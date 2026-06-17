@@ -426,3 +426,20 @@ a.cat-card.on .cat-meta { color: var(--accent); font-weight: 500; }
 .ed-preview { min-height: 420px; padding: 0.8rem 1rem; border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; }
 .ed-pick { padding: 2rem 0; }
 @media (max-width: 800px) { .ed-body { grid-template-columns: 1fr; } .ed-split { grid-template-columns: 1fr; } }
+
+/* analytics dashboard */
+.range-pills { display: flex; gap: 4px; }
+.range-pills a { font-size: 12px; padding: 4px 10px; border-radius: 8px; background: var(--surface); color: var(--muted); }
+.range-pills a:hover { color: var(--ink); text-decoration: none; }
+.range-pills a.on { background: var(--accent-tint); color: var(--accent); font-weight: 500; }
+.panel { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; margin: 1.25rem 0; }
+.panel-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.8rem; }
+.bars { display: flex; align-items: flex-end; gap: 5px; height: 110px; }
+.bar { flex: 1; min-height: 2px; background: var(--accent); opacity: 0.85; border-radius: 3px 3px 0 0; }
+.bar:hover { opacity: 1; }
+.rank-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.ranks { display: flex; flex-direction: column; gap: 7px; }
+.rank-row { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.92rem; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.rank-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-row b { color: var(--ink); font-weight: 600; }
+@media (max-width: 700px) { .rank-cols { grid-template-columns: 1fr; } }

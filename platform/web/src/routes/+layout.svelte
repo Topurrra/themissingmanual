@@ -3,6 +3,8 @@
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { guardSearchSubmit } from '$lib/search.js';
+  import { afterNavigate } from '$app/navigation';
+  import { sendPageview } from '$lib/beacon.js';
 
   export let data;
   $: nav = data?.nav ?? [];
@@ -23,6 +25,10 @@
       const t = localStorage.getItem('theme');
       theme = t === 'dark' || t === 'light' ? t : 'system';
     } catch (e) {}
+  });
+
+  afterNavigate(({ to }) => {
+    if (to && !to.url.pathname.startsWith('/admin')) sendPageview(to.url);
   });
 
   function toggleSidebar() {

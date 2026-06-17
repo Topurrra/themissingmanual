@@ -73,7 +73,16 @@ impl Store {
                  id TEXT PRIMARY KEY,
                  created_at TEXT NOT NULL DEFAULT (datetime('now')),
                  expires_at TEXT NOT NULL
-             );",
+             );
+             CREATE TABLE IF NOT EXISTS events (
+                 ts TEXT NOT NULL DEFAULT (datetime('now')),
+                 kind TEXT NOT NULL,
+                 path TEXT NOT NULL,
+                 referrer TEXT,
+                 visitor TEXT NOT NULL,
+                 query TEXT
+             );
+             CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);",
         )?;
         Ok(Self { conn })
     }
@@ -374,6 +383,58 @@ impl Store {
         self.conn.execute("DELETE FROM sessions WHERE expires_at <= datetime('now')", [])?;
         Ok(())
     }
+
+    // ---- analytics ----
+
+    pub fn record_event(&self, kind: &str, path: &str, referrer: &str, visitor: &str, query: &str) -> Result<(), StoreError> {
+        self.conn.execute(
+            "INSERT INTO events (kind, path, referrer, visitor, query) VALUES (?1,?2,?3,?4,?5)",
+            params![kind, path, referrer, visitor, query],
+        )?;
+        Ok(())
+    }
+
+    pub fn analytics_totals(&self, days: i64) -> Result<(i64, i64, i64), StoreError> {
+        let w = format!("-{days} days");
+        let views: i64 = self.conn.query_row(
+            "SELECT COUNT(*) FROM events WHERE kind='pageview' AND ts>=datetime('now',?1)",
+            params![w], |r| r.get(0))?;
+        let uniq: i64 = self.conn.query_row(
+            "SELECT COUNT(DISTINCT visitor) FROM events WHERE kind='pageview' AND ts>=datetime('now',?1)",
+            params![w], |r| r.get(0))?;
+        let searches: i64 = self.conn.query_row(
+            "SELECT COUNT(*) FROM events WHERE kind='search' AND ts>=datetime('now',?1)",
+            params![w], |r| r.get(0))?;
+        Ok((views, uniq, searches))
+    }
+
+    pub fn views_per_day(&self, days: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        let w = format!("-{days} days");
+        let mut stmt = self.conn.prepare(
+            "SELECT date(ts) d, COUNT(*) FROM events WHERE kind='pageview' AND ts>=datetime('now',?1) GROUP BY d ORDER BY d")?;
+        let rows = stmt.query_map(params![w], |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?)))?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    // `col` and `where_extra` are fixed internal literals (never user input).
+    fn top_by(&self, where_extra: &str, col: &str, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        let w = format!("-{days} days");
+        let sql = format!(
+            "SELECT {col} k, COUNT(*) c FROM events WHERE ts>=datetime('now',?1) {where_extra} GROUP BY k ORDER BY c DESC LIMIT ?2");
+        let mut stmt = self.conn.prepare(&sql)?;
+        let rows = stmt.query_map(params![w, limit], |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?)))?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    pub fn top_paths(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        self.top_by("AND kind='pageview'", "path", days, limit)
+    }
+    pub fn top_referrers(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        self.top_by("AND referrer IS NOT NULL AND referrer<>''", "referrer", days, limit)
+    }
+    pub fn top_searches(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        self.top_by("AND kind='search' AND query<>''", "query", days, limit)
+    }
 }
 
 #[cfg(test)]
@@ -476,5 +537,22 @@ mod tests {
         assert_eq!(s.list_all_guides().unwrap().len(), 2); // admin sees both
         assert!(s.get_guide("b").unwrap().is_none()); // public fetch hides draft
         assert!(s.get_guide_any_status("b").unwrap().is_some()); // admin fetch shows it
+    }
+
+    #[test]
+    fn analytics_counts_and_uniques() {
+        let s = Store::open_in_memory().unwrap();
+        s.record_event("pageview", "/guides/git", "google.com", "vA", "").unwrap();
+        s.record_event("pageview", "/guides/git", "", "vA", "").unwrap(); // same visitor
+        s.record_event("pageview", "/", "reddit.com", "vB", "").unwrap();
+        s.record_event("search", "/search", "", "vB", "rebase").unwrap();
+        let (views, uniq, searches) = s.analytics_totals(30).unwrap();
+        assert_eq!(views, 3);
+        assert_eq!(uniq, 2);
+        assert_eq!(searches, 1);
+        assert_eq!(s.top_paths(30, 10).unwrap()[0], ("/guides/git".to_string(), 2));
+        assert_eq!(s.top_searches(30, 10).unwrap()[0], ("rebase".to_string(), 1));
+        assert!(s.top_referrers(30, 10).unwrap().iter().any(|(r, _)| r == "google.com"));
+        assert_eq!(s.views_per_day(30).unwrap().iter().map(|(_, c)| c).sum::<i64>(), 3);
     }
 }

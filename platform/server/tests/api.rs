@@ -286,3 +286,36 @@ async fn admin_asset_roundtrip() {
     let bytes = axum::body::to_bytes(fetched.into_body(), usize::MAX).await.unwrap();
     assert_eq!(&bytes[..], b"PNGDATA");
 }
+
+#[tokio::test]
+async fn events_ingest_and_validation() {
+    let app = server::app(admin_state());
+    let ok = app
+        .clone()
+        .oneshot(post_json("/api/events", r#"{"kind":"pageview","path":"/guides/x","visitor":"v1"}"#))
+        .await
+        .unwrap();
+    assert_eq!(ok.status(), StatusCode::NO_CONTENT);
+    let bad = app
+        .oneshot(post_json("/api/events", r#"{"kind":"nope","path":"/","visitor":"v1"}"#))
+        .await
+        .unwrap();
+    assert_eq!(bad.status(), StatusCode::BAD_REQUEST);
+}
+
+#[tokio::test]
+async fn analytics_requires_auth_and_returns_shape() {
+    let app = server::app(admin_state());
+    assert_eq!(app.clone().oneshot(get("/api/admin/analytics")).await.unwrap().status(), StatusCode::UNAUTHORIZED);
+    let cookie = login(&app).await;
+    app.clone()
+        .oneshot(post_json("/api/events", r#"{"kind":"pageview","path":"/","visitor":"vz"}"#))
+        .await
+        .unwrap();
+    let res = app.oneshot(get_auth("/api/admin/analytics?days=30", &cookie)).await.unwrap();
+    assert_eq!(res.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert!(v["views"].as_i64().unwrap() >= 1);
+    assert!(v["topPaths"].is_array());
+}

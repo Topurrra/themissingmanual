@@ -30,6 +30,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/categories/:slug", patch(admin::patch_category).delete(admin::delete_category))
         .route("/assets", post(admin::upload_asset))
         .route("/preview", post(admin::preview))
+        .route("/analytics", get(admin::analytics))
         .route_layer(middleware::from_fn_with_state(state.clone(), auth::require_admin));
     // Auth routes — not behind require_admin (login establishes the session; me/logout self-check).
     let auth_routes = Router::new()
@@ -43,6 +44,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/api/guides/:slug", get(guide_detail))
         .route("/api/guides/:slug/:phase", get(phase_detail))
         .route("/api/search", get(search))
+        .route("/api/events", post(admin::record_event))
         .route("/api/categories", get(list_categories))
         .route("/api/categories/:slug", get(category_detail))
         .route("/assets/:id", get(admin::serve_asset))

@@ -8,7 +8,8 @@
   const nav = [
     { href: '/admin', label: 'Dashboard', icon: 'ti-layout-dashboard' },
     { href: '/admin/content', label: 'Content', icon: 'ti-files' },
-    { href: '/admin/categories', label: 'Categories', icon: 'ti-category' }
+    { href: '/admin/categories', label: 'Categories', icon: 'ti-category' },
+    { href: '/admin/analytics', label: 'Analytics', icon: 'ti-chart-bar' }
   ];
   function active(href) {
     return href === '/admin' ? path === '/admin' : path.startsWith(href);

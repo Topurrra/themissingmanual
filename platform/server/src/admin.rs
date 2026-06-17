@@ -1,6 +1,7 @@
 use std::sync::Arc;
+use std::collections::HashMap;
 use axum::{
-    extract::{Multipart, Path, State},
+    extract::{Multipart, Path, Query, State},
     http::{header, StatusCode},
     response::{IntoResponse, Response},
     Json,
@@ -320,6 +321,64 @@ pub async fn serve_asset(State(state): State<Arc<AppState>>, Path(id): Path<Stri
     match r {
         Ok(Some((mime, _filename, bytes))) => ([(header::CONTENT_TYPE, mime)], bytes).into_response(),
         Ok(None) => (StatusCode::NOT_FOUND, "not found").into_response(),
+        Err(e) => err(e),
+    }
+}
+
+// ===== analytics =====
+
+fn truncate(s: &str, n: usize) -> String {
+    s.chars().take(n).collect()
+}
+
+#[derive(Deserialize)]
+pub struct EventInput {
+    kind: String,
+    path: String,
+    #[serde(default)]
+    referrer: String,
+    visitor: String,
+    #[serde(default)]
+    query: String,
+}
+
+// Public: the analytics collector posts here (server-to-server from the web origin).
+pub async fn record_event(State(state): State<Arc<AppState>>, Json(e): Json<EventInput>) -> Response {
+    if e.kind != "pageview" && e.kind != "search" {
+        return (StatusCode::BAD_REQUEST, Json(json!({ "error": "bad kind" }))).into_response();
+    }
+    let r = {
+        state.store.lock().unwrap().record_event(
+            &e.kind,
+            &truncate(&e.path, 512),
+            &truncate(&e.referrer, 255),
+            &truncate(&e.visitor, 64),
+            &truncate(&e.query, 255),
+        )
+    };
+    match r {
+        Ok(_) => StatusCode::NO_CONTENT.into_response(),
+        Err(e) => err(e),
+    }
+}
+
+pub async fn analytics(State(state): State<Arc<AppState>>, Query(q): Query<HashMap<String, String>>) -> Response {
+    let days: i64 = q.get("days").and_then(|s| s.parse().ok()).unwrap_or(30).clamp(1, 365);
+    let store = state.store.lock().unwrap();
+    let build = || -> Result<serde_json::Value, content_core::store::StoreError> {
+        let (views, uniq, searches) = store.analytics_totals(days)?;
+        Ok(json!({
+            "views": views,
+            "uniqueVisitors": uniq,
+            "searches": searches,
+            "perDay": store.views_per_day(days)?.into_iter().map(|(d, c)| json!({"day": d, "count": c})).collect::<Vec<_>>(),
+            "topPaths": store.top_paths(days, 10)?.into_iter().map(|(p, c)| json!({"path": p, "count": c})).collect::<Vec<_>>(),
+            "topReferrers": store.top_referrers(days, 10)?.into_iter().map(|(p, c)| json!({"referrer": p, "count": c})).collect::<Vec<_>>(),
+            "topSearches": store.top_searches(days, 10)?.into_iter().map(|(p, c)| json!({"query": p, "count": c})).collect::<Vec<_>>(),
+        }))
+    };
+    match build() {
+        Ok(v) => Json(v).into_response(),
         Err(e) => err(e),
     }
 }
