@@ -3,6 +3,7 @@
 pub mod models;
 pub mod frontmatter;
 pub mod render;
+pub mod links;
 pub mod store;
 pub mod index;
 pub mod ingest;

@@ -56,7 +56,7 @@ pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Sta
         let (fm, body_md) = parse_markdown(&raw)
             .map_err(|e| IngestError::Frontmatter(path.display().to_string(), e))?;
 
-        let html = render_markdown(&body_md);
+        let html = crate::links::rewrite_internal_links(&render_markdown(&body_md), &fm.guide);
         let plain = html_to_text(&html);
 
         if seen_guides.insert(fm.guide.clone()) {

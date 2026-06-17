@@ -36,3 +36,11 @@ fn typo_still_finds_rebase_content() {
     let hits = index.search("rebse", 5).unwrap();
     assert!(!hits.is_empty(), "fuzzy search should find rebase content despite the typo");
 }
+
+#[test]
+fn internal_links_rewritten_to_web_routes() {
+    let (store, _index) = ingested();
+    let p1 = store.get_phase("git-explained-like-a-human", 1).unwrap().unwrap();
+    assert!(!p1.html.contains(".md\""), "internal .md links should be rewritten to web routes");
+    assert!(p1.html.contains("/guides/git-explained-like-a-human/"), "should contain a rewritten web route");
+}

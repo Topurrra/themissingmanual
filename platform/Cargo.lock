@@ -347,6 +347,7 @@ name = "content-core"
 version = "0.1.0"
 dependencies = [
  "comrak",
+ "regex",
  "rusqlite",
  "serde",
  "serde_json",
