@@ -17,7 +17,7 @@
 }
 
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; font-family: var(--font-body); }
 body {
   margin: 0;
   background: var(--bg);
@@ -36,6 +36,7 @@ h1, h2, h3 {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.12;
+  text-wrap: balance;
 }
 h1 { font-size: 2rem; margin: 0 0 0.5rem; }
 h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.015em; margin: 2.4rem 0 0.8rem; }
@@ -126,7 +127,7 @@ ul.guides a, ol.phases a, ul.results a {
 .reader { font-size: 17px; }
 .reader h1 { font-size: 2rem; margin-top: 0; }
 .reader h2 { font-size: 1.45rem; }
-.reader p { margin: 1.1rem 0; color: var(--body); }
+.reader p { margin: 1.1rem 0; color: var(--body); text-wrap: pretty; }
 .reader strong { color: var(--ink); font-weight: 600; }
 .reader a { font-weight: 500; }
 .reader ul, .reader ol { padding-left: 1.3rem; }
