@@ -8,6 +8,13 @@ services:
     environment:
       BIND_ADDR: 0.0.0.0:3000
       CONTENT_ROOT: .
+      DB_PATH: /data/manual.db
+      # Enable the admin console by setting a password hash. Generate one with:
+      #   docker compose run --rm api server hash-password "your-password"
+      # then export ADMIN_PASSWORD_HASH (e.g. in a .env file beside this compose file).
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:-}
+    volumes:
+      - manual-data:/data
 
   web:
     build:
@@ -20,3 +27,6 @@ services:
       PORT: "3000"
     depends_on:
       - api
+
+volumes:
+  manual-data:

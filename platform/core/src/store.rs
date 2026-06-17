@@ -1,5 +1,5 @@
 use rusqlite::{params, Connection};
-use crate::models::{GuideSummary, Phase, PhaseRef};
+use crate::models::{CategoryRow, GuideSummary, Phase, PhaseRef};
 
 pub struct Store {
     conn: Connection,
@@ -44,6 +44,37 @@ impl Store {
                  PRIMARY KEY (guide_slug, phase_no)
              );",
         )?;
+        // Additive migrations (ignore "duplicate column name" on re-open).
+        for stmt in [
+            "ALTER TABLE guides ADD COLUMN status TEXT NOT NULL DEFAULT 'published'",
+            "ALTER TABLE guides ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 0",
+            "ALTER TABLE guides ADD COLUMN created_at TEXT NOT NULL DEFAULT (datetime('now'))",
+            "ALTER TABLE guides ADD COLUMN updated_at TEXT NOT NULL DEFAULT (datetime('now'))",
+            "ALTER TABLE phases ADD COLUMN markdown TEXT NOT NULL DEFAULT ''",
+        ] {
+            let _ = conn.execute(stmt, []);
+        }
+        conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS categories (
+                 slug TEXT PRIMARY KEY,
+                 name TEXT NOT NULL,
+                 icon TEXT NOT NULL,
+                 blurb TEXT NOT NULL,
+                 sort_order INTEGER NOT NULL DEFAULT 0
+             );
+             CREATE TABLE IF NOT EXISTS assets (
+                 id TEXT PRIMARY KEY,
+                 filename TEXT,
+                 mime TEXT NOT NULL,
+                 bytes BLOB NOT NULL,
+                 created_at TEXT NOT NULL DEFAULT (datetime('now'))
+             );
+             CREATE TABLE IF NOT EXISTS sessions (
+                 id TEXT PRIMARY KEY,
+                 created_at TEXT NOT NULL DEFAULT (datetime('now')),
+                 expires_at TEXT NOT NULL
+             );",
+        )?;
         Ok(Self { conn })
     }
 
@@ -61,18 +92,18 @@ impl Store {
         let syns = serde_json::to_string(&p.synonyms)?;
         self.conn.execute(
             "INSERT INTO phases
-               (guide_slug, phase_no, title, summary, tags_json, difficulty, synonyms_json, html, updated)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
+               (guide_slug, phase_no, title, summary, tags_json, difficulty, synonyms_json, html, updated, markdown)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
              ON CONFLICT(guide_slug, phase_no) DO UPDATE SET
-               title=?3, summary=?4, tags_json=?5, difficulty=?6, synonyms_json=?7, html=?8, updated=?9",
-            params![p.guide_slug, p.phase_no, p.title, p.summary, tags, p.difficulty, syns, p.html, p.updated],
+               title=?3, summary=?4, tags_json=?5, difficulty=?6, synonyms_json=?7, html=?8, updated=?9, markdown=?10",
+            params![p.guide_slug, p.phase_no, p.title, p.summary, tags, p.difficulty, syns, p.html, p.updated, p.markdown],
         )?;
         Ok(())
     }
 
     pub fn get_phase(&self, guide_slug: &str, phase_no: u32) -> Result<Option<Phase>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT guide_slug, phase_no, title, summary, tags_json, difficulty, synonyms_json, html, updated
+            "SELECT guide_slug, phase_no, title, summary, tags_json, difficulty, synonyms_json, html, updated, markdown
              FROM phases WHERE guide_slug = ?1 AND phase_no = ?2",
         )?;
         let mut rows = stmt.query(params![guide_slug, phase_no])?;
@@ -87,6 +118,7 @@ impl Store {
                 synonyms: serde_json::from_str(&row.get::<_, String>(6)?)?,
                 html: row.get(7)?,
                 updated: row.get(8)?,
+                markdown: row.get(9)?,
             })),
             None => Ok(None),
         }
@@ -94,16 +126,37 @@ impl Store {
 
     pub fn list_guides(&self) -> Result<Vec<GuideSummary>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT slug, title, summary, category, difficulty FROM guides ORDER BY slug",
+            "SELECT slug, title, summary, category, difficulty, status FROM guides WHERE status='published' ORDER BY sort_order, slug",
+        )?;
+        let rows = stmt.query_map([], Self::row_to_guide)?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    /// Admin listing: every guide regardless of status.
+    pub fn list_all_guides(&self) -> Result<Vec<GuideSummary>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT slug, title, summary, category, difficulty, status FROM guides ORDER BY sort_order, slug",
         )?;
         let rows = stmt.query_map([], Self::row_to_guide)?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
     }
 
     pub fn get_guide(&self, slug: &str) -> Result<Option<GuideSummary>, StoreError> {
-        let mut stmt = self.conn.prepare(
-            "SELECT slug, title, summary, category, difficulty FROM guides WHERE slug = ?1",
-        )?;
+        self.get_guide_inner(slug, true)
+    }
+
+    /// Admin fetch: returns the guide even if it's a draft.
+    pub fn get_guide_any_status(&self, slug: &str) -> Result<Option<GuideSummary>, StoreError> {
+        self.get_guide_inner(slug, false)
+    }
+
+    fn get_guide_inner(&self, slug: &str, published_only: bool) -> Result<Option<GuideSummary>, StoreError> {
+        let sql = if published_only {
+            "SELECT slug, title, summary, category, difficulty, status FROM guides WHERE slug = ?1 AND status='published'"
+        } else {
+            "SELECT slug, title, summary, category, difficulty, status FROM guides WHERE slug = ?1"
+        };
+        let mut stmt = self.conn.prepare(sql)?;
         let mut rows = stmt.query(params![slug])?;
         match rows.next()? {
             Some(row) => Ok(Some(Self::row_to_guide(row)?)),
@@ -113,7 +166,7 @@ impl Store {
 
     pub fn guides_for_category(&self, category: &str) -> Result<Vec<GuideSummary>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT slug, title, summary, category, difficulty FROM guides WHERE category = ?1 ORDER BY difficulty, title",
+            "SELECT slug, title, summary, category, difficulty, status FROM guides WHERE category = ?1 AND status='published' ORDER BY difficulty, title",
         )?;
         let rows = stmt.query_map(params![category], Self::row_to_guide)?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
@@ -126,6 +179,7 @@ impl Store {
             summary: row.get(2)?,
             category: row.get(3)?,
             difficulty: row.get(4)?,
+            status: row.get(5)?,
         })
     }
 
@@ -141,6 +195,184 @@ impl Store {
             })
         })?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    // ===== CMS additions (B1) =====
+
+    pub fn set_guide_status(&self, slug: &str, status: &str) -> Result<(), StoreError> {
+        self.conn.execute(
+            "UPDATE guides SET status=?2, updated_at=datetime('now') WHERE slug=?1",
+            params![slug, status],
+        )?;
+        Ok(())
+    }
+
+    pub fn guide_status(&self, slug: &str) -> Result<String, StoreError> {
+        Ok(self
+            .conn
+            .query_row("SELECT status FROM guides WHERE slug=?1", params![slug], |r| r.get(0))?)
+    }
+
+    pub fn update_guide_meta(&self, slug: &str, title: &str, summary: &str, category: &str, difficulty: &str) -> Result<(), StoreError> {
+        self.conn.execute(
+            "UPDATE guides SET title=?2, summary=?3, category=?4, difficulty=?5, updated_at=datetime('now') WHERE slug=?1",
+            params![slug, title, summary, category, difficulty],
+        )?;
+        Ok(())
+    }
+
+    pub fn delete_guide_row(&self, slug: &str) -> Result<(), StoreError> {
+        self.conn.execute("DELETE FROM phases WHERE guide_slug=?1", params![slug])?;
+        self.conn.execute("DELETE FROM guides WHERE slug=?1", params![slug])?;
+        Ok(())
+    }
+
+    pub fn delete_phase(&self, slug: &str, phase_no: u32) -> Result<(), StoreError> {
+        self.conn.execute(
+            "DELETE FROM phases WHERE guide_slug=?1 AND phase_no=?2",
+            params![slug, phase_no],
+        )?;
+        Ok(())
+    }
+
+    pub fn next_phase_no(&self, slug: &str) -> Result<u32, StoreError> {
+        let max: Option<i64> = self.conn.query_row(
+            "SELECT MAX(phase_no) FROM phases WHERE guide_slug=?1",
+            params![slug],
+            |r| r.get(0),
+        )?;
+        Ok(max.map(|m| (m + 1) as u32).unwrap_or(0))
+    }
+
+    /// Remap phase numbers to the given order (two-pass to avoid PK collisions).
+    pub fn reorder_phases(&self, slug: &str, order: &[u32]) -> Result<(), StoreError> {
+        for (i, no) in order.iter().enumerate() {
+            self.conn.execute(
+                "UPDATE phases SET phase_no=?3 WHERE guide_slug=?1 AND phase_no=?2",
+                params![slug, no, 100_000 + i as i64],
+            )?;
+        }
+        for i in 0..order.len() {
+            self.conn.execute(
+                "UPDATE phases SET phase_no=?3 WHERE guide_slug=?1 AND phase_no=?2",
+                params![slug, 100_000 + i as i64, i as i64],
+            )?;
+        }
+        Ok(())
+    }
+
+    // ---- categories ----
+
+    pub fn list_categories_rows(&self) -> Result<Vec<CategoryRow>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT slug, name, icon, blurb, sort_order FROM categories ORDER BY sort_order, name",
+        )?;
+        let rows = stmt.query_map([], |r| {
+            Ok(CategoryRow {
+                slug: r.get(0)?,
+                name: r.get(1)?,
+                icon: r.get(2)?,
+                blurb: r.get(3)?,
+                sort_order: r.get(4)?,
+            })
+        })?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    pub fn upsert_category(&self, c: &CategoryRow) -> Result<(), StoreError> {
+        self.conn.execute(
+            "INSERT INTO categories (slug, name, icon, blurb, sort_order) VALUES (?1,?2,?3,?4,?5)
+             ON CONFLICT(slug) DO UPDATE SET name=?2, icon=?3, blurb=?4, sort_order=?5",
+            params![c.slug, c.name, c.icon, c.blurb, c.sort_order],
+        )?;
+        Ok(())
+    }
+
+    pub fn delete_category(&self, slug: &str) -> Result<(), StoreError> {
+        self.conn.execute("DELETE FROM categories WHERE slug=?1", params![slug])?;
+        Ok(())
+    }
+
+    pub fn reorder_categories(&self, slugs: &[String]) -> Result<(), StoreError> {
+        for (i, s) in slugs.iter().enumerate() {
+            self.conn.execute(
+                "UPDATE categories SET sort_order=?2 WHERE slug=?1",
+                params![s, i as i64],
+            )?;
+        }
+        Ok(())
+    }
+
+    pub fn categories_count(&self) -> Result<i64, StoreError> {
+        Ok(self.conn.query_row("SELECT COUNT(*) FROM categories", [], |r| r.get(0))?)
+    }
+
+    pub fn count_guides_in_category(&self, slug: &str) -> Result<i64, StoreError> {
+        Ok(self.conn.query_row(
+            "SELECT COUNT(*) FROM guides WHERE category=?1",
+            params![slug],
+            |r| r.get(0),
+        )?)
+    }
+
+    pub fn count_published_in_category(&self, slug: &str) -> Result<i64, StoreError> {
+        Ok(self.conn.query_row(
+            "SELECT COUNT(*) FROM guides WHERE category=?1 AND status='published'",
+            params![slug],
+            |r| r.get(0),
+        )?)
+    }
+
+    // ---- assets ----
+
+    pub fn insert_asset(&self, id: &str, filename: &str, mime: &str, bytes: &[u8]) -> Result<(), StoreError> {
+        self.conn.execute(
+            "INSERT INTO assets (id, filename, mime, bytes) VALUES (?1,?2,?3,?4)",
+            params![id, filename, mime, bytes],
+        )?;
+        Ok(())
+    }
+
+    pub fn get_asset(&self, id: &str) -> Result<Option<(String, String, Vec<u8>)>, StoreError> {
+        let mut stmt = self.conn.prepare("SELECT mime, filename, bytes FROM assets WHERE id=?1")?;
+        let mut rows = stmt.query(params![id])?;
+        match rows.next()? {
+            Some(row) => Ok(Some((
+                row.get(0)?,
+                row.get::<_, Option<String>>(1)?.unwrap_or_default(),
+                row.get(2)?,
+            ))),
+            None => Ok(None),
+        }
+    }
+
+    // ---- sessions ----
+
+    pub fn create_session(&self, id: &str) -> Result<(), StoreError> {
+        self.conn.execute(
+            "INSERT INTO sessions (id, expires_at) VALUES (?1, datetime('now','+30 days'))",
+            params![id],
+        )?;
+        Ok(())
+    }
+
+    pub fn session_valid(&self, id: &str) -> Result<bool, StoreError> {
+        let n: i64 = self.conn.query_row(
+            "SELECT COUNT(*) FROM sessions WHERE id=?1 AND expires_at > datetime('now')",
+            params![id],
+            |r| r.get(0),
+        )?;
+        Ok(n > 0)
+    }
+
+    pub fn delete_session(&self, id: &str) -> Result<(), StoreError> {
+        self.conn.execute("DELETE FROM sessions WHERE id=?1", params![id])?;
+        Ok(())
+    }
+
+    pub fn purge_expired_sessions(&self) -> Result<(), StoreError> {
+        self.conn.execute("DELETE FROM sessions WHERE expires_at <= datetime('now')", [])?;
+        Ok(())
     }
 }
 
@@ -160,6 +392,7 @@ mod tests {
             synonyms: vec!["what is a commit".into()],
             html: "<h1>Hi</h1>".into(),
             updated: "2026-06-17".into(),
+            markdown: "# Hi".into(),
         }
     }
 
@@ -215,5 +448,33 @@ mod tests {
         assert_eq!(vc.len(), 1);
         assert_eq!(vc[0].slug, "git");
         assert!(store.guides_for_category("databases").unwrap().is_empty());
+    }
+
+    #[test]
+    fn migrations_add_columns_and_tables() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("t.db");
+        {
+            let s = Store::open(&path).unwrap();
+            s.upsert_guide("g", "T", "S", "version-control", "beginner").unwrap();
+            s.set_guide_status("g", "draft").unwrap();
+        }
+        let s = Store::open(&path).unwrap(); // reopen — persistence survives
+        assert_eq!(s.guide_status("g").unwrap(), "draft");
+        assert!(s.list_categories_rows().unwrap().is_empty()); // table exists, empty until seeded
+    }
+
+    #[test]
+    fn drafts_excluded_from_public_list() {
+        let s = Store::open_in_memory().unwrap();
+        s.upsert_guide("a", "A", "s", "version-control", "beginner").unwrap();
+        s.upsert_guide("b", "B", "s", "version-control", "beginner").unwrap();
+        s.set_guide_status("b", "draft").unwrap();
+        let public: Vec<_> = s.list_guides().unwrap().into_iter().map(|g| g.slug).collect();
+        assert!(public.contains(&"a".to_string()));
+        assert!(!public.contains(&"b".to_string()));
+        assert_eq!(s.list_all_guides().unwrap().len(), 2); // admin sees both
+        assert!(s.get_guide("b").unwrap().is_none()); // public fetch hides draft
+        assert!(s.get_guide_any_status("b").unwrap().is_some()); // admin fetch shows it
     }
 }

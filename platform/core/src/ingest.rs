@@ -25,7 +25,7 @@ pub enum IngestError {
 }
 
 /// Strip HTML tags to plain text for indexing the body.
-fn html_to_text(html: &str) -> String {
+pub fn html_to_text(html: &str) -> String {
     let mut out = String::with_capacity(html.len());
     let mut in_tag = false;
     for c in html.chars() {
@@ -42,6 +42,7 @@ fn html_to_text(html: &str) -> String {
 /// Ingest every `guides/<slug>/NN-*.md` under `root` into the store + index.
 pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Stats, IngestError> {
     let guides_root = root.join("guides");
+    crate::categories::seed_categories(store)?;
     let mut writer = index.writer()?;
     let mut stats = Stats::default();
     let mut seen_guides = std::collections::BTreeSet::new();
@@ -87,6 +88,7 @@ pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Sta
             synonyms: fm.synonyms.clone(),
             html,
             updated: fm.updated.clone(),
+            markdown: body_md,
         };
         store.upsert_phase(&phase)?;
         writer.add_phase(&phase, &format!("{} {}", fm.summary, plain))?;
@@ -127,6 +129,7 @@ updated: 2026-06-17\n\
         assert_eq!(stats.phases, 1);
         let p = store.get_phase("demo", 1).unwrap().unwrap();
         assert!(p.html.contains("<h1>"));
+        assert!(p.markdown.contains("branch"), "markdown source kept for editing");
         let hits = index.search("branch", 10).unwrap();
         assert_eq!(hits[0].guide_slug, "demo");
     }

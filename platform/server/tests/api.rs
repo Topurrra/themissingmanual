@@ -114,3 +114,175 @@ async fn category_detail_and_404() {
     let missing = app.oneshot(Request::builder().uri("/api/categories/nope").body(Body::empty()).unwrap()).await.unwrap();
     assert_eq!(missing.status(), StatusCode::NOT_FOUND);
 }
+
+// ===== admin (B1) =====
+
+fn admin_state() -> std::sync::Arc<server::AppState> {
+    let hash = server::auth::hash_password("secret");
+    std::sync::Arc::new(server::AppState::build(&repo_root()).unwrap().with_admin_hash(Some(hash)))
+}
+
+fn get(uri: &str) -> Request<Body> {
+    Request::builder().uri(uri).body(Body::empty()).unwrap()
+}
+fn get_auth(uri: &str, cookie: &str) -> Request<Body> {
+    Request::builder().uri(uri).header("cookie", cookie).body(Body::empty()).unwrap()
+}
+fn post_json(uri: &str, body: &str) -> Request<Body> {
+    Request::builder().method("POST").uri(uri).header("content-type", "application/json").body(Body::from(body.to_string())).unwrap()
+}
+fn post_json_auth(uri: &str, body: &str, cookie: &str) -> Request<Body> {
+    Request::builder().method("POST").uri(uri).header("content-type", "application/json").header("cookie", cookie).body(Body::from(body.to_string())).unwrap()
+}
+fn patch_json_auth(uri: &str, body: &str, cookie: &str) -> Request<Body> {
+    Request::builder().method("PATCH").uri(uri).header("content-type", "application/json").header("cookie", cookie).body(Body::from(body.to_string())).unwrap()
+}
+
+async fn login(app: &axum::Router) -> String {
+    let r = app.clone().oneshot(post_json("/api/admin/login", r#"{"password":"secret"}"#)).await.unwrap();
+    assert_eq!(r.status(), StatusCode::OK);
+    r.headers().get("set-cookie").unwrap().to_str().unwrap().split(';').next().unwrap().to_string()
+}
+async fn public_guide_slugs(app: &axum::Router) -> Vec<String> {
+    let r = app.clone().oneshot(get("/api/guides")).await.unwrap();
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    let gs: Vec<GuideSummary> = serde_json::from_slice(&bytes).unwrap();
+    gs.into_iter().map(|g| g.slug).collect()
+}
+async fn search_count(app: &axum::Router, q: &str) -> usize {
+    let r = app.clone().oneshot(get(&format!("/api/search?q={q}"))).await.unwrap();
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    let hits: Vec<SearchHit> = serde_json::from_slice(&bytes).unwrap();
+    hits.len()
+}
+
+#[tokio::test]
+async fn admin_auth_flow() {
+    let app = server::app(admin_state());
+    assert_eq!(app.clone().oneshot(get("/api/admin/me")).await.unwrap().status(), StatusCode::UNAUTHORIZED);
+    assert_eq!(
+        app.clone().oneshot(post_json("/api/admin/login", r#"{"password":"nope"}"#)).await.unwrap().status(),
+        StatusCode::UNAUTHORIZED
+    );
+    let cookie = login(&app).await;
+    assert_eq!(app.clone().oneshot(get_auth("/api/admin/me", &cookie)).await.unwrap().status(), StatusCode::OK);
+    let logout = Request::builder().method("POST").uri("/api/admin/logout").header("cookie", &cookie).body(Body::empty()).unwrap();
+    assert_eq!(app.oneshot(logout).await.unwrap().status(), StatusCode::OK);
+}
+
+#[tokio::test]
+async fn admin_routes_require_auth() {
+    let app = server::app(admin_state());
+    let r = app
+        .oneshot(post_json("/api/admin/guides", r#"{"slug":"x","title":"X","summary":"s","category":"databases","difficulty":"beginner"}"#))
+        .await
+        .unwrap();
+    assert_eq!(r.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
+async fn admin_create_draft_then_publish() {
+    let app = server::app(admin_state());
+    let cookie = login(&app).await;
+    let created = app
+        .clone()
+        .oneshot(post_json_auth(
+            "/api/admin/guides",
+            r#"{"slug":"new-topic","title":"New Topic","summary":"s","category":"databases","difficulty":"beginner"}"#,
+            &cookie,
+        ))
+        .await
+        .unwrap();
+    assert_eq!(created.status(), StatusCode::CREATED);
+    assert!(!public_guide_slugs(&app).await.contains(&"new-topic".to_string()), "draft hidden from public");
+
+    let published = app
+        .clone()
+        .oneshot(patch_json_auth(
+            "/api/admin/guides/new-topic",
+            r#"{"title":"New Topic","summary":"s","category":"databases","difficulty":"beginner","status":"published"}"#,
+            &cookie,
+        ))
+        .await
+        .unwrap();
+    assert_eq!(published.status(), StatusCode::OK);
+    assert!(public_guide_slugs(&app).await.contains(&"new-topic".to_string()), "published guide is public");
+}
+
+#[tokio::test]
+async fn admin_phase_create_and_search() {
+    let app = server::app(admin_state());
+    let cookie = login(&app).await;
+    app.clone()
+        .oneshot(post_json_auth(
+            "/api/admin/guides",
+            r#"{"slug":"zebras","title":"Zebras","summary":"about zebras","category":"databases","difficulty":"beginner"}"#,
+            &cookie,
+        ))
+        .await
+        .unwrap();
+    let phase = app
+        .clone()
+        .oneshot(post_json_auth(
+            "/api/admin/guides/zebras/phases",
+            "{\"title\":\"Stripes\",\"summary\":\"about stripes\",\"markdown\":\"## Stripes\\n\\nZebras have unique quagga stripes.\"}",
+            &cookie,
+        ))
+        .await
+        .unwrap();
+    assert_eq!(phase.status(), StatusCode::CREATED);
+    assert_eq!(search_count(&app, "quagga").await, 0, "draft content must not be searchable");
+
+    app.clone()
+        .oneshot(patch_json_auth(
+            "/api/admin/guides/zebras",
+            r#"{"title":"Zebras","summary":"about zebras","category":"databases","difficulty":"beginner","status":"published"}"#,
+            &cookie,
+        ))
+        .await
+        .unwrap();
+    assert!(search_count(&app, "quagga").await >= 1, "published content is searchable");
+}
+
+#[tokio::test]
+async fn admin_preview_renders_markdown() {
+    let app = server::app(admin_state());
+    let cookie = login(&app).await;
+    let r = app
+        .oneshot(post_json_auth("/api/admin/preview", "{\"markdown\":\"## Hi\\n\\nsome code\"}", &cookie))
+        .await
+        .unwrap();
+    assert_eq!(r.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert!(v["html"].as_str().unwrap().contains("<h2>"));
+}
+
+#[tokio::test]
+async fn admin_asset_roundtrip() {
+    let app = server::app(admin_state());
+    let cookie = login(&app).await;
+    let boundary = "XBOUNDARY";
+    let body = format!(
+        "--{b}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"a.png\"\r\nContent-Type: image/png\r\n\r\nPNGDATA\r\n--{b}--\r\n",
+        b = boundary
+    );
+    let upload = Request::builder()
+        .method("POST")
+        .uri("/api/admin/assets")
+        .header("content-type", format!("multipart/form-data; boundary={boundary}"))
+        .header("cookie", &cookie)
+        .body(Body::from(body))
+        .unwrap();
+    let r = app.clone().oneshot(upload).await.unwrap();
+    assert_eq!(r.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    let url = v["url"].as_str().unwrap().to_string();
+
+    let fetched = app.oneshot(get(&url)).await.unwrap();
+    assert_eq!(fetched.status(), StatusCode::OK);
+    assert_eq!(fetched.headers().get("content-type").unwrap(), "image/png");
+    let bytes = axum::body::to_bytes(fetched.into_body(), usize::MAX).await.unwrap();
+    assert_eq!(&bytes[..], b"PNGDATA");
+}

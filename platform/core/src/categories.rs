@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::models::GuideSummary;
+use crate::models::{CategoryRow, GuideSummary};
 use crate::store::{Store, StoreError};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -28,33 +28,46 @@ const DEFS: &[Def] = &[
     Def { slug: "security", name: "Security", icon: "ti-shield-lock", blurb: "The threats, the defaults, and the habits that keep you out of the news." },
 ];
 
-fn to_category(def: &Def, count: usize) -> Category {
-    Category {
-        slug: def.slug.to_string(),
-        name: def.name.to_string(),
-        icon: def.icon.to_string(),
-        blurb: def.blurb.to_string(),
-        count,
+/// Seed the canonical categories on first run. No-op if any category already exists.
+pub fn seed_categories(store: &Store) -> Result<(), StoreError> {
+    if store.categories_count()? > 0 {
+        return Ok(());
     }
+    for (i, d) in DEFS.iter().enumerate() {
+        store.upsert_category(&CategoryRow {
+            slug: d.slug.to_string(),
+            name: d.name.to_string(),
+            icon: d.icon.to_string(),
+            blurb: d.blurb.to_string(),
+            sort_order: i as i64,
+        })?;
+    }
+    Ok(())
 }
 
-/// The canonical categories, in display order, with live guide counts.
+fn row_to_category(row: CategoryRow, count: usize) -> Category {
+    Category { slug: row.slug, name: row.name, icon: row.icon, blurb: row.blurb, count }
+}
+
+/// All categories from the DB, in display order, with live published-guide counts.
 pub fn categories_with_counts(store: &Store) -> Result<Vec<Category>, StoreError> {
-    let guides = store.list_guides()?;
-    Ok(DEFS
-        .iter()
-        .map(|d| to_category(d, guides.iter().filter(|g| g.category == d.slug).count()))
-        .collect())
+    let rows = store.list_categories_rows()?;
+    let mut out = Vec::with_capacity(rows.len());
+    for r in rows {
+        let count = store.count_published_in_category(&r.slug)? as usize;
+        out.push(row_to_category(r, count));
+    }
+    Ok(out)
 }
 
-/// One category plus its guides; `None` if the slug isn't a known category.
+/// One category plus its published guides; `None` if the slug isn't a known category.
 pub fn category_with_guides(store: &Store, slug: &str) -> Result<Option<(Category, Vec<GuideSummary>)>, StoreError> {
-    let def = match DEFS.iter().find(|d| d.slug == slug) {
-        Some(d) => d,
+    let row = match store.list_categories_rows()?.into_iter().find(|c| c.slug == slug) {
+        Some(r) => r,
         None => return Ok(None),
     };
     let guides = store.guides_for_category(slug)?;
-    let cat = to_category(def, guides.len());
+    let cat = row_to_category(row, guides.len());
     Ok(Some((cat, guides)))
 }
 
@@ -65,6 +78,7 @@ mod tests {
     #[test]
     fn seven_categories_in_order() {
         let store = Store::open_in_memory().unwrap();
+        seed_categories(&store).unwrap();
         let cats = categories_with_counts(&store).unwrap();
         assert_eq!(cats.len(), 7);
         assert_eq!(cats[1].slug, "version-control");
@@ -74,6 +88,7 @@ mod tests {
     #[test]
     fn counts_and_lookup() {
         let store = Store::open_in_memory().unwrap();
+        seed_categories(&store).unwrap();
         store.upsert_guide("git", "Git", "x", "version-control", "beginner").unwrap();
         let cats = categories_with_counts(&store).unwrap();
         assert_eq!(cats.iter().find(|c| c.slug == "version-control").unwrap().count, 1);
@@ -82,5 +97,23 @@ mod tests {
         assert_eq!(cat.count, 1);
         assert_eq!(guides[0].slug, "git");
         assert!(category_with_guides(&store, "nope").unwrap().is_none());
+    }
+
+    #[test]
+    fn seeding_is_idempotent() {
+        let store = Store::open_in_memory().unwrap();
+        seed_categories(&store).unwrap();
+        seed_categories(&store).unwrap();
+        assert_eq!(categories_with_counts(&store).unwrap().len(), 7);
+    }
+
+    #[test]
+    fn draft_not_counted() {
+        let store = Store::open_in_memory().unwrap();
+        seed_categories(&store).unwrap();
+        store.upsert_guide("d", "Draft", "x", "databases", "beginner").unwrap();
+        store.set_guide_status("d", "draft").unwrap();
+        let cats = categories_with_counts(&store).unwrap();
+        assert_eq!(cats.iter().find(|c| c.slug == "databases").unwrap().count, 0);
     }
 }

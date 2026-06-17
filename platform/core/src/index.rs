@@ -139,7 +139,7 @@ mod tests {
             guide_slug: "git".into(), phase_no: no, title: title.into(),
             summary: format!("{title} summary"), tags: tags.iter().map(|s| s.to_string()).collect(),
             difficulty: "beginner".into(), synonyms: vec![], html: format!("<p>{body}</p>"),
-            updated: "2026-06-17".into(),
+            updated: "2026-06-17".into(), markdown: body.into(),
         }
     }
 

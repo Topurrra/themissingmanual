@@ -25,6 +25,8 @@ pub struct Phase {
     pub synonyms: Vec<String>,
     pub html: String,
     pub updated: String,
+    #[serde(default)]
+    pub markdown: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -34,6 +36,8 @@ pub struct GuideSummary {
     pub summary: String,
     pub category: String,
     pub difficulty: String,
+    #[serde(default)]
+    pub status: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -41,6 +45,15 @@ pub struct PhaseRef {
     pub phase_no: u32,
     pub title: String,
     pub summary: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct CategoryRow {
+    pub slug: String,
+    pub name: String,
+    pub icon: String,
+    pub blurb: String,
+    pub sort_order: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

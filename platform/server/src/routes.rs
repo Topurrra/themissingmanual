@@ -2,13 +2,15 @@ use std::sync::Arc;
 use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
+    middleware,
     response::{IntoResponse, Response},
-    routing::get,
+    routing::{get, patch, post},
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
 use content_core::{Category, GuideSummary, PhaseRef};
 use crate::state::AppState;
+use crate::{admin, auth};
 
 pub fn health_router() -> Router {
     Router::new().route("/api/health", get(|| async { "ok" }))
@@ -16,6 +18,25 @@ pub fn health_router() -> Router {
 
 /// The full application router, with state.
 pub fn app(state: Arc<AppState>) -> Router {
+    // Admin content routes — guarded by the require_admin middleware.
+    let protected = Router::new()
+        .route("/guides", get(admin::list_guides).post(admin::create_guide))
+        .route("/guides/:slug", get(admin::get_guide).patch(admin::patch_guide).delete(admin::delete_guide))
+        .route("/guides/:slug/phases", get(admin::list_phases).post(admin::create_phase))
+        .route("/guides/:slug/phases/reorder", post(admin::reorder_phases))
+        .route("/guides/:slug/phases/:no", get(admin::get_phase).patch(admin::patch_phase).delete(admin::delete_phase))
+        .route("/categories", get(admin::list_categories).post(admin::create_category))
+        .route("/categories/reorder", post(admin::reorder_categories))
+        .route("/categories/:slug", patch(admin::patch_category).delete(admin::delete_category))
+        .route("/assets", post(admin::upload_asset))
+        .route("/preview", post(admin::preview))
+        .route_layer(middleware::from_fn_with_state(state.clone(), auth::require_admin));
+    // Auth routes — not behind require_admin (login establishes the session; me/logout self-check).
+    let auth_routes = Router::new()
+        .route("/login", post(auth::login))
+        .route("/logout", post(auth::logout))
+        .route("/me", get(auth::me));
+
     Router::new()
         .route("/api/health", get(|| async { "ok" }))
         .route("/api/guides", get(list_guides))
@@ -24,6 +45,8 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/api/search", get(search))
         .route("/api/categories", get(list_categories))
         .route("/api/categories/:slug", get(category_detail))
+        .route("/assets/:id", get(admin::serve_asset))
+        .nest("/api/admin", protected.merge(auth_routes))
         .with_state(state)
 }
 
