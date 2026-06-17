@@ -44,3 +44,13 @@ fn internal_links_rewritten_to_web_routes() {
     assert!(!p1.html.contains(".md\""), "internal .md links should be rewritten to web routes");
     assert!(p1.html.contains("/guides/git-explained-like-a-human/"), "should contain a rewritten web route");
 }
+
+#[test]
+fn real_guides_categorized() {
+    let (store, _index) = ingested();
+    let cats = content_core::categories::categories_with_counts(&store).unwrap();
+    let vc = cats.iter().find(|c| c.slug == "version-control").unwrap();
+    assert_eq!(vc.count, 1, "the Git guide should be in version-control");
+    let (_cat, guides) = content_core::categories::category_with_guides(&store, "version-control").unwrap().unwrap();
+    assert_eq!(guides[0].slug, "git-explained-like-a-human");
+}
