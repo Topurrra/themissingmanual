@@ -7,7 +7,7 @@ use axum::{
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
-use content_core::{GuideSummary, PhaseRef};
+use content_core::{Category, GuideSummary, PhaseRef};
 use crate::state::AppState;
 
 pub fn health_router() -> Router {
@@ -22,6 +22,8 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/api/guides/:slug", get(guide_detail))
         .route("/api/guides/:slug/:phase", get(phase_detail))
         .route("/api/search", get(search))
+        .route("/api/categories", get(list_categories))
+        .route("/api/categories/:slug", get(category_detail))
         .with_state(state)
 }
 
@@ -86,6 +88,35 @@ async fn search(State(state): State<Arc<AppState>>, Query(params): Query<SearchP
     }
     match state.index.search(&params.q, 20) {
         Ok(hits) => Json(hits).into_response(),
+        Err(e) => server_error(e),
+    }
+}
+
+async fn list_categories(State(state): State<Arc<AppState>>) -> Response {
+    let result = {
+        let store = state.store.lock().unwrap();
+        content_core::categories::categories_with_counts(&store)
+    };
+    match result {
+        Ok(cats) => Json(cats).into_response(),
+        Err(e) => server_error(e),
+    }
+}
+
+#[derive(Serialize)]
+struct CategoryPage {
+    category: Category,
+    guides: Vec<GuideSummary>,
+}
+
+async fn category_detail(State(state): State<Arc<AppState>>, Path(slug): Path<String>) -> Response {
+    let result = {
+        let store = state.store.lock().unwrap();
+        content_core::categories::category_with_guides(&store, &slug)
+    };
+    match result {
+        Ok(Some((category, guides))) => Json(CategoryPage { category, guides }).into_response(),
+        Ok(None) => (StatusCode::NOT_FOUND, Json(serde_json::json!({ "error": "category not found" }))).into_response(),
         Err(e) => server_error(e),
     }
 }

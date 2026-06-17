@@ -1,7 +1,7 @@
 use axum::body::Body;
 use axum::http::{Request, StatusCode};
 use tower::ServiceExt; // for `oneshot`
-use content_core::{GuideSummary, SearchHit};
+use content_core::{Category, GuideSummary, SearchHit};
 
 fn repo_root() -> std::path::PathBuf {
     std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap()
@@ -87,4 +87,30 @@ async fn search_returns_hits_and_rejects_empty() {
         .oneshot(Request::builder().uri("/api/search?q=").body(Body::empty()).unwrap())
         .await.unwrap();
     assert_eq!(empty.status(), StatusCode::BAD_REQUEST);
+}
+
+#[tokio::test]
+async fn lists_categories_with_counts() {
+    let app = server::app(std::sync::Arc::new(server::AppState::build(&repo_root()).unwrap()));
+    let res = app.oneshot(Request::builder().uri("/api/categories").body(Body::empty()).unwrap()).await.unwrap();
+    assert_eq!(res.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
+    let cats: Vec<Category> = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(cats.len(), 7);
+    assert_eq!(cats.iter().find(|c| c.slug == "version-control").unwrap().count, 1);
+}
+
+#[tokio::test]
+async fn category_detail_and_404() {
+    let state = std::sync::Arc::new(server::AppState::build(&repo_root()).unwrap());
+    let app = server::app(state);
+    let ok = app.clone().oneshot(Request::builder().uri("/api/categories/version-control").body(Body::empty()).unwrap()).await.unwrap();
+    assert_eq!(ok.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(ok.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(v["category"]["slug"], "version-control");
+    assert!(v["guides"].as_array().unwrap().len() >= 1);
+
+    let missing = app.oneshot(Request::builder().uri("/api/categories/nope").body(Body::empty()).unwrap()).await.unwrap();
+    assert_eq!(missing.status(), StatusCode::NOT_FOUND);
 }
