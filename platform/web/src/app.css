@@ -435,8 +435,8 @@ a.cat-card.on .cat-meta { color: var(--accent); font-weight: 500; }
 .panel { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; margin: 1.25rem 0; }
 .panel-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.8rem; }
 .bars { display: flex; align-items: flex-end; gap: 5px; height: 110px; }
-.bar { flex: 1; min-height: 2px; background: var(--accent); opacity: 0.85; border-radius: 3px 3px 0 0; }
-.bar:hover { opacity: 1; }
+.bars .bar { flex: 1; min-height: 2px; background: var(--accent); opacity: 0.85; border-radius: 3px 3px 0 0; }
+.bars .bar:hover { opacity: 1; }
 .rank-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 .ranks { display: flex; flex-direction: column; gap: 7px; }
 .rank-row { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.92rem; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
