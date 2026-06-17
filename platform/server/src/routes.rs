@@ -1,12 +1,12 @@
 use std::sync::Arc;
 use axum::{
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
     response::{IntoResponse, Response},
     routing::get,
     Json, Router,
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use content_core::{GuideSummary, PhaseRef};
 use crate::state::AppState;
 
@@ -21,6 +21,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/api/guides", get(list_guides))
         .route("/api/guides/:slug", get(guide_detail))
         .route("/api/guides/:slug/:phase", get(phase_detail))
+        .route("/api/search", get(search))
         .with_state(state)
 }
 
@@ -70,6 +71,21 @@ async fn phase_detail(State(state): State<Arc<AppState>>, Path((slug, phase)): P
     match result {
         Ok(Some(p)) => Json(p).into_response(),
         Ok(None) => (StatusCode::NOT_FOUND, Json(serde_json::json!({ "error": "phase not found" }))).into_response(),
+        Err(e) => server_error(e),
+    }
+}
+
+#[derive(Deserialize)]
+struct SearchParams {
+    q: String,
+}
+
+async fn search(State(state): State<Arc<AppState>>, Query(params): Query<SearchParams>) -> Response {
+    if params.q.trim().is_empty() {
+        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({ "error": "query `q` is required" }))).into_response();
+    }
+    match state.index.search(&params.q, 20) {
+        Ok(hits) => Json(hits).into_response(),
         Err(e) => server_error(e),
     }
 }

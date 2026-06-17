@@ -1,7 +1,7 @@
 use axum::body::Body;
 use axum::http::{Request, StatusCode};
 use tower::ServiceExt; // for `oneshot`
-use content_core::GuideSummary;
+use content_core::{GuideSummary, SearchHit};
 
 fn repo_root() -> std::path::PathBuf {
     std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap()
@@ -68,4 +68,23 @@ async fn phase_detail_and_404() {
         .oneshot(Request::builder().uri("/api/guides/git-explained-like-a-human/99").body(Body::empty()).unwrap())
         .await.unwrap();
     assert_eq!(missing.status(), StatusCode::NOT_FOUND);
+}
+
+#[tokio::test]
+async fn search_returns_hits_and_rejects_empty() {
+    let state = std::sync::Arc::new(server::AppState::build(&repo_root()).unwrap());
+    let app = server::app(state);
+
+    let res = app.clone()
+        .oneshot(Request::builder().uri("/api/search?q=how%20to%20revert%20a%20commit").body(Body::empty()).unwrap())
+        .await.unwrap();
+    assert_eq!(res.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
+    let hits: Vec<SearchHit> = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(hits[0].phase_no, 3);
+
+    let empty = app
+        .oneshot(Request::builder().uri("/api/search?q=").body(Body::empty()).unwrap())
+        .await.unwrap();
+    assert_eq!(empty.status(), StatusCode::BAD_REQUEST);
 }
