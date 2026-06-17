@@ -12,3 +12,7 @@ Thumbs.db
 /platform/target/
 # Ingest output (generated SQLite DB + Tantivy index)
 platform/.data/
+# Web (SvelteKit)
+platform/web/node_modules/
+platform/web/.svelte-kit/
+platform/web/build/
