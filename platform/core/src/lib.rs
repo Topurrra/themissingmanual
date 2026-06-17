@@ -4,5 +4,6 @@ pub mod models;
 pub mod frontmatter;
 pub mod render;
 pub mod store;
+pub mod index;
 
 pub use models::{Frontmatter, GuideSummary, Phase, SearchHit};
