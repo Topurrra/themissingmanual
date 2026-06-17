@@ -1,7 +1,7 @@
 <script>
   import { guardSearchSubmit } from '$lib/search.js';
   export let data;
-  $: ({ categories, recent } = data);
+  $: ({ categories, recent, tracks } = data);
 </script>
 
 <svelte:head><title>The Missing Manual for Developers</title></svelte:head>
@@ -14,6 +14,22 @@
     <input type="search" name="q" placeholder="Search… e.g. how to revert a commit" aria-label="Search guides" />
   </form>
 </section>
+
+{#if tracks && tracks.length}
+  <div class="section-head">
+    <h2 class="section-eyebrow">Learning paths</h2>
+    <a class="section-link" href="/paths">See all paths →</a>
+  </div>
+  <div class="track-cards">
+    {#each tracks as t}
+      <a class="track-card" href={`/paths/${t.slug}`}>
+        <span class="track-name">{t.name}</span>
+        <span class="track-blurb">{t.blurb}</span>
+        <span class="track-meta">{t.step_count} steps</span>
+      </a>
+    {/each}
+  </div>
+{/if}
 
 <h2 class="section-eyebrow">Browse by topic</h2>
 <div class="cat-grid">

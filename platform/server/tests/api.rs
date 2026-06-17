@@ -319,3 +319,23 @@ async fn analytics_requires_auth_and_returns_shape() {
     assert!(v["views"].as_i64().unwrap() >= 1);
     assert!(v["topPaths"].is_array());
 }
+
+#[tokio::test]
+async fn tracks_list_and_detail() {
+    let app = server::app(std::sync::Arc::new(server::AppState::build(&repo_root()).unwrap()));
+    let list = app.clone().oneshot(get("/api/tracks")).await.unwrap();
+    assert_eq!(list.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(list.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert!(v.as_array().unwrap().iter().any(|t| t["slug"] == "backend-developer"));
+
+    let detail = app.clone().oneshot(get("/api/tracks/backend-developer?language=go")).await.unwrap();
+    assert_eq!(detail.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(detail.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(v["roadmap"][0]["guide"]["slug"], "git-explained-like-a-human");
+    assert!(v["dimensions"].as_array().unwrap().len() >= 1);
+
+    let missing = app.oneshot(get("/api/tracks/nope")).await.unwrap();
+    assert_eq!(missing.status(), StatusCode::NOT_FOUND);
+}

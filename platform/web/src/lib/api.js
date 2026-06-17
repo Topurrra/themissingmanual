@@ -13,3 +13,5 @@ export const getPhase = (fetch, slug, phase) => getJson(fetch, `/api/guides/${en
 export const search = (fetch, q) => getJson(fetch, `/api/search?q=${encodeURIComponent(q)}`);
 export const listCategories = (fetch) => getJson(fetch, '/api/categories');
 export const getCategory = (fetch, slug) => getJson(fetch, `/api/categories/${encodeURIComponent(slug)}`);
+export const listTracks = (fetch) => getJson(fetch, '/api/tracks');
+export const getTrack = (fetch, slug, search = '') => getJson(fetch, `/api/tracks/${encodeURIComponent(slug)}${search}`);

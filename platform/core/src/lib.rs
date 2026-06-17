@@ -8,6 +8,7 @@ pub mod store;
 pub mod index;
 pub mod ingest;
 pub mod categories;
+pub mod tracks;
 
 pub use models::{Frontmatter, GuideSummary, Phase, PhaseRef, SearchHit};
 pub use categories::Category;

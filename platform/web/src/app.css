@@ -443,3 +443,27 @@ a.cat-card.on .cat-meta { color: var(--accent); font-weight: 500; }
 .rank-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rank-row b { color: var(--ink); font-weight: 600; }
 @media (max-width: 700px) { .rank-cols { grid-template-columns: 1fr; } }
+
+/* learning paths */
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.section-link { font-size: 0.9rem; }
+.track-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; margin: 0.5rem 0 1rem; }
+.track-card { display: flex; flex-direction: column; gap: 0.4rem; border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.2rem; background: var(--bg); }
+.track-card:hover { border-color: var(--accent); text-decoration: none; }
+.track-name { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; color: var(--ink); letter-spacing: -0.01em; }
+.track-blurb { color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
+.track-meta { color: var(--faint); font-size: 0.82rem; }
+.choice-form { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: flex-end; margin: 1.4rem 0; padding: 1.1rem; background: var(--surface); border-radius: 12px; }
+.choice-form label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; color: var(--muted); }
+.choice-form select { padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 7px; font: inherit; background: var(--bg); color: var(--ink); }
+.choice-form button { padding: 0.5rem 1rem; border: 0; border-radius: 8px; background: var(--accent); color: #fff; font: inherit; font-weight: 500; cursor: pointer; }
+.choice-form button:hover { background: var(--accent-strong); }
+.roadmap { list-style: none; padding: 0; margin: 1.5rem 0; }
+.road-step { display: flex; gap: 0.9rem; padding: 0.9rem 0; border-bottom: 1px solid var(--line); }
+.road-num { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; }
+.road-body { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.road-cat { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+.road-title { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; }
+.road-title.muted { color: var(--muted); }
+.soon-tag { display: inline-block; width: fit-content; font-size: 0.72rem; color: var(--faint); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; margin-top: 2px; }
+.road-note { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
