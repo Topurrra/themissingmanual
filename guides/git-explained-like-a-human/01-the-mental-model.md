@@ -39,11 +39,13 @@ saving little diffs and stacking them up. That picture falls apart the first tim
 something. The truth — *each commit is a complete snapshot* — is what makes everything else make sense.
 
 ```text
-   (parent)        (parent)
- C1  ◄─────────  C2  ◄─────────  C3
- every            every           every
- file, as         file, as        file, as
- it was           it was          it was
+        oldest  ─────────────►  newest    (time flows this way)
+
+        ┌────┐     ┌────┐     ┌────┐
+        │ C1 │ ◄── │ C2 │ ◄── │ C3 │
+        └────┘     └────┘     └────┘
+        each box  = a complete snapshot of every file in your project
+        each ◄──  = "this commit remembers the one before it (its parent)"
 ```
 Each commit points back at the one before it. Follow the arrows backward and you're walking through
 history, one complete snapshot at a time.
@@ -71,10 +73,18 @@ project. It's not a folder. It's a label — a small pointer — that says "this
 `main`."
 
 ```text
-C1 ◄── C2 ◄── C3
-              ▲
-              │
-            main        <- "main" is a label stuck on commit C3
+        oldest  ─────────────►  newest    (time flows this way)
+
+        ┌────┐     ┌────┐     ┌────┐
+        │ C1 │ ◄── │ C2 │ ◄── │ C3 │
+        └────┘     └────┘     └────┘
+                                ▲
+                                │
+                             ┌──────┐
+                             │ main │   ← the "main" sticky note,
+                             └──────┘     stuck on C3 (the newest commit)
+
+        each ◄── means "this commit remembers the one before it (its parent)"
 ```
 
 **What it does in real life.** When you make a new commit on `main`, Git creates the snapshot and then
@@ -82,12 +92,16 @@ C1 ◄── C2 ◄── C3
 point at the newest commit on that branch.
 
 ```text
-   you commit C4...
+        ...then you commit C4, and Git slides the sticky note forward:
 
-C1 ◄── C2 ◄── C3 ◄── C4
-                     ▲
-                     │
-                   main        <- the label moved forward on its own
+        ┌────┐     ┌────┐     ┌────┐     ┌────┐
+        │ C1 │ ◄── │ C2 │ ◄── │ C3 │ ◄── │ C4 │
+        └────┘     └────┘     └────┘     └────┘
+                                          ▲
+                                          │
+                                       ┌──────┐
+                                       │ main │   ← Git peeled "main" off C3
+                                       └──────┘     and stuck it on C4, on its own
 ```
 
 **A real example.** Creating a branch costs almost nothing, because you're adding a second sticky note
@@ -113,13 +127,17 @@ onto this one — it's the most valuable idea in Git.
 currently on — and therefore at the commit you're currently sitting on.
 
 ```text
-        HEAD
-         |
-         v
-       main
-         |
-         v
-C1 ◄── C2 ◄── C3
+                             HEAD         ← "you are here"
+                                │
+                                ▼
+                             ┌──────┐
+                             │ main │     ← the branch you're on
+                             └──────┘
+                                │
+                                ▼
+        ┌────┐     ┌────┐     ┌────┐
+        │ C1 │ ◄── │ C2 │ ◄── │ C3 │      ← main points at C3,
+        └────┘     └────┘     └────┘         so that's where you are
 ```
 Read it as: "you are on `main`, which is currently at commit C3."
 
