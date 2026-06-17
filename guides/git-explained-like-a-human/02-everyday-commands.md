@@ -34,7 +34,7 @@ command — that's where the "what just happened" lives.
 | `git branch` | List / create / delete the sticky-note labels that point at commits. |
 | `git switch` / `checkout` | Move HEAD ("you are here") to another branch or commit. `switch` is the modern, safer name. |
 | `git merge` | Combine another branch's commits into your current branch. |
-| `git fetch` | Download the remote's new commits but DON'T touch your files. Just look. |
+| `git fetch` | Download the remote's new commits but DON'T touch your files. Only look. |
 | `git pull` | `fetch` + `merge`: download remote commits and apply them now. |
 | `git push` | Upload your commits to the remote so others get them. |
 | `git stash` | Shelve uncommitted changes for a clean tree; `pop` them back later. |
@@ -162,7 +162,7 @@ diff --git a/cart.js b/cart.js
 (`-`), one added (`+`). This is the diff between your working file and the box.
 
 **The gotcha.** This one confuses everyone: once you `git add` a file, plain `git diff` shows *nothing*
-for it — because `diff` compares working-vs-box, and `add` just made them identical. Your change isn't
+for it — because `diff` compares working-vs-box, and `add` made them identical. Your change isn't
 gone; it's in the box. To see what's *in the box* (staged, about to be committed), use `git diff
 --staged`. Remember it as: plain `diff` = "not added yet," `diff --staged` = "added, about to commit."
 
@@ -350,3 +350,7 @@ shuffling work between the three places (`add`, `diff`, `stash`), or syncing cop
 
 Which means you're ready for the part that used to be terrifying: **[Phase 3 — When It Breaks](03-when-it-breaks.md)**,
 where things go wrong and you fix them without breaking a sweat.
+
+---
+
+[← Phase 1: The Mental Model](01-the-mental-model.md) · [Guide overview](_guide.md) · [Phase 3: When It Breaks →](03-when-it-breaks.md)

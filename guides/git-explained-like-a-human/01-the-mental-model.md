@@ -265,3 +265,7 @@ understand.
 
 Next up: **[Phase 2 — the everyday commands](02-everyday-commands.md)**, where we take each command you
 already type and show what it's *actually* doing to these five things.
+
+---
+
+[← Guide overview](_guide.md) · [Phase 2: The Everyday Commands →](02-everyday-commands.md)

@@ -55,7 +55,7 @@ $ git switch main                 # go back to main...
 $ git reset --hard HEAD~1         # ...and move main's label back one commit
 ```
 *What just happened:* `git switch -c feature-cart` created the `feature-cart` label on the commit you
-just made and moved you onto it — your work is now safely on `feature-cart`. Then you switched back to
+made and moved you onto it — your work is now safely on `feature-cart`. Then you switched back to
 `main` and moved its label back by one (`HEAD~1` means "one commit before HEAD"), so `main` points where
 it did before your stray commit.
 
@@ -237,3 +237,7 @@ and copies you keep in sync.
 **Where to go next.** When you're ready for the advanced nightmares — recovering commits you thought were
 gone (the reflog), safely undoing history you've *already pushed*, and rescuing a rebase that went
 sideways — that's the next guide. You now have the foundation that makes all of it make sense.
+
+---
+
+[← Phase 2: The Everyday Commands](02-everyday-commands.md) · [Guide overview](_guide.md)
