@@ -2,5 +2,6 @@
 
 pub mod models;
 pub mod frontmatter;
+pub mod render;
 
 pub use models::{Frontmatter, GuideSummary, Phase, SearchHit};
