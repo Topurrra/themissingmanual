@@ -31,3 +31,41 @@ async fn lists_guides() {
     let guides: Vec<GuideSummary> = serde_json::from_slice(&bytes).unwrap();
     assert!(guides.iter().any(|g| g.slug == "git-explained-like-a-human"));
 }
+
+#[tokio::test]
+async fn guide_detail_and_404() {
+    let state = std::sync::Arc::new(server::AppState::build(&repo_root()).unwrap());
+    let app = server::app(state);
+
+    let ok = app.clone()
+        .oneshot(Request::builder().uri("/api/guides/git-explained-like-a-human").body(Body::empty()).unwrap())
+        .await.unwrap();
+    assert_eq!(ok.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(ok.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert!(v["phases"].as_array().unwrap().len() >= 3);
+
+    let missing = app
+        .oneshot(Request::builder().uri("/api/guides/nope").body(Body::empty()).unwrap())
+        .await.unwrap();
+    assert_eq!(missing.status(), StatusCode::NOT_FOUND);
+}
+
+#[tokio::test]
+async fn phase_detail_and_404() {
+    let state = std::sync::Arc::new(server::AppState::build(&repo_root()).unwrap());
+    let app = server::app(state);
+
+    let ok = app.clone()
+        .oneshot(Request::builder().uri("/api/guides/git-explained-like-a-human/1").body(Body::empty()).unwrap())
+        .await.unwrap();
+    assert_eq!(ok.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(ok.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert!(v["html"].as_str().unwrap().contains("<"));
+
+    let missing = app
+        .oneshot(Request::builder().uri("/api/guides/git-explained-like-a-human/99").body(Body::empty()).unwrap())
+        .await.unwrap();
+    assert_eq!(missing.status(), StatusCode::NOT_FOUND);
+}
