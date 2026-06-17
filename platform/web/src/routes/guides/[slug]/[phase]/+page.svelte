@@ -5,7 +5,8 @@
 
 <svelte:head><title>{phase.title}</title></svelte:head>
 
-<p><a href={`/guides/${phase.guide_slug}`}>← Back to guide</a></p>
+<p class="nav-foot"><a href={`/guides/${phase.guide_slug}`}>← Back to guide</a></p>
+<div class="meta-eyebrow">{phase.guide_slug.replace(/-/g, ' ')} · phase {phase.phase_no}</div>
 <article class="reader">
   {@html phase.html}
 </article>
