@@ -8,6 +8,7 @@
   $: nav = data?.nav ?? [];
   $: path = $page.url.pathname;
   $: isHome = path === '/';
+  $: isAdmin = path.startsWith('/admin');
   $: currentGuide = (path.match(/^\/guides\/([^/]+)/) || [])[1] || null;
   $: currentCategory = (path.match(/^\/categories\/([^/]+)/) || [])[1] || null;
 
@@ -53,6 +54,9 @@
 
 <svelte:window on:keydown={onKeydown} />
 
+{#if isAdmin}
+  <slot />
+{:else}
 <header class="site-header">
   <div class="bar">
     <a href="/" class="brand">The Missing Manual</a>
@@ -130,4 +134,5 @@
       <i class="ti ti-layout-sidebar-left-expand" aria-hidden="true"></i>
     </button>
   {/if}
+{/if}
 {/if}
