@@ -10,6 +10,8 @@ pub struct Frontmatter {
     pub difficulty: String,
     pub synonyms: Vec<String>,
     pub updated: String,
+    #[serde(default)]
+    pub category: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -30,6 +32,8 @@ pub struct GuideSummary {
     pub slug: String,
     pub title: String,
     pub summary: String,
+    pub category: String,
+    pub difficulty: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

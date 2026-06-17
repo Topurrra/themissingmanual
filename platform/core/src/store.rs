@@ -27,7 +27,9 @@ impl Store {
             "CREATE TABLE IF NOT EXISTS guides (
                  slug TEXT PRIMARY KEY,
                  title TEXT NOT NULL,
-                 summary TEXT NOT NULL
+                 summary TEXT NOT NULL,
+                 category TEXT NOT NULL DEFAULT '',
+                 difficulty TEXT NOT NULL DEFAULT ''
              );
              CREATE TABLE IF NOT EXISTS phases (
                  guide_slug TEXT NOT NULL,
@@ -45,11 +47,11 @@ impl Store {
         Ok(Self { conn })
     }
 
-    pub fn upsert_guide(&self, slug: &str, title: &str, summary: &str) -> Result<(), StoreError> {
+    pub fn upsert_guide(&self, slug: &str, title: &str, summary: &str, category: &str, difficulty: &str) -> Result<(), StoreError> {
         self.conn.execute(
-            "INSERT INTO guides (slug, title, summary) VALUES (?1, ?2, ?3)
-             ON CONFLICT(slug) DO UPDATE SET title = ?2, summary = ?3",
-            params![slug, title, summary],
+            "INSERT INTO guides (slug, title, summary, category, difficulty) VALUES (?1, ?2, ?3, ?4, ?5)
+             ON CONFLICT(slug) DO UPDATE SET title=?2, summary=?3, category=?4, difficulty=?5",
+            params![slug, title, summary, category, difficulty],
         )?;
         Ok(())
     }
@@ -91,24 +93,40 @@ impl Store {
     }
 
     pub fn list_guides(&self) -> Result<Vec<GuideSummary>, StoreError> {
-        let mut stmt = self.conn.prepare("SELECT slug, title, summary FROM guides ORDER BY slug")?;
-        let rows = stmt.query_map([], |row| {
-            Ok(GuideSummary { slug: row.get(0)?, title: row.get(1)?, summary: row.get(2)? })
-        })?;
+        let mut stmt = self.conn.prepare(
+            "SELECT slug, title, summary, category, difficulty FROM guides ORDER BY slug",
+        )?;
+        let rows = stmt.query_map([], Self::row_to_guide)?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
     }
 
     pub fn get_guide(&self, slug: &str) -> Result<Option<GuideSummary>, StoreError> {
-        let mut stmt = self.conn.prepare("SELECT slug, title, summary FROM guides WHERE slug = ?1")?;
+        let mut stmt = self.conn.prepare(
+            "SELECT slug, title, summary, category, difficulty FROM guides WHERE slug = ?1",
+        )?;
         let mut rows = stmt.query(params![slug])?;
         match rows.next()? {
-            Some(row) => Ok(Some(GuideSummary {
-                slug: row.get(0)?,
-                title: row.get(1)?,
-                summary: row.get(2)?,
-            })),
+            Some(row) => Ok(Some(Self::row_to_guide(row)?)),
             None => Ok(None),
         }
+    }
+
+    pub fn guides_for_category(&self, category: &str) -> Result<Vec<GuideSummary>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT slug, title, summary, category, difficulty FROM guides WHERE category = ?1 ORDER BY difficulty, title",
+        )?;
+        let rows = stmt.query_map(params![category], Self::row_to_guide)?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    fn row_to_guide(row: &rusqlite::Row) -> rusqlite::Result<GuideSummary> {
+        Ok(GuideSummary {
+            slug: row.get(0)?,
+            title: row.get(1)?,
+            summary: row.get(2)?,
+            category: row.get(3)?,
+            difficulty: row.get(4)?,
+        })
     }
 
     pub fn list_phase_refs(&self, guide_slug: &str) -> Result<Vec<PhaseRef>, StoreError> {
@@ -148,7 +166,7 @@ mod tests {
     #[test]
     fn upsert_then_read_back() {
         let store = Store::open_in_memory().unwrap();
-        store.upsert_guide("git", "Git Guide", "All about git").unwrap();
+        store.upsert_guide("git", "Git Guide", "All about git", "version-control", "beginner").unwrap();
         store.upsert_phase(&sample_phase()).unwrap();
 
         let got = store.get_phase("git", 1).unwrap().unwrap();
@@ -157,13 +175,14 @@ mod tests {
 
         let guides = store.list_guides().unwrap();
         assert_eq!(guides.len(), 1);
-        assert_eq!(guides[0].slug, "git");
+        assert_eq!(guides[0].category, "version-control");
+        assert_eq!(guides[0].difficulty, "beginner");
     }
 
     #[test]
     fn upsert_is_idempotent_on_guide_and_phase() {
         let store = Store::open_in_memory().unwrap();
-        store.upsert_guide("git", "Git Guide", "x").unwrap();
+        store.upsert_guide("git", "Git Guide", "x", "version-control", "beginner").unwrap();
         store.upsert_phase(&sample_phase()).unwrap();
         store.upsert_phase(&sample_phase()).unwrap(); // same (guide,phase_no)
         assert_eq!(store.list_guides().unwrap().len(), 1);
@@ -173,16 +192,28 @@ mod tests {
     #[test]
     fn get_guide_and_phase_refs() {
         let store = Store::open_in_memory().unwrap();
-        store.upsert_guide("git", "Git Guide", "All about git").unwrap();
+        store.upsert_guide("git", "Git Guide", "All about git", "version-control", "beginner").unwrap();
         store.upsert_phase(&sample_phase()).unwrap();
 
         let g = store.get_guide("git").unwrap().unwrap();
         assert_eq!(g.title, "Git Guide");
+        assert_eq!(g.category, "version-control");
         assert!(store.get_guide("missing").unwrap().is_none());
 
         let refs = store.list_phase_refs("git").unwrap();
         assert_eq!(refs.len(), 1);
         assert_eq!(refs[0].phase_no, 1);
         assert_eq!(refs[0].title, "The Mental Model");
+    }
+
+    #[test]
+    fn guides_for_category_filters_and_orders() {
+        let store = Store::open_in_memory().unwrap();
+        store.upsert_guide("git", "Git Guide", "x", "version-control", "beginner").unwrap();
+        store.upsert_guide("rust", "Rust Guide", "y", "programming-languages", "advanced").unwrap();
+        let vc = store.guides_for_category("version-control").unwrap();
+        assert_eq!(vc.len(), 1);
+        assert_eq!(vc[0].slug, "git");
+        assert!(store.guides_for_category("databases").unwrap().is_empty());
     }
 }

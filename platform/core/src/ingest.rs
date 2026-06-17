@@ -62,13 +62,19 @@ pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Sta
         if seen_guides.insert(fm.guide.clone()) {
             // First time we see this guide: clear any stale docs and record the guide row.
             writer.delete_guide(&fm.guide);
-            store.upsert_guide(&fm.guide, &fm.guide, "")?; // refined when phase 0 (_guide.md) is seen
+            store.upsert_guide(&fm.guide, &fm.guide, "", "", "")?; // refined when phase 0 (_guide.md) is seen
             stats.guides += 1;
         }
 
-        // Treat phase 0 (the _guide.md overview) as the guide's title/summary too.
+        // Treat phase 0 (the _guide.md overview) as the guide's title/summary/category/difficulty.
         if fm.phase == 0 {
-            store.upsert_guide(&fm.guide, &fm.title, &fm.summary)?;
+            store.upsert_guide(
+                &fm.guide,
+                &fm.title,
+                &fm.summary,
+                fm.category.as_deref().unwrap_or(""),
+                &fm.difficulty,
+            )?;
         }
 
         let phase = Phase {
