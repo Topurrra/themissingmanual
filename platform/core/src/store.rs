@@ -1,5 +1,5 @@
 use rusqlite::{params, Connection};
-use crate::models::{GuideSummary, Phase};
+use crate::models::{GuideSummary, Phase, PhaseRef};
 
 pub struct Store {
     conn: Connection,
@@ -97,6 +97,33 @@ impl Store {
         })?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
     }
+
+    pub fn get_guide(&self, slug: &str) -> Result<Option<GuideSummary>, StoreError> {
+        let mut stmt = self.conn.prepare("SELECT slug, title, summary FROM guides WHERE slug = ?1")?;
+        let mut rows = stmt.query(params![slug])?;
+        match rows.next()? {
+            Some(row) => Ok(Some(GuideSummary {
+                slug: row.get(0)?,
+                title: row.get(1)?,
+                summary: row.get(2)?,
+            })),
+            None => Ok(None),
+        }
+    }
+
+    pub fn list_phase_refs(&self, guide_slug: &str) -> Result<Vec<PhaseRef>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT phase_no, title, summary FROM phases WHERE guide_slug = ?1 ORDER BY phase_no",
+        )?;
+        let rows = stmt.query_map(params![guide_slug], |row| {
+            Ok(PhaseRef {
+                phase_no: row.get::<_, i64>(0)? as u32,
+                title: row.get(1)?,
+                summary: row.get(2)?,
+            })
+        })?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
 }
 
 #[cfg(test)]
@@ -141,5 +168,21 @@ mod tests {
         store.upsert_phase(&sample_phase()).unwrap(); // same (guide,phase_no)
         assert_eq!(store.list_guides().unwrap().len(), 1);
         assert!(store.get_phase("git", 1).unwrap().is_some());
+    }
+
+    #[test]
+    fn get_guide_and_phase_refs() {
+        let store = Store::open_in_memory().unwrap();
+        store.upsert_guide("git", "Git Guide", "All about git").unwrap();
+        store.upsert_phase(&sample_phase()).unwrap();
+
+        let g = store.get_guide("git").unwrap().unwrap();
+        assert_eq!(g.title, "Git Guide");
+        assert!(store.get_guide("missing").unwrap().is_none());
+
+        let refs = store.list_phase_refs("git").unwrap();
+        assert_eq!(refs.len(), 1);
+        assert_eq!(refs[0].phase_no, 1);
+        assert_eq!(refs[0].title, "The Mental Model");
     }
 }

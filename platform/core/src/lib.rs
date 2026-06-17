@@ -7,4 +7,4 @@ pub mod store;
 pub mod index;
 pub mod ingest;
 
-pub use models::{Frontmatter, GuideSummary, Phase, SearchHit};
+pub use models::{Frontmatter, GuideSummary, Phase, PhaseRef, SearchHit};

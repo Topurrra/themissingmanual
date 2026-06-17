@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Frontmatter {
@@ -12,7 +12,7 @@ pub struct Frontmatter {
     pub updated: String,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct Phase {
     pub guide_slug: String,
     pub phase_no: u32,
@@ -25,14 +25,21 @@ pub struct Phase {
     pub updated: String,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct GuideSummary {
     pub slug: String,
     pub title: String,
     pub summary: String,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PhaseRef {
+    pub phase_no: u32,
+    pub title: String,
+    pub summary: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct SearchHit {
     pub guide_slug: String,
     pub phase_no: u32,
