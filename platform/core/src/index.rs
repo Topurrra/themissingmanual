@@ -68,8 +68,23 @@ impl SearchIndex {
         parser.set_field_boost(f.title, 3.0);
         parser.set_field_boost(f.tags, 2.0);
         parser.set_conjunction_by_default();
-        let parsed = parser.parse_query_lenient(query).0;
-        let top = searcher.search(&parsed, &TopDocs::with_limit(limit))?;
+        // Exact/boosted parse first.
+        let exact = parser.parse_query_lenient(query).0;
+
+        // Fuzzy fallback: OR together a Levenshtein query (distance 1) per term,
+        // across title/body/tags, so typos still match.
+        use tantivy::query::{BooleanQuery, FuzzyTermQuery, Occur, Query};
+        let mut clauses: Vec<(Occur, Box<dyn Query>)> = vec![(Occur::Should, exact)];
+        for raw in query.split_whitespace() {
+            let term_text = raw.to_lowercase();
+            for field in [f.title, f.body, f.tags] {
+                let term = Term::from_field_text(field, &term_text);
+                let fq = FuzzyTermQuery::new(term, 1, true); // distance 1, transposition-aware
+                clauses.push((Occur::Should, Box::new(fq)));
+            }
+        }
+        let combined = BooleanQuery::new(clauses);
+        let top = searcher.search(&combined, &TopDocs::with_limit(limit))?;
 
         let mut hits = Vec::new();
         for (score, addr) in top {
@@ -150,5 +165,19 @@ mod tests {
 
         let hits = idx.search("stash", 10).unwrap();
         assert_eq!(hits[0].phase_no, 1); // title hit ranks first
+    }
+
+    #[test]
+    fn fuzzy_matches_a_typo() {
+        let idx = SearchIndex::create_in_ram().unwrap();
+        let mut w = idx.writer().unwrap();
+        w.add_phase(&phase(3, "When It Breaks", "rescuing a botched rebase", &["git", "rebase"]),
+                    "rescuing a botched rebase").unwrap();
+        w.commit().unwrap();
+
+        // "rebse" is one deletion away from "rebase" -> should still hit.
+        let hits = idx.search("rebse", 10).unwrap();
+        assert!(!hits.is_empty(), "fuzzy search should tolerate the typo");
+        assert_eq!(hits[0].phase_no, 3);
     }
 }
