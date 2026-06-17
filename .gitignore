@@ -17,3 +17,4 @@ platform/web/node_modules/
 platform/web/.svelte-kit/
 platform/web/build/
 .gstack/
+data/
