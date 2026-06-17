@@ -223,3 +223,43 @@ a:focus-visible,
 .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 :root:not([data-theme="dark"]) .theme-toggle .icon-sun { display: none; }
 :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+/* Landing hero */
+.hero { padding: 1.5rem 0 0.5rem; }
+.hero h1 { font-size: 2.4rem; line-height: 1.06; max-width: 18ch; margin: 0 0 0.6rem; }
+.hero .tagline { max-width: 56ch; font-size: 1.1rem; }
+.hero-search { max-width: 480px; margin-top: 1.2rem; }
+.hero-search input { font-size: 1rem; padding: 0.7rem 0.9rem; }
+.hero-search button { padding: 0.7rem 1.1rem; }
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--muted); font-weight: 400; margin: 2.4rem 0 1rem;
+}
+/* Category grid */
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.8rem; }
+.cat-card {
+  display: flex; flex-direction: column; gap: 0.45rem;
+  border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.05rem;
+  background: var(--bg);
+}
+.cat-card i { font-size: 22px; color: var(--faint); }
+.cat-card .cat-name { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; color: var(--ink); }
+.cat-card .cat-meta { font-size: 0.85rem; color: var(--faint); }
+a.cat-card.on { border-color: var(--accent); }
+a.cat-card.on:hover { background: var(--surface); text-decoration: none; }
+a.cat-card.on i { color: var(--accent); }
+a.cat-card.on .cat-name { color: var(--ink); }
+a.cat-card.on .cat-meta { color: var(--accent); font-weight: 500; }
+/* Category page */
+.cat-page { display: grid; grid-template-columns: 200px 1fr; gap: 2rem; align-items: start; }
+.cat-side { position: sticky; top: 5rem; font-size: 0.95rem; }
+.cat-side h3, .cat-main h3 {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); font-weight: 400; margin: 1.2rem 0 0.5rem;
+}
+.cat-side ul { list-style: none; padding: 0; margin: 0; }
+.cat-side li { padding: 0.25rem 0; }
+.cat-main .level-group { border-bottom: 1px solid var(--line); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+.cat-empty { color: var(--muted); padding: 1.5rem 0; }
+@media (max-width: 640px) { .cat-page { grid-template-columns: 1fr; } .cat-side { position: static; } }

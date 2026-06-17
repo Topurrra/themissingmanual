@@ -1,18 +1,46 @@
 <script>
   export let data;
+  $: ({ categories, recent } = data);
 </script>
 
 <svelte:head><title>The Missing Manual for Developers</title></svelte:head>
 
-<h1>The Missing Manual for Developers</h1>
-<p class="tagline">The stuff nobody teaches — explained like a battle-hardened friend.</p>
+<section class="hero">
+  <h1>The manual a senior who actually cares would hand you.</h1>
+  <p class="tagline">Real-world knowledge nobody teaches, explained with zero ego. Not "build a todo app," not a 1000-page reference. Free forever.</p>
+  <form method="GET" action="/search" class="searchbar hero-search">
+    <input type="search" name="q" placeholder="Search… e.g. how to revert a commit" aria-label="Search guides" />
+    <button type="submit">Search</button>
+  </form>
+</section>
 
-<h2>Guides</h2>
-<ul class="guides">
-  {#each data.guides as g}
-    <li>
-      <a href={`/guides/${g.slug}`}>{g.title}</a>
-      <span class="summary">{g.summary}</span>
-    </li>
+<h2 class="section-eyebrow">Browse by topic</h2>
+<div class="cat-grid">
+  {#each categories as c}
+    {#if c.count > 0}
+      <a class="cat-card on" href={`/categories/${c.slug}`}>
+        <i class={`ti ${c.icon}`} aria-hidden="true"></i>
+        <span class="cat-name">{c.name}</span>
+        <span class="cat-meta">{c.count} guide{c.count === 1 ? '' : 's'} →</span>
+      </a>
+    {:else}
+      <div class="cat-card">
+        <i class={`ti ${c.icon}`} aria-hidden="true"></i>
+        <span class="cat-name">{c.name}</span>
+        <span class="cat-meta">Coming soon</span>
+      </div>
+    {/if}
   {/each}
-</ul>
+</div>
+
+{#if recent.length}
+  <h2 class="section-eyebrow">Newly added</h2>
+  <ul class="guides">
+    {#each recent as g}
+      <li>
+        <a href={`/guides/${g.slug}`}>{g.title}</a>
+        <span class="summary">{g.summary}</span>
+      </li>
+    {/each}
+  </ul>
+{/if}

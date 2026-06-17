@@ -11,3 +11,5 @@ export const listGuides = (fetch) => getJson(fetch, '/api/guides');
 export const getGuide = (fetch, slug) => getJson(fetch, `/api/guides/${encodeURIComponent(slug)}`);
 export const getPhase = (fetch, slug, phase) => getJson(fetch, `/api/guides/${encodeURIComponent(slug)}/${phase}`);
 export const search = (fetch, q) => getJson(fetch, `/api/search?q=${encodeURIComponent(q)}`);
+export const listCategories = (fetch) => getJson(fetch, '/api/categories');
+export const getCategory = (fetch, slug) => getJson(fetch, `/api/categories/${encodeURIComponent(slug)}`);
