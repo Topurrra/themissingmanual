@@ -1,0 +1,7 @@
+.git
+docs
+platform/target
+platform/.data
+**/node_modules
+platform/web/.svelte-kit
+platform/web/build
