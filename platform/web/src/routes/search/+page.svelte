@@ -7,7 +7,7 @@
 
 <h1>Search</h1>
 <form method="GET" action="/search" class="searchbar">
-  <input type="search" name="q" value={q} placeholder="e.g. how to revert a commit" autofocus />
+  <input type="search" name="q" value={q} placeholder="e.g. how to revert a commit" />
   <button type="submit">Search</button>
 </form>
 
