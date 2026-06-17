@@ -8,3 +8,7 @@ Thumbs.db
 # Build output (future static site)
 /dist/
 /.cache/
+# Rust
+/platform/target/
+# Ingest output (generated SQLite DB + Tantivy index)
+platform/.data/

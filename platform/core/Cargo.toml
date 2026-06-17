@@ -1,0 +1,21 @@
+[package]
+name = "content-core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "content_core"
+path = "src/lib.rs"
+
+[dependencies]
+comrak = "0.28"
+tantivy = "0.22"
+rusqlite = { version = "0.32", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_yaml = "0.9"
+serde_json = "1"
+walkdir = "2"
+thiserror = "1"
+
+[dev-dependencies]
+tempfile = "3"
