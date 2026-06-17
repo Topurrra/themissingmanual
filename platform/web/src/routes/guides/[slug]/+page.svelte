@@ -5,7 +5,6 @@
 
 <svelte:head><title>{guide.title}</title></svelte:head>
 
-<p><a href="/">← All guides</a></p>
 <h1>{guide.title}</h1>
 <p class="tagline">{guide.summary}</p>
 

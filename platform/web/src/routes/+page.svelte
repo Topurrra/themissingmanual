@@ -1,4 +1,5 @@
 <script>
+  import { guardSearchSubmit } from '$lib/search.js';
   export let data;
   $: ({ categories, recent } = data);
 </script>
@@ -8,9 +9,9 @@
 <section class="hero">
   <h1>The manual a senior who actually cares would hand you.</h1>
   <p class="tagline">Real-world knowledge nobody teaches, explained with zero ego. Not "build a todo app," not a 1000-page reference. Free forever.</p>
-  <form method="GET" action="/search" class="searchbar hero-search">
+  <form method="GET" action="/search" class="search-field hero-search" on:submit={guardSearchSubmit}>
+    <i class="ti ti-search" aria-hidden="true"></i>
     <input type="search" name="q" placeholder="Search… e.g. how to revert a commit" aria-label="Search guides" />
-    <button type="submit">Search</button>
   </form>
 </section>
 
