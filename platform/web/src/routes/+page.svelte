@@ -1,18 +1,22 @@
 <script>
-  import { guardSearchSubmit } from '$lib/search.js';
   export let data;
   $: ({ categories, recent, tracks } = data);
+  $: iconFor = Object.fromEntries(categories.map((c) => [c.slug, c.icon]));
+  $: totalGuides = categories.reduce((a, c) => a + (c.count || 0), 0);
 </script>
 
 <svelte:head><title>The Missing Manual for Developers</title></svelte:head>
 
 <section class="hero">
-  <h1>The manual a senior who actually cares would hand you.</h1>
-  <p class="tagline">Real-world knowledge nobody teaches, explained with zero ego. Not "build a todo app," not a 1000-page reference. Free forever.</p>
-  <form method="GET" action="/search" class="search-field hero-search" on:submit={guardSearchSubmit}>
-    <i class="ti ti-search" aria-hidden="true"></i>
-    <input type="search" name="q" placeholder="Search… e.g. how to revert a commit" aria-label="Search guides" />
-  </form>
+  <span class="eyebrow">Free forever</span>
+  <h1>The manual a senior who <span class="accent">actually cares</span> would hand you.</h1>
+  <p class="tagline">Real-world knowledge nobody teaches, explained with zero ego. Not “build a todo app,” not a 1000-page reference. Free forever.</p>
+  <div class="hero-stats">
+    <span><b>{totalGuides}</b> guide{totalGuides === 1 ? '' : 's'}</span>
+    <span><b>{categories.length}</b> topics</span>
+    <span><b>{tracks?.length ?? 0}</b> learning paths</span>
+    <span><b>$0</b> forever</span>
+  </div>
 </section>
 
 {#if tracks && tracks.length}
@@ -21,8 +25,9 @@
     <a class="section-link" href="/paths">See all paths →</a>
   </div>
   <div class="track-cards">
-    {#each tracks as t}
+    {#each tracks as t, i}
       <a class="track-card" href={`/paths/${t.slug}`}>
+        <span class="track-index">{String(i + 1).padStart(2, '0')}</span>
         <span class="track-name">{t.name}</span>
         <span class="track-blurb">{t.blurb}</span>
         <span class="track-meta">{t.step_count} steps</span>
@@ -35,13 +40,13 @@
 <div class="cat-grid">
   {#each categories as c}
     {#if c.count > 0}
-      <a class="cat-card on" href={`/categories/${c.slug}`}>
+      <a class="cat-card" href={`/categories/${c.slug}`}>
         <i class={`ti ${c.icon}`} aria-hidden="true"></i>
         <span class="cat-name">{c.name}</span>
         <span class="cat-meta">{c.count} guide{c.count === 1 ? '' : 's'} →</span>
       </a>
     {:else}
-      <div class="cat-card">
+      <div class="cat-card disabled">
         <i class={`ti ${c.icon}`} aria-hidden="true"></i>
         <span class="cat-name">{c.name}</span>
         <span class="cat-meta">Coming soon</span>
@@ -55,8 +60,11 @@
   <ul class="guides">
     {#each recent as g}
       <li>
-        <a href={`/guides/${g.slug}`}>{g.title}</a>
-        <span class="summary">{g.summary}</span>
+        <span class="guide-ico" title={g.category}><i class={`ti ${iconFor[g.category] || 'ti-file-text'}`} aria-hidden="true"></i></span>
+        <span class="guide-body">
+          <a href={`/guides/${g.slug}`}>{g.title}</a>
+          <span class="summary">{g.summary}</span>
+        </span>
       </li>
     {/each}
   </ul>

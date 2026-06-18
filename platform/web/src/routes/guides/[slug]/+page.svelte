@@ -5,7 +5,8 @@
 
 <svelte:head><title>{guide.title}</title></svelte:head>
 
-<h1>{guide.title}</h1>
+<div class="crumb"><a href="/">All topics</a> <span>/</span> <span>{guide.title}</span></div>
+<h1 class="page-title">{guide.title}</h1>
 <p class="tagline">{guide.summary}</p>
 
 <ol class="phases">

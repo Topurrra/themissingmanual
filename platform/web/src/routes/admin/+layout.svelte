@@ -1,6 +1,7 @@
 <script>
   import '../../app.css';
   import { page } from '$app/stores';
+  import Appearance from '$lib/Appearance.svelte';
 
   $: path = $page.url.pathname;
   $: bare = path === '/admin/login';
@@ -27,6 +28,8 @@
           <a href={n.href} class:on={active(n.href)}><i class={`ti ${n.icon}`} aria-hidden="true"></i> {n.label}</a>
         {/each}
       </nav>
+      <span class="admin-spacer"></span>
+      <Appearance />
       <form method="POST" action="/admin/login?/logout" class="admin-logout">
         <button type="submit"><i class="ti ti-logout" aria-hidden="true"></i> Logout</button>
       </form>

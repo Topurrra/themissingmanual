@@ -7,18 +7,25 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Geist:wght@400;500;600&family=Sora:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css" />
     <script>
+      // Restore theme + font before first paint (no flash of wrong theme/font).
       (function () {
         try {
-          var t = localStorage.getItem('theme');
+          var t = localStorage.getItem('tmm-theme');
           if (t !== 'dark' && t !== 'light') {
             t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           }
           document.documentElement.dataset.theme = t;
+          var f = localStorage.getItem('tmm-font');
+          if (f) {
+            var stack = '"' + f + '", system-ui, -apple-system, "Segoe UI", sans-serif';
+            document.documentElement.style.setProperty('--font-display', stack);
+            document.documentElement.style.setProperty('--font-body', stack);
+          }
         } catch (e) {}
       })();
     </script>

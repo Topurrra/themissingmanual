@@ -6,6 +6,7 @@ export async function load({ fetch }) {
   const nav = categories.map((c) => ({
     slug: c.slug,
     name: c.name,
+    icon: c.icon,
     guides: guides.filter((g) => g.category === c.slug)
   }));
   return { nav };
