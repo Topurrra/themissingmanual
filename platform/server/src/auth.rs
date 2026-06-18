@@ -108,10 +108,12 @@ pub async fn login(
         }
     }
     // Session cookie (no Max-Age): the DB session is the real 30-day authority.
-    // Behind HTTPS in production, add `.secure(true)`.
+    // `cookie_secure` (COOKIE_SECURE=1) marks it Secure for HTTPS production.
+    let secure = state.cookie_secure;
     let cookie = Cookie::build((COOKIE, id))
         .http_only(true)
         .same_site(SameSite::Strict)
+        .secure(secure)
         .path("/")
         .build();
     (jar.add(cookie), Json(json!({ "ok": true }))).into_response()

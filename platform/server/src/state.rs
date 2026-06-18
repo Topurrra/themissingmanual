@@ -14,6 +14,12 @@ pub struct AppState {
     pub index: SearchIndex,
     pub admin_hash: Option<String>,
     pub login_attempts: Mutex<HashMap<IpAddr, (u32, Instant)>>,
+    /// Max stored asset size in bytes (`ASSET_MAX_BYTES`, default 5 MiB).
+    pub asset_max: usize,
+    /// Optional shared secret for `/api/events` (`BEACON_KEY`); None = open.
+    pub beacon_key: Option<String>,
+    /// Mark the session cookie `Secure` (`COOKIE_SECURE=1`, for HTTPS prod).
+    pub cookie_secure: bool,
 }
 
 impl AppState {
@@ -51,12 +57,31 @@ impl AppState {
             index,
             admin_hash: std::env::var("ADMIN_PASSWORD_HASH").ok().filter(|s| !s.is_empty()),
             login_attempts: Mutex::new(HashMap::new()),
+            asset_max: std::env::var("ASSET_MAX_BYTES")
+                .ok()
+                .and_then(|s| s.parse().ok())
+                .filter(|&n| n > 0)
+                .unwrap_or(5 * 1024 * 1024),
+            beacon_key: std::env::var("BEACON_KEY").ok().filter(|s| !s.is_empty()),
+            cookie_secure: matches!(std::env::var("COOKIE_SECURE").as_deref(), Ok("1") | Ok("true")),
         }
     }
 
     /// Inject an admin password hash (used by tests; production reads the env in `wrap`).
     pub fn with_admin_hash(mut self, hash: Option<String>) -> Self {
         self.admin_hash = hash;
+        self
+    }
+
+    /// Inject a beacon key (tests; production reads `BEACON_KEY` in `wrap`).
+    pub fn with_beacon_key(mut self, key: Option<String>) -> Self {
+        self.beacon_key = key;
+        self
+    }
+
+    /// Inject the max asset size (tests; production reads `ASSET_MAX_BYTES` in `wrap`).
+    pub fn with_asset_max(mut self, n: usize) -> Self {
+        self.asset_max = n;
         self
     }
 
@@ -72,6 +97,20 @@ impl AppState {
             }
         }
         w.commit()?;
+        Ok(())
+    }
+
+    /// Periodic upkeep: prune old analytics events and purge expired sessions.
+    /// Retention is `EVENTS_RETENTION_DAYS` (default 365).
+    pub fn maintenance(&self) -> Result<(), Box<dyn std::error::Error>> {
+        let retain: i64 = std::env::var("EVENTS_RETENTION_DAYS")
+            .ok()
+            .and_then(|s| s.parse().ok())
+            .filter(|&d| d > 0)
+            .unwrap_or(365);
+        let store = self.store.lock().unwrap();
+        store.prune_events(retain)?;
+        store.purge_expired_sessions()?;
         Ok(())
     }
 

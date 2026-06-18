@@ -2,7 +2,7 @@ use std::sync::Arc;
 use std::collections::HashMap;
 use axum::{
     extract::{Multipart, Path, Query, State},
-    http::{header, StatusCode},
+    http::{header, HeaderMap, StatusCode},
     response::{IntoResponse, Response},
     Json,
 };
@@ -306,6 +306,9 @@ pub async fn upload_asset(State(state): State<Arc<AppState>>, mut mp: Multipart)
             Ok(b) => b,
             Err(e) => return (StatusCode::BAD_REQUEST, Json(json!({ "error": e.to_string() }))).into_response(),
         };
+        if bytes.len() > state.asset_max {
+            return (StatusCode::PAYLOAD_TOO_LARGE, Json(json!({ "error": "file too large" }))).into_response();
+        }
         let id = uuid::Uuid::new_v4().to_string();
         let r = { state.store.lock().unwrap().insert_asset(&id, &filename, &mime, &bytes) };
         if let Err(e) = r {
@@ -343,7 +346,15 @@ pub struct EventInput {
 }
 
 // Public: the analytics collector posts here (server-to-server from the web origin).
-pub async fn record_event(State(state): State<Arc<AppState>>, Json(e): Json<EventInput>) -> Response {
+// If BEACON_KEY is set, require a matching `x-beacon-key` header so the events
+// endpoint can't be POSTed to directly when the API is exposed. Unset = open (the
+// web-origin collector is the intended caller and the API is normally internal-only).
+pub async fn record_event(State(state): State<Arc<AppState>>, headers: HeaderMap, Json(e): Json<EventInput>) -> Response {
+    if let Some(key) = &state.beacon_key {
+        if headers.get("x-beacon-key").and_then(|v| v.to_str().ok()) != Some(key.as_str()) {
+            return (StatusCode::UNAUTHORIZED, Json(json!({ "error": "bad beacon key" }))).into_response();
+        }
+    }
     if e.kind != "pageview" && e.kind != "search" {
         return (StatusCode::BAD_REQUEST, Json(json!({ "error": "bad kind" }))).into_response();
     }

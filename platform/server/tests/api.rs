@@ -339,3 +339,56 @@ async fn tracks_list_and_detail() {
     let missing = app.oneshot(get("/api/tracks/nope")).await.unwrap();
     assert_eq!(missing.status(), StatusCode::NOT_FOUND);
 }
+
+// ===== hardening guards =====
+
+#[tokio::test]
+async fn events_require_beacon_key_when_configured() {
+    let state = std::sync::Arc::new(
+        server::AppState::build(&repo_root()).unwrap().with_beacon_key(Some("k".to_string())),
+    );
+    let app = server::app(state);
+
+    // No key header → rejected.
+    let no_key = app
+        .clone()
+        .oneshot(post_json("/api/events", r#"{"kind":"pageview","path":"/","visitor":"v"}"#))
+        .await
+        .unwrap();
+    assert_eq!(no_key.status(), StatusCode::UNAUTHORIZED);
+
+    // Correct key header → accepted.
+    let with_key = Request::builder()
+        .method("POST")
+        .uri("/api/events")
+        .header("content-type", "application/json")
+        .header("x-beacon-key", "k")
+        .body(Body::from(r#"{"kind":"pageview","path":"/","visitor":"v"}"#.to_string()))
+        .unwrap();
+    assert_eq!(app.oneshot(with_key).await.unwrap().status(), StatusCode::NO_CONTENT);
+}
+
+#[tokio::test]
+async fn oversized_asset_is_rejected() {
+    let hash = server::auth::hash_password("secret");
+    let state = std::sync::Arc::new(
+        server::AppState::build(&repo_root()).unwrap().with_admin_hash(Some(hash)).with_asset_max(4),
+    );
+    let app = server::app(state);
+    let cookie = login(&app).await;
+
+    let boundary = "XB";
+    let body = format!(
+        "--{b}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"a.png\"\r\nContent-Type: image/png\r\n\r\nPNGDATA\r\n--{b}--\r\n",
+        b = boundary
+    );
+    let upload = Request::builder()
+        .method("POST")
+        .uri("/api/admin/assets")
+        .header("content-type", format!("multipart/form-data; boundary={boundary}"))
+        .header("cookie", &cookie)
+        .body(Body::from(body))
+        .unwrap();
+    // "PNGDATA" is 7 bytes > the 4-byte cap.
+    assert_eq!(app.oneshot(upload).await.unwrap().status(), StatusCode::PAYLOAD_TOO_LARGE);
+}

@@ -24,7 +24,21 @@ async fn main() {
     let state = Arc::new(
         server::AppState::build_persistent(&db, Some(&root)).expect("failed to build app state"),
     );
-    let app = server::app(state);
+    let app = server::app(state.clone());
+
+    // Background maintenance: prune old events + expired sessions now and every 24h.
+    {
+        let st = state.clone();
+        tokio::spawn(async move {
+            let mut tick = tokio::time::interval(std::time::Duration::from_secs(24 * 3600));
+            loop {
+                tick.tick().await; // fires immediately on the first iteration, then daily
+                if let Err(e) = st.maintenance() {
+                    eprintln!("maintenance error: {e}");
+                }
+            }
+        });
+    }
 
     let listener = tokio::net::TcpListener::bind(&bind_addr)
         .await

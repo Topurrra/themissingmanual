@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use axum::{
-    extract::{Path, Query, State},
+    extract::{DefaultBodyLimit, Path, Query, State},
     http::StatusCode,
     middleware,
     response::{IntoResponse, Response},
@@ -18,6 +18,8 @@ pub fn health_router() -> Router {
 
 /// The full application router, with state.
 pub fn app(state: Arc<AppState>) -> Router {
+    // Cap the asset-upload request body just above the stored-asset size limit.
+    let upload_limit = state.asset_max.saturating_add(1024 * 1024);
     // Admin content routes — guarded by the require_admin middleware.
     let protected = Router::new()
         .route("/guides", get(admin::list_guides).post(admin::create_guide))
@@ -28,7 +30,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/categories", get(admin::list_categories).post(admin::create_category))
         .route("/categories/reorder", post(admin::reorder_categories))
         .route("/categories/:slug", patch(admin::patch_category).delete(admin::delete_category))
-        .route("/assets", post(admin::upload_asset))
+        .route("/assets", post(admin::upload_asset).layer(DefaultBodyLimit::max(upload_limit)))
         .route("/preview", post(admin::preview))
         .route("/analytics", get(admin::analytics))
         .route_layer(middleware::from_fn_with_state(state.clone(), auth::require_admin));

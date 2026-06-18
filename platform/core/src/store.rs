@@ -394,6 +394,15 @@ impl Store {
         Ok(())
     }
 
+    /// Delete analytics events older than `retain_days` (bounds unbounded table growth).
+    /// Returns the number of rows removed.
+    pub fn prune_events(&self, retain_days: i64) -> Result<usize, StoreError> {
+        let cutoff = format!("-{retain_days} days");
+        Ok(self
+            .conn
+            .execute("DELETE FROM events WHERE ts < datetime('now', ?1)", params![cutoff])?)
+    }
+
     pub fn analytics_totals(&self, days: i64) -> Result<(i64, i64, i64), StoreError> {
         let w = format!("-{days} days");
         let views: i64 = self.conn.query_row(
@@ -554,5 +563,24 @@ mod tests {
         assert_eq!(s.top_searches(30, 10).unwrap()[0], ("rebase".to_string(), 1));
         assert!(s.top_referrers(30, 10).unwrap().iter().any(|(r, _)| r == "google.com"));
         assert_eq!(s.views_per_day(30).unwrap().iter().map(|(_, c)| c).sum::<i64>(), 3);
+    }
+
+    #[test]
+    fn prune_events_removes_only_old_rows() {
+        let s = Store::open_in_memory().unwrap();
+        // One old event (400 days ago) and one fresh one.
+        s.conn
+            .execute(
+                "INSERT INTO events (ts, kind, path, referrer, visitor, query)
+                 VALUES (datetime('now','-400 days'),'pageview','/old','','v','')",
+                [],
+            )
+            .unwrap();
+        s.record_event("pageview", "/new", "", "v", "").unwrap();
+
+        let removed = s.prune_events(365).unwrap();
+        assert_eq!(removed, 1);
+        let total: i64 = s.conn.query_row("SELECT COUNT(*) FROM events", [], |r| r.get(0)).unwrap();
+        assert_eq!(total, 1); // only the fresh event survives
     }
 }
