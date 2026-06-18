@@ -96,7 +96,7 @@ async fn lists_categories_with_counts() {
     assert_eq!(res.status(), StatusCode::OK);
     let bytes = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
     let cats: Vec<Category> = serde_json::from_slice(&bytes).unwrap();
-    assert_eq!(cats.len(), 7);
+    assert_eq!(cats.len(), 16);
     assert!(cats.iter().find(|c| c.slug == "version-control").unwrap().count >= 1);
 }
 

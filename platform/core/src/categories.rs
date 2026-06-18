@@ -18,21 +18,31 @@ struct Def {
     blurb: &'static str,
 }
 
+// The canonical taxonomy. Array order is the display order (sort_order = index).
+// This is the source of truth — edit here to add/rename/reorder categories.
 const DEFS: &[Def] = &[
+    Def { slug: "operating-systems", name: "Operating Systems", icon: "ti-device-desktop", blurb: "Windows, macOS, and Linux — what they're really doing under the hood, from first login to power user." },
+    Def { slug: "hardware", name: "Hardware", icon: "ti-cpu", blurb: "How the machine is actually built and talks to itself — from the chip to the device on your desk." },
+    Def { slug: "networking", name: "Networking", icon: "ti-network", blurb: "How the internet really works, and how to design networks that hold up — from your home router to the enterprise." },
     Def { slug: "programming-languages", name: "Programming Languages", icon: "ti-code", blurb: "Languages and their features, explained the way they should have been." },
     Def { slug: "version-control", name: "Version Control", icon: "ti-git-branch", blurb: "Git and friends: what they actually do, and how to stay calm when they break." },
-    Def { slug: "devops", name: "DevOps & Infra", icon: "ti-server", blurb: "Containers, CI/CD, servers, and the tools nobody hands you a map for." },
+    Def { slug: "debugging", name: "Debugging & Troubleshooting", icon: "ti-bug", blurb: "Reading the error, finding the real cause, and fixing it calmly instead of guessing." },
+    Def { slug: "testing", name: "Testing", icon: "ti-test-pipe", blurb: "Unit, integration, end-to-end, and load tests — plus TDD/BDD — that actually catch the bug." },
     Def { slug: "databases", name: "Databases", icon: "ti-database", blurb: "Schemas, queries, and the production lessons that come with them." },
+    Def { slug: "data-analytics", name: "Data & Analytics", icon: "ti-chart-histogram", blurb: "Data pipelines, engineering, BI, and the ML basics — turning raw data into answers you trust." },
+    Def { slug: "apis", name: "APIs & Integration", icon: "ti-plug-connected", blurb: "REST, GraphQL, gRPC, webhooks, and message queues — how systems actually talk to each other." },
     Def { slug: "architecture", name: "Architecture", icon: "ti-sitemap", blurb: "Designing systems that survive contact with real load and real teams." },
+    Def { slug: "devops", name: "DevOps", icon: "ti-infinity", blurb: "CI/CD, automation, and infrastructure as code — shipping safely and repeatedly." },
+    Def { slug: "infrastructure", name: "Infrastructure & Cloud", icon: "ti-cloud", blurb: "Servers, containers, and cloud platforms — where your code actually runs." },
     Def { slug: "performance", name: "Performance", icon: "ti-gauge", blurb: "Finding the slow thing, and the tools that show you where it hides." },
     Def { slug: "security", name: "Security", icon: "ti-shield-lock", blurb: "The threats, the defaults, and the habits that keep you out of the news." },
+    Def { slug: "ai-ml", name: "AI & Machine Learning", icon: "ti-brain", blurb: "Models, training, and putting AI into real products — without the hype or the hand-waving." },
 ];
 
-/// Seed the canonical categories on first run. No-op if any category already exists.
+/// Upsert the canonical category taxonomy. `DEFS` is the source of truth, so this runs on every
+/// boot/ingest — new categories appear and renames/reorders take effect. Categories created in the
+/// admin console that aren't in `DEFS` are left untouched (this only upserts `DEFS` slugs).
 pub fn seed_categories(store: &Store) -> Result<(), StoreError> {
-    if store.categories_count()? > 0 {
-        return Ok(());
-    }
     for (i, d) in DEFS.iter().enumerate() {
         store.upsert_category(&CategoryRow {
             slug: d.slug.to_string(),
@@ -76,12 +86,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn seven_categories_in_order() {
+    fn taxonomy_seeded_in_order() {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         let cats = categories_with_counts(&store).unwrap();
-        assert_eq!(cats.len(), 7);
-        assert_eq!(cats[1].slug, "version-control");
+        assert_eq!(cats.len(), 16);
+        assert_eq!(cats[0].slug, "operating-systems"); // DEFS array order = display order
+        assert!(cats.iter().any(|c| c.slug == "version-control"));
+        assert!(cats.iter().any(|c| c.slug == "infrastructure")); // the DevOps split
         assert!(cats.iter().all(|c| c.count == 0));
     }
 
@@ -104,7 +116,7 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         seed_categories(&store).unwrap();
-        assert_eq!(categories_with_counts(&store).unwrap().len(), 7);
+        assert_eq!(categories_with_counts(&store).unwrap().len(), 16);
     }
 
     #[test]

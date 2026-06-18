@@ -161,8 +161,11 @@ updated: 2026-06-18
 ```
 Phase files are the same, with their `phase:` number and **no** `category`/`order`.
 
-- **Categories:** `programming-languages`, `version-control`, `devops`, `databases`, `architecture`,
-  `performance`, `security`.
+- **Categories** (canonical list lives in `platform/core/src/categories.rs` → `DEFS`):
+  `operating-systems`, `hardware`, `networking`, `programming-languages`, `version-control`,
+  `debugging`, `testing`, `databases`, `data-analytics`, `apis`, `architecture`, `devops`,
+  `infrastructure`, `performance`, `security`, `ai-ml`. To add/rename/reorder one, edit `DEFS`
+  (it re-seeds on boot; admin-created categories outside `DEFS` are left alone).
 - **Difficulty:** `beginner` / `intermediate` / `advanced` (shown as Basic / Intermediate / Advanced).
 - **Order:** set `order:` on `_guide.md` to control position within a category (lower = earlier).
 
