@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use axum::{
     extract::{DefaultBodyLimit, Path, Query, State},
-    http::StatusCode,
+    http::{header, StatusCode},
     middleware,
     response::{IntoResponse, Response},
     routing::{get, patch, post},
@@ -30,6 +30,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/categories", get(admin::list_categories).post(admin::create_category))
         .route("/categories/reorder", post(admin::reorder_categories))
         .route("/categories/:slug", patch(admin::patch_category).delete(admin::delete_category))
+        .route("/password", post(auth::change_password))
         .route("/assets", post(admin::upload_asset).layer(DefaultBodyLimit::max(upload_limit)))
         .route("/preview", post(admin::preview))
         .route("/analytics", get(admin::analytics))
@@ -46,6 +47,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/api/guides/:slug", get(guide_detail))
         .route("/api/guides/:slug/:phase", get(phase_detail))
         .route("/api/search", get(search))
+        .route("/api/rss", get(rss))
         .route("/api/events", post(admin::record_event))
         .route("/api/categories", get(list_categories))
         .route("/api/categories/:slug", get(category_detail))
@@ -119,6 +121,44 @@ async fn search(State(state): State<Arc<AppState>>, Query(params): Query<SearchP
         Ok(hits) => Json(hits).into_response(),
         Err(e) => server_error(e),
     }
+}
+
+/// RSS 2.0 feed of published guides. Item links point at the public web origin
+/// (`SITE_URL`, default http://localhost:5173) — set SITE_URL in production.
+async fn rss(State(state): State<Arc<AppState>>) -> Response {
+    let guides = {
+        let store = state.store.lock().unwrap();
+        store.list_guides()
+    };
+    let guides = match guides {
+        Ok(g) => g,
+        Err(e) => return server_error(e),
+    };
+    fn xml_escape(s: &str) -> String {
+        s.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;")
+    }
+    let site = std::env::var("SITE_URL").unwrap_or_else(|_| "http://localhost:5173".to_string());
+    let site = site.trim_end_matches('/');
+    let mut items = String::new();
+    for g in &guides {
+        let link = format!("{site}/guides/{}", g.slug);
+        items.push_str(&format!(
+            "<item><title>{}</title><link>{}</link><guid isPermaLink=\"true\">{}</guid><description>{}</description></item>",
+            xml_escape(&g.title),
+            xml_escape(&link),
+            xml_escape(&link),
+            xml_escape(&g.summary),
+        ));
+    }
+    let body = format!(
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+         <rss version=\"2.0\"><channel>\
+         <title>The Missing Manual</title>\
+         <link>{site}</link>\
+         <description>Real-world developer knowledge, explained with zero ego.</description>\
+         {items}</channel></rss>"
+    );
+    ([(header::CONTENT_TYPE, "application/rss+xml; charset=utf-8")], body).into_response()
 }
 
 async fn list_categories(State(state): State<Arc<AppState>>) -> Response {

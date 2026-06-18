@@ -91,11 +91,15 @@ pub async fn login(
     if rate_limited(&state, ip) {
         return (StatusCode::TOO_MANY_REQUESTS, Json(json!({ "error": "too many attempts" }))).into_response();
     }
-    let hash = match &state.admin_hash {
-        Some(h) => h,
-        None => return (StatusCode::UNAUTHORIZED, Json(json!({ "error": "admin not configured" }))).into_response(),
+    let hash = {
+        let store = state.store.lock().unwrap();
+        match store.get_admin_hash() {
+            Ok(Some(h)) => h,
+            Ok(None) => return (StatusCode::UNAUTHORIZED, Json(json!({ "error": "admin not configured" }))).into_response(),
+            Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))).into_response(),
+        }
     };
-    if !verify_password(hash, &body.password) {
+    if !verify_password(&hash, &body.password) {
         record_fail(&state, ip);
         return (StatusCode::UNAUTHORIZED, Json(json!({ "error": "invalid password" }))).into_response();
     }
@@ -133,6 +137,33 @@ pub async fn me(State(state): State<Arc<AppState>>, jar: CookieJar) -> Response 
         Json(json!({ "authed": true })).into_response()
     } else {
         (StatusCode::UNAUTHORIZED, Json(json!({ "authed": false }))).into_response()
+    }
+}
+
+#[derive(Deserialize)]
+pub struct ChangePassword {
+    current_password: String,
+    new_password: String,
+}
+
+/// Change the admin password (behind `require_admin`). Verifies the current password,
+/// then stores a new argon2 hash. Takes effect immediately — the DB is authoritative.
+pub async fn change_password(State(state): State<Arc<AppState>>, Json(b): Json<ChangePassword>) -> Response {
+    if b.new_password.len() < 8 {
+        return (StatusCode::BAD_REQUEST, Json(json!({ "error": "new password must be at least 8 characters" }))).into_response();
+    }
+    let store = state.store.lock().unwrap();
+    let current = match store.get_admin_hash() {
+        Ok(Some(h)) => h,
+        Ok(None) => return (StatusCode::UNAUTHORIZED, Json(json!({ "error": "admin not configured" }))).into_response(),
+        Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))).into_response(),
+    };
+    if !verify_password(&current, &b.current_password) {
+        return (StatusCode::UNAUTHORIZED, Json(json!({ "error": "current password is incorrect" }))).into_response();
+    }
+    match store.set_admin_hash(&hash_password(&b.new_password)) {
+        Ok(_) => Json(json!({ "ok": true })).into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))).into_response(),
     }
 }
 

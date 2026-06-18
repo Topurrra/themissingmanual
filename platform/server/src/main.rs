@@ -16,6 +16,16 @@ async fn main() {
             println!("imported into {}", db.display());
             return;
         }
+        Some("create-admin") => {
+            let pw = std::env::args().nth(2).expect("usage: server create-admin <password>");
+            let (db, _root) = paths();
+            let store = content_core::store::Store::open(&db).expect("open db");
+            store
+                .set_admin_hash(&server::auth::hash_password(&pw))
+                .expect("set admin password");
+            println!("admin password set in {}", db.display());
+            return;
+        }
         _ => {}
     }
 

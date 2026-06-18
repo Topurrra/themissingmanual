@@ -12,7 +12,6 @@ use content_core::index::SearchIndex;
 pub struct AppState {
     pub store: Mutex<Store>,
     pub index: SearchIndex,
-    pub admin_hash: Option<String>,
     pub login_attempts: Mutex<HashMap<IpAddr, (u32, Instant)>>,
     /// Max stored asset size in bytes (`ASSET_MAX_BYTES`, default 5 MiB).
     pub asset_max: usize,
@@ -35,6 +34,13 @@ impl AppState {
     pub fn build_persistent(db_path: &Path, content_root: Option<&Path>) -> Result<Self, Box<dyn std::error::Error>> {
         let store = Store::open(db_path)?;
         content_core::categories::seed_categories(&store)?;
+        // First-run bootstrap: seed the admin credential from ADMIN_PASSWORD_HASH if the DB
+        // has none yet. After that the DB is authoritative (so console resets persist).
+        if store.get_admin_hash()?.is_none() {
+            if let Some(h) = std::env::var("ADMIN_PASSWORD_HASH").ok().filter(|s| !s.is_empty()) {
+                store.set_admin_hash(&h)?;
+            }
+        }
         let index = SearchIndex::create_in_ram()?;
         let imported = if store.list_all_guides()?.is_empty() {
             match content_root {
@@ -55,7 +61,6 @@ impl AppState {
         Self {
             store: Mutex::new(store),
             index,
-            admin_hash: std::env::var("ADMIN_PASSWORD_HASH").ok().filter(|s| !s.is_empty()),
             login_attempts: Mutex::new(HashMap::new()),
             asset_max: std::env::var("ASSET_MAX_BYTES")
                 .ok()
@@ -67,9 +72,12 @@ impl AppState {
         }
     }
 
-    /// Inject an admin password hash (used by tests; production reads the env in `wrap`).
-    pub fn with_admin_hash(mut self, hash: Option<String>) -> Self {
-        self.admin_hash = hash;
+    /// Set the admin password hash (used by tests; production seeds it from the env on
+    /// first run and the DB is authoritative thereafter). Writes to the DB.
+    pub fn with_admin_hash(self, hash: Option<String>) -> Self {
+        if let Some(h) = &hash {
+            self.store.lock().unwrap().set_admin_hash(h).expect("set admin hash");
+        }
         self
     }
 

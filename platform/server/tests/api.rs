@@ -392,3 +392,61 @@ async fn oversized_asset_is_rejected() {
     // "PNGDATA" is 7 bytes > the 4-byte cap.
     assert_eq!(app.oneshot(upload).await.unwrap().status(), StatusCode::PAYLOAD_TOO_LARGE);
 }
+
+#[tokio::test]
+async fn admin_change_password_takes_effect() {
+    let app = server::app(admin_state()); // initial admin password is "secret"
+    let cookie = login(&app).await;
+
+    // Wrong current password → rejected.
+    let wrong = app
+        .clone()
+        .oneshot(post_json_auth(
+            "/api/admin/password",
+            r#"{"current_password":"nope","new_password":"newsecret1"}"#,
+            &cookie,
+        ))
+        .await
+        .unwrap();
+    assert_eq!(wrong.status(), StatusCode::UNAUTHORIZED);
+
+    // Correct current password → changed.
+    let ok = app
+        .clone()
+        .oneshot(post_json_auth(
+            "/api/admin/password",
+            r#"{"current_password":"secret","new_password":"newsecret1"}"#,
+            &cookie,
+        ))
+        .await
+        .unwrap();
+    assert_eq!(ok.status(), StatusCode::OK);
+
+    // Old password no longer logs in; the new one does.
+    let old = app
+        .clone()
+        .oneshot(post_json("/api/admin/login", r#"{"password":"secret"}"#))
+        .await
+        .unwrap();
+    assert_eq!(old.status(), StatusCode::UNAUTHORIZED);
+    let new = app
+        .oneshot(post_json("/api/admin/login", r#"{"password":"newsecret1"}"#))
+        .await
+        .unwrap();
+    assert_eq!(new.status(), StatusCode::OK);
+}
+
+#[tokio::test]
+async fn rss_feed_lists_published_guides() {
+    let app = server::app(std::sync::Arc::new(server::AppState::build(&repo_root()).unwrap()));
+    let res = app.oneshot(get("/api/rss")).await.unwrap();
+    assert_eq!(res.status(), StatusCode::OK);
+    assert_eq!(
+        res.headers().get("content-type").unwrap(),
+        "application/rss+xml; charset=utf-8"
+    );
+    let bytes = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
+    let xml = String::from_utf8(bytes.to_vec()).unwrap();
+    assert!(xml.contains("<rss version=\"2.0\">"));
+    assert!(xml.contains("/guides/git-explained-like-a-human"));
+}

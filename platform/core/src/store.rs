@@ -82,7 +82,11 @@ impl Store {
                  visitor TEXT NOT NULL,
                  query TEXT
              );
-             CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);",
+             CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
+             CREATE TABLE IF NOT EXISTS settings (
+                 key TEXT PRIMARY KEY,
+                 value TEXT NOT NULL
+             );",
         )?;
         Ok(Self { conn })
     }
@@ -381,6 +385,31 @@ impl Store {
 
     pub fn purge_expired_sessions(&self) -> Result<(), StoreError> {
         self.conn.execute("DELETE FROM sessions WHERE expires_at <= datetime('now')", [])?;
+        Ok(())
+    }
+
+    // ---- admin credential (single admin; the DB is the runtime source of truth) ----
+
+    /// The stored argon2 admin password hash, or None if no admin has been created yet.
+    pub fn get_admin_hash(&self) -> Result<Option<String>, StoreError> {
+        match self.conn.query_row(
+            "SELECT value FROM settings WHERE key='admin_password_hash'",
+            [],
+            |r| r.get::<_, String>(0),
+        ) {
+            Ok(v) => Ok(Some(v)),
+            Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+            Err(e) => Err(e.into()),
+        }
+    }
+
+    /// Create or replace the admin password hash.
+    pub fn set_admin_hash(&self, hash: &str) -> Result<(), StoreError> {
+        self.conn.execute(
+            "INSERT INTO settings (key, value) VALUES ('admin_password_hash', ?1)
+             ON CONFLICT(key) DO UPDATE SET value=?1",
+            params![hash],
+        )?;
         Ok(())
     }
 
