@@ -105,6 +105,7 @@ pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Sta
                 fm.category.as_deref().unwrap_or(""),
                 &fm.difficulty,
             )?;
+            store.set_guide_sort_order(&fm.guide, fm.order)?;
         }
 
         let phase = Phase {
@@ -161,5 +162,31 @@ updated: 2026-06-17\n\
         assert!(p.markdown.contains("branch"), "markdown source kept for editing");
         let hits = index.search("branch", 10).unwrap();
         assert_eq!(hits[0].guide_slug, "demo");
+    }
+
+    #[test]
+    fn frontmatter_order_controls_listing() {
+        let dir = tempfile::tempdir().unwrap();
+        let mk = |slug: &str, order: i64| {
+            let d = dir.path().join("guides").join(slug);
+            fs::create_dir_all(&d).unwrap();
+            fs::write(
+                d.join("_guide.md"),
+                format!(
+"---\ntitle: \"{slug}\"\nguide: \"{slug}\"\nphase: 0\nsummary: \"s\"\ntags: [t]\ncategory: version-control\ndifficulty: beginner\nsynonyms: []\nupdated: 2026-06-18\norder: {order}\n---\n# {slug}\n"
+                ),
+            )
+            .unwrap();
+        };
+        // "aaa" sorts first alphabetically, but a higher order pushes it after "zzz".
+        mk("aaa-guide", 2);
+        mk("zzz-guide", 1);
+
+        let store = crate::store::Store::open_in_memory().unwrap();
+        let index = crate::index::SearchIndex::create_in_ram().unwrap();
+        ingest_dir(dir.path(), &store, &index).unwrap();
+
+        let slugs: Vec<String> = store.list_guides().unwrap().into_iter().map(|g| g.slug).collect();
+        assert_eq!(slugs, vec!["zzz-guide".to_string(), "aaa-guide".to_string()], "order overrides slug");
     }
 }

@@ -12,6 +12,9 @@ pub struct Frontmatter {
     pub updated: String,
     #[serde(default)]
     pub category: Option<String>,
+    /// Sidebar/listing order within a category (lower = earlier; default 0). Set on `_guide.md`.
+    #[serde(default)]
+    pub order: i64,
 }
 
 #[derive(Debug, Clone, Serialize)]

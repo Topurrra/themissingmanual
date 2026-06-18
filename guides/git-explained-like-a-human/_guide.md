@@ -5,6 +5,7 @@ phase: 0
 summary: "What Git actually is, what every everyday command really does, and how to stay calm when it breaks."
 tags: [git, version-control, beginner-friendly]
 category: version-control
+order: 2
 difficulty: beginner
 synonyms: ["learn git", "understand git", "git explained simply", "git for beginners who already use it"]
 updated: 2026-06-17

@@ -220,6 +220,11 @@ impl Store {
         Ok(())
     }
 
+    pub fn set_guide_sort_order(&self, slug: &str, order: i64) -> Result<(), StoreError> {
+        self.conn.execute("UPDATE guides SET sort_order=?2 WHERE slug=?1", params![slug, order])?;
+        Ok(())
+    }
+
     pub fn guide_status(&self, slug: &str) -> Result<String, StoreError> {
         Ok(self
             .conn
