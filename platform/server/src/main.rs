@@ -61,13 +61,18 @@ async fn main() {
             .unwrap_or(300);
         tokio::spawn(async move {
             let mut tick = tokio::time::interval(std::time::Duration::from_secs(secs));
+            // First run after boot is forced, so a freshly-built binary re-applies its ingest
+            // logic (new frontmatter fields, etc.) to existing content even if the files are
+            // byte-identical. Later ticks only re-import when the files actually change.
+            let mut force = true;
             loop {
                 tick.tick().await; // fires immediately on the first iteration, then every `secs`
-                match st.sync_content() {
+                match st.sync_content(force) {
                     Ok(Some(s)) => println!("content sync: imported {} guide(s), {} phase(s)", s.guides, s.phases),
                     Ok(None) => {}
                     Err(e) => eprintln!("content sync error: {e}"),
                 }
+                force = false;
             }
         });
     }

@@ -470,12 +470,14 @@ fn content_sync_reimports_only_when_files_change() {
 
     let state = server::AppState::build(dir.path()).unwrap();
     // First sync establishes the baseline signature (re-imports once).
-    assert!(state.sync_content().unwrap().is_some());
+    assert!(state.sync_content(false).unwrap().is_some());
     // Nothing changed on disk → no re-import.
-    assert!(state.sync_content().unwrap().is_none());
+    assert!(state.sync_content(false).unwrap().is_none());
+    // force=true re-imports even when the files are unchanged (boot / manual sync).
+    assert!(state.sync_content(true).unwrap().is_some());
     // A new guide folder appears → the sync imports it.
     write_guide("demo2");
-    assert!(state.sync_content().unwrap().is_some());
+    assert!(state.sync_content(false).unwrap().is_some());
     let slugs: Vec<String> = state
         .store
         .lock()

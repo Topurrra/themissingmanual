@@ -133,14 +133,17 @@ impl AppState {
     /// changed ("files win on change"). Returns the ingest stats if it re-imported, or
     /// `None` if nothing changed. Guides created in the CMS (no folder) are never touched —
     /// `ingest_dir` only visits guides that exist on disk.
-    pub fn sync_content(&self) -> Result<Option<content_core::ingest::Stats>, Box<dyn std::error::Error>> {
+    pub fn sync_content(&self, force: bool) -> Result<Option<content_core::ingest::Stats>, Box<dyn std::error::Error>> {
         let root = match &self.content_root {
             Some(r) => r.clone(),
             None => return Ok(None),
         };
         let sig = content_core::ingest::content_signature(&root).to_string();
         let store = self.store.lock().unwrap();
-        if store.get_setting("content_sig")?.as_deref() == Some(sig.as_str()) {
+        // `force` bypasses the change check: a new binary must re-apply its ingest logic to
+        // existing files even when the file *contents* are unchanged (the signature only tracks
+        // file content, not the code). Boot + manual sync force; periodic ticks don't.
+        if !force && store.get_setting("content_sig")?.as_deref() == Some(sig.as_str()) {
             return Ok(None); // nothing changed on disk
         }
         let stats = ingest_dir(&root, &store, &self.index)?;
