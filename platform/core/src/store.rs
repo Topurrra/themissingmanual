@@ -179,7 +179,7 @@ impl Store {
 
     pub fn guides_for_category(&self, category: &str) -> Result<Vec<GuideSummary>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT slug, title, summary, category, difficulty, status FROM guides WHERE category = ?1 AND status='published' ORDER BY difficulty, title",
+            "SELECT slug, title, summary, category, difficulty, status FROM guides WHERE category = ?1 AND status='published' ORDER BY sort_order, title",
         )?;
         let rows = stmt.query_map(params![category], Self::row_to_guide)?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
