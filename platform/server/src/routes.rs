@@ -31,6 +31,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/categories/reorder", post(admin::reorder_categories))
         .route("/categories/:slug", patch(admin::patch_category).delete(admin::delete_category))
         .route("/password", post(auth::change_password))
+        .route("/sync", post(admin::sync_now))
         .route("/assets", post(admin::upload_asset).layer(DefaultBodyLimit::max(upload_limit)))
         .route("/preview", post(admin::preview))
         .route("/analytics", get(admin::analytics))

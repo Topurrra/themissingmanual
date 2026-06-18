@@ -50,6 +50,28 @@ async fn main() {
         });
     }
 
+    // Background content sync: re-import guides/ when the files change (files win on change).
+    // Interval via SYNC_INTERVAL_SECS (default 300). New guide folders go live within one interval.
+    {
+        let st = state.clone();
+        let secs: u64 = std::env::var("SYNC_INTERVAL_SECS")
+            .ok()
+            .and_then(|s| s.parse().ok())
+            .filter(|&n| n > 0)
+            .unwrap_or(300);
+        tokio::spawn(async move {
+            let mut tick = tokio::time::interval(std::time::Duration::from_secs(secs));
+            loop {
+                tick.tick().await; // fires immediately on the first iteration, then every `secs`
+                match st.sync_content() {
+                    Ok(Some(s)) => println!("content sync: imported {} guide(s), {} phase(s)", s.guides, s.phases),
+                    Ok(None) => {}
+                    Err(e) => eprintln!("content sync error: {e}"),
+                }
+            }
+        });
+    }
+
     let listener = tokio::net::TcpListener::bind(&bind_addr)
         .await
         .unwrap_or_else(|e| panic!("bind {bind_addr}: {e}"));

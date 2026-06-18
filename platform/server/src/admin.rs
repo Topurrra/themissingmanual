@@ -393,3 +393,15 @@ pub async fn analytics(State(state): State<Arc<AppState>>, Query(q): Query<HashM
         Err(e) => err(e),
     }
 }
+
+// ===== content sync =====
+
+/// Manually trigger a sync of `guides/` into the DB + index (files-win-on-change).
+/// No-op (changed:false) when the on-disk content hasn't changed since the last sync.
+pub async fn sync_now(State(state): State<Arc<AppState>>) -> Response {
+    match state.sync_content() {
+        Ok(Some(stats)) => Json(json!({ "changed": true, "guides": stats.guides, "phases": stats.phases })).into_response(),
+        Ok(None) => Json(json!({ "changed": false })).into_response(),
+        Err(e) => err(e),
+    }
+}

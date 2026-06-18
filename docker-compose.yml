@@ -15,6 +15,9 @@ services:
       ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:-}
     volumes:
       - manual-data:/data
+      # Live content: drop guide folders in ./guides and the periodic sync picks them up
+      # (files win on change). Read-only — the server only reads them.
+      - ./guides:/app/guides:ro
 
   web:
     build:
@@ -25,6 +28,10 @@ services:
     environment:
       API_BASE: http://api:3000
       PORT: "3000"
+      # adapter-node's public origin, used by SvelteKit's CSRF check on form POSTs.
+      # Must match the URL in the browser, or logins/forms get 403. Override for
+      # production, e.g. ORIGIN=https://your-domain.
+      ORIGIN: ${ORIGIN:-http://localhost:5173}
     depends_on:
       - api
 

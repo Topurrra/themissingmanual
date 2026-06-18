@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::net::IpAddr;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 use std::time::Instant;
 use content_core::ingest::{html_to_text, ingest_dir};
@@ -8,11 +8,13 @@ use content_core::store::Store;
 use content_core::index::SearchIndex;
 
 /// Shared application state: the SQLite store (behind a mutex — rusqlite is !Sync),
-/// the Tantivy index (Send + Sync), the admin password hash, and a login rate-limit map.
+/// the Tantivy index (Send + Sync), request config, and a login rate-limit map.
 pub struct AppState {
     pub store: Mutex<Store>,
     pub index: SearchIndex,
     pub login_attempts: Mutex<HashMap<IpAddr, (u32, Instant)>>,
+    /// Root holding `guides/`, for the periodic file sync. None disables sync.
+    pub content_root: Option<PathBuf>,
     /// Max stored asset size in bytes (`ASSET_MAX_BYTES`, default 5 MiB).
     pub asset_max: usize,
     /// Optional shared secret for `/api/events` (`BEACON_KEY`); None = open.
@@ -27,7 +29,7 @@ impl AppState {
         let store = Store::open_in_memory()?;
         let index = SearchIndex::create_in_ram()?;
         ingest_dir(repo_root, &store, &index)?;
-        Ok(Self::wrap(store, index))
+        Ok(Self::wrap(store, index, Some(repo_root.to_path_buf())))
     }
 
     /// Persistent build: open the on-disk DB, import Markdown once if empty, rebuild the index.
@@ -50,18 +52,23 @@ impl AppState {
         } else {
             false
         };
-        let me = Self::wrap(store, index);
+        let me = Self::wrap(store, index, content_root.map(|p| p.to_path_buf()));
         if !imported {
             me.rebuild_index()?; // DB already had content: the fresh in-RAM index needs filling
+        } else if let Some(root) = me.content_root.clone() {
+            // Record the baseline signature so the periodic sync only re-imports on real change.
+            let sig = content_core::ingest::content_signature(&root).to_string();
+            me.store.lock().unwrap().set_setting("content_sig", &sig).ok();
         }
         Ok(me)
     }
 
-    fn wrap(store: Store, index: SearchIndex) -> Self {
+    fn wrap(store: Store, index: SearchIndex, content_root: Option<PathBuf>) -> Self {
         Self {
             store: Mutex::new(store),
             index,
             login_attempts: Mutex::new(HashMap::new()),
+            content_root,
             asset_max: std::env::var("ASSET_MAX_BYTES")
                 .ok()
                 .and_then(|s| s.parse().ok())
@@ -120,6 +127,25 @@ impl AppState {
         store.prune_events(retain)?;
         store.purge_expired_sessions()?;
         Ok(())
+    }
+
+    /// Sync `guides/` into the DB + index, but only when the on-disk content actually
+    /// changed ("files win on change"). Returns the ingest stats if it re-imported, or
+    /// `None` if nothing changed. Guides created in the CMS (no folder) are never touched —
+    /// `ingest_dir` only visits guides that exist on disk.
+    pub fn sync_content(&self) -> Result<Option<content_core::ingest::Stats>, Box<dyn std::error::Error>> {
+        let root = match &self.content_root {
+            Some(r) => r.clone(),
+            None => return Ok(None),
+        };
+        let sig = content_core::ingest::content_signature(&root).to_string();
+        let store = self.store.lock().unwrap();
+        if store.get_setting("content_sig")?.as_deref() == Some(sig.as_str()) {
+            return Ok(None); // nothing changed on disk
+        }
+        let stats = ingest_dir(&root, &store, &self.index)?;
+        store.set_setting("content_sig", &sig)?;
+        Ok(Some(stats))
     }
 
     /// Re-index a single guide after a content change (drops then re-adds if published).

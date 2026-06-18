@@ -39,6 +39,35 @@ pub fn html_to_text(html: &str) -> String {
     out
 }
 
+/// A content signature of every `guides/**/*.md` under `root`, for cheap change detection.
+/// Hashes each file's relative path + bytes (sorted), so any add, edit, or removal changes it.
+pub fn content_signature(root: &Path) -> u64 {
+    use std::hash::{Hash, Hasher};
+    let guides_root = root.join("guides");
+    let mut entries: Vec<(String, Vec<u8>)> = Vec::new();
+    for entry in WalkDir::new(&guides_root).into_iter().filter_map(|e| e.ok()) {
+        let path = entry.path();
+        if path.extension().and_then(|e| e.to_str()) != Some("md") {
+            continue;
+        }
+        if let Ok(bytes) = std::fs::read(path) {
+            let rel = path
+                .strip_prefix(&guides_root)
+                .unwrap_or(path)
+                .to_string_lossy()
+                .replace('\\', "/");
+            entries.push((rel, bytes));
+        }
+    }
+    entries.sort_by(|a, b| a.0.cmp(&b.0)); // WalkDir order isn't guaranteed; sort for determinism
+    let mut h = std::collections::hash_map::DefaultHasher::new();
+    for (rel, bytes) in &entries {
+        rel.hash(&mut h);
+        bytes.hash(&mut h);
+    }
+    h.finish()
+}
+
 /// Ingest every `guides/<slug>/NN-*.md` under `root` into the store + index.
 pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Stats, IngestError> {
     let guides_root = root.join("guides");

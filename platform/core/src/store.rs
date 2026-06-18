@@ -388,29 +388,34 @@ impl Store {
         Ok(())
     }
 
-    // ---- admin credential (single admin; the DB is the runtime source of truth) ----
+    // ---- settings (generic key/value) ----
 
-    /// The stored argon2 admin password hash, or None if no admin has been created yet.
-    pub fn get_admin_hash(&self) -> Result<Option<String>, StoreError> {
-        match self.conn.query_row(
-            "SELECT value FROM settings WHERE key='admin_password_hash'",
-            [],
-            |r| r.get::<_, String>(0),
-        ) {
+    pub fn get_setting(&self, key: &str) -> Result<Option<String>, StoreError> {
+        match self.conn.query_row("SELECT value FROM settings WHERE key=?1", params![key], |r| r.get::<_, String>(0)) {
             Ok(v) => Ok(Some(v)),
             Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
             Err(e) => Err(e.into()),
         }
     }
 
-    /// Create or replace the admin password hash.
-    pub fn set_admin_hash(&self, hash: &str) -> Result<(), StoreError> {
+    pub fn set_setting(&self, key: &str, value: &str) -> Result<(), StoreError> {
         self.conn.execute(
-            "INSERT INTO settings (key, value) VALUES ('admin_password_hash', ?1)
-             ON CONFLICT(key) DO UPDATE SET value=?1",
-            params![hash],
+            "INSERT INTO settings (key, value) VALUES (?1, ?2) ON CONFLICT(key) DO UPDATE SET value=?2",
+            params![key, value],
         )?;
         Ok(())
+    }
+
+    // ---- admin credential (single admin; the DB is the runtime source of truth) ----
+
+    /// The stored argon2 admin password hash, or None if no admin has been created yet.
+    pub fn get_admin_hash(&self) -> Result<Option<String>, StoreError> {
+        self.get_setting("admin_password_hash")
+    }
+
+    /// Create or replace the admin password hash.
+    pub fn set_admin_hash(&self, hash: &str) -> Result<(), StoreError> {
+        self.set_setting("admin_password_hash", hash)
     }
 
     // ---- analytics ----
