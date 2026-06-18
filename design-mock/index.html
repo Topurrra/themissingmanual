@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Missing Manual for Developers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css" />
+  <script>
+    (function () { try { var t = localStorage.getItem('mock-theme');
+      if (t !== 'dark' && t !== 'light') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t; } catch (e) {} })();
+  </script>
+  <link rel="stylesheet" href="mock.css" />
+</head>
+<body>
+  <!-- ============================ Header ============================ -->
+  <header class="site-header">
+    <div class="bar">
+      <a href="index.html" class="brand">The Missing Manual</a>
+      <form class="header-search" onsubmit="return false">
+        <div class="search-field">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <input type="search" placeholder="Search… e.g. undo a commit" aria-label="Search guides" />
+          <span class="kbd">/</span>
+        </div>
+      </form>
+      <div class="bar-right">
+        <div class="settings-wrap">
+          <button class="icon-btn" data-settings-btn aria-label="Settings" title="Settings"><i class="ti ti-settings"></i></button>
+          <div class="settings-pop" data-settings-pop hidden role="dialog" aria-label="Settings">
+            <p class="settings-label">Theme</p>
+            <div class="seg">
+              <button data-theme-opt="light">Light</button>
+              <button data-theme-opt="dark">Dark</button>
+              <button data-theme-opt="system">System</button>
+            </div>
+            <p class="settings-soon">More customization coming soon.</p>
+          </div>
+        </div>
+        <button class="icon-btn" data-theme-quick aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================ Landing ============================ -->
+  <main class="page-main home">
+    <section class="hero">
+      <span class="eyebrow">Free forever</span>
+      <h1>The manual a senior who <span class="accent">actually cares</span> would hand you.</h1>
+      <p class="tagline">Real-world knowledge nobody teaches, explained with zero ego. Not “build a todo app,” not a 1000-page reference. Free forever.</p>
+      <div class="hero-stats">
+        <span><b>1</b> guide</span>
+        <span><b>7</b> topics</span>
+        <span><b>2</b> learning paths</span>
+        <span><b>$0</b> forever</span>
+      </div>
+    </section>
+
+    <!-- Learning paths (real: backend-developer, devops-engineer) -->
+    <div class="section-head">
+      <h2 class="section-eyebrow">Learning paths</h2>
+      <a class="section-link" href="#">See all paths →</a>
+    </div>
+    <div class="track-cards">
+      <a class="track-card" href="#">
+        <span class="track-index">01</span>
+        <span class="track-name">Backend Developer</span>
+        <span class="track-blurb">From version control to a deployed, tested service — the path a backend dev actually walks.</span>
+        <span class="track-meta">6 steps</span>
+      </a>
+      <a class="track-card" href="#">
+        <span class="track-index">02</span>
+        <span class="track-name">DevOps Engineer</span>
+        <span class="track-blurb">Ship and run other people’s code: containers, pipelines, and keeping the lights on.</span>
+        <span class="track-meta">4 steps</span>
+      </a>
+    </div>
+
+    <!-- Browse by topic (real: 7 categories, only Version Control is live) -->
+    <h2 class="section-eyebrow">Browse by topic</h2>
+    <div class="cat-grid">
+      <div class="cat-card disabled">
+        <i class="ti ti-code" aria-hidden="true"></i>
+        <span class="cat-name">Programming Languages</span>
+        <span class="cat-meta">Coming soon</span>
+      </div>
+      <a class="cat-card" href="category.html">
+        <i class="ti ti-git-branch" aria-hidden="true"></i>
+        <span class="cat-name">Version Control</span>
+        <span class="cat-meta">1 guide →</span>
+      </a>
+      <div class="cat-card disabled">
+        <i class="ti ti-server" aria-hidden="true"></i>
+        <span class="cat-name">DevOps &amp; Infra</span>
+        <span class="cat-meta">Coming soon</span>
+      </div>
+      <div class="cat-card disabled">
+        <i class="ti ti-database" aria-hidden="true"></i>
+        <span class="cat-name">Databases</span>
+        <span class="cat-meta">Coming soon</span>
+      </div>
+      <div class="cat-card disabled">
+        <i class="ti ti-sitemap" aria-hidden="true"></i>
+        <span class="cat-name">Architecture</span>
+        <span class="cat-meta">Coming soon</span>
+      </div>
+      <div class="cat-card disabled">
+        <i class="ti ti-gauge" aria-hidden="true"></i>
+        <span class="cat-name">Performance</span>
+        <span class="cat-meta">Coming soon</span>
+      </div>
+      <div class="cat-card disabled">
+        <i class="ti ti-shield-lock" aria-hidden="true"></i>
+        <span class="cat-name">Security</span>
+        <span class="cat-meta">Coming soon</span>
+      </div>
+    </div>
+
+    <!-- Newly added (real: the one git guide) -->
+    <h2 class="section-eyebrow">Newly added</h2>
+    <ul class="guides">
+      <li>
+        <span class="guide-ico" title="Version Control"><i class="ti ti-git-branch" aria-hidden="true"></i></span>
+        <span class="guide-body">
+          <a href="guide.html">Git, Explained Like You're a Human</a>
+          <span class="summary">What Git actually is, what every everyday command really does, and how to stay calm when it breaks.</span>
+        </span>
+      </li>
+    </ul>
+  </main>
+
+  <!-- ============================ Footer ============================ -->
+  <footer class="colophon">
+    <div class="colophon-inner">
+      <div>
+        <div class="co-brand">The Missing Manual</div>
+        <div class="co-line">Free forever. No ads. No tracking walls.</div>
+      </div>
+      <nav>
+        <a href="#">About</a>
+        <a href="#">Contribute</a>
+        <a href="#">GitHub</a>
+        <a href="#">RSS</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="mock.js"></script>
+</body>
+</html>
