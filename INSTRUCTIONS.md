@@ -232,18 +232,83 @@ URL in your browser. It's set to `http://localhost:5173` in `docker-compose.yml`
 `docker compose down`, or kill the local process — Windows: `netstat -ano | findstr :3000` then
 `taskkill /F /PID <pid>`.
 
-**Inspect the database directly** (the api image has no `sqlite3` by default; install it ad hoc):
-```bash
-docker compose exec api sh -c "apt-get update -qq && apt-get install -y -qq sqlite3; \
-  sqlite3 /data/manual.db 'SELECT slug, sort_order, status FROM guides ORDER BY sort_order, slug;'"
-```
+**Inspect the database** to see raw values (e.g. why ordering or draft/published status looks off) —
+see **§9 Querying the database**.
 
 **PowerShell equivalents:** `grep` → `Select-String`; `curl -X POST …` → `curl.exe -X POST …` or
 `Invoke-RestMethod -Method Post …`; `head`/`tail` → `Select-Object -First/-Last N`.
 
 ---
 
-## 9. How it fits together (for changes)
+## 9. Querying the database
+
+Yes — it's a plain **SQLite** file you can query directly.
+- **Docker:** `/data/manual.db` inside the `api` container (on the `manual-data` volume).
+- **Local (no Docker):** `./data/manual.db`.
+
+Most data is also readable without SQL via the API (`/api/guides`, `/api/categories`, `/api/search?q=…`,
+the admin endpoints) — reach for SQL when you need raw columns like `sort_order` or the analytics tables.
+
+> Reads are safe while the server is running (SQLite allows concurrent readers). Avoid manual **writes**
+> while `api` is up — let the app own writes.
+
+### Option A — one-off SQLite container against the volume (nothing to install in the app)
+```bash
+docker volume ls | grep manual-data        # find the exact name, e.g. knowledgebase_manual-data
+docker run --rm -v knowledgebase_manual-data:/data alpine \
+  sh -c "apk add -q sqlite && sqlite3 /data/manual.db 'SELECT slug, sort_order, status FROM guides ORDER BY sort_order, slug;'"
+```
+
+### Option B — sqlite3 inside the running api container
+The api image ships without `sqlite3`; install it ad hoc (gone on the next rebuild):
+```bash
+docker compose exec api sh -c "command -v sqlite3 >/dev/null || { apt-get update -qq && apt-get install -y -qq sqlite3; }; \
+  sqlite3 /data/manual.db 'SELECT slug, sort_order, status FROM guides ORDER BY sort_order, slug;'"
+```
+Drop the trailing SQL for an interactive `sqlite>` prompt (`.tables`, `.schema guides`, `.quit`).
+
+### Option C — copy it out and use a GUI
+```bash
+docker compose cp api:/data/manual.db ./manual.db     # Docker (local: it's already ./data/manual.db)
+```
+Open `manual.db` in **DB Browser for SQLite** (https://sqlitebrowser.org) or any SQLite client. That's a
+*copy* — edits don't sync back; for live changes use the CMS/API.
+
+### Tables & handy queries
+Tables: `guides`, `phases`, `categories`, `assets`, `sessions`, `events`, `settings`.
+```sql
+.tables                      -- list tables
+.schema guides               -- one table's definition
+
+-- guides: ordering, difficulty, draft vs published
+SELECT slug, category, difficulty, sort_order, status FROM guides ORDER BY sort_order, slug;
+
+-- phases of one guide
+SELECT phase_no, title FROM phases WHERE guide_slug='git-from-zero' ORDER BY phase_no;
+
+-- categories and their order
+SELECT slug, name, sort_order FROM categories ORDER BY sort_order;
+
+-- settings: is an admin set? what's the last content-sync signature?
+SELECT key FROM settings;                 -- expect: admin_password_hash, content_sig
+
+-- analytics: totals by kind, and top pages over the last 30 days
+SELECT kind, COUNT(*) FROM events GROUP BY kind;
+SELECT path, COUNT(*) AS c FROM events
+  WHERE kind='pageview' AND ts >= datetime('now','-30 days')
+  GROUP BY path ORDER BY c DESC LIMIT 10;
+
+-- active sessions
+SELECT COUNT(*) FROM sessions WHERE expires_at > datetime('now');
+```
+> Don't `SELECT *` from `assets` — its `bytes` column holds binary blobs. Select `id, filename, mime`.
+
+PowerShell: `grep` → `Select-String` (e.g. `docker volume ls | Select-String manual-data`); the
+`docker run …` and `docker compose exec …` commands work unchanged.
+
+---
+
+## 10. How it fits together (for changes)
 
 - **Markdown in `guides/`** is the content source → ingested into **SQLite** (`/data/manual.db`) + a
   **Tantivy** search index. The DB also holds CMS edits, the admin credential, sessions, and analytics.
@@ -257,7 +322,7 @@ and when committing, stage only the files you own.
 
 ---
 
-## 10. Production checklist
+## 11. Production checklist
 
 - `ORIGIN=https://your-domain` (web) and `SITE_URL=https://your-domain` (api).
 - `COOKIE_SECURE=1` (serve over HTTPS).
