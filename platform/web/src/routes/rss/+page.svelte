@@ -7,7 +7,9 @@
 
   <p>Every new guide and every published phase shows up in the feed the moment it goes live. Paste this URL into any RSS reader (NetNewsWire, Feedly, Reeder, Thunderbird, your editor's RSS plugin):</p>
 
-  <pre><code>https://themissingmanual.dev/feed.xml</code></pre>
+  <pre><code>/rss.xml</code></pre>
+
+  <p>Or just <a href="/rss.xml">open the feed</a> — most readers will offer to subscribe.</p>
 
   <h2>What you'll get</h2>
   <ul>

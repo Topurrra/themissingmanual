@@ -3,6 +3,7 @@
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { guardSearchSubmit } from '$lib/search.js';
+  import { levelLabel } from '$lib/difficulty.js';
   import { afterNavigate } from '$app/navigation';
   import { sendPageview } from '$lib/beacon.js';
   import CommandPalette from '$lib/CommandPalette.svelte';
@@ -10,12 +11,19 @@
 
   export let data;
   $: nav = data?.nav ?? [];
+  $: guidePhases = data?.guidePhases ?? null;
+  $: guideTitle = data?.guideTitle ?? null;
   $: path = $page.url.pathname;
   $: isHome = path === '/';
   $: isAdmin = path.startsWith('/admin');
   // info pages render centred, no sidebar (like home)
   $: bare = isHome || ['/about', '/contribute', '/rss'].includes(path);
   $: currentGuide = (path.match(/^\/guides\/([^/]+)/) || [])[1] || null;
+  // The active phase number on /guides/[slug]/[phase] — null on the guide overview.
+  $: currentPhase = (() => {
+    const m = path.match(/^\/guides\/[^/]+\/(\d+)/);
+    return m ? Number(m[1]) : null;
+  })();
   $: currentCategory = (path.match(/^\/categories\/([^/]+)/) || [])[1] || null;
 
   // Scoped sidebar: the current topic (a category page, or the category that owns
@@ -85,13 +93,31 @@
           </button>
         </div>
         <nav class="sidebar-nav">
-          {#if activeCat}
+          {#if currentGuide && guidePhases}
+            {#if activeCat}
+              <a class="rail-back" href={`/categories/${activeCat.slug}`}><i class="ti ti-chevron-left" aria-hidden="true"></i> {activeCat.name}</a>
+            {/if}
+            <div class="rail-guide-title">{guideTitle}</div>
+            <ul class="nav-items">
+              <li><a href={`/guides/${currentGuide}`} class:on={currentPhase === null}
+                aria-current={currentPhase === null ? 'page' : undefined}>Overview</a></li>
+              {#each guidePhases.filter((p) => p.phase_no > 0) as p}
+                <li><a href={`/guides/${currentGuide}/${p.phase_no}`} class:on={currentPhase === p.phase_no}
+                  aria-current={currentPhase === p.phase_no ? 'page' : undefined}>{p.phase_no} · {p.title}</a></li>
+              {/each}
+            </ul>
+          {:else if activeCat}
             <div class="rail-topic"><i class={`ti ${activeCat.icon}`} aria-hidden="true"></i> {activeCat.name}</div>
             {#if activeCat.guides.length}
               <ul class="nav-items">
                 {#each activeCat.guides as g}
+                  {@const lvl = levelLabel(g.difficulty)}
                   <li><a href={`/guides/${g.slug}`} class:on={currentGuide === g.slug}
-                    aria-current={currentGuide === g.slug ? 'page' : undefined}>{g.title}</a></li>
+                    class="nav-lvl-row" aria-current={currentGuide === g.slug ? 'page' : undefined}>
+                    <span class="nav-lvl-title">{g.title}</span>
+                    <span class="lvl" class:mid={lvl === 'Intermediate'} class:adv={lvl === 'Advanced'}
+                      title={lvl} aria-label={lvl}>{lvl[0]}</span>
+                  </a></li>
                 {/each}
               </ul>
             {:else}
@@ -126,7 +152,7 @@
       <nav>
         <a href="/about">About</a>
         <a href="/contribute">Contribute</a>
-        <a href="/rss">RSS</a>
+        <a href="/rss.xml">RSS</a>
         <span class="co-social">
           <a href={SOCIAL.github} target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><i class="ti ti-brand-github"></i></a>
           <a href={SOCIAL.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><i class="ti ti-brand-linkedin"></i></a>

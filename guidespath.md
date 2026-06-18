@@ -266,6 +266,17 @@ filling them is the highest-leverage content because it completes a track the wi
 
 *(Adding a track = a `TrackDef` in `content-core::tracks`; choice options map to guide slugs once they exist.)*
 
+### ⏸️ DEFERRED — sync `content-core::tracks` to the new taxonomy (don't forget)
+**Paused by request (2026-06-19). Not done yet.** When we return to tracks:
+1. **Fix stale step categories in `tracks.rs`** (they predate the 16-category split):
+   - Backend Developer: `api` step `architecture` → **`apis`**; `test` step `architecture` → **`testing`**;
+     `deploy` step `devops` → **`infrastructure`**.
+   - DevOps Engineer: containers/`deploy` step `devops` → **`infrastructure`** (keep `cicd` on `devops`,
+     `observability` on `performance`).
+2. **Add the two proposed `TrackDef`s:** *Computer Foundations* and *Observability & On-Call* (see above).
+3. Update the `tracks_list_and_detail` / track tests for any new tracks.
+No rush — tracks pay off once their steps resolve to live guides; today most are "coming soon".
+
 ---
 
 ## Conventions reminder (for whoever writes the next one)

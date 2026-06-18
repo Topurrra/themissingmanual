@@ -19,6 +19,13 @@
   --accent-strong: #0a5f67;
   --accent-tint: rgba(14, 124, 134, 0.10);
   --accent-tint-2: rgba(14, 124, 134, 0.05);
+
+  /* Semantic status tokens — danger (destructive) + warn (draft/pending).
+     Tuned for the off-white base; see the dark override for the dark values. */
+  --danger: #c0392b;
+  --danger-strong: #962a1f;
+  --warn: #8a6d1a;
+  --warn-bg: #f3ead2;
   --code-bg: #16161a;
   --code-fg: #e6e6ea;
   --shadow-sm: 0 1px 2px rgba(19, 19, 22, 0.04);
@@ -51,6 +58,12 @@
   --accent-strong: #6fb6bc;
   --accent-tint: rgba(77, 150, 156, 0.16);
   --accent-tint-2: rgba(47, 182, 192, 0.07);
+
+  /* Semantic status tokens — brighter red + warmer amber so they read on #101012. */
+  --danger: #e2685a;
+  --danger-strong: #ef8275;
+  --warn: #d9b455;
+  --warn-bg: #3a3320;
   --code-bg: #1b1b20;
   --code-fg: #e6e6ea;
   --shadow-md: 0 6px 24px -8px rgba(0, 0, 0, 0.5);
@@ -410,6 +423,22 @@ p { margin: 1rem 0; }
 .nav-items a.muted:hover { color: var(--muted); }
 .nav-soon { color: var(--faint); font-size: 0.85rem; padding: 0.1rem 0 0.2rem 0.85rem; }
 
+/* Category guide rows carry a small level marker (B / I / A). The link becomes a
+   flex row so the title keeps its ellipsis while the marker sits flush-right. */
+.nav-items a.nav-lvl-row { display: flex; align-items: center; gap: 0.5rem; }
+.nav-lvl-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lvl {
+  flex: none; margin-left: auto;
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 500;
+  letter-spacing: 0.02em; line-height: 1;
+  color: var(--accent);
+  border: 1px solid currentColor; border-radius: 4px;
+  padding: 2px 4px; opacity: 0.75;
+}
+.lvl.mid { color: #c79a2a; }
+.lvl.adv { color: #b4533a; }
+.nav-items a:hover .lvl, .nav-items a.on .lvl { opacity: 1; }
+
 /* scoped per-topic sidebar headings */
 .rail-topic {
   display: flex; align-items: center; gap: 0.5rem;
@@ -671,6 +700,43 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .reader-nav .rn-title { font-family: var(--font-display); font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
 .reader-nav a:hover .rn-title { color: var(--accent); }
 
+/* Structured phase footer (.phasenav): prev / overview / next cards built from
+   guidePhases. When present we hide the author-written nav line at the end of
+   the Markdown — reliably the final <hr> + the final <p> of the rendered HTML. */
+.reader.has-phasenav > hr:last-of-type,
+.reader.has-phasenav > hr:last-of-type + p { display: none; }
+
+.reader-nav.phasenav { align-items: stretch; gap: 0.75rem; margin-top: 3.5rem; }
+.reader-nav.phasenav a {
+  flex: 1 1 0; max-width: none; min-width: 0;
+  gap: 4px; padding: 0.85rem 1rem;
+  border: 1px solid var(--line); border-radius: 12px;
+  background: var(--raise);
+  text-decoration: none;
+  transition: border-color 0.18s var(--ease), background 0.18s var(--ease), transform 0.18s var(--ease);
+}
+.reader-nav.phasenav a:hover { border-color: var(--accent); background: var(--surface); }
+/* keep the row balanced when a guide edge has no prev or next */
+.reader-nav.phasenav .rn-spacer { flex: 1 1 0; }
+/* the overview is a quieter, narrower middle target */
+.reader-nav.phasenav a.overview { flex: 0 1 auto; align-items: center; text-align: center; }
+.reader-nav.phasenav a.next { margin-left: 0; }
+/* titles must never break mid-phrase, so the trailing arrow can't orphan */
+.reader-nav.phasenav .rn-label { white-space: nowrap; }
+.reader-nav.phasenav .rn-title {
+  font-size: 1rem; line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.reader-nav.phasenav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 560px) {
+  .reader-nav.phasenav { flex-direction: column; }
+  .reader-nav.phasenav a { max-width: none; text-align: left; }
+  .reader-nav.phasenav a.next { text-align: left; }
+  .reader-nav.phasenav a.overview { align-items: flex-start; text-align: left; }
+  .reader-nav.phasenav .rn-spacer { display: none; }
+}
+
 /* -----------------------------------------------------------------------------
    Resume reading — save-your-place bookmark (reader pages)
    --------------------------------------------------------------------------- */
@@ -852,9 +918,16 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .admin-bar {
   display: flex; align-items: center; gap: 1.5rem;
   padding: 0.7rem 1.5rem; border-bottom: 1px solid var(--line);
-  position: sticky; top: 0; background: var(--bg); z-index: 10;
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
 }
-.admin-brand { font-family: var(--font-display); font-weight: 600; color: var(--ink); }
+.admin-brand {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 1.12rem; letter-spacing: -0.025em;
+  color: var(--ink);
+}
 .admin-brand span { color: var(--accent); font-weight: 500; }
 .admin-brand:hover { text-decoration: none; color: var(--ink); }
 .admin-nav { display: flex; gap: 0.4rem; }
@@ -875,18 +948,26 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .admin-btn.sm { padding: 0.3rem 0.6rem; font-size: 0.85rem; }
 .admin-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
 .admin-btn.primary:hover { background: var(--accent-strong); color: #fff; }
-.admin-btn.danger:hover { color: #c0392b; }
+.admin-btn.danger:hover { color: var(--danger); }
 .admin-main { max-width: 1100px; margin: 0 auto; padding: 1.8rem 1.5rem 4rem; }
 .admin-h1 { font-size: 1.6rem; margin: 0 0 1rem; }
 .admin-h2 { font-size: 1.1rem; margin: 1.8rem 0 0.8rem; }
 .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .admin-empty { color: var(--faint); }
 .admin-note { color: var(--accent); font-size: 0.9rem; }
-.admin-err { color: #c0392b; font-size: 0.9rem; }
+.admin-err { color: var(--danger); font-size: 0.9rem; }
 
 .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
-.metric { background: var(--surface); border-radius: 10px; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.2rem; }
-.metric-n { font-family: var(--font-display); font-size: 1.8rem; font-weight: 600; color: var(--ink); }
+.metric {
+  background: var(--raise); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  padding: 1.1rem 1.2rem; display: flex; flex-direction: column; gap: 0.15rem;
+}
+.metric-k {
+  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 0.15rem;
+}
+.metric-n { font-family: var(--font-display); font-size: 1.8rem; font-weight: 600; color: var(--ink); line-height: 1.1; }
 .metric-l { color: var(--muted); font-size: 0.85rem; }
 
 .admin-list { list-style: none; padding: 0; margin: 0.5rem 0; }
@@ -894,8 +975,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 
 .badge { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 6px; }
 .badge.published { background: var(--accent-tint); color: var(--accent-strong); }
-.badge.draft { background: #f3ead2; color: #8a6d1a; }
-:root[data-theme="dark"] .badge.draft { background: #3a3320; color: #d9b455; }
+.badge.draft { background: var(--warn-bg); color: var(--warn); }
 
 .admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
 .admin-table th, .admin-table td { text-align: left; padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--line); font-size: 0.95rem; }
@@ -906,14 +986,14 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .new-topic button { padding: 0.45rem 0.9rem; border: 0; border-radius: 7px; background: var(--accent); color: #fff; cursor: pointer; }
 
 /* login */
-.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-.login-card { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 0.7rem; border: 1px solid var(--line); border-radius: 14px; padding: 1.8rem; background: var(--bg); }
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; background: var(--surface); }
+.login-card { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 0.7rem; border: 1px solid var(--line); border-radius: 14px; padding: 1.8rem; background: var(--raise); box-shadow: var(--shadow-md); }
 .login-card h1 { font-size: 1.5rem; margin: 0; }
 .login-sub { color: var(--muted); font-size: 0.92rem; margin: 0 0 0.4rem; }
-.login-card input { padding: 0.6rem 0.8rem; border: 1px solid var(--line); border-radius: 8px; font: inherit; background: var(--bg); color: var(--ink); }
+.login-card input { padding: 0.6rem 0.8rem; border: 1px solid var(--line); font: inherit; background: var(--bg); color: var(--ink); }
 .login-card button { padding: 0.6rem; border: 0; border-radius: 8px; background: var(--accent); color: #fff; font: inherit; font-weight: 500; cursor: pointer; }
 .login-card button:hover { background: var(--accent-strong); }
-.login-err { color: #c0392b; font-size: 0.88rem; margin: 0; }
+.login-err { color: var(--danger); font-size: 0.88rem; margin: 0; }
 
 /* categories admin */
 .cat-rows { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -924,6 +1004,16 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .cat-icon-input { width: 120px; }
 .cat-blurb-input { flex: 1; min-width: 180px; }
 .cat-slug { color: var(--faint); font-size: 0.8rem; font-family: var(--font-mono); }
+
+/* account — change-password form */
+.acct-form { max-width: 360px; display: flex; flex-direction: column; gap: 0.9rem; }
+.acct-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.acct-field > span { font-size: 0.85rem; color: var(--muted); }
+.acct-field input {
+  padding: 0.55rem 0.7rem; border: 1px solid var(--line); font: inherit;
+  background: var(--bg); color: var(--ink);
+}
+.acct-actions { margin-top: 0.3rem; }
 
 /* editor */
 .ed-top { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; }
@@ -944,7 +1034,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .ed-phase:hover { background: var(--surface); color: var(--ink); }
 .ed-phase.on { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
 .ed-del { background: none; border: 0; color: var(--faint); cursor: pointer; padding: 2px; }
-.ed-del:hover { color: #c0392b; }
+.ed-del:hover { color: var(--danger); }
 .ed-phase-meta { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
 .ed-phase-meta input { flex: 1; padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 7px; font: inherit; background: var(--bg); color: var(--ink); }
 .ed-toolbar { display: flex; align-items: center; gap: 0.3rem; padding: 0.4rem 0; border-bottom: 1px solid var(--line); margin-bottom: 0.6rem; flex-wrap: wrap; }
@@ -957,6 +1047,33 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .ed-preview { min-height: 420px; padding: 0.8rem 1rem; border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; }
 .ed-pick { padding: 2rem 0; }
 @media (max-width: 800px) { .ed-body { grid-template-columns: 1fr; } .ed-split { grid-template-columns: 1fr; } }
+
+/* Admin field layer — ONE consistent radius + focus treatment for every admin
+   text input/select. Mirrors the public .search-field house style: accent border
+   + soft ring on the field, outline suppressed so the global :focus-visible
+   (2px outline + 4px radius) never clashes with the 9px corners. */
+.new-topic input, .new-topic select,
+.login-card input,
+.cat-fields input,
+.acct-field input,
+.ed-meta > input, .ed-meta select,
+.ed-titlefield,
+.ed-phase-meta input,
+.ed-split textarea {
+  border-radius: 9px;
+}
+.new-topic input:focus, .new-topic select:focus,
+.login-card input:focus,
+.cat-fields input:focus,
+.acct-field input:focus,
+.ed-meta > input:focus, .ed-meta select:focus,
+.ed-titlefield:focus,
+.ed-phase-meta input:focus,
+.ed-split textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-tint);
+  outline: none;
+}
 
 /* analytics dashboard */
 .range-pills { display: flex; gap: 4px; }

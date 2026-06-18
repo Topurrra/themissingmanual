@@ -1,19 +1,30 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
 
   // Reading-progress hairline + "save my place" resume-reading, scoped to the
   // .reader article on the current page. Anchors the mark to a content block so
   // it survives font/zoom changes. All DOM is created on mount (client only).
+  // Keyed on phase identity by the page, so this re-mounts on each navigation;
+  // tick() ensures the new {@html phase.html} is in the DOM before we snapshot.
   onMount(() => {
+    // Cleanup state lives out here so the synchronous destroy callback below can
+    // tear down everything init() creates — even though init() runs after tick().
+    // (onMount only registers a destroy callback when it returns one synchronously;
+    // an async onMount returns a Promise and its cleanup would be silently ignored.)
+    let destroyed = false;
+    const cleanup = [];
+    const made = [];
+
+    const init = async () => {
+    await tick();
+    if (destroyed) return;
     const reader = document.querySelector('.reader');
     if (!reader) return;
     reader.style.position = 'relative';
 
     const KEY = 'tmm-place:' + location.pathname;
     const TOP = 80;
-    const cleanup = [];
     const on = (t, ev, fn, o) => { t.addEventListener(ev, fn, o); cleanup.push(() => t.removeEventListener(ev, fn, o)); };
-    const made = [];
     const make = (tag, cls, parent) => { const e = document.createElement(tag); if (cls) e.className = cls; (parent || document.body).appendChild(e); made.push(e); return e; };
 
     const blocks = [...reader.querySelectorAll(':scope > p, :scope > h1, :scope > h2, :scope > h3, :scope > pre, :scope > ul, :scope > ol, :scope > blockquote')];
@@ -27,7 +38,7 @@
     on(window, 'scroll', onScroll, { passive: true });
     onScroll();
 
-    if (!blocks.length) return () => { cleanup.forEach((f) => f()); made.forEach((e) => e.remove()); };
+    if (!blocks.length) return;
 
     const read = () => { try { const v = localStorage.getItem(KEY); return v ? JSON.parse(v) : null; } catch (e) { return null; } };
     const write = (m) => { try { m ? localStorage.setItem(KEY, JSON.stringify(m)) : localStorage.removeItem(KEY); } catch (e) {} };
@@ -96,7 +107,17 @@
       ro.observe(reader);
       cleanup.push(() => ro.disconnect());
     }
+    };
 
-    return () => { cleanup.forEach((f) => f()); made.forEach((e) => e.remove()); };
+    init();
+
+    // Synchronous destroy callback: runs on the {#key} swap, tearing down
+    // listeners/observers and removing the FAB/ribbon/pill so each navigation
+    // leaves exactly one set of tools.
+    return () => {
+      destroyed = true;
+      cleanup.forEach((f) => f());
+      made.forEach((e) => e.remove());
+    };
   });
 </script>

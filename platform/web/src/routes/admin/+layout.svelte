@@ -10,7 +10,8 @@
     { href: '/admin', label: 'Dashboard', icon: 'ti-layout-dashboard' },
     { href: '/admin/content', label: 'Content', icon: 'ti-files' },
     { href: '/admin/categories', label: 'Categories', icon: 'ti-category' },
-    { href: '/admin/analytics', label: 'Analytics', icon: 'ti-chart-bar' }
+    { href: '/admin/analytics', label: 'Analytics', icon: 'ti-chart-bar' },
+    { href: '/admin/account', label: 'Account', icon: 'ti-user' }
   ];
   function active(href) {
     return href === '/admin' ? path === '/admin' : path.startsWith(href);

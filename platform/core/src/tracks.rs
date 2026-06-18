@@ -63,7 +63,7 @@ fn opt(value: &str, label: &str, guide: Option<&str>) -> ChoiceOption {
 /// The global choice-dimension registry. An option maps to a guide slug only once that guide exists.
 pub fn dimension(id: &str) -> Option<ChoiceDimension> {
     let (label, options) = match id {
-        "version-control" => ("Version control", vec![opt("git", "Git", Some("git-explained-like-a-human"))]),
+        "version-control" => ("Version control", vec![opt("git", "Git", Some("git-from-zero"))]),
         "language" => ("Language", vec![opt("go", "Go", None), opt("rust", "Rust", None), opt("python", "Python", None), opt("node", "Node.js", None)]),
         "database" => ("Database", vec![opt("postgresql", "PostgreSQL", None), opt("mysql", "MySQL", None), opt("mongodb", "MongoDB", None), opt("sqlite", "SQLite", None)]),
         "api-style" => ("API style", vec![opt("rest", "REST", None), opt("graphql", "GraphQL", None), opt("grpc", "gRPC", None)]),
@@ -81,7 +81,7 @@ const TRACKS: &[TrackDef] = &[
         blurb: "From version control to a deployed, tested service — the path a backend dev actually walks.",
         choices: &["language", "database", "api-style", "deployment", "testing"],
         steps: &[
-            StepDef { id: "vcs", title: "Version control", category: "version-control", choice: None, guide_slug: Some("git-explained-like-a-human"), note: None },
+            StepDef { id: "vcs", title: "Version control", category: "version-control", choice: None, guide_slug: Some("git-from-zero"), note: None },
             StepDef { id: "lang", title: "Your language", category: "programming-languages", choice: Some("language"), guide_slug: None, note: None },
             StepDef { id: "db", title: "Your database", category: "databases", choice: Some("database"), guide_slug: None, note: None },
             StepDef { id: "api", title: "API style", category: "architecture", choice: Some("api-style"), guide_slug: None, note: None },
@@ -95,7 +95,7 @@ const TRACKS: &[TrackDef] = &[
         blurb: "Ship and run other people's code: containers, pipelines, and keeping the lights on.",
         choices: &["deployment"],
         steps: &[
-            StepDef { id: "vcs", title: "Version control", category: "version-control", choice: None, guide_slug: Some("git-explained-like-a-human"), note: None },
+            StepDef { id: "vcs", title: "Version control", category: "version-control", choice: None, guide_slug: Some("git-from-zero"), note: None },
             StepDef { id: "deploy", title: "Containers & deployment", category: "devops", choice: Some("deployment"), guide_slug: None, note: None },
             StepDef { id: "cicd", title: "CI/CD pipelines", category: "devops", choice: None, guide_slug: None, note: Some("Automate build, test, and deploy.") },
             StepDef { id: "obs", title: "Observability", category: "performance", choice: None, guide_slug: None, note: Some("Logs, metrics, and traces for when it breaks.") },
@@ -185,7 +185,7 @@ mod tests {
     #[test]
     fn backend_track_resolves_git_and_marks_rest_coming_soon() {
         let s = Store::open_in_memory().unwrap();
-        s.upsert_guide("git-explained-like-a-human", "Git", "x", "version-control", "beginner").unwrap();
+        s.upsert_guide("git-from-zero", "Git", "x", "version-control", "beginner").unwrap();
         let mut choices = HashMap::new();
         choices.insert("language".to_string(), "go".to_string());
         let road = resolve_roadmap("backend-developer", &choices, &s).unwrap().unwrap();

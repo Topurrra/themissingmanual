@@ -201,13 +201,13 @@
         <input bind:value={current.summary} placeholder="Phase summary" />
       </div>
       <div class="ed-toolbar">
-        <button on:click={() => surround('**')} title="Bold"><i class="ti ti-bold" aria-hidden="true"></i></button>
-        <button on:click={() => surround('*')} title="Italic"><i class="ti ti-italic" aria-hidden="true"></i></button>
-        <button on:click={() => insert('\n## ')} title="Heading"><i class="ti ti-heading" aria-hidden="true"></i></button>
-        <button on:click={() => surround('`')} title="Inline code"><i class="ti ti-code" aria-hidden="true"></i></button>
-        <button on:click={() => insert('\n```\n\n```\n')} title="Code block"><i class="ti ti-code-dots" aria-hidden="true"></i></button>
-        <button on:click={() => insert('\n- ')} title="List"><i class="ti ti-list" aria-hidden="true"></i></button>
-        <button on:click={() => surround('[', '](url)')} title="Link"><i class="ti ti-link" aria-hidden="true"></i></button>
+        <button on:click={() => surround('**')} title="Bold" aria-label="Bold"><i class="ti ti-bold" aria-hidden="true"></i></button>
+        <button on:click={() => surround('*')} title="Italic" aria-label="Italic"><i class="ti ti-italic" aria-hidden="true"></i></button>
+        <button on:click={() => insert('\n## ')} title="Heading" aria-label="Heading"><i class="ti ti-heading" aria-hidden="true"></i></button>
+        <button on:click={() => surround('`')} title="Inline code" aria-label="Inline code"><i class="ti ti-code" aria-hidden="true"></i></button>
+        <button on:click={() => insert('\n```\n\n```\n')} title="Code block" aria-label="Code block"><i class="ti ti-code-dots" aria-hidden="true"></i></button>
+        <button on:click={() => insert('\n- ')} title="List" aria-label="List"><i class="ti ti-list" aria-hidden="true"></i></button>
+        <button on:click={() => surround('[', '](url)')} title="Link" aria-label="Link"><i class="ti ti-link" aria-hidden="true"></i></button>
         <span class="ed-tool-hint">drop or paste an image to upload</span>
         <span class="ed-msg">{phaseMsg}</span>
         <button class="admin-btn sm primary" on:click={savePhase}>Save phase</button>

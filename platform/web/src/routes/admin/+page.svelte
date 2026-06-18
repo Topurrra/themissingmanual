@@ -7,9 +7,9 @@
 
 <h1 class="admin-h1">Dashboard</h1>
 <div class="metrics">
-  <div class="metric"><span class="metric-n">{published}</span><span class="metric-l">Published</span></div>
-  <div class="metric"><span class="metric-n">{drafts}</span><span class="metric-l">Drafts</span></div>
-  <div class="metric"><span class="metric-n">{categoryCount}</span><span class="metric-l">Categories</span></div>
+  <div class="metric"><span class="metric-k">Live</span><span class="metric-n">{published}</span><span class="metric-l">Published</span></div>
+  <div class="metric"><span class="metric-k">In progress</span><span class="metric-n">{drafts}</span><span class="metric-l">Drafts</span></div>
+  <div class="metric"><span class="metric-k">Topics</span><span class="metric-n">{categoryCount}</span><span class="metric-l">Categories</span></div>
 </div>
 
 <div class="admin-head">

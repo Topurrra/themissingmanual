@@ -17,7 +17,7 @@
     { title: 'Home', type: 'Page', icon: 'ti-home', url: '/' },
     { title: 'About', type: 'Page', icon: 'ti-info-circle', url: '/about' },
     { title: 'Contribute', type: 'Page', icon: 'ti-pencil', url: '/contribute' },
-    { title: 'Subscribe via RSS', type: 'Page', icon: 'ti-rss', url: '/rss' }
+    { title: 'Subscribe via RSS', type: 'Page', icon: 'ti-rss', url: '/rss.xml', external: true }
   ];
 
   function matches(text, query) {
@@ -86,7 +86,10 @@
     if (!it) return;
     if (it.soon) { close(); return; }
     close();
-    goto(it.url);
+    // External targets (e.g. the /rss.xml feed endpoint) are server responses,
+    // not in-app routes — goto() can't handle them, so do a real navigation.
+    if (it.external) window.location.href = it.url;
+    else goto(it.url);
   }
 
   function onKey(e) {
