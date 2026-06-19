@@ -18,3 +18,4 @@ platform/web/.svelte-kit/
 platform/web/build/
 .gstack/
 data/
+.env
