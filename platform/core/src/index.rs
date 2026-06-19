@@ -251,18 +251,25 @@ impl SearchIndex {
         let mut out: Vec<String> = Vec::new();
         for word in query.split_whitespace() {
             let w = word.to_lowercase();
-            if w.chars().count() < 4 || vocab.contains(&w) {
+            if w.chars().count() < 4 || vocab.contains_key(&w) {
                 out.push(word.to_string());
                 continue;
             }
             let max = if w.chars().count() >= 7 { 2 } else { 1 };
+            // Within the edit-distance budget, prefer the smallest distance, then the most
+            // frequent term, then lexicographic order — so ties are deterministic regardless of
+            // map iteration order (the bug that let a growing index land "mrge" on "urge").
             let best = vocab
                 .iter()
-                .map(|t| (levenshtein(&w, t), t))
-                .filter(|&(d, _)| d <= max)
-                .min_by_key(|&(d, _)| d);
+                .map(|(t, &freq)| (levenshtein(&w, t), freq, t))
+                .filter(|&(d, _, _)| d <= max)
+                .min_by(|a, b| {
+                    a.0.cmp(&b.0)
+                        .then_with(|| b.1.cmp(&a.1))
+                        .then_with(|| a.2.cmp(b.2))
+                });
             match best {
-                Some((_, t)) => {
+                Some((_, _, t)) => {
                     changed = true;
                     out.push(t.clone());
                 }
@@ -277,17 +284,18 @@ impl SearchIndex {
         }
     }
 
-    /// All indexed terms across title + body (small corpus; only used on the thin-results path).
-    fn vocab(&self, searcher: &tantivy::Searcher) -> std::collections::HashSet<String> {
-        let mut v = std::collections::HashSet::new();
+    /// All indexed terms (over the un-stemmed `raw` field) with their document frequency,
+    /// summed across segments. Frequency is the tie-breaker for "did you mean": among
+    /// equally-close candidates, the word that actually appears more in the corpus wins
+    /// ("mrge" -> "merge", not the rarer "urge"). Only used on the thin-results path.
+    fn vocab(&self, searcher: &tantivy::Searcher) -> std::collections::HashMap<String, u64> {
+        let mut v: std::collections::HashMap<String, u64> = std::collections::HashMap::new();
         for seg in searcher.segment_readers() {
-            for field in [self.fields.raw] {
-                if let Ok(inv) = seg.inverted_index(field) {
-                    if let Ok(mut stream) = inv.terms().stream() {
-                        while stream.advance() {
-                            if let Ok(s) = std::str::from_utf8(stream.key()) {
-                                v.insert(s.to_string());
-                            }
+            if let Ok(inv) = seg.inverted_index(self.fields.raw) {
+                if let Ok(mut stream) = inv.terms().stream() {
+                    while stream.advance() {
+                        if let Ok(s) = std::str::from_utf8(stream.key()) {
+                            *v.entry(s.to_string()).or_insert(0) += stream.value().doc_freq as u64;
                         }
                     }
                 }
@@ -430,5 +438,22 @@ mod tests {
         // A clear misspelling with no exact term -> "did you mean" should offer the real word.
         let r = idx.search("rebasng", 10).unwrap();
         assert!(r.suggestion.is_some(), "a misspelling should produce a suggestion");
+    }
+
+    #[test]
+    fn suggestion_prefers_the_more_common_word() {
+        // "mrge" is edit-distance 1 from both "merge" and "urge"; the word that's common in the
+        // corpus must win the tie (regression: a growing index used to surface the rarer "urge").
+        let idx = idx_with(&[
+            phase(1, "Merging branches", "how to merge a branch", &["git"]),
+            phase(2, "More merging", "you merge again then merge once more", &["git"]),
+            phase(3, "An urge", "a sudden urge appears", &["misc"]),
+        ]);
+        let r = idx.search("mrge", 10).unwrap();
+        assert_eq!(
+            r.suggestion.as_deref(),
+            Some("merge"),
+            "common word wins the tie, not 'urge'"
+        );
     }
 }
