@@ -20,12 +20,12 @@ Goal: let an admin run the whole platform from `/admin`. Status legend: **TODO**
 | Bulk actions (publish/unpublish/delete/recategorize/difficulty) | ★ ⚙️⬜ | DONE |
 | Filter + sort the content table (status/category/difficulty/updated) | ★ ⬜ | DONE |
 | Draft → Review → Published workflow + scheduled publish | ⚙️⬜ | TODO |
-| Drag-to-reorder guides in a category & phases in a guide (`order:`) | ⚙️⬜ | BACKEND ✅ (guides + phases) — ⬜ FE |
-| Edit history / versioning + diff + revert | ⚙️⬜ | BACKEND ✅ — ⬜ FE (diff view) |
+| Drag-to-reorder guides in a category & phases in a guide (`order:`) | ⚙️⬜ | DONE (guides) — phases FE TODO |
+| Edit history / versioning + diff + revert | ⚙️⬜ | DONE |
 | Editor helpers: insert Mermaid / runnable block; "make fence runnable" toggle | ⬜ | TODO |
 | Image / asset library (browse, reuse, delete uploads) | ⚙️⬜ | TODO |
 | Unsaved-changes guard + autosave in the editor | ⬜ | TODO |
-| Broken-link & orphaned-asset checker | ⚙️⬜ | BACKEND ✅ — ⬜ FE |
+| Broken-link & orphaned-asset checker | ⚙️⬜ | DONE (Content Health panel) |
 
 ## 2. Structure: categories · learning paths · tags
 | Item | Markers | Status |

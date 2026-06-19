@@ -101,13 +101,136 @@
     if (!confirm(`Delete ${n} topic${n === 1 ? '' : 's'}? This cannot be undone.`)) return;
     runBulk('delete');
   }
+
+  // ---- Reorder mode (drag-to-reorder within a category) ----
+  // A separate, grouped-by-category view. The flat filter/sort/paginate/bulk
+  // table only makes sense over the whole set; manual ordering only makes sense
+  // *within* one category, so we toggle to a dedicated view rather than bolting
+  // dragging onto the table.
+  let reorderMode = false;
+  let savingCat = null;        // category slug currently persisting (disables drag)
+  let dragCat = null;          // category slug of the row being dragged
+  let dragIndex = null;        // index of the row being dragged within its group
+  let overIndex = null;        // index currently hovered (for drop indicator)
+
+  // Local working copy of the grouped order. Built from data.guides, which
+  // already arrives in the backend's persisted per-category order.
+  let groups = [];
+  // Rebuild groups from the loaded guides whenever they change (e.g. after a
+  // save + invalidateAll, or when first entering reorder mode).
+  $: groups = buildGroups(guides, categories);
+
+  function buildGroups(allGuides, cats) {
+    const catName = new Map((cats ?? []).map((c) => [c.slug, c.name]));
+    const order = []; // category slugs in first-seen order, seeded by `categories`
+    const byCat = new Map();
+    for (const c of cats ?? []) {
+      order.push(c.slug);
+      byCat.set(c.slug, []);
+    }
+    for (const g of allGuides) {
+      const key = g.category ?? '';
+      if (!byCat.has(key)) {
+        order.push(key);
+        byCat.set(key, []);
+      }
+      byCat.get(key).push(g);
+    }
+    return order
+      .map((slug) => ({
+        slug,
+        name: catName.get(slug) ?? slug ?? 'Uncategorised',
+        items: byCat.get(slug) ?? []
+      }))
+      .filter((grp) => grp.items.length > 0);
+  }
+
+  function onDragStart(catSlug, index, ev) {
+    if (savingCat) return;
+    dragCat = catSlug;
+    dragIndex = index;
+    overIndex = index;
+    // Required for Firefox to initiate a drag; payload is informational only.
+    try {
+      ev.dataTransfer.effectAllowed = 'move';
+      ev.dataTransfer.setData('text/plain', String(index));
+    } catch {}
+  }
+
+  function onDragOver(catSlug, index, ev) {
+    // Only a valid drop target if it's the same category as the dragged row.
+    if (dragCat !== catSlug || savingCat) return;
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = 'move';
+    overIndex = index;
+  }
+
+  function onDragEnd() {
+    dragCat = null;
+    dragIndex = null;
+    overIndex = null;
+  }
+
+  async function onDrop(catSlug, index) {
+    if (dragCat !== catSlug || dragIndex === null || savingCat) {
+      onDragEnd();
+      return;
+    }
+    const from = dragIndex;
+    const to = index;
+    if (from === to) {
+      onDragEnd();
+      return;
+    }
+
+    const grp = groups.find((g) => g.slug === catSlug);
+    if (!grp) {
+      onDragEnd();
+      return;
+    }
+
+    // Reorder a copy of this category's items.
+    const items = grp.items.slice();
+    const [moved] = items.splice(from, 1);
+    items.splice(to, 0, moved);
+
+    // Optimistically reflect the new order in the UI.
+    groups = groups.map((g) => (g.slug === catSlug ? { ...g, items } : g));
+    onDragEnd();
+
+    // Persist just this category's slugs in their new order.
+    msg = '';
+    err = '';
+    savingCat = catSlug;
+    try {
+      await adminPost('/guides/reorder', { order: items.map((g) => g.slug) });
+      await invalidateAll(); // re-run loader → groups rebuild from fresh order
+      msg = `Order saved · ${grp.name}`;
+    } catch (e) {
+      err = e.message;
+      await invalidateAll(); // resync from server on failure
+    } finally {
+      savingCat = null;
+    }
+  }
 </script>
 
 <svelte:head><title>Admin · Content</title></svelte:head>
 
 <div class="admin-head">
   <h1 class="admin-h1">Content</h1>
-  <button class="admin-btn" on:click={() => (showNew = !showNew)}><i class="ti ti-plus" aria-hidden="true"></i> New topic</button>
+  <div class="admin-head-actions">
+    <button
+      class="admin-btn"
+      class:primary={reorderMode}
+      aria-pressed={reorderMode}
+      on:click={() => (reorderMode = !reorderMode)}
+    >
+      <i class="ti ti-arrows-sort" aria-hidden="true"></i>
+      {reorderMode ? 'Done reordering' : 'Reorder'}
+    </button>
+    <button class="admin-btn" on:click={() => (showNew = !showNew)}><i class="ti ti-plus" aria-hidden="true"></i> New topic</button>
+  </div>
 </div>
 
 {#if showNew}
@@ -127,6 +250,7 @@
   {#if form?.error}<p class="admin-err">{form.error}</p>{/if}
 {/if}
 
+{#if !reorderMode}
 <!-- Filter / sort / search bar -->
 <div class="admin-filters" role="search">
   <label class="admin-field">
@@ -165,10 +289,12 @@
     <input type="search" bind:value={q} placeholder="Filter by title…" />
   </label>
 </div>
+{/if}
 
 {#if msg}<p class="admin-note" aria-live="polite">{msg}</p>{/if}
 {#if err}<p class="admin-err" aria-live="assertive">{err}</p>{/if}
 
+{#if !reorderMode}
 <!-- Bulk action bar -->
 {#if selectedCount > 0}
   <div class="admin-bulk" aria-live="polite">
@@ -243,3 +369,112 @@
     </button>
   </nav>
 {/if}
+{/if}
+
+{#if reorderMode}
+<!-- Reorder mode: grouped-by-category, drag rows within a category to reorder -->
+<p class="admin-reorder-hint">Drag rows by the handle to set the order within a category. Changes save automatically.</p>
+{#each groups as grp (grp.slug)}
+  <section class="admin-reorder-group" aria-labelledby={`reorder-cat-${grp.slug}`}>
+    <h2 class="admin-h2 admin-reorder-cat" id={`reorder-cat-${grp.slug}`}>
+      {grp.name}
+      {#if savingCat === grp.slug}<span class="admin-reorder-saving">Saving…</span>{/if}
+    </h2>
+    <ul class="admin-reorder-list" class:is-saving={savingCat === grp.slug}>
+      {#each grp.items as g, i (g.slug)}
+        <li
+          class="admin-reorder-row"
+          class:is-dragging={dragCat === grp.slug && dragIndex === i}
+          class:is-over={dragCat === grp.slug && overIndex === i && dragIndex !== i}
+          title={g.title}
+          draggable={savingCat ? 'false' : 'true'}
+          on:dragstart={(e) => onDragStart(grp.slug, i, e)}
+          on:dragover={(e) => onDragOver(grp.slug, i, e)}
+          on:drop|preventDefault={() => onDrop(grp.slug, i)}
+          on:dragend={onDragEnd}
+        >
+          <span class="admin-reorder-handle" aria-label={`Drag to reorder ${g.title}`}>
+            <i class="ti ti-grip-vertical" aria-hidden="true"></i>
+          </span>
+          <span class="admin-reorder-title">{g.title}</span>
+          <span class={`badge ${g.status}`}>{g.status}</span>
+        </li>
+      {/each}
+    </ul>
+  </section>
+{:else}
+  <p class="admin-empty">No topics to reorder yet.</p>
+{/each}
+{/if}
+
+<style>
+  .admin-head-actions { display: flex; align-items: center; gap: 0.5rem; }
+
+  .admin-reorder-hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 1.2rem;
+  }
+  .admin-reorder-group { margin-bottom: 1.6rem; }
+  .admin-reorder-cat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .admin-reorder-saving {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+
+  .admin-reorder-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .admin-reorder-list.is-saving { opacity: 0.6; pointer-events: none; }
+
+  .admin-reorder-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--raise);
+    transition: background 0.12s var(--ease), box-shadow 0.12s var(--ease);
+  }
+  .admin-reorder-row:last-child { border-bottom: 0; }
+  .admin-reorder-row:hover { background: var(--surface); }
+  .admin-reorder-row.is-dragging { opacity: 0.45; }
+  .admin-reorder-row.is-over {
+    box-shadow: inset 0 2px 0 0 var(--accent);
+    background: var(--accent-tint);
+  }
+
+  .admin-reorder-handle {
+    display: inline-flex;
+    align-items: center;
+    color: var(--faint);
+    cursor: grab;
+    flex: 0 0 auto;
+  }
+  .admin-reorder-handle:active { cursor: grabbing; }
+  .admin-reorder-handle .ti { font-size: 18px; }
+  .admin-reorder-row.is-dragging .admin-reorder-handle { cursor: grabbing; }
+
+  .admin-reorder-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 0.95rem;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>
