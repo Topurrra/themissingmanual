@@ -1,9 +1,11 @@
 <script>
   import { onMount } from 'svelte';
+  import { lofiEnabled, setLofiEnabled, syncLofiEnabled } from '$lib/lofi-store.js';
 
   // Shared appearance control: theme (system/light/dark) + font picker + quick
-  // dark-mode toggle. Persists to localStorage (tmm-theme / tmm-font); app.html
-  // applies the saved values before first paint, this just drives the UI + writes.
+  // dark-mode toggle + lofi-player master switch. Persists to localStorage
+  // (tmm-theme / tmm-font / tmm-lofi-enabled); app.html applies the saved
+  // theme/font before first paint, this just drives the UI + writes.
   const FONTS = [
     { id: 'IBM Plex Sans', name: 'IBM Plex', vibe: 'Technical · default' },
     { id: 'Inter', name: 'Inter', vibe: 'Clean, neutral · ★★★★★' },
@@ -17,6 +19,8 @@
   let theme = 'system';
   let font = 'IBM Plex Sans';
 
+  $: lofiOn = $lofiEnabled;
+
   onMount(() => {
     try {
       const t = localStorage.getItem('tmm-theme');
@@ -24,6 +28,7 @@
       const f = localStorage.getItem('tmm-font');
       if (f) font = f;
     } catch (e) {}
+    syncLofiEnabled();
   });
 
   function applyTheme(next) {
@@ -76,6 +81,11 @@
               <span class="fo-vibe">{f.vibe}</span>
             </button>
           {/each}
+        </div>
+        <p class="settings-label" style="margin-top:0.9rem">Lofi player</p>
+        <div class="seg">
+          <button class:on={lofiOn} on:click={() => setLofiEnabled(true)}>On</button>
+          <button class:on={!lofiOn} on:click={() => setLofiEnabled(false)}>Off</button>
         </div>
       </div>
     {/if}

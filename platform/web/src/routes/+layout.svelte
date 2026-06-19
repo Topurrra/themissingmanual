@@ -8,6 +8,7 @@
   import { sendPageview } from '$lib/beacon.js';
   import CommandPalette from '$lib/CommandPalette.svelte';
   import Appearance from '$lib/Appearance.svelte';
+  import LofiPlayer from '$lib/LofiPlayer.svelte';
 
   export let data;
   $: nav = data?.nav ?? [];
@@ -77,6 +78,7 @@
         </div>
       </form>
 
+      <LofiPlayer />
       <Appearance />
     </div>
   </header>

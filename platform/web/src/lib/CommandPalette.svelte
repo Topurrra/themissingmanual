@@ -7,6 +7,7 @@
   let open = false;
   let q = '';
   let live = []; // guide/phase hits from the search API
+  let suggestion = null; // "did you mean" spelling correction from the API
   let active = 0;
   let inputEl;
   let timer;
@@ -57,13 +58,22 @@
   }, []);
 
   async function runSearch(query) {
-    if (!query.trim()) { live = []; return; }
+    if (!query.trim()) { live = []; suggestion = null; return; }
     try {
       const res = await fetch(`/search.json?q=${encodeURIComponent(query)}`);
-      if (!res.ok) { live = []; return; }
+      if (!res.ok) { live = []; suggestion = null; return; }
       const data = await res.json();
       live = data.hits || [];
-    } catch (e) { live = []; }
+      suggestion = data.suggestion || null;
+    } catch (e) { live = []; suggestion = null; }
+  }
+
+  // Re-run the palette search with the suggested spelling (in-place, no navigation).
+  function applySuggestion() {
+    if (!suggestion) return;
+    q = suggestion;
+    runSearch(q);
+    active = 0;
   }
 
   function onInput() {
@@ -76,6 +86,7 @@
     open = true;
     q = '';
     live = [];
+    suggestion = null;
     active = 0;
     setTimeout(() => inputEl && inputEl.focus(), 10);
   }
@@ -128,6 +139,12 @@
     </div>
 
     <div class="cmdk-list">
+      {#if suggestion}
+        <button type="button" class="cmdk-suggest" on:click={applySuggestion}>
+          <i class="ti ti-arrow-back-up" aria-hidden="true"></i>
+          <span>Did you mean <b>{suggestion}</b>?</span>
+        </button>
+      {/if}
       {#if items.length === 0}
         <div class="cmdk-empty">No matches for “{q}”.</div>
       {:else}
@@ -163,3 +180,25 @@
     </div>
   </div>
 </div>
+
+<style>
+  .cmdk-suggest {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    width: 100%;
+    margin: 0.3rem 0 0.1rem;
+    padding: 0.5rem 0.7rem;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.86rem;
+    text-align: left;
+    cursor: pointer;
+  }
+  .cmdk-suggest:hover { background: var(--accent-tint); }
+  .cmdk-suggest .ti { color: var(--accent); font-size: 16px; flex: none; }
+  .cmdk-suggest b { color: var(--accent); font-weight: 600; }
+</style>
