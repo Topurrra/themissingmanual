@@ -11,6 +11,7 @@
     { href: '/admin/content', label: 'Content', icon: 'ti-files' },
     { href: '/admin/categories', label: 'Categories', icon: 'ti-category' },
     { href: '/admin/analytics', label: 'Analytics', icon: 'ti-chart-bar' },
+    { href: '/admin/feedback', label: 'Feedback', icon: 'ti-message-2' },
     { href: '/admin/account', label: 'Account', icon: 'ti-user' }
   ];
   function active(href) {

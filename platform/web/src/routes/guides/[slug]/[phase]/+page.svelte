@@ -3,6 +3,7 @@
   import ReaderTools from '$lib/ReaderTools.svelte';
   import Mermaid from '$lib/Mermaid.svelte';
   import RunnableCode from '$lib/RunnableCode.svelte';
+  import FeedbackWidget from '$lib/FeedbackWidget.svelte';
   export let data;
   $: phase = data.phase;
 
@@ -68,6 +69,7 @@
 </article>
 
 {#key `${phase.guide_slug}/${phase.phase_no}`}
+  <FeedbackWidget guideSlug={phase.guide_slug} phaseNo={phase.phase_no} />
   <ReaderTools />
   <Mermaid />
   <RunnableCode />

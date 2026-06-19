@@ -8,14 +8,13 @@
 <svelte:head><title>The Missing Manual for Developers</title></svelte:head>
 
 <section class="hero">
-  <span class="eyebrow">Free forever</span>
   <h1>The manual a senior who <span class="accent">actually cares</span> would hand you.</h1>
   <p class="tagline">Real-world knowledge nobody teaches, explained with zero ego. Not “build a todo app,” not a 1000-page reference. Free forever.</p>
   <div class="hero-stats">
     <span><b>{totalGuides}</b> guide{totalGuides === 1 ? '' : 's'}</span>
     <span><b>{categories.length}</b> topics</span>
     <span><b>{tracks?.length ?? 0}</b> learning paths</span>
-    <span><b>$0</b> forever</span>
+    <span><b>Free</b> Forever</span>
   </div>
 </section>
 

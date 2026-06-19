@@ -17,8 +17,8 @@ Goal: let an admin run the whole platform from `/admin`. Status legend: **TODO**
 ## 1. Content & authoring
 | Item | Markers | Status |
 |---|---|---|
-| Bulk actions (publish/unpublish/delete/recategorize/difficulty) | ★ ⚙️⬜ | BACKEND ✅ — ⬜ FE |
-| Filter + sort the content table (status/category/difficulty/updated) | ★ ⬜ | TODO (FE only) |
+| Bulk actions (publish/unpublish/delete/recategorize/difficulty) | ★ ⚙️⬜ | DONE |
+| Filter + sort the content table (status/category/difficulty/updated) | ★ ⬜ | DONE |
 | Draft → Review → Published workflow + scheduled publish | ⚙️⬜ | TODO |
 | Drag-to-reorder guides in a category & phases in a guide (`order:`) | ⚙️⬜ | BACKEND ✅ (guides + phases) — ⬜ FE |
 | Edit history / versioning + diff + revert | ⚙️⬜ | BACKEND ✅ — ⬜ FE (diff view) |
@@ -48,7 +48,7 @@ Goal: let an admin run the whole platform from `/admin`. Status legend: **TODO**
 |---|---|---|
 | Per-guide analytics (views/phase, scroll depth, runnable runs, resume usage) | ⚙️ | TODO |
 | Trends & period-over-period deltas; CSV export | ⚙️⬜ | TODO |
-| Reader feedback — 👍/👎 + note per phase → admin inbox | ★ ⚙️⬜ | BACKEND ✅ — ⬜ FE |
+| Reader feedback — 👍/👎 + note per phase → admin inbox | ★ ⚙️⬜ | DONE |
 | Live "reading now" counter / recent activity feed | ⚙️⬜ | TODO |
 
 ## 5. Site config & branding (Settings hub)

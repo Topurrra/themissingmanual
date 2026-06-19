@@ -176,7 +176,7 @@
     <div class="cmdk-foot">
       <span><span class="k">↑</span><span class="k">↓</span> navigate</span>
       <span><span class="k">↵</span> open</span>
-      <span><span class="k">{isMac ? '⌘' : 'Ctrl'} K</span> toggle</span>
+      <span><span class="k">{isMac ? '⌘' : 'Ctrl+'}K</span> toggle</span>
     </div>
   </div>
 </div>

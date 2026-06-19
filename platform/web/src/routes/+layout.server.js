@@ -1,4 +1,4 @@
-import { listCategories, listGuides, getGuide } from '$lib/api.js';
+import { listCategories, listGuides, getGuide, listTracks, getTrack } from '$lib/api.js';
 
 export async function load({ fetch, url }) {
   const categories = (await listCategories(fetch)) ?? [];
@@ -22,5 +22,20 @@ export async function load({ fetch, url }) {
     }
   }
 
-  return { nav, guidePhases, guideTitle };
+  // On a learning-paths page, fetch the tracks list (sidebar) and — on a specific
+  // track — that track's resolved roadmap (matching the choice-form query so the
+  // sidebar steps mirror the main column).
+  let tracks = null;
+  let activeTrackSlug = null;
+  let trackRoadmap = null;
+  if (url.pathname === '/paths' || url.pathname.startsWith('/paths/')) {
+    tracks = (await listTracks(fetch)) ?? [];
+    activeTrackSlug = (url.pathname.match(/^\/paths\/([^/]+)/) || [])[1] || null;
+    if (activeTrackSlug) {
+      const detail = await getTrack(fetch, activeTrackSlug, url.search);
+      trackRoadmap = detail?.roadmap ?? null;
+    }
+  }
+
+  return { nav, guidePhases, guideTitle, tracks, activeTrackSlug, trackRoadmap };
 }

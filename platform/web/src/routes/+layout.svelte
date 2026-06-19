@@ -2,11 +2,11 @@
   import '../app.css';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
-  import { guardSearchSubmit } from '$lib/search.js';
   import { levelLabel } from '$lib/difficulty.js';
   import { afterNavigate } from '$app/navigation';
   import { sendPageview } from '$lib/beacon.js';
   import CommandPalette from '$lib/CommandPalette.svelte';
+  import HeaderSearch from '$lib/HeaderSearch.svelte';
   import Appearance from '$lib/Appearance.svelte';
   import LofiPlayer from '$lib/LofiPlayer.svelte';
 
@@ -14,7 +14,12 @@
   $: nav = data?.nav ?? [];
   $: guidePhases = data?.guidePhases ?? null;
   $: guideTitle = data?.guideTitle ?? null;
+  $: tracks = data?.tracks ?? null;
+  $: activeTrackSlug = data?.activeTrackSlug ?? null;
+  $: trackRoadmap = data?.trackRoadmap ?? null;
   $: path = $page.url.pathname;
+  // On any learning-paths page (list or a specific track) the sidebar shows paths.
+  $: isPaths = path === '/paths' || path.startsWith('/paths/');
   $: isHome = path === '/';
   $: isAdmin = path.startsWith('/admin');
   // info pages render centred, no sidebar (like home)
@@ -40,25 +45,58 @@
     linkedin: 'https://www.linkedin.com/in/your-handle'
   };
 
+  // Footer sponsors — drop in real URLs when available. Names use exact brand casing;
+  // the per-letter colouring lives in the markup/CSS (`.spon-*`), not here.
+  const SPONSORS = [
+    { name: 'KeepITLocal', url: '#' },
+    { name: 'OMNIS-X', url: '#' }
+  ];
+
   let collapsed = false;
   let palette;
   let kbdLabel = '⌘K';
+  // On narrow screens the sidebar is an off-canvas drawer (not a persistent rail).
+  const MOBILE_MAX = 920;
+  let mobile = false;
+  // The drawer is "open" on mobile when the shell is not collapsed.
+  $: drawerOpen = mobile && !collapsed && !bare && !isHome && !isAdmin;
+
+  function syncMobile() {
+    const m = window.innerWidth <= MOBILE_MAX;
+    if (m && !mobile) collapsed = true; // entering mobile → drawer starts closed
+    mobile = m;
+  }
 
   onMount(() => {
+    mobile = window.innerWidth <= MOBILE_MAX;
     try {
       const s = localStorage.getItem('tmm-sidebar');
-      collapsed = s ? s === 'collapsed' : window.innerWidth < 920;
-    } catch (e) {}
-    if (!/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) kbdLabel = 'Ctrl K';
+      // On mobile always start with the drawer closed regardless of saved desktop state.
+      collapsed = mobile ? true : s ? s === 'collapsed' : false;
+    } catch (e) {
+      collapsed = mobile;
+    }
+    if (!/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) kbdLabel = 'Ctrl+K';
+    window.addEventListener('resize', syncMobile);
+    return () => window.removeEventListener('resize', syncMobile);
   });
 
   afterNavigate(({ to }) => {
+    // Navigating (e.g. tapping a sidebar link) closes the mobile drawer.
+    if (mobile) collapsed = true;
     if (to && !to.url.pathname.startsWith('/admin')) sendPageview(to.url);
   });
 
   function toggleSidebar() {
     collapsed = !collapsed;
-    try { localStorage.setItem('tmm-sidebar', collapsed ? 'collapsed' : 'open'); } catch (e) {}
+    // Don't persist the mobile drawer state — it's transient, not a layout preference.
+    if (!mobile) {
+      try { localStorage.setItem('tmm-sidebar', collapsed ? 'collapsed' : 'open'); } catch (e) {}
+    }
+  }
+
+  function closeDrawer() {
+    if (mobile) collapsed = true;
   }
 </script>
 
@@ -69,14 +107,10 @@
     <div class="bar">
       <a href="/" class="brand">The Missing Manual</a>
 
-      <form method="GET" action="/search" class="header-search" on:submit={guardSearchSubmit}>
-        <div class="search-field">
-          <i class="ti ti-search" aria-hidden="true"></i>
-          <input type="search" name="q" placeholder="Search… e.g. undo a commit" aria-label="Search guides" />
-          <span class="kbd" role="button" tabindex="-1" title="Command palette"
-            on:click|preventDefault|stopPropagation={() => palette && palette.show()}>{kbdLabel}</span>
-        </div>
-      </form>
+      <HeaderSearch>
+        <span class="kbd" role="button" tabindex="-1" title="Command palette"
+          on:click|preventDefault|stopPropagation={() => palette && palette.show()}>{kbdLabel}</span>
+      </HeaderSearch>
 
       <LofiPlayer />
       <Appearance />
@@ -86,6 +120,9 @@
   {#if bare}
     <main class="page-main home"><slot /></main>
   {:else}
+    {#if drawerOpen}
+      <button class="sidebar-backdrop" on:click={closeDrawer} aria-label="Close menu"></button>
+    {/if}
     <div class="shell" class:collapsed>
       <aside class="sidebar">
         <div class="sidebar-head">
@@ -95,7 +132,30 @@
           </button>
         </div>
         <nav class="sidebar-nav">
-          {#if currentGuide && guidePhases}
+          {#if isPaths && tracks}
+            <a class="rail-topic" href="/paths"><i class="ti ti-route" aria-hidden="true"></i> Learning paths</a>
+            <ul class="nav-items">
+              {#each tracks as t}
+                <li>
+                  <a href={`/paths/${t.slug}`} class:on={activeTrackSlug === t.slug}
+                    aria-current={activeTrackSlug === t.slug ? 'page' : undefined}>{t.name}</a>
+                  {#if activeTrackSlug === t.slug && trackRoadmap}
+                    <ul class="nav-substeps">
+                      {#each trackRoadmap as step, i}
+                        <li>
+                          {#if step.guide}
+                            <a href={`/guides/${step.guide.slug}`}>{i + 1}. {step.guide.title}</a>
+                          {:else}
+                            <span class="substep-soon">{i + 1}. {step.title}<span class="soon-cue">soon</span></span>
+                          {/if}
+                        </li>
+                      {/each}
+                    </ul>
+                  {/if}
+                </li>
+              {/each}
+            </ul>
+          {:else if currentGuide && guidePhases}
             {#if activeCat}
               <a class="rail-back" href={`/categories/${activeCat.slug}`}><i class="ti ti-chevron-left" aria-hidden="true"></i> {activeCat.name}</a>
             {/if}
@@ -150,6 +210,16 @@
       <div>
         <div class="co-brand">The Missing Manual</div>
         <div class="co-line">Free forever.</div>
+        <div class="sponsors">
+          <span class="spon-label">Sponsored by</span>
+          <span class="spon-names">
+            <a class="spon-name" href={SPONSORS[0].url} target="_blank" rel="noopener"
+              >Keep<span class="spon-it">IT</span>Local</a>
+            <span class="spon-sep" aria-hidden="true">and</span>
+            <a class="spon-name" href={SPONSORS[1].url} target="_blank" rel="noopener"
+              >OMNIS-<span class="spon-x">X</span></a>
+          </span>
+        </div>
       </div>
       <nav>
         <a href="/about">About</a>

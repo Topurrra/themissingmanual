@@ -1,5 +1,6 @@
 services:
   api:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: platform/server/Dockerfile
@@ -20,6 +21,7 @@ services:
       - ./guides:/app/guides:ro
 
   web:
+    restart: unless-stopped
     build:
       context: platform/web
       dockerfile: Dockerfile
