@@ -2,29 +2,29 @@
 
 **For:** web/designer agents. **From:** backend. **Decision:** in-browser code editor via client-side WASM
 (no server execution — zero security/cost/ops risk, scales infinitely, runs on the user's machine).
-**Status:** design/contract only; nothing built yet.
+**Status:** the backend marker is **SHIPPED** — the ingest now emits `<pre data-runnable="<lang>">`.
+The frontend editor/runtimes are the remaining work.
 
 ## Goal
 Inside a guide, a marked code block becomes an interactive widget: editable code + a **Run** button + an
 output panel, executed entirely in the browser. Ideal for the per-language A→Z guides and the SQL guides.
 
-## The marker contract (how a block is flagged "runnable")
-A normal fenced block stays static. A runnable one needs a signal that survives Markdown → HTML.
-
-**Recommended (backend-emitted attribute — I'll build this side):** the writer flags a block with a
-`runnable` info string:
+## The marker contract (SHIPPED)
+The writer flags a block with a `runnable` info string:
 ````markdown
 ```python runnable
 print("hello")
 ```
 ````
-The ingest (comrak post-process) emits `<pre data-runnable="python"><code>…</code></pre>`. The frontend
-then just queries `[data-runnable]`, reads the language + the code, and mounts the editor. Clean, and the
-detection is a single attribute. **Say the word and I'll add the ingest support** (small backend change).
-
-**Fallback (frontend-only, no backend change):** detect a sentinel first line in the code, e.g.
-`# ::runnable` (Python) / `// ::runnable` (JS), strip it, and use the `language-*` class for the runtime.
-Works today with zero backend change if you want to prototype before I wire the attribute.
+The ingest now renders that as:
+```html
+<pre data-runnable="python"><code class="language-python">…highlighted…</code></pre>
+```
+So the frontend simply `querySelectorAll('[data-runnable]')`, reads the language from the attribute (and the
+code text from the inner `<code>`), and mounts the editor. A plain fence (no `runnable`) stays a static
+`<pre><code class="language-…">`, and ```mermaid is never marked runnable. The language is validated
+(alphanumeric/`+`/`-`) before the attribute is emitted. The messier `# ::runnable` sentinel fallback is no
+longer needed — the real attribute is live.
 
 ## Runtimes (all client-side)
 | Language | Runtime |
@@ -46,5 +46,6 @@ few MB, so never load it on guides that don't need it.
 
 ## Ownership
 - **Frontend:** the editor, the WASM runtimes, the Run widget, lazy-loading, theming.
-- **Backend (me):** the `data-runnable` attribute in the ingest, if you choose the recommended marker.
-- This is independent of search/Mermaid — it can land on its own timeline.
+- **Backend (done):** the `data-runnable="<lang>"` attribute in the ingest (`content-core::render`).
+- This is independent of search/Mermaid — it can land on its own timeline. Live after the next API restart
+  (re-ingest re-renders the guides).

@@ -49,10 +49,15 @@ impl SyntaxHighlighterAdapter for ClassedHighlighter {
 
     fn write_pre_tag(
         &self,
-        output: &mut dyn Write,
+        _output: &mut dyn Write,
         _attributes: HashMap<String, String>,
     ) -> io::Result<()> {
-        output.write_all(b"<pre>")
+        // Intentionally emit nothing here. comrak surfaces a fence's extra info words (e.g. the
+        // `runnable` flag in ```python runnable) only on the *code* attributes (`data-meta`),
+        // which arrive in write_code_tag — after this call. So both the <pre> and <code> tags are
+        // emitted there, where we can stamp data-runnable onto the <pre>. (Our render options set
+        // no <pre> attributes, so nothing is lost by skipping them here.)
+        Ok(())
     }
 
     fn write_code_tag(
@@ -62,9 +67,28 @@ impl SyntaxHighlighterAdapter for ClassedHighlighter {
     ) -> io::Result<()> {
         // Keep the language class (e.g. `language-rust`) so the frontend can still see the
         // language — and so ```mermaid blocks stay detectable for client-side rendering.
-        match attributes.get("class") {
-            Some(class) => write!(output, "<code class=\"{class}\">"),
-            None => output.write_all(b"<code>"),
+        let class = attributes.get("class").map(String::as_str).unwrap_or("");
+        let lang = class.strip_prefix("language-").unwrap_or("");
+
+        // A fence flagged `runnable` (```python runnable) becomes an in-browser runnable block:
+        // the frontend mounts a WASM editor on any <pre data-runnable="<lang>">. comrak puts the
+        // post-language info into `data-meta` (full_info_string is enabled in render_markdown).
+        let runnable = attributes
+            .get("data-meta")
+            .is_some_and(|m| m.split_whitespace().any(|t| t == "runnable"))
+            && !lang.is_empty()
+            && lang.chars().all(|c| c.is_ascii_alphanumeric() || c == '+' || c == '-');
+
+        if runnable {
+            write!(output, "<pre data-runnable=\"{lang}\">")?;
+        } else {
+            output.write_all(b"<pre>")?;
+        }
+
+        if class.is_empty() {
+            output.write_all(b"<code>")
+        } else {
+            write!(output, "<code class=\"{class}\">")
         }
     }
 }
@@ -80,6 +104,8 @@ pub fn render_markdown(md: &str) -> String {
     opts.extension.table = true;
     opts.extension.strikethrough = true;
     opts.extension.autolink = true;
+    // Surface a fence's post-language info (e.g. `runnable`) so the highlighter can act on it.
+    opts.render.full_info_string = true;
 
     let mut plugins = ComrakPlugins::default();
     plugins.render.codefence_syntax_highlighter = Some(highlighter());
@@ -126,5 +152,28 @@ mod tests {
     fn syntax_css_is_non_empty_and_prefixed() {
         let css = syntax_css();
         assert!(css.contains(".tok-"), "expected tok- prefixed classes");
+    }
+
+    #[test]
+    fn runnable_fence_gets_a_data_attribute() {
+        let html = render_markdown("```python runnable\nprint(1)\n```\n");
+        assert!(
+            html.contains("<pre data-runnable=\"python\">"),
+            "runnable fence should be marked for the editor: {html}"
+        );
+        assert!(html.contains("language-python"), "language class preserved: {html}");
+    }
+
+    #[test]
+    fn plain_fence_is_not_runnable() {
+        let html = render_markdown("```python\nprint(1)\n```\n");
+        assert!(!html.contains("data-runnable"), "a plain fence stays static: {html}");
+        assert!(html.contains("<pre><code class=\"language-python\">"), "{html}");
+    }
+
+    #[test]
+    fn mermaid_fence_is_not_runnable() {
+        let html = render_markdown("```mermaid\nflowchart LR\n  A --> B\n```\n");
+        assert!(!html.contains("data-runnable"), "mermaid is not a runnable block: {html}");
     }
 }
