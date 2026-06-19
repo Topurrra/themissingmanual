@@ -210,6 +210,7 @@ actual languages.*
 | 6 | `load-balancers-and-nginx` | Load Balancers & Reverse Proxies (nginx) | intermediate | ✅ |
 | 7 | `cloud-platforms-explained` | Cloud Platforms, Explained (AWS / GCP / Azure) | intermediate | ✅ |
 | 8 | `kubernetes-without-the-hype` | Kubernetes, Explained Without the Hype ⭐ | advanced | ✅ |
+| 9 | `ship-your-side-project` | Ship Your Side Project to the Internet (end-to-end capstone) | intermediate | ✅ |
 
 ### performance ✅ COMPLETE
 *Finding the slow thing, and the tools that show you where it hides. Home of the observability/monitoring tool guides.*
@@ -257,36 +258,24 @@ actual languages.*
 
 ## Learning-path tracks (from `content-core::tracks`)
 
-Tracks string guides into a roadmap. The ⭐ items above are the steps currently showing "coming soon" —
-filling them is the highest-leverage content because it completes a track the wizard already offers.
+Tracks string guides into a roadmap. **All six are wired and resolve to live guides** (the earlier
+taxonomy sync + deferred fixes are done; choice options map to real per-language/api/deployment guides):
 
-**Backend Developer:** version control ✅ → language ⭐ (`programming-languages`) → database ⭐ (`databases`)
-→ API style ⭐ (`apis`) → deployment ⭐ (`infrastructure`) → testing ⭐ (`testing`)
+1. **Backend Developer** — version control → language (py/js/go/rust) → databases → API style
+   (REST/GraphQL/gRPC) → deployment (Docker/K8s/VPS) → testing.
+2. **DevOps Engineer** — version control → Linux for servers → containers & deployment → CI/CD →
+   observability.
+3. **Computer Foundations** — how a computer works → what an OS is → how the internet works → the
+   terminal & shell.
+4. **Observability & On-Call** — reading logs → logs/metrics/traces → dashboards (Prometheus/Grafana) →
+   reading Dynatrace → when prod is down.
+5. **Data Engineer** — what data engineering is → ETL/ELT → warehouses vs lakes → spreadsheets→SQL→pipelines
+   → data quality & observability.
+6. **Ship It** — a server → SSH → Docker → domain & DNS → HTTPS & a proxy → auto-deploy → the
+   `ship-your-side-project` capstone.
 
-**DevOps Engineer:** version control ✅ → containers & deployment ⭐ (`infrastructure`) → CI/CD ⭐ (`devops`)
-→ observability ⭐ (`performance`)
-
-### Proposed new tracks (once their categories have content)
-- **Computer Foundations** (the "not only for developers" on-ramp): How a Computer Works (`hardware`) →
-  What an OS Is (`operating-systems`) → How the Internet Works (`networking`) → The Terminal & Shell.
-- **Observability & On-Call** (the monitoring/tool-reading path): Reading Logs (`debugging`) →
-  Observability: Logs/Metrics/Traces (`performance`) → Reading Dynatrace / Graylog (`performance`) →
-  When Prod Is Down (`debugging`).
-- **Debugging / Troubleshooting:** stack traces → logs → reproducing → debugger → bisect → prod-down
-  (the whole `debugging` ladder).
-
-*(Adding a track = a `TrackDef` in `content-core::tracks`; choice options map to guide slugs once they exist.)*
-
-### ⏸️ DEFERRED — sync `content-core::tracks` to the new taxonomy (don't forget)
-**Paused by request (2026-06-19). Not done yet.** When we return to tracks:
-1. **Fix stale step categories in `tracks.rs`** (they predate the 16-category split):
-   - Backend Developer: `api` step `architecture` → **`apis`**; `test` step `architecture` → **`testing`**;
-     `deploy` step `devops` → **`infrastructure`**.
-   - DevOps Engineer: containers/`deploy` step `devops` → **`infrastructure`** (keep `cicd` on `devops`,
-     `observability` on `performance`).
-2. **Add the two proposed `TrackDef`s:** *Computer Foundations* and *Observability & On-Call* (see above).
-3. Update the `tracks_list_and_detail` / track tests for any new tracks.
-No rush — tracks pay off once their steps resolve to live guides; today most are "coming soon".
+*(Adding a track = a `TrackDef` in `content-core::tracks`; update the track tests' count. Choice
+dimensions live in `dimension()`.)*
 
 ---
 

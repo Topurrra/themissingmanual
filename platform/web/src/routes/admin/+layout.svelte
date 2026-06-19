@@ -18,12 +18,12 @@
     { href: '/admin/feedback', label: 'Feedback', icon: 'ti-message-2' },
     { href: '/admin/health', label: 'Health', icon: 'ti-stethoscope' },
     { href: '/admin/operations', label: 'Operations', icon: 'ti-server-cog' },
-    { href: '/admin/account', label: 'Account', icon: 'ti-user' }
+    { href: '/admin/account', label: 'Account', icon: 'ti-user' },
+    { href: '/admin/settings', label: 'Settings', icon: 'ti ti-settings' }
   ];
   function active(href) {
     return href === '/admin' ? path === '/admin' : path.startsWith(href);
   }
-  $: onSettings = path.startsWith('/admin/settings');
 
   let collapsed = false;
   onMount(() => {
@@ -51,10 +51,6 @@
       </button>
       <a href="/admin" class="admin-brand">The Missing Manual <span>admin</span></a>
       <span class="admin-spacer"></span>
-      <a href="/admin/settings" class="icon-btn adm-gear" class:on={onSettings}
-        aria-label="Settings" title="Settings" aria-current={onSettings ? 'page' : undefined}>
-        <i class="ti ti-settings" aria-hidden="true"></i>
-      </a>
       <LofiPlayer />
       <Appearance />
       <form method="POST" action="/admin/login?/logout" class="admin-logout">

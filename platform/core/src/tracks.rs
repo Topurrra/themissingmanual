@@ -169,6 +169,21 @@ const TRACKS: &[TrackDef] = &[
             StepDef { id: "quality", title: "Data quality & observability", category: "data-analytics", choice: None, guide_slug: Some("data-quality-and-observability"), note: None },
         ],
     },
+    TrackDef {
+        slug: "ship-it",
+        name: "Ship It",
+        blurb: "Take a project that runs on your laptop and put it on the internet — a server, SSH, Docker, a domain, HTTPS, and auto-deploy on merge.",
+        choices: &[],
+        steps: &[
+            StepDef { id: "server", title: "A server to run on", category: "infrastructure", choice: None, guide_slug: Some("what-a-server-is"), note: None },
+            StepDef { id: "ssh", title: "Get in securely (SSH)", category: "infrastructure", choice: None, guide_slug: Some("ssh-and-keys"), note: None },
+            StepDef { id: "docker", title: "Package it (Docker)", category: "infrastructure", choice: None, guide_slug: Some("docker-without-the-magic"), note: None },
+            StepDef { id: "dns", title: "A domain & DNS", category: "networking", choice: None, guide_slug: Some("ip-dns-and-ports"), note: None },
+            StepDef { id: "https", title: "HTTPS & a proxy", category: "security", choice: None, guide_slug: Some("https-and-tls"), note: None },
+            StepDef { id: "cicd", title: "Auto-deploy on merge", category: "devops", choice: None, guide_slug: Some("your-first-pipeline-github-actions"), note: None },
+            StepDef { id: "capstone", title: "Ship it, end to end", category: "infrastructure", choice: None, guide_slug: Some("ship-your-side-project"), note: None },
+        ],
+    },
 ];
 
 fn track_to_summary(t: &TrackDef) -> TrackSummary {
@@ -295,6 +310,17 @@ mod tests {
         assert_eq!(road.len(), 4);
         assert!(road.iter().all(|st| !st.coming_soon), "every foundations step is a live guide");
         assert!(list_tracks().iter().any(|t| t.slug == "computer-foundations"));
-        assert_eq!(list_tracks().len(), 5, "two original + three new tracks");
+        assert_eq!(list_tracks().len(), 6, "backend, devops, foundations, observability, data, ship-it");
+    }
+
+    #[test]
+    fn ship_it_track_is_fully_live() {
+        let s = Store::open_in_memory().unwrap();
+        for slug in ["what-a-server-is", "ssh-and-keys", "docker-without-the-magic", "ip-dns-and-ports", "https-and-tls", "your-first-pipeline-github-actions", "ship-your-side-project"] {
+            s.upsert_guide(slug, slug, "x", "infrastructure", "intermediate").unwrap();
+        }
+        let road = resolve_roadmap("ship-it", &HashMap::new(), &s).unwrap().unwrap();
+        assert_eq!(road.len(), 7);
+        assert!(road.iter().all(|st| !st.coming_soon), "every Ship It step resolves to a live guide");
     }
 }
