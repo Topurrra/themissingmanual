@@ -20,7 +20,7 @@
   </div>
 </section>
 
-{#if tracks && tracks.length}
+<!-- {#if tracks && tracks.length}
   <div class="section-head">
     <h2 class="section-eyebrow">Learning paths</h2>
     <a class="section-link" href="/paths">See all paths →</a>
@@ -35,7 +35,7 @@
       </a>
     {/each}
   </div>
-{/if}
+{/if} -->
 
 <h2 class="section-eyebrow">Browse by topic</h2>
 <div class="cat-grid">
