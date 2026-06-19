@@ -86,21 +86,20 @@ software, a *bulkhead* means giving each dependency (or class of work) its **own
 resources — connections, threads, whatever's finite — so that one dependency saturating its pool can't
 starve the others.
 
+*One shared pool — a hang anywhere starves everything:*
 ```mermaid
-flowchart TB
-  subgraph NoBulk["No bulkheads — one shared pool"]
-    direction TB
-    Recs1[recs] --> Shared["shared pool"]
-    Av1["avatars (hangs)"] --> Shared
-    Co1[checkout] --> Shared
-    Shared --> Starve["avatars fills the pool → recs AND checkout starve too"]
-  end
-  subgraph Bulk["Bulkheads — isolated pools"]
-    direction TB
-    Recs2[recs] --> PR[recs pool]
-    Av2["avatars (hangs)"] --> PA["avatars pool (fills ONLY this)"]
-    Co2[checkout] --> PC[checkout pool]
-  end
+flowchart LR
+  Recs[recs] --> Pool[shared pool]
+  Av["avatars (hang)"] --> Pool
+  Co[checkout] --> Pool
+  Pool --> Starve[fills → all starve]
+```
+*Bulkheads — each gets its own pool, so a hang is contained:*
+```mermaid
+flowchart LR
+  Av2["avatars (hang)"] --> PA[avatars pool]
+  Recs2[recs] --> PR[recs pool]
+  Co2[checkout] --> PC[checkout pool]
 ```
 
 **What it does in real life.** Give the avatar calls, say, their own small connection pool. When avatars

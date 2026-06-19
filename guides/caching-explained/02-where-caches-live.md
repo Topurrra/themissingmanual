@@ -21,13 +21,7 @@ Here's the whole journey, from the user's screen to the source of truth, with th
 
 ```mermaid
 flowchart LR
-  User([USER])
-  Browser["Browser cache<br/>on the device"]
-  CDN["CDN (edge)<br/>near the user"]
-  App["App server<br/>does the real work"]
-  AppCache["App cache (Redis / mem)<br/>remembers expensive answers"]
-  DB["Database (+ its own caches)<br/>the source of truth"]
-  User --> Browser --> CDN --> App --> AppCache --> DB
+  User([user]) --> Browser[browser cache] --> CDN[CDN edge] --> App[app server] --> AppCache[app cache] --> DB[(database)]
 ```
 
 A hit at any box turns the request around right there — the boxes to its right never even hear about the request. Closer to the user = faster + cheaper.
@@ -63,20 +57,19 @@ Each box is a place a copy of an answer can live. Let's walk them from the user 
 
 📝 **Terminology.** *Redis* is a fast, in-memory data store frequently used as a shared application cache. When people say "put it in Redis," they usually mean "keep this answer in our shared, fast, in-memory cache."
 
+*In-memory — each server keeps its own copy, so they can disagree:*
 ```mermaid
 flowchart LR
-  subgraph InMem["In-memory (per-process) — fast, but copies can disagree"]
-    direction LR
-    SA[Server A] --- CA[its own copy]
-    SB[Server B] --- CB[its own copy]
-    SC[Server C] --- CC[its own copy]
-  end
-  subgraph Shared["Shared (Redis) — one network hop, but everyone agrees"]
-    direction LR
-    RA[Server A] --> Redis[(Redis: one shared copy)]
-    RB[Server B] --> Redis
-    RC[Server C] --> Redis
-  end
+  SA[Server A] --- CA[own copy]
+  SB[Server B] --- CB[own copy]
+  SC[Server C] --- CC[own copy]
+```
+*Shared (Redis) — one network hop, but every server sees the same copy:*
+```mermaid
+flowchart LR
+  RA[Server A] --> Redis[(shared Redis)]
+  RB[Server B] --> Redis
+  RC[Server C] --> Redis
 ```
 
 **What it does in real life.** This is where you cache the results of heavy computation and slow queries — a rendered dashboard, an expensive aggregation, the answer from a slow third-party API. It targets the *computation* and *slow dependency* costs from Phase 1.

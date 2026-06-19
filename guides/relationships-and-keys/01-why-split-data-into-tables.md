@@ -82,17 +82,12 @@ each order *references* the customer it belongs to instead of copying the custom
 
 ```mermaid
 erDiagram
-  CUSTOMERS ||--o{ ORDERS : "has (customer → id)"
+  CUSTOMERS ||--o{ ORDERS : has
   CUSTOMERS {
     int id PK
-    text name
-    text email
   }
   ORDERS {
-    int id PK
     int customer FK
-    text product
-    numeric amount
   }
 ```
 

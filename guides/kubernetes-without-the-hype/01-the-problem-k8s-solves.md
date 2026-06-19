@@ -91,17 +91,10 @@ they differ, take a step to close the gap.* Then do it again. Forever.
 
 ```mermaid
 flowchart LR
-  Desired["read DESIRED state<br/>(I want 3 running)"]
-  Actual["read ACTUAL state<br/>(2 are running)"]
-  Compare{compare}
-  Act["differ? → act<br/>(start 1 more)"]
-  Match["match? → do nothing"]
-  Desired --> Compare
-  Actual --> Compare
-  Compare --> Act
-  Compare --> Match
-  Act -- look again --> Compare
-  Match -- look again --> Compare
+  Desired[desired: 3] --> Compare{compare}
+  Actual[actual: 2] --> Compare
+  Compare -->|differ| Act[act: start 1]
+  Act -->|look again| Compare
 ```
 
 *What this gives you:* what people call "self-healing" is just this loop doing its boring job. Nobody wrote

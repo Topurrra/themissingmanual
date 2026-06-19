@@ -22,13 +22,9 @@ If you've written any code, you already know this shape:
 
 ```mermaid
 flowchart LR
-  IMG["IMAGE (like a CLASS)<br/>a frozen blueprint<br/>• a filesystem<br/>• the start command<br/>read-only, reusable"]
-  C1["container 1 (like an OBJECT)<br/>live, running · own state"]
-  C2["container 2"]
-  C3["container 3"]
-  IMG -- docker run --> C1
-  IMG -- docker run --> C2
-  IMG -- docker run --> C3
+  IMG["Image<br/>(class)"] -->|docker run| C1["container 1"]
+  IMG -->|docker run| C2["container 2"]
+  IMG -->|docker run| C3["container 3"]
 ```
 
 *One image → many containers: run it five times, you get five independent containers.*
@@ -76,24 +72,15 @@ reason Docker took over. It comes down to one thing — **the kernel**.
 > hardware and shares it among programs. If that's fuzzy, the
 > [What an Operating System Is](/guides/what-an-operating-system-is) guide explains it from scratch.
 
+*Virtual machines — each carries a full guest OS (heavy):*
 ```mermaid
-flowchart TD
-  subgraph VM["VIRTUAL MACHINES — a whole guest OS each (heavy)"]
-    direction TB
-    VApps["App + Libs ×3<br/>each with its own GUEST OS (kernel)"]
-    Hyp["Hypervisor"]
-    VHost["Host OS / kernel"]
-    VHW["Hardware"]
-    VApps --> Hyp --> VHost --> VHW
-  end
-  subgraph CT["CONTAINERS — share ONE host kernel (light)"]
-    direction TB
-    CApps["App + Libs ×3 (no guest OS)"]
-    Eng["Docker Engine"]
-    CHost["Host OS — ONE KERNEL, shared by all containers"]
-    CHW["Hardware"]
-    CApps --> Eng --> CHost --> CHW
-  end
+flowchart LR
+  VApps["app + guest OS ×3"] --> Hyp[hypervisor] --> VHost[host OS] --> VHW[hardware]
+```
+*Containers — share the host's one kernel (light):*
+```mermaid
+flowchart LR
+  CApps["app + libs ×3"] --> Eng[Docker Engine] --> CHost["host OS<br/>one shared kernel"] --> CHW[hardware]
 ```
 
 **The VM way.** A virtual machine emulates a whole computer. On top of your real OS sits a *hypervisor*,

@@ -140,16 +140,6 @@ Here is that relationship as a picture:
 
 ```mermaid
 classDiagram
-  class Animal {
-    +name
-    +speak()
-  }
-  class Dog {
-    +speak()
-  }
-  class Cat {
-    +speak()
-  }
   Animal <|-- Dog
   Animal <|-- Cat
 ```

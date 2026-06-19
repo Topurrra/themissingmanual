@@ -22,19 +22,11 @@ Here's the mental model for the whole phase. You've pushed state off the app ser
 ```mermaid
 flowchart TD
   Users([users]) --> LB[load balancer]
-  LB --> A1["app srv"]
-  LB --> A2["app srv"]
-  LB --> A3["app srv"]
-  A1 --> SS["SESSION STORE (Redis)"]
-  A2 --> SS
-  A3 --> SS
-  A1 --> DB[(DATABASE)]
-  A2 --> DB
-  A3 --> DB
-  Cache["CACHE"] -->|sheds load off| DB
-  A1 -.-> Cache
-  A2 -.-> Cache
-  A3 -.-> Cache
+  LB --> App["app servers ×N<br/>(stateless — clone freely)"]
+  App --> SS[(session store)]
+  App --> DB[(database)]
+  App -.-> Cache[(cache)]
+  Cache -.->|sheds load| DB
 ```
 
 The app servers are STATELESS — clone freely. The session store and database are STATEFUL — the hard parts, shared by every app server.

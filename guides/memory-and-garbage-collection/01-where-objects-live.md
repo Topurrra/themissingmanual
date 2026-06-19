@@ -24,16 +24,14 @@ Before we can talk about cleaning up memory, we have to be honest about where th
 
 ```mermaid
 flowchart LR
-  subgraph Stack["STACK — fast, automatic (pops off on return)"]
-    direction TB
-    G["frame: greet()<br/>name = •<br/>length = 3"]
-    M["frame: main()"]
+  subgraph Stack["STACK (auto)"]
+    G["greet()<br/>name = •"]
+    M["main()"]
   end
-  subgraph Heap["HEAP — flexible (stays until reclaimed)"]
-    direction TB
-    S["'Sam' (the string)"]
-    U["User #4102 record"]
-    L["a 10,000-element list"]
+  subgraph Heap["HEAP (until reclaimed)"]
+    S["'Sam'"]
+    U["User record"]
+    L["big list"]
   end
   G -->|pointer| S
 ```
@@ -70,15 +68,10 @@ Reclaim too early and you get a disaster. Suppose two variables point at the sam
 
 ```mermaid
 flowchart LR
-  subgraph before["before — both point to the same object"]
-    a1["a"] --> obj["heap object"]
-    b1["b"] --> obj
-  end
-  subgraph after["after — freed via a, but b still points here"]
-    a2["a"] --> freed["FREED — reused<br/>for something else"]
-    b2["b"] -->|dangling pointer| freed
-  end
-  before --> after
+  a[a] --> Obj[heap object]
+  b[b] --> Obj
+  Obj -->|freed via a| Freed[freed memory]
+  b -.->|dangling!| Freed
 ```
 
 Now `b` is a **dangling pointer** — it points at memory that's been freed and possibly handed to something else entirely. Reading through `b` gives you garbage; writing through it corrupts another part of your program. This is the famous **use-after-free** bug, and it's both nasty to debug and a serious security hole.

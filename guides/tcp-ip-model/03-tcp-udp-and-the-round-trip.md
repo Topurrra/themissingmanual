@@ -25,10 +25,10 @@ Then we'll do the satisfying part: take one packet and watch it travel all the w
 sequenceDiagram
   participant You
   participant Server
-  You->>Server: SYN — can we talk? Here's my starting count.
-  Server-->>You: SYN-ACK — yes. Here's mine, and I heard yours.
-  You->>Server: ACK — great, I heard yours too. Go.
-  Note over You,Server: now the real data flows
+  You->>Server: SYN
+  Server-->>You: SYN-ACK
+  You->>Server: ACK
+  Note over You,Server: data flows
 ```
 
 📝 **Terminology.** *SYN* = "synchronize" (let's start, here's my sequence number). *ACK* = "acknowledge" (I received yours). Every chunk TCP sends gets acknowledged; if an ACK doesn't come back in time, TCP assumes the chunk was lost and sends it again. That ACK-and-retransmit loop is the whole reliability machine.
@@ -66,13 +66,8 @@ This is where every idea in the guide comes together. Watch a single request go 
 ### On send: wrapping, top to bottom
 
 ```mermaid
-flowchart TD
-  app["APPLICATION: build GET / HTTP/1.1 (the message)"]
-  transport["TRANSPORT: add TCP header — src/dst ports, sequence # (now a segment)"]
-  internet["INTERNET: add IP header — src/dst IP addresses (now a packet)"]
-  link["LINK: add frame header — next-hop MAC, then onto wire (now a frame)"]
-  wire((out over Wi-Fi to your router, then hop by hop to the server))
-  app -->|wrap| transport -->|wrap| internet -->|wrap| link --> wire
+flowchart LR
+  app[Application] -->|+ HTTP msg| transport[Transport] -->|+ TCP ports| internet[Internet] -->|+ IP addrs| link[Link] -->|+ frame| wire((wire))
 ```
 *What just happened:* Your HTTP request started as plain text at the top and picked up one wrapper per layer on the way down — TCP's ports, IP's addresses, the Link layer's next-hop info — exactly the nested-envelopes picture from [Phase 1](01-why-layers.md). Your original request sits untouched at the center the whole time. The fully-wrapped bundle goes out as a *frame* on the wire.
 
@@ -83,14 +78,8 @@ The packet hops across the internet. Each router along the path strips and rebui
 ### On receive: unwrapping, bottom to top
 
 ```mermaid
-flowchart TD
-  card((frame arrives at the server's network card))
-  link["LINK: strip frame header — this hop's done (back to a packet)"]
-  internet["INTERNET: strip IP header — yes, this IP is me (back to a segment)"]
-  transport["TRANSPORT: strip TCP header — port 443? that's the web server"]
-  app["APPLICATION: hand GET / HTTP/1.1 to the web server (the message, intact)"]
-  reply((server builds a reply and sends it back down ITS stack — same trip in reverse))
-  card --> link -->|unwrap| internet -->|unwrap| transport -->|unwrap| app --> reply
+flowchart LR
+  card((arrives)) --> link[Link] -->|− frame| internet[Internet] -->|− IP| transport[Transport] -->|− TCP| app[Application]
 ```
 *What just happened:* The receiving machine peeled the envelopes in the exact reverse order they were added — Link first, Application last — each layer reading the wrapper meant *for it* and handing the rest up. The server's Application layer receives the identical request your browser wrote. It then builds a response and sends it down its own stack, wrapping it all over again for the trip home. That's the full round trip: down, across, up — and back.
 
@@ -101,33 +90,12 @@ If you've read other material, you've seen a **seven**-layer model called **OSI*
 - The **TCP/IP model (4 layers)** describes how the internet *actually* works. It's the practical one, and it's what this guide taught.
 - The **OSI model (7 layers)** is an older, more academic reference framework. It splits the work into finer slices — its bottom two map to TCP/IP's Link layer, and its top three (Session, Presentation, Application) all fold into TCP/IP's single Application layer.
 
-```mermaid
-flowchart LR
-  subgraph OSI["OSI (7, reference)"]
-    direction TB
-    o7[7 Application]
-    o6[6 Presentation]
-    o5[5 Session]
-    o4[4 Transport]
-    o3[3 Network]
-    o2[2 Data Link]
-    o1[1 Physical]
-  end
-  subgraph TCPIP["TCP/IP (4, real)"]
-    direction TB
-    tApp[Application]
-    tTransport[Transport]
-    tInternet[Internet]
-    tLink[Link]
-  end
-  o7 --> tApp
-  o6 --> tApp
-  o5 --> tApp
-  o4 --> tTransport
-  o3 --> tInternet
-  o2 --> tLink
-  o1 --> tLink
-```
+| OSI (7 layers, reference) | TCP/IP (4 layers, real) |
+|---|---|
+| Application · Presentation · Session | Application |
+| Transport | Transport |
+| Network | Internet |
+| Data Link · Physical | Link |
 
 💡 **Key point.** They describe the *same reality* at different resolutions — OSI just has more lines on the diagram. You'll hear engineers say "that's a layer 7 problem" (meaning the application) or "a layer 3 issue" (meaning IP/routing); those numbers are OSI's. Knowing the mapping above lets you translate on the fly. Don't let the two different counts make you think you misunderstood something — you didn't.
 

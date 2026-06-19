@@ -28,15 +28,12 @@ value from another table**. It's a pointer — `orders.customer_id` holds the `i
 
 ```mermaid
 erDiagram
-  CUSTOMERS ||--o{ ORDERS : "referenced by (id ← customer_id)"
+  CUSTOMERS ||--o{ ORDERS : "referenced by"
   CUSTOMERS {
     int id PK
-    text name
   }
   ORDERS {
-    int id PK
     int customer_id FK
-    text product
   }
 ```
 
@@ -121,19 +118,11 @@ are the connections themselves. Each row holds two foreign keys — one to each 
 
 ```mermaid
 erDiagram
-  STUDENTS ||--o{ ENROLLMENTS : "has"
-  COURSES  ||--o{ ENROLLMENTS : "has"
-  STUDENTS {
-    int id PK
-    text name
-  }
+  STUDENTS ||--o{ ENROLLMENTS : has
+  COURSES ||--o{ ENROLLMENTS : has
   ENROLLMENTS {
     int student_id FK
     int course_id FK
-  }
-  COURSES {
-    int id PK
-    text title
   }
 ```
 

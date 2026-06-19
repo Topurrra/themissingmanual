@@ -101,19 +101,10 @@ identical, which is exactly why it bites people.
 more items have to move.
 
 ```mermaid
-flowchart TD
-  subgraph after["after — insert X at index 1"]
-    direction LR
-    A2[A] --> X2[X] --> B2[B] --> C2[C] --> D2[D]
-  end
-  subgraph before["before"]
-    direction LR
-    A1[A] --> B1[B] --> C1[C] --> D1[D]
-  end
-  B1 -. shifts right .-> B2
-  C1 -. shifts right .-> C2
-  D1 -. shifts right .-> D2
+flowchart LR
+  A[A] --> X["X — inserted at index 1"] --> B[B] --> C[C] --> D[D]
 ```
+*Inserting `X` at index 1 shoves `B`, `C`, `D` each one slot to the right to make room.*
 
 ```python runnable
 letters = ["A", "B", "C", "D"]

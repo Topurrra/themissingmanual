@@ -19,13 +19,9 @@ A quick way to hold them before we dig in:
 
 ```mermaid
 flowchart TD
-  Service["Service — a stable front door + load balancer<br/>(one address, many backends)"]
-  Deployment["Deployment — I want N copies of this app,<br/>here's how to update them safely"]
-  Pod["Pod ×N — the smallest runnable unit:<br/>a wrapper around your container(s)"]
-  Container["your container — the image you built in the Docker guide"]
-  Service -->|routes traffic to| Deployment
-  Deployment -->|creates & maintains| Pod
-  Pod -->|runs| Container
+  Service[Service] -->|routes to| Deployment[Deployment]
+  Deployment -->|creates| Pod["Pod ×N"]
+  Pod -->|runs| Container[your container]
 ```
 
 Notice the direction. You almost never create a Pod yourself. You declare a **Deployment**, it makes the
@@ -204,19 +200,10 @@ refinement of this base — and now you can read it.
 
 ```mermaid
 flowchart TD
-  You["you"]
-  Deployment["Deployment (replicas: 3, template, image)"]
-  Traffic["traffic"]
-  Service["Service 'web'<br/>stable IP, load-balances across the live Pods"]
-  subgraph Pods["Pods — labeled app=web, disposable, replaced on death"]
-    P1["Pod"]
-    P2["Pod"]
-    P3["Pod"]
-  end
-  You -->|apply| Deployment
-  Deployment -->|controller maintains| Pods
-  Traffic --> Service
-  Service -->|selected by label| Pods
+  You[you] -->|apply| Deployment[Deployment]
+  Deployment -->|maintains| Pods["Pods ×N<br/>app=web"]
+  Traffic[traffic] --> Service[Service web]
+  Service -->|by label| Pods
 ```
 
 ## Recap

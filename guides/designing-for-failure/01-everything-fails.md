@@ -83,19 +83,10 @@ Now the recommendations service gets *slow* — not down, just slow, taking seve
 Here's what happens, step by step:
 
 ```mermaid
-flowchart TB
-  subgraph Healthy["Healthy"]
-    direction LR
-    HReq([request]) --> HW["worker (frees in ms)"] --> HRecs[recs]
-    HFree["plenty of free workers for new requests"]
-  end
-  subgraph Slow["Slow dependency, no timeout"]
-    direction TB
-    SReq([request]) --> SW["worker STUCK waiting"] --> SRecs["recs (slow…)"]
-    SW --> Fill["requests keep arriving, each grabs a worker, each gets stuck"]
-    Fill --> AllStuck["ALL workers stuck on a merely-slow dependency"]
-    AllStuck --> Down["new requests: nowhere to run → whole service is 'down'"]
-  end
+flowchart LR
+  Slow[slow dependency] --> Stuck[workers stuck waiting]
+  Stuck --> Fill[worker pool fills]
+  Fill --> Down[no free workers → whole service down]
 ```
 
 *What just happened:* Each slow call holds a worker hostage for seconds instead of milliseconds. Because

@@ -27,9 +27,9 @@ The mental model for this phase: **anything you depend on, you must be able to l
 
 ```mermaid
 flowchart TD
-  clients[clients] --> lb[LOAD BALANCER<br/>one address the VIP<br/>health-checks, forwards to a healthy backend]
+  clients[clients] --> lb[load balancer]
   lb --> a[server A — up]
-  lb --> b[server B — DOWN<br/>health check failed, removed from rotation]
+  lb --> b[server B — down]
   lb --> c[server C — up]
 ```
 
@@ -61,20 +61,16 @@ A load balancer spreads work across many servers — but pause on an uncomfortab
 - **Active-passive (failover):** one component does the work; a standby sits ready and takes over when the primary fails. Simpler, but you're paying for hardware that's idle most of the time, and the failover moment can cause a brief blip.
 - **Active-active:** both components carry traffic at once, so you get extra capacity *and* resilience — but it's harder to set up correctly.
 
+*Single point of failure — one router, one switch; either dying takes everything down:*
 ```mermaid
-flowchart TD
-  subgraph SPOF["Single point of failure"]
-    direction TB
-    net1((internet)) --> r1[1 router<br/>if this dies, EVERYTHING goes down]
-    r1 --> sw1[1 switch]
-  end
-  subgraph RED["Redundant — no single fatal box"]
-    direction TB
-    ispa((ISP-A)) --> ra[router 1]
-    ispb((ISP-B)) --> rb[router 2]
-    ra --> sws[switch 1 + switch 2<br/>cross-linked]
-    rb --> sws
-  end
+flowchart LR
+  net((internet)) --> r[1 router] --> sw[1 switch]
+```
+*Redundant — two of each, so losing one is survivable:*
+```mermaid
+flowchart LR
+  A((ISP-A)) --> r1[router 1] --> sw["switches<br/>cross-linked"]
+  B((ISP-B)) --> r2[router 2] --> sw
 ```
 
 ⚠️ **Gotcha.** Redundancy you've never tested is a guess, not a guarantee. The classic disaster is discovering during a real outage that the "standby" was misconfigured, its software had drifted out of sync, or the failover never actually triggered. Two of everything only helps if you periodically *pull the plug on the primary on purpose* and confirm the secondary takes over cleanly. Untested failover has a way of failing exactly when you need it.
