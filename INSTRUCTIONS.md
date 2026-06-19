@@ -231,6 +231,18 @@ Set these in `docker-compose.yml` (per service) or the shell when running locall
 URL in your browser. It's set to `http://localhost:5173` in `docker-compose.yml`; for a real domain set
 `ORIGIN=https://your-domain`. Recreate web after changing it: `docker compose up -d --force-recreate web`.
 
+**Admin login says the password is wrong** — especially after putting `ADMIN_PASSWORD_HASH` in `.env`.
+Two traps: (1) the argon2 hash is full of `$`, and **Docker Compose interpolates `$word` in `.env`** — it
+silently eats `$argon2id…` and blanks the `$salt`/`$hash` segments (you'll see `"…" variable is not set`
+warnings), so the container gets a mangled hash; (2) `ADMIN_PASSWORD_HASH` only seeds on a **first boot
+with an empty DB**, so once the `manual-data` volume exists it's ignored anyway. Fix — set the password
+straight in the DB (no `.env`, no `$` problem):
+```bash
+docker compose run --rm api server create-admin "your-password"
+```
+Don't keep the hash in `.env`; `create-admin` is the canonical path. (If you must use the env, escape every
+`$` as `$$` **and** start from an empty DB.)
+
 **"Address already in use" on :3000 or :5173.** A stale container or a local server holds the port.
 `docker compose down`, or kill the local process — Windows: `netstat -ano | findstr :3000` then
 `taskkill /F /PID <pid>`.
@@ -329,7 +341,8 @@ and when committing, stage only the files you own.
 
 - `ORIGIN=https://your-domain` (web) and `SITE_URL=https://your-domain` (api).
 - `COOKIE_SECURE=1` (serve over HTTPS).
-- A strong admin password via `create-admin` (not a default).
+- A strong admin password via `create-admin` (not a default). **Do not put the hash in `.env`** — Docker
+  Compose's `$`-interpolation mangles an argon2 hash, and the env only seeds a first-boot empty DB anyway.
 - Keep the API internal (only expose the web service publicly); optionally set `BEACON_KEY` and have the
   web collector send `x-beacon-key`.
 - Back up the `manual-data` volume (it's the whole database).
