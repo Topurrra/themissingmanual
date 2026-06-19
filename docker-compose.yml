@@ -17,6 +17,10 @@ services:
       #   docker compose run --rm api server hash-password "your-password"
       # then export ADMIN_PASSWORD_HASH (e.g. in a .env file beside this compose file).
       ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:-}
+      # Mark the session cookie Secure (HTTPS). Set COOKIE_SECURE=1 in .env behind Cloudflare/HTTPS.
+      COOKIE_SECURE: ${COOKIE_SECURE:-}
+      # Base URL for RSS item links. Set SITE_URL=https://your-domain in .env for production.
+      SITE_URL: ${SITE_URL:-http://localhost:5173}
     volumes:
       - manual-data:/data
       # Live content: drop guide folders in ./guides and the periodic sync picks them up
@@ -39,6 +43,19 @@ services:
       ORIGIN: ${ORIGIN:-http://localhost:5173}
     depends_on:
       - api
+
+  # Cloudflare Tunnel — publishes the site at your domain over HTTPS with NO open ports.
+  # Setup: create a tunnel in Cloudflare Zero Trust, set its Public Hostname to
+  # `http://web:3000`, put the token in .env as CF_TUNNEL_TOKEN, then start with:
+  #     docker compose --profile prod up -d --build
+  # The `prod` profile keeps cloudflared OUT of local dev (where there's no token).
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN:-}
+    depends_on:
+      - web
+    profiles: ["prod"]
 
 volumes:
   manual-data:
