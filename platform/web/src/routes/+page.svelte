@@ -10,7 +10,7 @@
 <section class="hero">
   <!-- <h1>The manual a senior who <span class="accent">actually cares</span> would hand you.</h1>
   <p class="tagline">Real-world knowledge nobody teaches, explained with zero ego. Not “build a todo app,” not a 1000-page reference. Free forever.</p> -->
-  <h1>Learn how things <span class="accent">actually </span>works.</h1>
+  <h1>Learn how things <span class="accent">actually </span> works.</h1>
   <p class="tagline">Clear, practical, and free — forever.</p>
   <div class="hero-stats">
     <span><b>{totalGuides}</b> guide{totalGuides === 1 ? '' : 's'}</span>
