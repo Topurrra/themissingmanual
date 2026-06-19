@@ -54,9 +54,11 @@ export async function load({ fetch, url }) {
   let tracks = null;
   let activeTrackSlug = null;
   let trackRoadmap = null;
-  if (url.pathname === '/paths' || url.pathname.startsWith('/paths/')) {
+  const fromTrack = url.searchParams.get('track');
+  const onPaths = url.pathname === '/paths' || url.pathname.startsWith('/paths/');
+  if (onPaths || fromTrack) {
     tracks = (await listTracks(fetch)) ?? [];
-    activeTrackSlug = (url.pathname.match(/^\/paths\/([^/]+)/) || [])[1] || null;
+    activeTrackSlug = (url.pathname.match(/^\/paths\/([^/]+)/) || [])[1] || fromTrack || null;
     if (activeTrackSlug) {
       const detail = await getTrack(fetch, activeTrackSlug, url.search);
       trackRoadmap = detail?.roadmap ?? null;

@@ -20,6 +20,9 @@
   $: path = $page.url.pathname;
   // On any learning-paths page (list or a specific track) the sidebar shows paths.
   $: isPaths = path === '/paths' || path.startsWith('/paths/');
+  // When a guide is reached from a learning path it carries ?track=<slug>; that
+  // keeps the learning-path sidebar (instead of the topic sidebar) on the guide.
+  $: fromTrack = $page.url.searchParams.get('track');
   $: isHome = path === '/';
   $: isAdmin = path.startsWith('/admin');
   // info pages render centred, no sidebar (like home)
@@ -196,7 +199,7 @@
           </button>
         </div>
         <nav class="sidebar-nav">
-          {#if isPaths && tracks}
+          {#if (isPaths || fromTrack) && tracks}
             <a class="rail-topic" href="/paths"><i class="ti ti-route" aria-hidden="true"></i> Learning paths</a>
             <ul class="nav-items">
               {#each tracks as t}
@@ -208,7 +211,9 @@
                       {#each trackRoadmap as step, i}
                         <li>
                           {#if step.guide}
-                            <a href={`/guides/${step.guide.slug}`}>{i + 1}. {step.guide.title}</a>
+                            <a href={`/guides/${step.guide.slug}?track=${t.slug}`}
+                              class:on={currentGuide === step.guide.slug}
+                              aria-current={currentGuide === step.guide.slug ? 'page' : undefined}>{i + 1}. {step.guide.title}</a>
                           {:else}
                             <span class="substep-soon">{i + 1}. {step.title}<span class="soon-cue">soon</span></span>
                           {/if}
@@ -271,9 +276,21 @@
 
   <footer class="colophon">
     <div class="colophon-inner">
-      <div>
+      <div class="co-main">
         <div class="co-brand">{siteName}</div>
         <div class="co-line">{tagline}</div>
+      </div>
+      <div class="co-right">
+        <nav>
+          <a href="/about">About</a>
+          <a href="/contribute">Contribute</a>
+          <a href="/rss.xml">RSS</a>
+          <span class="co-social">
+            {#each socialLinks as s}
+              <a href={s.url} target="_blank" rel="noopener" aria-label={s.label} title={s.label}><i class={`ti ${s.icon}`}></i></a>
+            {/each}
+          </span>
+        </nav>
         <div class="sponsors">
           <span class="spon-label">Sponsored by</span>
           <span class="spon-names">
@@ -292,16 +309,6 @@
           </span>
         </div>
       </div>
-      <nav>
-        <a href="/about">About</a>
-        <a href="/contribute">Contribute</a>
-        <a href="/rss.xml">RSS</a>
-        <span class="co-social">
-          {#each socialLinks as s}
-            <a href={s.url} target="_blank" rel="noopener" aria-label={s.label} title={s.label}><i class={`ti ${s.icon}`}></i></a>
-          {/each}
-        </span>
-      </nav>
     </div>
   </footer>
 

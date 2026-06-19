@@ -879,10 +879,11 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 }
 .colophon .co-brand { font-family: var(--font-display); font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
 .colophon .co-line { color: var(--faint); font-family: var(--font-mono); font-size: 0.76rem; margin-top: 0.3rem; }
+.co-right { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 1.1rem; }
 
 /* Sponsored-by row. Names keep exact brand casing; per-letter colour spans
    (.spon-it / .spon-x) win over the link colour, so they survive a:hover. */
-.sponsors { margin-top: 0.85rem; }
+.sponsors { margin-top: 0.85rem; text-align: right; }
 .spon-label {
   display: block;
   color: var(--faint);
@@ -910,7 +911,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 @supports not ((background-clip: text) or (-webkit-background-clip: text)) {
   .spon-name .spon-x { color: #ff5722; -webkit-text-fill-color: #ff5722; background: none; }
 }
-.colophon nav { display: flex; gap: 1.4rem; margin-left: auto; flex-wrap: wrap; align-items: center; }
+.colophon nav { display: flex; gap: 1.4rem; flex-wrap: wrap; align-items: center; }
 .colophon nav a { color: var(--muted); font-size: 0.9rem; }
 .colophon nav a:hover { color: var(--accent); }
 .co-social { display: inline-flex; gap: 0.5rem; }
@@ -1000,7 +1001,8 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
   .header-search .kbd { display: none; }
   .page-main.home { padding: 2.2rem 1.3rem 3rem; }
   .colophon-inner { flex-direction: column; }
-  .colophon nav { margin-left: 0; }
+  .co-right { margin-left: 0; align-items: flex-start; }
+  .sponsors { text-align: left; }
 }
 
 /* =============================================================================

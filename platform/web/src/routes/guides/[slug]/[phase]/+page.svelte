@@ -15,6 +15,12 @@
   $: runnableOn = flagOn(siteConfig.flag_runnable);
   $: mermaidOn = flagOn(siteConfig.flag_mermaid);
 
+  // Preserve learning-path context: when the guide was reached from a path it
+  // carries ?track=<slug>; keep it on this guide's own overview/phase links so
+  // the learning-path sidebar persists while moving between phases.
+  $: trackQ = $page.url.searchParams.get('track');
+  $: q = trackQ ? `?track=${trackQ}` : '';
+
   // Build a structured prev / overview / next footer from the guide's phases
   // (loaded by +layout.server.js as $page.data.guidePhases). This replaces the
   // author-written nav line at the end of the Markdown, which is hidden via CSS.
@@ -33,7 +39,7 @@
 <svelte:head><title>{phase.title}</title></svelte:head>
 
 <div class="crumb">
-  <a href={`/guides/${phase.guide_slug}`}>← Back to guide</a>
+  <a href={`/guides/${phase.guide_slug}${q}`}>← Back to guide</a>
   <span>/</span>
   <span>Phase {phase.phase_no}</span>
 </div>
@@ -44,12 +50,12 @@
   {#if hasFooterNav}
     <nav class="reader-nav phasenav" aria-label="Phase navigation">
       {#if prevPhase}
-        <a class="prev" href={`/guides/${slug}/${prevPhase.phase_no}`}>
+        <a class="prev" href={`/guides/${slug}/${prevPhase.phase_no}${q}`}>
           <span class="rn-label">← Previous</span>
           <span class="rn-title">{prevPhase.title}</span>
         </a>
       {:else if prevIsOverview}
-        <a class="prev" href={`/guides/${slug}`}>
+        <a class="prev" href={`/guides/${slug}${q}`}>
           <span class="rn-label">← Overview</span>
           <span class="rn-title">{$page.data.guideTitle ?? 'Guide overview'}</span>
         </a>
@@ -58,14 +64,14 @@
       {/if}
 
       {#if showOverview}
-        <a class="overview" href={`/guides/${slug}`}>
+        <a class="overview" href={`/guides/${slug}${q}`}>
           <span class="rn-label">Guide</span>
           <span class="rn-title">Overview</span>
         </a>
       {/if}
 
       {#if nextPhase}
-        <a class="next" href={`/guides/${slug}/${nextPhase.phase_no}`}>
+        <a class="next" href={`/guides/${slug}/${nextPhase.phase_no}${q}`}>
           <span class="rn-label">Next →</span>
           <span class="rn-title">{nextPhase.title}</span>
         </a>
