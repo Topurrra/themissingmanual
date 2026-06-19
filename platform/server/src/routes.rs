@@ -23,6 +23,7 @@ pub fn app(state: Arc<AppState>) -> Router {
     // Admin content routes — guarded by the require_admin middleware.
     let protected = Router::new()
         .route("/guides", get(admin::list_guides).post(admin::create_guide))
+        .route("/guides/bulk", post(admin::bulk_guides))
         .route("/guides/:slug", get(admin::get_guide).patch(admin::patch_guide).delete(admin::delete_guide))
         .route("/guides/:slug/phases", get(admin::list_phases).post(admin::create_phase))
         .route("/guides/:slug/phases/reorder", post(admin::reorder_phases))
@@ -35,6 +36,10 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/assets", post(admin::upload_asset).layer(DefaultBodyLimit::max(upload_limit)))
         .route("/preview", post(admin::preview))
         .route("/analytics", get(admin::analytics))
+        .route("/settings", get(admin::get_settings).put(admin::put_settings))
+        .route("/feedback", get(admin::list_feedback))
+        .route("/status", get(admin::status))
+        .route("/backlog", get(admin::backlog))
         .route_layer(middleware::from_fn_with_state(state.clone(), auth::require_admin));
     // Auth routes — not behind require_admin (login establishes the session; me/logout self-check).
     let auth_routes = Router::new()
@@ -50,6 +55,8 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/api/search", get(search))
         .route("/api/rss", get(rss))
         .route("/api/events", post(admin::record_event))
+        .route("/api/feedback", post(admin::submit_feedback))
+        .route("/api/site-config", get(admin::site_config))
         .route("/api/categories", get(list_categories))
         .route("/api/categories/:slug", get(category_detail))
         .route("/api/tracks", get(list_tracks_h))

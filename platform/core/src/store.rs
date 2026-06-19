@@ -1,5 +1,5 @@
 use rusqlite::{params, Connection};
-use crate::models::{CategoryRow, GuideSummary, Phase, PhaseRef};
+use crate::models::{CategoryRow, FeedbackRow, GuideSummary, Phase, PhaseRef};
 
 pub struct Store {
     conn: Connection,
@@ -86,7 +86,16 @@ impl Store {
              CREATE TABLE IF NOT EXISTS settings (
                  key TEXT PRIMARY KEY,
                  value TEXT NOT NULL
-             );",
+             );
+             CREATE TABLE IF NOT EXISTS feedback (
+                 ts TEXT NOT NULL DEFAULT (datetime('now')),
+                 guide_slug TEXT NOT NULL,
+                 phase_no INTEGER NOT NULL,
+                 vote TEXT NOT NULL,
+                 note TEXT NOT NULL DEFAULT '',
+                 visitor TEXT NOT NULL DEFAULT ''
+             );
+             CREATE INDEX IF NOT EXISTS idx_feedback_ts ON feedback(ts);",
         )?;
         Ok(Self { conn })
     }
@@ -242,6 +251,24 @@ impl Store {
     pub fn delete_guide_row(&self, slug: &str) -> Result<(), StoreError> {
         self.conn.execute("DELETE FROM phases WHERE guide_slug=?1", params![slug])?;
         self.conn.execute("DELETE FROM guides WHERE slug=?1", params![slug])?;
+        Ok(())
+    }
+
+    /// Set just a guide's category (used by bulk recategorize).
+    pub fn set_guide_category(&self, slug: &str, category: &str) -> Result<(), StoreError> {
+        self.conn.execute(
+            "UPDATE guides SET category=?2, updated_at=datetime('now') WHERE slug=?1",
+            params![slug, category],
+        )?;
+        Ok(())
+    }
+
+    /// Set just a guide's difficulty (used by bulk difficulty change).
+    pub fn set_guide_difficulty(&self, slug: &str, difficulty: &str) -> Result<(), StoreError> {
+        self.conn.execute(
+            "UPDATE guides SET difficulty=?2, updated_at=datetime('now') WHERE slug=?1",
+            params![slug, difficulty],
+        )?;
         Ok(())
     }
 
@@ -411,6 +438,41 @@ impl Store {
         Ok(())
     }
 
+    /// Total size of the SQLite database file in bytes (for the admin status panel).
+    pub fn db_size_bytes(&self) -> Result<i64, StoreError> {
+        let pages: i64 = self.conn.query_row("PRAGMA page_count", [], |r| r.get(0))?;
+        let page_size: i64 = self.conn.query_row("PRAGMA page_size", [], |r| r.get(0))?;
+        Ok(pages * page_size)
+    }
+
+    // ---- reader feedback ----
+
+    /// Record one reader 👍/👎 (with optional note) on a guide phase.
+    pub fn insert_feedback(&self, guide_slug: &str, phase_no: i64, vote: &str, note: &str, visitor: &str) -> Result<(), StoreError> {
+        self.conn.execute(
+            "INSERT INTO feedback (guide_slug, phase_no, vote, note, visitor) VALUES (?1,?2,?3,?4,?5)",
+            params![guide_slug, phase_no, vote, note, visitor],
+        )?;
+        Ok(())
+    }
+
+    /// Most recent feedback entries for the admin inbox (newest first).
+    pub fn list_feedback(&self, limit: i64) -> Result<Vec<FeedbackRow>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT ts, guide_slug, phase_no, vote, note FROM feedback ORDER BY ts DESC LIMIT ?1",
+        )?;
+        let rows = stmt.query_map(params![limit], |r| {
+            Ok(FeedbackRow {
+                ts: r.get(0)?,
+                guide_slug: r.get(1)?,
+                phase_no: r.get(2)?,
+                vote: r.get(3)?,
+                note: r.get(4)?,
+            })
+        })?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
     // ---- admin credential (single admin; the DB is the runtime source of truth) ----
 
     /// The stored argon2 admin password hash, or None if no admin has been created yet.
@@ -571,6 +633,24 @@ mod tests {
         let s = Store::open(&path).unwrap(); // reopen — persistence survives
         assert_eq!(s.guide_status("g").unwrap(), "draft");
         assert!(s.list_categories_rows().unwrap().is_empty()); // table exists, empty until seeded
+    }
+
+    #[test]
+    fn feedback_roundtrip_and_guide_setters() {
+        let s = Store::open_in_memory().unwrap();
+        s.upsert_guide("g", "T", "S", "databases", "beginner").unwrap();
+        s.set_guide_category("g", "apis").unwrap();
+        s.set_guide_difficulty("g", "advanced").unwrap();
+        let g = s.get_guide_any_status("g").unwrap().unwrap();
+        assert_eq!(g.category, "apis");
+        assert_eq!(g.difficulty, "advanced");
+
+        s.insert_feedback("g", 2, "down", "this phase confused me", "v1").unwrap();
+        s.insert_feedback("g", 1, "up", "", "v2").unwrap();
+        let fb = s.list_feedback(10).unwrap();
+        assert_eq!(fb.len(), 2);
+        assert_eq!(fb[0].vote, "up"); // newest first
+        assert!(s.db_size_bytes().unwrap() > 0);
     }
 
     #[test]

@@ -1,5 +1,15 @@
 use serde::{Deserialize, Serialize};
 
+/// One reader-feedback entry (👍/👎 + optional note) for the admin inbox.
+#[derive(Debug, Clone, Serialize)]
+pub struct FeedbackRow {
+    pub ts: String,
+    pub guide_slug: String,
+    pub phase_no: i64,
+    pub vote: String,
+    pub note: String,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct Frontmatter {
     pub title: String,

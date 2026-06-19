@@ -137,6 +137,9 @@ fn post_json_auth(uri: &str, body: &str, cookie: &str) -> Request<Body> {
 fn patch_json_auth(uri: &str, body: &str, cookie: &str) -> Request<Body> {
     Request::builder().method("PATCH").uri(uri).header("content-type", "application/json").header("cookie", cookie).body(Body::from(body.to_string())).unwrap()
 }
+fn put_json_auth(uri: &str, body: &str, cookie: &str) -> Request<Body> {
+    Request::builder().method("PUT").uri(uri).header("content-type", "application/json").header("cookie", cookie).body(Body::from(body.to_string())).unwrap()
+}
 
 async fn login(app: &axum::Router) -> String {
     let r = app.clone().oneshot(post_json("/api/admin/login", r#"{"password":"secret"}"#)).await.unwrap();
@@ -452,6 +455,105 @@ async fn rss_feed_lists_published_guides() {
     let xml = String::from_utf8(bytes.to_vec()).unwrap();
     assert!(xml.contains("<rss version=\"2.0\">"));
     assert!(xml.contains("/guides/git-explained-like-a-human"));
+}
+
+// ===== admin console — first wave (bulk · settings · feedback · status · backlog) =====
+
+#[tokio::test]
+async fn bulk_recategorize_and_guards() {
+    let app = server::app(admin_state());
+    let cookie = login(&app).await;
+
+    // auth required
+    let unauth = app.clone().oneshot(post_json("/api/admin/guides/bulk", r#"{"action":"publish","slugs":["git-from-zero"]}"#)).await.unwrap();
+    assert_eq!(unauth.status(), StatusCode::UNAUTHORIZED);
+
+    // unknown action + missing value → 400
+    let bad = app.clone().oneshot(post_json_auth("/api/admin/guides/bulk", r#"{"action":"frobnicate","slugs":["git-from-zero"]}"#, &cookie)).await.unwrap();
+    assert_eq!(bad.status(), StatusCode::BAD_REQUEST);
+    let noval = app.clone().oneshot(post_json_auth("/api/admin/guides/bulk", r#"{"action":"recategorize","slugs":["git-from-zero"]}"#, &cookie)).await.unwrap();
+    assert_eq!(noval.status(), StatusCode::BAD_REQUEST);
+
+    // recategorize one guide and confirm it stuck
+    let ok = app.clone().oneshot(post_json_auth("/api/admin/guides/bulk", r#"{"action":"recategorize","slugs":["git-from-zero"],"value":"apis"}"#, &cookie)).await.unwrap();
+    assert_eq!(ok.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(ok.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(v["affected"], 1);
+    let g = app.oneshot(get_auth("/api/admin/guides/git-from-zero", &cookie)).await.unwrap();
+    let bytes = axum::body::to_bytes(g.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(v["guide"]["category"], "apis");
+}
+
+#[tokio::test]
+async fn settings_whitelist_and_public_config() {
+    let app = server::app(admin_state());
+    let cookie = login(&app).await;
+
+    // PUT a whitelisted key + an attempt to overwrite the admin hash (must be ignored)
+    let put = app.clone().oneshot(put_json_auth("/api/admin/settings", r#"{"site_name":"TMM","flag_lofi":"1","admin_password_hash":"hacked"}"#, &cookie)).await.unwrap();
+    assert_eq!(put.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(put.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    let updated: Vec<String> = serde_json::from_value(v["updated"].clone()).unwrap();
+    assert!(updated.contains(&"site_name".to_string()));
+    assert!(!updated.contains(&"admin_password_hash".to_string()), "credentials are not editable via settings");
+
+    // public site-config reflects it and never exposes the hash
+    let cfg = app.clone().oneshot(get("/api/site-config")).await.unwrap();
+    assert_eq!(cfg.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(cfg.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(v["site_name"], "TMM");
+    assert!(v.get("admin_password_hash").is_none());
+
+    // the admin password was untouched → original login still works
+    assert_eq!(app.oneshot(post_json("/api/admin/login", r#"{"password":"secret"}"#)).await.unwrap().status(), StatusCode::OK);
+}
+
+#[tokio::test]
+async fn feedback_submit_and_inbox() {
+    let app = server::app(admin_state());
+
+    // bad vote → 400
+    let bad = app.clone().oneshot(post_json("/api/feedback", r#"{"guide_slug":"git-from-zero","phase_no":1,"vote":"meh"}"#)).await.unwrap();
+    assert_eq!(bad.status(), StatusCode::BAD_REQUEST);
+
+    // public submit → 204
+    let ok = app.clone().oneshot(post_json("/api/feedback", r#"{"guide_slug":"git-from-zero","phase_no":1,"vote":"up","note":"clear!"}"#)).await.unwrap();
+    assert_eq!(ok.status(), StatusCode::NO_CONTENT);
+
+    // admin inbox needs auth and shows the entry
+    assert_eq!(app.clone().oneshot(get("/api/admin/feedback")).await.unwrap().status(), StatusCode::UNAUTHORIZED);
+    let cookie = login(&app).await;
+    let inbox = app.oneshot(get_auth("/api/admin/feedback", &cookie)).await.unwrap();
+    assert_eq!(inbox.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(inbox.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(v[0]["vote"], "up");
+    assert_eq!(v[0]["guide_slug"], "git-from-zero");
+}
+
+#[tokio::test]
+async fn status_and_backlog_endpoints() {
+    let app = server::app(admin_state());
+    assert_eq!(app.clone().oneshot(get("/api/admin/status")).await.unwrap().status(), StatusCode::UNAUTHORIZED);
+    let cookie = login(&app).await;
+
+    let st = app.clone().oneshot(get_auth("/api/admin/status", &cookie)).await.unwrap();
+    assert_eq!(st.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(st.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert!(v["version"].is_string());
+    assert!(v["guides"]["total"].as_i64().unwrap() > 0);
+    assert!(v["dbSizeBytes"].as_i64().unwrap() > 0);
+
+    let bl = app.oneshot(get_auth("/api/admin/backlog?days=30", &cookie)).await.unwrap();
+    assert_eq!(bl.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(bl.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert!(v["items"].is_array());
 }
 
 #[test]

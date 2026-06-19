@@ -405,3 +405,203 @@ pub async fn sync_now(State(state): State<Arc<AppState>>) -> Response {
         Err(e) => err(e),
     }
 }
+
+// ===== bulk content actions =====
+
+#[derive(Deserialize)]
+pub struct BulkReq {
+    action: String,
+    slugs: Vec<String>,
+    #[serde(default)]
+    value: String,
+}
+
+/// Apply one action to many guides: publish | unpublish | delete | recategorize | difficulty.
+/// `recategorize`/`difficulty` use `value` (the new category / difficulty).
+pub async fn bulk_guides(State(state): State<Arc<AppState>>, Json(b): Json<BulkReq>) -> Response {
+    let valued = matches!(b.action.as_str(), "recategorize" | "difficulty");
+    if !matches!(b.action.as_str(), "publish" | "unpublish" | "delete" | "recategorize" | "difficulty") {
+        return (StatusCode::BAD_REQUEST, Json(json!({ "error": "unknown action" }))).into_response();
+    }
+    if valued && b.value.trim().is_empty() {
+        return (StatusCode::BAD_REQUEST, Json(json!({ "error": "this action requires a value" }))).into_response();
+    }
+    let mut affected = 0usize;
+    for slug in &b.slugs {
+        let res = {
+            let store = state.store.lock().unwrap();
+            match b.action.as_str() {
+                "publish" => store.set_guide_status(slug, "published"),
+                "unpublish" => store.set_guide_status(slug, "draft"),
+                "delete" => store.delete_guide_row(slug),
+                "recategorize" => store.set_guide_category(slug, &b.value),
+                "difficulty" => store.set_guide_difficulty(slug, &b.value),
+                _ => unreachable!(),
+            }
+        };
+        if let Err(e) = res {
+            return err(e);
+        }
+        // Keep the search index consistent (status changes add/drop docs; delete purges).
+        match b.action.as_str() {
+            "publish" | "unpublish" => {
+                let _ = state.reindex_guide(slug);
+            }
+            "delete" => {
+                if let Ok(mut w) = state.index.writer() {
+                    w.delete_guide(slug);
+                    let _ = w.commit();
+                }
+            }
+            _ => {}
+        }
+        affected += 1;
+    }
+    Json(json!({ "ok": true, "affected": affected })).into_response()
+}
+
+// ===== settings hub (site config + feature flags) =====
+
+/// Settings the admin may edit and the public `/api/site-config` exposes. Whitelisted so this path
+/// can never read or overwrite credentials (`admin_password_hash`) or internal keys (`content_sig`).
+const SITE_SETTING_KEYS: &[&str] = &[
+    "site_name",
+    "tagline",
+    "sponsors",
+    "social",
+    "announcement",
+    "flag_lofi",
+    "flag_runnable",
+    "flag_mermaid",
+];
+
+fn read_site_settings(state: &AppState) -> Result<serde_json::Value, content_core::store::StoreError> {
+    let store = state.store.lock().unwrap();
+    let mut map = serde_json::Map::new();
+    for &k in SITE_SETTING_KEYS {
+        map.insert(k.to_string(), json!(store.get_setting(k)?.unwrap_or_default()));
+    }
+    Ok(serde_json::Value::Object(map))
+}
+
+/// Admin: read the editable site settings (all whitelisted keys, blank if unset).
+pub async fn get_settings(State(state): State<Arc<AppState>>) -> Response {
+    match read_site_settings(&state) {
+        Ok(v) => Json(v).into_response(),
+        Err(e) => err(e),
+    }
+}
+
+/// Admin: write site settings. Only whitelisted keys are accepted; anything else is ignored.
+pub async fn put_settings(State(state): State<Arc<AppState>>, Json(b): Json<HashMap<String, String>>) -> Response {
+    let store = state.store.lock().unwrap();
+    let mut updated = Vec::new();
+    for (k, v) in &b {
+        if SITE_SETTING_KEYS.contains(&k.as_str()) {
+            if let Err(e) = store.set_setting(k, v) {
+                return err(e);
+            }
+            updated.push(k.clone());
+        }
+    }
+    Json(json!({ "ok": true, "updated": updated })).into_response()
+}
+
+/// Public: the site config the frontend reads (name, tagline, sponsors/social JSON, flags).
+pub async fn site_config(State(state): State<Arc<AppState>>) -> Response {
+    match read_site_settings(&state) {
+        Ok(v) => Json(v).into_response(),
+        Err(e) => err(e),
+    }
+}
+
+// ===== reader feedback =====
+
+#[derive(Deserialize)]
+pub struct FeedbackInput {
+    guide_slug: String,
+    phase_no: i64,
+    vote: String,
+    #[serde(default)]
+    note: String,
+    #[serde(default)]
+    visitor: String,
+}
+
+/// Public: a reader posts 👍/👎 (+ optional note) on a phase.
+pub async fn submit_feedback(State(state): State<Arc<AppState>>, Json(b): Json<FeedbackInput>) -> Response {
+    if b.vote != "up" && b.vote != "down" {
+        return (StatusCode::BAD_REQUEST, Json(json!({ "error": "vote must be 'up' or 'down'" }))).into_response();
+    }
+    let r = {
+        state.store.lock().unwrap().insert_feedback(
+            &truncate(&b.guide_slug, 128),
+            b.phase_no,
+            &b.vote,
+            &truncate(&b.note, 1000),
+            &truncate(&b.visitor, 64),
+        )
+    };
+    match r {
+        Ok(_) => StatusCode::NO_CONTENT.into_response(),
+        Err(e) => err(e),
+    }
+}
+
+/// Admin: the feedback inbox (newest first; `?limit=` default 100).
+pub async fn list_feedback(State(state): State<Arc<AppState>>, Query(q): Query<HashMap<String, String>>) -> Response {
+    let limit: i64 = q.get("limit").and_then(|s| s.parse().ok()).unwrap_or(100).clamp(1, 1000);
+    let r = { state.store.lock().unwrap().list_feedback(limit) };
+    match r {
+        Ok(f) => Json(f).into_response(),
+        Err(e) => err(e),
+    }
+}
+
+// ===== system status =====
+
+/// Admin: API version, DB size, and content counts for the status panel.
+pub async fn status(State(state): State<Arc<AppState>>) -> Response {
+    let store = state.store.lock().unwrap();
+    let build = || -> Result<serde_json::Value, content_core::store::StoreError> {
+        let total = store.list_all_guides()?.len();
+        let published = store.list_guides()?.len();
+        let categories = store.list_categories_rows()?.len();
+        Ok(json!({
+            "version": env!("CARGO_PKG_VERSION"),
+            "dbSizeBytes": store.db_size_bytes()?,
+            "guides": { "total": total, "published": published, "draft": total - published },
+            "categories": categories,
+        }))
+    };
+    match build() {
+        Ok(v) => Json(v).into_response(),
+        Err(e) => err(e),
+    }
+}
+
+// ===== content backlog (demand vs. coverage) =====
+
+/// Admin: top searches scored by how many results they return today — fewest hits + highest
+/// demand first, so "people search this and find little" rises to the top as a content backlog.
+pub async fn backlog(State(state): State<Arc<AppState>>, Query(q): Query<HashMap<String, String>>) -> Response {
+    let days: i64 = q.get("days").and_then(|s| s.parse().ok()).unwrap_or(30).clamp(1, 365);
+    let searches = { state.store.lock().unwrap().top_searches(days, 50) };
+    let searches = match searches {
+        Ok(s) => s,
+        Err(e) => return err(e),
+    };
+    let mut items: Vec<serde_json::Value> = searches
+        .into_iter()
+        .map(|(query, demand)| {
+            let hits = state.index.search(&query, 5).map(|r| r.hits.len()).unwrap_or(0);
+            json!({ "query": query, "demand": demand, "hits": hits })
+        })
+        .collect();
+    items.sort_by(|a, b| {
+        let (ha, hb) = (a["hits"].as_u64().unwrap_or(0), b["hits"].as_u64().unwrap_or(0));
+        ha.cmp(&hb)
+            .then(b["demand"].as_i64().unwrap_or(0).cmp(&a["demand"].as_i64().unwrap_or(0)))
+    });
+    Json(json!({ "days": days, "items": items })).into_response()
+}
