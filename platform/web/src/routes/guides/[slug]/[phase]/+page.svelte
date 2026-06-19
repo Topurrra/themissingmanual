@@ -2,6 +2,7 @@
   import { page } from '$app/stores';
   import ReaderTools from '$lib/ReaderTools.svelte';
   import Mermaid from '$lib/Mermaid.svelte';
+  import RunnableCode from '$lib/RunnableCode.svelte';
   export let data;
   $: phase = data.phase;
 
@@ -69,4 +70,5 @@
 {#key `${phase.guide_slug}/${phase.phase_no}`}
   <ReaderTools />
   <Mermaid />
+  <RunnableCode />
 {/key}
