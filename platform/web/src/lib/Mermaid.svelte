@@ -41,34 +41,84 @@
       };
     };
 
-    const themeVariablesFor = (t) => ({
-      fontFamily: 'IBM Plex Sans, system-ui, -apple-system, "Segoe UI", sans-serif',
-      // Nodes
-      primaryColor: t.raise,
-      primaryBorderColor: t.accent,
-      primaryTextColor: t.ink,
-      secondaryColor: t.surface,
-      secondaryBorderColor: t.line,
-      secondaryTextColor: t.ink,
-      tertiaryColor: t.surface,
-      tertiaryBorderColor: t.line,
-      tertiaryTextColor: t.ink,
-      // Edges / arrows / labels
-      lineColor: t.accentStrong,
-      textColor: t.body,
-      // Clusters / subgraphs
-      clusterBkg: t.surface,
-      clusterBorder: t.line,
-      // Notes (sequence/etc.)
-      noteBkgColor: t.surface,
-      noteBorderColor: t.line,
-      noteTextColor: t.ink,
-      // General surfaces
-      mainBkg: t.raise,
-      background: t.bg,
-      titleColor: t.ink,
-      edgeLabelBackground: t.bg
-    });
+    // Ordered series palette for multi-series diagrams (pie slices, git
+    // branches, journey/gantt sections). Medium tones tuned to keep contrast on
+    // BOTH the light and dark figure background, with white text on top.
+    const SERIES = ['#0e8a86', '#3b74b0', '#8a63a8', '#c07d3a', '#4f9d5b', '#b4566b', '#5a8fa8', '#9a8a3e'];
+
+    const themeVariablesFor = (t) => {
+      // gitGraph wants per-branch colors (git0..7), the inverse text on commit
+      // dots (gitInv*), and the branch-label text (gitBranchLabel*).
+      const git = {};
+      for (let i = 0; i < 8; i++) {
+        git['git' + i] = SERIES[i % SERIES.length];
+        git['gitInv' + i] = '#ffffff';
+        git['gitBranchLabel' + i] = '#ffffff';
+      }
+      // pie wants pie1..12.
+      const pie = {};
+      for (let i = 1; i <= 12; i++) pie['pie' + i] = SERIES[(i - 1) % SERIES.length];
+
+      return {
+        fontFamily: 'IBM Plex Sans, system-ui, -apple-system, "Segoe UI", sans-serif',
+        // Cap the base font so big and small diagrams read as one family.
+        fontSize: '15px',
+        // Nodes
+        primaryColor: t.surface,
+        primaryBorderColor: t.accent,
+        primaryTextColor: t.ink,
+        secondaryColor: t.raise,
+        secondaryBorderColor: t.line,
+        secondaryTextColor: t.ink,
+        tertiaryColor: t.surface,
+        tertiaryBorderColor: t.line,
+        tertiaryTextColor: t.ink,
+        // Edges / arrows / labels
+        lineColor: t.accentStrong,
+        textColor: t.body,
+        // Clusters / subgraphs
+        clusterBkg: t.surface,
+        clusterBorder: t.line,
+        // Notes (sequence/etc.)
+        noteBkgColor: t.surface,
+        noteBorderColor: t.line,
+        noteTextColor: t.ink,
+        // General surfaces
+        mainBkg: t.surface,
+        background: t.bg,
+        titleColor: t.ink,
+        edgeLabelBackground: t.raise,
+        // Sequence diagram actors / activations
+        actorBkg: t.surface,
+        actorBorder: t.accent,
+        actorTextColor: t.ink,
+        actorLineColor: t.line,
+        signalColor: t.body,
+        signalTextColor: t.body,
+        activationBkgColor: t.raise,
+        activationBorderColor: t.accent,
+        sequenceNumberColor: '#ffffff',
+        // gitGraph
+        ...git,
+        commitLabelColor: t.ink,
+        commitLabelBackground: t.surface,
+        commitLabelFontSize: '12px',
+        tagLabelColor: t.ink,
+        tagLabelBackground: t.surface,
+        tagLabelBorder: t.line,
+        // pie
+        ...pie,
+        pieTitleTextColor: t.ink,
+        pieSectionTextColor: '#ffffff',
+        pieSectionTextSize: '14px',
+        pieLegendTextColor: t.body,
+        pieStrokeColor: t.raise,
+        pieStrokeWidth: '2px',
+        pieOuterStrokeColor: t.line,
+        pieOuterStrokeWidth: '1px',
+        pieOpacity: '1'
+      };
+    };
 
     const initMermaid = (t) => {
       mermaid.initialize({
@@ -95,9 +145,15 @@
           d.figure.innerHTML = svg;
           const el = d.figure.querySelector('svg');
           if (el) {
-            // Responsive: let CSS cap the width; drop hardcoded px width/height.
+            // Render at the diagram's NATURAL width, capped to the column. Never
+            // stretch a small diagram to fill the column (the old maxWidth:100%
+            // with no width did that — a 2-node graph ballooned to full width),
+            // and never let a big one overflow (max-width:100% scales it down;
+            // the lightbox zooms it). height:auto keeps the aspect ratio.
+            const vbW = parseFloat((el.getAttribute('viewBox') || '').split(/\s+/)[2]);
             el.removeAttribute('width');
             el.removeAttribute('height');
+            if (vbW > 0) el.style.width = Math.round(vbW) + 'px';
             el.style.maxWidth = '100%';
             el.style.height = 'auto';
           }
