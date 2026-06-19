@@ -7,6 +7,14 @@
   export let data;
   $: phase = data.phase;
 
+  // Default-on flag rule (same as the layout/admin toggles): unset/""/"1"/"true" ⇒ ON,
+  // only explicit "0"/"false"/"off"/"no" ⇒ off. When off we simply don't mount the
+  // enhancer; the underlying <pre> still renders as plain content.
+  const flagOn = (v) => !['0', 'false', 'off', 'no'].includes(String(v ?? '').trim().toLowerCase());
+  $: siteConfig = $page.data.siteConfig ?? {};
+  $: runnableOn = flagOn(siteConfig.flag_runnable);
+  $: mermaidOn = flagOn(siteConfig.flag_mermaid);
+
   // Build a structured prev / overview / next footer from the guide's phases
   // (loaded by +layout.server.js as $page.data.guidePhases). This replaces the
   // author-written nav line at the end of the Markdown, which is hidden via CSS.
@@ -71,6 +79,6 @@
 {#key `${phase.guide_slug}/${phase.phase_no}`}
   <FeedbackWidget guideSlug={phase.guide_slug} phaseNo={phase.phase_no} />
   <ReaderTools />
-  <Mermaid />
-  <RunnableCode />
+  {#if mermaidOn}<Mermaid />{/if}
+  {#if runnableOn}<RunnableCode />{/if}
 {/key}

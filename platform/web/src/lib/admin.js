@@ -16,6 +16,7 @@ async function j(method, path, body) {
 export const adminGet = (p) => j('GET', p);
 export const adminPost = (p, b) => j('POST', p, b);
 export const adminPatch = (p, b) => j('PATCH', p, b);
+export const adminPut = (p, b) => j('PUT', p, b);
 export const adminDelete = (p) => j('DELETE', p);
 
 export async function adminUpload(file) {

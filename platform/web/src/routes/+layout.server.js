@@ -1,6 +1,32 @@
 import { listCategories, listGuides, getGuide, listTracks, getTrack } from '$lib/api.js';
+import { API_BASE } from '$lib/server/adminApi.js';
+
+// Public site config (PUBLIC endpoint). All fields are strings; "" when unset.
+// On any failure we return an all-empty object so the layout's fallbacks render
+// today's site unchanged.
+const EMPTY_SITE_CONFIG = {
+  site_name: '',
+  tagline: '',
+  sponsors: '',
+  social: '',
+  announcement: '',
+  flag_lofi: '',
+  flag_runnable: '',
+  flag_mermaid: ''
+};
+
+async function getSiteConfig(fetch) {
+  try {
+    const res = await fetch(`${API_BASE}/api/site-config`);
+    if (!res.ok) return { ...EMPTY_SITE_CONFIG };
+    return await res.json();
+  } catch {
+    return { ...EMPTY_SITE_CONFIG };
+  }
+}
 
 export async function load({ fetch, url }) {
+  const siteConfig = await getSiteConfig(fetch);
   const categories = (await listCategories(fetch)) ?? [];
   const guides = (await listGuides(fetch)) ?? [];
   const nav = categories.map((c) => ({
@@ -37,5 +63,5 @@ export async function load({ fetch, url }) {
     }
   }
 
-  return { nav, guidePhases, guideTitle, tracks, activeTrackSlug, trackRoadmap };
+  return { nav, guidePhases, guideTitle, tracks, activeTrackSlug, trackRoadmap, siteConfig };
 }

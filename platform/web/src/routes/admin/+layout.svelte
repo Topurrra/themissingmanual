@@ -13,6 +13,7 @@
     { href: '/admin/analytics', label: 'Analytics', icon: 'ti-chart-bar' },
     { href: '/admin/feedback', label: 'Feedback', icon: 'ti-message-2' },
     { href: '/admin/health', label: 'Health', icon: 'ti-stethoscope' },
+    { href: '/admin/settings', label: 'Settings', icon: 'ti-settings' },
     { href: '/admin/account', label: 'Account', icon: 'ti-user' }
   ];
   function active(href) {
