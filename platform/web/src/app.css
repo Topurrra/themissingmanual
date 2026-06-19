@@ -871,7 +871,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .colophon { border-top: 1px solid var(--line); margin-top: 4rem; }
 .colophon-inner {
   margin: 0 auto;
-  padding: 2.4rem 1.6rem 3rem;
+  padding: 2.4rem 1.6rem 1rem;
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem 3rem;

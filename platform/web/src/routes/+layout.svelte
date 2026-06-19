@@ -45,7 +45,7 @@
   const flagOn = (v) => !['0', 'false', 'off', 'no'].includes(String(v ?? '').trim().toLowerCase());
 
   $: siteName = (siteConfig.site_name || '').trim() || 'The Missing Manual';
-  $: tagline = (siteConfig.tagline || '').trim() || 'Free forever.';
+  $: tagline = (siteConfig.tagline || '').trim() || 'Free forever';
   $: announcement = (siteConfig.announcement || '').trim();
   $: lofiOn = flagOn(siteConfig.flag_lofi);
 
