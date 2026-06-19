@@ -30,58 +30,62 @@ that display order.
 
 ## Categories
 
-### operating-systems
+### operating-systems ✅ COMPLETE
 *Windows, macOS, and Linux — what they're really doing under the hood. The broadest on-ramp; great for non-developers too.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | **What an Operating System Actually Is** | beginner | ⬜ | The A. Kernel, processes, files, memory — the model shared by Windows/macOS/Linux. |
-| 2 | The Filesystem, Explained | beginner | ⬜ | Paths, permissions, where things actually live. |
-| 3 | The Terminal & Shell, Explained | beginner | ⬜ | `cd`/`ls`/pipes/PATH. Survival for the command line. (Foundational — referenced by devops/infra.) |
-| 4 | Processes, Memory & the CPU | beginner→intermediate | ⬜ | What "100% CPU" / "out of memory" actually mean. |
-| 5 | Linux From Zero | beginner→intermediate | ⬜ | Shell, packages, permissions, services — the OS most servers run. |
-| 6 | Windows for People Who Use It Every Day | intermediate | ⬜ | Beyond clicking: services, the registry, PowerShell basics. |
-| 7 | macOS Under the Hood | intermediate | ⬜ | Unix underneath, Homebrew, where macOS differs. |
-| 8 | Linux for Servers | advanced | ⬜ | systemd, users, logs, cron, hardening. |
+| 1 | `what-an-operating-system-is` | What an Operating System Actually Is | beginner | ✅ |
+| 2 | `the-filesystem-explained` | The Filesystem, Explained | beginner | ✅ |
+| 3 | `the-terminal-and-shell` | The Terminal & Shell, Explained | beginner | ✅ |
+| 4 | `processes-memory-and-cpu` | Processes, Memory & the CPU | intermediate | ✅ |
+| 5 | `linux-from-zero` | Linux From Zero | beginner | ✅ |
+| 6 | `windows-for-power-users` | Windows for People Who Use It Every Day | intermediate | ✅ |
+| 7 | `macos-under-the-hood` | macOS Under the Hood | intermediate | ✅ |
+| 8 | `linux-for-servers` | Linux for Servers | advanced | ✅ |
 
-### hardware
+### hardware ✅ COMPLETE
 *How the machine is built and talks to itself — from the chip to the device on your desk.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | **How a Computer Actually Works** | beginner | ⬜ | The A. CPU, RAM, storage, the bus — the parts and how they cooperate. |
-| 2 | CPU, RAM & Storage, Explained | beginner | ⬜ | What each does and why it decides "fast" vs "slow". |
-| 3 | Storage Deep-Dive: HDD vs SSD vs NVMe | intermediate | ⬜ | How data is really stored and why it matters. |
-| 4 | How Data Moves Inside a Machine | intermediate | ⬜ | Buses, I/O, interrupts — devices communicating. |
-| 5 | How Devices Connect (USB, PCIe, GPUs, peripherals) | intermediate | ⬜ | Plugging the world into the box. |
-| 6 | Inside a Server & Data-Center Hardware | advanced | ⬜ | Racks, redundancy, what "the cloud" physically is. |
+| 1 | `how-a-computer-works` | How a Computer Actually Works | beginner | ✅ |
+| 2 | `cpu-ram-and-storage` | CPU, RAM & Storage, Explained | beginner | ✅ |
+| 3 | `storage-hdd-ssd-nvme` | Storage Deep-Dive: HDD vs SSD vs NVMe | intermediate | ✅ |
+| 4 | `how-data-moves-inside-a-machine` | How Data Moves Inside a Machine | intermediate | ✅ |
+| 5 | `how-devices-connect` | How Devices Connect (USB, PCIe, GPUs, peripherals) | intermediate | ✅ |
+| 6 | `inside-a-server-and-data-center` | Inside a Server & Data-Center Hardware | advanced | ✅ |
 
-### networking
+### networking ✅ COMPLETE
 *How the internet really works, and how to design networks that hold up — home to enterprise.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | **How the Internet Actually Works** | beginner | ⬜ | The A. The journey of one request: packets, IP, DNS, servers. |
-| 2 | IP Addresses, DNS & Ports, Explained | beginner | ⬜ | The address book of the internet. |
-| 3 | HTTP, Explained | beginner | ⬜ | Requests, responses, status codes, headers. (APIs build on this — see `apis`.) |
-| 4 | Your Home Network, Explained | beginner→intermediate | ⬜ | Router, NAT, Wi-Fi, firewall — the box that connects you. |
-| 5 | The TCP/IP Model Without the Acronym Soup | intermediate | ⬜ | The layers, finally intuitive. |
-| 6 | Troubleshooting Networks | intermediate | ⬜ 🛠️ | `ping`/`traceroute`/`dig` + reading **Wireshark**. |
-| 7 | Designing an Enterprise Network | advanced | ⬜ | Subnets, VLANs, load balancers, redundancy. (Manifesto: "plan enterprise-grade networks".) |
+| 1 | `how-the-internet-works` | How the Internet Actually Works | beginner | ✅ |
+| 2 | `ip-dns-and-ports` | IP Addresses, DNS & Ports, Explained | beginner | ✅ |
+| 3 | `http-explained` | HTTP, Explained | beginner | ✅ |
+| 4 | `your-home-network` | Your Home Network, Explained | beginner | ✅ |
+| 5 | `tcp-ip-model` | The TCP/IP Model Without the Acronym Soup | intermediate | ✅ |
+| 6 | `troubleshooting-networks` | Troubleshooting Networks 🛠️ | intermediate | ✅ |
+| 7 | `designing-an-enterprise-network` | Designing an Enterprise Network | advanced | ✅ |
 
-### programming-languages
+### programming-languages ✅ COMPLETE
 *Languages and features explained the way they should have been. Feeds the backend track `language` step.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | **Programming From Zero** | beginner | ⬜ | The A (career-switchers!). Variables, types, control flow, functions. |
-| 2 | What Actually Happens When Your Code Runs | beginner | ⬜ | Compile vs interpret, the stack & heap, memory. |
-| 3 | Data Structures, Explained | beginner→intermediate | ⬜ | Arrays, maps, sets — when to reach for which. |
-| 4 | Regular Expressions, Explained | beginner | ⬜ | Read and write regex without fear. |
-| 5 | Async/Await & the Event Loop | intermediate | ⬜ | Why "blocking" matters; concurrency intuition. |
-| 6 | Memory & Garbage Collection, Explained | intermediate | ⬜ | What's really happening to your objects. |
-| 7 | Python / JavaScript / Go / Rust — "explained like a human" | beginner→intermediate | ⬜ ⭐ | Per-language intros that feed the `language` choice (go/rust/python/node). |
-| 8 | Object-Oriented vs Functional, Honestly | intermediate | ⬜ | One fair comparison, both styles. |
+| 1 | `programming-from-zero` | Programming From Zero | beginner | ✅ |
+| 2 | `what-happens-when-code-runs` | What Actually Happens When Your Code Runs | beginner | ✅ |
+| 3 | `data-structures-explained` | Data Structures, Explained | beginner | ✅ |
+| 4 | `regular-expressions-explained` | Regular Expressions, Explained | beginner | ✅ |
+| 5 | `async-await-and-the-event-loop` | Async/Await & the Event Loop | intermediate | ✅ |
+| 6 | `memory-and-garbage-collection` | Memory & Garbage Collection, Explained | intermediate | ✅ |
+| 7 | `languages-explained-like-a-human` | Python, JavaScript, Go & Rust — Explained Like a Human ⭐ | beginner | ✅ |
+| 8 | `oop-vs-functional` | Object-Oriented vs Functional, Honestly | intermediate | ✅ |
+| 9 | `python-from-zero` | Python From Zero (A→Z, 10 phases; big idea = OOP) | beginner→advanced | ✅ |
+| 10 | `javascript-from-zero` | JavaScript From Zero (A→Z, 10 phases; big idea = async & the DOM) | beginner→advanced | ✅ |
+| 11 | `go-from-zero` | Go From Zero (A→Z, 10 phases; big idea = goroutines & channels) | beginner→advanced | ✅ |
+| 12 | `rust-from-zero` | Rust From Zero (A→Z, 10 phases; big idea = ownership & borrowing) | beginner→advanced | ✅ |
 
 ### version-control ✅ COMPLETE
 *The flagship ladder — a full beginner→advanced run. The model every other category should copy.*
@@ -93,154 +97,153 @@ that display order.
 | 3 | `git-with-other-people` | Git With Other People | intermediate | ✅ |
 | 4 | `git-disaster-recovery` | Git Disaster Recovery | advanced | ✅ |
 
-### debugging
+### debugging ✅ COMPLETE
 *Finding and fixing what's broken, calmly. The manifesto's home turf ("read a stack trace at 2am").*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | What an Error Message Is Actually Telling You | beginner | ⬜ | The A. How to read an error instead of fearing it. |
-| 2 | **Reading a Stack Trace at 2am** | beginner | 🔜 | North-star topic. Language-agnostic; everyone needs it, nobody teaches it. |
-| 3 | Reading Logs Without Drowning | beginner | ⬜ | grep/tail/levels/structured logs; finding the needle. |
-| 4 | How to Reproduce a Bug | intermediate | ⬜ | The skill that makes every other fix possible. |
-| 5 | Using a Debugger (Breakpoints, Stepping, Watch) | intermediate | ⬜ | Beyond print-debugging. |
-| 6 | Bisecting a Bug (`git bisect` + binary-search thinking) | intermediate | ⬜ | "Which commit broke it?" |
-| 7 | When Prod Is Down: Staying Calm | advanced | ⬜ | Incident-response survival: triage, comms, rollback. |
+| 1 | `what-an-error-message-tells-you` | What an Error Message Is Actually Telling You | beginner | ✅ |
+| 2 | `reading-a-stack-trace` | Reading a Stack Trace at 2am | beginner | ✅ |
+| 3 | `reading-logs-without-drowning` | Reading Logs Without Drowning | beginner | ✅ |
+| 4 | `how-to-reproduce-a-bug` | How to Reproduce a Bug | intermediate | ✅ |
+| 5 | `using-a-debugger` | Using a Debugger (Breakpoints, Stepping, Watch) | intermediate | ✅ |
+| 6 | `bisecting-a-bug` | Bisecting a Bug (git bisect + binary-search thinking) | intermediate | ✅ |
+| 7 | `when-prod-is-down` | When Prod Is Down: Staying Calm | advanced | ✅ |
 
-### testing
-*Unit, integration, E2E, and load tests — plus TDD/BDD — that actually catch the bug. (Moved out of the old `architecture` grab-bag.)*
+### testing ✅ COMPLETE
+*Unit, integration, E2E, and load tests — plus TDD/BDD — that actually catch the bug.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | Why Test At All? | beginner | ⬜ | The A. The mental model: tests as a safety net, not a chore. |
-| 2 | Your First Unit Test | beginner | ⬜ | Arrange–act–assert, hands on. |
-| 3 | Unit / Integration / E2E, Explained | intermediate | ⬜ ⭐ | The pyramid; what each catches. Feeds the backend `testing` step. |
-| 4 | Mocking, Stubbing & Test Doubles | intermediate | ⬜ | Isolating the thing under test. |
-| 5 | TDD & BDD, Honestly | intermediate | ⬜ | What they are, when they help, when they don't. |
-| 6 | Testing in CI (what runs on every push) | intermediate | ⬜ | Ties into `devops` CI/CD. |
-| 7 | Load & Performance Testing | advanced | ⬜ | Will it hold under real traffic? |
+| 1 | `why-test-at-all` | Why Test At All? | beginner | ✅ |
+| 2 | `your-first-unit-test` | Your First Unit Test | beginner | ✅ |
+| 3 | `unit-integration-e2e` | Unit, Integration & E2E Tests, Explained ⭐ | intermediate | ✅ |
+| 4 | `mocking-and-test-doubles` | Mocking, Stubbing & Test Doubles | intermediate | ✅ |
+| 5 | `tdd-and-bdd-honestly` | TDD & BDD, Honestly | intermediate | ✅ |
+| 6 | `testing-in-ci` | Testing in CI (What Runs on Every Push) | intermediate | ✅ |
+| 7 | `load-and-performance-testing` | Load & Performance Testing | advanced | ✅ |
 
-### databases
+### databases ✅ COMPLETE
 *Schemas, queries, and the production lessons that come with them. Feeds the backend track `database` step.*
-**(Rebuilt A→Z — the old list opened on JOINs with no basics.)**
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | **What a Database Actually Is** | beginner | 🔜 | The missing A. Tables, rows, columns, keys — the mental model. |
-| 2 | SELECT, WHERE & Friends: Querying Basics | beginner | ⬜ | Reading and filtering data; INSERT/UPDATE/DELETE. |
-| 3 | Relationships & Keys (Primary / Foreign) | beginner | ⬜ | The thing JOINs actually depend on. |
-| 4 | SQL Joins, Finally Explained | beginner→intermediate | ⬜ ⭐ | INNER/LEFT/etc. (Was listed first — it's really rung 4.) |
-| 5 | Why Is My Query Slow? (Indexes & EXPLAIN) | intermediate | 🔜 ⭐ | "Fast on my laptop, dying in prod." |
-| 6 | Transactions & ACID, Explained | intermediate | ⬜ | Commits, rollbacks, isolation. |
-| 7 | Database Migrations Without Fear | intermediate | ⬜ | Schema changes on live data. |
-| 8 | SQL vs NoSQL, Honestly | intermediate | ⬜ | One fair table, both sides. |
-| 9 | Scaling a Database (Replication & Sharding) | advanced | ⬜ | When one box isn't enough. |
+| 1 | `what-a-database-is` | What a Database Actually Is | beginner | ✅ |
+| 2 | `querying-basics-select-where` | SELECT, WHERE & Friends: Querying Basics | beginner | ✅ |
+| 3 | `relationships-and-keys` | Relationships & Keys (Primary & Foreign) | beginner | ✅ |
+| 4 | `sql-joins-explained` | SQL Joins, Finally Explained ⭐ | beginner | ✅ |
+| 5 | `why-is-my-query-slow` | Why Is My Query Slow? (Indexes & EXPLAIN) ⭐ | intermediate | ✅ |
+| 6 | `transactions-and-acid` | Transactions & ACID, Explained | intermediate | ✅ |
+| 7 | `database-migrations` | Database Migrations Without Fear | intermediate | ✅ |
+| 8 | `sql-vs-nosql` | SQL vs NoSQL, Honestly | intermediate | ✅ |
+| 9 | `scaling-a-database` | Scaling a Database (Replication & Sharding) | advanced | ✅ |
 
-### data-analytics
+### data-analytics ✅ COMPLETE
 *Data pipelines, engineering, BI, and the ML basics — turning raw data into answers you trust.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | **What "Data Engineering" Even Is** | beginner | ⬜ | The A. The path from raw data to a usable answer. |
-| 2 | Spreadsheets → SQL → Pipelines | beginner | ⬜ | The natural progression most people actually take. |
-| 3 | ETL / ELT Pipelines, Explained | intermediate | ⬜ | Extract-transform-load, the backbone of data work. |
-| 4 | Data Warehouses vs Lakes, Honestly | intermediate | ⬜ | Where the data lands and why. |
-| 5 | Building a BI Dashboard That's Actually Useful | intermediate | ⬜ | Metrics that inform decisions, not vanity charts. |
-| 6 | ML Basics for Data People | intermediate | ⬜ | Bridges into `ai-ml`. |
-| 7 | Data Quality & Pipeline Observability | advanced | ⬜ | Trusting the numbers; catching silent breakage. |
+| 1 | `what-is-data-engineering` | What "Data Engineering" Even Is | beginner | ✅ |
+| 2 | `spreadsheets-to-sql-to-pipelines` | Spreadsheets → SQL → Pipelines | beginner | ✅ |
+| 3 | `etl-elt-pipelines` | ETL & ELT Pipelines, Explained | intermediate | ✅ |
+| 4 | `warehouses-vs-lakes` | Data Warehouses vs Lakes, Honestly | intermediate | ✅ |
+| 5 | `bi-dashboards-that-work` | Building a BI Dashboard That's Actually Useful | intermediate | ✅ |
+| 6 | `ml-basics-for-data-people` | ML Basics for Data People | intermediate | ✅ |
+| 7 | `data-quality-and-observability` | Data Quality & Pipeline Observability | advanced | ✅ |
 
-### apis
-*REST, GraphQL, gRPC, webhooks, and message queues — how systems actually talk. (API guides moved here from the old `architecture` category.)*
+### apis ✅ COMPLETE
+*REST, GraphQL, gRPC, webhooks, and message queues — how systems actually talk.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | **What an API Actually Is** | beginner | ⬜ | The A — the mental model before any protocol. |
-| 2 | HTTP & JSON: the API Building Blocks | beginner | ⬜ | Builds on `networking` → HTTP. |
-| 3 | REST APIs, Explained | beginner→intermediate | ⬜ ⭐ | Feeds `api-style` (rest). |
-| 4 | Reading API Docs & Using Postman | beginner | ⬜ 🛠️ | Make a real request, read the response. |
-| 5 | GraphQL, Explained | intermediate | ⬜ ⭐ | Feeds `api-style` (graphql). |
-| 6 | gRPC, Explained | intermediate | ⬜ ⭐ | Feeds `api-style` (grpc). |
-| 7 | Webhooks & Message Queues | intermediate | ⬜ | Events and async integration. |
-| 8 | Versioning & Designing APIs That Last | advanced | ⬜ | Contracts, deprecation, not breaking clients. (Auth for APIs → see `security`.) |
+| 1 | `what-an-api-is` | What an API Actually Is | beginner | ✅ |
+| 2 | `http-and-json-api-basics` | HTTP & JSON: the API Building Blocks | beginner | ✅ |
+| 3 | `rest-apis-explained` | REST APIs, Explained ⭐ | intermediate | ✅ |
+| 4 | `reading-api-docs-postman` | Reading API Docs & Using Postman 🛠️ | beginner | ✅ |
+| 5 | `graphql-explained` | GraphQL, Explained ⭐ | intermediate | ✅ |
+| 6 | `grpc-explained` | gRPC, Explained ⭐ | intermediate | ✅ |
+| 7 | `webhooks-and-message-queues` | Webhooks & Message Queues | intermediate | ✅ |
+| 8 | `designing-apis-that-last` | Versioning & Designing APIs That Last | advanced | ✅ |
 
-### architecture
-*Designing systems that survive real load and real teams. (Leaner now — APIs and testing have their own categories.)*
+### architecture ✅ COMPLETE
+*Designing systems that survive real load and real teams.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | What "Architecture" Even Means | beginner | ⬜ | The A. Boxes, arrows, and the trade-offs behind them. |
-| 2 | Monolith vs Microservices, Honestly | intermediate | ⬜ | When to split, when not to. |
-| 3 | Caching, Explained | intermediate | ⬜ | What to cache, invalidation, the footguns. |
-| 4 | Designing for Scale (Load Balancing, Statelessness) | advanced | ⬜ | Surviving real traffic. |
-| 5 | Designing for Failure (Retries, Timeouts, Circuit Breakers) | advanced | ⬜ | Systems that bend instead of break. |
+| 1 | `what-architecture-means` | What "Architecture" Even Means | beginner | ✅ |
+| 2 | `monolith-vs-microservices` | Monolith vs Microservices, Honestly | intermediate | ✅ |
+| 3 | `caching-explained` | Caching, Explained | intermediate | ✅ |
+| 4 | `designing-for-scale` | Designing for Scale (Load Balancing, Statelessness) | advanced | ✅ |
+| 5 | `designing-for-failure` | Designing for Failure (Retries, Timeouts, Circuit Breakers) | advanced | ✅ |
 
-### devops
-*CI/CD, automation, and infrastructure as code — shipping safely and repeatedly. (Containers/cloud now live in `infrastructure`.)*
+### devops ✅ COMPLETE
+*CI/CD, automation, and infrastructure as code — shipping safely and repeatedly.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | What DevOps Actually Is | beginner | ⬜ | The A. The loop: build → test → ship → observe. |
-| 2 | Environment Variables & Config (.env, YAML) | beginner | ⬜ | "What that config file really does" (manifesto). |
-| 3 | Build & Release Basics | beginner→intermediate | ⬜ | Artifacts, versions, environments. |
-| 4 | What a CI/CD Pipeline Actually Does | intermediate | ⬜ ⭐ | Feeds the devops `cicd` step. |
-| 5 | Your First Pipeline (GitHub Actions) | intermediate | ⬜ 🛠️ | A real workflow, line by line. |
-| 6 | Automating the Boring Stuff (Ops Scripting) | intermediate | ⬜ | Bash/Python for repeatable tasks. |
-| 7 | Infrastructure as Code (Terraform Basics) | intermediate→advanced | ⬜ | Servers defined in version-controlled files. |
+| 1 | `what-devops-is` | What DevOps Actually Is | beginner | ✅ |
+| 2 | `env-vars-and-config` | Environment Variables & Config (.env, YAML) | beginner | ✅ |
+| 3 | `build-and-release-basics` | Build & Release Basics | beginner | ✅ |
+| 4 | `what-cicd-does` | What a CI/CD Pipeline Actually Does ⭐ | intermediate | ✅ |
+| 5 | `your-first-pipeline-github-actions` | Your First Pipeline (GitHub Actions) 🛠️ | intermediate | ✅ |
+| 6 | `automating-the-boring-stuff` | Automating the Boring Stuff (Ops Scripting) | intermediate | ✅ |
+| 7 | `infrastructure-as-code-terraform` | Infrastructure as Code (Terraform Basics) | advanced | ✅ |
 
-### infrastructure
-*Servers, containers, and cloud platforms — where your code actually runs. (Split out of the old "DevOps & Infra".)*
+### infrastructure ✅ COMPLETE
+*Servers, containers, and cloud platforms — where your code actually runs.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | What a Server Actually Is | beginner | ⬜ | The A. From "a computer that's always on" to the cloud. |
-| 2 | SSH & Keys, Explained | beginner | ⬜ | Key pairs, agents, `~/.ssh/config` (manifesto). |
-| 3 | **Docker Without the Magic** | beginner→intermediate | 🔜 ⭐ | image vs container vs volume vs layer; "works on my machine". Feeds `deployment`. |
-| 4 | Docker Compose for Real Projects | intermediate | ⬜ | Multi-service stacks (this project is one). |
-| 5 | Deploying to a VPS (From Zero to Live) | intermediate | ⬜ ⭐ | Feeds `deployment` (vps option). |
-| 6 | Load Balancers & Reverse Proxies (nginx) | intermediate | ⬜ | Routing traffic to your app. |
-| 7 | Cloud Platforms, Explained (AWS / GCP / Azure) | intermediate | ⬜ | The mental model, not the 900 services. |
-| 8 | Kubernetes, Explained Without the Hype | advanced | ⬜ ⭐ | Feeds `deployment` (k8s option). |
+| 1 | `what-a-server-is` | What a Server Actually Is | beginner | ✅ |
+| 2 | `ssh-and-keys` | SSH & Keys, Explained | beginner | ✅ |
+| 3 | `docker-without-the-magic` | Docker Without the Magic ⭐ | intermediate | ✅ |
+| 4 | `docker-compose-for-real-projects` | Docker Compose for Real Projects | intermediate | ✅ |
+| 5 | `deploying-to-a-vps` | Deploying to a VPS (From Zero to Live) ⭐ | intermediate | ✅ |
+| 6 | `load-balancers-and-nginx` | Load Balancers & Reverse Proxies (nginx) | intermediate | ✅ |
+| 7 | `cloud-platforms-explained` | Cloud Platforms, Explained (AWS / GCP / Azure) | intermediate | ✅ |
+| 8 | `kubernetes-without-the-hype` | Kubernetes, Explained Without the Hype ⭐ | advanced | ✅ |
 
-### performance
+### performance ✅ COMPLETE
 *Finding the slow thing, and the tools that show you where it hides. Home of the observability/monitoring tool guides.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | What "Performance" Even Means | beginner | ⬜ | The A. Latency vs throughput; measure before you optimize. |
-| 2 | Big-O Without the Math Panic | beginner | ⬜ | Intuition, not proofs. |
-| 3 | Finding the Slow Thing (Profiling 101) | intermediate | ⬜ | Profilers, flame graphs, the real bottleneck. |
-| 4 | Observability: Logs, Metrics & Traces | intermediate | ⬜ ⭐ | The concept. Feeds the devops `observability` step. |
-| 5 | Reading Dynatrace (What It's Showing You) | intermediate | ⬜ 🛠️ | Manifesto-named. Traces, service flow, problems. |
-| 6 | Reading Graylog (Log Search & Streams) | intermediate | ⬜ 🛠️ | Structured-log search when you're drowning. |
-| 7 | Prometheus & Grafana, Explained | intermediate | ⬜ 🛠️ | Metrics + dashboards, the open-source pair. |
-| 8 | Optimizing Real Systems | advanced | ⬜ | Putting profiling + observability to work. |
+| 1 | `what-performance-means` | What "Performance" Even Means | beginner | ✅ |
+| 2 | `big-o-without-the-math-panic` | Big-O Without the Math Panic | beginner | ✅ |
+| 3 | `profiling-101` | Finding the Slow Thing (Profiling 101) | intermediate | ✅ |
+| 4 | `observability-logs-metrics-traces` | Observability: Logs, Metrics & Traces ⭐ | intermediate | ✅ |
+| 5 | `reading-dynatrace` | Reading Dynatrace (What It's Showing You) 🛠️ | intermediate | ✅ |
+| 6 | `reading-graylog` | Reading Graylog (Log Search & Streams) 🛠️ | intermediate | ✅ |
+| 7 | `prometheus-and-grafana` | Prometheus & Grafana, Explained 🛠️ | intermediate | ✅ |
+| 8 | `optimizing-real-systems` | Optimizing Real Systems | advanced | ✅ |
 
-### security
+### security ✅ COMPLETE
 *The threats, the defaults, and the habits that keep you out of the news.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | What "Security" Even Means (Threat Modeling Basics) | beginner | ⬜ | The A. Think like an attacker, defend in layers. |
-| 2 | How Passwords Should Be Stored (Hashing) | beginner | ⬜ | Salting, bcrypt/argon2, what NOT to do. |
-| 3 | CORS, Explained (and Why It Keeps Blocking You) | beginner | ⬜ | The error everyone fights. |
-| 4 | Auth vs Authz (Sessions, JWT, OAuth) | intermediate | ⬜ | The one everyone half-understands. (Used by `apis`.) |
-| 5 | HTTPS / TLS, Explained | intermediate | ⬜ | Certs, the handshake, why the padlock. |
-| 6 | SQL Injection & XSS, Explained | intermediate | ⬜ | The two classic web holes. |
-| 7 | The OWASP Top 10, Explained | intermediate | ⬜ | The canonical "what goes wrong". |
-| 8 | Secrets Management (Don't Commit Your Keys) | intermediate | ⬜ | Vaults, env, rotation. |
+| 1 | `what-security-means` | What "Security" Even Means (Threat Modeling Basics) | beginner | ✅ |
+| 2 | `how-passwords-are-stored` | How Passwords Should Be Stored (Hashing) | beginner | ✅ |
+| 3 | `cors-explained` | CORS, Explained (and Why It Keeps Blocking You) | beginner | ✅ |
+| 4 | `auth-vs-authz` | Auth vs Authz (Sessions, JWT, OAuth) | intermediate | ✅ |
+| 5 | `https-and-tls` | HTTPS / TLS, Explained | intermediate | ✅ |
+| 6 | `sql-injection-and-xss` | SQL Injection & XSS, Explained | intermediate | ✅ |
+| 7 | `owasp-top-10` | The OWASP Top 10, Explained | intermediate | ✅ |
+| 8 | `secrets-management` | Secrets Management (Don't Commit Your Keys) | intermediate | ✅ |
 
-### ai-ml
+### ai-ml ✅ COMPLETE
 *Models, training, and putting AI into real products — without the hype or the hand-waving.*
 
-| order | guide | difficulty | status | notes |
+| order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | **What AI & Machine Learning Actually Are** | beginner | ⬜ | The A. AI vs ML vs LLM, demystified. |
-| 2 | How a Model Learns (Training, in Plain English) | beginner | ⬜ | Data → weights → predictions, no calculus. |
-| 3 | Using an LLM API in Your App | beginner→intermediate | ⬜ | Practical: prompts, tokens, cost, streaming. |
-| 4 | Prompt Engineering, Honestly | beginner | ⬜ | What actually moves the needle. |
-| 5 | Embeddings & Vector Search, Explained | intermediate | ⬜ | Meaning as numbers; similarity. |
-| 6 | RAG (Retrieval-Augmented Generation), Explained | intermediate | ⬜ | Grounding an LLM in your own data. |
-| 7 | Running Models Locally | intermediate | ⬜ | Ollama and friends; when local makes sense. |
-| 8 | Fine-Tuning vs Prompting, Honestly | advanced | ⬜ | When training your own is (and isn't) worth it. |
+| 1 | `what-ai-and-ml-are` | What AI & Machine Learning Actually Are | beginner | ✅ |
+| 2 | `how-a-model-learns` | How a Model Learns (Training, in Plain English) | beginner | ✅ |
+| 3 | `using-an-llm-api` | Using an LLM API in Your App | beginner | ✅ |
+| 4 | `prompt-engineering-honestly` | Prompt Engineering, Honestly | beginner | ✅ |
+| 5 | `embeddings-and-vector-search` | Embeddings & Vector Search, Explained | intermediate | ✅ |
+| 6 | `rag-explained` | RAG (Retrieval-Augmented Generation), Explained | intermediate | ✅ |
+| 7 | `running-models-locally` | Running Models Locally | intermediate | ✅ |
+| 8 | `fine-tuning-vs-prompting` | Fine-Tuning vs Prompting, Honestly | advanced | ✅ |
 
 ---
 

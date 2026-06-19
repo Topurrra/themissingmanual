@@ -99,7 +99,7 @@ you push. You only do this once per machine.
 > browser sign-in the *first* time you push — so you may not need `gh` at all; just try Step 4 and follow
 > the prompt. Two more options you'll hear about: a **Personal Access Token** (a long password-like string
 > you generate in GitHub's settings and paste when asked) and **SSH keys** (a more permanent setup). All
-> of them work; `gh auth login` is simply the least painful on day one. Setting up SSH keys is worth doing
+> of them work; `gh auth login` is the least painful on day one. Setting up SSH keys is worth doing
 > eventually — that's a topic for a later guide.
 
 ## Step 4: Push

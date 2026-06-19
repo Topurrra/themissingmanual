@@ -110,7 +110,7 @@ first-push wall, and it catches everyone — old tutorials still tell people to 
 $ gh auth login
 ```
 Follow the browser sign-in (full walkthrough in [Phase 3, Step 3](03-putting-it-on-github.md)), then push
-again. On Windows, simply retrying the push may pop up a browser sign-in from the bundled credential
+again. On Windows, retrying the push may pop up a browser sign-in from the bundled credential
 manager — let it. A Personal Access Token or SSH key also work; you only need one of them.
 
 ## 5. `Updates were rejected (fetch first)`

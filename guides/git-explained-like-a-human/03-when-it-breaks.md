@@ -79,17 +79,10 @@ the actual code. You want to rewind the commit and keep the changes.
 commit. The only real question is what happens to the *changes* from the commit you're undoing — and
 that's the single difference between the three forms of `reset`.
 
-```text
-        reset moves the "main" label back by one commit:
-
-        ┌────┐     ┌────┐     ┌────┐
-        │ C1 │ ◄── │ C2 │ ◄── │ C3 │   ← C3 still exists; it is not deleted
-        └────┘     └────┘     └────┘
-                     ▲
-                     │   (main was on C3; reset moved it back to C2)
-                  ┌──────┐
-                  │ main │
-                  └──────┘
+```mermaid
+flowchart LR
+  C1 --> C2 --> C3
+  main(main) -.->|"reset moved it back"| C2
 ```
 The label moves from C3 back to C2. The three flavors decide what happens to the *contents* of C3:
 

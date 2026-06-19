@@ -38,16 +38,13 @@ snapshot.
 saving little diffs and stacking them up. That picture falls apart the first time you try to undo
 something. The truth — *each commit is a complete snapshot* — is what makes everything else make sense.
 
-```text
-        oldest  ─────────────►  newest    (time flows this way)
-
-        ┌────┐     ┌────┐     ┌────┐
-        │ C1 │ ◄── │ C2 │ ◄── │ C3 │
-        └────┘     └────┘     └────┘
-        each box  = a complete snapshot of every file in your project
-        each ◄──  = "this commit remembers the one before it (its parent)"
+```mermaid
+gitGraph
+  commit id: "C1"
+  commit id: "C2"
+  commit id: "C3"
 ```
-Each commit points back at the one before it. Follow the arrows backward and you're walking through
+Each box is a complete snapshot; each commit points back at the one before it (its parent). Follow the arrows backward and you're walking through
 history, one complete snapshot at a time.
 
 **A real example.**
@@ -72,37 +69,26 @@ name on it, stuck onto one specific commit.** That's the whole thing. `main` is 
 project. It's not a folder. It's a label — a small pointer — that says "this commit is the tip of
 `main`."
 
-```text
-        oldest  ─────────────►  newest    (time flows this way)
-
-        ┌────┐     ┌────┐     ┌────┐
-        │ C1 │ ◄── │ C2 │ ◄── │ C3 │
-        └────┘     └────┘     └────┘
-                                ▲
-                                │
-                             ┌──────┐
-                             │ main │   ← the "main" sticky note,
-                             └──────┘     stuck on C3 (the newest commit)
-
-        each ◄── means "this commit remembers the one before it (its parent)"
+```mermaid
+gitGraph
+  commit id: "C1"
+  commit id: "C2"
+  commit id: "C3"
 ```
+The `main` label sits on C3, the newest commit — a sticky note, not a copy of your project.
 
 **What it does in real life.** When you make a new commit on `main`, Git creates the snapshot and then
 *peels the sticky note off the old commit and sticks it on the new one*. The label always moves to
 point at the newest commit on that branch.
 
-```text
-        ...then you commit C4, and Git slides the sticky note forward:
-
-        ┌────┐     ┌────┐     ┌────┐     ┌────┐
-        │ C1 │ ◄── │ C2 │ ◄── │ C3 │ ◄── │ C4 │
-        └────┘     └────┘     └────┘     └────┘
-                                          ▲
-                                          │
-                                       ┌──────┐
-                                       │ main │   ← Git peeled "main" off C3
-                                       └──────┘     and stuck it on C4, on its own
+```mermaid
+gitGraph
+  commit id: "C1"
+  commit id: "C2"
+  commit id: "C3"
+  commit id: "C4"
 ```
+You commit C4, and Git peels the `main` label off C3 and sticks it on C4 — the label always rides the newest commit.
 
 **A real example.** Creating a branch costs almost nothing, because you're adding a second sticky note
 and nothing else:
@@ -126,18 +112,11 @@ onto this one — it's the most valuable idea in Git.
 **What it actually is.** `HEAD` is the "you are here" arrow on the map. It points at the branch you're
 currently on — and therefore at the commit you're currently sitting on.
 
-```text
-                             HEAD         ← "you are here"
-                                │
-                                ▼
-                             ┌──────┐
-                             │ main │     ← the branch you're on
-                             └──────┘
-                                │
-                                ▼
-        ┌────┐     ┌────┐     ┌────┐
-        │ C1 │ ◄── │ C2 │ ◄── │ C3 │      ← main points at C3,
-        └────┘     └────┘     └────┘         so that's where you are
+```mermaid
+flowchart TD
+  HEAD(HEAD) --> main(main)
+  main --> C3
+  C1 --> C2 --> C3
 ```
 Read it as: "you are on `main`, which is currently at commit C3."
 
@@ -166,13 +145,10 @@ a sticky note there: `git switch -c my-branch`.
 *three* places. This is the source of more confusion than anything else in Git, and it's genuinely
 simple once you draw it:
 
-```text
-  working           staging            repository
-  directory         area               (history)
-  (your edits)      (the "next         (committed
-                     commit" box)       snapshots)
-
-   file.js  ──add──►  file.js  ──commit──►  C4
+```mermaid
+flowchart LR
+  W(working directory) -->|add| S(staging area)
+  S -->|commit| R(repository)
 ```
 
 1. **Working directory** — your actual files, with your actual edits. What you see in your editor.
@@ -217,13 +193,10 @@ there are three places, you always know which one to look in.
 that lives somewhere else — on GitHub, GitLab, a company server. It isn't special. It isn't "the real
 one." It's a peer copy that you sync with.
 
-```text
-   your computer                        origin (e.g. GitHub)
-   ┌─────────────┐                      ┌─────────────┐
-   │ C1◄C2◄C3    │   ◄── push / pull ──►│ C1◄C2◄C3    │
-   │     ▲       │                      │     ▲       │
-   │   main      │                      │   main      │
-   └─────────────┘                      └─────────────┘
+```mermaid
+flowchart LR
+  L(your computer) -->|push| O(origin)
+  O -->|fetch / pull| L
 ```
 
 **What it does in real life.** Three sync operations move commits between the copies:

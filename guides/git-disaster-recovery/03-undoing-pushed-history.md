@@ -54,7 +54,7 @@ Memorize the spirit: **rewriting history is fine until that history is shared; a
 
 **What it actually is.** `git revert` doesn't delete or rewrite anything. It creates a **brand-new commit**
 that is the exact *inverse* of a previous one — whatever that commit added, the revert removes, and vice
-versa. History stays intact; you've simply appended "...and now undo that."
+versa. History stays intact; you've appended "...and now undo that."
 
 **Why it's the safe choice.** Because it only adds a commit, everyone else's history still matches yours.
 There's nothing to force, nothing to clobber. This is how you undo something on `main` without causing a
@@ -108,7 +108,7 @@ want.
 🪖 **War story.** A teammate once ran `git push --force` on `main` to "clean up" his branch, not realizing
 two other people had merged that morning. Their commits vanished from the remote — recoverable only because
 someone still had them in a local reflog. An hour of everyone's day went to the rescue. `--force-with-lease`
-would have simply refused the push. The lease isn't training wheels; it's the seatbelt seniors keep on.
+would have refused the push. The lease isn't training wheels; it's the seatbelt seniors keep on.
 
 ## 4. Communicate — the part Git can't do for you
 
