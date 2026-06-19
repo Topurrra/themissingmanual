@@ -16,7 +16,7 @@ integer (position within its category).
    explains *what the tool is showing you* (not a click-by-click UI tour, which ages badly). Tool guides
    live in their concept category (Dynatrace → `performance`, Postman → `apis`, Wireshark → `networking`).
 
-The 16 categories below match `content-core::categories::DEFS` (the canonical taxonomy) and appear in
+The 17 categories below match `content-core::categories::DEFS` (the canonical taxonomy) and appear in
 that display order.
 
 ## Legend
@@ -69,8 +69,10 @@ that display order.
 | 6 | `troubleshooting-networks` | Troubleshooting Networks 🛠️ | intermediate | ✅ |
 | 7 | `designing-an-enterprise-network` | Designing an Enterprise Network | advanced | ✅ |
 
-### programming-languages ✅ COMPLETE
-*Languages and features explained the way they should have been. Feeds the backend track `language` step.*
+### programming-concepts ✅ COMPLETE
+*The ideas under every language — how code runs, data structures, async, memory, big-O, and choosing a
+language. Language-agnostic; split out of `programming-languages` so the languages category holds only
+actual languages.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -82,10 +84,16 @@ that display order.
 | 6 | `memory-and-garbage-collection` | Memory & Garbage Collection, Explained | intermediate | ✅ |
 | 7 | `languages-explained-like-a-human` | Python, JavaScript, Go & Rust — Explained Like a Human ⭐ | beginner | ✅ |
 | 8 | `oop-vs-functional` | Object-Oriented vs Functional, Honestly | intermediate | ✅ |
-| 9 | `python-from-zero` | Python From Zero (A→Z, 10 phases; big idea = OOP) | beginner→advanced | ✅ |
-| 10 | `javascript-from-zero` | JavaScript From Zero (A→Z, 10 phases; big idea = async & the DOM) | beginner→advanced | ✅ |
-| 11 | `go-from-zero` | Go From Zero (A→Z, 10 phases; big idea = goroutines & channels) | beginner→advanced | ✅ |
-| 12 | `rust-from-zero` | Rust From Zero (A→Z, 10 phases; big idea = ownership & borrowing) | beginner→advanced | ✅ |
+
+### programming-languages ✅ COMPLETE
+*One A→Z course per language (zero → advanced). Feeds the backend track `language` step.*
+
+| order | slug | guide | difficulty | status |
+|---|---|---|---|---|
+| 1 | `python-from-zero` | Python From Zero (A→Z, 10 phases; big idea = OOP) | beginner→advanced | ✅ |
+| 2 | `javascript-from-zero` | JavaScript From Zero (A→Z, 10 phases; big idea = async & the DOM) | beginner→advanced | ✅ |
+| 3 | `go-from-zero` | Go From Zero (A→Z, 10 phases; big idea = goroutines & channels) | beginner→advanced | ✅ |
+| 4 | `rust-from-zero` | Rust From Zero (A→Z, 10 phases; big idea = ownership & borrowing) | beginner→advanced | ✅ |
 
 ### version-control ✅ COMPLETE
 *The flagship ladder — a full beginner→advanced run. The model every other category should copy.*
@@ -286,7 +294,7 @@ No rush — tracks pay off once their steps resolve to live guides; today most a
 - Files: `guides/<slug>/_guide.md` (phase 0, carries `category`) + `NN-name.md` phases.
 - Frontmatter on every file; `_guide.md` needs `category` + `order:` (its rung number in the table above) +
   `difficulty`. Keep the `order:` values matching this doc so the sidebar ladders A→Z.
-- **Category** must be one of the 16 canonical slugs in `content-core::categories::DEFS`. Adding a category =
+- **Category** must be one of the 17 canonical slugs in `content-core::categories::DEFS`. Adding a category =
   one `DEFS` entry (it re-seeds on boot).
 - Internal links: relative `.md` *within the same guide* (ingest rewrites them). **Cross-guide links must use
   the absolute web route** `/guides/<slug>` — the rewriter only handles same-guide prefix-less `.md` names.
