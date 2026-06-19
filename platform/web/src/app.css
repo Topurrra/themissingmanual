@@ -1009,8 +1009,8 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
    Admin console
    ============================================================================= */
 .admin-bar {
-  display: flex; align-items: center; gap: 1.5rem;
-  padding: 0.7rem 1.5rem; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 0.9rem;
+  padding: 0.6rem 1.25rem; border-bottom: 1px solid var(--line);
   position: sticky; top: 0; z-index: 40;
   background: color-mix(in srgb, var(--bg) 82%, transparent);
   -webkit-backdrop-filter: saturate(180%) blur(12px);
@@ -1023,14 +1023,9 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 }
 .admin-brand span { color: var(--accent); font-weight: 500; }
 .admin-brand:hover { text-decoration: none; color: var(--ink); }
-.admin-nav { display: flex; gap: 0.4rem; }
-.admin-nav a {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.4rem 0.7rem; border-radius: 8px; color: var(--muted); font-size: 0.95rem;
-}
-.admin-nav a:hover { background: var(--surface); color: var(--ink); text-decoration: none; }
-.admin-nav a.on { color: var(--accent); background: var(--accent-tint); }
 .admin-spacer { margin-left: auto; }
+/* header settings gear — active state mirrors a sidebar 'on' link */
+.adm-gear.on { color: var(--accent); border-color: var(--accent); }
 .admin-logout { margin-left: 0; }
 .admin-logout button, .admin-btn {
   display: inline-flex; align-items: center; gap: 0.4rem;
@@ -1042,7 +1037,93 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .admin-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
 .admin-btn.primary:hover { background: var(--accent-strong); color: #fff; }
 .admin-btn.danger:hover { color: var(--danger); }
-.admin-main { max-width: 1100px; margin: 0 auto; padding: 1.8rem 1.5rem 4rem; }
+
+/* -----------------------------------------------------------------------------
+   Admin shell + collapsible left sidebar. Mirrors the public .shell/.sidebar
+   pattern (collapse animates the sidebar WIDTH, the grid track follows it), but
+   is namespaced .adm-* so it can't collide with the public reading shell.
+   --------------------------------------------------------------------------- */
+.adm-shell {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+}
+.adm-sidebar {
+  width: 218px;
+  position: sticky;
+  top: 53px;
+  height: calc(100vh - 53px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px solid var(--line);
+  padding: 1.2rem 0.8rem 2rem;
+  transition: width 0.3s var(--ease), opacity 0.24s var(--ease),
+              padding 0.3s var(--ease), border-color 0.2s var(--ease);
+}
+.adm-shell.collapsed .adm-sidebar {
+  width: 0;
+  opacity: 0;
+  padding-left: 0;
+  padding-right: 0;
+  border-color: transparent;
+  pointer-events: none;
+}
+.adm-nav { display: flex; flex-direction: column; gap: 2px; }
+.adm-nav a {
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.5rem 0.7rem; border-radius: 9px;
+  color: var(--muted); font-size: 0.95rem; white-space: nowrap;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease);
+}
+.adm-nav a:hover { background: var(--surface); color: var(--ink); text-decoration: none; }
+.adm-nav a.on { color: var(--accent); background: var(--accent-tint); font-weight: 500; }
+.adm-nav a .ti { font-size: 18px; flex: none; }
+.adm-nav-label { overflow: hidden; text-overflow: ellipsis; }
+
+/* header collapse toggle — same affordance as the public .rail-btn */
+.adm-rail-btn {
+  flex: none;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--faint);
+  cursor: pointer;
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  display: inline-grid; place-items: center;
+  transition: all 0.15s var(--ease);
+}
+.adm-rail-btn:hover { background: var(--surface); color: var(--ink); }
+.adm-rail-btn .ti { font-size: 19px; }
+
+.admin-main { max-width: 1100px; width: 100%; justify-self: center; min-width: 0; padding: 1.8rem 1.8rem 4rem; }
+
+/* Mobile: the admin sidebar becomes an off-canvas overlay so the main column
+   spans full width. Toggling collapse slides it in/out via translateX. */
+@media (max-width: 760px) {
+  .adm-shell { grid-template-columns: 1fr; }
+  .adm-sidebar {
+    position: fixed;
+    left: 0; top: 53px; bottom: 0;
+    width: 218px; height: auto;
+    background: var(--bg);
+    z-index: 39;
+    opacity: 1;
+    padding: 1.2rem 0.8rem 2rem;
+    border-right: 1px solid var(--line);
+    box-shadow: var(--shadow-pop);
+    transform: translateX(0);
+    transition: transform 0.28s var(--ease);
+    pointer-events: auto;
+  }
+  .adm-shell.collapsed .adm-sidebar {
+    width: 218px; opacity: 1;
+    padding: 1.2rem 0.8rem 2rem;
+    border-color: var(--line);
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+  .admin-main { padding: 1.4rem 1.1rem 3rem; }
+}
 .admin-h1 { font-size: 1.6rem; margin: 0 0 1rem; }
 .admin-h2 { font-size: 1.1rem; margin: 1.8rem 0 0.8rem; }
 .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }

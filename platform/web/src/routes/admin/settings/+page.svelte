@@ -1,5 +1,5 @@
 <script>
-  import { adminPut } from '$lib/admin.js';
+  import { adminPut, adminUpload } from '$lib/admin.js';
 
   export let data;
 
@@ -19,11 +19,58 @@
   let runnable = isOn(data.flag_runnable);
   let mermaid = isOn(data.flag_mermaid);
 
+  // Lofi playlist — a JSON string of [{ title, artist, src }] stored under
+  // lofi_tracks. Seed defensively: invalid/empty ⇒ [].
+  let tracks = (() => {
+    try {
+      const parsed = JSON.parse(data.lofi_tracks || '');
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {}
+    return [];
+  })();
+  let trackTitle = '';
+  let trackArtist = '';
+  let pendingFile = null; // { url, name } once an upload finishes
+  let uploading = false;
+  let uploadErr = '';
+
   let saving = false;
   let ok = '';
   let err = '';
   let sponsorsErr = '';
   let socialErr = '';
+
+  async function onAudioPick(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    uploadErr = '';
+    uploading = true;
+    pendingFile = null;
+    try {
+      const { url } = await adminUpload(file);
+      pendingFile = { url, name: file.name };
+      if (!trackTitle) trackTitle = file.name.replace(/\.[^.]+$/, '');
+    } catch (e2) {
+      uploadErr = e2.message || 'Upload failed';
+    } finally {
+      uploading = false;
+    }
+  }
+
+  function addTrack() {
+    if (!pendingFile) return;
+    tracks = [
+      ...tracks,
+      { title: (trackTitle || pendingFile.name).trim(), artist: trackArtist.trim(), src: pendingFile.url }
+    ];
+    trackTitle = '';
+    trackArtist = '';
+    pendingFile = null;
+  }
+
+  function removeTrack(i) {
+    tracks = tracks.filter((_, idx) => idx !== i);
+  }
 
   // The pristine snapshot, for the "unsaved changes" hint.
   const initial = JSON.stringify({
@@ -72,7 +119,8 @@
       social: String(social ?? '').trim() === '' ? '' : social,
       flag_lofi: lofi ? '1' : '0',
       flag_runnable: runnable ? '1' : '0',
-      flag_mermaid: mermaid ? '1' : '0'
+      flag_mermaid: mermaid ? '1' : '0',
+      lofi_tracks: JSON.stringify(tracks)
     };
 
     saving = true;
@@ -135,6 +183,56 @@
       <span class="set-track" aria-hidden="true"></span>
       <span class="set-toggle-label">Mermaid diagrams</span>
     </label>
+  </section>
+
+  <section class="set-group">
+    <h2 class="admin-h2">Lofi music</h2>
+    <p class="set-hint">Upload audio and build the lofi playlist. The header player uses it live; saved with the rest of these settings.</p>
+
+    <div class="lofi-add">
+      <label class="admin-field set-field">
+        <span>Audio file</span>
+        <input type="file" accept="audio/*" on:change={onAudioPick} disabled={uploading} />
+      </label>
+      {#if uploading}<span class="set-hint">Uploading…</span>{/if}
+      {#if uploadErr}<p class="admin-err set-jsonerr">{uploadErr}</p>{/if}
+      {#if pendingFile}
+        <p class="set-hint">Ready: <code>{pendingFile.name}</code></p>
+      {/if}
+
+      <label class="admin-field set-field">
+        <span>Title</span>
+        <input type="text" bind:value={trackTitle} placeholder="Track title" />
+      </label>
+      <label class="admin-field set-field">
+        <span>Artist</span>
+        <input type="text" bind:value={trackArtist} placeholder="Artist" />
+      </label>
+
+      <button type="button" class="admin-btn" on:click={addTrack} disabled={!pendingFile}>
+        <i class="ti ti-plus" aria-hidden="true"></i> Add track
+      </button>
+    </div>
+
+    {#if tracks.length}
+      <ul class="lofi-list">
+        {#each tracks as t, i}
+          <li class="lofi-item">
+            <div class="lofi-item-meta">
+              <span class="lofi-item-title">{t.title || 'Untitled'}</span>
+              {#if t.artist}<span class="lofi-item-artist">— {t.artist}</span>{/if}
+            </div>
+            <audio class="lofi-item-audio" controls preload="none" src={t.src}></audio>
+            <button type="button" class="lofi-item-x" on:click={() => removeTrack(i)}
+              aria-label="Remove track" title="Remove">
+              <i class="ti ti-x" aria-hidden="true"></i>
+            </button>
+          </li>
+        {/each}
+      </ul>
+    {:else}
+      <p class="set-hint">No tracks yet — the player falls back to the built-in placeholders.</p>
+    {/if}
   </section>
 
   <section class="set-group">
@@ -227,6 +325,87 @@
   }
   .set-jsonerr {
     margin: 0.1rem 0 0;
+  }
+
+  /* Lofi playlist editor */
+  .lofi-add {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: flex-start;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+  .lofi-add .set-field {
+    width: 100%;
+  }
+  .lofi-add input[type='file'] {
+    font-size: 0.85rem;
+    color: var(--body);
+  }
+  .lofi-list {
+    list-style: none;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .lofi-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--bg);
+  }
+  .lofi-item-meta {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem;
+  }
+  .lofi-item-title {
+    font-size: 0.92rem;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .lofi-item-artist {
+    font-size: 0.8rem;
+    color: var(--faint);
+  }
+  .lofi-item-audio {
+    flex: 0 0 auto;
+    height: 30px;
+    max-width: 220px;
+  }
+  .lofi-item-x {
+    flex: none;
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: inline-grid;
+    place-items: center;
+    transition: background 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease);
+  }
+  .lofi-item-x:hover {
+    background: var(--surface);
+    color: var(--danger);
+    border-color: var(--danger);
+  }
+  .lofi-item-x .ti {
+    font-size: 16px;
   }
 
   /* On/off switch */

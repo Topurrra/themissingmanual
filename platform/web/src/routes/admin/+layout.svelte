@@ -1,11 +1,14 @@
 <script>
   import '../../app.css';
   import { page } from '$app/stores';
+  import { onMount } from 'svelte';
   import Appearance from '$lib/Appearance.svelte';
+  import LofiPlayer from '$lib/LofiPlayer.svelte';
 
   $: path = $page.url.pathname;
   $: bare = path === '/admin/login';
 
+  // Sidebar nav — everything EXCEPT Settings (Settings lives in the header gear).
   const nav = [
     { href: '/admin', label: 'Dashboard', icon: 'ti-layout-dashboard' },
     { href: '/admin/content', label: 'Content', icon: 'ti-files' },
@@ -15,11 +18,24 @@
     { href: '/admin/feedback', label: 'Feedback', icon: 'ti-message-2' },
     { href: '/admin/health', label: 'Health', icon: 'ti-stethoscope' },
     { href: '/admin/operations', label: 'Operations', icon: 'ti-server-cog' },
-    { href: '/admin/settings', label: 'Settings', icon: 'ti-settings' },
     { href: '/admin/account', label: 'Account', icon: 'ti-user' }
   ];
   function active(href) {
     return href === '/admin' ? path === '/admin' : path.startsWith(href);
+  }
+  $: onSettings = path.startsWith('/admin/settings');
+
+  let collapsed = false;
+  onMount(() => {
+    try {
+      collapsed = localStorage.getItem('tmm-admin-sidebar') === 'collapsed';
+    } catch (e) {}
+  });
+  function toggleSidebar() {
+    collapsed = !collapsed;
+    try {
+      localStorage.setItem('tmm-admin-sidebar', collapsed ? 'collapsed' : 'open');
+    } catch (e) {}
   }
 </script>
 
@@ -28,18 +44,36 @@
 {:else}
   <div class="admin">
     <header class="admin-bar">
+      <button class="adm-rail-btn" on:click={toggleSidebar}
+        aria-label={collapsed ? 'Show sidebar' : 'Collapse sidebar'}
+        title={collapsed ? 'Show sidebar' : 'Collapse sidebar'}>
+        <i class="ti ti-menu-2" aria-hidden="true"></i>
+      </button>
       <a href="/admin" class="admin-brand">The Missing Manual <span>admin</span></a>
-      <nav class="admin-nav">
-        {#each nav as n}
-          <a href={n.href} class:on={active(n.href)}><i class={`ti ${n.icon}`} aria-hidden="true"></i> {n.label}</a>
-        {/each}
-      </nav>
       <span class="admin-spacer"></span>
+      <a href="/admin/settings" class="icon-btn adm-gear" class:on={onSettings}
+        aria-label="Settings" title="Settings" aria-current={onSettings ? 'page' : undefined}>
+        <i class="ti ti-settings" aria-hidden="true"></i>
+      </a>
+      <LofiPlayer />
       <Appearance />
       <form method="POST" action="/admin/login?/logout" class="admin-logout">
         <button type="submit"><i class="ti ti-logout" aria-hidden="true"></i> Logout</button>
       </form>
     </header>
-    <main class="admin-main"><slot /></main>
+    <div class="adm-shell" class:collapsed>
+      <aside class="adm-sidebar">
+        <nav class="adm-nav">
+          {#each nav as n}
+            <a href={n.href} class:on={active(n.href)}
+              aria-current={active(n.href) ? 'page' : undefined} title={n.label}>
+              <i class={`ti ${n.icon}`} aria-hidden="true"></i>
+              <span class="adm-nav-label">{n.label}</span>
+            </a>
+          {/each}
+        </nav>
+      </aside>
+      <main class="admin-main"><slot /></main>
+    </div>
   </div>
 {/if}

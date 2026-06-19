@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import { TRACKS } from '$lib/lofi-tracks.js';
   import { lofiEnabled, setLofiEnabled, syncLofiEnabled } from '$lib/lofi-store.js';
 
@@ -14,8 +15,6 @@
   const TRACK_KEY = 'tmm-lofi-track';
   const VOL_STEP = 0.1;
 
-  const hasTracks = TRACKS.length > 0;
-
   let audio; // bound <audio> element
   let open = false; // transport popover open
   let playing = false;
@@ -24,7 +23,24 @@
   let ready = false; // mounted on client — gates rendering of stored state
 
   $: enabled = $lofiEnabled;
-  $: track = hasTracks ? TRACKS[index] : null;
+
+  // Active playlist: prefer the admin-managed list from site config
+  // (lofi_tracks — a JSON string of [{ title, artist, src }]); fall back to the
+  // built-in TRACKS. Keep only well-formed entries (a non-empty `src`).
+  $: list = (() => {
+    try {
+      const parsed = JSON.parse($page.data?.siteConfig?.lofi_tracks || '');
+      if (Array.isArray(parsed)) {
+        const clean = parsed.filter((t) => t && typeof t.src === 'string' && t.src.trim());
+        if (clean.length) return clean;
+      }
+    } catch (e) {}
+    return TRACKS;
+  })();
+  $: hasTracks = list.length > 0;
+  // Keep the index valid when the active list changes (e.g. admin shortens it).
+  $: if (index >= list.length) index = 0;
+  $: track = hasTracks ? list[index] : null;
   $: volPct = Math.round(volume * 100);
 
   onMount(() => {
@@ -33,7 +49,7 @@
       const v = parseFloat(localStorage.getItem(VOL_KEY));
       if (!Number.isNaN(v)) volume = Math.min(1, Math.max(0, v));
       const t = parseInt(localStorage.getItem(TRACK_KEY), 10);
-      if (!Number.isNaN(t) && t >= 0 && t < TRACKS.length) index = t;
+      if (!Number.isNaN(t) && t >= 0 && t < list.length) index = t;
     } catch (e) {}
     if (audio) audio.volume = volume;
     ready = true;
@@ -68,13 +84,13 @@
   }
   function next() {
     if (!hasTracks) return;
-    index = (index + 1) % TRACKS.length;
+    index = (index + 1) % list.length;
     persistTrack();
     if (playing) queueMicrotask(play);
   }
   function prev() {
     if (!hasTracks) return;
-    index = (index - 1 + TRACKS.length) % TRACKS.length;
+    index = (index - 1 + list.length) % list.length;
     persistTrack();
     if (playing) queueMicrotask(play);
   }

@@ -477,6 +477,10 @@ const SITE_SETTING_KEYS: &[&str] = &[
     "flag_lofi",
     "flag_runnable",
     "flag_mermaid",
+    // JSON array of admin-uploaded lofi tracks: [{title, artist, src}]. The
+    // player reads this from /api/site-config; empty falls back to the built-in
+    // tracks. Uploaded audio is stored via the asset endpoint (src=/assets/<id>).
+    "lofi_tracks",
 ];
 
 fn read_site_settings(state: &AppState) -> Result<serde_json::Value, content_core::store::StoreError> {

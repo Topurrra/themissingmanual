@@ -56,7 +56,7 @@ Goal: let an admin run the whole platform from `/admin`. Status legend: **TODO**
 |---|---|---|
 | Manage footer sponsors / social / site name & tagline from admin | ★ ⚙️⬜ | DONE |
 | Feature flags (lofi, runnable, mermaid, palette); announcement banner; maintenance mode | ⚙️⬜ | DONE (flags + announcement) — maintenance mode TODO |
-| Lofi playlist manager (upload tracks, edit manifest) | ⚙️⬜ | TODO |
+| Lofi playlist manager (upload tracks, edit manifest) | ⚙️⬜ | DONE (Settings · Music — upload audio + playlist) |
 | SEO — meta defaults, sitemap, robots, RSS settings | ⚙️⬜ | TODO |
 
 ## 6. Users, access & audit — ⏸️ PARKED (2026-06-19)

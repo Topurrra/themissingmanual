@@ -10,6 +10,9 @@ services:
       BIND_ADDR: 0.0.0.0:3000
       CONTENT_ROOT: .
       DB_PATH: /data/manual.db
+      # Max uploaded-asset size. Raised from the 5 MiB default so admins can
+      # upload full lofi tracks (audio) from the Settings → Music section.
+      ASSET_MAX_BYTES: ${ASSET_MAX_BYTES:-20971520}
       # Enable the admin console by setting a password hash. Generate one with:
       #   docker compose run --rm api server hash-password "your-password"
       # then export ADMIN_PASSWORD_HASH (e.g. in a .env file beside this compose file).
