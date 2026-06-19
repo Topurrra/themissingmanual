@@ -65,5 +65,15 @@ pub struct SearchHit {
     pub phase_no: u32,
     pub title: String,
     pub summary: String,
+    /// Highlighted passage from the body showing why this matched (HTML with `<b>` marks).
+    #[serde(default)]
+    pub snippet: String,
     pub score: f32,
+}
+
+/// Search response: the ranked hits plus an optional "did you mean" correction.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SearchResults {
+    pub hits: Vec<SearchHit>,
+    pub suggestion: Option<String>,
 }

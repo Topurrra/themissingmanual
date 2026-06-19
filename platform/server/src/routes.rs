@@ -119,7 +119,17 @@ async fn search(State(state): State<Arc<AppState>>, Query(params): Query<SearchP
         return (StatusCode::BAD_REQUEST, Json(serde_json::json!({ "error": "query `q` is required" }))).into_response();
     }
     match state.index.search(&params.q, 20) {
-        Ok(hits) => Json(hits).into_response(),
+        Ok(results) => {
+            // Body stays the hits array (non-breaking); the optional "did you mean"
+            // rides in a header so existing clients keep working unchanged.
+            let mut resp = Json(results.hits).into_response();
+            if let Some(s) = results.suggestion {
+                if let Ok(val) = header::HeaderValue::from_str(&s) {
+                    resp.headers_mut().insert("x-search-suggestion", val);
+                }
+            }
+            resp
+        }
         Err(e) => server_error(e),
     }
 }

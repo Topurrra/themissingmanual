@@ -160,7 +160,7 @@ updated: 2026-06-17\n\
         let p = store.get_phase("demo", 1).unwrap().unwrap();
         assert!(p.html.contains("<h1>"));
         assert!(p.markdown.contains("branch"), "markdown source kept for editing");
-        let hits = index.search("branch", 10).unwrap();
+        let hits = index.search("branch", 10).unwrap().hits;
         assert_eq!(hits[0].guide_slug, "demo");
     }
 
