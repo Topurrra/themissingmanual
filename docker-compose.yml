@@ -41,6 +41,10 @@ services:
       # Must match the URL in the browser, or logins/forms get 403. Override for
       # production, e.g. ORIGIN=https://your-domain.
       ORIGIN: ${ORIGIN:-http://localhost:5173}
+      # adapter-node caps request bodies at 512KB by default, which 500s any
+      # audio upload (the admin asset proxy buffers the whole body). Raise it
+      # above the API's asset limit (~21 MiB) so music uploads go through.
+      BODY_SIZE_LIMIT: ${BODY_SIZE_LIMIT:-26214400}
     depends_on:
       - api
 
