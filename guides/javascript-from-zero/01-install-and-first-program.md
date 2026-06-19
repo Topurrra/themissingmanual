@@ -75,7 +75,7 @@ single `-`). `--version` is asking the command "tell me your version and exit."
 
 Create a file called `hello.js` (the `.js` extension is the convention for JavaScript files). Put one line
 in it:
-```javascript
+```javascript runnable
 console.log("Hello, JavaScript!");
 ```
 *What just happened:* `console.log` is the instruction for "print this to the output." The text you want
