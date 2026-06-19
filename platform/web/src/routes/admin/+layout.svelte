@@ -9,10 +9,12 @@
   const nav = [
     { href: '/admin', label: 'Dashboard', icon: 'ti-layout-dashboard' },
     { href: '/admin/content', label: 'Content', icon: 'ti-files' },
+    { href: '/admin/backlog', label: 'Backlog', icon: 'ti-list-search' },
     { href: '/admin/categories', label: 'Categories', icon: 'ti-category' },
     { href: '/admin/analytics', label: 'Analytics', icon: 'ti-chart-bar' },
     { href: '/admin/feedback', label: 'Feedback', icon: 'ti-message-2' },
     { href: '/admin/health', label: 'Health', icon: 'ti-stethoscope' },
+    { href: '/admin/operations', label: 'Operations', icon: 'ti-server-cog' },
     { href: '/admin/settings', label: 'Settings', icon: 'ti-settings' },
     { href: '/admin/account', label: 'Account', icon: 'ti-user' }
   ];

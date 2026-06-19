@@ -38,9 +38,9 @@ Goal: let an admin run the whole platform from `/admin`. Status legend: **TODO**
 ## 3. Search & discoverability
 | Item | Markers | Status |
 |---|---|---|
-| Content-backlog board — dead searches → one-click "draft a guide" | ★ ⚙️⬜ | BACKEND ✅ — ⬜ FE |
+| Content-backlog board — dead searches → one-click "draft a guide" | ★ ⚙️⬜ | DONE |
 | Search tuning — synonyms, pin/boost, fix "did you mean" ranking | ⚙️ | PARTIAL — did-you-mean ranking fixed; synonyms/pin/boost TODO |
-| Rebuild-search-index button | ⚙️ | BACKEND ✅ (POST /api/admin/sync) — ⬜ FE button |
+| Rebuild-search-index button | ⚙️ | DONE (Operations · re-ingest) |
 | Featured / pinned guides on the homepage | ⚙️⬜ | TODO |
 
 ## 4. Analytics, feedback & insights
@@ -74,8 +74,8 @@ Goal: let an admin run the whole platform from `/admin`. Status legend: **TODO**
 ## 7. Operations / system
 | Item | Markers | Status |
 |---|---|---|
-| Re-ingest / reindex button + cache clear (no API restart needed) | ★ ⚙️ | BACKEND ✅ (POST /api/admin/sync) — ⬜ FE button |
-| System status panel — API health, version, DB/index size, recent errors | ⚙️ | BACKEND ✅ (GET /api/admin/status) — ⬜ FE |
+| Re-ingest / reindex button + cache clear (no API restart needed) | ★ ⚙️ | DONE (Operations) |
+| System status panel — API health, version, DB/index size, recent errors | ⚙️ | DONE (Operations) |
 | DB backup / restore (export/import) | ⚙️ | TODO |
 
 ---

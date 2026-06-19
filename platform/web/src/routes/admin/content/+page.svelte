@@ -1,11 +1,25 @@
 <script>
   import { enhance } from '$app/forms';
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import { adminPost } from '$lib/admin.js';
   import { invalidateAll } from '$app/navigation';
   export let data;
   export let form;
   $: ({ guides, categories } = data);
   let showNew = false;
+
+  // Prefill from ?new=<query> (e.g. "Draft a guide" on the Backlog page): open the
+  // new-topic form and seed its title. Read once on mount so the user can still
+  // edit/close it freely.
+  let newTitle = '';
+  onMount(() => {
+    const seed = $page.url.searchParams.get('new');
+    if (seed) {
+      newTitle = seed;
+      showNew = true;
+    }
+  });
 
   // ---- Filter / sort / search (client-side over the SSR-loaded list) ----
   let fStatus = 'all';      // all | published | draft
@@ -236,7 +250,7 @@
 {#if showNew}
   <form method="POST" action="?/create" use:enhance class="new-topic">
     <input name="slug" placeholder="slug (e.g. docker-basics)" required />
-    <input name="title" placeholder="Title" required />
+    <input name="title" placeholder="Title" bind:value={newTitle} required />
     <select name="category">
       {#each categories as c}<option value={c.slug}>{c.name}</option>{/each}
     </select>
