@@ -39,6 +39,18 @@ pub fn html_to_text(html: &str) -> String {
     out
 }
 
+/// Plain text for the **search index**: like [`html_to_text`], but first drops Mermaid diagram
+/// source (`<code class="language-mermaid">…</code>`) so diagram DSL — `flowchart`, `-->`, node
+/// labels — never pollutes search or the "did you mean" vocabulary. The *stored* HTML keeps the
+/// source untouched; the frontend needs it to render the diagram.
+pub fn html_to_index_text(html: &str) -> String {
+    use std::sync::OnceLock;
+    static MERMAID: OnceLock<regex::Regex> = OnceLock::new();
+    let re = MERMAID
+        .get_or_init(|| regex::Regex::new(r#"(?s)<code class="language-mermaid">.*?</code>"#).unwrap());
+    html_to_text(&re.replace_all(html, ""))
+}
+
 /// A content signature of every `guides/**/*.md` under `root`, for cheap change detection.
 /// Hashes each file's relative path + bytes (sorted), so any add, edit, or removal changes it.
 pub fn content_signature(root: &Path) -> u64 {
@@ -87,7 +99,7 @@ pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Sta
             .map_err(|e| IngestError::Frontmatter(path.display().to_string(), e))?;
 
         let html = crate::links::rewrite_internal_links(&render_markdown(&body_md), &fm.guide);
-        let plain = html_to_text(&html);
+        let plain = html_to_index_text(&html); // index excludes Mermaid diagram source
 
         if seen_guides.insert(fm.guide.clone()) {
             // First time we see this guide: clear any stale docs and record the guide row.
@@ -133,6 +145,22 @@ pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Sta
 mod tests {
     use super::*;
     use std::fs;
+
+    #[test]
+    fn mermaid_source_is_excluded_from_index_text() {
+        let html = render_markdown(
+            "Intro prose.\n\n```mermaid\nflowchart LR\n  Apple --> Banana\n```\n\nMore prose.\n",
+        );
+        let idx = html_to_index_text(&html);
+        assert!(idx.contains("Intro prose"), "prose kept: {idx}");
+        assert!(idx.contains("More prose"), "prose kept: {idx}");
+        assert!(
+            !idx.to_lowercase().contains("flowchart"),
+            "diagram DSL must be excluded from the index: {idx}"
+        );
+        // Sanity: a plain de-HTML *would* have included it — proving the exclusion does work.
+        assert!(html_to_text(&html).to_lowercase().contains("flowchart"));
+    }
 
     #[test]
     fn ingests_a_fixture_guide() {
