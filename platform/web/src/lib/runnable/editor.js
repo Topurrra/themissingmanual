@@ -19,10 +19,42 @@ import {
 } from '@codemirror/commands';
 import {
   syntaxHighlighting,
-  defaultHighlightStyle,
+  HighlightStyle,
   bracketMatching,
   indentOnInput
 } from '@codemirror/language';
+import { tags as t } from '@lezer/highlight';
+
+// JetBrains "Darcula"-style highlighting. The editor surface is always dark
+// (--code-bg is dark in both site themes), so CM6's default light style left
+// keywords (#708 etc.) nearly invisible — these are bright tokens tuned for a
+// dark background: orange keywords, yellow functions, green strings, blue
+// numbers, purple constants/fields, grey-italic comments.
+const FG = '#a9b7c6';
+const jetbrainsHighlightStyle = HighlightStyle.define([
+  { tag: [t.keyword, t.modifier, t.controlKeyword, t.operatorKeyword, t.definitionKeyword, t.moduleKeyword], color: '#cc7832' },
+  { tag: [t.bool, t.null, t.atom, t.self], color: '#cc7832' },
+  { tag: [t.name, t.variableName, t.character, t.deleted], color: FG },
+  { tag: [t.propertyName], color: '#9876aa' },
+  { tag: [t.function(t.variableName), t.function(t.propertyName), t.definition(t.function(t.variableName))], color: '#ffc66d' },
+  { tag: [t.labelName], color: FG },
+  { tag: [t.constant(t.variableName), t.standard(t.name), t.color], color: '#9876aa' },
+  { tag: [t.className, t.typeName, t.namespace], color: FG },
+  { tag: [t.number, t.integer, t.float], color: '#6897bb' },
+  { tag: [t.string, t.special(t.string), t.regexp, t.attributeValue], color: '#6a8759' },
+  { tag: [t.escape], color: '#cc7832' },
+  { tag: [t.comment, t.lineComment, t.blockComment], color: '#808080', fontStyle: 'italic' },
+  { tag: [t.docComment], color: '#629755', fontStyle: 'italic' },
+  { tag: [t.meta, t.annotation], color: '#bbb529' },
+  { tag: [t.operator, t.punctuation, t.separator, t.bracket, t.brace, t.paren], color: FG },
+  { tag: [t.tagName], color: '#e8bf6a' },
+  { tag: [t.attributeName], color: '#bababa' },
+  { tag: [t.invalid], color: '#bc3f3c' },
+  { tag: [t.heading], color: '#cc7832', fontWeight: 'bold' },
+  { tag: [t.strong], fontWeight: 'bold' },
+  { tag: [t.emphasis], fontStyle: 'italic' },
+  { tag: [t.link, t.url], color: '#287bde', textDecoration: 'underline' }
+]);
 
 // Read a computed design token off :root, with a fallback.
 function token(name, fallback) {
@@ -88,7 +120,7 @@ export function createEditor({ parent, doc, langExtension }) {
       history(),
       indentOnInput(),
       bracketMatching(),
-      syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+      syntaxHighlighting(jetbrainsHighlightStyle, { fallback: true }),
       keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
       EditorView.contentAttributes.of({ 'aria-label': 'Code editor' }),
       langCompartment.of(langExtension ? [langExtension] : []),
