@@ -16,6 +16,11 @@ async fn main() {
             println!("imported into {}", db.display());
             return;
         }
+        Some("syntax-css") => {
+            // Emit the CSS for the `tok-`-prefixed code-highlight classes (for the frontend).
+            print!("{}", content_core::render::syntax_css());
+            return;
+        }
         Some("create-admin") => {
             let pw = std::env::args().nth(2).expect("usage: server create-admin <password>");
             let (db, _root) = paths();

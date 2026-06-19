@@ -9,6 +9,7 @@ path = "src/lib.rs"
 
 [dependencies]
 comrak = "0.28"
+syntect = "5"
 tantivy = "0.22"
 rusqlite = { version = "0.32", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
