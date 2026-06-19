@@ -1,5 +1,6 @@
 <script>
   import { adminPut, adminUpload } from '$lib/admin.js';
+  import { invalidateAll } from '$app/navigation';
 
   export let data;
 
@@ -33,6 +34,8 @@
   let pendingFile = null; // { url, name } once an upload finishes
   let uploading = false;
   let uploadErr = '';
+  let playlistMsg = '';
+  let playlistErr = '';
 
   let saving = false;
   let ok = '';
@@ -57,7 +60,7 @@
     }
   }
 
-  function addTrack() {
+  async function addTrack() {
     if (!pendingFile) return;
     tracks = [
       ...tracks,
@@ -66,10 +69,27 @@
     trackTitle = '';
     trackArtist = '';
     pendingFile = null;
+    await savePlaylist();
   }
 
-  function removeTrack(i) {
+  async function removeTrack(i) {
     tracks = tracks.filter((_, idx) => idx !== i);
+    await savePlaylist();
+  }
+
+  // Persist ONLY the playlist immediately — so adding/removing a track is live
+  // without hunting for "Save settings". invalidateAll re-fetches the public
+  // site config so the header player swaps to the new list without a reload.
+  async function savePlaylist() {
+    playlistErr = '';
+    playlistMsg = '';
+    try {
+      await adminPut('/settings', { lofi_tracks: JSON.stringify(tracks) });
+      playlistMsg = 'Playlist saved';
+      await invalidateAll();
+    } catch (e) {
+      playlistErr = e.message || 'Could not save the playlist';
+    }
   }
 
   // The pristine snapshot, for the "unsaved changes" hint.
@@ -187,7 +207,7 @@
 
   <section class="set-group">
     <h2 class="admin-h2">Lofi music</h2>
-    <p class="set-hint">Upload audio and build the lofi playlist. The header player uses it live; saved with the rest of these settings.</p>
+    <p class="set-hint">Upload audio and build the lofi playlist. Adding or removing a track <strong>saves immediately</strong> — the header player updates live (no need to hit "Save settings").</p>
 
     <div class="lofi-add">
       <label class="admin-field set-field">
@@ -233,6 +253,14 @@
     {:else}
       <p class="set-hint">No tracks yet — the player falls back to the built-in placeholders.</p>
     {/if}
+
+    <div class="set-actions">
+      <button type="button" class="admin-btn" on:click={savePlaylist}>
+        <i class="ti ti-device-floppy" aria-hidden="true"></i> Save playlist
+      </button>
+      {#if playlistMsg}<span class="admin-note">{playlistMsg}</span>{/if}
+      {#if playlistErr}<span class="admin-err">{playlistErr}</span>{/if}
+    </div>
   </section>
 
   <section class="set-group">
