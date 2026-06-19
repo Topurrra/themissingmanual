@@ -212,10 +212,15 @@ class SqlAdapter {
     if (this.#loading) return this.#loading;
     this.#loading = (async () => {
       onStatus && onStatus('Downloading SQLite runtime (first run only)…');
-      // sql.js ships an ESM build; import it from the CDN and locate its .wasm.
-      const initSqlJs = (await import(/* @vite-ignore */ `${SQLJS_CDN}/sql-wasm.js`)).default
-        || globalThis.initSqlJs;
+      // sql.js dist/sql-wasm.js is a UMD bundle, not an ES module: load it as a
+      // classic <script> (like Pyodide) so it registers globalThis.initSqlJs.
+      // Importing it via import() yields an empty module namespace (no default
+      // export), and the call later fails deep in the minified code with a
+      // cryptic "e is not a function".
+      await loadScript(`${SQLJS_CDN}/sql-wasm.js`);
       onStatus && onStatus('Starting SQLite…');
+      const initSqlJs = globalThis.initSqlJs;
+      if (typeof initSqlJs !== 'function') throw new Error('sql.js failed to register initSqlJs');
       this.#SQL = await initSqlJs({ locateFile: (f) => `${SQLJS_CDN}/${f}` });
       this.#db = new this.#SQL.Database();
       this.#db.run(SEED_SQL);
