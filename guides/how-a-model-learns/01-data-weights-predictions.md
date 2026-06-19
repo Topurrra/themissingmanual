@@ -39,15 +39,11 @@ runs that input through the recipe using its current weights, and out comes a pr
 every time; the weights are what make one model good at spotting spam and another good at finishing
 your sentences.
 
-```text
-        INPUT                 THE MODEL                    OUTPUT
-   ┌──────────────┐     ┌────────────────────┐     ┌──────────────┐
-   │ "free money  │ ──► │  recipe + weights   │ ──► │  spam: 94%   │
-   │  click here" │     │ (the adjustable     │     │  not: 6%     │
-   └──────────────┘     │  numbers)           │     └──────────────┘
-                        └────────────────────┘
-                                 ▲
-                        training set THESE numbers
+```mermaid
+flowchart LR
+  IN["input<br/>'free money click here'"] --> M["the model<br/>recipe + weights"]
+  M --> OUT["output<br/>spam: 94% / not: 6%"]
+  T(training) -.->|sets these numbers| M
 ```
 
 ## So what is a "prediction"?

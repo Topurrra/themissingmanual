@@ -38,17 +38,14 @@ $ ps -o pid,ppid,stat,command
 
 **What it actually is.** No process appears from nowhere. Every process is *started by another process* — its **parent** — forming a family tree. Your terminal starts the commands you type. Firefox starts a process per tab. At the very root sits the first process the kernel launched at boot (PID 1), the ancestor of everything.
 
-```text
-   PID 1  (the first process, started by the kernel at boot)
-     │
-     ├── login / your desktop session
-     │     │
-     │     ├── terminal  (PID 8800)
-     │     │     └── ps  (PID 9032)          ← you typed this
-     │     │
-     │     └── firefox   (PID 4821)
-     │           ├── tab  (PID 9001)
-     │           └── tab  (PID 9002)         ← the browser started these
+```mermaid
+flowchart TD
+  init["PID 1 (first process, started by the kernel at boot)"] --> session[login / your desktop session]
+  session --> terminal[terminal, PID 8800]
+  session --> firefox[firefox, PID 4821]
+  terminal --> ps["ps, PID 9032 (you typed this)"]
+  firefox --> tab1[tab, PID 9001]
+  firefox --> tab2[tab, PID 9002]
 ```
 
 **Why this matters in real life.** The tree explains things that otherwise look like magic. Close Firefox and its tabs vanish too — because killing a parent usually takes its children with it. It also explains *blame*: if some `python` process is eating your CPU, its parent (the `PPID`) tells you *what launched it* — a cron job? your editor? a runaway script? — which is often the real thing to fix.
@@ -72,18 +69,15 @@ $
 
 **What it actually is.** A process is almost never running every instant — it spends most of its life *waiting*. The OS tracks which of a few states each one is in. You don't need the full list; three carry almost all the meaning:
 
-```text
-   RUNNING   ── on a CPU core right now (or ready and waiting its turn).
-               This is the only state that burns CPU.
-
-   SLEEPING  ── waiting for something: a key press, a network reply,
-               a disk read, a timer. Using ~no CPU. Most processes,
-               most of the time, are here. (Sleeping is normal & healthy.)
-
-   ZOMBIE    ── finished running, but its parent hasn't collected the
-               "I'm done" notice yet. It's dead; it just hasn't been
-               cleared from the table. Uses no CPU and no real memory.
+```mermaid
+stateDiagram-v2
+  [*] --> Running
+  Running --> Sleeping: waits for input / network / disk
+  Sleeping --> Running: what it waited for arrived
+  Running --> Zombie: finished
+  Zombie --> [*]: parent collects the "I'm done" notice
 ```
+*Running = on a CPU core (the only state that burns CPU). Sleeping = waiting, using ~no CPU; where most processes sit most of the time. Zombie = finished but not yet cleared from the table; harmless leftover bookkeeping.*
 
 In `ps`, the `STAT` column shows these: `R` = running, `S` = sleeping, `Z` = zombie (Task Manager shows similar wording under a "Status" column — "Running," "Suspended").
 

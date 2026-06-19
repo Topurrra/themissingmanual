@@ -154,6 +154,20 @@ then `2`, on its own, and from now on it will reject any duplicate or empty `id`
 PostgreSQL's spelling; MySQL writes `AUTO_INCREMENT`, SQLite uses `INTEGER PRIMARY KEY` — the idea is
 identical.)
 
+Try a self-contained version you can run — declare a primary key, add rows, and read them back:
+
+```sql runnable
+CREATE TABLE members (
+  id   INTEGER PRIMARY KEY,
+  name TEXT
+);
+INSERT INTO members (id, name) VALUES (1, 'Ada'), (2, 'Grace'), (3, 'Alan');
+SELECT * FROM members;
+```
+*What just happened:* `id INTEGER PRIMARY KEY` told the database this column is each row's unique,
+permanent name. The three rows went in, each with its own `id`, and the `SELECT` reads them back —
+every member now has a stable handle the rest of a schema could point at.
+
 **Why this saves you later.** Every time you fix one specific record, link one table to another, or
 de-duplicate a messy import, you're leaning on the primary key. A table with a clean surrogate key is one
 you can reason about; a table keyed on something that drifts (an email, a name) is a slow-motion bug

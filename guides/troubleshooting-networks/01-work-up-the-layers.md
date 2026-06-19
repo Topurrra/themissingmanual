@@ -33,17 +33,14 @@ Now the rungs themselves, bottom to top.
 
 Each rung maps onto a layer of the TCP/IP model — the model that says a network is built in stacked levels, each one relying on the level below. (If that model is new to you, [The TCP/IP Model](/guides/tcp-ip-model) is the grounding; you can also just follow the picture below.)
 
-```text
-   You walk UP this stack. First "no" wins.
-
-   Rung 5  ──  Can I reach the DESTINATION?      (the far server / API)      ── Transport/App
-   Rung 4  ──  Can I RESOLVE A NAME?  (DNS)      (turn name → IP address)    ── Application
-   Rung 3  ──  Can I reach the GATEWAY?          (the router off my network) ── Internet (routing)
-   Rung 2  ──  Do I have an IP ADDRESS?          (am I a citizen of a net?)  ── Internet (addressing)
-   Rung 1  ──  Is the LINK up?                   (cable / Wi-Fi connected)   ── Link
-
-   Everything BELOW your first failure is proven fine.
-   Everything ABOVE it is not your problem yet.
+```mermaid
+flowchart TD
+  r1["Rung 1 — Is the LINK up? (cable / Wi-Fi connected) — Link"]
+  r2["Rung 2 — Do I have an IP ADDRESS? (am I a citizen of a net?) — Internet (addressing)"]
+  r3["Rung 3 — Can I reach the GATEWAY? (the router off my network) — Internet (routing)"]
+  r4["Rung 4 — Can I RESOLVE A NAME? (DNS: turn name → IP) — Application"]
+  r5["Rung 5 — Can I reach the DESTINATION? (the far server / API) — Transport/App"]
+  r1 -->|yes, walk up| r2 -->|yes| r3 -->|yes| r4 -->|yes| r5
 ```
 
 📝 **Terminology.** Your *gateway* (or *default gateway*) is the router that connects your local network to everything else. Anything not on your own network goes out through it — so if you can't reach the gateway, you can't reach the internet at all, no matter how healthy your laptop is.

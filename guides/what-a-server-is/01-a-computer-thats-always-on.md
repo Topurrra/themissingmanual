@@ -79,15 +79,12 @@ Now we can name the relationship, because you've already seen both halves of it.
 📝 **Terminology.** *Client* = the program that initiates a request. *Server* = the program that waits for
 requests and responds. The same machine can be a client in one conversation and a server in another.
 
-```text
-   ┌──────────────┐   "GET me the home page"    ┌──────────────┐
-   │              │ ──────────────────────────► │              │
-   │   CLIENT     │                             │    SERVER    │
-   │ (your        │                             │ (waits, then │
-   │  browser,    │ ◄────────────────────────── │  answers)    │
-   │  phone app)  │   "Here's the page (HTML)"   │              │
-   └──────────────┘                             └──────────────┘
-        asks                                        answers
+```mermaid
+flowchart LR
+  Client["CLIENT<br/>(your browser, phone app)<br/>asks"]
+  Server["SERVER<br/>(waits, then answers)"]
+  Client -- "GET me the home page" --> Server
+  Server -- "Here's the page (HTML)" --> Client
 ```
 
 **What it does in real life.** Every time you load a page, tap a button in an app, or send a message, your

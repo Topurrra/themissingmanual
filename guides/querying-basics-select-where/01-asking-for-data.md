@@ -105,6 +105,15 @@ break. Naming the columns you want is a small act of kindness to future-you.
 columns to be precise, or use `*` to grab them all while exploring. Either way, you get back a result
 set — a grid of rows — and the underlying table is untouched.
 
+Try the shape yourself on a tiny built-in `authors` table:
+
+```sql runnable
+SELECT name, country
+FROM authors;
+```
+*What just happened:* You asked for two columns, `name` and `country`, from `authors`, and got every
+row back — but only those two columns. The `id` is still in the table; you just didn't ask for it.
+
 ## Reading the result set
 
 When a query comes back, read it the same way every time: the **header row** at the top tells you which

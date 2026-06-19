@@ -23,22 +23,12 @@ This phase is about what that piece actually does — which is less mysterious t
 
 Here's the whole arrangement in one picture:
 
-```text
-                          ┌───────────────────┐
-        requests ───────▶ │   LOAD BALANCER   │   the only address users know
-                          │  (health-checks   │
-                          │   + distributes)  │
-                          └───────────────────┘
-                            │       │       │
-              ┌─────────────┘       │       └─────────────┐
-              ▼                     ▼                     ▼
-        ┌──────────┐          ┌──────────┐          ┌──────────┐
-        │ server A │          │ server B │          │ server C │   identical,
-        │ (healthy)│          │ (DOWN ✗) │          │ (healthy)│   stateless
-        └──────────┘          └──────────┘          └──────────┘   pool
-              ▲                     ✗                     ▲
-              └─── traffic goes here ─── and here ────────┘
-                   (B gets none — it failed its health check)
+```mermaid
+flowchart TD
+  Req([requests]) --> LB["LOAD BALANCER<br/>health-checks + distributes<br/>(the only address users know)"]
+  LB -->|traffic| A["server A (healthy)"]
+  LB -. "no traffic — failed health check" .-> B["server B (DOWN)"]
+  LB -->|traffic| C["server C (healthy)"]
 ```
 
 **Why people get this wrong.** Newcomers picture a load balancer as something exotic and heavyweight. It isn't. Conceptually it's a smart receptionist: it knows which desks are staffed, and it hands each visitor to a free, working one. The "smart" part is two jobs it does relentlessly — *distribution* (spreading the requests) and *health checking* (knowing which backends are actually up). Get those two ideas and you understand a load balancer.

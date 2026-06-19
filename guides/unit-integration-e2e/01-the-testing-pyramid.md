@@ -31,18 +31,13 @@ The picture is a pyramid. And the reason it's a *pyramid* and not, say, a stack 
 
 Here's the picture. Wider means *more tests of that kind*; taller-up means *more of the system per test*.
 
-```text
-                    ▲  slower · flakier · fewer
-                   ╱ ╲
-                  ╱E2E╲          a handful: whole system, through the UI/API
-                 ╱─────╲
-                ╱       ╲
-               ╱ Integr. ╲      some: a few real pieces together (code + DB)
-              ╱───────────╲
-             ╱             ╲
-            ╱     Unit       ╲   lots: one piece in isolation, no DB, no network
-           ╱─────────────────╲
-          ▼  faster · steadier · many
+```mermaid
+flowchart TD
+  E2E[E2E — a handful: whole system, through the UI/API]
+  Integ[Integration — some: a few real pieces, e.g. code + DB]
+  Unit[Unit — lots: one piece in isolation, no DB, no network]
+  E2E -->|slower · flakier · fewer| Integ
+  Integ -->|faster · steadier · many| Unit
 ```
 
 *Reading the picture:* as you climb, each test runs more of the system, so each one gets **slower** and more **flaky** (more moving parts = more things that can wobble for reasons unrelated to your bug). So you write **fewer** of them. Down at the base, each test runs almost nothing, so it's **fast** and **steady** — cheap enough to write thousands.

@@ -30,16 +30,11 @@ together:
 - A **private key** — the one and only **key that opens that padlock**. It never leaves your computer. You
   never send it anywhere. Ever.
 
-```text
-        YOUR COMPUTER                              THE SERVER
-   ┌────────────────────┐                   ┌────────────────────┐
-   │  private key  🔑    │                   │  your public key 🔒 │
-   │  (stays here,       │   prove ownership │  (a padlock you     │
-   │   never travels)    │ ────────────────► │   hung here)        │
-   └────────────────────┘                   └────────────────────┘
-        the ONE key                              anyone can hold
-        that opens the lock                      the padlock; only
-                                                 your key opens it
+```mermaid
+flowchart LR
+  PK["YOUR COMPUTER<br/>private key 🔑<br/>(stays here, never travels —<br/>the ONE key that opens the lock)"]
+  PUB["THE SERVER<br/>your public key 🔒<br/>(a padlock you hung here —<br/>anyone can hold it; only your key opens it)"]
+  PK -- prove ownership --> PUB
 ```
 
 The beauty of a padlock: handing someone your padlock tells them **nothing** about your key. They can hang

@@ -45,24 +45,10 @@ Now we can finally connect all three parts. Across this guide a pattern kept sur
 
 **Why it exists — the trade nobody can escape.** Memory that's fast is expensive and physically can't be made huge; memory that's huge is cheap but slow. You can't have one kind of memory that's instantly fast, enormous, *and* permanent — no such thing exists. So computers use *several* kinds, arranged in layers: a tiny sliver of blazing-fast memory closest to the CPU, then a larger pool of fast memory, then a vast amount of slower permanent storage. Each layer trades speed for size as you move away from the CPU.
 
-```text
-                          THE MEMORY HIERARCHY
-              (closer to the CPU = faster but smaller)
-
-                        ▲                        ▲
-            faster      │        ╱╲              │  smaller
-            to reach    │       ╱  ╲             │  (less of it)
-                        │      ╱ CPU╲            │
-                        │     ╱cache ╲           │   tiny · fastest
-                        │    ╱────────╲          │
-                        │   ╱   RAM    ╲         │   bigger · fast
-                        │  ╱  (working  ╲        │   · wiped on power off
-                        │ ╱   memory)    ╲       │
-                        │╱────────────────╲      ▼
-            slower      ╱     STORAGE      ╲     huge · slowest
-            to reach   ╱   (your files,     ╲    · survives power off
-                      ╱   apps, the OS)      ╲
-                     ╱────────────────────────╲
+```mermaid
+flowchart TD
+    Cache["CPU cache<br/>tiny · fastest"] --> RAM["RAM (working memory)<br/>bigger · fast · wiped on power off"]
+    RAM --> Storage["STORAGE (your files, apps, the OS)<br/>huge · slowest · survives power off"]
 ```
 
 **How to read the pyramid.** Climb *up* toward the CPU and memory gets faster but there's far less of it. Slide *down* away from the CPU and you get vastly more room but slower access. The whole machine is built to keep what the CPU needs *now* as high up as possible — pulling data from storage into RAM, and from RAM into cache, so the worker rarely has to wait on the slow layers below.

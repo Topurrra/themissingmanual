@@ -35,19 +35,13 @@ whole platform.
 **What it does in real life.** When a freshness check fails on a raw source, lineage instantly tells you the
 blast radius — every mart and dashboard that draws from it, so you know what to quarantine and who to warn.
 
-```text
-              ┌─────────────────┐
-   raw ──────►│ staging_orders  │  ◄── freshness check FAILS here
-              └────────┬────────┘
-                       │  (lineage shows everything below is now suspect)
-          ┌────────────┼─────────────┐
-          ▼            ▼             ▼
-   ┌────────────┐ ┌──────────┐ ┌──────────────┐
-   │ daily_rev  │ │ cohorts  │ │ exec_summary │   ← all downstream = all at risk
-   └────────────┘ └──────────┘ └──────────────┘
-          │
-          ▼
-   "Revenue" dashboard  ← the number a human is about to act on
+```mermaid
+flowchart TD
+  raw[raw] --> staging["staging_orders<br/>freshness check FAILS here"]
+  staging --> rev[daily_rev]
+  staging --> cohorts[cohorts]
+  staging --> exec[exec_summary]
+  rev --> dash["'Revenue' dashboard<br/>a human is about to act on this"]
 ```
 
 *What just happened:* The diagram traces a single failure at `staging_orders` down to every table and
@@ -149,14 +143,13 @@ isn't a separate system bolted on, it's the same pipeline, instrumented so it ca
 
 The full picture, end to end:
 
-```text
-   build it            test it (Phase 2)         see it (Phase 3)
-   ───────             ─────────────────         ────────────────
-   extract  ─►  transform ─►[quality gate]─►  load ─► monitor history
-   (ETL/ELT guide)        │                              │
-                          fail fast,                     lineage + alerts + SLA
-                          go red                         ─► a human, before the
-                                                            bad number is trusted
+```mermaid
+flowchart LR
+  E[Extract] --> T[Transform]
+  T --> G{Quality gate<br/>fail fast, go red}
+  G --> L[Load]
+  L --> M[Monitor history<br/>lineage + alerts + SLA]
+  M --> H[A human — before the<br/>bad number is trusted]
 ```
 
 *What just happened:* This is the whole guide in one line of pipes. You build the pipeline (the ETL/ELT

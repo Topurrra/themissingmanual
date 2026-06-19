@@ -23,19 +23,11 @@ Each note is called a **stack frame** — one for every function that has starte
 
 Picture an order-checkout flow. `main` calls `checkout`, which calls `charge_card`, which calls `validate`:
 
-```text
-   how the calls stack up as the program runs:
-
-        push ↓                                   ┌──────────────────┐
-                                                 │ validate()       │  ← top: running RIGHT NOW
-                                       ┌─────────┴──────────────────┤
-                                       │ charge_card()              │  called validate()
-                             ┌─────────┴────────────────────────────┤
-                             │ checkout()                            │  called charge_card()
-                   ┌─────────┴──────────────────────────────────────┤
-                   │ main()                                          │  bottom: where it all started
-                   └─────────────────────────────────────────────────┘
-        pop ↑
+```mermaid
+flowchart TD
+  main["main()  ← bottom: where it all started"] -->|calls| checkout["checkout()"]
+  checkout -->|calls| charge["charge_card()"]
+  charge -->|calls| validate["validate()  ← top: running RIGHT NOW"]
 ```
 
 The bottom of the stack is where your program *started*. The top is what it's doing at this exact instant. Everything in between is the unbroken chain of "this function called that function" that got you here.
@@ -50,18 +42,12 @@ The bottom of the stack is where your program *started*. The top is what it's do
 
 That's why it's so valuable. It isn't telling you *only* the line that exploded. It's handing you the entire path the program took to reach that line — which is usually where the real answer is hiding.
 
-```text
-   the stack at the instant validate() throws  →  becomes the trace you read
-
-        ┌──────────────────┐                        Error: invalid card number
-        │ validate()       │  ← it broke here   →     at validate()        ← top line / crash point
-        ├──────────────────┤                          at charge_card()
-        │ charge_card()    │                          at checkout()
-        ├──────────────────┤                          at main()            ← where it all began
-        │ checkout()       │
-        ├──────────────────┤
-        │ main()           │
-        └──────────────────┘
+```mermaid
+flowchart TD
+  err["Error: invalid card number"] --> v["at validate()  ← crash point"]
+  v -->|called by| c["at charge_card()"]
+  c -->|called by| ck["at checkout()"]
+  ck -->|called by| m["at main()  ← where it all began"]
 ```
 
 ⚠️ **Gotcha: the order is not the same in every language.** Some languages print the trace top-frame-first (the crash point at the top); others print it bottom-frame-first (the crash point at the *bottom*, after a "most recent call last" note). Same picture, printed from opposite ends. We'll deal with this head-on in the next phase — for now, the thing to hold onto is that *one end is the crash point and the other end is where it all started.* Knowing which end you're looking at is half the battle, and it's a battle you'll win every time once you've seen both.

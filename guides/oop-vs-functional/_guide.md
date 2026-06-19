@@ -4,7 +4,7 @@ guide: "oop-vs-functional"
 phase: 0
 summary: "Two ways of organizing code, demystified: what object-oriented programming actually is, what functional programming actually is, and the honest truth about which to reach for and when."
 tags: [oop, functional-programming, paradigms, encapsulation, immutability, pure-functions]
-category: programming-languages
+category: programming-concepts
 difficulty: intermediate
 synonyms: ["oop vs functional programming", "what is object oriented programming", "what is functional programming", "should i use oop or functional", "difference between oop and functional", "object oriented vs functional honestly"]
 order: 8

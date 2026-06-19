@@ -17,17 +17,15 @@ Pod, Deployment, Service, and the controller that ties them together — and you
 
 A quick way to hold them before we dig in:
 
-```text
-   Service        ── a stable front door + load balancer (one address, many backends)
-      │
-      ▼  routes traffic to
-   Deployment     ── "I want N copies of this app, here's how to update them safely"
-      │
-      ▼  creates & maintains
-   Pod ×N         ── the smallest runnable unit: a wrapper around your container(s)
-      │
-      ▼  runs
-   your container ── the image you built in the Docker guide
+```mermaid
+flowchart TD
+  Service["Service — a stable front door + load balancer<br/>(one address, many backends)"]
+  Deployment["Deployment — I want N copies of this app,<br/>here's how to update them safely"]
+  Pod["Pod ×N — the smallest runnable unit:<br/>a wrapper around your container(s)"]
+  Container["your container — the image you built in the Docker guide"]
+  Service -->|routes traffic to| Deployment
+  Deployment -->|creates & maintains| Pod
+  Pod -->|runs| Container
 ```
 
 Notice the direction. You almost never create a Pod yourself. You declare a **Deployment**, it makes the
@@ -204,15 +202,21 @@ refinement of this base — and now you can read it.
 
 ## How it all fits
 
-```text
-   you ──apply──► Deployment (replicas: 3, template, image)
-                       │ controller maintains
-                       ▼
-                 Pod  Pod  Pod   (labeled app=web, disposable, replaced on death)
-                  ▲    ▲    ▲
-                  └────┼────┘  selected by label
-                       │
-   traffic ──────► Service "web" (stable IP, load-balances across the live Pods)
+```mermaid
+flowchart TD
+  You["you"]
+  Deployment["Deployment (replicas: 3, template, image)"]
+  Traffic["traffic"]
+  Service["Service 'web'<br/>stable IP, load-balances across the live Pods"]
+  subgraph Pods["Pods — labeled app=web, disposable, replaced on death"]
+    P1["Pod"]
+    P2["Pod"]
+    P3["Pod"]
+  end
+  You -->|apply| Deployment
+  Deployment -->|controller maintains| Pods
+  Traffic --> Service
+  Service -->|selected by label| Pods
 ```
 
 ## Recap

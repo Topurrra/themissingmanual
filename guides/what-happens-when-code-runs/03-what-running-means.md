@@ -21,16 +21,9 @@ We've followed your code a long way. It started as text. A compiler or interpret
 
 The difference is worth holding onto: your executable is like a recipe sitting in a cookbook. A process is what exists when someone is *actually cooking it* — ingredients out, pots on the stove, the kitchen busy. One recipe; you could cook it twice at once in two kitchens.
 
-```text
-   ON DISK (resting)                 IN RAM (running)
-   ─────────────────                 ────────────────
-   ┌───────────────┐                 ┌─────────────────────────┐
-   │  hello        │   you run it    │  PROCESS: hello          │
-   │  (executable, │  ────────────►  │   • its machine code     │
-   │   just a file)│                 │   • its stack            │
-   └───────────────┘                 │   • its heap             │
-                                     │   • a process ID (PID)   │
-                                     └─────────────────────────┘
+```mermaid
+flowchart LR
+  Disk["ON DISK (resting)<br/>hello — just a file"] -->|you run it| Proc["IN RAM (running)<br/>PROCESS: hello<br/>machine code · stack · heap · PID"]
 ```
 
 ## RAM is the workspace; the CPU does the work
@@ -41,14 +34,10 @@ Two pieces of hardware do the heavy lifting for a running process, and they have
 
 **The CPU is what actually executes the instructions.** The **CPU** (the processor) is the part that does the work: it reads your process's machine instructions from RAM, one after another, and carries each one out — add these, copy that, compare, jump. This is the literal meaning of "the code is running": the CPU is stepping through your translated instructions, in order, doing exactly what each one says.
 
-```text
-   ┌──────────┐   reads instructions   ┌──────────────────────────┐
-   │   CPU    │ ◄──────────────────────│   RAM                    │
-   │ executes │                        │   (your process lives     │
-   │  one     │   reads & writes data  │    here: code, stack,     │
-   │  step    │ ◄─────────────────────►│    heap)                  │
-   │ at a time│                        └──────────────────────────┘
-   └──────────┘
+```mermaid
+flowchart LR
+  RAM["RAM<br/>your process lives here:<br/>code, stack, heap"] -->|reads instructions| CPU["CPU<br/>executes one step at a time"]
+  CPU <-->|reads & writes data| RAM
 ```
 
 ## The OS schedules your process onto the CPU
@@ -57,13 +46,12 @@ Here's the fact that surprises people: your process is almost never running *con
 
 **What the OS does in real life.** The operating system acts as a scheduler. It gives your process a slice of the CPU, lets it run for a tiny moment, then pauses it and hands the CPU to another process, and another — cycling through all of them so fast it *looks* like everything runs at once. Your program experiences this as "running," even though, zoomed in, it's running in rapid bursts with pauses in between.
 
-```text
-   over a few milliseconds, ONE cpu core might do:
-
-   [ your program ][ browser ][ music app ][ your program ][ system task ][ your program ] ...
-        ▲                                        ▲                              ▲
-        └──────────── your process gets the CPU in quick slices, not all at once ───┘
+```mermaid
+flowchart LR
+  A["your program"] --> B["browser"] --> C["music app"] --> D["your program"] --> E["system task"] --> F["your program"]
 ```
+
+*Over a few milliseconds, one CPU core hands its time around in quick slices — your process gets the CPU in bursts, not all at once.*
 
 This juggling act — how the OS decides who runs when, and how to read a machine that feels "stuck" — is a rich topic on its own. When you're ready to go deeper into processes, scheduling, and what "100% CPU" really means, that's [Processes, Memory & the CPU](/guides/processes-memory-and-cpu).
 
@@ -73,14 +61,11 @@ This juggling act — how the OS decides who runs when, and how to read a machin
 
 Now every piece from this guide connects. From the text you typed to the work the chip does:
 
-```text
-   1. SOURCE CODE        2. TRANSLATED            3. A PROCESS              4. CPU EXECUTES
-   (text you wrote)      (machine instructions)   (loaded into RAM,        (the CPU runs the
-                                                   scheduled by the OS)      instructions, using
-   total = price + tax   ─compiler/interpreter─►   ┌──────────────┐         stack & heap for data)
-                          turns it into the         │ stack │ heap │   ──►   add, copy, compare,
-                          CPU's instructions        │ code in RAM  │         jump... step by step
-                                                    └──────────────┘
+```mermaid
+flowchart LR
+  S["1. SOURCE CODE<br/>total = price + tax"] -->|compiler / interpreter| T["2. TRANSLATED<br/>machine instructions"]
+  T --> P["3. A PROCESS<br/>code, stack, heap in RAM<br/>scheduled by the OS"]
+  P --> X["4. CPU EXECUTES<br/>add, copy, compare, jump<br/>step by step"]
 ```
 
 Read left to right, that's the answer to the question this whole guide asked. **Source code** is text you write. A **compiler or interpreter** translates it into **machine instructions** ([Phase 1](01-source-to-machine.md)). To run, those instructions and their data are loaded into **RAM**, organized into **stack and heap** ([Phase 2](02-stack-and-heap.md)), as a **process** the OS **schedules onto the CPU**, which **executes** them one step at a time. No magic anywhere in the line — just a handoff from human-readable words to a chip doing simple things very fast.

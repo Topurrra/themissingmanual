@@ -4,7 +4,7 @@ guide: "what-happens-when-code-runs"
 phase: 0
 summary: "The journey from the text you type to a living program: how source code gets translated into machine instructions, where your data lives while it runs, and what 'running' actually means to the operating system and CPU."
 tags: [programming, compilers, interpreters, stack, heap, processes, mental-model]
-category: programming-languages
+category: programming-concepts
 order: 2
 difficulty: beginner
 synonyms: ["what happens when code runs", "how does code run", "compiled vs interpreted", "what is a compiler", "what is an interpreter", "stack vs heap", "what is machine code", "how does a program become a process"]

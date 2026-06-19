@@ -5,7 +5,7 @@ phase: 0
 summary: "Learn Python from nothing: install it, understand what its values and types actually are, master the collections and control flow you'll use every day, and lay out a real project — all with small, runnable examples and honest explanations."
 tags: [python, beginner-friendly, programming-language, learn-python]
 category: programming-languages
-order: 9
+order: 1
 difficulty: beginner
 synonyms: ["learn python", "python for beginners", "how to start with python", "python tutorial from scratch", "understand python", "python basics explained"]
 updated: 2026-06-19

@@ -115,17 +115,17 @@ DMA controller, instead of the CPU copying each byte. "Direct" means *direct to 
 
 **What it does in real life.** The conversation becomes a delegation:
 
-```text
-   1. CPU → disk:  "Read 1 MB starting at disk location X,
-                    and put it in RAM starting at address Y."   (one short setup)
-
-   2. CPU:         goes off and does other useful work. ───────► decodes audio,
-                                                                  redraws the screen…
-
-   3. DMA controller ⇄ bus ⇄ RAM:   moves the megabyte itself,
-                                     block by block, no CPU involved.
-
-   4. DMA controller → CPU:  "Done."   (a single signal — an interrupt; Phase 3)
+```mermaid
+sequenceDiagram
+    participant CPU
+    participant DMA as DMA controller
+    participant RAM
+    CPU->>DMA: read 1 MB from disk into RAM at Y
+    Note over CPU: goes off and does other work
+    loop block by block, no CPU involved
+        DMA->>RAM: move the megabyte itself
+    end
+    DMA-->>CPU: done (an interrupt; Phase 3)
 ```
 
 *What just happened:* the CPU spent a tiny moment describing the transfer, then handed the grunt work to

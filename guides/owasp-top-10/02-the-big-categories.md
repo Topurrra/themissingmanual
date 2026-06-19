@@ -76,11 +76,12 @@ $ curl https://shop.example.com/api/orders/1042 -H "Authorization: Bearer <my-to
 
 Step back and you'll see most of these rhyme:
 
-```text
-   Trusting input you shouldn't  ─►  Injection, SSRF, Insecure Design
-   Forgetting to check the asker ─►  Broken Access Control, Auth Failures
-   Leaving a default switched on ─►  Security Misconfiguration, Outdated Components
-   Failing to protect the data   ─►  Cryptographic Failures
+```mermaid
+flowchart LR
+  m1["Trusting input you shouldn't"] --> c1["Injection, SSRF, Insecure Design"]
+  m2["Forgetting to check the asker"] --> c2["Broken Access Control, Auth Failures"]
+  m3["Leaving a default switched on"] --> c3["Security Misconfiguration, Outdated Components"]
+  m4["Failing to protect the data"] --> c4["Cryptographic Failures"]
 ```
 
 You don't have to memorize ten unrelated facts. You have to internalize a few habits of suspicion — and the Top 10 is the checklist that reminds you which suspicions to have *where*.

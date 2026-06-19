@@ -39,15 +39,16 @@ hands work to your email worker. They even pair up: a very common, very healthy 
 webhook and immediately drop its payload onto an internal queue*, so your endpoint returns `2xx` in
 milliseconds and your own workers do the real processing on their own schedule.
 
-```text
-   OUTSIDE WORLD                 │  YOUR SYSTEM
-                                 │
-   Stripe ──webhook (POST)──────►│ /webhooks  ──drop──► [ queue ] ──► workers
-   GitHub                        │  (verify, ack fast)               (slow work,
-   Email provider                │                                    retries, etc.)
-                                 │
-   "they tell you"              cross         "you pass work around internally"
-                              the boundary
+```mermaid
+flowchart LR
+  subgraph Outside["outside world (they tell you)"]
+    S[Stripe / GitHub / email provider]
+  end
+  subgraph Yours["your system (you pass work around internally)"]
+    EP["/webhooks (verify, ack fast)"] -->|drop| Q[queue]
+    Q --> W[workers: slow work, retries, etc.]
+  end
+  S -->|webhook POST| EP
 ```
 
 **An honest comparison.** Neither is "better"; they answer different questions.
@@ -166,14 +167,12 @@ it sits at the front being retried, it can hold up everything behind it. That's 
 after they've failed too many times (you set the limit, e.g. 5 attempts). Instead of retrying a hopeless
 message forever, the broker moves it aside into the DLQ, and the main queue keeps flowing.
 
-```text
-   main queue ──► consumer ──fails──► retry ──fails──► retry ... (up to N)
-                                                          │
-                                                          ▼ after N failures
-                                                    ┌───────────────┐
-                                                    │ dead-letter Q │  ← parked for
-                                                    └───────────────┘     a human to
-                                                                          inspect later
+```mermaid
+flowchart LR
+  MQ[main queue] --> C[consumer]
+  C -->|fails| R[retry, up to N times]
+  R -->|fails again| C
+  R -->|after N failures| DLQ["dead-letter queue (parked for a human to inspect later)"]
 ```
 
 📝 **Terminology.** *Dead-letter queue* (DLQ) — the holding pen for messages that have repeatedly failed.

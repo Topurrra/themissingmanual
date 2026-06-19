@@ -19,20 +19,16 @@ The good news: there's only *one* difference between them, and once you see it t
 
 Both pipelines do the same three jobs. The only question is whether **Transform** happens *before* or *after* the **Load**:
 
-```text
-  ETL  (transform first)
-  ┌─────────┐   ┌───────────┐   ┌────────────┐
-  │ EXTRACT │──►│ TRANSFORM │──►│    LOAD     │   clean data lands in the
-  └─────────┘   └───────────┘   └────────────┘   warehouse; raw is discarded
-                (on a separate
-                 transform box)
-
-  ELT  (load first, transform inside)
-  ┌─────────┐   ┌────────────┐   ┌───────────────────────┐
-  │ EXTRACT │──►│    LOAD     │──►│       TRANSFORM        │   raw lands first,
-  └─────────┘   └────────────┘   │  (runs INSIDE the      │   then SQL reshapes
-                  raw lands      │   warehouse, with SQL) │   it in place
-                                 └───────────────────────┘
+```mermaid
+flowchart LR
+  subgraph ETL [ETL — transform first]
+    direction LR
+    E1[Extract] --> T1[Transform<br/>separate box] --> L1[Load<br/>clean data only]
+  end
+  subgraph ELT [ELT — load first]
+    direction LR
+    E2[Extract] --> L2[Load<br/>raw lands] --> T2[Transform<br/>SQL, in warehouse]
+  end
 ```
 
 That's the whole distinction. **ETL transforms on the way in; ELT transforms after it's already in.** Everything else — the trade-offs, the tooling, the team debates — flows from that.

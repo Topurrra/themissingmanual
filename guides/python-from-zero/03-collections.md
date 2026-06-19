@@ -21,7 +21,7 @@ with the trap that catches everyone.
 
 **What it actually is.** A **list** is an ordered row of values you can change — add to, remove from,
 rearrange. It's your default "bunch of things in order." You write one with square brackets `[]`.
-```python
+```python runnable
 fruits = ["apple", "banana", "cherry"]
 print(fruits)
 print(len(fruits))
@@ -33,7 +33,7 @@ print(len(fruits))
 ```
 
 **Indexing** — reach in by position. Python counts from **0**, and negative numbers count from the end:
-```python
+```python runnable
 fruits = ["apple", "banana", "cherry"]
 print(fruits[0])
 print(fruits[-1])
@@ -49,7 +49,7 @@ cherry
 the end and raises `IndexError: list index out of range`. The last valid position is always `len - 1`.
 
 **Changing it** — because a list is *mutable* (changeable), you can add and modify in place:
-```python
+```python runnable
 fruits = ["apple", "banana"]
 fruits.append("cherry")
 fruits[0] = "apricot"
@@ -69,7 +69,7 @@ once created." This distinction quietly governs how every collection behaves —
 **What it actually is.** A **tuple** is like a list, but **immutable** — once you make it, you can't add,
 remove, or change items. You write one with parentheses `()`. Use a tuple when a group of values
 *belongs together and shouldn't change*: coordinates, a row from a database, an RGB color.
-```python
+```python runnable
 point = (4, 5)
 print(point[0])
 print(point[1])
@@ -105,7 +105,7 @@ reorder. **Tuple**: a fixed group of related values that travels together and wo
 things up by position, you look them up by a meaningful *key*. It's the right tool whenever you think
 "given X, what's its Y?" — given a username, their age; given a product, its price. You write one with
 curly braces and `key: value` pairs.
-```python
+```python runnable
 ages = {"ada": 36, "linus": 54}
 print(ages["ada"])
 print("ada" in ages)
@@ -118,7 +118,7 @@ True
 ```
 
 Adding or updating is the same square-bracket syntax:
-```python
+```python runnable
 ages = {"ada": 36}
 ages["grace"] = 85
 ages["ada"] = 37
@@ -140,7 +140,7 @@ KeyError: 'bob'
 ```
 When you're not sure a key exists, use `.get()`, which returns `None` (or a default you pick) instead of
 crashing:
-```python
+```python runnable
 ages = {"ada": 36}
 print(ages.get("bob"))
 print(ages.get("bob", 0))
@@ -157,7 +157,7 @@ None
 **What it actually is.** A **set** holds *unique* items with no duplicates and no particular order. Reach
 for it when you care about "what distinct things are in here?" or "is this thing present?" — membership
 and uniqueness, not position. You write one with curly braces (but just values, no `key: value`).
-```python
+```python runnable
 seen = {1, 2, 2, 3, 3, 3}
 print(seen)
 print(2 in seen)
@@ -169,7 +169,7 @@ membership:
 True
 ```
 A favorite real use: strip duplicates out of a list by passing it through a set.
-```python
+```python runnable
 tags = ["python", "web", "python", "api", "web"]
 unique = set(tags)
 print(unique)
@@ -184,7 +184,7 @@ so yours may print in a different arrangement:
 
 For lists, tuples, and strings, you can pull out a *slice* — a sub-range — with `[start:stop]`. The
 `start` is included; the `stop` is **not**.
-```python
+```python runnable
 nums = [10, 20, 30, 40, 50]
 print(nums[1:3])
 print(nums[:2])
@@ -198,7 +198,7 @@ print(nums[2:])
 [30, 40, 50]
 ```
 The same works on strings, since a string is a sequence of characters:
-```python
+```python runnable
 word = "Python"
 print(word[0:3])
 ```
@@ -217,7 +217,7 @@ This is the gotcha that produces the most baffling bugs for beginners, so meet i
 **What's really going on.** When you write `b = a` where `a` is a list, you do **not** get a copy. Both
 names now point at the *exact same list in memory*. Change it through one name, and the change shows up
 through the other — because there's only one list.
-```python
+```python runnable
 a = [1, 2, 3]
 b = a
 b.append(4)
@@ -232,7 +232,7 @@ changed that one shared list, so reading it through `a` shows the `4` too:
 ```
 If you genuinely want a separate, independent copy, ask for one explicitly with `.copy()` (or
 `list(a)`):
-```python
+```python runnable
 a = [1, 2, 3]
 b = a.copy()
 b.append(4)

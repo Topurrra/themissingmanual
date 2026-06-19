@@ -4,7 +4,7 @@ guide: "regular-expressions-explained"
 phase: 0
 summary: "A regex is a pattern that describes the shape of text — not code you run, but text you describe. Learn the mental model, the small toolkit you'll use 90% of the time, and how to avoid the classic traps."
 tags: [regex, regular-expressions, pattern-matching, text, beginner-friendly]
-category: programming-languages
+category: programming-concepts
 order: 4
 difficulty: beginner
 synonyms: ["what is a regex", "how do regular expressions work", "regex for beginners", "understand regular expressions", "learn regex", "regex explained simply"]

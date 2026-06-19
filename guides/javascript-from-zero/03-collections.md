@@ -20,7 +20,7 @@ fluent and a huge amount of JavaScript opens up.
 
 **What an array actually is.** An array is an ordered list of values, written with square brackets. The
 values can be any type, and you reach into the list by *position* — counting from **0**, not 1.
-```javascript
+```javascript runnable
 const fruits = ["apple", "banana", "cherry"];
 console.log(fruits[0]);     // first item
 console.log(fruits[2]);     // third item
@@ -37,7 +37,7 @@ this is universal across most languages and worth burning into memory now. `frui
 you `undefined` rather than an error.
 
 You can add and change items:
-```javascript
+```javascript runnable
 const fruits = ["apple", "banana"];
 fruits.push("cherry");   // add to the end
 fruits[0] = "apricot";   // replace the first item
@@ -56,7 +56,7 @@ Arrays come with built-in methods that transform lists without you writing manua
 the ones you'll reach for constantly, so meet them now — even if they feel like a lot at first.
 
 **`map`** makes a *new* array by transforming every item:
-```javascript
+```javascript runnable
 const numbers = [1, 2, 3];
 const doubled = numbers.map((n) => n * 2);
 console.log(doubled);
@@ -70,7 +70,7 @@ compact function we'll cover properly in [Phase 4](04-control-flow-and-functions
 "given `n`, give back `n * 2`.") The original `numbers` is untouched.
 
 **`filter`** makes a new array keeping only the items that pass a test:
-```javascript
+```javascript runnable
 const numbers = [1, 2, 3, 4, 5, 6];
 const evens = numbers.filter((n) => n % 2 === 0);
 console.log(evens);
@@ -83,7 +83,7 @@ dividing by 2 is zero" — i.e. it's even) returned `true`. The odd numbers were
 comes out; the original stays put.
 
 **`reduce`** boils a whole array down to a single value:
-```javascript
+```javascript runnable
 const numbers = [10, 20, 30];
 const total = numbers.reduce((sum, n) => sum + n, 0);
 console.log(total);
@@ -105,7 +105,7 @@ like a sentence: "take the numbers, *filter* the evens, *map* them doubled."
 **What an object actually is.** Where an array holds values by *position*, an object holds values by
 *name*. It's a bundle of `key: value` pairs in curly braces — perfect for representing one "thing" with
 several properties.
-```javascript
+```javascript runnable
 const user = {
   name: "Ada",
   age: 36,
@@ -124,7 +124,7 @@ the key is in a variable or has unusual characters). The keys are `name`, `age`,
 whatever you stored.
 
 You change and add properties freely:
-```javascript
+```javascript runnable
 const user = { name: "Ada" };
 user.age = 36;        // add a new property
 user.name = "Ada L."; // change an existing one
@@ -156,7 +156,7 @@ every JavaScript developer. Pay attention here — it's worth more than the rest
 **Primitives are copied by value. Objects and arrays are shared by reference.** When you assign a number
 or string, you copy the value. When you assign an object or array, you copy a *reference* — a pointer to
 the same underlying thing. Two names, one object.
-```javascript
+```javascript runnable
 const a = { count: 1 };
 const b = a;        // b points at the SAME object as a
 b.count = 99;
@@ -174,7 +174,7 @@ This is also why a `const` array can still be `push`ed into: `const` locks the *
 the object's *insides* are still free to change. `const` protects the pointer, not the contents.
 
 And it's why two equal-looking objects aren't equal:
-```javascript
+```javascript runnable
 console.log({ x: 1 } === { x: 1 });   // two separate objects
 const same = { x: 1 };
 console.log(same === same);           // the same object

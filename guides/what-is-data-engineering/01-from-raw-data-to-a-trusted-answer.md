@@ -26,12 +26,12 @@ and use.
 
 The word people reach for is **pipeline**, and it's a good one. Picture a river:
 
-```text
-   SOURCES            INGESTION         STORAGE          TRANSFORM         SERVE
-   (messy, raw)   →   (collect it)  →   (hold it)    →   (clean it)    →   (use it)
-
-   ~~~~~~~~~~~~        ~~~~~~~~~~~        ~~~~~~~~~~~       ~~~~~~~~~~~       ~~~~~~~~~~~
-   muddy upstream  ─────────────────────────────────────────────────►   clear at the tap
+```mermaid
+flowchart LR
+  S[Sources<br/>messy, raw] --> I[Ingestion<br/>collect it]
+  I --> St[Storage<br/>hold it]
+  St --> T[Transform<br/>clean it]
+  T --> Sv[Serve<br/>use it]
 ```
 
 Water starts muddy upstream (raw data from your apps and systems), flows through stages, and comes out
@@ -74,16 +74,12 @@ on it.
 
 Think about who's standing at the tap:
 
-```text
-   ┌──────────────────────────────────────────────┐
-   │  A leader deciding where to spend next quarter │  ← acts on the number
-   │  An analyst answering "why did sales drop?"     │
-   │  A model deciding which users to email          │
-   └──────────────────────────────────────────────┘
-                         ▲
-                  one trusted number
-                         │
-            the entire pipeline behind it
+```mermaid
+flowchart TD
+  pipe[The entire pipeline behind it] --> num[One trusted number]
+  num --> leader[A leader deciding next quarter's spend]
+  num --> analyst[An analyst answering 'why did sales drop?']
+  num --> model[A model deciding which users to email]
 ```
 
 If the number at the tap is wrong, the decision is wrong — and nobody downstream can tell, because the

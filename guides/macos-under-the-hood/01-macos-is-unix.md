@@ -26,21 +26,11 @@ Apple has a name for the open-source Unix core of macOS: **Darwin**. Picture the
 same three-layer stack from [What an Operating System Is](/guides/what-an-operating-system-is), but with
 Apple's actual names filled in:
 
-```text
-   ┌─────────────────────────────────────────────┐
-   │   THE MAC YOU SEE                             │   Finder, Dock, Spotlight,
-   │   (Aqua desktop + your apps)                  │   your apps — the "coat"
-   ├─────────────────────────────────────────────┤
-   │   APPLE'S FRAMEWORKS                          │   Cocoa, Metal, the APIs
-   │   (the Mac-specific libraries apps call)      │   apps are written against
-   ├─────────────────────────────────────────────┤
-   │   DARWIN  =  the Unix core                    │   ← the open-source foundation
-   │   • BSD userland (the Unix commands & libs)   │     a real Unix lives here
-   │   • the XNU kernel                            │
-   ├─────────────────────────────────────────────┤
-   │   THE HARDWARE                                │   Apple silicon (or Intel),
-   │   (CPU, RAM, disk, screen, network)           │   memory, disk, devices
-   └─────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  See[The Mac you see<br/>Finder, Dock, Spotlight, your apps — the coat] --> Frameworks[Apple's frameworks<br/>Cocoa, Metal, the APIs apps call]
+  Frameworks --> Darwin[Darwin = the Unix core<br/>BSD userland + the XNU kernel]
+  Darwin --> Hardware[The hardware<br/>Apple silicon or Intel, RAM, disk, devices]
 ```
 
 **What it actually is.** *Darwin* is the foundation layer — an open-source Unix operating system that

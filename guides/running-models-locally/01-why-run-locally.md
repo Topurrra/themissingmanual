@@ -23,18 +23,17 @@ When you call a **hosted API** — OpenAI, Anthropic, and the rest — your text
 
 When you **run locally**, the model's files sit on your disk, and the math runs on your own CPU or GPU. Nothing leaves your machine. You own the compute, which means you also own its limits.
 
-```text
-   HOSTED API                          LOCAL
-   ┌──────────┐   your text            ┌──────────────────┐
-   │ your app │ ───────────────►       │   your machine   │
-   └──────────┘                        │  ┌────────────┐  │
-        ▲        someone else's        │  │  the model │  │
-        │        data center +         │  │  + your    │  │
-        └──────  their big model       │  │  app, all  │  │
-                 (you rent it)         │  │  in here   │  │
-                                       │  └────────────┘  │
-                                       └──────────────────┘
-                                        nothing leaves
+```mermaid
+flowchart LR
+  subgraph Hosted["HOSTED API"]
+    direction LR
+    APP[your app] -->|your text| DC["someone else's data center<br/>+ their big model (you rent it)"]
+    DC -->|answer| APP
+  end
+  subgraph Local["LOCAL — nothing leaves"]
+    direction LR
+    M["your machine<br/>the model + your app, all in here"]
+  end
 ```
 
 Everything below is a consequence of that picture.

@@ -41,15 +41,11 @@ The process at the top of that sorted list, sitting at a high `%CPU`, is what's 
 
 **What it actually is.** You have hundreds of processes and maybe 4–8 cores. The part of the kernel that decides *who runs on which core, and for how long* is the **scheduler**. It runs a process for a few milliseconds, pauses it, runs the next, and cycles through everyone fast enough that it *looks* simultaneous — the trick from the OS guide, now with a name and a job.
 
-```text
-   One core, over a few milliseconds:
-
-   ms 1   ms 2   ms 3   ms 4   ms 5   ms 6
-   [chrome][music][edit ][chrome][music][edit ]   ← scheduler rotates turns
-
-   Plenty of cores, light load → everyone gets turns instantly → feels fast.
-   Too many hungry processes → your turn comes around late → feels sluggish.
+```mermaid
+flowchart LR
+  ms1[ms 1: chrome] --> ms2[ms 2: music] --> ms3[ms 3: editor] --> ms4[ms 4: chrome] --> ms5[ms 5: music] --> ms6[ms 6: editor]
 ```
+*One core, a few milliseconds: the scheduler rotates turns. Light load and everyone gets a turn instantly (feels fast); too many hungry processes and your turn comes around late (feels sluggish).*
 
 **Why this saves you later.** "Slow" usually isn't a broken CPU — it's the scheduler with more demand than it can satisfy, so each process's turn arrives later. That's why closing a couple of greedy programs makes everything *else* snap back: you freed up turns for the rest. The CPU was never sick; it was overbooked.
 

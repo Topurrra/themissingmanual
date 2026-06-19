@@ -37,16 +37,13 @@ actual heavy lifting. The software that runs the queue (RabbitMQ, Amazon SQS, an
 **broker**.
 
 **The picture.**
-```text
-   PRODUCERS                 THE QUEUE                  CONSUMERS
-
-   signup ──┐          ┌───┬───┬───┬───┬───┐         ┌─► worker A
-   service  ├──drop───►│ M │ M │ M │ M │ M │──pull──►├─► worker B
-            │          └───┴───┴───┴───┴───┘         └─► worker C
-   upload ──┘            ▲             ▲
-   service          newest in     oldest out          workers take messages
-                                  (first-in,           when THEY are ready,
-                                   first-out)          at their own pace
+```mermaid
+flowchart LR
+  P1[signup service] -->|drop| Q
+  P2[upload service] -->|drop| Q
+  Q["the queue (FIFO: newest in, oldest out)"] -->|pull| W1[worker A]
+  Q -->|pull| W2[worker B]
+  Q -->|pull| W3[worker C]
 ```
 *Reading the diagram:* producers drop messages in on the left and immediately move on. Messages wait in
 line. Consumers pull them off the front when they have capacity. Nobody on the left waits for anybody on

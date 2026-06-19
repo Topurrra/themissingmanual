@@ -21,31 +21,15 @@ Once you see the machine that way, each part has an obvious purpose: *something*
 
 Here's the whole cast on one page. Don't worry about the details yet — just notice that there are only a few boxes, and they're all connected by the same wiring.
 
-```text
-                        ┌──────────────────────────────────────┐
-                        │            THE MOTHERBOARD            │
-                        │      (the board everything plugs       │
-                        │       into; its wiring = the bus)      │
-                        │                                        │
-   ┌────────────┐       │   ┌────────┐         ┌────────────┐    │
-   │  POWER     │──────►│   │  CPU   │◄───────►│    RAM     │    │
-   │  SUPPLY    │       │   │ (the   │  fast   │ (fast temp │    │
-   │ (the wall) │       │   │ worker)│  road   │ workspace) │    │
-   └────────────┘       │   └────────┘         └────────────┘    │
-                        │        ▲                                │
-                        │        │ slower road                    │
-                        │        ▼                                │
-                        │   ┌────────────────┐                    │
-                        │   │   STORAGE       │  (SSD / hard drive │
-                        │   │ (permanent      │   — the filing     │
-                        │   │  filing cabinet)│   cabinet)         │
-                        │   └────────────────┘                    │
-                        │                                        │
-                        │   ┌────────────────────────────────┐   │
-                        │   │  I/O: keyboard, mouse, screen,  │   │
-                        │   │  speakers, network, USB ports   │   │
-                        │   └────────────────────────────────┘   │
-                        └──────────────────────────────────────┘
+```mermaid
+flowchart LR
+  Power[Power supply<br/>the wall] --> Board
+  subgraph Board[The motherboard — wiring = the bus]
+    direction LR
+    CPU[CPU<br/>the worker] <-->|fast road| RAM[RAM<br/>fast temp workspace]
+    CPU <-->|slower road| Storage[Storage<br/>permanent filing cabinet]
+    CPU <--> IO[I/O<br/>keyboard, screen, network, USB]
+  end
 ```
 
 Five things to know: the **CPU** does the work, the **RAM** is the fast workspace, **storage** is the permanent filing cabinet, the **motherboard** (and its **bus**) is the wiring that connects everything, and **power** plus **I/O** keep it running and let you talk to it. Now let's take them one at a time.
@@ -113,11 +97,10 @@ Two supporting characters round out the cast.
 
 📝 **Terminology.** *I/O* = Input/Output: anything the computer uses to take information in or send it out. Your keyboard is input; your screen is output; the network is both.
 
-```text
-   INPUT  ──►  [ the computer: CPU + RAM + storage ]  ──►  OUTPUT
-   keyboard       reads instructions, does the work,        screen
-   mouse          remembers the results                     speakers
-   network                                                  network
+```mermaid
+flowchart LR
+  In["INPUT<br/>keyboard, mouse, network"] --> Computer["The computer<br/>CPU + RAM + storage"]
+  Computer --> Out["OUTPUT<br/>screen, speakers, network"]
 ```
 
 That picture — information flows *in*, the machine does work on it, results flow *out* — is the shape of every program you'll ever run.

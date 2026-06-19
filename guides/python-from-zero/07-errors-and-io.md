@@ -31,7 +31,7 @@ printing a traceback.
 prints when an uncaught exception crashes the program. (Reading those is a skill of its own — see
 [What an Error Message Tells You](/guides/what-an-error-message-tells-you).)
 
-```python
+```python runnable
 print(10 / 0)
 ```
 ```console
@@ -51,7 +51,7 @@ caught it, so it bubbled all the way up and crashed the program, printing where 
 **What it actually is.** `try` marks a block "this might fail." `except` says "if *this kind* of failure
 happens, do this instead of crashing." You catch only the specific failures you know how to deal with.
 
-```python
+```python runnable
 def safe_divide(a, b):
     try:
         return a / b
@@ -119,7 +119,7 @@ the manual version once so you know what `with` is buying you.)
 situation it can't accept. Raising a clear error early beats returning a nonsense value that explodes
 three functions later.
 
-```python
+```python runnable
 def withdraw(balance, amount):
     if amount > balance:
         raise ValueError(f"can't withdraw {amount} from {balance}")

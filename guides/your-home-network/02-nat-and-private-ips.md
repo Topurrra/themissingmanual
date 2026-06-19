@@ -66,20 +66,13 @@ Your home gets one public address, and NAT quietly multiplexes all your devices 
 router rewrites their "from" address to the single public IP, and keeps a little table so it knows which
 reply belongs to whom:
 
-```text
-   INSIDE (private)                ROUTER (NAT)                 OUTSIDE (one public IP)
-
-   laptop 192.168.1.20 ──┐
-                         ├──►  rewrites "from" to  ──►  203.0.113.7  ──►  internet
-   phone  192.168.1.21 ──┘     203.0.113.7, and
-                              remembers who asked
-
-                              ┌──────────────────────────────┐
-                              │ translation table            │
-                              │ 192.168.1.20  ◄─ this reply  │   ◄── reply comes back to
-                              │ 192.168.1.21  ◄─ that reply  │       203.0.113.7; router uses
-                              └──────────────────────────────┘       the table to send it to
-                                                                     the right device
+```mermaid
+flowchart LR
+  laptop[laptop<br/>192.168.1.20] --> nat
+  phone[phone<br/>192.168.1.21] --> nat
+  nat[ROUTER / NAT<br/>rewrites from to 203.0.113.7<br/>and remembers who asked<br/>via a translation table]
+  nat -->|one public IP| net((internet<br/>203.0.113.7))
+  net -.->|reply comes back; table routes it<br/>to the right device| nat
 ```
 
 *The address `203.0.113.7` above is a documentation-only example IP — your real public IP will be

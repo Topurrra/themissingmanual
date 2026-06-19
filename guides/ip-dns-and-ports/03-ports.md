@@ -102,20 +102,12 @@ postgres  1190  ada    7u  IPv4  ...  TCP 127.0.0.1:5432 (LISTEN)
 
 Trace one ordinary action — visiting `https://example.com` — and you'll see every idea in this guide do its part:
 
-```text
-   you type  https://example.com
-        │
-        ▼
-   DNS lookup        example.com  →  93.184.215.14     (Phase 2: name → number)
-        │
-        ▼
-   connect to        93.184.215.14                     (Phase 1: the machine's IP)
-        │
-        ▼
-   on port           443  (default for https)          (Phase 3: the right door)
-        │
-        ▼
-   the page loads.
+```mermaid
+flowchart TD
+  type["you type https://example.com"] --> dns["DNS lookup: example.com → 93.184.215.14<br/>(Phase 2: name → number)"]
+  dns --> connect["connect to 93.184.215.14<br/>(Phase 1: the machine's IP)"]
+  connect --> port["on port 443, default for https<br/>(Phase 3: the right door)"]
+  port --> page["the page loads"]
 ```
 
 A name became a number, the number found a machine, and a port found the right service on it. That's the address book of the internet, top to bottom — and it's running behind every link you'll ever click.

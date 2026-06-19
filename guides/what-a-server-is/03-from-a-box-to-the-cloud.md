@@ -44,18 +44,22 @@ computer.
 top of a physical host. *Hypervisor* = the software that splits one physical machine into multiple isolated
 VMs and keeps them from interfering with each other.
 
-```text
-   ┌─────────────────────────────────────────────────────┐
-   │   ONE physical server                               │
-   │  ┌──────────┐   ┌──────────┐   ┌──────────┐         │
-   │  │   VM 1   │   │   VM 2   │   │   VM 3   │          │  each VM thinks it's
-   │  │ own OS,  │   │ own OS,  │   │ own OS,  │          │  a whole computer —
-   │  │ own apps │   │ own apps │   │ own apps │          │  isolated from the others
-   │  └──────────┘   └──────────┘   └──────────┘         │
-   │  ───────────  hypervisor  ──────────────────────    │  splits the real machine
-   │  ───────────  real CPU / RAM / disk  ───────────    │  into independent slices
-   └─────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  subgraph Box["ONE physical server"]
+    HW["real CPU / RAM / disk"]
+    HV["hypervisor — splits the real machine into independent slices"]
+    subgraph VMs[" "]
+      direction LR
+      VM1["VM 1<br/>own OS, own apps"]
+      VM2["VM 2<br/>own OS, own apps"]
+      VM3["VM 3<br/>own OS, own apps"]
+    end
+    HW --> HV --> VMs
+  end
 ```
+
+*Each VM thinks it's a whole computer — isolated from the others.*
 
 **What it does in real life.** That idle, wasted physical box from Rung 1 now hosts *several* servers at once,
 each isolated from the others. If one VM crashes or gets compromised, the others keep running. This is the
@@ -121,19 +125,15 @@ trade-off is less control over the machine — which, for many jobs, you didn't 
 
 ## The whole ladder
 
-```text
-   MORE control,            physical server   ── you own the metal, the building, everything
-   MORE work for you            │
-                                ▼
-                            virtual machine   ── one box split into many isolated servers
-                                │
-                                ▼
-                            cloud instance    ── you RENT a VM; provider owns the metal
-                                │                  ("the cloud is someone else's computer")
-                                ▼
-   LESS control,            serverless        ── you rent the RUNNING OF YOUR CODE;
-   LESS work for you            │                  the server is fully managed and invisible
-                                ▼
+```mermaid
+flowchart TD
+  P["physical server<br/>you own the metal, the building, everything"]
+  V["virtual machine<br/>one box split into many isolated servers"]
+  C["cloud instance<br/>you RENT a VM; provider owns the metal<br/>(the cloud is someone else's computer)"]
+  S["serverless<br/>you rent the RUNNING OF YOUR CODE;<br/>the server is fully managed and invisible"]
+  P -->|"MORE control, more work for you"| V
+  V --> C
+  C -->|"LESS control, less work for you"| S
 ```
 
 *Reading the ladder:* as you go down, you hand off more of the work — and give up more direct control over the

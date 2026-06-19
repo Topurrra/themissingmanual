@@ -22,14 +22,11 @@ weeks later that the expensive part hadn't even started. Let's walk the whole pi
 
 Four stages, and they are wildly unequal in effort:
 
-```text
-   ┌──────────────────┐   ┌────────────┐   ┌──────────────┐   ┌──────────────┐
-   │  1. THE DATASET  │──►│ 2. TRAINING│──►│ 3. HOSTING / │──►│ 4. EVALUATION│
-   │ curated examples │   │  the run   │   │   SERVING    │   │  did it work?│
-   └──────────────────┘   └────────────┘   └──────────────┘   └──────────────┘
-        ▲▲▲▲▲▲▲▲▲▲              ▲                  ▲▲                ▲▲▲
-     where the real cost     mostly a         ongoing, not       skip this and
-        actually lives        button          one-and-done     you're flying blind
+```mermaid
+flowchart LR
+  D["1. THE DATASET<br/>curated examples<br/>(where the real cost lives)"] --> T["2. TRAINING<br/>the run<br/>(mostly a button)"]
+  T --> H["3. HOSTING / SERVING<br/>(ongoing, not one-and-done)"]
+  H --> E["4. EVALUATION<br/>did it work?<br/>(skip it and you're flying blind)"]
 ```
 
 The widest part of that diagram is stage 1, and that's not an accident.

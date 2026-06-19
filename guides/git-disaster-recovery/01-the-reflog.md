@@ -41,16 +41,12 @@ or HEAD) stopped pointing at it, so it fell out of `git log`. But the commit obj
 repository — and the reflog still remembers the hash it used to be at. The reflog is the map back to
 commits that `git log` can no longer see.
 
-```text
-   git log shows only what's reachable from a label now:
-
-        ┌────┐   ┌────┐
-        │ C1 │◄──│ C2 │   ← main (after a reset moved it back to C2)
-        └────┘   └────┘
-                       ╲
-                        ╲ ┌────┐
-                          │ C3 │   ← "lost": no label points here, so git log hides it
-                          └────┘     …but the REFLOG still has C3's hash. Not gone — unlabeled.
+```mermaid
+flowchart LR
+  C1 --> C2 --> C3
+  main(main) -.->|reset moved it back| C2
+  reflog(reflog) -.->|still has its hash| C3
+  C3 -.- note["'lost': no label, so git log hides it — not gone, just unlabeled"]
 ```
 
 📝 **Terminology.** *Reachable* means "you can get to this commit by following labels and parent pointers."

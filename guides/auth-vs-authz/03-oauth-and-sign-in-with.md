@@ -19,19 +19,11 @@ The problem OAuth solves is specific: *how do you let an app do something with y
 
 Some cars come with a **valet key**. It starts the engine and opens the door — enough for the valet to park it — but it *won't* open the trunk or the glovebox, and you can stop honoring it later. You hand the valet limited, revocable access without giving them your real key.
 
-```text
-  YOU (resource owner)
-    │  "Let this app read my contacts. Nothing else."
-    ▼
-  GOOGLE (the service that holds your data + does the login)
-    │  issues a VALET KEY (access token):
-    │  scope = contacts:read    (not email, not files, not delete)
-    │  expires soon
-    ▼
-  THE APP (third party)
-    uses the valet key to read contacts —
-    never saw your password, can't touch anything else,
-    and you can revoke the key anytime
+```mermaid
+flowchart TD
+  you["YOU (resource owner)"] -- "let this app read my contacts, nothing else" --> google["GOOGLE<br/>holds your data + does the login"]
+  google -- "VALET KEY (access token)<br/>scope = contacts:read, expires soon" --> app["THE APP (third party)"]
+  app -- "reads contacts only — never saw your password" --> google
 ```
 
 That's OAuth. **You** own the data. **Google** holds it and is the one place you actually type your password. **The app** gets a valet key — an *access token* — that's limited to exactly what you approved and nothing more. The app never sees your password, and you can take the key back later from your Google account settings.
@@ -40,26 +32,18 @@ That's OAuth. **You** own the data. **Google** holds it and is the one place you
 
 When you click "Sign in with Google" (or "Connect your calendar"), here's the dance, with the real terms attached:
 
-```text
-  1. App → "Go ask Google for permission"   (redirects your browser to Google)
-                       │
-                       ▼
-  2. Google → shows YOU a consent screen:
-       "AcmeApp wants to: read your contacts.  [Allow] [Deny]"
-       (you log in HERE, at Google, with YOUR password — the app never sees it)
-                       │ you click Allow
-                       ▼
-  3. Google → redirects back to the app with a short-lived AUTHORIZATION CODE
-                       │
-                       ▼
-  4. App (server-side) → exchanges that code WITH Google for tokens
-       (this swap happens app-server ↔ Google directly, not through your browser)
-                       │
-                       ▼
-  5. Google → returns an ACCESS TOKEN (the valet key) + a REFRESH TOKEN
-                       │
-                       ▼
-  6. App → calls Google's API with the access token to read your contacts
+```mermaid
+sequenceDiagram
+  participant Browser as You / Browser
+  participant App
+  participant Google
+  App->>Browser: redirect to Google for permission
+  Browser->>Google: log in + see consent screen ("read your contacts?")
+  Browser->>Google: click Allow (password stays at Google)
+  Google-->>App: redirect back with short-lived authorization code
+  App->>Google: exchange code for tokens (back channel)
+  Google-->>App: access token (valet key) + refresh token
+  App->>Google: call API with access token → read contacts
 ```
 
 The crucial move is step 2: **you authenticate at Google, not at the app.** Your password never leaves Google. The app only ever receives tokens — and only after you explicitly consent to a specific scope.

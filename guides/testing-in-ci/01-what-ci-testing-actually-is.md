@@ -39,19 +39,14 @@ your tests in a terminal, you already understand 90% of what CI does. The other 
 remember to do it. The robot doesn't get tired, doesn't skip the slow test because it's late, and
 doesn't forget. That reliability is the entire point — humans forget to run tests; the server never does.
 
-```text
-   You push a branch  ─────►  CI server wakes up
-                              ┌──────────────────────────┐
-                              │ 1. grab a clean machine   │
-                              │ 2. download your code     │
-                              │ 3. install dependencies   │
-                              │ 4. run the test suite     │
-                              └──────────────┬───────────┘
-                                             │
-                              ┌──────────────▼───────────┐
-                              │  report back to your PR:  │
-                              │     ✓ green  /  ✗ red     │
-                              └──────────────────────────┘
+```mermaid
+flowchart TD
+  Push[You push a branch] --> Wake[CI server wakes up]
+  Wake --> Clean[1. grab a clean machine]
+  Clean --> Code[2. download your code]
+  Code --> Deps[3. install dependencies]
+  Deps --> Test[4. run the test suite]
+  Test --> Report[Report back to your PR: green or red]
 ```
 
 ## The green check is the gate

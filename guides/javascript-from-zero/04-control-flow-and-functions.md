@@ -19,7 +19,7 @@ they're the unit you'll think in for the rest of your career.
 ## Making decisions: `if` / `else`
 
 **What it does.** `if` runs a block of code only when a condition is `true`. `else` covers the other case.
-```javascript
+```javascript runnable
 const hour = 14;
 
 if (hour < 12) {
@@ -57,7 +57,7 @@ empty array). So `if (value)` means "if value is truthy."
 ## Repeating: `for...of` and `while`
 
 The cleanest way to do something with every item in an array is `for...of`:
-```javascript
+```javascript runnable
 const names = ["Ada", "Linus", "Grace"];
 for (const name of names) {
   console.log(`Hello, ${name}`);
@@ -76,7 +76,7 @@ number itself.)
 
 When you don't know in advance how many times to loop, use `while` — it repeats *as long as* its condition
 stays true:
-```javascript
+```javascript runnable
 let countdown = 3;
 while (countdown > 0) {
   console.log(countdown);
@@ -100,7 +100,7 @@ program — the classic "infinite loop." Always make sure each pass moves toward
 **What a function actually is.** A function is a named, reusable block of instructions that can take
 *inputs* (parameters) and hand back an *output* (a return value). It lets you write a piece of behavior
 once and run it whenever you need it, with different inputs.
-```javascript
+```javascript runnable
 function greet(name) {
   return `Hello, ${name}!`;
 }
@@ -122,7 +122,7 @@ actual value you pass in when calling (`"Ada"`). `return` ends the function and 
 function with no `return` hands back `undefined`.
 
 **Default parameters** let a parameter fall back to a value when the caller leaves it out:
-```javascript
+```javascript runnable
 function greet(name = "friend") {
   return `Hello, ${name}!`;
 }
@@ -141,7 +141,7 @@ checks through your code.
 
 You've already seen these in [Phase 3](03-collections.md). An **arrow function** is a shorter way to write
 a function, used constantly for small, inline functions:
-```javascript
+```javascript runnable
 const double = (n) => n * 2;
 const greet = (name) => `Hello, ${name}!`;
 
@@ -165,7 +165,7 @@ one real behavioral difference around `this`, which we flag at the end of this p
 This is the idea that makes JavaScript click. **A function is itself a value** — you can store it in a
 variable, put it in an array, and (the powerful part) *pass it to another function*. A function passed to
 another function is called a **callback**.
-```javascript
+```javascript runnable
 function runTwice(action) {
   action();
   action();

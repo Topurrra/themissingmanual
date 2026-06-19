@@ -29,16 +29,16 @@ else broken code and maybe pushed a bug to production.
 `main`. You do all your committing there, in your own sandbox, where half-finished and experimental are
 perfectly safe. When the work is done and reviewed, it gets merged back into `main` as one reviewed unit.
 
-```text
-                    your feature branch (your sandbox)
-                    ┌────┐   ┌────┐
-                    │ A  │◄──│ B  │   ← commit freely here; nobody else affected
-                    └────┘   └────┘
-                   ╱                ╲ merge back when done + reviewed
-   ┌────┐   ┌────┐                  ╲┌────┐
-   │ C1 │◄──│ C2 │ ◄─────────────────│ M  │   main: stays working the whole time
-   └────┘   └────┘                   └────┘
-     main
+```mermaid
+gitGraph
+  commit id: "C1"
+  commit id: "C2"
+  branch feature
+  checkout feature
+  commit id: "A"
+  commit id: "B"
+  checkout main
+  merge feature id: "M"
 ```
 
 💡 **Key point.** A feature branch buys you isolation. Your messy middle is invisible to the team until
@@ -50,11 +50,14 @@ team Git workflow.
 Here's the whole life-cycle of one piece of work. We'll spend the rest of this guide on the interesting
 parts, but see the shape first:
 
-```text
-   git switch -c feature/x   →   work + commit   →   git push -u origin feature/x
-                                                              │
-                                                              ▼
-   delete branch  ◄──  merge (via PR)  ◄──  review  ◄──  open a pull request
+```mermaid
+flowchart LR
+  B(git switch -c feature/x) --> W(work + commit)
+  W --> P(git push -u origin feature/x)
+  P --> PR(open a pull request)
+  PR --> R(review)
+  R --> M(merge via PR)
+  M --> D(delete branch)
 ```
 
 Let's walk the first half now (the PR and review half is [Phase 3](03-pull-requests-and-review.md)).

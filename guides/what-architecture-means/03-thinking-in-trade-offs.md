@@ -50,15 +50,21 @@ There's one trade-off-shaping force so reliable it has a name, and it surprises 
 
 Picture it:
 
-```text
-   YOUR TEAMS                          YOUR SYSTEM TENDS TO BECOME
-   ──────────                          ───────────────────────────
-   ┌─────────┐ ┌─────────┐ ┌────────┐      ┌─────────┐ ┌─────────┐ ┌────────┐
-   │ Payments│ │ Search  │ │ Accounts│  ►   │ Payments│ │ Search  │ │ Accounts│
-   │  team   │ │  team   │ │  team   │      │   box   │ │   box   │ │   box   │
-   └─────────┘ └─────────┘ └────────┘      └─────────┘ └─────────┘ └────────┘
-
-   three teams who don't talk much   ──►   three components that don't share much
+```mermaid
+flowchart LR
+  subgraph Teams["YOUR TEAMS (don't talk much)"]
+    PT[Payments team]
+    ST[Search team]
+    AT[Accounts team]
+  end
+  subgraph System["YOUR SYSTEM BECOMES (components that don't share much)"]
+    PB[Payments box]
+    SB[Search box]
+    AB[Accounts box]
+  end
+  PT --> PB
+  ST --> SB
+  AT --> AB
 ```
 
 **What it does in real life.** If three separate teams build a system, you'll almost always end up with (at least) three major components, roughly one per team — because the way people are organized to communicate quietly shapes how their software is organized to communicate. This isn't a rule someone *chose*; it's a pull that happens whether you plan for it or not.

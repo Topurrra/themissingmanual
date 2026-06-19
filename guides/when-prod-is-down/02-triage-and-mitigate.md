@@ -111,22 +111,16 @@ move. (Practicing failover when nothing is on fire is, you guessed it, a postmor
 
 ---
 
-```text
-   PICK YOUR MITIGATION — start at the top, work down
-
-   Did a deploy go out right before? ──────────► ROLL BACK the deploy
-                │ no
-                ▼
-   Is the bad behavior behind a flag? ─────────► FLAG IT OFF
-                │ no
-                ▼
-   Did load spike with no code change? ────────► SCALE UP the saturated tier
-                │ no
-                ▼
-   Is one replica/zone/region unhealthy? ──────► FAIL OVER to the healthy one
-                │ no
-                ▼
-   None obvious? ──► stabilize what you can, then diagnose (Phase 1 → logs/traces)
+```mermaid
+flowchart TD
+  q1{"Did a deploy go out<br/>right before?"} -->|yes| rb["ROLL BACK the deploy"]
+  q1 -->|no| q2{"Is the bad behavior<br/>behind a flag?"}
+  q2 -->|yes| ff["FLAG IT OFF"]
+  q2 -->|no| q3{"Did load spike with<br/>no code change?"}
+  q3 -->|yes| sc["SCALE UP the saturated tier"]
+  q3 -->|no| q4{"Is one replica/zone/<br/>region unhealthy?"}
+  q4 -->|yes| fo["FAIL OVER to the healthy one"]
+  q4 -->|no| none["Stabilize what you can,<br/>then diagnose (logs/traces)"]
 ```
 
 📝 **Terminology.** *Mitigation* = anything that reduces or stops the user impact, whether or not it fixes the

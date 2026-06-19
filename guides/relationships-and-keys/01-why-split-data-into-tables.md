@@ -80,20 +80,24 @@ The cure is to give each kind of thing its own table, where each fact is written
 Customers go in a `customers` table. Orders go in an `orders` table. Then — and this is the crucial part —
 each order *references* the customer it belongs to instead of copying the customer's details.
 
-```text
-  customers                              orders
-  ┌────┬───────────────┬──────────────┐ ┌────────┬──────────┬───────────┬─────────┐
-  │ id │ name          │ email        │ │ id     │ customer │ product   │ amount  │
-  ├────┼───────────────┼──────────────┤ ├────────┼──────────┼───────────┼─────────┤
-  │ 1  │ Ada Lovelace  │ ada@ex.com   │ │ 1001   │    1     │ Keyboard  │  49.00  │
-  │ 2  │ Grace Hopper  │ grace@ex.com │ │ 1002   │    1     │ Mouse     │  25.00  │
-  └────┴───────────────┴──────────────┘ │ 1003   │    2     │ Monitor   │ 210.00  │
-                ▲                        │ 1004   │    1     │ Webcam    │  80.00  │
-                │                        └────────┴────┬─────┴───────────┴─────────┘
-                │                                       │
-                └───────────────────────────────────────┘
-                 order's "customer" holds the customer's id, not their name
+```mermaid
+erDiagram
+  CUSTOMERS ||--o{ ORDERS : "has (customer → id)"
+  CUSTOMERS {
+    int id PK
+    text name
+    text email
+  }
+  ORDERS {
+    int id PK
+    int customer FK
+    text product
+    numeric amount
+  }
 ```
+
+Each order's `customer` column holds the customer's `id` — a pointer — not a copy of their name and
+email. Ada (id `1`) is written once; her three orders just carry the number `1`.
 
 Ada's name and email now live in **exactly one row** — `customers` id `1`. Her three orders don't copy
 her details; they just hold the number `1`, a pointer that says "this order belongs to customer 1."

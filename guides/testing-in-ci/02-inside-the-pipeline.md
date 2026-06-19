@@ -21,18 +21,15 @@ can read the log and know which step broke and why.
 **What it actually is.** A CI run is a short, ordered checklist the server works through. Every system
 calls the pieces something slightly different, but the shape is almost always the same:
 
-```text
-   ┌─────────────────────────────────────────────────────────┐
-   │  A CI RUN (triggered by your push)                       │
-   │                                                          │
-   │   1. Check out  →  download the exact commit you pushed  │
-   │   2. Set up     →  install the language/runtime version  │
-   │   3. Install    →  fetch the project's dependencies      │
-   │   4. Lint       →  check style/formatting (optional)     │
-   │   5. Test       →  run the suite   ◄── the part we care  │
-   │                                        about most        │
-   │   6. Report     →  pass = green, any failure = red       │
-   └─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  Checkout[1. Check out — download the exact commit you pushed]
+  Setup[2. Set up — install the language/runtime version]
+  Install[3. Install — fetch the project's dependencies]
+  Lint[4. Lint — check style/formatting, optional]
+  Test[5. Test — run the suite — the part we care about most]
+  Report[6. Report — pass = green, any failure = red]
+  Checkout --> Setup --> Install --> Lint --> Test --> Report
 ```
 
 📝 **Terminology.** The whole sequence is often called a **pipeline** or a **workflow**. One unit of

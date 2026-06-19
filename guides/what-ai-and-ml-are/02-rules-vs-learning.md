@@ -23,14 +23,9 @@ For most of computing history, software worked one way. A person thought hard ab
 the rules, and typed those rules into the computer as explicit instructions. The computer didn't decide
 anything — it followed orders, exactly, forever.
 
-```text
-   TRADITIONAL CODE
-
-   human writes rules  ──►  computer follows them  ──►  answer
-
-   "IF the email contains
-    'FREE MONEY' THEN
-    mark it as spam"
+```mermaid
+flowchart LR
+  H["human writes rules<br/>'IF email says FREE MONEY → spam'"] --> C[computer follows them] --> A[answer]
 ```
 
 **What it does in real life.** Say you want to block spam email. The old way: you sit down and write rules.
@@ -56,8 +51,9 @@ Picture yourself maintaining that spam filter. You write your rules, and for a w
   add an *exception*. Now your rule list has rules about its own rules.
 - Spam in a new language shows up. None of your English rules apply. You start over.
 
-```text
-   you write a rule  ──►  spammers adapt  ──►  you write another rule  ──►  …forever
+```mermaid
+flowchart LR
+  R[you write a rule] --> S[spammers adapt] --> R2[you write another rule] --> S
 ```
 
 You're in an endless arms race, hand-writing more and more brittle rules, and the list never converges.
@@ -74,13 +70,11 @@ machine learning was built to fill.
 Machine learning flips the arrow. Instead of you writing the rules, you give the machine a big pile of
 *examples* — emails already labeled "spam" or "not spam" — and let it work out the rules itself.
 
-```text
-   MACHINE LEARNING
-
-   labeled examples  ──►  the machine learns the patterns  ──►  a "model"
-                                                                    │
-                          new, unseen email  ──────────────────────►  prediction:
-                                                                       "92% spam"
+```mermaid
+flowchart LR
+  E[labeled examples] --> L[the machine learns the patterns] --> M[a 'model']
+  N[new, unseen email] --> M
+  M --> P["prediction: '92% spam'"]
 ```
 
 📝 **Terminology.** *Training data* = the labeled examples you feed the machine to learn from (here:

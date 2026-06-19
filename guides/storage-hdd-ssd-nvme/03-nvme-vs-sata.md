@@ -36,14 +36,10 @@ data far faster than SATA can carry it. The road, built for a horse and cart, ca
 good SATA SSD is still enormously faster than any HDD — losing the moving parts (Phase 2) is a huge win all by
 itself — but the SATA interface puts a ceiling on it that the flash itself would happily blow past.
 
-```text
-   SATA SSD:
-
-   ┌──────────┐   fast    ┌────────────┐   narrow road    ┌─────┐
-   │ NAND     │ ────────► │ SATA cable │ ───────────────► │ CPU │
-   │ flash    │  (lots)   │ (one lane) │   ← the cap      └─────┘
-   └──────────┘           └────────────┘
-        the flash could send more than the cable can carry
+```mermaid
+flowchart LR
+    NAND["NAND flash"] -->|"fast (lots of data)"| SATA["SATA cable<br/>(one narrow lane)"]
+    SATA -->|"capped here"| CPU["CPU"]
 ```
 
 ## NVMe over PCIe — a road built for flash

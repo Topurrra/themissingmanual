@@ -69,21 +69,12 @@ When a release has one change and something breaks right after, you know exactly
 
 These four habits aren't a checklist you complete — they're a way of thinking that reinforces itself:
 
-```text
-   shared ownership  ──►  "production is everyone's problem"
-          │
-          ▼
-   automate the toil ──►  fewer manual mistakes, faster loop
-          │
-          ▼
-   small, frequent   ──►  each change is easy to verify and undo
-   changes
-          │
-          ▼
-   blameless         ──►  people surface problems instead of
-   learning               hiding them, so the system keeps improving
-          │
-          └──────────────►  back to shared ownership, stronger each time
+```mermaid
+flowchart TD
+  Own[Shared ownership] -->|production is everyone's problem| Auto[Automate the toil]
+  Auto -->|fewer manual mistakes, faster loop| Small[Small, frequent changes]
+  Small -->|each change is easy to verify and undo| Blameless[Blameless learning]
+  Blameless -->|people surface problems instead of hiding them| Own
 ```
 
 💡 **Key point.** DevOps is a **culture**, made real by shared ownership, automating toil, shipping small and often, and learning without blame. The tools and pipelines serve that culture — they don't replace it. A team with the culture and crude tools is doing DevOps; a team with perfect tools and a wall down the middle is not.

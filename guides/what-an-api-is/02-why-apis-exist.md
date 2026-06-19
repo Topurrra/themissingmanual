@@ -42,13 +42,12 @@ Most apps you use have two big parts. There's the part you see and touch — the
 
 These two halves talk to each other through — you guessed it — an API.
 
-```text
-   ┌──────────────┐        the API         ┌──────────────┐
-   │  FRONTEND    │   ── "log this user │   │  BACKEND     │
-   │  (the screen │       in" ──────────►│   │  (data,      │
-   │   you touch) │                      │   │   rules,     │
-   │              │◄── "ok, here's their │   │   passwords) │
-   └──────────────┘     name and inbox" ─┘   └──────────────┘
+```mermaid
+sequenceDiagram
+  participant Frontend as Frontend (the screen you touch)
+  participant Backend as Backend (data, rules, passwords)
+  Frontend->>Backend: "log this user in"
+  Backend-->>Frontend: "ok, here's their name and inbox"
 ```
 
 When you log in, the frontend doesn't check your password itself — it sends your details across this API to the backend and asks "is this person allowed in?" The backend does the checking and answers. Because there's a clean contract between them, two different teams can work on the two halves at once, and either side can be rebuilt without dragging the other along — as long as the contract holds.

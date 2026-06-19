@@ -53,16 +53,12 @@ The trap is answering a level-1 question with a level-3 test. If you want to che
 
 Here's the shape teams drift into when nobody's steering — the pyramid flipped on its head:
 
-```text
-          ╲─────────────────╱
-           ╲   lots of E2E  ╱     slow, flaky, vague failures
-            ╲─────────────╱
-             ╲  some integ ╱
-              ╲─────────╱
-               ╲ a few  ╱
-                ╲ unit ╱
-                 ╲────╱
-                   ▼  (almost no fast tests at the bottom)
+```mermaid
+flowchart TD
+  E2E[lots of E2E — slow, flaky, vague failures]
+  Integ[some integration]
+  Unit[a few unit — almost no fast tests at the bottom]
+  E2E --> Integ --> Unit
 ```
 
 It's called the **ice-cream cone** (a fat scoop of E2E on top, tapering to almost no units at the base), and it's the single most common testing-strategy failure. It usually grows by accident: testing through the UI feels the most "real," QA writes end-to-end checks, nobody pushes logic down into units, and one day you look up and your suite is a tower of slow E2E tests balanced on nothing.

@@ -25,18 +25,15 @@ code, up front, where they're cheap.
 
 **What it actually is.** Test-driven development is a loop with three steps, repeated in tiny increments:
 
-```text
-   ┌─────────────────────────────────────────────────┐
-   │                                                   │
-   ▼                                                   │
- ┌──────┐        ┌────────┐        ┌──────────┐        │
- │ RED  │  ───►  │ GREEN  │  ───►  │ REFACTOR │  ──────┘
- └──────┘        └────────┘        └──────────┘
- write a test    write the         clean up the
- that fails      simplest code     code now that
- (it must fail   that makes it     it's safely
-  for the        pass — even if    covered by a
-  right reason)  it's ugly         passing test
+```mermaid
+stateDiagram-v2
+  [*] --> Red
+  Red --> Green: write the simplest code that passes
+  Green --> Refactor: clean up under a passing test
+  Refactor --> Red: next small piece
+  Red: RED — write a failing test (must fail for the right reason)
+  Green: GREEN — make it pass, even if it's ugly
+  Refactor: REFACTOR — improve structure, behavior unchanged
 ```
 
 You write a failing test that describes one small piece of behavior you want (**red**). You write the least

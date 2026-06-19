@@ -4,7 +4,7 @@ guide: "data-structures-explained"
 phase: 0
 summary: "The handful of containers you actually use day to day — arrays/lists, maps, and sets — what each one is really good at, and how to pick the right one without overthinking it."
 tags: [data-structures, arrays, lists, maps, sets, beginner-friendly]
-category: programming-languages
+category: programming-concepts
 order: 3
 difficulty: beginner
 synonyms: ["what data structure should i use", "array vs list vs map", "when to use a hash map", "difference between list and set", "data structures for beginners"]

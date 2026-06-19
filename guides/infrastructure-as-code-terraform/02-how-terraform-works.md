@@ -59,17 +59,11 @@ resource "aws_instance" "web" {
 
 You don't run a `.tf` file like a script. You run *Terraform commands* against your files, and there's a three-step loop you'll repeat for the rest of your life with this tool. Learn it as a rhythm.
 
-```text
-   init  ──►  plan  ──►  apply
-    │          │          │
-    │          │          └─ make reality match. THIS is the only step
-    │          │             that changes anything in your cloud.
-    │          │
-    │          └─ preview the diff. Read-only. Shows what apply WOULD do.
-    │             This is your seatbelt — read it every time.
-    │
-    └─ set up the working dir: download the providers your config needs.
-       Run once per project (and again when providers change).
+```mermaid
+flowchart LR
+  Init[init<br/>download providers] -->|once per project| Plan[plan<br/>preview the diff, read-only]
+  Plan -->|your seatbelt — read every time| Apply[apply<br/>make reality match]
+  Apply -.->|the only step that changes your cloud| Cloud[(your cloud)]
 ```
 
 ### `terraform init` — set up the working directory
@@ -171,14 +165,10 @@ This is the part people skip and then get burned by. Slow down here.
 
 **Why it has to exist.** Think about your second `plan`. Terraform needs to answer "does the thing my config describes already exist, and is it correct?" It can't re-derive that from the config alone — the config doesn't contain the cloud's IDs. So Terraform keeps the mapping in state. Without state, it would have no idea that the `web` in your file is the *same* server as the one already running, and it might try to create a second one.
 
-```text
-   YOUR CONFIG (.tf)          STATE (.tfstate)              REAL CLOUD
-   ─────────────────          ────────────────              ──────────
-   aws_instance.web    ◄────►  web  ⇄  i-0a1b2c3d...  ◄────►  [ running EC2 ]
-   "what I want"               "what I built, and             "what actually
-                                its real-world ID"             exists"
-
-   plan = compare all three, and show the difference
+```mermaid
+flowchart LR
+  Config[YOUR CONFIG .tf<br/>aws_instance.web — what I want] <-->|maps to| State[STATE .tfstate<br/>web ⇄ i-0a1b2c3d... — what I built]
+  State <-->|maps to| Cloud[REAL CLOUD<br/>running EC2 — what actually exists]
 ```
 
 **Why people get this wrong.** The instinct is to treat state as a disposable cache you can ignore or delete. It is not. State is the authoritative record of the link between your code and your real, possibly-expensive, possibly-production infrastructure. Lose or corrupt it and Terraform forgets it owns those resources — the next `plan` may want to create duplicates of everything, or it may lose the ability to manage what's already there.

@@ -37,19 +37,11 @@ to edit code, add a new log line, redeploy, and wait for the problem to happen a
 
 Observability answers **questions you didn't know you'd need to ask.**
 
-```text
-   MONITORING                          OBSERVABILITY
-   "Is the thing I watch okay?"        "Why is this surprising thing happening?"
-
-   ┌──────────────────────┐           you ask a new question  ──┐
-   │ CPU         ✓ 41%    │                                     │
-   │ Error rate  ✓ 0.2%   │           ┌─────────────────────────▼────────┐
-   │ Uptime      ✓ 99.9%  │           │ rich data already emitted:        │
-   │ Disk        ⚠ 88%    │ ──alert── │ logs · metrics · traces           │
-   └──────────────────────┘           │ → slice it by customer, region,   │
-   known things,                      │   endpoint, version, anything     │
-   known thresholds                   └───────────────────────────────────┘
-                                       new question, answer already there
+```mermaid
+flowchart LR
+  mon["Monitoring<br/>known checks, known thresholds<br/>CPU · errors · uptime · disk"] -->|known alarm fires| alert{{"alert"}}
+  q(["a new, unplanned question"]) --> data["rich data already emitted<br/>logs · metrics · traces"]
+  data -->|slice by customer, region,<br/>endpoint, version| answer["answer already there"]
 ```
 
 **Why people get this wrong.** The common wrong picture is "observability is just monitoring with nicer

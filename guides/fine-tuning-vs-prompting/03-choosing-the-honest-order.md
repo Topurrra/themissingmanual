@@ -93,14 +93,10 @@ of the honest cost, and it's exactly why fine-tuning sits *last* in the order.
 
 ## 4. Why this order, in one breath
 
-```text
-   cheaper, faster, more reversible            more expensive, slower, more locked-in
-   ◄──────────────────────────────────────────────────────────────────────────────►
-
-      PROMPT            ──►          RAG            ──►          FINE-TUNE
-   change a string            build retrieval              build a dataset,
-   instant, free              facts stay editable          train, host, re-tune
-   rides model upgrades       rides model upgrades         goes stale on new bases
+```mermaid
+flowchart LR
+  P["PROMPT<br/>change a string<br/>instant, free<br/>rides model upgrades"] -->|still stuck?| R["RAG<br/>build retrieval<br/>facts stay editable<br/>rides model upgrades"]
+  R -->|still stuck?| F["FINE-TUNE<br/>build a dataset, train, host<br/>goes stale on new bases"]
 ```
 
 *What just happened:* You climb only as far as the problem forces you. Each rung costs more and commits you

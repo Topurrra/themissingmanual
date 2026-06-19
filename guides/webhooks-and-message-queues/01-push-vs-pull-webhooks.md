@@ -63,15 +63,19 @@ to an endpoint on your side. The *event* is the thing that happened (payment suc
 email bounced); the *delivery* is the individual HTTP POST that tells you about it.
 
 **The flip, in one picture.**
-```text
-   POLLING (you pull)                      WEBHOOK (they push)
-
-   YOU ──"any news?"──► THEM              THEM ──"it happened!"──► YOU
-   YOU ◄────"no"─────── THEM              (one POST, only when there's
-   YOU ──"any news?"──► THEM               actually something to say)
-   YOU ◄────"no"─────── THEM
-   YOU ──"any news?"──► THEM              you registered a URL once;
-   YOU ◄───"yes!"────── THEM              now they do the talking
+```mermaid
+sequenceDiagram
+  participant You
+  participant Them
+  Note over You,Them: POLLING — you pull, over and over
+  loop until the answer finally changes
+    You->>Them: "any news?"
+    Them-->>You: "no"
+  end
+  You->>Them: "any news?"
+  Them-->>You: "yes!"
+  Note over You,Them: WEBHOOK — you register a URL once, then they push
+  Them->>You: "it happened!" (one POST, only when there's something to say)
 ```
 
 **How it works, step by step.**

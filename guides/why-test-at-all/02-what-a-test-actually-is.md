@@ -33,12 +33,14 @@ to your code.
 
 Here's the shape of every test you'll ever write, drawn out:
 
-```text
-   ┌─────────────────────────────────────────────────────┐
-   │  1. ARRANGE   set up the inputs                       │
-   │  2. ACT       call YOUR real code with those inputs   │
-   │  3. ASSERT    check the result is what you expected   │   ← the test passes
-   └─────────────────────────────────────────────────────┘     or fails here
+```mermaid
+flowchart TD
+  A[1. ARRANGE — set up the inputs]
+  B[2. ACT — call YOUR real code with those inputs]
+  C[3. ASSERT — check the result is what you expected]
+  A --> B --> C
+  C -->|matches| Pass([test passes])
+  C -->|doesn't match| Fail([test fails])
 ```
 
 This is sometimes called **Arrange–Act–Assert**, and once you see it you'll spot it in every test. It's just

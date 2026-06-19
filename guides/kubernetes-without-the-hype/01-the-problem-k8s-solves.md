@@ -89,18 +89,19 @@ That phrase "makes reality match" isn't a metaphor; it's a literal loop running 
 controller's job never changes: *compare the actual state of the world to the desired state you declared, and if
 they differ, take a step to close the gap.* Then do it again. Forever.
 
-```text
-        ┌──────────────────────────────────────────────┐
-        │                                                │
-        ▼                                                │
-   read DESIRED state          read ACTUAL state         │
-   ("I want 3 running")        ("2 are running")          │
-        │                            │                    │
-        └──────────► compare ◄───────┘                    │
-                       │                                   │
-                  differ? → act ("start 1 more") ──────────┘
-                       │
-                  match?  → do nothing, look again
+```mermaid
+flowchart LR
+  Desired["read DESIRED state<br/>(I want 3 running)"]
+  Actual["read ACTUAL state<br/>(2 are running)"]
+  Compare{compare}
+  Act["differ? → act<br/>(start 1 more)"]
+  Match["match? → do nothing"]
+  Desired --> Compare
+  Actual --> Compare
+  Compare --> Act
+  Compare --> Match
+  Act -- look again --> Compare
+  Match -- look again --> Compare
 ```
 
 *What this gives you:* what people call "self-healing" is just this loop doing its boring job. Nobody wrote

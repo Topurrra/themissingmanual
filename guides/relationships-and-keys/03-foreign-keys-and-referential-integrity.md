@@ -26,19 +26,23 @@ and starts enforcing it itself.
 value from another table**. It's a pointer — `orders.customer_id` holds the `id` of a row over in
 `customers` — and you tell the database it's a pointer so the database can protect it.
 
-```text
-  customers (the "one" side)        orders (the "many" side)
-  ┌──────┬───────────────┐          ┌────────┬─────────────┬───────────┐
-  │ id   │ name          │          │ id     │ customer_id │ product   │
-  ├──────┼───────────────┤          ├────────┼─────────────┼───────────┤
-  │  1   │ Ada Lovelace  │◄─────────┤ 1001   │      1      │ Keyboard  │
-  │  2   │ Grace Hopper  │◄───┐     │ 1002   │      1      │ Mouse     │
-  └──────┴───────────────┘    │     │ 1003   │      2      │ Monitor   │
-         ▲                    └─────┤ 1004   │      1      │ Webcam    │
-         │                          └────────┴──────┬──────┴───────────┘
-   PRIMARY KEY                          FOREIGN KEY ─┘
-   (the name)                           (points at a customer's id)
+```mermaid
+erDiagram
+  CUSTOMERS ||--o{ ORDERS : "referenced by (id ← customer_id)"
+  CUSTOMERS {
+    int id PK
+    text name
+  }
+  ORDERS {
+    int id PK
+    int customer_id FK
+    text product
+  }
 ```
+
+The `customers.id` is the **primary key** (the name); `orders.customer_id` is the **foreign key**
+(a pointer at a customer's `id`). Orders 1001, 1002, and 1004 all carry `customer_id = 1`, so they all
+point at Ada.
 
 📝 **Terminology.** The table being pointed *at* (`customers`) is the **referenced** or **parent** table.
 The table doing the pointing (`orders`) is the **referencing** or **child** table. The foreign key always
@@ -96,10 +100,11 @@ all along, and it's the most common relationship there is. The pattern is simple
 Each order carries one `customer_id`. A customer can be pointed at by any number of orders. That
 asymmetry — many pointers in, one pointer out — *is* one-to-many.
 
-```text
-                       ┌── order 1001 ──┐
-   customer 1 (Ada) ◄──┼── order 1002 ──┤   one customer,
-                       └── order 1004 ──┘   many orders
+```mermaid
+flowchart RL
+  O1[order 1001] --> C[customer 1 - Ada]
+  O2[order 1002] --> C
+  O4[order 1004] --> C
 ```
 
 ### Many-to-many — when both sides multiply
@@ -114,18 +119,26 @@ The fix is a third table that exists purely to hold the pairings:
 are the connections themselves. Each row holds two foreign keys — one to each side — and each row means
 "this student is in this course."
 
-```text
-  students            enrollments (the junction)        courses
-  ┌────┬───────┐      ┌────────────┬───────────┐        ┌────┬──────────┐
-  │ id │ name  │      │ student_id │ course_id │        │ id │ title    │
-  ├────┼───────┤      ├────────────┼───────────┤        ├────┼──────────┤
-  │ 1  │ Ada   │◄─────┤     1      │    101    ├───────►│101 │ Calculus │
-  │ 2  │ Grace │◄─┐   │     1      │    102    ├──┐     │102 │ Logic    │
-  └────┴───────┘  │   │     2      │    101    │  └────►└────┴──────────┘
-                  └───┤            │           │
-                      └────────────┴───────────┘
-   one row per pairing: "Ada is in Calculus", "Ada is in Logic", "Grace is in Calculus"
+```mermaid
+erDiagram
+  STUDENTS ||--o{ ENROLLMENTS : "has"
+  COURSES  ||--o{ ENROLLMENTS : "has"
+  STUDENTS {
+    int id PK
+    text name
+  }
+  ENROLLMENTS {
+    int student_id FK
+    int course_id FK
+  }
+  COURSES {
+    int id PK
+    text title
+  }
 ```
+
+One row per pairing in `enrollments`: "Ada is in Calculus," "Ada is in Logic," "Grace is in Calculus."
+Each row holds two foreign keys — one to each side.
 
 ```sql
 CREATE TABLE enrollments (
@@ -201,8 +214,19 @@ dangling pointers.
 That guarantee is precisely what makes the next step safe. When you want "every order *with* its
 customer's name," you follow the foreign keys back to their primary keys and stitch the tables together.
 That stitching is the **JOIN**, and because referential integrity ensures every `customer_id` really does
-match a customer, your joins return whole, sensible rows instead of gaps. You're ready for
-[SQL JOINs Explained](/guides/sql-joins-explained) — it's the natural payoff of everything here.
+match a customer, your joins return whole, sensible rows instead of gaps. Here's that payoff on a
+built-in pair of tables — `books` each carry an `author_id` foreign key pointing at `authors.id`:
+
+```sql runnable
+SELECT books.title, authors.name AS author
+FROM books
+JOIN authors ON books.author_id = authors.id;
+```
+*What just happened:* Each book carried an `author_id`; the JOIN followed that foreign key back to the
+matching `authors` row and stitched the two tables into one result — every book shown beside its author's
+name. Because each `author_id` really points at a real author, no row came back with a gap.
+
+You're ready for [SQL JOINs Explained](/guides/sql-joins-explained) — it's the natural payoff of everything here.
 
 ## Recap
 

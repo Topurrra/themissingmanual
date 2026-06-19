@@ -19,18 +19,11 @@ Before any rules about `.gitignore` or vaults, you need one idea in your head �
 
 Think of your house key. It isn't dangerous because it's shiny or because it's secret-looking — it's dangerous because of what it *opens*. You don't leave it under the mat, you don't photocopy it for strangers, and if you lose it you change the lock. Every rule in this guide is one of those instincts applied to software.
 
-```text
-   Is it config, or is it a secret?
-        │
-        │   "If a stranger had this value, could they
-        │    spend my money, read my data, or be me?"
-        │
-        ├── NO  ──►  Config.  (port number, log level, feature flag,
-        │            the public URL of your API)  — harmless if seen.
-        │
-        └── YES ──►  SECRET.  (anything that unlocks money or data)
-                     Treat it like a house key: never in code,
-                     never in Git, rotate it if it ever gets out.
+```mermaid
+flowchart TD
+  q{"If a stranger had this value, could they<br/>spend my money, read my data, or be me?"}
+  q -->|no| config["CONFIG<br/>(port, log level, feature flag, public API URL)<br/>— harmless if seen"]
+  q -->|yes| secret["SECRET<br/>(anything that unlocks money or data)<br/>— never in code, never in Git, rotate if it leaks"]
 ```
 
 💡 **Key point.** The thing that makes a value a secret is *what it unlocks*, not what it looks like. A short password to a production database is a secret; a long random string that's actually a public identifier is not. When unsure, ask the consequence question.

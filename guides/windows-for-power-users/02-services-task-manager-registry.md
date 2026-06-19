@@ -92,12 +92,12 @@ This is the one people are scared of, and the fear comes entirely from not knowi
 
 **How it's organized.** Three nested concepts — and they map almost exactly onto folders, files, and the contents of files:
 
-```text
-   HIVE   (top-level root, like a drive)
-     └── KEY   (a folder)
-           └── KEY   (a sub-folder)
-                 ├── VALUE: name → data      (like a setting = its value)
-                 └── VALUE: name → data
+```mermaid
+flowchart TD
+  Hive["HIVE (top-level root, like a drive)"] --> Key["KEY (a folder)"]
+  Key --> SubKey["KEY (a sub-folder)"]
+  SubKey --> Value1["VALUE: name → data (a setting = its value)"]
+  SubKey --> Value2["VALUE: name → data"]
 ```
 
 - **Hives** — the handful of top-level roots. The two you'll actually meet:

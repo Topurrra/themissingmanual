@@ -52,28 +52,15 @@ That bootstrapping step — agree on a shared secret without ever sending it in 
 
 Here's the shape of what happens in the half-second before your page loads, slightly simplified to keep the idea clear. (Modern TLS 1.3 streamlines this and uses a key-agreement method where neither side ever transmits the secret at all — but the *roles* below are what matters for the mental model.)
 
-```text
-   YOU (browser)                                        SERVER (yourbank.com)
-        │                                                        │
-        │ ── 1. "Hello. Here's what TLS versions & ──────────►   │
-        │        ciphers I can speak."                           │
-        │                                                        │
-        │ ◄──── 2. "Hello. Let's use this cipher. ──────────────  │
-        │          And here is my CERTIFICATE,                   │
-        │          which contains my PUBLIC KEY."                │
-        │                                                        │
-   3. You CHECK the certificate                                  │
-      (Is it for yourbank.com? Signed by a                       │
-       CA I trust? Not expired? — Phase 3)                       │
-        │                                                        │
-        │ ── 4. Using the public key, both sides ──────────►     │
-        │        safely agree on a shared SESSION KEY            │
-        │        (the eavesdropper can't derive it)              │
-        │                                                        │
-        │ ◄═══ 5. From here on, EVERYTHING is encrypted ═══════► │
-        │        with the fast SYMMETRIC session key.            │
-        │        (your password, the page, all of it)            │
-        │                                                        │
+```mermaid
+sequenceDiagram
+  participant You as You (browser)
+  participant Server as Server (yourbank.com)
+  You->>Server: 1. Hello — TLS versions & ciphers I can speak
+  Server-->>You: 2. Hello — use this cipher; here's my certificate (+ public key)
+  Note over You: 3. CHECK the certificate<br/>(right domain? trusted CA? not expired? — Phase 3)
+  You->>Server: 4. Using the public key, both sides agree on a shared SESSION KEY
+  Note over You,Server: 5. Everything from here is encrypted<br/>with the fast symmetric session key
 ```
 
 *What just happened:* Steps 1–2 are introductions — agreeing on a common language and the server presenting its credentials. Step 3 is where authentication happens: you verify the certificate before trusting anything (the whole of Phase 3). Step 4 is the clever part — the public/private key pair lets both sides arrive at the *same* session key without that key ever crossing the wire in a form an eavesdropper could use. Step 5 is the payoff: a fast, symmetric, encrypted tunnel for the real conversation. Notice the asymmetric keys did their job in step 4 and then step aside.

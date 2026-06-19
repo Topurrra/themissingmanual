@@ -30,15 +30,15 @@ The reason this matters is the same reason Git matters for code. Think about wha
 a history of ordered changes, the same history on every machine, and the ability to move forward
 (apply commits) or backward (revert them). Migrations give your *schema* exactly those properties.
 
-```text
-   CODE (git)                         SCHEMA (migrations)
-   ─────────                          ───────────────────
-   commit 1  add login route          0001  create users table
-   commit 2  add phone field to form  0002  add phone_number column
-   commit 3  add SMS sender           0003  create messages table
-        │                                  │
-        ▼ same ordered history             ▼ same ordered history
-   on every machine & environment     on every machine & environment
+```mermaid
+flowchart LR
+  subgraph CODE[CODE - git]
+    c1[commit 1: add login route] --> c2[commit 2: add phone field to form] --> c3[commit 3: add SMS sender]
+  end
+  subgraph SCHEMA[SCHEMA - migrations]
+    m1[0001 create users table] --> m2[0002 add phone_number column] --> m3[0003 create messages table]
+  end
+  CODE -. same ordered history on every machine .- SCHEMA
 ```
 
 So a migration file is to your database what a commit is to your code: one ordered, replayable step.

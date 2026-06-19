@@ -92,15 +92,11 @@ something's wrong. When data breaks, it often breaks *silently*. The number is s
 plausible-looking number. People still act on it. And one bad value upstream flows through every join and
 aggregation below it, contaminating everything downstream — without ever raising an alarm.
 
-```text
-   one bad row at a source
-            │
-            ▼  flows downstream, unnoticed
-   ┌──────────────────────────────────────────┐
-   │  wrong total in a dashboard               │
-   │  wrong input to a model                   │
-   │  wrong number in a board meeting          │   ← decision made on poison
-   └──────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  bad[One bad row at a source] -->|flows downstream, unnoticed| dash[Wrong total in a dashboard]
+  bad --> model[Wrong input to a model]
+  bad --> board[Wrong number in a board meeting<br/>decision made on poison]
 ```
 
 That's why a data engineer's real product isn't pipelines — it's *trust*. Anyone can write a script that

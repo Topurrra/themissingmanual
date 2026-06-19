@@ -81,15 +81,13 @@ The blank-page problem ("what do I even put here?") has two well-known answers, 
 
 **What it actually is.** An **alert rule** is a PromQL expression plus a condition and a duration: "if *this* is true for *this long*, fire." Prometheus evaluates the rule on a timer; when it fires, it hands the alert to **Alertmanager**, a separate component whose job is routing — deciding who gets paged, grouping related alerts, and silencing them during maintenance.
 
-```text
-  Prometheus                    Alertmanager                 You
-  ┌─────────────────┐           ┌──────────────┐
-  │ evaluates rule: │   fires   │ group, dedupe│   page /    📟  ───►  🧑
-  │ error rate > 5% │ ────────► │ route, silence│  Slack /
-  │ for 10m         │           │              │  email
-  └─────────────────┘           └──────────────┘
-   "is it true, and             "who should hear about
-    has it stayed true?"         this, and how?"
+```mermaid
+flowchart LR
+  prom["Prometheus<br/>evaluates rule: error rate over 5% for 10m<br/>(is it true, and has it stayed true?)"]
+  am["Alertmanager<br/>group, dedupe, route, silence<br/>(who should hear, and how?)"]
+  you["You<br/>page / Slack / email"]
+  prom -->|fires| am
+  am --> you
 ```
 
 *What just happened:* Prometheus decides *whether* something is wrong; Alertmanager decides *what to do about it*. Splitting those two jobs is deliberate — it means one Alertmanager can handle alerts from many Prometheus servers, and you tune *routing* (who, when, how loud) without touching the *rules* (what counts as wrong).

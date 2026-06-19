@@ -56,20 +56,17 @@ electricity, and air conditioning; the more machines per rack and the more racks
 economics. A tower wastes all of that. So the server gets squashed flat, its ports moved to the front and
 back for cabling in a row, and its lid bolted down because nobody's opening it casually.
 
-```text
-   A 42U RACK (front view), filled with servers
-   ┌───────────────────────┐
-   │  switch (top-of-rack)  │  1U   ← networking for the whole rack (Phase 3)
-   ├───────────────────────┤
-   │   server   web-prod-1  │  1U
-   ├───────────────────────┤
-   │   server   web-prod-2  │  1U
-   ├───────────────────────┤
-   │   server   db-prod-1   │  2U   ← taller: more drives, bigger cooling
-   │                        │
-   ├───────────────────────┤
-   │          ...           │       ← repeat until the rack is full
-   └───────────────────────┘
+```mermaid
+flowchart TD
+  subgraph Rack["42U rack (front view)"]
+    direction TB
+    SW["Switch (top-of-rack) — 1U"]
+    S1["Server web-prod-1 — 1U"]
+    S2["Server web-prod-2 — 1U"]
+    DB["Server db-prod-1 — 2U<br/>more drives, bigger cooling"]
+    More["… repeat until full"]
+  end
+  SW --- S1 --- S2 --- DB --- More
 ```
 
 **Why this saves you later.** When a colleague says "we're out of rack space" or "that box is a 2U," you
@@ -163,10 +160,12 @@ unplugged) and the server doesn't even hiccup. Better still, the two PSUs are of
 power circuits**, so even losing a whole circuit — a tripped breaker, a failed feed — doesn't take the
 machine down.
 
-```text
-   power feed A ──► PSU 1 ─┐
-                           ├──► server keeps running if EITHER feed/PSU survives
-   power feed B ──► PSU 2 ─┘
+```mermaid
+flowchart LR
+  A["Power feed A"] --> P1["PSU 1"]
+  B["Power feed B"] --> P2["PSU 2"]
+  P1 --> S["Server<br/>keeps running if either feed/PSU survives"]
+  P2 --> S
 ```
 
 We'll meet this idea — *two of a thing so the failure of one doesn't matter* — over and over in
@@ -200,22 +199,14 @@ is plugged into the wall — even with the main system powered down — the BMC 
 network, drawing a trickle of standby power. "Off," for a server, usually means *the main computer is off
 but its little manager is still on*.
 
-```text
-   ┌─────────────────────────────────────────────┐
-   │  THE SERVER (one physical box)               │
-   │                                              │
-   │   ┌────────────────────────────────────┐    │
-   │   │  MAIN COMPUTER                       │    │  ◄─ runs your OS, your services.
-   │   │  CPU, RAM, disks, your OS            │    │     Can be powered off.
-   │   └────────────────────────────────────┘    │
-   │                                              │
-   │   ┌──────────────┐                           │
-   │   │     BMC      │ ◄── its own NIC ──► network│  ◄─ tiny separate computer.
-   │   │ (always on)  │                           │     Stays on while the main
-   │   └──────────────┘                           │     computer is off.
-   └─────────────────────────────────────────────┘
-              │
-        plugged into the wall (standby power keeps the BMC alive)
+```mermaid
+flowchart TD
+  subgraph Server["The server (one physical box)"]
+    Main["Main computer<br/>CPU, RAM, disks, your OS<br/>(can be powered off)"]
+    BMC["BMC (always on)<br/>own NIC, stays on while main is off"]
+  end
+  BMC -->|own NIC| Net["Network"]
+  Wall["Wall power (standby keeps BMC alive)"] --> Server
 ```
 
 **What it does in real life.** Through the BMC, over the network, an admin who is nowhere near the building

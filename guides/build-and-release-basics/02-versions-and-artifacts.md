@@ -45,14 +45,11 @@ The promise is simple and humane: the version number tells you *how scared to be
 
 **The rule that fixes it: build once, deploy the same thing everywhere.** You build the artifact a *single* time, freeze it, and then move that *identical* frozen artifact wherever it needs to go. You do not rebuild it for testing and then rebuild it again for production — that would produce two different artifacts that you only *hope* are the same.
 
-```text
-   ❌ Rebuild per destination          ✅ Build once, deploy the same artifact
-
-   source → build → test server        source → build → 1.4.0 (frozen)
-   source → build → prod server                          │   │
-        (two builds = two              deploy ───────────┘   │
-         different artifacts,          the SAME 1.4.0 ───────┘
-         only HOPED to match)          to test AND to prod
+```mermaid
+flowchart LR
+  Source[source] -->|build once| Frozen[1.4.0 frozen]
+  Frozen -->|deploy the same artifact| Test[test server]
+  Frozen -->|deploy the same artifact| Prod[prod server]
 ```
 
 ⚠️ **The gotcha.** "We rebuild for production" sounds responsible, but it quietly breaks the chain of trust. The artifact you *tested* and the artifact you *shipped* came out of two separate build runs — a dependency could have updated, a tool could differ, the clock could have ticked past something. You tested one thing and shipped another. The whole reason Phase 1 insisted on reproducible builds is so you *don't have to* rebuild: you build the trustworthy artifact once and carry that exact one forward.

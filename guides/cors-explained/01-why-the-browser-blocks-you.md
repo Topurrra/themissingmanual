@@ -57,16 +57,15 @@ why the Network tab can show a `200 OK` while your `fetch` throws.
 **Why this rule exists at all.** Imagine you're logged into your bank in one tab. Your browser holds a
 cookie that proves it's you. Now you open a sketchy tab with this on the page:
 
-```text
-   evil.example.com  (a page you didn't write)
-        │
-        │  fetch("https://yourbank.com/account/balance")
-        ▼
-   Your browser AUTOMATICALLY attaches your bank cookie…
-        │
-        ▼
-   …without the same-origin policy, evil.example.com's
-   JavaScript could READ your balance and send it home.
+```mermaid
+sequenceDiagram
+  participant Evil as evil.example.com
+  participant Browser
+  participant Bank as yourbank.com
+  Evil->>Browser: fetch("yourbank.com/account/balance")
+  Browser->>Bank: request + your bank cookie (attached automatically)
+  Bank-->>Browser: your balance
+  Note over Browser,Evil: Same-origin policy blocks Evil's JS<br/>from reading the response
 ```
 
 The same-origin policy is what stops that. The evil page can *send* the request, but the browser will not
@@ -89,19 +88,15 @@ answers with `Access-Control-Allow-Origin: http://localhost:5173`, it's telling 
 `localhost:5173` is allowed to read this — let it through."* The browser sees that permission slip and
 hands your JavaScript the response.
 
-```text
-   ┌──────────────────┐         request          ┌──────────────────┐
-   │  Your page on     │ ───────────────────────► │  API server on    │
-   │  localhost:5173   │                          │  localhost:3000   │
-   │  (the browser)    │ ◄─────────────────────── │  (you control it) │
-   └──────────────────┘   response + CORS header  └──────────────────┘
-            │                                              │
-            │  ENFORCES the rule:                          │  PERMITS exceptions:
-            │  "can this page read                         │  "I allow origin
-            │   this response?"                            │   localhost:5173"
-            ▼                                              ▼
-     If the response says yes → JS gets the data.
-     If it doesn't → browser blocks the read. CORS error.
+```mermaid
+flowchart LR
+  page["Your page on localhost:5173<br/>(browser ENFORCES the rule)"]
+  api["API server on localhost:3000<br/>(server PERMITS exceptions)"]
+  page -- "request" --> api
+  api -- "response + CORS header<br/>'I allow localhost:5173'" --> page
+  page --> check{response says<br/>this origin is OK?}
+  check -->|yes| ok([JS gets the data])
+  check -->|no| err([browser blocks the read — CORS error])
 ```
 
 💡 **The whole mental model in one line:** the **browser enforces**, the **server permits**. A CORS error

@@ -19,20 +19,13 @@ You know what you're protecting, and you know where the danger crosses into your
 
 **Why one wall fails.** Every lock has a flaw eventually — a bug, a misconfiguration, a leaked password, a clever input nobody predicted. If your whole defense is one wall, the day it cracks, an attacker has *everything*. You're betting the entire system on never making a single mistake. Nobody wins that bet forever.
 
-```text
-   ONE WALL (brittle):                  LAYERS (defense in depth):
-
-      attacker                             attacker
-         │                                    │
-         ▼                                    ▼
-    ┌──────────┐                       ┌──────────────┐  network locked down
-    │   wall   │  ← one crack          ├──────────────┤  strong login + 2FA
-    └──────────┘    = total loss       ├──────────────┤  least-privilege access
-         │                             ├──────────────┤  data encrypted at rest
-         ▼                             ├──────────────┤  logging + alerts
-    EVERYTHING                         └──────────────┘
-                                        each layer the attacker
-                                        must defeat *separately*
+```mermaid
+flowchart TD
+  attacker([attacker]) --> L1[network locked down]
+  L1 --> L2[strong login + 2FA]
+  L2 --> L3[least-privilege access]
+  L3 --> L4[data encrypted at rest]
+  L4 --> L5[logging + alerts]
 ```
 
 *What just happened:* In the layered picture, no single failure is fatal. An attacker who gets past the login still hits limited access; if they get further, the data they reach is encrypted; and the whole time, logging is quietly raising a flag. Each layer buys you time and shrinks what a breach costs.

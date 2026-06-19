@@ -41,6 +41,20 @@ A **session** hands the client a meaningless ticket stub (a random id) and keeps
 
 **What it does in real life.** The cookie is a claim check. It carries nothing meaningful by itself — just an id. All the authority lives server-side, behind that id.
 
+```mermaid
+sequenceDiagram
+  participant Browser
+  participant Server
+  participant Store as session store
+  Browser->>Server: POST /login (email + password)
+  Server->>Store: save id 8f3b… → "Alice, admin"
+  Server-->>Browser: Set-Cookie: session=8f3b…
+  Browser->>Server: GET /invoices (cookie attached)
+  Server->>Store: look up 8f3b…
+  Store-->>Server: "this is Alice"
+  Server-->>Browser: Alice's invoices
+```
+
 **A real example.** Here's the cookie the server set, annotated:
 ```text
 Set-Cookie: session=8f3b9c2e1a7d4b60; HttpOnly; Secure; SameSite=Lax; Max-Age=86400

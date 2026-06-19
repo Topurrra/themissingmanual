@@ -17,18 +17,15 @@ There's one last picture to fix, and it trips up almost everyone building their 
 
 **What it actually is.** A database like PostgreSQL or MySQL runs as its own long-lived program — a **server** — sitting and waiting for requests. Your application is a **client**: it opens a **connection** to that server, sends requests over it, and gets answers back. They are two separate programs having a conversation, even when they happen to run on the same computer.
 
-```text
-   ┌─────────────────────┐                      ┌─────────────────────────┐
-   │   YOUR APP           │   connection         │   THE DATABASE SERVER    │
-   │   (the client)       │ ───── request ─────► │   (the DBMS, e.g.        │
-   │                      │                      │    PostgreSQL)           │
-   │   "give me all       │ ◄──── answer ─────── │                          │
-   │    orders for        │      (rows)          │   ┌──────────────────┐   │
-   │    customer 2"       │                      │   │  the actual data │   │
-   └─────────────────────┘                      │   └──────────────────┘   │
-                                                 └─────────────────────────┘
-        often on different machines, talking over the network
+```mermaid
+flowchart LR
+  App["YOUR APP (the client)<br/>give me all orders for customer 2"]
+  Server["THE DATABASE SERVER<br/>(the DBMS, e.g. PostgreSQL)<br/>holds the actual data"]
+  App -->|request over a connection| Server
+  Server -->|answer (rows)| App
 ```
+
+The two are often on different machines, talking over the network.
 
 📝 **Terminology.** *Client–server* = one program (the **server**) provides a service and waits for requests; other programs (**clients**) connect to it and make requests. Your web app is a client of the database server, exactly like your browser is a client of a web server.
 
@@ -60,6 +57,15 @@ WHERE city = 'London';
 (1 row)
 ```
 *What just happened:* You described what you wanted — the `name` and `city` columns, **from** the `customers` table, but only the rows **where** the city is London — and sent that to the server. The server found the matching rows and handed back the answer: one row, Ada. Notice you never told it *how* to search or *where* the rows physically live. You stated the question; the DBMS planned and ran it. That describe-the-goal style is the heart of SQL.
+
+Here's the same shape you can run right now, against a tiny built-in `authors` table:
+
+```sql runnable
+SELECT name, country
+FROM authors
+WHERE country = 'UK';
+```
+*What just happened:* You described what you wanted — `name` and `country` from `authors`, but only the rows **where** the country is the UK — and got back the two matching authors. You never said *how* to find them; that describe-the-goal style is the heart of SQL.
 
 You don't need to write SQL yet — that's a guide of its own. The point here is only that **SQL is the conversation**, and that the conversation goes over a connection to a server.
 

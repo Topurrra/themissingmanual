@@ -25,7 +25,7 @@ the indented lines beneath belong to it. Every structure here uses it.
 **What it actually is.** An `if` runs a block *only when* a condition is true. Add `elif` ("else if")
 for more conditions to check in turn, and `else` for "none of the above." Python checks them top to
 bottom and runs the **first** matching block, then skips the rest.
-```python
+```python runnable
 score = 72
 if score >= 90:
     print("A")
@@ -63,7 +63,7 @@ comparison like `>=`, `==`, `!=` (not equal), `<`, `>`. The block under `if` run
 **What it actually is.** Python lets you use *any* value as a condition, not only `True`/`False`. When
 it does, it asks "is this value *truthy* or *falsy*?" The falsy values are the "empty or nothing" ones;
 almost everything else is truthy.
-```python
+```python runnable
 print(bool(0), bool(""), bool([]), bool(None))
 print(bool(42), bool("hi"), bool([1, 2]))
 ```
@@ -75,7 +75,7 @@ False False False False
 True True True
 ```
 This lets you write natural checks. Instead of `if len(items) > 0:`, you can write:
-```python
+```python runnable
 items = []
 if items:
     print("There are items")
@@ -94,7 +94,7 @@ The list is empty
 
 **What it actually is.** A `for` loop walks through a collection and runs its block *once per item*,
 with each item handed to a name you choose.
-```python
+```python runnable
 for fruit in ["apple", "banana", "cherry"]:
     print(fruit)
 ```
@@ -107,7 +107,7 @@ cherry
 ```
 To repeat a fixed number of times, loop over `range(n)`, which produces the numbers `0` up to (but not
 including) `n`:
-```python
+```python runnable
 for i in range(3):
     print(i)
 ```
@@ -123,7 +123,7 @@ exclusive" rule as slicing:
 
 **What it actually is.** A `while` loop repeats its block *as long as* a condition stays true. You reach
 for it when you don't know in advance how many times you'll loop — you loop until something changes.
-```python
+```python runnable
 n = 3
 while n > 0:
     print(n)
@@ -147,7 +147,7 @@ suspect; press **Ctrl-C** to stop it.
 **What it actually is.** A **function** is a named, reusable block of instructions. You *define* it once
 with `def`, then *call* it whenever you need it — possibly with different inputs each time. It's how you
 avoid copy-pasting the same logic and how you give a chunk of code a meaningful name.
-```python
+```python runnable
 def greet(name):
     return f"Hello, {name}!"
 
@@ -166,7 +166,7 @@ Hello, Linus!
 value you pass in when calling (`"Ada"`). `return` sends a value back out of the function.
 
 **Defaults** let a parameter be optional by giving it a fallback value:
-```python
+```python runnable
 def greet(name, greeting="Hello"):
     return f"{greeting}, {name}!"
 
@@ -183,7 +183,7 @@ Hi, Ada!
 **`return` vs printing — a crucial difference.** A function that *prints* shows text on screen but hands
 back nothing usable; a function that *returns* gives you a value you can store and work with. A function
 with no `return` hands back `None`:
-```python
+```python runnable
 def show(x):
     print(x)
 
@@ -206,7 +206,7 @@ This one bites *experienced* developers, not only beginners — so it's worth me
 **What goes wrong.** When you give a parameter a default that is a **mutable** value (like a list), that
 default is created **once**, when the function is defined — and then *shared across every call* that uses
 it. It does **not** get a fresh list each time, which is almost never what you want.
-```python
+```python runnable
 def add_item(item, basket=[]):
     basket.append(item)
     return basket
@@ -225,7 +225,7 @@ default accumulates across calls, silently.
 
 **The fix** is a fixed pattern to adopt every time: default to `None`, then create a fresh value
 *inside* the function.
-```python
+```python runnable
 def add_item(item, basket=None):
     if basket is None:
         basket = []

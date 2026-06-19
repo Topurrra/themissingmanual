@@ -21,14 +21,14 @@ You don't need a separate "security phase." You need the Top 10 present at three
 
 **At code review.** Make the relevant categories part of how you read a diff. A reviewer with the list in mind sees the string-concatenated query (Injection), the missing ownership check (Broken Access Control), the user-supplied URL the server fetches (SSRF).
 
-```text
-   Reviewing this diff, run the relevant suspicions:
-
-     ┌─ touches a DB query?      → is it parameterized?         (Injection)
-     ├─ touches user data/IDs?   → does it check ownership?     (Broken Access Control)
-     ├─ touches login/sessions?  → rate-limited? MFA? safe cookies? (Auth Failures)
-     ├─ makes an outbound call?  → is the destination trusted?  (SSRF)
-     └─ added a dependency?      → known CVEs? still maintained? (Vulnerable Components)
+```mermaid
+flowchart LR
+  diff["Reviewing this diff,<br/>run the relevant suspicions"]
+  diff --> q1["touches a DB query?<br/>→ is it parameterized? (Injection)"]
+  diff --> q2["touches user data/IDs?<br/>→ does it check ownership? (Broken Access Control)"]
+  diff --> q3["touches login/sessions?<br/>→ rate-limited? MFA? safe cookies? (Auth Failures)"]
+  diff --> q4["makes an outbound call?<br/>→ is the destination trusted? (SSRF)"]
+  diff --> q5["added a dependency?<br/>→ known CVEs? still maintained? (Vulnerable Components)"]
 ```
 
 **At dependency-update time.** A huge share of real breaches come through **Vulnerable & Outdated Components** — a library with a publicly known hole that nobody updated. This is the least glamorous and most cost-effective security work you'll ever do: keep your dependencies patched.

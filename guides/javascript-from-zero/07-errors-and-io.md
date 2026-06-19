@@ -37,7 +37,7 @@ try {
 
 **What it actually is.** You don't only catch errors the language throws — you `throw` your own when your code hits a situation it can't honor. Throwing an `Error` is how you say "this is broken; whoever called me needs to deal with it."
 
-```javascript
+```javascript runnable
 function withdraw(balance, amount) {
   if (amount > balance) {
     throw new Error("Insufficient funds");

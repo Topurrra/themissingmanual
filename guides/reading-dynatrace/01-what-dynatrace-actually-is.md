@@ -65,24 +65,14 @@ When you click a service, you get *that service's* response time, failures, and 
 because the model already knows those links. You're never assembling the relationships yourself; you're
 navigating ones the model already drew.
 
-```text
-   ENTITY MODEL — everything is a typed node with relationships
-   (illustrative)
-
-        ┌──────────────┐  calls   ┌──────────────┐  calls   ┌────────────┐
-        │ checkout-svc │ ───────► │ pricing-svc  │ ───────► │  orders-db │
-        └──────┬───────┘          └──────┬───────┘          └────────────┘
-               │ runs on                 │ runs on
-        ┌──────▼───────┐          ┌──────▼───────┐
-        │  process A   │          │  process B   │
-        └──────┬───────┘          └──────┬───────┘
-               │ on host                 │ on host
-        ┌──────▼───────┐          ┌──────▼───────┐
-        │   host-01    │          │   host-02    │
-        └──────────────┘          └──────────────┘
-
-   Each box = an entity (typed, with a stable identity).
-   Each arrow = a relationship the model already knows.
+```mermaid
+flowchart TD
+  checkout["checkout-svc"] -->|calls| pricing["pricing-svc"]
+  pricing -->|calls| ordersdb[("orders-db")]
+  checkout -->|runs on| procA["process A"]
+  pricing -->|runs on| procB["process B"]
+  procA -->|on host| host1["host-01"]
+  procB -->|on host| host2["host-02"]
 ```
 
 *What just happened:* That diagram is the thing Dynatrace is really storing. Every chart, map, and trace you

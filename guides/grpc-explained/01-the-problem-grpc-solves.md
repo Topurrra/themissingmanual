@@ -26,21 +26,15 @@ For a public API, REST over JSON is a great default. It's readable, debuggable i
 knows it. But look at what happens on *every single call* when one of your services talks to another using
 JSON over HTTP/1.1:
 
-```text
-   pricing service                              currency service
-        │                                              │
-        │  open a fresh TCP connection                 │
-        │ ───────────────────────────────────────────▶│
-        │  send: { "amount": 1299, "from": "USD",      │
-        │          "to": "EUR" }   ← text, parsed      │
-        │ ───────────────────────────────────────────▶│
-        │                          read JSON as text,  │
-        │                          turn "1299" into    │
-        │                          a number again ...  │
-        │◀─────────────────────────────────────────── │
-        │  { "amount": 1187, "currency": "EUR" }       │
-        │  close connection                            │
-        ▼                                              ▼
+```mermaid
+sequenceDiagram
+  participant Pricing as pricing service
+  participant Currency as currency service
+  Pricing->>Currency: open a fresh TCP connection
+  Pricing->>Currency: send { "amount": 1299, "from": "USD", "to": "EUR" } (text, parsed)
+  Note over Currency: read JSON as text, turn "1299" back into a number
+  Currency-->>Pricing: { "amount": 1187, "currency": "EUR" }
+  Note over Pricing,Currency: connection closed — next call starts over
 ```
 
 *What just happened:* The number `1299` was turned into the text `"1299"`, shipped as characters, then
@@ -107,15 +101,13 @@ take on that old idea — the "g" is just Google's prefix, not "good" or "great.
 Here's the same currency call, but as gRPC frames it. Don't worry about the syntax yet — Phase 2 walks
 through it. Notice only the *feeling*:
 
-```text
-   pricing service                              currency service
-        │                                              │
-        │  convert(amount=1299, from=USD, to=EUR)      │
-        │  ─ a function call ─────────────────────────▶│   one shared, persistent
-        │     sent as compact binary over HTTP/2       │   HTTP/2 connection
-        │◀─────────────────────────────────────────── │
-        │  Money(amount=1187, currency=EUR)            │
-        ▼                                              ▼
+```mermaid
+sequenceDiagram
+  participant Pricing as pricing service
+  participant Currency as currency service
+  Note over Pricing,Currency: one shared, persistent HTTP/2 connection
+  Pricing->>Currency: convert(amount=1299, from=USD, to=EUR) — a function call, sent as compact binary
+  Currency-->>Pricing: Money(amount=1187, currency=EUR)
 ```
 
 *What just happened:* From the developer's chair, pricing called a function and got a typed result back. No

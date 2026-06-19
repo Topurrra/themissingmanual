@@ -21,19 +21,21 @@ If the monolith strains when one big team shares one deploy and one part needs d
 
 Here is the same checkout system from Phase 1, now as services:
 
-```text
-   MONOLITH (Phase 1)                MICROSERVICES (this phase)
+```mermaid
+flowchart TB
+  subgraph Mono["MONOLITH — one deploy, one DB, in-process calls"]
+    direction TB
+    Modules["login · billing · search · images · orders"]
+    MonoDB[(one shared database)]
+    Modules --> MonoDB
+  end
 
-   ┌──────────────────────┐         ┌────────┐   ┌─────────┐   ┌────────┐
-   │ login billing search │         │ login  │   │ billing │   │ search │
-   │   images   orders    │         │ svc    │   │ svc     │   │ svc    │
-   │   ┌──────────────┐   │         └───┬────┘   └────┬────┘   └───┬────┘
-   │   │  one shared  │   │             │  network    │  calls     │
-   │   │   database   │   │             ▼             ▼            ▼
-   │   └──────────────┘   │          ┌────┐        ┌────┐       ┌────┐
-   └──────────────────────┘          │ DB │        │ DB │       │ DB │
-   in-process function calls         └────┘        └────┘       └────┘
-   one deploy, one DB                each its own deploy + its own DB
+  subgraph Micro["MICROSERVICES — each its own deploy + its own DB, network calls"]
+    direction LR
+    LoginSvc[login svc] --> LoginDB[(DB)]
+    BillingSvc[billing svc] --> BillingDB[(DB)]
+    SearchSvc[search svc] --> SearchDB[(DB)]
+  end
 ```
 
 The lines that used to be free function calls inside one box are now arrows crossing a network between boxes. Everything that follows comes from that.

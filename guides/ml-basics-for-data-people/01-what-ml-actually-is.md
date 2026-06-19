@@ -30,17 +30,11 @@ You, the human, decided the thresholds. Thirty days. Three tickets. You picked t
 
 **What ML actually is.** Machine learning flips that around. Instead of *you* writing the rules, you hand the computer a pile of **historical examples** — past customers, each one labeled with what actually happened ("this one churned," "this one stayed") — and a learning procedure figures out the patterns on its own. The output of that process is a **model**: a thing you can feed a *new* customer's data and get back a prediction.
 
-```text
-   THE ML WAY: the computer learns the rules
-
-   historical examples            learning            a model
-   (customers + what               procedure      ┌──────────────┐
-    actually happened)   ───────────────────────► │ learned       │
-                                                   │ patterns      │
-   new customer ─────────────────────────────────►│  ↓            │
-                                                   │ "82% likely   │
-                                                   │  to churn"    │
-                                                   └──────────────┘
+```mermaid
+flowchart LR
+  hist[Historical examples<br/>customers + what happened] -->|learning procedure| model[A model<br/>learned patterns]
+  new[New customer] --> model
+  model --> pred["Prediction<br/>'82% likely to churn'"]
 ```
 
 📝 **Terminology.** A *model* is the learned thing — the output of training. It's not a program someone wrote line by line; it's a set of patterns the learning procedure distilled from your data. You feed it new inputs, it returns predictions.

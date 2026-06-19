@@ -19,29 +19,15 @@ Here's the secret that makes the whole thing work: **optimization is a measureme
 
 Every optimization that actually lands walks the same circle:
 
-```text
-   ┌──────────────────────────────────────────────────────┐
-   │                                                        │
-   │   ① set a TARGET   ─────────────────────────────────┐  │
-   │   "p95 checkout < 300ms"   (do this once, up front)  │  │
-   │                                                    │  │
-   ▼                                                    │  │
-   ② MEASURE a baseline ──▶ ③ FIND the bottleneck       │  │
-        "p95 is 1200ms"        "70% is in the DB call"  │  │
-                                      │                  │  │
-                                      ▼                  │  │
-                            ④ form ONE hypothesis        │  │
-                            "a missing index is the      │  │
-                             cause; adding it helps"     │  │
-                                      │                  │  │
-                                      ▼                  │  │
-                            ⑤ change ONE thing           │  │
-                                      │                  │  │
-                                      ▼                  │  │
-                            ⑥ RE-MEASURE ────────────────┘  │
-                            hit target? ──── yes ──▶ STOP ──┘
-                                  │
-                                  no ──▶ back to ③
+```mermaid
+flowchart TD
+  T["① set a TARGET<br/>'p95 checkout < 300ms' (once, up front)"] --> B["② measure a BASELINE<br/>'p95 is 1200ms'"]
+  B --> F["③ find the BOTTLENECK<br/>'70% is in the DB call'"]
+  F --> H["④ form ONE hypothesis"]
+  H --> C["⑤ change ONE thing"]
+  C --> R{"⑥ re-measure:<br/>hit target?"}
+  R -->|no| F
+  R -->|yes| STOP(["STOP"])
 ```
 
 Notice what's at the top and what's at the bottom. A target you decide *before* you start, and a hard stop the moment you reach it. Everything in between is the part people think of as "optimizing." The two ends are what separate a focused afternoon from a lost fortnight.

@@ -37,6 +37,17 @@ bookkeeping (which commits are still in play) so you only ever have to answer on
 present. Every commit before it is good; it and everything after are bad. That single commit is the change
 that introduced the bug — the thing you actually want to read.
 
+The hunt walks a line of commits looking for the exact good→bad flip:
+
+```mermaid
+gitGraph
+  commit id: "v2.3.0 (good)"
+  commit id: "C1 (good)"
+  commit id: "first bad"
+  commit id: "C3 (bad)"
+  commit id: "HEAD (bad)"
+```
+
 ## A full bisect session, start to finish
 
 Let's say checkout is broken on `main` today, but you know it worked at the `v2.3.0` release tag. That's

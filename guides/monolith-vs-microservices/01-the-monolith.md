@@ -21,19 +21,18 @@ updated: 2026-06-19
 
 Here's the whole shape in one picture:
 
-```text
-        ┌─────────────────────────────────────┐
-        │            ONE APPLICATION           │
-        │                                      │
-        │   ┌───────┐  ┌────────┐  ┌────────┐  │
-        │   │ Login │  │Billing │  │ Search │  │   modules call each other
-        │   └───┬───┘  └───┬────┘  └───┬────┘  │   as plain function calls
-        │       └──────────┼───────────┘       │   (same process)
-        │              ┌───▼────┐               │
-        │              │   DB    │              │
-        │              └─────────┘              │
-        └─────────────────────────────────────┘
-              deploys & scales as one unit
+```mermaid
+flowchart TD
+  subgraph App["ONE APPLICATION (deploys & scales as one unit)"]
+    direction TB
+    Login[Login]
+    Billing[Billing]
+    Search[Search]
+    DB[(DB)]
+    Login --> DB
+    Billing --> DB
+    Search --> DB
+  end
 ```
 
 ## Where the monolith genuinely shines
@@ -72,20 +71,13 @@ A monolith isn't free of limits — it's just that the limits show up later and 
 
 **Scaling the whole thing to scale one part.** A monolith scales by running more copies of the *entire* application behind a load balancer. That works fine — until one slice has wildly different needs from the rest.
 
-```text
-   Your image-processing endpoint is CPU-hungry.
-   Everything else is light.
+Your image-processing endpoint is CPU-hungry. Everything else is light. To give image-processing more CPU, you must run more copies of the WHOLE app:
 
-   To give image-processing more CPU, you must run
-   more copies of the WHOLE app:
-
-        ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
-        │ login       │  │ login       │  │ login       │
-        │ billing     │  │ billing     │  │ billing     │
-        │ images ◄CPU │  │ images ◄CPU │  │ images ◄CPU │   ← what you
-        │ search      │  │ search      │  │ search      │     actually
-        └─────────────┘  └─────────────┘  └─────────────┘     wanted more of
-            you also paid to duplicate login, billing, search
+```mermaid
+flowchart LR
+  C1["Copy 1<br/>login · billing · images (CPU) · search"]
+  C2["Copy 2<br/>login · billing · images (CPU) · search"]
+  C3["Copy 3<br/>login · billing · images (CPU) · search"]
 ```
 
 *The strain:* you can't give the image-processing code more resources without also duplicating login, billing, and search alongside it. Often that's perfectly acceptable — copies of a stateless app are cheap. It becomes a real problem only when one part's resource appetite is so different from the rest that duplicating everything to feed it is genuinely wasteful.

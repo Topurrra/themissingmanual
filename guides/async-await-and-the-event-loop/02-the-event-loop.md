@@ -23,25 +23,13 @@ The answer is a beautifully simple machine called the **event loop**. It's the e
 
 The "events" are the bells from Phase 1: a network response arrived, a timer fired, a file finished loading. When one of those happens, the work that should run *next* (the code waiting on that result) gets placed in the queue. The loop will get to it.
 
-```text
-        ┌──────────────────────── the loop ────────────────────────┐
-        │                                                           │
-        │   1. take next task    ┌──────────────────────────┐      │
-        │      from the queue ──► │  run it to completion     │     │
-        │              ▲          │  (the single thread)      │     │
-        │              │          └────────────┬─────────────┘     │
-        │              └────────── 2. go back ◄─┘                   │
-        └───────────────────────────────────────────────────────────┘
-                              ▲
-                              │  events drop work into the queue when ready
-              ┌───────────────┼───────────────┐
-              │               │               │
-        network reply     timer fires     file loaded
-        "table 4 ready"   "2s elapsed"    "read done"
-
-        THE QUEUE:   [ task ] [ task ] [ task ]  ◄── join at the back
-                        ▲
-                     picked from the front
+```mermaid
+flowchart TD
+  Net["network reply"] --> Q
+  Timer["timer fires"] --> Q
+  File["file loaded"] --> Q
+  Q["THE QUEUE<br/>task · task · task<br/>(join at back, picked from front)"] -->|1. take next task| Run["run it to completion<br/>(the single thread)"]
+  Run -->|2. go back| Q
 ```
 
 *What's happening:* Your code runs on the single thread. When it starts a wait — a network request, say — it hands that request off (to the operating system, the browser, the runtime) and *returns immediately*, freeing the thread to do other things. Later, when the reply lands, the runtime drops the "continue here" work into the queue. The loop, going around and around, eventually picks it up and runs it. The waiter dropped the order and walked away; the bell put the finished dish back in his path.

@@ -69,10 +69,16 @@ asks for it *every* time you connect. The **ssh-agent** is a small program that 
 private key in memory for the duration of your session, so you type the passphrase once and SSH borrows the
 key from the agent after that.
 
-```text
-   first connection:  you type passphrase ──► agent unlocks & holds the key
-   every connection after:  SSH asks the agent ──► instant, no passphrase
-   you log out / reboot:  agent forgets ──► you'll type it once again next time
+```mermaid
+sequenceDiagram
+  participant You
+  participant Agent as ssh-agent
+  participant SSH
+  You->>Agent: first time — type passphrase
+  Agent->>Agent: unlock & hold the key
+  SSH->>Agent: every connection after
+  Agent-->>SSH: instant, no passphrase
+  Note over Agent: log out / reboot — agent forgets (type it once more next time)
 ```
 
 **What it does in real life.** On most desktop systems the agent is already running. You hand it your key

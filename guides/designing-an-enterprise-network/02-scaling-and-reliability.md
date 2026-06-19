@@ -25,20 +25,12 @@ The mental model for this phase: **anything you depend on, you must be able to l
 
 **What it does in real life.** Requests arrive at the balancer's one address; it forwards each to a healthy backend, often round-robin (take turns) or by which backend is least busy. Add a server to handle more load, and you've scaled *horizontally* — out, across more machines — rather than *vertically* (buying one ever-bigger machine, which has a ceiling and is itself a single point of failure).
 
-```text
-                         ┌──────────────┐
-        clients ───────► │ LOAD BALANCER│  one address (the VIP)
-                         │  health-checks│  forwards to a HEALTHY backend
-                         └──────┬───────┘
-              ┌─────────────────┼─────────────────┐
-              ▼                 ▼                 ▼
-        ┌──────────┐      ┌──────────┐      ┌──────────┐
-        │ server A │      │ server B │      │ server C │
-        │  (up)    │      │  (DOWN)  │      │  (up)    │
-        └──────────┘      └──────────┘      └──────────┘
-                            ▲
-              health check failed → balancer stops sending here.
-              Clients keep hitting A and C. Nobody notices B is gone.
+```mermaid
+flowchart TD
+  clients[clients] --> lb[LOAD BALANCER<br/>one address the VIP<br/>health-checks, forwards to a healthy backend]
+  lb --> a[server A — up]
+  lb --> b[server B — DOWN<br/>health check failed, removed from rotation]
+  lb --> c[server C — up]
 ```
 
 **A real example.** When a load balancer marks a backend unhealthy, you see it in its logs or status. Here's what a health-check transition looks like in an NGINX-style upstream log:
@@ -69,18 +61,20 @@ A load balancer spreads work across many servers — but pause on an uncomfortab
 - **Active-passive (failover):** one component does the work; a standby sits ready and takes over when the primary fails. Simpler, but you're paying for hardware that's idle most of the time, and the failover moment can cause a brief blip.
 - **Active-active:** both components carry traffic at once, so you get extra capacity *and* resilience — but it's harder to set up correctly.
 
-```text
-   SINGLE POINT OF FAILURE            REDUNDANT (no single fatal box)
-
-     internet                           ISP-A          ISP-B
-        │                                 │              │
-   ┌────┴────┐                       ┌────┴────┐    ┌────┴────┐
-   │ 1 router│  ◄─ if this dies,     │ router 1│    │ router 2│  ◄─ either can
-   └────┬────┘     EVERYTHING        └────┬────┘    └────┬────┘     carry the load
-        │          goes down.             └──────┬───────┘
-   ┌────┴────┐                            ┌──────┴──────┐
-   │ 1 switch│                            │   switch 1  │ + switch 2
-   └─────────┘                            └─────────────┘  (cross-linked)
+```mermaid
+flowchart TD
+  subgraph SPOF["Single point of failure"]
+    direction TB
+    net1((internet)) --> r1[1 router<br/>if this dies, EVERYTHING goes down]
+    r1 --> sw1[1 switch]
+  end
+  subgraph RED["Redundant — no single fatal box"]
+    direction TB
+    ispa((ISP-A)) --> ra[router 1]
+    ispb((ISP-B)) --> rb[router 2]
+    ra --> sws[switch 1 + switch 2<br/>cross-linked]
+    rb --> sws
+  end
 ```
 
 ⚠️ **Gotcha.** Redundancy you've never tested is a guess, not a guarantee. The classic disaster is discovering during a real outage that the "standby" was misconfigured, its software had drifted out of sync, or the failover never actually triggered. Two of everything only helps if you periodically *pull the plug on the primary on purpose* and confirm the secondary takes over cleanly. Untested failover has a way of failing exactly when you need it.

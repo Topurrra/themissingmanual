@@ -41,12 +41,12 @@ Picture the trap. You can't reliably trigger the bug. You read the code, spot so
 
 A solid reproduction closes that loop:
 
-```text
-   1. Run the recipe   → bug appears        (you can trigger it)
-   2. Make your change
-   3. Run the recipe   → bug is gone        (the change actually killed it)
-   4. Undo your change
-   5. Run the recipe   → bug returns        (it was YOUR change that mattered)
+```mermaid
+flowchart TD
+  r1["Run the recipe<br/>bug appears"] --> c["Make your change"]
+  c --> r2["Run the recipe<br/>bug is gone"]
+  r2 --> u["Undo your change"]
+  u --> r3["Run the recipe<br/>bug returns → it was YOUR change"]
 ```
 
 *What just happened:* steps 1 and 3 prove the bug is real and your change removed it. Steps 4 and 5 — undoing the fix and watching the bug come back — prove it was *your change* that did the work, not some unrelated coincidence. That round trip is the difference between "I think this is fixed" and "I know this is fixed."
@@ -61,14 +61,10 @@ Every reproduction effort is the same two moves, and the order matters.
 
 **Move 2 — shrink it.** Once it triggers reliably, start removing things. Drop steps that turn out not to matter. Cut the data down to the smallest input that still breaks. Strip away the parts of the system that aren't involved. Each thing you remove that *doesn't* stop the bug is a thing you've proven is innocent — and what's left, when you can't remove anything more, is pointing straight at the cause.
 
-```text
-   Move 1: TRIGGER                       Move 2: SHRINK
-   ───────────────                       ──────────────
-   vague report                          big messy reproduction
-        │                                       │
-        ▼                                       ▼  remove what isn't needed
-   reliable reproduction      ───────►   minimal reproduction
-   (it breaks on demand)                 (nothing left but the cause)
+```mermaid
+flowchart LR
+  vague["vague report"] -->|Move 1: TRIGGER| reliable["reliable reproduction<br/>(breaks on demand)"]
+  reliable -->|Move 2: SHRINK<br/>remove what isn't needed| minimal["minimal reproduction<br/>(nothing left but the cause)"]
 ```
 
 🪖 **War story.** A teammate spent a full afternoon reading a payment module line by line, certain the bug was "in there somewhere." It wasn't until he stopped reading and forced himself to reproduce it — actually run a real checkout that failed — that he noticed the failure only happened for orders over a certain amount. That single observation, which no amount of code-reading had surfaced, narrowed a thousand lines down to one branch in about a minute. Reproducing first would have saved the afternoon.

@@ -82,22 +82,20 @@ then frees it.
 Now the recommendations service gets *slow* — not down, just slow, taking several seconds to respond.
 Here's what happens, step by step:
 
-```text
-   Healthy:                          Slow dependency, no timeout:
-
-   request ─▶ [worker] ─▶ recs       request ─▶ [worker] ──────────▶ recs (slow…)
-              (frees in ms)                     (worker STUCK waiting)
-
-   plenty of free workers            requests keep arriving…
-   to take new requests              every new one grabs a worker…
-                                     …and that worker gets stuck too
-
-                                     ┌───────────────────────────────┐
-                                     │ ALL workers stuck waiting on   │
-                                     │ a dependency that's merely slow │
-                                     └───────────────────────────────┘
-                                     new requests: nowhere to run → your
-                                     whole service is now "down"
+```mermaid
+flowchart TB
+  subgraph Healthy["Healthy"]
+    direction LR
+    HReq([request]) --> HW["worker (frees in ms)"] --> HRecs[recs]
+    HFree["plenty of free workers for new requests"]
+  end
+  subgraph Slow["Slow dependency, no timeout"]
+    direction TB
+    SReq([request]) --> SW["worker STUCK waiting"] --> SRecs["recs (slow…)"]
+    SW --> Fill["requests keep arriving, each grabs a worker, each gets stuck"]
+    Fill --> AllStuck["ALL workers stuck on a merely-slow dependency"]
+    AllStuck --> Down["new requests: nowhere to run → whole service is 'down'"]
+  end
 ```
 
 *What just happened:* Each slow call holds a worker hostage for seconds instead of milliseconds. Because

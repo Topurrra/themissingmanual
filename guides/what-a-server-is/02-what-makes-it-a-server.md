@@ -103,18 +103,17 @@ answer) for different kinds of request.
 Now put it together. Here's the request/response role at the scale a real server handles it — many clients,
 all reaching the same address, all answered by the server software waiting there:
 
-```text
-        ┌──────────┐
-        │ client A │ ──┐                       ┌─────────────────────────────┐
-        └──────────┘   │   requests            │   SERVER  (one machine)     │
-                       ├──────────────────────►│   reachable at an address   │
-        ┌──────────┐   │                       │  ┌───────────────────────┐  │
-        │ client B │ ──┤                       │  │ web server software   │  │
-        └──────────┘   │                       │  │  • waits for requests │  │
-                       │   responses           │  │  • sends responses    │  │
-        ┌──────────┐   │◄──────────────────────│  └───────────────────────┘  │
-        │ client C │ ──┘                       │   headless · always-on      │
-        └──────────┘                           └─────────────────────────────┘
+```mermaid
+flowchart LR
+  A["client A"] -- request --> S
+  B["client B"] -- request --> S
+  C["client C"] -- request --> S
+  subgraph S["SERVER (one machine) · reachable at an address · headless · always-on"]
+    SW["web server software<br/>• waits for requests<br/>• sends responses"]
+  end
+  S -- response --> A
+  S -- response --> B
+  S -- response --> C
 ```
 
 *Reading the diagram:* every client initiates a request to the server's address. The server software, sitting

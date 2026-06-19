@@ -17,23 +17,17 @@ This phase walks the whole pipeline. It splits cleanly into two stages: a slow *
 
 ## The whole pipeline in one picture
 
-```text
-  INDEXING  (done once, ahead of time, repeated when docs change)
-  ─────────────────────────────────────────────────────────────
-   your docs ──► chunk ──► embed each chunk ──► store vectors
-   (wiki, PDFs,  (split    (turn text into     (in a vector
-    repo, etc.)   into       a number-list       store / index)
-                  pieces)    that captures
-                             meaning)
-
-
-  QUERY  (runs on every question)
-  ─────────────────────────────────────────────────────────────
-   question ──► embed the ──► search the ──► top-k ──► build ──► LLM ──► answer
-                question      vector store   chunks    prompt    reads   (grounded
-                (same way     for nearest    (the most  (question  & gen-  + citable)
-                 as chunks)   vectors        relevant   + chunks)  erates
-                                             pieces)
+```mermaid
+flowchart LR
+  subgraph Indexing["INDEXING — ahead of time, redone when docs change"]
+    direction LR
+    D[your docs] --> CH[chunk] --> E[embed each chunk] --> VS[(vector store)]
+  end
+  subgraph Query["QUERY — on every question"]
+    direction LR
+    Q[question] --> QE[embed question] --> S[search nearest] --> K[top-k chunks] --> PR[augmented prompt] --> L[LLM generates] --> A[grounded answer]
+  end
+  VS -.->|searched against| S
 ```
 
 The key insight tying the two halves together: you turn *both* your documents and the incoming question into the same kind of object — a **vector** — so you can measure how related they are by math, not by keyword matching. Let's walk each step.

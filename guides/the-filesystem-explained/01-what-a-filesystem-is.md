@@ -32,16 +32,16 @@ Let's build the picture first, because once you have it, paths and folders stop 
 
 **What it actually is.** The filesystem organizes everything into a **tree**: folders that contain files and other folders, branching down from a single starting point. A *folder* (also called a *directory*) is just a named container; a *file* is a named blob of bytes. That's the whole structure.
 
-```text
-   /                          ← the root: the one top of the whole tree
-   ├── home/
-   │   └── ada/               ← your home folder
-   │       ├── notes.txt
-   │       └── projects/
-   │           └── budget.xlsx
-   ├── etc/                   ← system configuration files
-   └── usr/
-       └── bin/               ← installed programs
+```mermaid
+flowchart TD
+  root["/ (root)"] --> home[home/]
+  root --> etc["etc/ (system config)"]
+  root --> usr[usr/]
+  home --> ada["ada/ (your home folder)"]
+  ada --> notes[notes.txt]
+  ada --> projects[projects/]
+  projects --> budget[budget.xlsx]
+  usr --> bin["bin/ (installed programs)"]
 ```
 
 Notice there's exactly one box at the very top that everything hangs off. That's the **root**.

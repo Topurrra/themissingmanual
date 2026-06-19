@@ -19,16 +19,14 @@ Let's clear the fog. The cure is one picture: an assembly line. Raw material com
 
 **What a pipeline actually is.** A pipeline is a sequence of steps that moves data from where it's *produced* to where it's *consumed*, reshaping it along the way. Think of a factory line: each station does one job and hands its output to the next.
 
-```text
-   SOURCES                  PIPELINE                      DESTINATION
- ┌──────────┐
- │ database │──┐        ┌─────────┐   ┌───────────┐   ┌──────────────┐
- ├──────────┤  ├──────► │ EXTRACT │──►│ TRANSFORM │──►│     LOAD     │
- │   API    │──┤  pull  └─────────┘   └───────────┘   └──────────────┘
- ├──────────┤  │         (read it)    (clean/reshape)   (write it where
- │  files   │──┘                                          it gets used)
- └──────────┘
-       raw material  ──►  work at each station  ──►  finished product
+```mermaid
+flowchart LR
+  db[(database)] --> E
+  api[API] --> E
+  files[files] --> E
+  E[Extract<br/>read it] --> T[Transform<br/>clean / reshape]
+  T --> L[Load<br/>write it where used]
+  L --> dest[(Analytics DB)]
 ```
 
 Each station has exactly one responsibility. When something breaks, this picture is what lets you ask the right question: *which station failed?* That alone turns "the pipeline is broken" into a debuggable problem.

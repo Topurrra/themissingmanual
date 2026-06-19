@@ -27,7 +27,7 @@ out `True` or `False` (remember comparison operators from [Phase 2](02-building-
 of instructions. The computer runs that block **only if** the condition is `True`. If it's `False`, it
 skips the block.
 
-```python
+```python runnable
 temperature = 35
 if temperature > 30:
     print("It's hot out. Drink water.")
@@ -59,7 +59,7 @@ Plain top-to-bottom is one path; control flow lets you branch off it.
 `if` alone handles "do this when true, otherwise do nothing." Often you want "do this, *otherwise* do
 that." That's `else`. And for more than two paths, `elif` ("else if") checks another condition:
 
-```python
+```python runnable
 score = 72
 if score >= 90:
     print("Grade: A")
@@ -89,7 +89,7 @@ once and tell the computer how many times to do it.
 The most common loop, the `for` loop, walks through a sequence of values, running its block once for each
 one:
 
-```python
+```python runnable
 for number in range(1, 6):
     print(number)
 ```
@@ -116,7 +116,7 @@ rule shows up all over programming; meet it now and it'll surprise you less late
 Loops aren't only for counting. Their real value is doing real work many times. Here we add up a list of
 numbers:
 
-```python
+```python runnable
 prices = [10, 25, 5]
 total = 0
 for price in prices:
@@ -152,7 +152,7 @@ Why does this matter so much? Because it lets you name a piece of work and reuse
 yourself. Think of a function as a recipe card: written once, followed any number of times, by anyone,
 without re-explaining the steps.
 
-```python
+```python runnable
 def greet():
     print("Hello!")
     print("Welcome to the program.")
@@ -185,7 +185,7 @@ A function that does the exact same thing every time is useful, but the real pow
   `print`). Inside the function, that value lands in a named slot called a **parameter**.
 - A **result** is a value the function hands back to you, using the `return` instruction.
 
-```python
+```python runnable
 def add(a, b):
     result = a + b
     return result
@@ -218,7 +218,7 @@ try to use the result," this is almost always why.
 Here's a tiny but complete program that uses every idea from this guide at once. Read it top to bottom,
 the way the computer does, and you should be able to follow every line:
 
-```python
+```python runnable
 def grade_for(score):
     if score >= 90:
         return "A"

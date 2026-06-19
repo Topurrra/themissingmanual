@@ -66,16 +66,16 @@ Here's the idea the entire rest of this guide stands on. It's a shift in *what y
 
 📝 **Terminology.** *Desired state* is that description: the complete picture of what your infrastructure *should* look like, written in files. *Declarative* means you specify the end state and let the tool work out how to reach it. *Imperative* means you specify the steps yourself. (You've met this split before — `git pull` is declarative-ish "make my branch match the remote," not "fetch object 1, then object 2.")
 
-```text
-   IMPERATIVE  (click-ops, scripts of steps)
-   ────────────────────────────────────────────────
-   you  ──►  do step 1  ──►  do step 2  ──►  do step 3  ──►  hope
-            (you own every step and every failure in the middle)
-
-   DECLARATIVE  (Infrastructure as Code)
-   ────────────────────────────────────────────────
-   you  ──►  "this is what should exist"  ──►  TOOL works out the steps
-                                               and makes reality match
+```mermaid
+flowchart LR
+  subgraph Imperative[Imperative: click-ops, scripts of steps]
+    direction LR
+    You1[you] --> S1[do step 1] --> S2[do step 2] --> S3[do step 3] --> Hope[hope]
+  end
+  subgraph Declarative[Declarative: Infrastructure as Code]
+    direction LR
+    You2[you] -->|this is what should exist| Tool[tool works out the steps and makes reality match]
+  end
 ```
 
 **Why this changes everything.** Once the desired state lives in a file:

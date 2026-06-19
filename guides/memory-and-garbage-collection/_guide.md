@@ -4,7 +4,7 @@ guide: "memory-and-garbage-collection"
 phase: 0
 summary: "What actually happens to the objects your code creates: where they live in memory, why some of them have to be cleaned up, and how the two big approaches — freeing memory by hand versus a garbage collector that does it for you — really work."
 tags: [memory, garbage-collection, heap, stack, allocation, leaks, mark-and-sweep]
-category: programming-languages
+category: programming-concepts
 order: 6
 difficulty: intermediate
 synonyms: ["what is garbage collection", "how does garbage collection work", "what is a memory leak", "manual vs automatic memory management", "what is the heap", "stack vs heap", "why does my program pause", "what is mark and sweep", "do garbage collected languages have memory leaks"]

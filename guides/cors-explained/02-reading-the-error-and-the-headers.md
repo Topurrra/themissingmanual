@@ -139,6 +139,18 @@ origin, those methods, that header." The browser saw approval and *then* sent th
 server had not approved the method or header, the browser would stop here — and you'd see *"Response to
 preflight request doesn't pass access control check."*
 
+The two-step "may I? / yes / now the real one" shape is the whole idea of a preflight:
+
+```mermaid
+sequenceDiagram
+  participant Browser
+  participant Server
+  Browser->>Server: OPTIONS (preflight): may I POST with content-type?
+  Server-->>Browser: 204 + Allow-Origin / Allow-Methods / Allow-Headers
+  Browser->>Server: the real POST /api/users
+  Server-->>Browser: 200 + the data
+```
+
 ⚠️ **The preflight is a separate request with its own rules.** Your real request can fail at the
 preflight stage and never even run. If the error mentions "preflight," the problem is the `OPTIONS`
 response — the server isn't allowing your method or your headers, not (yet) the data request itself.

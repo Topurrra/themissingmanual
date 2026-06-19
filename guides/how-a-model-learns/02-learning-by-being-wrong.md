@@ -24,21 +24,11 @@ and being slightly less wrong each time.** This phase walks the loop in plain wo
 takes one example whose answer we already know, and uses the gap between the guess and the truth to
 improve the model.
 
-```text
-   ┌─────────────────────────────────────────────────────────┐
-   │                                                         │
-   │   1. PREDICT      take an example, run it through       │
-   │                   the current weights → a guess        │
-   │                                                         │
-   │   2. MEASURE      compare the guess to the known        │
-   │                   answer → how wrong? (the "loss")      │
-   │                                                         │
-   │   3. NUDGE        adjust the weights a little so this   │
-   │                   guess would have been less wrong      │
-   │                                                         │
-   │   4. REPEAT  ─────────────────────────────────────►    │
-   │              with the next example, millions of times   │
-   └─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+  P["1. predict<br/>run an example<br/>through the weights"] --> M["2. measure<br/>how wrong? (the loss)"]
+  M --> N["3. nudge<br/>adjust the weights<br/>a little"]
+  N -->|next example,<br/>millions of times| P
 ```
 
 We'll take the steps that need a name one at a time.

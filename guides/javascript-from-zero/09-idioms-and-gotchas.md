@@ -21,7 +21,7 @@ Two halves: first the **idioms** — modern syntax that makes code shorter and c
 
 **What it actually is.** Pulling values out of an object or array straight into named variables, instead of one assignment per field.
 
-```javascript
+```javascript runnable
 const user = { name: "Ada", role: "admin" };
 
 const { name, role } = user;          // object destructuring
@@ -56,7 +56,7 @@ console.log(b, sum(1, 2, 3));
 
 **What it actually is.** `?.` safely reads a property that might not exist; `??` supplies a fallback only when something is `null` or `undefined`.
 
-```javascript
+```javascript runnable
 const data = { user: { name: "Ada" } };
 
 console.log(data.user?.name);        // "Ada"
@@ -71,7 +71,7 @@ console.log(data.order?.total ?? 0); // 0 — fallback
 
 **What it actually is.** `map`, `filter`, `reduce`, `find`, and friends express *what* you want done to a list, rather than a manual `for` loop that spells out *how*.
 
-```javascript
+```javascript runnable
 const nums = [1, 2, 3, 4];
 const doubled = nums.map((n) => n * 2);        // transform each
 const evens = nums.filter((n) => n % 2 === 0); // keep some
@@ -111,7 +111,7 @@ Now the *why* behind each.
 
 `==` performs *type coercion*: it converts operands to a common type before comparing, producing famous nonsense like `0 == ""` and `false == "0"` both being `true`.
 
-```javascript
+```javascript runnable
 console.log(0 == "");      // true  (coerced — surprising)
 console.log(0 === "");     // false (no coercion — sane)
 ```
@@ -138,7 +138,7 @@ const counter = {
 
 `function` declarations are *hoisted* — moved to the top of their scope — so they work before the line they're written on. `let` and `const` are not usable before their declaration.
 
-```javascript
+```javascript runnable
 greet();                       // works — function declarations are hoisted
 function greet() { console.log("hi"); }
 
@@ -151,7 +151,7 @@ const x = 5;
 
 `NaN` ("Not a Number") is the result of invalid math, and it's the only value in JavaScript not equal to itself.
 
-```javascript
+```javascript runnable
 const result = Number("abc"); // NaN
 console.log(result === NaN);       // false (!)
 console.log(Number.isNaN(result)); // true
@@ -162,7 +162,7 @@ console.log(Number.isNaN(result)); // true
 
 Numbers are stored in binary floating point, which can't represent some decimals exactly — so arithmetic has tiny rounding errors.
 
-```javascript
+```javascript runnable
 console.log(0.1 + 0.2);            // 0.30000000000000004
 console.log(0.1 + 0.2 === 0.3);    // false
 ```
@@ -172,7 +172,7 @@ console.log(0.1 + 0.2 === 0.3);    // false
 
 Objects and arrays are held by *reference*. Assigning one to a new variable doesn't copy the data — both names point at the *same* object, so a change through one is visible through the other.
 
-```javascript
+```javascript runnable
 const a = { count: 1 };
 const b = a;        // NOT a copy — same object
 b.count = 99;
@@ -184,7 +184,7 @@ console.log(a.count); // 99 — `a` changed too
 
 In a condition, non-boolean values are coerced to true/false. The falsy values are: `false`, `0`, `""`, `null`, `undefined`, and `NaN`. Everything else is truthy.
 
-```javascript
+```javascript runnable
 const count = 0;
 if (count) console.log("has items");  // never runs — 0 is falsy!
 if (count > 0) console.log("has items"); // correct

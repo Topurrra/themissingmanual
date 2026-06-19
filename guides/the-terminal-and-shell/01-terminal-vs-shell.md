@@ -21,17 +21,10 @@ of simple, separate pieces you can actually reason about.
 Picture what's really happening when you open that black window. There are two distinct pieces stacked
 together:
 
-```text
-   ┌──────────────────────────────────────────────┐
-   │  THE TERMINAL  (the window)                    │  draws text on screen,
-   │  ┌────────────────────────────────────────┐   │  captures your keystrokes
-   │  │  THE SHELL  (a program: bash/zsh/pwsh)   │   │  ← reads what you type,
-   │  │  $ _                                      │   │    runs it, prints results
-   │  └────────────────────────────────────────┘   │
-   └──────────────────────────────────────────────┘
-                         │
-                         ▼
-                  THE OPERATING SYSTEM  ── actually runs the programs
+```mermaid
+flowchart TD
+  Terminal[The terminal, the window<br/>draws text, captures keystrokes] --> Shell[The shell, a program<br/>bash / zsh / pwsh — reads, runs, prints]
+  Shell --> OS[The operating system<br/>actually runs the programs]
 ```
 
 **What the terminal actually is.** The **terminal** (or "terminal emulator") is the *window* — a fairly
@@ -88,17 +81,12 @@ baffling `command not found` error.
 Here's the rhythm the shell runs in, forever. Every command you ever type goes through the same four
 steps:
 
-```text
-   ┌─►  READ    the shell reads the line you typed and pressed Enter on
-   │     │
-   │     ▼
-   │   EVALUATE figures out what you meant, asks the OS to run it
-   │     │
-   │     ▼
-   │   PRINT    shows you the result (output, or an error)
-   │     │
-   │     ▼
-   └──  LOOP    prints a fresh prompt and waits for the next line
+```mermaid
+flowchart LR
+  Read[READ<br/>read the line you typed] --> Eval[EVALUATE<br/>ask the OS to run it]
+  Eval --> Print[PRINT<br/>show the result or error]
+  Print --> Loop[LOOP<br/>fresh prompt, wait]
+  Loop --> Read
 ```
 
 This cycle has a name: the **read-eval-print loop**, or **REPL**. It's not jargon you need to wield, but

@@ -36,17 +36,12 @@ That whole assembled package — kernel **plus** all the surrounding software �
 ("distro" for short). Ubuntu, Fedora, and Debian are distributions. They are the car. Linux is the engine
 inside all of them.
 
-```text
-   ┌──────────────────────────────────────────────────────┐
-   │   A LINUX DISTRIBUTION  (the whole "car")             │
-   │                                                        │
-   │     desktop / login screen / terminal                 │   ← what you see and touch
-   │     installed tools (cp, ls, a text editor, a browser) │   ← the everyday utilities
-   │     a package manager (apt, dnf …)                     │   ← how you install more
-   │   ┌──────────────────────────────────────────────┐    │
-   │   │   THE LINUX KERNEL  (the "engine")           │    │   ← the same core, everywhere
-   │   └──────────────────────────────────────────────┘    │
-   └──────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  Distro["A Linux distribution (the whole car)"] --> See[desktop / login screen / terminal<br/>what you see and touch]
+  Distro --> Tools[installed tools: cp, ls, editor, browser<br/>the everyday utilities]
+  Distro --> PM[a package manager: apt, dnf<br/>how you install more]
+  Distro --> Kernel[The Linux kernel, the engine<br/>the same core, everywhere]
 ```
 
 📝 **Terminology.** *Kernel* = the core that manages hardware. *Distribution / distro* = the kernel

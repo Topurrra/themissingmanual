@@ -41,14 +41,12 @@ Now the *why* behind the rule. Why does fixing one line sometimes transform ever
 
 Picture your system as a series of stages, each taking some time, work flowing through them in order:
 
-```text
-   ┌──────────┐   ┌──────────┐   ┌──────────────────┐   ┌──────────┐
-   │ fetch    │──►│ render   │──►│ send email       │──►│ save     │
-   │  ~19 ms  │   │  ~2 ms   │   │  ~1842 ms        │   │  ~32 ms  │
-   └──────────┘   └──────────┘   └────────┬─────────┘   └──────────┘
-                                          │
-                                  THE BOTTLENECK
-                       the slowest stage sets the pace for everything
+```mermaid
+flowchart LR
+  fetch["fetch · ~19 ms"] --> render["render · ~2 ms"]
+  render --> email["send email · ~1842 ms"]
+  email --> save["save · ~32 ms"]
+  email -.->|the bottleneck: slowest stage sets the pace| neck(("⛔"))
 ```
 
 📝 **Terminology.** The *bottleneck* is the slowest stage — the narrow neck of the bottle that limits how fast anything can flow through the whole thing. The name is literal: tip a bottle over and it's the narrow neck, not the wide body, that decides how fast the water comes out.

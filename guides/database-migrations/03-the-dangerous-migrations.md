@@ -37,10 +37,13 @@ table that lock is held for a blink and nobody notices. On a table with millions
 operation can hold that lock for *minutes* — and while it's held, queries that need the table queue up
 behind it. To your users, the feature (or the whole app) is frozen.
 
-```text
-   migration:  [════════ ALTER TABLE holds a lock ════════]   (minutes on a big table)
-   user write: │ waiting… │ waiting… │ waiting… │  ← every write queues behind the lock
-                                                    app looks frozen / times out
+```mermaid
+flowchart TD
+  M["migration: ALTER TABLE holds a lock<br/>(minutes on a big table)"] --> L[(table lock held)]
+  W1[user write 1] --> L
+  W2[user write 2] --> L
+  W3[user write 3] --> L
+  L --> F["every write queues behind the lock<br/>app looks frozen / times out"]
 ```
 
 The classic trap is building an index. A plain `CREATE INDEX` on a large, busy table blocks writes to

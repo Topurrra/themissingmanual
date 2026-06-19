@@ -36,19 +36,16 @@ on top of the frozen image. Every file the app creates — uploaded images, a da
 in that writable layer. And that layer belongs to the container, so when the container is removed, the
 layer is removed with it. The data is *gone*.
 
-```text
-   Without a volume:                    With a volume:
-
-   ┌─────────────────┐                  ┌─────────────────┐
-   │   container      │                 │   container      │
-   │  writable layer  │ ◄ data here     │  writable layer  │
-   │  (dies with it)  │   dies on rm    │                  │
-   └─────────────────┘                  │   /data ─────────┼──► ┌──────────┐
-                                         └─────────────────┘    │  volume   │
-                                                                 │ on host,  │
-                                                                 │ outlives  │
-                                                                 │ container │
-                                                                 └──────────┘
+```mermaid
+flowchart LR
+  subgraph WO["Without a volume"]
+    C1["container<br/>writable layer<br/>(data here — dies on rm)"]
+  end
+  subgraph W["With a volume"]
+    C2["container<br/>/data"]
+  end
+  V["volume on host<br/>outlives the container"]
+  C2 -- "/data" --> V
 ```
 
 **What a volume actually is.** A **volume** is storage that lives *outside* the container's lifecycle —

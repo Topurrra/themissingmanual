@@ -21,12 +21,13 @@ The good news: both come from the *same* root cause, and once you see it, GraphQ
 
 That single design choice — *the server owns the shape of the response* — is the source of both problems below. Hold onto it; it's the hinge the entire guide turns on.
 
-```text
-   REST: the server owns the shape
-   ┌──────────┐                      ┌──────────┐
-   │  client  │ ── GET /users/42 ──► │  server  │
-   │          │ ◄── fixed payload ── │          │   you get the server's
-   └──────────┘   (always the same)  └──────────┘   idea of "a user"
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Server
+  Note over Client,Server: REST — the server owns the shape
+  Client->>Server: GET /users/42
+  Server-->>Client: fixed payload (always the same — the server's idea of "a user")
 ```
 
 ## Problem 1: over-fetching — more than you asked for
@@ -86,14 +87,13 @@ Both problems trace back to the same root: *the server decided the shape.* Graph
 
 **The pitch:** ask for exactly the fields you want, get exactly those fields back, in a single request.
 
-```text
-   GraphQL: the client owns the shape
-   ┌──────────┐                          ┌──────────┐
-   │  client  │ ── "name, avatar, and ─► │  server  │
-   │          │     last 3 orders with   │          │
-   │          │      shipment status"    │          │
-   │          │ ◄── exactly that, once ──│          │
-   └──────────┘                          └──────────┘
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Server
+  Note over Client,Server: GraphQL — the client owns the shape
+  Client->>Server: "name, avatar, and last 3 orders with shipment status"
+  Server-->>Client: exactly that, in one response
 ```
 
 For over-fetching, that means the comment list asks for `name` and `avatarUrl` and receives a payload with two fields — no bio, no billing address. For under-fetching, the dashboard header describes the user, their last three orders, *and* each shipment's status in one query, and the server walks the relationships and returns the whole nested shape in one round trip.

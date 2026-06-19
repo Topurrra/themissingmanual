@@ -40,7 +40,7 @@ put the data and the functions that belong with it in the same box.
 
 **A real example.** Here is a `Dog`. Read the comments — they carry the whole lesson.
 
-```python
+```python runnable
 class Dog:
     def __init__(self, name, age):   # the constructor: runs when you make a Dog
         self.name = name             # store data ON this particular dog
@@ -107,7 +107,7 @@ three places to fix when the shared logic changes — and they *will* drift apar
 the parent has, and you add or override only what's different. We pull the common parts up into an
 `Animal` parent, and let `Dog` inherit from it.
 
-```python
+```python runnable
 class Animal:
     def __init__(self, name):
         self.name = name

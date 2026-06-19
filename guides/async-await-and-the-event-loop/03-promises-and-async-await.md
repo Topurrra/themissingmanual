@@ -19,21 +19,13 @@ You've got the model now: waiting is wasteful (Phase 1), and a single-threaded e
 
 A promise is always in one of three states:
 
-```text
-                     ┌─────────────┐
-                     │   PENDING   │   the wait is still in progress;
-                     │ (no value   │   the value isn't here yet
-                     │   yet)      │
-                     └──────┬──────┘
-                            │
-              ┌─────────────┴─────────────┐
-              ▼                           ▼
-        ┌───────────┐               ┌───────────┐
-        │ FULFILLED │               │ REJECTED  │
-        │ the value │               │ it failed;│
-        │  arrived  │               │ here's the│
-        │           │               │  error    │
-        └───────────┘               └───────────┘
+```mermaid
+stateDiagram-v2
+  [*] --> Pending: start the wait
+  Pending --> Fulfilled: value arrived
+  Pending --> Rejected: it failed (error)
+  Fulfilled --> [*]
+  Rejected --> [*]
 ```
 
 *What's happening:* A promise starts **pending** — the food is still cooking. It then settles exactly once, into one of two final states: **fulfilled** with the value (the dish is ready), or **rejected** with an error (the kitchen dropped it). Once settled, it never changes again. This is why you sometimes see `Promise { <pending> }` printed: you logged the *receipt* before the value arrived.

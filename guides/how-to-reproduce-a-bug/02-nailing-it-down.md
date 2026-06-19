@@ -76,15 +76,13 @@ Once you can trigger the bug reliably — even clumsily — start Move 2 from Ph
 
 You build it by subtraction. Remove one thing, run the recipe, and watch:
 
-```text
-   Full reproduction: 9 steps, 500-row file, 3 services running
-        │
-        │  remove the file → still breaks?   YES → the file wasn't it, drop it
-        │  cut to 6 steps  → still breaks?   YES → those 3 steps were innocent
-        │  stop service B  → still breaks?   YES → B wasn't involved
-        │  cut to 1 step   → still breaks?   NO  → put that step back; it matters
-        ▼
-   Minimal reproduction: 2 steps, empty input, 1 service — and it still breaks
+```mermaid
+flowchart TD
+  full["Full reproduction:<br/>9 steps, 500-row file, 3 services"] -->|remove the file, still breaks?| f1["YES → file wasn't it, drop it"]
+  f1 -->|cut to 6 steps, still breaks?| f2["YES → those 3 steps were innocent"]
+  f2 -->|stop service B, still breaks?| f3["YES → B wasn't involved"]
+  f3 -->|cut to 1 step, still breaks?| f4["NO → put that step back; it matters"]
+  f4 --> minimal["Minimal reproduction:<br/>2 steps, empty input, 1 service — still breaks"]
 ```
 
 *What just happened:* each time you removed something and the bug *still* happened, you proved that thing was innocent and threw it out. The one time removing a step made the bug *stop*, you'd cut something essential — so you put it back. What survives this process is the irreducible core, and that core points almost directly at the cause. A bug that took nine steps to describe might shrink to "call this function with an empty list."

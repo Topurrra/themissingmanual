@@ -59,16 +59,13 @@ This is the big one. Add up every place where the outside world can touch your s
 
 For the notes app, the attack surface includes:
 
-```text
-        OUTSIDE WORLD                          YOUR SYSTEM
-   ┌──────────────────┐
-   │  login form      │ ───────────────►  authentication code
-   │  note text box   │ ───────────────►  database
-   │  search box      │ ───────────────►  database
-   │  file upload     │ ───────────────►  file storage
-   │  password reset  │ ───────────────►  email + account code
-   │  the public API  │ ───────────────►  everything behind it
-   └──────────────────┘
+```mermaid
+flowchart LR
+  login[login form] --> auth[authentication code]
+  note[note text box] --> db[(database)]
+  upload[file upload] --> store[file storage]
+  reset[password reset] --> email[email + account code]
+  api[the public API] --> behind[everything behind it]
 ```
 
 Every arrow is a place to ask your Phase 1 question: *how could this be abused?* The login form could be guessed at. The text boxes could carry hostile input. The password reset could leak whether an account exists. You're not solving them yet — you're *listing the doors*.
@@ -91,19 +88,16 @@ There's one idea that makes Question 3 click, and it's worth its own section bec
 
 Here's the boundary in the notes app:
 
-```text
-   UNTRUSTED                    ║                    TRUSTED
-   (you don't control this)     ║   trust boundary   (you control this)
-                                ║
-     ┌──────────┐               ║              ┌──────────────┐
-     │ browser  │   request     ║              │  your server │
-     │  / user  │ ────────────► ║ ───────────► │   + database │
-     └──────────┘               ║   CHECK      └──────────────┘
-                                ║   HERE
-        ▲                       ║
-        │  anyone can send      ║   ◄── validate, authenticate, and
-        │  anything they want   ║       sanitize everything that
-        │  through this side    ║       crosses this line
+```mermaid
+flowchart LR
+  subgraph untrusted["UNTRUSTED (you don't control this)"]
+    browser["browser / user<br/>anyone can send anything"]
+  end
+  subgraph trusted["TRUSTED (you control this)"]
+    server["your server + database"]
+  end
+  browser -- "request" --> check{{"trust boundary:<br/>validate, authenticate,<br/>sanitize HERE"}}
+  check --> server
 ```
 
 *What just happened:* Everything on the left of that line can be a lie. The browser can be modified. The request can be hand-crafted by a script that never opened your page. So the moment data *crosses* the boundary into your server, you treat it as guilty until proven innocent — you check who sent it, that it's well-formed, and that it's allowed to do what it's asking.

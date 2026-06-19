@@ -19,19 +19,12 @@ The answer is a **loop**. And once you see the shape of it, the whole point of D
 
 Software in a DevOps world isn't a straight line from "start" to "done." It's a cycle that keeps turning, where the *end* feeds the *beginning*:
 
-```text
-         ┌──────────────────────────────────────────────┐
-         │                                              │
-         ▼                                              │
-     ┌───────┐     ┌───────┐     ┌───────┐     ┌─────────┐
-     │ BUILD │ ──► │ TEST  │ ──► │ SHIP  │ ──► │ OBSERVE │
-     └───────┘     └───────┘     └───────┘     └─────────┘
-      write &       check it      release it    watch it run,
-      compile       works         to users      learn, then ──┐
-      the code                                                │
-         ▲                                                    │
-         └────────────  what you learn becomes  ◄─────────────┘
-                        the next thing you build
+```mermaid
+flowchart LR
+  Build[Build] -->|make an artifact| Test[Test]
+  Test -->|check it works| Ship[Ship]
+  Ship -->|release to users| Observe[Observe]
+  Observe -->|what you learn feeds the next change| Build
 ```
 
 **What it actually is.** DevOps is a *continuous* cycle: you **build** a change, **test** it, **ship** it to users, **observe** how it behaves in the real world, and what you learn there feeds straight back into the next thing you build. Then it turns again. And again.

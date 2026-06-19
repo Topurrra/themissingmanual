@@ -20,7 +20,7 @@ rather than letting them ambush you later.
 
 **What a variable actually is.** A variable is a name pointing at a value. You make one with `let` or
 `const`, an `=`, and the value:
-```javascript
+```javascript runnable
 let score = 0;
 const name = "Ada";
 console.log(score, name);
@@ -40,7 +40,7 @@ The difference between the two is one rule:
 - **`const`** — you *cannot* reassign it. Use it for values that shouldn't change. This is the one you'll
   use most.
 
-```javascript
+```javascript runnable
 let count = 1;
 count = 2;          // fine — let allows this
 const limit = 10;
@@ -78,7 +78,7 @@ fundamental ("primitive") types you'll use constantly:
   that exists but was never given a value.
 
 You can ask any value its type with the `typeof` operator:
-```javascript
+```javascript runnable
 console.log(typeof "hello");   // string
 console.log(typeof 42);        // number
 console.log(typeof true);      // boolean
@@ -103,7 +103,7 @@ assign is `undefined`.
 
 You'll constantly want to mix text and values together. The clean way uses **template literals** —
 strings wrapped in backticks (`` ` ``) instead of quotes, with `${...}` holes you drop values into:
-```javascript
+```javascript runnable
 const name = "Ada";
 const score = 42;
 console.log(`${name} scored ${score} points.`);
@@ -133,7 +133,7 @@ thing than you expected.
 
 **Loose typing** means JavaScript will *automatically convert* between types when an operation mixes them,
 even when you didn't ask it to. This is the famous footgun:
-```javascript
+```javascript runnable
 console.log("5" + 1);   // string + number
 console.log("5" - 1);   // string - number
 ```
@@ -152,7 +152,7 @@ the next gotcha matters so much.
 **`==` vs `===` — always use `===`.** JavaScript has two equality operators. `==` ("loose equality")
 converts types before comparing, which produces genuinely baffling results. `===` ("strict equality")
 compares without converting — values must match in *both* value and type.
-```javascript
+```javascript runnable
 console.log(0 == "");      // true  (both convert to "falsy")
 console.log(0 === "");     // false (number vs string — no conversion)
 console.log(1 == "1");     // true  ("1" converted to 1)
@@ -165,7 +165,7 @@ one specific trick (checking for `null`/`undefined` together), and you can learn
 
 **`NaN` — "Not a Number," and it's contagious.** When a math operation can't produce a real number, you
 get `NaN`:
-```javascript
+```javascript runnable
 console.log(Number("hello"));   // tried to make a number from non-numeric text
 console.log(NaN === NaN);       // the famous one
 ```
@@ -180,7 +180,7 @@ use `Number.isNaN(x)`, never `x === NaN`.
 
 **Floating-point money — don't store cents as decimals.** JavaScript numbers can't represent every decimal
 exactly, which leads to the single most reported "JavaScript is broken" moment:
-```javascript
+```javascript runnable
 console.log(0.1 + 0.2);
 console.log(0.1 + 0.2 === 0.3);
 ```

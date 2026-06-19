@@ -22,15 +22,13 @@ If you want the reasoning, it's all underneath.
 
 Ask these in order. The first "yes" usually points you at your container.
 
-```text
-   1. Does the ORDER matter, or do I look things up by position (#1, #2, #3)?
-          └─► YES → use a LIST
-
-   2. Do I look things up by a KEY, and want a value back fast?
-          └─► YES → use a MAP (dict / hash map)
-
-   3. Do I only care WHETHER something is present, with no duplicates?
-          └─► YES → use a SET
+```mermaid
+flowchart TD
+  Q1{"Order or position<br/>matters?"} -->|yes| List[use a LIST]
+  Q1 -->|no| Q2{"Look up by KEY<br/>for a value?"}
+  Q2 -->|yes| Map[use a MAP / dict]
+  Q2 -->|no| Q3{"Only care if present,<br/>no duplicates?"}
+  Q3 -->|yes| Set[use a SET]
 ```
 
 Most everyday code is one of these three. When two seem to fit, ask which question your code asks *most

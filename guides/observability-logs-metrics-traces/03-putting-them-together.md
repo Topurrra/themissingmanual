@@ -91,11 +91,10 @@ an index to support it, so it reads the entire table every time. The fix is now 
 Notice what made this fast and calm: you used each pillar for the question it's actually good at, and the
 shared `trace_id` carried you across the handoffs. That's the whole game.
 
-```text
-   METRIC                TRACE                  LOG
-   "p99 doubled    ──►   "payment-db span  ──►  "Seq Scan, 4.2M rows,
-    at 14:00"             ate 690/812 ms"        missing index"
-   THAT (+ how widespread)   WHERE              WHY
+```mermaid
+flowchart LR
+  M["METRIC<br/>p99 doubled at 14:00<br/>(that + how widespread)"] --> T["TRACE<br/>payment-db span<br/>ate 690/812 ms<br/>(where)"]
+  T --> L["LOG<br/>Seq Scan, 4.2M rows,<br/>missing index<br/>(why)"]
 ```
 
 ## The tool landscape, lightly

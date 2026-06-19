@@ -36,18 +36,13 @@ sending more requests in the background — still the same one move.
 
 Here's the shape of it:
 
-```text
-   CLIENT                                          SERVER
-   (your browser)                                  (example.com)
-
-      │   "GET me the page at /about, please"         │
-      │ ────────────── request ──────────────────►    │
-      │                                               │
-      │                                          (looks it up)
-      │                                               │
-      │    "200 OK — here's the HTML"                 │
-      │ ◄───────────── response ──────────────────    │
-      │                                               │
+```mermaid
+sequenceDiagram
+  participant Client as Client (your browser)
+  participant Server as Server (example.com)
+  Client->>Server: request: GET me the page at /about, please
+  Note right of Server: looks it up
+  Server-->>Client: response: 200 OK — here's the HTML
 ```
 
 One arrow out, one arrow back. Hold onto this picture — everything below is just filling in what those

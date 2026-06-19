@@ -67,10 +67,9 @@ just be four hours off. Always check whether the log is in UTC before you go hun
 can tell a routine note from a five-alarm fire at a glance. Almost every logging system uses the same five
 (sometimes with a `TRACE` below DEBUG), from least to most serious:
 
-```text
-   DEBUG   ──►   INFO   ──►   WARN   ──►   ERROR   ──►   FATAL
-   (chatty)     (normal)    (uh-oh)     (broke)      (dead)
-   least serious  ───────────────────────────────►  most serious
+```mermaid
+flowchart LR
+  D["DEBUG<br/>(chatty)"] --> I["INFO<br/>(normal)"] --> W["WARN<br/>(uh-oh)"] --> E["ERROR<br/>(broke)"] --> F["FATAL<br/>(dead)"]
 ```
 
 📝 **Terminology.** Here's what each one *means* in practice — this is the vocabulary the rest of the

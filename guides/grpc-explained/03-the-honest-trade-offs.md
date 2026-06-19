@@ -82,12 +82,10 @@ call your gRPC service the way it calls a REST endpoint.
 The workaround is **grpc-web**: a variant of the protocol that browsers *can* speak, paired with a small
 **proxy** that translates between grpc-web and real gRPC.
 
-```text
-   browser                  proxy (e.g. Envoy)            gRPC service
-   ┌────────┐   grpc-web    ┌───────────────┐   gRPC      ┌────────────┐
-   │  JS app│ ────────────▶ │  translates    │ ─────────▶ │  Converter │
-   │        │ ◀──────────── │  both ways     │ ◀───────── │            │
-   └────────┘               └───────────────┘            └────────────┘
+```mermaid
+flowchart LR
+  Browser["browser (JS app)"] <-->|grpc-web| Proxy["proxy, e.g. Envoy (translates both ways)"]
+  Proxy <-->|gRPC| Service["gRPC service (Converter)"]
 ```
 
 *What just happened:* The browser talks grpc-web to a proxy; the proxy talks native gRPC to your service,

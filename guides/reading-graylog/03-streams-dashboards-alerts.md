@@ -25,23 +25,12 @@ what you logged.
 condition belongs in this pile." Once it exists, you (and dashboards and alerts) can search just that
 pile instead of the whole firehose every time.
 
-```text
-   every incoming log line
-            │
-            ▼
-   ┌─────────────────────┐
-   │  stream rules ask:   │
-   │  does this line match?│
-   └─────────┬───────────┘
-     ┌───────┼─────────────────┐
-     ▼       ▼                 ▼
- ┌────────┐ ┌──────────────┐ ┌──────────────┐
- │ "All   │ │ "Prod        │ │ "Slow DB     │
- │ errors"│ │  checkout"   │ │  queries"    │
- │ level: │ │ env:prod AND │ │ took_ms:>1000│
- │ error  │ │ service:     │ │              │
- │        │ │ checkout     │ │              │
- └────────┘ └──────────────┘ └──────────────┘
+```mermaid
+flowchart TD
+  line["every incoming log line"] --> rules{"stream rules:<br/>does this line match?"}
+  rules --> s1["'All errors'<br/>level:error"]
+  rules --> s2["'Prod checkout'<br/>env:prod AND service:checkout"]
+  rules --> s3["'Slow DB queries'<br/>took_ms:>1000"]
 ```
 
 **What it does in real life.** Instead of typing `level:error AND env:prod` for the hundredth time, you

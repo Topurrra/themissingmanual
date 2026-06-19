@@ -27,13 +27,12 @@ Each row is explained in full below.
 
 **What it actually is.** When you open `/home/ada/notes.txt`, the OS doesn't magically know where the bytes are. It *walks the tree*: it looks up `home` in the root, finds `ada` inside `home`, finds `notes.txt` inside `ada`, and only then learns which numbered boxes on the disk hold the contents. Each step also checks permissions — that's why a folder you can't enter (`x` off) blocks everything beneath it.
 
-```text
-   /home/ada/notes.txt
-      │    │      │
-      ▼    ▼      ▼
-   look   look   look up "notes.txt"  ──►  this entry records which disk
-   up     up     in ada's folder            boxes hold the bytes  ──►  read them
-  "home"  "ada"
+```mermaid
+flowchart LR
+  root["/"] -->|look up home| home[home]
+  home -->|look up ada| ada[ada]
+  ada -->|look up notes.txt| entry[notes.txt entry<br/>records which disk boxes hold the bytes]
+  entry --> bytes[Read the bytes]
 ```
 
 💡 **Key point.** A path is resolved one folder at a time, top down, checking permission at each step. This is why "no such file" can mean a folder *partway up* the path is wrong, and why "permission denied" can come from a folder you didn't even name — you lacked `x` to pass *through* it.

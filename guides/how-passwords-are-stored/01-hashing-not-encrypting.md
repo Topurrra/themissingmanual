@@ -49,22 +49,32 @@ no matter the input. Second, changing one character — `hunter2` to `hunter3` �
 different hash, with no resemblance to the first. There's no "close"; there's no pattern an attacker can
 follow back to the original.
 
+Run this yourself — it's the same hash function, in Python's standard library. Change the password and
+watch the entire digest change:
+
+```python runnable
+import hashlib
+
+for password in ["hunter2", "hunter3"]:
+    digest = hashlib.sha256(password.encode()).hexdigest()
+    print(f"{password} -> {digest}")
+```
+
 ## Why this protects a stolen database
 
 **The mental model.** You never write the password to disk. Instead:
 
-```text
-   SIGN UP                              LOG IN
-   ───────                              ──────
-   user types  "hunter2"               user types  "hunter2"
-        │                                   │
-        ▼                                   ▼
-     hash it                             hash it
-        │                                   │
-        ▼                                   ▼
-   store the HASH       ───────►        compare to the STORED hash
-   (not the password)                   match?  ✓ let them in
-                                        no match? ✗ reject
+```mermaid
+flowchart LR
+  subgraph signup["SIGN UP"]
+    s1["user types 'hunter2'"] --> s2[hash it] --> s3[("store the HASH<br/>(not the password)")]
+  end
+  subgraph login["LOG IN"]
+    l1["user types 'hunter2'"] --> l2[hash it] --> l3{compare to stored hash}
+    l3 -->|match| ok([let them in])
+    l3 -->|no match| no([reject])
+  end
+  s3 -.-> l3
 ```
 
 On signup you hash the password and store *only the hash*. On login you hash whatever the user just typed

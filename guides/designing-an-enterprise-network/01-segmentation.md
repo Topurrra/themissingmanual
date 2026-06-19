@@ -84,20 +84,15 @@ Subnets divide by *address*. But there's a physical problem subnets alone don't 
 
 **What it does in real life.** You map each VLAN to a subnet — VLAN 10 carries the `10.10.10.0/24` workstation subnet, VLAN 20 carries the `10.10.20.0/24` server subnet — and the two ride the same physical hardware without ever mixing. Traffic that *does* need to cross (a workstation reaching a server) is forced up to a router, where, again, you get to decide.
 
-```text
-                 ONE PHYSICAL SWITCH, THREE LOGICAL ZONES
-
-   port 1  ─[VLAN 10]─┐                          ┌─[VLAN 10] port 9
-   port 2  ─[VLAN 10]─┤   workstations           │
-   port 3  ─[VLAN 20]─┤   servers                ├─[VLAN 20] port 10
-   port 4  ─[VLAN 30]─┘   printers / IoT         └─[VLAN 30] port 11
-                          │                       │
-                          └───────► ROUTER ◄──────┘
-                            (the only path between VLANs —
-                             and the place you enforce rules)
-
-   Same cabinet. Same switch. A device on VLAN 30 cannot reach
-   VLAN 20 without passing through the router.
+```mermaid
+flowchart TD
+  switch[One physical switch]
+  switch --> v10[VLAN 10<br/>workstations]
+  switch --> v20[VLAN 20<br/>servers]
+  switch --> v30[VLAN 30<br/>printers / IoT]
+  v10 --> router[ROUTER<br/>the only path between VLANs —<br/>and where you enforce rules]
+  v20 --> router
+  v30 --> router
 ```
 
 ⚠️ **Gotcha.** A VLAN is a *configuration*, not a physical wall, and it's only as good as the config. A misconfigured trunk port, a port accidentally left in the wrong VLAN, or a switch with weak management access can let traffic leak between VLANs that you believed were isolated. Treat VLAN boundaries as real security boundaries only when the switch management plane itself is locked down — otherwise you've drawn a line that an attacker can step over by reconfiguring the switch.
@@ -108,20 +103,15 @@ Subnets divide by *address*. But there's a physical problem subnets alone don't 
 
 Subnets and VLANs are not competitors; they're the same dividing line drawn at two layers. The VLAN separates the *traffic* on the wire; the subnet separates the *addresses*; and you map one to the other so a "zone" means the same thing whether you're looking at a switch port or an IP address. The router between zones is where both lines converge, and it's where the next two phases hang their work — scaling decisions and security rules both live at these boundaries.
 
-```text
-                 ZONE = one VLAN + one subnet, with rules at the boundary
-
-   ┌──────────────────────┐   ┌──────────────────────┐   ┌──────────────────────┐
-   │  WORKSTATIONS         │   │  SERVERS              │   │  GUEST / IoT          │
-   │  VLAN 10              │   │  VLAN 20              │   │  VLAN 30              │
-   │  10.10.10.0/24        │   │  10.10.20.0/24        │   │  10.10.30.0/24        │
-   └──────────┬───────────┘   └──────────┬───────────┘   └──────────┬───────────┘
-              │                           │                          │
-              └───────────────────► ROUTER / FIREWALL ◄──────────────┘
-                            every cross-zone packet is a decision
-
-   A breach, a broadcast storm, or a runaway host in any one box
-   stays in that box. That contained blast radius is the entire prize.
+```mermaid
+flowchart TD
+  ws[WORKSTATIONS<br/>VLAN 10 · 10.10.10.0/24]
+  srv[SERVERS<br/>VLAN 20 · 10.10.20.0/24]
+  guest[GUEST / IoT<br/>VLAN 30 · 10.10.30.0/24]
+  fw[ROUTER / FIREWALL<br/>every cross-zone packet is a decision]
+  ws --> fw
+  srv --> fw
+  guest --> fw
 ```
 
 ## Recap

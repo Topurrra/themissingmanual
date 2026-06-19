@@ -111,7 +111,7 @@ which is exactly why real programs live in files.
 
 A REPL is great for experiments, but real programs are saved files you can run again and re-run. Create
 a file called `hello.py` in any folder, with one line in it:
-```python
+```python runnable
 print("Hello, Python!")
 ```
 *What just happened:* This is the same `print` instruction from the REPL, now saved to disk. `print`

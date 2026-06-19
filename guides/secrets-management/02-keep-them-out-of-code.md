@@ -98,12 +98,12 @@ Now the part people most want to be untrue. Suppose you already committed a secr
 
 Git doesn't store files as a single "current" state; it stores **history** — every commit is a snapshot, and old snapshots don't disappear when you change the latest one. Deleting the secret in a new commit just means the *newest* snapshot no longer has it. The commit where you *added* it is still right there, one step back in the log, with the secret intact. Anyone can check out that older commit and read it.
 
-```text
-   commit C3  "Remove secret"      ← secret gone HERE...
-        │
-   commit C2  "Add payment logic"  ← ...but it's STILL RIGHT HERE,
-        │                            full value, forever in history
-   commit C1  "Initial commit"
+```mermaid
+flowchart TD
+  c3["commit C3 — 'Remove secret'<br/>secret gone HERE..."]
+  c2["commit C2 — 'Add payment logic'<br/>...but it's STILL RIGHT HERE, full value, forever"]
+  c1["commit C1 — 'Initial commit'"]
+  c3 --> c2 --> c1
 ```
 
 And if you *pushed*, it's worse: the secret now exists in every clone anyone has made, and quite possibly in a scanning bot's database already. Even genuinely rewriting Git history to scrub it (a heavy, coordinated operation) can't recall the copies already out in the world.

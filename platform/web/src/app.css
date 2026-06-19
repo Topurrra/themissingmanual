@@ -883,7 +883,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 
 /* Sponsored-by row. Names keep exact brand casing; per-letter colour spans
    (.spon-it / .spon-x) win over the link colour, so they survive a:hover. */
-.sponsors { margin-top: 0.85rem; text-align: right; }
+.sponsors { margin-top: 0.85rem; }
 .spon-label {
   display: block;
   color: var(--faint);

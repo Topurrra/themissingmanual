@@ -38,16 +38,12 @@ Every cache in computing is this notepad. The "expensive work" might be a databa
 - 📝 **Cache hit** — the copy is there. You take it and skip the expensive work. Fast.
 - 📝 **Cache miss** — the copy isn't there. You do the real work, return the answer, and (usually) store a copy so next time is a hit.
 
-```text
-   Ask the cache for "user 42's profile"
-                │
-        ┌───────┴────────┐
-        ▼                ▼
-   it's there?        it's not there?
-     = HIT              = MISS
-        │                │
-   return the copy   do the real work (query the DB),
-   (fast)            return it, AND save a copy for next time
+```mermaid
+flowchart TD
+  Ask["Ask the cache for 'user 42's profile'"]
+  Ask --> Q{Is the copy there?}
+  Q -- "yes = HIT" --> Hit["Return the copy (fast)"]
+  Q -- "no = MISS" --> Miss["Do the real work (query the DB),<br/>return it, AND save a copy for next time"]
 ```
 
 **What it does in real life.** The first request for something is almost always a miss — nobody's computed it yet, so the cache is empty for that item (this first-time miss is often called a *cold* cache). You pay full price once. Every later request for the same thing can be a hit, paying almost nothing. So caching doesn't make any single answer cheaper to *produce* — it makes *repeated* requests for the same answer nearly free.

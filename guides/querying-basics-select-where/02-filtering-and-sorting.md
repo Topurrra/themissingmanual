@@ -82,6 +82,16 @@ WHERE age > 40;
 *What just happened:* The test `age > 40` was true only for Grace (41) and Katherine (52), so those are
 the two rows you got. Everyone 40 or younger was filtered out.
 
+Try a filter yourself on the built-in `authors` table:
+
+```sql runnable
+SELECT name, country
+FROM authors
+WHERE country = 'USA';
+```
+*What just happened:* The database tested each row's `country` against `'USA'` and kept only the
+matches — Grace Hopper and Dennis Ritchie. Note the single quotes: text values go in `'single quotes'`.
+
 ### `LIKE` — match part of a text value
 
 **What it actually is.** `LIKE` is for "contains" or "starts with" style matching on text, using `%` as
@@ -260,12 +270,12 @@ everywhere; the keyword differs by database. We'll use `LIMIT` throughout.
 These pieces always go in the same order. The database expects this sequence, and writing them out of
 order is a syntax error:
 
-```text
-  SELECT   columns        ← what you want
-  FROM     table          ← where it lives
-  WHERE    condition       ← which rows to keep
-  ORDER BY column          ← how to sort them
-  LIMIT    n               ← how many to take
+```mermaid
+flowchart LR
+  S["SELECT columns<br/>(what you want)"] --> F["FROM table<br/>(where it lives)"]
+  F --> W["WHERE condition<br/>(which rows to keep)"]
+  W --> O["ORDER BY column<br/>(how to sort them)"]
+  O --> L["LIMIT n<br/>(how many to take)"]
 ```
 
 Not every query needs every clause — but when they appear together, this is the order. A useful way to

@@ -19,15 +19,11 @@ Here's the whole thing in one sentence: **authentication proves who you are; aut
 
 Picture boarding a flight.
 
-```text
-   ┌─────────────────────┐         ┌──────────────────────────┐
-   │  AUTHENTICATION      │         │  AUTHORIZATION           │
-   │  "Who are you?"      │   then  │  "What may you do?"      │
-   │                      │  ────►  │                          │
-   │  Show your PASSPORT  │         │  Show your TICKET        │
-   │  → proves identity   │         │  → grants this seat,     │
-   │                      │         │     this flight, today   │
-   └─────────────────────┘         └──────────────────────────┘
+```mermaid
+flowchart LR
+  authn["AUTHENTICATION — 'Who are you?'<br/>Show your PASSPORT → proves identity"]
+  authz["AUTHORIZATION — 'What may you do?'<br/>Show your TICKET → this seat, this flight, today"]
+  authn -- then --> authz
 ```
 
 Your **passport** proves you are who you claim to be. That's authentication. It says nothing about *where* you're allowed to go.
@@ -83,23 +79,13 @@ content-type: application/json
 
 Every protected request runs both checks, in order:
 
-```text
-  incoming request
-        │
-        ▼
-  ┌───────────────┐   no    ┌──────────────────────┐
-  │ AUTHENTICATED?│ ──────► │ 401 — who are you?   │
-  │ (who are you) │         └──────────────────────┘
-  └───────┬───────┘
-          │ yes
-          ▼
-  ┌───────────────┐   no    ┌──────────────────────┐
-  │ AUTHORIZED?   │ ──────► │ 403 — not allowed    │
-  │ (may you?)    │         └──────────────────────┘
-  └───────┬───────┘
-          │ yes
-          ▼
-     do the thing
+```mermaid
+flowchart TD
+  req([incoming request]) --> authn{authenticated?<br/>who are you}
+  authn -->|no| e401[401 — who are you?]
+  authn -->|yes| authz{authorized?<br/>may you?}
+  authz -->|no| e403[403 — not allowed]
+  authz -->|yes| do([do the thing])
 ```
 
 Authentication is the front door: it establishes identity once. Authorization is every interior door: it gets checked again and again, per action, because the answer changes depending on *what* you're trying to do and *which* resource you're touching.

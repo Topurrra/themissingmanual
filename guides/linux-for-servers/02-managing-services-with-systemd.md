@@ -24,20 +24,15 @@ process the kernel starts at boot, the ancestor of everything else (you'll see i
 what should run, starts those things in the right order, restarts them if they crash, and tracks whether
 each one is healthy.
 
-```text
-   kernel boots
-        │
-        ▼
-   ┌──────────────┐   PID 1 — the first process, parent of all
-   │   systemd    │   reads "units" and brings the system up
-   └──────────────┘
-        │ starts and supervises…
-        ├──► sshd.service      (so you can log in)
-        ├──► nginx.service     (your web server)
-        ├──► postgresql.service(your database)
-        └──► cron.service      (scheduled jobs)
-                 each one is a "unit" systemd keeps watch over
+```mermaid
+flowchart TD
+  kernel[kernel boots] --> systemd["systemd (PID 1)<br/>first process; reads units, brings the system up"]
+  systemd -->|starts and supervises| sshd["sshd.service (so you can log in)"]
+  systemd --> nginx["nginx.service (your web server)"]
+  systemd --> pg["postgresql.service (your database)"]
+  systemd --> cron["cron.service (scheduled jobs)"]
 ```
+*Each one is a "unit" systemd keeps watch over.*
 
 **Why people get this wrong.** Coming from running programs by hand, the temptation is to `cd` somewhere and
 launch the binary yourself — `./nginx &` or similar. That program dies when your SSH session ends (the Phase 1

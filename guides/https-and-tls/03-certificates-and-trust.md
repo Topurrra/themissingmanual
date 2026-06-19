@@ -48,22 +48,13 @@ So the certificate is signed by a CA. But that's the same puzzle one level up: w
 
 The trust is anchored by a short list your browser and operating system ship with — the **root store**, a few hundred CA certificates the vendors have vetted. The chain works like this:
 
-```text
-   ┌──────────────────────────┐
-   │  ROOT CA certificate      │  ← pre-installed in your browser/OS.
-   │  (you trust this already)  │     This is the anchor.
-   └────────────┬─────────────┘
-                │ signs
-                ▼
-   ┌──────────────────────────┐
-   │  INTERMEDIATE CA cert      │  ← the root vouches for this one
-   └────────────┬─────────────┘
-                │ signs
-                ▼
-   ┌──────────────────────────┐
-   │  yourbank.com's cert       │  ← the one the server handed you
-   │  (contains its public key) │     in the handshake
-   └──────────────────────────┘
+```mermaid
+flowchart TD
+  root["ROOT CA certificate<br/>pre-installed in your browser/OS — the anchor"]
+  inter["INTERMEDIATE CA cert<br/>the root vouches for this one"]
+  site["yourbank.com's cert<br/>(contains its public key) — handed to you in the handshake"]
+  root -- signs --> inter
+  inter -- signs --> site
 ```
 
 *What just happened:* Your browser follows the chain upward. The server's cert was signed by an intermediate CA; the intermediate was signed by a root; and the root is one your browser *already* trusts because it shipped with it. Each link is verified by a signature. If every link checks out and the chain ends at a trusted root, the browser accepts the certificate and the padlock appears. If the chain breaks anywhere — a signature doesn't verify, or it ends at a root nobody trusts — you get a warning. You don't have to trust the website; you only have to trust the handful of roots, and they vouch down the chain.

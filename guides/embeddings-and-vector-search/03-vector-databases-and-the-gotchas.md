@@ -34,12 +34,13 @@ This phase covers the two things that separate a toy from a real system: **how y
 
 **What it does in real life.** You hand it vectors (usually with some metadata attached — the original text, an ID, tags), and later you hand it a query vector and ask for the top `k` nearest. It handles the storage, the indexing, and the speed. A typical interaction looks like this:
 
-```text
-   WRITE (once, or whenever content changes)
-     for each document:  embed it → store (vector + text + metadata)
-
-   READ (every search)
-     embed query → ask DB for top-k nearest → get back the documents
+```mermaid
+flowchart LR
+  D[document] -->|embed| DV[vector + text + metadata]
+  DV --> DB[(vector database)]
+  Q[query] -->|embed| QV[query vector]
+  QV --> DB
+  DB --> R[top-k documents]
 ```
 
 *What just happened:* The shape is identical to the semantic search from Phase 2 — embed, find nearest, return. The only thing the database adds is the ability to do the "find nearest" part across an enormous collection in milliseconds, plus the bookkeeping to give you back the actual text and metadata, not just a bare vector.

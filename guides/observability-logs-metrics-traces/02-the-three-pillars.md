@@ -122,17 +122,17 @@ services and one of them is slow, a trace lays the whole thing out as a waterfal
 visually obvious. This is the question metrics and logs both struggle with: "the request was slow — but
 which *part* of it?"
 
-**A real example.** Here's one trace drawn as a waterfall, time flowing left to right:
+**A real example.** Here's one trace (`trace_id: 4bf92f3577b34da6`, 812 ms total) drawn as the request crossing services, each span's duration noted:
 
-```text
-trace_id: 4bf92f3577b34da6        total: 812 ms
-                                  0ms        400ms        812ms
-api-gateway        ████████████████████████████████████████  812 ms  (root span)
-  └─ auth-service  ██                                          38 ms
-  └─ checkout-svc    ████████████████████████████████████     740 ms
-       └─ payment-db   ██████████████████████████████████     690 ms  ◄── the slow span
-       └─ cache-get    █                                        9 ms
-  └─ render-response                                       ██   24 ms
+```mermaid
+sequenceDiagram
+  Client->>api-gateway: GET /checkout (root span, 812 ms)
+  api-gateway->>auth-service: authorize (38 ms)
+  api-gateway->>checkout-svc: process (740 ms)
+  checkout-svc->>payment-db: query (690 ms)
+  Note over payment-db: the slow span
+  checkout-svc->>cache-get: lookup (9 ms)
+  api-gateway->>api-gateway: render-response (24 ms)
 ```
 
 *What just happened:* One request took 812ms total. The waterfall shows almost all of that time — 690ms —

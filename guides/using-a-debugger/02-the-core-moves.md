@@ -143,12 +143,10 @@ prevents this — worth turning on.
 **What it actually is.** The call stack is the chain of function calls that led to where you're paused — each
 function that's currently "waiting" for the one below it to return. In the snapshot earlier, the stack was:
 
-```text
-   ▶ cart_total        ← you are here (top of the stack)
-     handle_checkout    ← this function called cart_total
-     <module>           ← the top-level code that started it all
-   ─────────────────
-   reads top-to-bottom: newest call on top, original caller at the bottom
+```mermaid
+flowchart TD
+  mod["&lt;module&gt;  ← top-level code that started it all"] -->|called| hc["handle_checkout"]
+  hc -->|called| ct["cart_total  ← you are here (top of the stack)"]
 ```
 
 **What it does in real life.** Click any frame in the stack and the debugger jumps you to that function's

@@ -142,19 +142,15 @@ enough time passes to check whether it has recovered.
 
 It lives in three states:
 
-```text
-            many failures
-            in a row
-   ┌────────┐  ───────────▶  ┌────────┐   after a cooldown   ┌──────────┐
-   │ CLOSED │                │  OPEN  │ ───────────────────▶ │ HALF-OPEN│
-   │ normal │  ◀───────────  │ fail   │                      │ try ONE  │
-   │ calls  │   test succeeds│ fast   │ ◀─────────────────── │ test call│
-   └────────┘                └────────┘   test fails (reopen)└──────────┘
-
-   CLOSED    : calls flow normally; count failures.
-   OPEN      : too many failures → stop calling; fail instantly for a cooldown.
-   HALF-OPEN : cooldown elapsed → let ONE test call through.
-               success → back to CLOSED; failure → back to OPEN.
+```mermaid
+flowchart LR
+  Closed["CLOSED<br/>normal calls, count failures"]
+  Open["OPEN<br/>fail fast for a cooldown"]
+  HalfOpen["HALF-OPEN<br/>let ONE test call through"]
+  Closed -- "many failures in a row" --> Open
+  Open -- "after a cooldown" --> HalfOpen
+  HalfOpen -- "test succeeds" --> Closed
+  HalfOpen -- "test fails (reopen)" --> Open
 ```
 
 **What it does in real life.** When the dependency is healthy, the breaker is **closed** and traffic
@@ -187,14 +183,13 @@ single logical attempt) and keep it consistent.
 
 These aren't three separate tools you pick between — they're layers on the *same* call:
 
-```text
-   one outbound call to a dependency:
-
-   ┌─ circuit breaker ─ open?  → fail fast, don't even try
-   │                   closed? ↓
-   │   ┌─ retry (idempotent only) ─ with backoff + jitter
-   │   │     ┌─ timeout ─ cap each individual attempt
-   │   │     │     └─ the actual network call
+```mermaid
+flowchart LR
+  Call([outbound call]) --> CB{Circuit breaker open?}
+  CB -- "open" --> Fast[fail fast, don't even try]
+  CB -- "closed" --> Retry["Retry (idempotent only)<br/>backoff + jitter"]
+  Retry --> Timeout["Timeout<br/>cap each attempt"]
+  Timeout --> Net[the actual network call]
 ```
 
 A call goes out; the **timeout** caps how long each attempt can take; **retries** handle a transient

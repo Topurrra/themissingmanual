@@ -69,6 +69,15 @@ The `ON orders.user_id = users.id` is the heart of it. It's the matching rule �
 
 *What just happened:* For each order, the database looked up the user whose `id` matched that order's `user_id`, then produced one wide row combining columns from both tables. Order `101` (`user_id = 1`) got paired with Ada; order `103` (`user_id = 2`) got paired with Grace. The two separate tables became one result that answers your actual question.
 
+You can run the same move right now on two built-in tables — `books` and `authors`, linked by `books.author_id`:
+
+```sql runnable
+SELECT books.title, authors.name
+FROM books
+JOIN authors ON books.author_id = authors.id;
+```
+*What just happened:* For each book, the database looked up the author whose `id` matched the book's `author_id`, then glued the two together into one wide row — every book shown beside the person who wrote it. Two separate tables became one result that answers a question spanning both.
+
 ⚠️ **Where did orders go?** You started with four orders but got back three rows. Order `104` (`user_id = 7`) vanished, because there's no user `7` to match it to. That's not a bug — it's the *defining behavior* of the plain `JOIN` you just wrote (it's an INNER join, which keeps only rows that match on both sides). Whether that's what you want is the entire subject of Phase 2. For now, notice that a join doesn't only combine rows — it can also *drop* the ones that don't match.
 
 ## How to read a join condition out loud

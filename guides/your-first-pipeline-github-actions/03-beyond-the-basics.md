@@ -60,15 +60,11 @@ jobs:
 
 *What just happened:* `strategy.matrix.node-version` lists three versions. GitHub expands this one job into three parallel jobs — one per version — each on its own runner. The expression `${{ matrix.node-version }}` is how a step reads the current value; in the first copy it's `"18"`, in the second `"20"`, in the third `"22"`. You wrote the job once; you got three real test runs.
 
-```text
-        ┌─────────────────────────────┐
-   one  │  test (matrix: node 18,20,22)│
-  job → └─────────────────────────────┘
-              │        │        │
-              ▼        ▼        ▼
-         ┌────────┐┌────────┐┌────────┐
-         │ node18 ││ node20 ││ node22 │   three runners, in parallel
-         └────────┘└────────┘└────────┘
+```mermaid
+flowchart TD
+  Job[one job<br/>test, matrix: node 18, 20, 22] --> N18[node 18]
+  Job --> N20[node 20]
+  Job --> N22[node 22]
 ```
 
 📝 **Terminology.** `${{ ... }}` is GitHub Actions **expression** syntax — a small templating language for reading context like `matrix`, `github`, and (next) `secrets`. Anything inside the double braces is evaluated by GitHub before the step runs.
@@ -100,9 +96,11 @@ The matrix view in the Actions tab now shows three results. If only Node 18 fail
 
 **What it does in real life.** This is a repository setting, not YAML. In Settings → Branches (or Settings → Rules → Rulesets), add a rule for your `main` branch and enable *"Require status checks to pass before merging,"* then select your CI check (it appears in the list by name once it has run at least once).
 
-```text
-  PR opened ──► CI runs ──► ✓ green  ──► [ Merge ] enabled
-                       └──► ✗ red    ──► [ Merge ] blocked, with a reason
+```mermaid
+flowchart LR
+  PR[PR opened] --> CI[CI runs]
+  CI -->|green| Enabled[Merge enabled]
+  CI -->|red| Blocked[Merge blocked, with a reason]
 ```
 
 *What just happened:* You connected the pipeline's verdict to the merge button. Now a red run physically prevents the merge, and a contributor sees *why* they're blocked. This is the moment CI stops being decorative and starts protecting `main` — the entire point of running tests on every PR.

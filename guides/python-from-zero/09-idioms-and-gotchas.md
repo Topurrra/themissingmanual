@@ -26,7 +26,7 @@ the small, surprising behaviors that bite nearly every Python programmer exactly
 **What it actually is.** A **comprehension** builds a new collection by describing it, instead of starting
 empty and appending in a loop. It reads close to how you'd say it out loud.
 
-```python
+```python runnable
 nums = [1, 2, 3, 4, 5]
 
 # the long way
@@ -58,7 +58,7 @@ than the plain loop. Use them for simple transform-and-filter; reach for a real 
 
 ### Unpacking — pull a sequence apart into names
 
-```python
+```python runnable
 point = (3, 4)
 x, y = point                       # unpack a tuple into two names
 first, *rest = [1, 2, 3, 4]        # * grabs "everything else"
@@ -79,7 +79,7 @@ tuple and the caller unpacks it.
 **What they are.** `enumerate` gives you the index *and* the item while looping. `zip` walks two (or more)
 sequences in lockstep. Both replace clunky index bookkeeping.
 
-```python
+```python runnable
 names = ["Ana", "Bo", "Cy"]
 scores = [90, 85, 95]
 
@@ -108,7 +108,7 @@ lists position by position. ⚠️ If the lists are different lengths, `zip` sto
 dict, `0`, and `None` are all "falsy"; non-empty ones are "truthy." So you write `if items:`, not
 `if len(items) > 0:`.
 
-```python
+```python runnable
 items = []
 if items:
     print("has stuff")
@@ -147,7 +147,7 @@ A couple of these deserve seeing in code, because reading about them isn't the s
 happen.
 
 **Mutable default argument:**
-```python
+```python runnable
 def add_item(item, basket=[]):     # the trap
     basket.append(item)
     return basket
@@ -165,7 +165,7 @@ omits `basket`. So the second call appended to the *same* list, which still held
 default to `None` and create a fresh list inside the function each call.
 
 **`is` vs `==`:**
-```python
+```python runnable
 a = 257
 b = 257
 print(a == b)      # equal value?  yes

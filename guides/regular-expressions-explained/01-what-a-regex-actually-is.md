@@ -35,16 +35,11 @@ A regex is exactly that description, written in a compact notation the engine un
 notation looks alien at first, but the *job* is the friendly one you already do in plain language:
 **say what the text looks like.**
 
-```text
-  Your job:   "what does the text I want LOOK like?"
-                        │
-                        ▼
-              you write a PATTERN  ──────►  ┌──────────────┐
-              (the regex)                   │ regex engine │  does the searching
-                                            └──────────────┘
-                        ▲                          │
-                        │                          ▼
-              some TEXT to search  ──────►   matches / no match
+```mermaid
+flowchart LR
+  Pattern[You write a PATTERN<br/>the regex] --> Engine[regex engine]
+  Text[Some TEXT to search] --> Engine
+  Engine --> Result[matches / no match]
 ```
 
 *What this picture says:* you supply two things — a pattern and some text — and the engine reports

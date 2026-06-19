@@ -21,18 +21,13 @@ What's different is only *what you send* and *what comes back*. So let's look at
 
 That's the whole interaction. There's no hidden session living on the server remembering your last call. Each request is self-contained: the model only knows what's in the messages you send *this time*. (That detail matters a lot in Phase 2, so tuck it away.)
 
-```text
-   YOUR APP                          THE MODEL API
-   ────────                          ─────────────
-   messages so far:
-     [system]  "You are helpful."
-     [user]    "What's a closure?"   ──── HTTP POST ───►   reads the
-                                                           whole list,
-                                                           generates the
-                                          ◄─── response ──  next message
-   you get back:
-     [assistant] "A closure is a
-                  function that ..."
+```mermaid
+sequenceDiagram
+  participant App as Your app
+  participant API as The model API
+  App->>API: HTTP POST messages<br/>[system] "You are helpful."<br/>[user] "What's a closure?"
+  Note over API: reads the whole list,<br/>generates the next message
+  API-->>App: response<br/>[assistant] "A closure is a function that ..."
 ```
 
 📝 **Terminology.** This style is usually called the **chat completions** API (you give it a chat, it *completes* it with the next turn). Different providers name their endpoint slightly differently, but the shape — a list of role-tagged messages in, one assistant message out — is the same across the major ones.

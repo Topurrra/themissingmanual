@@ -52,15 +52,10 @@ The wall wasn't just an org-chart line. It created a genuinely painful way to wo
 
 The name itself is the definition: **Dev** + **Ops**, joined, with no wall in between.
 
-```text
-   BEFORE DevOps                      WITH DevOps
-   ┌─────┐  wall  ┌─────┐            ┌───────────────────────────┐
-   │ Dev │ ░░░░░► │ Ops │            │   one team, one loop:      │
-   └─────┘        └─────┘            │   build  ─►  ship  ─►  run │
-   build it    run it (alone)        │     ▲                  │   │
-   hand off and walk away            │     └──────────────────┘   │
-                                     │   you build it, you run it │
-                                     └───────────────────────────┘
+```mermaid
+flowchart LR
+  Build[Build it] --> Ship[Ship it] --> Run[Run it]
+  Run -->|you build it, you run it| Build
 ```
 
 **Why people get this wrong.** Because organizations took the *idea* and slapped it on a *box*. They renamed the ops team "the DevOps team," or hired a "DevOps engineer" to manage the deploy scripts, and called it done. But putting "DevOps" on a door doesn't remove the wall — it just moves the wall and renames one side of it. DevOps is something a whole team *does*, not a department you can point at. (We'll come back hard to this in [Phase 3](03-the-culture.md).)

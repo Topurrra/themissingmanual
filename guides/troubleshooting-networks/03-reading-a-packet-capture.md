@@ -93,16 +93,17 @@ You read it top to bottom, like a chat log between two machines. **Source** and 
 
 You don't need to understand every packet. The method is always the same, and it's just Phase 1's "first failure wins" applied to a transcript:
 
-```text
-   1. Did the handshake complete?      no  → connection can't start (down/firewall/wrong port)
-                                       yes ↓
-   2. Did real data flow both ways?    no  → one side never replied — see who went silent
-                                       yes ↓
-   3. Lots of retransmissions?         yes → lossy / congested path (the "slow" fingerprint)
-                                       no  ↓
-   4. Any RST?                         yes → someone refused/killed it — read the DIRECTION
-                                       no  ↓
-   5. Which side sent the last packet, and when did it stop?  ← that's where it broke
+```mermaid
+flowchart TD
+  q1{1. Did the handshake complete?}
+  q1 -->|no| a1[connection can't start:<br/>down / firewall / wrong port]
+  q1 -->|yes| q2{2. Did real data flow both ways?}
+  q2 -->|no| a2[one side never replied —<br/>see who went silent]
+  q2 -->|yes| q3{3. Lots of retransmissions?}
+  q3 -->|yes| a3[lossy / congested path<br/>the slow fingerprint]
+  q3 -->|no| q4{4. Any RST?}
+  q4 -->|yes| a4[someone refused/killed it —<br/>read the DIRECTION]
+  q4 -->|no| a5[5. Which side sent the last packet,<br/>and when did it stop? — that's where it broke]
 ```
 *What just happened:* You walked the conversation the same way you walked the layers — top to bottom, stopping at the first thing that's wrong. The capture's gift is that "where did it break" is no longer a theory; it's a specific row, with a sender, a timestamp, and a packet type. That's the end of guessing.
 

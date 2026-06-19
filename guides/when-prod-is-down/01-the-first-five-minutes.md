@@ -166,16 +166,14 @@ and should — find the root cause. *After* the bleeding stops.
 stop *right now*?" Diagnosis answers "why did this happen and how do I prevent it?" In the first five minutes,
 you only have one job, and it's mitigation.
 
-```text
-   THE OUTAGE TIMELINE — what to optimize for
-
-   alert ──► confirm ──► assess ──► MITIGATE ──┬──► diagnose ──► permanent fix
-             real?       blast        (stop    │     (now calm,    (later,
-                         radius        the      │      service       reviewed)
-                                       bleeding) │      restored)
-                                                 ▼
-                                       ◄── minimize THIS gap ──►
-                                       (time users are in pain)
+```mermaid
+flowchart LR
+  alert["alert"] --> confirm["confirm<br/>real?"]
+  confirm --> assess["assess<br/>blast radius"]
+  assess --> mitigate["MITIGATE<br/>stop the bleeding"]
+  mitigate --> diagnose["diagnose<br/>(now calm, service restored)"]
+  diagnose --> fix["permanent fix<br/>(later, reviewed)"]
+  alert -. minimize this gap = time users are in pain .-> mitigate
 ```
 
 The whole game in the early phase is shrinking that shaded gap — the time users are actually hurting — and you

@@ -19,16 +19,13 @@ We won't worry yet about *how* your device knows where the page lives, or *how* 
 
 Before we trace the trip, meet the players. Each one has a small, specific job.
 
-```text
-   YOU                                                    THE WEB PAGE
-   ┌──────────┐   ┌────────┐   ┌──────┐   ~~~~~~~~~~   ┌──────────┐
-   │  your    │──▶│  home  │──▶│ your │──▶ the open ──▶│  server  │
-   │  device  │   │ router │   │ ISP  │    internet    │ (a       │
-   │ (phone,  │◀──│        │◀──│      │◀── ~~~~~~~~~ ◀──│ computer │
-   │  laptop) │   └────────┘   └──────┘                │ that     │
-   └──────────┘                                        │ holds    │
-                                                       │ the page)│
-                                                       └──────────┘
+```mermaid
+flowchart LR
+  device[Your device<br/>phone, laptop] -->|request| router[Home router]
+  router -->|request| isp[Your ISP]
+  isp -->|request| net((The open<br/>internet))
+  net -->|request| server[Server<br/>holds the page]
+  server -.->|answer comes back the same way| device
 ```
 
 - **Your device** — the phone or laptop in your hand. It wants a web page.

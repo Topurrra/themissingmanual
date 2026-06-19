@@ -25,14 +25,11 @@ Picture the obvious approach to renaming a column from `name` to `full_name`: wr
 renames it, deploy it alongside the code that uses the new name. The problem is timing. A deploy is
 never instantaneous — for a window of seconds or minutes, you have a mix:
 
-```text
-   time ───────────────────────────────────────────────►
-
-   schema:   name ──────────────[RENAME]────────► full_name
-   app:      ▓▓▓ old code (reads `name`) ▓▓▓
-                            │
-                            ▼ migration runs here, mid-deploy
-                     old code now queries `name`  ✗ column gone → errors
+```mermaid
+flowchart TD
+  S1["schema: column is name"] -->|RENAME runs mid-deploy| S2["schema: column is full_name"]
+  App["old app code still live, reads name"] --> S2
+  S2 --> Err["old code now queries name<br/>✗ column gone → errors"]
 ```
 
 *What just happened:* The rename took effect while old app instances were still live. Those instances
@@ -47,11 +44,11 @@ The fix is to stop trying to switch in one instant.
 Almost every safe live migration follows the same three-beat shape. Hold this and you can reason your
 way through most changes:
 
-```text
-   1. ADD       create the new structure, additively — old app keeps working, untouched
-   2. BACKFILL  copy/compute data into the new structure — in safe batches, no rush
-   3. SWITCH    deploy app code that uses the new structure — only now does it matter
-              (4. CLEAN UP, later: remove the old structure once nothing reads it)
+```mermaid
+flowchart LR
+  A["1. ADD<br/>create the new structure additively<br/>old app keeps working, untouched"] --> B["2. BACKFILL<br/>copy/compute data into it<br/>in safe batches, no rush"]
+  B --> C["3. SWITCH<br/>deploy app code that uses<br/>the new structure"]
+  C --> D["4. CLEAN UP (later)<br/>remove the old structure<br/>once nothing reads it"]
 ```
 
 The genius of this order is that **every step is safe on its own.** Adding nullable structure breaks
@@ -88,10 +85,11 @@ This is a deploy you can ship in the middle of a Tuesday.
 Deploy app code that writes to **both** `name` and `full_name` whenever a user is created or updated.
 Reads still come from `name`.
 
-```text
-   app writes ──► name        (old, still the source of truth for reads)
-            └───► full_name   (new, being kept in sync from now on)
-   app reads  ──► name
+```mermaid
+flowchart LR
+  W[app writes] --> N["name (old, still source of truth for reads)"]
+  W --> FN["full_name (new, kept in sync from now on)"]
+  R[app reads] --> N
 ```
 
 *What just happened:* From this deploy onward, any new or changed row keeps the two columns identical.
@@ -125,10 +123,12 @@ everywhere.
 Now — and only now — deploy app code that **reads** from `full_name`. The data is all there, so this
 flips cleanly.
 
-```text
-   app writes ──► name
-            └───► full_name
-   app reads  ──► full_name   ← switched
+```mermaid
+flowchart LR
+  W[app writes] --> N[name]
+  W --> FN[full_name]
+  R[app reads] --> FN
+  FN -.->|switched| R
 ```
 
 *What just happened:* The app now treats `full_name` as the real column. `name` is still being written

@@ -21,17 +21,14 @@ Picture sending a postcard through the mail. Anyone who handles it — the mail 
 
 HTTPS is just HTTP carried inside a TLS-protected connection. TLS adds exactly three guarantees. Hold onto these three words — *encryption, integrity, authentication* — and most of HTTPS follows.
 
-```text
-   Plain HTTP:  [ your request ] ───── readable by everyone in between ─────► server
-                  a postcard
-
-   HTTPS:       [ your request ] ──► [ TLS envelope ] ──► unreadable, tamper-evident ──► server
-                                          │
-                          ┌───────────────┼───────────────┐
-                          ▼               ▼               ▼
-                     ENCRYPTION       INTEGRITY      AUTHENTICATION
-                  "nobody can      "nobody can      "you reached the
-                   read it"         change it"       real server"
+```mermaid
+flowchart TD
+  http["Plain HTTP: your request<br/>(a postcard — readable by everyone in between)"] --> server1[server]
+  req["HTTPS: your request"] --> tls[TLS envelope]
+  tls --> server2[server]
+  tls --> enc["ENCRYPTION<br/>nobody can read it"]
+  tls --> integ["INTEGRITY<br/>nobody can change it"]
+  tls --> authn["AUTHENTICATION<br/>you reached the real server"]
 ```
 
 ### 1. Encryption — eavesdroppers can't read it

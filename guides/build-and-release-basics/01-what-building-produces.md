@@ -29,13 +29,11 @@ Once you hold that idea — *source goes in, a runnable thing comes out* — the
 
 The artifact you get depends on the job:
 
-```text
-   SOURCE CODE                BUILD STEP                ARTIFACT
-   (what you write)           (the recipe)              (what you ship)
-
-   main.go            ─►   go build           ─►   a compiled binary
-   src/*.ts, *.css    ─►   npm run build      ─►   a bundle (dist/ folder)
-   Dockerfile + app   ─►   docker build       ─►   a container image
+```mermaid
+flowchart LR
+  Go[main.go] -->|go build| GoBin[a compiled binary]
+  TS[src/*.ts, *.css] -->|npm run build| Bundle[a bundle: dist/ folder]
+  Docker[Dockerfile + app] -->|docker build| Image[a container image]
 ```
 
 The point of the diagram: different stacks produce different *kinds* of artifact, but it's always the same move — source in, one runnable thing out.

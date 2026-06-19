@@ -25,20 +25,12 @@ This distinction is the key to the whole journey: a program has to be *moved* fr
 
 Here's the relay, start to finish, when you open that music player:
 
-```text
-   1. CLICK             You double-click the music player's icon.
-
-   2. LOAD              The program is copied from STORAGE up into RAM,
-      storage ──► RAM   because the CPU can't work directly from the slow
-                        filing cabinet. It needs it on the fast desk.
-
-   3. FETCH + EXECUTE   The CPU reads the first instruction from RAM and
-      RAM ──► CPU       does it. Then the next. Then the next. Over and
-                        over, billions of times a second.
-
-   4. OUTPUT            Some of those instructions say "send this sound to
-      CPU ──► speakers  the speakers" or "draw this window on the screen."
-                        Results flow back out through I/O.
+```mermaid
+flowchart LR
+  Click["1. CLICK<br/>double-click the icon"] --> Storage[Storage]
+  Storage -->|2. LOAD: copy up| RAM[RAM]
+  RAM -->|3. FETCH + EXECUTE| CPU[CPU]
+  CPU -->|4. OUTPUT| Out["Speakers / screen"]
 ```
 
 Step 2 is the part most people have never been told. **The CPU can't run a program straight from storage** — storage is far too slow to feed the worker one instruction at a time. So the first thing that happens when you open *anything* is a copy: the program's instructions get pulled up from the filing cabinet onto the desk, where the CPU can reach them fast. The little spinning icon you see when a big app is "loading"? That's largely this copy happening.
@@ -47,17 +39,11 @@ Step 2 is the part most people have never been told. **The CPU can't run a progr
 
 **What it actually is.** Once the program is in RAM, the CPU does the same simple loop, forever, for every program running:
 
-```text
-        ┌─────────────────────────────────────────────┐
-        │                                             │
-        ▼                                             │
-   ┌─────────┐      ┌──────────┐      ┌──────────┐    │
-   │  FETCH  │ ───► │  EXECUTE │ ───► │  move to  │ ──┘
-   │ the next│      │   it     │      │ next step │
-   │ instr.  │      │          │      │           │
-   └─────────┘      └──────────┘      └──────────┘
-
-   "Get the next instruction from RAM.  Do what it says.  Repeat."
+```mermaid
+flowchart LR
+  Fetch["FETCH<br/>the next instruction"] --> Execute["EXECUTE<br/>do what it says"]
+  Execute --> Move["MOVE ON<br/>to next step"]
+  Move -->|repeat| Fetch
 ```
 
 That's the entire job of a CPU: **fetch the next instruction, execute it, move on, repeat** — at a pace of billions of times per second. Each individual step is tiny ("add these two numbers," "compare these," "put this result over there"). There's no grand plan inside the CPU. The plan is the program; the CPU just walks through it relentlessly.
@@ -70,21 +56,13 @@ That's the entire job of a CPU: **fetch the next instruction, execute it, move o
 
 Here's the idea that makes sense of *everything* about computer speed. The parts that hold data aren't equally fast. There's a ladder, and the rule is brutally simple: **the closer to the CPU, the faster — and the smaller and more expensive.**
 
-```text
-   FASTEST, smallest, closest to the worker
-   ▲
-   │   ┌────────────────────────────────────────────────┐
-   │   │ Inside the CPU itself (registers & cache)        │  blink-fast,
-   │   │ — a tiny scratchpad right next to the worker     │  but tiny
-   │   ├────────────────────────────────────────────────┤
-   │   │ RAM — the desk                                   │  fast,
-   │   │ — fast workspace, a few GB                        │  medium size
-   │   ├────────────────────────────────────────────────┤
-   │   │ STORAGE (SSD / hard drive) — the filing cabinet   │  much slower,
-   │   │ — slow but huge and permanent                     │  huge
-   │   └────────────────────────────────────────────────┘
-   ▼
-   SLOWEST, biggest, farthest from the worker
+```mermaid
+flowchart TD
+  Cache["Inside the CPU: registers &amp; cache<br/>blink-fast, but tiny"]
+  RAM["RAM — the desk<br/>fast, a few GB"]
+  Storage["Storage (SSD / hard drive)<br/>much slower, huge, permanent"]
+  Cache -->|farther from the worker| RAM
+  RAM -->|farther from the worker| Storage
 ```
 
 The gaps between these rungs are enormous — not a little slower, but dramatically slower at each step down. Reaching into the CPU's own scratchpad is near-instant; reaching into RAM is quick; reaching all the way down to storage is slow enough that the CPU would spend most of its time *waiting* if it had to work from there.
@@ -99,13 +77,13 @@ The gaps between these rungs are enormous — not a little slower, but dramatica
 
 ## The whole picture, together
 
-```text
-   STORAGE  ──load──►  RAM  ──fetch──►  CPU  ──execute──►  results
-   (cabinet)           (desk)           (worker)            │
-      ▲                  ▲                                   │
-      │                  │                                   │
-      └──── save ────────┴───────────── output to screen ───┘
-                                        / speakers / network
+```mermaid
+flowchart LR
+  Storage["STORAGE<br/>cabinet"] -->|load| RAM["RAM<br/>desk"]
+  RAM -->|fetch| CPU["CPU<br/>worker"]
+  CPU -->|execute| Results[results]
+  Results -->|output to screen / speakers / network| Out([out])
+  Results -.->|save| Storage
 ```
 
 A program lives in the cabinet, gets laid out on the desk, and the worker runs through it step by step — pulling data up the ladder to stay fast, pushing results back out to you, and saving anything that needs to last back down into the cabinet. That relay, repeated billions of times a second, is a computer running.

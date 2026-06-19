@@ -147,13 +147,11 @@ matters is a short list of **action items** — concrete, owned, and tracked lik
 The strongest action items remove the *contributing factors*, because each one defuses a whole class of future
 outages. They tend to fall into three families:
 
-```text
-   PREVENTION LADDER — from weakest to strongest
-
-   weakest  │  "be more careful"        ──► relies on humans not being human. Don't.
-            │  better alert / runbook   ──► catch it faster, recover faster next time
-            │  test / canary / staged   ──► catch this class of bug BEFORE users do
-   strongest│  guardrail (can't happen) ──► make the failure structurally impossible
+```mermaid
+flowchart TD
+  w["weakest: 'be more careful'<br/>relies on humans not being human. Don't."] --> a["better alert / runbook<br/>catch it faster, recover faster"]
+  a --> t["test / canary / staged<br/>catch this class of bug BEFORE users do"]
+  t --> g["strongest: guardrail<br/>make the failure structurally impossible"]
 ```
 
 - **Better alerts** — if you were slow to detect, add or tune an alert so next time you know in seconds, not

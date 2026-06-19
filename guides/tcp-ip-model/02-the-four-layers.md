@@ -13,16 +13,13 @@ updated: 2026-06-19
 
 Now that you know *why* there are layers — one job each, trust below, wrapping on the way down — the four names finally have somewhere to land. The TCP/IP model has four of them, and they stack from the wire up to your app:
 
-```text
-   ┌───────────────────────────────────────────────┐
-   │ APPLICATION   what you actually use   HTTP, DNS │   ← top: closest to you
-   ├───────────────────────────────────────────────┤
-   │ TRANSPORT     deliver to the right program  TCP/UDP
-   ├───────────────────────────────────────────────┤
-   │ INTERNET      address & route across nets   IP   │
-   ├───────────────────────────────────────────────┤
-   │ LINK          get to the next hop    Wi-Fi/Ethernet  ← bottom: the wire
-   └───────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  app["APPLICATION — what you actually use (HTTP, DNS)<br/>top: closest to you"]
+  transport["TRANSPORT — deliver to the right program (TCP/UDP)"]
+  internet["INTERNET — address & route across networks (IP)"]
+  link["LINK — get to the next hop (Wi-Fi/Ethernet)<br/>bottom: the wire"]
+  app --> transport --> internet --> link
 ```
 
 Read it as a journey getting *more abstract* as you go up. The bottom layer thinks about voltage and radio; the top layer thinks about web pages. Let's take them from the bottom, because that's the order your data is wrapped on the way out.
@@ -74,11 +71,13 @@ Which one a program picks shapes everything about how it behaves. That choice is
 
 Here's a single web request — your browser loading `https://example.com` — placed on the stack so you can see each layer's contribution:
 
-```text
-   APPLICATION │ "GET / HTTP/1.1  Host: example.com"      ← the actual request
-   TRANSPORT   │ TCP, to port 443, ordered & guaranteed    ← which program, how careful
-   INTERNET    │ to IP 93.184.216.34, routed hop by hop     ← which machine, what path
-   LINK        │ over Wi-Fi to your router (first hop)       ← onto the wire
+```mermaid
+flowchart TD
+  app["APPLICATION: GET / HTTP/1.1  Host: example.com<br/>the actual request"]
+  transport["TRANSPORT: TCP, to port 443, ordered & guaranteed<br/>which program, how careful"]
+  internet["INTERNET: to IP 93.184.216.34, routed hop by hop<br/>which machine, what path"]
+  link["LINK: over Wi-Fi to your router (first hop)<br/>onto the wire"]
+  app --> transport --> internet --> link
 ```
 *What just happened:* (an illustrative breakdown, not a packet capture) Top to bottom, each layer added the one thing it's responsible for. The Application layer wrote the request. Transport said "send it to the program on port 443, and be careful — it's TCP." The Internet layer said "that's IP `93.184.216.34`, here's the route." The Link layer said "first hop: my router, over Wi-Fi." Four jobs, four wrappers, one request on its way.
 

@@ -165,6 +165,17 @@ GROUP BY customer;
 dragging, no manual cleanup, and it reads the same live table everyone else does. Same result you used to
 assemble by hand, now expressed as one repeatable sentence.
 
+**Try it yourself.** Here's the same idea on a tiny library dataset — join two tables and count, the kind
+of question that would mean a fragile VLOOKUP in a sheet. Run it and tweak the `WHERE`:
+
+```sql runnable
+SELECT a.name AS author, a.country, COUNT(b.id) AS books
+FROM authors a
+JOIN books b ON b.author_id = a.id
+GROUP BY a.id
+ORDER BY books DESC;
+```
+
 And that word — *repeatable* — is the bridge to Phase 3. You've fixed size, types, and the source of
 truth. But you're still the one running this query every Monday. What happens when even *that* should run
 on its own?

@@ -38,19 +38,13 @@ The two words that matter most are **categories** and **risk**.
 
 Here's the picture to carry around. A field guide to birds doesn't list every bird that has ever existed — it shows you the ones you're actually likely to see, with enough detail to recognize each on sight. The OWASP Top 10 is a field guide to the *usual suspects* in web app break-ins: the attacks you're genuinely likely to face, described so you can recognize them in your own code before an attacker recognizes them first.
 
-```text
-   ┌─────────────────────────────────────────────────────────┐
-   │  OWASP  (the nonprofit — publishes free security stuff)  │
-   │                                                          │
-   │     produces  ─────►   The Top 10                        │
-   │                         (a field guide to the ~10        │
-   │                          most common risk CATEGORIES)    │
-   │                                                          │
-   │     each category  ─────►  many real vulnerabilities     │
-   │                            in real apps                  │
-   └─────────────────────────────────────────────────────────┘
-
-        The list gives everyone the SAME map and the SAME words.
+```mermaid
+flowchart TD
+  owasp["OWASP<br/>(nonprofit — publishes free security resources)"]
+  top10["The Top 10<br/>(a field guide to the ~10 most common risk CATEGORIES)"]
+  vulns["many real vulnerabilities in real apps"]
+  owasp -- produces --> top10
+  top10 -- "each category covers" --> vulns
 ```
 
 That last line is the real value, and it's worth saying plainly: the Top 10's biggest gift isn't the ranking — it's that it gives the whole industry a **shared checklist and a shared vocabulary.** When a pentester writes "Broken Access Control" in a report, your team knows exactly what family of problem they mean, where to look, and roughly how bad it is. Before shared lists like this, every report invented its own terms and every team argued past each other.

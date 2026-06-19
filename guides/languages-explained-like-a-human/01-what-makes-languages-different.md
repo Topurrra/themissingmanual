@@ -81,13 +81,16 @@ quietly compile your code to a faster intermediate form first, and some compile 
 
 **What it feels like in real life.**
 
-```text
-COMPILED                          INTERPRETED
-  edit code                         edit code
-     │ build (a real step)             │ (no build step)
-     ▼                                 ▼
-  one runnable file ──► runs        run it via the interpreter ──► runs
-  fast, ships alone                 needs the interpreter installed
+```mermaid
+flowchart TB
+  subgraph Compiled["COMPILED"]
+    direction TB
+    CE["edit code"] -->|build: a real step| CB["one runnable file"] --> CR["runs — fast, ships alone"]
+  end
+  subgraph Interpreted["INTERPRETED"]
+    direction TB
+    IE["edit code"] -->|no build step| IR["run via the interpreter — needs it installed"]
+  end
 ```
 
 **The trade-off, honestly.** Compiling costs you a build step and a slower edit-test loop, and buys you fast

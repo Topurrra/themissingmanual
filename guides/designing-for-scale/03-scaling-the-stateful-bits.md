@@ -19,29 +19,25 @@ It didn't disappear. It moved. The whole trick of Phase 1 was to take state *out
 
 Here's the mental model for the whole phase. You've pushed state off the app servers — now it sits in a small number of shared places that *all* the app servers talk to:
 
-```text
-                    ┌───────────────────┐
-        users ────▶ │   load balancer   │
-                    └───────────────────┘
-                      │      │      │
-                 ┌────┘      │      └────┐
-                 ▼           ▼           ▼
-            ┌─────────┐ ┌─────────┐ ┌─────────┐
-            │ app srv │ │ app srv │ │ app srv │   STATELESS — clone freely
-            └─────────┘ └─────────┘ └─────────┘
-                 │           │           │
-                 └─────┬─────┴─────┬─────┘
-                       ▼           ▼
-                ┌────────────┐ ┌────────────┐
-                │  SESSION   │ │  DATABASE  │   STATEFUL — the hard parts,
-                │   STORE    │ │            │   shared by every app server
-                │  (Redis)   │ │            │
-                └────────────┘ └────────────┘
-                       ▲
-                ┌────────────┐
-                │   CACHE    │   sheds load off the database
-                └────────────┘
+```mermaid
+flowchart TD
+  Users([users]) --> LB[load balancer]
+  LB --> A1["app srv"]
+  LB --> A2["app srv"]
+  LB --> A3["app srv"]
+  A1 --> SS["SESSION STORE (Redis)"]
+  A2 --> SS
+  A3 --> SS
+  A1 --> DB[(DATABASE)]
+  A2 --> DB
+  A3 --> DB
+  Cache["CACHE"] -->|sheds load off| DB
+  A1 -.-> Cache
+  A2 -.-> Cache
+  A3 -.-> Cache
 ```
+
+The app servers are STATELESS — clone freely. The session store and database are STATEFUL — the hard parts, shared by every app server.
 
 The app servers in the middle are easy — clone them all day. The shared stores at the bottom are where scaling gets real. Let's take them one at a time.
 

@@ -19,15 +19,10 @@ This phase also answers the single most common confusion in all of releasing —
 
 **What it actually is.** An **environment** is a complete, separate place where your software runs. The same artifact can run in several environments at once, each isolated from the others, so what you do in one can't touch the rest. The usual three:
 
-```text
-   DEV                STAGING               PRODUCTION
-   ┌──────────┐       ┌──────────┐          ┌──────────┐
-   │ your      │      │ a mirror  │         │ the real  │
-   │ sandbox   │ ───► │ of prod   │  ─────► │ thing —   │
-   │ (break    │      │ (final    │         │ real users│
-   │  freely)  │      │ rehearsal)│         │  & data   │
-   └──────────┘       └──────────┘          └──────────┘
-     loosest            stricter              strictest
+```mermaid
+flowchart LR
+  Dev[Dev<br/>your sandbox — break freely] -->|promote| Staging[Staging<br/>a mirror of prod — final rehearsal]
+  Staging -->|promote| Prod[Production<br/>the real thing — real users & data]
 ```
 
 - **Dev (development)** — your sandbox. Fake or sample data, fast feedback, safe to break. This is where you confirm the thing runs at all.
@@ -68,15 +63,12 @@ Deployed myapp:1.4.0 to production.
 
 **What it does in real life.** The artifact is built to read its settings — database address, API keys, feature switches — from its surroundings rather than having them baked in. Each environment hands the same artifact a *different* set of values:
 
-```text
-                ┌─────────────────────────────────────┐
-                │     the SAME artifact: myapp:1.4.0    │
-                └─────────────────────────────────────┘
-                   ▲              ▲              ▲
-            reads config   reads config   reads config
-                   │              │              │
-              DEV config    STAGING config   PROD config
-              (test DB)     (staging DB)     (real DB)
+```mermaid
+flowchart TD
+  Artifact[the SAME artifact: myapp:1.4.0]
+  DevCfg[DEV config<br/>test DB] -->|reads config| Artifact
+  StgCfg[STAGING config<br/>staging DB] -->|reads config| Artifact
+  ProdCfg[PROD config<br/>real DB] -->|reads config| Artifact
 ```
 
 One artifact, three sets of settings. The code that runs is identical; only the values it's fed change from place to place. This is the companion idea to "build once": you can ship one artifact everywhere *because* the per-place differences have been pulled out into config. (The how-to of feeding config in safely — environment variables, secrets, and the traps around them — has its own guide: [Environment Variables & Config](/guides/env-vars-and-config).)

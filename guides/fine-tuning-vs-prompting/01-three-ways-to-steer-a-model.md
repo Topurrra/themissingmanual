@@ -27,20 +27,19 @@ this is the model's "instincts," its defaults) and the **context** (everything y
 the prompt, the conversation, any documents you paste in). Two of your three levers work on the context; one
 works on the weights.
 
-```text
-   REQUEST TIME (cheap, instant, reversible)        TRAINING TIME (expensive, slow, sticky)
-   ─────────────────────────────────────────        ──────────────────────────────────────
-
-   ┌─────────────┐   ┌─────────────┐                 ┌──────────────────────────────┐
-   │  PROMPTING  │   │     RAG     │                 │        FINE-TUNING           │
-   │ instructions│   │  knowledge  │                 │   the model's own weights     │
-   └──────┬──────┘   └──────┬──────┘                 └───────────────┬──────────────┘
-          │                 │                                        │
-          ▼                 ▼                                        ▼
-       changes WHAT      changes WHAT                            changes HOW
-       you ask for       facts it sees                       it answers BY DEFAULT
-          │                 │                                        │
-          └───────► fed in as context ◄──────┘            baked in — no context needed
+```mermaid
+flowchart TD
+  subgraph RT["REQUEST TIME — cheap, instant, reversible"]
+    direction LR
+    P["PROMPTING<br/>changes WHAT you ask for"]
+    R["RAG<br/>changes WHAT facts it sees"]
+  end
+  subgraph TT["TRAINING TIME — expensive, slow, sticky"]
+    F["FINE-TUNING<br/>changes HOW it answers by default"]
+  end
+  P -->|fed in as context| OUT[model output]
+  R -->|fed in as context| OUT
+  F -->|baked into the weights| OUT
 ```
 
 *The dividing line that matters most:* **RAG adds knowledge. Fine-tuning teaches behavior.** Almost every

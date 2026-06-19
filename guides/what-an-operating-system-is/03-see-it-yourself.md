@@ -63,23 +63,13 @@ seeing it: problems shrink from "the computer is haunted" to "that process, righ
 That pile of processes didn't appear by magic. Here's the chain from cold metal to your desktop — the
 moment the manager-in-the-middle takes charge:
 
-```text
-   power on
-      │
-      ▼
-   firmware (BIOS/UEFI)  ── a tiny program baked into the motherboard;
-      │                     it wakes the hardware and finds the OS on disk
-      ▼
-   the KERNEL loads       ── the core from Phase 1 starts up and takes
-      │                     control of the hardware
-      ▼
-   first process starts   ── the kernel launches the one process that
-      │                     starts everything else
-      ▼
-   services + login       ── background services start; you get a login screen
-      │
-      ▼
-   your desktop           ── your session's processes start; you're in
+```mermaid
+flowchart TD
+  Power[Power on] --> Firmware[Firmware BIOS/UEFI<br/>wakes the hardware, finds the OS on disk]
+  Firmware --> Kernel[The kernel loads<br/>takes control of the hardware]
+  Kernel --> First[First process starts<br/>launches everything else]
+  First --> Services[Services + login<br/>background services, login screen]
+  Services --> Desktop[Your desktop<br/>your session starts, you're in]
 ```
 *What just happened:* Pressing power runs a tiny built-in program (the **firmware**) that knows just enough
 to wake the hardware and hand control to the **kernel**. The kernel takes over, then starts a first process

@@ -36,17 +36,12 @@ functions — which is exactly what you want.
 
 Here's the shape, drawn out:
 
-```text
-   ┌──────────────────────────────────────────────────────────┐
-   │  ARRANGE   set up the inputs and anything the code needs   │
-   │            (e.g. price = 100, tax_rate = 0.10)             │
-   ├──────────────────────────────────────────────────────────┤
-   │  ACT       call the function you're testing — exactly once │
-   │            (e.g. result = total_with_tax(100, 0.10))       │
-   ├──────────────────────────────────────────────────────────┤
-   │  ASSERT    check the result is what you expected           │
-   │            (e.g. assert result == 110)                     │
-   └──────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  A["ARRANGE — set up the inputs (price = 100, tax_rate = 0.10)"]
+  B["ACT — call the function once (result = total_with_tax(100, 0.10))"]
+  C["ASSERT — check the result (assert result == 110)"]
+  A --> B --> C
 ```
 
 - **Arrange** — get everything ready. The inputs you'll pass in, and any setup the code depends on.

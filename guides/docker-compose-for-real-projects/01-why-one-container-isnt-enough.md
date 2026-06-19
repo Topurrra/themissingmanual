@@ -23,22 +23,17 @@ Open up almost any web app you'd ship and you'll find the same cast: something s
 
 A typical web app stack looks like this:
 
-```text
-        ┌──────────────────────────────────────────────┐
-        │                  your app                     │
-        │                                               │
-        │   ┌─────────┐     ┌─────────┐     ┌────────┐  │
-        │   │   web   │ ──► │   api   │ ──► │   db   │  │
-        │   │ (nginx) │     │ (node)  │     │(postgres)│ │
-        │   └─────────┘     └────┬────┘     └────────┘  │
-        │                        │                      │
-        │                        ▼                      │
-        │                   ┌─────────┐                 │
-        │                   │  cache  │                 │
-        │                   │ (redis) │                 │
-        │                   └─────────┘                 │
-        └──────────────────────────────────────────────┘
-          each box = one container    each ──► = "talks to"
+```mermaid
+flowchart LR
+  subgraph App["your app — each box = one container, each arrow = talks to"]
+    web["web (nginx)"]
+    api["api (node)"]
+    db["db (postgres)"]
+    cache["cache (redis)"]
+    web --> api
+    api --> db
+    api --> cache
+  end
 ```
 
 The web container takes requests and hands the real work to the API. The API reads and writes the database, and checks the cache before doing slow work. Four containers, three connections — and every one of those connections has to actually *exist* for the app to function.

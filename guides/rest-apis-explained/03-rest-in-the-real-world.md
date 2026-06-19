@@ -81,15 +81,18 @@ mobile connections.
 **Under-fetching** — the opposite: one resource isn't enough, so you make several calls. To render
 "a user and the titles of their last 5 orders," the user resource doesn't include orders, so:
 
-```text
-   GET /users/42            → the user
-   GET /users/42/orders     → their orders
-   (now loop the orders to get each one's line items…)
-   GET /orders/1180         ┐
-   GET /orders/1179         │  one round trip
-   GET /orders/1178         ├─ per order — the "N+1 requests" problem
-   GET /orders/1177         │
-   GET /orders/1176         ┘
+```mermaid
+sequenceDiagram
+  participant Client
+  participant API
+  Client->>API: GET /users/42
+  API-->>Client: the user
+  Client->>API: GET /users/42/orders
+  API-->>Client: their 5 orders
+  loop one round trip per order — the "N+1 requests" problem
+    Client->>API: GET /orders/{id}
+    API-->>Client: that order's details
+  end
 ```
 
 *What just happened:* One screen became seven sequential requests, each paying its own network round trip.

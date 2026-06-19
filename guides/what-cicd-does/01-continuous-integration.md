@@ -42,18 +42,14 @@ GitLab CI, Jenkins, CircleCI — the brand varies, the idea doesn't) notices, sp
 checks out your code, builds it, and runs your test suite. A few minutes later it reports back: a green
 check if everything passed, a red X if something broke. That result sits right on your pull request.
 
-```text
-   You push ──►  CI server wakes up
-                 ┌───────────────────────────────────┐
-                 │  1. fresh machine, checkout code   │
-                 │  2. install dependencies           │
-                 │  3. BUILD                          │
-                 │  4. run the TESTS                  │
-                 └───────────────────────────────────┘
-                            │
-              ┌─────────────┴──────────────┐
-           ✅ green                       ❌ red
-        safe to merge               something broke — fix first
+```mermaid
+flowchart TD
+  Push[You push] --> Checkout[Fresh machine, checkout code]
+  Checkout --> Install[Install dependencies]
+  Install --> Build[Build]
+  Build --> Test[Run the tests]
+  Test --> Green[Green: safe to merge]
+  Test --> Red[Red: something broke — fix first]
 ```
 
 ## The red/green gate

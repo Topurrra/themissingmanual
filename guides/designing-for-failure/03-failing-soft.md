@@ -86,14 +86,21 @@ software, a *bulkhead* means giving each dependency (or class of work) its **own
 resources — connections, threads, whatever's finite — so that one dependency saturating its pool can't
 starve the others.
 
-```text
-   No bulkheads — one shared pool:        Bulkheads — isolated pools:
-
-   ┌──────── shared pool ────────┐        ┌─ recs ─┐ ┌─ avatars ─┐ ┌─ checkout ─┐
-   │ recs  avatars  checkout ... │        │ ███░░░ │ │ ████████  │ │  ░░░░░░    │
-   └─────────────────────────────┘        └────────┘ └───────────┘ └────────────┘
-   avatars hangs → fills the pool →        avatars hangs → fills ONLY its pool.
-   recs AND checkout starve too.           recs and checkout keep their own slots.
+```mermaid
+flowchart TB
+  subgraph NoBulk["No bulkheads — one shared pool"]
+    direction TB
+    Recs1[recs] --> Shared["shared pool"]
+    Av1["avatars (hangs)"] --> Shared
+    Co1[checkout] --> Shared
+    Shared --> Starve["avatars fills the pool → recs AND checkout starve too"]
+  end
+  subgraph Bulk["Bulkheads — isolated pools"]
+    direction TB
+    Recs2[recs] --> PR[recs pool]
+    Av2["avatars (hangs)"] --> PA["avatars pool (fills ONLY this)"]
+    Co2[checkout] --> PC[checkout pool]
+  end
 ```
 
 **What it does in real life.** Give the avatar calls, say, their own small connection pool. When avatars
@@ -131,14 +138,12 @@ dependency that briefly hiccups under load. Every client retries. Those retries 
 dependency, already struggling, now gets the normal traffic *plus* a flood of retries on top. That pushes
 it further down, which causes more failures, which triggers *more* retries. The system attacks itself.
 
-```text
-   dependency hiccups
-        │
-        ▼
-   clients retry  ──▶  extra load on a struggling service
-        ▲                        │
-        │                        ▼
-        └──────  more failures ◀─┘   (the storm feeds itself)
+```mermaid
+flowchart TD
+  Hiccup[dependency hiccups] --> Retry[clients retry]
+  Retry --> Load[extra load on a struggling service]
+  Load --> Fail[more failures]
+  Fail --> Retry
 ```
 
 *What just happened:* This is a **retry storm** (a flavor of the **thundering herd** from Phase 2):

@@ -72,7 +72,7 @@ extension.
 **What it actually is.** Python ships with a large collection of ready-made modules called the
 **standard library** — math, dates, randomness, file paths, JSON, and far more. You import them exactly
 like your own modules, but you don't have to install anything; they're already there.
-```python
+```python runnable
 import math
 from random import randint
 
@@ -103,7 +103,7 @@ file borrowed one function from it.
 **The mechanism.** Python sets a built-in variable, `__name__`, differently depending on how the file is
 used: it's `"__main__"` when you **run the file directly**, but the *module's own name* when the file is
 **imported**. So you guard "run this only when executed directly" behind a check on it.
-```python
+```python runnable
 # greetings.py
 def shout(text):
     return text.upper() + "!"

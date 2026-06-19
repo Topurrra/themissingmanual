@@ -50,21 +50,13 @@ Whichever CD you're doing, the pipeline that gets you there is a **sequence of s
 next. Think of it as an assembly line: a change only advances to the next stage if it cleared the one
 before.
 
-```text
-   commit
-     │
-     ▼
-  ┌────────┐   ┌────────┐   ┌──────────┐   ┌────────┐
-  │ BUILD  │──►│  TEST  │──►│  STAGING │──►│ DEPLOY │──► production
-  └────────┘   └────────┘   └──────────┘   └────────┘
-   compile,     run the      deploy to a    release to
-   package      test suite   prod-like      real users
-                             rehearsal
-                             environment
-        (the CI half)  │  (the CD half)
-                       ▼
-            ── continuous DELIVERY stops here until a human clicks DEPLOY ──
-            ── continuous DEPLOYMENT crosses the line automatically ──
+```mermaid
+flowchart LR
+  Commit[commit] --> Build[Build<br/>compile, package]
+  Build --> Test[Test<br/>run the suite]
+  Test --> Staging[Staging<br/>prod-like rehearsal]
+  Staging -->|delivery: human clicks deploy<br/>deployment: automatic| Deploy[Deploy]
+  Deploy --> Prod[production]
 ```
 
 - **Build** — turn source code into the thing you actually run: compile it, bundle it, package it into an

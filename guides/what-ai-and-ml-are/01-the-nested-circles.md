@@ -20,27 +20,15 @@ Let's build that picture before we define anything.
 
 ## The one diagram that untangles it all
 
-```text
-   ┌─────────────────────────────────────────────────────────┐
-   │  ARTIFICIAL INTELLIGENCE (AI)                             │
-   │  "make a machine do something that seems smart"          │
-   │                                                          │
-   │    ┌────────────────────────────────────────────────┐   │
-   │    │  MACHINE LEARNING (ML)                           │   │
-   │    │  "let the machine learn from examples,           │   │
-   │    │   instead of being told every rule"              │   │
-   │    │                                                  │   │
-   │    │    ┌──────────────────────────────────────┐     │   │
-   │    │    │  DEEP LEARNING                         │     │   │
-   │    │    │  "ML using big neural networks"        │     │   │
-   │    │    │                                        │     │   │
-   │    │    │    ┌──────────────────────────┐        │     │   │
-   │    │    │    │  TODAY'S LLMs            │        │     │   │
-   │    │    │    │  (ChatGPT, Claude, …)    │        │     │   │
-   │    │    │    └──────────────────────────┘        │     │   │
-   │    │    └──────────────────────────────────────┘     │   │
-   │    └────────────────────────────────────────────────┘   │
-   └─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  subgraph AI["ARTIFICIAL INTELLIGENCE — make a machine seem smart"]
+    subgraph ML["MACHINE LEARNING — learn from examples, not hand-written rules"]
+      subgraph DL["DEEP LEARNING — ML using big neural networks"]
+        LLM["TODAY'S LLMs<br/>(ChatGPT, Claude, …)"]
+      end
+    end
+  end
 ```
 
 Every inner circle *is* an example of the circle around it. An LLM is a kind of deep learning. Deep

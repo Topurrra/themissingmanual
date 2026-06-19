@@ -31,18 +31,11 @@ Three more notes for the moment of panic: **assume it was seen** (don't gamble t
 
 **What it actually is.** A **secrets manager** (or **vault**) is a dedicated service whose entire job is to hold secrets safely and hand them out carefully. Instead of secrets living in files on developer laptops and in environment variables typed into a dashboard, they live in one central system that does four things a flat file can't:
 
-```text
-   ┌──────────────────── Secrets Manager ────────────────────┐
-   │                                                          │
-   │   • ENCRYPTED at rest   — stored scrambled, not plain    │
-   │   • ACCESS-CONTROLLED   — who can read which secret      │
-   │   • AUDITED             — every read is logged: who,when │
-   │   • ROTATABLE           — change a secret in ONE place   │
-   │                                                          │
-   └──────────────────────────────────────────────────────────┘
-            ▲                              ▲
-       app asks at startup           human asks via CLI/console
-       "give me DB_PASSWORD"         (and the request is logged)
+```mermaid
+flowchart TD
+  app["app asks at startup<br/>'give me DB_PASSWORD'"] --> sm
+  human["human asks via CLI/console<br/>(request is logged)"] --> sm
+  sm["Secrets Manager<br/>• ENCRYPTED at rest<br/>• ACCESS-CONTROLLED — who can read which secret<br/>• AUDITED — every read logged (who, when)<br/>• ROTATABLE — change a secret in ONE place"]
 ```
 
 📝 **Terminology.** The category includes self-hosted **HashiCorp Vault** and the managed cloud offerings — **AWS Secrets Manager**, **Google Secret Manager**, **Azure Key Vault**. They differ in features and where they run, but the core promise is the same: encrypted central storage, fine-grained access control, an audit trail, and a single place to rotate.
@@ -55,12 +48,15 @@ Three more notes for the moment of panic: **assume it was seen** (don't gamble t
 
 **Why people get this wrong.** A tempting shortcut, especially with containers, is to copy the `.env` file or hardcode a key into the **Docker image** during the build so "it's all in one place." Don't. A built image is an artifact that gets pushed to a registry, pulled to many machines, and often kept around in old versions. A secret baked into it is now a secret copied into every layer, every pull, and every cached version of that image — the Phase 1 problem all over again, just in a different file format.
 
-```text
-   BAD:  build time  ──►  [ image: app code + SECRET baked in ]  ──►  registry, every host, old versions...
-                                       (secret now copied everywhere)
-
-   GOOD: build time  ──►  [ image: app code only, no secrets ]
-         start time  ──►  app fetches SECRET from the manager / platform env, holds it in memory
+```mermaid
+flowchart LR
+  subgraph bad["BAD"]
+    b1[build time] --> b2["image: app code + SECRET baked in"] --> b3["registry, every host, old versions<br/>(secret copied everywhere)"]
+  end
+  subgraph good["GOOD"]
+    g1[build time] --> g2["image: app code only, no secrets"]
+    g3[start time] --> g4["app fetches SECRET from manager / platform env<br/>holds it in memory"]
+  end
 ```
 
 The image stays clean and shareable; the secret only ever lives in memory on the running machine, supplied at the last moment by something access-controlled and audited. Same code, but the secret never gets frozen into an artifact.

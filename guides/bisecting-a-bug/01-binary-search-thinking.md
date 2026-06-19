@@ -36,15 +36,12 @@ breaks that link entirely.
 point, where it still worked" and "after this point, where it's broken." You keep only the half the bug
 must be hiding in, find *its* midpoint, and test again. The range collapses fast:
 
-```text
-  1000 commits, all suspect. "good" is the oldest, "bad" is the newest.
-  Test the midpoint each time; keep only the half that still contains the break.
-
-  step 1:  [################ 1000 ################]   test middle ──► good? bad?
-  step 2:  [###### 500 ######]                        keep the half with the break
-  step 3:        [### 250 ###]
-  step 4:           [# 125 #]
-  step 5..10:          63 ► 32 ► 16 ► 8 ► 4 ► 2 ► 1   ◄── the first bad commit
+```mermaid
+flowchart LR
+  s1["1000 suspects"] -->|test middle, keep broken half| s2["500"]
+  s2 -->|halve| s3["250"]
+  s3 -->|halve| s4["125"]
+  s4 -->|halve ~6 more times| s5["1<br/>first bad commit"]
 ```
 
 *What just happened:* Every test cut the suspects roughly in half, so after about ten tests a thousand

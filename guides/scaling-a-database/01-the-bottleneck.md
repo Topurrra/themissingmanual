@@ -31,18 +31,15 @@ So this phase is the discipline that comes before any of the dramatic stuff: fin
 
 Before "we need to scale" becomes a project, walk this list. Each step is cheaper and less permanent than the one after it.
 
-```text
-   CHEAPEST / LEAST PERMANENT
-   ─────────────────────────────────────────────
-   1. Fix the queries        → indexes, kill N+1, stop SELECT *
-   2. Add a cache            → stop asking the DB the same thing
-   3. Pool the connections   → reuse connections, don't drown the DB
-   4. Scale UP               → a bigger single box
-   ─────────────────────────────────────────────
-   5. Scale OUT: replication → more machines, more reads      (Phase 2)
-   6. Scale OUT: sharding    → split the data, more writes    (Phase 3)
-   ─────────────────────────────────────────────
-   MOST EXPENSIVE / HARDEST TO UNDO
+```mermaid
+flowchart TD
+  A["1. Fix the queries — indexes, kill N+1, stop SELECT *"] --> B["2. Add a cache — stop asking the DB the same thing"]
+  B --> C["3. Pool the connections — reuse them, don't drown the DB"]
+  C --> D["4. Scale UP — a bigger single box"]
+  D --> E["5. Scale OUT: replication — more machines, more reads (Phase 2)"]
+  E --> F["6. Scale OUT: sharding — split the data, more writes (Phase 3)"]
+  A -.- top([cheapest / least permanent])
+  F -.- bottom([most expensive / hardest to undo])
 ```
 
 ### Add a cache
@@ -73,15 +70,10 @@ Here is the question that determines which scaling tool you'll eventually reach 
 
 **Why this matters so much.** The two scaling tools in this guide solve different problems:
 
-```text
-   YOUR BOTTLENECK IS...        THE TOOL THAT HELPS...
-   ─────────────────────        ──────────────────────────────────
-   too many READS         ───▶  REPLICATION (Phase 2)
-                                copies of the DB serving reads
-
-   too many WRITES        ───▶  SHARDING (Phase 3)
-                                the data split across machines
-   ─────────────────────        ──────────────────────────────────
+```mermaid
+flowchart LR
+  R["too many READS"] --> RT["REPLICATION (Phase 2)<br/>copies of the DB serving reads"]
+  W["too many WRITES"] --> WT["SHARDING (Phase 3)<br/>the data split across machines"]
 ```
 
 Most applications are overwhelmingly read-heavy — a social feed, a news site, a store catalog: read constantly, written rarely. That's good news, because **reads are the easy thing to scale.** You can make as many copies of the data as you like and spread reads across them; that's replication, and it's the well-trodden path.

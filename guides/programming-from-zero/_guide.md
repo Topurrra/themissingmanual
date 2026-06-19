@@ -4,7 +4,7 @@ guide: "programming-from-zero"
 phase: 0
 summary: "What a program actually is, the building blocks every language shares (variables, types, operators), and how code makes decisions and reuses work with if/else, loops, and functions."
 tags: [programming, beginner, python, fundamentals, learn-to-code]
-category: programming-languages
+category: programming-concepts
 order: 1
 difficulty: beginner
 synonyms: ["how to start programming", "learn to code from scratch", "what is a program", "programming for beginners", "coding for career switchers", "what is a variable", "what is a function"]

@@ -23,25 +23,15 @@ buttons are.
 **What changed.** A single server with one app is a single diary. You SSH in, you read the diary. But a
 typical production system isn't one diary — it's dozens, scattered across machines that come and go.
 
-```text
-                 a request comes in
-                         │
-                         ▼
-                 ┌───────────────┐
-                 │ load balancer │  ← writes its own log, on its own box
-                 └───────┬───────┘
-              ┌──────────┼──────────┐
-              ▼          ▼          ▼
-          ┌───────┐  ┌───────┐  ┌───────┐
-          │ app-1 │  │ app-2 │  │ app-3 │   ← request lands on ONE of these
-          └───┬───┘  └───┬───┘  └───┬───┘
-              └──────────┼──────────┘
-                         ▼
-                 ┌───────────────┐
-                 │   database    │  ← logs slow queries, on yet another box
-                 └───────────────┘
-
-   The story of ONE request is smeared across several logs on several machines.
+```mermaid
+flowchart TD
+  req["a request comes in"] --> lb["load balancer<br/>(its own log, own box)"]
+  lb --> app1["app-1"]
+  lb --> app2["app-2"]
+  lb --> app3["app-3"]
+  app1 --> db[("database<br/>logs slow queries, another box")]
+  app2 --> db
+  app3 --> db
 ```
 
 When the pager goes off, you don't know which `app-N` handled the failing request. SSHing into each one
@@ -61,13 +51,15 @@ SSH into," the question becomes "what am I searching for." One box. One search. 
 **How the logs get there.** A small agent runs on each machine — or each container's output is collected
 by the platform — and forwards every log line to the central server over the network.
 
-```text
-   app-1 ─┐
-   app-2 ─┤
-   app-3 ─┤   log shippers      ┌──────────────────────────┐
-   lb    ─┼──  (forward every ──▶│   Graylog / ELK / etc.   │◀── you search here
-   db    ─┤    line over the     │  stores all logs together │
-   worker ┘    network)          └──────────────────────────┘
+```mermaid
+flowchart LR
+  app1["app-1"] --> ship["log shippers<br/>forward every line<br/>over the network"]
+  app2["app-2"] --> ship
+  app3["app-3"] --> ship
+  lb["lb"] --> ship
+  db["db"] --> ship
+  ship --> central["Graylog / ELK / etc.<br/>stores all logs together"]
+  central --> you(["you search here"])
 ```
 
 📝 **Log shipper / agent.** The thing that reads logs on a machine and sends them onward. You'll see

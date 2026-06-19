@@ -25,15 +25,11 @@ It doesn't, and that's good news. Once you understand the one thing a model is a
 
 **A useful picture.**
 
-```text
-   your prompt                    the model                 the output
- ┌───────────────┐          ┌──────────────────┐         ┌───────────────┐
- │ "Write about  │  ───►    │ predicts the most │  ───►   │  whatever best │
- │  dogs."       │          │ likely continuation│        │  fits a vague │
- └───────────────┘          └──────────────────┘         │  request      │
-                                                          └───────────────┘
-   vague, open-ended  ───────────────────────────────►   vague, generic
-   specific, framed   ───────────────────────────────►   specific, on-target
+```mermaid
+flowchart LR
+  P[your prompt] --> M[the model<br/>predicts the most<br/>likely continuation] --> O[the output]
+  V[vague, open-ended prompt] -.-> VG[vague, generic output]
+  S[specific, framed prompt] -.-> SG[specific, on-target output]
 ```
 
 The arrow is the whole job. A clearer, more specific, better-structured prompt narrows what a "good continuation" looks like — so the output lands closer to what you wanted.

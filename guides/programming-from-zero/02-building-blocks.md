@@ -26,7 +26,7 @@ combine values). Let's take them one at a time.
 Picture a labeled box: you put a value in the box, write a name on the label, and from then on you can
 ask for the value by name.
 
-```python
+```python runnable
 age = 30
 print(age)
 ```
@@ -49,7 +49,7 @@ Quotes mean "this exact text." No quotes mean "the value stored under this name.
 **Variables can change.** That's why they're called *variable* — the value can vary. You can put a new
 value in the box, and it replaces the old one:
 
-```python
+```python runnable
 score = 0
 print(score)
 score = 100
@@ -98,7 +98,7 @@ written without quotes — they're special values, not text.
 
 Here's each type living in a variable:
 
-```python
+```python runnable
 name = "Ada"
 age = 30
 is_student = True
@@ -118,7 +118,7 @@ True
 **Why the type matters: `"30"` is not `30`.** This is the part that surprises people. A number in quotes
 is text, and the computer treats text and numbers differently:
 
-```python
+```python runnable
 print(2 + 2)
 print("2" + "2")
 ```
@@ -151,7 +151,7 @@ There are two families you'll use constantly.
 
 These do exactly what you'd expect on numbers:
 
-```python
+```python runnable
 print(10 + 3)
 print(10 - 3)
 print(10 * 3)
@@ -173,7 +173,7 @@ why it stops where it does; it's a normal quirk of how computers hold decimals.)
 
 You can use operators with variables, not only with literal numbers. This is where they earn their keep:
 
-```python
+```python runnable
 price = 20
 quantity = 3
 total = price * quantity
@@ -207,7 +207,7 @@ questions about its values (and in [Phase 3](03-control-flow-and-functions.md), 
 
 Watch one in action:
 
-```python
+```python runnable
 age = 30
 print(age > 18)
 print(age == 18)

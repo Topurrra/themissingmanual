@@ -33,7 +33,7 @@ job involves data, AI, or "I need to automate this annoying thing," Python is us
 collected. So it's loose and quick to write — and not built for raw speed.
 
 **A tiny taste.**
-```python
+```python runnable
 def greet(name):
     print(f"Hello, {name}!")
 
@@ -73,7 +73,7 @@ outside a browser.
 hood, so it's faster than its reputation), garbage collected. Runs *everywhere* — its defining trait.
 
 **A tiny taste.**
-```javascript
+```javascript runnable
 function greet(name) {
   console.log(`Hello, ${name}!`);
 }

@@ -32,14 +32,11 @@ next, pauses it, and cycles through them all — *so fast* that to you they look
 is called **scheduling**, and it's why your music keeps playing while your browser loads while your editor
 waits for your next keystroke.
 
-```text
-   What it feels like:        What's really happening (one core):
-
-   browser ┐                  ms 1: browser
-   music   ├ all at once      ms 2: music      ← the OS switches between them
-   editor  ┘                  ms 3: editor        thousands of times a second,
-                              ms 4: browser        so it LOOKS simultaneous
+```mermaid
+flowchart LR
+  ms1[ms 1: browser] --> ms2[ms 2: music] --> ms3[ms 3: editor] --> ms4[ms 4: browser] --> more[...]
 ```
+*One core, switched thousands of times a second — so the browser, music, and editor only LOOK like they run all at once.*
 
 **Why this saves you later.** "Why is my computer slow?" usually means too many processes are fighting over
 too little CPU, so each one's turn comes around less often. "Force quit" / "End task" is you asking the OS
@@ -70,14 +67,14 @@ running to the filing cabinet.
 human-friendly system on top of it — **files** with names, organized into **folders** (directories), in a
 tree. That organizing system is the **filesystem**.
 
-```text
-   /                         ← the root (everything lives under one top)
-   ├── Users/
-   │   └── ada/
-   │       ├── Documents/
-   │       │   └── budget.xlsx        ← a file, at a path you can name
-   │       └── Pictures/
-   └── Applications/
+```mermaid
+flowchart TD
+  root["/ (root)"] --> Users[Users/]
+  root --> Applications[Applications/]
+  Users --> ada[ada/]
+  ada --> Documents[Documents/]
+  ada --> Pictures[Pictures/]
+  Documents --> budget[budget.xlsx]
 ```
 
 **The job: turning slots into names you can find.** Without the filesystem you'd be asking for "the bytes in
@@ -111,13 +108,12 @@ or confused. Knowing the layer exists tells you where to look.
 
 ## The four jobs, together
 
-```text
-                ┌──────────────── THE OS MANAGES ────────────────┐
-   processes  → │  shares the CPU among running programs          │
-   memory     → │  hands out and protects RAM                     │
-   files      → │  organizes the disk into named files & folders  │
-   devices    → │  talks to hardware through drivers              │
-                └─────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+  OS[The OS manages] --> Processes[Processes<br/>shares the CPU among running programs]
+  OS --> Memory[Memory<br/>hands out and protects RAM]
+  OS --> Files[Files<br/>organizes the disk into named files and folders]
+  OS --> Devices[Devices<br/>talks to hardware through drivers]
 ```
 
 Every feature, setting, and error message you'll ever meet is really one of these four jobs showing

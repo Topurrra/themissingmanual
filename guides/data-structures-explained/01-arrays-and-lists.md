@@ -29,13 +29,11 @@ both; we'll say "list" from here on, and call out the array detail only where it
 **What it actually is.** A list is a row of slots, side by side, each holding one item, and each with a
 number called its **index**. Picture a row of lockers:
 
-```text
-   index:    0        1        2        3        4
-           ┌────┐   ┌────┐   ┌────┐   ┌────┐   ┌────┐
-   list:   │ Mo │   │ Tu │   │ We │   │ Th │   │ Fr │
-           └────┘   └────┘   └────┘   └────┘   └────┘
-             ▲                                    ▲
-        first item                           last item
+```mermaid
+flowchart LR
+  S0["Mo<br/>index 0"]:::first --> S1["Tu<br/>index 1"] --> S2["We<br/>index 2"] --> S3["Th<br/>index 3"] --> S4["Fr<br/>index 4"]:::last
+  classDef first fill:#1a3a2a,stroke:#3a7a5a;
+  classDef last fill:#1a3a2a,stroke:#3a7a5a;
 ```
 
 📝 **Terminology.** The **index** is the slot number. Almost every language starts counting at **0**, not
@@ -53,7 +51,7 @@ recipe, messages in a chat, rows in a spreadsheet.
 *straight* to any slot just from its number. It doesn't walk past slots 0, 1, 2 to reach slot 3 — it
 computes where slot 3 lives and lands on it directly. Slot #3 and slot #3000 cost the same.
 
-```python
+```python runnable
 days = ["Mo", "Tu", "We", "Th", "Fr"]
 
 print(days[0])   # the first item
@@ -76,7 +74,7 @@ default container for "I have a bunch of things in order and I want item number 
 almost always room just past the last slot, so the item drops into place and the list's length ticks up by
 one.
 
-```python
+```python runnable
 days = ["Mo", "Tu", "We", "Th", "Fr"]
 days.append("Sa")
 print(days)
@@ -102,20 +100,22 @@ identical, which is exactly why it bites people.
 *every item from slot 1 onward has to shuffle one slot to the right* to make room. The bigger the list, the
 more items have to move.
 
-```text
-   insert "X" at index 1:
-
-   before:  ┌────┐ ┌────┐ ┌────┐ ┌────┐
-            │ A  │ │ B  │ │ C  │ │ D  │
-            └────┘ └────┘ └────┘ └────┘
-                     │      │      │
-                     ▼      ▼      ▼   everything from here shifts right
-   after:   ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐
-            │ A  │ │ X  │ │ B  │ │ C  │ │ D  │
-            └────┘ └────┘ └────┘ └────┘ └────┘
+```mermaid
+flowchart TD
+  subgraph after["after — insert X at index 1"]
+    direction LR
+    A2[A] --> X2[X] --> B2[B] --> C2[C] --> D2[D]
+  end
+  subgraph before["before"]
+    direction LR
+    A1[A] --> B1[B] --> C1[C] --> D1[D]
+  end
+  B1 -. shifts right .-> B2
+  C1 -. shifts right .-> C2
+  D1 -. shifts right .-> D2
 ```
 
-```python
+```python runnable
 letters = ["A", "B", "C", "D"]
 letters.insert(1, "X")   # put "X" at index 1, shove the rest over
 print(letters)
@@ -140,7 +140,7 @@ One more honest limitation. A list is fast at "give me item number N," but it's 
 `"We"` in here, and where?" To answer that, the computer has no shortcut — it walks the slots one by one,
 checking each, until it finds a match or runs out.
 
-```python
+```python runnable
 days = ["Mo", "Tu", "We", "Th", "Fr"]
 print("We" in days)        # is it present?
 print(days.index("We"))    # at which slot?

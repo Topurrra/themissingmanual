@@ -26,18 +26,11 @@ Let's build the mental model that makes the rest of this guide click.
 **What it actually is.** An **environment** is one place your app runs, with its own surroundings. The
 same exact code can run in several of them at once:
 
-```text
-   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐
-   │ DEVELOPMENT │   │   STAGING   │   │ PRODUCTION  │
-   │ your laptop │   │ test server │   │ real users  │
-   ├─────────────┤   ├─────────────┤   ├─────────────┤
-   │ local DB    │   │ staging DB  │   │ live DB     │
-   │ test API key│   │ test API key│   │ real API key│
-   │ debug logs  │   │ debug logs  │   │ quiet logs  │
-   └─────────────┘   └─────────────┘   └─────────────┘
-          \________________|________________/
-                           │
-                  the SAME application code
+```mermaid
+flowchart TD
+  Code[The SAME application code] --> Dev[Development<br/>your laptop · local DB · debug logs]
+  Code --> Staging[Staging<br/>test server · staging DB · debug logs]
+  Code --> Prod[Production<br/>real users · live DB · quiet logs]
 ```
 
 📝 **Terminology.** People throw these names around constantly:

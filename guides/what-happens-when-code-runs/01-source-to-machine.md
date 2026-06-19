@@ -23,13 +23,13 @@ Now here's the gap nobody points out: **the CPU — the chip actually doing the 
 
 **What the machine runs.** The CPU runs **machine code**: a long sequence of tiny instructions, encoded as numbers, that match that exact kind of chip. Machine code is not readable in any practical sense — it's the opposite end of the spectrum from your source. Here's the contrast, made concrete:
 
-```text
-   WHAT YOU WROTE (source code)         WHAT THE CPU RUNS (machine code, simplified)
-   ────────────────────────────         ───────────────────────────────────────────
-   total = price + tax          ──►      load  price into register A
-                                         load  tax   into register B
-                                         add   A, B  -> register A
-                                         store register A into total
+```mermaid
+flowchart LR
+  Src["source code<br/>total = price + tax"] --> Trans["translate"]
+  Trans --> M1["load price → reg A"]
+  Trans --> M2["load tax → reg B"]
+  Trans --> M3["add A, B → reg A"]
+  Trans --> M4["store reg A → total"]
 ```
 
 One readable line on the left can become several machine instructions on the right. The translation from one to the other is the job we're about to meet — and there are two ways to do it.

@@ -33,18 +33,12 @@ The good news: there's a clear rule, and once you know it, this stops being scar
 
 ## The one distinction that decides everything
 
-```text
-   Is the commit only on MY machine?
-        │
-        ├── YES ──►  Rewrite freely: reset, commit --amend, rebase.
-        │            (That's the earlier guides. Nothing here needed.)
-        │
-        └── NO, it's pushed ──►  Has anyone else pulled it / do they build on this branch?
-                                      │
-                                      ├── YES (shared branch) ──►  DON'T rewrite. Use `git revert` (§2).
-                                      │
-                                      └── NO (a branch only I use) ──►  Rewrite, then
-                                                                        `--force-with-lease` (§3).
+```mermaid
+flowchart TD
+  Q1{Is the commit only on MY machine?} -->|Yes| Free(Rewrite freely:<br/>reset, commit --amend, rebase)
+  Q1 -->|No, it's pushed| Q2{Has anyone else pulled it,<br/>or do they build on this branch?}
+  Q2 -->|Yes — shared branch| Revert(DON'T rewrite.<br/>Use git revert §2)
+  Q2 -->|No — a branch only I use| Lease(Rewrite, then<br/>--force-with-lease §3)
 ```
 
 Memorize the spirit: **rewriting history is fine until that history is shared; after that, you undo by

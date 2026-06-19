@@ -36,16 +36,12 @@ The hardest lesson in this whole field fits in one sentence: **"it ran" is not t
 
 > 📝 **Terminology.** *DAG* = **Directed Acyclic Graph**. *Directed*: each arrow points one way (A then B). *Acyclic*: no loops — you can never end up depending on yourself, directly or in a circle. It's just a dependency map: "this step runs after that step."
 
-```text
-                ┌────────────────┐
-                │ extract_orders │──┐
-                └────────────────┘  │   ┌─────────────────┐    ┌───────────────┐
-                                    ├──►│ transform_orders│──► │ daily_revenue │
-                ┌────────────────┐  │   └─────────────────┘    └───────────────┘
-                │ extract_products│─┘            ▲                     ▲
-                └────────────────┘               │                     │
-                                          needs both extracts    needs orders +
-                                                                  products done
+```mermaid
+flowchart LR
+  EO[extract_orders] --> TO[transform_orders]
+  EP[extract_products] --> TO
+  TO --> DR[daily_revenue]
+  EP --> DR
 ```
 
 **What it does in real life.** You declare the dependencies, and the orchestrator (Airflow, Dagster, Prefect, and friends) figures out the order — running independent steps in parallel and waiting for prerequisites before starting dependents. You describe *what depends on what*; it handles *when*.

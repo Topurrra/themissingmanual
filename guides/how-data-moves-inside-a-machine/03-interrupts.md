@@ -55,19 +55,18 @@ small piece of code to handle the event, then resume exactly where it left off. 
 **What it does in real life.** When you press a key, the keyboard controller raises an interrupt. The CPU,
 mid-instruction-stream on your program, finishes the current instruction, then:
 
-```text
-   an interrupt, on a timeline:
-
-   CPU running your program ─────────────────────────────────────►  time
-
-        you press a key  │
-                         ▼
-        keyboard ──interrupt signal──►  CPU
-
-   ...your program...  ▮  →  [ save place ]  →  [ handler reads the key ]
-                       ▲                                    │
-                       │            [ restore place ] ◄─────┘
-                       └──────  ...your program resumes, right where it was
+```mermaid
+sequenceDiagram
+    participant Program as Your program
+    participant CPU
+    participant Keyboard
+    Note over CPU: running your program
+    Keyboard->>CPU: interrupt signal (you pressed a key)
+    Note over CPU: save place
+    CPU->>Keyboard: handler reads the key
+    Keyboard-->>CPU: the key
+    Note over CPU: restore place
+    CPU->>Program: resume, right where it was
 ```
 
 *What just happened:* the CPU bookmarked exactly where it was in your program (saved its registers and

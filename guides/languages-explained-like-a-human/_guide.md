@@ -4,7 +4,7 @@ guide: "languages-explained-like-a-human"
 phase: 0
 summary: "What each major language is actually for and what it feels like to use, so you can choose one on purpose instead of by hype — the axes that make languages different, an honest look at four of them, and a practical way to pick."
 tags: [programming-languages, python, javascript, go, rust, beginner-friendly]
-category: programming-languages
+category: programming-concepts
 order: 7
 difficulty: beginner
 synonyms: ["which programming language should I learn", "python vs javascript vs go vs rust", "what is each programming language for", "difference between python javascript go rust", "what language should a beginner learn", "compiled vs interpreted typed vs dynamic"]

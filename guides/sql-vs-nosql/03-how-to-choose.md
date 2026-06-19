@@ -93,12 +93,14 @@ the right type. The only question is **who enforces that structure.**
 - In a schema-flexible store, *your application code* enforces it — or nobody does, and then
   malformed records pile up silently until something downstream chokes on them.
 
-```text
-  WHERE DOES THE SCHEMA LIVE?
-
-  Relational:        [ your app ]  →  [ DATABASE enforces shape ]  →  data is clean
-  Schema-flexible:   [ your app enforces shape ]  →  [ database stores anything ]  →  ?
-                            ↑ if you skip this, malformed data gets in
+```mermaid
+flowchart LR
+  subgraph R[Relational]
+    RA[your app] --> RD[DATABASE enforces shape] --> RC[data is clean]
+  end
+  subgraph S[Schema-flexible]
+    SA["your app enforces shape<br/>(skip this → malformed data gets in)"] --> SD[database stores anything] --> SQ["?"]
+  end
 ```
 
 The honest version: "schemaless" really means "the schema moved out of the database and into
@@ -120,14 +122,11 @@ it: **polyglot persistence.**
 
 A very ordinary, healthy architecture:
 
-```text
-  ┌─────────────┐   source of truth: users, orders, products
-  │ PostgreSQL  │   (relational — integrity + flexible queries)
-  └─────────────┘
-        │
-        ├──► Redis        cache hot reads + sessions (key-value, speed)
-        │
-        └──► Elasticsearch  full-text product search (a search-tuned store)
+```mermaid
+flowchart LR
+  PG["PostgreSQL<br/>source of truth: users, orders, products<br/>(relational — integrity + flexible queries)"]
+  PG --> Redis["Redis<br/>cache hot reads + sessions<br/>(key-value, speed)"]
+  PG --> ES["Elasticsearch<br/>full-text product search<br/>(a search-tuned store)"]
 ```
 
 Nothing about this is exotic or contradictory. Postgres is the authoritative record; Redis

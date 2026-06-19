@@ -20,16 +20,15 @@ both. Let's name the jobs first, then look at the boxes.
 
 Here's the whole setup, from your couch to the wider internet:
 
-```text
-   YOUR DEVICES            THE BOXES ON YOUR SHELF            THE OUTSIDE WORLD
-
-   laptop   ┐
-   phone    ├──Wi-Fi/cable──►  ┌────────┐      ┌───────┐      ┌─────────┐      ┌──────────┐
-   TV       ┘                  │ ROUTER │──────│ MODEM │──────│  ISP    │──────│ internet │
-   printer  ┘                  └────────┘      └───────┘      └─────────┘      └──────────┘
-                               shares one      connects        your internet    everything
-                               connection      you to the      company          else
-                               among devices   ISP
+```mermaid
+flowchart LR
+  laptop[laptop] -->|Wi-Fi/cable| router
+  phone[phone] -->|Wi-Fi/cable| router
+  tv[TV] -->|Wi-Fi/cable| router
+  router[ROUTER<br/>shares one connection<br/>among devices]
+  router --> modem[MODEM<br/>connects you to the ISP]
+  modem --> isp[ISP<br/>your internet company]
+  isp --> net((internet<br/>everything else))
 ```
 
 The **modem** is the box that talks to your **ISP** (your internet company — Comcast, BT, your local

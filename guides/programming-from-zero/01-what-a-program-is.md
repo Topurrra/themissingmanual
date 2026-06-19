@@ -44,14 +44,9 @@ frustrated hours.
 When you run a program, the computer starts at the first line and walks downward, doing each instruction
 in turn:
 
-```text
-   ┌─────────────────────────────────────────────┐
-   │  Line 1: do this first        ───┐           │
-   │  Line 2: then do this            │ the       │
-   │  Line 3: then this               │ computer  │
-   │  Line 4: then this               ▼ walks     │
-   │  ...     and so on, top to bottom, in order. │
-   └─────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  L1["Line 1: do this first"] --> L2["Line 2: then do this"] --> L3["Line 3: then this"] --> L4["Line 4: then this"] --> More["... and so on, top to bottom, in order"]
 ```
 
 Order matters enormously. If line 2 depends on something line 4 sets up, it won't work — the computer
@@ -63,7 +58,7 @@ machine does at each line, in sequence.
 The classic first instruction in any language is: **put some text on the screen.** In Python, the
 instruction for that is `print`.
 
-```python
+```python runnable
 print("Hello, world!")
 ```
 *What just happened:* `print` is an instruction that means "display this on the screen." The text you
@@ -95,7 +90,7 @@ with. Here the argument is the text `"Hello, world!"`.
 
 Because the computer goes top to bottom, three `print` instructions run in the order you wrote them:
 
-```python
+```python runnable
 print("First")
 print("Second")
 print("Third")

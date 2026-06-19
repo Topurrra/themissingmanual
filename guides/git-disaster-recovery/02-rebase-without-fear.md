@@ -25,15 +25,31 @@ originals become unreachable (and yes, the reflog still has them).
 
 Compare it with merge, which you already know. Say `main` moved forward while you worked:
 
-```text
-   MERGE main into your branch:            REBASE your branch onto main:
+**Merge `main` into your branch** — a merge commit `M` ties the two histories together:
+```mermaid
+gitGraph
+  commit id: "C1"
+  commit id: "C2"
+  branch feature
+  checkout feature
+  commit id: "A"
+  commit id: "B"
+  checkout main
+  commit id: "C5"
+  checkout feature
+  merge main id: "M"
+```
 
-   C1─C2─────C5 (main)                      C1─C2─────C5 (main)
-        \       \                                       \
-         A──B────M (feature)                             A'─B' (feature)
-         (a merge commit M ties               (your A,B re-created as A',B'
-          the two histories together)          sitting on top of C5 — a
-                                                straight line, no merge commit)
+**Rebase your branch onto `main`** — your `A`,`B` are re-created as `A'`,`B'` on top of `C5`, a straight line with no merge commit:
+```mermaid
+gitGraph
+  commit id: "C1"
+  commit id: "C2"
+  commit id: "C5"
+  branch feature
+  checkout feature
+  commit id: "A'"
+  commit id: "B'"
 ```
 
 **Why reach for it.** The result is a *linear* history — your work sits cleanly on top of the latest

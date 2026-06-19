@@ -5,7 +5,7 @@ phase: 0
 summary: "Learn Rust from nothing: install it, write your first program, understand its types and collections, master match and functions, organize a project — and then meet ownership, the one idea that makes Rust safe and fast at the same time."
 tags: [rust, beginner, getting-started, ownership, cargo]
 category: programming-languages
-order: 12
+order: 4
 difficulty: beginner
 synonyms: ["learn rust", "rust for beginners", "how to start with rust", "rust programming tutorial", "rust from scratch", "is rust hard to learn", "rust ownership explained"]
 updated: 2026-06-19

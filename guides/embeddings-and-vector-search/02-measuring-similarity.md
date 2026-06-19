@@ -52,6 +52,14 @@ This is the whole point. Everything so far was setup for this one move.
 
 That third step — "find the nearest stored vectors to this one" — has a name: **nearest-neighbor search**.
 
+```mermaid
+flowchart LR
+  T[query text] -->|same embedding model| V[query vector]
+  V --> N[nearest-neighbor search]
+  S[(stored vectors)] -.->|searched| N
+  N --> R[top-k matches]
+```
+
 📝 **Terminology — nearest-neighbor search.** Given one query point, find the stored points closest to it. "Find the 5 nearest" is a *k-nearest-neighbors* search, often written `k=5`.
 
 **What it does in real life.** Here's the move in plain terms, with a small library of stored documents:

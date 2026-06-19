@@ -57,18 +57,19 @@ which connect upward again toward the data center's links to the wider internet.
 between them. **Top-of-rack (ToR)** describes the switch placed in each rack so that rack's servers cable to
 it locally, instead of every server running a long cable to a central point.
 
-```text
-                    ┌──────────────────────────────┐
-                    │   up to the rest of the data  │
-                    │   center & the internet       │
-                    └───────────────┬──────────────┘
-                            ┌────────┴────────┐
-                       (aggregation switches)
-                        ┌───────┐     ┌───────┐
-                        │ ToR   │     │ ToR   │   ← one switch per rack
-                        └───┬───┘     └───┬───┘
-                   ┌────────┼──────┐  ┌───┼────────┐
-                 server  server  server  …  server   ← short cables, rack-local
+```mermaid
+flowchart TD
+  Net["Rest of the data center &amp; the internet"]
+  Agg["Aggregation switches"]
+  ToR1["ToR switch (rack 1)"]
+  ToR2["ToR switch (rack 2)"]
+  S1["Servers (rack-local, short cables)"]
+  S2["Servers (rack-local, short cables)"]
+  Net --> Agg
+  Agg --> ToR1
+  Agg --> ToR2
+  ToR1 --> S1
+  ToR2 --> S2
 ```
 
 > ⏭️ This is the physical shape of data-center networking; how IP addresses, routing, and the internet
@@ -165,19 +166,19 @@ machine. The **hypervisor** is the software layer that creates and isolates them
 hardware among the **virtual machines (VMs)** running on top. A **cloud VM / instance** is one such virtual
 machine that you rent.
 
-```text
-   ONE PHYSICAL SERVER in a data-center rack
-   ┌─────────────────────────────────────────────────────────┐
-   │   ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐         │
-   │   │  VM    │  │  VM    │  │  VM    │  │  VM    │  ◄─ each renter
-   │   │ (your  │  │(someone│  │(someone│  │ (idle) │     gets one slice,
-   │   │  cloud │  │  else) │  │  else) │  │        │     isolated from
-   │   │ server)│  │        │  │        │  │        │     the neighbors
-   │   └────────┘  └────────┘  └────────┘  └────────┘         │
-   │   ─────────── HYPERVISOR ───────────────────────         │  ◄─ slices the
-   │   ───── real CPU cores, real RAM, real storage ──        │     real hardware
-   └─────────────────────────────────────────────────────────┘
-            this physical box: Phase 1 & 2's machine, in a Phase 3 building
+```mermaid
+flowchart TD
+  subgraph Box["One physical server (real CPU cores, RAM, storage)"]
+    HV["Hypervisor (slices the real hardware)"]
+    subgraph VMs["Virtual machines — each renter gets one isolated slice"]
+      direction LR
+      V1["VM (your cloud server)"]
+      V2["VM (someone else)"]
+      V3["VM (someone else)"]
+      V4["VM (idle)"]
+    end
+    HV --> VMs
+  end
 ```
 
 So the honest, precise version of the saying is:

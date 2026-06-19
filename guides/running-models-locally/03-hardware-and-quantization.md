@@ -50,13 +50,9 @@ Here's the lever that makes local models practical, and it's the one concept mos
 
 **The trade.** Rounding the weights loses a little accuracy, so a quantized model is slightly less sharp than the full-precision original. But the memory savings are large and the quality loss is usually small — for most everyday use you'd struggle to notice. That lopsided trade — *a little quality for a lot of memory* — is exactly why quantization is the default way people run models locally. It's what lets a model that wouldn't fit your machine suddenly fit.
 
-```text
-   FULL PRECISION                 QUANTIZED
-   ┌──────────────────┐           ┌──────────┐
-   │  big file        │   ──────► │ smaller  │   fits in less memory,
-   │  needs lots of   │  round    │ file     │   runs on more machines,
-   │  memory          │  weights  │          │   slightly less sharp
-   └──────────────────┘           └──────────┘
+```mermaid
+flowchart LR
+  F["FULL PRECISION<br/>big file, needs lots of memory"] -->|round the weights| Q["QUANTIZED<br/>smaller file — fits in less memory,<br/>runs on more machines, slightly less sharp"]
 ```
 
 **What it looks like in practice.** On model pages and in Ollama's tags you'll see labels like `Q4` or `Q8` — that's roughly the number of bits per parameter (4-bit, 8-bit). Lower numbers mean a smaller, lighter model with a bit more quality lost; higher numbers mean larger and closer to the original. A 4-bit quantization (often written `Q4`) is a very common, practical default — small enough to fit modest hardware, good enough for most work. When a model "wouldn't fit," the fix is frequently "use a more quantized version of it."

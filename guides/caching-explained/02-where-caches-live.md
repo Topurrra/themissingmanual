@@ -19,23 +19,18 @@ The shape to hold in your head: a request travels from the user toward the truth
 
 Here's the whole journey, from the user's screen to the source of truth, with the caches it can hit on the way:
 
-```text
-   USER                                                          TRUTH
-    │                                                              │
-    ▼          ▼            ▼                ▼                     ▼
- ┌──────┐  ┌───────┐   ┌──────────┐   ┌───────────────┐   ┌─────────────┐
- │Browser│  │  CDN  │   │   App    │   │  App cache    │   │  Database   │
- │ cache │  │ (edge)│   │ server   │   │ (Redis / mem) │   │ (+ its own  │
- │       │  │       │   │          │   │               │   │   caches)   │
- └──────┘  └───────┘   └──────────┘   └───────────────┘   └─────────────┘
-  on the    near the     does the      remembers           the source
-  device    user, all    real work     expensive answers   of truth
-            over world                 between requests
-
-  A hit at any box turns the request around right there —
-  the boxes to its right never even hear about the request.
-  Closer to the user = faster + cheaper.
+```mermaid
+flowchart LR
+  User([USER])
+  Browser["Browser cache<br/>on the device"]
+  CDN["CDN (edge)<br/>near the user"]
+  App["App server<br/>does the real work"]
+  AppCache["App cache (Redis / mem)<br/>remembers expensive answers"]
+  DB["Database (+ its own caches)<br/>the source of truth"]
+  User --> Browser --> CDN --> App --> AppCache --> DB
 ```
+
+A hit at any box turns the request around right there — the boxes to its right never even hear about the request. Closer to the user = faster + cheaper.
 
 Each box is a place a copy of an answer can live. Let's walk them from the user outward.
 
@@ -68,14 +63,20 @@ Each box is a place a copy of an answer can live. Let's walk them from the user 
 
 📝 **Terminology.** *Redis* is a fast, in-memory data store frequently used as a shared application cache. When people say "put it in Redis," they usually mean "keep this answer in our shared, fast, in-memory cache."
 
-```text
-   In-memory (per-process):          Shared (Redis):
-
-   Server A ── its own copy          Server A ─┐
-   Server B ── its own copy                    ├──► Redis ── one shared copy
-   Server C ── its own copy          Server B ─┤
-                                     Server C ─┘
-   fast, but copies can disagree     one network hop, but everyone agrees
+```mermaid
+flowchart LR
+  subgraph InMem["In-memory (per-process) — fast, but copies can disagree"]
+    direction LR
+    SA[Server A] --- CA[its own copy]
+    SB[Server B] --- CB[its own copy]
+    SC[Server C] --- CC[its own copy]
+  end
+  subgraph Shared["Shared (Redis) — one network hop, but everyone agrees"]
+    direction LR
+    RA[Server A] --> Redis[(Redis: one shared copy)]
+    RB[Server B] --> Redis
+    RC[Server C] --> Redis
+  end
 ```
 
 **What it does in real life.** This is where you cache the results of heavy computation and slow queries — a rendered dashboard, an expensive aggregation, the answer from a slow third-party API. It targets the *computation* and *slow dependency* costs from Phase 1.

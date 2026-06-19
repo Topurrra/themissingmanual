@@ -23,16 +23,11 @@ Let's make that concrete, then decode every CPU spec you'll ever see.
 
 **What it does in real life.** Round and round the loop goes:
 
-```text
-        ┌─────────────────────────────────────────────┐
-        │                                             │
-        ▼                                             │
-   ┌─────────┐      ┌──────────┐      ┌──────────┐    │
-   │  FETCH  │ ───► │  DECODE  │ ───► │ EXECUTE  │ ───┘
-   │ get the │      │ figure   │      │ do it    │
-   │  next   │      │ out what │      │ (add,    │   …then fetch
-   │  step   │      │ it means │      │  copy,   │   the next step
-   └─────────┘      └──────────┘      └──────────┘
+```mermaid
+flowchart LR
+    F["FETCH<br/>get the next step"] --> D["DECODE<br/>figure out what it means"]
+    D --> E["EXECUTE<br/>do it (add, copy, jump)"]
+    E -->|"…then fetch the next step"| F
 ```
 
 One trip around that loop is incredibly small — "add 3 and 5." But a modern CPU makes that trip an enormous number of times every second, so those tiny steps add up to a video playing, a game running, a page loading. The CPU never gets bored and never speeds up because the task is interesting; it just runs the loop, relentlessly.
@@ -78,16 +73,11 @@ This one's quieter — it's rarely a headline spec — but it explains a lot, so
 
 **What it does in real life.** Before reaching all the way out to RAM, the CPU checks its cache first. If what it needs is already there (a "cache hit"), it gets it almost instantly and the loop keeps humming. If it's not (a "cache miss"), the CPU has to wait while the data is fetched from the slower RAM. Good caching is why a CPU can stay busy instead of constantly waiting.
 
-```text
-   CPU core
-     │  "I need that value."
-     ▼
-   ┌────────┐   in cache?  yes ──► got it, almost instantly
-   │ CACHE  │
-   │ (tiny, │   no ─────────────► wait… fetch it from RAM
-   │  super │                      (much slower, much bigger)
-   │  fast) │
-   └────────┘
+```mermaid
+flowchart LR
+    CPU["CPU core<br/>'I need that value.'"] --> Cache["CACHE<br/>tiny, super fast"]
+    Cache -->|"hit (in cache)"| Hit["got it, almost instantly"]
+    Cache -->|"miss (not in cache)"| RAM["wait… fetch from RAM<br/>much slower, much bigger"]
 ```
 
 **Why this matters even though you won't shop for it.** Cache is your first glimpse of the big idea this whole guide is building toward: a computer keeps the data the CPU needs *close* to the CPU, in small fast memory, and keeps the rest *further away* in bigger, slower memory. Cache is the closest, smallest, fastest rung. RAM is the next rung out. Storage is further still. We'll draw that full ladder — the **memory hierarchy** — in [Phase 3](03-storage-the-filing-cabinet.md). For now, just hold onto the shape: *closer to the CPU = faster but smaller; further away = bigger but slower.*

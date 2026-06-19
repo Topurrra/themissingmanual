@@ -98,16 +98,15 @@ statement* is SQL sent to the database with placeholders so it can plan the quer
 query* is any query where you pass values through placeholders instead of concatenating them in. The thing
 that matters for security is the same: **SQL and values travel on separate channels.**
 
-```text
-   CONCATENATION (the hole)              PARAMETERIZED (the fix)
-
-   ┌──────────────────────────┐         ┌────────────────────────┐
-   │ SQL + value  → one string│         │ SQL with ?  ───────────┼──► DB compiles
-   └────────────┬─────────────┘         └────────────────────────┘    structure first
-                ▼                        ┌────────────────────────┐
-        DB parses the whole              │ value ─────────────────┼──► slotted in
-        string as SQL — value            └────────────────────────┘    as pure data,
-        can redraw the query                                           never parsed as SQL
+```mermaid
+flowchart LR
+  subgraph hole["CONCATENATION (the hole)"]
+    c1["SQL + value → one string"] --> c2["DB parses the whole string as SQL<br/>— value can redraw the query"]
+  end
+  subgraph fix["PARAMETERIZED (the fix)"]
+    p1["SQL with ?"] --> p3["DB compiles structure first"]
+    p2["value"] --> p4["slotted in as pure data<br/>— never parsed as SQL"]
+  end
 ```
 
 Here's the same login lookup, done right. (This example is Python with the standard `sqlite3` library; every

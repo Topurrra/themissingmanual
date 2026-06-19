@@ -128,11 +128,10 @@ same setting is defined in two places, **which one does the app actually use?**
 **What it actually is.** **Precedence** is the order, decided by the application, in which config sources
 override each other. The widely-used convention, from lowest priority to highest, is:
 
-```text
-   defaults in code   <   config file   <   environment variable
-   (lowest priority)                          (highest — wins)
-
-   each layer to the right OVERRIDES the same setting on its left
+```mermaid
+flowchart LR
+  Defaults[Defaults in code<br/>lowest priority] -->|overridden by| File[Config file]
+  File -->|overridden by| Env[Environment variable<br/>highest — wins]
 ```
 
 Read it as a stack: the code ships with sensible **defaults**; a **config file** overrides those for the

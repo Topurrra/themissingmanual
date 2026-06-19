@@ -31,7 +31,7 @@ That's the shift in worldview. In OOP you ask "what objects do I have, and what 
 
 **A real example.** Same task — add an item to a cart — done both ways:
 
-```python
+```python runnable
 # Mutating: changes the original list in place
 def add_item_mutating(cart, item):
     cart.append(item)
@@ -98,7 +98,7 @@ def add_tax_pure(price):
 
 **A real example.** Take a list of order amounts, drop the refunds (negatives), apply tax, and sum the total:
 
-```python
+```python runnable
 orders = [100, -20, 50, 30]
 
 taxed_total = sum(

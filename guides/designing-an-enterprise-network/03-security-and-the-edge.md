@@ -25,19 +25,11 @@ The old mental model was a castle: a hard wall around the outside, and everythin
 
 **What stateful really buys you.** A stateful firewall remembers the connections it has allowed. When an internal user opens a connection out to a web server, the firewall notes that conversation; the server's replies are recognized as *part of a connection we permitted* and let back in automatically — while an *unsolicited* inbound packet, one that isn't part of any established conversation, is dropped. You write rules about who may *start* a conversation, and the return traffic takes care of itself.
 
-```text
-   STATEFUL FIREWALL — judges packets in the context of a conversation
-
-   inside ──► "start a connection to web server :443"  ──►  ALLOWED
-                              │  (firewall records this flow in its state table)
-                              ▼
-   web server's reply  ──────────────────────────────►  ALLOWED
-                              (recognized as part of the permitted flow)
-
-   random inbound packet, no matching flow  ──────────►  DROPPED
-                              (nobody on the inside asked for this)
-
-   default disposition: anything not explicitly permitted is DENIED.
+```mermaid
+flowchart LR
+  inside[inside: start a connection<br/>to web server :443] -->|firewall records<br/>this flow| allow1([ALLOWED])
+  reply[web server's reply] -->|recognized as part<br/>of the permitted flow| allow2([ALLOWED])
+  rand[random inbound packet,<br/>no matching flow] -->|nobody asked for this| drop([DROPPED])
 ```
 
 **A real example.** Firewall rules read as a top-to-bottom policy. Here's a small stateful ruleset and what it's saying:
@@ -68,28 +60,12 @@ Here's a tension. Some of your services *have* to be reachable from the internet
 
 **What it does in real life.** The firewall lets the internet reach the DMZ on specific ports (the website on 443, say) — and that's *all* the internet can touch. Critically, the rules from the DMZ *into* the internal network are extremely tight: the public web server can reach the one internal database it needs, on the one port it needs, and nothing else. So if that public-facing server is compromised — and public-facing servers are the ones most likely to be — the attacker is stuck in the DMZ, holding a box that can't freely reach anything valuable.
 
-```text
-                          ┌───────────┐
-        INTERNET ───────► │ FIREWALL  │
-                          └─────┬─────┘
-                  allow :443    │    deny everything else inbound
-                                ▼
-                       ┌─────────────────┐
-                       │      DMZ         │   public web / mail / VPN gateway
-                       │  (own VLAN+subnet)│   reachable from the internet
-                       └────────┬─────────┘
-                  VERY TIGHT rules: DMZ → internal only on the
-                  exact port(s) a public service legitimately needs
-                                │
-                          ┌─────┴─────┐
-                          │ FIREWALL  │
-                          └─────┬─────┘
-                                ▼
-                       ┌─────────────────┐
-                       │ INTERNAL NETWORK │   workstations, servers, databases
-                       │ (the zones from  │   NOT directly reachable from outside
-                       │   Phase 1)       │
-                       └─────────────────┘
+```mermaid
+flowchart TD
+  net((INTERNET)) --> fw1[FIREWALL]
+  fw1 -->|allow :443, deny everything else inbound| dmz[DMZ<br/>public web / mail / VPN gateway<br/>own VLAN+subnet, reachable from the internet]
+  dmz -->|VERY TIGHT rules: only the exact port s<br/>a public service legitimately needs| fw2[FIREWALL]
+  fw2 --> internal[INTERNAL NETWORK<br/>workstations, servers, databases<br/>the zones from Phase 1 —<br/>NOT directly reachable from outside]
 ```
 
 ⚠️ **Gotcha.** A DMZ only works if the inward rules stay tight. The slow failure is convenience creep — over months, someone needs the DMZ server to reach "just one more" internal system, then another, until the DMZ can reach half the internal network and the whole separation is hollow. A DMZ that can reach everything inside isn't a DMZ; it's an attacker's launchpad with extra steps. Review those inbound-to-internal rules like they matter, because they do.

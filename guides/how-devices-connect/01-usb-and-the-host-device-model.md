@@ -33,19 +33,12 @@ and have them talk — both think they're the host, and a USB conversation needs
 a USB device does nothing until a host gives it power and starts asking questions. The device is patient
 and dumb on purpose; all the intelligence about *what to do* lives on the host side.
 
-```text
-        ┌──────────────────────┐
-        │      THE HOST        │   one boss: starts every conversation,
-        │  (computer + its     │   supplies power, assigns addresses
-        │   host controller)   │
-        └──────────┬───────────┘
-                   │ the bus (a shared road)
-        ┌──────────┼───────────┐
-        ▼          ▼           ▼
-     ┌─────┐    ┌─────┐     ┌──────┐
-     │ kbd │    │ usb │     │ web- │     many devices: they only answer,
-     │     │    │drive│     │ cam  │     never start the conversation
-     └─────┘    └─────┘     └──────┘
+```mermaid
+flowchart TD
+    Host["THE HOST<br/>(computer + host controller)"]
+    Host -->|"the bus (a shared road)"| Kbd["keyboard"]
+    Host -->|"the bus (a shared road)"| Drive["USB drive"]
+    Host -->|"the bus (a shared road)"| Cam["webcam"]
 ```
 
 ## What happens when you plug something in (enumeration)
@@ -112,17 +105,18 @@ track: it still addresses and interviews every device individually, no matter ho
 sits. Many things you don't think of as hubs *are* hubs internally — your monitor with USB ports on the
 back, your keyboard with a passthrough port.
 
-```text
-   HOST
-    │
-    ▼
-  ┌─────┐      a hub turns one upstream port into several downstream ones
-  │ hub │──┬──────┬──────┬───────────┐
-  └─────┘  ▼      ▼      ▼           ▼
-         mouse   kbd   ┌─────┐     printer
-                       │ hub │──┬────────┐      hubs nest: a hub can feed a hub
-                       └─────┘  ▼        ▼
-                              drive    webcam
+```mermaid
+flowchart TD
+    Host["HOST"]
+    Hub1["hub"]
+    Hub2["hub"]
+    Host --> Hub1
+    Hub1 --> Mouse["mouse"]
+    Hub1 --> Kbd["keyboard"]
+    Hub1 --> Printer["printer"]
+    Hub1 --> Hub2
+    Hub2 --> Drive["drive"]
+    Hub2 --> Cam["webcam"]
 ```
 
 ⚠️ **Gotcha — power is shared, and it's the usual reason a chain "gets flaky."** A port supplies a limited

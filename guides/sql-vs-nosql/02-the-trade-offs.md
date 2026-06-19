@@ -82,16 +82,32 @@ thousand copies or accept that old orders show the old address. Sometimes the ol
 *correct* (an order shipped where it shipped) — sometimes it's a bug waiting to happen. The
 trade is **read simplicity now** vs **update complexity later**.
 
-```text
-  RELATIONAL (normalized)            NOSQL DOCUMENT (denormalized)
-  -----------------------            -----------------------------
-  users:  [ id, name, address ]      orders: [
-  orders: [ id, user_id, total ]       { total, user: { name, address } },
-            └── join on user_id          { total, user: { name, address } },  ← address
-                                          ...                                    copied
-                                       ]                                         per order
-  one address, joined when needed    one read, but address duplicated
+```mermaid
+flowchart TB
+  subgraph REL[RELATIONAL - normalized]
+    U["users: id, name, address"]
+    O["orders: id, user_id, total"]
+    O -->|join on user_id| U
+  end
+  subgraph DOC[NOSQL DOCUMENT - denormalized]
+    D["orders: each document holds<br/>total + a COPY of user name &amp; address<br/>(address duplicated per order)"]
+  end
 ```
+
+Relational keeps one address, joined when needed; the document store does one read, but the address is
+copied into every order.
+
+Here's the relational "stored once, joined when needed" move on a built-in pair of tables — each book
+stores only its `author_id`, and the author's name is recombined at query time:
+
+```sql runnable
+SELECT books.title, authors.name AS author
+FROM books
+JOIN authors ON books.author_id = authors.id;
+```
+*What just happened:* The author's name lives once in `authors`; the books just point at it by `author_id`.
+The JOIN stitched them back together for this one question — no name was duplicated on disk to make it
+readable.
 
 ## 3. Consistency vs horizontal scale (a gentle look at CAP)
 

@@ -42,16 +42,12 @@ is so common — not indecision, but design.
 
 You don't have to choose, and most mature data teams don't. The dominant pattern reads top to bottom:
 
-```text
-   sources                lake (raw)              warehouse (curated)        users
-   ───────                ──────────              ───────────────────        ─────
-   app DB    ─┐                                                          ┌─► BI dashboards
-   APIs      ─┤──►   land EVERYTHING raw   ──►   model clean, trusted  ──┤
-   logs      ─┤      cheap object storage       tables for analytics    └─► exec reporting
-   events    ─┘      (keep the originals)       (structured, fast)
-                            │
-                            └──────────────────────────────────► data science / ML
-                                              (work straight from the raw lake)
+```mermaid
+flowchart LR
+  src[sources<br/>app DB · APIs · logs · events] -->|land raw| lake[(Lake — raw<br/>cheap object storage)]
+  lake -->|model clean| wh[(Warehouse — curated<br/>structured, fast)]
+  wh --> bi[BI dashboards / exec reporting]
+  lake -->|raw, full-resolution| ml[Data science / ML]
 ```
 
 **How it works in practice.**

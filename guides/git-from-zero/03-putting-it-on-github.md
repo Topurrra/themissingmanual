@@ -26,12 +26,9 @@ Remember from Phase 1: Git is the tool on your computer; GitHub is a website tha
 have *two* copies of the project — yours, and GitHub's — and you'll **push** your commits up to keep
 GitHub's copy in sync with yours.
 
-```text
-   YOUR COMPUTER                         GITHUB (github.com)
-   ┌──────────────────┐                  ┌──────────────────┐
-   │  hello-git repo  │  ── git push ──► │  hello-git repo  │
-   │  (your commits)  │                  │  (the copy)      │
-   └──────────────────┘                  └──────────────────┘
+```mermaid
+flowchart LR
+  L(your computer<br/>hello-git repo<br/>your commits) -->|git push| G(GitHub<br/>hello-git repo<br/>the copy)
 ```
 
 📝 **Terminology.** That online copy is called a **remote** — a copy of your repo that lives somewhere

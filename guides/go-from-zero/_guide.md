@@ -5,7 +5,7 @@ phase: 0
 summary: "Learn Go from nothing: install it, write your first program, understand its types and collections, master its one loop and multiple-return functions, organize code into modules, and meet goroutines — the reason Go exists."
 tags: [go, golang, beginner, getting-started, concurrency]
 category: programming-languages
-order: 11
+order: 3
 difficulty: beginner
 synonyms: ["learn go", "golang for beginners", "how to start with go", "go programming tutorial", "go language from scratch", "is go hard to learn"]
 updated: 2026-06-19

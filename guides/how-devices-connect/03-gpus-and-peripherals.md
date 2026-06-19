@@ -60,11 +60,13 @@ supplied with data. The work itself is fast; getting the data *to* the GPU over 
 often the slow part. This is why GPUs carry their own large, very fast on-board memory (VRAM): once data
 is sitting in VRAM, the cores can chew through it without waiting on the PCIe trip back to system RAM.
 
-```text
-   SYSTEM RAM  ──── PCIe ────►  GPU + its own VRAM ──► thousands of cores
-   (where data         the      (data lives here so      (do the parallel
-    starts)         bottleneck   the cores don't wait      work, fast)
-                    often is     on the PCIe trip)
+```mermaid
+flowchart LR
+    RAM["SYSTEM RAM<br/>(where data starts)"]
+    GPU["GPU + its own VRAM<br/>(data lives here so the cores<br/>don't wait on the PCIe trip)"]
+    Cores["thousands of cores<br/>(do the parallel work, fast)"]
+    RAM -->|"PCIe (the bottleneck often is here)"| GPU
+    GPU --> Cores
 ```
 
 ⚠️ **Gotcha — "my GPU is barely being used" is usually a feeding problem.** When a GPU sits at low

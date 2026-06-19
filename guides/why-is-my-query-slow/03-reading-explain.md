@@ -96,20 +96,15 @@ When estimated and actual row counts are wildly apart, that mismatch — not the
 
 This is the whole discipline, and it's a loop you can run on any slow query without guessing:
 
-```text
-   1. MEASURE   →  EXPLAIN ANALYZE the slow query.
-                   Find the Seq Scan with millions of "Rows Removed by Filter".
-                   Note the columns in the WHERE / JOIN / ORDER BY.
-
-   2. FIX       →  CREATE INDEX on the column(s) you filter / join / sort on.
-
-   3. RE-CHECK  →  EXPLAIN ANALYZE the same query again.
-                   Confirm it now says "Index Scan", the filter-removed rows are gone,
-                   and Execution Time actually dropped.
-
-   ↺ Not fixed? The index may not apply (e.g. a function on the column, or a
-     leading-wildcard LIKE '%foo'), or estimates are off → run ANALYZE, or the
-     scan was correct all along (you really do need most of the rows).
+```mermaid
+flowchart TD
+  M["1. MEASURE: EXPLAIN ANALYZE the slow query<br/>find the Seq Scan + millions of Rows Removed by Filter<br/>note the WHERE / JOIN / ORDER BY columns"]
+  F["2. FIX: CREATE INDEX on the column(s)<br/>you filter / join / sort on"]
+  R["3. RE-CHECK: EXPLAIN ANALYZE again<br/>confirm Index Scan, removed-rows gone,<br/>Execution Time dropped"]
+  N["Not fixed? index may not apply (function on column,<br/>leading-wildcard LIKE '%foo'), stale estimates → ANALYZE,<br/>or the scan was correct all along"]
+  M --> F --> R
+  R -->|still slow| N
+  N --> M
 ```
 
 ⚠️ **Gotcha — always re-check, never assume.** Creating an index does *not* guarantee the database will use it. If your `WHERE` wraps the column in a function (`WHERE lower(email) = ...` won't use a plain index on `email`), or uses a leading wildcard (`LIKE '%example.com'`), or the planner decides a scan is genuinely cheaper, your shiny new index sits unused. The only way to know it worked is step 3: run `EXPLAIN ANALYZE` again and *see* `Index Scan` with a lower execution time. Measure the fix; don't trust it.

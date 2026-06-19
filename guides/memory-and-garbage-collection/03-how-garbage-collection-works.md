@@ -21,15 +21,12 @@ The chains start from a set of always-live places called the **roots**: your cur
 
 📝 **Terminology.** *Reachable* = there exists a chain of references from a root to the object. *Roots* = the starting points the collector trusts as live (local variables on the stack, globals, etc.). *Garbage* = a heap object that is **not** reachable from any root.
 
-```text
-   ROOTS (live: locals, globals)
-     │
-     ├──▶ [ User ] ──▶ [ Address ]          all reachable from a root → KEPT
-     │
-     └──▶ [ Cart ] ──▶ [ Item ] ──▶ [ Item ]
-
-            [ old Session ]  ◀── nothing points here → UNREACHABLE → GARBAGE
-            [ temp Buffer ]  ◀── nothing points here → UNREACHABLE → GARBAGE
+```mermaid
+flowchart LR
+  Roots["ROOTS<br/>(locals, globals)"] --> User --> Address
+  Roots --> Cart --> Item1["Item"] --> Item2["Item"]
+  Session["old Session<br/>UNREACHABLE → GARBAGE"]
+  Buffer["temp Buffer<br/>UNREACHABLE → GARBAGE"]
 ```
 
 💡 **Key point.** Garbage isn't "stuff you're finished with." It's "stuff you can no longer *reach*." Those are usually the same thing — but the gap between them is exactly where leaks hide, as we'll see at the end.
@@ -42,17 +39,14 @@ The oldest and most intuitive way to act on reachability is **mark-and-sweep**. 
 
 **Step 2 — Sweep.** Walk through the heap and reclaim every object that *isn't* marked. Those are the unreachable ones — the garbage. Their memory goes back to the pool for reuse. Then clear all the marks, ready for next time.
 
-```text
-   MARK: trace from roots, flag everything reachable
-
-     roots ──▶ [A]✓ ──▶ [B]✓        [C]   [D]✓ ──▶ [E]✓
-                                      ▲
-                              (nothing points to C)
-
-   SWEEP: reclaim everything without a ✓
-
-     keep: A, B, D, E          reclaim: C   →   its memory is now free again
+```mermaid
+flowchart LR
+  roots["roots"] --> A["A ✓"] --> B["B ✓"]
+  roots --> D["D ✓"] --> E["E ✓"]
+  C["C (unmarked)<br/>nothing points here → SWEEP"]
 ```
+
+*MARK: trace from the roots and flag everything reachable (A, B, D, E get a ✓). SWEEP: reclaim everything without a ✓ — here, C — and its memory is free again.*
 
 *What this buys you:* the collector never has to understand your program's logic. It just answers "reachable or not?" mechanically and reclaims the rest. That's why you can create objects with abandon and trust they'll be cleaned up — the cleanup rule doesn't depend on you remembering anything.
 

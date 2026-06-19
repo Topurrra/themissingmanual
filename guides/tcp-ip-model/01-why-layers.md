@@ -23,17 +23,11 @@ The cleanest analogy is the postal system, so let's use it the whole way through
 
 You want to send a birthday card to a friend in another city. You write the card. You do **not** think about which highway the mail truck takes, whether it flies or drives, or how the sorting machine reads barcodes. You write words; that's your one job. You hand the card to the postal system and trust it.
 
-```text
-   YOU (write words)
-      │  hand off, trust below
-      ▼
-   MAILROOM (put it in an addressed envelope)
-      │  hand off, trust below
-      ▼
-   POST OFFICE (sort by region, route it)
-      │  hand off, trust below
-      ▼
-   TRUCKS & PLANES (physically move it)
+```mermaid
+flowchart TD
+  you[YOU<br/>write words] -->|hand off, trust below| mailroom[MAILROOM<br/>put it in an addressed envelope]
+  mailroom -->|hand off, trust below| post[POST OFFICE<br/>sort by region, route it]
+  post -->|hand off, trust below| trucks[TRUCKS & PLANES<br/>physically move it]
 ```
 
 Each level cares about one thing and ignores the rest. The truck driver never reads your card. You never plan the route. That separation is what makes the whole thing *possible* — and it's exactly how a network is built.

@@ -19,24 +19,18 @@ Here's the part that's almost never explained to beginners: that memory isn't on
 
 Picture the memory your running program is handed. Two areas matter here:
 
-```text
-   ┌───────────────────────────────────────────────┐
-   │  THE STACK                                     │   fast, automatic, orderly.
-   │  ───────────                                   │   holds each function call's
-   │  call frame: main()                            │   local variables. grows and
-   │  call frame: greet()    ← top (current call)   │   shrinks as calls come & go.
-   │     name = "Sam"                               │
-   ├───────────────────────────────────────────────┤
-   │                                                │
-   │            (free space in between)             │
-   │                                                │
-   ├───────────────────────────────────────────────┤
-   │  THE HEAP                                      │   flexible, longer-lived.
-   │  ──────────                                    │   holds data that must outlast
-   │  [ a big list of 10,000 items ]                │   the function that made it,
-   │  [ an image loaded from disk   ]               │   or that's too big/dynamic
-   │                                                │   for the stack.
-   └───────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  subgraph Stack["THE STACK — fast, automatic, tied to calls"]
+    direction TB
+    F2["greet() ← current call<br/>name = 'Sam'"] --> F1["main()"]
+  end
+  subgraph Heap["THE HEAP — flexible, longer-lived"]
+    direction TB
+    H1["a big list of 10,000 items"]
+    H2["an image loaded from disk"]
+  end
+  Stack -.- Heap
 ```
 
 They solve two different problems. The stack is for the short-lived, predictable bookkeeping of function calls. The heap is for everything that needs to stick around or grow. Let's take them one at a time.
@@ -49,7 +43,7 @@ They solve two different problems. The stack is for the short-lived, predictable
 
 **What it does in real life.** Consider this little chain of calls:
 
-```python
+```python runnable
 def greet(name):
     message = "Hi " + name   # `name` and `message` live in greet's stack frame
     return message
@@ -63,14 +57,19 @@ main()
 
 As this runs, the stack changes shape:
 
-```text
-   step 1: main() is called          step 2: main() calls greet()        step 3: greet() returns
-   ┌──────────────┐                  ┌──────────────┐                    ┌──────────────┐
-   │ main()       │                  │ greet()      │ ← added on top     │ main()       │ ← greet's frame
-   │   user="Sam" │                  │   name="Sam" │                    │   user="Sam" │   is gone again
-   └──────────────┘                  │ main()       │                    └──────────────┘
-                                     │   user="Sam" │
-                                     └──────────────┘
+```mermaid
+flowchart LR
+  subgraph s1["step 1: main() called"]
+    a1["main()<br/>user = 'Sam'"]
+  end
+  subgraph s2["step 2: main() calls greet()"]
+    direction TB
+    b2["greet() ← added on top<br/>name = 'Sam'"] --> b1["main()<br/>user = 'Sam'"]
+  end
+  subgraph s3["step 3: greet() returns"]
+    c1["main()<br/>user = 'Sam'<br/>(greet's frame gone)"]
+  end
+  s1 --> s2 --> s3
 ```
 *What just happened:* Calling `greet` pushed a new frame on top of the stack, holding its local variables (`name`, `message`). The moment `greet` returned, that whole frame was discarded automatically — no cleanup code from you. That automatic add-on-call, remove-on-return is exactly why the stack is so fast and why you never have to think about freeing a local variable.
 

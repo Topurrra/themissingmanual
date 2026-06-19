@@ -32,14 +32,13 @@ another from the CPU to the disk, another to the keyboard — a tangle of point-
 designs mostly worked the *other* way: one shared bus that many components hang off of. Sharing is the
 whole point — it means you can add a new component to the bus without rewiring everything else.
 
-```text
-        ┌───────┐     ┌───────┐     ┌──────────┐
-        │  CPU  │     │  RAM  │     │   Disk   │     each box taps the same wires
-        └───┬───┘     └───┬───┘     └────┬─────┘
-            │             │              │
-   ═════════╪═════════════╪══════════════╪═══════════  ← the bus (shared wiring)
-            │             │              │
-        everything connected to the bus can send and receive on it
+```mermaid
+flowchart TD
+    CPU["CPU"] --- BUS
+    RAM["RAM"] --- BUS
+    Disk["Disk"] --- BUS
+    BUS{{"the bus<br/>(shared wiring)"}}
+    BUS -.- note["every connected part<br/>can send and receive"]
 ```
 
 **The catch with sharing.** Because the wires are shared, only one conversation can happen at a time —
@@ -86,14 +85,11 @@ Now put the two ideas together. The CPU and RAM are connected by the **memory bu
 CPU uses the bus to carry three things: an **address** (which slot), a **command** (read or write), and —
 for a write — the **data** itself.
 
-```text
-        ┌───────┐                                    ┌───────┐
-        │  CPU  │                                    │  RAM  │
-        └───┬───┘                                    └───┬───┘
-            │   ── address: "slot 4096" ───────────►     │
-            │   ── command: "READ" ────────────────►     │   the memory bus
-            │   ◄──────────── data: "the byte 0x6A" ─    │
-            └────────────── memory bus ─────────────────┘
+```mermaid
+flowchart LR
+    CPU["CPU"] -->|"address: slot 4096"| RAM["RAM"]
+    CPU -->|"command: READ"| RAM
+    RAM -->|"data: the byte 0x6A"| CPU
 ```
 
 **What it does in real life — a read.** The CPU puts the address on the bus and signals "read." The RAM

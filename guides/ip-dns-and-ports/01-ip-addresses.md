@@ -54,13 +54,12 @@ This is the part that quietly confuses almost everyone, so let's go slowly.
 
 **Two worlds, two kinds of address.** Your home has many devices — phone, laptop, TV, console. Each gets a **private IP address**, handed out by your router, that only means something *inside your home network*. Out on the public internet, your whole home appears as a *single* **public IP address**, the one your internet provider gave your router.
 
-```text
-        YOUR HOME (private addresses)              THE INTERNET
-        ┌───────────────────────────┐
-        │  laptop   192.168.1.10     │
-        │  phone    192.168.1.11     │── router ──►  203.0.113.42
-        │  TV       192.168.1.12     │             (one public IP
-        └───────────────────────────┘              for everything)
+```mermaid
+flowchart LR
+  laptop[laptop<br/>192.168.1.10] --> router[Router]
+  phone[phone<br/>192.168.1.11] --> router
+  tv[TV<br/>192.168.1.12] --> router
+  router -->|one public IP for everything| net((Internet<br/>203.0.113.42))
 ```
 
 📝 **Terminology.** *Private IP addresses* come from reserved ranges (you'll often see `192.168.x.x` or `10.x.x.x`) that are reused in every home and office worldwide — they're meaningful only inside their own network. *Public IP addresses* are unique across the whole internet.

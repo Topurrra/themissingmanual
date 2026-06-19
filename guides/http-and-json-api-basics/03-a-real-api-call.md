@@ -90,7 +90,15 @@ new one. Let's read each flag, because this is the pattern you'll reuse constant
 The response is `201 Created` — a more specific `2xx` than `200`, meaning "I made the new thing." The
 server filled in an `id` (16) and an empty `tags` array, and the `Location` header points at the URL of the
 resource you just created. You sent JSON; you got JSON back. That round trip is the heart of working with
-any web API.
+any web API:
+
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Server
+  Client->>Server: POST /products + Content-Type: application/json + JSON body
+  Server-->>Client: 201 Created + Location: /products/16 + JSON body
+```
 
 📝 **Terminology.** The single quotes around the `-d '...'` value are your **shell's** way of passing the
 JSON to `curl` as one piece without mangling it — they are not part of the JSON. Inside, the JSON itself

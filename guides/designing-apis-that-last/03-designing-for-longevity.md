@@ -232,17 +232,14 @@ Your database schema changes for *database* reasons (performance, normalization,
 Your API contract should change only for *API* reasons. Wiring them together means every internal
 refactor leaks out as a breaking change to people who have no idea your database even exists.
 
-```text
-   ❌ Leaky: DB row == API response
-   ┌──────────────┐   serialize    ┌──────────────┐
-   │  orders row   │ ─────────────► │  API response │   refactor the table → break clients
-   └──────────────┘   (1:1)         └──────────────┘
-
-   ✅ Decoupled: a deliberate mapping in between
-   ┌──────────────┐   map/transform ┌──────────────┐
-   │  orders row   │ ─────────────► │  resource     │   refactor freely behind the map;
-   │ (internal)    │   (you choose)  │ (public shape)│   the public shape stays stable
-   └──────────────┘                 └──────────────┘
+```mermaid
+flowchart LR
+  subgraph Leaky["❌ Leaky — refactor the table and you break clients"]
+    R1[orders row] -->|serialize 1:1| Resp[API response]
+  end
+  subgraph Decoupled["✅ Decoupled — refactor freely behind the map; public shape stays stable"]
+    R2["orders row (internal)"] -->|map / transform, you choose| Pub["resource (public shape)"]
+  end
 ```
 
 **The fix.** Put a deliberate translation layer between your storage and your API — a serializer,

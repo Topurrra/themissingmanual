@@ -26,25 +26,13 @@ It's one dial, not three separate worlds. As you slide toward "more managed," yo
 work* — and you also get *less control* and bind yourself a little tighter to the provider. Nothing here
 is "better"; they're trades.
 
-```text
-   LESS MANAGED ◄─────────────────────────────────────────────► MORE MANAGED
-   more control                                                  less control
-   more ops work                                                 less ops work
-
-   ┌──────────────┐        ┌──────────────┐        ┌──────────────┐
-   │    IaaS      │        │    PaaS      │        │  Serverless  │
-   │ (raw VM)     │        │ (a platform) │        │ (functions)  │
-   ├──────────────┤        ├──────────────┤        ├──────────────┤
-   │ You: OS,     │        │ You: your    │        │ You: one     │
-   │ runtime,     │        │ code + config│        │ function's   │
-   │ deploy, code │        │              │        │ code         │
-   │              │        │ Them: OS,    │        │ Them: ALL    │
-   │ Them: the    │        │ runtime,     │        │ the rest,    │
-   │ hardware     │        │ scaling      │        │ incl. idle   │
-   └──────────────┘        └──────────────┘        └──────────────┘
-     EC2, Compute            App Engine,             Lambda, Cloud
-     Engine, VMs             Elastic Beanstalk,      Functions,
-                             App Service             Azure Functions
+```mermaid
+flowchart LR
+  IaaS["IaaS (raw VM)<br/>You: OS, runtime, deploy, code<br/>Them: the hardware<br/><br/>EC2, Compute Engine, VMs"]
+  PaaS["PaaS (a platform)<br/>You: your code + config<br/>Them: OS, runtime, scaling<br/><br/>App Engine, Elastic Beanstalk, App Service"]
+  SL["Serverless (functions)<br/>You: one function's code<br/>Them: ALL the rest, incl. idle<br/><br/>Lambda, Cloud Functions, Azure Functions"]
+  IaaS -->|"more managed →<br/>less control, less ops work"| PaaS
+  PaaS --> SL
 ```
 
 ### IaaS — Infrastructure as a Service (the raw VM)

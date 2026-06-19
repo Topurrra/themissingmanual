@@ -26,7 +26,7 @@ grammar.
 
 Here's a block of code that runs only when a condition is true (we'll cover `if` properly in
 [Phase 4](04-control-flow-and-functions.md) — focus on the *shape* for now):
-```python
+```python runnable
 temperature = 30
 if temperature > 25:
     print("It's warm")
@@ -67,7 +67,7 @@ other languages.
 
 **What it actually is.** A variable is a *name* you attach to a value so you can refer to it later. You
 create one with `=` — read it as "let this name refer to this value," not as math equality.
-```python
+```python runnable
 name = "Ada"
 age = 36
 print(name)
@@ -81,7 +81,7 @@ Ada
 ```
 
 You can re-point a name at a new value any time — that's the whole idea of a *variable*:
-```python
+```python runnable
 score = 10
 score = score + 5
 print(score)
@@ -94,7 +94,7 @@ didn't "change"; you pointed it somewhere new.
 
 Every value in Python has a **type** — what kind of thing it is. You'll use five constantly. You can
 ask any value its type with the built-in `type()`:
-```python
+```python runnable
 print(type(36))
 print(type(3.14))
 print(type("hello"))
@@ -132,7 +132,7 @@ value; they just tell Python "the text starts here and ends there."
 **What it actually is.** In some languages you must declare "this variable holds an integer" and it can
 *only* ever hold integers. Python doesn't work that way. A name can point at a value of one type now and
 a different type later — the *value* has a type, but the *name* is just a label.
-```python
+```python runnable
 x = 42
 print(type(x))
 x = "now I'm text"
@@ -153,7 +153,7 @@ breaks later. Keep your variables holding one *kind* of thing, and you avoid mos
 You'll constantly want to build a string out of fixed text plus some values. The clean, modern way is an
 **f-string**: a string prefixed with the letter `f`, where anything inside `{ }` is replaced by the
 value of that expression.
-```python
+```python runnable
 name = "Ada"
 age = 36
 print(f"{name} is {age} years old")
@@ -164,7 +164,7 @@ print(f"{name} is {age} years old")
 Ada is 36 years old
 ```
 You can put any expression inside the braces, not only a bare name:
-```python
+```python runnable
 price = 4
 print(f"Two coffees cost {price * 2} dollars")
 ```
@@ -182,7 +182,7 @@ those around, but you don't need to write them.)
 ⚠️ **`=` vs `==` — assignment vs comparison.** A single `=` *assigns* (points a name at a value). A
 double `==` *compares* two values and gives back a boolean. Mixing them up is one of the most common
 early mistakes:
-```python
+```python runnable
 x = 5
 print(x == 5)
 print(x == 6)
@@ -197,7 +197,7 @@ Say it in your head as you type: `=` is "set to," `==` is "is equal to?"
 
 ⚠️ **Integer vs float division — `/` always gives a float.** Plain division with `/` *always* produces
 a `float`, even when the numbers divide evenly. If you want whole-number division, use `//`:
-```python
+```python runnable
 print(7 / 2)
 print(8 / 2)
 print(7 // 2)

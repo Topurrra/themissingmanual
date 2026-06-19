@@ -58,11 +58,15 @@ So something has to translate names into numbers. That something is **DNS**.
 
 **What it does in real life.** This lookup happens automatically, in the blink before a page loads, every single time you visit a site by name. You never see it, but it's the very first step of the journey from Phase 1. The order is:
 
-```text
-   1. you type:     example.com
-   2. your device asks DNS:   "what's the address for example.com?"
-   3. DNS answers:            "93.184.216.34"
-   4. NOW your device can send packets there  (the Phase 1 journey begins)
+```mermaid
+sequenceDiagram
+  participant You as Your device
+  participant DNS as DNS (phone book)
+  participant Server
+  You->>DNS: What's the address for example.com?
+  DNS-->>You: 93.184.216.34
+  You->>Server: send packets to 93.184.216.34
+  Note over You,Server: the Phase 1 journey begins
 ```
 
 **A real example.** You can do the lookup by hand. The `nslookup` command asks DNS the same question your browser asks:

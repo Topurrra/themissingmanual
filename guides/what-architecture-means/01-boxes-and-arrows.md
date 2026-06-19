@@ -19,16 +19,15 @@ Let's start with the one picture that makes everything else click. Forget patter
 
 Here's the most common shape in all of software — the one behind nearly every website and app you use:
 
-```text
-   ┌──────────────┐        ┌──────────────┐        ┌──────────────┐
-   │   THE WEB    │  ───►  │   THE API    │  ───►  │  THE DATABASE │
-   │   (browser)  │        │   (server)   │        │   (storage)   │
-   │              │  ◄───  │              │  ◄───  │              │
-   └──────────────┘        └──────────────┘        └──────────────┘
-     what the user          the rules and             where the data
-     sees and clicks        logic live here           is kept safe
-
-     ──►  "sends a request"        ◄──  "sends an answer back"
+```mermaid
+flowchart LR
+  Web["THE WEB (browser)<br/>what the user sees and clicks"]
+  API["THE API (server)<br/>the rules and logic live here"]
+  DB["THE DATABASE (storage)<br/>where the data is kept safe"]
+  Web -- "sends a request" --> API
+  API -- "sends a request" --> DB
+  DB -- "sends an answer back" --> API
+  API -- "sends an answer back" --> Web
 ```
 
 Read it left to right: you click something in your **browser**, which sends a request to the **server** (often called the API), which asks the **database** for the data it needs, and the answer flows back the other way. Three boxes, arrows between them. That diagram *is* an architecture.
@@ -63,19 +62,15 @@ Software architecture is the same move. Before you write the detailed code (the 
 
 Let's make those three boxes concrete. Imagine you open a weather app and check today's forecast. Here's the conversation that happens between the boxes:
 
-```text
-   YOU tap "Today"
-        │
-        ▼
-   ┌──────────┐   "GET today's forecast for London"   ┌──────────┐
-   │ BROWSER  │  ───────────────────────────────────► │  SERVER  │
-   │ / APP    │                                        │  (API)   │
-   └──────────┘                                        └────┬─────┘
-        ▲                                                   │ "find London's
-        │                                                   ▼  latest forecast"
-        │            { "high": 18, "low": 11,         ┌──────────┐
-        └──────────────  "summary": "cloudy" }   ◄────│ DATABASE │
-                                                       └──────────┘
+```mermaid
+sequenceDiagram
+  participant App as Browser / App
+  participant Server as Server (API)
+  participant DB as Database
+  App->>Server: GET today's forecast for London
+  Server->>DB: find London's latest forecast
+  DB-->>Server: { "high": 18, "low": 11, "summary": "cloudy" }
+  Server-->>App: forecast data
 ```
 
 *What just happened:* The app didn't know the forecast itself — it just knew *who to ask*. It sent a request to the server. The server held the logic ("which city? what's the latest reading?") and asked the database, which is where the actual numbers live. The database handed back the data, the server passed it along, and the app drew it on your screen. Each box did one job and trusted the next box to do its own. That separation — each part with a clear role — is the heart of good architecture.

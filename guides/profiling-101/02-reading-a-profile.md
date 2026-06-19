@@ -47,12 +47,10 @@ This is the one idea that, if you get it backwards, sends you optimizing the wro
 - **Self time** (also called *internal* or *exclusive* time — `tottime` in the output above) is the time spent executing *that function's own code*, not counting the functions it called. It's the work the function does with its own hands.
 - **Cumulative time** (also *total* or *inclusive* time — `cumtime` above) is the time spent in that function *plus everything it called, down the whole chain*. It's the work the function is responsible for, including the work it delegated.
 
-```text
-   process_all  ─ calls ─►  process_one  ─ calls ─►  resize_pixel
-
-   resize_pixel : self 4.2s   (it does the heavy pixel math itself)
-   process_one  : self 0.6s,  cumulative 5.0s   (0.6s its own + 4.4s in resize_pixel)
-   process_all  : self 0.9s,  cumulative 6.0s   (a little glue + everything below it)
+```mermaid
+flowchart LR
+  A["process_all<br/>self 0.9s · cum 6.0s"] -->|calls| B["process_one<br/>self 0.6s · cum 5.0s"]
+  B -->|calls| C["resize_pixel<br/>self 4.2s · the worker"]
 ```
 
 **Why this trips everyone up.** Look at `process_all` in the table: its **cumulative** time is 5.98 seconds — nearly the whole program. If you sort by cumulative time, `process_all` looks like the villain. But its *self* time is only 0.9 seconds. It's not slow; it just *contains* the slow thing. Rewriting `process_all` would do almost nothing. The actual culprit is `resize_pixel`, with high *self* time — that's where the CPU is genuinely spending cycles.

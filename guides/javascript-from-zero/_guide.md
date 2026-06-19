@@ -5,7 +5,7 @@ phase: 0
 summary: "Learn JavaScript from nothing: where it runs, its values and types, collections, control flow and functions, modules, async and the DOM, errors and I/O, the ecosystem, and the idioms that separate fluent from fumbling."
 tags: [javascript, js, node, beginner, web, programming-language]
 category: programming-languages
-order: 10
+order: 2
 difficulty: beginner
 synonyms: ["learn javascript from scratch", "javascript for beginners", "how to start with javascript", "javascript tutorial a to z", "is javascript hard to learn", "javascript node and browser"]
 updated: 2026-06-19

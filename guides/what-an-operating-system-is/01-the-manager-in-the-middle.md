@@ -19,17 +19,10 @@ its own.
 
 Picture your computer in three layers, stacked:
 
-```text
-   ┌─────────────────────────────────────────────┐
-   │   YOUR PROGRAMS                               │   the browser, the game,
-   │   (browser, editor, games, Spotify…)          │   the apps you actually use
-   ├─────────────────────────────────────────────┤
-   │   THE OPERATING SYSTEM                         │   ← the manager in the middle
-   │   (Windows / macOS / Linux)                    │     (Windows, macOS, Linux)
-   ├─────────────────────────────────────────────┤
-   │   THE HARDWARE                                 │   CPU, memory (RAM), disk,
-   │   (CPU, RAM, disk, screen, keyboard, network)  │   screen, keyboard, network
-   └─────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  Programs[Your programs<br/>browser, editor, games, Spotify] --> OS[The operating system<br/>Windows / macOS / Linux]
+  OS --> Hardware[The hardware<br/>CPU, RAM, disk, screen, keyboard, network]
 ```
 
 **What it actually is.** The operating system is the **layer that sits between your programs and the
@@ -74,12 +67,10 @@ around it.
 
 This creates a crucial dividing line:
 
-```text
-   USER SPACE   │  your programs run here, "at arm's length" from the hardware.
-   (untrusted)  │  They can't touch hardware directly — they must ask the kernel.
-   ─────────────┼──────────────────────────────────────────────────────────────
-   KERNEL SPACE │  the kernel runs here, with full control of the hardware.
-   (trusted)    │  It does the dangerous, powerful work — carefully, on request.
+```mermaid
+flowchart TD
+  User[User space, untrusted<br/>your programs run here, at arm's length] -->|system call| Kernel[Kernel space, trusted<br/>full control of the hardware]
+  Kernel -->|result| User
 ```
 
 **What it does in real life.** When your browser wants to save a file, it doesn't write to the disk itself.

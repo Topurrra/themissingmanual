@@ -27,28 +27,18 @@ In the last phase you saw that machines find each other by number. But you don't
 
 When your computer needs the IP for a name it hasn't seen recently, it doesn't ask one server — it walks a short chain. You don't have to memorize the machinery, but seeing the shape of it makes the failures later make sense.
 
-```text
-   "What's the IP for example.com?"
-
-   your computer
-        │
-        ▼
-   ┌──────────────┐   asks around on your behalf
-   │  resolver    │   (usually run by your ISP or
-   │ (recursive)  │    a service like 1.1.1.1)
-   └──────┬───────┘
-          │  1. "Who handles .com names?"
-          ▼
-   ┌──────────────┐
-   │  root + TLD  │   points toward the servers
-   │   servers    │   responsible for example.com
-   └──────┬───────┘
-          │  2. "Ask example.com's own name server"
-          ▼
-   ┌──────────────┐
-   │ authoritative│   the final word:
-   │ name server  │   "example.com is 93.184.215.14"
-   └──────────────┘
+```mermaid
+sequenceDiagram
+  participant You as Your computer
+  participant Resolver as Resolver (recursive)
+  participant Root as Root + TLD servers
+  participant Auth as Authoritative name server
+  You->>Resolver: What's the IP for example.com?
+  Resolver->>Root: Who handles .com names?
+  Root-->>Resolver: ask example.com's own name server
+  Resolver->>Auth: What's the IP for example.com?
+  Auth-->>Resolver: 93.184.215.14
+  Resolver-->>You: 93.184.215.14
 ```
 
 📝 **Terminology.** A *resolver* (or *recursive resolver*) is the helper that does the legwork — it asks the other servers for you and returns the final answer. An *authoritative name server* is the one that actually *owns* the answer for a given domain. The intermediate steps (*root* and *TLD* servers, where *TLD* = top-level domain like `.com` or `.org`) just point the resolver toward the right authoritative server.

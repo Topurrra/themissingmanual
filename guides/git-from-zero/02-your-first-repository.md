@@ -138,12 +138,11 @@ $ git commit -m "Add a second line"
 two moves — `add` to stage, `commit` to seal. No `(root-commit)` this time, because this snapshot has a
 parent: your first commit. That's the loop, forever:
 
-```text
-   edit a file   ──►   git add   ──►   git commit
-   (do the work)      (pack the box)   (seal the snapshot)
-        ▲                                   │
-        └───────────────────────────────────┘
-                  repeat, as often as you like
+```mermaid
+flowchart LR
+  E(edit a file<br/>do the work) -->|git add| S(stage<br/>pack the box)
+  S -->|git commit| C(snapshot<br/>seal it)
+  C -->|repeat| E
 ```
 
 ## `git log` — see your history

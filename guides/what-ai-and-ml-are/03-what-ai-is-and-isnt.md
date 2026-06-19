@@ -89,19 +89,14 @@ that "Paris is the capital of France" — only the statistical fact that those w
 its training data. There is no little ledger of truth inside it to consult. There's just the learned
 pattern of what text usually looks like.
 
-```text
-   What you imagine is happening        What is actually happening
-   ───────────────────────────         ──────────────────────────
-   question                            question
-      │                                   │
-      ▼                                   ▼
-   [ looks up the truth ]              [ predicts plausible next words
-      │                                  from learned patterns ]
-      ▼                                   │
-   true answer                           ▼
-                                       plausible answer
-                                       (often true, sometimes not —
-                                        and it can't tell which)
+```mermaid
+flowchart TD
+  subgraph Imagine["What you imagine is happening"]
+    Q1[question] --> LU[looks up the truth] --> TA[true answer]
+  end
+  subgraph Actual["What is actually happening"]
+    Q2[question] --> PR[predicts plausible next words<br/>from learned patterns] --> PA["plausible answer<br/>(often true, sometimes not —<br/>and it can't tell which)"]
+  end
 ```
 
 ⚠️ **Gotcha: it predicts *plausible*, not *true*.** This is the whole phase in one line. The model is

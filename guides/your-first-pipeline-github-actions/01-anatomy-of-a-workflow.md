@@ -19,20 +19,14 @@ So before a single line of YAML, let's install the mental model. There are reall
 
 **What it actually is.** A GitHub Actions pipeline is a chain of nested things, each living inside the one above it:
 
-```text
-  EVENT            "something happened"  (you pushed; someone opened a PR)
-    │
-    ▼
-  WORKFLOW         one .yml file in .github/workflows/  — "what to do about it"
-    │
-    ├── JOB        a unit of work that gets its own fresh machine
-    │     │
-    │     └── STEP   one command or one prebuilt action, run in order
-    │     └── STEP
-    │
-    └── JOB        (jobs run in parallel by default, each on its own machine)
-
-  RUNNER           the throwaway machine a job runs on (e.g. ubuntu-latest)
+```mermaid
+flowchart TD
+  Event[Event<br/>you pushed; someone opened a PR] -->|triggers| Workflow[Workflow<br/>one .yml in .github/workflows/]
+  Workflow --> Job1[Job<br/>own fresh machine]
+  Workflow --> Job2[Job<br/>runs in parallel]
+  Job1 --> Step1[Step: command or action]
+  Job1 --> Step2[Step: command or action]
+  Job1 -->|runs on| Runner[Runner<br/>throwaway machine, e.g. ubuntu-latest]
 ```
 
 Read it as a sentence: *an **event** triggers a **workflow**, which contains one or more **jobs**, each of which runs a list of **steps** on a fresh **runner**.* That's the whole model. Now let's give each word a real definition.

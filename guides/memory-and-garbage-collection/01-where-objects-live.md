@@ -22,18 +22,20 @@ Before we can talk about cleaning up memory, we have to be honest about where th
 - **The stack** is a tidy stack of plates. Every time you call a function, a new plate (a *stack frame*) goes on top, holding that function's local variables. When the function returns, its plate comes off — instantly, automatically. The stack is fast and self-cleaning, but it only works for things whose size is known up front and whose life ends when the function does.
 - **The heap** is a big open warehouse. You can ask for a space of any size, at any time, and it stays yours until *something* decides to give it back. Nothing comes off automatically when a function returns. The heap is flexible, but that flexibility is exactly what makes cleanup hard.
 
-```text
-   STACK (fast, automatic)               HEAP (flexible, manual cleanup)
-   ┌──────────────────────┐              ┌───────────────────────────────┐
-   │ frame: greet()       │              │                               │
-   │   name = ─────────────────────────▶ │  "Sam" (the actual string)    │
-   │   length = 3         │              │                               │
-   ├──────────────────────┤              │  [User #4102 record]          │
-   │ frame: main()        │              │                               │
-   │   ...                │              │  [a 10,000-element list]      │
-   └──────────────────────┘              └───────────────────────────────┘
-     pops off when the              this stuff stays until someone
-     function returns               explicitly reclaims it
+```mermaid
+flowchart LR
+  subgraph Stack["STACK — fast, automatic (pops off on return)"]
+    direction TB
+    G["frame: greet()<br/>name = •<br/>length = 3"]
+    M["frame: main()"]
+  end
+  subgraph Heap["HEAP — flexible (stays until reclaimed)"]
+    direction TB
+    S["'Sam' (the string)"]
+    U["User #4102 record"]
+    L["a 10,000-element list"]
+  end
+  G -->|pointer| S
 ```
 
 The arrow is the key detail. On the stack, the variable `name` doesn't usually hold the string "Sam" itself — it holds the *address* of where "Sam" lives on the heap. That address is called a **pointer** (or a *reference*, in higher-level languages).
@@ -46,7 +48,7 @@ If the stack is so fast and automatic, why not put everything there? Because the
 
 Consider building something and handing it back:
 
-```python
+```python runnable
 def make_user(name):
     user = {"name": name, "logins": 0}   # build a dictionary
     return user                          # hand it back to the caller
@@ -66,16 +68,17 @@ Here's the problem the rest of this guide exists to solve. A piece of heap memor
 
 Reclaim too early and you get a disaster. Suppose two variables point at the same heap object, you free it because one of them is done, and the other variable still thinks it's valid:
 
-```text
-   a ──┐
-       ├──▶ [ heap object ]          both a and b point to the same object
-   b ──┘
-
-   ... you reclaim it because you're "done" with it via a ...
-
-   a ──┐
-       ├──▶ [ FREED — reused for     b still points here, but the bytes are
-   b ──┘      something else now ]   now somebody else's. b is a live grenade.
+```mermaid
+flowchart LR
+  subgraph before["before — both point to the same object"]
+    a1["a"] --> obj["heap object"]
+    b1["b"] --> obj
+  end
+  subgraph after["after — freed via a, but b still points here"]
+    a2["a"] --> freed["FREED — reused<br/>for something else"]
+    b2["b"] -->|dangling pointer| freed
+  end
+  before --> after
 ```
 
 Now `b` is a **dangling pointer** — it points at memory that's been freed and possibly handed to something else entirely. Reading through `b` gives you garbage; writing through it corrupts another part of your program. This is the famous **use-after-free** bug, and it's both nasty to debug and a serious security hole.

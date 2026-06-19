@@ -71,13 +71,11 @@ The promise is about that one instant: the moment `COMMIT` returns success. Befo
 
 It's tempting to memorize ACID as four trivia points. Don't. See them as four ways the database has your back across one transaction's life:
 
-```text
-   BEGIN ──────────── work ──────────── COMMIT ──────────── (forever)
-     │                  │                  │                    │
-  Atomicity        Isolation          Consistency          Durability
-  the bundle is    others can't       the commit is        once committed,
-  indivisible      see your half-     refused if it         it survives any
-  (all or none)    finished work      breaks your rules     crash
+```mermaid
+flowchart LR
+  B["BEGIN<br/><br/>Atomicity:<br/>the bundle is<br/>indivisible (all or none)"] --> W["work<br/><br/>Isolation:<br/>others can't see<br/>your half-finished work"]
+  W --> C["COMMIT<br/><br/>Consistency:<br/>the commit is refused<br/>if it breaks your rules"]
+  C --> F["forever<br/><br/>Durability:<br/>once committed,<br/>it survives any crash"]
 ```
 
 Atomicity and Consistency are about *one* transaction being whole and legal. Isolation is about *many* transactions coexisting. Durability is about surviving *time and failure* after the fact.

@@ -23,18 +23,15 @@ touching anything, because each piece only makes sense in light of the others.
 
 **What you're building.** A request from a visitor's browser will travel like this:
 
-```text
-   browser ──► your-domain.com ──► [DNS] ──► 203.0.113.10 (your box)
-                                                    │
-                                            port 443 (HTTPS)
-                                                    ▼
-                                        ┌────────────────────┐
-                                        │   nginx (public)    │  ← terminates HTTPS,
-                                        │   reverse proxy     │     forwards inward
-                                        └─────────┬──────────┘
-                                                  │ plain HTTP, on the box only
-                                                  ▼
-                                        127.0.0.1:3000  ← your app (private)
+```mermaid
+flowchart TD
+  Browser["browser<br/>your-domain.com"]
+  DNS["DNS<br/>resolves name → IP"]
+  Nginx["nginx (public)<br/>reverse proxy — terminates HTTPS,<br/>forwards inward"]
+  App["127.0.0.1:3000<br/>your app (private)"]
+  Browser -->|"your-domain.com"| DNS
+  DNS -->|"203.0.113.10, port 443 (HTTPS)"| Nginx
+  Nginx -->|"plain HTTP, on the box only"| App
 ```
 
 Three jobs, three tools:

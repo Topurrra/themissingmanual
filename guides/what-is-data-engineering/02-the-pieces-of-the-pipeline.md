@@ -17,16 +17,12 @@ you'll ever hear into the right spot in the flow.
 
 Here's the whole river, labeled:
 
-```text
-  SOURCES            INGESTION         STORAGE             TRANSFORM           SERVE
- ┌──────────┐       ┌──────────┐      ┌────────────┐      ┌────────────┐      ┌────────────┐
- │ apps     │       │          │      │ warehouse  │      │ clean      │      │ dashboards │
- │ databases│  ──►  │ collect  │ ──►  │   or       │ ──►  │ join       │ ──►  │ reports    │
- │ APIs     │       │ & load   │      │ lake       │      │ aggregate  │      │ ML models  │
- │ logs     │       │          │      │ (hold raw) │      │ (make it   │      │            │
- └──────────┘       └──────────┘      └────────────┘      │  trusted)  │      └────────────┘
-   where data         get it out        a big, stable      └────────────┘        where people
-   is born            of the sources    home for the data     reshape it          actually use it
+```mermaid
+flowchart LR
+  S[Sources<br/>apps · databases<br/>APIs · logs] --> I[Ingestion<br/>collect & load]
+  I --> St[Storage<br/>warehouse or lake<br/>hold raw]
+  St --> T[Transform<br/>clean · join · aggregate<br/>make it trusted]
+  T --> Sv[Serve<br/>dashboards · reports<br/>ML models]
 ```
 
 Let's take them one at a time.
@@ -114,6 +110,17 @@ ORDER BY order_date;
 data was unusable for a report; this output is something a leader can read directly. That move, raw → 
 trusted summary, is the transform stage in one query.
 
+**Try the same shape of move.** This runs the same kind of aggregate over a tiny library dataset — rows
+rolled up into a per-group summary. Run it, then change `GROUP BY` to see the transform stage in action:
+
+```sql runnable
+SELECT a.country, COUNT(b.id) AS books, MIN(b.year) AS earliest
+FROM authors a
+JOIN books b ON b.author_id = a.id
+GROUP BY a.country
+ORDER BY books DESC;
+```
+
 📝 **Terminology — ETL vs ELT.** You'll hear both. **ETL** = *Extract, Transform, Load* (clean the data
 *before* storing it). **ELT** = *Extract, Load, Transform* (store the raw data first, then clean it
 *inside* the warehouse). Modern cloud warehouses are powerful enough that ELT is now common — but it's the
@@ -141,10 +148,17 @@ invisible.
 These three titles get blurred constantly. The pipeline makes the difference easy to see — it's mostly
 about *which part of the river you live in*:
 
-```text
-   SOURCES → INGESTION → STORAGE → TRANSFORM → SERVE → DECISIONS
-   └──────── DATA ENGINEER ───────────────┘        └── ANALYST ──┘
-                                                    └── DATA SCIENTIST ──►
+```mermaid
+flowchart LR
+  subgraph DE [Data engineer — builds the river]
+    direction LR
+    S[Sources] --> I[Ingestion] --> St[Storage] --> T[Transform]
+  end
+  T --> Sv[Serve]
+  subgraph TAP [Analyst & scientist — drink from the tap]
+    direction LR
+    Sv --> D[Decisions / dashboards / models]
+  end
 ```
 
 - **Data engineer** — builds and maintains the river itself: ingestion, storage, and the transform

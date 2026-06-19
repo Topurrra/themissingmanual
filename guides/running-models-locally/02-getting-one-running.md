@@ -21,16 +21,12 @@ We'll use **Ollama**, because it removes almost all of the friction. It's a smal
 
 **Why people get this wrong.** It's easy to picture "installing an AI" as one monolithic thing. It's cleaner to keep them separate in your head: you install the *runtime* once, and then you download *models* into it — as many as you like, swapping between them. Pulling a second model doesn't reinstall anything; it just drops another record on the shelf.
 
-```text
-   ┌─────────────────────────────────────────┐
-   │              Ollama (runtime)            │
-   │   loads model files, does the math,      │
-   │   exposes a chat prompt + a local API    │
-   │   ┌──────────┐  ┌──────────┐             │
-   │   │ model A  │  │ model B  │   ← files    │
-   │   │ (weights)│  │ (weights)│     on disk  │
-   │   └──────────┘  └──────────┘             │
-   └─────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  subgraph Ollama["Ollama (runtime) — loads model files, does the math,<br/>exposes a chat prompt + a local API"]
+    A["model A<br/>(weights on disk)"]
+    B["model B<br/>(weights on disk)"]
+  end
 ```
 
 > 📝 **Terminology.** When you tell Ollama to **pull** a model, it downloads the weight files to your disk. When you **run** a model, Ollama loads those files into memory and starts answering. Pull once; run as often as you like.

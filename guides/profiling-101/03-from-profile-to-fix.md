@@ -19,21 +19,12 @@ This phase is the discipline that closes that gap. It's a short, boring, reliabl
 
 **What it actually is.** Optimization isn't a single heroic edit; it's a loop you run until you're fast enough:
 
-```text
-   ┌─────────────────────────────────────────────────────────┐
-   │  1. MEASURE   → profile a realistic run; find the        │
-   │                 hot spot (high self time / wide box)      │
-   │                                                          │
-   │  2. HYPOTHESIZE → "it's slow because it rebuilds the      │
-   │                    table every call"                      │
-   │                                                          │
-   │  3. CHANGE ONE THING → fix exactly that, nothing else     │
-   │                                                          │
-   │  4. RE-MEASURE → profile again. Faster? Keep it.         │
-   │                  Same/worse? Revert it.                   │
-   └──────────────────────────┬──────────────────────────────┘
-                              │  not fast enough? loop again
-                              └──────────────► back to step 1
+```mermaid
+flowchart LR
+  M["1. Measure<br/>find the hot spot"] --> H["2. Hypothesize<br/>the why"]
+  H --> C["3. Change one thing"]
+  C --> R["4. Re-measure<br/>faster? keep · else revert"]
+  R -->|not fast enough yet| M
 ```
 
 **Why each step is non-negotiable.**

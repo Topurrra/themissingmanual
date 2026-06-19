@@ -23,16 +23,17 @@ This is sharding. It's the most powerful tool in this guide and the most expensi
 
 Hold the contrast clearly, because it's the whole point:
 
-```text
-   REPLICATION (Phase 2)              SHARDING (Phase 3)
-   each machine = a FULL copy         each machine = a SLICE of the data
-   ─────────────────────────          ─────────────────────────────────
-   ┌────────┐ ┌────────┐              ┌─────────┐ ┌─────────┐ ┌─────────┐
-   │ ALL    │ │ ALL    │              │ users   │ │ users   │ │ users   │
-   │ data   │ │ data   │              │ A–H     │ │ I–P     │ │ Q–Z     │
-   └────────┘ └────────┘              └─────────┘ └─────────┘ └─────────┘
-   scales READS                       scales WRITES
-   (more places to read)              (each shard takes its own writes)
+```mermaid
+flowchart TB
+  subgraph REP["REPLICATION (Phase 2) — each machine = a FULL copy · scales READS"]
+    R1[ALL data]
+    R2[ALL data]
+  end
+  subgraph SH["SHARDING (Phase 3) — each machine = a SLICE · scales WRITES"]
+    S1[users A–H]
+    S2[users I–P]
+    S3[users Q–Z]
+  end
 ```
 
 **Why this scales writes.** With three shards, writes for users A–H land on shard 1, I–P on shard 2, Q–Z on shard 3 — three machines absorbing writes *in parallel*, each responsible for a third of the load. That parallelism is the thing replication could never give you, because no single machine has to see every write anymore. Add shards, add write capacity.

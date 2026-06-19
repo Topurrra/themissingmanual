@@ -48,11 +48,11 @@ Some phrasings do shift output, but the effect is small, inconsistent, and chang
 
 Because no single prompt is guaranteed, the real skill is a loop, not a lucky first draft:
 
-```text
-   write a prompt  ──►  run it on REAL inputs  ──►  read the outputs honestly
-        ▲                                                      │
-        │                                                      ▼
-        └──────────  tighten what was under-specified  ◄──────┘
+```mermaid
+flowchart LR
+  W[write a prompt] --> R[run it on REAL inputs] --> O[read the outputs honestly]
+  O --> T[tighten what was under-specified]
+  T --> W
 ```
 
 The critical word is **real inputs**. A prompt that works on one tidy example you made up can fall apart on the messy, varied, edge-case data you'll actually feed it. Before you rely on a prompt, run it across a handful of genuine cases — including the awkward ones — and look at what it does. That's how you find the gap between "looks good once" and "works in practice."

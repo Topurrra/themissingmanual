@@ -39,19 +39,12 @@ The process at the top of the memory-sorted list is using the most RAM. Now let'
 
 **What it actually is.** When RAM fills up, the OS doesn't crash. It finds memory that hasn't been touched in a while — a background app, an idle tab — and writes it out to a reserved area on the **disk**, freeing that RAM for whatever needs it now. Moving memory between RAM and disk like this is **paging**; the disk area it uses is called **swap** (Windows: the *page file*; macOS: *swap files* it manages automatically).
 
-```text
-   RAM is full. A new program needs room.
-
-        ┌──────── RAM (fast) ────────┐        ┌─── DISK / swap (slow) ───┐
-        │ active tab                 │        │                          │
-        │ editor (in use)            │        │                          │
-        │ idle app (untouched 10min) │ ──────▶│ idle app (paged out)     │
-        └────────────────────────────┘        └──────────────────────────┘
-          ▲ room freed for the new program
-
-   Later you click that idle app → OS must page it BACK from disk first
-   → a beachball / spinner while you wait. That wait IS the swap cost.
+```mermaid
+flowchart LR
+  RAM["RAM, fast<br/>active tab · editor in use · idle app untouched 10 min"] -->|page out idle app| Swap["Disk / swap, slow<br/>idle app paged out"]
+  Swap -->|click the idle app: page it back in| RAM
 ```
+*RAM is full and a new program needs room, so the OS pages the idle app out to disk — freeing RAM now. Later, clicking that idle app forces the OS to page it back from disk first (the beachball/spinner). That wait IS the swap cost.*
 
 **Why this is the slowness.** Disk is *dramatically* slower than RAM — orders of magnitude. As long as paging is occasional, you barely notice. But when RAM is so tight that the OS is *constantly* shuffling pages out and pulling them back — every app switch forcing another disk round-trip — the machine spends more time moving memory than doing your work. That pathological state has a name: **thrashing**. The molasses feeling, the solid disk light, the multi-second app switches — that's thrashing, the OS frantically swapping to avoid the alternative.
 
@@ -97,15 +90,11 @@ The diagnosis writes itself: one Java process is eating real RAM, which forced e
 
 **What it actually is.** Sometimes paging can't save the day — memory demand outruns RAM *and* swap. The OS now faces a genuinely bad choice: freeze the entire system, or sacrifice something. Linux chooses to sacrifice: a part of the kernel called the **OOM killer** ("Out Of Memory killer") wakes up, picks the process it judges most responsible (roughly: the biggest memory user, weighed against a few factors), and kills it — SIGKILL, no negotiation — to claw back enough RAM to keep the *rest* of the system alive.
 
-```text
-   RAM full  →  swap full  →  next allocation can't be satisfied
-        │
-        ▼
-   OOM killer wakes, scores processes by memory use, picks one
-        │
-        ▼
-   SIGKILL the chosen victim  →  RAM freed  →  system survives
-        (the victim is gone with no warning and no cleanup)
+```mermaid
+flowchart TD
+  Full["RAM full → swap full → next allocation can't be satisfied"] --> Pick[OOM killer wakes, scores processes by memory use, picks one]
+  Pick --> Kill["SIGKILL the chosen victim (gone with no warning, no cleanup)"]
+  Kill --> Survive[RAM freed → system survives]
 ```
 
 **Why this matters in real life.** This explains one of the most baffling experiences in computing: **a program vanishes with no error, no crash dialog, nothing.** You didn't close it; it didn't crash *itself*. The OS executed it to survive. On Linux servers the fingerprint is unmistakable in the system log:

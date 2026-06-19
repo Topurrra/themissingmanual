@@ -29,22 +29,13 @@ Picture an office with a receptionist at the front desk. Visitors don't wander t
 right person. They tell the receptionist what they need; the receptionist walks it back to the right office,
 gets the answer, and hands it back. Visitors only ever see the front desk. That's nginx.
 
-```text
-                  ┌──────────────────────────────────────────┐
-                  │                  internet                 │
-                  └───────────────────┬──────────────────────┘
-                                      │  https://yoursite.com
-                                      ▼
-                        ┌───────────────────────────┐
-                        │           nginx           │   ← the receptionist
-                        │      (reverse proxy)       │     public, port 443
-                        └─────────────┬─────────────┘
-                                      │  http://127.0.0.1:3000
-                                      ▼
-                        ┌───────────────────────────┐
-                        │          your app          │   ← private, not exposed
-                        │      (listens on :3000)    │     to the internet
-                        └───────────────────────────┘
+```mermaid
+flowchart TD
+  Net["internet"]
+  Nginx["nginx (reverse proxy)<br/>the receptionist — public, port 443"]
+  App["your app (listens on :3000)<br/>private, not exposed to the internet"]
+  Net -->|"https://yoursite.com"| Nginx
+  Nginx -->|"http://127.0.0.1:3000"| App
 ```
 
 📝 **Terminology — reverse vs forward proxy.** A *forward* proxy sits in front of *clients* and forwards their

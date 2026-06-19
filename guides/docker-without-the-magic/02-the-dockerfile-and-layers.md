@@ -61,16 +61,19 @@ happens at build time, `CMD` at run time.
 what changed in the filesystem at that step. The final image is those layers stacked, read-only, one on
 top of the next:
 
-```text
-   CMD ["node","server.js"]   ─►  (metadata, tiny)
-   EXPOSE 3000                 ─►  (metadata, tiny)
-   COPY . .                    ─►  ┌──────────────┐  your source code
-   RUN npm ci                  ─►  │  layer        │  installed node_modules  (BIG)
-   COPY package.json ...       ─►  │  layer        │  the manifests
-   WORKDIR /app                 ─►  │  layer        │
-   FROM node:20-slim           ─►  └──────────────┘  the base image
-                                    stacked, read-only
+```mermaid
+flowchart TD
+  L6["CMD [node, server.js] — metadata, tiny"]
+  L5["EXPOSE 3000 — metadata, tiny"]
+  L4["COPY . . — your source code"]
+  L3["RUN npm ci — installed node_modules (BIG)"]
+  L2["COPY package.json ... — the manifests"]
+  L1["WORKDIR /app"]
+  L0["FROM node:20-slim — the base image"]
+  L6 --> L5 --> L4 --> L3 --> L2 --> L1 --> L0
 ```
+
+*Each instruction is one read-only layer; the final image is them stacked.*
 
 **Why this matters in real life: the build cache.** When you rebuild, Docker walks the instructions in
 order and **reuses the cached layer for any step whose inputs haven't changed.** The instant it hits a

@@ -27,7 +27,7 @@ OOP's answer: put the balance and the only functions allowed to change it in the
 
 **A real example.** Here's that bank account as a class. The comments are the whole point — read them.
 
-```python
+```python runnable
 class BankAccount:
     def __init__(self, owner):
         self.owner = owner        # data that belongs to this account

@@ -35,15 +35,15 @@ tree at some folder (this is called "mounting").
 else. (Confusingly, "root" is *also* the name of the all-powerful admin user — we'll meet that root in
 [Phase 3](03-users-permissions-sudo.md). Same word, two meanings: the top folder, and the superuser.)
 
-```text
-   /                         ← the root: the top of the single tree
-   ├── bin/    ── essential everyday commands (ls, cp, cat …)
-   ├── etc/    ── system configuration files (settings live here)
-   ├── home/   ── one folder per human user
-   │   └── ada/    ← your stuff lives here: /home/ada
-   ├── usr/    ── most installed programs and their files
-   ├── var/    ── data that changes constantly: logs, databases, mail
-   └── tmp/    ── scratch space, wiped on reboot
+```mermaid
+flowchart TD
+  root["/ (root: top of the single tree)"] --> bin["bin/ — essential commands (ls, cp, cat)"]
+  root --> etc["etc/ — system configuration files"]
+  root --> home["home/ — one folder per human user"]
+  root --> usr["usr/ — most installed programs"]
+  root --> var["var/ — data that changes: logs, databases, mail"]
+  root --> tmp["tmp/ — scratch space, wiped on reboot"]
+  home --> ada["ada/ — your stuff: /home/ada"]
 ```
 
 ## The folders that surprise everyone, and what each is for

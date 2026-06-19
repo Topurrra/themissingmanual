@@ -80,18 +80,22 @@ This is the new concept worth slowing down for, because everything relational is
 
 **What it does in real life.** The key is how you (and the DBMS) refer to one specific row with zero ambiguity. "Update customer **2**." "Delete order **5057**." "This order belongs to customer **2**." That last one is the seed of the whole relational idea: one table can point at a row in another table *by its key*. An `orders` table can carry a `customer_id` column whose value is the `id` of the customer who placed it.
 
-```text
-   orders                              customers
-   ┌──────┬─────────────┬─────────┐    ┌─────┬──────────────┐
-   │ id   │ customer_id │ total   │    │ id  │ name         │
-   ├──────┼─────────────┼─────────┤    ├─────┼──────────────┤
-   │ 5057 │      2      │  19.99  │──┐ │ 1   │ Ada Lovelace │
-   │ 5058 │      2      │   4.50  │──┤ │ 2   │ Alan Turing  │ ◄── both orders
-   │ 5059 │      3      │  99.00  │  └►│     │              │     point here
-   └──────┴─────────────┴─────────┘    │ 3   │ Grace Hopper │
-              │                         └─────┴──────────────┘
-              └─ "customer_id = 2" means "this order belongs to row id=2"
+```mermaid
+erDiagram
+  CUSTOMERS ||--o{ ORDERS : "places (customer_id → id)"
+  CUSTOMERS {
+    int id PK
+    text name
+  }
+  ORDERS {
+    int id PK
+    int customer_id FK
+    numeric total
+  }
 ```
+
+Read it as: a row in `orders` carries a `customer_id`, and `customer_id = 2` means "this order
+belongs to the `customers` row whose `id` is 2" — so orders 5057 and 5058 both point at Alan Turing.
 
 💡 **Key point.** A key turns a table from an isolated grid into something you can *reliably point at*. Unique, unchanging identity per row is the foundation that lets tables connect to each other — which is where the real power of relational databases comes from.
 

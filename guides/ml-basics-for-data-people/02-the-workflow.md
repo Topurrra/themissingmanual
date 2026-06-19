@@ -13,16 +13,12 @@ updated: 2026-06-19
 
 Now that you know what ML *is*, let's walk how a supervised project actually moves from your tables to a working model. There are four beats — **features, split, train, evaluate** — and a data person has a strong hand in three of them. The one piece that's "the algorithm" is, honestly, the smallest part. Let's see why.
 
-```text
-   THE SUPERVISED ML WORKFLOW
-
-   your raw     ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌───────────┐
-   tables ────► │ FEATURES │──►│  SPLIT   │──►│  TRAIN   │──►│ EVALUATE  │
-                │ shape the│   │ train /  │   │ on the   │   │ on the    │
-                │ inputs   │   │ test     │   │ train set│   │ test set  │
-                └──────────┘   └──────────┘   └──────────┘   └───────────┘
-                  └──────── mostly data work ───────┘  algo    you decide
-                                                              "is it good?"
+```mermaid
+flowchart LR
+  raw[Your raw tables] --> F[Features<br/>shape the inputs]
+  F --> S[Split<br/>train / test]
+  S --> T[Train<br/>on the train set]
+  T --> E[Evaluate<br/>on the test set]
 ```
 
 ## Features: the columns the model learns from

@@ -35,20 +35,17 @@ Remember the two oddities: order `104` points at a non-existent user `7`, and Li
 
 Before the syntax, hold this picture. Every join is choosing which rows to keep when a match is missing.
 
-```text
-  INNER JOIN  →  keep ONLY rows that match on BOTH sides
-                 ┌──────────┐
-        users    │ matched  │    orders
-       (some) ───┤ rows     ├─── (some)
-                 └──────────┘
-                 unmatched rows on either side are dropped
-
-  LEFT JOIN   →  keep ALL left-table rows; attach matches where they exist
-                 ┌────────────────────┐
-        ALL  ────┤ every left row,     │
-       users     │ NULLs where no      │
-                 │ matching order      │
-                 └────────────────────┘
+```mermaid
+flowchart LR
+  subgraph INNER[INNER JOIN: keep only rows matching on BOTH sides]
+    UI[users] --> MI[matched rows only]
+    OI[orders] --> MI
+    MI --> DI[unmatched rows on either side are dropped]
+  end
+  subgraph LEFT[LEFT JOIN: keep ALL left rows, attach matches where they exist]
+    UL[ALL users] --> ML[every left row; NULLs where no matching order]
+    OL[orders] --> ML
+  end
 ```
 
 The word that controls everything is "left." The **left table** is the one named first, in the `FROM` clause. In `FROM users LEFT JOIN orders`, `users` is the left table — so a LEFT JOIN guarantees every user appears, matched up with their orders or padded with NULLs.
@@ -76,6 +73,15 @@ INNER JOIN orders ON orders.user_id = users.id;
 *What just happened:* The database kept only rows where a user and an order matched on `user_id = id`. Linus is gone — he has no orders, so he never finds a match. Order `104` is gone too — its `user_id = 7` matches no user. INNER is ruthless about both directions: anything without a partner is dropped.
 
 **When you want this.** Use INNER when the question only makes sense for matched rows: "list all orders with who bought them," "show employees with the department they belong to." If an unmatched row would be meaningless in the answer, INNER is right.
+
+Run an INNER JOIN yourself on the built-in `authors` and `books` tables:
+
+```sql runnable
+SELECT authors.name, books.title
+FROM authors
+INNER JOIN books ON books.author_id = authors.id;
+```
+*What just happened:* The database kept only rows where an author matched a book on `author_id = id`. Every author who wrote at least one book in the table shows up beside each of their books; an author with no book here would simply not appear.
 
 ## LEFT JOIN — every left row, no matter what
 

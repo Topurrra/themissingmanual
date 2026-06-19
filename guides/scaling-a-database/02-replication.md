@@ -21,22 +21,15 @@ Let's build the mental model first, because the whole thing rests on one simple 
 
 📝 **Terminology.** The leader is also called the *primary*, *master*, or *source*; followers are called *replicas*, *secondaries*, *standbys*, or *read replicas*. The names vary by database, but the roles are identical: one place writes go, several places reads can come from. We'll say *leader* and *follower* throughout.
 
-```text
-                         WRITES go here only
-                              │
-                              ▼
-                        ┌───────────┐
-                        │  LEADER   │  ← the one source of truth for writes
-                        └─────┬─────┘
-            replicates changes│  (streams the write log)
-                ┌─────────────┼─────────────┐
-                ▼             ▼             ▼
-          ┌──────────┐  ┌──────────┐  ┌──────────┐
-          │ FOLLOWER │  │ FOLLOWER │  │ FOLLOWER │   ← READ-only copies
-          └──────────┘  └──────────┘  └──────────┘
-                ▲             ▲             ▲
-                └─────────────┴─────────────┘
-                       READS spread across followers
+```mermaid
+flowchart TD
+  Writes[WRITES go here only] --> Leader["LEADER<br/>(the one source of truth for writes)"]
+  Leader -->|streams the write log| F1[FOLLOWER]
+  Leader -->|streams the write log| F2[FOLLOWER]
+  Leader -->|streams the write log| F3[FOLLOWER]
+  F1 --> Reads[READS spread across followers]
+  F2 --> Reads
+  F3 --> Reads
 ```
 
 **How the syncing actually works.** The leader already keeps an ordered log of every change it makes — it needs this for crash recovery anyway (PostgreSQL calls it the *write-ahead log* / WAL; MySQL calls it the *binlog*). Replication is, at heart, the leader shipping that change-log to each follower, and each follower replaying it to stay current. The follower isn't re-running your `UPDATE` query from scratch; it's applying the leader's recorded result. That's it — that's the engine.
@@ -73,11 +66,15 @@ Everything above is the good news. Here is the thing you *must* internalize befo
 
 **What it actually does to your app — the classic bug.** A user updates their profile, the app writes it to the leader, then immediately re-renders their profile page with a read — which gets routed to a follower that hasn't received the change yet. The user sees their *old* profile and concludes the save failed, so they save again. This is the single most common replication footgun, and it's called **"read your own writes."**
 
-```text
-   t0  User clicks Save  ──▶  WRITE lands on LEADER ✔
-   t1  Page reloads      ──▶  READ goes to FOLLOWER
-                                 └─ follower hasn't gotten the change yet
-   t2  User sees OLD data  ◀── stale read!  "Did my save not work?"
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant L as Leader
+  participant F as Follower
+  U->>L: t0 clicks Save → WRITE lands on Leader ✔
+  U->>F: t1 page reloads → READ goes to Follower
+  Note over F: follower hasn't gotten the change yet
+  F-->>U: t2 user sees OLD data — stale read! "Did my save not work?"
 ```
 
 **How to handle it (you have options, none free).** You don't eliminate lag — you decide where you can tolerate it:

@@ -135,15 +135,11 @@ its schema is, and how it changes over time.
 warehouse," you get structured, queryable, governed tables that live on the same cheap storage as the raw
 data — one place, two behaviors.
 
-```text
-        LAKEHOUSE
-        ┌──────────────────────────────────────────────┐
-        │  table layer  (Iceberg / Delta Lake / Hudi)   │  ← schemas, reliable
-        │  ── gives files warehouse-like tables ──       │    tables, updates
-        ├──────────────────────────────────────────────┤
-        │  object storage  (S3 / GCS / Azure Blob)      │  ← cheap raw files
-        └──────────────────────────────────────────────┘
-          warehouse-style tables ON TOP of lake-cheap storage
+```mermaid
+flowchart TD
+  table["Table layer — Iceberg / Delta Lake / Hudi<br/>schemas, reliable tables, updates"]
+  store[("Object storage — S3 / GCS / Azure Blob<br/>cheap raw files")]
+  table -->|warehouse-like tables on top of| store
 ```
 
 📝 **A note on honesty.** "Lakehouse" is also a marketing term, and a lakehouse isn't automatically the

@@ -28,23 +28,15 @@ Untangling them is the whole game. So let's name the jobs.
 
 **What it does in real life.** Here's the flow, end to end:
 
-```text
-  YOUR SERVICES              PROMETHEUS                    GRAFANA
-  (expose metrics)        (scrape + store + query)       (query + display)
-
-  ┌──────────────┐         ┌───────────────────┐         ┌──────────────┐
-  │  app:8080    │◄───┐    │                   │         │   📊  📈      │
-  │  /metrics    │    │    │   ┌───────────┐   │         │  dashboards  │
-  └──────────────┘    ├────┤   │  TSDB     │   │◄────────┤   & panels   │
-                      │    │   │ (storage) │   │  PromQL │              │
-  ┌──────────────┐    │    │   └───────────┘   │  query  └──────────────┘
-  │  db:9100     │◄───┘    │                   │   over
-  │  /metrics    │  scrape │   answers queries │   HTTP
-  └──────────────┘  every  └───────────────────┘
-                    15s
-
-   ── collect & store ──────────────────►   ── display ──────►
-            PROMETHEUS'S JOB                   GRAFANA'S JOB
+```mermaid
+flowchart LR
+  app["app:8080 /metrics"]
+  db["db:9100 /metrics"]
+  prom["Prometheus<br/>scrape + store (TSDB) + query"]
+  graf["Grafana<br/>dashboards & panels"]
+  prom -->|scrape every 15s| app
+  prom -->|scrape every 15s| db
+  graf -->|PromQL query over HTTP| prom
 ```
 
 *What just happened:* Prometheus reaches out every scrape interval (15s is the common default) and reads a plain-text page each service publishes at `/metrics`. It stores every number it finds, stamped with the time. Grafana, when you open a dashboard, sends PromQL queries to Prometheus and renders whatever comes back. The arrows point *from* Prometheus *to* your services on purpose — Prometheus pulls; your services don't push.

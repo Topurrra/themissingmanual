@@ -35,42 +35,43 @@ When two transactions touch the same data at the same time, three classic anomal
 
 **Dirty read.** Your transaction reads a change another transaction made but *hasn't committed yet* — and then that other transaction rolls back. You acted on data that never really existed.
 
-```text
-   Transaction A                 Transaction B
-   ─────────────                 ─────────────
-   BEGIN
-   UPDATE alice balance = 0
-                                 BEGIN
-                                 SELECT alice balance  ──► reads 0  (DIRTY: not committed!)
-                                 ...decides Alice is broke...
-   ROLLBACK   (balance was
-              never really 0)
+```mermaid
+sequenceDiagram
+  participant A as Transaction A
+  participant B as Transaction B
+  A->>A: BEGIN; UPDATE alice balance = 0
+  B->>B: BEGIN
+  B->>A: SELECT alice balance → reads 0 (DIRTY: not committed!)
+  B->>B: decides Alice is broke
+  A->>A: ROLLBACK (balance was never really 0)
 ```
 
 *What just happened:* B read a value A was still working on, then A changed its mind. B made a decision on a number that the database, moments later, pretended never happened. This is the worst anomaly, and most databases forbid it by default.
 
 **Non-repeatable read.** You read the same row twice in one transaction and get two different answers, because someone else committed a change in between.
 
-```text
-   Transaction A                 Transaction B
-   ─────────────                 ─────────────
-   BEGIN
-   SELECT alice balance  ──► 400
-                                 UPDATE alice balance = 300; COMMIT
-   SELECT alice balance  ──► 300   (same query, different answer!)
+```mermaid
+sequenceDiagram
+  participant A as Transaction A
+  participant B as Transaction B
+  A->>A: BEGIN
+  A->>A: SELECT alice balance → 400
+  B->>B: UPDATE alice balance = 300; COMMIT
+  A->>A: SELECT alice balance → 300 (same query, different answer!)
 ```
 
 *What just happened:* Within a single transaction, a value you already read shifted under your feet. If your logic assumed the first read was still true (say, you checked the balance, then deducted from it), you've got a bug.
 
 **Phantom read.** You run a query with a `WHERE` filter, then run it again, and *new rows* that match have appeared (or matching rows have vanished) because another transaction committed an insert or delete.
 
-```text
-   Transaction A                          Transaction B
-   ─────────────                          ─────────────
-   BEGIN
-   SELECT count(*) WHERE balance > 1000  ──► 3
-                                          INSERT a $5000 account; COMMIT
-   SELECT count(*) WHERE balance > 1000  ──► 4   (a "phantom" row appeared)
+```mermaid
+sequenceDiagram
+  participant A as Transaction A
+  participant B as Transaction B
+  A->>A: BEGIN
+  A->>A: SELECT count(*) WHERE balance > 1000 → 3
+  B->>B: INSERT a $5000 account; COMMIT
+  A->>A: SELECT count(*) WHERE balance > 1000 → 4 (a phantom row appeared)
 ```
 
 *What just happened:* It's like a non-repeatable read, but for *which rows match* rather than the value in one known row. The set you're reasoning about grew or shrank mid-transaction.
@@ -112,19 +113,15 @@ There's one concurrency hazard that isn't about *reading* the wrong thing — it
 
 The classic recipe: two transfers grab the same two rows in *opposite order*.
 
-```text
-   Transaction A (transfer Alice → Bob)     Transaction B (transfer Bob → Alice)
-   ────────────────────────────────────     ────────────────────────────────────
-   BEGIN                                     BEGIN
-   UPDATE alice   (locks Alice's row)        UPDATE bob     (locks Bob's row)
-
-   UPDATE bob  ──► wants Bob's lock,         UPDATE alice ──► wants Alice's lock,
-                   which B holds. WAIT.                       which A holds. WAIT.
-
-                   ╲                         ╱
-                    ╲   each waits for the   ╱
-                     ╲  lock the other holds ╱
-                      ╲   →  DEADLOCK  ←    ╱
+```mermaid
+sequenceDiagram
+  participant A as Transaction A (Alice → Bob)
+  participant B as Transaction B (Bob → Alice)
+  A->>A: BEGIN; UPDATE alice (locks Alice's row)
+  B->>B: BEGIN; UPDATE bob (locks Bob's row)
+  A-->>B: UPDATE bob → wants Bob's lock, which B holds. WAIT
+  B-->>A: UPDATE alice → wants Alice's lock, which A holds. WAIT
+  Note over A,B: each waits for the lock the other holds → DEADLOCK
 ```
 
 *What just happened:* A locked Alice and then asked for Bob; B locked Bob and then asked for Alice. Now A is waiting on B and B is waiting on A. Left alone they'd wait forever — so the database steps in.

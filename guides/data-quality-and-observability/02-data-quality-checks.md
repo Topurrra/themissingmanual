@@ -149,6 +149,17 @@ sign error or a refund leaking into the orders table). No duplicates this time. 
 have crashed anything; each is "valid" to the database. The validity check is what gives them an opinion:
 *these values do not make sense, stop the run.*
 
+**Try a validity sweep yourself.** Here's the same shape of check — count the violations in one query — over
+a tiny seeded library dataset. It returns zero violations today; change a threshold to watch it "fire":
+
+```sql runnable
+SELECT
+  SUM(CASE WHEN b.title IS NULL THEN 1 ELSE 0 END)  AS null_titles,
+  COUNT(*) - COUNT(DISTINCT b.id)                   AS duplicate_ids,
+  SUM(CASE WHEN b.year < 1800 THEN 1 ELSE 0 END)    AS impossible_years
+FROM books b;
+```
+
 ⚠️ **Gotcha — test the column that hurts, not every column.** It's tempting to slap a null check on all 80
 columns. Don't. A null in an optional `notes` field is fine; a null in `amount` corrupts revenue. Spend
 your checks where a bad value actually changes a number someone trusts. Over-checking is its own failure
@@ -161,14 +172,17 @@ checks as early as you can, and make a failure stop the pipeline before the bad 
 downstream.** This is the fail-fast idea, and it's the difference between catching bad data in one staging
 table and chasing it across twenty.
 
-```text
-   WITHOUT fail-fast checks               WITH fail-fast checks
-   ──────────────────────────            ──────────────────────────
-   source ─► staging ─► marts ─► dashboards
-                                          source ─► staging ─►[CHECK]─✗ STOP
-        bad data flows the whole way               │
-        wrong numbers on dashboards                └─ run halts here;
-        cleanup spans many tables                     bad data never reaches marts
+```mermaid
+flowchart LR
+  subgraph WO [Without fail-fast checks]
+    direction LR
+    s1[source] --> st1[staging] --> m1[marts] --> d1[dashboards<br/>wrong numbers]
+  end
+  subgraph WF [With fail-fast checks]
+    direction LR
+    s2[source] --> st2[staging] --> chk{CHECK} -->|fail| stop[STOP<br/>bad data never reaches marts]
+    chk -->|pass| m2[marts]
+  end
 ```
 
 **What it does in real life.** You insert the checks as a *gate* between stages — after data lands in

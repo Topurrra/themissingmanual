@@ -65,19 +65,17 @@ These are where good teams get hurt. Both come from choosing for the wrong reaso
 
 ⚠️ **The distributed monolith: all the coupling of a monolith, none of the benefits of microservices.** This is the worst of both worlds, and it's distressingly common. It happens when you split a system into services *but the services are still tightly coupled* — they have to be deployed together, they share a database, or every change to one forces changes to the others.
 
-```text
-   It looks like microservices...        ...but acts like a monolith:
+It looks like microservices, but acts like a monolith — you can't deploy one service without the others, they share one database, and one change ripples through all three:
 
-   ┌──────┐  ┌──────┐  ┌──────┐          • you can't deploy svc A without
-   │ svc A │──│ svc B │──│ svc C │          also deploying B and C
-   └──────┘  └──────┘  └──────┘          • they share one database
-        ╲        │        ╱              • one change ripples through all three
-         ╲       │       ╱               • a request must hop all three to work
-          ▼      ▼      ▼
-          ┌──────────────┐               You now PAY every microservices cost
-          │ one shared DB │              (network, tracing, ops) and get
-          └──────────────┘               NONE of the benefits (independence).
+```mermaid
+flowchart TD
+  A[svc A] --> B[svc B] --> C[svc C]
+  A --> DB[(one shared DB)]
+  B --> DB
+  C --> DB
 ```
+
+You now PAY every microservices cost (network, tracing, ops) and get NONE of the benefits (independence).
 
 You're paying the full microservices bill — network calls, distributed debugging, ops overhead — and getting none of the rewards, because the services can't actually move independently. **The tell:** if deploying one service routinely requires deploying others in lockstep, or they all read and write the same tables, you have a distributed monolith. The cure is real boundaries: each service owns its own data and can deploy on its own. If you can't give a candidate service those things, it shouldn't be a separate service yet.
 

@@ -4,7 +4,7 @@ guide: "async-await-and-the-event-loop"
 phase: 0
 summary: "Async exists because programs spend most of their time waiting; the event loop is a single thread plus a queue of ready-to-continue work; and async/await is just readable syntax over 'a value that isn't here yet.'"
 tags: [async, await, event-loop, promises, concurrency, javascript, non-blocking]
-category: programming-languages
+category: programming-concepts
 difficulty: intermediate
 synonyms: ["why does async exist", "what is the event loop", "how does async await work", "what is a promise", "blocking vs non-blocking", "single threaded but concurrent", "what does await do", "dont block the event loop"]
 order: 5

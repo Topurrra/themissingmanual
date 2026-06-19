@@ -17,13 +17,12 @@ We have a request that travels (Phase 1) and a way to find the right machine (Ph
 
 **What it actually is.** Almost everything on the internet is one machine **asking** and another machine **answering**. The one that asks is the **client**. The one that answers is the **server**. That's the whole pattern.
 
-```text
-   ┌──────────┐     "may I have the page at /about ?"     ┌──────────┐
-   │  CLIENT  │  ────────────────────────────────────▶   │  SERVER  │
-   │ (you —   │                                           │ (waits,  │
-   │  your    │  ◀────────────────────────────────────   │  listens,│
-   │  browser)│     "here it is: <the page> "             │  answers)│
-   └──────────┘                                           └──────────┘
+```mermaid
+sequenceDiagram
+  participant Client as Client (your browser)
+  participant Server as Server (waits, listens)
+  Client->>Server: may I have the page at /about ?
+  Server-->>Client: here it is: <the page>
 ```
 
 📝 **Terminology.** *Client* = the machine that initiates a request (your phone, your browser). *Server* = the machine that waits for requests and responds. A single computer can be both at different moments — but in any one exchange, one side asks and one side answers.

@@ -24,20 +24,20 @@ to a *pool* of identical app instances — and decides, for each request, which 
 receptionist, but now there are five identical offices that can all answer the same question, and the
 receptionist picks one each time.
 
-```text
-                              ┌──────────────┐
-              internet  ───►  │     nginx     │   one public front door
-                              │ (load balancer)│
-                              └───────┬───────┘
-                                      │  picks one per request
-                ┌─────────────────────┼─────────────────────┐
-                ▼                     ▼                      ▼
-        ┌──────────────┐     ┌──────────────┐      ┌──────────────┐
-        │  app copy #1  │     │  app copy #2  │      │  app copy #3  │
-        │   :3001       │     │   :3002       │      │   :3003       │
-        └──────────────┘     └──────────────┘      └──────────────┘
-                       the "upstream" pool — interchangeable instances
+```mermaid
+flowchart TD
+  Net["internet"]
+  Nginx["nginx (load balancer)<br/>one public front door"]
+  A1["app copy #1 :3001"]
+  A2["app copy #2 :3002"]
+  A3["app copy #3 :3003"]
+  Net --> Nginx
+  Nginx -->|"picks one per request"| A1
+  Nginx --> A2
+  Nginx --> A3
 ```
+
+*The "upstream" pool — interchangeable instances.*
 
 📝 **Terminology — "upstream."** In nginx, the pool of backend instances is called an **upstream**. It's the
 group of servers that requests flow *up to* after passing through the proxy. You'll see it as a named block in

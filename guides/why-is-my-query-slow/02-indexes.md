@@ -23,16 +23,17 @@ Because the index is *sorted*, the database doesn't read it top to bottom either
 
 📝 **Terminology.** Most database indexes are **B-trees** (balanced trees). You don't need the internals — the working mental model is "a sorted structure the database can jump into and narrow down by halving, instead of reading from the start." That halving is why a B-tree lookup stays fast even as the table grows huge: doubling the rows adds only one more step, not double the work.
 
-```text
-   FULL-TABLE SCAN (no index)            INDEX LOOKUP (B-tree)
-   read every row in order               jump + narrow by halving
-
-   [r][r][r][r] ... [r][r][r]            sorted index of emails:
-    ▲── check all of them ──▲                 ...
-                                          [ada@...] → row #738,114
-                                               │  found in a handful of hops,
-                                               ▼  then jump straight to the row
-                                          (table, untouched except that one row)
+```mermaid
+flowchart TD
+  subgraph SCAN[FULL-TABLE SCAN no index]
+    Q1[query: email = ada] --> R[read every row in order, check each]
+    R --> F1[found, after reading the whole table]
+  end
+  subgraph IDX[INDEX LOOKUP B-tree]
+    Q2[query: email = ada] --> J[jump into sorted index, narrow by halving]
+    J --> P["index entry points to row #738114"]
+    P --> F2[jump straight to that one row]
+  end
 ```
 
 **Why people get this wrong.** A common picture is that an index "sorts the table" or "makes the table faster." It doesn't touch the table's order at all. It's an *additional* object — extra data on disk — that the database consults *first* to find out which rows it needs, and only then goes to the table for those specific rows. Two structures: the pile (table) and the sorted lookup (index).

@@ -17,21 +17,13 @@ Let's start with the idea everything else rests on, because almost everyone's fi
 
 Here's the part that surprises people: **a database is two things, not one.**
 
-```text
-   ┌───────────────────────────────────────────────┐
-   │                  A DATABASE                     │
-   │                                                 │
-   │   ┌─────────────────────────────────────────┐  │
-   │   │  THE DATA                                 │  │  ← the organized store:
-   │   │  (tables of customers, orders, prices…)   │  │    your actual information
-   │   └─────────────────────────────────────────┘  │
-   │                                                 │
-   │   ┌─────────────────────────────────────────┐  │
-   │   │  THE DBMS  (the program that manages it)  │  │  ← the manager:
-   │   │  access · integrity · many users · speed  │  │    guards and serves the data
-   │   └─────────────────────────────────────────┘  │
-   │                                                 │
-   └───────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  subgraph DB[A DATABASE]
+    DBMS["THE DBMS<br/>(the program that manages it)<br/>access · integrity · many users · speed"]
+    DATA["THE DATA<br/>(tables of customers, orders, prices…)"]
+    DBMS -->|guards and serves| DATA
+  end
 ```
 
 **What it actually is.** A database is an **organized store of data** *plus* a **program that manages all access to it**. That program is the real hero, and it has a name: the **DBMS** — the Database Management System. When people say "the database is down" or "ask the database," they usually mean the DBMS, the running program, not the bytes on disk.
@@ -58,17 +50,10 @@ In a spreadsheet, nothing stops you from typing `banana` into the "price" column
 
 **What the DBMS does instead.** It enforces rules *about* the data, every time, no matter who or what is writing. "This column must be a number." "This field can't be empty." "Every order must point to a real customer." The DBMS refuses anything that breaks a rule, so bad data can't get in through the front door in the first place.
 
-```text
-   You ask the DBMS to save a bad order
-              │
-              ▼
-   ┌──────────────────────────┐
-   │  DBMS checks the rules    │   "price must be a number"
-   │  price = "banana"  ✗      │   "customer must exist"
-   └──────────────────────────┘
-              │
-              ▼
-       REJECTED — nothing was saved
+```mermaid
+flowchart TD
+  A["You ask the DBMS to save a bad order<br/>(price = banana)"] --> B{"DBMS checks the rules:<br/>price must be a number?<br/>customer must exist?"}
+  B -->|fails a rule| C["REJECTED — nothing was saved"]
 ```
 
 💡 **Key point.** *Integrity* is the database's promise that the data obeys the rules you set — always, automatically, for every writer. A spreadsheet trusts you to be careful. A database doesn't have to.

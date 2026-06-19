@@ -27,12 +27,9 @@ your branch in a web page where people can see your changes, comment line by lin
 and finally click a button to merge. Git moves the commits; the website adds the conversation and the
 safety of review.
 
-```text
-   YOUR BRANCH on GitHub                     A PULL REQUEST is a web page that:
-   ┌──────────────────────┐                  • shows your branch's diff vs main
-   │ feature/cart-totals  │ ──opens a PR──►   • collects review comments + approval
-   │ (3 commits)          │                   • offers a "Merge" button into main
-   └──────────────────────┘                   • is NOT a git command — it's a GitHub thing
+```mermaid
+flowchart LR
+  B(feature/cart-totals<br/>3 commits) -->|opens a PR| PR(A pull request — a web page that:<br/>• shows your branch's diff vs main<br/>• collects review comments + approval<br/>• offers a Merge button into main<br/>• is NOT a git command — it's a GitHub thing)
 ```
 
 📝 **Terminology.** GitHub and Bitbucket say *pull request* (PR); GitLab says *merge request* (MR). Same

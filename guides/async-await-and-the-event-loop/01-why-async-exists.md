@@ -43,28 +43,26 @@ Say your program needs to do three things, each of which mostly waits on the net
 
 The blocking version does them one after another, standing at the kitchen window each time:
 
-```text
-BLOCKING (one waiter who stands and waits)
-
- fetch user      |■■■■■■■■■■|
- fetch orders               |■■■■■■■■■■|
- fetch notif                            |■■■■■■■■■■|
-                 └─────────────── ~300 ms ──────────────┘
-
- ■ = waiting on the network (CPU idle the whole time)
+```mermaid
+gantt
+  title BLOCKING — waits stack back-to-back (~300 ms)
+  dateFormat X
+  axisFormat %L
+  fetch user    :0, 100
+  fetch orders  :100, 200
+  fetch notif   :200, 300
 ```
 
 The non-blocking version starts all three, then handles each reply as it arrives:
 
-```text
-NON-BLOCKING (start all three, handle replies as they land)
-
- fetch user      |■■■■■■■■■■|
- fetch orders    |■■■■■■■■■■|
- fetch notif     |■■■■■■■■■■|
-                 └──── ~100 ms ────┘
-
- ■ = waiting on the network — but all three waits overlap
+```mermaid
+gantt
+  title NON-BLOCKING — waits overlap (~100 ms)
+  dateFormat X
+  axisFormat %L
+  fetch user    :0, 100
+  fetch orders  :0, 100
+  fetch notif   :0, 100
 ```
 
 *What's happening:* In the blocking version, the three 100 ms waits happen back-to-back because the worker refuses to start the second wait until the first is fully done. In the non-blocking version, the worker kicks off all three waits up front, then collects the results as they come in — so the waits *overlap* instead of stacking. Same network, same per-request time, roughly a third of the wall-clock time. (These are illustrative round numbers to show the shape, not a measured benchmark.)

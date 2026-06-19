@@ -19,15 +19,12 @@ Here's the honest answer, and it's the most important sentence in this guide: **
 
 Most languages people argue about are **multi-paradigm** — they support more than one style and let you pick per situation.
 
-```text
-   strongly OO            mixed / multi-paradigm           strongly functional
-  ┌──────────┐    ┌──────────────────────────────────┐    ┌──────────────┐
-  │  Java*   │    │  Python   JavaScript   C#         │    │  Haskell     │
-  │  (older) │    │  Scala    Kotlin       Rust       │    │  Clojure     │
-  └──────────┘    └──────────────────────────────────┘    │  Elm         │
-                                                            └──────────────┘
-   * even Java has added lambdas, streams, and records — it has drifted toward the middle.
+```mermaid
+flowchart LR
+  OO["strongly OO<br/>Java (older)*"] --> Mixed["mixed / multi-paradigm<br/>Python · JavaScript · C#<br/>Scala · Kotlin · Rust"] --> FP["strongly functional<br/>Haskell · Clojure · Elm"]
 ```
+
+*\* Even Java has added lambdas, streams, and records — it has drifted toward the middle.*
 
 The takeaway: if you write Python or JavaScript, you are *already* free to use objects where they help and pure functions where they help. The "which language is functional" question matters far less than "which approach fits this particular piece of code."
 

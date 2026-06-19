@@ -21,20 +21,11 @@ If anything interrupts you after the first statement and before the second — a
 
 Picture it as wrapping several changes in a single sealed envelope. While the envelope is open you can keep adding changes to it. The moment you seal it (`COMMIT`), everything inside becomes permanent together. If you tear it up instead (`ROLLBACK`), everything inside disappears together, as if you never started.
 
-```text
-   BEGIN ───────────────────────────────────► COMMIT
-     │                                            │
-     │   ┌──────────────────────────────────┐     │   all changes
-     │   │  UPDATE alice  (-$100)           │     │   become permanent
-     │   │  UPDATE bob    (+$100)           │     │   AT THE SAME MOMENT
-     │   └──────────────────────────────────┘     │
-     │              the bundle                     ▼
-     │
-     └──────────────────────────────► ROLLBACK
-                                          │
-                                          ▼   the WHOLE bundle is
-                                              thrown away — as if
-                                              nothing ever happened
+```mermaid
+flowchart LR
+  B["BEGIN<br/>(open the bundle)"] --> U["UPDATE alice -$100<br/>UPDATE bob +$100"]
+  U --> C["COMMIT<br/>all changes become permanent at the same moment"]
+  U --> R["ROLLBACK<br/>the WHOLE bundle is thrown away,<br/>as if nothing ever happened"]
 ```
 
 That's the entire idea. Everything else in this guide is detail hanging off this one picture: changes go in a bundle, and the bundle commits or rolls back *as a whole*.

@@ -50,15 +50,11 @@ is gone.
 If you need to allow several origins (say dev *and* staging), the server should keep a small **allowlist**
 and reflect the request's `Origin` back only when it's on that list:
 
-```text
-   request Origin = http://localhost:5173
-        │
-        ▼
-   is it in my allowlist?  ── no ──►  don't send the header (browser blocks)
-        │
-       yes
-        ▼
-   Access-Control-Allow-Origin: http://localhost:5173   ← echo back the exact origin
+```mermaid
+flowchart TD
+  req["request Origin = http://localhost:5173"] --> check{in my allowlist?}
+  check -->|no| block["don't send the header<br/>(browser blocks)"]
+  check -->|yes| echo["Access-Control-Allow-Origin:<br/>http://localhost:5173 — echo the exact origin"]
 ```
 
 This is the honest way to support multiple origins. Resist the urge to reach for `*` — the next sections
@@ -131,14 +127,15 @@ Sometimes you *can't* change the server — it's a third-party API, or someone e
 you can sidestep CORS entirely with a **proxy**: your own dev server forwards the request, so the browser
 only ever talks to *one* origin (yours).
 
-```text
-   browser → http://localhost:5173/api/...   (same origin — no CORS!)
-                       │
-                       ▼  your dev server forwards it server-side
-              https://some-third-party-api.com/...
-                       │
-                       ▼  the response comes back through your server
-   browser ← http://localhost:5173/api/...   (still looks same-origin)
+```mermaid
+flowchart LR
+  browser["browser<br/>(localhost:5173)"]
+  dev["your dev server<br/>(localhost:5173)"]
+  api["some-third-party-api.com"]
+  browser -- "/api/... (same origin, no CORS)" --> dev
+  dev -- "forwards server-side" --> api
+  api -- "response" --> dev
+  dev -- "still looks same-origin" --> browser
 ```
 
 *What's happening:* the browser thinks it's talking to its own origin (`localhost:5173`), so the

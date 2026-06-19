@@ -25,17 +25,11 @@ things up *by the key*, and you get the value back without searching. Think of a
 you hand over your coat (the value) and get a numbered ticket (the key). When you come back, you don't dig
 through every coat — you hand over ticket #42 and the attendant goes *straight* to hook 42.
 
-```text
-        key            value
-     ┌────────┐     ┌──────────────┐
-     │ "ada"  │ ──► │ "ada@mail.io"│
-     ├────────┤     ├──────────────┤
-     │ "linus"│ ──► │ "linus@x.org"│
-     ├────────┤     ├──────────────┤
-     │ "grace"│ ──► │ "grace@navy" │
-     └────────┘     └──────────────┘
-
-   give it a key  ──►  it hands back that key's value, instantly
+```mermaid
+flowchart LR
+  K1["key: ada"] -->|value| V1["ada@mail.io"]
+  K2["key: linus"] -->|value| V2["linus@x.org"]
+  K3["key: grace"] -->|value| V3["grace@navy"]
 ```
 
 📝 **Terminology.** A map goes by many names. Python calls it a **dict** (dictionary); JavaScript has
@@ -47,7 +41,7 @@ find "umbrella" — you jump to U and you're nearly there. A map does the same f
 
 ## Using a map — set a value, get it back
 
-```python
+```python runnable
 emails = {
     "ada": "ada@mail.io",
     "linus": "linus@x.org",
@@ -87,8 +81,9 @@ and lists aren't.
 lives on. So instead of searching, the map *computes the location* from the key itself and goes straight
 there.
 
-```text
-   key "ada"  ──►  [ hash function ]  ──►  shelf #7  ──►  go directly to shelf 7
+```mermaid
+flowchart LR
+  Key["key: ada"] --> Hash["hash function"] --> Shelf["shelf #7"] --> Go["go directly to shelf 7"]
 ```
 
 Compare that to last phase's list, where finding a value meant walking every slot. A map skips the walk
@@ -118,7 +113,7 @@ seen a thing*. That's a **set**.
 checking "is this in the bag?" is fast. It's a map that kept only the keys and threw away the values — so it
 inherits the same hashing speed.
 
-```python
+```python runnable
 seen = set()
 seen.add("ada")
 seen.add("linus")
@@ -141,7 +136,7 @@ is exactly the point. `"ada" in seen` answered instantly (same hashing jump as a
 **fast membership** ("have I already processed this ID?"). A common one-liner removes duplicates from a list
 by passing it through a set:
 
-```python
+```python runnable
 ids = [3, 7, 3, 1, 7, 7]
 unique_ids = set(ids)
 print(unique_ids)

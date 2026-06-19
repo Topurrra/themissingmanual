@@ -19,14 +19,15 @@ You sit down. Someone hands you a **menu**. The menu lists what you can ask for 
 
 That whole arrangement is the idea behind an API.
 
-```text
-   YOU                  THE MENU + WAITER            THE KITCHEN
-   (the customer)       (the agreed way to ask)      (does the real work)
-
-   "I'd like a    ──►   takes your order,      ──►   chef cooks it,
-    margherita"         passes it back               you never see how
-
-                  ◄──   brings out the pizza   ◄──
+```mermaid
+sequenceDiagram
+  participant You as You (customer)
+  participant Waiter as Menu + Waiter (the agreed way to ask)
+  participant Kitchen as Kitchen (does the real work)
+  You->>Waiter: "I'd like a margherita"
+  Waiter->>Kitchen: passes your order back
+  Kitchen-->>Waiter: chef cooks it (you never see how)
+  Waiter-->>You: brings out the pizza
 ```
 
 - **You** are one program that needs something done.

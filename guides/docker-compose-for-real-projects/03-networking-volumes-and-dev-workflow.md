@@ -21,17 +21,13 @@ This phase answers all three, and then names the two traps that bite people once
 
 **Why people get this wrong.** Coming from running containers by hand, people expect to wire up IP addresses, or `--link` flags, or hand-managed networks. None of that. The service name *is* the address. That's the whole mechanism.
 
-```text
-        Compose-created private network: "shop_default"
-   ┌──────────────────────────────────────────────────────┐
-   │                                                        │
-   │   web ──────► api ──────► db        api ──────► cache  │
-   │              reaches      reaches             reaches  │
-   │              "db:5432"    Postgres            "cache:  │
-   │                                                6379"   │
-   │                                                        │
-   └──────────────────────────────────────────────────────┘
-     a service's NAME is its hostname on this network
+```mermaid
+flowchart LR
+  subgraph Net["Compose-created private network: shop_default — a service's NAME is its hostname"]
+    web --> api
+    api -- "db:5432" --> db
+    api -- "cache:6379" --> cache
+  end
 ```
 
 **What it does in real life.** Look back at the API's config from Phase 2:
