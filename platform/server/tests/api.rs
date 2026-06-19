@@ -556,6 +556,74 @@ async fn status_and_backlog_endpoints() {
     assert!(v["items"].is_array());
 }
 
+// ===== admin console — second wave (revisions/revert · reorder · link audit) =====
+
+#[tokio::test]
+async fn phase_revisions_and_revert() {
+    let app = server::app(admin_state());
+    let cookie = login(&app).await;
+
+    // original markdown of git-from-zero phase 1
+    let orig = app.clone().oneshot(get_auth("/api/admin/guides/git-from-zero/phases/1", &cookie)).await.unwrap();
+    let bytes = axum::body::to_bytes(orig.into_body(), usize::MAX).await.unwrap();
+    let ov: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    let orig_md = ov["markdown"].as_str().unwrap().to_string();
+
+    // edit it (snapshots the pre-edit version)
+    let edit = app.clone().oneshot(patch_json_auth(
+        "/api/admin/guides/git-from-zero/phases/1",
+        r##"{"title":"Edited","summary":"edited","markdown":"# Edited body"}"##,
+        &cookie,
+    )).await.unwrap();
+    assert_eq!(edit.status(), StatusCode::OK);
+
+    // history now lists the pre-edit revision
+    let hist = app.clone().oneshot(get_auth("/api/admin/guides/git-from-zero/phases/1/revisions", &cookie)).await.unwrap();
+    assert_eq!(hist.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(hist.into_body(), usize::MAX).await.unwrap();
+    let revs: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    let rev_id = revs[0]["id"].as_i64().unwrap();
+
+    // revert restores the original markdown
+    let revert = app.clone().oneshot(post_json_auth(&format!("/api/admin/revisions/{rev_id}/revert"), "{}", &cookie)).await.unwrap();
+    assert_eq!(revert.status(), StatusCode::OK);
+    let now = app.oneshot(get_auth("/api/admin/guides/git-from-zero/phases/1", &cookie)).await.unwrap();
+    let bytes = axum::body::to_bytes(now.into_body(), usize::MAX).await.unwrap();
+    let nv: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(nv["markdown"].as_str().unwrap(), orig_md);
+}
+
+#[tokio::test]
+async fn reorder_guides_persists() {
+    let app = server::app(admin_state());
+    let cookie = login(&app).await;
+    let r = app.clone().oneshot(post_json_auth(
+        "/api/admin/guides/reorder",
+        r#"{"order":["git-from-zero","git-explained-like-a-human"]}"#,
+        &cookie,
+    )).await.unwrap();
+    assert_eq!(r.status(), StatusCode::OK);
+    // version-control category now lists git-from-zero first (sort_order 0)
+    let cat = app.oneshot(get("/api/categories/version-control")).await.unwrap();
+    let bytes = axum::body::to_bytes(cat.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(v["guides"][0]["slug"], "git-from-zero");
+}
+
+#[tokio::test]
+async fn link_audit_runs() {
+    let app = server::app(admin_state());
+    assert_eq!(app.clone().oneshot(get("/api/admin/health-check")).await.unwrap().status(), StatusCode::UNAUTHORIZED);
+    let cookie = login(&app).await;
+    let r = app.oneshot(get_auth("/api/admin/health-check", &cookie)).await.unwrap();
+    assert_eq!(r.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert!(v["broken_links"].is_array());
+    assert!(v["missing_assets"].is_array());
+    assert!(v["orphaned_assets"].is_array());
+}
+
 #[test]
 fn content_sync_reimports_only_when_files_change() {
     let dir = tempfile::tempdir().unwrap();

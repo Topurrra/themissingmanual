@@ -9,6 +9,7 @@ pub mod index;
 pub mod ingest;
 pub mod categories;
 pub mod tracks;
+pub mod audit;
 
 pub use models::{Frontmatter, GuideSummary, Phase, PhaseRef, SearchHit};
 pub use categories::Category;

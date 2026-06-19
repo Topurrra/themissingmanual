@@ -10,6 +10,41 @@ pub struct FeedbackRow {
     pub note: String,
 }
 
+/// Lightweight entry for the phase edit-history list.
+#[derive(Debug, Clone, Serialize)]
+pub struct RevisionMeta {
+    pub id: i64,
+    pub created_at: String,
+    pub title: String,
+}
+
+/// A full stored snapshot of a phase (for diff + revert).
+#[derive(Debug, Clone, Serialize)]
+pub struct PhaseRevision {
+    pub id: i64,
+    pub guide_slug: String,
+    pub phase_no: i64,
+    pub created_at: String,
+    pub title: String,
+    pub summary: String,
+    pub markdown: String,
+}
+
+/// One bad reference found by the link/asset audit (`from` = "<guide>/<phase>").
+#[derive(Debug, Clone, Serialize)]
+pub struct BrokenRef {
+    pub from: String,
+    pub href: String,
+}
+
+/// Result of the broken-link / orphaned-asset audit.
+#[derive(Debug, Clone, Serialize, Default)]
+pub struct LinkReport {
+    pub broken_links: Vec<BrokenRef>,
+    pub missing_assets: Vec<BrokenRef>,
+    pub orphaned_assets: Vec<String>,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct Frontmatter {
     pub title: String,

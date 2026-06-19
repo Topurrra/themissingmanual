@@ -1,5 +1,5 @@
 use rusqlite::{params, Connection};
-use crate::models::{CategoryRow, FeedbackRow, GuideSummary, Phase, PhaseRef};
+use crate::models::{CategoryRow, FeedbackRow, GuideSummary, Phase, PhaseRef, PhaseRevision, RevisionMeta};
 
 pub struct Store {
     conn: Connection,
@@ -95,7 +95,17 @@ impl Store {
                  note TEXT NOT NULL DEFAULT '',
                  visitor TEXT NOT NULL DEFAULT ''
              );
-             CREATE INDEX IF NOT EXISTS idx_feedback_ts ON feedback(ts);",
+             CREATE INDEX IF NOT EXISTS idx_feedback_ts ON feedback(ts);
+             CREATE TABLE IF NOT EXISTS phase_revisions (
+                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 guide_slug TEXT NOT NULL,
+                 phase_no INTEGER NOT NULL,
+                 title TEXT NOT NULL,
+                 summary TEXT NOT NULL,
+                 markdown TEXT NOT NULL,
+                 created_at TEXT NOT NULL DEFAULT (datetime('now'))
+             );
+             CREATE INDEX IF NOT EXISTS idx_revisions_phase ON phase_revisions(guide_slug, phase_no);",
         )?;
         Ok(Self { conn })
     }
@@ -231,6 +241,15 @@ impl Store {
 
     pub fn set_guide_sort_order(&self, slug: &str, order: i64) -> Result<(), StoreError> {
         self.conn.execute("UPDATE guides SET sort_order=?2 WHERE slug=?1", params![slug, order])?;
+        Ok(())
+    }
+
+    /// Persist a drag-reorder: set each guide's `sort_order` to its index in `slugs`
+    /// (caller passes one category's guides in the desired order).
+    pub fn reorder_guides(&self, slugs: &[String]) -> Result<(), StoreError> {
+        for (i, s) in slugs.iter().enumerate() {
+            self.conn.execute("UPDATE guides SET sort_order=?2 WHERE slug=?1", params![s, i as i64])?;
+        }
         Ok(())
     }
 
@@ -473,6 +492,56 @@ impl Store {
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
     }
 
+    // ---- phase edit history (versioning + revert) ----
+
+    /// Snapshot a phase's content into the history. Called from the admin edit path only —
+    /// never from ingest, so a boot re-import doesn't flood the history.
+    pub fn insert_phase_revision(&self, guide_slug: &str, phase_no: i64, title: &str, summary: &str, markdown: &str) -> Result<(), StoreError> {
+        self.conn.execute(
+            "INSERT INTO phase_revisions (guide_slug, phase_no, title, summary, markdown) VALUES (?1,?2,?3,?4,?5)",
+            params![guide_slug, phase_no, title, summary, markdown],
+        )?;
+        Ok(())
+    }
+
+    /// History entries for one phase, newest first (id + timestamp + title for the list).
+    pub fn list_phase_revisions(&self, guide_slug: &str, phase_no: i64) -> Result<Vec<RevisionMeta>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, created_at, title FROM phase_revisions WHERE guide_slug=?1 AND phase_no=?2 ORDER BY id DESC",
+        )?;
+        let rows = stmt.query_map(params![guide_slug, phase_no], |r| {
+            Ok(RevisionMeta { id: r.get(0)?, created_at: r.get(1)?, title: r.get(2)? })
+        })?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    /// One full revision by id (for diff + revert).
+    pub fn get_phase_revision(&self, id: i64) -> Result<Option<PhaseRevision>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, guide_slug, phase_no, created_at, title, summary, markdown FROM phase_revisions WHERE id=?1",
+        )?;
+        let mut rows = stmt.query(params![id])?;
+        match rows.next()? {
+            Some(r) => Ok(Some(PhaseRevision {
+                id: r.get(0)?,
+                guide_slug: r.get(1)?,
+                phase_no: r.get(2)?,
+                created_at: r.get(3)?,
+                title: r.get(4)?,
+                summary: r.get(5)?,
+                markdown: r.get(6)?,
+            })),
+            None => Ok(None),
+        }
+    }
+
+    /// All stored asset ids (for the orphaned-asset audit).
+    pub fn list_asset_ids(&self) -> Result<Vec<String>, StoreError> {
+        let mut stmt = self.conn.prepare("SELECT id FROM assets")?;
+        let rows = stmt.query_map([], |r| r.get::<_, String>(0))?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
     // ---- admin credential (single admin; the DB is the runtime source of truth) ----
 
     /// The stored argon2 admin password hash, or None if no admin has been created yet.
@@ -651,6 +720,29 @@ mod tests {
         assert_eq!(fb.len(), 2);
         assert_eq!(fb[0].vote, "up"); // newest first
         assert!(s.db_size_bytes().unwrap() > 0);
+    }
+
+    #[test]
+    fn revisions_reorder_and_asset_ids() {
+        let s = Store::open_in_memory().unwrap();
+        s.insert_phase_revision("g", 1, "v1", "s1", "# one").unwrap();
+        s.insert_phase_revision("g", 1, "v2", "s2", "# two").unwrap();
+        let revs = s.list_phase_revisions("g", 1).unwrap();
+        assert_eq!(revs.len(), 2);
+        assert_eq!(revs[0].title, "v2"); // newest first
+        let full = s.get_phase_revision(revs[1].id).unwrap().unwrap();
+        assert_eq!(full.markdown, "# one");
+        assert_eq!(full.guide_slug, "g");
+
+        s.upsert_guide("a", "A", "", "databases", "beginner").unwrap();
+        s.upsert_guide("b", "B", "", "databases", "beginner").unwrap();
+        s.reorder_guides(&["b".to_string(), "a".to_string()]).unwrap();
+        // b should now sort before a (order 0 vs 1)
+        let cats = s.guides_for_category("databases").unwrap();
+        assert_eq!(cats[0].slug, "b");
+
+        s.insert_asset("id1", "a.png", "image/png", b"x").unwrap();
+        assert_eq!(s.list_asset_ids().unwrap(), vec!["id1".to_string()]);
     }
 
     #[test]

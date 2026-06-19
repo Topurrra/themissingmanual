@@ -175,6 +175,10 @@ pub async fn patch_phase(State(state): State<Arc<AppState>>, Path((slug, no)): P
             Ok(None) => return not_found(),
             Err(e) => return err(e),
         };
+        // Snapshot the pre-edit version into the history before overwriting it.
+        if let Err(e) = store.insert_phase_revision(&slug, no as i64, &p.title, &p.summary, &p.markdown) {
+            return err(e);
+        }
         p.title = b.title;
         p.summary = b.summary;
         p.markdown = b.markdown;
@@ -604,4 +608,96 @@ pub async fn backlog(State(state): State<Arc<AppState>>, Query(q): Query<HashMap
             .then(b["demand"].as_i64().unwrap_or(0).cmp(&a["demand"].as_i64().unwrap_or(0)))
     });
     Json(json!({ "days": days, "items": items })).into_response()
+}
+
+// ===== drag-reorder guides within a category =====
+
+#[derive(Deserialize)]
+pub struct ReorderGuides {
+    order: Vec<String>,
+}
+
+/// Persist a drag-reorder: `order` is one category's guide slugs in the desired order.
+pub async fn reorder_guides(State(state): State<Arc<AppState>>, Json(b): Json<ReorderGuides>) -> Response {
+    let r = { state.store.lock().unwrap().reorder_guides(&b.order) };
+    match r {
+        Ok(_) => Json(json!({ "ok": true })).into_response(),
+        Err(e) => err(e),
+    }
+}
+
+// ===== phase edit history (versioning + revert) =====
+
+/// History entries for a phase (newest first).
+pub async fn list_revisions(State(state): State<Arc<AppState>>, Path((slug, no)): Path<(String, u32)>) -> Response {
+    let r = { state.store.lock().unwrap().list_phase_revisions(&slug, no as i64) };
+    match r {
+        Ok(v) => Json(v).into_response(),
+        Err(e) => err(e),
+    }
+}
+
+/// One full revision (its markdown, for diffing client-side).
+pub async fn get_revision(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Response {
+    let r = { state.store.lock().unwrap().get_phase_revision(id) };
+    match r {
+        Ok(Some(rev)) => Json(rev).into_response(),
+        Ok(None) => not_found(),
+        Err(e) => err(e),
+    }
+}
+
+/// Restore a phase to a past revision (snapshotting the current content first, so revert is itself undoable).
+pub async fn revert_revision(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Response {
+    let result = {
+        let store = state.store.lock().unwrap();
+        let rev = match store.get_phase_revision(id) {
+            Ok(Some(r)) => r,
+            Ok(None) => return not_found(),
+            Err(e) => return err(e),
+        };
+        let no = rev.phase_no as u32;
+        let cur = match store.get_phase(&rev.guide_slug, no) {
+            Ok(Some(p)) => p,
+            Ok(None) => return not_found(),
+            Err(e) => return err(e),
+        };
+        if let Err(e) = store.insert_phase_revision(&rev.guide_slug, rev.phase_no, &cur.title, &cur.summary, &cur.markdown) {
+            return err(e);
+        }
+        let html = links::rewrite_internal_links(&render_markdown(&rev.markdown), &rev.guide_slug);
+        let restored = Phase {
+            guide_slug: rev.guide_slug.clone(),
+            phase_no: no,
+            title: rev.title,
+            summary: rev.summary,
+            tags: cur.tags,
+            difficulty: cur.difficulty,
+            synonyms: cur.synonyms,
+            html,
+            updated: cur.updated,
+            markdown: rev.markdown,
+        };
+        store.upsert_phase(&restored).map(|_| rev.guide_slug.clone())
+    };
+    match result {
+        Ok(slug) => {
+            if let Err(e) = state.reindex_guide(&slug) {
+                return err(e);
+            }
+            Json(json!({ "ok": true })).into_response()
+        }
+        Err(e) => err(e),
+    }
+}
+
+// ===== content audit (broken links / orphaned assets) =====
+
+/// Scan all phase HTML for broken internal links and missing/orphaned assets.
+pub async fn link_check(State(state): State<Arc<AppState>>) -> Response {
+    let r = { content_core::audit::check_links(&state.store.lock().unwrap()) };
+    match r {
+        Ok(report) => Json(report).into_response(),
+        Err(e) => err(e),
+    }
 }
