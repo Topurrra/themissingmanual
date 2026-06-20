@@ -1,6 +1,9 @@
 <script>
   import { page } from '$app/stores';
   import ReaderTools from '$lib/ReaderTools.svelte';
+  import Glossary from '$lib/Glossary.svelte';
+  import ReaderTTS from '$lib/ReaderTTS.svelte';
+  import Quiz from '$lib/Quiz.svelte';
   import Mermaid from '$lib/Mermaid.svelte';
   import RunnableCode from '$lib/RunnableCode.svelte';
   import FeedbackWidget from '$lib/FeedbackWidget.svelte';
@@ -34,6 +37,8 @@
   // Show the stand-alone overview card only when it isn't already the prev.
   $: showOverview = !!slug && phase.phase_no > 1;
   $: hasFooterNav = !!(prevPhase || prevIsOverview || nextPhase || showOverview);
+  // Last real phase of the guide → finishing its quiz completes the guide.
+  $: isLastPhase = phase.phase_no > 0 && !nextPhase;
 </script>
 
 <svelte:head><title>{phase.title}</title></svelte:head>
@@ -46,6 +51,10 @@
 
 <article class="reader" class:has-phasenav={hasFooterNav}>
   {@html phase.html}
+
+  {#key `${phase.guide_slug}/${phase.phase_no}`}
+    <Quiz guideSlug={phase.guide_slug} phaseNo={phase.phase_no} isLast={isLastPhase} />
+  {/key}
 
   {#if hasFooterNav}
     <nav class="reader-nav phasenav" aria-label="Phase navigation">
@@ -85,6 +94,8 @@
 {#key `${phase.guide_slug}/${phase.phase_no}`}
   <FeedbackWidget guideSlug={phase.guide_slug} phaseNo={phase.phase_no} />
   <ReaderTools />
+  <Glossary />
+  <ReaderTTS />
   {#if mermaidOn}<Mermaid />{/if}
   {#if runnableOn}<RunnableCode />{/if}
 {/key}

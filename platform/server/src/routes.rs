@@ -64,8 +64,6 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/api/site-config", get(admin::site_config))
         .route("/api/categories", get(list_categories))
         .route("/api/categories/:slug", get(category_detail))
-        .route("/api/tracks", get(list_tracks_h))
-        .route("/api/tracks/:slug", get(track_detail))
         .route("/assets/:id", get(admin::serve_asset))
         .nest("/api/admin", protected.merge(auth_routes))
         .with_state(state)
@@ -213,27 +211,3 @@ async fn category_detail(State(state): State<Arc<AppState>>, Path(slug): Path<St
     }
 }
 
-async fn list_tracks_h() -> Response {
-    Json(content_core::tracks::list_tracks()).into_response()
-}
-
-async fn track_detail(
-    State(state): State<Arc<AppState>>,
-    Path(slug): Path<String>,
-    Query(choices): Query<std::collections::HashMap<String, String>>,
-) -> Response {
-    let meta = match content_core::tracks::track_meta(&slug) {
-        Some(m) => m,
-        None => return (StatusCode::NOT_FOUND, Json(serde_json::json!({ "error": "track not found" }))).into_response(),
-    };
-    let dimensions = content_core::tracks::dimensions_for(&slug).unwrap_or_default();
-    let roadmap = {
-        let store = state.store.lock().unwrap();
-        match content_core::tracks::resolve_roadmap(&slug, &choices, &store) {
-            Ok(Some(r)) => r,
-            Ok(None) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({ "error": "track not found" }))).into_response(),
-            Err(e) => return server_error(e),
-        }
-    };
-    Json(serde_json::json!({ "track": meta, "dimensions": dimensions, "roadmap": roadmap, "choices": choices })).into_response()
-}

@@ -199,6 +199,23 @@ p { margin: 1rem 0; }
 }
 .brand:hover { color: var(--ink); }
 
+/* Header sidebar toggle — single affordance, mirrors the admin console's
+   .adm-rail-btn. Replaces the old in-sidebar collapse + floating expand pair. */
+.site-rail-btn {
+  flex: none;
+  margin-right: -0.5rem;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--faint);
+  cursor: pointer;
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  display: inline-grid; place-items: center;
+  transition: all 0.15s var(--ease);
+}
+.site-rail-btn:hover { background: var(--surface); color: var(--ink); }
+.site-rail-btn .ti { font-size: 19px; }
+
 .header-search { flex: 1 1 0; display: flex; justify-content: center; }
 
 /* Search field — ONE clean focus treatment: border + soft ring on the wrapper;
@@ -280,6 +297,7 @@ p { margin: 1rem 0; }
 }
 @keyframes pop { from { opacity: 0; transform: scale(0.96) translateY(-4px); } to { opacity: 1; transform: none; } }
 .settings-label { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin: 0 0 0.6rem; }
+.settings-hint { font-size: 0.76rem; color: var(--muted); margin: 0.4rem 0 0; line-height: 1.4; }
 .seg { display: flex; gap: 4px; background: var(--surface); padding: 4px; border-radius: 10px; }
 .seg button {
   flex: 1;
@@ -332,7 +350,7 @@ p { margin: 1rem 0; }
    --------------------------------------------------------------------------- */
 .shell {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: start;
 }
 .sidebar {
@@ -375,19 +393,6 @@ p { margin: 1rem 0; }
 }
 .all-topics:hover { color: var(--ink); }
 .all-topics .ti { font-size: 18px; color: var(--accent); }
-.rail-btn {
-  flex: none;
-  background: none;
-  border: 1px solid transparent;
-  color: var(--faint);
-  cursor: pointer;
-  width: 34px; height: 34px;
-  border-radius: 9px;
-  display: inline-grid; place-items: center;
-  transition: all 0.15s var(--ease);
-}
-.rail-btn:hover { background: var(--surface); color: var(--ink); }
-.rail-btn .ti { font-size: 19px; }
 
 .sidebar-nav { font-size: 0.95rem; }
 .nav-cat {
@@ -492,28 +497,6 @@ a.rail-topic:hover { color: var(--accent); }
 a.rail-back:hover { color: var(--accent); }
 .rail-guide-title { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--ink); margin: 0 0 0.6rem; padding: 0 0.6rem; line-height: 1.25; }
 
-/* floating expand handle — only meaningful while collapsed */
-.sidebar-expand {
-  position: fixed;
-  left: 14px;
-  top: 74px;
-  z-index: 35;
-  background: var(--raise);
-  border: 1px solid var(--line);
-  color: var(--muted);
-  border-radius: 10px;
-  width: 36px; height: 36px;
-  cursor: pointer;
-  display: none;
-  place-items: center;
-  box-shadow: var(--shadow-md);
-  transition: color 0.15s var(--ease), transform 0.15s var(--ease);
-}
-.shell.collapsed ~ .sidebar-expand,
-.sidebar-expand.show { display: grid; }
-.sidebar-expand:hover { color: var(--ink); transform: translateX(2px); }
-.sidebar-expand .ti { font-size: 19px; }
-
 /* -----------------------------------------------------------------------------
    Main column
    --------------------------------------------------------------------------- */
@@ -541,6 +524,35 @@ a.rail-back:hover { color: var(--accent); }
 }
 .hero h1 .accent { color: var(--accent); }
 .hero .tagline { max-width: 54ch; font-size: 1.18rem; }
+.hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin-top: 1.8rem; }
+.cta-primary {
+  display: inline-flex; align-items: center;
+  font-weight: 600; font-size: 1rem;
+  background: var(--accent); color: #fff;
+  padding: 0.7rem 1.4rem; border-radius: 10px;
+  transition: background 0.15s var(--ease);
+}
+.cta-primary:hover { background: var(--accent-strong); color: #fff; text-decoration: none; }
+.cta-secondary {
+  display: inline-flex; align-items: center;
+  font-size: 1rem; color: var(--body);
+  padding: 0.7rem 1.1rem; border-radius: 10px; border: 1px solid var(--line);
+  transition: border-color 0.15s var(--ease), color 0.15s var(--ease);
+}
+.cta-secondary:hover { border-color: var(--accent); color: var(--ink); text-decoration: none; }
+.cta-note { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); letter-spacing: 0.02em; }
+
+/* Dark theme: --accent-strong is *lighter* than --accent (tuned for link text),
+   so filled buttons would lighten on hover and wash out their white label. Darken
+   instead, keeping white text readable. Covers the public filled CTAs/buttons.
+   (Global rules beat the components' scoped :hover via higher specificity.) */
+:root[data-theme="dark"] .cta-primary:hover,
+:root[data-theme="dark"] .build-btn:hover,
+:root[data-theme="dark"] .tr-start:hover:not(:disabled),
+:root[data-theme="dark"] .admin-btn.primary:hover {
+  background: #3f8389;
+  color: #fff;
+}
 .hero-stats {
   display: flex;
   flex-wrap: wrap;
@@ -553,38 +565,6 @@ a.rail-back:hover { color: var(--accent); }
 }
 .hero-stats b { color: var(--ink); font-weight: 600; }
 .hero-stats span { display: inline-flex; align-items: center; gap: 0.5rem; }
-
-/* learning path cards */
-.section-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 3rem 0 1.1rem; }
-.section-head .section-eyebrow { margin: 0; flex: 1; }
-.section-link { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); white-space: nowrap; }
-
-.track-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.9rem; margin: 0.5rem 0 1rem; }
-.track-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 1.3rem 1.35rem 1.2rem;
-  background: var(--raise);
-  position: relative;
-  overflow: hidden;
-  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
-}
-.track-card::after {
-  content: "→";
-  position: absolute;
-  top: 1.2rem; right: 1.3rem;
-  color: var(--faint);
-  transition: transform 0.25s var(--ease), color 0.2s var(--ease);
-}
-.track-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-md); text-decoration: none; }
-.track-card:hover::after { color: var(--accent); transform: translateX(4px); }
-.track-index { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); letter-spacing: 0.08em; }
-.track-name { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; color: var(--ink); letter-spacing: -0.015em; }
-.track-blurb { color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
-.track-meta { color: var(--faint); font-size: 0.78rem; font-family: var(--font-mono); margin-top: 0.2rem; }
 
 /* category grid */
 .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.9rem; }
@@ -879,26 +859,25 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
   margin: 0 auto;
   padding: 2.4rem 1.6rem 1rem;
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem 3rem;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.35rem;
 }
+/* Top row: brand on the left, sponsors on the right, on one line. */
+.co-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem 2rem; flex-wrap: wrap; }
 .colophon .co-brand { font-family: var(--font-display); font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
-.colophon .co-line { color: var(--faint); font-family: var(--font-mono); font-size: 0.76rem; margin-top: 0.3rem; }
-.co-right { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 1.1rem; }
+.colophon .co-line { color: var(--faint); font-family: var(--font-mono); font-size: 0.76rem; }
 
 /* Sponsored-by row. Names keep exact brand casing; per-letter colour spans
    (.spon-it / .spon-x) win over the link colour, so they survive a:hover. */
-.sponsors { margin-top: 0.85rem; }
+.sponsors { display: grid; align-items: baseline; gap: 0.5ch; flex-wrap: wrap; }
 .spon-label {
-  display: block;
   color: var(--faint);
   font-family: var(--font-mono);
   font-size: 0.66rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-.spon-names { display: inline-flex; align-items: baseline; gap: 0.5ch; margin-top: 0.22rem; flex-wrap: wrap; }
+.spon-names { display: inline-flex; align-items: baseline; gap: 0.5ch; flex-wrap: wrap; }
 .spon-name { color: var(--body); font-weight: 600; }
 .spon-name:hover { color: var(--ink); }
 .spon-sep { color: var(--faint); font-size: 0.85rem; }
@@ -930,24 +909,6 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
    --------------------------------------------------------------------------- */
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 .search-field input:focus-visible { outline: none; }
-
-/* -----------------------------------------------------------------------------
-   Learning paths — roadmap & choice form
-   --------------------------------------------------------------------------- */
-.choice-form { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: flex-end; margin: 1.4rem 0; padding: 1.1rem; background: var(--surface); border-radius: 12px; }
-.choice-form label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; color: var(--muted); }
-.choice-form select { padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 7px; font: inherit; background: var(--bg); color: var(--ink); }
-.choice-form button { padding: 0.5rem 1rem; border: 0; border-radius: 8px; background: var(--accent); color: #fff; font: inherit; font-weight: 500; cursor: pointer; }
-.choice-form button:hover { background: var(--accent-strong); }
-.roadmap { list-style: none; padding: 0; margin: 1.5rem 0; }
-.road-step { display: flex; gap: 0.9rem; padding: 0.9rem 0; border-bottom: 1px solid var(--line); }
-.road-num { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; }
-.road-body { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
-.road-cat { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
-.road-title { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; }
-.road-title.muted { color: var(--muted); }
-.soon-tag { display: inline-block; width: fit-content; font-size: 0.72rem; color: var(--faint); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; margin-top: 2px; }
-.road-note { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
 
 /* -----------------------------------------------------------------------------
    Responsive
@@ -995,7 +956,6 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
     animation: backdrop-in 0.2s var(--ease);
   }
   .page-main { padding: 2rem 1.5rem 4rem; }
-  .sidebar-expand.show, .shell.collapsed ~ .sidebar-expand { display: grid; }
 }
 /* Backdrop is mobile-only; never show it on desktop even if the element renders. */
 @media (min-width: 921px) { .sidebar-backdrop { display: none; } }
@@ -1006,9 +966,6 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
   .header-search { order: 3; flex-basis: 100%; }
   .header-search .kbd { display: none; }
   .page-main.home { padding: 2.2rem 1.3rem 3rem; }
-  .colophon-inner { flex-direction: column; }
-  .co-right { margin-left: 0; align-items: flex-start; }
-  .sponsors { text-align: left; }
 }
 
 /* =============================================================================
@@ -1310,10 +1267,3 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .panel-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.8rem; }
 .bars { display: flex; align-items: flex-end; gap: 5px; height: 110px; }
 .bars .bar { flex: 1; min-height: 2px; background: var(--accent); opacity: 0.85; border-radius: 3px 3px 0 0; }
-.bars .bar:hover { opacity: 1; }
-.rank-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-.ranks { display: flex; flex-direction: column; gap: 7px; }
-.rank-row { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.92rem; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
-.rank-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rank-row b { color: var(--ink); font-weight: 600; }
-@media (max-width: 700px) { .rank-cols { grid-template-columns: 1fr; } }

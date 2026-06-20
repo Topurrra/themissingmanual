@@ -1,4 +1,4 @@
-import { listCategories, listGuides, getGuide, listTracks, getTrack } from '$lib/api.js';
+import { listCategories, listGuides, getGuide } from '$lib/api.js';
 import { API_BASE } from '$lib/server/adminApi.js';
 
 // Public site config (PUBLIC endpoint). All fields are strings; "" when unset.
@@ -49,22 +49,5 @@ export async function load({ fetch, url }) {
     }
   }
 
-  // On a learning-paths page, fetch the tracks list (sidebar) and — on a specific
-  // track — that track's resolved roadmap (matching the choice-form query so the
-  // sidebar steps mirror the main column).
-  let tracks = null;
-  let activeTrackSlug = null;
-  let trackRoadmap = null;
-  const fromTrack = url.searchParams.get('track');
-  const onPaths = url.pathname === '/paths' || url.pathname.startsWith('/paths/');
-  if (onPaths || fromTrack) {
-    tracks = (await listTracks(fetch)) ?? [];
-    activeTrackSlug = (url.pathname.match(/^\/paths\/([^/]+)/) || [])[1] || fromTrack || null;
-    if (activeTrackSlug) {
-      const detail = await getTrack(fetch, activeTrackSlug, url.search);
-      trackRoadmap = detail?.roadmap ?? null;
-    }
-  }
-
-  return { nav, guidePhases, guideTitle, tracks, activeTrackSlug, trackRoadmap, siteConfig };
+  return { nav, guidePhases, guideTitle, siteConfig };
 }

@@ -1,18 +1,19 @@
 <script>
   import { onMount } from 'svelte';
   import { lofiEnabled, setLofiEnabled, syncLofiEnabled } from '$lib/lofi-store.js';
+  import { beginnerMode, setBeginner, syncBeginner } from '$lib/beginner-store.js';
 
   // Shared appearance control: theme (system/light/dark) + font picker + quick
-  // dark-mode toggle + lofi-player master switch. Persists to localStorage
-  // (tmm-theme / tmm-font / tmm-lofi-enabled); app.html applies the saved
-  // theme/font before first paint, this just drives the UI + writes.
+  // dark-mode toggle + lofi-player master switch + beginner mode. Persists to
+  // localStorage; app.html applies the saved theme/font before first paint.
   const FONTS = [
     { id: 'IBM Plex Sans', name: 'IBM Plex', vibe: 'Technical · default' },
     { id: 'Inter', name: 'Inter', vibe: 'Clean, neutral · ★★★★★' },
     { id: 'Geist', name: 'Geist', vibe: 'Modern, precise · ★★★★★' },
     { id: 'Sora', name: 'Sora', vibe: 'Friendly, distinct · ★★★★☆' },
     { id: 'DM Sans', name: 'DM Sans', vibe: 'Elegant, soft · ★★★★☆' },
-    { id: 'Plus Jakarta Sans', name: 'Plus Jakarta Sans', vibe: 'Premium, editorial · ★★★★☆' }
+    { id: 'Plus Jakarta Sans', name: 'Plus Jakarta Sans', vibe: 'Premium, editorial · ★★★★☆' },
+    { id: 'Atkinson Hyperlegible', name: 'Atkinson Hyperlegible', vibe: 'High-legibility · easier to read' }
   ];
 
   let open = false;
@@ -20,6 +21,7 @@
   let font = 'IBM Plex Sans';
 
   $: lofiOn = $lofiEnabled;
+  $: beginnerOn = $beginnerMode;
 
   onMount(() => {
     try {
@@ -29,6 +31,7 @@
       if (f) font = f;
     } catch (e) {}
     syncLofiEnabled();
+    syncBeginner();
   });
 
   function applyTheme(next) {
@@ -82,6 +85,12 @@
             </button>
           {/each}
         </div>
+        <p class="settings-label" style="margin-top:0.9rem">Beginner mode</p>
+        <div class="seg">
+          <button class:on={beginnerOn} on:click={() => setBeginner(true)}>On</button>
+          <button class:on={!beginnerOn} on:click={() => setBeginner(false)}>Off</button>
+        </div>
+        <p class="settings-hint">Shows beginner-level guides only.</p>
         <p class="settings-label" style="margin-top:0.9rem">Lofi player</p>
         <div class="seg">
           <button class:on={lofiOn} on:click={() => setLofiEnabled(true)}>On</button>

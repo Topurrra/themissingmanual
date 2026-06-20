@@ -9,24 +9,21 @@
   import HeaderSearch from '$lib/HeaderSearch.svelte';
   import Appearance from '$lib/Appearance.svelte';
   import LofiPlayer from '$lib/LofiPlayer.svelte';
+  import PathRail from '$lib/PathRail.svelte';
+  import { beginnerMode, setBeginner } from '$lib/beginner-store.js';
 
   export let data;
   $: nav = data?.nav ?? [];
   $: guidePhases = data?.guidePhases ?? null;
   $: guideTitle = data?.guideTitle ?? null;
-  $: tracks = data?.tracks ?? null;
-  $: activeTrackSlug = data?.activeTrackSlug ?? null;
-  $: trackRoadmap = data?.trackRoadmap ?? null;
+  // Flat category + guide lists (derived from nav) feed the right-side path rail.
+  $: pathCategories = nav.map((c) => ({ slug: c.slug, name: c.name, icon: c.icon }));
+  $: pathGuides = nav.flatMap((c) => c.guides);
   $: path = $page.url.pathname;
-  // On any learning-paths page (list or a specific track) the sidebar shows paths.
-  $: isPaths = path === '/paths' || path.startsWith('/paths/');
-  // When a guide is reached from a learning path it carries ?track=<slug>; that
-  // keeps the learning-path sidebar (instead of the topic sidebar) on the guide.
-  $: fromTrack = $page.url.searchParams.get('track');
   $: isHome = path === '/';
   $: isAdmin = path.startsWith('/admin');
-  // info pages render centred, no sidebar (like home)
-  $: bare = isHome || ['/about', '/contribute', '/rss'].includes(path);
+  // info pages + the learning-path wizard render centred, no sidebar (like home)
+  $: bare = isHome || ['/about', '/contribute', '/rss', '/paths', '/glossary', '/train'].includes(path);
   $: currentGuide = (path.match(/^\/guides\/([^/]+)/) || [])[1] || null;
   // The active phase number on /guides/[slug]/[phase] — null on the guide overview.
   $: currentPhase = (() => {
@@ -110,6 +107,11 @@
     (currentCategory && nav.find((c) => c.slug === currentCategory)) ||
     (currentGuide && nav.find((c) => c.guides.some((g) => g.slug === currentGuide))) ||
     null;
+  // Beginner mode filters the sidebar's per-topic guide list. The guide you're
+  // currently reading always stays visible, even if it's above beginner level.
+  $: visibleCatGuides = (activeCat?.guides ?? []).filter(
+    (g) => !$beginnerMode || g.difficulty === 'beginner' || g.slug === currentGuide
+  );
 
   let collapsed = false;
   let palette;
@@ -167,9 +169,22 @@
   {#if announcement}
     <div class="announce-banner" role="status">{announcement}</div>
   {/if}
+  {#if $beginnerMode}
+    <div class="beginner-banner" role="status">
+      <span><i class="ti ti-sparkles" aria-hidden="true"></i> Beginner mode — showing beginner-level guides only.</span>
+      <button type="button" on:click={() => setBeginner(false)}>Show everything</button>
+    </div>
+  {/if}
 
   <header class="site-header">
     <div class="bar">
+      {#if !bare}
+        <button class="site-rail-btn" on:click={toggleSidebar}
+          aria-label={collapsed ? 'Show sidebar' : 'Collapse sidebar'}
+          title={collapsed ? 'Show sidebar' : 'Collapse sidebar'}>
+          <i class="ti ti-menu-2" aria-hidden="true"></i>
+        </button>
+      {/if}
       <a href="/" class="brand">{siteName}</a>
 
       <HeaderSearch>
@@ -194,38 +209,9 @@
       <aside class="sidebar">
         <div class="sidebar-head">
           <a href="/" class="all-topics"><i class="ti ti-layout-grid" aria-hidden="true"></i> All topics</a>
-          <button class="rail-btn" on:click={toggleSidebar} aria-label="Collapse sidebar" title="Collapse sidebar">
-            <i class="ti ti-layout-sidebar-left-collapse" aria-hidden="true"></i>
-          </button>
         </div>
         <nav class="sidebar-nav">
-          {#if (isPaths || fromTrack) && tracks}
-            <a class="rail-topic" href="/paths"><i class="ti ti-route" aria-hidden="true"></i> Learning paths</a>
-            <ul class="nav-items">
-              {#each tracks as t}
-                <li>
-                  <a href={`/paths/${t.slug}`} class:on={activeTrackSlug === t.slug}
-                    aria-current={activeTrackSlug === t.slug ? 'page' : undefined}>
-                    <i class="ti ti-route" aria-hidden="true"></i><span class="nav-label">{t.name}</span></a>
-                  {#if activeTrackSlug === t.slug && trackRoadmap}
-                    <ul class="nav-substeps">
-                      {#each trackRoadmap as step, i}
-                        <li>
-                          {#if step.guide}
-                            <a href={`/guides/${step.guide.slug}?track=${t.slug}`}
-                              class:on={currentGuide === step.guide.slug}
-                              aria-current={currentGuide === step.guide.slug ? 'page' : undefined}>{i + 1}. {step.guide.title}</a>
-                          {:else}
-                            <span class="substep-soon">{i + 1}. {step.title}<span class="soon-cue">soon</span></span>
-                          {/if}
-                        </li>
-                      {/each}
-                    </ul>
-                  {/if}
-                </li>
-              {/each}
-            </ul>
-          {:else if currentGuide && guidePhases}
+          {#if currentGuide && guidePhases}
             {#if activeCat}
               <a class="rail-back" href={`/categories/${activeCat.slug}`}><i class="ti ti-chevron-left" aria-hidden="true"></i> {activeCat.name}</a>
             {/if}
@@ -242,9 +228,9 @@
             </ul>
           {:else if activeCat}
             <div class="rail-topic"><i class={`ti ${activeCat.icon}`} aria-hidden="true"></i> {activeCat.name}</div>
-            {#if activeCat.guides.length}
+            {#if visibleCatGuides.length}
               <ul class="nav-items">
-                {#each activeCat.guides as g}
+                {#each visibleCatGuides as g}
                   {@const lvl = levelLabel(g.difficulty)}
                   <li><a href={`/guides/${g.slug}`} class:on={currentGuide === g.slug}
                     class="nav-lvl-row" aria-current={currentGuide === g.slug ? 'page' : undefined}>
@@ -271,31 +257,14 @@
         </nav>
       </aside>
       <main class="page-main"><slot /></main>
+      <PathRail guides={pathGuides} categories={pathCategories} currentSlug={currentGuide} />
     </div>
-    {#if collapsed}
-      <button class="sidebar-expand" on:click={toggleSidebar} aria-label="Show sidebar" title="Show sidebar">
-        <i class="ti ti-layout-sidebar-left-expand" aria-hidden="true"></i>
-      </button>
-    {/if}
   {/if}
 
   <footer class="colophon">
     <div class="colophon-inner">
-      <div class="co-main">
+      <div class="co-top">
         <div class="co-brand">{siteName}</div>
-        <div class="co-line">{tagline}</div>
-      </div>
-      <div class="co-right">
-        <nav>
-          <a href="/about">About</a>
-          <a href="/contribute">Contribute</a>
-          <a href="/rss.xml">RSS</a>
-          <span class="co-social">
-            {#each socialLinks as s}
-              <a href={s.url} target="_blank" rel="noopener" aria-label={s.label} title={s.label}><i class={`ti ${s.icon}`}></i></a>
-            {/each}
-          </span>
-        </nav>
         <div class="sponsors">
           <span class="spon-label">Sponsored by</span>
           <span class="spon-names">
@@ -314,6 +283,12 @@
           </span>
         </div>
       </div>
+      <div class="co-line">{tagline}</div>
+      <nav>
+        <a href="/about">About</a>
+        <a href="/glossary">Glossary</a>
+        <a href="/train">Train</a>
+      </nav>
     </div>
   </footer>
 
@@ -332,4 +307,21 @@
     font-size: 0.86rem;
     line-height: 1.4;
   }
+  /* Beginner-mode indicator — explains why advanced guides are hidden + a way out. */
+  .beginner-banner {
+    display: flex; align-items: center; justify-content: center; gap: 0.9rem; flex-wrap: wrap;
+    padding: 0.5rem 1.25rem;
+    background: var(--accent-tint);
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+    font-size: 0.86rem; line-height: 1.4;
+  }
+  .beginner-banner .ti { color: var(--accent); }
+  .beginner-banner button {
+    font: inherit; font-size: 0.82rem; cursor: pointer;
+    background: none; border: 1px solid var(--line); border-radius: 7px;
+    padding: 0.2rem 0.6rem; color: var(--muted);
+    transition: border-color 0.15s var(--ease), color 0.15s var(--ease);
+  }
+  .beginner-banner button:hover { border-color: var(--accent); color: var(--ink); }
 </style>

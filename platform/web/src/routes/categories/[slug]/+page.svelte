@@ -1,8 +1,10 @@
 <script>
   import { groupByLevel } from '$lib/difficulty.js';
+  import { beginnerMode } from '$lib/beginner-store.js';
   export let data;
   $: ({ category, guides } = data);
-  $: groups = groupByLevel(guides);
+  // In beginner mode, show only the Basic group.
+  $: groups = groupByLevel(guides).filter((g) => !$beginnerMode || g.level === 'Basic');
   const dotClass = (level) => (level === 'Intermediate' ? 'mid' : level === 'Advanced' ? 'adv' : '');
 </script>
 
@@ -14,6 +16,8 @@
 
 {#if guides.length === 0}
   <p class="cat-empty">Guides for {category.name} are on the way. In the meantime, browse what's live from the home page.</p>
+{:else if groups.length === 0}
+  <p class="cat-empty">No beginner-level guides in {category.name} yet. Turn off beginner mode (the gear, top right) to see everything here.</p>
 {:else}
   {#each groups as grp}
     <h2 class="level-head"><span class={`dot ${dotClass(grp.level)}`}></span> {grp.level}</h2>
