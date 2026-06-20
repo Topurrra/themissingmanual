@@ -10,8 +10,8 @@
 <section class="hero">
   <!-- <h1>The manual a senior who <span class="accent">actually cares</span> would hand you.</h1>
   <p class="tagline">Real-world knowledge nobody teaches, explained with zero ego. Not “build a todo app,” not a 1000-page reference. Free forever.</p> -->
-  <h1>Learn how things <span class="accent">actually </span> works.</h1>
-  <p class="tagline">Clear, practical, and free — forever.</p>
+  <h1>Everything you were <span class="accent">supposed</span> to already know.</h1>
+  <p class="tagline">The unwritten manual for how software really works — Git, networks, databases, the cloud, AI — explained the way a senior who actually cares would. No fluff, no filler, free forever.</p>
   <div class="hero-stats">
     <span><b>{totalGuides}</b> guide{totalGuides === 1 ? '' : 's'}</span>
     <span><b>{categories.length}</b> topics</span>

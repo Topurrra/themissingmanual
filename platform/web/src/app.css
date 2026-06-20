@@ -54,7 +54,7 @@
   --faint: #6e6e76;
   --line: #2a2a30;
   --line-soft: #202026;
-  --accent: #4d969c;
+  --accent: #43885b;
   --accent-strong: #6fb6bc;
   --accent-tint: rgba(77, 150, 156, 0.16);
   --accent-tint-2: rgba(47, 182, 192, 0.07);
@@ -343,7 +343,7 @@ p { margin: 1rem 0; }
   overflow-y: auto;
   overflow-x: hidden;
   border-right: 1px solid var(--line);
-  padding: 1.4rem 1.1rem 2rem;
+  padding: 1.2rem 0.9rem 2rem;
   transition: width 0.3s var(--ease), opacity 0.24s var(--ease),
               padding 0.3s var(--ease), border-color 0.2s var(--ease);
 }
@@ -360,7 +360,8 @@ p { margin: 1rem 0; }
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-bottom: 0.8rem;
+  padding-left: 0.6rem;
+  margin-bottom: 0.9rem;
 }
 .all-topics {
   display: inline-flex;
@@ -380,13 +381,13 @@ p { margin: 1rem 0; }
   border: 1px solid transparent;
   color: var(--faint);
   cursor: pointer;
-  width: 30px; height: 30px;
-  border-radius: 8px;
+  width: 34px; height: 34px;
+  border-radius: 9px;
   display: inline-grid; place-items: center;
   transition: all 0.15s var(--ease);
 }
 .rail-btn:hover { background: var(--surface); color: var(--ink); }
-.rail-btn .ti { font-size: 18px; }
+.rail-btn .ti { font-size: 19px; }
 
 .sidebar-nav { font-size: 0.92rem; }
 .nav-cat {
@@ -400,42 +401,44 @@ p { margin: 1rem 0; }
 .nav-cat a { color: var(--faint); }
 .nav-cat a:hover { color: var(--ink); }
 .nav-cat.on a { color: var(--accent); }
-.nav-items { list-style: none; padding: 0; margin: 0; }
+.nav-items { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
 .nav-items a {
   display: block;
-  padding: 0.32rem 0 0.32rem 0.85rem;
+  padding: 0.42rem 0.6rem;
+  border-radius: 9px;
   color: var(--muted);
-  border-left: 2px solid var(--line);
   line-height: 1.4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color 0.15s var(--ease), border-color 0.15s var(--ease), background 0.15s var(--ease);
+  transition: color 0.15s var(--ease), background 0.15s var(--ease);
 }
-.nav-items a:hover { color: var(--ink); border-left-color: var(--faint); }
+.nav-items a:hover { color: var(--ink); background: var(--surface); text-decoration: none; }
 .nav-items a.on {
   color: var(--accent);
   font-weight: 500;
-  border-left-color: var(--accent);
-  background: linear-gradient(90deg, var(--accent-tint-2), transparent);
+  background: var(--accent-tint);
 }
 .nav-items a.muted { color: var(--faint); }
 .nav-items a.muted:hover { color: var(--muted); }
-.nav-soon { color: var(--faint); font-size: 0.85rem; padding: 0.1rem 0 0.2rem 0.85rem; }
+.nav-soon { color: var(--faint); font-size: 0.85rem; padding: 0.2rem 0 0.2rem 0.6rem; }
 
 /* Learning-path steps nested under the active path — subordinate to the track:
    indented past the path's border, smaller, with their own thin guide-line. */
 .nav-substeps {
   list-style: none;
-  margin: 0.1rem 0 0.4rem;
-  padding: 0;
-  margin-left: 0.85rem;
+  margin: 0.15rem 0 0.4rem 0.85rem;
+  padding: 0 0 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
   border-left: 1px solid var(--line);
 }
 .nav-substeps a,
 .nav-substeps .substep-soon {
   display: block;
-  padding: 0.26rem 0 0.26rem 0.7rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 8px;
   font-size: 0.86rem;
   line-height: 1.35;
   color: var(--muted);
@@ -443,8 +446,9 @@ p { margin: 1rem 0; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.nav-substeps a { transition: color 0.15s var(--ease); }
-.nav-substeps a:hover { color: var(--ink); }
+.nav-substeps a { transition: color 0.15s var(--ease), background 0.15s var(--ease); }
+.nav-substeps a:hover { color: var(--ink); background: var(--surface); text-decoration: none; }
+.nav-substeps a.on { color: var(--accent); font-weight: 500; background: var(--accent-tint); }
 .nav-substeps .substep-soon { color: var(--faint); display: flex; align-items: center; gap: 0.4rem; }
 .nav-substeps .soon-cue {
   flex: none;
@@ -470,21 +474,21 @@ p { margin: 1rem 0; }
 .lvl.adv { color: #b4533a; }
 .nav-items a:hover .lvl, .nav-items a.on .lvl { opacity: 1; }
 
-/* scoped per-topic sidebar headings */
+/* scoped per-topic sidebar headings — text left-aligned with the nav pills below */
 .rail-topic {
   display: flex; align-items: center; gap: 0.5rem;
   font-family: var(--font-display); font-weight: 600; font-size: 1rem;
-  color: var(--ink); margin: 0.1rem 0 0.8rem;
+  color: var(--ink); margin: 0.1rem 0 0.7rem; padding: 0 0.6rem;
 }
 .rail-topic i { color: var(--accent); font-size: 18px; }
 a.rail-topic:hover { color: var(--accent); }
 .rail-back {
   display: inline-flex; align-items: center; gap: 0.4rem;
   font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--faint); margin-bottom: 0.7rem;
+  text-transform: uppercase; color: var(--faint); margin-bottom: 0.7rem; padding: 0 0.6rem;
 }
 a.rail-back:hover { color: var(--accent); }
-.rail-guide-title { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--ink); margin: 0 0 0.6rem; line-height: 1.25; }
+.rail-guide-title { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--ink); margin: 0 0 0.6rem; padding: 0 0.6rem; line-height: 1.25; }
 
 /* floating expand handle — only meaningful while collapsed */
 .sidebar-expand {
@@ -959,7 +963,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
     background: var(--bg);
     z-index: 46;
     opacity: 1;
-    padding: 1.4rem 1.1rem 2rem;
+    padding: 1.2rem 0.9rem 2rem;
     transform: translateX(-100%);
     transition: transform 0.28s var(--ease);
     border-right: 1px solid var(--line);
@@ -974,7 +978,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
      desktop collapse rule that animates width/opacity to zero) */
   .shell.collapsed .sidebar {
     width: 280px; opacity: 1;
-    padding: 1.4rem 1.1rem 2rem;
+    padding: 1.2rem 0.9rem 2rem;
     border-color: var(--line);
     transform: translateX(-100%);
     pointer-events: none;
