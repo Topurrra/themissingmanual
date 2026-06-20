@@ -205,7 +205,8 @@
               {#each tracks as t}
                 <li>
                   <a href={`/paths/${t.slug}`} class:on={activeTrackSlug === t.slug}
-                    aria-current={activeTrackSlug === t.slug ? 'page' : undefined}>{t.name}</a>
+                    aria-current={activeTrackSlug === t.slug ? 'page' : undefined}>
+                    <i class="ti ti-route" aria-hidden="true"></i><span class="nav-label">{t.name}</span></a>
                   {#if activeTrackSlug === t.slug && trackRoadmap}
                     <ul class="nav-substeps">
                       {#each trackRoadmap as step, i}
@@ -231,10 +232,12 @@
             <div class="rail-guide-title">{guideTitle}</div>
             <ul class="nav-items">
               <li><a href={`/guides/${currentGuide}`} class:on={currentPhase === null}
-                aria-current={currentPhase === null ? 'page' : undefined}>Overview</a></li>
+                aria-current={currentPhase === null ? 'page' : undefined}>
+                <i class="ti ti-file-text" aria-hidden="true"></i><span class="nav-label">Overview</span></a></li>
               {#each guidePhases.filter((p) => p.phase_no > 0) as p}
                 <li><a href={`/guides/${currentGuide}/${p.phase_no}`} class:on={currentPhase === p.phase_no}
-                  aria-current={currentPhase === p.phase_no ? 'page' : undefined}>{p.phase_no} · {p.title}</a></li>
+                  aria-current={currentPhase === p.phase_no ? 'page' : undefined}>
+                  <i class="ti ti-file-text" aria-hidden="true"></i><span class="nav-label">{p.phase_no} · {p.title}</span></a></li>
               {/each}
             </ul>
           {:else if activeCat}
@@ -245,6 +248,7 @@
                   {@const lvl = levelLabel(g.difficulty)}
                   <li><a href={`/guides/${g.slug}`} class:on={currentGuide === g.slug}
                     class="nav-lvl-row" aria-current={currentGuide === g.slug ? 'page' : undefined}>
+                    <i class="ti ti-file-text" aria-hidden="true"></i>
                     <span class="nav-lvl-title">{g.title}</span>
                     <span class="lvl" class:mid={lvl === 'Intermediate'} class:adv={lvl === 'Advanced'}
                       title={lvl} aria-label={lvl}>{lvl[0]}</span>
@@ -259,7 +263,8 @@
             <ul class="nav-items">
               {#each nav as c}
                 <li><a href={`/categories/${c.slug}`} class:muted={!c.guides.length}
-                  class:on={currentCategory === c.slug}>{c.name}</a></li>
+                  class:on={currentCategory === c.slug}>
+                  <i class={`ti ${c.icon}`} aria-hidden="true"></i><span class="nav-label">{c.name}</span></a></li>
               {/each}
             </ul>
           {/if}

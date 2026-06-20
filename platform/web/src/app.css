@@ -389,7 +389,7 @@ p { margin: 1rem 0; }
 .rail-btn:hover { background: var(--surface); color: var(--ink); }
 .rail-btn .ti { font-size: 19px; }
 
-.sidebar-nav { font-size: 0.92rem; }
+.sidebar-nav { font-size: 0.95rem; }
 .nav-cat {
   font-family: var(--font-mono);
   font-size: 0.66rem;
@@ -403,16 +403,18 @@ p { margin: 1rem 0; }
 .nav-cat.on a { color: var(--accent); }
 .nav-items { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
 .nav-items a {
-  display: block;
-  padding: 0.42rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.7rem;
   border-radius: 9px;
   color: var(--muted);
   line-height: 1.4;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   transition: color 0.15s var(--ease), background 0.15s var(--ease);
 }
+/* Leading icon — matches the admin nav's icon+label rows. */
+.nav-items a > .ti { font-size: 18px; flex: none; }
+.nav-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .nav-items a:hover { color: var(--ink); background: var(--surface); text-decoration: none; }
 .nav-items a.on {
   color: var(--accent);
@@ -460,7 +462,7 @@ p { margin: 1rem 0; }
 
 /* Category guide rows carry a small level marker (B / I / A). The link becomes a
    flex row so the title keeps its ellipsis while the marker sits flush-right. */
-.nav-items a.nav-lvl-row { display: flex; align-items: center; gap: 0.5rem; }
+.nav-items a.nav-lvl-row { gap: 0.65rem; }
 .nav-lvl-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lvl {
   flex: none; margin-left: auto;
