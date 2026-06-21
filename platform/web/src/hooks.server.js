@@ -1,13 +1,18 @@
 import { getGuide, getPhase } from '$lib/api.js';
+import { apiCatalog, skillsIndex, OPENAPI, SKILL_MD } from '$lib/agent-endpoints.js';
 
 // /guides/<slug> or /guides/<slug>/<phase>
 const GUIDE_RE = /^\/guides\/([^/]+?)(?:\/(\d+))?\/?$/;
 
-// Serve markdown only when the client explicitly prefers it and is NOT a browser
-// (browsers always send text/html in Accept). This keeps HTML the default.
 function prefersMarkdown(accept) {
   if (!accept) return false;
   return /text\/markdown/i.test(accept) && !/text\/html/i.test(accept);
+}
+
+function json(obj, type = 'application/json') {
+  return new Response(JSON.stringify(obj, null, 2), {
+    headers: { 'content-type': `${type}; charset=utf-8`, 'cache-control': 'max-age=3600' }
+  });
 }
 
 async function guideToMarkdown(fetch, slug) {
@@ -25,7 +30,23 @@ async function guideToMarkdown(fetch, slug) {
 export async function handle({ event, resolve }) {
   const { url, request } = event;
   const accept = request.headers.get('accept') || '';
-  const m = url.pathname.match(GUIDE_RE);
+  const p = url.pathname;
+
+  // ── Agent-discovery endpoints (served here because SvelteKit's router skips
+  // dot-directories like /.well-known).
+  if (request.method === 'GET') {
+    if (p === '/.well-known/api-catalog') return json(apiCatalog(url.origin), 'application/linkset+json');
+    if (p === '/openapi.json') return json(OPENAPI, 'application/openapi+json');
+    if (p === '/api/health')
+      return json({ status: 'ok', service: 'the-missing-manual', time: new Date().toISOString() });
+    if (p === '/.well-known/agent-skills/index.json') return json(skillsIndex(url.origin));
+    if (p === '/.well-known/agent-skills/use-the-missing-manual/SKILL.md')
+      return new Response(SKILL_MD, {
+        headers: { 'content-type': 'text/markdown; charset=utf-8', 'cache-control': 'max-age=3600' }
+      });
+  }
+
+  const m = p.match(GUIDE_RE);
 
   // ── Markdown for Agents: content-negotiated markdown for guide pages.
   if (m && request.method === 'GET' && prefersMarkdown(accept)) {
@@ -60,7 +81,8 @@ export async function handle({ event, resolve }) {
     const o = url.origin;
     const links = [
       `<${o}/sitemap.xml>; rel="sitemap"; type="application/xml"`,
-      `<${o}/llms.txt>; rel="describedby"; type="text/plain"`
+      `<${o}/llms.txt>; rel="describedby"; type="text/plain"`,
+      `<${o}/.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"`
     ];
     if (m) links.push(`<${o}${url.pathname}>; rel="alternate"; type="text/markdown"`);
     response.headers.append('link', links.join(', '));

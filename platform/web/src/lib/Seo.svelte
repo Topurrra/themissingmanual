@@ -1,5 +1,6 @@
 <script>
   import { page } from '$app/stores';
+  import { siteOrigin } from '$lib/site.js';
 
   export let title = '';
   export let description = '';
@@ -7,7 +8,7 @@
   export let image = '';          // absolute or root-relative og image
   export let jsonld = null;       // object or array → injected as ld+json
 
-  $: origin = $page.url.origin;
+  $: origin = siteOrigin($page.url.origin);
   $: canonical = origin + $page.url.pathname;
   $: ogImage = image ? (image.startsWith('http') ? image : origin + image) : '';
   // Build the ld+json script as a string (closing tag split so it can't terminate

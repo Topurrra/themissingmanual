@@ -1,5 +1,6 @@
 <script>
   import { page } from '$app/stores';
+  import { siteOrigin } from '$lib/site.js';
   import Seo from '$lib/Seo.svelte';
   import { quizFor } from '$lib/quizzes.js';
   import Freshness from '$lib/Freshness.svelte';
@@ -34,7 +35,7 @@
 
   // SEO/AEO structured data: the phase as an Article, a breadcrumb, and — when the
   // phase has quiz questions — a FAQPage (answer-engine friendly).
-  $: origin = $page.url.origin;
+  $: origin = siteOrigin($page.url.origin);
   $: guideTitle = $page.data.guideTitle ?? slug;
   $: faq = quizFor(slug, phase.phase_no);
   $: jsonld = [

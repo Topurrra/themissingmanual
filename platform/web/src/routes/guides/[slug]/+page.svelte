@@ -1,5 +1,6 @@
 <script>
   import { page } from '$app/stores';
+  import { siteOrigin } from '$lib/site.js';
   import Seo from '$lib/Seo.svelte';
   export let data;
   $: ({ guide, phases } = data);
@@ -9,7 +10,7 @@
   $: trackQ = $page.url.searchParams.get('track');
   $: q = trackQ ? `?track=${trackQ}` : '';
 
-  $: origin = $page.url.origin;
+  $: origin = siteOrigin($page.url.origin);
   $: jsonld = [
     {
       '@context': 'https://schema.org', '@type': 'Article',

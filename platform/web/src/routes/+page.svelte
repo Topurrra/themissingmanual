@@ -5,9 +5,10 @@
   import { allCards, loadState, countDue } from '$lib/srs.js';
   import Seo from '$lib/Seo.svelte';
   import { page } from '$app/stores';
+  import { siteOrigin } from '$lib/site.js';
 
   export let data;
-  $: origin = $page.url.origin;
+  $: origin = siteOrigin($page.url.origin);
   $: homeLd = {
     '@context': 'https://schema.org', '@type': 'WebSite',
     name: 'The Missing Manual', url: origin,
