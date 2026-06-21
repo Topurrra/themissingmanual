@@ -1,7 +1,10 @@
 <script>
   import { highlight, guardSearchSubmit } from '$lib/search.js';
+  import { page } from '$app/stores';
+  import AskPanel from '$lib/AskPanel.svelte';
   export let data;
   $: ({ q, hits, suggestion } = data);
+  $: askEnabled = $page.data.askEnabled;
 </script>
 
 <svelte:head><title>{q ? `Search: ${q}` : 'Search'}</title></svelte:head>
@@ -13,6 +16,7 @@
 </form>
 
 {#if q}
+  {#if askEnabled}<AskPanel query={q} />{/if}
   {#if suggestion}
     <p class="did-you-mean">Did you mean <a href="/search?q={encodeURIComponent(suggestion)}">{suggestion}</a>?</p>
   {/if}

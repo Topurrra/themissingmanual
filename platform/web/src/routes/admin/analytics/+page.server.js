@@ -1,4 +1,5 @@
 import { adminJson } from '$lib/server/adminApi.js';
+import { askStatus, topAsks } from '$lib/server/aisearch.js';
 
 const EMPTY = {
   views: 0,
@@ -13,5 +14,5 @@ const EMPTY = {
 export async function load({ request, url }) {
   const days = url.searchParams.get('days') || '30';
   const analytics = (await adminJson(request.headers.get('cookie'), `/analytics?days=${days}`, null)) ?? EMPTY;
-  return { analytics, days: Number(days) };
+  return { analytics, days: Number(days), ai: { status: askStatus(), top: topAsks(10) } };
 }

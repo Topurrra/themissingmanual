@@ -17,5 +17,11 @@ platform/web/node_modules/
 platform/web/.svelte-kit/
 platform/web/build/
 .gstack/
-data/
+# Project data dir: ignore its contents, but keep the AI Search folder. The
+# aisearch .db files stay ignored; the .gitkeep placeholder is tracked so the
+# docker-compose bind mount (./data/aisearch) always has a target.
+data/*
+!data/aisearch/
+data/aisearch/*
+!data/aisearch/.gitkeep
 .env

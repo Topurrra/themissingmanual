@@ -45,6 +45,12 @@ services:
       # audio upload (the admin asset proxy buffers the whole body). Raise it
       # above the API's asset limit (~21 MiB) so music uploads go through.
       BODY_SIZE_LIMIT: ${BODY_SIZE_LIMIT:-26214400}
+      # Persistent dir for the AI Search SQLite DB (aisearch.db): config (incl. the
+      # CF API token), the monthly usage counter, and the ask log. Bind-mounted to
+      # ./data/aisearch on the host so it survives image rebuilds / redeploys.
+      ASK_DATA_DIR: /data
+    volumes:
+      - ./data/aisearch:/data
     depends_on:
       - api
 

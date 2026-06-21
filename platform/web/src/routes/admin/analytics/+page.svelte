@@ -1,6 +1,7 @@
 <script>
   export let data;
   $: ({ analytics, days } = data);
+  $: ai = data.ai;
   $: prev = analytics.prev || { views: 0, uniqueVisitors: 0, searches: 0 };
   $: hasData = analytics.views > 0 || analytics.searches > 0;
 
@@ -170,6 +171,24 @@
         {:else}<p class="admin-empty">No searches yet</p>{/each}
       </div>
       <p class="admin-note" style="margin-top:0.8rem;">Frequent searches are your content backlog.</p>
+
+      <h2 class="admin-h2">AI Search · Ask the guides</h2>
+      {#if ai.status.configured}
+        <p class="admin-note" style="margin:0 0 0.6rem;">{ai.status.used.toLocaleString()} of {ai.status.cap.toLocaleString()} AI queries used this month — <b>{ai.status.remaining.toLocaleString()} left</b>{#if !ai.status.enabled} · feature is OFF{/if}. <a href="/admin/ai-search">Manage →</a></p>
+        <div class="ranks">
+          {#each ai.top as r, i}
+            {@const mx = peak(ai.top)}
+            <div class="rank-row">
+              <span class="rank-i">{i + 1}</span>
+              <span class="rank-label">{r.query}</span>
+              <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+              <b class="rank-count">{r.count.toLocaleString()}</b>
+            </div>
+          {:else}<p class="admin-empty">No AI questions yet</p>{/each}
+        </div>
+      {:else}
+        <p class="admin-note">Not configured. <a href="/admin/ai-search">Set up AI Search →</a></p>
+      {/if}
     </div>
   </div>
 {/if}

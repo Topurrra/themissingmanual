@@ -1,0 +1,3 @@
+# Holds aisearch.db (AI Search config, monthly usage counter, ask log).
+# Bind-mounted into the web container at /data. The .db files are gitignored;
+# this placeholder keeps the folder in the repo so the bind mount has a target.
