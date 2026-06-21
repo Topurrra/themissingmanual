@@ -80,7 +80,8 @@ impl Store {
                  path TEXT NOT NULL,
                  referrer TEXT,
                  visitor TEXT NOT NULL,
-                 query TEXT
+                 query TEXT,
+                 device TEXT NOT NULL DEFAULT ''
              );
              CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
              CREATE TABLE IF NOT EXISTS settings (
@@ -107,6 +108,8 @@ impl Store {
              );
              CREATE INDEX IF NOT EXISTS idx_revisions_phase ON phase_revisions(guide_slug, phase_no);",
         )?;
+        // Additive migration for pre-existing events tables (no-op once present).
+        let _ = conn.execute("ALTER TABLE events ADD COLUMN device TEXT NOT NULL DEFAULT ''", []);
         Ok(Self { conn })
     }
 
@@ -556,10 +559,10 @@ impl Store {
 
     // ---- analytics ----
 
-    pub fn record_event(&self, kind: &str, path: &str, referrer: &str, visitor: &str, query: &str) -> Result<(), StoreError> {
+    pub fn record_event(&self, kind: &str, path: &str, referrer: &str, visitor: &str, query: &str, device: &str) -> Result<(), StoreError> {
         self.conn.execute(
-            "INSERT INTO events (kind, path, referrer, visitor, query) VALUES (?1,?2,?3,?4,?5)",
-            params![kind, path, referrer, visitor, query],
+            "INSERT INTO events (kind, path, referrer, visitor, query, device) VALUES (?1,?2,?3,?4,?5,?6)",
+            params![kind, path, referrer, visitor, query, device],
         )?;
         Ok(())
     }
@@ -613,6 +616,32 @@ impl Store {
     }
     pub fn top_searches(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
         self.top_by("AND kind='search' AND query<>''", "query", days, limit)
+    }
+    pub fn top_guides(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        self.top_by("AND kind='pageview' AND path LIKE '/guides/%'", "path", days, limit)
+    }
+    pub fn top_categories(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        self.top_by("AND kind='pageview' AND path LIKE '/categories/%'", "path", days, limit)
+    }
+    pub fn top_devices(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        self.top_by("AND kind='pageview' AND device<>''", "device", days, limit)
+    }
+    /// Totals for the period before the current window (for trend comparison):
+    /// events in [now-2*days, now-days).
+    pub fn analytics_totals_prev(&self, days: i64) -> Result<(i64, i64, i64), StoreError> {
+        let lo = format!("-{} days", days * 2);
+        let hi = format!("-{days} days");
+        let count = |kind_clause: &str| -> Result<i64, StoreError> {
+            Ok(self.conn.query_row(
+                &format!("SELECT COUNT(*) FROM events WHERE {kind_clause} AND ts>=datetime('now',?1) AND ts<datetime('now',?2)"),
+                params![lo, hi], |r| r.get(0))?)
+        };
+        let views = count("kind='pageview'")?;
+        let searches = count("kind='search'")?;
+        let uniq: i64 = self.conn.query_row(
+            "SELECT COUNT(DISTINCT visitor) FROM events WHERE kind='pageview' AND ts>=datetime('now',?1) AND ts<datetime('now',?2)",
+            params![lo, hi], |r| r.get(0))?;
+        Ok((views, uniq, searches))
     }
 }
 
@@ -762,10 +791,10 @@ mod tests {
     #[test]
     fn analytics_counts_and_uniques() {
         let s = Store::open_in_memory().unwrap();
-        s.record_event("pageview", "/guides/git", "google.com", "vA", "").unwrap();
-        s.record_event("pageview", "/guides/git", "", "vA", "").unwrap(); // same visitor
-        s.record_event("pageview", "/", "reddit.com", "vB", "").unwrap();
-        s.record_event("search", "/search", "", "vB", "rebase").unwrap();
+        s.record_event("pageview", "/guides/git", "google.com", "vA", "", "").unwrap();
+        s.record_event("pageview", "/guides/git", "", "vA", "", "").unwrap(); // same visitor
+        s.record_event("pageview", "/", "reddit.com", "vB", "", "").unwrap();
+        s.record_event("search", "/search", "", "vB", "rebase", "").unwrap();
         let (views, uniq, searches) = s.analytics_totals(30).unwrap();
         assert_eq!(views, 3);
         assert_eq!(uniq, 2);
@@ -787,7 +816,7 @@ mod tests {
                 [],
             )
             .unwrap();
-        s.record_event("pageview", "/new", "", "v", "").unwrap();
+        s.record_event("pageview", "/new", "", "v", "", "").unwrap();
 
         let removed = s.prune_events(365).unwrap();
         assert_eq!(removed, 1);

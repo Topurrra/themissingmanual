@@ -17,6 +17,17 @@ export async function POST({ request, getClientAddress, url }) {
   const day = new Date().toISOString().slice(0, 10);
   const visitor = crypto.createHash('sha256').update(day + ip + ua + SALT).digest('hex').slice(0, 32);
 
+  // Coarse device class from the UA (the raw UA is never stored — just this label).
+  const ul = ua.toLowerCase();
+  const device =
+    /ipad|tablet|playbook|silk|kindle/.test(ul) || (/android/.test(ul) && !/mobile/.test(ul))
+      ? 'tablet'
+      : /mobi|iphone|ipod|windows phone|android.*mobile/.test(ul)
+        ? 'mobile'
+        : ul
+          ? 'desktop'
+          : '';
+
   let referrer = '';
   try {
     if (data.referrer) {
@@ -30,7 +41,8 @@ export async function POST({ request, getClientAddress, url }) {
     path: (data.path || '/').slice(0, 512),
     referrer,
     visitor,
-    query: (data.query || '').slice(0, 255)
+    query: (data.query || '').slice(0, 255),
+    device
   };
   try {
     await fetch(`${API_BASE}/api/events`, {

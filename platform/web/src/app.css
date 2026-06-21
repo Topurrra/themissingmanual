@@ -857,7 +857,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .colophon { border-top: 1px solid var(--line); margin-top: 4rem; }
 .colophon-inner {
   margin: 0 auto;
-  padding: 2.4rem 1.6rem 1rem;
+  padding: 1.3rem 1.5rem 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -1100,6 +1100,11 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
   box-shadow: var(--shadow-sm);
   padding: 1.1rem 1.2rem; display: flex; flex-direction: column; gap: 0.15rem;
 }
+.metric-trend { margin-top: 0.4rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; }
+.metric-trend.up { color: #2e9e6b; }
+.metric-trend.down { color: #c0563c; }
+.metric-trend.flat { color: var(--faint); }
+.bar-axis { display: flex; justify-content: space-between; margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.66rem; color: var(--faint); }
 .metric-k {
   font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 0.15rem;
@@ -1264,6 +1269,25 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .range-pills a:hover { color: var(--ink); text-decoration: none; }
 .range-pills a.on { background: var(--accent-tint); color: var(--accent); font-weight: 500; }
 .panel { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; margin: 1.25rem 0; }
-.panel-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.8rem; }
-.bars { display: flex; align-items: flex-end; gap: 5px; height: 110px; }
-.bars .bar { flex: 1; min-height: 2px; background: var(--accent); opacity: 0.85; border-radius: 3px 3px 0 0; }
+.panel-label { font-size: 0.85rem; color: var(--muted); }
+.panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.8rem; }
+.panel-readout { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+.panel-readout b { color: var(--ink); font-weight: 600; }
+.bars { display: flex; align-items: flex-end; gap: 5px; height: 110px; overflow-x: auto; overflow-y: hidden; padding-bottom: 4px; }
+.bars .bar { flex: 1 0 7px; min-width: 7px; min-height: 2px; background: var(--accent); opacity: 0.85; border-radius: 3px 3px 0 0; transition: opacity 0.1s var(--ease); cursor: default; }
+/* On hover, dim the rest and spotlight the one under the cursor. */
+.bars:hover .bar { opacity: 0.35; }
+.bars .bar.active { opacity: 1; }
+
+/* Ranked lists (top topics / referrers / searches) — rank #, label, proportional
+   bar, then the count, so the number reads as its own value and rows compare visually. */
+.rank-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2.5rem; }
+.ranks { display: flex; flex-direction: column; gap: 2px; margin-bottom: 0.5rem; }
+.rank-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.4rem 0.55rem; border-radius: 9px; font-size: 0.9rem; color: var(--body); }
+a.rank-row:hover { background: var(--surface); text-decoration: none; }
+.rank-i { flex: none; width: 1.3rem; text-align: right; font-family: var(--font-mono); font-size: 0.72rem; color: var(--faint); }
+.rank-label { flex: 0 1 auto; min-width: 4ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+.rank-meter { flex: 1 1 30px; min-width: 24px; height: 6px; border-radius: 999px; background: var(--surface); overflow: hidden; }
+.rank-fill { display: block; height: 100%; background: var(--accent); opacity: 0.85; border-radius: 999px; }
+.rank-count { flex: none; min-width: 2.5ch; text-align: right; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--ink); }
+@media (max-width: 760px) { .rank-cols { grid-template-columns: 1fr; } }

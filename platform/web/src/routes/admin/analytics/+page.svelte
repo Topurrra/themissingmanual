@@ -1,9 +1,49 @@
 <script>
   export let data;
   $: ({ analytics, days } = data);
-  $: maxPerDay = Math.max(1, ...analytics.perDay.map((d) => d.count));
+  $: prev = analytics.prev || { views: 0, uniqueVisitors: 0, searches: 0 };
   $: hasData = analytics.views > 0 || analytics.searches > 0;
+
+  const peak = (rows) => Math.max(1, ...rows.map((r) => r.count));
+  const pretty = (p) => {
+    if (p === '/') return 'Home';
+    let m;
+    if ((m = p.match(/^\/guides\/([^/]+)(?:\/(\d+))?/))) return m[1].replace(/-/g, ' ') + (m[2] ? ` · phase ${m[2]}` : '');
+    if ((m = p.match(/^\/categories\/([^/]+)/))) return m[1].replace(/-/g, ' ');
+    return p.replace(/^\//, '').replace(/-/g, ' ');
+  };
+  const fmtDay = (k) => { try { return new Date(k + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); } catch (e) { return k; } };
+  const fmtFull = (k) => { try { return new Date(k + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }); } catch (e) { return k; } };
+  let hover = -1; // hovered bar index, -1 = none
+
+  // Zero-fill the day series so the chart spans the whole window (no skipped days).
+  function fillDays(n, rows) {
+    const map = Object.fromEntries((rows || []).map((r) => [r.day, r.count]));
+    const out = [];
+    const t = new Date();
+    for (let i = n - 1; i >= 0; i--) {
+      const d = new Date(t);
+      d.setDate(t.getDate() - i);
+      out.push({ day: d.toISOString().slice(0, 10), count: map[d.toISOString().slice(0, 10)] || 0 });
+    }
+    return out;
+  }
+  $: series = fillDays(days, analytics.perDay);
+  $: maxPerDay = Math.max(1, ...series.map((d) => d.count));
+  $: devTotal = (analytics.devices || []).reduce((a, d) => a + d.count, 0);
+  $: viewsPerVisitor = analytics.uniqueVisitors ? (analytics.views / analytics.uniqueVisitors).toFixed(1) : '0';
+  const trend = (cur, prv) => (prv > 0 ? Math.round(((cur - prv) / prv) * 100) : cur > 0 ? null : 0);
+  $: tViews = trend(analytics.views, prev.views);
+  $: tVisitors = trend(analytics.uniqueVisitors, prev.uniqueVisitors);
+  $: tSearches = trend(analytics.searches, prev.searches);
 </script>
+
+{#snippet chip(t)}
+  {#if t === null}<span class="metric-trend up">new</span>
+  {:else if t > 0}<span class="metric-trend up">▲ {t}%</span>
+  {:else if t < 0}<span class="metric-trend down">▼ {Math.abs(t)}%</span>
+  {:else}<span class="metric-trend flat">no change</span>{/if}
+{/snippet}
 
 <svelte:head><title>Admin · Analytics</title></svelte:head>
 
@@ -19,43 +59,114 @@
 {#if !hasData}
   <p class="admin-empty">No traffic recorded yet. Visit a few public pages, then check back.</p>
 {:else}
+  <p class="admin-note" style="margin: 0 0 0.6rem;">Trends compare the last {days} days with the {days} before that.</p>
   <div class="metrics">
-    <div class="metric"><span class="metric-n">{analytics.views.toLocaleString()}</span><span class="metric-l">Views</span></div>
-    <div class="metric"><span class="metric-n">{analytics.uniqueVisitors.toLocaleString()}</span><span class="metric-l">Unique visitors</span></div>
-    <div class="metric"><span class="metric-n">{analytics.searches.toLocaleString()}</span><span class="metric-l">Searches</span></div>
+    <div class="metric">
+      <span class="metric-n">{analytics.views.toLocaleString()}</span>
+      <span class="metric-l">Views</span>
+      {@render chip(tViews)}
+    </div>
+    <div class="metric">
+      <span class="metric-n">{analytics.uniqueVisitors.toLocaleString()}</span>
+      <span class="metric-l">Unique visitors / day</span>
+      {@render chip(tVisitors)}
+    </div>
+    <div class="metric">
+      <span class="metric-n">{analytics.searches.toLocaleString()}</span>
+      <span class="metric-l">Searches</span>
+      {@render chip(tSearches)}
+    </div>
+    <div class="metric">
+      <span class="metric-n">{viewsPerVisitor}</span>
+      <span class="metric-l">Views / visitor</span>
+    </div>
   </div>
 
-  {#if analytics.perDay.length}
-    <div class="panel">
-      <div class="panel-label">Views over time</div>
-      <div class="bars">
-        {#each analytics.perDay as d}
-          <div class="bar" style={`height:${Math.round((d.count / maxPerDay) * 100)}%`} title={`${d.day}: ${d.count}`}></div>
-        {/each}
+  <div class="panel">
+    <div class="panel-head">
+      <span class="panel-label">Views over time</span>
+      {#if hover >= 0}
+        <span class="panel-readout">{fmtFull(series[hover].day)} · <b>{series[hover].count.toLocaleString()}</b> view{series[hover].count === 1 ? '' : 's'}</span>
+      {/if}
+    </div>
+    <div class="bars" role="presentation" on:mouseleave={() => (hover = -1)}>
+      {#each series as d, i}
+        <div class="bar" class:active={i === hover} style={`height:${Math.round((d.count / maxPerDay) * 100)}%`}
+          on:mouseenter={() => (hover = i)} title={`${fmtDay(d.day)}: ${d.count}`}></div>
+      {/each}
+    </div>
+    {#if series.length}
+      <div class="bar-axis">
+        <span>{fmtDay(series[0].day)}</span>
+        {#if series.length > 2}<span>{fmtDay(series[Math.floor(series.length / 2)].day)}</span>{/if}
+        <span>{fmtDay(series[series.length - 1].day)}</span>
       </div>
+    {/if}
+  </div>
+
+  {#if analytics.devices && analytics.devices.length}
+    <h2 class="admin-h2">Devices</h2>
+    <div class="ranks">
+      {#each analytics.devices as r}
+        <div class="rank-row">
+          <span class="rank-label" style="text-transform:capitalize;">{r.device}</span>
+          <span class="rank-meter"><span class="rank-fill" style={`width:${devTotal ? (r.count / devTotal) * 100 : 0}%`}></span></span>
+          <b class="rank-count">{devTotal ? Math.round((r.count / devTotal) * 100) : 0}%</b>
+        </div>
+      {/each}
     </div>
   {/if}
 
   <div class="rank-cols">
     <div>
-      <h2 class="admin-h2">Top topics</h2>
+      <h2 class="admin-h2">Top guides</h2>
       <div class="ranks">
-        {#each analytics.topPaths as r}
-          <div class="rank-row"><span>{r.path}</span><b>{r.count.toLocaleString()}</b></div>
+        {#each analytics.topGuides || [] as r, i}
+          {@const mx = peak(analytics.topGuides)}
+          <a class="rank-row" href={r.path} title={r.path}>
+            <span class="rank-i">{i + 1}</span>
+            <span class="rank-label">{pretty(r.path)}</span>
+            <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+            <b class="rank-count">{r.count.toLocaleString()}</b>
+          </a>
         {:else}<p class="admin-empty">—</p>{/each}
       </div>
-      <h2 class="admin-h2">Top referrers</h2>
+      <h2 class="admin-h2">Top categories</h2>
       <div class="ranks">
-        {#each analytics.topReferrers as r}
-          <div class="rank-row"><span>{r.referrer}</span><b>{r.count.toLocaleString()}</b></div>
-        {:else}<p class="admin-empty">Direct / none yet</p>{/each}
+        {#each analytics.topCategories || [] as r, i}
+          {@const mx = peak(analytics.topCategories)}
+          <a class="rank-row" href={r.path} title={r.path}>
+            <span class="rank-i">{i + 1}</span>
+            <span class="rank-label">{pretty(r.path)}</span>
+            <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+            <b class="rank-count">{r.count.toLocaleString()}</b>
+          </a>
+        {:else}<p class="admin-empty">—</p>{/each}
       </div>
     </div>
     <div>
+      <h2 class="admin-h2">Top referrers</h2>
+      <div class="ranks">
+        {#each analytics.topReferrers as r, i}
+          {@const mx = peak(analytics.topReferrers)}
+          <div class="rank-row">
+            <span class="rank-i">{i + 1}</span>
+            <span class="rank-label">{r.referrer}</span>
+            <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+            <b class="rank-count">{r.count.toLocaleString()}</b>
+          </div>
+        {:else}<p class="admin-empty">Direct / none yet</p>{/each}
+      </div>
       <h2 class="admin-h2">Top search queries</h2>
       <div class="ranks">
-        {#each analytics.topSearches as r}
-          <div class="rank-row"><span>{r.query}</span><b>{r.count.toLocaleString()}</b></div>
+        {#each analytics.topSearches as r, i}
+          {@const mx = peak(analytics.topSearches)}
+          <div class="rank-row">
+            <span class="rank-i">{i + 1}</span>
+            <span class="rank-label">{r.query}</span>
+            <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+            <b class="rank-count">{r.count.toLocaleString()}</b>
+          </div>
         {:else}<p class="admin-empty">No searches yet</p>{/each}
       </div>
       <p class="admin-note" style="margin-top:0.8rem;">Frequent searches are your content backlog.</p>

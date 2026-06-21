@@ -347,6 +347,8 @@ pub struct EventInput {
     visitor: String,
     #[serde(default)]
     query: String,
+    #[serde(default)]
+    device: String,
 }
 
 // Public: the analytics collector posts here (server-to-server from the web origin).
@@ -369,6 +371,7 @@ pub async fn record_event(State(state): State<Arc<AppState>>, headers: HeaderMap
             &truncate(&e.referrer, 255),
             &truncate(&e.visitor, 64),
             &truncate(&e.query, 255),
+            &truncate(&e.device, 16),
         )
     };
     match r {
@@ -382,14 +385,19 @@ pub async fn analytics(State(state): State<Arc<AppState>>, Query(q): Query<HashM
     let store = state.store.lock().unwrap();
     let build = || -> Result<serde_json::Value, content_core::store::StoreError> {
         let (views, uniq, searches) = store.analytics_totals(days)?;
+        let (pviews, puniq, psearches) = store.analytics_totals_prev(days)?;
         Ok(json!({
             "views": views,
             "uniqueVisitors": uniq,
             "searches": searches,
+            "prev": { "views": pviews, "uniqueVisitors": puniq, "searches": psearches },
             "perDay": store.views_per_day(days)?.into_iter().map(|(d, c)| json!({"day": d, "count": c})).collect::<Vec<_>>(),
+            "topGuides": store.top_guides(days, 10)?.into_iter().map(|(p, c)| json!({"path": p, "count": c})).collect::<Vec<_>>(),
+            "topCategories": store.top_categories(days, 10)?.into_iter().map(|(p, c)| json!({"path": p, "count": c})).collect::<Vec<_>>(),
             "topPaths": store.top_paths(days, 10)?.into_iter().map(|(p, c)| json!({"path": p, "count": c})).collect::<Vec<_>>(),
             "topReferrers": store.top_referrers(days, 10)?.into_iter().map(|(p, c)| json!({"referrer": p, "count": c})).collect::<Vec<_>>(),
             "topSearches": store.top_searches(days, 10)?.into_iter().map(|(p, c)| json!({"query": p, "count": c})).collect::<Vec<_>>(),
+            "devices": store.top_devices(days, 5)?.into_iter().map(|(p, c)| json!({"device": p, "count": c})).collect::<Vec<_>>(),
         }))
     };
     match build() {
