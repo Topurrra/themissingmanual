@@ -10,6 +10,7 @@
   import Appearance from '$lib/Appearance.svelte';
   import LofiPlayer from '$lib/LofiPlayer.svelte';
   import PathRail from '$lib/PathRail.svelte';
+  import WebMcp from '$lib/WebMcp.svelte';
   import { beginnerMode, setBeginner } from '$lib/beginner-store.js';
 
   export let data;
@@ -167,6 +168,8 @@
 </script>
 
 <svelte:head><title>{siteName}</title></svelte:head>
+
+<WebMcp />
 
 {#if isAdmin}
   <slot />
