@@ -8,7 +8,14 @@ const CACHE = `tmm-cache-${version}`;
 const PRECACHE = [...build, ...files];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
+  // Precache hashed assets (atomic), plus the home shell best-effort so there is
+  // always an offline landing page and the navigation fallback always resolves.
+  event.waitUntil(
+    caches
+      .open(CACHE)
+      .then((c) => c.addAll(PRECACHE).then(() => c.add('/').catch(() => {})))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', (event) => {
