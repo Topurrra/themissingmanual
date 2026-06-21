@@ -191,3 +191,15 @@ dying disk). The histogram tells you which kind of problem you have before you'v
 ---
 
 [← Phase 1: Why Centralized Logs](01-why-centralized-logs.md) · [Phase 3: Streams, Dashboards & Alerts →](03-streams-dashboards-alerts.md)
+
+## Try it yourself
+
+Build a pattern for the responses you care about (here: 4xx/5xx status codes):
+
+```playground-regex
+\b[45]\d\d\b
+GET /api/users 200 12ms
+GET /api/order 404 3ms
+POST /api/pay 500 80ms
+GET /health 200 1ms
+```

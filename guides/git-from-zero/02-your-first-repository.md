@@ -175,3 +175,10 @@ project onto GitHub so it's backed up and shareable.
 ---
 
 [← Phase 1: What Version Control Even Is](01-what-is-version-control.md) · [Guide overview](_guide.md) · [Phase 3: Putting It on GitHub →](03-putting-it-on-github.md)
+
+## Try it yourself
+
+Run commands and watch the history graph build — `commit -m "first"`, `branch dev`, `checkout dev`, `commit -m "work"`, `checkout main`, `merge dev`:
+
+```playground-git
+```

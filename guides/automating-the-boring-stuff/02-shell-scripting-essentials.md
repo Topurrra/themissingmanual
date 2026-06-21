@@ -190,3 +190,11 @@ You can now write a script that does real work and fails safely. Next: how to te
 ---
 
 [← Phase 1: If You've Done It Twice, Script It](01-if-youve-done-it-twice.md) · [Guide overview](_guide.md) · [Phase 3: When to Reach for Python →](03-when-to-reach-for-python.md)
+
+## Try it yourself
+
+Decode any cron schedule — edit it and see the plain-English meaning plus the next run times:
+
+```playground-cron
+*/15 9-17 * * 1-5
+```

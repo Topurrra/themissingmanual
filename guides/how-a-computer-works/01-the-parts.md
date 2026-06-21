@@ -119,3 +119,11 @@ Now that you can name the parts, let's watch them cooperate — next we follow a
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: How They Work Together to Run a Program →](02-running-a-program.md)
+
+## Try it yourself
+
+Everything inside is binary. Convert between bases and try a bitwise operation:
+
+```playground-base
+42
+```

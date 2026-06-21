@@ -219,3 +219,15 @@ often quieter and earlier.
 ---
 
 [← Phase 1: What Logs Actually Are](01-what-logs-actually-are.md) · [Phase 3: Logs That Help Future-You →](03-logs-that-help-future-you.md)
+
+## Try it yourself
+
+Find the lines that matter — edit the pattern and watch matches highlight:
+
+```playground-regex
+ERROR|WARN
+2026-06-20 12:01 INFO  request ok
+2026-06-20 12:02 ERROR db timeout after 5s
+2026-06-20 12:03 WARN  slow query 1200ms
+2026-06-20 12:04 INFO  request ok
+```

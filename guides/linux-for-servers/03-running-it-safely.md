@@ -295,3 +295,10 @@ it by hand, calmly, on one box. Which you now can.
 ---
 
 [← Guide overview](_guide.md) · [Phase 1: The Server Mindset →](01-the-server-mindset.md)
+
+## Try it yourself
+
+Inspect a fake server filesystem — `ls -l`, `cat /etc/hostname`, `cat readme.txt | grep shell`, `tail -n 2 projects/todo.txt`:
+
+```playground-terminal
+```

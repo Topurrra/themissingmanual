@@ -164,6 +164,11 @@ crisis.
 Next: the day-to-day reality of running nginx — TLS, compression, caching, rate limiting, and how to change
 the config without taking your site down.
 
+Send traffic and watch how each algorithm spreads it across the backends:
+
+```playground-lb
+```
+
 ---
 
 [← Phase 1: What a Reverse Proxy Is](01-what-a-reverse-proxy-is.md) · [Guide overview](_guide.md) · [Phase 3: What nginx Does in Practice →](03-what-nginx-does-in-practice.md)

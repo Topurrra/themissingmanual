@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:glossary": "node scripts/build-glossary.mjs",
+    "lint:content": "node scripts/lint-content.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "^5",

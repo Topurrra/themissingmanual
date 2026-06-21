@@ -251,3 +251,15 @@ silent failure before a human does.
 ---
 
 [← Phase 1: Why Trust Is the Whole Product](01-why-trust-is-the-whole-product.md) · [Phase 3: Pipeline Observability →](03-pipeline-observability.md)
+
+## Try it yourself
+
+A quick format check — which values are valid ISO dates (YYYY-MM-DD)?
+
+```playground-regex
+^\d{4}-\d{2}-\d{2}$
+2026-06-20
+2026-6-20
+20260620
+not-a-date
+```

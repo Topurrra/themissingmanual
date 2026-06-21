@@ -90,6 +90,11 @@ In all three cases the fix is the same shape: do the expensive thing once, keep 
 
 You know what a cache is and why it helps. The next question is *where* you'd actually put one — and it turns out a single web request passes through several caches stacked one behind the other.
 
+See why a small cache still helps — repeated keys are instant hits, and the least-recently-used entry gets evicted when it fills:
+
+```playground-lru
+```
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Where Caches Live →](02-where-caches-live.md)

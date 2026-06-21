@@ -96,4 +96,9 @@ You now have the one idea the whole field rests on: meaning as coordinates. Next
 
 ---
 
+Click a word to see its nearest neighbours. Similar meanings sit close together — that's the whole idea behind an embedding:
+
+```playground-embed
+```
+
 [← Guide overview](_guide.md) · [Phase 2: Measuring Similarity →](02-measuring-similarity.md)

@@ -162,4 +162,10 @@ That last point — slow lookup by value — is the doorway to the next containe
 
 ---
 
+Append is cheap; inserting at the front shifts everything. Click a box to see index access is instant:
+
+```playground-ds
+array
+```
+
 [← Guide overview](_guide.md) · [Phase 2: Maps & Sets — Lookup by Key →](02-maps-and-sets.md)

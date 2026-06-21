@@ -186,3 +186,10 @@ your choice of data structure secretly sets your Big-O.
 ---
 
 [← Phase 1: It's About How Things GROW](01-its-about-how-things-grow.md) · [Guide overview](_guide.md) · [Phase 3: Why It Matters in Real Life →](03-why-it-matters-in-real-life.md)
+
+## See it grow
+
+Drag *n* and watch how each complexity class pulls away from the others:
+
+```playground-bigo
+```

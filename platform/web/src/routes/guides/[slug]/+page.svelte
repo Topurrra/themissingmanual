@@ -1,5 +1,6 @@
 <script>
   import { page } from '$app/stores';
+  import Seo from '$lib/Seo.svelte';
   export let data;
   $: ({ guide, phases } = data);
   // Preserve learning-path context: when the guide was reached from a path it
@@ -7,9 +8,27 @@
   // learning-path sidebar persists while reading. Other links (home) drop it.
   $: trackQ = $page.url.searchParams.get('track');
   $: q = trackQ ? `?track=${trackQ}` : '';
+
+  $: origin = $page.url.origin;
+  $: jsonld = [
+    {
+      '@context': 'https://schema.org', '@type': 'Article',
+      headline: guide.title, description: guide.summary,
+      author: { '@type': 'Organization', name: 'The Missing Manual' },
+      publisher: { '@type': 'Organization', name: 'The Missing Manual' },
+      mainEntityOfPage: `${origin}/guides/${guide.slug}`
+    },
+    {
+      '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${origin}/` },
+        { '@type': 'ListItem', position: 2, name: guide.title, item: `${origin}/guides/${guide.slug}` }
+      ]
+    }
+  ];
 </script>
 
-<svelte:head><title>{guide.title}</title></svelte:head>
+<Seo title={`${guide.title} — The Missing Manual`} description={guide.summary} type="article" image={`/guides/${guide.slug}/og.svg`} {jsonld} />
 
 <div class="crumb"><a href="/">All topics</a> <span>/</span> <span>{guide.title}</span></div>
 <h1 class="page-title">{guide.title}</h1>

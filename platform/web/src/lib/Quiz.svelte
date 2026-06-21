@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { quizFor } from '$lib/quizzes.js';
+  import { seedChapter } from '$lib/srs.js';
 
   export let guideSlug;
   export let phaseNo;
@@ -13,6 +14,7 @@
   let selected = [];
   let marked = false;
   let celebrated = false;
+  let seeded = false;
 
   $: answered = selected.filter((s) => s != null).length;
   $: allDone = questions.length > 0 && answered === questions.length;
@@ -24,6 +26,8 @@
   $: if (allDone && questions.length && correct === questions.length && !marked) { marked = true; markGuideDone(); }
   // Celebrate a perfect score with a confetti burst (skips reduced-motion users).
   $: if (allDone && questions.length && correct === questions.length && !celebrated) { celebrated = true; celebrate(); }
+  // Finishing the quiz enrols this chapter into spaced review (resurfaces later).
+  $: if (allDone && questions.length && !seeded) { seeded = true; seedChapter(guideSlug, phaseNo); }
 
   function markGuideDone() {
     try {
@@ -129,6 +133,7 @@
       <div class="quiz-summary">
         <span class="quiz-score">You got {correct} of {questions.length}.</span>
         {#if correct === questions.length}<span class="quiz-flag">Marked complete in your path.</span>{/if}
+        <span class="quiz-flag"><i class="ti ti-cards" aria-hidden="true"></i> Saved to <a href="/review">review</a></span>
         <button type="button" class="quiz-retry" on:click={retry}>Try again</button>
       </div>
     {/if}
@@ -170,10 +175,8 @@
   .quiz-explain.ok { color: var(--body); }
   .quiz-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
   .quiz-score { font-weight: 600; color: var(--ink); }
-  .quiz-flag { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); }
-  .quiz-retry {
-    margin-left: auto; cursor: pointer; font: inherit; font-size: 0.85rem; color: var(--muted);
-    background: none; border: 0; text-decoration: underline; text-underline-offset: 3px;
-  }
+  .quiz-flag { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); }
+  .quiz-flag a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  .quiz-retry { margin-left: auto; cursor: pointer; font: inherit; font-size: 0.85rem; color: var(--muted); background: none; border: 0; text-decoration: underline; text-underline-offset: 3px; }
   .quiz-retry:hover { color: var(--ink); }
 </style>

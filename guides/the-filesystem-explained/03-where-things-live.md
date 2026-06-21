@@ -135,3 +135,10 @@ That's the whole map: numbered storage at the bottom, a tree on top, rules guard
 ---
 
 [← Phase 2: Permissions & Ownership](02-permissions-and-ownership.md) · [Guide overview](_guide.md)
+
+## Try it yourself
+
+Poke around a fake filesystem — `ls`, `cd`, `pwd`, `cat`, `tree`. Nothing leaves your browser:
+
+```playground-terminal
+```

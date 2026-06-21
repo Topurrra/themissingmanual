@@ -126,3 +126,11 @@ That's the everyday skill: see the scan, add the index the plan points at, prove
 ---
 
 [← Phase 2: Indexes](02-indexes.md) · [Guide overview](_guide.md)
+
+## Try it yourself
+
+Ask SQLite how it plans to run a query (real EXPLAIN output):
+
+```sql runnable
+EXPLAIN QUERY PLAN SELECT * FROM books WHERE author_id = 3;
+```

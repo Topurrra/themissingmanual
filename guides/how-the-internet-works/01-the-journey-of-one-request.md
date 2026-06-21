@@ -115,3 +115,10 @@ Next, a question the journey left open: when you typed that web address, how did
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Addresses & Names →](02-addresses-and-names.md)
+
+## See it move
+
+Step through the whole journey — the DNS lookup, the request travelling out, and the response coming back:
+
+```playground-network
+```

@@ -1,0 +1,14 @@
+{
+  "name": "The Missing Manual",
+  "short_name": "Missing Manual",
+  "description": "Clear, in-depth guides to how software really works. Free, forever.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fcfcfd",
+  "theme_color": "#0e7c86",
+  "icons": [
+    { "src": "/icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" },
+    { "src": "/icon-maskable.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "maskable" }
+  ]
+}

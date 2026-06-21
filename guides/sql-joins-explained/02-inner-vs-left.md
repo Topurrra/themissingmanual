@@ -167,4 +167,20 @@ Now you can get exactly the rows you intend. Next, the ways a join can betray yo
 
 ---
 
+Switch the join type and watch which rows survive — and where NULLs appear:
+
+```playground-join
+```
+
 [← Phase 1: Why Joins Exist](01-why-joins-exist.md) · [Guide overview](_guide.md) · [Phase 3: Join Gotchas →](03-join-gotchas.md)
+
+## Try it yourself
+
+Run a real join against the sample `authors` and `books` tables:
+
+```sql runnable
+SELECT authors.name, books.title, books.year
+FROM authors
+JOIN books ON books.author_id = authors.id
+ORDER BY books.year;
+```

@@ -93,4 +93,9 @@ Next: the model will sometimes be wrong, slow, or unavailable — and it won't w
 
 ---
 
+Type anything and watch it split into tokens — the unit you actually pay for:
+
+```playground-tokens
+```
+
 [← Phase 1: It's Just an API Call](01-its-just-an-api-call.md) · [Guide overview](_guide.md) · [Phase 3: Building Reliably →](03-building-reliably.md)

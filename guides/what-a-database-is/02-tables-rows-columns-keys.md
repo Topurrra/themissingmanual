@@ -115,3 +115,11 @@ Next, we'll step back from the data and look at where the database actually *liv
 ---
 
 [← Guide overview](_guide.md) · [Phase 3: The Database vs Your App →](03-the-database-vs-your-app.md)
+
+## Try it yourself
+
+Every row of the sample `books` table — try changing the query:
+
+```sql runnable
+SELECT * FROM books;
+```

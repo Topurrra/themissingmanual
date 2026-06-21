@@ -1,7 +1,11 @@
 <script>
   import { page } from '$app/stores';
+  import Seo from '$lib/Seo.svelte';
+  import { quizFor } from '$lib/quizzes.js';
+  import Freshness from '$lib/Freshness.svelte';
   import ReaderTools from '$lib/ReaderTools.svelte';
   import Glossary from '$lib/Glossary.svelte';
+  import Playgrounds from '$lib/Playgrounds.svelte';
   import ReaderTTS from '$lib/ReaderTTS.svelte';
   import Quiz from '$lib/Quiz.svelte';
   import Mermaid from '$lib/Mermaid.svelte';
@@ -10,44 +14,66 @@
   export let data;
   $: phase = data.phase;
 
-  // Default-on flag rule (same as the layout/admin toggles): unset/""/"1"/"true" ⇒ ON,
-  // only explicit "0"/"false"/"off"/"no" ⇒ off. When off we simply don't mount the
-  // enhancer; the underlying <pre> still renders as plain content.
   const flagOn = (v) => !['0', 'false', 'off', 'no'].includes(String(v ?? '').trim().toLowerCase());
   $: siteConfig = $page.data.siteConfig ?? {};
   $: runnableOn = flagOn(siteConfig.flag_runnable);
   $: mermaidOn = flagOn(siteConfig.flag_mermaid);
 
-  // Preserve learning-path context: when the guide was reached from a path it
-  // carries ?track=<slug>; keep it on this guide's own overview/phase links so
-  // the learning-path sidebar persists while moving between phases.
   $: trackQ = $page.url.searchParams.get('track');
   $: q = trackQ ? `?track=${trackQ}` : '';
 
-  // Build a structured prev / overview / next footer from the guide's phases
-  // (loaded by +layout.server.js as $page.data.guidePhases). This replaces the
-  // author-written nav line at the end of the Markdown, which is hidden via CSS.
   $: slug = phase.guide_slug;
   $: phases = $page.data.guidePhases ?? [];
-  $: realPhases = phases.filter((p) => p.phase_no > 0); // phase_no 0 is the overview
+  $: realPhases = phases.filter((p) => p.phase_no > 0);
   $: prevPhase = realPhases.find((p) => p.phase_no === phase.phase_no - 1) ?? null;
   $: nextPhase = realPhases.find((p) => p.phase_no === phase.phase_no + 1) ?? null;
-  // On the first phase, the natural "previous" step is the guide overview.
   $: prevIsOverview = !!slug && !prevPhase && phase.phase_no === 1;
-  // Show the stand-alone overview card only when it isn't already the prev.
   $: showOverview = !!slug && phase.phase_no > 1;
   $: hasFooterNav = !!(prevPhase || prevIsOverview || nextPhase || showOverview);
-  // Last real phase of the guide → finishing its quiz completes the guide.
   $: isLastPhase = phase.phase_no > 0 && !nextPhase;
+
+  // SEO/AEO structured data: the phase as an Article, a breadcrumb, and — when the
+  // phase has quiz questions — a FAQPage (answer-engine friendly).
+  $: origin = $page.url.origin;
+  $: guideTitle = $page.data.guideTitle ?? slug;
+  $: faq = quizFor(slug, phase.phase_no);
+  $: jsonld = [
+    {
+      '@context': 'https://schema.org', '@type': 'Article',
+      headline: phase.title, description: phase.summary,
+      author: { '@type': 'Organization', name: 'The Missing Manual' },
+      publisher: { '@type': 'Organization', name: 'The Missing Manual' },
+      mainEntityOfPage: `${origin}/guides/${slug}/${phase.phase_no}`,
+      isPartOf: { '@type': 'Article', name: guideTitle, url: `${origin}/guides/${slug}` }
+    },
+    {
+      '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${origin}/` },
+        { '@type': 'ListItem', position: 2, name: guideTitle, item: `${origin}/guides/${slug}` },
+        { '@type': 'ListItem', position: 3, name: phase.title, item: `${origin}/guides/${slug}/${phase.phase_no}` }
+      ]
+    },
+    ...(faq.length
+      ? [{
+          '@context': 'https://schema.org', '@type': 'FAQPage',
+          mainEntity: faq.map((qq) => ({
+            '@type': 'Question', name: qq.q,
+            acceptedAnswer: { '@type': 'Answer', text: qq.choices[qq.answer] }
+          }))
+        }]
+      : [])
+  ];
 </script>
 
-<svelte:head><title>{phase.title}</title></svelte:head>
+<Seo title={`${phase.title} — The Missing Manual`} description={phase.summary} type="article" image={`/guides/${slug}/og.svg`} {jsonld} />
 
 <div class="crumb">
   <a href={`/guides/${phase.guide_slug}${q}`}>← Back to guide</a>
   <span>/</span>
   <span>Phase {phase.phase_no}</span>
 </div>
+<div style="margin: 0.1rem 0 1.2rem;"><Freshness date={phase.updated} /></div>
 
 <article class="reader" class:has-phasenav={hasFooterNav}>
   {@html phase.html}
@@ -95,6 +121,7 @@
   <FeedbackWidget guideSlug={phase.guide_slug} phaseNo={phase.phase_no} />
   <ReaderTools />
   <Glossary />
+  <Playgrounds />
   <ReaderTTS />
   {#if mermaidOn}<Mermaid />{/if}
   {#if runnableOn}<RunnableCode />{/if}

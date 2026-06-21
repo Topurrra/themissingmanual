@@ -140,6 +140,11 @@ You can now read both halves of an HTTP exchange. The last phase covers the extr
 every message — the headers, the cookies that let a site remember you, and the encryption behind
 `https://`.
 
+Build a request and see the raw HTTP that goes over the wire, plus the response it gets back:
+
+```playground-http
+```
+
 ---
 
 [← Phase 1: Request & Response](01-request-and-response.md) · [Guide overview](_guide.md) · [Phase 3: Headers, Cookies & the S in HTTPS →](03-headers-cookies-and-https.md)

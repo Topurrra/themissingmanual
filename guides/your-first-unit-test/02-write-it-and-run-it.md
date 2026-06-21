@@ -207,4 +207,9 @@ you and one that quietly lies — the habits that make a test worth keeping.
 
 ---
 
+Run the tests below — then break the function on purpose and watch them turn red:
+
+```playground-unittest
+```
+
 [← Phase 1: Arrange, Act, Assert](01-arrange-act-assert.md) · [Guide overview](_guide.md) · [Phase 3: What Makes a Good Test →](03-what-makes-a-good-test.md)

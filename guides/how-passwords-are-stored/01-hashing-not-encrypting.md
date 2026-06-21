@@ -126,3 +126,11 @@ fast hash we just used is the wrong one for passwords.
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Salt (and Why Plain SHA-256 Isn't Enough) →](02-salt-and-fast-hashes.md)
+
+## Try it yourself
+
+Type a password and watch its real SHA-256 hash. Change one character — the whole thing changes:
+
+```playground-hash
+hunter2
+```

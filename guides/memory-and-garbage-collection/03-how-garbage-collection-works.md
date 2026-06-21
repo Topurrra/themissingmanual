@@ -108,4 +108,9 @@ You now have the mental model the whole topic rests on. When you create an objec
 
 ---
 
+Allocate objects, drop a root, then run the collector to see mark-and-sweep decide what lives and what gets freed:
+
+```playground-gc
+```
+
 [← Phase 2: Manual vs Automatic Memory](02-manual-vs-automatic.md) · [Guide overview](_guide.md)

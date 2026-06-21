@@ -136,6 +136,11 @@ enough to choose well and write code that stays fast as it grows.
 
 ---
 
+Two everyday structures, side by side — push/pop a stack (LIFO) versus enqueue/dequeue a queue (FIFO):
+
+```playground-ds
+```
+
 [← Phase 2: Maps & Sets](02-maps-and-sets.md) · [Guide overview](_guide.md)
 
 **Related guides:** [Programming from Zero](/guides/programming-from-zero) · [What Happens When Code Runs](/guides/what-happens-when-code-runs)

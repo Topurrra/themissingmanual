@@ -173,4 +173,10 @@ question you're asking. The next phase turns that into a decision you can make i
 
 ---
 
+Set keys and click a row to "get" by key — no scanning. Switch the tab to a set to see uniqueness:
+
+```playground-ds
+map
+```
+
 [← Phase 1: Arrays & Lists](01-arrays-and-lists.md) · [Guide overview](_guide.md) · [Phase 3: Choosing the Right One →](03-choosing-the-right-one.md)

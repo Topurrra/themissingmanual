@@ -113,6 +113,11 @@ Here's why. DNS is the *first* step of almost every connection. If the lookup fa
 
 You can now turn a name into a number. But an address gets your request to the right *machine* — how does it reach the right *service* on that machine? That's ports.
 
+Follow a single lookup as it travels from your machine out to the root, TLD, and authoritative servers:
+
+```playground-dns
+```
+
 ---
 
 [← Phase 1: IP Addresses](01-ip-addresses.md) · [Guide overview](_guide.md) · [Phase 3: Ports — One Machine, Many Doors →](03-ports.md)

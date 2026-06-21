@@ -233,3 +233,12 @@ Chasing perfection here is how regex earns its scary reputation.
 ---
 
 [← Phase 1: What a Regex Actually Is](01-what-a-regex-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Using Regex for Real →](03-using-regex-for-real.md)
+
+## Try it yourself
+
+Edit the pattern or the sample text and watch the matches highlight live:
+
+```playground-regex
+\b[\w.]+@[\w.]+\.\w+\b
+Email alice@example.com or bob@test.org — but "hello world" matches nothing.
+```

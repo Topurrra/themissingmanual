@@ -125,6 +125,9 @@
               </li>
             {/each}
           </ol>
+          <a class="pr-review" href={`/review?guides=${g.items.map((s) => s.slug).join(',')}`}>
+            <i class="ti ti-cards" aria-hidden="true"></i> Review {g.name}
+          </a>
         {/each}
       </div>
       <a class="pr-full" href="/paths">View full path →</a>
@@ -188,11 +191,14 @@
   }
   .pr-cat:first-child { margin-top: 0; }
   .pr-cat-items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+  .pr-review { display: inline-flex; align-items: center; gap: 0.35rem; margin: 0.3rem 0 0.2rem 0.3rem; font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); }
+  .pr-review .ti { font-size: 13px; color: var(--accent); }
+  .pr-review:hover { color: var(--accent); }
   .pr-step { display: flex; align-items: flex-start; gap: 0.45rem; padding: 0.25rem 0.3rem; border-radius: 8px; }
   .pr-step.current { background: var(--accent-tint); }
   .pr-check {
     flex: none; margin-top: 0.1rem; cursor: pointer;
-    width: 18px; height: 18px; border-radius: 5px;
+    width: 20px; height: 20px; border-radius: 5px;
     border: 1.5px solid var(--line); background: var(--raise); color: transparent;
     display: inline-grid; place-items: center; transition: all 0.15s var(--ease);
   }
@@ -206,13 +212,7 @@
   .pr-link:hover { color: var(--ink); text-decoration: none; }
   .pr-step.current .pr-link { color: var(--accent); font-weight: 500; }
   .pr-step.done .pr-link { color: var(--faint); text-decoration: line-through; text-decoration-color: var(--line); }
-
-  .pr-full {
-    margin-top: 0.8rem; flex: none;
-    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.04em;
-    color: var(--muted);
-  }
+  .pr-full { margin-top: 0.8rem; flex: none; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.04em; color: var(--muted); }
   .pr-full:hover { color: var(--accent); }
-
   @media (max-width: 1100px) { .path-rail { display: none; } }
 </style>

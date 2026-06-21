@@ -82,6 +82,11 @@ $ node blockdemo.js
 
 We now have the engine. But writing code that hands off waits and picks them back up — using the queue directly — would be a nightmare of nested callbacks. The last piece is the syntax that lets you *write* async code as if it were ordinary top-to-bottom code, while it quietly cooperates with the loop: promises, and `async`/`await`.
 
+Step through exactly what happens — watch the call stack empty, then microtasks drain before the next macrotask:
+
+```playground-eventloop
+```
+
 ---
 
 [← Phase 1: Why Async Exists](01-why-async-exists.md) · [Guide overview](_guide.md) · [Phase 3: Promises & async/await →](03-promises-and-async-await.md)

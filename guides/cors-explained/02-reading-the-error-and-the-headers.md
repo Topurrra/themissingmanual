@@ -171,6 +171,11 @@ is always right there.
    request that must be approved before the real request runs.
 5. An error mentioning "preflight" means the `OPTIONS` response didn't allow your method or headers.
 
+Change the method, the server's header, and credentials to see exactly when the browser allows or blocks the response:
+
+```playground-cors
+```
+
 ---
 
 [← Phase 1: Why the Browser Blocks You](01-why-the-browser-blocks-you.md) · [Phase 3: Fixing It Properly →](03-fixing-it-properly.md)

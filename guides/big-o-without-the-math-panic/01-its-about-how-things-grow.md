@@ -128,6 +128,11 @@ Everything in the next phase is just five common answers to it.
 Next, the small set of shapes you'll actually run into — and how to name each one straight from the
 code.
 
+Watch how a simple sort actually moves the data — each comparison and swap is one step of work that grows with *n*:
+
+```playground-sorting
+```
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: The Few You Actually Meet →](02-the-few-you-actually-meet.md)

@@ -23,7 +23,12 @@
   $: isHome = path === '/';
   $: isAdmin = path.startsWith('/admin');
   // info pages + the learning-path wizard render centred, no sidebar (like home)
-  $: bare = isHome || ['/about', '/contribute', '/rss', '/paths', '/glossary', '/train'].includes(path);
+  // Centered (no sidebar) pages. Review is centered on its own, but when reached
+  // from a learning-path "Review {topic}" link (?guides=…) we keep the shell so
+  // the path rail stays visible and the user can continue.
+  $: bare = isHome
+    || ['/about', '/contribute', '/rss', '/paths', '/glossary', '/train'].includes(path)
+    || (path === '/review' && !$page.url.searchParams.get('guides'));
   $: currentGuide = (path.match(/^\/guides\/([^/]+)/) || [])[1] || null;
   // The active phase number on /guides/[slug]/[phase] — null on the guide overview.
   $: currentPhase = (() => {
@@ -288,6 +293,7 @@
         <a href="/about">About</a>
         <a href="/glossary">Glossary</a>
         <a href="/train">Train</a>
+        <a href="/review">Review</a>
       </nav>
     </div>
   </footer>

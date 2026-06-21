@@ -2,8 +2,17 @@
   import { onMount } from 'svelte';
   import { generatePath } from '$lib/pathgen.js';
   import { beginnerMode } from '$lib/beginner-store.js';
+  import { allCards, loadState, countDue } from '$lib/srs.js';
+  import Seo from '$lib/Seo.svelte';
+  import { page } from '$app/stores';
 
   export let data;
+  $: origin = $page.url.origin;
+  $: homeLd = {
+    '@context': 'https://schema.org', '@type': 'WebSite',
+    name: 'The Missing Manual', url: origin,
+    description: 'Free, in-depth guides to how software really works.'
+  };
   $: ({ categories, recent, guides } = data);
   $: iconFor = Object.fromEntries(categories.map((c) => [c.slug, c.icon]));
 
@@ -25,6 +34,7 @@
   let hasPath = false;
   let pct = 0;
   let bookmarks = [];
+  let dueCount = 0;
 
   $: titleFor = Object.fromEntries((guides || []).map((g) => [g.slug, g.title]));
 
@@ -67,11 +77,16 @@
         pct = steps.length ? Math.round((d / steps.length) * 100) : 0;
       }
     } catch (e) {}
+    try { dueCount = countDue(allCards(), loadState()); } catch (e) {}
     loadBookmarks();
   });
 </script>
 
-<svelte:head><title>The Missing Manual for Developers</title></svelte:head>
+<Seo
+  title="The Missing Manual for Developers"
+  description="Clear, in-depth guides to how software really works — from how a computer boots up to the internet, databases, and AI. Start from zero or go deep. Free, forever."
+  type="website"
+  jsonld={homeLd} />
 
 <section class="hero">
   <h1>Understand how software <span class="accent">actually</span> works.</h1>
@@ -110,14 +125,26 @@
   </ul>
 {/if}
 
-<a class="home-train" href="/train">
-  <span class="ht-icon"><i class="ti ti-brain" aria-hidden="true"></i></span>
-  <span class="ht-text">
-    <span class="ht-title">Train your brain</span>
-    <span class="ht-blurb">Quick games — speed, memory, focus, and quiz knowledge from the guides.</span>
-  </span>
-  <span class="ht-go" aria-hidden="true">→</span>
-</a>
+<div class="home-cards">
+  {#if dueCount > 0}
+    <a class="home-train review" href="/review">
+      <span class="ht-icon"><i class="ti ti-cards" aria-hidden="true"></i></span>
+      <span class="ht-text">
+        <span class="ht-title">Review · {dueCount} due</span>
+        <span class="ht-blurb">Quick spaced-repetition cards to lock in what you've learned.</span>
+      </span>
+      <span class="ht-go" aria-hidden="true">→</span>
+    </a>
+  {/if}
+  <a class="home-train" href="/train">
+    <span class="ht-icon"><i class="ti ti-brain" aria-hidden="true"></i></span>
+    <span class="ht-text">
+      <span class="ht-title">Train your brain</span>
+      <span class="ht-blurb">Quick games — speed, memory, focus, and quiz knowledge from the guides.</span>
+    </span>
+    <span class="ht-go" aria-hidden="true">→</span>
+  </a>
+</div>
 
 <h2 class="section-eyebrow" id="topics">Browse by topic</h2>
 <div class="cat-grid">
@@ -154,9 +181,9 @@
 {/if}
 
 <style>
+  .home-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.8rem; margin: 1.5rem 0 0.5rem; }
   .home-train {
-    display: flex; align-items: center; gap: 1rem;
-    margin: 1.5rem 0 0.5rem; padding: 1.1rem 1.3rem;
+    display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.3rem;
     border: 1px solid var(--line); border-radius: 14px; background: var(--raise);
     transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease), transform 0.15s var(--ease);
   }

@@ -183,3 +183,10 @@ entries. The commit just before the start (`HEAD@{6}` here) is your branch exact
 ---
 
 [← Phase 1: The Reflog](01-the-reflog.md) · [Guide overview](_guide.md) · [Phase 3: Undoing What You've Already Pushed →](03-undoing-pushed-history.md)
+
+## Try it yourself
+
+Run commands and watch the history graph build — `commit -m "first"`, `branch dev`, `checkout dev`, `commit -m "work"`, `checkout main`, `merge dev`:
+
+```playground-git
+```

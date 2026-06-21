@@ -299,3 +299,11 @@ stakes go up and one missing word can rewrite an entire table. We'll make sure i
 ---
 
 [← Phase 1: Asking for Data](01-asking-for-data.md) · [Guide overview](_guide.md) · [Phase 3: Changing Data →](03-changing-data.md)
+
+## Try it yourself
+
+This runs real SQLite in your browser against a tiny `authors` table — edit and run it:
+
+```sql runnable
+SELECT name, country FROM authors WHERE country = 'UK' ORDER BY name;
+```

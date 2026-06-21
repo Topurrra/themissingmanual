@@ -109,6 +109,11 @@ If you've read other material, you've seen a **seven**-layer model called **OSI*
 
 That's the model, end to end: why layers exist, what the four are, and how a packet actually travels. The next time "TCP/IP" comes up, it won't be acronym soup — it'll be a picture you can reason from.
 
+Walk the three-way handshake one packet at a time:
+
+```playground-tcp
+```
+
 ---
 
 [← Phase 2: The Four Layers](02-the-four-layers.md) · [Guide overview](_guide.md)

@@ -152,6 +152,9 @@
               </li>
             {/each}
           </ul>
+          <a class="road-review" href={`/review?guides=${g.items.map((s) => s.slug).join(',')}`}>
+            <i class="ti ti-cards" aria-hidden="true"></i> Review {g.name}
+          </a>
         </li>
       {/each}
     </ol>
@@ -230,6 +233,12 @@
     text-transform: uppercase; color: var(--faint); margin: 0 0 0.7rem;
   }
   .road-items { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .road-review {
+    display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.7rem; margin-left: 1.5rem;
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.02em; color: var(--muted);
+  }
+  .road-review .ti { font-size: 15px; color: var(--accent); }
+  .road-review:hover { color: var(--accent); }
   .road-step { display: flex; align-items: flex-start; gap: 0.8rem; padding: 0.2rem 0; }
   .step-check {
     flex: none; margin-top: 0.15rem; cursor: pointer;
@@ -246,7 +255,6 @@
   .step-summary { font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
   .road-step.done .step-title { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--faint); }
   .road-step.done .step-summary { opacity: 0.7; }
-
   .lvl {
     flex: none; margin-top: 0.2rem;
     font-family: var(--font-mono); font-size: 0.62rem; font-weight: 500; line-height: 1;
