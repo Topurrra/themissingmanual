@@ -47,6 +47,11 @@
       if (destroyed) return;
       const reader = document.querySelector('.reader');
       if (!reader) return;
+      // Remove any ```quiz block from the body — it is rendered as the Quiz widget.
+      reader.querySelectorAll('code.language-quiz').forEach((code) => {
+        const host = code.closest('pre') || code;
+        host.remove();
+      });
       const codes = reader.querySelectorAll('code[class*="language-playground-"]');
       codes.forEach((code) => {
         const cls = [...code.classList].find((c) => c.startsWith('language-playground-'));

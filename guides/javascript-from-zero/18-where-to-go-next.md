@@ -1,7 +1,7 @@
 ---
 title: "Where to Go Next — Honest Signposts From Here"
 guide: "javascript-from-zero"
-phase: 10
+phase: 18
 summary: "You know the language; here's the honest map of what's next — frontend frameworks (React/Vue/Svelte), backend with Node/Express, TypeScript (typed JS, strongly worth it), full-stack — plus what to actually build to make it stick."
 tags: [javascript, react, vue, svelte, node, express, typescript, full-stack, learning-path]
 difficulty: beginner
@@ -88,4 +88,4 @@ You started this course unsure what `npm run dev` even did. You're leaving it ab
 
 ---
 
-[← Phase 9: Idioms & Common Gotchas](09-idioms-and-gotchas.md) · [Guide overview](_guide.md)
+[← Phase 17: Types & the Road to TypeScript](17-types-and-typescript.md) · [Guide overview](_guide.md)

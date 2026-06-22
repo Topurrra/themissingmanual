@@ -201,4 +201,4 @@ if (count > 0) console.log("has items"); // correct
 
 ---
 
-[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: Where to Go Next →](10-where-to-go-next.md)
+[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: Scope, Closures & Hoisting →](10-scope-and-closures.md)

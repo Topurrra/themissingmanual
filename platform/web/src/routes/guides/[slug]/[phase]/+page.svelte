@@ -2,7 +2,7 @@
   import { page } from '$app/stores';
   import { siteOrigin } from '$lib/site.js';
   import Seo from '$lib/Seo.svelte';
-  import { quizFor } from '$lib/quizzes.js';
+  import { quizFor, parseQuizBlock } from '$lib/quizzes.js';
   import Freshness from '$lib/Freshness.svelte';
   import ReaderTools from '$lib/ReaderTools.svelte';
   import Glossary from '$lib/Glossary.svelte';
@@ -37,7 +37,9 @@
   // phase has quiz questions — a FAQPage (answer-engine friendly).
   $: origin = siteOrigin($page.url.origin);
   $: guideTitle = $page.data.guideTitle ?? slug;
-  $: faq = quizFor(slug, phase.phase_no);
+  $: mdQuiz = parseQuizBlock(phase.markdown);
+  $: quiz = mdQuiz && mdQuiz.length ? mdQuiz : quizFor(slug, phase.phase_no);
+  $: faq = quiz;
   $: jsonld = [
     {
       '@context': 'https://schema.org', '@type': 'Article',
@@ -80,7 +82,7 @@
   {@html phase.html}
 
   {#key `${phase.guide_slug}/${phase.phase_no}`}
-    <Quiz guideSlug={phase.guide_slug} phaseNo={phase.phase_no} isLast={isLastPhase} />
+    <Quiz guideSlug={phase.guide_slug} phaseNo={phase.phase_no} isLast={isLastPhase} questions={quiz} />
   {/key}
 
   {#if hasFooterNav}

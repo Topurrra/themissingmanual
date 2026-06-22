@@ -214,4 +214,4 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 ---
 
-[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Phase 10: Where to Go Next →](10-where-to-go-next.md)
+[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: Lifetimes & the Borrow Checker →](10-lifetimes-and-borrowing.md)

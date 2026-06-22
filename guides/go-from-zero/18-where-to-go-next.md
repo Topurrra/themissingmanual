@@ -1,7 +1,7 @@
 ---
 title: "Where to Go Next"
 guide: "go-from-zero"
-phase: 10
+phase: 18
 summary: "Honest signposts for what to build with Go now — web services with net/http or chi/gin, CLIs with cobra, and Go's home turf of cloud and infrastructure tooling (Docker and Kubernetes are written in Go) — plus what to build next."
 tags: [go, golang, net-http, chi, gin, cobra, cli, kubernetes, docker, cloud, what-to-build]
 difficulty: beginner
@@ -58,4 +58,4 @@ You came in not knowing Go. You're leaving able to read it, write it idiomatical
 
 ---
 
-[← Phase 9: Idioms & Common Gotchas](09-idioms-and-gotchas.md) · [Guide overview](_guide.md)
+[← Phase 17: Performance & Optimization](17-performance-and-optimization.md) · [Guide overview](_guide.md)

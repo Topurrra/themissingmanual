@@ -90,7 +90,7 @@ actual languages.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
-| 1 | `python-from-zero` | Python From Zero (A→Z, 10 phases; big idea = OOP) | beginner→advanced | ✅ |
+| 1 | `python-from-zero` | Python From Zero (zero-to-hero, 19 phases, per-phase 🟢🟡🔴 badges) | beginner→advanced | ✅ |
 | 2 | `javascript-from-zero` | JavaScript From Zero (A→Z, 10 phases; big idea = async & the DOM) | beginner→advanced | ✅ |
 | 3 | `go-from-zero` | Go From Zero (A→Z, 10 phases; big idea = goroutines & channels) | beginner→advanced | ✅ |
 | 4 | `rust-from-zero` | Rust From Zero (A→Z, 10 phases; big idea = ownership & borrowing) | beginner→advanced | ✅ |

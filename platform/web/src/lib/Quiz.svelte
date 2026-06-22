@@ -1,14 +1,13 @@
 <script>
   import { onMount } from 'svelte';
-  import { quizFor } from '$lib/quizzes.js';
   import { seedChapter } from '$lib/srs.js';
 
   export let guideSlug;
   export let phaseNo;
   export let isLast = false;
+  export let questions = [];
 
   const PATH_DONE = 'tmm-path-done';
-  $: questions = quizFor(guideSlug, phaseNo);
   $: storeKey = `tmm-quiz:${guideSlug}/${phaseNo}`;
 
   let selected = [];

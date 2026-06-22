@@ -6229,41 +6229,6 @@ export const QUIZZES = {
       explain: 'Threads are still fine for I/O-bound waiting; for CPU-bound work reach for multiprocessing or a native library.'
     },
   ],
-  'python-from-zero/10': [
-    {
-      q: 'Which branch is for building a website or an API in Python?',
-      choices: [
-        'Data (NumPy, pandas)',
-        'Web (Django for full apps, FastAPI for APIs)',
-        'Automation',
-        'Packaging'
-      ],
-      answer: 1,
-      explain: 'Django is batteries-included for full applications; FastAPI is a lightweight framework focused on APIs.'
-    },
-    {
-      q: 'What are pandas and NumPy for?',
-      choices: [
-        'Building web servers',
-        'Data work - NumPy for fast numerical arrays, pandas for tables (DataFrames) you can filter, group, and join',
-        'Sharing your code as a package',
-        'Running tests'
-      ],
-      answer: 1,
-      explain: 'If you have ever wished a spreadsheet were programmable, pandas (built on NumPy) is that.'
-    },
-    {
-      q: 'What is the guide\'s honest advice for learning the next layer?',
-      choices: [
-        'Read every tutorial start to finish first',
-        'Build something that needs it, get stuck, and look up exactly the piece you are stuck on',
-        'Memorize the standard library',
-        'Learn all four branches before building'
-      ],
-      answer: 1,
-      explain: 'A project you fight through teaches you to build; pick the smallest version of the thing you want to exist and build that.'
-    },
-  ],
   'querying-basics-select-where/1': [
     {
       q: 'What two essential parts does a SELECT query have?',
@@ -12183,4 +12148,18 @@ export const QUIZZES = {
 
 export function quizFor(slug, phase) {
   return QUIZZES[`${slug}/${phase}`] || [];
+}
+
+// Quiz authored directly in a phase's Markdown via a ```quiz fenced block holding
+// a JSON array of { q, choices, answer, explain }. Returns the array, or null if
+// absent/invalid (caller then falls back to QUIZZES above).
+export function parseQuizBlock(markdown) {
+  if (!markdown) return null;
+  const m = markdown.match(/```quiz\s*\n([\s\S]*?)```/i);
+  if (!m) return null;
+  try {
+    const data = JSON.parse(m[1].trim());
+    if (Array.isArray(data) && data.length) return data;
+  } catch (e) {}
+  return null;
 }

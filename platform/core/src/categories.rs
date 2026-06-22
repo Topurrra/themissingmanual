@@ -26,6 +26,7 @@ const DEFS: &[Def] = &[
     Def { slug: "networking", name: "Networking", icon: "ti-network", blurb: "How the internet really works, and how to design networks that hold up — from your home router to the enterprise." },
     Def { slug: "programming-concepts", name: "Programming Concepts", icon: "ti-bulb", blurb: "The ideas under every language — how code runs, data structures, async, memory, big-O, and choosing the right tool." },
     Def { slug: "programming-languages", name: "Programming Languages", icon: "ti-code", blurb: "Python, JavaScript, Go, and Rust — each language end to end, from zero to advanced." },
+    Def { slug: "frameworks", name: "Frameworks & Libraries", icon: "ti-stack-2", blurb: "Django, FastAPI, React, Next, Spring Boot, and friends — the big frameworks and libraries, each tied to its language." },
     Def { slug: "version-control", name: "Version Control", icon: "ti-git-branch", blurb: "Git and friends: what they actually do, and how to stay calm when they break." },
     Def { slug: "debugging", name: "Debugging & Troubleshooting", icon: "ti-bug", blurb: "Reading the error, finding the real cause, and fixing it calmly instead of guessing." },
     Def { slug: "testing", name: "Testing", icon: "ti-test-pipe", blurb: "Unit, integration, end-to-end, and load tests — plus TDD/BDD — that actually catch the bug." },
@@ -91,14 +92,16 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         let cats = categories_with_counts(&store).unwrap();
-        assert_eq!(cats.len(), 17);
+        assert_eq!(cats.len(), 18);
         assert_eq!(cats[0].slug, "operating-systems"); // DEFS array order = display order
         assert!(cats.iter().any(|c| c.slug == "version-control"));
         assert!(cats.iter().any(|c| c.slug == "infrastructure")); // the DevOps split
         assert!(cats.iter().any(|c| c.slug == "programming-concepts")); // split out of programming-languages
-        // concepts display before the languages themselves
+        assert!(cats.iter().any(|c| c.slug == "frameworks")); // frameworks sit beside the languages
+        // concepts display before the languages themselves; frameworks right after
         let pos = |s: &str| cats.iter().position(|c| c.slug == s).unwrap();
         assert!(pos("programming-concepts") < pos("programming-languages"));
+        assert!(pos("programming-languages") < pos("frameworks"));
         assert!(cats.iter().all(|c| c.count == 0));
     }
 
@@ -121,7 +124,7 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         seed_categories(&store).unwrap();
-        assert_eq!(categories_with_counts(&store).unwrap().len(), 17);
+        assert_eq!(categories_with_counts(&store).unwrap().len(), 18);
     }
 
     #[test]

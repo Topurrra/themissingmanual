@@ -168,7 +168,7 @@ $ go run . &
 $ curl localhost:8080
 Hello from net/http!
 ```
-*What just happened:* With nothing but `net/http` from the standard library, we registered a handler for `/` and started a real web server on port 8080 — no framework, no dependencies in `go.mod`. The `curl` hit it and got the response. This is why a lot of Go services run on the standard library for a long time before reaching for anything external. (The popular web frameworks that build on top of this are signposted in [Phase 10](10-where-to-go-next.md).)
+*What just happened:* With nothing but `net/http` from the standard library, we registered a handler for `/` and started a real web server on port 8080 — no framework, no dependencies in `go.mod`. The `curl` hit it and got the response. This is why a lot of Go services run on the standard library for a long time before reaching for anything external. (The popular web frameworks that build on top of this are signposted in [Phase 10](18-where-to-go-next.md).)
 
 ## `golangci-lint` — the one tool worth adding
 

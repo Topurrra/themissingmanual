@@ -194,9 +194,10 @@ objects in memory (257 is past CPython's small-int cache), so `is` — which ask
 6. The **gotcha cheat-card** — mutable defaults, late-binding closures, `is` vs `==`, integer caching, the
    GIL, shadowing stdlib names — are the surprises that bite everyone once. Now they won't bite you.
 
-You can read, write, and reason about Python like someone who's been here a while. The last phase is a
-map: where to go from here, honestly.
+You can read, write, and reason about Python like someone who's been here a while. That's the *basics*
+done — phases 1–9. From here the guide goes deeper, into how Python actually works under your code,
+starting with its object model.
 
 ---
 
-[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: Where to Go Next →](10-where-to-go-next.md)
+[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: The Data Model & Dunder Methods →](10-the-data-model.md)

@@ -201,4 +201,4 @@ That's idiomatic Go. You can now read other people's Go and write code that look
 
 ---
 
-[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Phase 10: Where to Go Next →](10-where-to-go-next.md)
+[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: Interfaces in Depth →](10-interfaces-in-depth.md)

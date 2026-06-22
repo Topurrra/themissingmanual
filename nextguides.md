@@ -102,44 +102,68 @@ Slugs are proposals; set the real `order:` (next free rung in that category) whe
 
 ## Part 2 — Per-language deepening + new languages
 
-Each language gets a **trio**: `*-from-zero` (basics, exists for py/js/go/rust) → `*-beyond-the-basics`
-(advanced language features) → one or more **framework** guides (the dominant real-world stack). All in
-`programming-languages` for now (⚠ if it grows unwieldy, consider splitting frameworks into their own
-category — see notes).
+**STRUCTURE DECISION (2026-06-19):** each `*-from-zero` is **one zero-to-hero guide** — we APPEND the
+advanced phases *into it* with per-phase difficulty badges (🟢 Basic / 🟡 Intermediate / 🔴 Advanced),
+rather than a separate `*-beyond-the-basics` guide. Reason: one entry per language keeps the sidebar from
+overcrowding, and "from zero" should mean all the way to hero. **Frameworks stay separate guides** (a
+framework is a different tool, and there are only a few per language). So each language = *one* growing
+from-zero guide + a handful of framework guides. (The `*-beyond-the-basics` items below mean "advanced
+phases appended into the from-zero guide.")
 
 > **Runnable note:** python & javascript code can be ` ```lang runnable `; **go, rust, java, c#** cannot yet
 > (no runtime — see `docs/runnable-languages-roadmap.md`), and framework/web guides aren't runnable either
 > (they need a server). Keep snippets plain for those.
 
-### Python  (`python-from-zero` ✅)
-- [ ] `python-beyond-the-basics` — advanced — decorators, generators, context managers, typing/mypy, dunder methods, packaging, async deep-dive.
+### Python  (`python-from-zero` — now zero-to-hero, 19 phases)
+- [x] **Advanced phases folded into `python-from-zero` (phases 10–18, badged):** the data model & dunder
+  methods · iterators & generators · decorators · context managers · type hints & mypy · dataclasses ·
+  concurrency & the GIL · performance & memory · packaging & environments. (Where-to-Go-Next moved to the
+  finale, phase 19. ✅ 2026-06-19)
 - [ ] `fastapi-from-zero` — intermediate — modern async API framework (the popular default). 🔝
 - [ ] `django-from-zero` — intermediate — batteries-included web framework (ORM, admin, templates).
 
-### JavaScript / TypeScript  (`javascript-from-zero` ✅)
-- [ ] `typescript-from-zero` — intermediate — typed JS; the single highest-demand gap. 🔝
-- [ ] `javascript-beyond-the-basics` — advanced — prototypes/`this` deep, modules & bundlers, iterators/generators, perf.
-- [ ] `react-from-zero` — intermediate — components, state, hooks, the render model. 🔝
-- [ ] `nextjs-from-zero` — intermediate — the full-stack React framework (routing, SSR, server components).
-- [ ] `nodejs-and-express-from-zero` — intermediate — JS on the server, building an API.
+### JavaScript / TypeScript  (`javascript-from-zero` ✅ now zero-to-hero, 18 phases)
+- [x] **Advanced phases folded into `javascript-from-zero` (phases 10–17, badged):** scope/closures/hoisting ·
+  `this`/prototypes/object model · iterators/generators/symbols · the event loop deep · functional JS ·
+  modules & bundlers deep · performance & memory · types & the road to TypeScript. (Where-to-Go-Next moved
+  to the finale, phase 18. ✅ 2026-06-22)
+- [x] `typescript-from-zero` — intermediate — its own zero-to-hero guide, **13 phases** (order 3, after JS):
+  types, functions, interfaces, unions/narrowing, generics, classes, tsconfig — then the deep half: the
+  structural type system, utility & mapped types, conditional & template-literal types, typing the real
+  world. ✅ 2026-06-22
+- [ ] `react-from-zero` — intermediate — components, state, hooks, the render model. 🔝 → **frameworks** category
+- [ ] `nextjs-from-zero` — intermediate — the full-stack React framework (routing, SSR, server components). → **frameworks**
+- [ ] `nodejs-and-express-from-zero` — intermediate — JS on the server, building an API. → **frameworks**
 
-### Go  (`go-from-zero` ✅)
-- [ ] `go-beyond-the-basics` — advanced — concurrency patterns (select, worker pools, context), generics, interfaces deep, profiling, modules.
-- [ ] `go-web-services` — intermediate — `net/http` + a router (chi/gin); building a real service.
+### Go  (`go-from-zero` ✅ now zero-to-hero, 18 phases)
+- [x] **Advanced phases folded into `go-from-zero` (phases 10–17, badged):** interfaces in depth · generics &
+  advanced types · concurrency patterns · error handling deep · the runtime (scheduler, memory, GC) ·
+  testing/benchmarks/profiling · the standard library as design · performance & optimization. (Where-to-Go-Next
+  moved to the finale, phase 18. ✅ 2026-06-22)
+- [ ] `go-web-services` — intermediate — `net/http` + a router (chi/gin); building a real service. → **frameworks**
 
-### Rust  (`rust-from-zero` ✅)
-- [ ] `rust-beyond-the-basics` — advanced — traits & generics deep, lifetimes in practice, `async`/await + tokio, error handling patterns, macros, a peek at `unsafe`.
-- [ ] `rust-web-with-axum` — intermediate — async web services in Rust (axum/tokio). (This very platform is Rust+axum.)
+### Rust  (`rust-from-zero` ✅ now zero-to-hero, 18 phases)
+- [x] **Advanced phases folded into `rust-from-zero` (phases 10–17, badged):** lifetimes & the borrow checker
+  deep · traits & generics deep · smart pointers & interior mutability · error handling deep · fearless
+  concurrency · closures/iterators/zero-cost abstractions · macros · performance/unsafe/ecosystem.
+  (Where-to-Go-Next moved to the finale, phase 18. ✅ 2026-06-22)
+- [ ] `rust-web-with-axum` — intermediate — async web services in Rust (axum/tokio). (This very platform is Rust+axum.) → **frameworks**
 
-### Java  (NEW — full depth)
-- [ ] `java-from-zero` — beginner — JVM, `javac`/`java`, types, classes & objects, collections, the standard library.
-- [ ] `java-beyond-the-basics` — advanced — generics, streams & lambdas, concurrency, the JVM/GC, build tools (Maven/Gradle), packaging.
-- [ ] `spring-boot-from-zero` — intermediate — the dominant Java framework; DI, controllers, JPA, building a REST service. 🔝
+### Java  (`java-from-zero` ✅ zero-to-hero, 18 phases — order 6)
+- [x] `java-from-zero` — one zero-to-hero guide, **18 phases**: install/JVM, types, collections, control flow,
+  classes & objects, inheritance & interfaces, errors & I/O, packages/build/tooling, idioms — then the deep
+  half: generics, lambdas & functional interfaces, the Streams API, records/sealed/modern Java, concurrency
+  & threads, the JVM (memory/GC/JIT, `playground-gc`), testing/profiling, performance (`playground-bigo`).
+  Code plain ` ```java ` (not runnable). ✅ 2026-06-22
+- [ ] `spring-boot-from-zero` — intermediate — the dominant Java framework; DI, controllers, JPA, building a REST service. 🔝 → **frameworks**
 
-### C#  (NEW — full depth)
-- [ ] `csharp-from-zero` — beginner — .NET, `dotnet` CLI, types, classes, collections, LINQ basics.
-- [ ] `csharp-beyond-the-basics` — advanced — LINQ deep, `async`/await & Tasks, generics, records, the .NET runtime/GC, NuGet.
-- [ ] `aspnet-core-from-zero` — intermediate — the dominant C# web framework; minimal APIs/controllers, DI, EF Core. 🔝
+### C#  (`csharp-from-zero` ✅ zero-to-hero, 18 phases — order 7)
+- [x] `csharp-from-zero` — one zero-to-hero guide, **18 phases**: install/.NET/CLR, types (value vs ref),
+  collections, control flow, classes & objects, inheritance & interfaces, errors & I/O, projects/NuGet/tooling,
+  idioms — then the deep half: generics, delegates/lambdas/events, LINQ, records/pattern-matching/modern C#,
+  async/await & Tasks, the .NET runtime (memory/GC/JIT, `playground-gc`), testing/profiling, performance
+  (`playground-bigo`). Code plain ` ```csharp ` (not runnable). ✅ 2026-06-22
+- [ ] `aspnet-core-from-zero` — intermediate — the dominant C# web framework; minimal APIs/controllers, DI, EF Core. 🔝 → **frameworks**
 
 > **Later (not now):** more languages on the same trio pattern — candidates: **Kotlin, Swift, PHP, Ruby,
 > C/C++, SQL-as-a-language**. Add when the above land.
@@ -147,11 +171,14 @@ category — see notes).
 ---
 
 ## Notes & open decisions
-- **Possible new `frontend` category.** Several ideas are frontend-flavored and currently filed elsewhere:
-  `debugging-in-the-browser` (debugging), `web-performance-core-web-vitals` (performance), plus
-  `react-from-zero` / `nextjs-from-zero` / `typescript-from-zero` (programming-languages). If we add HTML/CSS
-  basics + a framework lane, a dedicated `frontend` category (one `DEFS` entry in `content-core::categories`)
-  would group these cleanly. **Decide before writing the React/Next guides** so they land in the right home.
+- **`frameworks` category LANDED (✅ 2026-06-22).** Added to `content-core::categories` `DEFS` (slug
+  `frameworks`, "Frameworks & Libraries", icon `ti-stack-2`), positioned right after `programming-languages`
+  (18 categories total; tests bumped 17→18). Framework guides (FastAPI/Django/React/Next/Spring/axum/etc.)
+  go here, NOT in `programming-languages`. The `→ frameworks` tags above mark which backlog items belong.
+- **Possible new `frontend` category (still open).** Several ideas are frontend-flavored and currently filed
+  elsewhere: `debugging-in-the-browser` (debugging), `web-performance-core-web-vitals` (performance). If we
+  add HTML/CSS basics, a dedicated `frontend` category could group these. **Decide before writing the
+  HTML/CSS/browser-platform guides.**
 - **Category placements flagged ⚠** above are deliberate; revisit if a `frontend` category lands.
 - **Framework guides** may eventually warrant their own grouping if `programming-languages` gets crowded;
   fine where they are for now.

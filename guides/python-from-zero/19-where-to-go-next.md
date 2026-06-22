@@ -1,19 +1,20 @@
 ---
 title: "Where to Go Next"
 guide: "python-from-zero"
-phase: 10
+phase: 19
 summary: "An honest map of where Python goes from here — web (Django/FastAPI), data (pandas/NumPy), automation, and packaging — framed as signposts, not hype, with a nudge toward building something real."
 tags: [python, next-steps, django, fastapi, pandas, numpy, automation, packaging]
 difficulty: beginner
-synonyms: ["what to learn after python basics", "python web framework django fastapi", "python for data science pandas numpy", "python automation scripting", "what should i build with python"]
+synonyms: ["what to learn after python", "python web framework django fastapi", "python for data science pandas numpy", "python automation scripting", "what should i build with python"]
 updated: 2026-06-19
 ---
 
 # Where to Go Next
 
-You've gone from "what is Python" to writing classes, handling errors, isolating projects, and reading
-code like a local. That's the whole language in your hands. What's left isn't *more Python* so much as
-*Python pointed at a problem* — and which direction you go depends entirely on what you want to make.
+You've gone the whole distance — from "what is Python" through classes and errors, and on into the deep
+half: the data model, generators, decorators, typing, concurrency, performance, and packaging. That's the
+*language* genuinely in your hands. What's left isn't *more Python* so much as *Python pointed at a
+problem* — and which direction you go depends entirely on what you want to make.
 
 So this last phase is a map, not a curriculum. No "you must learn all of these." Pick the one branch that
 matches what you're trying to build, ignore the rest until you need them, and — most importantly — go
@@ -46,18 +47,20 @@ you'll hear most:
   models, and forms out of the box. Great when you're building a full application and want the common
   parts already solved. The trade-off: it's opinionated and large, so there's more to learn up front.
 - **FastAPI** — a modern, lightweight framework focused on building APIs (the JSON-over-HTTP kind). It's
-  smaller, fast to start with, and leans on the type hints you've already seen. Great when you want an API
-  and not a whole website.
+  smaller, fast to start with, and leans on the type hints you met in [Phase 14](14-type-hints.md). Great
+  when you want an API and not a whole website.
 
 Neither is "better" — Django is more *included*, FastAPI is more *minimal*. To understand what an API
-even is before you pick, [What an API Is](/guides/what-an-api-is) is the grounding.
+even is before you pick, [What an API Is](/guides/what-an-api-is) is the grounding. (Deep dives on both
+are their own guides.)
 
 ### Data — turn numbers into answers
 
 If your goal is analysis — spreadsheets too big for Excel, charts, models — this is where Python genuinely
 dominates.
 
-- **NumPy** — fast numerical arrays. The foundation almost everything data-related is built on.
+- **NumPy** — fast numerical arrays. The foundation almost everything data-related is built on (and the
+  practical escape hatch from the performance limits of [Phase 17](17-performance-and-memory.md)).
 - **pandas** — tables (it calls them DataFrames) with filtering, grouping, and joining, built on NumPy.
   If you've ever wished a spreadsheet were programmable, this is that.
 
@@ -73,9 +76,9 @@ people feel Python "click" — because the payoff is a real chore that never bot
 
 ### Packaging — share what you built
 
-Once you've written something useful, packaging is how you turn it into a tool others can `pip install`.
-It builds on the `pyproject.toml` from [Phase 8](08-ecosystem-and-tooling.md). Don't rush here — it's the
-right branch only once you have a thing worth sharing, not before.
+You've already seen the mechanics in [Phase 18](18-packaging-and-environments.md) — `pyproject.toml`,
+building, publishing. The "next step" here isn't learning *how*; it's having something worth sharing.
+Don't rush it — package a tool once it's genuinely useful to someone other than you.
 
 ## The honest advice: build, then look things up
 
@@ -90,21 +93,22 @@ A few starter projects sized to where you are right now:
 - **Data:** load a CSV with pandas, filter it, and print the answer to one question you actually care
   about.
 
-Pick the smallest version of the thing you want to exist. Build *that*. Everything you learned in this
-guide — types, collections, functions, classes, errors, the tooling — was the vocabulary. A project is
-where it becomes fluency.
+Pick the smallest version of the thing you want to exist. Build *that*. Everything in this guide — types,
+collections, functions, classes, the data model, generators, decorators, typing, concurrency — was the
+vocabulary. A project is where it becomes fluency.
 
 ## One last reframe
 
 Python was a deliberate choice as a first language: readable, forgiving, and useful in nearly every
 corner of software. But the *ideas* you picked up here — variables and types, collections, control flow,
-objects, error handling, dependency isolation — aren't Python's. They're how nearly every modern language
-works, dressed in different syntax. If you ever pick up a second language, you'll find you already know
-most of it; you're just learning new spellings. [Languages, Explained Like a Human](/guides/languages-explained-like-a-human)
-is the map of that bigger landscape, for whenever you're curious what else is out there.
+objects, the data model, iteration, error handling, concurrency — aren't Python's. They're how nearly
+every modern language works, dressed in different syntax. If you ever pick up a second language, you'll
+find you already know most of it; you're just learning new spellings.
+[Languages, Explained Like a Human](/guides/languages-explained-like-a-human) is the map of that bigger
+landscape, for whenever you're curious what else is out there.
 
-You came in not knowing what `print("hello")` did. You're leaving able to reason about an entire program.
-That's not a small thing. Go make something.
+You came in not knowing what `print("hello")` did. You're leaving able to reason about an entire program
+*and* the runtime underneath it. That's not a small thing. Go make something.
 
 ## Recap
 
@@ -116,6 +120,31 @@ That's not a small thing. Go make something.
 4. The concepts you learned here are nearly universal across languages; a second language is mostly new
    spelling.
 
+One last check — the through-lines of the whole guide:
+
+```quiz
+[
+  {
+    "q": "Python branches toward different goals. If you wanted to build an API that other programs call over HTTP, which branch is that?",
+    "choices": ["Data (NumPy / pandas)", "Web (Django / FastAPI)", "Packaging (pyproject.toml)", "Automation (small scripts)"],
+    "answer": 1,
+    "explain": "Web is the branch for websites and APIs — Django for full applications, FastAPI for lightweight APIs. Data, automation, and packaging point at different destinations."
+  },
+  {
+    "q": "What's the guide's honest advice for learning the next layer beyond this guide?",
+    "choices": ["Read every framework's docs cover to cover first", "Follow a long tutorial start to finish before building anything", "Build something that needs it, get stuck, and look up exactly the piece you're stuck on", "Memorize the standard library before starting a project"],
+    "answer": 2,
+    "explain": "You learn by building and looking things up when you get stuck. A tutorial teaches you to follow tutorials; a project you fight through teaches you to build."
+  },
+  {
+    "q": "You finish this guide and later pick up a second language. What carries over?",
+    "choices": ["Almost nothing — every language is entirely its own world", "The core ideas — variables, collections, control flow, objects, iteration, errors — which are nearly universal", "Only Python's exact syntax, which you'll have to unlearn", "Just the print statement"],
+    "answer": 1,
+    "explain": "The concepts you learned aren't Python's — they're how nearly every modern language works, dressed in different syntax. A second language is mostly learning new spellings."
+  }
+]
+```
+
 ---
 
-[← Phase 9: Idioms & Common Gotchas](09-idioms-and-gotchas.md) · [Guide overview](_guide.md)
+[← Phase 18: Packaging & Environments](18-packaging-and-environments.md) · [Guide overview](_guide.md)

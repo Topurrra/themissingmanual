@@ -1,7 +1,7 @@
 ---
 title: "Where to Go Next"
 guide: "rust-from-zero"
-phase: 10
+phase: 18
 summary: "Honest signposts for what to build with Rust next — CLI tools, web servers, systems and embedded, WebAssembly — plus the official Book as the deep dive, and a reminder that the borrow checker stops fighting you sooner than you think."
 tags: [rust, next-steps, learning-path, clap, axum, webassembly, the-rust-book]
 difficulty: beginner
@@ -60,4 +60,4 @@ You've got the mental model now. Go build something. Welcome to Rust.
 
 ---
 
-[← Phase 9: Idioms & Common Gotchas](09-idioms-and-gotchas.md) · [Guide overview](_guide.md)
+[← Phase 17: Performance, Unsafe & the Ecosystem](17-performance-and-unsafe.md) · [Guide overview](_guide.md)
