@@ -4,7 +4,7 @@ use axum::{
     http::{header, StatusCode},
     middleware,
     response::{IntoResponse, Response},
-    routing::{get, patch, post},
+    routing::{delete, get, patch, post},
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
@@ -33,6 +33,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/revisions/:id", get(admin::get_revision))
         .route("/revisions/:id/revert", post(admin::revert_revision))
         .route("/health-check", get(admin::link_check))
+        .route("/orphaned-assets", delete(admin::delete_orphaned_assets))
         .route("/categories", get(admin::list_categories).post(admin::create_category))
         .route("/categories/reorder", post(admin::reorder_categories))
         .route("/categories/:slug", patch(admin::patch_category).delete(admin::delete_category))
@@ -60,6 +61,8 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/api/search", get(search))
         .route("/api/rss", get(rss))
         .route("/api/events", post(admin::record_event))
+        .route("/api/ui-metrics", post(crate::halcyon::ui_metric_sample))
+        .route("/api/ui-metrics/reset", post(crate::halcyon::ui_metric_reset))
         .route("/api/feedback", post(admin::submit_feedback))
         .route("/api/site-config", get(admin::site_config))
         .route("/api/categories", get(list_categories))

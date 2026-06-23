@@ -60,6 +60,10 @@ pub struct Frontmatter {
     /// Sidebar/listing order within a category (lower = earlier; default 0). Set on `_guide.md`.
     #[serde(default)]
     pub order: i64,
+    /// Optional sub-group within a category for sidebar nesting (e.g. a language like
+    /// "Java" under Frameworks). Set on `_guide.md`; absent = ungrouped (rendered flat).
+    #[serde(default)]
+    pub group: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -86,6 +90,9 @@ pub struct GuideSummary {
     pub difficulty: String,
     #[serde(default)]
     pub status: String,
+    /// Optional sub-group within the category for sidebar nesting (e.g. "Java"). None = ungrouped.
+    #[serde(default)]
+    pub group: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

@@ -2,6 +2,7 @@ pub mod admin;
 pub mod auth;
 pub mod routes;
 pub mod state;
+mod halcyon;
 
 pub use routes::{app, health_router};
 pub use state::AppState;

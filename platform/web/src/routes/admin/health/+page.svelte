@@ -1,5 +1,10 @@
 <script>
+  import { enhance } from '$app/forms';
+
   export let data;
+  export let form;
+
+  let deleting = false;
 
   $: brokenLinks = data.broken_links ?? [];
   $: missingAssets = data.missing_assets ?? [];
@@ -74,7 +79,28 @@
   </tbody>
 </table>
 {#if orphanedAssets.length}
-  <p class="hc-hint">Deleting orphaned assets needs a future endpoint — listed here for review only.</p>
+  <form
+    method="POST"
+    action="?/deleteOrphans"
+    use:enhance={() => {
+      deleting = true;
+      return async ({ update }) => {
+        await update();
+        deleting = false;
+      };
+    }}
+  >
+    <button type="submit" class="hc-delete" disabled={deleting}>
+      {deleting ? 'Deleting…' : `Delete ${orphanedAssets.length} orphaned asset${orphanedAssets.length === 1 ? '' : 's'}`}
+    </button>
+    <span class="hc-hint">Removes assets no phase references. Cannot remove anything still in use.</span>
+  </form>
+{/if}
+
+{#if form?.deleted != null}
+  <p class="admin-note hc-ok">Deleted {form.deleted} orphaned asset{form.deleted === 1 ? '' : 's'} ✓</p>
+{:else if form?.error}
+  <p class="admin-note hc-err">{form.error}</p>
 {/if}
 
 <style>
@@ -97,6 +123,24 @@
   .hc-hint {
     color: var(--faint);
     font-size: 0.85rem;
+    margin-left: 0.7rem;
+  }
+  .hc-delete {
     margin-top: 0.6rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #fff;
+    background: var(--danger, #b3261e);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .hc-delete:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .hc-err {
+    color: var(--danger, #b3261e);
   }
 </style>

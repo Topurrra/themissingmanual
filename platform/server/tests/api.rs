@@ -96,7 +96,7 @@ async fn lists_categories_with_counts() {
     assert_eq!(res.status(), StatusCode::OK);
     let bytes = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
     let cats: Vec<Category> = serde_json::from_slice(&bytes).unwrap();
-    assert_eq!(cats.len(), 17);
+    assert_eq!(cats.len(), 18);
     assert!(cats.iter().find(|c| c.slug == "version-control").unwrap().count >= 1);
 }
 
@@ -139,6 +139,9 @@ fn patch_json_auth(uri: &str, body: &str, cookie: &str) -> Request<Body> {
 }
 fn put_json_auth(uri: &str, body: &str, cookie: &str) -> Request<Body> {
     Request::builder().method("PUT").uri(uri).header("content-type", "application/json").header("cookie", cookie).body(Body::from(body.to_string())).unwrap()
+}
+fn delete_auth(uri: &str, cookie: &str) -> Request<Body> {
+    Request::builder().method("DELETE").uri(uri).header("cookie", cookie).body(Body::empty()).unwrap()
 }
 
 async fn login(app: &axum::Router) -> String {
@@ -323,28 +326,8 @@ async fn analytics_requires_auth_and_returns_shape() {
     assert!(v["topPaths"].is_array());
 }
 
-#[tokio::test]
-async fn tracks_list_and_detail() {
-    let app = server::app(std::sync::Arc::new(server::AppState::build(&repo_root()).unwrap()));
-    let list = app.clone().oneshot(get("/api/tracks")).await.unwrap();
-    assert_eq!(list.status(), StatusCode::OK);
-    let bytes = axum::body::to_bytes(list.into_body(), usize::MAX).await.unwrap();
-    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
-    assert!(v.as_array().unwrap().iter().any(|t| t["slug"] == "backend-developer"));
-
-    let detail = app.clone().oneshot(get("/api/tracks/backend-developer?language=go")).await.unwrap();
-    assert_eq!(detail.status(), StatusCode::OK);
-    let bytes = axum::body::to_bytes(detail.into_body(), usize::MAX).await.unwrap();
-    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
-    // The first step is the (fixed) version-control step and resolves to a live guide —
-    // don't hard-code which guide, so adding/repointing content doesn't break this.
-    assert_eq!(v["roadmap"][0]["category"], "version-control");
-    assert!(v["roadmap"][0]["guide"]["slug"].is_string(), "vcs step resolves to a live guide");
-    assert!(v["dimensions"].as_array().unwrap().len() >= 1);
-
-    let missing = app.oneshot(get("/api/tracks/nope")).await.unwrap();
-    assert_eq!(missing.status(), StatusCode::NOT_FOUND);
-}
+// (The learning-path "tracks" API was removed; /paths is now generated client-side
+// from categories + guides, so there's no /api/tracks endpoint to test.)
 
 // ===== hardening guards =====
 
@@ -622,6 +605,54 @@ async fn link_audit_runs() {
     assert!(v["broken_links"].is_array());
     assert!(v["missing_assets"].is_array());
     assert!(v["orphaned_assets"].is_array());
+}
+
+#[tokio::test]
+async fn delete_orphaned_assets_removes_unreferenced() {
+    let app = server::app(admin_state());
+    assert_eq!(
+        app.clone().oneshot(delete_auth("/api/admin/orphaned-assets", "")).await.unwrap().status(),
+        StatusCode::UNAUTHORIZED
+    );
+    let cookie = login(&app).await;
+
+    // Upload an asset no phase references → it's an orphan.
+    let boundary = "XORPHAN";
+    let body = format!(
+        "--{b}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"a.png\"\r\nContent-Type: image/png\r\n\r\nPNGDATA\r\n--{b}--\r\n",
+        b = boundary
+    );
+    let upload = Request::builder()
+        .method("POST")
+        .uri("/api/admin/assets")
+        .header("content-type", format!("multipart/form-data; boundary={boundary}"))
+        .header("cookie", &cookie)
+        .body(Body::from(body))
+        .unwrap();
+    let r = app.clone().oneshot(upload).await.unwrap();
+    assert_eq!(r.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    let url = serde_json::from_slice::<serde_json::Value>(&bytes).unwrap()["url"].as_str().unwrap().to_string();
+
+    // The audit now reports exactly this orphan.
+    let r = app.clone().oneshot(get_auth("/api/admin/health-check", &cookie)).await.unwrap();
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(v["orphaned_assets"].as_array().unwrap().len(), 1);
+
+    // Delete orphans → reports one removed.
+    let r = app.clone().oneshot(delete_auth("/api/admin/orphaned-assets", &cookie)).await.unwrap();
+    assert_eq!(r.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(v["deleted"], 1);
+
+    // Asset is gone and the audit is clean.
+    assert_eq!(app.clone().oneshot(get(&url)).await.unwrap().status(), StatusCode::NOT_FOUND);
+    let r = app.oneshot(get_auth("/api/admin/health-check", &cookie)).await.unwrap();
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(v["orphaned_assets"].as_array().unwrap().len(), 0);
 }
 
 #[test]

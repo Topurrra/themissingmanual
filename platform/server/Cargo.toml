@@ -7,6 +7,7 @@ edition = "2021"
 content-core = { path = "../core" }
 axum = { version = "0.7", features = ["multipart"] }
 axum-extra = { version = "0.9", features = ["cookie"] }
+base64 = "0.22"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

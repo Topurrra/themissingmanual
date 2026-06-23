@@ -70,6 +70,14 @@ A free, text-first developer knowledge library. Content is Markdown in `guides/`
 truth); the platform under `platform/` is a Rust `content-core` engine (ingest + SQLite + Tantivy
 search) + an axum `server` API + a SvelteKit `web` front-end.
 
+## Guides folder layout
+Guides live under `guides/<category>/<slug>/` (e.g. `guides/programming-languages/python-from-zero/`),
+one folder per category for easy browsing. **This nesting is purely organizational** — ingest uses a
+recursive walk and keys off frontmatter, not the path: a guide's slug comes from `guide:` and its
+category from `category:` in `_guide.md`, and web routes stay `/guides/<slug>/<phase>`. When adding a
+guide, drop it in the folder matching its `category:` frontmatter. The category subfolder must equal the
+category slug in `platform/core/src/categories.rs` `DEFS`.
+
 ## Design system
 Read `DESIGN.md` before any visual or UI change. Fonts, colors, spacing, and aesthetic are defined
 there. Don't deviate without explicit approval.

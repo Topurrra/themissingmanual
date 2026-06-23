@@ -713,3 +713,22 @@ pub async fn link_check(State(state): State<Arc<AppState>>) -> Response {
         Err(e) => err(e),
     }
 }
+
+/// Delete every asset that no phase references. The server recomputes the orphan
+/// set itself (rather than trusting client-supplied ids) so a stale page can never
+/// delete an asset that is actually in use.
+pub async fn delete_orphaned_assets(State(state): State<Arc<AppState>>) -> Response {
+    let store = state.store.lock().unwrap();
+    let report = match content_core::audit::check_links(&store) {
+        Ok(r) => r,
+        Err(e) => return err(e),
+    };
+    let mut deleted = 0usize;
+    for id in &report.orphaned_assets {
+        match store.delete_asset(id) {
+            Ok(n) => deleted += n,
+            Err(e) => return err(e),
+        }
+    }
+    Json(json!({ "ok": true, "deleted": deleted })).into_response()
+}

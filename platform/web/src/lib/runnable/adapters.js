@@ -150,9 +150,23 @@ class PythonAdapter {
     await this.#loading;
   }
 
-  async run(code) {
+  async run(code, opts = {}) {
     if (!this.#pyodide) return { error: 'Python runtime not loaded.' };
     const py = this.#pyodide;
+    const { onStatus } = opts;
+    // Pyodide ships only the stdlib; scan the code's imports and pull any bundled
+    // packages (pandas, numpy, micropip, …) on demand before running. Without this,
+    // `import pandas` fails with ModuleNotFoundError. Unknown imports are ignored
+    // here (Pyodide just skips them) and surface as a clean traceback at runtime.
+    try {
+      onStatus && onStatus('Loading packages…');
+      await py.loadPackagesFromImports(code);
+    } catch (err) {
+      // A package failing to download shouldn't crash the widget — report it cleanly.
+      return { error: `Could not load required packages: ${String(err.message || err)}` };
+    } finally {
+      onStatus && onStatus('');
+    }
     // Capture stdout + stderr by redirecting Python's streams to a buffer.
     let captured = '';
     py.setStdout({ batched: (s) => (captured += s + '\n') });

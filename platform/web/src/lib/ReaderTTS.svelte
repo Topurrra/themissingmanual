@@ -20,13 +20,34 @@
 
   $: label = !playing ? 'Listen' : paused ? 'Resume' : 'Pause';
 
+  // The browser's *default* voice is often the most robotic local one. We rank the
+  // available voices so neural / "Natural" / online ones float to the top and the
+  // best one is used unless the listener picks a specific voice.
+  const NATURAL_RE = /natural|neural|online|enhanced|premium|wavenet|journey|siri/i;
+  const GOOD_NAMES =
+    /google|aria|jenny|guy|ryan|sonia|natasha|michelle|libby|samantha|daniel|karen|moira|serena|allison|ava|zoe|aaron|nathan/i;
+  function isNatural(v) {
+    // localService === false means the voice is served (usually a neural cloud voice).
+    return NATURAL_RE.test(v.name) || v.localService === false;
+  }
+  function rankVoice(v) {
+    let s = 0;
+    if (NATURAL_RE.test(v.name)) s += 100;
+    if (v.localService === false) s += 40;
+    if (GOOD_NAMES.test(v.name)) s += 20;
+    if (/^en[-_]?US/i.test(v.lang)) s += 6;
+    else if (/^en[-_]?GB/i.test(v.lang)) s += 5;
+    else if (/^en/i.test(v.lang)) s += 3;
+    return s;
+  }
   function loadVoices() {
     const all = window.speechSynthesis.getVoices() || [];
     const en = all.filter((v) => /^en/i.test(v.lang));
-    voices = en.length ? en : all;
+    voices = (en.length ? en : all).slice().sort((a, b) => rankVoice(b) - rankVoice(a));
   }
+  // Empty selection ("Auto") resolves to the top-ranked (most natural) voice.
   function currentVoice() {
-    return voices.find((v) => v.voiceURI === voiceURI) || null;
+    return voices.find((v) => v.voiceURI === voiceURI) || voices[0] || null;
   }
 
   // Friendly short label, e.g. "Microsoft Zira - English (United States)" -> "Zira (US)".
@@ -52,6 +73,16 @@
       .filter((el) => !el.closest('pre, code, .phasenav') && el.textContent.trim().length > 1)
       .map((el) => ({ el, text: el.textContent.replace(/\s+/g, ' ').trim() }));
   }
+  // Light cleanup so the engine reads abbreviations/symbols like a person, not literally.
+  function normalize(t) {
+    return t
+      .replace(/\be\.g\.\s*/gi, 'for example, ')
+      .replace(/\bi\.e\.\s*/gi, 'that is, ')
+      .replace(/\betc\./gi, 'etcetera')
+      .replace(/\bvs\.?\b/gi, 'versus')
+      .replace(/\s*→\s*/g, ' to ')
+      .replace(/\s*&\s*/g, ' and ');
+  }
   function clearHighlight() {
     document.querySelectorAll('.tts-reading').forEach((el) => el.classList.remove('tts-reading'));
   }
@@ -65,8 +96,9 @@
     if (i >= blocks.length) { stop(); return; }
     idx = i;
     highlight(i);
-    const u = new SpeechSynthesisUtterance(blocks[i].text);
+    const u = new SpeechSynthesisUtterance(normalize(blocks[i].text));
     u.rate = rate;
+    u.pitch = 1;
     const v = currentVoice();
     if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
     u.onend = () => { if (myGen === gen) step(i + 1, myGen); };
@@ -131,9 +163,9 @@
     </button>
     {#if voices.length}
       <select bind:value={voiceURI} on:change={onVoice} class="tts-sel tts-voice" aria-label="Voice" title="Voice">
-        <option value="">Default voice</option>
+        <option value="">Auto · best voice</option>
         {#each voices as v}
-          <option value={v.voiceURI}>{prettyVoice(v)}</option>
+          <option value={v.voiceURI}>{isNatural(v) ? '✨ ' : ''}{prettyVoice(v)}</option>
         {/each}
       </select>
     {/if}

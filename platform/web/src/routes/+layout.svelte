@@ -119,6 +119,41 @@
     (g) => !$beginnerMode || g.difficulty === 'beginner' || g.slug === currentGuide
   );
 
+  // Some categories (e.g. Frameworks) tag guides with a sub-group like a language.
+  // Split the active category's guides into ungrouped (flat, on top) and named,
+  // collapsible groups. Order follows sort_order (visibleCatGuides is pre-sorted).
+  $: catGroups = (() => {
+    const ungrouped = [];
+    const groups = [];
+    const byName = new Map();
+    for (const g of visibleCatGuides) {
+      if (!g.group) {
+        ungrouped.push(g);
+        continue;
+      }
+      let grp = byName.get(g.group);
+      if (!grp) {
+        grp = { name: g.group, guides: [] };
+        byName.set(g.group, grp);
+        groups.push(grp);
+      }
+      grp.guides.push(g);
+    }
+    return { ungrouped, groups };
+  })();
+
+  // Manually-opened sub-groups (the group owning the current guide is always open).
+  let openGroups = new Set();
+  function toggleGroup(name) {
+    const k = (activeCat?.slug ?? '') + ':' + name;
+    if (openGroups.has(k)) openGroups.delete(k);
+    else openGroups.add(k);
+    openGroups = openGroups; // trigger reactivity
+    try {
+      localStorage.setItem('tmm-groups', JSON.stringify([...openGroups]));
+    } catch (e) {}
+  }
+
   let collapsed = false;
   let palette;
   let kbdLabel = '⌘K';
@@ -143,6 +178,10 @@
     } catch (e) {
       collapsed = mobile;
     }
+    try {
+      const g = localStorage.getItem('tmm-groups');
+      if (g) openGroups = new Set(JSON.parse(g));
+    } catch (e) {}
     if (!/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) kbdLabel = 'Ctrl+K';
     window.addEventListener('resize', syncMobile);
     return () => window.removeEventListener('resize', syncMobile);
@@ -237,18 +276,44 @@
           {:else if activeCat}
             <div class="rail-topic"><i class={`ti ${activeCat.icon}`} aria-hidden="true"></i> {activeCat.name}</div>
             {#if visibleCatGuides.length}
-              <ul class="nav-items">
-                {#each visibleCatGuides as g}
-                  {@const lvl = levelLabel(g.difficulty)}
-                  <li><a href={`/guides/${g.slug}`} class:on={currentGuide === g.slug}
-                    class="nav-lvl-row" aria-current={currentGuide === g.slug ? 'page' : undefined}>
-                    <i class="ti ti-file-text" aria-hidden="true"></i>
-                    <span class="nav-lvl-title">{g.title}</span>
-                    <span class="lvl" class:mid={lvl === 'Intermediate'} class:adv={lvl === 'Advanced'}
-                      title={lvl} aria-label={lvl}>{lvl[0]}</span>
-                  </a></li>
-                {/each}
-              </ul>
+              {#if catGroups.ungrouped.length}
+                <ul class="nav-items">
+                  {#each catGroups.ungrouped as g}
+                    {@const lvl = levelLabel(g.difficulty)}
+                    <li><a href={`/guides/${g.slug}`} class:on={currentGuide === g.slug}
+                      class="nav-lvl-row" aria-current={currentGuide === g.slug ? 'page' : undefined}>
+                      <i class="ti ti-file-text" aria-hidden="true"></i>
+                      <span class="nav-lvl-title">{g.title}</span>
+                      <span class="lvl" class:mid={lvl === 'Intermediate'} class:adv={lvl === 'Advanced'}
+                        title={lvl} aria-label={lvl}>{lvl[0]}</span>
+                    </a></li>
+                  {/each}
+                </ul>
+              {/if}
+              {#each catGroups.groups as grp}
+                {@const hasCurrent = grp.guides.some((g) => g.slug === currentGuide)}
+                {@const open = hasCurrent || openGroups.has(activeCat.slug + ':' + grp.name)}
+                <button type="button" class="nav-group" class:open on:click={() => toggleGroup(grp.name)}
+                  aria-expanded={open}>
+                  <i class="ti ti-chevron-right nav-group-chev" aria-hidden="true"></i>
+                  <span class="nav-group-name">{grp.name}</span>
+                  <span class="nav-group-count">{grp.guides.length}</span>
+                </button>
+                {#if open}
+                  <ul class="nav-items nav-sub">
+                    {#each grp.guides as g}
+                      {@const lvl = levelLabel(g.difficulty)}
+                      <li><a href={`/guides/${g.slug}`} class:on={currentGuide === g.slug}
+                        class="nav-lvl-row" aria-current={currentGuide === g.slug ? 'page' : undefined}>
+                        <i class="ti ti-file-text" aria-hidden="true"></i>
+                        <span class="nav-lvl-title">{g.title}</span>
+                        <span class="lvl" class:mid={lvl === 'Intermediate'} class:adv={lvl === 'Advanced'}
+                          title={lvl} aria-label={lvl}>{lvl[0]}</span>
+                      </a></li>
+                    {/each}
+                  </ul>
+                {/if}
+              {/each}
             {:else}
               <div class="nav-soon">Coming soon</div>
             {/if}

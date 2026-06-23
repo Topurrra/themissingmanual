@@ -118,6 +118,7 @@ pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Sta
                 &fm.difficulty,
             )?;
             store.set_guide_sort_order(&fm.guide, fm.order)?;
+            store.set_guide_group(&fm.guide, fm.group.as_deref().unwrap_or(""))?;
         }
 
         let phase = Phase {

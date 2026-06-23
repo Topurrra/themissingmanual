@@ -50,6 +50,7 @@ impl Store {
             "ALTER TABLE guides ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 0",
             "ALTER TABLE guides ADD COLUMN created_at TEXT NOT NULL DEFAULT (datetime('now'))",
             "ALTER TABLE guides ADD COLUMN updated_at TEXT NOT NULL DEFAULT (datetime('now'))",
+            "ALTER TABLE guides ADD COLUMN group_name TEXT NOT NULL DEFAULT ''",
             "ALTER TABLE phases ADD COLUMN markdown TEXT NOT NULL DEFAULT ''",
         ] {
             let _ = conn.execute(stmt, []);
@@ -122,6 +123,12 @@ impl Store {
         Ok(())
     }
 
+    /// Set a guide's sub-group (e.g. a language under Frameworks). Empty string = ungrouped.
+    pub fn set_guide_group(&self, slug: &str, group: &str) -> Result<(), StoreError> {
+        self.conn.execute("UPDATE guides SET group_name=?2 WHERE slug=?1", params![slug, group])?;
+        Ok(())
+    }
+
     pub fn upsert_phase(&self, p: &Phase) -> Result<(), StoreError> {
         let tags = serde_json::to_string(&p.tags)?;
         let syns = serde_json::to_string(&p.synonyms)?;
@@ -161,7 +168,7 @@ impl Store {
 
     pub fn list_guides(&self) -> Result<Vec<GuideSummary>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT slug, title, summary, category, difficulty, status FROM guides WHERE status='published' ORDER BY sort_order, slug",
+            "SELECT slug, title, summary, category, difficulty, status, group_name FROM guides WHERE status='published' ORDER BY sort_order, slug",
         )?;
         let rows = stmt.query_map([], Self::row_to_guide)?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
@@ -170,7 +177,7 @@ impl Store {
     /// Admin listing: every guide regardless of status.
     pub fn list_all_guides(&self) -> Result<Vec<GuideSummary>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT slug, title, summary, category, difficulty, status FROM guides ORDER BY sort_order, slug",
+            "SELECT slug, title, summary, category, difficulty, status, group_name FROM guides ORDER BY sort_order, slug",
         )?;
         let rows = stmt.query_map([], Self::row_to_guide)?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
@@ -187,9 +194,9 @@ impl Store {
 
     fn get_guide_inner(&self, slug: &str, published_only: bool) -> Result<Option<GuideSummary>, StoreError> {
         let sql = if published_only {
-            "SELECT slug, title, summary, category, difficulty, status FROM guides WHERE slug = ?1 AND status='published'"
+            "SELECT slug, title, summary, category, difficulty, status, group_name FROM guides WHERE slug = ?1 AND status='published'"
         } else {
-            "SELECT slug, title, summary, category, difficulty, status FROM guides WHERE slug = ?1"
+            "SELECT slug, title, summary, category, difficulty, status, group_name FROM guides WHERE slug = ?1"
         };
         let mut stmt = self.conn.prepare(sql)?;
         let mut rows = stmt.query(params![slug])?;
@@ -201,7 +208,7 @@ impl Store {
 
     pub fn guides_for_category(&self, category: &str) -> Result<Vec<GuideSummary>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT slug, title, summary, category, difficulty, status FROM guides WHERE category = ?1 AND status='published' ORDER BY sort_order, title",
+            "SELECT slug, title, summary, category, difficulty, status, group_name FROM guides WHERE category = ?1 AND status='published' ORDER BY sort_order, title",
         )?;
         let rows = stmt.query_map(params![category], Self::row_to_guide)?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
@@ -215,6 +222,10 @@ impl Store {
             category: row.get(3)?,
             difficulty: row.get(4)?,
             status: row.get(5)?,
+            group: {
+                let g: String = row.get(6)?;
+                if g.is_empty() { None } else { Some(g) }
+            },
         })
     }
 
@@ -398,6 +409,11 @@ impl Store {
             params![id, filename, mime, bytes],
         )?;
         Ok(())
+    }
+
+    /// Delete a stored asset by id. Returns the number of rows removed (0 if it didn't exist).
+    pub fn delete_asset(&self, id: &str) -> Result<usize, StoreError> {
+        Ok(self.conn.execute("DELETE FROM assets WHERE id=?1", params![id])?)
     }
 
     pub fn get_asset(&self, id: &str) -> Result<Option<(String, String, Vec<u8>)>, StoreError> {
@@ -772,6 +788,17 @@ mod tests {
 
         s.insert_asset("id1", "a.png", "image/png", b"x").unwrap();
         assert_eq!(s.list_asset_ids().unwrap(), vec!["id1".to_string()]);
+    }
+
+    #[test]
+    fn guide_group_roundtrips() {
+        let s = Store::open_in_memory().unwrap();
+        s.upsert_guide("spring", "Spring", "x", "frameworks", "intermediate").unwrap();
+        s.upsert_guide("anchor", "Anchor", "x", "frameworks", "beginner").unwrap();
+        s.set_guide_group("spring", "Java").unwrap();
+        let g = s.guides_for_category("frameworks").unwrap();
+        assert_eq!(g.iter().find(|x| x.slug == "spring").unwrap().group.as_deref(), Some("Java"));
+        assert_eq!(g.iter().find(|x| x.slug == "anchor").unwrap().group, None); // ungrouped stays None
     }
 
     #[test]

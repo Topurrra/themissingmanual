@@ -481,6 +481,21 @@ p { margin: 1rem 0; }
 .lvl.adv { color: #b4533a; }
 .nav-items a:hover .lvl, .nav-items a.on .lvl { opacity: 1; }
 
+/* collapsible sub-groups within a category (e.g. languages under Frameworks) */
+.nav-group {
+  display: flex; align-items: center; gap: 0.5rem; width: 100%;
+  padding: 0.5rem 0.7rem; margin-top: 2px;
+  background: none; border: 0; cursor: pointer; text-align: left;
+  font-family: var(--font-body); font-size: 0.9rem; font-weight: 500;
+  color: var(--ink); border-radius: 9px;
+}
+.nav-group:hover { background: var(--surface); }
+.nav-group-chev { font-size: 16px; flex: none; color: var(--faint); transition: transform 0.15s var(--ease); }
+.nav-group.open .nav-group-chev { transform: rotate(90deg); }
+.nav-group-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-group-count { flex: none; margin-left: auto; font-family: var(--font-mono); font-size: 0.62rem; color: var(--faint); }
+.nav-sub { margin-left: 0.7rem; padding-left: 0.55rem; border-left: 1px solid var(--line); }
+
 /* scoped per-topic sidebar headings — text left-aligned with the nav pills below */
 .rail-topic {
   display: flex; align-items: center; gap: 0.5rem;

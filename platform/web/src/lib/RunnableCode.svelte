@@ -210,7 +210,13 @@
             if (!destroyed) renderOutput({}, { loading: status });
           });
           renderOutput({}, { loading: 'Running…' });
-          const res = await adapter.run(editor.getValue());
+          // onStatus lets a runtime report mid-run progress (e.g. Pyodide loading
+          // imported packages on first use); fall back to "Running…" when cleared.
+          const res = await adapter.run(editor.getValue(), {
+            onStatus: (status) => {
+              if (!destroyed) renderOutput({}, { loading: status || 'Running…' });
+            }
+          });
           if (!destroyed) renderOutput(res);
         } catch (e) {
           if (!destroyed)
