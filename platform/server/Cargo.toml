@@ -3,6 +3,13 @@ name = "server"
 version = "0.1.0"
 edition = "2021"
 
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "z"
+strip = true
+
 [dependencies]
 content-core = { path = "../core" }
 axum = { version = "0.7", features = ["multipart"] }
@@ -18,3 +25,4 @@ uuid = { version = "1", features = ["v4"] }
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }
 tempfile = "3"
+

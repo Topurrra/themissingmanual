@@ -94,8 +94,14 @@
 </script>
 
 {#if questions.length}
-  <section class="quiz" aria-label="Check your understanding">
-    <h2 class="quiz-head"><i class="ti ti-help-circle" aria-hidden="true"></i> Check your understanding</h2>
+  <details class="quiz">
+    <summary class="quiz-head">
+      <i class="ti ti-help-circle" aria-hidden="true"></i>
+      <span class="quiz-head-text">Check your understanding</span>
+      <span class="quiz-count">{questions.length} {questions.length === 1 ? 'question' : 'questions'}</span>
+      <i class="ti ti-chevron-down quiz-chevron" aria-hidden="true"></i>
+    </summary>
+    <div class="quiz-body">
 
     {#each questions as q, qi}
       {@const ans = selected[qi]}
@@ -136,7 +142,8 @@
         <button type="button" class="quiz-retry" on:click={retry}>Try again</button>
       </div>
     {/if}
-  </section>
+    </div>
+  </details>
 {/if}
 
 <style>
@@ -145,10 +152,18 @@
     border-radius: 14px; background: var(--surface);
   }
   .quiz-head {
-    display: flex; align-items: center; gap: 0.5rem; margin: 0 0 1rem;
+    display: flex; align-items: center; gap: 0.5rem; margin: 0; cursor: pointer;
+    list-style: none; user-select: none;
     font-family: var(--font-display); font-size: 1.05rem; color: var(--ink);
   }
+  .quiz-head::-webkit-details-marker { display: none; }
   .quiz-head .ti { color: var(--accent); font-size: 20px; }
+  .quiz-count { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); font-weight: 500; }
+  .quiz-chevron { margin-left: auto; color: var(--muted) !important; font-size: 18px !important; transition: transform 0.18s var(--ease); }
+  details.quiz[open] .quiz-chevron { transform: rotate(180deg); }
+  details.quiz[open] .quiz-head { margin-bottom: 1rem; }
+  .quiz-body { animation: quiz-reveal 0.18s var(--ease); }
+  @keyframes quiz-reveal { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: none; } }
   .quiz-q { margin: 0 0 1.4rem; }
   .quiz-q:last-of-type { margin-bottom: 0.6rem; }
   .quiz-prompt { font-weight: 600; color: var(--ink); margin: 0 0 0.6rem; line-height: 1.5; }

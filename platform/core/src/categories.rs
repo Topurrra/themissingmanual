@@ -21,6 +21,8 @@ struct Def {
 // The canonical taxonomy. Array order is the display order (sort_order = index).
 // This is the source of truth — edit here to add/rename/reorder categories.
 const DEFS: &[Def] = &[
+    Def { slug: "logic", name: "Logic", icon: "ti-logic-and", blurb: "Clear reasoning from the ground up — true/false, if-then, proof, and spotting bad arguments. The thinking that sits under all code and math." },
+    Def { slug: "mathematics", name: "Mathematics", icon: "ti-math-symbols", blurb: "The language reality is written in — sets, numbers, probability, and more — taught from intuition, for anyone who was told they're 'bad at math'." },
     Def { slug: "operating-systems", name: "Operating Systems", icon: "ti-device-desktop", blurb: "Windows, macOS, and Linux — what they're really doing under the hood, from first login to power user." },
     Def { slug: "hardware", name: "Hardware", icon: "ti-cpu", blurb: "How the machine is actually built and talks to itself — from the chip to the device on your desk." },
     Def { slug: "networking", name: "Networking", icon: "ti-network", blurb: "How the internet really works, and how to design networks that hold up — from your home router to the enterprise." },
@@ -92,8 +94,9 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         let cats = categories_with_counts(&store).unwrap();
-        assert_eq!(cats.len(), 18);
-        assert_eq!(cats[0].slug, "operating-systems"); // DEFS array order = display order
+        assert_eq!(cats.len(), 20);
+        assert_eq!(cats[0].slug, "logic"); // DEFS array order = display order; foundations lead
+        assert_eq!(cats[1].slug, "mathematics");
         assert!(cats.iter().any(|c| c.slug == "version-control"));
         assert!(cats.iter().any(|c| c.slug == "infrastructure")); // the DevOps split
         assert!(cats.iter().any(|c| c.slug == "programming-concepts")); // split out of programming-languages
@@ -124,7 +127,7 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         seed_categories(&store).unwrap();
-        assert_eq!(categories_with_counts(&store).unwrap().len(), 18);
+        assert_eq!(categories_with_counts(&store).unwrap().len(), 20);
     }
 
     #[test]
