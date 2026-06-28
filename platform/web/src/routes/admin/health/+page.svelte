@@ -1,10 +1,13 @@
 <script>
   import { enhance } from '$app/forms';
+  import { adminPost } from '$lib/admin.js';
 
   export let data;
   export let form;
 
   let deleting = false;
+  let syncing = false;
+  let syncMsg = '';
 
   $: brokenLinks = data.broken_links ?? [];
   $: missingAssets = data.missing_assets ?? [];
@@ -19,6 +22,23 @@
     const slug = String(from ?? '').split('/')[0];
     return `/admin/content/${slug}`;
   }
+
+  async function reingest() {
+    syncing = true;
+    syncMsg = '';
+    try {
+      const res = await adminPost('/sync', {});
+      if (res.changed) {
+        syncMsg = `Re-ingested ${res.guides} guide(s), ${res.phases} phase(s) ✓`;
+      } else {
+        syncMsg = 'No changes detected — content already up to date.';
+      }
+    } catch (e) {
+      syncMsg = `Sync failed: ${e.message}`;
+    } finally {
+      syncing = false;
+    }
+  }
 </script>
 
 <svelte:head><title>Admin · Health</title></svelte:head>
@@ -30,6 +50,13 @@
 {#if allHealthy}
   <p class="admin-note hc-ok">Everything looks healthy ✓</p>
 {/if}
+
+<div class="hc-actions">
+  <button type="button" class="admin-btn" on:click={reingest} disabled={syncing}>
+    <i class="ti ti-refresh" aria-hidden="true"></i> {syncing ? 'Re-ingesting…' : 'Re-ingest content'}
+  </button>
+  {#if syncMsg}<span class="admin-note">{syncMsg}</span>{/if}
+</div>
 
 <h2 class="admin-h2">Broken links <span class="hc-count">{brokenLinks.length}</span></h2>
 <table class="admin-table">
@@ -104,6 +131,12 @@
 {/if}
 
 <style>
+  .hc-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0.6rem 0 1.2rem;
+  }
   .hc-ok {
     margin: 0 0 0.5rem;
   }

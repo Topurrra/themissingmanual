@@ -11,8 +11,10 @@ pub enum FrontmatterError {
 }
 
 /// Split a Markdown document into its YAML frontmatter and its body.
+/// Accepts both LF (`\n`) and CRLF (`\r\n`) line endings.
 pub fn parse_markdown(input: &str) -> Result<(Frontmatter, String), FrontmatterError> {
-    let rest = input.strip_prefix("---\n").ok_or(FrontmatterError::Missing)?;
+    let normalized = input.replace("\r\n", "\n");
+    let rest = normalized.strip_prefix("---\n").ok_or(FrontmatterError::Missing)?;
     let end = rest.find("\n---").ok_or(FrontmatterError::Unterminated)?;
     let yaml = &rest[..end];
     let body = rest[end + 4..].trim_start_matches('\n').to_string();

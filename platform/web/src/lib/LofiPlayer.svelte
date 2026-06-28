@@ -13,6 +13,8 @@
   // localStorage under tmm-lofi-*.
   const VOL_KEY = 'tmm-lofi-volume';
   const TRACK_KEY = 'tmm-lofi-track';
+  const SHUFFLE_KEY = 'tmm-lofi-shuffle';
+  const REPEAT_KEY = 'tmm-lofi-repeat';
   const VOL_STEP = 0.1;
 
   let audio; // bound <audio> element
@@ -21,6 +23,8 @@
   let volume = 0.6;
   let index = 0;
   let ready = false; // mounted on client — gates rendering of stored state
+  let shuffle = false;
+  let repeat = 'none'; // 'none' | 'all' | 'one'
 
   $: enabled = $lofiEnabled;
 
@@ -50,6 +54,10 @@
       if (!Number.isNaN(v)) volume = Math.min(1, Math.max(0, v));
       const t = parseInt(localStorage.getItem(TRACK_KEY), 10);
       if (!Number.isNaN(t) && t >= 0 && t < list.length) index = t;
+      const s = localStorage.getItem(SHUFFLE_KEY);
+      if (s === '1') shuffle = true;
+      const r = localStorage.getItem(REPEAT_KEY);
+      if (r === 'all' || r === 'one') repeat = r;
     } catch (e) {}
     if (audio) audio.volume = volume;
     ready = true;
@@ -63,6 +71,12 @@
   }
   function persistTrack() {
     try { localStorage.setItem(TRACK_KEY, String(index)); } catch (e) {}
+  }
+  function persistShuffle() {
+    try { localStorage.setItem(SHUFFLE_KEY, shuffle ? '1' : '0'); } catch (e) {}
+  }
+  function persistRepeat() {
+    try { localStorage.setItem(REPEAT_KEY, repeat); } catch (e) {}
   }
 
   function play() {
@@ -84,15 +98,41 @@
   }
   function next() {
     if (!hasTracks) return;
-    index = (index + 1) % list.length;
+    if (shuffle) {
+      let nextIndex;
+      do {
+        nextIndex = Math.floor(Math.random() * list.length);
+      } while (nextIndex === index && list.length > 1);
+      index = nextIndex;
+    } else {
+      index = (index + 1) % list.length;
+    }
     persistTrack();
-    if (playing) queueMicrotask(play);
+    if (playing) requestAnimationFrame(play);
   }
   function prev() {
     if (!hasTracks) return;
-    index = (index - 1 + list.length) % list.length;
+    if (shuffle) {
+      let prevIndex;
+      do {
+        prevIndex = Math.floor(Math.random() * list.length);
+      } while (prevIndex === index && list.length > 1);
+      index = prevIndex;
+    } else {
+      index = (index - 1 + list.length) % list.length;
+    }
     persistTrack();
-    if (playing) queueMicrotask(play);
+    if (playing) requestAnimationFrame(play);
+  }
+  function toggleShuffle() {
+    shuffle = !shuffle;
+    persistShuffle();
+  }
+  function cycleRepeat() {
+    if (repeat === 'none') repeat = 'all';
+    else if (repeat === 'all') repeat = 'one';
+    else repeat = 'none';
+    persistRepeat();
   }
   function volUp() {
     volume = Math.min(1, Math.round((volume + VOL_STEP) * 100) / 100);
@@ -115,8 +155,24 @@
   }
 
   function onEnded() {
-    // Auto-advance through the playlist; loop back to the start.
-    next();
+    if (repeat === 'one') {
+      audio.currentTime = 0;
+      const onSeeked = () => {
+        audio.removeEventListener('seeked', onSeeked);
+        audio.play().catch(() => {});
+      };
+      audio.addEventListener('seeked', onSeeked);
+      // Fallback in case seeked never fires (e.g., already at 0)
+      setTimeout(() => {
+        audio.removeEventListener('seeked', onSeeked);
+        if (audio.currentTime === 0) audio.play().catch(() => {});
+      }, 100);
+    } else if (repeat === 'all' || index < list.length - 1) {
+      next();
+    } else {
+      // repeat === 'none' and we're at the last track: stop
+      playing = false;
+    }
   }
   function onKeydown(e) {
     if (e.key === 'Escape') open = false;
@@ -168,6 +224,9 @@
           </div>
 
           <div class="lofi-transport">
+            <button class="lofi-btn" on:click={toggleShuffle} aria-label="Shuffle" title="Shuffle" class:on={shuffle}>
+              <i class="ti ti-arrows-shuffle" aria-hidden="true"></i>
+            </button>
             <button class="lofi-btn" on:click={prev} aria-label="Previous track" title="Previous">
               <i class="ti ti-player-skip-back" aria-hidden="true"></i>
             </button>
@@ -177,6 +236,9 @@
             </button>
             <button class="lofi-btn" on:click={next} aria-label="Next track" title="Next">
               <i class="ti ti-player-skip-forward" aria-hidden="true"></i>
+            </button>
+            <button class="lofi-btn" on:click={cycleRepeat} aria-label={repeat === 'none' ? 'Repeat off' : repeat === 'all' ? 'Repeat all' : 'Repeat one'} title={repeat === 'none' ? 'Repeat off' : repeat === 'all' ? 'Repeat all' : 'Repeat one'} class:on={repeat !== 'none'}>
+              <i class={`ti ${repeat === 'one' ? 'ti-repeat-once' : 'ti-repeat'}`} aria-hidden="true"></i>
             </button>
           </div>
 
@@ -216,7 +278,7 @@
     box-shadow: 0 0 0 2px var(--raise);
   }
 
-  .lofi-pop { width: 232px; }
+  .lofi-pop { width: 355px; }
   .lofi-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.7rem; }
   .lofi-x {
     background: none; border: 0; color: var(--faint); cursor: pointer;
@@ -247,6 +309,7 @@
   .lofi-btn .ti { font-size: 18px; }
   .lofi-btn-sm { width: 30px; height: 30px; }
   .lofi-btn-sm .ti { font-size: 16px; }
+  .lofi-btn.on { color: var(--accent); border-color: var(--accent); }
 
   .lofi-play {
     background: var(--accent);

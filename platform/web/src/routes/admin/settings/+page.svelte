@@ -31,7 +31,7 @@
   })();
   let trackTitle = '';
   let trackArtist = '';
-  let pendingFile = null; // { url, name } once an upload finishes
+  let pendingFiles = []; // [{ url, name }] once uploads finish
   let uploading = false;
   let uploadErr = '';
   let playlistMsg = '';
@@ -44,31 +44,39 @@
   let socialErr = '';
 
   async function onAudioPick(e) {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
     uploadErr = '';
     uploading = true;
-    pendingFile = null;
+    pendingFiles = [];
     try {
-      const { url } = await adminUpload(file);
-      pendingFile = { url, name: file.name };
-      if (!trackTitle) trackTitle = file.name.replace(/\.[^.]+$/, '');
+      const results = await Promise.all(files.map(async (file) => {
+        const { url } = await adminUpload(file);
+        return { url, name: file.name };
+      }));
+      pendingFiles = results;
+      if (!trackTitle && results.length === 1) {
+        trackTitle = results[0].name.replace(/\.[^.]+$/, '');
+      }
     } catch (e2) {
       uploadErr = e2.message || 'Upload failed';
+      pendingFiles = [];
     } finally {
       uploading = false;
     }
   }
 
-  async function addTrack() {
-    if (!pendingFile) return;
-    tracks = [
-      ...tracks,
-      { title: (trackTitle || pendingFile.name).trim(), artist: trackArtist.trim(), src: pendingFile.url }
-    ];
+  async function addTracks() {
+    if (!pendingFiles.length) return;
+    const newTracks = pendingFiles.map((f) => ({
+      title: (trackTitle || f.name).trim(),
+      artist: trackArtist.trim(),
+      src: f.url
+    }));
+    tracks = [...tracks, ...newTracks];
     trackTitle = '';
     trackArtist = '';
-    pendingFile = null;
+    pendingFiles = [];
     await savePlaylist();
   }
 
@@ -211,26 +219,26 @@
 
     <div class="lofi-add">
       <label class="admin-field set-field">
-        <span>Audio file</span>
-        <input type="file" accept="audio/*" on:change={onAudioPick} disabled={uploading} />
+        <span>Audio file(s)</span>
+        <input type="file" accept="audio/*" multiple on:change={onAudioPick} disabled={uploading} />
       </label>
       {#if uploading}<span class="set-hint">Uploading…</span>{/if}
       {#if uploadErr}<p class="admin-err set-jsonerr">{uploadErr}</p>{/if}
-      {#if pendingFile}
-        <p class="set-hint">Ready: <code>{pendingFile.name}</code></p>
+      {#if pendingFiles.length}
+        <p class="set-hint">Ready: <code>{pendingFiles.length} file{pendingFiles.length === 1 ? '' : 's'}</code> — {pendingFiles.map(f => f.name).join(', ')}</p>
       {/if}
 
       <label class="admin-field set-field">
         <span>Title</span>
-        <input type="text" bind:value={trackTitle} placeholder="Track title" />
+        <input type="text" bind:value={trackTitle} placeholder="Track title (leave blank to use file names)" />
       </label>
       <label class="admin-field set-field">
         <span>Artist</span>
-        <input type="text" bind:value={trackArtist} placeholder="Artist" />
+        <input type="text" bind:value={trackArtist} placeholder="Artist (applied to all)" />
       </label>
 
-      <button type="button" class="admin-btn" on:click={addTrack} disabled={!pendingFile}>
-        <i class="ti ti-plus" aria-hidden="true"></i> Add track
+      <button type="button" class="admin-btn" on:click={addTracks} disabled={!pendingFiles.length}>
+        <i class="ti ti-plus" aria-hidden="true"></i> Add {pendingFiles.length || ''} track{pendingFiles.length === 1 ? '' : 's'}
       </button>
     </div>
 
