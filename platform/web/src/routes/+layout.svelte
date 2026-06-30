@@ -33,7 +33,7 @@
   // from a learning-path "Review {topic}" link (?guides=…) we keep the shell so
   // the path rail stays visible and the user can continue.
   $: bare = isHome
-    || ['/about', '/contribute', '/rss', '/paths', '/glossary', '/train'].includes(path)
+    || ['/about', '/contribute', '/rss', '/paths', '/glossary', '/train', '/changelog'].includes(path)
     || (path === '/review' && !$page.url.searchParams.get('guides'));
   $: currentGuide = (path.match(/^\/guides\/([^/]+)/) || [])[1] || null;
   // The active phase number on /guides/[slug]/[phase] - null on the guide overview.

@@ -1,34 +1,34 @@
-// Curated "What's new" - newest first. Each release is { date: 'YYYY-MM', items: [string] }.
-// Hand-maintained: when you ship something worth telling readers about, add a line to the
-// latest month (or start a new one). Rendered at /changelog. Dates are by month on purpose -
-// readers care about roughly when, not the exact day.
+// Curated "What's new" - newest first. Each release is { date: 'YYYY-MM', items: [...] }.
+// Each item is { tag: 'New' | 'Improved', text, href? }. Keep text short and link the
+// feature with href instead of writing out a path. Add a line to the latest month when
+// you ship something worth telling readers about.
 export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
-      'Faster page loads on mobile - fonts and icons no longer block the first paint.',
-      'New high-contrast dark theme, alongside the existing high-contrast light.',
-      'Cheat sheets now show up in instant search and the ⌘K command palette, with a shortcut on the homepage.',
-      'Built for AI assistants: a complete sitemap, structured data for the glossary, an llms.txt index, and a Model Context Protocol server at /mcp so tools like Claude and Cursor can search and read the guides directly.',
-      'Listen (text-to-speech) and page feedback now live inline in the reader instead of floating over the footer.'
+      { tag: 'New', text: 'High-contrast dark theme.' },
+      { tag: 'New', text: 'Cheat sheets now appear in instant search and the command palette.', href: '/cheat-sheet' },
+      { tag: 'New', text: 'Built for AI assistants: a sitemap, structured data, and a server that tools like Claude and Cursor can read directly.' },
+      { tag: 'Improved', text: 'Listen (text-to-speech) and feedback now sit inside the reader instead of floating over the page.' },
+      { tag: 'Improved', text: 'Faster page loads on mobile.' }
     ]
   },
   {
     date: '2026-06',
     items: [
-      'New themes - Sepia, Nord, Dracula, and high-contrast - plus a font picker in Settings.',
-      'The lofi player moved into the header, with clearer volume controls and a scrolling track title.',
-      'Brain games at /train.',
-      'New guides on no-code / low-code tools and working with AI.',
-      'New Math, Physics, and Logic topics.'
+      { tag: 'New', text: 'Five new themes and a font picker.' },
+      { tag: 'New', text: 'Brain games to sharpen the fundamentals.', href: '/train' },
+      { tag: 'New', text: 'Guides on no-code and low-code tools, and working with AI.' },
+      { tag: 'New', text: 'Math, Physics, and Logic topics.' },
+      { tag: 'Improved', text: 'The lofi player moved into the header with clearer controls.' }
     ]
   },
   {
     date: '2026-05',
     items: [
-      'In-depth programming-language guides, including new Java and C# tracks.',
-      'A Frameworks learning path.',
-      'The Cheat Sheet reference at /cheat-sheet and the Glossary.'
+      { tag: 'New', text: 'In-depth language guides, including Java and C#.' },
+      { tag: 'New', text: 'A Frameworks learning path.', href: '/paths' },
+      { tag: 'New', text: 'Cheat sheets and a plain-language glossary.', href: '/glossary' }
     ]
   }
 ];
@@ -38,7 +38,7 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-// 'YYYY-MM' → 'Month YYYY' (no date lib, no timezone surprises).
+// 'YYYY-MM' -> 'Month YYYY' (no date lib, no timezone surprises).
 export function formatMonth(ym) {
   const [y, m] = String(ym).split('-').map(Number);
   return `${MONTHS[(m || 1) - 1]} ${y}`;
