@@ -14,13 +14,13 @@ updated: 2026-06-30
 
 # kubectl, Day to Day
 
-You don't need to understand all of Kubernetes to be useful with it. You need maybe ten commands, the discipline to read what they tell you, and a debugging loop you can run half-asleep. Most days you are not architecting clusters; you are asking "what is this thing doing right now?" and "why won't it start?" — and answering those is a small, learnable skill.
+You don't need to understand all of Kubernetes to be useful with it. You need maybe ten commands, the discipline to read what they tell you, and a debugging loop you can run half-asleep. Most days you are not architecting clusters; you are asking "what is this thing doing right now?" and "why won't it start?" - and answering those is a small, learnable skill.
 
 This guide is the daily driver, not the theory. If a pod is stuck and Slack is getting loud, the commands here are what you reach for.
 
 ## How to read this
 
-Read it in order the first time; after that, treat it as a lookup. Phase 1 builds the mental model: kubectl is a typewriter to the cluster's API, and almost everything is a variation on one verb-plus-resource shape. Phase 2 is the handful of commands you'll run hourly. Phase 3 is the debugging loop — the exact sequence for a pod that won't come up. Type the commands as you go; reading them is not the same as feeling them.
+Read it in order the first time; after that, treat it as a lookup. Phase 1 builds the mental model: kubectl is a typewriter to the cluster's API, and almost everything is a variation on one verb-plus-resource shape. Phase 2 is the handful of commands you'll run hourly. Phase 3 is the debugging loop - the exact sequence for a pod that won't come up. Type the commands as you go; reading them is not the same as feeling them.
 
 If you've never met the moving parts (pods, deployments, namespaces), skim [/guides/kubernetes-without-the-hype](/guides/kubernetes-without-the-hype) first so the nouns aren't a mystery.
 

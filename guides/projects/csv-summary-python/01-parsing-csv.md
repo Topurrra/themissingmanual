@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 # Parsing the CSV
 
-The first job is getting the rows out of the file and into something Python can work with. We'll turn the raw CSV text into a list of dictionaries — one dict per row, keyed by the column header.
+The first job is getting the rows out of the file and into something Python can work with. We'll turn the raw CSV text into a list of dictionaries - one dict per row, keyed by the column header.
 
 ## Why not split on commas yourself?
 
@@ -41,7 +41,7 @@ North,120.50
 
 becomes `{"region": "North", "amount": "120.50"}`.
 
-Notice the amount is a **string**, not a number. CSV is only text — every value comes back as a string, even the ones that look numeric. We'll deal with converting those in the next phase. For now, our goal is to get the rows parsed and look at them.
+Notice the amount is a **string**, not a number. CSV is only text - every value comes back as a string, even the ones that look numeric. We'll deal with converting those in the next phase. For now, our goal is to get the rows parsed and look at them.
 
 Here's the full thing. Run it.
 
@@ -70,7 +70,7 @@ for row in rows:
     print(row)
 ```
 
-You should see six dictionaries, each with `date`, `region`, `product`, and `amount` keys. The headers became the keys automatically — that's `DictReader` doing its job.
+You should see six dictionaries, each with `date`, `region`, `product`, and `amount` keys. The headers became the keys automatically - that's `DictReader` doing its job.
 
 ## Reading the output
 
@@ -80,7 +80,7 @@ Look closely at one row:
 {'date': '2026-01-03', 'region': 'North', 'product': 'Widget', 'amount': '120.50'}
 ```
 
-Every value is in quotes — they're all strings. `'120.50'` is text, not the number `120.50`. If you tried to add up the amounts right now, you'd get `'120.50' + '89.00'` which concatenates into `'120.5089.00'`. Not what we want. Holding onto that fact is the whole reason the next phase exists.
+Every value is in quotes - they're all strings. `'120.50'` is text, not the number `120.50`. If you tried to add up the amounts right now, you'd get `'120.50' + '89.00'` which concatenates into `'120.5089.00'`. Not what we want. Holding onto that fact is the whole reason the next phase exists.
 
 ## Pull out one column
 
@@ -109,6 +109,6 @@ That `set()` trick collapses duplicates, and `sorted()` makes the order stable. 
 
 ## What you've got
 
-A reliable way to turn CSV text into a list of dicts you can loop over, index by column name, and pull values from. That's the foundation. The data's a little raw — everything's still a string — but it's structured, and that's the hard part done.
+A reliable way to turn CSV text into a list of dicts you can loop over, index by column name, and pull values from. That's the foundation. The data's a little raw - everything's still a string - but it's structured, and that's the hard part done.
 
 In the next phase we'll convert the `amount` column to real numbers and start adding things up. Keep this parsing pattern in your head: `StringIO` (or `open`) → `DictReader` → `list`. You'll write it at the top of every one of these scripts.

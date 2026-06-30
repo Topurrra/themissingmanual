@@ -10,7 +10,7 @@
 </script>
 
 {#if valid}
-  <span class="freshness" class:stale title={stale ? 'This guide may be out of date — verify against current tools.' : `Last updated ${label}`}>
+  <span class="freshness" class:stale title={stale ? 'This guide may be out of date - verify against current tools.' : `Last updated ${label}`}>
     <i class="ti ti-history" aria-hidden="true"></i>
     {#if stale}Updated {label} · may be out of date{:else}Updated {label}{/if}
   </span>

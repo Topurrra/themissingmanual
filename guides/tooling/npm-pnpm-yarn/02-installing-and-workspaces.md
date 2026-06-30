@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Installing, Updating, and Workspaces
 
-You'll spend most of your package-manager life in about six commands. The good news: npm, pnpm, and Yarn share the same shape, so learning one mostly teaches you all three. The part that actually trips people isn't the commands — it's the tiny version symbols (`^`, `~`) that quietly decide whether tomorrow's install upgrades half your tree. We'll get the commands out of the way fast, then slow down on the part that bites.
+You'll spend most of your package-manager life in about six commands. The good news: npm, pnpm, and Yarn share the same shape, so learning one mostly teaches you all three. The part that actually trips people isn't the commands - it's the tiny version symbols (`^`, `~`) that quietly decide whether tomorrow's install upgrades half your tree. We'll get the commands out of the way fast, then slow down on the part that bites.
 
 ## The everyday commands, side by side
 
@@ -28,13 +28,13 @@ run a script                npm run dev              pnpm dev              yarn 
 update within ranges        npm update               pnpm update           yarn upgrade
 ```
 
-*What just happened:* the verbs differ (`install` vs `add`, `uninstall` vs `remove`) but the model is identical. Adding a dependency does three things at once: downloads it, writes it into `package.json`, and updates the lockfile. The `-D` flag (short for `--save-dev`) sends it to `devDependencies` instead of `dependencies` — use it for anything that doesn't ship to production: test runners, bundlers, linters, type definitions.
+*What just happened:* the verbs differ (`install` vs `add`, `uninstall` vs `remove`) but the model is identical. Adding a dependency does three things at once: downloads it, writes it into `package.json`, and updates the lockfile. The `-D` flag (short for `--save-dev`) sends it to `devDependencies` instead of `dependencies` - use it for anything that doesn't ship to production: test runners, bundlers, linters, type definitions.
 
 📝 **Terminology.** `npm install` with no package name means "install the whole tree from the manifest/lock." `npm install <name>` means "add this one package." Same command, two jobs, decided by whether you name a package. pnpm and Yarn split these more clearly with `install` versus `add`.
 
 ## Semver: the version numbers have grammar
 
-Every version is three numbers: `MAJOR.MINOR.PATCH`, like `4.19.2`. This is **semantic versioning** — semver — and the promise behind it is what makes ranges safe-ish:
+Every version is three numbers: `MAJOR.MINOR.PATCH`, like `4.19.2`. This is **semantic versioning** - semver - and the promise behind it is what makes ranges safe-ish:
 
 - **PATCH** (`4.19.2` → `4.19.3`): bug fixes only. Nothing you use should change behavior.
 - **MINOR** (`4.19.2` → `4.20.0`): new features added, but old code keeps working (backward-compatible).
@@ -49,11 +49,11 @@ The promise: a properly versioned package only breaks you on a MAJOR bump. The r
 "express": "*"          wildcard   → anything (don't)
 ```
 
-*What just happened:* the caret `^` — the default when you run `npm install express` — allows minor and patch upgrades but stops before the next major. The tilde `~` is stricter: patch only. Both bet on semver being honored. The caret bets *more*, because it lets in new minor versions you've never tested.
+*What just happened:* the caret `^` - the default when you run `npm install express` - allows minor and patch upgrades but stops before the next major. The tilde `~` is stricter: patch only. Both bet on semver being honored. The caret bets *more*, because it lets in new minor versions you've never tested.
 
-⚠️ **Gotcha — the surprise upgrade.** This is the classic 2am story. Your `package.json` says `^4.19.2`. It's worked for months. A teammate (or CI on a fresh machine with no lockfile, or you after deleting the lock) runs an install, and because the caret allows it, they pull in `4.25.0` that shipped last week — which has a regression. Nothing in *your* code or `package.json` changed. The lockfile is exactly what prevents this: with the lock committed and respected, the range is only consulted *once*, when a version is first resolved. After that, everyone installs the pinned version. **The caret is your ceiling; the lockfile is your floor.**
+⚠️ **Gotcha - the surprise upgrade.** This is the classic 2am story. Your `package.json` says `^4.19.2`. It's worked for months. A teammate (or CI on a fresh machine with no lockfile, or you after deleting the lock) runs an install, and because the caret allows it, they pull in `4.25.0` that shipped last week - which has a regression. Nothing in *your* code or `package.json` changed. The lockfile is exactly what prevents this: with the lock committed and respected, the range is only consulted *once*, when a version is first resolved. After that, everyone installs the pinned version. **The caret is your ceiling; the lockfile is your floor.**
 
-## install vs update — they are not the same
+## install vs update - they are not the same
 
 This catches everyone, so be precise:
 
@@ -69,13 +69,13 @@ $ git diff package-lock.json
 +      "version": "4.20.1",
 ```
 
-*What just happened:* `npm update` walked your ranges, found newer versions within them (a caret let `4.19.2` move to `4.20.1`), installed them, and edited the lockfile. This is the *intended* way to take upgrades: run it on purpose, review the lockfile diff, run your tests, commit. The danger is never `update` itself — it's an *accidental* upgrade from a missing or ignored lockfile, which we close off for good in [Phase 3](03-store-and-gotchas.md).
+*What just happened:* `npm update` walked your ranges, found newer versions within them (a caret let `4.19.2` move to `4.20.1`), installed them, and edited the lockfile. This is the *intended* way to take upgrades: run it on purpose, review the lockfile diff, run your tests, commit. The danger is never `update` itself - it's an *accidental* upgrade from a missing or ignored lockfile, which we close off for good in [Phase 3](03-store-and-gotchas.md).
 
-📝 **Terminology.** To cross a *major* version (`4.x` → `5.x`) you can't use `update` — the caret won't allow it. You change `package.json` yourself (or run `npm install express@5`), then read the package's migration notes, because a major bump means something will break on purpose.
+📝 **Terminology.** To cross a *major* version (`4.x` → `5.x`) you can't use `update` - the caret won't allow it. You change `package.json` yourself (or run `npm install express@5`), then read the package's migration notes, because a major bump means something will break on purpose.
 
 ## Workspaces: many packages, one repo
 
-Real projects rarely stay a single package. You end up with a web app, a shared UI library, and a backend that all live together and depend on each other. **Workspaces** let one repository hold multiple packages and wire them up locally — the foundation of a *monorepo*.
+Real projects rarely stay a single package. You end up with a web app, a shared UI library, and a backend that all live together and depend on each other. **Workspaces** let one repository hold multiple packages and wire them up locally - the foundation of a *monorepo*.
 
 You declare the member packages in the root `package.json` (npm and Yarn) or in a `pnpm-workspace.yaml` (pnpm):
 
@@ -94,7 +94,7 @@ packages:
   - "apps/*"
 ```
 
-*What just happened:* the root is marked `"private": true` (a workspace root is never published) and points at folders of packages. Now one install at the root resolves *all* of them at once, and when `apps/web` depends on `packages/ui`, the manager links the local `ui` directly instead of downloading a published copy. Edit `ui`, and `web` sees the change immediately — no publish step.
+*What just happened:* the root is marked `"private": true` (a workspace root is never published) and points at folders of packages. Now one install at the root resolves *all* of them at once, and when `apps/web` depends on `packages/ui`, the manager links the local `ui` directly instead of downloading a published copy. Edit `ui`, and `web` sees the change immediately - no publish step.
 
 Running a script in a specific member:
 
@@ -104,9 +104,9 @@ $ npm run test --workspace=ui    # npm: run "test" in the ui package
 $ yarn workspace ui test         # yarn: same, yarn syntax
 ```
 
-*What just happened:* each manager has its own flag for "do this in that member" — pnpm's `--filter`, npm's `--workspace`, Yarn's `workspace` subcommand. Same idea, three spellings. This is how you build or test one app in a big repo without touching the others.
+*What just happened:* each manager has its own flag for "do this in that member" - pnpm's `--filter`, npm's `--workspace`, Yarn's `workspace` subcommand. Same idea, three spellings. This is how you build or test one app in a big repo without touching the others.
 
-⚠️ **Gotcha.** A workspace links local packages by their declared version range too. If `apps/web` depends on `"ui": "^1.0.0"` but your local `ui` is at `2.1.0`, the range won't match and the manager may try to fetch `ui` from the registry (and fail, if it was never published). For internal-only packages, point workspace dependents at the local version explicitly — pnpm offers `"ui": "workspace:*"` to mean "always the local one, whatever its version."
+⚠️ **Gotcha.** A workspace links local packages by their declared version range too. If `apps/web` depends on `"ui": "^1.0.0"` but your local `ui` is at `2.1.0`, the range won't match and the manager may try to fetch `ui` from the registry (and fail, if it was never published). For internal-only packages, point workspace dependents at the local version explicitly - pnpm offers `"ui": "workspace:*"` to mean "always the local one, whatever its version."
 
 ## In the wild
 
@@ -114,11 +114,11 @@ Big JavaScript codebases lean hard on workspaces. A typical setup keeps shared c
 
 ## Recap
 
-1. The three managers share one model — **install / add / remove / run / update** — with different verbs (`install` vs `add`, etc.).
+1. The three managers share one model - **install / add / remove / run / update** - with different verbs (`install` vs `add`, etc.).
 2. **Semver is `MAJOR.MINOR.PATCH`**; the promise is that only a MAJOR bump may break you.
-3. **Caret `^` allows minor + patch; tilde `~` allows patch only.** The caret is the source of the classic *surprise upgrade* — and the committed lockfile is what neutralizes it.
+3. **Caret `^` allows minor + patch; tilde `~` allows patch only.** The caret is the source of the classic *surprise upgrade* - and the committed lockfile is what neutralizes it.
 4. **`install` respects the lockfile; `update` deliberately moves up within ranges and rewrites the lock.** Take upgrades on purpose, then review the diff and test.
-5. **Workspaces** put many packages in one repo and link them locally — the backbone of a monorepo.
+5. **Workspaces** put many packages in one repo and link them locally - the backbone of a monorepo.
 
 Next, the part everyone has *felt* but few have had explained: why `node_modules` ballooned, how pnpm makes installs fast and strict at once, and the traps that catch every team.
 
@@ -133,7 +133,7 @@ Next, the part everyone has *felt* but few have had explained: why `node_modules
       "Any version including 5.x and beyond"
     ],
     "answer": 2,
-    "explain": "The caret allows minor and patch upgrades but stops before the next major. So 4.20.0 and 4.25.3 are fine, but 5.0.0 is not — that would be a breaking change."
+    "explain": "The caret allows minor and patch upgrades but stops before the next major. So 4.20.0 and 4.25.3 are fine, but 5.0.0 is not - that would be a breaking change."
   },
   {
     "q": "With a committed lockfile present, what does a plain install do versus update?",

@@ -24,8 +24,8 @@ Read the phases in order the first time. Phase 1 builds the mental model so the 
 
 ## The phases
 
-1. [Phase 1: Not Everything Needs Kafka](01-not-everything-needs-kafka.md) — the mental model: what NATS and SQS are, and how to pick a broker.
-2. [Phase 2: Sending and Receiving for Real](02-sending-and-receiving-for-real.md) — pub/sub, request-reply, JetStream, and the SQS poll loop.
-3. [Phase 3: Production Reality](03-production-reality.md) — visibility timeouts, dead-letter queues, duplicates, and the failure modes.
+1. [Phase 1: Not Everything Needs Kafka](01-not-everything-needs-kafka.md) - the mental model: what NATS and SQS are, and how to pick a broker.
+2. [Phase 2: Sending and Receiving for Real](02-sending-and-receiving-for-real.md) - pub/sub, request-reply, JetStream, and the SQS poll loop.
+3. [Phase 3: Production Reality](03-production-reality.md) - visibility timeouts, dead-letter queues, duplicates, and the failure modes.
 
 [Phase 1: Not Everything Needs Kafka](01-not-everything-needs-kafka.md) →

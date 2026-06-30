@@ -40,8 +40,8 @@ pub fn html_to_text(html: &str) -> String {
 }
 
 /// Plain text for the **search index**: like [`html_to_text`], but first drops Mermaid diagram
-/// source (`<code class="language-mermaid">…</code>`) so diagram DSL — `flowchart`, `-->`, node
-/// labels — never pollutes search or the "did you mean" vocabulary. The *stored* HTML keeps the
+/// source (`<code class="language-mermaid">…</code>`) so diagram DSL - `flowchart`, `-->`, node
+/// labels - never pollutes search or the "did you mean" vocabulary. The *stored* HTML keeps the
 /// source untouched; the frontend needs it to render the diagram.
 pub fn html_to_index_text(html: &str) -> String {
     use std::sync::OnceLock;
@@ -159,7 +159,7 @@ mod tests {
             !idx.to_lowercase().contains("flowchart"),
             "diagram DSL must be excluded from the index: {idx}"
         );
-        // Sanity: a plain de-HTML *would* have included it — proving the exclusion does work.
+        // Sanity: a plain de-HTML *would* have included it - proving the exclusion does work.
         assert!(html_to_text(&html).to_lowercase().contains("flowchart"));
     }
 

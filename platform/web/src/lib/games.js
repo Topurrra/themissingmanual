@@ -101,7 +101,7 @@ export function makeRotation(level) {
 }
 
 // Honest composite for the Brain Challenge: mostly accuracy, small capped speed bonus.
-// NOT a clinical IQ — see the disclaimer shown on the results screen.
+// NOT a clinical IQ - see the disclaimer shown on the results screen.
 export function challengeScore(results) {
   const total = results.length || 1;
   const right = results.filter((r) => r.ok).length;

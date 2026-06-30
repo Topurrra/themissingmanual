@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Writing the same test in k6 and JMeter
 
-Now we build something real. The scenario: your API has a login endpoint and a "list my orders" endpoint, and you want to know whether it holds up when traffic ramps from nothing to 100 concurrent users over a couple of minutes, then comes back down. We will build this twice — once in k6, once in JMeter — so you can feel the difference in your hands instead of reading a feature matrix.
+Now we build something real. The scenario: your API has a login endpoint and a "list my orders" endpoint, and you want to know whether it holds up when traffic ramps from nothing to 100 concurrent users over a couple of minutes, then comes back down. We will build this twice - once in k6, once in JMeter - so you can feel the difference in your hands instead of reading a feature matrix.
 
 The shape of the load is the same in both: **ramp up, hold, ramp down**. Ramping matters. Slamming a server from zero to full load tests a cold, panicked system; ramping up the way real traffic arrives gives caches and pools a chance to warm and shows you a curve, not a single point.
 
@@ -50,7 +50,7 @@ export default function () {
 }
 ```
 
-*What just happened:* `stages` drew the ramp-hold-ramp curve. `thresholds` encoded your goals from Phase 1 as machine-checkable rules. Each VU logs in, reads the token, lists orders, then pauses one second — a small but realistic user journey, not a blind request flood.
+*What just happened:* `stages` drew the ramp-hold-ramp curve. `thresholds` encoded your goals from Phase 1 as machine-checkable rules. Each VU logs in, reads the token, lists orders, then pauses one second - a small but realistic user journey, not a blind request flood.
 
 You run it from the terminal. This is the whole workflow:
 
@@ -67,7 +67,7 @@ $ k6 run orders-test.js
    ✓ THRESHOLDS PASSED
 ```
 
-*What just happened:* the run printed exactly the three numbers that matter — p95 (214 ms), error rate (0.42%), and throughput (42.3 req/s) — and checked them against your thresholds. `THRESHOLDS PASSED` means k6 will exit with code 0; if a threshold fails, it exits non-zero, which is the hook that makes CI work.
+*What just happened:* the run printed exactly the three numbers that matter - p95 (214 ms), error rate (0.42%), and throughput (42.3 req/s) - and checked them against your thresholds. `THRESHOLDS PASSED` means k6 will exit with code 0; if a threshold fails, it exits non-zero, which is the hook that makes CI work.
 
 ## The same scenario in JMeter
 
@@ -86,7 +86,7 @@ Test Plan
 
 *What just happened:* every concept from the k6 script has a one-to-one twin here. Threads are VUs, ramp-up time is the first stage, the JSON Extractor replaces `login.json('token')`, the Header Manager carries the token, and the Constant Timer is `sleep(1)`. Same scenario, assembled with a mouse.
 
-Reading results lives in the **Aggregate Report** listener, which gives you a table with a column literally labeled **95% Line** alongside **Throughput** and **Error %** — the same three numbers, named slightly differently.
+Reading results lives in the **Aggregate Report** listener, which gives you a table with a column literally labeled **95% Line** alongside **Throughput** and **Error %** - the same three numbers, named slightly differently.
 
 > JMeter's built-in ramp shape is one number: ramp-up time, then hold. k6's `stages` describe an arbitrary curve (up, hold, spike, down) directly. For multi-step ramps in JMeter you reach for the Ultimate Thread Group plugin. If your load shape is complex, that difference alone may decide the tool.
 
@@ -100,7 +100,7 @@ $ jmeter -n -t orders-test.jmx -l results.jtl
 
 *What just happened:* `-n` is non-GUI mode, `-t` points at the test plan you built in the GUI, and `-l` writes raw results to a `.jtl` file you analyze afterward. This is the mode you use for any run whose numbers you intend to trust, and the only mode that belongs anywhere near CI.
 
-k6 has no such split — it is headless by nature. That is most of why it slots into pipelines so cleanly:
+k6 has no such split - it is headless by nature. That is most of why it slots into pipelines so cleanly:
 
 ```yaml
 # a CI step, conceptually

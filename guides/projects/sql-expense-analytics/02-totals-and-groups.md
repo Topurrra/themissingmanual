@@ -18,7 +18,7 @@ updated: 2026-06-30
 
 Twenty-six rows is a list, not a report. Nobody wants to read every expense to
 find out you spent too much on dining. They want the number: dining, total.
-That's what this phase builds — spend rolled up by category, then by month —
+That's what this phase builds - spend rolled up by category, then by month -
 and the tool for both is `GROUP BY`.
 
 ## The mental shift: from rows to buckets
@@ -26,7 +26,7 @@ and the tool for both is `GROUP BY`.
 A plain `SELECT` gives you one output row per input row. `GROUP BY` changes the
 deal: it sorts your rows into buckets that share a value, then hands you **one
 output row per bucket**. The individual rows vanish into the bucket; what
-survives is whatever you compute across them — a `SUM`, a `COUNT`, an `AVG`.
+survives is whatever you compute across them - a `SUM`, a `COUNT`, an `AVG`.
 
 ```mermaid
 graph LR
@@ -96,7 +96,7 @@ ORDER BY total DESC;
 ```
 
 Read the output top to bottom. Rent dominates, as rent does. Groceries pile up
-across many small trips — notice `num_expenses` is high there while each visit
+across many small trips - notice `num_expenses` is high there while each visit
 is modest. Dining is the one to watch: lots of rows, and they add up.
 
 Two things to notice in the query:
@@ -165,7 +165,7 @@ GROUP BY month
 ORDER BY month;
 ```
 
-Two rows, January and February. February runs higher — that travel splurge and
+Two rows, January and February. February runs higher - that travel splurge and
 the Valentine dinner did their work. This is the bones of a trend, and in the
 next phase you'll measure that month-to-month jump precisely instead of
 squinting at it.
@@ -173,7 +173,7 @@ squinting at it.
 ## Filtering buckets vs filtering rows
 
 One more tool you'll want. `WHERE` filters rows *before* grouping. `HAVING`
-filters buckets *after* grouping. They're not interchangeable — use the one that
+filters buckets *after* grouping. They're not interchangeable - use the one that
 matches what you're filtering on.
 
 Say you only care about categories where you spent more than $150 total. That's
@@ -225,10 +225,10 @@ HAVING SUM(amount) > 150
 ORDER BY total DESC;
 ```
 
-The small categories — subscriptions, transport — drop off, leaving the ones
+The small categories - subscriptions, transport - drop off, leaving the ones
 that actually move your budget.
 
 You now have totals by category and by month. That's a report a person can read.
 Next, we make it tell a story over time: a running total and how each month
-compares to the one before — without losing the detail rows. That's what window
+compares to the one before - without losing the detail rows. That's what window
 functions are for.

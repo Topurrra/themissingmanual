@@ -11,11 +11,11 @@ updated: 2026-06-30
 
 # When it breaks: rollback, drift, and Terraform
 
-Everything so far assumed the happy path. Production is where templates meet reality: an update half-applies, someone hotfixes a resource by hand, a stack gets wedged in a state you can't escape. This phase is the survival kit — what CloudFormation does automatically when things go wrong, how to spot the changes you didn't make, the stuck states and how to get out of them, and an honest comparison with Terraform so you pick the right tool instead of defending the one you know.
+Everything so far assumed the happy path. Production is where templates meet reality: an update half-applies, someone hotfixes a resource by hand, a stack gets wedged in a state you can't escape. This phase is the survival kit - what CloudFormation does automatically when things go wrong, how to spot the changes you didn't make, the stuck states and how to get out of them, and an honest comparison with Terraform so you pick the right tool instead of defending the one you know.
 
 ## Automatic rollback: the safety net you'll meet first
 
-CloudFormation treats a stack operation as a transaction. If creating or updating a stack fails partway, it doesn't leave you with a half-built mess — it **rolls back**, undoing what it did to return the stack to the last known-good state.
+CloudFormation treats a stack operation as a transaction. If creating or updating a stack fails partway, it doesn't leave you with a half-built mess - it **rolls back**, undoing what it did to return the stack to the last known-good state.
 
 ```text
 Events (most recent first):
@@ -25,13 +25,13 @@ Events (most recent first):
   UPDATE_IN_PROGRESS            Jobs
 ```
 
-*What just happened:* the update to `Jobs` failed on a bad property, so CloudFormation reverted the whole update and the stack landed back at `UPDATE_ROLLBACK_COMPLETE` — its previous working configuration. You read these stack **events** bottom-to-top to find the *first* failure; everything above it is just the cleanup. The first `UPDATE_FAILED` line is almost always your real error message.
+*What just happened:* the update to `Jobs` failed on a bad property, so CloudFormation reverted the whole update and the stack landed back at `UPDATE_ROLLBACK_COMPLETE` - its previous working configuration. You read these stack **events** bottom-to-top to find the *first* failure; everything above it is just the cleanup. The first `UPDATE_FAILED` line is almost always your real error message.
 
-This is genuinely great default behavior. It also has a sharp edge: a rolled-back stack is back to working, but your *change* didn't apply. Don't celebrate the green `ROLLBACK_COMPLETE` as success — it means "I undid your change safely," not "your change worked."
+This is genuinely great default behavior. It also has a sharp edge: a rolled-back stack is back to working, but your *change* didn't apply. Don't celebrate the green `ROLLBACK_COMPLETE` as success - it means "I undid your change safely," not "your change worked."
 
 ## Drift: the gap between template and reality
 
-The template is supposed to be the source of truth. Then someone opens the console at 2 a.m. during an incident, flips a setting on a resource by hand, and forgets to put it back in the template. Now the live resource and the template disagree. That gap is **drift**, and it quietly erodes the whole promise of infrastructure as code — because the template no longer describes what's actually running.
+The template is supposed to be the source of truth. Then someone opens the console at 2 a.m. during an incident, flips a setting on a resource by hand, and forgets to put it back in the template. Now the live resource and the template disagree. That gap is **drift**, and it quietly erodes the whole promise of infrastructure as code - because the template no longer describes what's actually running.
 
 CloudFormation can detect it for you:
 
@@ -56,18 +56,18 @@ PropertyDifferences:
     DifferenceType: NOT_EQUAL
 ```
 
-*What just happened:* CloudFormation compared the live bucket to the template and found versioning was turned on by hand. The template still says `Suspended`. The fix is not to update the console again — it's to decide which side is right, put that truth into the template, and re-apply so the two agree. Run drift detection on a schedule; finding drift early is the difference between a one-line correction and an archaeology project.
+*What just happened:* CloudFormation compared the live bucket to the template and found versioning was turned on by hand. The template still says `Suspended`. The fix is not to update the console again - it's to decide which side is right, put that truth into the template, and re-apply so the two agree. Run drift detection on a schedule; finding drift early is the difference between a one-line correction and an archaeology project.
 
 > [!WARNING]
-> CloudFormation detects drift but does not automatically *fix* it. And it doesn't see everything — some resource types and some property kinds aren't covered by drift detection. Treat a clean drift report as "no detected drift," not a guarantee of none.
+> CloudFormation detects drift but does not automatically *fix* it. And it doesn't see everything - some resource types and some property kinds aren't covered by drift detection. Treat a clean drift report as "no detected drift," not a guarantee of none.
 
 ## Stuck stacks and the moves that free them
 
 A few failure states are common enough to keep in your back pocket:
 
-- **`ROLLBACK_COMPLETE` after a failed *create*.** A brand-new stack that failed to create lands here and can't be updated — only deleted. Delete it, fix the template, create again.
+- **`ROLLBACK_COMPLETE` after a failed *create*.** A brand-new stack that failed to create lands here and can't be updated - only deleted. Delete it, fix the template, create again.
 - **`UPDATE_ROLLBACK_FAILED`.** The rollback itself couldn't finish (often a resource it can't revert). Use `continue-update-rollback`, optionally skipping the resources it's stuck on, to get back to a stable state.
-- **Stuck `*_IN_PROGRESS` for a long time.** Usually a resource waiting on something that will never happen (a wait condition, a missing dependency, an IAM permission). Read the events for the resource that's hanging — the answer is almost always there.
+- **Stuck `*_IN_PROGRESS` for a long time.** Usually a resource waiting on something that will never happen (a wait condition, a missing dependency, an IAM permission). Read the events for the resource that's hanging - the answer is almost always there.
 
 ```bash
 # Nudge a wedged rollback past resources it can't revert
@@ -76,7 +76,7 @@ aws cloudformation continue-update-rollback \
   --resources-to-skip StuckResourceLogicalId
 ```
 
-*What just happened:* you told CloudFormation to finish the rollback while skipping the resource it couldn't handle, returning the stack to a stable `UPDATE_ROLLBACK_COMPLETE` so you can try again. Skipping isn't free — that resource may now be inconsistent with the template, so reconcile it afterward.
+*What just happened:* you told CloudFormation to finish the rollback while skipping the resource it couldn't handle, returning the stack to a stable `UPDATE_ROLLBACK_COMPLETE` so you can try again. Skipping isn't free - that resource may now be inconsistent with the template, so reconcile it afterward.
 
 ## A deletion guard worth knowing
 
@@ -104,19 +104,19 @@ You can do infrastructure as code on AWS with CloudFormation (native) or [/guide
 
 - **You're all-in on AWS.** It's native, free to use, needs no separate state file to host or lock, and supports new AWS features the day they ship.
 - **You want managed rollback and drift built in.** Both are first-class, no extra tooling.
-- **You're deep in the AWS ecosystem** — service catalog, StackSets across accounts, organizations integration all assume CloudFormation.
+- **You're deep in the AWS ecosystem** - service catalog, StackSets across accounts, organizations integration all assume CloudFormation.
 
 **Terraform wins when:**
 
 - **You're multi-cloud or use third-party services.** One language and workflow covers AWS, other clouds, Cloudflare, Datadog, GitHub, and more. CloudFormation only speaks AWS.
 - **You value the language and ecosystem.** HCL with modules, a huge registry of reusable modules, and `terraform plan` as a fast, readable preview many engineers find friendlier than change sets.
-- **You want explicit state you control** — though that state file is also a thing you must store, lock, and secure, which CloudFormation spares you.
+- **You want explicit state you control** - though that state file is also a thing you must store, lock, and secure, which CloudFormation spares you.
 
-The honest summary: if your world is one AWS account or org and likely to stay that way, CloudFormation's nativeness and zero state-management overhead are a real edge. The moment a second provider enters the picture, Terraform's single workflow usually wins. Plenty of shops run both — CloudFormation for AWS-only foundations, Terraform where the estate spans providers. Pick for the estate you actually have, not the one on a slide.
+The honest summary: if your world is one AWS account or org and likely to stay that way, CloudFormation's nativeness and zero state-management overhead are a real edge. The moment a second provider enters the picture, Terraform's single workflow usually wins. Plenty of shops run both - CloudFormation for AWS-only foundations, Terraform where the estate spans providers. Pick for the estate you actually have, not the one on a slide.
 
 ## In the wild
 
-A pragmatic split many teams settle on: CloudFormation (often via the higher-level AWS SAM or CDK, which both compile down to CloudFormation templates) for tightly AWS-coupled stacks like serverless apps, and Terraform for the cross-cutting platform layer. The shared discipline underneath both is the same — template in Git, preview every change, detect drift on a schedule, protect stateful resources from accidental deletion.
+A pragmatic split many teams settle on: CloudFormation (often via the higher-level AWS SAM or CDK, which both compile down to CloudFormation templates) for tightly AWS-coupled stacks like serverless apps, and Terraform for the cross-cutting platform layer. The shared discipline underneath both is the same - template in Git, preview every change, detect drift on a schedule, protect stateful resources from accidental deletion.
 
 ```quiz
 [

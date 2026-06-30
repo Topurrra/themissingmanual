@@ -2,7 +2,7 @@
 title: "Writing recursion that works"
 guide: recursion-finally-clicks
 phase: 2
-summary: "The mental model that makes recursion stop being scary: a base case, a step toward it, and trust — plus when it blows the stack and how to avoid it."
+summary: "The mental model that makes recursion stop being scary: a base case, a step toward it, and trust - plus when it blows the stack and how to avoid it."
 tags: [recursion, base-case, call-stack, stack-overflow, iteration, algorithms]
 difficulty: beginner
 synonyms: ["how does recursion work", "what is a base case", "recursive function explained", "stack overflow recursion", "recursion vs iteration", "function that calls itself"]
@@ -15,7 +15,7 @@ You have the model. Now the question that actually trips people at the keyboard:
 
 ## The recipe: base case first, always
 
-Write the base case before anything else. This is not a style preference — it is what keeps you from writing an infinite loop. Ask: "what is the smallest input I can answer instantly, without recursing?" Write that, return, done.
+Write the base case before anything else. This is not a style preference - it is what keeps you from writing an infinite loop. Ask: "what is the smallest input I can answer instantly, without recursing?" Write that, return, done.
 
 Then write the recursive case as if the smaller call already works. Three questions, in order:
 
@@ -36,11 +36,11 @@ print(sum_list([4, 2, 7, 1]))   # 14
 
 *What just happened:* the empty list is the floor, returning `0`. Every other call peels off `nums[0]`, trusts `sum_list(nums[1:])` to sum the remaining items, and adds them. `[4,2,7,1]` becomes `4 + sum([2,7,1])` becomes `4 + (2 + sum([7,1]))` and so on down to the empty list.
 
-That `nums[1:]` is the shrink step — each call gets a strictly shorter list, so the empty list is guaranteed to arrive. **Every recursive case must move toward the base case.** If your "smaller" input is not actually smaller, you have a bug, not a recursion.
+That `nums[1:]` is the shrink step - each call gets a strictly shorter list, so the empty list is guaranteed to arrive. **Every recursive case must move toward the base case.** If your "smaller" input is not actually smaller, you have a bug, not a recursion.
 
 ## The call stack: where the in-progress work waits
 
-To trust recursion you do not need to trace it, but to *debug* it you should know what is happening underneath. Every time a function calls another (including itself), the computer saves the current call's state — its variables, its place in the code — onto the **call stack**, and starts the new call. When a call returns, its frame is popped off and the call underneath picks up exactly where it paused.
+To trust recursion you do not need to trace it, but to *debug* it you should know what is happening underneath. Every time a function calls another (including itself), the computer saves the current call's state - its variables, its place in the code - onto the **call stack**, and starts the new call. When a call returns, its frame is popped off and the call underneath picks up exactly where it paused.
 
 Here is `factorial(3)` as a stack. Calls pile up on the way down, then unwind on the way back up:
 
@@ -56,7 +56,7 @@ factorial(3) resumes: 3 * 2      = 6   returns
 
 *What just happened:* the calls stack up until the base case (`factorial(0)`) returns a real value with no further calls. Then each paused call wakes up, plugs in the answer from the call above it, and returns its own answer downward. The "waiting" frames are why recursion can do work *after* the recursive call returns.
 
-That last point matters. A loop does its work as it goes. Recursion can also do work on the way *back up* — each frame was paused mid-expression (`3 * ___`) and finishes once the inner answer arrives. That unwinding is the recursion's superpower and, as you will see in phase 3, also where it can run out of room.
+That last point matters. A loop does its work as it goes. Recursion can also do work on the way *back up* - each frame was paused mid-expression (`3 * ___`) and finishes once the inner answer arrives. That unwinding is the recursion's superpower and, as you will see in phase 3, also where it can run out of room.
 
 ## Two calls, one function: branching recursion
 
@@ -75,13 +75,13 @@ def deep_sum(items):
 print(deep_sum([1, [2, [3, 4], 5], 6]))   # 21
 ```
 
-*What just happened:* the base case is implicit — a list with no sub-lists never recurses and the loop returns its plain sum. When the loop hits a sub-list, it trusts `deep_sum` to total that branch however deep it goes. You did not write code for "three levels deep"; you wrote code for "one level, and trust the rest," and it handles any depth.
+*What just happened:* the base case is implicit - a list with no sub-lists never recurses and the loop returns its plain sum. When the loop hits a sub-list, it trusts `deep_sum` to total that branch however deep it goes. You did not write code for "three levels deep"; you wrote code for "one level, and trust the rest," and it handles any depth.
 
-> Try writing iterative code that sums an *arbitrarily* nested list. You can, but you end up manually managing a stack of your own — which is exactly what recursion was doing for you for free. When the structure is nested or branching, recursion is usually the shorter, clearer code.
+> Try writing iterative code that sums an *arbitrarily* nested list. You can, but you end up manually managing a stack of your own - which is exactly what recursion was doing for you for free. When the structure is nested or branching, recursion is usually the shorter, clearer code.
 
 ## In the wild
 
-This shape is everywhere once you spot it. Walking a directory tree to find files: handle this folder's files, recurse into each subfolder. Rendering nested UI components: render this node, recurse into its children. Parsing JSON: a value might contain objects that contain values. All of them lean on the same move — handle one node, trust the function with the rest. Tree and list structures are covered in [data structures explained](/guides/data-structures-explained), and they are recursion's natural home.
+This shape is everywhere once you spot it. Walking a directory tree to find files: handle this folder's files, recurse into each subfolder. Rendering nested UI components: render this node, recurse into its children. Parsing JSON: a value might contain objects that contain values. All of them lean on the same move - handle one node, trust the function with the rest. Tree and list structures are covered in [data structures explained](/guides/data-structures-explained), and they are recursion's natural home.
 
 ```quiz
 [

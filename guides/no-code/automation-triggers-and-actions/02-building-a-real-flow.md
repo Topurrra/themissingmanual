@@ -2,7 +2,7 @@
 title: "Building a Multi-Step Flow"
 guide: automation-triggers-and-actions
 phase: 2
-summary: "A worked end-to-end automation showing filters, branches, data mapping, lookups, and formatting — the pieces that turn a two-step toy into something useful."
+summary: "A worked end-to-end automation showing filters, branches, data mapping, lookups, and formatting - the pieces that turn a two-step toy into something useful."
 tags: [automation, filters, branching, data-mapping, lookups]
 difficulty: beginner
 synonyms:
@@ -23,12 +23,12 @@ A two-step "when this, then that" is a fine warm-up, but real work has condition
 You run a small online store. When someone buys, you want to:
 
 1. Log every order in a spreadsheet for your bookkeeper.
-2. For orders over $200, send the customer a personal thank-you email — not the generic receipt.
+2. For orders over $200, send the customer a personal thank-you email - not the generic receipt.
 3. For wholesale customers, route the order to a different chat channel so the fulfillment team flags it for special packing.
 
 Let's build that.
 
-## Step 1 — the trigger
+## Step 1 - the trigger
 
 ```text
 WHEN  a new order is created in the store
@@ -36,7 +36,7 @@ WHEN  a new order is created in the store
 
 The trigger hands down a payload: customer name, email, order total, line items, a customer "type" field (retail or wholesale), and a timestamp. Everything below can pull from these.
 
-## Step 2 — the always-on action
+## Step 2 - the always-on action
 
 Logging every order has no condition, so it goes right after the trigger.
 
@@ -44,7 +44,7 @@ Logging every order has no condition, so it goes right after the trigger.
 THEN  add a row to the "Orders" spreadsheet
 ```
 
-Now the **mapping** work. The spreadsheet has columns, and you tell each column which field to pull from the trigger. This is the unglamorous heart of every automation — pointing outputs at inputs.
+Now the **mapping** work. The spreadsheet has columns, and you tell each column which field to pull from the trigger. This is the unglamorous heart of every automation - pointing outputs at inputs.
 
 ```text
 Spreadsheet column   <-  Trigger field
@@ -58,7 +58,7 @@ Mapping is where most beginners stumble, and the fix is mechanical: read the col
 
 ## Filters: stop the flow when it shouldn't continue
 
-The thank-you email is only for orders over $200. A **filter** is a gate: the flow runs up to the filter, checks a condition, and only continues if the condition passes. If it fails, the flow quietly stops right there — no error, nothing wrong, that run is done.
+The thank-you email is only for orders over $200. A **filter** is a gate: the flow runs up to the filter, checks a condition, and only continues if the condition passes. If it fails, the flow quietly stops right there - no error, nothing wrong, that run is done.
 
 ```text
 ONLY CONTINUE IF  {{Order.Total}}  is greater than  200
@@ -75,7 +75,7 @@ Put the filter *before* the thank-you email and *after* the spreadsheet row, so 
 
 ## Branching: different paths for different inputs
 
-The wholesale-vs-retail routing isn't a yes/no gate — it's a fork. That's a **branch** (Zapier calls these *Paths*, Make uses a *Router*, Power Automate has *Condition* and *Switch*). One incoming run, two or more possible roads, and the tool picks based on a condition.
+The wholesale-vs-retail routing isn't a yes/no gate - it's a fork. That's a **branch** (Zapier calls these *Paths*, Make uses a *Router*, Power Automate has *Condition* and *Switch*). One incoming run, two or more possible roads, and the tool picks based on a condition.
 
 ```mermaid
 graph TD
@@ -89,7 +89,7 @@ Each branch is its own little flow with its own steps. Use a branch when the *st
 
 ## Lookups: pulling in data the trigger didn't have
 
-Sometimes a step needs information the trigger never carried. Say your thank-you email should greet the customer by first name and mention their account manager — but the order payload only has an email address, not the account manager.
+Sometimes a step needs information the trigger never carried. Say your thank-you email should greet the customer by first name and mention their account manager - but the order payload only has an email address, not the account manager.
 
 A **lookup** (often "Find a record" / "Search" actions) fixes this. You add a search step: "find the customer in the CRM where email equals `{{Order.Email}}`." That step returns the full customer record, and now downstream steps can use the account-manager field it found.
 
@@ -104,7 +104,7 @@ Lookups are how you stitch two systems together when neither one knows everythin
 
 Raw fields are often the wrong shape. The timestamp comes through as `2026-06-30T14:08:55Z` but your spreadsheet wants `June 30, 2026`. The total arrives as `199.5` and you want `$199.50`. The name is `dana okoye` and you want `Dana Okoye` in the greeting.
 
-Every tool ships **formatting** steps for exactly this — Zapier's *Formatter*, Make's built-in functions, n8n's expressions, Power Automate's expression functions. You insert a small step that takes a messy field and emits a clean one, then map the *clean* version into your action.
+Every tool ships **formatting** steps for exactly this - Zapier's *Formatter*, Make's built-in functions, n8n's expressions, Power Automate's expression functions. You insert a small step that takes a messy field and emits a clean one, then map the *clean* version into your action.
 
 ```text
 Format date:    {{Order.Timestamp}}        ->  June 30, 2026

@@ -2,7 +2,7 @@
 title: "Real Automations (and AI Nodes)"
 guide: n8n
 phase: 3
-summary: "Building it for real — a concrete multi-step automation end to end, how webhooks let the outside world trigger a flow, and using AI/LLM nodes to add a thinking step."
+summary: "Building it for real - a concrete multi-step automation end to end, how webhooks let the outside world trigger a flow, and using AI/LLM nodes to add a thinking step."
 tags: [n8n, automation, webhooks, ai-nodes, llm]
 difficulty: intermediate
 synonyms:
@@ -25,7 +25,7 @@ The job: **every time a customer fills out the contact form on our website, look
 ```text
 [Webhook: form submitted]
         |
-[HTTP Request: enrich — look up company by email domain]
+[HTTP Request: enrich - look up company by email domain]
         |
    [IF: message contains "urgent" or "down"?]
        /                    \
@@ -52,9 +52,9 @@ The build rhythm from Phase 1 still applies: wire the webhook, submit one test f
 
 ## Webhooks: letting the outside world knock
 
-A schedule trigger asks "is it time yet?" on a clock. A **webhook** is the opposite — it sits and waits for the outside world to call *it*. n8n hands you a unique URL; whenever something hits that URL, your workflow runs, with whatever data the caller sent as the input.
+A schedule trigger asks "is it time yet?" on a clock. A **webhook** is the opposite - it sits and waits for the outside world to call *it*. n8n hands you a unique URL; whenever something hits that URL, your workflow runs, with whatever data the caller sent as the input.
 
-This is how you connect to anything that can "send a notification when X happens" — form tools, payment processors (Stripe firing on a new charge), GitHub on a new issue, your own app. Instead of polling "any new orders? any new orders?" every minute, the order system tells you the instant it happens.
+This is how you connect to anything that can "send a notification when X happens" - form tools, payment processors (Stripe firing on a new charge), GitHub on a new issue, your own app. Instead of polling "any new orders? any new orders?" every minute, the order system tells you the instant it happens.
 
 A few things to know:
 
@@ -64,22 +64,22 @@ A few things to know:
 
 ## AI nodes: a step that thinks
 
-Everything so far moves and reshapes data. The newer trick is a node that *reads and decides*. n8n has nodes that call large language models — OpenAI, Anthropic, and others — so a step in your flow can summarize, classify, extract, or draft, instead of only routing fields around.
+Everything so far moves and reshapes data. The newer trick is a node that *reads and decides*. n8n has nodes that call large language models - OpenAI, Anthropic, and others - so a step in your flow can summarize, classify, extract, or draft, instead of only routing fields around.
 
-Go back to the contact-form flow. The IF node checked for the literal words "urgent" or "down." Crude — it misses "your service has been broken for an hour and I'm losing money." Swap in an AI step and you can ask, in plain English, "Read this message. Reply with `urgent` or `normal`." The model reads intent, not keywords. You feed its answer into the IF node and the routing gets dramatically smarter for one extra node.
+Go back to the contact-form flow. The IF node checked for the literal words "urgent" or "down." Crude - it misses "your service has been broken for an hour and I'm losing money." Swap in an AI step and you can ask, in plain English, "Read this message. Reply with `urgent` or `normal`." The model reads intent, not keywords. You feed its answer into the IF node and the routing gets dramatically smarter for one extra node.
 
 Other honest, everyday uses:
 
 - **Summarize.** Turn a long support email into one line before it hits Slack.
 - **Extract.** Pull a date, an amount, and an order number out of free-text and hand back clean fields for the spreadsheet.
 - **Classify & tag.** Sort incoming messages into "billing," "bug," "sales."
-- **Draft.** Write a first-pass reply for a human to approve — never auto-send unreviewed.
+- **Draft.** Write a first-pass reply for a human to approve - never auto-send unreviewed.
 
 n8n also has an "Agent" style node where the model can decide which other tools to call, but start with the boring single-shot version: hand it text, get back a label or a summary, use that downstream. Walk before you run.
 
 Two cautions, because AI steps fail differently than normal nodes:
 
-- **They cost money per call and they're slow.** Each AI step is an API charge and a second or two of latency. A workflow that fires thousands of times will run up a bill — batch where you can, and don't put an AI call on a path that fires constantly.
-- **They're non-deterministic.** The same input can give slightly different output, and they occasionally make things up. Never let an AI step take an irreversible action — sending money, deleting records, emailing a customer — without a human or a hard rule in between. Use it to *suggest and sort*, and keep a person on anything that can't be undone.
+- **They cost money per call and they're slow.** Each AI step is an API charge and a second or two of latency. A workflow that fires thousands of times will run up a bill - batch where you can, and don't put an AI call on a path that fires constantly.
+- **They're non-deterministic.** The same input can give slightly different output, and they occasionally make things up. Never let an AI step take an irreversible action - sending money, deleting records, emailing a customer - without a human or a hard rule in between. Use it to *suggest and sort*, and keep a person on anything that can't be undone.
 
-Put it together and you have the shape of modern automation: webhooks let the world trigger you, nodes do the moving and routing, the Code node handles the weird parts, and an AI step adds judgment where keywords fall short — all running on infrastructure you control. That's the whole pitch of n8n, built.
+Put it together and you have the shape of modern automation: webhooks let the world trigger you, nodes do the moving and routing, the Code node handles the weird parts, and an AI step adds judgment where keywords fall short - all running on infrastructure you control. That's the whole pitch of n8n, built.

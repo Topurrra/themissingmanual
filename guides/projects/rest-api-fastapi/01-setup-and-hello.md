@@ -53,7 +53,7 @@ python -m venv .venv
 After activating, your prompt should show `(.venv)` at the front. That's how you
 know commands like `pip` and `python` are pointing at the project's environment
 and not the system one. If you open a new terminal later, run the activate
-command again — the virtualenv doesn't follow you between windows.
+command again - the virtualenv doesn't follow you between windows.
 
 > If PowerShell refuses to run the activate script with a "running scripts is
 > disabled" error, run
@@ -98,7 +98,7 @@ every endpoint you write follows this pattern:
 - `@app.get("/")` is a decorator. It tells FastAPI: when an HTTP `GET` request
   arrives for the path `/`, call the function right below me.
 - The function returns a plain Python dict. FastAPI turns that into a JSON
-  response automatically — you don't serialize anything by hand.
+  response automatically - you don't serialize anything by hand.
 
 ## Run the server
 
@@ -109,7 +109,7 @@ uvicorn main:app --reload
 ```
 
 Read `main:app` as "the object named `app`, inside the file `main.py`". The
-`--reload` flag tells Uvicorn to restart whenever you save a change — leave it
+`--reload` flag tells Uvicorn to restart whenever you save a change - leave it
 on while you're developing so you're not bouncing the server by hand all
 weekend.
 
@@ -133,12 +133,12 @@ You served a real HTTP response from your own machine.
 Now visit `http://127.0.0.1:8000/docs`.
 
 That page isn't something you wrote. FastAPI read your code and generated
-interactive API documentation for you — every endpoint, the methods, the shapes
+interactive API documentation for you - every endpoint, the methods, the shapes
 of the data. Right now there's only the one root endpoint, but as you add routes
 this page fills in automatically. You can click an endpoint, hit "Try it out",
 and fire a real request without touching `curl`.
 
-There's a second one at `http://127.0.0.1:8000/redoc` — same information, a
+There's a second one at `http://127.0.0.1:8000/redoc` - same information, a
 different layout. Pick whichever you like. I lean on `/docs` constantly while
 building because the "Try it out" button is faster than typing curl commands.
 
@@ -163,5 +163,5 @@ hands the JSON back. You'll add more functions, but the pipe stays the same.
 
 You have a project folder, an isolated environment, a running server, one
 working endpoint, and free interactive docs. Leave the server running with
-`--reload` — in the next phase we'll add real routes that take input, and you'll
+`--reload` - in the next phase we'll add real routes that take input, and you'll
 watch the docs update as you save. That's the build step done.

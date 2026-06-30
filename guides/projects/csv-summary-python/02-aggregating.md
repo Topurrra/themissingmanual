@@ -42,7 +42,7 @@ amounts = [float(row["amount"]) for row in rows]
 print(amounts)
 ```
 
-Now they're real numbers — no quotes — and we can add, compare, and average them.
+Now they're real numbers - no quotes - and we can add, compare, and average them.
 
 ## The five numbers
 
@@ -56,7 +56,7 @@ Python's built-ins do almost all the work here:
 | Largest? | `max(amounts)` |
 | Average? | `sum(amounts) / len(amounts)` |
 
-There's no special "average" built-in — average is the sum divided by the count, which you already have. Let's compute all five and print them.
+There's no special "average" built-in - average is the sum divided by the count, which you already have. Let's compute all five and print them.
 
 ```python runnable
 import csv
@@ -86,11 +86,11 @@ print(f"Largest:  {largest:.2f}")
 print(f"Average:  {average:.2f}")
 ```
 
-The `:.2f` in the f-string rounds to two decimal places — so `157.041666...` prints as `157.04`. Money never wants fifteen digits after the dot.
+The `:.2f` in the f-string rounds to two decimal places - so `157.041666...` prints as `157.04`. Money never wants fifteen digits after the dot.
 
 ## The one bug waiting to happen
 
-Look at `average = total / count`. If `count` is zero — an empty CSV, or one with only a header — that line blows up with `ZeroDivisionError`. It's worth one guard:
+Look at `average = total / count`. If `count` is zero - an empty CSV, or one with only a header - that line blows up with `ZeroDivisionError`. It's worth one guard:
 
 ```python runnable
 import csv
@@ -111,11 +111,11 @@ print(f"Total:   {total:.2f}")
 print(f"Average: {average:.2f}")
 ```
 
-`total / count if count else 0.0` reads as "divide if there's anything, otherwise zero." `sum([])` is already `0` and `len([])` is `0`, so those two are fine on their own — it's the division that needs the guard. One small condition saves you a crash on the inevitable empty file.
+`total / count if count else 0.0` reads as "divide if there's anything, otherwise zero." `sum([])` is already `0` and `len([])` is `0`, so those two are fine on their own - it's the division that needs the guard. One small condition saves you a crash on the inevitable empty file.
 
 ## Which row was the biggest?
 
-`max(amounts)` tells you the biggest number, but often you want the whole row — what product, what region. For that, give `max` a `key` so it compares rows by their amount and hands back the row itself:
+`max(amounts)` tells you the biggest number, but often you want the whole row - what product, what region. For that, give `max` a `key` so it compares rows by their amount and hands back the row itself:
 
 ```python runnable
 import csv
@@ -136,10 +136,10 @@ print("Biggest sale:")
 print(f"  {biggest['date']}  {biggest['region']}  {biggest['product']}  {biggest['amount']}")
 ```
 
-`key=lambda r: float(r["amount"])` tells `max` how to rank the rows. Without the `float`, it would compare the amounts as strings — and `'89.00'` sorts higher than `'410.00'` alphabetically, which would be wrong. The conversion matters everywhere you compare.
+`key=lambda r: float(r["amount"])` tells `max` how to rank the rows. Without the `float`, it would compare the amounts as strings - and `'89.00'` sorts higher than `'410.00'` alphabetically, which would be wrong. The conversion matters everywhere you compare.
 
 ## What you've got
 
-The headline numbers for the whole dataset: count, total, min, max, average — plus the single biggest row. That's already a useful summary. But a real report breaks the totals out by category — total per region, per product — so you can see where the money's actually coming from.
+The headline numbers for the whole dataset: count, total, min, max, average - plus the single biggest row. That's already a useful summary. But a real report breaks the totals out by category - total per region, per product - so you can see where the money's actually coming from.
 
 That's grouping, and it's the next phase. The pattern there builds straight on what you have: convert to a number, then accumulate. We'll do it per group instead of all at once.

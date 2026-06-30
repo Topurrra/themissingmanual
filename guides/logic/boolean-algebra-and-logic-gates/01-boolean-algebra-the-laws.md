@@ -2,7 +2,7 @@
 title: "Boolean Algebra: The Laws"
 guide: "boolean-algebra-and-logic-gates"
 phase: 1
-summary: "Treat true/false as 1/0 and AND/OR/NOT as operations, and you get an algebra with laws — identity, complement, distribution, De Morgan — that let you simplify a tangled condition the way you simplify ordinary algebra."
+summary: "Treat true/false as 1/0 and AND/OR/NOT as operations, and you get an algebra with laws - identity, complement, distribution, De Morgan - that let you simplify a tangled condition the way you simplify ordinary algebra."
 tags: [logic, boolean-algebra, laws, simplification, de-morgan]
 difficulty: beginner
 synonyms: ["what is boolean algebra", "boolean algebra laws", "simplify a boolean expression", "boolean identity laws", "and or not algebra"]
@@ -11,13 +11,13 @@ updated: 2026-06-25
 
 # Boolean Algebra: The Laws
 
-You already push true and false around with words — and, or, not. Boolean algebra swaps the
+You already push true and false around with words - and, or, not. Boolean algebra swaps the
 words for symbols, so you can *calculate* with truth the way you calculate with numbers. The
 payoff is real: a condition that looks like a tangle of `&&`, `||`, and `!` often collapses
 into something short once you know a handful of rules.
 
 This phase builds on [propositional logic](/guides/propositional-logic), where AND, OR, and
-NOT were connectives between statements. Here they're operations in an algebra — and an algebra
+NOT were connectives between statements. Here they're operations in an algebra - and an algebra
 comes with laws you can lean on.
 
 ## Two values, three operations
@@ -53,57 +53,57 @@ A + B   is 1 when EITHER A or B (or both) is 1
 ## The laws
 
 Here's what makes this an *algebra*. These identities hold for any values of A, B, and C. Read
-each as a sentence — that's how they stick.
+each as a sentence - that's how they stick.
 
-**Identity** — combining with the "do nothing" value leaves you unchanged.
+**Identity** - combining with the "do nothing" value leaves you unchanged.
 
 ```text
 A · 1 = A      AND-ing with true changes nothing
 A + 0 = A      OR-ing with false changes nothing
 ```
 
-**Domination (null)** — one value swallows everything.
+**Domination (null)** - one value swallows everything.
 
 ```text
 A · 0 = 0      AND-ing with false is always false
 A + 1 = 1      OR-ing with true is always true
 ```
 
-**Idempotent** — repeating yourself adds nothing.
+**Idempotent** - repeating yourself adds nothing.
 
 ```text
 A · A = A      "A and A" is only A
 A + A = A      "A or A" is only A
 ```
 
-**Complement** — a thing and its opposite.
+**Complement** - a thing and its opposite.
 
 ```text
 A · ¬A = 0     something can't be true and false at once
-A + ¬A = 1     something is either true or false — always
+A + ¬A = 1     something is either true or false - always
 ```
 
-**Double negation** — two flips cancel.
+**Double negation** - two flips cancel.
 
 ```text
 ¬¬A = A        "not not A" is A
 ```
 
-**Commutative** — order doesn't matter.
+**Commutative** - order doesn't matter.
 
 ```text
 A · B = B · A
 A + B = B + A
 ```
 
-**Associative** — grouping doesn't matter.
+**Associative** - grouping doesn't matter.
 
 ```text
 (A · B) · C = A · (B · C)
 (A + B) + C = A + (B + C)
 ```
 
-**Distributive** — here boolean algebra goes beyond ordinary arithmetic. AND distributes over
+**Distributive** - here boolean algebra goes beyond ordinary arithmetic. AND distributes over
 OR, *and* OR distributes over AND (that second one fails for regular numbers).
 
 ```text
@@ -111,13 +111,13 @@ A · (B + C) = A·B + A·C
 A + (B · C) = (A + B) · (A + C)
 ```
 
-**Absorption** — a shortcut that collapses a redundant term.
+**Absorption** - a shortcut that collapses a redundant term.
 
 ```text
 A + A·B = A     if A alone is enough, the extra AND doesn't matter
 ```
 
-**De Morgan** — the rule for pushing a NOT through a group. A negated AND becomes an OR of
+**De Morgan** - the rule for pushing a NOT through a group. A negated AND becomes an OR of
 negations, and a negated OR becomes an AND of negations.
 
 ```text
@@ -151,7 +151,7 @@ Result:               A + B
 ```
 
 Three named steps, and a five-symbol expression became three. `¬A·B` folds in because whenever
-A is false, `¬A·B` is B — so the whole thing behaves like "A or B" anyway.
+A is false, `¬A·B` is B - so the whole thing behaves like "A or B" anyway.
 
 Here's a shorter one using absorption, simplifying `A · (A + B)` to `A`:
 
@@ -170,7 +170,7 @@ Result:               A
 ```
 
 If A is true the whole thing is true; if A is false the whole thing is false. The expression
-never depends on B — and the algebra proves it without you checking a single row of a truth
+never depends on B - and the algebra proves it without you checking a single row of a truth
 table.
 
 ## For builders
@@ -197,17 +197,17 @@ You don't have to do this by hand every time. But knowing the laws means you can
 when a condition is more complicated than the logic requires.
 
 > ⚠️ **`+` is OR, not addition.** In boolean algebra `1 + 1 = 1`, not 2. The `+` means OR, so
-> "true or true" is true — there's no value above 1 to land on. If you carry arithmetic
+> "true or true" is true - there's no value above 1 to land on. If you carry arithmetic
 > instincts into these expressions, this is the trap that gets you. `A + A = A`, not `2A`.
 
 ## Recap
 
 - Boolean algebra has exactly two values: `1` (true) and `0` (false).
-- Three operations: AND (`·`), OR (`+`), NOT (`¬`) — each with several notations.
+- Three operations: AND (`·`), OR (`+`), NOT (`¬`) - each with several notations.
 - The laws (identity, domination, idempotent, complement, double negation, commutative,
   associative, distributive, absorption, De Morgan) let you rewrite expressions while
   preserving their meaning.
-- **De Morgan** pushes a NOT through a group; **absorption** drops redundant terms — together
+- **De Morgan** pushes a NOT through a group; **absorption** drops redundant terms - together
   they clean up most real-world conditions.
 - `+` means OR, so `1 + 1 = 1`. It is not arithmetic.
 

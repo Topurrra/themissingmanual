@@ -8,7 +8,7 @@
   $: path = $page.url.pathname;
   $: bare = path === '/admin/login';
 
-  // Sidebar nav — everything EXCEPT Settings (Settings lives in the header gear).
+  // Sidebar nav - everything EXCEPT Settings (Settings lives in the header gear).
   const nav = [
     { href: '/admin', label: 'Dashboard', icon: 'ti-layout-dashboard' },
     { href: '/admin/content', label: 'Content', icon: 'ti-files' },

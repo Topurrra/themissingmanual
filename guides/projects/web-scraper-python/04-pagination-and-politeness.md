@@ -2,7 +2,7 @@
 title: "Pagination and Being Polite"
 guide: web-scraper-python
 phase: 4
-summary: "Follow next-page links through a whole catalog while staying a good guest — delays, a real User-Agent, robots.txt, rate limits, and the ethics and law of scraping."
+summary: "Follow next-page links through a whole catalog while staying a good guest - delays, a real User-Agent, robots.txt, rate limits, and the ethics and law of scraping."
 tags: [python, pagination, robots-txt, rate-limiting, scraping-ethics]
 difficulty: intermediate
 synonyms:
@@ -17,7 +17,7 @@ updated: 2026-06-30
 # Pagination and Being Polite
 
 We've been scraping one page. The catalog has fifty. This phase teaches the
-scraper to walk from page to page until there are no more — and, equally important, to do it in a way that doesn't hammer the server or get you blocked.
+scraper to walk from page to page until there are no more - and, equally important, to do it in a way that doesn't hammer the server or get you blocked.
 By the end you'll have a loop that collects the whole catalog at a respectful
 pace.
 
@@ -28,7 +28,7 @@ skip. We won't.
 
 ## Find the "next" link
 
-Open the site and scroll to the bottom — there's a "next" button. Inspect it.
+Open the site and scroll to the bottom - there's a "next" button. Inspect it.
 On `books.toscrape.com` it's a `<li class="next">` containing an `<a>` whose
 `href` points at the following page. When you're on the last page, that element
 isn't there at all. That presence-or-absence is exactly the signal we need: keep
@@ -76,12 +76,12 @@ session.headers.update({
 ```
 
 Don't impersonate a real browser to sneak past defenses. If a site plainly
-doesn't want bots, that's information, not a challenge — more on that below.
+doesn't want bots, that's information, not a challenge - more on that below.
 
 ## The pagination loop
 
 Now the full walk. Start at page one, parse it, find the next link, sleep a
-moment, repeat — until there's no next link.
+moment, repeat - until there's no next link.
 
 ```python
 import time
@@ -142,17 +142,17 @@ ends on its own.
 ## Why the delay matters
 
 That `time.sleep(DELAY)` isn't decoration. Without it, a fast loop fires
-requests as quickly as Python can manage — dozens per second — and to the server
+requests as quickly as Python can manage - dozens per second - and to the server
 that's indistinguishable from an attack. You can knock a small site over, and
 you will absolutely get your IP blocked. A one-second pause makes you a normal
 visitor. Slow is polite, and polite is what keeps you scraping.
 
 A second knob worth knowing for bigger jobs: retries with backoff. If a request
-fails, wait a bit and try again — and wait *longer* each time rather than
+fails, wait a bit and try again - and wait *longer* each time rather than
 pounding a struggling server. For this project a fixed delay is enough; keep
 backoff in your back pocket for production.
 
-## robots.txt — read it, respect it
+## robots.txt - read it, respect it
 
 Most sites publish a file at `/robots.txt` saying which paths automated clients
 may and may not touch. It's a request, not a wall, but ignoring it is rude and,
@@ -176,7 +176,7 @@ real sites often disallow `/search`, `/cart`, login areas, and the like.)
 
 ## The ethics and the law, plainly
 
-I'm not your lawyer, and this isn't legal advice — but here's the working
+I'm not your lawyer, and this isn't legal advice - but here's the working
 understanding a careful person operates with:
 
 - **Public, factual data is the safe ground.** Facts (prices, titles, public
@@ -185,7 +185,7 @@ understanding a careful person operates with:
 - **Terms of Service exist.** Many sites' ToS forbid automated access. Violating
   them can be a breach of contract even when the data itself is public. Read them
   for anything you'll do more than once.
-- **Don't scrape personal data carelessly.** Names, emails, profiles — privacy
+- **Don't scrape personal data carelessly.** Names, emails, profiles - privacy
   law (GDPR, CCPA, and friends) applies regardless of whether data is "public."
 - **Don't degrade the service.** Hammering a server can cross from rude into
   unlawful (computer-misuse statutes). The delay isn't only manners.
@@ -211,6 +211,6 @@ graph TD
 ## Where we are
 
 The scraper now collects an entire catalog, page by page, at a pace that won't
-get you blocked or sued — with a real User-Agent and a robots.txt check in the
+get you blocked or sued - with a real User-Agent and a robots.txt check in the
 toolkit. The data's all in memory, though, and memory vanishes when the program
 exits. Last phase: write it to disk, then look at where you'd take this next.

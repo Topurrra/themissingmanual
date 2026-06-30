@@ -58,9 +58,9 @@
       {/each}
     </div>
     <p class="lb-note">
-      {#if algo === 'round-robin'}Each request goes to the next backend in turn — simple and even, but ignores how busy each one is.
-      {:else if algo === 'least-connections'}Each request goes to the backend with the fewest in-flight requests — adapts when some requests run long.
-      {:else}Each request picks a backend at random — even over time, lumpy in the short run.{/if}
+      {#if algo === 'round-robin'}Each request goes to the next backend in turn - simple and even, but ignores how busy each one is.
+      {:else if algo === 'least-connections'}Each request goes to the backend with the fewest in-flight requests - adapts when some requests run long.
+      {:else}Each request picks a backend at random - even over time, lumpy in the short run.{/if}
       Requests finish on their own after a random delay (watch “active” drop).
     </p>
   </div>

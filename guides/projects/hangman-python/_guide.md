@@ -2,7 +2,7 @@
 title: "Build a Hangman Game (Python)"
 guide: hangman-python
 phase: 0
-summary: "Build the classic word-guessing game in Python — masked word, guessed letters, dwindling lives, win/lose — running right in your browser (no input(), the play is simulated)."
+summary: "Build the classic word-guessing game in Python - masked word, guessed letters, dwindling lives, win/lose - running right in your browser (no input(), the play is simulated)."
 tags: [python, project, game, beginner, strings, sets]
 category: projects
 group: "Run-Along Projects"
@@ -32,7 +32,7 @@ and watched each piece run.
 
 A complete, playable round of Hangman: a secret word shown as blanks, a record of
 which letters have been guessed, a life counter that drops on every miss, and the
-two endings — you won, or you're out of lives.
+two endings - you won, or you're out of lives.
 
 ## The stack
 
@@ -42,7 +42,7 @@ and that's the only import in the whole project.
 ## This one runs in your browser
 
 Every code block on these pages has a Run button. Click it and the code runs
-right here — no setup, no terminal. Because there's no console to type into, we
+right here - no setup, no terminal. Because there's no console to type into, we
 don't use `input()`. Instead we feed the game a hardcoded list of guesses and
 print the play-by-play, so you watch a full round unfold each time you run it.
 

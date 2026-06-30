@@ -26,8 +26,8 @@ This is a concepts-and-protocol guide. There is no single CLI to install; the ex
 
 ## The phases
 
-1. [Phase 1: The Problem and the Four Roles](01-the-problem-and-the-roles.md) — why delegated access exists, and who plays what part.
-2. [Phase 2: The Authorization Code Flow and the Three Tokens](02-the-flow-and-the-tokens.md) — the dance, PKCE, scopes, and access vs refresh vs ID tokens.
-3. [Phase 3: Production Reality and the Gotchas](03-production-reality-and-gotchas.md) — storing tokens, the mistakes that leak accounts, and why you never roll your own.
+1. [Phase 1: The Problem and the Four Roles](01-the-problem-and-the-roles.md) - why delegated access exists, and who plays what part.
+2. [Phase 2: The Authorization Code Flow and the Three Tokens](02-the-flow-and-the-tokens.md) - the dance, PKCE, scopes, and access vs refresh vs ID tokens.
+3. [Phase 3: Production Reality and the Gotchas](03-production-reality-and-gotchas.md) - storing tokens, the mistakes that leak accounts, and why you never roll your own.
 
 [Phase 1: The Problem and the Four Roles](01-the-problem-and-the-roles.md) →

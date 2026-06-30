@@ -47,7 +47,7 @@
   onMount(() => { window.addEventListener('keydown', halcyonKeydown); return () => { window.removeEventListener('keydown', halcyonKeydown); clearArmTimeout(); }; });
 </script>
 
-<svelte:head><title>About — The Missing Manual</title></svelte:head>
+<svelte:head><title>About - The Missing Manual</title></svelte:head>
 
 <div style="position: relative;" onpointerdown={startGesture} onpointermove={trackGesture} onpointerup={endGesture} onpointercancel={endGesture}>
   <button onclick={halcyonArm} onblur={halcyonStop} tabindex="-1" aria-label="about-corner" style="position: absolute; left: 4px; top: 4px; width: 12px; height: 12px; opacity: 0; cursor: default; z-index: 50; padding: 0; border: 0; background: transparent;"></button>
@@ -58,14 +58,14 @@
         Free, clear knowledge about how software really works.
     </h1>
     <p class="tagline">
-        A text-first library that explains the things most resources skip —
+        A text-first library that explains the things most resources skip -
         from the absolute basics up to the deep details.
     </p>
 
     <p>
         Most learning resources have a gap. The official docs assume you already
         know. The tutorials stop at “hello world.” And the part that connects
-        them — what's <em>actually</em> happening underneath, and why — usually
+        them - what's <em>actually</em> happening underneath, and why - usually
         never gets written down. This is an attempt to write that part down: to
         explain how computers, networks, databases, and AI really work, in plain
         language, for free.
@@ -98,7 +98,7 @@
     <h2>Who it's for</h2>
     <p>
         Anyone who wants to genuinely <em>understand</em> the tools that run the
-        world — whether you're starting from scratch, learning on the side, or
+        world - whether you're starting from scratch, learning on the side, or
         filling in the gaps no one ever explained. New to all of this?
         <a href="/paths">Build a learning path →</a>
     </p>

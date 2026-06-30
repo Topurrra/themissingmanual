@@ -20,7 +20,7 @@ We'll build the mental model first (the container hierarchy nobody explains up f
 
 ## How to read this
 
-Read the phases in order; each one assumes the last. If you already know AWS, phase 2 has a translation table that will save you the most time. If you're brand new to cloud, don't skip phase 1 — the hierarchy is the thing that makes everything else make sense. For the bigger "why clouds exist at all" picture, see /guides/cloud-platforms-explained.
+Read the phases in order; each one assumes the last. If you already know AWS, phase 2 has a translation table that will save you the most time. If you're brand new to cloud, don't skip phase 1 - the hierarchy is the thing that makes everything else make sense. For the bigger "why clouds exist at all" picture, see /guides/cloud-platforms-explained.
 
 ## The phases
 

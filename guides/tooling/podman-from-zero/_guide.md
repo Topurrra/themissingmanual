@@ -24,8 +24,8 @@ If you know Docker, you can skim phase 2 for the deltas and spend your time on p
 
 ## The phases
 
-1. [What Podman Actually Is](01-what-podman-actually-is.md) — the mental model: no daemon, no root, and why that matters.
-2. [Running Containers and Pods](02-running-containers-and-pods.md) — the everyday commands, plus the one concept Docker doesn't have.
-3. [Production Reality and Gotchas](03-production-reality-and-gotchas.md) — systemd units, rootless limits, and the places it differs.
+1. [What Podman Actually Is](01-what-podman-actually-is.md) - the mental model: no daemon, no root, and why that matters.
+2. [Running Containers and Pods](02-running-containers-and-pods.md) - the everyday commands, plus the one concept Docker doesn't have.
+3. [Production Reality and Gotchas](03-production-reality-and-gotchas.md) - systemd units, rootless limits, and the places it differs.
 
 [Phase 1: What Podman Actually Is](01-what-podman-actually-is.md) →

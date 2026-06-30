@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Queries and mutations in real components
 
-Phase 1 was the model. Now the daily work. In practice you spend your time in three places: reading data with a query hook, changing it with a mutation hook, and reusing field selections with fragments. The thing that ties them together is still the cache — every one of these tools is really about reading from or writing to it.
+Phase 1 was the model. Now the daily work. In practice you spend your time in three places: reading data with a query hook, changing it with a mutation hook, and reusing field selections with fragments. The thing that ties them together is still the cache - every one of these tools is really about reading from or writing to it.
 
 ## Reading with useQuery
 
@@ -39,7 +39,7 @@ function Profile({ id }) {
 }
 ```
 
-*What just happened:* on first render `loading` is `true` and Apollo fires the request. When it resolves, the result lands in the normalized cache and the hook re-renders with `data` filled in. Mount this same component again with the same `id` and `loading` may never flip to `true` at all — the cache already has `User:42`, so it serves instantly. That "instant on the second visit" is the cache working, not magic.
+*What just happened:* on first render `loading` is `true` and Apollo fires the request. When it resolves, the result lands in the normalized cache and the hook re-renders with `data` filled in. Mount this same component again with the same `id` and `loading` may never flip to `true` at all - the cache already has `User:42`, so it serves instantly. That "instant on the second visit" is the cache working, not magic.
 
 Notice what you did *not* write: no `useState` for the result, no `useEffect` to fetch, no manual cleanup. In a REST app you'd hand-roll all three. Here the hook owns the lifecycle and the cache owns the data.
 
@@ -71,13 +71,13 @@ function RenameButton({ id }) {
 }
 ```
 
-*What just happened:* clicking sends the mutation. The server responds with the updated user, and because that response includes `id` and the changed field, Apollo writes it straight back into `User:42`. Every component reading that user — the header, a sidebar, a list row — re-renders with the new name. You wrote zero update logic, and the whole app stayed consistent.
+*What just happened:* clicking sends the mutation. The server responds with the updated user, and because that response includes `id` and the changed field, Apollo writes it straight back into `User:42`. Every component reading that user - the header, a sidebar, a list row - re-renders with the new name. You wrote zero update logic, and the whole app stayed consistent.
 
 That automatic write-back is the happy path, and it only works because you asked the mutation to **return the changed entity with its id**. Drop the `id` from the selection and Apollo can't match it to a cache entry, so nothing updates. Returning the fields you changed, with the id, is the single most important mutation habit.
 
 ## When the cache can't update itself
 
-Apollo updates the cache for free in exactly one case: a mutation that modifies an **existing** entity and returns it. It cannot guess for the two cases it has no way to reason about — **adding** to a list and **removing** from one. There's no rule that says "a new comment belongs in *that* query's results," so you have to tell it.
+Apollo updates the cache for free in exactly one case: a mutation that modifies an **existing** entity and returns it. It cannot guess for the two cases it has no way to reason about - **adding** to a list and **removing** from one. There's no rule that says "a new comment belongs in *that* query's results," so you have to tell it.
 
 The clean tool for adding is the mutation's `update` function, which hands you the cache and the mutation result.
 
@@ -113,7 +113,7 @@ useMutation(ADD_COMMENT, {
 
 For a delete, the symmetric move is `cache.evict` to drop the entity, then `cache.gc()` to clean up references. The principle holds: **structural changes to lists are yours to make; in-place field edits are Apollo's.**
 
-> If hand-writing cache updates feels heavy for a given mutation, the escape hatch is `refetchQueries` — name the queries to re-run after the write and let the server be the source of truth. It costs a round trip, but it's correct and readable. Reach for surgical cache updates only where the extra request actually hurts.
+> If hand-writing cache updates feels heavy for a given mutation, the escape hatch is `refetchQueries` - name the queries to re-run after the write and let the server be the source of truth. It costs a round trip, but it's correct and readable. Reach for surgical cache updates only where the extra request actually hurts.
 
 ## Fragments: stop repeating field lists
 
@@ -136,7 +136,7 @@ query GetTeam {
 }
 ```
 
-*What just happened:* `UserCard` defines the fields a user card needs once, and any query spreads it with `...UserCard`. Beyond saving typing, fragments keep a component's data needs next to the component itself — the card declares what it reads, and every query that renders a card pulls in exactly those fields. It also keeps cache entries consistent: when many queries select the same fields via one fragment, they all fill the same slots on `User:42`.
+*What just happened:* `UserCard` defines the fields a user card needs once, and any query spreads it with `...UserCard`. Beyond saving typing, fragments keep a component's data needs next to the component itself - the card declares what it reads, and every query that renders a card pulls in exactly those fields. It also keeps cache entries consistent: when many queries select the same fields via one fragment, they all fill the same slots on `User:42`.
 
 **In the wild:** teams co-locate a fragment with the component that uses it, then compose page-level queries out of those fragments. The page query becomes a list of `...ComponentFragment` spreads, and each component owns its own data contract. It's the GraphQL equivalent of a component declaring its props.
 

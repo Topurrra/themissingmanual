@@ -44,8 +44,8 @@ changelog (db/changelog.yaml)  ← committed to git, the master list
 
 When Liquibase runs against a database for the first time, it creates two tracking tables. You do not write these; Liquibase manages them.
 
-- `DATABASECHANGELOG` — one row per changeset that has been applied. This is the ledger.
-- `DATABASECHANGELOGLOCK` — a single-row lock so two Liquibase processes cannot run migrations against the same database at the same time.
+- `DATABASECHANGELOG` - one row per changeset that has been applied. This is the ledger.
+- `DATABASECHANGELOGLOCK` - a single-row lock so two Liquibase processes cannot run migrations against the same database at the same time.
 
 When you run an update, Liquibase reads your changelog file, reads the `DATABASECHANGELOG` table, and computes the difference. Anything in the file but not in the table gets run. Anything already in the table gets skipped.
 

@@ -29,13 +29,13 @@ query GetUser {
 }
 ```
 
-*What just happened:* you asked for three fields and you'll get exactly those three back — no `email`, no `createdAt`, no nested objects you didn't request. Under REST this is the over-fetching problem (the endpoint sends a fat object) and the under-fetching problem (you need a second call for related data). GraphQL collapses both: one request, the precise shape, related data nested in.
+*What just happened:* you asked for three fields and you'll get exactly those three back - no `email`, no `createdAt`, no nested objects you didn't request. Under REST this is the over-fetching problem (the endpoint sends a fat object) and the under-fetching problem (you need a second call for related data). GraphQL collapses both: one request, the precise shape, related data nested in.
 
 If that contrast is new to you, the deep version lives in [GraphQL Explained](/guides/graphql-explained) and [REST APIs Explained](/guides/rest-apis-explained). Here we take it as given and ask the next question: where does that response go once it arrives?
 
 ## The normalized cache, plainly
 
-A naive client would store responses by query. "The result of `GetUser` is *this blob*." That's what a `fetch`-based setup does, and it's why the same user ends up duplicated — every query that mentions user 42 keeps its own copy, and they drift apart.
+A naive client would store responses by query. "The result of `GetUser` is *this blob*." That's what a `fetch`-based setup does, and it's why the same user ends up duplicated - every query that mentions user 42 keeps its own copy, and they drift apart.
 
 Apollo does something different. It **flattens** every response into a flat table of objects, keyed by type and id. User 42 is stored once, under a key like `User:42`, no matter how many queries returned it.
 
@@ -51,7 +51,7 @@ User:42
 
 *What just happened:* the cache split the response into two pieces. `ROOT_QUERY` remembers that the `user(id: 42)` query points at the object `User:42`, and `User:42` holds the actual fields. The query result is a *reference*, not a copy. That single indirection is the whole trick.
 
-Why does that matter? Because the next time *any* query returns user 42 — a different screen, a different query name, a list that happens to include them — Apollo writes the fields back into the same `User:42` entry. Every component reading that user is looking at one source of truth.
+Why does that matter? Because the next time *any* query returns user 42 - a different screen, a different query name, a list that happens to include them - Apollo writes the fields back into the same `User:42` entry. Every component reading that user is looking at one source of truth.
 
 ```text
 ROOT_QUERY
@@ -77,13 +77,13 @@ flowchart LR
   K --> C
 ```
 
-*What just happened:* a component asks for data through a hook. Apollo checks the normalized cache first. On a hit, it returns instantly with no network call. On a miss, it goes to the server, writes the result into the cache, and serves it. The component never talks to the network directly — it talks to the cache, and the cache talks to the network.
+*What just happened:* a component asks for data through a hook. Apollo checks the normalized cache first. On a hit, it returns instantly with no network call. On a miss, it goes to the server, writes the result into the cache, and serves it. The component never talks to the network directly - it talks to the cache, and the cache talks to the network.
 
 This is the mental flip from REST. In a REST app you think in *requests*: "call `GET /users/42`, hold the result in component state." In Apollo you think in *data that already lives somewhere*: "I need user 42; give me whatever the cache knows, fetch only if it's missing." The request becomes an implementation detail of the cache.
 
 ## What you give up
 
-None of this is free, and pretending otherwise is how people get burned in Phase 3. The normalized cache is a second copy of your server's data living in the browser, and like any cache it can be wrong. After a mutation, after a delete, after another user changes something — the cache can hold data the server no longer agrees with. Most of the real work with Apollo is keeping that cache honest, which is exactly what Phase 2 is about.
+None of this is free, and pretending otherwise is how people get burned in Phase 3. The normalized cache is a second copy of your server's data living in the browser, and like any cache it can be wrong. After a mutation, after a delete, after another user changes something - the cache can hold data the server no longer agrees with. Most of the real work with Apollo is keeping that cache honest, which is exactly what Phase 2 is about.
 
 **For builders:** the practical line is this. If your app shows the same entities across many screens and edits them in place, the normalized cache earns its weight fast. If you're building a few read-only pages that never share data, `fetch` plus a query string is genuinely enough, and reaching for Apollo is the kind of complexity you'll resent later.
 

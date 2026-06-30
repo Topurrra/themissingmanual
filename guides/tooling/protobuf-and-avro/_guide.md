@@ -22,8 +22,8 @@ Read the phases in order the first time. Phase 1 is the why, and skipping it is 
 
 ## The phases
 
-1. [The mental model: schema-first binary data](01-why-schemas-beat-json.md) — why a schema plus binary beats schema-less JSON, and how Protobuf and Avro split the problem.
-2. [Using them day to day](02-using-protobuf-and-avro.md) — writing a `.proto` and an Avro schema, generating code, and reading the wire.
-3. [Schema evolution and the gotchas](03-schema-evolution-and-gotchas.md) — forward and backward compatibility, the field-number rules, and where it bites in production.
+1. [The mental model: schema-first binary data](01-why-schemas-beat-json.md) - why a schema plus binary beats schema-less JSON, and how Protobuf and Avro split the problem.
+2. [Using them day to day](02-using-protobuf-and-avro.md) - writing a `.proto` and an Avro schema, generating code, and reading the wire.
+3. [Schema evolution and the gotchas](03-schema-evolution-and-gotchas.md) - forward and backward compatibility, the field-number rules, and where it bites in production.
 
 [Phase 1: The mental model: schema-first binary data](01-why-schemas-beat-json.md) →

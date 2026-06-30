@@ -2,7 +2,7 @@
 title: "Proof by Induction"
 guide: "what-a-proof-is"
 phase: 3
-summary: "Induction proves a statement for all natural numbers with two steps: show it holds for the first case, then show that if it holds for one case it holds for the next. Like dominoes — knock the first, and the rule topples the rest."
+summary: "Induction proves a statement for all natural numbers with two steps: show it holds for the first case, then show that if it holds for one case it holds for the next. Like dominoes - knock the first, and the rule topples the rest."
 tags: [logic, induction, recursion, proof]
 difficulty: beginner
 synonyms: ["proof by induction", "mathematical induction", "base case inductive step", "induction and recursion", "domino principle proof"]
@@ -13,7 +13,7 @@ updated: 2026-06-25
 
 One kind of claim should make you nervous: a claim about *all* natural numbers.
 "This formula works for every n." Every n? There are infinitely many. You can't
-check them one by one — you'd never finish. So how could anyone prove something true
+check them one by one - you'd never finish. So how could anyone prove something true
 for an infinite list of cases?
 
 Induction is the answer, and it does the whole infinite job with a small, finite
@@ -33,7 +33,7 @@ somewhere.
 Second, the dominoes are **spaced so that each one knocks over the next**. Anywhere
 in the line, if a domino falls, the one after it falls too.
 
-If both hold, then *all* the dominoes fall — and you know it without watching. The
+If both hold, then *all* the dominoes fall - and you know it without watching. The
 first falls, so the second falls. The second falls, so the third falls. The rule
 carries you down the entire line, forever.
 
@@ -42,17 +42,17 @@ between them they cover infinitely many cases.
 
 ## The formal shape
 
-Suppose you have a statement `P(n)` — some claim that depends on a natural number n.
+Suppose you have a statement `P(n)` - some claim that depends on a natural number n.
 You want to prove `P(n)` is true for *every* natural number n.
 
 Induction says: do exactly two things.
 
-**Base case.** Prove `P(1)`. (Sometimes you start at `P(0)` instead — whichever is
+**Base case.** Prove `P(1)`. (Sometimes you start at `P(0)` instead - whichever is
 the first number you care about.) This is tipping the first domino.
 
 **Inductive step.** Prove that *if* `P(k)` is true, *then* `P(k+1)` is true. You
-assume `P(k)` holds for some unspecified k — this assumption is the **inductive
-hypothesis** — and from it you derive `P(k+1)`. This is the spacing between dominoes:
+assume `P(k)` holds for some unspecified k - this assumption is the **inductive
+hypothesis** - and from it you derive `P(k+1)`. This is the spacing between dominoes:
 each case knocks over the next.
 
 Put those two together and you've proved `P(n)` for all n. The base case starts the
@@ -60,7 +60,7 @@ chain; the inductive step propagates it forever.
 
 Notice what the inductive step really is: an implication, `P(k) → P(k+1)`. That's the
 same conditional you met in [propositional logic](/guides/propositional-logic).
-Induction is built from logical tools you already have — it only aims them at infinity.
+Induction is built from logical tools you already have - it only aims them at infinity.
 
 ## A worked example
 
@@ -106,9 +106,9 @@ Base case holds, and each case implies the next.
 Therefore P(n) holds for every natural number n.
 ```
 
-Read the inductive step again slowly — it's where the whole idea lives. We never
-proved the formula for `k+1` from scratch. We *borrowed* the result for `k` — that's
-the inductive hypothesis — and only added one more term. The hard part was already
+Read the inductive step again slowly - it's where the whole idea lives. We never
+proved the formula for `k+1` from scratch. We *borrowed* the result for `k` - that's
+the inductive hypothesis - and only added one more term. The hard part was already
 done for us, by us, one step earlier.
 
 ## Why it's valid
@@ -120,7 +120,7 @@ It isn't, and the domino picture shows why. You're not assuming `P(k)` is true f
 all k. You're proving a *connection*: "wherever the chain has reached, it reaches one
 further." That connection is a single, reusable rule. The base case then proves the
 chain has actually started. Combine "it started" with "it always continues" and you
-get "it reaches everywhere" — no circularity, only a rule applied over and over.
+get "it reaches everywhere" - no circularity, only a rule applied over and over.
 
 This is the deep payoff. The inductive step is proved *once*, in general, for an
 arbitrary k. But because k stands for any number, that one proof does the work of
@@ -130,7 +130,7 @@ individually. Finite work, infinite reach.
 
 ## For builders
 
-If you write code, you already think this way — under a different name.
+If you write code, you already think this way - under a different name.
 
 Induction is the exact shape of **recursion**. A recursive function has a **base
 case** (the input small enough to answer directly) and a **recursive case** (reduce
@@ -149,7 +149,7 @@ When you reason about whether a recursive function is *correct*, you're doing an
 induction proof, named or not. You check the base case returns the right answer. Then
 you assume the recursive call on the smaller input is correct (the inductive
 hypothesis), and check the function builds the right answer on top of it. If both
-hold, the function is correct for all inputs — because the dominoes fall.
+hold, the function is correct for all inputs - because the dominoes fall.
 
 So induction isn't an exotic math ritual. It's the same trust you place in a
 recursive call, made explicit.
@@ -160,7 +160,7 @@ The most common way to wreck an induction proof is to skip the base case.
 
 It's tempting, because the inductive step often feels like the clever, satisfying
 part. But without a base case, nothing anchors the chain. You can prove "each domino
-knocks over the next" perfectly — and if no domino ever gets tipped over, *not a
+knocks over the next" perfectly - and if no domino ever gets tipped over, *not a
 single one falls*. The implications are all true and completely useless, because
 they're never triggered.
 
@@ -175,9 +175,9 @@ nothing borrowed except the hypothesis itself.
 ## Where this leaves you
 
 You've now seen the three pillars of this guide. You know
-[what a proof actually is](01-what-a-proof-actually-is.md) — an argument that forces a
+[what a proof actually is](01-what-a-proof-actually-is.md) - an argument that forces a
 conclusion. You know
-[the main techniques](02-the-main-proof-techniques.md) — direct proof, contradiction,
+[the main techniques](02-the-main-proof-techniques.md) - direct proof, contradiction,
 contrapositive. And now you have induction: the tool for taming infinity, two steps
 that topple an endless line of cases.
 
@@ -186,7 +186,7 @@ and you have a vocabulary for the moves people make to get there.
 
 One more skill rounds it out, and it points the other direction. So far you've
 studied how arguments go *right*. The natural companion is learning how they go
-*wrong* — the recurring patterns of bad reasoning that look convincing until you name
+*wrong* - the recurring patterns of bad reasoning that look convincing until you name
 them. Spotting fallacies lets you sit through a confident-sounding argument and put
 your finger on exactly where it cheats. If proof is how you build trust in a
 conclusion, fallacy-spotting is how you withhold it when it hasn't been earned.
@@ -197,7 +197,7 @@ in everyday life.
 
 Prove by induction that the sum of the first `n` natural numbers is `n(n+1)/2`. Write
 out the base case (n = 1) and the inductive step (assume true for n, prove for n+1).
-The structure is identical to a recursive function that builds on a smaller input — see
+The structure is identical to a recursive function that builds on a smaller input - see
 the connection?
 
 A quick check before you go:
@@ -224,7 +224,7 @@ A quick check before you go:
       "Checking that the last domino falls"
     ],
     "answer": 1,
-    "explain": "The base case starts the chain — it tips the first domino. Without it, the 'each knocks over the next' rule is true but never triggered, so nothing falls."
+    "explain": "The base case starts the chain - it tips the first domino. Without it, the 'each knocks over the next' rule is true but never triggered, so nothing falls."
   },
   {
     "q": "Why do programmers already understand induction?",

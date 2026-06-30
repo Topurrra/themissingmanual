@@ -1,7 +1,7 @@
 // Pluggable runtime adapters for runnable code blocks.
 //
 // Each adapter implements a small interface so new languages can be added
-// without touching the widget. The widget never imports a runtime directly —
+// without touching the widget. The widget never imports a runtime directly -
 // it asks `getAdapter(lang)` and talks to the returned object.
 //
 //   interface RunResult {
@@ -23,7 +23,7 @@
 // once and subsequent runs are instant. `getAdapter` returns the same instance.
 //
 // Loading the big WASM runtimes (Pyodide, sql.js) is done from the jsDelivr CDN
-// via dynamic <script>/import injection — they're multiple MB and must stay out
+// via dynamic <script>/import injection - they're multiple MB and must stay out
 // of our bundle entirely. CodeMirror language modes come from npm via dynamic
 // import() so Vite code-splits them into lazy chunks.
 
@@ -55,7 +55,7 @@ function loadScript(src) {
 }
 
 // ---------------------------------------------------------------------------
-// JavaScript — sandboxed Web Worker (eval, captured console, hard timeout).
+// JavaScript - sandboxed Web Worker (eval, captured console, hard timeout).
 // ---------------------------------------------------------------------------
 class JsAdapter {
   label = 'JavaScript';
@@ -69,7 +69,7 @@ class JsAdapter {
   }
 
   // The worker is cheap; we (re)create it lazily and reuse it. `load` only
-  // needs to exist so the widget can show a uniform loading state — for JS it
+  // needs to exist so the widget can show a uniform loading state - for JS it
   // resolves immediately (no MB-scale download).
   async load() {
     if (!this.#worker) this.#spawn();
@@ -125,7 +125,7 @@ class JsAdapter {
 }
 
 // ---------------------------------------------------------------------------
-// Python — Pyodide (CPython in WASM) from CDN. stdout + tracebacks captured.
+// Python - Pyodide (CPython in WASM) from CDN. stdout + tracebacks captured.
 // ---------------------------------------------------------------------------
 class PythonAdapter {
   label = 'Python';
@@ -162,7 +162,7 @@ class PythonAdapter {
       onStatus && onStatus('Loading packages…');
       await py.loadPackagesFromImports(code);
     } catch (err) {
-      // A package failing to download shouldn't crash the widget — report it cleanly.
+      // A package failing to download shouldn't crash the widget - report it cleanly.
       return { error: `Could not load required packages: ${String(err.message || err)}` };
     } finally {
       onStatus && onStatus('');
@@ -191,7 +191,7 @@ class PythonAdapter {
 }
 
 // ---------------------------------------------------------------------------
-// SQL — sql.js (SQLite in WASM) from CDN, seeded with a small sample DB.
+// SQL - sql.js (SQLite in WASM) from CDN, seeded with a small sample DB.
 // ---------------------------------------------------------------------------
 const SEED_SQL = `
 CREATE TABLE authors (id INTEGER PRIMARY KEY, name TEXT, country TEXT);
@@ -247,9 +247,9 @@ class SqlAdapter {
     try {
       const res = this.#db.exec(code);
       if (!res.length) {
-        // No result set (e.g. INSERT/UPDATE/CREATE) — report rows changed.
+        // No result set (e.g. INSERT/UPDATE/CREATE) - report rows changed.
         const changes = this.#db.getRowsModified();
-        return { logs: `OK — ${changes} row${changes === 1 ? '' : 's'} affected.` };
+        return { logs: `OK - ${changes} row${changes === 1 ? '' : 's'} affected.` };
       }
       // Render the LAST statement's result set as a table.
       const last = res[res.length - 1];
@@ -272,7 +272,7 @@ class SqlAdapter {
 }
 
 // ---------------------------------------------------------------------------
-// Unsupported language — degrade gracefully (editor shows, Run disabled).
+// Unsupported language - degrade gracefully (editor shows, Run disabled).
 // ---------------------------------------------------------------------------
 class UnsupportedAdapter {
   constructor(lang) {

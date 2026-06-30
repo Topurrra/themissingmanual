@@ -18,7 +18,7 @@
 
   let fs = freshFs();
   let cwd = HOME.split('/').filter(Boolean);
-  let lines = [{ t: 'out', v: "Sandbox shell — type 'help'. Pipes (|) and redirection (> >>) work." }];
+  let lines = [{ t: 'out', v: "Sandbox shell - type 'help'. Pipes (|) and redirection (> >>) work." }];
   let input = '';
   let history = [];
   let hi = -1;

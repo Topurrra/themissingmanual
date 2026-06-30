@@ -12,7 +12,7 @@ updated: 2026-06-19
 # When Mocking Helps vs Hurts
 
 Here's the uncomfortable truth nobody tells you when they hand you a mocking library: **a test full of mocks
-can pass while your product is on fire.** Doubles let you replace reality — and the more of reality you
+can pass while your product is on fire.** Doubles let you replace reality - and the more of reality you
 replace, the less your test is actually checking. Used at the right seam, doubles are essential. Used
 everywhere, they produce a suite that's green, fast, and worthless.
 
@@ -20,9 +20,9 @@ This phase is the judgment. The good news is it comes down to one question and a
 
 ## The one question: is this the boundary, or my own code?
 
-Picture your application as a region with a border. Inside the border is **code you own** — your functions
+Picture your application as a region with a border. Inside the border is **code you own** - your functions
 calling your other functions, your objects, your business logic. At the border are the **external systems**
-you don't own — the database, third-party APIs, the network, the file system, the clock, the payment
+you don't own - the database, third-party APIs, the network, the file system, the clock, the payment
 provider.
 
 ```text
@@ -39,9 +39,9 @@ provider.
         └─────────────┘  └─────────────┘  └────────────┘     fake THESE
 ```
 
-💡 **Key point — mock at the boundary, not inside it.** Replace the things at the border (slow, external,
-nondeterministic — exactly the four reasons from [Phase 1](01-why-fake-anything.md)). Use the *real* thing
-for your own code. When `service` calls `validator`, let it call the real `validator` — that interaction is
+💡 **Key point - mock at the boundary, not inside it.** Replace the things at the border (slow, external,
+nondeterministic - exactly the four reasons from [Phase 1](01-why-fake-anything.md)). Use the *real* thing
+for your own code. When `service` calls `validator`, let it call the real `validator` - that interaction is
 part of what you're trying to verify, not noise to be stubbed away.
 
 This single rule prevents most mocking pain. Everything below is *why* it works.
@@ -49,11 +49,11 @@ This single rule prevents most mocking pain. Everything below is *why* it works.
 ## The over-mocking trap, made concrete
 
 When you mock your own internals, two specific failures appear. They're worth seeing clearly because they're
-sneaky — the tests look fine.
+sneaky - the tests look fine.
 
 ### Trap 1: green tests over a broken product
 
-Suppose `calculateTotal` has a real bug — it forgets to add tax. Now look at a test of the function that
+Suppose `calculateTotal` has a real bug - it forgets to add tax. Now look at a test of the function that
 *calls* it:
 
 ```javascript
@@ -66,12 +66,12 @@ const receipt = await buildReceipt(cart, calculatorMock);
 
 expect(receipt.total).toBe(108.0); // passes! ...but the real calculator returns 100.0
 ```
-*What just happened:* We told the mock to return `108.0` — the answer we *believe* is correct — so the test
+*What just happened:* We told the mock to return `108.0` - the answer we *believe* is correct - so the test
 passes. But the real `calculateTotal` is broken and returns `100.0`. Our test never ran the real code, so it
 can't see the bug. We've encoded our *assumption* and then verified our assumption against itself. The test
 is green; the customer gets undercharged.
 
-⚠️ **Gotcha — a mock freezes your belief about a dependency in time.** The mock returns what you *thought*
+⚠️ **Gotcha - a mock freezes your belief about a dependency in time.** The mock returns what you *thought*
 the dependency does on the day you wrote the test. If the real dependency changes (or was wrong all along),
 the mock keeps cheerfully returning the old answer, and the test keeps passing while production breaks. Real
 objects can't lie to you like this; they run the actual code.
@@ -81,23 +81,23 @@ objects can't lie to you like this; they run the actual code.
 Over-mocking pushes you to assert on *how* your code works internally instead of *what* it produces:
 
 ```javascript
-// Asserting on internal call sequence — coupled to the implementation, not the behavior.
+// Asserting on internal call sequence - coupled to the implementation, not the behavior.
 expect(repo.beginTransaction).toHaveBeenCalled();
 expect(repo.insertRow).toHaveBeenCalledBefore(repo.commit);
 expect(repo.commit).toHaveBeenCalledTimes(1);
 ```
-*What just happened:* These assertions don't check that the order was *saved correctly* — they check the
+*What just happened:* These assertions don't check that the order was *saved correctly* - they check the
 exact sequence of internal calls the code happens to make today. The moment someone refactors `save` to do
 the same thing a slightly different way (say, a batch insert), every one of these tests breaks, even though
 the behavior is identical and correct.
 
 This is the quiet tax of over-mocking: tests that **break when you refactor working code** and **stay green
-when you break working code** — exactly backwards from what a test is for. A test should pin down *behavior*
+when you break working code** - exactly backwards from what a test is for. A test should pin down *behavior*
 (what comes out) and stay silent about *implementation* (how it got there), so you can refactor freely.
 
 🪖 **War story.** A team I know had a 4,000-test suite that ran in 90 seconds and was almost entirely mocks.
 It went green on every commit. Then a real outage: a downstream API had changed a field name months earlier,
-and not one test caught it — every test that touched that API used a mock returning the *old* shape. The
+and not one test caught it - every test that touched that API used a mock returning the *old* shape. The
 suite wasn't testing the software; it was testing a museum replica of the software as it existed the day each
 mock was written.
 
@@ -115,8 +115,8 @@ works:
 
 The order matters. A real object is the most honest test you can write, so prefer it. Drop to a fake when
 the real thing is too slow or external but still has behavior worth honoring (an in-memory database is the
-classic — see [Phase 2](02-the-doubles-defined-honestly.md)). Drop to a stub when you only need to set up a
-situation. Only reach for a strict mock when the *interaction* is genuinely the point — for example, "we
+classic - see [Phase 2](02-the-doubles-defined-honestly.md)). Drop to a stub when you only need to set up a
+situation. Only reach for a strict mock when the *interaction* is genuinely the point - for example, "we
 must call the payment gateway exactly once, never twice." Double-charging is a real bug a mock catches well;
 that's the case where asserting on the interaction earns its keep.
 
@@ -126,18 +126,18 @@ This connects to a bigger picture. Different layers of tests use *different amou
 
 - **Unit tests** sit at the bottom: small, fast, lots of doubles at the boundary so a single piece of logic
   can be checked in isolation.
-- **Integration tests** sit above: they wire several real pieces together — often including a real (or
-  fake) database — and use *far fewer* doubles, precisely so they catch the "the parts don't actually fit
+- **Integration tests** sit above: they wire several real pieces together - often including a real (or
+  fake) database - and use *far fewer* doubles, precisely so they catch the "the parts don't actually fit
   together" bugs that an over-mocked unit test sails right past.
-- **End-to-end tests** sit at the top: ideally almost no doubles — the real system, exercised like a user
+- **End-to-end tests** sit at the top: ideally almost no doubles - the real system, exercised like a user
   would.
 
 The mocked-unit-test and the no-mocks-integration-test aren't competitors; they're checking different
 things. The bug in Trap 1 (real calculator returns the wrong number) is exactly what an integration test
-with a real calculator would catch — which is *why* you don't rely on heavily-mocked unit tests alone.
+with a real calculator would catch - which is *why* you don't rely on heavily-mocked unit tests alone.
 
-> ⏭️ For how these layers fit together — what each one is for, how many of each to write, and why the shape
-> matters — see [Unit, Integration & E2E Tests](/guides/unit-integration-e2e). The one-line version: the
+> ⏭️ For how these layers fit together - what each one is for, how many of each to write, and why the shape
+> matters - see [Unit, Integration & E2E Tests](/guides/unit-integration-e2e). The one-line version: the
 > further up the pyramid, the fewer doubles, because the whole point of the higher layers is to test the
 > real seams that doubles hide.
 
@@ -156,13 +156,13 @@ Before you replace something with a double, ask:
 ## Recap
 
 1. **Mock at the boundary, not inside it.** Fake external systems; use real objects for your own code.
-2. **Over-mocking produces lying tests** — green over a broken product (because the mock encodes your
+2. **Over-mocking produces lying tests** - green over a broken product (because the mock encodes your
    assumption) and brittle against refactors (because it's welded to implementation details).
 3. A mock **freezes your belief** about a dependency; if reality drifts, the mock keeps the test green while
    production breaks.
 4. **Walk the ladder:** real object → fake → stub → mock. Stop at the first rung that works; only mock when
    the *interaction* is the contract.
-5. **Doubles thin out as you go up the pyramid** — integration and E2E tests use fewer of them on purpose,
+5. **Doubles thin out as you go up the pyramid** - integration and E2E tests use fewer of them on purpose,
    to catch exactly the bugs heavily-mocked unit tests miss. See
    [Unit, Integration & E2E Tests](/guides/unit-integration-e2e).
 

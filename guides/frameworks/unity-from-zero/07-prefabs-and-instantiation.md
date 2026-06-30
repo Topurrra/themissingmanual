@@ -12,7 +12,7 @@ updated: 2026-06-23
 # Prefabs & Instantiation
 
 So far every object in your collect-the-pickups game has been a thing you placed by hand in the
-editor — the player, the ground, a pickup or two you dropped into the scene. That works right up until
+editor - the player, the ground, a pickup or two you dropped into the scene. That works right up until
 you want *twenty* pickups, or pickups that keep appearing while the game runs. You don't want to copy-paste
 a GameObject twenty times and then, when you decide the pickup should be gold instead of blue, edit all
 twenty by hand. That way lies madness.
@@ -21,37 +21,37 @@ The fix is the single most important asset type in Unity: the **prefab**.
 
 ## The mental model: a prefab is a template
 
-Here's the whole idea in one breath: **a prefab is a reusable GameObject saved as an asset — a template.
+Here's the whole idea in one breath: **a prefab is a reusable GameObject saved as an asset - a template.
 `Instantiate` stamps copies of it at runtime; `Destroy` removes them. Edit the prefab, and every copy
 changes.**
 
 📝 If you've used C# classes, the analogy is close: a prefab is like a *class*, and each thing you spawn
-from it is an *instance*. One definition, many live copies. (It's not a perfect analogy — a prefab is data,
-not code — but "template you stamp out" is exactly the right instinct.)
+from it is an *instance*. One definition, many live copies. (It's not a perfect analogy - a prefab is data,
+not code - but "template you stamp out" is exactly the right instinct.)
 
 Think of it like a rubber stamp. You carve the stamp once. Then you press it onto the page as many times as
-you like, and every imprint looks the same. Re-carve the stamp and every *future* imprint changes — and
+you like, and every imprint looks the same. Re-carve the stamp and every *future* imprint changes - and
 with Unity prefabs, even the imprints already on the page update too, because each one stays linked to the
 stamp. That linkage is what makes prefabs the DRY (don't-repeat-yourself) tool for game objects.
 
 ## Creating a prefab
 
 You already have the raw material in your scene. To turn a GameObject into a prefab, you drag it from the
-**Hierarchy** window down into the **Project** window. That's it — Unity creates a `.prefab` asset, and the
+**Hierarchy** window down into the **Project** window. That's it - Unity creates a `.prefab` asset, and the
 GameObject in your scene becomes a *linked instance* of it (its name turns blue in the Hierarchy to show the
 connection).
 
 Walk through it for the pickup:
 
-1. Set up one pickup the way you want it — a small sphere, a Collider marked **Is Trigger**, a script that
+1. Set up one pickup the way you want it - a small sphere, a Collider marked **Is Trigger**, a script that
    bumps the score, maybe a material so it glows.
 2. Drag that GameObject from the Hierarchy into the Project window (a folder like `Assets/Prefabs` is a good
    home).
-3. You now have a `Pickup` prefab asset. Delete the one in the scene if you want — the template lives on in
+3. You now have a `Pickup` prefab asset. Delete the one in the scene if you want - the template lives on in
    the Project window, ready to be stamped out.
 
 To change the prefab later, double-click the asset to open it in **Prefab Mode** (an isolated editing view),
-make your edits, and save. Every instance in every scene — and every copy you spawn at runtime — picks up
+make your edits, and save. Every instance in every scene - and every copy you spawn at runtime - picks up
 the change. That's the edit-once-update-all payoff.
 
 💡 **Prefab Variants** are prefabs that inherit from a base prefab, the way a subclass inherits from a parent
@@ -61,7 +61,7 @@ reach for it when you notice yourself making near-identical prefabs.
 
 ## Spawning copies at runtime: `Instantiate`
 
-A prefab sitting in the Project window does nothing on its own — it's just a template. To put copies into the
+A prefab sitting in the Project window does nothing on its own - it's just a template. To put copies into the
 running game you call **`Instantiate`** from a script:
 
 ```csharp
@@ -77,7 +77,7 @@ pickup.name = "Pickup (spawned)";
 ```
 
 *What just happened:* we stamped out a new copy of `pickupPrefab` at `spawnPos` with no rotation, and the
-return value `pickup` is *that specific copy* — not the template. Renaming `pickup` touches only this one
+return value `pickup` is *that specific copy* - not the template. Renaming `pickup` touches only this one
 instance; the prefab asset and every other copy are untouched. Capturing the return value is how you spawn
 something and then immediately give it speed, a target, a color, whatever this particular copy needs.
 
@@ -88,10 +88,10 @@ Destroy(gameObject);          // remove this object now (end of frame)
 Destroy(gameObject, 3f);      // remove it after 3 seconds
 ```
 
-*What just happened:* the first line schedules this GameObject for removal — Unity actually deletes it at the
+*What just happened:* the first line schedules this GameObject for removal - Unity actually deletes it at the
 end of the current frame, not the instant you call it, so any code running right after still sees a valid
 object. The second line delays removal by three seconds, which is perfect for "spawn a particle burst, then
-clean it up" or "this pickup expires if nobody grabs it." Spawn with `Instantiate`, remove with `Destroy` —
+clean it up" or "this pickup expires if nobody grabs it." Spawn with `Instantiate`, remove with `Destroy` -
 that's the full lifecycle of a runtime object.
 
 ### The PickupSpawner
@@ -118,10 +118,10 @@ public class PickupSpawner : MonoBehaviour
 ```
 
 *What just happened:* `[SerializeField] private GameObject pickupPrefab` creates a slot in the Inspector where
-you drag your `Pickup` prefab — that's how the script knows *what* to spawn. In `Start`, `InvokeRepeating`
+you drag your `Pickup` prefab - that's how the script knows *what* to spawn. In `Start`, `InvokeRepeating`
 tells Unity: call `Spawn` after a 1-second delay, then again every `interval` seconds, forever. Each `Spawn`
 picks a random `x`/`z` somewhere on the ground (`y` is fixed at `0.5` so the pickup sits on the surface) and
-calls `Instantiate` to stamp a new pickup there. `Quaternion.identity` means "no rotation" — Unity stores
+calls `Instantiate` to stamp a new pickup there. `Quaternion.identity` means "no rotation" - Unity stores
 rotations as quaternions, and `identity` is the do-nothing rotation, the rotational equivalent of zero. The
 result: a pickup pops into existence every couple of seconds at a random spot, and your collect-the-pickups
 game finally has things to collect.
@@ -134,46 +134,46 @@ been assigned.`**
 
 The cause: `[SerializeField] private GameObject pickupPrefab` declares the slot, but a slot is empty until
 *you* fill it. You have to select the Spawner in the Hierarchy and **drag your Pickup prefab into that field
-in the Inspector**. The script can't guess which prefab you mean — that wiring happens in the editor, not in
+in the Inspector**. The script can't guess which prefab you mean - that wiring happens in the editor, not in
 code. A null `pickupPrefab` throws the instant `Spawn` runs.
 
 So the rule: any `[SerializeField]` reference you see in a script is a promise that you'll assign it in the
 Inspector. If something "isn't working" and the console mentions `Unassigned`, an empty Inspector slot is
-almost always the culprit — go look.
+almost always the culprit - go look.
 
 ## When spawning gets heavy: object pooling
 
-💡 `Instantiate` and `Destroy` are fine for a pickup every two seconds. But the moment you spawn *fast* — a
-machine gun firing bullets, an explosion throwing particles, a wave of enemies — they become a performance
+💡 `Instantiate` and `Destroy` are fine for a pickup every two seconds. But the moment you spawn *fast* - a
+machine gun firing bullets, an explosion throwing particles, a wave of enemies - they become a performance
 trap. Every `Instantiate` allocates memory, and every `Destroy` leaves garbage behind. Do that hundreds of
-times a second and the **garbage collector** eventually has to sweep up, which causes a visible stutter — a
-"GC hitch" — right when the action is most intense.
+times a second and the **garbage collector** eventually has to sweep up, which causes a visible stutter - a
+"GC hitch" - right when the action is most intense.
 
 The fix is **object pooling**: instead of creating and destroying objects, you create a fixed pool of them up
 front, then reuse them. When you need a bullet, you grab an inactive one from the pool and switch it on
 (`SetActive(true)`); when it's done, you switch it off (`SetActive(false)`) and return it to the pool instead
-of destroying it. No allocation, no garbage, no hitch — you're recycling the same handful of objects forever.
+of destroying it. No allocation, no garbage, no hitch - you're recycling the same handful of objects forever.
 
 You don't need to build this by hand. Unity ships a built-in `ObjectPool<T>` in `UnityEngine.Pool` that
 manages the get/release cycle for you. For your collect-the-pickups game, a pickup every couple of seconds is
-nowhere near the threshold where pooling matters — plain `Instantiate`/`Destroy` is the right, simple choice
+nowhere near the threshold where pooling matters - plain `Instantiate`/`Destroy` is the right, simple choice
 here. But file pooling away as *the* next step the day you build something spawn-heavy. Premature pooling is
 wasted effort; pooling when you're spawning hundreds of objects a second is the difference between smooth and
 stuttering.
 
 ## Recap
 
-- A **prefab** is a reusable GameObject saved as an asset — a template you create by dragging a GameObject
+- A **prefab** is a reusable GameObject saved as an asset - a template you create by dragging a GameObject
   from the Hierarchy into the Project window. Edit the prefab and every linked instance updates.
 - **`Instantiate(prefab, position, rotation)`** stamps a copy into the running scene and returns a reference
   to that new instance, so you can capture and customize it. `Quaternion.identity` means no rotation.
 - **`Destroy(gameObject)`** removes an object (at end of frame); `Destroy(obj, seconds)` delays removal.
 - A spawner references its prefab through a `[SerializeField]` field and spawns on a timer (e.g.
   `InvokeRepeating`).
-- ⚠️ You must **assign the prefab in the Inspector** — an empty slot throws `UnassignedReferenceException`
+- ⚠️ You must **assign the prefab in the Inspector** - an empty slot throws `UnassignedReferenceException`
   the moment you spawn.
 - 💡 For spawn-heavy games, swap `Instantiate`/`Destroy` for **object pooling** (`ObjectPool<T>`) to avoid
-  garbage-collection hitches — but only when you actually spawn fast.
+  garbage-collection hitches - but only when you actually spawn fast.
 
 ## Quick check
 

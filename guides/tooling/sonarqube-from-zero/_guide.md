@@ -22,8 +22,8 @@ Read in order. Phase 1 builds the mental model: SonarQube is a static analyzer p
 
 ## The phases
 
-1. [Phase 1: What SonarQube actually is](01-what-it-is.md) — the analyzer, the five issue types, and the gate.
-2. [Phase 2: Scanning and the quality gate](02-scanning-and-the-gate.md) — run a scan, read it, gate new code not old.
-3. [Phase 3: Where it nags and how to tame it](03-where-it-nags.md) — false positives, coverage, hotspots, gate fights.
+1. [Phase 1: What SonarQube actually is](01-what-it-is.md) - the analyzer, the five issue types, and the gate.
+2. [Phase 2: Scanning and the quality gate](02-scanning-and-the-gate.md) - run a scan, read it, gate new code not old.
+3. [Phase 3: Where it nags and how to tame it](03-where-it-nags.md) - false positives, coverage, hotspots, gate fights.
 
 [Phase 1: What SonarQube actually is](01-what-it-is.md) →

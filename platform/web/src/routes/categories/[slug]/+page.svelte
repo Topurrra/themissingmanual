@@ -31,7 +31,7 @@
   const dotClass = (level) => (level === 'Intermediate' ? 'mid' : level === 'Advanced' ? 'adv' : '');
 </script>
 
-<svelte:head><title>{category.name} — The Missing Manual</title></svelte:head>
+<svelte:head><title>{category.name} - The Missing Manual</title></svelte:head>
 
 <div class="crumb"><a href="/">All topics</a> <span>/</span> <span>{category.name}</span></div>
 <h1 class="page-title">{category.name}</h1>

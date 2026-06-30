@@ -22,8 +22,8 @@ Read the phases in order. Phase 1 builds the JUnit 5 mental model so the annotat
 
 ## The phases
 
-1. [What JUnit 5 actually is](01-what-junit-5-actually-is.md) — the Jupiter model, `@Test`, lifecycle, and assertions.
-2. [Mocking with Mockito](02-mocking-with-mockito.md) — isolate the unit, stub collaborators, verify interactions.
-3. [When tests lie](03-when-tests-lie.md) — the mock-too-much trap, brittle verification, and production reality.
+1. [What JUnit 5 actually is](01-what-junit-5-actually-is.md) - the Jupiter model, `@Test`, lifecycle, and assertions.
+2. [Mocking with Mockito](02-mocking-with-mockito.md) - isolate the unit, stub collaborators, verify interactions.
+3. [When tests lie](03-when-tests-lie.md) - the mock-too-much trap, brittle verification, and production reality.
 
 [Phase 1: What JUnit 5 actually is](01-what-junit-5-actually-is.md) →

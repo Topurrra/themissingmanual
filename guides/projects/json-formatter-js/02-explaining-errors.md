@@ -36,11 +36,11 @@ console.log(tryFormat('{"a":1}'));
 console.log(tryFormat('{"a":1,}'));
 ```
 
-Now every call returns an object. `ok: true` carries the formatted output; `ok: false` carries the error message. Nothing throws past our function. That alone makes this safe to wire into a page — but the message is still raw browser text.
+Now every call returns an object. `ok: true` carries the formatted output; `ok: false` carries the error message. Nothing throws past our function. That alone makes this safe to wire into a page - but the message is still raw browser text.
 
 ## Where did it break?
 
-Modern JavaScript engines tuck a character position into the error message — often as `position N` or `(line L column C)`. The exact wording differs between browsers, which is annoying, but the *number* is gold. If we can pull a position out, we can show the reader the spot.
+Modern JavaScript engines tuck a character position into the error message - often as `position N` or `(line L column C)`. The exact wording differs between browsers, which is annoying, but the *number* is gold. If we can pull a position out, we can show the reader the spot.
 
 ```js runnable
 const broken = '{"name":"Ada", "age":}'; // value missing after age
@@ -56,7 +56,7 @@ Run it and read the raw message your browser produced. Somewhere in there is a n
 
 ```js runnable
 function findPosition(message) {
-  // Engines say "position 21" or "(line 1 column 22)" — grab whichever.
+  // Engines say "position 21" or "(line 1 column 22)" - grab whichever.
   const posMatch = message.match(/position (\d+)/);
   if (posMatch) return Number(posMatch[1]);
   return null;
@@ -104,7 +104,7 @@ const broken = '{"name":"Ada", "age":}';
 console.log(pointAt(broken, 21));
 ```
 
-Run it and you get the line with a caret sitting under the character the parser choked on. For broken JSON that's usually right at — or one past — the real mistake, which is close enough to find it by eye.
+Run it and you get the line with a caret sitting under the character the parser choked on. For broken JSON that's usually right at - or one past - the real mistake, which is close enough to find it by eye.
 
 ## Wiring it into one honest formatter
 
@@ -146,6 +146,6 @@ console.log("");
 console.log(format("{'name':'Ada'}"));             // single quotes
 ```
 
-Run the whole thing. The valid object formats cleanly. The three broken ones each come back with a message and, where the engine gave us a position, a caret under the trouble spot. Three of the most common JSON mistakes — missing value, missing comma, single quotes — now produce a result you can act on instead of a stack trace.
+Run the whole thing. The valid object formats cleanly. The three broken ones each come back with a message and, where the engine gave us a position, a caret under the trouble spot. Three of the most common JSON mistakes - missing value, missing comma, single quotes - now produce a result you can act on instead of a stack trace.
 
 Your formatter no longer crashes on bad input, and it explains what it found. Next we ask a harder question: the JSON parsed fine, but is it the *right* data? That's the shape check in Phase 3.

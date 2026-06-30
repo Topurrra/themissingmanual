@@ -14,7 +14,7 @@ updated: 2026-06-19
 You typed `sudo apt install` in the last phase and it worked, but maybe a small voice asked: *what is
 sudo, and why did installing software need it when listing files didn't?* That voice is onto something
 real. Linux is built, from the ground up, around the idea that **not everyone is allowed to do everything**
-— and once you understand that, half of Linux's "why won't it let me?" moments turn into "oh, of course."
+- and once you understand that, half of Linux's "why won't it let me?" moments turn into "oh, of course."
 
 This phase is the mental model behind every `permission denied` you'll ever see.
 
@@ -23,15 +23,15 @@ This phase is the mental model behind every `permission denied` you'll ever see.
 **What it actually is.** Linux is **multi-user** from its core. Every account on the machine is a separate
 user with its own files and its own limits. But one user stands above all the rest:
 
-- **Normal users** — like `ada`. You own your files under `/home/ada`, you can run programs, but you
+- **Normal users** - like `ada`. You own your files under `/home/ada`, you can run programs, but you
   *can't* touch the system's vital parts (you can't edit other people's files, change system config in
   `/etc`, or install system-wide software) without explicit permission.
-- **root** — the **superuser**, the administrator with no limits. root can read, change, or delete *any*
+- **root** - the **superuser**, the administrator with no limits. root can read, change, or delete *any*
   file on the machine, install or remove anything, and reconfigure the whole system. root is allowed to do
-  everything — *including* break everything.
+  everything - *including* break everything.
 
 📝 **Terminology.** *root* (the user) = the all-powerful administrator account, also called the
-*superuser*. (Don't confuse it with root the *folder*, `/`, from Phase 2 — same word, different thing.)
+*superuser*. (Don't confuse it with root the *folder*, `/`, from Phase 2 - same word, different thing.)
 
 ## Why you don't just log in as root
 
@@ -40,7 +40,7 @@ hassles?" Here's why that's a genuinely bad idea, and why every careful Linux us
 
 When you're root, **nothing protects you from yourself**. A typo in a command can delete the entire system,
 because root is allowed to delete the entire system. A program you run while root has the power to do
-anything *you* could — so a malicious or buggy program gets the keys to everything. The permission walls
+anything *you* could - so a malicious or buggy program gets the keys to everything. The permission walls
 that would normally stop a mistake from spreading are gone, because root is exempt from all of them.
 
 The whole design intention is this: **work as a normal user, where mistakes stay small and local, and only
@@ -69,7 +69,7 @@ $ apt install tree
 E: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied)
 E: Unable to acquire the dpkg frontend lock. Are you root?
 ```
-*What just happened:* As a normal user you asked to change system-wide software, and Linux refused —
+*What just happened:* As a normal user you asked to change system-wide software, and Linux refused -
 `Permission denied`, and it even hints `Are you root?`. You don't have the authority for this on its own.
 Nothing broke; the wall did its job.
 
@@ -85,28 +85,28 @@ Setting up tree (2.0.2-1) ...
 allowed to use admin powers, and ran that single command as root. After it finished, you were instantly
 back to being plain `ada`. You borrowed the power for one command and gave it right back.
 
-⚠️ **Gotcha.** `sudo` asks for *your own* password, not a special "root password" — and as you type it,
+⚠️ **Gotcha.** `sudo` asks for *your own* password, not a special "root password" - and as you type it,
 **nothing appears on screen**, no dots, no stars. That's deliberate (so onlookers can't even see the
 length), not a frozen terminal. Type it and press Enter. After a successful `sudo`, it usually won't ask
 again for a few minutes.
 
 ⚠️ **The big caution.** `sudo` hands a command root's full power, so a careless `sudo` command can do real
-damage that a non-`sudo` one couldn't. Treat every `sudo` line as "I'm about to act as the administrator —
+damage that a non-`sudo` one couldn't. Treat every `sudo` line as "I'm about to act as the administrator -
 do I actually understand what this does?" The classic disaster is pasting a `sudo` command from a random
 website without reading it. The fix isn't fear; it's attention.
 
 ## File permissions: who can do what
 
-The other half of "Linux won't let me" is **file permissions** — the rules attached to every single file
+The other half of "Linux won't let me" is **file permissions** - the rules attached to every single file
 and folder saying who's allowed to do what with it.
 
 **What it actually is.** Every file carries an **owner** (usually whoever created it) and is associated
-with a **group** (a named set of users). The file then grants three kinds of access — separately to the
+with a **group** (a named set of users). The file then grants three kinds of access - separately to the
 owner, to the group, and to **everyone else**:
 
-- **r** — **read**: look at the file's contents (or list a folder's entries).
-- **w** — **write**: change the file (or add/remove files in a folder).
-- **x** — **execute**: run the file as a program (or, for a folder, *enter* it).
+- **r** - **read**: look at the file's contents (or list a folder's entries).
+- **w** - **write**: change the file (or add/remove files in a folder).
+- **x** - **execute**: run the file as a program (or, for a folder, *enter* it).
 
 📝 **Terminology.** *Owner* = the user who owns the file. *Group* = a named collection of users who can be
 given shared access. *Others* = everyone else on the system. Each gets its own r/w/x settings.
@@ -131,7 +131,7 @@ Let's decode `notes.txt`'s `-rw-r--r--`:
 ```
 
 So `notes.txt` can be read and edited by its owner `ada`, and only read by everyone else. Look at
-`backup.sh`: its `-rwxr-xr-x` adds **x** everywhere — it's a script meant to be *run*, so it carries
+`backup.sh`: its `-rwxr-xr-x` adds **x** everywhere - it's a script meant to be *run*, so it carries
 execute permission. And `projects` begins with **d**: it's a directory, and its **x** bits mean users are
 allowed to enter it.
 
@@ -142,17 +142,17 @@ Now the most common day-one error makes complete sense:
 $ cat /etc/shadow
 cat: /etc/shadow: Permission denied
 ```
-*What just happened:* `/etc/shadow` (where encrypted passwords live) is readable only by root — its
+*What just happened:* `/etc/shadow` (where encrypted passwords live) is readable only by root - its
 permissions deny read access to normal users on purpose. As `ada`, you don't have the **r** bit for
 "others," so Linux stops you. This isn't a bug or a broken file. It's the permission system protecting
 something sensitive, exactly as designed.
 
 When *you should* have access (it's your own file) and still get denied, the cause is usually that the file
 is owned by root or another user. The fix is either to use `sudo` (if it's genuinely an admin task) or to
-fix the file's ownership/permissions — but reach for that deliberately, not reflexively.
+fix the file's ownership/permissions - but reach for that deliberately, not reflexively.
 
 ⚠️ **Gotcha.** The reflex to "fix" a permission problem by making a file readable/writable by *everyone*
-(you'll see `chmod 777` suggested online) is almost always the wrong move — it removes the protection
+(you'll see `chmod 777` suggested online) is almost always the wrong move - it removes the protection
 instead of granting the right access, and on a server it's a real security hole. When you hit `permission
 denied`, first ask *should* this account have access here? Usually a targeted `sudo` is the correct answer,
 not throwing the doors open.
@@ -169,15 +169,15 @@ and become things you can diagnose in seconds.
 2. **Don't log in as root.** Work as a normal user so mistakes stay small; only borrow admin power for the
    moment you need it.
 3. **`sudo`** runs *one* command as root after asking for *your* password (typed invisibly). It's how you
-   do admin tasks safely — but every `sudo` deserves your attention.
+   do admin tasks safely - but every `sudo` deserves your attention.
 4. Every file has an **owner**, a **group**, and **others**, each with **read / write / execute** (`rwx`)
-   permissions — readable from an `ls -l` line.
+   permissions - readable from an `ls -l` line.
 5. **`permission denied`** almost always means the permission system is working as designed, not that
-   something's broken. Decide whether the account *should* have access before reaching for `sudo` — and
+   something's broken. Decide whether the account *should* have access before reaching for `sudo` - and
    avoid the `chmod 777` "fix."
 
 You can now move around, install software, and understand who's allowed to do what. The last piece is the
-software that runs *without* you — the background services humming on every Linux machine — and how to
+software that runs *without* you - the background services humming on every Linux machine - and how to
 start them, check them, and read their logs when they misbehave.
 
 ---

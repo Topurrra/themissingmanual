@@ -2,7 +2,7 @@
 title: "The daily core: matchers, mocks, async, timers"
 guide: jest-and-vitest
 phase: 2
-summary: "JavaScript and TypeScript testing: Jest's batteries-included matchers, mocks, and snapshots — and Vitest, the faster, Vite-native drop-in with the same API."
+summary: "JavaScript and TypeScript testing: Jest's batteries-included matchers, mocks, and snapshots - and Vitest, the faster, Vite-native drop-in with the same API."
 tags: [jest, vitest, testing, javascript, typescript, mocks, snapshots]
 difficulty: intermediate
 synonyms: ["jest vs vitest", "how to test javascript", "jest mocks", "vitest setup", "snapshot testing", "jest fake timers", "testing async code js"]
@@ -33,7 +33,7 @@ When a matcher fails, the runner prints a diff of expected vs received. That dif
 
 ## Mocks: replacing the parts you don't want to run
 
-Your function calls a database, an HTTP API, or a clock. You don't want the test to actually hit the network — that's slow, flaky, and not what you're testing. A **mock** is a stand-in: a fake function you control, that records how it was called.
+Your function calls a database, an HTTP API, or a clock. You don't want the test to actually hit the network - that's slow, flaky, and not what you're testing. A **mock** is a stand-in: a fake function you control, that records how it was called.
 
 ```js
 import { vi } from "vitest"; // Jest: use `jest` instead of `vi`, same methods
@@ -60,9 +60,9 @@ expect(user.name).toBe("Ada");
 expect(fetchUser).toHaveBeenCalledWith(1);
 ```
 
-*What just happened:* `mockResolvedValue` makes the fake return a resolved promise, so `await` gets your canned object. Now you can test code that depends on `fetchUser` without a real server. To replace a whole imported module, use `vi.mock("./api.js", ...)` (Jest: `jest.mock`) — same idea, applied to every export of a module.
+*What just happened:* `mockResolvedValue` makes the fake return a resolved promise, so `await` gets your canned object. Now you can test code that depends on `fetchUser` without a real server. To replace a whole imported module, use `vi.mock("./api.js", ...)` (Jest: `jest.mock`) - same idea, applied to every export of a module.
 
-> **Mock the boundary, not the logic.** Mock the things you don't own or don't want to run: the network, the filesystem, the clock, third-party SDKs. Don't mock the function you're actually testing — if you mock everything, the test passes even when the real code is broken. A test full of mocks is often a test that proves nothing.
+> **Mock the boundary, not the logic.** Mock the things you don't own or don't want to run: the network, the filesystem, the clock, third-party SDKs. Don't mock the function you're actually testing - if you mock everything, the test passes even when the real code is broken. A test full of mocks is often a test that proves nothing.
 
 ## Async: await the result, or the test lies
 
@@ -79,7 +79,7 @@ it("rejects on missing user", async () => {
 });
 ```
 
-*What just happened:* mark the test `async` and `await` the promise so the assertion runs before the test ends. For promises that should *fail*, use `await expect(promise).rejects.toThrow(...)` — and keep the `await`, or the rejection escapes and the test passes wrongly. The matching `.resolves` checks a fulfilled promise's value. The rule is simple: if there's a promise anywhere in the test, there must be an `await`.
+*What just happened:* mark the test `async` and `await` the promise so the assertion runs before the test ends. For promises that should *fail*, use `await expect(promise).rejects.toThrow(...)` - and keep the `await`, or the rejection escapes and the test passes wrongly. The matching `.resolves` checks a fulfilled promise's value. The rule is simple: if there's a promise anywhere in the test, there must be an `await`.
 
 ## Timers: stop waiting for real time
 
@@ -102,15 +102,15 @@ it("calls back after the delay", () => {
 });
 ```
 
-*What just happened:* `useFakeTimers()` swaps the real `setTimeout` for a controllable fake. The callback hasn't fired yet because no time has "passed." `advanceTimersByTime(1000)` simulates one second passing and runs anything scheduled in that window — with no actual waiting. Always call `useRealTimers()` afterward (or in an `afterEach`) so fake time doesn't leak into the next test. The Jest API is the same with `jest.` in front: `jest.useFakeTimers()`, `jest.advanceTimersByTime(...)`.
+*What just happened:* `useFakeTimers()` swaps the real `setTimeout` for a controllable fake. The callback hasn't fired yet because no time has "passed." `advanceTimersByTime(1000)` simulates one second passing and runs anything scheduled in that window - with no actual waiting. Always call `useRealTimers()` afterward (or in an `afterEach`) so fake time doesn't leak into the next test. The Jest API is the same with `jest.` in front: `jest.useFakeTimers()`, `jest.advanceTimersByTime(...)`.
 
-For builders: combine fake timers with a mock callback to test debouncing — fire the function five times, advance the clock, assert the callback ran *once*. That's a test that would take real seconds and be flaky if you used real timers.
+For builders: combine fake timers with a mock callback to test debouncing - fire the function five times, advance the clock, assert the callback ran *once*. That's a test that would take real seconds and be flaky if you used real timers.
 
 ```quiz
 [
   {
     "q": "You compare two objects with identical contents using toBe. What happens?",
-    "choices": ["Passes — contents match", "Fails — toBe uses === (reference equality)", "Throws a syntax error", "Passes only for empty objects"],
+    "choices": ["Passes - contents match", "Fails - toBe uses === (reference equality)", "Throws a syntax error", "Passes only for empty objects"],
     "answer": 1,
     "explain": "toBe is reference equality (===); two distinct objects are never ===. Use toEqual for deep content comparison."
   },

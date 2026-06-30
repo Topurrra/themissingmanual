@@ -2,7 +2,7 @@
 title: "The Evidence and the Everyday"
 guide: "relativity-space-time-and-gravity"
 phase: 3
-summary: "GPS would drift kilometers a day without relativity, starlight bends around the Sun, Mercury's orbit drifts on schedule, and LIGO heard spacetime ring — the proof that relativity is real, not theory."
+summary: "GPS would drift kilometers a day without relativity, starlight bends around the Sun, Mercury's orbit drifts on schedule, and LIGO heard spacetime ring - the proof that relativity is real, not theory."
 tags: [physics, relativity, evidence, gps, gravitational-lensing, gravitational-waves, ligo, mercury-orbit]
 difficulty: intermediate
 synonyms: ["proof of relativity", "how does gps use relativity", "gravitational lensing", "gravitational waves ligo", "mercury orbit precession", "is relativity real", "evidence for general relativity", "everyday relativity"]
@@ -25,7 +25,7 @@ test thrown at it for over a century.
 
 Your phone finds its location by listening to a fleet of satellites, each carrying an atomic clock and
 broadcasting the time. Your phone compares the times from several satellites and works out how far each
-signal traveled — and from those distances, where you are. The whole system is a race between light
+signal traveled - and from those distances, where you are. The whole system is a race between light
 signals, so it lives or dies on the clocks agreeing. And here's the thing: those clocks *can't* quietly
 agree, because of everything in the last two phases.
 
@@ -37,7 +37,7 @@ agree, because of everything in the last two phases.
    GENERAL relativity:  satellite is high up,        → its clock runs FASTER
                         in weaker gravity than us
 
-   the two don't cancel — net result: the orbiting clock
+   the two don't cancel - net result: the orbiting clock
    gains time relative to clocks on the ground, every single day
         │
         ▼
@@ -56,16 +56,16 @@ Left uncorrected, the error compounds and GPS positions would drift by something
 
 So the engineers build the correction in. The satellite clocks are deliberately set to tick at a rate
 that, once both relativistic effects are accounted for, comes out right as seen from the ground.
-Relativity isn't a footnote in the GPS design — it's a daily, operational requirement. The system would
+Relativity isn't a footnote in the GPS design - it's a daily, operational requirement. The system would
 not work without it.
 
 *What just happened:* GPS needs *both* relativities at once, and they pull in opposite directions. The
-fact that the system works — that your phone knows where you are — is a continuous, real-time experiment
+fact that the system works - that your phone knows where you are - is a continuous, real-time experiment
 confirming Einstein, running in the sky right now.
 
 ## Starlight that bends: gravitational lensing
 
-If mass curves spacetime, then light passing a massive object should follow that curve — its path
+If mass curves spacetime, then light passing a massive object should follow that curve - its path
 should bend, even though light has no mass to "pull." This was the first dramatic test of general
 relativity.
 
@@ -89,7 +89,7 @@ smaller value Newton's gravity allowed. It made Einstein world-famous overnight.
 
 Today this is everyday astronomy, not a one-off. Whole galaxies act as lenses, bending the light of
 more distant galaxies behind them into arcs, rings, and multiple images. It's called **gravitational
-lensing**, and astronomers now use it as a tool — to weigh galaxy clusters, to map invisible dark
+lensing**, and astronomers now use it as a tool - to weigh galaxy clusters, to map invisible dark
 matter by the way it bends light, and to magnify objects too far away to see otherwise. Curved
 spacetime stopped being a prediction and became an instrument.
 
@@ -99,12 +99,12 @@ Here's a piece of evidence that was sitting in the data *before* Einstein, accus
 
 Mercury's orbit isn't a closed loop; the whole ellipse slowly rotates over time, its closest point to
 the Sun creeping around. Most of that creep, astronomers could explain with the tugs of the other
-planets. But a small leftover remained — a tiny, persistent drift that Newton's gravity could not
+planets. But a small leftover remained - a tiny, persistent drift that Newton's gravity could not
 account for, no matter how carefully they checked. For decades it was an unsolved scandal. Some
 proposed an unseen planet, "Vulcan," nudging Mercury. It was never found.
 
-When Einstein applied general relativity to Mercury — the planet closest to the Sun, deepest in the
-Sun's curved spacetime — the equations produced extra orbital drift of precisely the missing amount. No
+When Einstein applied general relativity to Mercury - the planet closest to the Sun, deepest in the
+Sun's curved spacetime - the equations produced extra orbital drift of precisely the missing amount. No
 new planet. No fudging. The leftover was the signature of curved spacetime, and it had been hiding in
 the observations the whole time, waiting for the right theory. For Einstein, this was the moment he knew
 he was right.
@@ -112,7 +112,7 @@ he was right.
 ## Gravitational waves: hearing spacetime ring
 
 The boldest prediction took a century to confirm. If spacetime is a real, flexible fabric, then
-violent events should send *ripples* through it — waves of stretching and squeezing spacetime,
+violent events should send *ripples* through it - waves of stretching and squeezing spacetime,
 spreading outward at the speed of light. Einstein predicted these **gravitational waves** in 1916, then
 doubted they'd ever be detectable, because they're almost unimaginably faint by the time they reach us.
 
@@ -121,7 +121,7 @@ spiraled into each other and merged, and the collision shook spacetime hard enou
 after traveling for over a billion years, still stretched and squeezed LIGO's kilometers-long arms by a
 distance far smaller than a single proton. The detectors measured it. The signal matched what general
 relativity predicted for two merging black holes, down to the shape of the final "ringdown." It earned
-a Nobel Prize, and it opened a brand-new way to observe the universe — not with light, but by feeling
+a Nobel Prize, and it opened a brand-new way to observe the universe - not with light, but by feeling
 spacetime itself vibrate. Many more have been detected since.
 
 ```text
@@ -131,7 +131,7 @@ spacetime itself vibrate. Many more have been detected since.
           \/    ripples in spacetime spread outward at light speed
        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>  (over a billion years later...)
                                      LIGO's arms stretch by less than
-                                     a proton's width — and we measured it
+                                     a proton's width - and we measured it
 ```
 
 *What just happened:* A prediction Einstein himself doubted could ever be tested was confirmed a
@@ -141,9 +141,9 @@ away. The fabric is real, and it rings.
 ## Keeping it honest
 
 So how settled is all this? The core of special and general relativity is about as solid as physics
-gets. It's been tested across an enormous range of scales — atomic clocks on towers and airplanes,
+gets. It's been tested across an enormous range of scales - atomic clocks on towers and airplanes,
 particle accelerators, the orbits of planets and pulsars, the bending and lensing of light, and now
-gravitational waves — and it has passed every test, often to staggering precision. When you use GPS,
+gravitational waves - and it has passed every test, often to staggering precision. When you use GPS,
 you're trusting your life and your sense of direction to it.
 
 What isn't finished is the *very* extreme: at the center of a black hole and at the first instant of
@@ -151,12 +151,12 @@ the universe, general relativity's equations break down, predicting infinities t
 is incomplete. Reconciling relativity with the quantum world (see
 [/guides/what-physics-actually-is](/guides/what-physics-actually-is) for where physics draws its
 current edges) is the great unsolved problem. But that's the frontier, not a crack in what you've
-learned here. Everything in this guide — time dilation, curved spacetime, the equivalence principle, the
-constancy of light — is confirmed, working, and woven into technology you use every day.
+learned here. Everything in this guide - time dilation, curved spacetime, the equivalence principle, the
+constancy of light - is confirmed, working, and woven into technology you use every day.
 
 You started this guide being told relativity is only for geniuses. You now know its one rule, how it
 bends time and space, why gravity is geometry, and how we know it's true. That's not trivia. That's a
-working model of how space, time, and gravity actually behave — the same model a physicist carries,
+working model of how space, time, and gravity actually behave - the same model a physicist carries,
 without the equations getting in the way of the picture.
 
 ```quiz
@@ -170,7 +170,7 @@ without the equations getting in the way of the picture.
       "It only matters once per year"
     ],
     "answer": 1,
-    "explain": "Both effects act on the orbiting clocks and don't cancel — the gravitational one wins, so the clocks run ahead. Since GPS converts timing into distance at light speed, uncorrected drift would reach kilometers per day."
+    "explain": "Both effects act on the orbiting clocks and don't cancel - the gravitational one wins, so the clocks run ahead. Since GPS converts timing into distance at light speed, uncorrected drift would reach kilometers per day."
   },
   {
     "q": "What was special about Mercury's orbit that supported general relativity?",
@@ -181,13 +181,13 @@ without the equations getting in the way of the picture.
       "It was the same as every other planet's orbit"
     ],
     "answer": 2,
-    "explain": "Mercury's orbital ellipse slowly rotates. A small leftover drift defied Newtonian gravity for decades. Being deepest in the Sun's curved spacetime, Mercury showed the extra drift general relativity predicts — matching precisely."
+    "explain": "Mercury's orbital ellipse slowly rotates. A small leftover drift defied Newtonian gravity for decades. Being deepest in the Sun's curved spacetime, Mercury showed the extra drift general relativity predicts - matching precisely."
   },
   {
     "q": "What did LIGO detect in 2015?",
     "choices": [
       "A new planet near the Sun",
-      "Gravitational waves — ripples in spacetime from two black holes merging over a billion light-years away",
+      "Gravitational waves - ripples in spacetime from two black holes merging over a billion light-years away",
       "That the speed of light had changed",
       "That gravity does not exist"
     ],

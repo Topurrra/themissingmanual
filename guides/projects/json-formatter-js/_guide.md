@@ -2,7 +2,7 @@
 title: "Build a JSON Formatter & Validator (JS)"
 guide: json-formatter-js
 phase: 0
-summary: "Build a JSON pretty-printer and validator in JavaScript — parse, format, explain errors, and check shape — runnable right in your browser."
+summary: "Build a JSON pretty-printer and validator in JavaScript - parse, format, explain errors, and check shape - runnable right in your browser."
 tags: [javascript, project, json, validation, beginner]
 category: projects
 group: "Run-Along Projects"
@@ -20,7 +20,7 @@ updated: 2026-06-30
 
 # Build a JSON Formatter & Validator (JS)
 
-You have pasted ugly JSON into a tool more times than you can count. A single line, no spaces, a missing comma somewhere, and a browser tab that screams "Unexpected token" without telling you where. This weekend you and I are building the tool that does it better — and you'll understand every line of it.
+You have pasted ugly JSON into a tool more times than you can count. A single line, no spaces, a missing comma somewhere, and a browser tab that screams "Unexpected token" without telling you where. This weekend you and I are building the tool that does it better - and you'll understand every line of it.
 
 By the end you'll have a small JavaScript module that takes raw JSON text and:
 
@@ -33,7 +33,7 @@ No frameworks. No build step. No npm install. Everything here is plain JavaScrip
 
 ## This one runs in your browser
 
-This is a run-along project. Every code block on these pages is a real, runnable snippet — press the run button and you'll see the output right there on the page. You don't need to set anything up on your machine. Read, run, tweak a value, run again. That loop is the whole point.
+This is a run-along project. Every code block on these pages is a real, runnable snippet - press the run button and you'll see the output right there on the page. You don't need to set anything up on your machine. Read, run, tweak a value, run again. That loop is the whole point.
 
 Because each block runs fresh and on its own, every example re-declares what it needs and ends with a `console.log`. When you build the real thing later, you'd keep these as functions in one file and call them. Here, each one stands alone so you can poke at it in isolation.
 
@@ -61,13 +61,13 @@ Each phase adds one box. Phase 1 gets text in and pretty JSON out. Phase 2 handl
 
 ## What you'll learn
 
-- The second argument to `JSON.parse` and the third to `JSON.stringify` — the parts almost nobody reads about.
+- The second argument to `JSON.parse` and the third to `JSON.stringify` - the parts almost nobody reads about.
 - How to catch a thrown error and pull useful information out of it.
 - How to walk an object and compare it to an expected structure without reaching for a library.
 - Where to draw the line between "good enough for me" and "I'd ship this," and how to extend it past that line.
 
 Rough time: about two hours if you run every block and tinker. Less if you skim, but skimming a run-along project is like reading a recipe without tasting anything.
 
-Difficulty: beginner. If you've written a function and called it, you're ready. If you've never touched JSON, here's the one-sentence version — it's a text format for data that looks like JavaScript objects and arrays, and it's how most web APIs talk.
+Difficulty: beginner. If you've written a function and called it, you're ready. If you've never touched JSON, here's the one-sentence version - it's a text format for data that looks like JavaScript objects and arrays, and it's how most web APIs talk.
 
 Grab a drink. Phase 1 is short and you'll have working output in five minutes.

@@ -2,7 +2,7 @@
 title: "How the CPU Talks to Devices (I/O)"
 guide: "how-data-moves-inside-a-machine"
 phase: 2
-summary: "The CPU reaches devices the same way it reaches RAM — over buses — using memory-mapped I/O or port I/O; and DMA lets a device move data to and from RAM on its own, so the CPU isn't tied up copying every byte."
+summary: "The CPU reaches devices the same way it reaches RAM - over buses - using memory-mapped I/O or port I/O; and DMA lets a device move data to and from RAM on its own, so the CPU isn't tied up copying every byte."
 tags: [hardware, io, memory-mapped-io, ports, dma, devices, performance]
 difficulty: intermediate
 synonyms: ["how does the cpu talk to devices", "what is io", "memory-mapped io vs ports", "what is dma", "direct memory access", "why is dma faster", "how does a disk move data to ram"]
@@ -13,18 +13,18 @@ updated: 2026-06-19
 
 In Phase 1 the only thing on the far end of the bus was RAM. But your machine is full of other things the
 CPU needs to talk to: the disk, the keyboard, the network card, the GPU. The good news is you already
-have the mental model. Talking to a device works *a lot* like talking to memory — it's the same idea of
+have the mental model. Talking to a device works *a lot* like talking to memory - it's the same idea of
 addresses and a bus, pointed at hardware instead of RAM. The interesting part is the last section of this
 phase, where a device learns to move data *by itself*. Let's get there.
 
 ## I/O: reaching past RAM
 
-**What it actually is.** **I/O** — input/output — is the CPU exchanging data with anything that isn't its
+**What it actually is.** **I/O** - input/output - is the CPU exchanging data with anything that isn't its
 own registers or RAM. Input is data coming *in* (a keypress, a packet arriving, bytes read from disk);
 output is data going *out* (pixels to the screen, bytes written to disk, a packet sent).
 
 📝 **Terminology.** *I/O* (input/output) = moving data between the CPU and a device. *Device* = any piece
-of hardware that isn't the CPU or main memory — disk, keyboard, network card, GPU, USB stick.
+of hardware that isn't the CPU or main memory - disk, keyboard, network card, GPU, USB stick.
 
 **How a device looks to the CPU.** A device isn't a blob of storage like RAM; it's a thing with controls.
 A disk controller has a spot you write "read sectors 100–200" into, a spot you read the status from
@@ -40,7 +40,7 @@ one or both.
 
 **What it actually is.** The system reserves a chunk of the address space and wires it to a device
 instead of to RAM. The device's registers get **real memory addresses**. So the CPU talks to the device
-using the *exact same* read/write-an-address mechanism from Phase 1 — it just happens that address 0xFE00
+using the *exact same* read/write-an-address mechanism from Phase 1 - it just happens that address 0xFE00
 leads to the network card instead of to a memory slot.
 
 ```text
@@ -56,20 +56,20 @@ leads to the network card instead of to a memory slot.
 ```
 
 **Why this is elegant.** The CPU needs *no special instructions* for devices. "Write this value to that
-address" already exists; reuse it. The downside: those addresses are spent — they can't also be RAM —
+address" already exists; reuse it. The downside: those addresses are spent - they can't also be RAM -
 which is one reason a 32-bit machine with 4 GB installed sometimes can't use all 4 GB. Some of the
 address range is claimed by devices.
 
 ### Port I/O
 
-**What it actually is.** The other approach gives devices their own separate numbering — **ports** — that
+**What it actually is.** The other approach gives devices their own separate numbering - **ports** - that
 live *outside* the memory address space, reached with dedicated CPU instructions (on x86, literally `in`
 and `out`). Port 0x60 is the keyboard controller; the CPU runs an `in` from port 0x60 to read the latest
 key.
 
 📝 **Terminology.** *Port* (in this hardware sense) = a device's address in a separate I/O address space,
 accessed with special I/O instructions rather than normal memory reads and writes. (This is *not* the
-same thing as a network port like 443 — same word, different world.)
+same thing as a network port like 443 - same word, different world.)
 
 **The honest comparison.** Neither is "better"; they're a design trade-off:
 
@@ -79,7 +79,7 @@ same thing as a network port like 443 — same word, different world.)
    ├──────────────────┼─────────────────────────────┼──────────────────────────────┤
    │  Addressing      │  shares the memory address   │  separate I/O address space   │
    │                  │  space with RAM              │                               │
-   │  CPU support     │  none extra — normal load/   │  needs special instructions   │
+   │  CPU support     │  none extra - normal load/   │  needs special instructions   │
    │                  │  store instructions          │  (e.g. in / out)              │
    │  Cost            │  uses up memory addresses    │  keeps memory space free, but  │
    │                  │                              │  adds a separate mechanism    │
@@ -102,11 +102,11 @@ covered so far, the CPU would have to do it the slow way:
    ... one million times, with the CPU busy the entire time ...
 ```
 
-That works, but it's a catastrophe for performance: the CPU — the most valuable, fastest thing in the
-machine — is stuck shoveling bytes one at a time, doing nothing else. While it shovels, your music can't
+That works, but it's a catastrophe for performance: the CPU - the most valuable, fastest thing in the
+machine - is stuck shoveling bytes one at a time, doing nothing else. While it shovels, your music can't
 decode and your UI can't redraw.
 
-**What DMA actually is.** **DMA — Direct Memory Access** — is a small dedicated helper (a *DMA
+**What DMA actually is.** **DMA - Direct Memory Access** - is a small dedicated helper (a *DMA
 controller*, often built into the device itself) that can read and write RAM *over the bus on its own*,
 without routing every byte through the CPU. The CPU sets up the job once, then steps away.
 
@@ -129,11 +129,11 @@ sequenceDiagram
 ```
 
 *What just happened:* the CPU spent a tiny moment describing the transfer, then handed the grunt work to
-the DMA controller and went back to real work. The megabyte still travels over the bus — but the *CPU*
+the DMA controller and went back to real work. The megabyte still travels over the bus - but the *CPU*
 isn't the one carrying each byte. One setup, one "done" at the end, instead of a million round trips.
 
 ⚠️ **Gotcha.** DMA and the CPU share the same bus (Phase 1: only one transfer at a time). While DMA is
-hauling a big block, the CPU may have to wait its turn for the bus — so DMA isn't "free," it just frees
+hauling a big block, the CPU may have to wait its turn for the bus - so DMA isn't "free," it just frees
 the CPU from *doing the copy*. The win is overwhelming anyway, because the CPU gets to run real work
 during almost all of the transfer instead of being pinned to byte-shoveling.
 
@@ -149,11 +149,11 @@ exactly what they mean: it's handing the device an address range in RAM and sayi
    **registers** it reads and writes.
 2. Those registers are reached either by **memory-mapped I/O** (they get real memory addresses, reused
    from the Phase 1 mechanism) or by **port I/O** (a separate I/O address space with special
-   instructions) — a trade-off, not a winner.
+   instructions) - a trade-off, not a winner.
 3. **DMA** lets a device move data to and from RAM by itself. The CPU sets up the transfer once and walks
    away, which is why moving lots of data doesn't tie up the processor.
 
-But notice step 4 above — when the DMA controller finishes, it has to *tell* the CPU. How does a device
+But notice step 4 above - when the DMA controller finishes, it has to *tell* the CPU. How does a device
 get the CPU's attention without the CPU constantly stopping to check? That's the last piece: interrupts.
 
 ---

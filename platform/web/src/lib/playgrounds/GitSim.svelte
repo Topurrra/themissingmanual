@@ -1,7 +1,7 @@
 <script>
   // A tiny visual Git: type git commands, watch the commit graph build. Models
   // commits (with parents), branches, and HEAD. Supports commit / branch /
-  // checkout / merge / log / reset. Purely a teaching toy — no real repo.
+  // checkout / merge / log / reset. Purely a teaching toy - no real repo.
   let commits = [];        // { id, msg, parents:[id], lane }
   let branches = {};       // name -> tip commit id
   let laneOf = {};         // branch -> lane index

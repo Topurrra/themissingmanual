@@ -2,7 +2,7 @@
 title: "A Tiny Shape Check"
 guide: json-formatter-js
 phase: 3
-summary: "Validate parsed JSON against a small expected shape — required keys present and each value the right type."
+summary: "Validate parsed JSON against a small expected shape - required keys present and each value the right type."
 tags: [javascript, json, validation, schema, types]
 difficulty: beginner
 synonyms:
@@ -18,7 +18,7 @@ updated: 2026-06-30
 
 Valid JSON and *correct* JSON are different things. `{}` parses fine. So does `{"age":"thirty"}`. Your formatter from Phase 2 is happy with both, and neither is the user record your code expected. This phase adds the missing question: does this data have the keys I need, with values of the types I need?
 
-We're not building a schema library. We're writing about thirty lines that answer "is this the shape I asked for?" — and that turns out to cover most of what you actually check by hand.
+We're not building a schema library. We're writing about thirty lines that answer "is this the shape I asked for?" - and that turns out to cover most of what you actually check by hand.
 
 ## Describe the shape with an object
 
@@ -39,11 +39,11 @@ console.log(typeOf(null));
 console.log(typeOf(true));
 ```
 
-`typeOf` is the one helper we need. Plain `typeof` calls an array an object and calls `null` an object — both misleading. This wrapper sorts those two out so the rest of the check can trust what it gets back.
+`typeOf` is the one helper we need. Plain `typeof` calls an array an object and calls `null` an object - both misleading. This wrapper sorts those two out so the rest of the check can trust what it gets back.
 
 ## Compare data to the shape
 
-Now the check itself. Walk the expected shape; for each key, confirm it exists in the data and that its value's type matches. Collect every problem instead of stopping at the first — one good report beats five round trips.
+Now the check itself. Walk the expected shape; for each key, confirm it exists in the data and that its value's type matches. Collect every problem instead of stopping at the first - one good report beats five round trips.
 
 ```js runnable
 function typeOf(value) {
@@ -83,9 +83,9 @@ console.log("good:", checkShape(good, shape));
 console.log("bad: ", checkShape(bad, shape));
 ```
 
-Run it. The good record returns an empty array — no problems. The bad one returns two: `age` is a string where we wanted a number, and `admin` is missing entirely. An empty list means "passed." A non-empty list is your to-do list of fixes.
+Run it. The good record returns an empty array - no problems. The bad one returns two: `age` is a string where we wanted a number, and `admin` is missing entirely. An empty list means "passed." A non-empty list is your to-do list of fixes.
 
-Notice we let extra keys slide. If the data has a `email` field our shape didn't mention, we don't complain. That's a deliberate choice — most of the time you care that the keys you *need* are right, not that nothing extra came along. We'll revisit that in the extend section next phase.
+Notice we let extra keys slide. If the data has a `email` field our shape didn't mention, we don't complain. That's a deliberate choice - most of the time you care that the keys you *need* are right, not that nothing extra came along. We'll revisit that in the extend section next phase.
 
 ## Parse, then check, in one flow
 
@@ -140,7 +140,7 @@ Run all three. The first parses and matches the shape, so you get formatted outp
 
 ## How far would you push this?
 
-What we've got handles flat objects of basic types — which is a big slice of real-world JSON. It does *not* check nested objects, types inside arrays, or optional-versus-required keys. Those are real, and they're a natural next step:
+What we've got handles flat objects of basic types - which is a big slice of real-world JSON. It does *not* check nested objects, types inside arrays, or optional-versus-required keys. Those are real, and they're a natural next step:
 
 | Want | Sketch |
 | --- | --- |
@@ -148,6 +148,6 @@ What we've got handles flat objects of basic types — which is a big slice of r
 | Typed arrays | Shape value like `["string"]` meaning "array of strings" |
 | Optional keys | Mark some keys with a `?` and skip the "missing" check for them |
 
-Each is a few more lines on the same idea. Resist adding them until you have JSON that needs them — a check you don't use is a check you have to maintain for nothing.
+Each is a few more lines on the same idea. Resist adding them until you have JSON that needs them - a check you don't use is a check you have to maintain for nothing.
 
 You now have a tool that formats, explains failures, and judges shape. Phase 4 ties a bow on it: a minify mode for when you want the bytes back, stable key sorting, and a couple of directions to take it further.

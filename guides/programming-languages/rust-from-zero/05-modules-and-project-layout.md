@@ -11,14 +11,14 @@ updated: 2026-06-19
 
 # Modules & Project Layout
 
-Everything so far lived in one `main.rs`. Real projects don't — they grow into many files, pull in code
+Everything so far lived in one `main.rs`. Real projects don't - they grow into many files, pull in code
 other people wrote, and split logic into tidy named groups. This phase is the map: what each file in a
 Cargo project is *for*, how to carve your code into **modules**, what `pub` and `use` actually do, and what
-people mean by a **crate**. None of this is hard — it's mostly naming things you've half-noticed already —
+people mean by a **crate**. None of this is hard - it's mostly naming things you've half-noticed already -
 and getting it straight now makes everything later feel organized instead of scattered.
 
 This is also the last phase before the big one. At the end, we set up [Phase 6: Ownership](06-ownership-and-borrowing.md)
-properly — because that's the phase the whole guide has been walking toward.
+properly - because that's the phase the whole guide has been walking toward.
 
 ## Anatomy of a Cargo project
 
@@ -34,7 +34,7 @@ main.rs
 
 Two things matter:
 
-**`Cargo.toml` — the manifest.** A small config file describing your project: its name, version, and the
+**`Cargo.toml` - the manifest.** A small config file describing your project: its name, version, and the
 list of libraries it depends on. You'll edit this whenever you add a dependency.
 
 ```rust
@@ -46,27 +46,27 @@ edition = "2024"
 [dependencies]
 ```
 *What just happened:* `[package]` names your project and pins the **edition** (a several-year batch of
-language conventions — `2021` and `2024` are both common and fine; `cargo new` picks a recent one for you).
-`[dependencies]` is empty for now — it's where libraries you add will be listed.
+language conventions - `2021` and `2024` are both common and fine; `cargo new` picks a recent one for you).
+`[dependencies]` is empty for now - it's where libraries you add will be listed.
 
-📝 **Terminology.** `Cargo.toml` is the file *you* edit. You'll also see a `Cargo.lock` appear next to it —
+📝 **Terminology.** `Cargo.toml` is the file *you* edit. You'll also see a `Cargo.lock` appear next to it -
 that one is written by `cargo` to record the *exact* versions it resolved, so builds are reproducible.
 Leave `Cargo.lock` to `cargo`; don't hand-edit it.
 
-**`src/main.rs` vs `src/lib.rs` — the two kinds of crate root.** This is the one worth memorizing:
+**`src/main.rs` vs `src/lib.rs` - the two kinds of crate root.** This is the one worth memorizing:
 
-- **`src/main.rs`** is the entry point of a **binary** — a program you *run*. It has a `fn main()`. This is
+- **`src/main.rs`** is the entry point of a **binary** - a program you *run*. It has a `fn main()`. This is
   what `cargo new` gives you by default.
-- **`src/lib.rs`** is the entry point of a **library** — code meant to be *used by other code*, not run on
+- **`src/lib.rs`** is the entry point of a **library** - code meant to be *used by other code*, not run on
   its own. It has no `main`. You get one with `cargo new --lib mylib`.
 
 💡 **Key point.** A binary is a thing you run; a library is a thing you reuse. Many real projects have both:
 a `lib.rs` holding the actual logic (easy to test and share) and a thin `main.rs` that just calls into it.
 For now, `main.rs` is all you need.
 
-## `mod` — group code into modules
+## `mod` - group code into modules
 
-**What it actually is.** A **module** is a named container for related code — functions, types, other
+**What it actually is.** A **module** is a named container for related code - functions, types, other
 modules. It's how you keep a growing file from becoming a wall of unrelated functions. You declare one with
 `mod`.
 
@@ -86,18 +86,18 @@ $ cargo run
 Hello, Ada!
 ```
 *What just happened:* `mod greetings { ... }` created a module named `greetings` holding one function. From
-outside, you reach into it with `greetings::hello(...)` — the `::` is the path separator, "the `hello`
-inside `greetings`." (`format!` is like `println!` but builds a `String` instead of printing it — handy for
+outside, you reach into it with `greetings::hello(...)` - the `::` is the path separator, "the `hello`
+inside `greetings`." (`format!` is like `println!` but builds a `String` instead of printing it - handy for
 returning text.)
 
-📝 **Terminology.** A **path** like `greetings::hello` names *where* something lives — module by module,
+📝 **Terminology.** A **path** like `greetings::hello` names *where* something lives - module by module,
 separated by `::`. You've already used paths: `std::collections::HashMap` in
 [Phase 3](03-collections.md) is "`HashMap`, inside `collections`, inside the standard library `std`."
 
-## `pub` — make things public
+## `pub` - make things public
 
 Did you notice the `pub` on `hello`? That's not decoration. **By default, everything in a module is private
-— usable only inside that module.** `pub` ("public") opens it up to the outside.
+- usable only inside that module.** `pub` ("public") opens it up to the outside.
 
 ```rust
 mod greetings {
@@ -131,15 +131,15 @@ note: the function `secret` is defined here
 ```
 *What just happened:* `hello` is `pub`, so calling it works. `secret` has no `pub`, so it's private to the
 `greetings` module, and the compiler **refuses** to let `main` reach in and call it. This is privacy as a
-default — you decide deliberately what's part of a module's public surface and what's an internal detail.
+default - you decide deliberately what's part of a module's public surface and what's an internal detail.
 Code *inside* `greetings` could still call `secret` freely; only the outside is blocked.
 
 💡 **Key point.** Private-by-default is the same philosophy as immutable-by-default from
 [Phase 2](02-syntax-values-and-types.md): Rust makes the safe, restrictive choice the default and asks you
-to opt *out*. The benefit is a clear contract — anyone reading your module sees exactly which functions are
+to opt *out*. The benefit is a clear contract - anyone reading your module sees exactly which functions are
 meant to be used and which are internal plumbing they shouldn't depend on.
 
-## `use` — bring a name into scope
+## `use` - bring a name into scope
 
 Typing `greetings::hello` every time gets old, and long paths like
 `std::collections::HashMap` get *very* old. `use` pulls a name into the current scope so you can refer to
@@ -164,7 +164,7 @@ Hello, Ada!
 ```
 *What just happened:* `use greetings::hello;` made `hello` available by its bare name in `main`. This is
 exactly why you wrote `use std::collections::HashMap;` before using `HashMap` in
-[Phase 3](03-collections.md) — `use` shortens the path, it doesn't change what the thing is.
+[Phase 3](03-collections.md) - `use` shortens the path, it doesn't change what the thing is.
 
 Modules can nest, giving your project a tree you can picture:
 
@@ -185,10 +185,10 @@ tree from the root down.
 ## Crates and dependencies
 
 📝 **Terminology.** A **crate** is the unit Rust compiles: one binary or one library is a crate. Your
-project is a crate. The libraries you pull in are also crates — published on **[crates.io](https://crates.io)**,
+project is a crate. The libraries you pull in are also crates - published on **[crates.io](https://crates.io)**,
 Rust's package registry (the equivalent of npm for JavaScript or PyPI for Python).
 
-To use someone else's crate, add it to `Cargo.toml` — the easiest way is `cargo add`, which edits the file
+To use someone else's crate, add it to `Cargo.toml` - the easiest way is `cargo add`, which edits the file
 for you:
 
 ```console
@@ -198,12 +198,12 @@ $ cargo add rand
 ```
 *What just happened:* `cargo add rand` looked up the `rand` crate (random numbers), wrote it into the
 `[dependencies]` section of `Cargo.toml`, and noted the version. The next `cargo build` or `cargo run`
-downloads and compiles it automatically — that's the build whose *first* run is a bit slow, as we flagged
+downloads and compiles it automatically - that's the build whose *first* run is a bit slow, as we flagged
 in [Phase 1](01-install-and-first-program.md). After that, you bring its items in with `use` (e.g.
 `use rand::Rng;`) just like your own modules. The whole point of `cargo` is that adding a library is this
 short.
 
-⚠️ **Gotcha — `mod` vs `use` confusion.** These do *different* jobs, and mixing them up is common at first.
+⚠️ **Gotcha - `mod` vs `use` confusion.** These do *different* jobs, and mixing them up is common at first.
 `mod foo;` *declares that a module exists* (and, in a multi-file project, tells Rust to load `foo.rs`).
 `use foo::bar;` *brings an existing name into scope* for convenience. You declare a module **once** with
 `mod`; you can `use` names from it as often as you like. If you see "unresolved import," you usually have a
@@ -212,14 +212,14 @@ short.
 ## You're ready for the hard part
 
 You can now write Rust that holds data, makes decisions, lives in functions, and is organized into modules
-across a real project. That's a genuine working foundation — most of a programming language.
+across a real project. That's a genuine working foundation - most of a programming language.
 
 But there's one idea we've been carefully circling: every time you saw a `&` (borrowing a `Vec` in a `for`
 loop, passing `&owned` where a `&str` was wanted, `&str` itself), there was a deeper system at work. That
 system is **ownership**, and it's the reason Rust can promise memory safety without a garbage collector.
 
 🪖 **A word before you turn the page.** Phase 6 is *the* phase. It's where Rust stops resembling languages
-you know and the borrow checker — the part of the compiler that enforces ownership — starts rejecting code
+you know and the borrow checker - the part of the compiler that enforces ownership - starts rejecting code
 that looks fine to you. Everyone struggles here; it's not a sign you're doing badly, it's the normal shape
 of learning Rust. Take it slowly, type the examples, and let the mental model build. Once ownership clicks,
 the rest of Rust falls into place around it. If you want the "why does any language need this?" background
@@ -232,11 +232,11 @@ first, [Memory & Garbage Collection](/guides/memory-and-garbage-collection) sets
 2. **`src/main.rs`** is a binary you run (`fn main`); **`src/lib.rs`** is a library other code reuses.
 3. **`mod`** groups code into modules; reach into them with `::` paths.
 4. **Everything is private by default**; **`pub`** exposes it. Privacy is a deliberate, opt-out contract.
-5. **`use`** shortens a path by bringing a name into scope — it doesn't change what the thing is.
+5. **`use`** shortens a path by bringing a name into scope - it doesn't change what the thing is.
 6. A **crate** is a compiled unit (your project, or a library); **`cargo add <name>`** pulls one from
    crates.io.
 
-Next up is the heart of Rust: ownership and borrowing — who owns a value, what "moving" and "borrowing"
+Next up is the heart of Rust: ownership and borrowing - who owns a value, what "moving" and "borrowing"
 really mean, and why the borrow checker is on your side even when it's saying no.
 
 ---

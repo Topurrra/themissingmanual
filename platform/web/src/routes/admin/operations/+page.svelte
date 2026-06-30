@@ -7,7 +7,7 @@
 
   // Human-readable byte size (B / KB / MB / GB). Binary units (1024).
   function fmtBytes(bytes) {
-    if (bytes == null || isNaN(bytes)) return '—';
+    if (bytes == null || isNaN(bytes)) return '-';
     if (bytes < 1024) return `${bytes} B`;
     const units = ['KB', 'MB', 'GB', 'TB'];
     let n = bytes / 1024;
@@ -69,7 +69,7 @@
 <div class="ops-grid">
   <div class="ops-card">
     <span class="ops-label">Version</span>
-    <span class="ops-value">{version ?? '—'}</span>
+    <span class="ops-value">{version ?? '-'}</span>
   </div>
 
   <div class="ops-card">
@@ -85,7 +85,7 @@
 
   <div class="ops-card">
     <span class="ops-label">Categories</span>
-    <span class="ops-value">{catCount ?? '—'}</span>
+    <span class="ops-value">{catCount ?? '-'}</span>
     {#if catNames.length}
       <span class="ops-sub">{catNames.join(' · ')}</span>
     {/if}

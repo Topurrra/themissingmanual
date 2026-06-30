@@ -93,7 +93,7 @@ When you pick a dependency, you are not evaluating one library, you are adopting
     "q": "In a typical project with 14 direct dependencies and 1,243 installed packages, who chose the other ~1,229?",
     "choices": [
       "You did, during npm install",
-      "Nobody — they are transitive dependencies pulled in automatically by your dependencies",
+      "Nobody - they are transitive dependencies pulled in automatically by your dependencies",
       "The npm registry curators",
       "Your operating system"
     ],
@@ -109,7 +109,7 @@ When you pick a dependency, you are not evaluating one library, you are adopting
       "Because importing is the only way code can run"
     ],
     "answer": 1,
-    "explain": "Lifecycle scripts like postinstall execute the moment the package is fetched, with your full privileges — no import required."
+    "explain": "Lifecycle scripts like postinstall execute the moment the package is fetched, with your full privileges - no import required."
   },
   {
     "q": "An attacker publishes a PUBLIC package with the same name as your company's PRIVATE package, at a higher version, and your installer grabs it. What is this called?",

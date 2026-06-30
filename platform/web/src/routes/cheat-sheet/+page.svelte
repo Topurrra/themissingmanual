@@ -34,14 +34,14 @@
 </script>
 
 <Seo
-  title="Cheat Sheet — The Missing Manual"
-  description="A searchable command cheat sheet for Git, Bash, Docker, SQL, regex, kubectl, jq, curl, chmod and more — each command with what it does and a real, copy-paste example."
+  title="Cheat Sheet - The Missing Manual"
+  description="A searchable command cheat sheet for Git, Bash, Docker, SQL, regex, kubectl, jq, curl, chmod and more - each command with what it does and a real, copy-paste example."
 />
 
 <header class="cs-intro">
   <span class="eyebrow">Reference</span>
   <h1>Cheat Sheet</h1>
-  <p class="tagline">The commands you keep forgetting, with a one-line description and a real example you can copy — {total_cmds} across {CHEATSHEETS.length} tools. Pick a tool in the sidebar, or search across all of them.</p>
+  <p class="tagline">The commands you keep forgetting, with a one-line description and a real example you can copy - {total_cmds} across {CHEATSHEETS.length} tools. Pick a tool in the sidebar, or search across all of them.</p>
 </header>
 
 <div class="cs-search">

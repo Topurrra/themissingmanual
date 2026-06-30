@@ -113,7 +113,7 @@ For builders: the long-term move once you understand an inherited instance is to
     "q": "When does Jenkins most clearly earn its place over a hosted CI like GitHub Actions today?",
     "choices": ["For brand-new small projects with cloud-friendly code", "When you need self-hosting, are already deep in it, or need something no SaaS offers", "When you want zero maintenance work", "When you want the most modern UI"],
     "answer": 1,
-    "explain": "Hosted CI is usually less painful to start for greenfield, cloud-allowed projects. Jenkins's strength is self-hosting and total flexibility — exactly what regulated, self-hosted, or already-invested teams need."
+    "explain": "Hosted CI is usually less painful to start for greenfield, cloud-allowed projects. Jenkins's strength is self-hosting and total flexibility - exactly what regulated, self-hosted, or already-invested teams need."
   }
 ]
 ```

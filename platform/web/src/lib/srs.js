@@ -1,8 +1,8 @@
-// Spaced-repetition engine — pure client-side, no server, no accounts.
+// Spaced-repetition engine - pure client-side, no server, no accounts.
 //
 // IMPORTANT: Review only ever contains material you've ACTUALLY finished. A card
 // enters the system when its chapter's quiz is completed (see seedChapter), which
-// creates its first scheduling entry. Until seeded, a card is invisible here — so
+// creates its first scheduling entry. Until seeded, a card is invisible here - so
 // Review is the "don't forget what you learned" layer, distinct from Train (a game
 // you can play over anything). Cards come from the quiz bank + the glossary terms
 // that belong to the finished guide. State lives in localStorage.
@@ -33,7 +33,7 @@ export function saveState(s) {
 
 // Called when a chapter's quiz is finished: enrol that phase's quiz questions plus
 // the finished guide's glossary terms into spaced review (first due after a delay).
-// Idempotent — already-enrolled cards keep their schedule.
+// Idempotent - already-enrolled cards keep their schedule.
 export function seedChapter(guide, phase, { now = Date.now(), delayDays = 1 } = {}) {
   const state = loadState();
   let changed = false;

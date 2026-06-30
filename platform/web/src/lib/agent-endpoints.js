@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 // ── Agent skill: instructions for using the site programmatically.
 export const SKILL_MD = `# Use The Missing Manual
 
-The Missing Manual is a free, text-first library of in-depth developer guides —
+The Missing Manual is a free, text-first library of in-depth developer guides -
 from how a computer boots up to the internet, databases, and AI. Everything is
 public, with no authentication required.
 
@@ -24,7 +24,7 @@ The approximate token count is returned in the \`x-markdown-tokens\` response he
 - \`GET /sitemap.xml\`  → every URL on the site
 
 ## Usage
-No auth. Content is free to read, cite, and index — see the \`Content-Signal\`
+No auth. Content is free to read, cite, and index - see the \`Content-Signal\`
 directive in \`/robots.txt\` (search=yes, ai-input=yes, ai-train=yes).
 `;
 
@@ -66,7 +66,7 @@ export function skillsIndex(origin) {
 export const OPENAPI = {
   openapi: '3.1.0',
   info: {
-    title: 'The Missing Manual — public read API',
+    title: 'The Missing Manual - public read API',
     version: '1.0.0',
     description:
       'Read-only, unauthenticated endpoints for discovering and reading guide content. Guide pages also support Accept: text/markdown.'

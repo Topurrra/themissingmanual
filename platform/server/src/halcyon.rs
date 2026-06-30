@@ -1,5 +1,5 @@
 //! About-panel gesture. A short directional sequence on the about screen
-//! reveals a small acknowledgements panel — a piece of art plus a few lines of
+//! reveals a small acknowledgements panel - a piece of art plus a few lines of
 //! text. The step pattern and the panel resources are stored packed and
 //! expanded on demand so they don't sit in the source as bulky literals.
 

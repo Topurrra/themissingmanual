@@ -2,7 +2,7 @@
 // widget (LofiPlayer.svelte) and the Settings panel (Appearance.svelte) read and
 // write the same source of truth. Persisted to localStorage under tmm-lofi-*.
 //
-// Default is OFF on a fresh visit — the player NEVER autoplays.
+// Default is OFF on a fresh visit - the player NEVER autoplays.
 import { writable } from 'svelte/store';
 
 export const LOFI_ENABLED_KEY = 'tmm-lofi-enabled';

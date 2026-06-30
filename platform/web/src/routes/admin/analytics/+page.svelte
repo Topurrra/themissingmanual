@@ -130,7 +130,7 @@
             <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
             <b class="rank-count">{r.count.toLocaleString()}</b>
           </a>
-        {:else}<p class="admin-empty">—</p>{/each}
+        {:else}<p class="admin-empty">-</p>{/each}
       </div>
       <h2 class="admin-h2">Top categories</h2>
       <div class="ranks">
@@ -142,7 +142,7 @@
             <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
             <b class="rank-count">{r.count.toLocaleString()}</b>
           </a>
-        {:else}<p class="admin-empty">—</p>{/each}
+        {:else}<p class="admin-empty">-</p>{/each}
       </div>
     </div>
     <div>
@@ -174,7 +174,7 @@
 
       <h2 class="admin-h2">AI Search · Ask the guides</h2>
       {#if ai.status.configured}
-        <p class="admin-note" style="margin:0 0 0.6rem;">{ai.status.used.toLocaleString()} of {ai.status.cap.toLocaleString()} AI queries used this month — <b>{ai.status.remaining.toLocaleString()} left</b>{#if !ai.status.enabled} · feature is OFF{/if}. <a href="/admin/ai-search">Manage →</a></p>
+        <p class="admin-note" style="margin:0 0 0.6rem;">{ai.status.used.toLocaleString()} of {ai.status.cap.toLocaleString()} AI queries used this month - <b>{ai.status.remaining.toLocaleString()} left</b>{#if !ai.status.enabled} · feature is OFF{/if}. <a href="/admin/ai-search">Manage →</a></p>
         <div class="ranks">
           {#each ai.top as r, i}
             {@const mx = peak(ai.top)}

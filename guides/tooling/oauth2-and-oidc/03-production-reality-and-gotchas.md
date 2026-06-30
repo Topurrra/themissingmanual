@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Production Reality and the Gotchas
 
-The flow works in the demo. Now it has to survive real users, real attackers, and the 3am page. This phase is the stuff the spec mentions in passing and the tutorials skip — the parts that decide whether your auth is solid or a breach waiting to happen.
+The flow works in the demo. Now it has to survive real users, real attackers, and the 3am page. This phase is the stuff the spec mentions in passing and the tutorials skip - the parts that decide whether your auth is solid or a breach waiting to happen.
 
 ## Where do you put the tokens?
 
@@ -34,7 +34,7 @@ Back-end session      → tokens never reach the browser at all.
 
 If tokens *must* live in the browser (a pure SPA with no back end), keep them in memory, never in `localStorage`, and lean on short access-token lifetimes plus PKCE. But given the choice, push token handling to a back end.
 
-> **Cookies still need TLS.** Everything here assumes the whole flow runs over HTTPS. Authorization codes, tokens, and session cookies are bearer secrets — anyone who reads them in transit owns the session. Mark cookies `Secure` and serve over TLS end to end. If TLS itself is fuzzy, read [/guides/https-and-tls](/guides/https-and-tls).
+> **Cookies still need TLS.** Everything here assumes the whole flow runs over HTTPS. Authorization codes, tokens, and session cookies are bearer secrets - anyone who reads them in transit owns the session. Mark cookies `Secure` and serve over TLS end to end. If TLS itself is fuzzy, read [/guides/https-and-tls](/guides/https-and-tls).
 
 ## The gotchas that actually leak accounts
 
@@ -55,7 +55,7 @@ Attacker tries:
 
 **3. Forgetting `state`.** Skip the CSRF check from Phase 2 and an attacker can stitch their account onto your user's session. Generate `state` randomly, store it, and reject any callback where it doesn't match.
 
-**4. Using the access token to identify the user.** Said in Phase 2, repeated because it keeps happening: the access token is for the *API*, the ID token is for *identity*. Treating an access token as proof of who someone is — especially one minted for a different app — is a known account-takeover vector.
+**4. Using the access token to identify the user.** Said in Phase 2, repeated because it keeps happening: the access token is for the *API*, the ID token is for *identity*. Treating an access token as proof of who someone is - especially one minted for a different app - is a known account-takeover vector.
 
 **5. Mismatched `aud`.** A token issued for *another* client is still a valid, correctly-signed token. If you don't check that `aud` equals *your* `client_id`, you'll accept tokens minted for someone else. This is the "confused deputy" trap.
 
@@ -63,9 +63,9 @@ Attacker tries:
 
 Tokens expire, and "logout" is messier than it looks.
 
-- **Access tokens expire fast** (often around an hour). That's a feature — a leaked one dies quickly. Your back end refreshes silently using the refresh token.
+- **Access tokens expire fast** (often around an hour). That's a feature - a leaked one dies quickly. Your back end refreshes silently using the refresh token.
 - **Refresh tokens can be revoked.** When a user clicks "remove this app" or you detect compromise, revoke the refresh token at the Authorization Server. Better providers also do **refresh-token rotation**: each use issues a new refresh token and invalidates the old one, so a stolen-and-reused token gets caught.
-- **Logout has layers.** Clearing your own session cookie logs the user out of *your* app. It does **not** log them out of Google. OIDC defines separate end-session / front-channel logout mechanisms for that — know that "log out" usually means only your session unless you wire up the rest.
+- **Logout has layers.** Clearing your own session cookie logs the user out of *your* app. It does **not** log them out of Google. OIDC defines separate end-session / front-channel logout mechanisms for that - know that "log out" usually means only your session unless you wire up the rest.
 
 ```text
 User clicks "Log out":
@@ -78,20 +78,20 @@ User clicks "Log out":
 
 ## Why you never roll your own
 
-You might be tempted to hand-build the token endpoints, the JWT verification, the PKCE math. Don't. Not because you can't — because the failure mode is silent.
+You might be tempted to hand-build the token endpoints, the JWT verification, the PKCE math. Don't. Not because you can't - because the failure mode is silent.
 
-A bug in your business logic throws an error someone notices. A bug in your auth — a skipped `aud` check, a timing leak in signature comparison, a wildcard redirect — produces software that *works perfectly in every demo* and quietly grants account takeover. There's no failing test, no error in the logs, until it's a disclosure email.
+A bug in your business logic throws an error someone notices. A bug in your auth - a skipped `aud` check, a timing leak in signature comparison, a wildcard redirect - produces software that *works perfectly in every demo* and quietly grants account takeover. There's no failing test, no error in the logs, until it's a disclosure email.
 
 The lazy move here is also the correct one:
 
 - **Use a battle-tested library** for the client side (the well-known certified OIDC/OAuth client for your language and framework). It handles PKCE, state, and JWT validation correctly so you don't reinvent the subtle parts.
-- **Use an established Authorization Server / IdP** rather than writing one — a hosted provider or a mature self-hostable identity server. Issuing tokens correctly (key rotation, consent, revocation, rate limits) is a product, not a weekend.
+- **Use an established Authorization Server / IdP** rather than writing one - a hosted provider or a mature self-hostable identity server. Issuing tokens correctly (key rotation, consent, revocation, rate limits) is a product, not a weekend.
 
-You still need to understand the flow — that's why this guide exists — so you can configure it correctly, read the network tab when it breaks, and catch a misconfigured `redirect_uri`. But the cryptographic and protocol plumbing is solved. Reach for the proven implementation.
+You still need to understand the flow - that's why this guide exists - so you can configure it correctly, read the network tab when it breaks, and catch a misconfigured `redirect_uri`. But the cryptographic and protocol plumbing is solved. Reach for the proven implementation.
 
 ## In the wild
 
-When you wire up "Log in with Google" through a mature library, almost everything in this guide happens for you: the library builds the `/authorize` URL with PKCE and `state`, handles the callback, exchanges the code, and validates the ID token's signature and claims. Your job shrinks to three things — register an exact `redirect_uri`, request least-privilege scopes, and keep the refresh token on a trusted back end. Get those three right and you've used the standard the way it was meant to be used.
+When you wire up "Log in with Google" through a mature library, almost everything in this guide happens for you: the library builds the `/authorize` URL with PKCE and `state`, handles the callback, exchanges the code, and validates the ID token's signature and claims. Your job shrinks to three things - register an exact `redirect_uri`, request least-privilege scopes, and keep the refresh token on a trusted back end. Get those three right and you've used the standard the way it was meant to be used.
 
 ```quiz
 [
@@ -121,7 +121,7 @@ When you wire up "Log in with Google" through a mature library, almost everythin
     "q": "What's the strongest argument against hand-rolling your own OAuth/OIDC implementation?",
     "choices": [
       "Libraries are always faster to run",
-      "Auth bugs fail silently — they work in every demo while granting account takeover",
+      "Auth bugs fail silently - they work in every demo while granting account takeover",
       "It's against the OAuth2 specification to write your own",
       "Modern languages can't do the required cryptography"
     ],

@@ -147,7 +147,7 @@
           if (el) {
             // Render at the diagram's NATURAL width, capped to the column. Never
             // stretch a small diagram to fill the column (the old maxWidth:100%
-            // with no width did that — a 2-node graph ballooned to full width),
+            // with no width did that - a 2-node graph ballooned to full width),
             // and never let a big one overflow (max-width:100% scales it down;
             // the lightbox zooms it). height:auto keeps the aspect ratio.
             const vbW = parseFloat((el.getAttribute('viewBox') || '').split(/\s+/)[2]);
@@ -184,7 +184,7 @@
       if (!reader) return;
 
       const codes = [...reader.querySelectorAll('code.language-mermaid')];
-      if (!codes.length) return; // nothing to render — never load mermaid
+      if (!codes.length) return; // nothing to render - never load mermaid
 
       // Replace each <pre> with a hidden figure placeholder up front so the raw
       // source never flashes. Keep the original source + a restore() for fallback.
@@ -222,7 +222,7 @@
       try {
         mermaid = (await import('mermaid')).default;
       } catch (e) {
-        // Couldn't load the library at all — restore every original block.
+        // Couldn't load the library at all - restore every original block.
         diagrams.forEach((d) => d.restore());
         diagrams = [];
         return;
@@ -335,7 +335,7 @@
     display: block;
   }
 
-  /* Zoom lightbox — appended to <body>. */
+  /* Zoom lightbox - appended to <body>. */
   :global(.mmd-lightbox) {
     position: fixed;
     inset: 0;

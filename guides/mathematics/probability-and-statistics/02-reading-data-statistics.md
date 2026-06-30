@@ -11,7 +11,7 @@ updated: 2026-06-25
 
 # Reading Data: Statistics That Don't Lie
 
-You have a pile of numbers — salaries, page-load times, exam scores — and someone asks the
+You have a pile of numbers - salaries, page-load times, exam scores - and someone asks the
 most natural question in the world: *so, what's it like?* You can't read out all 10,000
 values. You need to compress them into a few honest numbers that capture the shape of the pile
 without lying about it.
@@ -37,7 +37,7 @@ Take this tiny dataset of quiz scores: `[3, 5, 5, 7, 10]`.
   everything else once, so the mode is `5`.
 
 For this gentle dataset, mean (6), median (5), and mode (5) sit close together. That's the
-comfortable case. The interesting — and dangerous — case is when they pull apart.
+comfortable case. The interesting - and dangerous - case is when they pull apart.
 
 ## Mean vs median: the one idea that matters most
 
@@ -47,7 +47,7 @@ Imagine a small room with ten people. Nine earn around \$50,000 a year. The tent
 billionaire who earns \$1,000,000,000.
 
 What's the **average** (mean) income? Add the nine \$50,000 salaries (\$450,000) to the
-billion, divide by ten — roughly \$100,045,000. So the headline reads: *"Average income in
+billion, divide by ten - roughly \$100,045,000. So the headline reads: *"Average income in
 this room: over \$100 million."*
 
 Every word of that is arithmetically true and completely useless. Nobody in that room lives
@@ -56,10 +56,10 @@ toward the one extreme value, and now it describes nobody.
 
 The **median** doesn't flinch. Line up all ten incomes and look at the middle: still about
 \$50,000. The median answers "what does a typical person here earn?" honestly, because a single
-huge value can't move the middle of the line — it sits at the far end.
+huge value can't move the middle of the line - it sits at the far end.
 
 This is the core lesson: **the mean is sensitive to outliers and skew; the median resists
-them.** When data is lumpy — a few values far from the rest — the mean tells you about the
+them.** When data is lumpy - a few values far from the rest - the mean tells you about the
 lump, and the median tells you about the people.
 
 That's why you hear "median household income" and "median home price" in the news, almost never
@@ -72,7 +72,7 @@ Knowing the center isn't enough. Two datasets can share a mean and feel complete
 other is all over the place. You need a number for **spread**.
 
 The simplest is the **range**: largest value minus smallest. For `[0, 50, 100]` the range is
-`100 - 0 = 100`. Quick, but fragile — one freak value blows it up, and it says nothing about
+`100 - 0 = 100`. Quick, but fragile - one freak value blows it up, and it says nothing about
 what happens in between.
 
 The workhorse is **standard deviation**. The intuition is all you need right now:
@@ -85,7 +85,7 @@ scored near 70. If it's 25, scores are flung from near-zero to near-perfect, and
 is 70" hides a lot.
 
 (Under the hood: measure how far each value is from the mean, square those distances so
-positives and negatives don't cancel, average them — that average is the **variance** — then
+positives and negatives don't cancel, average them - that average is the **variance** - then
 take the square root to get back to the original units. You don't grind the formula by hand; a
 calculator or one line of code does it. What you need is the mental model: *typical distance
 from the average*.)
@@ -96,7 +96,7 @@ A **distribution** is the shape the data makes when you sort it into buckets and
 values land here, how many there?" Picture a histogram: tall bars where values pile up, short
 bars where they're rare.
 
-The most famous shape is the **normal distribution** — the "bell curve." Most values cluster
+The most famous shape is the **normal distribution** - the "bell curve." Most values cluster
 around the center and thin out symmetrically as you move away in either direction. Adult
 heights, measurement errors, and many natural quantities land roughly here. When data is
 bell-shaped, the mean and median sit together in the middle, and standard deviation describes
@@ -105,11 +105,11 @@ the width of the bell.
 Plenty of real data is **not** symmetric. When a long tail stretches off to one side, the
 distribution is **skewed**. Incomes, latencies, and file sizes are classic right-skewed shapes:
 most values are modest, with a few very large ones trailing off to the right. That long tail is
-exactly what drags the mean away from the median — which is why those are the cases where the
+exactly what drags the mean away from the median - which is why those are the cases where the
 median earns its keep.
 
 To talk about position inside a distribution, use **percentiles**. The *p*th percentile is the
-value below which *p* percent of the data falls. The **median is the 50th percentile** — half
+value below which *p* percent of the data falls. The **median is the 50th percentile** - half
 the data sits below it. The 95th percentile (**p95**) is the value 95% of your data comes in
 under; only the slowest or largest 5% exceed it. Percentiles let you describe the tail
 precisely instead of hand-waving about "the big ones."
@@ -117,7 +117,7 @@ precisely instead of hand-waving about "the big ones."
 ## See it move
 
 Watch the mean and median react differently to a single outlier. This uses Python's
-standard-library `statistics` module — nothing to install.
+standard-library `statistics` module - nothing to install.
 
 ```python runnable
 import statistics
@@ -129,7 +129,7 @@ print(round(statistics.pstdev(data), 2))
 
 *What just happened:* the mean comes out to about `17.14`, even though six of the seven values
 are between 2 and 4. That single `100` dragged the average into a range where no actual data
-point lives. The median is `4` — the genuine middle of the pile — and it doesn't budge no
+point lives. The median is `4` - the genuine middle of the pile - and it doesn't budge no
 matter how extreme that outlier gets. The standard deviation is large precisely because one
 value sits so far from the mean. Same data, two very different stories about "the typical
 value," and only one is honest.
@@ -137,7 +137,7 @@ value," and only one is honest.
 ## For builders: why teams track p95, not the average
 
 If you run a web service, you care how fast it responds. The tempting metric is **average
-response time** — but request latencies are right-skewed, and the average hides the pain.
+response time** - but request latencies are right-skewed, and the average hides the pain.
 
 Say 99 requests return in 50 ms and one stalls at 5,000 ms. The average is about 99.5 ms,
 which sounds fine. But one user waited five full seconds, and the average quietly buried them.
@@ -146,19 +146,19 @@ suffer.
 
 That's why serious teams watch **percentiles** instead:
 
-- **p50** (the median): the typical experience — half of requests are faster.
+- **p50** (the median): the typical experience - half of requests are faster.
 - **p95**: 95% of requests come in under this. A reasonable "most people are okay."
-- **p99**: the slowest 1%. This is where your worst real experiences live — the spinning
+- **p99**: the slowest 1%. This is where your worst real experiences live - the spinning
   loaders, the rage-quits, the support tickets.
 
 Optimizing the average can mean shaving milliseconds off requests that were already fast.
 Optimizing p99 means fixing the requests that are actually hurting people. The percentile tells
 you where the suffering is; the average tells you a comforting story. This same instinct shows
-up anywhere you summarize counts — and counting itself has its own toolkit in
+up anywhere you summarize counts - and counting itself has its own toolkit in
 [/guides/counting-and-combinatorics](/guides/counting-and-combinatorics).
 
-> ⚠️ **"Average" almost always means the mean.** And for skewed data — incomes, latencies, file
-> sizes, response times — the mean is the number most likely to mislead you. When you see an
+> ⚠️ **"Average" almost always means the mean.** And for skewed data - incomes, latencies, file
+> sizes, response times - the mean is the number most likely to mislead you. When you see an
 > average reported on lumpy data, ask for the median (and a percentile or two) before you trust
 > it. The mean isn't wrong; it's answering a different question than the one you probably care
 > about.
@@ -172,7 +172,7 @@ up anywhere you summarize counts — and counting itself has its own toolkit in
 - **Spread**: the **range** is max minus min; **standard deviation** is the typical distance of
   values from the mean. Same center, different spread = different data.
 - **Shape**: a **distribution** describes how values pile up. The **normal** curve is the
-  symmetric bell; **skewed** data has a long tail. **Percentiles** pin down position — the
+  symmetric bell; **skewed** data has a long tail. **Percentiles** pin down position - the
   median is the 50th percentile, and p95/p99 expose the tail.
 
 A quick check before you move on:
@@ -183,7 +183,7 @@ A quick check before you move on:
     "q": "Nine people earn about $50k and one earns $1 billion. Which number better describes a typical income in the room?",
     "choices": ["The mean, because it uses every value", "The median, because the outlier barely moves it", "The range, because it shows the gap", "They're equally good summaries here"],
     "answer": 1,
-    "explain": "The single huge income drags the mean to over $100 million — a value nobody actually earns. The median stays near $50k because one extreme value can't shift the middle of the sorted list."
+    "explain": "The single huge income drags the mean to over $100 million - a value nobody actually earns. The median stays near $50k because one extreme value can't shift the middle of the sorted list."
   },
   {
     "q": "What does the standard deviation of a dataset describe?",
@@ -195,7 +195,7 @@ A quick check before you move on:
     "q": "The median is equivalent to which percentile?",
     "choices": ["The 50th percentile", "The 95th percentile", "The 100th percentile", "The 0th percentile"],
     "answer": 0,
-    "explain": "The pth percentile is the value below which p percent of the data falls. The median splits the data in half, so exactly 50% sits below it — making it the 50th percentile."
+    "explain": "The pth percentile is the value below which p percent of the data falls. The median splits the data in half, so exactly 50% sits below it - making it the 50th percentile."
   }
 ]
 ```

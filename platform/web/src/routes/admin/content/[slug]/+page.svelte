@@ -375,7 +375,7 @@
 </div>
 
 <style>
-  /* Edit-history drawer. Scoped to this component — all tokens come from app.css.
+  /* Edit-history drawer. Scoped to this component - all tokens come from app.css.
      NOTE: app.css has no --ok token, so additions fall back to a sensible green
      via the var() fallback; removals use the global --danger. */
   .ed-hist-backdrop {

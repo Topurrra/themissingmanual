@@ -2,7 +2,7 @@
 title: "Predicates: Statements With Variables"
 guide: "predicate-logic-and-quantifiers"
 phase: 1
-summary: "A predicate is a statement with a blank — 'x is even' — that becomes true or false only once you fill the blank. Plus the 'domain': the set of things the blank is allowed to be."
+summary: "A predicate is a statement with a blank - 'x is even' - that becomes true or false only once you fill the blank. Plus the 'domain': the set of things the blank is allowed to be."
 tags: [logic, predicate-logic, predicates, domain]
 difficulty: beginner
 synonyms: ["what is a predicate in logic", "statement with a variable", "domain of discourse", "predicate vs proposition", "what is P(x)"]
@@ -19,7 +19,7 @@ those boxes with `and`, `or`, `not`, and `→`, but the box stayed opaque. That 
 wanted to say something that wasn't about *one* fixed thing.
 
 Try saying "every number greater than one has a prime factor" with only sealed boxes. You can't.
-There's no single true-or-false statement there — there's a *pattern* that's supposed to hold for
+There's no single true-or-false statement there - there's a *pattern* that's supposed to hold for
 many things at once. To talk about that, you have to open the box and look at the variable inside.
 
 That's what predicate logic does. It looks *inside* a statement.
@@ -27,7 +27,7 @@ That's what predicate logic does. It looks *inside* a statement.
 ## A predicate is a statement with a blank
 
 Here's the core idea. A **predicate** is a statement with one or more variables in it. On its own
-it has no truth value — not true, not false — because it isn't finished. It's a statement with a
+it has no truth value - not true, not false - because it isn't finished. It's a statement with a
 blank, waiting for you to fill it.
 
 ```text
@@ -50,7 +50,7 @@ P(4)  →  "4 is even"   →  true
 P(7)  →  "7 is even"   →  false
 ```
 
-Notice what happened. `P(x)` had no truth value. `P(4)` does — a real, finished statement that
+Notice what happened. `P(x)` had no truth value. `P(4)` does - a real, finished statement that
 happens to be true. Filling the blank turned a *predicate* into a proposition, the kind of sealed
 box from the last guide.
 
@@ -73,7 +73,7 @@ Older(Sam, Maya)   →  "Sam is older than Maya"   →  the opposite
 ```
 
 Order matters, the same way it does in subtraction. `Older(a, b)` and `Older(b, a)` are different
-statements. Filling one blank but not the other still gets you no truth value —
+statements. Filling one blank but not the other still gets you no truth value -
 `Older(Maya, x)` is *still* a predicate, only a smaller one. It now means "Maya is older than ___",
 true or false only once you say who `x` is.
 
@@ -85,7 +85,7 @@ don't need the vocabulary, but you'll see it.
 There's a quiet question behind every predicate: *what kinds of things are allowed in the blank?*
 
 For `P(x) = "x is even"`, plugging in `4` is fine. But what would `P("banana")` mean? "Banana is
-even" isn't false — it's nonsense. Evenness is about numbers, not fruit. So we always have in mind a
+even" isn't false - it's nonsense. Evenness is about numbers, not fruit. So we always have in mind a
 set of things the variable is allowed to range over. That set is the **domain of discourse** (or the
 *domain*, or *universe*).
 
@@ -116,7 +116,7 @@ the next phase, so let it sink in now: the domain isn't a detail, it's half the 
 
 ## For builders
 
-If you write code, you use predicates constantly — under a different name.
+If you write code, you use predicates constantly - under a different name.
 
 A predicate is a **function that returns a boolean**:
 
@@ -125,12 +125,12 @@ is_even(x):
     return x % 2 == 0
 ```
 
-`is_even` on its own isn't true or false — it's a function. `is_even(4)` returns `true`;
+`is_even` on its own isn't true or false - it's a function. `is_even(4)` returns `true`;
 `is_even(7)` returns `false`. That's `P(4)` and `P(7)`, exactly. The mathematician's `P(x)` and the
 programmer's `is_even(x)` are the same object in different clothes.
 
 And the domain? That's roughly the *type* of the argument. `is_even` expects an integer; handing it a
-string is a type error — the programming version of "banana is even" being nonsense rather than
+string is a type error - the programming version of "banana is even" being nonsense rather than
 false.
 
 You'll also notice that lots of standard library tools *take a predicate as an argument*. `filter()`
@@ -141,7 +141,7 @@ filter(is_even, [1, 2, 3, 4, 5, 6])   →  [2, 4, 6]
 ```
 
 `filter` walks the list and keeps each element for which the predicate returns true. That list is, in
-effect, the domain. So `filter` asks, for each `x` in the domain, "is `P(x)` true?" — and that
+effect, the domain. So `filter` asks, for each `x` in the domain, "is `P(x)` true?" - and that
 question is the seed of the quantifiers you'll meet next.
 
 ## ⚠️ A predicate alone is not true or false
@@ -158,12 +158,12 @@ when there are a hundred doors and you haven't said which one.
 
 There are exactly two ways to give `P(x)` a truth value:
 
-1. **Fill the blank** with a specific value — `P(4)` — turning it into a proposition.
-2. **Quantify** it — say something about *all* x, or *some* x, in the domain.
+1. **Fill the blank** with a specific value - `P(4)` - turning it into a proposition.
+2. **Quantify** it - say something about *all* x, or *some* x, in the domain.
 
 That second option is the whole next phase. Statements like "*for all* x in the domain, P(x) is
 true" and "*there exists* an x in the domain where P(x) is true" take a predicate plus a domain and
-produce something true or false — without pinning `x` to a single value. That's the bridge from
+produce something true or false - without pinning `x` to a single value. That's the bridge from
 "statement with a blank" back to "statement you can actually judge."
 
 ## Recap
@@ -188,7 +188,7 @@ Consider this code:
 const admins = users.filter(u => u.role === 'admin');
 ```
 
-The `filter` method takes a predicate — here, `u.role === 'admin'`. Now write, in
+The `filter` method takes a predicate - here, `u.role === 'admin'`. Now write, in
 plain English, what the *domain* is for this predicate, and what the predicate claims
 about each element. Then: is `filter` checking a `∀` claim or an `∃` claim? Why?
 
@@ -212,7 +212,7 @@ Quick check before you move on:
     "choices": [
       "Always true",
       "Always false",
-      "It has no truth value yet — the question is incomplete until x is fixed",
+      "It has no truth value yet - the question is incomplete until x is fixed",
       "It depends on whether x is a letter or a number"
     ],
     "answer": 2,
@@ -227,7 +227,7 @@ Quick check before you move on:
       "The number of variables (blanks) the predicate has"
     ],
     "answer": 1,
-    "explain": "The domain is the set of legal values for the variable. The same predicate can behave very differently over different domains — for example, 'x is even' is always true over the even numbers but never true over the odd numbers."
+    "explain": "The domain is the set of legal values for the variable. The same predicate can behave very differently over different domains - for example, 'x is even' is always true over the even numbers but never true over the odd numbers."
   }
 ]
 ```

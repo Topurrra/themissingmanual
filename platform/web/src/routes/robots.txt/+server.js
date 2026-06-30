@@ -1,4 +1,4 @@
-// robots.txt — allow everything, point crawlers at the sitemap, and declare
+// robots.txt - allow everything, point crawlers at the sitemap, and declare
 // AI-usage preferences via Content Signals (contentsignals.org). Fully open:
 // this is free educational content meant to be read, indexed, and learned from.
 export function GET({ url }) {

@@ -18,11 +18,11 @@ updated: 2026-06-30
 
 # Drift, shadows, and production
 
-The everyday loop is smooth until someone reaches into the database by hand, or a migration half-fails in production, or two people generate migrations on the same day. This phase is about those moments — the ones that turn a calm Tuesday into an incident. None of them are mysterious once you understand what Prisma is checking and why.
+The everyday loop is smooth until someone reaches into the database by hand, or a migration half-fails in production, or two people generate migrations on the same day. This phase is about those moments - the ones that turn a calm Tuesday into an incident. None of them are mysterious once you understand what Prisma is checking and why.
 
 ## The shadow database, demystified
 
-When `migrate dev` generates a migration, it needs to answer a sharp question: *does the recorded migration history actually produce the schema I wrote?* To check this without touching your real dev data, Prisma spins up a temporary, throwaway database — the **shadow database** — replays every migration into it from scratch, and compares the result against your schema.
+When `migrate dev` generates a migration, it needs to answer a sharp question: *does the recorded migration history actually produce the schema I wrote?* To check this without touching your real dev data, Prisma spins up a temporary, throwaway database - the **shadow database** - replays every migration into it from scratch, and compares the result against your schema.
 
 ```console
 $ npx prisma migrate dev --name add_index
@@ -35,7 +35,7 @@ The following migration(s) have been created and applied:
   └─ 20260630140000_add_index/
 ```
 
-*What just happened:* Prisma built a clean database, ran your whole migration history into it, and used that as a trustworthy reference point to compute the diff for the new migration. It's created and dropped automatically. The shadow database is *only* used by `migrate dev` — `migrate deploy` never needs one, which is good, because production database users often can't create databases.
+*What just happened:* Prisma built a clean database, ran your whole migration history into it, and used that as a trustworthy reference point to compute the diff for the new migration. It's created and dropped automatically. The shadow database is *only* used by `migrate dev` - `migrate deploy` never needs one, which is good, because production database users often can't create databases.
 
 > If your dev database user lacks permission to create a database, the shadow step fails. The fix is to point Prisma at a separate shadow database you provision yourself, via the `shadowDatabaseUrl` field in your `datasource` block. This is common on hosted Postgres where your user can't create databases.
 
@@ -65,11 +65,11 @@ $ npx prisma migrate deploy
 Error: The migration `20260630131500_add_user_bio` was modified after it was applied.
 ```
 
-*What just happened:* the on-disk file no longer matches the recorded checksum, so deploy halts. This is a feature, not an annoyance — it guarantees that what ran on production is exactly what's in your repo. If you need to change something, you add a *new* migration that alters it. History is append-only, like a ledger.
+*What just happened:* the on-disk file no longer matches the recorded checksum, so deploy halts. This is a feature, not an annoyance - it guarantees that what ran on production is exactly what's in your repo. If you need to change something, you add a *new* migration that alters it. History is append-only, like a ledger.
 
 ## When a migration fails halfway
 
-In production, a migration can fail partway — a unique constraint hits existing duplicate data, a statement times out. Prisma marks that migration as failed in `_prisma_migrations`, and subsequent `migrate deploy` runs refuse to continue until you resolve it:
+In production, a migration can fail partway - a unique constraint hits existing duplicate data, a statement times out. Prisma marks that migration as failed in `_prisma_migrations`, and subsequent `migrate deploy` runs refuse to continue until you resolve it:
 
 ```console
 $ npx prisma migrate resolve --rolled-back 20260630131500_add_user_bio
@@ -91,11 +91,11 @@ $ npx prisma migrate resolve --rolled-back 20260630131500_add_user_bio
   by timestamp and that both still apply cleanly into a fresh database.
 ```
 
-*What just happened:* every item traces back to the same idea from phase 1 — schema, history, and database must keep agreeing. Drift detection and checksums are the guardrails; this checklist is how you avoid tripping them.
+*What just happened:* every item traces back to the same idea from phase 1 - schema, history, and database must keep agreeing. Drift detection and checksums are the guardrails; this checklist is how you avoid tripping them.
 
 ## In the wild
 
-On teams, the painful drift case is two developers each running `migrate dev` the same day on separate branches. Both migrations apply fine alone, but when both land on `main`, their timestamp order may differ from the order they were authored in. Before merging, it's worth confirming the combined set applies cleanly into a fresh database — that's exactly what the shadow database does for you locally, and what a CI step running `migrate deploy` against an empty database confirms for the team. For the deeper theory of ordering and reversibility, see [/guides/database-migrations](/guides/database-migrations).
+On teams, the painful drift case is two developers each running `migrate dev` the same day on separate branches. Both migrations apply fine alone, but when both land on `main`, their timestamp order may differ from the order they were authored in. Before merging, it's worth confirming the combined set applies cleanly into a fresh database - that's exactly what the shadow database does for you locally, and what a CI step running `migrate deploy` against an empty database confirms for the team. For the deeper theory of ordering and reversibility, see [/guides/database-migrations](/guides/database-migrations).
 
 ```quiz
 [

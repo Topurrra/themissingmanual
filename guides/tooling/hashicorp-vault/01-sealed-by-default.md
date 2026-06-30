@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Sealed by Default
 
-Picture the state your secrets are in today. A database password lives in `application.yml`, which lives in a repo, which lives on every laptop that ever cloned it. An AWS key is in a CI variable that ten people can read. None of these secrets has an expiry date, none of them is logged when read, and revoking one means a frantic grep across every service that might use it. This is *secrets sprawl*, and it's not laziness — it's the default. Every shortcut was reasonable in the moment. The problem is that the moments add up into a blast radius nobody can measure.
+Picture the state your secrets are in today. A database password lives in `application.yml`, which lives in a repo, which lives on every laptop that ever cloned it. An AWS key is in a CI variable that ten people can read. None of these secrets has an expiry date, none of them is logged when read, and revoking one means a frantic grep across every service that might use it. This is *secrets sprawl*, and it's not laziness - it's the default. Every shortcut was reasonable in the moment. The problem is that the moments add up into a blast radius nobody can measure.
 
 Vault's whole pitch is to collapse that blast radius. Instead of secrets scattered as plaintext, there's one service that holds them encrypted, hands them out only to identities that policy allows, can make many of them short-lived, and writes down every access. Before any of that makes sense, you need the one idea the rest hangs from: Vault spends most of its life **sealed**.
 
@@ -19,7 +19,7 @@ Vault's whole pitch is to collapse that blast radius. Instead of secrets scatter
 
 When Vault stores a secret, it doesn't write it to disk in the clear. It encrypts it with an internal *encryption key*. That encryption key is itself encrypted by a *root key* (sometimes called the master key). So far that's normal at-rest encryption. The twist is where the root key lives: it does **not** live on disk in usable form.
 
-When the Vault process starts, it's *sealed*. It has the encrypted data and the encrypted root key, but it cannot decrypt anything, because it's missing the piece that unlocks the root key. In that state Vault can do almost nothing — it can't read secrets, can't issue tokens, can't serve requests. It's a locked safe whose combination isn't in the building.
+When the Vault process starts, it's *sealed*. It has the encrypted data and the encrypted root key, but it cannot decrypt anything, because it's missing the piece that unlocks the root key. In that state Vault can do almost nothing - it can't read secrets, can't issue tokens, can't serve requests. It's a locked safe whose combination isn't in the building.
 
 ```text
                 sealed                          unsealed
@@ -57,7 +57,7 @@ $ vault operator unseal Tz0a...
 Sealed   false   Unseal Progress   0/3
 ```
 
-*What just happened:* three of the five share-holders showed up, the root key got reassembled in memory, and Vault is now serving requests. Restart the process and you're back to sealed — you unseal again.
+*What just happened:* three of the five share-holders showed up, the root key got reassembled in memory, and Vault is now serving requests. Restart the process and you're back to sealed - you unseal again.
 
 > In real production, almost nobody types unseal keys by hand. Vault is configured with **auto-unseal**, where a cloud KMS or HSM holds the unlocking key and Vault asks it on startup. Shamir is the model to understand; auto-unseal is the model you run. Phase 3 returns to this.
 
@@ -65,11 +65,11 @@ Sealed   false   Unseal Progress   0/3
 
 Once unsealed, Vault is a set of pluggable parts. You don't need them all on day one, but the names will keep coming up:
 
-- **Secrets engines** — mounted at a path, each one *does* something with secrets. The `kv` engine stores static key-value secrets. The `database` engine *generates* credentials on demand. The `transit` engine encrypts data without ever storing it. Different engines, mounted at different paths, same Vault.
-- **Auth methods** — how a human or machine proves who they are *before* Vault gives them a token. A person might log in with their company SSO; a Kubernetes pod proves itself with its service-account token; a CI job uses AppRole. Each method maps an external identity to Vault policies.
-- **Policies** — written rules saying which paths an identity may read, write, or delete. No policy, no access. This is how Vault turns "who are you" into "what may you touch."
-- **Tokens** — the currency of every request. After you authenticate, you get a token; every later call carries it. Tokens have a lease and expire.
-- **Audit devices** — the tamper-evident log of every request and response (with secrets hashed, not printed).
+- **Secrets engines** - mounted at a path, each one *does* something with secrets. The `kv` engine stores static key-value secrets. The `database` engine *generates* credentials on demand. The `transit` engine encrypts data without ever storing it. Different engines, mounted at different paths, same Vault.
+- **Auth methods** - how a human or machine proves who they are *before* Vault gives them a token. A person might log in with their company SSO; a Kubernetes pod proves itself with its service-account token; a CI job uses AppRole. Each method maps an external identity to Vault policies.
+- **Policies** - written rules saying which paths an identity may read, write, or delete. No policy, no access. This is how Vault turns "who are you" into "what may you touch."
+- **Tokens** - the currency of every request. After you authenticate, you get a token; every later call carries it. Tokens have a lease and expire.
+- **Audit devices** - the tamper-evident log of every request and response (with secrets hashed, not printed).
 
 ```text
    identity ──auth method──► token ──(carries)──► request
@@ -79,11 +79,11 @@ Once unsealed, Vault is a set of pluggable parts. You don't need them all on day
                                           secrets engine at a path
 ```
 
-*What just happened:* every interaction follows the same spine — prove identity, get a token, make a request, policy decides, an engine serves it, the audit device records it. Hold that shape and the rest of Vault is detail.
+*What just happened:* every interaction follows the same spine - prove identity, get a token, make a request, policy decides, an engine serves it, the audit device records it. Hold that shape and the rest of Vault is detail.
 
 ## Why this beats a config file
 
-The payoff of all this structure is concrete. Secrets are encrypted at rest under a key that isn't sitting on disk. Access is governed by policy you can read and review, not by file permissions scattered across hosts. Many secrets can be *dynamic* — generated when asked and revoked automatically — so a leaked credential is worth little because it expires. And the audit log means "who read the prod database password, and when" has an actual answer.
+The payoff of all this structure is concrete. Secrets are encrypted at rest under a key that isn't sitting on disk. Access is governed by policy you can read and review, not by file permissions scattered across hosts. Many secrets can be *dynamic* - generated when asked and revoked automatically - so a leaked credential is worth little because it expires. And the audit log means "who read the prod database password, and when" has an actual answer.
 
 For the bigger picture of why teams move off plaintext and what other tools play in this space, see [/guides/secrets-management](/guides/secrets-management). Vault is one strong answer to the problem that guide frames.
 

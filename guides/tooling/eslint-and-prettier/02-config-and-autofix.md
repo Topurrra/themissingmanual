@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Config and autofix
 
-Now the everyday part. You know the two jobs; here's how you wire the tools into a project and run them. The good news: the modern setup is smaller than the old one. The pieces are a Prettier config (tiny), an ESLint config (a flat array these days), and two commands you'll run constantly — one to format, one to fix.
+Now the everyday part. You know the two jobs; here's how you wire the tools into a project and run them. The good news: the modern setup is smaller than the old one. The pieces are a Prettier config (tiny), an ESLint config (a flat array these days), and two commands you'll run constantly - one to format, one to fix.
 
 ## Installing the pieces
 
@@ -29,7 +29,7 @@ For ESLint, the quickest honest start is its own setup command, which asks a few
 npm init @eslint/config@latest
 ```
 
-*What just happened:* ESLint scaffolds a config tailored to your answers (framework, TypeScript or not, browser or Node) and installs the plugins those answers imply. You'll still want to read what it wrote — a generated config you don't understand is a config you can't fix later.
+*What just happened:* ESLint scaffolds a config tailored to your answers (framework, TypeScript or not, browser or Node) and installs the plugins those answers imply. You'll still want to read what it wrote - a generated config you don't understand is a config you can't fix later.
 
 ## Prettier config: small on purpose
 
@@ -44,7 +44,7 @@ Prettier's config is deliberately tiny because Prettier doesn't have many knobs.
 }
 ```
 
-*What just happened:* you set four preferences — keep semicolons, prefer single quotes, wrap lines around 100 characters, add trailing commas everywhere they're legal. Everything else uses Prettier's defaults. Resist the urge to tweak more; the whole value is that the team stops debating these.
+*What just happened:* you set four preferences - keep semicolons, prefer single quotes, wrap lines around 100 characters, add trailing commas everywhere they're legal. Everything else uses Prettier's defaults. Resist the urge to tweak more; the whole value is that the team stops debating these.
 
 Pair it with a `.prettierignore` so Prettier skips files it shouldn't touch:
 
@@ -59,7 +59,7 @@ package-lock.json
 
 ## ESLint flat config: the modern shape
 
-Modern ESLint uses **flat config**: a single `eslint.config.js` file exporting an array of config objects. This replaced the older `.eslintrc` style. The array shape is the thing to understand — each object can target certain files and set rules, and later objects override earlier ones. That ordering is exactly what makes the Prettier handshake work.
+Modern ESLint uses **flat config**: a single `eslint.config.js` file exporting an array of config objects. This replaced the older `.eslintrc` style. The array shape is the thing to understand - each object can target certain files and set rules, and later objects override earlier ones. That ordering is exactly what makes the Prettier handshake work.
 
 ```js
 // eslint.config.js
@@ -103,13 +103,13 @@ export default [
 ];
 ```
 
-*What just happened:* `prettier` sits last in the array on purpose. Since later objects win, it turns off ESLint's stylistic rules *after* everything else has had its say. Now the division of labor is enforced in code: ESLint checks correctness, Prettier owns formatting, and they physically cannot collide. The order is the whole trick — put `prettier` anywhere but last and an earlier formatting rule can sneak back in.
+*What just happened:* `prettier` sits last in the array on purpose. Since later objects win, it turns off ESLint's stylistic rules *after* everything else has had its say. Now the division of labor is enforced in code: ESLint checks correctness, Prettier owns formatting, and they physically cannot collide. The order is the whole trick - put `prettier` anywhere but last and an earlier formatting rule can sneak back in.
 
 > One sentence to memorize: `eslint-config-prettier` goes last and turns ESLint's formatting rules off. That's the entire peace treaty.
 
 ## The two commands you'll live in
 
-Both tools have an autofix mode, and it's where most of the value is. You rarely fix style by hand — you let the machine do it.
+Both tools have an autofix mode, and it's where most of the value is. You rarely fix style by hand - you let the machine do it.
 
 ```bash
 # format every file in place
@@ -133,11 +133,11 @@ Wire them into `package.json` so nobody has to remember the flags:
 }
 ```
 
-*What just happened:* now `npm run format` and `npm run lint` are the team's shared vocabulary. New contributors don't need to know `npx` incantations — they run the named scripts, which is also exactly what your CI will call in Phase 3.
+*What just happened:* now `npm run format` and `npm run lint` are the team's shared vocabulary. New contributors don't need to know `npx` incantations - they run the named scripts, which is also exactly what your CI will call in Phase 3.
 
 ## In the wild
 
-A common rhythm on a healthy team: format-on-save in the editor (so you never think about it), `npm run lint` while you work (to catch bugs early), and both enforced in CI (so nothing slips through). You'll set up that enforcement next — the configs you wrote above are what every layer points at.
+A common rhythm on a healthy team: format-on-save in the editor (so you never think about it), `npm run lint` while you work (to catch bugs early), and both enforced in CI (so nothing slips through). You'll set up that enforcement next - the configs you wrote above are what every layer points at.
 
 ```quiz
 [

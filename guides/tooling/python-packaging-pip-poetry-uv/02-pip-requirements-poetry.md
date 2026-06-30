@@ -2,7 +2,7 @@
 title: "The Daily Driver: pip, requirements, and Poetry"
 guide: python-packaging-pip-poetry-uv
 phase: 2
-summary: "Taming Python environments: virtual environments, pip and requirements, the modern pyproject.toml with Poetry, and uv's blazing resolver — without dependency hell."
+summary: "Taming Python environments: virtual environments, pip and requirements, the modern pyproject.toml with Poetry, and uv's blazing resolver - without dependency hell."
 tags: [python, packaging, pip, venv, poetry, uv, dependencies, virtualenv]
 difficulty: intermediate
 synonyms:
@@ -17,7 +17,7 @@ updated: 2026-06-30
 
 # The Daily Driver: pip, requirements, and Poetry
 
-You've got the model: each project gets its own shelf, and you keep the *recipe* in git. This phase is about writing that recipe well. We'll start where almost everyone starts — `pip` and a `requirements.txt` — see exactly where that recipe falls short, and then move to `pyproject.toml` with Poetry, which fixes the gaps without changing the model underneath.
+You've got the model: each project gets its own shelf, and you keep the *recipe* in git. This phase is about writing that recipe well. We'll start where almost everyone starts - `pip` and a `requirements.txt` - see exactly where that recipe falls short, and then move to `pyproject.toml` with Poetry, which fixes the gaps without changing the model underneath.
 
 ## pip and requirements.txt: the honest baseline
 
@@ -33,9 +33,9 @@ flask
 (.venv) $ pip install -r requirements.txt
 ```
 
-*What just happened:* pip read the file line by line and installed each named package — and, quietly, the latest compatible version of each, *plus* every library those packages themselves depend on. That last part matters: `flask` pulls in a half-dozen other packages you never named.
+*What just happened:* pip read the file line by line and installed each named package - and, quietly, the latest compatible version of each, *plus* every library those packages themselves depend on. That last part matters: `flask` pulls in a half-dozen other packages you never named.
 
-Now the gap. Your file says `flask` with no version. Install it today and you get one version; install it next year and you get a newer one that might behave differently. The recipe isn't reproducible — it's a wish. The common patch is `pip freeze`:
+Now the gap. Your file says `flask` with no version. Install it today and you get one version; install it next year and you get a newer one that might behave differently. The recipe isn't reproducible - it's a wish. The common patch is `pip freeze`:
 
 ```console
 (.venv) $ pip freeze > requirements.txt
@@ -51,15 +51,15 @@ requests==2.31.0
 ...
 ```
 
-*What just happened:* `pip freeze` dumped *every* package on the shelf with its exact version — including all the indirect dependencies you never asked for. Now the install is reproducible. But you've created a new problem: this flat list can't tell you which packages you actually chose (`flask`, `requests`) and which are just along for the ride. When you want to remove `flask`, you can't know which of those other lines are safe to delete. There's no record of *intent*, only of *result*.
+*What just happened:* `pip freeze` dumped *every* package on the shelf with its exact version - including all the indirect dependencies you never asked for. Now the install is reproducible. But you've created a new problem: this flat list can't tell you which packages you actually chose (`flask`, `requests`) and which are just along for the ride. When you want to remove `flask`, you can't know which of those other lines are safe to delete. There's no record of *intent*, only of *result*.
 
 That's the core limitation of `requirements.txt`: it's a single flat list that conflates "what I want" with "what that dragged in," and on its own it doesn't separate your runtime needs from your test-only tools either.
 
-> `requirements.txt` is not dead — it's a fine, dependency-light format for simple scripts, container builds, and deployment targets that expect it. The trouble starts when a project grows and you need to reason about *why* each package is there.
+> `requirements.txt` is not dead - it's a fine, dependency-light format for simple scripts, container builds, and deployment targets that expect it. The trouble starts when a project grows and you need to reason about *why* each package is there.
 
 ## pyproject.toml: declaring intent
 
-The modern Python recipe is a file called `pyproject.toml`. It's a standardized config file (defined across several PEPs) that declares what your project *is* and what it *directly* depends on — your intent, separate from the resolved result.
+The modern Python recipe is a file called `pyproject.toml`. It's a standardized config file (defined across several PEPs) that declares what your project *is* and what it *directly* depends on - your intent, separate from the resolved result.
 
 ```toml
 # pyproject.toml
@@ -73,13 +73,13 @@ dependencies = [
 ]
 ```
 
-*What just happened:* you declared the two libraries you actually chose, with version *floors* (`>=`), and which Python versions the project supports. Nothing about `certifi` or `click` — those are consequences, recorded elsewhere, not intent. This is the recipe a human reads to understand the project.
+*What just happened:* you declared the two libraries you actually chose, with version *floors* (`>=`), and which Python versions the project supports. Nothing about `certifi` or `click` - those are consequences, recorded elsewhere, not intent. This is the recipe a human reads to understand the project.
 
 But `pyproject.toml` declares intent; it doesn't, by itself, *pin* the exact resolved versions for reproducibility, and standard tooling won't manage the environment for you. That's the job a project manager fills. Poetry is the long-established one.
 
 ## Poetry: intent plus a lockfile, in one tool
 
-Poetry reads and writes `pyproject.toml`, creates and manages the virtual environment for you, resolves the full dependency tree, and — the key part — records the exact resolution in a `poetry.lock` file.
+Poetry reads and writes `pyproject.toml`, creates and manages the virtual environment for you, resolves the full dependency tree, and - the key part - records the exact resolution in a `poetry.lock` file.
 
 ```console
 $ poetry new billing-service        # scaffold a project, or `poetry init` in an existing one
@@ -88,7 +88,7 @@ $ poetry add requests flask         # adds to pyproject.toml AND installs AND up
 $ poetry add --group dev pytest     # a dev-only dependency, kept out of production installs
 ```
 
-*What just happened:* `poetry add` did three things at once — wrote the dependency into `pyproject.toml`, installed it into a managed virtual environment, and updated `poetry.lock` with the precise versions of everything in the resolved tree. The `--group dev` flag put `pytest` in a separate bucket, so your production install can skip test tooling entirely. That dependency-group split is exactly the "which packages are along for the ride / which are test-only" problem that flat `requirements.txt` couldn't express.
+*What just happened:* `poetry add` did three things at once - wrote the dependency into `pyproject.toml`, installed it into a managed virtual environment, and updated `poetry.lock` with the precise versions of everything in the resolved tree. The `--group dev` flag put `pytest` in a separate bucket, so your production install can skip test tooling entirely. That dependency-group split is exactly the "which packages are along for the ride / which are test-only" problem that flat `requirements.txt` couldn't express.
 
 The lockfile is the payoff. `pyproject.toml` says "Flask 3.x or newer"; `poetry.lock` says "this exact build of Flask 3.0.2, and these exact 14 other packages, with these hashes." Two files, two jobs:
 
@@ -100,11 +100,11 @@ poetry.lock      →  machine resolution, exact PINS + hashes, tool-generated, c
 *What just happened:* the split solves the `requirements.txt` confusion cleanly. You read and edit the ranges; the tool owns the pins. Commit both. To reproduce the exact environment anywhere, one command reads the lock:
 
 ```console
-$ poetry install        # builds the environment from poetry.lock — identical every time
+$ poetry install        # builds the environment from poetry.lock - identical every time
 $ poetry run pytest     # run a command inside the managed environment, no manual activate
 ```
 
-*What just happened:* `poetry install` rebuilt the shelf to match the lockfile exactly — same versions on your machine, your teammate's, and CI. `poetry run` executed a command inside that environment without you having to activate it. This is the literal cure for "works on my machine": everyone resolves to the same locked versions instead of each grabbing whatever is newest that day.
+*What just happened:* `poetry install` rebuilt the shelf to match the lockfile exactly - same versions on your machine, your teammate's, and CI. `poetry run` executed a command inside that environment without you having to activate it. This is the literal cure for "works on my machine": everyone resolves to the same locked versions instead of each grabbing whatever is newest that day.
 
 ## In the wild
 
@@ -121,7 +121,7 @@ A healthy repo commits `pyproject.toml` and the lockfile, and git-ignores `.venv
       "It installs packages globally"
     ],
     "answer": 1,
-    "explain": "Freeze records the result, not the intent — you can't tell which lines you wanted vs. which were dragged in."
+    "explain": "Freeze records the result, not the intent - you can't tell which lines you wanted vs. which were dragged in."
   },
   {
     "q": "What's the division of labor between pyproject.toml and poetry.lock?",
@@ -143,7 +143,7 @@ A healthy repo commits `pyproject.toml` and the lockfile, and git-ignores `.venv
       "Pins every dependency to its latest version"
     ],
     "answer": 1,
-    "explain": "Dependency groups separate test/dev tooling from runtime deps — something flat requirements.txt can't express."
+    "explain": "Dependency groups separate test/dev tooling from runtime deps - something flat requirements.txt can't express."
   }
 ]
 ```

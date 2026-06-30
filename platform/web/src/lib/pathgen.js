@@ -46,7 +46,7 @@ export const LEVELS = [
   {
     id: 'comfortable',
     label: "I'm comfortable",
-    blurb: 'I want the deep end too — include the advanced material.',
+    blurb: 'I want the deep end too - include the advanced material.',
     allow: ['beginner', 'intermediate', 'advanced']
   }
 ];

@@ -514,7 +514,7 @@ impl Store {
 
     // ---- phase edit history (versioning + revert) ----
 
-    /// Snapshot a phase's content into the history. Called from the admin edit path only —
+    /// Snapshot a phase's content into the history. Called from the admin edit path only -
     /// never from ingest, so a boot re-import doesn't flood the history.
     pub fn insert_phase_revision(&self, guide_slug: &str, phase_no: i64, title: &str, summary: &str, markdown: &str) -> Result<(), StoreError> {
         self.conn.execute(
@@ -745,7 +745,7 @@ mod tests {
             s.upsert_guide("g", "T", "S", "version-control", "beginner").unwrap();
             s.set_guide_status("g", "draft").unwrap();
         }
-        let s = Store::open(&path).unwrap(); // reopen — persistence survives
+        let s = Store::open(&path).unwrap(); // reopen - persistence survives
         assert_eq!(s.guide_status("g").unwrap(), "draft");
         assert!(s.list_categories_rows().unwrap().is_empty()); // table exists, empty until seeded
     }

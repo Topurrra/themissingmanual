@@ -27,8 +27,8 @@ and a way to print the word with the right letters showing and the rest hidden.
 
 Two things:
 
-- The **word** — a plain string, like `"python"`.
-- The **guessed letters** — the letters the player has tried and got right (or
+- The **word** - a plain string, like `"python"`.
+- The **guessed letters** - the letters the player has tried and got right (or
   tried at all; we'll firm that up next phase). For now, think of it as a small
   collection of single letters.
 
@@ -47,7 +47,7 @@ for letter in word:
 ```
 
 Run that. Six lines, one letter each. That `for letter in word` loop is the
-engine of the whole display — we'll decide, per letter, whether to show it or
+engine of the whole display - we'll decide, per letter, whether to show it or
 hide it.
 
 ## Show it or hide it
@@ -67,7 +67,7 @@ letter inside the guessed collection?" and gives back `True` or `False`.
 ## Putting the blanks together
 
 Now we glue those per-letter results into one line. We build a list of the shown
-characters and join them with spaces so the blanks are readable — `p _ t _ _ n`
+characters and join them with spaces so the blanks are readable - `p _ t _ _ n`
 reads better than `p_t__n`.
 
 ```python runnable
@@ -87,10 +87,10 @@ print("Word:", display)
 
 Run it. You should see `Word: p _ t _ _ n`. The `p`, `t`, and `n` show because
 they're in `guessed`; the `y`, `h`, and `o` are still underscores. Change
-`guessed` to `{"y", "o"}` and run again — different letters reveal. This is the
+`guessed` to `{"y", "o"}` and run again - different letters reveal. This is the
 game's whole face.
 
-That curly-brace `{"p", "t", "n"}` is a **set** — a collection with no duplicates
+That curly-brace `{"p", "t", "n"}` is a **set** - a collection with no duplicates
 and fast membership checks. It's exactly the right tool for "which letters have
 been guessed," and we'll lean on it hard next phase. For now, know that
 `letter in guessed` against a set is quick and reads like English.
@@ -114,9 +114,9 @@ print("Guessed it all  ->", show(word, set("python")))
 ```
 
 Run it and read the four lines. The first two mask different letters. The third
-passes an empty set (`set()`) — every letter is hidden, all underscores, exactly
+passes an empty set (`set()`) - every letter is hidden, all underscores, exactly
 what a fresh game looks like. The fourth passes `set("python")`, which turns the
-string into a set of its letters `{'p','y','t','h','o','n'}` — every letter is
+string into a set of its letters `{'p','y','t','h','o','n'}` - every letter is
 guessed, so the full word shows. That last line is what winning looks like, and
 we'll use that same idea to detect a win in Phase 3.
 
@@ -137,5 +137,5 @@ writing a line of code to handle it. We'll make use of exactly that next.
 
 You have a `show(word, guessed)` function that turns any word plus any set of
 guessed letters into a clean masked line. That's the screen of your game. Next we
-make a guess actually do something — add a letter, tell the player hit or miss,
+make a guess actually do something - add a letter, tell the player hit or miss,
 and watch the blanks fill in.

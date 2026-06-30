@@ -30,7 +30,7 @@ function tryBuild(words, size) {
       placements.push({ word, cells });
       placed = true;
     }
-    if (!placed) return null; // crowded grid — caller retries from scratch
+    if (!placed) return null; // crowded grid - caller retries from scratch
   }
   return { grid, placements };
 }

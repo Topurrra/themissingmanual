@@ -24,10 +24,10 @@ in a realistic month-and-a-half of spending, and confirm it's all there.
 
 Strip a real expense down to what a report cares about and you get four things:
 
-- **When** it happened — a date.
-- **What** it was for — a category like groceries or rent.
-- **A short description** — the merchant or memo, so a row is recognizable.
-- **How much** — the amount.
+- **When** it happened - a date.
+- **What** it was for - a category like groceries or rent.
+- **A short description** - the merchant or memo, so a row is recognizable.
+- **How much** - the amount.
 
 That maps cleanly to four columns. Here's the table:
 
@@ -58,12 +58,12 @@ below a cent. We'll note where it matters.
 **`category` as a plain text column.** No separate categories table, no foreign
 key. With a couple dozen rows and a handful of categories, a lookup table would
 be machinery you don't need yet. The cost is that a typo (`grocery` vs
-`groceries`) becomes its own category — so keep the spellings consistent when
+`groceries`) becomes its own category - so keep the spellings consistent when
 you add rows.
 
 ## The seed data
 
-Now the rows. Here's roughly six weeks of spending across January and February —
+Now the rows. Here's roughly six weeks of spending across January and February -
 the kind of mix a real month has: a big rent payment, recurring subscriptions,
 a scatter of groceries and dining, one travel splurge.
 
@@ -114,7 +114,7 @@ ORDER BY spent_on;
 
 You should get 26 rows back, oldest first. Scan them. There's your rent
 anchoring each month, a travel spike in early February, and groceries and dining
-sprinkled throughout — enough variety that the analytics later will have
+sprinkled throughout - enough variety that the analytics later will have
 something to say.
 
 ## One thing to remember
@@ -124,7 +124,7 @@ then `SELECT`. **Every runnable block in the rest of this project repeats that
 setup.** The same `CREATE TABLE` and the same 26-row `INSERT` will appear at the
 top of every block before the new query.
 
-That looks repetitive, and it is — on purpose. Each block runs in a fresh,
+That looks repetitive, and it is - on purpose. Each block runs in a fresh,
 empty database, so it has to build its own world before it can query it. The
 upside is that any block on any page works on its own: you can jump straight to
 the window-functions phase, hit Run, and it works, because the data comes with

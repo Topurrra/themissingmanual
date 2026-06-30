@@ -13,12 +13,12 @@
   const STEPS = [
     { i: 0, t: 'Type & Enter', d: 'You type example.com and press Enter.' },
     { i: 0, t: 'DNS lookup', d: 'First your device asks DNS: which IP is example.com?', kind: 'dns' },
-    { i: 0, t: 'DNS answer', d: 'DNS replies 93.184.216.34 — now your device can send packets.', kind: 'dns' },
+    { i: 0, t: 'DNS answer', d: 'DNS replies 93.184.216.34 - now your device can send packets.', kind: 'dns' },
     { i: 1, t: 'To the router', d: 'The request goes to your home router over Wi-Fi.', kind: 'req' },
     { i: 2, t: 'To your ISP', d: 'The router forwards it up to your ISP.', kind: 'req' },
     { i: 3, t: 'Across the internet', d: 'Hop by hop, router to router, across the world.', kind: 'req' },
     { i: 4, t: 'Reaches the server', d: 'The server holding the page receives the request.', kind: 'req' },
-    { i: 3, t: 'Response returns', d: 'The server sends the page back — same path, reversed.', kind: 'res' },
+    { i: 3, t: 'Response returns', d: 'The server sends the page back - same path, reversed.', kind: 'res' },
     { i: 2, t: 'Back through the ISP', d: 'The answer travels back through your ISP.', kind: 'res' },
     { i: 1, t: 'Back to the router', d: 'And to your home router.', kind: 'res' },
     { i: 0, t: 'Painted!', d: 'Your browser receives the answer and draws the page.', kind: 'res' }

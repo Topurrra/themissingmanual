@@ -19,7 +19,7 @@ SonarQube is two things bolted together. First, a **static analyzer**: it reads 
 
 Static analysis means reading code as text and structure, never executing it. The analyzer parses your files into a syntax tree, walks that tree, and matches it against a library of **rules**. A rule is a small pattern with a verdict, like "a `catch` block that swallows the exception and does nothing" or "a method with cyclomatic complexity over 15."
 
-Because it never runs your code, it can scan a whole repository fast and find issues that only show up on rare paths. The flip side: it reasons about *shapes* of code, not actual behavior, so it both misses real bugs and flags things that are fine in context. Hold that thought — it explains most of phase 3.
+Because it never runs your code, it can scan a whole repository fast and find issues that only show up on rare paths. The flip side: it reasons about *shapes* of code, not actual behavior, so it both misses real bugs and flags things that are fine in context. Hold that thought - it explains most of phase 3.
 
 ```text
 your source files
@@ -43,19 +43,19 @@ your source files
 
 SonarQube sorts findings into a handful of buckets. Knowing which bucket a finding lands in tells you how seriously to take it.
 
-- **Bugs** — code that is likely wrong: a possible null dereference, an `if` whose two branches are identical, a resource never closed. These are correctness problems.
-- **Vulnerabilities** — code that is likely a security hole: SQL built by string concatenation, a hardcoded credential, weak crypto. Treat these as real until proven otherwise.
-- **Security hotspots** — code that *might* be a security risk but needs a human to judge. Not the same as a vulnerability (more on that distinction in phase 3).
-- **Code smells** — maintainability problems: a 300-line method, a confusing name, dead code, a `TODO` left in. They don't break anything today; they make tomorrow harder.
-- **Coverage and duplication** — not issues but measurements. Coverage is the percent of lines exercised by your tests (SonarQube reads this from a report your test runner produces). Duplication is the percent of lines that are copy-pasted blocks.
+- **Bugs** - code that is likely wrong: a possible null dereference, an `if` whose two branches are identical, a resource never closed. These are correctness problems.
+- **Vulnerabilities** - code that is likely a security hole: SQL built by string concatenation, a hardcoded credential, weak crypto. Treat these as real until proven otherwise.
+- **Security hotspots** - code that *might* be a security risk but needs a human to judge. Not the same as a vulnerability (more on that distinction in phase 3).
+- **Code smells** - maintainability problems: a 300-line method, a confusing name, dead code, a `TODO` left in. They don't break anything today; they make tomorrow harder.
+- **Coverage and duplication** - not issues but measurements. Coverage is the percent of lines exercised by your tests (SonarQube reads this from a report your test runner produces). Duplication is the percent of lines that are copy-pasted blocks.
 
-Each issue also carries a **severity** (from low up to blocker) and an estimated **remediation effort** in minutes. Add all those minutes up across the project and you get the **technical debt** number — the dashboard's headline "X days" is the analyzer's guess at how long fixing every smell would take. It's a rough signal, not a deadline.
+Each issue also carries a **severity** (from low up to blocker) and an estimated **remediation effort** in minutes. Add all those minutes up across the project and you get the **technical debt** number - the dashboard's headline "X days" is the analyzer's guess at how long fixing every smell would take. It's a rough signal, not a deadline.
 
 > The single most useful habit: read an issue's *type* and *severity* before reacting. A blocker bug and a minor code smell both show up as findings, but only one should hold up your day.
 
 ## The quality profile and the gate
 
-Two pieces of config decide what you see. The **quality profile** is which rules are switched on for a language — Sonar ships a sensible default (named "Sonar way") and your team may have its own. The **quality gate** is the set of pass/fail conditions evaluated after analysis, like "coverage on new code must be at least 80%" or "zero new blocker issues."
+Two pieces of config decide what you see. The **quality profile** is which rules are switched on for a language - Sonar ships a sensible default (named "Sonar way") and your team may have its own. The **quality gate** is the set of pass/fail conditions evaluated after analysis, like "coverage on new code must be at least 80%" or "zero new blocker issues."
 
 The gate is what gives Sonar teeth. Without a gate, the dashboard is a wall of advice you can ignore. With a gate wired into CI, a failing gate can mark your PR check red and, if the branch is protected, block the merge. That is the whole reason SonarQube feels like a wall instead of a linter.
 
@@ -68,9 +68,9 @@ Gate: "Sonar way" (default, on new code)
 Result: FAILED
 ```
 
-*What just happened:* four conditions, three pass, one fails — and a single failing condition fails the whole gate. The red X on your PR almost always traces to one specific unmet condition, so the first move is always to find which one.
+*What just happened:* four conditions, three pass, one fails - and a single failing condition fails the whole gate. The red X on your PR almost always traces to one specific unmet condition, so the first move is always to find which one.
 
-For builders: SonarQube and SonarCloud are the same engine in different clothes — SonarQube is the server you (or your platform team) host, SonarCloud is the hosted version. The scanner, rules, and gate concepts are identical, so everything in this guide applies to both.
+For builders: SonarQube and SonarCloud are the same engine in different clothes - SonarQube is the server you (or your platform team) host, SonarCloud is the hosted version. The scanner, rules, and gate concepts are identical, so everything in this guide applies to both.
 
 ```quiz
 [
@@ -78,7 +78,7 @@ For builders: SonarQube and SonarCloud are the same engine in different clothes 
     "q": "What does 'static analysis' mean in SonarQube?",
     "choices": ["It runs your tests and measures speed", "It reads your code as text and structure without executing it", "It analyzes production traffic in real time", "It only checks code formatting"],
     "answer": 1,
-    "explain": "Static analysis parses source into a tree and matches rules against it, never running the code — which is why it's fast but also why it can produce false positives."
+    "explain": "Static analysis parses source into a tree and matches rules against it, never running the code - which is why it's fast but also why it can produce false positives."
   },
   {
     "q": "Which finding type means 'likely a real correctness problem'?",

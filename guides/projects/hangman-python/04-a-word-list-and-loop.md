@@ -17,7 +17,7 @@ updated: 2026-06-30
 # A Word List and the Game Loop
 
 You've built every part: the masked word, the guess handler, the life counter,
-and both endings. Two things finish the game. First, the word should vary — a
+and both endings. Two things finish the game. First, the word should vary - a
 fixed "python" gets old. Second, all those parts should live in one function you
 call to play a round. This phase does both, then hands you the keys to extend it.
 
@@ -34,7 +34,7 @@ word = random.choice(WORDS)
 print("Picked:", word)
 ```
 
-Run it a few times — you'll get different words. That randomness is what makes the
+Run it a few times - you'll get different words. That randomness is what makes the
 game replayable. In the runnable blocks below we'll call `random.seed(...)` first
 so the "random" pick is the same every run, which keeps the printed play-through
 stable for you to read. On your own machine you'd drop the seed and let it be
@@ -43,8 +43,8 @@ genuinely random.
 ## Everything in one function
 
 Here's the move that ties the project together: take the full round from Phase 3
-and wrap it in a `play(word, moves, lives)` function. Same logic — show, guess,
-count, check — but now it's one callable thing. We pass in the guesses as `moves`
+and wrap it in a `play(word, moves, lives)` function. Same logic - show, guess,
+count, check - but now it's one callable thing. We pass in the guesses as `moves`
 because there's no console here; on your machine you'd read them from the player.
 
 ```python runnable
@@ -87,7 +87,7 @@ play(word, moves)
 ```
 
 Run it. With seed 2 the word comes out "python", and the move list starts with two
-common-but-wrong vowels (`e`, `a`) before the right letters come in — so you watch
+common-but-wrong vowels (`e`, `a`) before the right letters come in - so you watch
 two lives burn, then the word fill in for a win. That's the finished game: random
 word, a full round, both endings, all in one function.
 
@@ -120,7 +120,7 @@ print("Win path and lose path both check out. Game logic is solid.")
 ```
 
 Run it. The confirmation line means a clean sweep wins and three misses on three
-lives loses — the two outcomes your `play` function rests on.
+lives loses - the two outcomes your `play` function rests on.
 
 ## Where to take it
 
@@ -132,13 +132,13 @@ You have a complete game. Here are real extensions, easiest first:
 | Categories | Make `WORDS` a dict like `{"animals": [...], "fruit": [...]}` and pick a category, then a word. |
 | A hint | After a few misses, reveal one unguessed letter: pick from `set(word) - guessed`. |
 | Score | Count wins across rounds; award points for lives remaining at the win. |
-| ASCII art | Print a stick figure that grows a limb per miss — a list of art strings indexed by misses. |
+| ASCII art | Print a stick figure that grows a limb per miss - a list of art strings indexed by misses. |
 
 ## Play it for real on your machine
 
 The browser version simulates guesses because there's no place to type. On your
 own machine you can read real input. Save this as `hangman.py` and run it with
-`python hangman.py` in your terminal — it asks for one letter per turn:
+`python hangman.py` in your terminal - it asks for one letter per turn:
 
 ```python
 import random
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     play()
 ```
 
-It's the same game you built here — `show`, `won`, the life count, both endings.
+It's the same game you built here - `show`, `won`, the life count, both endings.
 The only change is the `while` loop reads a real guess with `input()` instead of
 walking a fixed list, plus a check that the player typed exactly one letter. That
 input-guard is the kind of thing you skip in a demo and want the moment a real
@@ -188,6 +188,6 @@ person uses it.
 ## You built it
 
 A row of blanks became a guess handler became a life counter became a finished,
-random, replayable game — each phase a piece you ran and watched work. That's the
+random, replayable game - each phase a piece you ran and watched work. That's the
 whole arc of building software: small correct parts, snapped together. Now go add
 a category mode, or that growing stick figure, and make it yours.

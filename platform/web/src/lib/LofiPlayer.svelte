@@ -6,7 +6,7 @@
 
   // Compact lofi player for the header. Mounted ONCE in the root layout (outside
   // any {#key}/page block) so the <audio> element and playback survive route
-  // changes — navigating between guides never restarts the music.
+  // changes - navigating between guides never restarts the music.
   //
   // NEVER autoplays: default state is paused. Audio only starts on a Play press
   // (browsers block autoplay anyway). Enabled-state + volume + track persist in
@@ -22,14 +22,14 @@
   let playing = false;
   let volume = 0.6;
   let index = 0;
-  let ready = false; // mounted on client — gates rendering of stored state
+  let ready = false; // mounted on client - gates rendering of stored state
   let shuffle = false;
   let repeat = 'none'; // 'none' | 'all' | 'one'
 
   $: enabled = $lofiEnabled;
 
   // Active playlist: prefer the admin-managed list from site config
-  // (lofi_tracks — a JSON string of [{ title, artist, src }]); fall back to the
+  // (lofi_tracks - a JSON string of [{ title, artist, src }]); fall back to the
   // built-in TRACKS. Keep only well-formed entries (a non-empty `src`).
   $: list = (() => {
     try {
@@ -63,7 +63,7 @@
     ready = true;
   });
 
-  // When master is switched off, stop and reset — audio must not keep playing.
+  // When master is switched off, stop and reset - audio must not keep playing.
   $: if (ready && !enabled && playing) stop();
 
   function persistVol() {
@@ -146,7 +146,7 @@
   }
 
   // Quick-hide (✕ on the widget): a fast dismiss without opening Settings. Same
-  // effect as the master toggle — stops audio and removes the widget. Persisted,
+  // effect as the master toggle - stops audio and removes the widget. Persisted,
   // so reopening it lives in Settings → Lofi player.
   function quickHide() {
     stop();
@@ -163,7 +163,7 @@
       playing = true;
       next();
     } else {
-      playing = false; // repeat: none and on the last track — stop.
+      playing = false; // repeat: none and on the last track - stop.
     }
   }
   function onKeydown(e) {
@@ -221,7 +221,7 @@
 {/if}
 
 <style>
-  /* Inline lofi player in the header — namespaced (.lofi-*), uses global tokens. */
+  /* Inline lofi player in the header - namespaced (.lofi-*), uses global tokens. */
   .lofi-bar {
     display: inline-flex; align-items: center; gap: 1px;
     padding: 2px 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--raise);

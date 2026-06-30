@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 # The Browser Client
 
-You've been talking to your server with throwaway scripts. Time to give it a real face. This phase builds a single HTML page — input box, send button, scrolling message list — that connects to your server over a WebSocket. When you finish, you'll open this page in two browser tabs and chat between them.
+You've been talking to your server with throwaway scripts. Time to give it a real face. This phase builds a single HTML page - input box, send button, scrolling message list - that connects to your server over a WebSocket. When you finish, you'll open this page in two browser tabs and chat between them.
 
 The browser is the best WebSocket client there is, because it ships with one built in. No library, no install. You write `new WebSocket(...)` and it works.
 
@@ -24,7 +24,7 @@ Built on your machine. Make sure your server from phase 2 is running.
 
 ## The page
 
-Create a file called `index.html` in your project folder, next to `server.js`. It's all in one file — markup, style, and script — so there's nothing to wire together.
+Create a file called `index.html` in your project folder, next to `server.js`. It's all in one file - markup, style, and script - so there's nothing to wire together.
 
 ```html
 <!doctype html>
@@ -128,14 +128,14 @@ It looks like a lot, but most of it is the markup and a little styling. The inte
 The browser's WebSocket uses `addEventListener` for events, mirroring the Node side:
 
 - `"open"` fires once the connection is live. We flip the status text to "Connected" so you get visible proof.
-- `"close"` fires if the connection drops — handy when you stop the server and want the page to admit it.
+- `"close"` fires if the connection drops - handy when you stop the server and want the page to admit it.
 - `"message"` fires for every relayed message. `event.data` is the text the server sent, and we drop it into the list.
 
 The form's `submit` handler is where you send. We `preventDefault()` so the page doesn't reload, grab the trimmed input, and bail out if it's empty. Then `socket.send(text)` ships it to the server.
 
-Here's the piece that ties back to phase 2: right after sending, we also call `addMessage("You: " + text)` locally. Remember, the server broadcasts to everyone *except* the sender — so your own message never comes back to you. The client shows it itself, instantly, with no round trip. That's the convention we set up on purpose.
+Here's the piece that ties back to phase 2: right after sending, we also call `addMessage("You: " + text)` locally. Remember, the server broadcasts to everyone *except* the sender - so your own message never comes back to you. The client shows it itself, instantly, with no round trip. That's the convention we set up on purpose.
 
-`addMessage` builds a list item, appends it, and nudges the scroll to the bottom so the newest line is always visible. Using `textContent` (not `innerHTML`) means a message containing something like `<script>` shows up as literal text instead of running — a small habit worth keeping.
+`addMessage` builds a list item, appends it, and nudges the scroll to the bottom so the newest line is always visible. Using `textContent` (not `innerHTML`) means a message containing something like `<script>` shows up as literal text instead of running - a small habit worth keeping.
 
 ## Open it
 
@@ -145,7 +145,7 @@ So: with your server running, open `index.html` in your browser. The status shou
 
 Now open the **same file in a second tab.** Two tabs, two clients, both connected to the one server.
 
-Type a message in tab one and hit Send. It appears in tab one as "You: ..." immediately, and a moment later it appears in tab two as the relayed text. Reply from tab two. You're chatting — two browser tabs passing messages through a Node server you wrote.
+Type a message in tab one and hit Send. It appears in tab one as "You: ..." immediately, and a moment later it appears in tab two as the relayed text. Reply from tab two. You're chatting - two browser tabs passing messages through a Node server you wrote.
 
 ## When it doesn't connect
 
@@ -158,8 +158,8 @@ If the status sticks on "Connecting…" or jumps to "Disconnected," run through 
 | Works in one tab, not the other | Second tab opened a stale page | Refresh the second tab |
 | Console shows a connection error | Server crashed | Check the server terminal for an exception |
 
-Open your browser's developer console (F12) when in doubt — WebSocket errors show up there with a clear message.
+Open your browser's developer console (F12) when in doubt - WebSocket errors show up there with a clear message.
 
 ## What you have now
 
-A real chat client. Type, send, read, all live, no refresh. It's anonymous, though — every message is only text with no idea who said it. In the next phase we fix that: each person picks a username when they join, and the room announces arrivals and departures.
+A real chat client. Type, send, read, all live, no refresh. It's anonymous, though - every message is only text with no idea who said it. In the next phase we fix that: each person picks a username when they join, and the room announces arrivals and departures.

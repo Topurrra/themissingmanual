@@ -12,7 +12,7 @@ updated: 2026-06-19
 # An Error Is Information, Not an Insult
 
 The first thing to unlearn is the feeling. When red text appears, it *feels* like the computer caught you
-doing something stupid. It isn't that at all. The computer is not capable of judging you — it's a machine
+doing something stupid. It isn't that at all. The computer is not capable of judging you - it's a machine
 following instructions, and it hit a step it could not complete. The error is its report back to you:
 "I got this far, then I couldn't continue, and here's the reason." That's it. It's a status update from a
 very literal coworker.
@@ -32,18 +32,18 @@ Rather than guess what you meant or silently do the wrong thing, it stops and te
 running." *Traceback* (or *stack trace*) is the list of steps the program was in the middle of when it
 failed. For now, treat them as flavors of the same thing: a report of a failure.
 
-**Why people get this wrong.** Beginners read an error as a verdict — "I'm bad at this" — instead of as
+**Why people get this wrong.** Beginners read an error as a verdict - "I'm bad at this" - instead of as
 data. But the error has no opinion of you. It's describing the *code's* situation, not your worth. The
 sooner it becomes neutral information, the sooner you can use it.
 
 **Why this saves you later.** Every minute you don't spend panicking is a minute you spend reading. And the
-reading is where the fix lives — almost always, the answer is sitting right there in the text you were too
+reading is where the fix lives - almost always, the answer is sitting right there in the text you were too
 rattled to look at.
 
 ## The anatomy: three parts in almost every error
 
 Here's the secret that makes errors readable: they nearly all carry the same three pieces of information.
-Once you can spot them, any error — in any language — stops being a wall and becomes a form you can fill in.
+Once you can spot them, any error - in any language - stops being a wall and becomes a form you can fill in.
 
 ```text
    ┌─────────────────────────────────────────────────────────────┐
@@ -53,11 +53,11 @@ Once you can spot them, any error — in any language — stops being a wall and
    └─────────────────────────────────────────────────────────────┘
 ```
 
-1. **The location** — *which file, and which line.* This is the computer pointing at the exact spot. It's
+1. **The location** - *which file, and which line.* This is the computer pointing at the exact spot. It's
    the most valuable part and the one beginners most often skip.
-2. **The type** — *the category of problem*, like `TypeError`, `SyntaxError`, or `FileNotFoundError`. The
+2. **The type** - *the category of problem*, like `TypeError`, `SyntaxError`, or `FileNotFoundError`. The
    type tells you *what kind* of thing went wrong, which narrows your search enormously.
-3. **The message** — *a human-readable sentence* with the specifics: which name was undefined, which file
+3. **The message** - *a human-readable sentence* with the specifics: which name was undefined, which file
    wasn't found, which value was the wrong type.
 
 Let's see those three parts in two different languages, so you trust they're always there.
@@ -75,13 +75,13 @@ Traceback (most recent call last):
 TypeError: can only concatenate str (not "int") to str
 ```
 
-*What just happened:* Read it from the **bottom up** — that's where the answer almost always is.
+*What just happened:* Read it from the **bottom up** - that's where the answer almost always is.
 
 - **The type:** `TypeError`. The category of problem is "you used a value of the wrong type."
 - **The message:** `can only concatenate str (not "int") to str`. In plain words: you tried to glue a
   number (`int`) onto a string (`str`) with `+`, and Python only glues strings to strings. (📝 *concatenate*
   just means "join end to end.")
-- **The location:** `File "greet.py", line 3`. It even underlines the exact expression — `"Age: " + 30` —
+- **The location:** `File "greet.py", line 3`. It even underlines the exact expression - `"Age: " + 30` -
   with `~~~^~~` so you don't have to hunt.
 
 So without knowing anything else, the error has told you: *line 3, you mixed text and a number, turn the
@@ -93,7 +93,7 @@ New readers start at the top, drown in file paths, and miss the one line that ma
 
 ## The same anatomy, in JavaScript
 
-Now the same idea in a different language, so you see the parts don't change — only the formatting does:
+Now the same idea in a different language, so you see the parts don't change - only the formatting does:
 
 ```console
 $ node cart.js
@@ -108,13 +108,13 @@ TypeError: Cannot read properties of undefined (reading 'total')
 
 *What just happened:* The three parts are all here, just arranged differently:
 
-- **The type:** `TypeError` again — same category of "wrong type" problem, different language.
+- **The type:** `TypeError` again - same category of "wrong type" problem, different language.
 - **The message:** `Cannot read properties of undefined (reading 'total')`. Translation: you tried to read
-  `.total` from something, but that something was `undefined` — nothing was there. (We'll meet this exact
+  `.total` from something, but that something was `undefined` - nothing was there. (We'll meet this exact
   "nothing where I expected something" family in [Phase 2](02-common-families.md); it's one of the most
   common errors in all of programming.)
-- **The location:** `cart.js:5:20` — file `cart.js`, **line 5, column 20.** The `^` points right at
-  `cart.total`. The `at ...` lines below are the trail of function calls that led here — that trail is the
+- **The location:** `cart.js:5:20` - file `cart.js`, **line 5, column 20.** The `^` points right at
+  `cart.total`. The `at ...` lines below are the trail of function calls that led here - that trail is the
   stack trace, and reading long ones is its own skill in
   [Reading a Stack Trace](/guides/reading-a-stack-trace).
 
@@ -125,7 +125,7 @@ when the words aren't.
 
 ## What about errors with no line number?
 
-Not every error points at a line of *your* code — and that's information too. A command-line tool might
+Not every error points at a line of *your* code - and that's information too. A command-line tool might
 just print:
 
 ```console
@@ -133,9 +133,9 @@ $ npm start
 sh: vite: command not found
 ```
 
-*What just happened:* There's no file and no line because the problem isn't *inside* your code — it's that
+*What just happened:* There's no file and no line because the problem isn't *inside* your code - it's that
 a program (`vite`) the project expects to exist couldn't be found on your system. The "location" here is
-implicit: it happened while trying to *start* something. Same three-part instinct still helps — type
+implicit: it happened while trying to *start* something. Same three-part instinct still helps - type
 ("command not found"), message (which command: `vite`), and the rough location (during `npm start`). The
 absence of a line number is itself a clue that the trouble is in your *environment*, not your *logic*.
 
@@ -147,12 +147,12 @@ absence of a line number is itself a clue that the trouble is in your *environme
    **what specifically** (the message).
 3. **Read bottom-to-top** in languages like Python: the last line is the headline, the lines above are the
    trail.
-4. The anatomy is the **same across languages** — only the formatting changes. Train your eye on the three
+4. The anatomy is the **same across languages** - only the formatting changes. Train your eye on the three
    parts and you can read errors anywhere.
 5. **No line number** usually means the problem is in your environment (a missing tool, a bad path), not in
    your code's logic.
 
-Next, we'll name the handful of error *families* you'll meet over and over — so that the moment you read
+Next, we'll name the handful of error *families* you'll meet over and over - so that the moment you read
 the type, you already half-know what went wrong.
 
 ---

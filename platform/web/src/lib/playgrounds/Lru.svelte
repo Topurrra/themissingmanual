@@ -44,7 +44,7 @@
     {#if last}
       <p class="lr-msg" class:hit={last.hit}>
         <i class={`ti ${last.hit ? 'ti-circle-check' : 'ti-circle-x'}`}></i>
-        <b>{last.k}</b> — {last.hit ? 'HIT (already cached, moved to front)' : last.evicted ? `MISS (cached; evicted ${last.evicted} — the least-recently used)` : 'MISS (added to cache)'}
+        <b>{last.k}</b> - {last.hit ? 'HIT (already cached, moved to front)' : last.evicted ? `MISS (cached; evicted ${last.evicted} - the least-recently used)` : 'MISS (added to cache)'}
       </p>
     {:else}
       <p class="lr-msg lr-hint">Click keys above. A repeat within the last {cap} unique keys is a hit; otherwise the oldest is evicted.</p>

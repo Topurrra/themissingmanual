@@ -2,7 +2,7 @@
 title: "When it breaks: flaky tests, slow builds, and managed-CI tradeoffs"
 guide: circleci-from-zero
 phase: 3
-summary: "Cloud-native CI/CD with config.yml: jobs, workflows, executors, and orbs — fast parallel pipelines without running your own server."
+summary: "Cloud-native CI/CD with config.yml: jobs, workflows, executors, and orbs - fast parallel pipelines without running your own server."
 tags: [circleci, ci, cd, pipelines, devops, yaml]
 difficulty: intermediate
 synonyms: ["circleci tutorial", "circleci config.yml", "circleci workflows", "circleci orbs", "circleci vs github actions", "how does circleci work"]
@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # When it breaks: flaky tests, slow builds, and managed-CI tradeoffs
 
-A pipeline that works on day one will eventually go red for reasons that have nothing to do with your code. Tests that pass locally fail in CI. The build that took two minutes now takes twelve. And one morning your whole team is blocked because someone else's infrastructure is having a bad day. This phase is about those moments — speeding pipelines up, debugging the weird ones, and being honest about what you give up by not running your own CI.
+A pipeline that works on day one will eventually go red for reasons that have nothing to do with your code. Tests that pass locally fail in CI. The build that took two minutes now takes twelve. And one morning your whole team is blocked because someone else's infrastructure is having a bad day. This phase is about those moments - speeding pipelines up, debugging the weird ones, and being honest about what you give up by not running your own CI.
 
 ## Parallelism and test splitting: the real speed lever
 
@@ -45,7 +45,7 @@ The catch: `--split-by=timings` needs timing data to balance well, and it gets t
 
 ## Debugging the "passes locally, fails in CI" classic
 
-This is the most common CircleCI frustration, and it's almost never CircleCI's fault. The CI machine is a clean, fresh environment — which means it's exposing something your laptop was hiding.
+This is the most common CircleCI frustration, and it's almost never CircleCI's fault. The CI machine is a clean, fresh environment - which means it's exposing something your laptop was hiding.
 
 The usual culprits, in order of how often they're the answer:
 
@@ -67,11 +67,11 @@ env | grep API    # is the variable actually set?
 
 *What just happened:* you're now on the real CI container, in the real working directory, with the real environment. This turns "it fails in CI and I can't see why" into ordinary local debugging. Reproducing the failure by hand here beats a dozen speculative commit-and-push rounds every time.
 
-> Secrets like API keys never belong in `config.yml` — that file is in your repo for the world to read. Set them as environment variables in the CircleCI project settings (or a context for sharing across projects). They're injected at runtime and masked in logs.
+> Secrets like API keys never belong in `config.yml` - that file is in your repo for the world to read. Set them as environment variables in the CircleCI project settings (or a context for sharing across projects). They're injected at runtime and masked in logs.
 
 ## Contexts: secrets shared across projects
 
-A single project's env vars live in its settings. When several projects need the same secret — a shared deploy key, a registry token — a **context** holds it once and grants jobs access.
+A single project's env vars live in its settings. When several projects need the same secret - a shared deploy key, a registry token - a **context** holds it once and grants jobs access.
 
 ```yaml
 workflows:
@@ -90,7 +90,7 @@ workflows:
 
 CircleCI is somebody else's infrastructure. That's the whole pitch and the whole cost, so be clear-eyed about both sides.
 
-What you get: no build servers to patch, fresh clean machines on every run, instant scale-out across dozens of parallel containers, and pre-built executors for languages and macOS you'd struggle to maintain yourself. For most teams this is an obvious win — running a reliable Jenkins fleet is a real job nobody enjoys.
+What you get: no build servers to patch, fresh clean machines on every run, instant scale-out across dozens of parallel containers, and pre-built executors for languages and macOS you'd struggle to maintain yourself. For most teams this is an obvious win - running a reliable Jenkins fleet is a real job nobody enjoys.
 
 What you give up:
 
@@ -99,7 +99,7 @@ What you give up:
 - **Data leaves your network.** Your source and secrets run on their machines. For some regulated environments that alone forces self-hosted runners.
 - **The config is theirs.** You write CircleCI YAML, not a portable standard. Moving to another CI later is a rewrite, not a copy.
 
-CircleCI's answer to the network and control concerns is **self-hosted runners** — your own machines doing the execution while CircleCI still orchestrates. That's the hybrid middle: you keep the nice workflow UI and orbs, but sensitive jobs run on hardware you control. It's more to operate than pure cloud, less than a full Jenkins.
+CircleCI's answer to the network and control concerns is **self-hosted runners** - your own machines doing the execution while CircleCI still orchestrates. That's the hybrid middle: you keep the nice workflow UI and orbs, but sensitive jobs run on hardware you control. It's more to operate than pure cloud, less than a full Jenkins.
 
 ```mermaid
 graph LR
@@ -107,9 +107,9 @@ graph LR
   B -->|full control, full ops| C[Run your own Jenkins]
 ```
 
-*What just happened:* the same axis runs through every CI choice — convenience on one end, control on the other. CircleCI's cloud sits at the convenient end, self-hosted runners in the middle, rolling your own at the far end. Pick by what your situation actually demands, not by what sounds impressive.
+*What just happened:* the same axis runs through every CI choice - convenience on one end, control on the other. CircleCI's cloud sits at the convenient end, self-hosted runners in the middle, rolling your own at the far end. Pick by what your situation actually demands, not by what sounds impressive.
 
-In the wild: most teams over-provision parallelism and under-invest in test speed, then wonder why the CI bill climbed. Faster tests beat more machines almost every time — four parallel containers running a slow, flaky suite is paying four times to be frustrated. Fix the suite first, then split it.
+In the wild: most teams over-provision parallelism and under-invest in test speed, then wonder why the CI bill climbed. Faster tests beat more machines almost every time - four parallel containers running a slow, flaky suite is paying four times to be frustrated. Fix the suite first, then split it.
 
 For the bigger picture of where CircleCI fits among other tools, [What CI/CD does](/guides/what-cicd-does) is the map; this guide was the territory for one specific city on it.
 

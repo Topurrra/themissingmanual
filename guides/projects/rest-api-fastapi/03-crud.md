@@ -18,13 +18,13 @@ updated: 2026-06-30
 
 CRUD is the four things almost every API does: **C**reate, **R**ead,
 **U**pdate, **D**elete. This phase wires up all four over a place to keep the
-notes. We're using a plain Python dictionary on purpose — it keeps the focus on
+notes. We're using a plain Python dictionary on purpose - it keeps the focus on
 the routing and the HTTP, with no database to set up yet. Phase 5 swaps it for
 SQLite, and you'll see how little of this code changes.
 
 One catch with an in-memory store: the data lives only while the server runs.
 Restart it (or let `--reload` bounce it on a save) and you're back to empty.
-That's fine for now — it's exactly why phase 5 exists.
+That's fine for now - it's exactly why phase 5 exists.
 
 ## Replace main.py
 
@@ -86,21 +86,21 @@ Walk through what each route does:
 - **list** returns all the note records as a JSON array.
 - **get** looks up one note by its id.
 - **create** assigns the next id, stores the record, bumps the counter, and
-  returns what it stored — including the new id, which the client needs.
+  returns what it stored - including the new id, which the client needs.
 - **update** overwrites the note at that id with the new data.
 - **delete** removes the entry and confirms which id went.
 
 The `global next_id` line is there because we reassign that module-level variable
-inside the function. It's a little ugly — and it's another reason a real database
+inside the function. It's a little ugly - and it's another reason a real database
 is nicer, since the database hands out ids for us. We'll get there.
 
-> Notice `get` and `delete` will blow up if the id doesn't exist — a `KeyError`
+> Notice `get` and `delete` will blow up if the id doesn't exist - a `KeyError`
 > that FastAPI turns into an ugly 500. We're leaving that on purpose. Phase 4 is
 > all about turning those into clean 404s.
 
 ## Test it with curl
 
-Restart isn't needed — `--reload` already reloaded on save. Open a *second*
+Restart isn't needed - `--reload` already reloaded on save. Open a *second*
 terminal (leave the server running in the first) and drive the API by hand.
 
 Windows note: PowerShell aliases `curl` to its own command, so use `curl.exe`
@@ -153,7 +153,7 @@ List again and you'll see note 1 has changed.
 curl -X DELETE http://127.0.0.1:8000/notes/2
 ```
 
-List one final time — note 2 is gone.
+List one final time - note 2 is gone.
 
 ## The map of methods to operations
 
@@ -171,11 +171,11 @@ committing to memory:
 Two patterns fall out of this. `POST` and `GET-all` act on the *collection*
 (`/notes`), while `GET-one`, `PUT`, and `DELETE` act on a *specific member*
 (`/notes/{id}`). And the same path serves different operations depending on the
-method — `/notes` is both "list" and "create", the method tells them apart.
+method - `/notes` is both "list" and "create", the method tells them apart.
 
 ## Where we are
 
 You have a full CRUD API. You can create notes, read them back, change them, and
-remove them — all driven by the right HTTP methods, all testable with curl or the
+remove them - all driven by the right HTTP methods, all testable with curl or the
 `/docs` page. It's missing one thing a real API can't skip: it falls apart the
 moment someone asks for a note that doesn't exist. That's the next phase.

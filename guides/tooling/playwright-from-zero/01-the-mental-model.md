@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The mental model: a browser you can boss around
 
-Here's the situation you're probably in. Your app works when you click through it by hand. But you want a machine to click through it too — log in, add an item to the cart, check the total — so you find out the moment a deploy breaks the checkout flow. That's an **end-to-end (E2E) test**: it drives a real browser the way a real user would, and asserts that the right things happened.
+Here's the situation you're probably in. Your app works when you click through it by hand. But you want a machine to click through it too - log in, add an item to the cart, check the total - so you find out the moment a deploy breaks the checkout flow. That's an **end-to-end (E2E) test**: it drives a real browser the way a real user would, and asserts that the right things happened.
 
 Playwright is a library and test runner for exactly that. You write code that says "go to this URL, fill this box, click that button, and the page should now show 'Order confirmed'." Playwright opens an actual browser, performs those actions, and checks the result.
 
@@ -19,9 +19,9 @@ Playwright is a library and test runner for exactly that. You write code that sa
 
 Strip away the marketing and Playwright is three things bolted together:
 
-- A **driver** that controls real browser engines — Chromium (Chrome/Edge), Firefox, and WebKit (Safari) — over a fast, low-level protocol.
+- A **driver** that controls real browser engines - Chromium (Chrome/Edge), Firefox, and WebKit (Safari) - over a fast, low-level protocol.
 - A **test runner** (`@playwright/test`) that finds your test files, runs them in parallel, retries failures if you ask it to, and produces reports.
-- A pile of **debugging tooling** — codegen, the inspector, and the trace viewer — that makes a broken test cheap to diagnose instead of a mystery.
+- A pile of **debugging tooling** - codegen, the inspector, and the trace viewer - that makes a broken test cheap to diagnose instead of a mystery.
 
 You install it with one command, and it downloads the browser binaries it controls so you're not depending on whatever Chrome happens to be on the machine.
 
@@ -42,7 +42,7 @@ This is the part that matters, so slow down here.
 
 The classic E2E nightmare is **flakiness**: a test that passes and fails without the code changing. The root cause is almost always timing. The page hasn't finished loading, a button isn't clickable yet because a spinner is on top of it, an element exists in the DOM but is still `display: none`. Older tools made you guess how long to wait. You'd write `sleep(2000)` and pray. Too short and it's flaky; too long and your suite crawls.
 
-Playwright's answer is the **locator**, and locators **auto-wait**. A locator isn't the element — it's a *recipe* for finding the element, evaluated fresh every time you act on it. Before Playwright clicks, it automatically waits for the element to be present, visible, stable (not animating), enabled, and actually able to receive the click. Only then does it click. If those conditions aren't met within the timeout, you get a clear error instead of a silent misclick.
+Playwright's answer is the **locator**, and locators **auto-wait**. A locator isn't the element - it's a *recipe* for finding the element, evaluated fresh every time you act on it. Before Playwright clicks, it automatically waits for the element to be present, visible, stable (not animating), enabled, and actually able to receive the click. Only then does it click. If those conditions aren't met within the timeout, you get a clear error instead of a silent misclick.
 
 ```js
 // A locator: a description, not a snapshot
@@ -52,7 +52,7 @@ const submit = page.getByRole('button', { name: 'Submit' });
 await submit.click();
 ```
 
-*What just happened:* `getByRole(...)` built a locator but touched nothing yet. `click()` ran the actionability checks, waited until the button was genuinely clickable, then clicked — no `sleep`, no manual wait, no flake from "the spinner was still up."
+*What just happened:* `getByRole(...)` built a locator but touched nothing yet. `click()` ran the actionability checks, waited until the button was genuinely clickable, then clicked - no `sleep`, no manual wait, no flake from "the spinner was still up."
 
 > The mental shift: you stop telling the browser *when* to act and start telling it *what must be true* before it acts. Playwright fills in the waiting. Most flakiness you've ever fought disappears at this layer.
 
@@ -89,7 +89,7 @@ test('user can log in', async ({ page }) => {
 
 *What just happened:* the test got a fresh `page` (an isolated browser tab), navigated, filled two fields by their labels, clicked Log in, then asserted the Dashboard heading appears. Every step auto-waited, so there's not a single `sleep` and nothing to make it flaky.
 
-**For builders:** notice the test reads like a sentence describing user behavior. That's deliberate — locators like `getByRole` and `getByLabel` target what the user sees and what assistive tech announces, not brittle CSS classes that change every time someone touches the styling.
+**For builders:** notice the test reads like a sentence describing user behavior. That's deliberate - locators like `getByRole` and `getByLabel` target what the user sees and what assistive tech announces, not brittle CSS classes that change every time someone touches the styling.
 
 ```quiz
 [

@@ -3,7 +3,7 @@
   export let data;
 
   $: items = data.items ?? [];
-  // Active window — coerce to a string so it matches the option values below.
+  // Active window - coerce to a string so it matches the option values below.
   $: activeDays = String(data.days ?? '30');
 
   const WINDOWS = ['7', '30', '90'];
@@ -39,7 +39,7 @@
 </div>
 
 <p class="bk-intro">
-  Searches with the fewest hits over the last {activeDays} days — readers looking for
+  Searches with the fewest hits over the last {activeDays} days - readers looking for
   guides that don't exist yet. Draft one straight from a row.
 </p>
 

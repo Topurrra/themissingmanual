@@ -17,7 +17,7 @@ export async function POST({ request, getClientAddress, url }) {
   const day = new Date().toISOString().slice(0, 10);
   const visitor = crypto.createHash('sha256').update(day + ip + ua + SALT).digest('hex').slice(0, 32);
 
-  // Coarse device class from the UA (the raw UA is never stored — just this label).
+  // Coarse device class from the UA (the raw UA is never stored - just this label).
   const ul = ua.toLowerCase();
   const device =
     /ipad|tablet|playbook|silk|kindle/.test(ul) || (/android/.test(ul) && !/mobile/.test(ul))

@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The Everyday Loop: Install, Upgrade, Rollback
 
-You understand the three ideas now: chart, values, release. This phase is the muscle memory — the handful of commands you'll actually run, in the order you'll run them. None of them is complicated. The skill is knowing which one to reach for and what it does to your release history.
+You understand the three ideas now: chart, values, release. This phase is the muscle memory - the handful of commands you'll actually run, in the order you'll run them. None of them is complicated. The skill is knowing which one to reach for and what it does to your release history.
 
 ## Scaffold a chart
 
@@ -25,11 +25,11 @@ $ ls myapp
 Chart.yaml  charts  templates  values.yaml
 ```
 
-*What just happened:* Helm generated the standard chart layout from the last phase, pre-filled with a sample Deployment, Service, and a sensible `values.yaml`. The generated chart is more than most apps need — treat it as a starting point to delete from, not a sacred template. Open `templates/deployment.yaml` and you'll see the same `{{ .Values.* }}` placeholders you already understand.
+*What just happened:* Helm generated the standard chart layout from the last phase, pre-filled with a sample Deployment, Service, and a sensible `values.yaml`. The generated chart is more than most apps need - treat it as a starting point to delete from, not a sacred template. Open `templates/deployment.yaml` and you'll see the same `{{ .Values.* }}` placeholders you already understand.
 
 ## Render before you ship: helm template
 
-Before sending anything to a cluster, see what Helm will actually produce. `helm template` renders the chart locally and prints the final YAML — no cluster involved:
+Before sending anything to a cluster, see what Helm will actually produce. `helm template` renders the chart locally and prints the final YAML - no cluster involved:
 
 ```console
 $ helm template myapp ./myapp
@@ -51,7 +51,7 @@ spec:
 ...
 ```
 
-*What just happened:* Helm filled in every placeholder using the defaults in `values.yaml` and printed the manifests it would send to Kubernetes — the placeholders are gone, replaced by real values. This is your read-before-you-commit step. If the output looks wrong here, it'll be wrong in the cluster. Get in the habit of running this whenever you change a template.
+*What just happened:* Helm filled in every placeholder using the defaults in `values.yaml` and printed the manifests it would send to Kubernetes - the placeholders are gone, replaced by real values. This is your read-before-you-commit step. If the output looks wrong here, it'll be wrong in the cluster. Get in the habit of running this whenever you change a template.
 
 ## Install: create a release
 
@@ -66,7 +66,7 @@ STATUS: deployed
 REVISION: 1
 ```
 
-*What just happened:* `web` is the **release name** you chose — every command from here on refers to this release by that name. `REVISION: 1` is the key line: this is the first version of the release. Helm rendered the templates with the default values, sent the manifests to the cluster, and stored revision 1 in its history.
+*What just happened:* `web` is the **release name** you chose - every command from here on refers to this release by that name. `REVISION: 1` is the key line: this is the first version of the release. Helm rendered the templates with the default values, sent the manifests to the cluster, and stored revision 1 in its history.
 
 To install the same chart with different settings, point Helm at a values file or override individual keys on the command line:
 
@@ -74,7 +74,7 @@ To install the same chart with different settings, point Helm at a values file o
 $ helm install web-prod ./myapp -f values-prod.yaml --set image.tag=1.4.1
 ```
 
-*What just happened:* `-f values-prod.yaml` layers a prod-specific values file on top of the chart's defaults; `--set image.tag=1.4.1` overrides one key inline. This is the per-environment story in action: **same chart, different values, different release name.** Values from `-f` and `--set` win over the chart's `values.yaml`, and `--set` wins over `-f` — later sources override earlier ones.
+*What just happened:* `-f values-prod.yaml` layers a prod-specific values file on top of the chart's defaults; `--set image.tag=1.4.1` overrides one key inline. This is the per-environment story in action: **same chart, different values, different release name.** Values from `-f` and `--set` win over the chart's `values.yaml`, and `--set` wins over `-f` - later sources override earlier ones.
 
 > Keep one values file per environment (`values-dev.yaml`, `values-prod.yaml`) checked into git. Reserve `--set` for one-off overrides and CI-injected values like the image tag. A `--set` that should have been permanent is a value you'll forget you applied.
 
@@ -94,11 +94,11 @@ STATUS: deployed
 REVISION: 1
 ```
 
-*What just happened:* `helm list` shows every release in the namespace with its current revision and status — your inventory of what Helm manages. `helm status web` zooms into one release. If a release ever shows a status other than `deployed` (like `failed` or `pending-upgrade`), that's your signal something went sideways during the last operation.
+*What just happened:* `helm list` shows every release in the namespace with its current revision and status - your inventory of what Helm manages. `helm status web` zooms into one release. If a release ever shows a status other than `deployed` (like `failed` or `pending-upgrade`), that's your signal something went sideways during the last operation.
 
 ## Upgrade: change a release
 
-When you ship a new image tag or tweak a value, you `helm upgrade` the existing release — you do **not** install again:
+When you ship a new image tag or tweak a value, you `helm upgrade` the existing release - you do **not** install again:
 
 ```console
 $ helm upgrade web ./myapp --set image.tag=1.4.1
@@ -107,7 +107,7 @@ STATUS: deployed
 REVISION: 2
 ```
 
-*What just happened:* Helm re-rendered the chart with the new tag and applied the diff to the cluster. The crucial detail is `REVISION: 2` — Helm bumped the revision and kept revision 1 in history. Upgrade is the workhorse: nearly every deploy after the first is an upgrade.
+*What just happened:* Helm re-rendered the chart with the new tag and applied the diff to the cluster. The crucial detail is `REVISION: 2` - Helm bumped the revision and kept revision 1 in history. Upgrade is the workhorse: nearly every deploy after the first is an upgrade.
 
 A safer habit is `helm upgrade --install` (often written `helm upgrade -i`):
 
@@ -115,7 +115,7 @@ A safer habit is `helm upgrade --install` (often written `helm upgrade -i`):
 $ helm upgrade --install web ./myapp --set image.tag=1.4.1
 ```
 
-*What just happened:* This upgrades the release if it exists, or installs it if it doesn't. It's the standard command in CI pipelines because it works whether or not the release is already there — no need to branch on "first deploy versus later deploy." One command for both cases.
+*What just happened:* This upgrades the release if it exists, or installs it if it doesn't. It's the standard command in CI pipelines because it works whether or not the release is already there - no need to branch on "first deploy versus later deploy." One command for both cases.
 
 ## Inspect history and roll back
 
@@ -128,7 +128,7 @@ REVISION  STATUS      CHART        APP VERSION  DESCRIPTION
 2         deployed    myapp-0.1.0  1.4.1        Upgrade complete
 ```
 
-*What just happened:* `superseded` means an older revision that's been replaced; `deployed` is the live one. This is the audit trail — you can see exactly what each revision was and when it landed.
+*What just happened:* `superseded` means an older revision that's been replaced; `deployed` is the live one. This is the audit trail - you can see exactly what each revision was and when it landed.
 
 Now suppose revision 2 is broken. You don't dig through git or hand-edit YAML under pressure. You roll back:
 
@@ -143,7 +143,7 @@ REVISION  STATUS      CHART        APP VERSION  DESCRIPTION
 3         deployed    myapp-0.1.0  1.16.0       Rollback to 1
 ```
 
-*What just happened:* `helm rollback web 1` re-applied the exact state of revision 1 — and recorded it as a **new** revision 3. Notice rollback doesn't delete history or rewind the counter; it moves forward to a state identical to a past one. Run `helm rollback web` with no number and it goes to the immediately previous revision. This is the payoff of the release model: recovery is one command, and the trail stays intact.
+*What just happened:* `helm rollback web 1` re-applied the exact state of revision 1 - and recorded it as a **new** revision 3. Notice rollback doesn't delete history or rewind the counter; it moves forward to a state identical to a past one. Run `helm rollback web` with no number and it goes to the immediately previous revision. This is the payoff of the release model: recovery is one command, and the trail stays intact.
 
 ## Tear down
 
@@ -154,7 +154,7 @@ $ helm uninstall web
 release "web" uninstalled
 ```
 
-*What just happened:* Helm deleted every resource it created for the `web` release — the Deployment, Service, and so on — in one shot. No hunting down individual objects with `kubectl delete`. Because Helm tracked exactly what it installed, it knows exactly what to remove.
+*What just happened:* Helm deleted every resource it created for the `web` release - the Deployment, Service, and so on - in one shot. No hunting down individual objects with `kubectl delete`. Because Helm tracked exactly what it installed, it knows exactly what to remove.
 
 That's the full daily loop: `create` to scaffold, `template` to preview, `install` for the first deploy, `upgrade` (or `upgrade --install`) for every change, `history` and `rollback` when something breaks, `uninstall` to clean up. Six commands cover almost everything you'll do.
 

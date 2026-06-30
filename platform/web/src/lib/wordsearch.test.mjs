@@ -1,6 +1,6 @@
 // Self-check for the word-search generator: `node src/lib/wordsearch.test.mjs`.
 // Proves every pack word actually gets placed and that each placement's cells
-// spell the word in a straight, contiguous line — the things that, if broken,
+// spell the word in a straight, contiguous line - the things that, if broken,
 // make a word literally unfindable.
 import { makeWordSearch, WS_PACKS } from './wordsearch.js';
 import assert from 'node:assert';
@@ -32,4 +32,4 @@ for (const pack of WS_PACKS) {
   }
 }
 
-console.log('wordsearch.test.mjs — all checks passed');
+console.log('wordsearch.test.mjs - all checks passed');

@@ -25,20 +25,20 @@ short and the gotcha is obvious.
 **What it actually is.** When you make an SSH key, you actually make a **pair** of files that belong
 together:
 
-- A **public key** — think of it as an open **padlock**. You can hand it out freely. You hang it on any
+- A **public key** - think of it as an open **padlock**. You can hand it out freely. You hang it on any
   server you want to log into.
-- A **private key** — the one and only **key that opens that padlock**. It never leaves your computer. You
+- A **private key** - the one and only **key that opens that padlock**. It never leaves your computer. You
   never send it anywhere. Ever.
 
 ```mermaid
 flowchart LR
-  PK["YOUR COMPUTER<br/>private key 🔑<br/>(stays here, never travels —<br/>the ONE key that opens the lock)"]
-  PUB["THE SERVER<br/>your public key 🔒<br/>(a padlock you hung here —<br/>anyone can hold it; only your key opens it)"]
+  PK["YOUR COMPUTER<br/>private key 🔑<br/>(stays here, never travels -<br/>the ONE key that opens the lock)"]
+  PUB["THE SERVER<br/>your public key 🔒<br/>(a padlock you hung here -<br/>anyone can hold it; only your key opens it)"]
   PK -- prove ownership --> PUB
 ```
 
 The beauty of a padlock: handing someone your padlock tells them **nothing** about your key. They can hang
-it on a door, photograph it, copy it — and still can't open it. Only the matching private key can. That's
+it on a door, photograph it, copy it - and still can't open it. Only the matching private key can. That's
 the heart of how keys work.
 
 **Why people get this wrong.** The names sound symmetric, so beginners assume the two files are
@@ -55,20 +55,20 @@ this, and they're the whole reason keys win:
 
 - **No secret ever travels.** With a password, you send the actual secret across the network on every
   login (encrypted, but still the real thing leaves your machine). With a key, your **private key never
-  moves** — only a one-time proof does. There is no reusable secret on the wire to capture.
+  moves** - only a one-time proof does. There is no reusable secret on the wire to capture.
 - **It resists brute force.** A password is short enough for a human to remember, which means it's short
-  enough for a machine to eventually guess by trying combinations. A private key is enormous and random —
+  enough for a machine to eventually guess by trying combinations. A private key is enormous and random -
   far beyond what guessing can reach in any practical time. This is why servers exposed to the internet
   routinely turn passwords *off* and require keys.
 
 💡 **Key point.** Passwords prove who you are by *sending a shared secret*. Keys prove who you are by
-*demonstrating you hold the private key* — without revealing it. That single shift is what makes key logins
+*demonstrating you hold the private key* - without revealing it. That single shift is what makes key logins
 both effortless and safer.
 
 ## Generating a key with `ssh-keygen`
 
 **What it does in real life.** One command creates the pair. The modern, recommended type is `ed25519`
-(small, fast, strong). The `-C` flag just adds a comment so you can recognize the key later — your email is
+(small, fast, strong). The `-C` flag just adds a comment so you can recognize the key later - your email is
 the convention.
 
 ```console
@@ -86,17 +86,17 @@ SHA256:9pK2vN... ada@example.com
 *What just happened:* `ssh-keygen` asked three questions (pressing Enter accepts the sensible default for
 each) and then wrote **two files**:
 
-- `id_ed25519` — your **private** key. The secret. Guard it.
-- `id_ed25519.pub` — your **public** key. Note the `.pub` extension; that's always the padlock, the
+- `id_ed25519` - your **private** key. The secret. Guard it.
+- `id_ed25519.pub` - your **public** key. Note the `.pub` extension; that's always the padlock, the
   shareable half.
 
-📝 **Terminology — the passphrase.** When it asked for a *passphrase*, that's an optional extra lock on the
+📝 **Terminology - the passphrase.** When it asked for a *passphrase*, that's an optional extra lock on the
 **private key file itself**, so that if someone copies the file off your laptop, it's still useless without
-the passphrase. It is *not* the server's password — it never goes to the server. Pressing Enter twice
+the passphrase. It is *not* the server's password - it never goes to the server. Pressing Enter twice
 leaves the key unprotected (convenient, riskier). Setting one is safer, and Phase 3 shows how the
 **ssh-agent** lets you type it just once per session so it's not annoying.
 
-## `~/.ssh/` — where keys live
+## `~/.ssh/` - where keys live
 
 **What it actually is.** All of this lives in a hidden folder in your home directory called `~/.ssh/`
 (the `~` means "my home folder"). Take a quick look:
@@ -110,15 +110,15 @@ total 12
 ```
 
 *What just happened:* `ls -l` listed the folder in long form. You can see your two new key files, plus the
-`known_hosts` file from Phase 1 (the record of servers you've trusted). Look at the leftmost column — those
+`known_hosts` file from Phase 1 (the record of servers you've trusted). Look at the leftmost column - those
 letters are **permissions**, and they matter here:
 
 - The private key reads `-rw-------`: only *you* can read or write it. No one else on the machine can even
   look.
-- The public key reads `-rw-r--r--`: you can write it, everyone can read it. That's fine — it's meant to be
+- The public key reads `-rw-r--r--`: you can write it, everyone can read it. That's fine - it's meant to be
   shared.
 
-⚠️ **Gotcha — permissions that are too open break logins silently.** SSH is deliberately paranoid: if your
+⚠️ **Gotcha - permissions that are too open break logins silently.** SSH is deliberately paranoid: if your
 private key or `~/.ssh` folder is readable by other users, SSH **refuses to use the key** rather than risk
 it being stolen. If keys mysteriously stop working, this is a prime suspect. The fix is to tighten them:
 `chmod 700 ~/.ssh` and `chmod 600 ~/.ssh/id_ed25519`. (`ssh-keygen` sets these correctly when it creates
@@ -126,8 +126,8 @@ the files; the trouble usually starts after copying keys around by hand.)
 
 ## Installing the public key with `ssh-copy-id`
 
-**What it does in real life.** To log in with your key, the server needs your **padlock** — your public
-key — added to a file in *its* `~/.ssh/` called `authorized_keys`. The clean way to do that is one command:
+**What it does in real life.** To log in with your key, the server needs your **padlock** - your public
+key - added to a file in *its* `~/.ssh/` called `authorized_keys`. The clean way to do that is one command:
 
 ```console
 $ ssh-copy-id ada@server.example.com
@@ -143,7 +143,7 @@ and check to make sure that only the key(s) you wanted were added.
 
 *What just happened:* `ssh-copy-id` logged in **this one last time with your password**, appended your
 public key to the server's `~/.ssh/authorized_keys`, and disconnected. You just hung your padlock on the
-server. From now on, your private key opens it — no password needed.
+server. From now on, your private key opens it - no password needed.
 
 Prove it:
 
@@ -156,25 +156,25 @@ ada@server:~$
 
 *What just happened:* No password prompt this time. SSH offered your private key, the server checked it
 against the padlock you installed, the match worked, and you were let straight in. (If you set a passphrase
-on the key, you'll be asked for *that* once — Phase 3 makes even that a one-time-per-session thing.)
+on the key, you'll be asked for *that* once - Phase 3 makes even that a one-time-per-session thing.)
 
 📝 **No `ssh-copy-id`?** On some systems (notably stock Windows) the command isn't installed. The same job
-is just appending the contents of your `id_ed25519.pub` to the server's `~/.ssh/authorized_keys` — any
+is just appending the contents of your `id_ed25519.pub` to the server's `~/.ssh/authorized_keys` - any
 method that gets that one line of text into that one file works. `ssh-copy-id` automates it safely.
 
 ## The one rule that matters most
 
-⚠️ **Gotcha — NEVER share or commit your PRIVATE key.** This is the single most important sentence in the
+⚠️ **Gotcha - NEVER share or commit your PRIVATE key.** This is the single most important sentence in the
 guide. Your private key (`id_ed25519`, the file *without* `.pub`) is the only thing standing between you and
 anyone who wants to log in as you. So:
 
 - **Never paste it** into a chat, an email, a ticket, or a forum post.
-- **Never commit it** to a Git repository — accidentally pushing a private key to GitHub is a genuinely
+- **Never commit it** to a Git repository - accidentally pushing a private key to GitHub is a genuinely
   common, genuinely bad mistake, and bots scan for exactly this.
 - **Never copy it onto a shared machine.** If you need to log in from another computer, generate a *new*
   key pair there.
 
-The public key (`.pub`) is the opposite — share it freely, that's its entire purpose. The rule is simple
+The public key (`.pub`) is the opposite - share it freely, that's its entire purpose. The rule is simple
 once you hold the mental model: you can hand out as many copies of the padlock as you like, but the key
 that opens it stays in your pocket, always.
 
@@ -189,7 +189,7 @@ that opens it stays in your pocket, always.
 5. **`ssh-copy-id user@host`** installs your public key on the server so future logins use the key.
 6. **Never share or commit the private key.** The `.pub` file is the only half you ever hand out.
 
-You can now log in without typing a password. Next: making SSH pleasant to live with — short names instead
+You can now log in without typing a password. Next: making SSH pleasant to live with - short names instead
 of long host strings, typing your passphrase once instead of every time, and reading the errors everyone
 eventually hits.
 

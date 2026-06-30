@@ -75,7 +75,7 @@
     goto(item.url);
   }
 
-  // Full results page — what Enter / the Search button has always done.
+  // Full results page - what Enter / the Search button has always done.
   function submitAll() {
     if (!q.trim()) return;
     close();
@@ -157,7 +157,7 @@
             </button>
           {/each}
         {:else}
-          <div class="typeahead-empty">No quick matches — press Enter to search.</div>
+          <div class="typeahead-empty">No quick matches - press Enter to search.</div>
         {/if}
         <button
           type="button"

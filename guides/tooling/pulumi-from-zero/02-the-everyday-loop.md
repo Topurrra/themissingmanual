@@ -42,7 +42,7 @@ index.ts            your program: the actual resource declarations
 
 ## Stacks: one program, many environments
 
-A **stack** is an independent instance of your program with its own state and its own config. `dev`, `staging`, `prod` are three stacks of the *same* code. This is how you avoid copy-pasting infrastructure per environment — you write it once and select a stack.
+A **stack** is an independent instance of your program with its own state and its own config. `dev`, `staging`, `prod` are three stacks of the *same* code. This is how you avoid copy-pasting infrastructure per environment - you write it once and select a stack.
 
 ```console
 $ pulumi stack ls
@@ -54,7 +54,7 @@ prod       3 days ago      9
 $ pulumi stack select prod
 ```
 
-*What just happened:* `stack ls` listed every stack with its resource count; the `*` marks the one you're on. `stack select prod` switched the active stack, so the next `up` targets production's state and config — not dev's. Always glance at which stack is active before you run anything that mutates.
+*What just happened:* `stack ls` listed every stack with its resource count; the `*` marks the one you're on. `stack select prod` switched the active stack, so the next `up` targets production's state and config - not dev's. Always glance at which stack is active before you run anything that mutates.
 
 ## Config and secrets
 
@@ -66,7 +66,7 @@ $ pulumi config set instanceCount 3
 $ pulumi config set --secret dbPassword 'S3cr3t!'
 ```
 
-*What just happened:* the first two went into `Pulumi.dev.yaml` as plain values. The `--secret` flag encrypted `dbPassword` before writing it, so the password never sits in the file as cleartext — it's stored encrypted and only decrypted at deploy time.
+*What just happened:* the first two went into `Pulumi.dev.yaml` as plain values. The `--secret` flag encrypted `dbPassword` before writing it, so the password never sits in the file as cleartext - it's stored encrypted and only decrypted at deploy time.
 
 Reading config back in your program is ordinary code:
 
@@ -80,7 +80,7 @@ const password = config.requireSecret("dbPassword");   // stays a secret value
 
 *What just happened:* `requireNumber` pulled `instanceCount` as a typed number and would error before any deploy if it were absent. `requireSecret` keeps the value marked as secret so Pulumi masks it in logs and stores it encrypted in state.
 
-> Secret values stay encrypted in the stack config and in state, and Pulumi masks them in CLI output. That's strong, but it's not a vault — anyone who can run `pulumi config get --secret` or read decrypted state can see them. Scope who has that access.
+> Secret values stay encrypted in the stack config and in state, and Pulumi masks them in CLI output. That's strong, but it's not a vault - anyone who can run `pulumi config get --secret` or read decrypted state can see them. Scope who has that access.
 
 ## The preview-then-up rhythm
 
@@ -103,7 +103,7 @@ Resources:
 Do you want to perform this update? [Use arrows] yes / no
 ```
 
-*What just happened:* `up` showed the same diff `preview` would, then paused for confirmation. The symbols are worth memorizing: `+` create, `~` update in place, `-` delete, and a `+-` (replace) means the resource must be destroyed and recreated. The `[diff: ~tags]` tells you *which* property changed — here, tags.
+*What just happened:* `up` showed the same diff `preview` would, then paused for confirmation. The symbols are worth memorizing: `+` create, `~` update in place, `-` delete, and a `+-` (replace) means the resource must be destroyed and recreated. The `[diff: ~tags]` tells you *which* property changed - here, tags.
 
 Answer `yes` and Pulumi applies, streaming each resource as it completes:
 
@@ -136,7 +136,7 @@ $ pulumi destroy
 $ pulumi stack rm dev
 ```
 
-*What just happened:* `destroy` deleted every resource the `dev` stack manages (with a preview and confirmation first, same as `up`). `stack rm` then removed the now-empty stack and its state. Order matters — destroy before you remove the stack, or you orphan real resources with no state pointing at them.
+*What just happened:* `destroy` deleted every resource the `dev` stack manages (with a preview and confirmation first, same as `up`). `stack rm` then removed the now-empty stack and its state. Order matters - destroy before you remove the stack, or you orphan real resources with no state pointing at them.
 
 ## In the wild
 

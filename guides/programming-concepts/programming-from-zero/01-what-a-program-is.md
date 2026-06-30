@@ -11,7 +11,7 @@ updated: 2026-06-19
 
 # What a Program Actually Is
 
-Before you write a single line, let's get the most important idea straight — because almost everything
+Before you write a single line, let's get the most important idea straight - because almost everything
 that feels scary about coding comes from a wrong picture of what's happening.
 
 Here's the wrong picture: that the computer is *smart*, that it understands what you *meant*, that
@@ -24,7 +24,7 @@ expecting that, code gets dramatically less frustrating.
 computer carries out one at a time, in order, from top to bottom. That's it. You are writing a recipe,
 and the computer is the most literal cook imaginable.
 
-The key word is *literal*. The computer does **exactly** what your instructions say — no more, no less.
+The key word is *literal*. The computer does **exactly** what your instructions say - no more, no less.
 It doesn't guess what you meant. It doesn't skip a step because it seems obvious. It doesn't fix your
 mistake for you. If you tell it to do something nonsensical, it does the nonsensical thing (or stops and
 complains). This sounds like a weakness. It's actually the thing that makes programming *learnable*:
@@ -35,7 +35,7 @@ understand. A *program* is a complete set of those instructions that does someth
 language* (we're using **Python**) is the specific vocabulary and grammar you write the instructions in.
 
 💡 **Key point.** You are not casting spells and hoping. You are writing precise instructions for a
-machine that follows them exactly. When something goes wrong, it's not magic failing — it's an
+machine that follows them exactly. When something goes wrong, it's not magic failing - it's an
 instruction that said something other than what you intended. That reframe alone will save you a hundred
 frustrated hours.
 
@@ -49,7 +49,7 @@ flowchart TD
   L1["Line 1: do this first"] --> L2["Line 2: then do this"] --> L3["Line 3: then this"] --> L4["Line 4: then this"] --> More["... and so on, top to bottom, in order"]
 ```
 
-Order matters enormously. If line 2 depends on something line 4 sets up, it won't work — the computer
+Order matters enormously. If line 2 depends on something line 4 sets up, it won't work - the computer
 reached line 2 before line 4 ever happened. Reading code is mostly this: tracing, in your head, what the
 machine does at each line, in sequence.
 
@@ -83,7 +83,7 @@ because every piece is a thing you'll see again and again:
 ```
 
 📝 **Terminology.** Running an instruction like `print(...)` is called **calling** it, and the value you
-put in the parentheses is called an **argument** — the thing you're handing to the instruction to work
+put in the parentheses is called an **argument** - the thing you're handing to the instruction to work
 with. Here the argument is the text `"Hello, world!"`.
 
 ## Order in action
@@ -104,20 +104,20 @@ Second
 Third
 ```
 
-Swap the lines and the output swaps too. The computer has no opinion about what order makes sense — it
+Swap the lines and the output swaps too. The computer has no opinion about what order makes sense - it
 follows yours.
 
 ## The gotcha that bites every single beginner
 
 ⚠️ **The computer is unforgivingly literal about punctuation.** Leave off a quote, a parenthesis, or
-misspell `print`, and the program doesn't "mostly work" — it stops and reports an error. For example,
+misspell `print`, and the program doesn't "mostly work" - it stops and reports an error. For example,
 forgetting the closing quote:
 
 ```python
 print("Hello, world!)
 ```
 *What just happened:* The computer started reading the text after the first quote and kept going,
-looking for the closing quote that ends it — and never found one. It can't guess where you meant the
+looking for the closing quote that ends it - and never found one. It can't guess where you meant the
 text to stop, so it gives up with a message like this:
 
 ```console
@@ -127,30 +127,30 @@ text to stop, so it gives up with a message like this:
 SyntaxError: unterminated string literal (detected at line 1)
 ```
 
-📝 **Terminology.** A **syntax error** means your code broke the grammar rules of the language — like a
+📝 **Terminology.** A **syntax error** means your code broke the grammar rules of the language - like a
 sentence with no closing quotation mark. The computer can't even *run* it yet, because it can't make
 sense of what you wrote.
 
 This feels harsh at first. But notice what the error gives you: the file, the line number (`line 1`), a
-little `^` pointing near the problem, and a description (`unterminated string literal` — "you opened a
+little `^` pointing near the problem, and a description (`unterminated string literal` - "you opened a
 piece of text and never closed it"). Errors aren't the computer being mean. They're the computer telling
 you, precisely, where your instructions didn't make sense. Learning to *read* them calmly is one of the
 biggest things separating someone who's stuck from someone who's moving.
 
 ## Why this saves you later
 
-Every confusing moment ahead — a program that does the wrong thing, output that's out of order, a crash
-you don't understand — comes back to this one idea: **the computer did exactly what you told it, in the
+Every confusing moment ahead - a program that does the wrong thing, output that's out of order, a crash
+you don't understand - comes back to this one idea: **the computer did exactly what you told it, in the
 order you told it.** When code misbehaves, you don't ask "why is it broken?" You ask "what did I
 actually tell it to do, line by line?" Then you trace it. That mindset is the entire job.
 
 ## Recap
 
 1. A **program** is a list of instructions the computer follows **in order, top to bottom**.
-2. The computer is **perfectly literal** — it does exactly what you wrote, never what you meant. That
+2. The computer is **perfectly literal** - it does exactly what you wrote, never what you meant. That
    predictability is what makes bugs findable.
 3. `print("...")` displays text on the screen; the text in quotes is the **argument** you hand it.
-4. **Order matters** — rearrange the lines and you rearrange the output.
+4. **Order matters** - rearrange the lines and you rearrange the output.
 5. A **syntax error** means you broke the language's grammar (a missing quote or parenthesis); the error
    message points you at where.
 

@@ -11,9 +11,9 @@ updated: 2026-06-30
 
 # Two ways to order change
 
-Here's the situation these tools were built for. You changed your schema on your laptop — added a table, dropped a column, added an index. It works locally. Now that same change has to reach staging and production, in the right order, applied exactly once, with no human pasting SQL into a prod console at 11pm. Multiply that across a team where three people are all changing the schema in the same week, and "remembering what's been applied" stops being a strategy.
+Here's the situation these tools were built for. You changed your schema on your laptop - added a table, dropped a column, added an index. It works locally. Now that same change has to reach staging and production, in the right order, applied exactly once, with no human pasting SQL into a prod console at 11pm. Multiply that across a team where three people are all changing the schema in the same week, and "remembering what's been applied" stops being a strategy.
 
-A migration tool's whole job is to answer two questions reliably: **what changes exist**, and **which ones has this particular database already seen**. Everything else is detail. dbmate and Sqitch both answer those questions for plain SQL — no ORM, no framework, no code-generated migrations. They differ, deeply, on how they decide the *order* of changes. That one decision shapes everything about how each tool feels.
+A migration tool's whole job is to answer two questions reliably: **what changes exist**, and **which ones has this particular database already seen**. Everything else is detail. dbmate and Sqitch both answer those questions for plain SQL - no ORM, no framework, no code-generated migrations. They differ, deeply, on how they decide the *order* of changes. That one decision shapes everything about how each tool feels.
 
 ## The shared idea: SQL files plus a ledger
 
@@ -27,7 +27,7 @@ add_posts              add_posts      ✓ applied
 add_index_on_email     (not present)  ← will run now
 ```
 
-*What just happened:* The tool saw three change files but a ledger that only knows about two, so it runs the third and writes a new ledger row. Run it again and nothing happens, because now all three are recorded. That idempotence — "apply what's missing, skip what's done" — is the entire point.
+*What just happened:* The tool saw three change files but a ledger that only knows about two, so it runs the third and writes a new ledger row. Run it again and nothing happens, because now all three are recorded. That idempotence - "apply what's missing, skip what's done" - is the entire point.
 
 The thing to internalize: **the database itself is the source of truth for what's been applied.** Not a config file, not your memory. Each environment carries its own ledger, so prod knows prod's history and staging knows staging's. The files in your repo are the menu; the ledger is the receipt.
 
@@ -57,13 +57,13 @@ CREATE TABLE users (
 DROP TABLE users;
 ```
 
-*What just happened:* One file describes how to apply the change (`up`) and how to undo it (`down`). dbmate reads the markers to know which block to run. The `down` block is what makes rollback possible — and if you leave it empty, rollback for that step does nothing.
+*What just happened:* One file describes how to apply the change (`up`) and how to undo it (`down`). dbmate reads the markers to know which block to run. The `down` block is what makes rollback possible - and if you leave it empty, rollback for that step does nothing.
 
 dbmate is a single small binary, written in Go, with no runtime dependency on your application's language. The same tool migrates a Rails app, a Python service, and a Rust service identically. That language-agnosticism is the reason people reach for it over a framework's built-in migrator.
 
 ## Sqitch: order by dependency graph
 
-Sqitch makes the opposite choice, and it's the more interesting one. It says: **timestamps are a lie about ordering.** Two teammates working in parallel both create a migration "after" the current tip, but neither's change actually depends on the other. A timestamp forces a false order. What actually matters is *real* dependencies — this change needs that table to exist first.
+Sqitch makes the opposite choice, and it's the more interesting one. It says: **timestamps are a lie about ordering.** Two teammates working in parallel both create a migration "after" the current tip, but neither's change actually depends on the other. A timestamp forces a false order. What actually matters is *real* dependencies - this change needs that table to exist first.
 
 So Sqitch has no timestamps and no version numbers. Each change is a **named change** with explicitly declared dependencies, and the changes form a directed graph. Sqitch deploys them in an order that respects the graph (recorded in a plain-text file called `sqitch.plan`).
 
@@ -73,7 +73,7 @@ users  ──requires──>  posts  ──requires──>  comments
                         └──requires──>  post_tags
 ```
 
-*What just happened:* `comments` and `post_tags` both declare they require `posts`, which requires `users`. Sqitch reads these declared dependencies and deploys in an order that never violates them. There's no "what time was this made" — there's only "what does this need to already exist."
+*What just happened:* `comments` and `post_tags` both declare they require `posts`, which requires `users`. Sqitch reads these declared dependencies and deploys in an order that never violates them. There's no "what time was this made" - there's only "what does this need to already exist."
 
 And Sqitch splits each change into **three scripts**, not two:
 
@@ -83,9 +83,9 @@ revert/add_users.sql    -- undo the change
 verify/add_users.sql    -- prove the change worked
 ```
 
-*What just happened:* `deploy` and `revert` mirror dbmate's up/down. The third script, `verify`, is Sqitch's signature feature: a script that fails if the change didn't actually take. We'll use it for real in Phase 3 — for now, hold the idea that Sqitch can *check its own work*, not assume the deploy succeeded.
+*What just happened:* `deploy` and `revert` mirror dbmate's up/down. The third script, `verify`, is Sqitch's signature feature: a script that fails if the change didn't actually take. We'll use it for real in Phase 3 - for now, hold the idea that Sqitch can *check its own work*, not assume the deploy succeeded.
 
-Sqitch is heavier than dbmate — a Perl application, configured per project, with its own vocabulary (`add`, `deploy`, `revert`, `verify`, `tag`). You pay that weight for the dependency graph and the verify step.
+Sqitch is heavier than dbmate - a Perl application, configured per project, with its own vocabulary (`add`, `deploy`, `revert`, `verify`, `tag`). You pay that weight for the dependency graph and the verify step.
 
 ## The mental model, side by side
 
@@ -116,7 +116,7 @@ Hold both pictures: **a line of timestamps** versus **a graph of named, verifiab
     "explain": "dbmate prefixes each migration with a UTC timestamp and applies them in ascending order, which is chronological."
   },
   {
-    "q": "What does Sqitch's third script per change — the verify script — do?",
+    "q": "What does Sqitch's third script per change - the verify script - do?",
     "choices": ["Re-runs the deploy to be safe", "Fails if the change did not actually take effect", "Generates the revert automatically", "Records a timestamp in the plan"],
     "answer": 1,
     "explain": "Verify scripts let Sqitch check its own work: they fail when the deploy didn't truly succeed, rather than assuming it did."

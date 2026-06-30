@@ -24,9 +24,9 @@ That's it. `aZ4` means `https://example.com/some/very/long/path?ref=newsletter`.
 
 ## A map, not a math problem
 
-People sometimes assume a shortener does something clever to the URL — compresses it, hashes it, encrypts it. It doesn't have to. The long URL isn't squeezed into the short code; it's **filed under** the short code.
+People sometimes assume a shortener does something clever to the URL - compresses it, hashes it, encrypts it. It doesn't have to. The long URL isn't squeezed into the short code; it's **filed under** the short code.
 
-Think of a coat check. You hand over your coat, you get a numbered ticket. The number doesn't contain your coat — it's a label pointing at a hook where the coat hangs. The short code is the ticket. The long URL is the coat.
+Think of a coat check. You hand over your coat, you get a numbered ticket. The number doesn't contain your coat - it's a label pointing at a hook where the coat hangs. The short code is the ticket. The long URL is the coat.
 
 ```mermaid
 graph LR
@@ -44,7 +44,7 @@ store = {}
 store["aZ4"] = "https://example.com/some/very/long/path"
 ```
 
-Now `store["aZ4"]` hands back the long URL. That single dictionary is the heart of the entire service. Everything we build after this — the code generator, the two functions, the CLI — exists to feed and query this one dictionary.
+Now `store["aZ4"]` hands back the long URL. That single dictionary is the heart of the entire service. Everything we build after this - the code generator, the two functions, the CLI - exists to feed and query this one dictionary.
 
 Why a dictionary and not, say, a list? Because lookup needs to be by code, not by position. With a list you'd scan every entry asking "is this the one?" With a dictionary you ask for the key and get the value directly, no matter how many entries you've stored. For a service that might hold millions of links, that difference is the whole game.
 
@@ -70,11 +70,11 @@ print("Sends you to:   ", store[visited])
 print("The whole store:", store)
 ```
 
-Run that and you'll see the lookup resolve. The output shows the code, the URL it points to, and the raw dictionary underneath — three lines that, between them, contain the entire idea of the product.
+Run that and you'll see the lookup resolve. The output shows the code, the URL it points to, and the raw dictionary underneath - three lines that, between them, contain the entire idea of the product.
 
 ## What happens if the code doesn't exist?
 
-There's a sharp edge here. If you ask the dictionary for a code it's never seen, indexing it with `store["nope"]` raises a `KeyError` and your program crashes. A real shortener gets garbage requests constantly — typos, expired links, people guessing codes — so it can't crash on every miss.
+There's a sharp edge here. If you ask the dictionary for a code it's never seen, indexing it with `store["nope"]` raises a `KeyError` and your program crashes. A real shortener gets garbage requests constantly - typos, expired links, people guessing codes - so it can't crash on every miss.
 
 The standard-library answer is `dict.get()`, which returns a fallback instead of exploding. Run this:
 
@@ -84,14 +84,14 @@ store = {"aZ4": "https://example.com/some/very/long/path"}
 # a code we know about
 print("aZ4 ->", store.get("aZ4", "NOT FOUND"))
 
-# a code we've never stored — no crash, just the fallback
+# a code we've never stored - no crash, just the fallback
 print("zzz ->", store.get("zzz", "NOT FOUND"))
 ```
 
-`store.get("zzz", "NOT FOUND")` checks for the key and, finding nothing, returns the fallback string instead of raising. That `get` pattern is how `resolve()` will stay calm when someone hands it a code that doesn't exist — we'll lean on it again in Phase 3.
+`store.get("zzz", "NOT FOUND")` checks for the key and, finding nothing, returns the fallback string instead of raising. That `get` pattern is how `resolve()` will stay calm when someone hands it a code that doesn't exist - we'll lean on it again in Phase 3.
 
 ## Where we are
 
-You now have the data model: a dictionary that maps codes to URLs, with a safe way to read from it. That's a working store. What it can't do yet is *invent* the short codes — right now we typed `aZ4` by hand. A real shortener generates a fresh, unused code for every new URL, automatically.
+You now have the data model: a dictionary that maps codes to URLs, with a safe way to read from it. That's a working store. What it can't do yet is *invent* the short codes - right now we typed `aZ4` by hand. A real shortener generates a fresh, unused code for every new URL, automatically.
 
-That's the next piece. In Phase 2 we'll build a generator that turns a plain counter into compact codes like `a`, `b`, `c`, … `Z`, `ba`, and so on — and I'll show you why a counter is a better starting point than reaching for random strings.
+That's the next piece. In Phase 2 we'll build a generator that turns a plain counter into compact codes like `a`, `b`, `c`, … `Z`, `ba`, and so on - and I'll show you why a counter is a better starting point than reaching for random strings.

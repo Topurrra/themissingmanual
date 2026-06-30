@@ -2,7 +2,7 @@
 title: "Relations & Functions"
 guide: "sets-relations-and-functions"
 phase: 2
-summary: "A relation is a set of ordered pairs — a way of connecting things. A function is a special relation where every input maps to exactly one output. Domain, codomain, and range, made concrete."
+summary: "A relation is a set of ordered pairs - a way of connecting things. A function is a special relation where every input maps to exactly one output. Domain, codomain, and range, made concrete."
 tags: [mathematics, functions, relations, domain, range]
 difficulty: beginner
 synonyms: ["what is a relation in math", "what is a function in math", "domain codomain range", "ordered pairs", "is it a function vertical line test"]
@@ -12,7 +12,7 @@ updated: 2026-06-25
 # Relations & Functions
 
 In Phase 1 you met sets: collections of distinct things, where order doesn't matter and
-duplicates don't count. That was the noun. Now comes the verb — how things *connect* to each
+duplicates don't count. That was the noun. Now comes the verb - how things *connect* to each
 other. The quiet surprise: the connection is itself a set. Everything you learned still applies.
 We're not starting over; we're stacking one idea on another.
 
@@ -31,7 +31,7 @@ The rule that defines it: `(a, b)` equals `(c, d)` only when `a = c` **and** `b 
 
 `(1, 2)` is **not** `(2, 1)`
 
-That single change — order now matters — is the whole reason ordered pairs exist. The first slot
+That single change - order now matters - is the whole reason ordered pairs exist. The first slot
 and the second slot mean different things, and you can't shuffle them.
 
 ## A relation is a set of ordered pairs
@@ -45,7 +45,7 @@ An everyday example. Suppose three people own pets:
 { (Ana, cat), (Ben, dog), (Ana, parrot) }
 ```
 
-That set of pairs *is* a relation — the "owns" relation. Notice Ana shows up twice, connected to
+That set of pairs *is* a relation - the "owns" relation. Notice Ana shows up twice, connected to
 two different pets. That's allowed. A relation doesn't restrict how many partners a thing has.
 
 Another classic: "is older than." If Ana is older than Ben, and Ben is older than Cara, the
@@ -55,7 +55,7 @@ relation is the set of pairs that hold true:
 { (Ana, Ben), (Ana, Cara), (Ben, Cara) }
 ```
 
-The order in each pair matters here — `(Ana, Ben)` means "Ana is older than Ben," and you can't
+The order in each pair matters here - `(Ana, Ben)` means "Ana is older than Ben," and you can't
 flip it. This is why we needed ordered pairs first: relations are built out of them.
 
 And because a relation is a set, every Phase 1 idea carries over. You can ask whether a pair is a
@@ -68,7 +68,7 @@ A **function** is a special kind of relation. The special rule:
 > **Every input maps to exactly one output.**
 
 Read that again, because it's the load-bearing sentence of this entire guide. Not "at most one,"
-not "roughly one" — **exactly one**. Give the function an input, and there is one and only one
+not "roughly one" - **exactly one**. Give the function an input, and there is one and only one
 output waiting for it. No ambiguity, no choices.
 
 Look back at the pets relation:
@@ -78,7 +78,7 @@ Look back at the pets relation:
 ```
 
 Is this a function? No. Ana (an input) maps to *two* outputs: cat and parrot. The rule says
-exactly one. One input, two outputs — that breaks it. So "owns a pet" is a relation but **not** a
+exactly one. One input, two outputs - that breaks it. So "owns a pet" is a relation but **not** a
 function.
 
 Now fix it. Suppose each person has exactly one *favorite* food:
@@ -88,7 +88,7 @@ Now fix it. Suppose each person has exactly one *favorite* food:
 ```
 
 This **is** a function. Every input (person) maps to exactly one output (their favorite food).
-Two inputs can share an output — both Ana and Cara map to sushi — and that's fine. The rule
+Two inputs can share an output - both Ana and Cara map to sushi - and that's fine. The rule
 constrains inputs, not outputs. What's forbidden is one input pointing at two different things.
 
 Say it one more time so it sticks: a function is a relation where **every input maps to exactly
@@ -101,11 +101,11 @@ Three words that sound interchangeable but aren't. Let's pin them down with one 
 Take the "favorite food" function above, and suppose the menu it's drawn from is
 `{sushi, tacos, pizza, salad}`.
 
-- **Domain** — the set of inputs. Here: `{Ana, Ben, Cara}`. These are the things the function
+- **Domain** - the set of inputs. Here: `{Ana, Ben, Cara}`. These are the things the function
   accepts.
-- **Codomain** — the declared set the outputs are *allowed* to come from. Here: the whole menu,
+- **Codomain** - the declared set the outputs are *allowed* to come from. Here: the whole menu,
   `{sushi, tacos, pizza, salad}`. It's the promised territory.
-- **Range** (also called the **image**) — the outputs that *actually get produced*. Here:
+- **Range** (also called the **image**) - the outputs that *actually get produced*. Here:
   `{sushi, tacos}`. Nobody picked pizza or salad, so those sit in the codomain but never appear in
   the range.
 
@@ -114,9 +114,9 @@ codomain is what you *promised* was possible; the range is what *happened*.
 
 ## Quick recap of `f(x)` notation
 
-You've seen `f(x)` before — back in [why math isn't your enemy](/guides/why-math-isnt-your-enemy)
+You've seen `f(x)` before - back in [why math isn't your enemy](/guides/why-math-isnt-your-enemy)
 it was a machine: feed in `x`, get back `f(x)`. Now you can read it precisely. `f` is the function
-(a set of pairs). `x` is an input from the domain. `f(x)` is *the* output — singular, because the
+(a set of pairs). `x` is an input from the domain. `f(x)` is *the* output - singular, because the
 definition guarantees exactly one. When you write `f(3) = 6`, you're naming the pair `(3, 6)` that
 lives inside the function.
 
@@ -135,7 +135,7 @@ square = {1: 1, 2: 4, 3: 9}
 print(square[3])
 ```
 
-*What just happened:* `double(5)` returned `10` — one input, one output, exactly as the definition
+*What just happened:* `double(5)` returned `10` - one input, one output, exactly as the definition
 demands. Then the dict `square` mapped the key `3` to the value `9`. A Python dict can't hold the
 same key twice with two different values, which is precisely the "every input maps to exactly one
 output" rule, enforced by the language. The dict *is* a function, written as a lookup table.
@@ -144,8 +144,8 @@ output" rule, enforced by the language. The dict *is* a function, written as a l
 
 You already use functions every day; you don't call them that.
 
-- A **pure function** in code — one that always returns the same output for the same input, with no
-  side effects — *is* a mathematical function. Same input, same output, every time. That's the
+- A **pure function** in code - one that always returns the same output for the same input, with no
+  side effects - *is* a mathematical function. Same input, same output, every time. That's the
   definition, restated in a language you compile.
 - A **dict / map / hash table** is a **finite function**: a literal list of input-output pairs, one
   value per key. When you write `users[id]`, you're evaluating a function at the point `id`.
@@ -156,20 +156,20 @@ foreign.
 
 > ⚠️ **Not every relation is a function.** The trap is forgetting the "exactly one" rule. The
 > moment a single input maps to two different outputs, you have a relation but *not* a function.
-> If you ever graph it, this is what the **vertical line test** checks: draw any vertical line — if
+> If you ever graph it, this is what the **vertical line test** checks: draw any vertical line - if
 > it crosses the graph more than once, one input is hitting multiple outputs, so it's not a
 > function.
 
 ## Recap
 
 - An **ordered pair** `(a, b)` cares about order: `(1, 2)` is not `(2, 1)`.
-- A **relation** is a set of ordered pairs — a way of connecting things. Because it's a set,
+- A **relation** is a set of ordered pairs - a way of connecting things. Because it's a set,
   everything from Phase 1 still applies.
 - A **function** is a relation where **every input maps to exactly one output**. One input → two
   outputs breaks it.
 - **Domain** = inputs, **codomain** = the declared set of possible outputs, **range** = the outputs
   actually produced (always inside the codomain).
-- In code, a pure function and a dict are both functions — same idea, different notation.
+- In code, a pure function and a dict are both functions - same idea, different notation.
 
 A quick check before you move on:
 
@@ -195,7 +195,7 @@ A quick check before you move on:
       "The domain is the codomain; the range is empty"
     ],
     "answer": 0,
-    "explain": "Domain = the set of inputs. Range = the outputs actually produced, which here is {sushi, tacos} — a subset of the codomain (pizza and salad never appear)."
+    "explain": "Domain = the set of inputs. Range = the outputs actually produced, which here is {sushi, tacos} - a subset of the codomain (pizza and salad never appear)."
   },
   {
     "q": "Which statement about the ordered pair (1, 2) is true?",
@@ -206,7 +206,7 @@ A quick check before you move on:
       "(1, 2) is only valid if 1 is less than 2"
     ],
     "answer": 0,
-    "explain": "In an ordered pair the order is meaningful: (a, b) = (c, d) only when a = c and b = d. So (1, 2) and (2, 1) are different — unlike the set {1, 2}, where order is ignored."
+    "explain": "In an ordered pair the order is meaningful: (a, b) = (c, d) only when a = c and b = d. So (1, 2) and (2, 1) are different - unlike the set {1, 2}, where order is ignored."
   }
 ]
 ```

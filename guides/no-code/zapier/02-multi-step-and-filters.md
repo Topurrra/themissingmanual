@@ -22,11 +22,11 @@ A two-step Zap is a demo. Real work needs more: do several things in response to
 
 After your trigger, you can stack actions, and they run strictly top to bottom. New Stripe charge → create the customer in your CRM → add a row to a revenue sheet → post in the team Slack. Four steps, one trigger.
 
-The order matters for two reasons. First, each step can use the output of *any* step above it — so if step 2 creates a record and hands back its new ID, step 3 can use that ID. Second, if a step fails, the steps below it don't run. Put the steps that must happen earlier; put the nice-to-haves later.
+The order matters for two reasons. First, each step can use the output of *any* step above it - so if step 2 creates a record and hands back its new ID, step 3 can use that ID. Second, if a step fails, the steps below it don't run. Put the steps that must happen earlier; put the nice-to-haves later.
 
 ## Passing data between steps
 
-Every step produces **output** — named fields you can pull into later steps. The trigger outputs the email, name, and amount. A "create record" action outputs the ID of the thing it created. You insert these outputs into the fields of later steps, the same way you mapped fields in Phase 1.
+Every step produces **output** - named fields you can pull into later steps. The trigger outputs the email, name, and amount. A "create record" action outputs the ID of the thing it created. You insert these outputs into the fields of later steps, the same way you mapped fields in Phase 1.
 
 Two habits keep this from biting you:
 
@@ -45,13 +45,13 @@ FILTER   →  Only continue if  Amount  >  100
 ACTION   →  Post in #big-sales Slack channel
 ```
 
-A charge for $40 hits the filter and stops — silently and correctly. A charge for $250 sails through. Filters are how you stop a Zap from spamming you on every trivial event, and (important for your bill, as Phase 3 explains) a filtered-out run is cheap.
+A charge for $40 hits the filter and stops - silently and correctly. A charge for $250 sails through. Filters are how you stop a Zap from spamming you on every trivial event, and (important for your bill, as Phase 3 explains) a filtered-out run is cheap.
 
 Common filter conditions: "exists / doesn't exist" (skip if no email), "text contains" (only support emails with "refund" in the subject), "greater than / less than" for numbers.
 
 ## Paths: branching
 
-A **Filter** is one road with a gate. **Paths** give you a fork — different actions depending on the data. Each path has its own condition and its own set of actions.
+A **Filter** is one road with a gate. **Paths** give you a fork - different actions depending on the data. Each path has its own condition and its own set of actions.
 
 ```mermaid
 flowchart TD
@@ -61,7 +61,7 @@ flowchart TD
   R -->|No plan chosen| C[Send a follow-up email]
 ```
 
-Each branch runs only if its condition matches. This is your if / else-if / else. Reach for Paths when "it depends" enters the conversation — VIP customers go one way, everyone else another. Note that Paths are a feature of paid plans; on the free tier you'd approximate branching by running several separate Zaps, each with its own filter.
+Each branch runs only if its condition matches. This is your if / else-if / else. Reach for Paths when "it depends" enters the conversation - VIP customers go one way, everyone else another. Note that Paths are a feature of paid plans; on the free tier you'd approximate branching by running several separate Zaps, each with its own filter.
 
 ## Formatter: the cleanup crew
 
@@ -79,7 +79,7 @@ A Formatter step takes a value in, transforms it, and outputs the cleaned-up ver
 
 ## Lookups: find before you act
 
-Often you don't want to blindly *create* a record — you want to find an existing one and either update it or create it if it's missing. Many apps offer a **"Find or Create"** action (sometimes a separate "Lookup"). It searches for a match (say, a customer by email); if found, it hands you that record's ID; if not, it creates one. This is how you avoid duplicate contacts piling up every time the same person triggers a Zap.
+Often you don't want to blindly *create* a record - you want to find an existing one and either update it or create it if it's missing. Many apps offer a **"Find or Create"** action (sometimes a separate "Lookup"). It searches for a match (say, a customer by email); if found, it hands you that record's ID; if not, it creates one. This is how you avoid duplicate contacts piling up every time the same person triggers a Zap.
 
 ```text
 TRIGGER  →  New form submission

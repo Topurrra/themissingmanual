@@ -173,7 +173,7 @@
     }
     nbRunning = false;
     correct = nbHits; attempts = nbHits + nbMiss + nbFalse;
-    if (nbHits >= nbStream.length * 0.25 && nbFalse <= 2) { /* did well — could bump next time */ }
+    if (nbHits >= nbStream.length * 0.25 && nbFalse <= 2) { /* did well - could bump next time */ }
     end('Stream complete');
   }
   function nbMatch() {
@@ -353,14 +353,14 @@
   onDestroy(() => { clearInterval(timer); memGen++; nbGen++; });
 </script>
 
-<svelte:head><title>Train your brain — The Missing Manual</title></svelte:head>
+<svelte:head><title>Train your brain - The Missing Manual</title></svelte:head>
 <svelte:window on:keydown={onKey} on:pointerup={wsRelease} />
 
 {#if stage === 'menu'}
   <header class="tr-intro">
     <span class="eyebrow">Train</span>
     <h1>Train your brain</h1>
-    <p class="tagline">Quick, adaptive workouts for the skills under clear thinking — reasoning, working memory, spatial sense, speed, and recall. Pick a game and beat your best, or take the Brain Challenge for a score.</p>
+    <p class="tagline">Quick, adaptive workouts for the skills under clear thinking - reasoning, working memory, spatial sense, speed, and recall. Pick a game and beat your best, or take the Brain Challenge for a score.</p>
   </header>
 
   <button class="tr-challenge" on:click={startChallenge}>
@@ -418,7 +418,7 @@
   {:else if ADAPTIVE.includes(game)}
     <div class="tr-opt">
       <span class="tr-opt-label">Difficulty</span>
-      <span class="tr-adaptive"><i class="ti ti-trending-up" aria-hidden="true"></i> Adapts to you — it ramps up as you get them right.</span>
+      <span class="tr-adaptive"><i class="ti ti-trending-up" aria-hidden="true"></i> Adapts to you - it ramps up as you get them right.</span>
     </div>
   {/if}
 
@@ -427,7 +427,7 @@
     {#if startDisabled}
       <span class="tr-best">Finish a guide’s quiz to unlock Knowledge.</span>
     {:else if game === 'wordsearch'}
-      <span class="tr-best">Find every term — beat your best time.</span>
+      <span class="tr-best">Find every term - beat your best time.</span>
     {:else}
       <span class="tr-best">Best: <b>{best}</b></span>
     {/if}
@@ -535,7 +535,7 @@
         <span class="ws-word" class:done={wsFound.has(w)}>{w}</span>
       {/each}
     </div>
-    <p class="tr-hint">Drag across letters in any direction — backwards and diagonally count. <button class="tr-link" on:click={wsReveal}>Reveal answers</button></p>
+    <p class="tr-hint">Drag across letters in any direction - backwards and diagonally count. <button class="tr-link" on:click={wsReveal}>Reveal answers</button></p>
   {/if}
 
 {:else if stage === 'wordsearchDone'}
@@ -559,7 +559,7 @@
   <header class="tr-intro">
     <span class="eyebrow">{newBest ? 'New best!' : 'Brain Challenge'}</span>
     <h1>Brain Score: {chScore}</h1>
-    <p class="tagline">{chBand} — {correct} of {chResults.length} correct.</p>
+    <p class="tagline">{chBand} - {correct} of {chResults.length} correct.</p>
   </header>
 
   <div class="tr-skills">
@@ -573,7 +573,7 @@
 
   <p class="tr-disclaimer">
     <i class="ti ti-info-circle" aria-hidden="true"></i>
-    This is a self-benchmark for fun and practice — <b>not a clinical IQ test</b>. A real IQ score needs a
+    This is a self-benchmark for fun and practice - <b>not a clinical IQ test</b>. A real IQ score needs a
     professionally administered, age-normed assessment. And brain-training mostly sharpens the trained skill;
     transfer to general intelligence is debated. Train because it’s fun and useful, not to chase a number.
   </p>
@@ -687,7 +687,7 @@
 
   .tr-prompt-svg { display: flex; justify-content: center; margin: 0 0 1.4rem; color: var(--ink); }
   /* These elements are injected via {@html}, so Svelte's scoping never tags
-     them — the selectors must be :global() or the styles silently don't apply. */
+     them - the selectors must be :global() or the styles silently don't apply. */
   :global(.tr-svg) { width: 100%; height: 100%; display: block; }
   .tr-choice.svg :global(.tr-svg) { width: 60px; height: 60px; }
   :global(.tr-mx) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: min(300px, 88%); margin: 0 auto; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); }

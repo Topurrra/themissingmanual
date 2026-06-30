@@ -24,8 +24,8 @@ Go in order. Phase 1 gives you the mental model: tasks, the build graph, and why
 
 ## The phases
 
-1. [Phase 1: The Build Is a Graph](01-the-build-is-a-graph.md) — what Gradle actually is, tasks, and the task DAG
-2. [Phase 2: The Build Script You Live In](02-the-build-script-you-live-in.md) — the DSL, plugins, and dependency configurations
-3. [Phase 3: Why It's Fast, and Where It Bites](03-why-its-fast-and-where-it-bites.md) — incremental builds, the cache, the wrapper, and gotchas
+1. [Phase 1: The Build Is a Graph](01-the-build-is-a-graph.md) - what Gradle actually is, tasks, and the task DAG
+2. [Phase 2: The Build Script You Live In](02-the-build-script-you-live-in.md) - the DSL, plugins, and dependency configurations
+3. [Phase 3: Why It's Fast, and Where It Bites](03-why-its-fast-and-where-it-bites.md) - incremental builds, the cache, the wrapper, and gotchas
 
 [Phase 1: The Build Is a Graph](01-the-build-is-a-graph.md) →

@@ -2,7 +2,7 @@ import { listGuides, listCategories, getGuide } from '$lib/api.js';
 
 // XML sitemap: static pages + every category + every guide overview + every phase.
 // Each phase is its own citable answer page, so we list them all rather than relying
-// on crawlers to follow links — better for search indexing and AI answer engines.
+// on crawlers to follow links - better for search indexing and AI answer engines.
 export async function GET({ fetch, url }) {
   const origin = url.origin;
   const guides = (await listGuides(fetch)) ?? [];

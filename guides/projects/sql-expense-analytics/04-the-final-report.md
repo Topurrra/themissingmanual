@@ -18,20 +18,20 @@ updated: 2026-06-30
 
 You've built every piece: the table, the grouped totals, the running total, the
 month-over-month change. This phase ties them into the two queries a real
-expense report leads with — *where did the money go* (category share of total)
-and *which way is it trending* (the monthly trend) — each as one self-contained
+expense report leads with - *where did the money go* (category share of total)
+and *which way is it trending* (the monthly trend) - each as one self-contained
 statement you could paste straight into a dashboard.
 
 ## Report part one: category share of total
 
 A category total is useful. A category's **share of total** is the line that
-ends arguments — "dining was 9% of everything" lands harder than a raw dollar
+ends arguments - "dining was 9% of everything" lands harder than a raw dollar
 figure.
 
 To get a percentage you need two numbers in the same row: each category's total,
 and the grand total across all categories. The grand total is a single number
 that has to be available on every row, and that's exactly a window function with
-an empty `OVER ()` — no `ORDER BY`, no `PARTITION BY`, meaning "sum over the
+an empty `OVER ()` - no `ORDER BY`, no `PARTITION BY`, meaning "sum over the
 whole result."
 
 A CTE (the `WITH ... AS (...)` block) computes the per-category totals once, and
@@ -88,7 +88,7 @@ ORDER BY total DESC;
 ```
 
 Now you've got the headline. Rent is the biggest slice by far; the discretionary
-categories — dining, travel — are the ones you can actually act on. The
+categories - dining, travel - are the ones you can actually act on. The
 `pct_of_total` column adds up to 100 across all rows, because the denominator is
 the same grand total on every row. The `100.0 *` (not `100 *`) forces
 floating-point division so you get `8.7`, not `0`.
@@ -96,7 +96,7 @@ floating-point division so you get `8.7`, not `0`.
 ## Report part two: the monthly trend
 
 The second half of the report is the trend over time, with the running total and
-the month-over-month change side by side — everything from phase 3, assembled
+the month-over-month change side by side - everything from phase 3, assembled
 into one statement. This is the query you'd chart.
 
 ```sql runnable
@@ -154,7 +154,7 @@ ORDER BY month;
 
 One table, the full trend: each month's spend, the cumulative total across all
 months, and how each month moved versus the last. January's `mom_change` is
-empty (no prior month), `cumulative` ends at the grand total. This is a report —
+empty (no prior month), `cumulative` ends at the grand total. This is a report -
 the kind you'd refresh monthly and glance at to know whether you're drifting.
 
 ## You built a report
@@ -171,15 +171,15 @@ short phases, you produced:
 | `OVER ()` + CTEs | Share-of-total in one query |
 
 Those five techniques cover the vast majority of analytical SQL you'll ever
-write. Sales, signups, errors per day — it's the same shapes with different
+write. Sales, signups, errors per day - it's the same shapes with different
 column names.
 
 ## Extend it
 
-The data is yours — keep going:
+The data is yours - keep going:
 
 - **Add March.** Insert a handful of `'2026-03-...'` rows and re-run the trend
-  query. The trend extends with no code change — that's the payoff of writing it
+  query. The trend extends with no code change - that's the payoff of writing it
   against the data instead of hardcoding two months.
 - **Category trend.** Combine the techniques: `GROUP BY month, category`, then
   `PARTITION BY category ORDER BY month` to get each category's own
@@ -190,6 +190,6 @@ The data is yours — keep going:
   it to your monthly category totals, and flag where you went over.
 
 Each of those is a small variation on what you've already done. Pick one, open
-any block above, swap the bottom query, and run it. You've got the loop now —
+any block above, swap the bottom query, and run it. You've got the loop now -
 edit, run, read the output, repeat. That's how SQL stops being syntax and starts
 being a tool you reach for.

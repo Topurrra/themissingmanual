@@ -2,7 +2,7 @@
 title: "Parsing the HTML"
 guide: web-scraper-python
 phase: 2
-summary: "Load the fetched HTML into BeautifulSoup and locate elements two ways — with the find/find_all methods and with CSS selectors."
+summary: "Load the fetched HTML into BeautifulSoup and locate elements two ways - with the find/find_all methods and with CSS selectors."
 tags: [python, beautifulsoup, html-parsing, css-selectors, find]
 difficulty: intermediate
 synonyms:
@@ -16,12 +16,12 @@ updated: 2026-06-30
 
 # Parsing the HTML
 
-Last phase we ended with a giant string of HTML. A string is hard to work with —
+Last phase we ended with a giant string of HTML. A string is hard to work with -
 you can't ask a string "give me every book title on this page." This phase turns
 that string into a tree you *can* ask questions of, using BeautifulSoup, and
 shows you the two ways to find things in it.
 
-We're working with `https://books.toscrape.com/` — a fake bookstore made for
+We're working with `https://books.toscrape.com/` - a fake bookstore made for
 practice. Open it in your browser and right-click a book, then choose "Inspect,"
 so you can see the HTML we're about to navigate. Scraping is half code, half
 reading someone else's markup.
@@ -48,7 +48,7 @@ print(soup.title.text)   # just the text inside it
 
 Run `python parse.py`. You should see the `<title>` tag and then its text. That
 `soup` object is the whole page as a navigable tree. `"html.parser"` is Python's
-built-in parser — nothing extra to install. (There are faster parsers like
+built-in parser - nothing extra to install. (There are faster parsers like
 `lxml`, but the built-in one is right for learning and fine for most jobs.)
 
 ## The find family
@@ -62,7 +62,7 @@ constantly.
 first_h3 = soup.find("h3")
 print("First h3:", first_h3.text)
 
-# Every <article> with class "product_pod" — each one is a book
+# Every <article> with class "product_pod" - each one is a book
 books = soup.find_all("article", class_="product_pod")
 print("Books found on this page:", len(books))
 ```
@@ -72,7 +72,7 @@ narrow by attribute. Class is special: because `class` is a reserved word in
 Python, BeautifulSoup spells the keyword `class_` with a trailing underscore.
 You'll hit that one a lot.
 
-On this page you should see 20 books — that's how many fit on a page before
+On this page you should see 20 books - that's how many fit on a page before
 pagination kicks in (Phase 4's problem).
 
 ## Reach inside a matched element
@@ -103,7 +103,7 @@ attributes, `.text` for what's between the tags.
 ## The other way: CSS selectors
 
 There's a second style, and once it clicks many people never go back. If you
-know CSS — the selectors you'd write in a stylesheet — you can use the exact same
+know CSS - the selectors you'd write in a stylesheet - you can use the exact same
 syntax to find elements, with `select` (returns a list) and `select_one`
 (returns the first).
 
@@ -122,7 +122,7 @@ print("Price:", price.text)
 ```
 
 Same results, different spelling. `article.product_pod` means "an `<article>`
-with class `product_pod`." A space means "descendant of" — so
+with class `product_pod`." A space means "descendant of" - so
 `article.product_pod h3 a` reads as "an `<a>` somewhere inside an `<h3>` somewhere
 inside that article." If you can read CSS, you can read these.
 
@@ -133,15 +133,15 @@ Neither is "correct." Here's how I choose:
 | Situation | Reach for |
 |-----------|-----------|
 | One condition, by tag or class | either; `find` reads plainly |
-| Deeply nested path | `select` — one selector beats nested `find` calls |
+| Deeply nested path | `select` - one selector beats nested `find` calls |
 | Matching by class only | `select(".price_color")` is shorter than `find_all` |
-| Logic between steps (loop, branch) | `find` — you stay in Python |
+| Logic between steps (loop, branch) | `find` - you stay in Python |
 | You already think in CSS | `select` will feel like home |
 
 A handy trick from your browser: inspect an element, right-click it in the
 elements panel, and many browsers offer "Copy → Copy selector." That hands you a
-CSS selector you can paste straight into `select_one`. Trim it down — the copied
-version is often longer than it needs to be — but it's a fast start.
+CSS selector you can paste straight into `select_one`. Trim it down - the copied
+version is often longer than it needs to be - but it's a fast start.
 
 ## See the whole page's structure
 
@@ -161,12 +161,12 @@ for book in soup.select("article.product_pod"):
 ```
 
 Run it. Twenty titles scroll past. You read a real page's worth of data out
-of raw HTML — that's the parsing skill, and it's the heart of every scraper.
+of raw HTML - that's the parsing skill, and it's the heart of every scraper.
 
 ## Where we are
 
 You can load HTML into a searchable tree and pull out exactly the elements you
 want, two different ways, both within the whole page and within a single item.
 Right now we're printing loose pieces. Next phase we gather those pieces into
-clean, structured records — one tidy dictionary per book — and make the code
+clean, structured records - one tidy dictionary per book - and make the code
 survive a page where a field is missing.

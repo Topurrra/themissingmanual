@@ -11,13 +11,13 @@ updated: 2026-06-30
 
 # Production Reality and Gotchas
 
-Everything works on your laptop. Then you put it on a server, reboot, and your container does not come back — because there is no daemon to bring it back. This phase is the bill that comes due for going daemonless, and the well-worn answers to each item.
+Everything works on your laptop. Then you put it on a server, reboot, and your container does not come back - because there is no daemon to bring it back. This phase is the bill that comes due for going daemonless, and the well-worn answers to each item.
 
 ## Restarts: systemd is the daemon now
 
 With Docker, `--restart=always` works because `dockerd` is always running and re-launches the container after a reboot. Podman has no such service, so the job falls to the init system every Linux server already runs: systemd.
 
-The modern way is **Quadlet** — you describe a container in a small unit-like file, and systemd generates the service for you:
+The modern way is **Quadlet** - you describe a container in a small unit-like file, and systemd generates the service for you:
 
 ```ini
 # ~/.config/containers/systemd/cache.container
@@ -35,7 +35,7 @@ $ systemctl --user start cache.service
 $ loginctl enable-linger $USER
 ```
 
-*What just happened:* you declared a container in a `.container` file, systemd turned it into `cache.service`, and you started it as a *user* service — no root involved. The `enable-linger` line is the one people forget: by default a rootless user's services stop when you log out, so linger tells systemd to keep your user manager running across logout and reboot. Without it, your "always-on" container quietly dies the moment you disconnect.
+*What just happened:* you declared a container in a `.container` file, systemd turned it into `cache.service`, and you started it as a *user* service - no root involved. The `enable-linger` line is the one people forget: by default a rootless user's services stop when you log out, so linger tells systemd to keep your user manager running across logout and reboot. Without it, your "always-on" container quietly dies the moment you disconnect.
 
 > Older guides use `podman generate systemd` to emit a unit file you save by hand. It still works, but it is deprecated in favor of Quadlet. If you are starting fresh, write a `.container` file; if you inherit generated units, they will keep running.
 
@@ -72,11 +72,11 @@ $ export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock
 $ docker-compose up    # now talks to Podman
 ```
 
-*What just happened:* you started Podman's compatibility socket and pointed `DOCKER_HOST` at it, so Docker-API clients reach Podman instead. It is a faithful subset, not a perfect clone — most Compose files run fine; the rare feature that depends on a Docker-only API quirk will not. Note this socket is on-demand: it activates when a client connects and is not a permanent root daemon.
+*What just happened:* you started Podman's compatibility socket and pointed `DOCKER_HOST` at it, so Docker-API clients reach Podman instead. It is a faithful subset, not a perfect clone - most Compose files run fine; the rare feature that depends on a Docker-only API quirk will not. Note this socket is on-demand: it activates when a client connects and is not a permanent root daemon.
 
 ## Volumes, SELinux, and the `:z` you'll forget
 
-On SELinux systems (Fedora, RHEL, and relatives — common Podman territory), a host bind-mount needs a label or the container cannot read it:
+On SELinux systems (Fedora, RHEL, and relatives - common Podman territory), a host bind-mount needs a label or the container cannot read it:
 
 ```console
 $ podman run -v ./data:/data:Z docker.io/library/postgres:16
@@ -95,7 +95,7 @@ Neither is a moral choice. They produce the same OCI images and run the same wor
 
 ## In the wild
 
-A typical server deployment ends up as: a Quadlet `.container` file per service, `enable-linger` set so they survive reboots, a high host port behind nginx or Caddy, and `DOCKER_HOST` exported only on the CI box that runs Compose-based integration tests. No root daemon anywhere — which is the entire reason the security team signed off.
+A typical server deployment ends up as: a Quadlet `.container` file per service, `enable-linger` set so they survive reboots, a high host port behind nginx or Caddy, and `DOCKER_HOST` exported only on the CI box that runs Compose-based integration tests. No root daemon anywhere - which is the entire reason the security team signed off.
 
 ```quiz
 [

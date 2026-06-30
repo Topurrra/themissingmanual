@@ -18,7 +18,7 @@ export async function GET({ fetch, url }) {
 
   let out =
     '# The Missing Manual\n\n' +
-    '> Free, in-depth, plain-language guides to how software really works — from how a ' +
+    '> Free, in-depth, plain-language guides to how software really works - from how a ' +
     'computer boots up to the internet, databases, and AI. Every guide page is also available ' +
     'as Markdown by requesting it with the `Accept: text/markdown` header.\n\n';
 
@@ -34,7 +34,7 @@ export async function GET({ fetch, url }) {
     `- [Glossary](${origin}/glossary): plain-language definitions of the terms used across the guides.\n\n` +
     '## For agents\n' +
     'Every guide page is also available as clean Markdown via the `Accept: text/markdown` header.\n' +
-    `MCP server (Streamable HTTP, read-only): \`${origin}/mcp\` — tools: search_guides, read_guide.\n\n`;
+    `MCP server (Streamable HTTP, read-only): \`${origin}/mcp\` - tools: search_guides, read_guide.\n\n`;
 
   return new Response(out, {
     headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'max-age=3600' }

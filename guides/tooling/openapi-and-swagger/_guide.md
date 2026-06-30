@@ -2,7 +2,7 @@
 title: "OpenAPI and Swagger"
 guide: openapi-and-swagger
 phase: 0
-summary: "Describe your REST API once in OpenAPI, and get interactive docs, client SDKs, request validation, and contract tests for free — the API as a spec."
+summary: "Describe your REST API once in OpenAPI, and get interactive docs, client SDKs, request validation, and contract tests for free - the API as a spec."
 tags: [openapi, swagger, rest, api, documentation, tooling]
 category: tooling
 group: "API & Search"
@@ -22,8 +22,8 @@ Read in order. Phase 1 builds the mental model: what OpenAPI actually is, why "S
 
 ## The phases
 
-1. [Phase 1: The Contract, Not the Docs](01-the-contract-not-the-docs.md) — what OpenAPI is and why a machine-readable spec exists.
-2. [Phase 2: Writing and Generating From the Spec](02-writing-and-generating.md) — author a spec, render docs, generate clients, pick a workflow.
-3. [Phase 3: The Spec at Work in Production](03-the-spec-in-production.md) — validation, mocking, contract tests, versioning, and the traps.
+1. [Phase 1: The Contract, Not the Docs](01-the-contract-not-the-docs.md) - what OpenAPI is and why a machine-readable spec exists.
+2. [Phase 2: Writing and Generating From the Spec](02-writing-and-generating.md) - author a spec, render docs, generate clients, pick a workflow.
+3. [Phase 3: The Spec at Work in Production](03-the-spec-in-production.md) - validation, mocking, contract tests, versioning, and the traps.
 
 [Phase 1: The Contract, Not the Docs](01-the-contract-not-the-docs.md) →

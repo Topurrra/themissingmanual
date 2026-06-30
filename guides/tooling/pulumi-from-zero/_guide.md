@@ -24,8 +24,8 @@ Read the phases in order the first time. Phase 1 builds the mental model so the 
 
 ## The phases
 
-1. [What Pulumi actually is](01-what-pulumi-actually-is.md) — the mental model: a real language describing a desired state, plus a state file and a diff engine.
-2. [The everyday loop](02-the-everyday-loop.md) — projects, stacks, config, and the `preview`/`up`/`destroy` rhythm you'll live in.
-3. [Where the rope gets you](03-where-the-rope-gets-you.md) — the gotchas a general-purpose language invites, and when to reach for Pulumi over HCL.
+1. [What Pulumi actually is](01-what-pulumi-actually-is.md) - the mental model: a real language describing a desired state, plus a state file and a diff engine.
+2. [The everyday loop](02-the-everyday-loop.md) - projects, stacks, config, and the `preview`/`up`/`destroy` rhythm you'll live in.
+3. [Where the rope gets you](03-where-the-rope-gets-you.md) - the gotchas a general-purpose language invites, and when to reach for Pulumi over HCL.
 
 [Phase 1: What Pulumi actually is](01-what-pulumi-actually-is.md) →

@@ -36,8 +36,8 @@ slice we care about:
 | `` `code` ``           | `<code>code</code>`              |
 | `[text](url)`          | `<a href="url">text</a>`         |
 
-Notice the split in that table. The top four rules look at a **whole line** — a `#` at
-the start makes the entire line a heading. The bottom four work **inside** a line —
+Notice the split in that table. The top four rules look at a **whole line** - a `#` at
+the start makes the entire line a heading. The bottom four work **inside** a line -
 `**bold**` could appear in the middle of a paragraph or a heading.
 
 That split is the most important idea in this guide. We have two kinds of rules:
@@ -90,13 +90,13 @@ lines.forEach((line, i) => {
 ```
 
 Run that. You should see six lines, including the two blank ones (index 1 and 4). Those
-blank lines matter later — they are how Markdown separates one paragraph from the next —
+blank lines matter later - they are how Markdown separates one paragraph from the next -
 so it is good that `split` keeps them.
 
 ## Framing the loop
 
 Now the skeleton everything else hangs on. We loop over the lines and, for each one,
-decide what it is. Right now we only know how to *classify* a line, not convert it — but
+decide what it is. Right now we only know how to *classify* a line, not convert it - but
 classifying is the first half of the job, and it shows you the shape of the code we will
 fill in over the next phases.
 
@@ -130,13 +130,13 @@ the blank line is blank, and the rest is a paragraph.
 
 This is the real architecture in miniature. A Markdown parser is fundamentally a thing
 that walks lines, classifies each one, and emits the matching HTML. Everything from here
-is filling in the "emit the matching HTML" part — making `classify` smarter and turning
+is filling in the "emit the matching HTML" part - making `classify` smarter and turning
 those labels into real tags.
 
 ## Where we are
 
 You have a converter's skeleton: input split into lines, and a function that knows what
-each line is. You also have the mental model — blocks versus inline — that the rest of
+each line is. You also have the mental model - blocks versus inline - that the rest of
 the build rests on.
 
 Next phase we replace those labels with actual HTML tags. Bring the `classify` idea with

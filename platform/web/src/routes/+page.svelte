@@ -96,13 +96,13 @@
 
 <Seo
   title="The Missing Manual for Developers"
-  description="Clear, in-depth guides to how software really works — from how a computer boots up to the internet, databases, and AI. Start from zero or go deep. Free, forever."
+  description="Clear, in-depth guides to how software really works - from how a computer boots up to the internet, databases, and AI. Start from zero or go deep. Free, forever."
   type="website"
   jsonld={homeLd} />
 
 <section class="hero">
   <h1>Understand how software <span class="accent">actually</span> works.</h1>
-  <p class="tagline">Clear, in-depth guides to everything from how a computer boots up to how the internet, databases, and AI really work. Start from zero or go deep — at your own pace. Free, forever, no account needed.</p>
+  <p class="tagline">Clear, in-depth guides to everything from how a computer boots up to how the internet, databases, and AI really work. Start from zero or go deep - at your own pace. Free, forever, no account needed.</p>
   <div class="hero-cta">
     {#if hasPath}
       <a class="cta-primary" href="/paths">Continue learning →</a>
@@ -153,7 +153,7 @@
     <span class="ht-icon"><i class="ti ti-brain" aria-hidden="true"></i></span>
     <span class="ht-text">
       <span class="ht-title">Train your brain</span>
-      <span class="ht-blurb">Quick games — speed, memory, focus, and quiz knowledge from the guides.</span>
+      <span class="ht-blurb">Quick games - speed, memory, focus, and quiz knowledge from the guides.</span>
     </span>
     <span class="ht-go" aria-hidden="true">→</span>
   </a>

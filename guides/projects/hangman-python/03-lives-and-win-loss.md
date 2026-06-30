@@ -2,7 +2,7 @@
 title: "Lives, Wins, and Losses"
 guide: hangman-python
 phase: 3
-summary: "Subtract a life on every wrong guess, then detect the two endings — the full word for a win, zero lives for a loss."
+summary: "Subtract a life on every wrong guess, then detect the two endings - the full word for a win, zero lives for a loss."
 tags: [python, conditionals, loops, game, beginner]
 difficulty: beginner
 synonyms:
@@ -18,15 +18,15 @@ updated: 2026-06-30
 
 A guessing game with no consequences is a list of letters. The fun is the tension:
 every wrong guess brings you closer to losing, every right one closer to winning.
-This phase adds that tension — a life counter that drops on misses, plus the two
+This phase adds that tension - a life counter that drops on misses, plus the two
 checks that end the game.
 
 By the end you'll run a complete round from start to finish.
 
 ## Lives are a number that only misses touch
 
-A life is a counter. Start it at some limit — six is the classic Hangman number,
-one for each part of the stick figure — and subtract one every time the player
+A life is a counter. Start it at some limit - six is the classic Hangman number,
+one for each part of the stick figure - and subtract one every time the player
 misses. Hits don't touch it.
 
 ```python runnable
@@ -38,7 +38,7 @@ for bad in ["z", "q", "x"]:
 ```
 
 Run it. Three misses, three down from six, lands on three. When `lives` hits zero,
-the player is out — that's the loss condition, and it's a plain `lives <= 0`
+the player is out - that's the loss condition, and it's a plain `lives <= 0`
 check.
 
 ## Detecting a win
@@ -56,13 +56,13 @@ print("Half guessed:", won(word, {"p", "y", "t"}))
 print("All guessed: ", won(word, set("python")))
 ```
 
-Run it. The first line is `False` — `h`, `o`, and `n` are still missing. The
-second is `True` — `set("python")` holds every letter, so every `letter in
+Run it. The first line is `False` - `h`, `o`, and `n` are still missing. The
+second is `True` - `set("python")` holds every letter, so every `letter in
 guessed` check is true, so `all(...)` is true. That `won` function is your win
 detector.
 
 One thing worth noticing: this checks every *distinct* letter in the word, and a
-word like "coffee" has repeats. That's fine — guessing `f` once puts `f` in the
+word like "coffee" has repeats. That's fine - guessing `f` once puts `f` in the
 set, and both `f` positions in "coffee" now count as guessed. The set handles
 repeated letters in the word without any extra code.
 
@@ -103,7 +103,7 @@ word = "python"
 guessed = set()
 lives = 6
 
-# A simulated game: one miss ('z'), the rest hits — this should win.
+# A simulated game: one miss ('z'), the rest hits - this should win.
 moves = ["p", "y", "z", "t", "h", "o", "n"]
 
 print(f"Starting word: {show(word, guessed)}  (lives: {lives})")
@@ -165,12 +165,12 @@ else:
 ```
 
 Run it. Three misses burn the three lives, and the loop's `break` fires before the
-fourth guess is even read — notice only three turns print, then `Out of lives`.
+fourth guess is even read - notice only three turns print, then `Out of lives`.
 Same engine, both endings, decided by the guesses and the life limit.
 
 ## Where you are
 
 You have a full round: a masked word, guess handling, a life counter, and both
-endings. The one thing still hardcoded is the word itself — you've been playing
+endings. The one thing still hardcoded is the word itself - you've been playing
 "python" every time. Last phase we pick from a word list and wrap everything into
 a single tidy game function, then point you at ways to make it your own.

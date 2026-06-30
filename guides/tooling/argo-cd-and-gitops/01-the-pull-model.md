@@ -13,11 +13,11 @@ updated: 2026-06-30
 
 Think about how most teams deploy before GitOps. A pipeline runs, and at the end it reaches into the cluster and *pushes*: `kubectl apply`, a `helm upgrade`, maybe a hand-typed command at 2am during an incident. The cluster does whatever the last push told it. Now ask the uncomfortable question: what's running right now, and who decided that? Often nobody can answer with certainty. The cluster's state and your repo's state have quietly diverged, and the only way to know is to go poke at the live thing.
 
-GitOps flips the direction. Instead of CI pushing into the cluster, a controller *inside* the cluster pulls from Git and makes the cluster match. The repo stops being a record of intentions and becomes the literal, enforced definition of what runs. That one inversion — pull instead of push — is the whole idea. Everything else in this guide is a consequence of it.
+GitOps flips the direction. Instead of CI pushing into the cluster, a controller *inside* the cluster pulls from Git and makes the cluster match. The repo stops being a record of intentions and becomes the literal, enforced definition of what runs. That one inversion - pull instead of push - is the whole idea. Everything else in this guide is a consequence of it.
 
 ## Desired state vs actual state
 
-Kubernetes is already declarative. You don't tell it "start three pods" — you write a Deployment that says `replicas: 3`, and a controller works to make that true and keep it true. If a pod dies, Kubernetes notices the gap between desired (3) and actual (2) and starts a replacement. That gap-closing behavior has a name: a **reconciliation loop**.
+Kubernetes is already declarative. You don't tell it "start three pods" - you write a Deployment that says `replicas: 3`, and a controller works to make that true and keep it true. If a pod dies, Kubernetes notices the gap between desired (3) and actual (2) and starts a replacement. That gap-closing behavior has a name: a **reconciliation loop**.
 
 GitOps extends that loop one level up. The desired state is now a set of YAML files in a Git repo. The actual state is the live cluster. Argo CD is the controller that watches both and works to close any gap between them.
 
@@ -33,8 +33,8 @@ GitOps extends that loop one level up. The desired state is now a set of YAML fi
 
 The two states get compared constantly, and the comparison produces a status you'll live by:
 
-- **Synced** — the cluster matches Git. All is well.
-- **OutOfSync** — the cluster has drifted from Git, or Git has new commits the cluster hasn't applied yet.
+- **Synced** - the cluster matches Git. All is well.
+- **OutOfSync** - the cluster has drifted from Git, or Git has new commits the cluster hasn't applied yet.
 
 ## Push vs pull, side by side
 
@@ -50,7 +50,7 @@ PULL (GitOps)
   Truth: "whatever Git says, enforced continuously"
 ```
 
-*What just happened:* in push, your CI system holds cluster credentials and is the actor. In pull, the cluster holds a read-only token to Git and is its own actor — credentials never leave the cluster's blast radius.
+*What just happened:* in push, your CI system holds cluster credentials and is the actor. In pull, the cluster holds a read-only token to Git and is its own actor - credentials never leave the cluster's blast radius.
 
 That credential point matters more than it looks. In a push world, every CI runner that can deploy has keys to prod. In a pull world, Argo CD reads Git (often read-only) and acts from *inside* the cluster, so your CI never needs cluster access at all. CI's job shrinks to "build the image, write the new tag into Git." Deployment becomes a Git commit.
 
@@ -60,11 +60,11 @@ That credential point matters more than it looks. In a push world, every CI runn
 
 Three properties fall out of the pull model for free, and they're the reason teams adopt it.
 
-**Auditability.** Every change to production is a Git commit — authored, timestamped, reviewed in a pull request. Want to know who changed the replica count and why? It's `git log`, not a forensic dig through cluster history.
+**Auditability.** Every change to production is a Git commit - authored, timestamped, reviewed in a pull request. Want to know who changed the replica count and why? It's `git log`, not a forensic dig through cluster history.
 
-**Rollback is `git revert`.** Because Git is the source of truth, undoing a bad deploy is undoing a commit. You don't hunt for the previous image tag or the old config — you revert the commit, and Argo CD reconciles the cluster back to that state. Same mechanism as deploying, run backwards.
+**Rollback is `git revert`.** Because Git is the source of truth, undoing a bad deploy is undoing a commit. You don't hunt for the previous image tag or the old config - you revert the commit, and Argo CD reconciles the cluster back to that state. Same mechanism as deploying, run backwards.
 
-**Drift detection and self-healing.** If someone runs `kubectl edit` by hand, the cluster no longer matches Git. Argo CD sees that as OutOfSync and can flag it — or, if you turn on self-heal, quietly undo it. The cluster can't silently drift away from what's reviewed and recorded.
+**Drift detection and self-healing.** If someone runs `kubectl edit` by hand, the cluster no longer matches Git. Argo CD sees that as OutOfSync and can flag it - or, if you turn on self-heal, quietly undo it. The cluster can't silently drift away from what's reviewed and recorded.
 
 ```text
 $ argocd app get payments
@@ -77,7 +77,7 @@ Sync Status: OutOfSync   (someone edited the live Deployment)
 
 ## For builders
 
-You don't need GitOps for a hobby cluster you alone touch. It earns its keep the moment more than one person can change production, or the moment "what's actually running?" becomes a question with a scary answer. The payoff is a single, reviewable, revertible record of your infrastructure — and a controller that won't let reality drift away from it behind your back.
+You don't need GitOps for a hobby cluster you alone touch. It earns its keep the moment more than one person can change production, or the moment "what's actually running?" becomes a question with a scary answer. The payoff is a single, reviewable, revertible record of your infrastructure - and a controller that won't let reality drift away from it behind your back.
 
 ```quiz
 [
@@ -101,7 +101,7 @@ You don't need GitOps for a hobby cluster you alone touch. It earns its keep the
       "Delete the namespace and recreate it by hand"
     ],
     "answer": 2,
-    "explain": "Because Git is the source of truth, rollback is git revert — the same reconciliation mechanism, run against an earlier state."
+    "explain": "Because Git is the source of truth, rollback is git revert - the same reconciliation mechanism, run against an earlier state."
   },
   {
     "q": "Why does the pull model reduce your production credential exposure?",

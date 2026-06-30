@@ -39,17 +39,17 @@ Say you ask an agent: "Find the cheapest flight from Boston to Lisbon in October
 ```text
 Goal: cheap BOS→LIS flight in October, add to calendar
 
-Step 1 — Plan: I need flight prices. Use the flight-search tool.
-Step 1 — Act: search BOS→LIS, October.
-Step 1 — Observe: got 12 results, cheapest is Oct 14, $480.
+Step 1 - Plan: I need flight prices. Use the flight-search tool.
+Step 1 - Act: search BOS→LIS, October.
+Step 1 - Observe: got 12 results, cheapest is Oct 14, $480.
 
-Step 2 — Plan: confirm it's a real bookable fare, not a glitch.
-Step 2 — Act: open the Oct 14 listing.
-Step 2 — Observe: still $480, one stop, looks legit.
+Step 2 - Plan: confirm it's a real bookable fare, not a glitch.
+Step 2 - Act: open the Oct 14 listing.
+Step 2 - Observe: still $480, one stop, looks legit.
 
-Step 3 — Plan: add a placeholder to the calendar.
-Step 3 — Act: create event "Possible LIS trip" on Oct 14.
-Step 3 — Observe: event created successfully.
+Step 3 - Plan: add a placeholder to the calendar.
+Step 3 - Act: create event "Possible LIS trip" on Oct 14.
+Step 3 - Observe: event created successfully.
 
 Done? Yes. Report back to the user.
 ```
@@ -58,21 +58,21 @@ Notice what happened. The agent did not plan all three steps up front and march 
 
 ## Why the loop is the whole point
 
-This is what makes agents feel smart. Real tasks are full of surprises — a file is missing, a login expired, a number looks wrong. A rigid script snaps the moment reality differs from the plan. The loop bends. Each pass, the agent sees what actually happened and adjusts. That is why an agent can muddle through a messy task that you could not have scripted in advance: it is not following your steps, it is finding its own, one at a time.
+This is what makes agents feel smart. Real tasks are full of surprises - a file is missing, a login expired, a number looks wrong. A rigid script snaps the moment reality differs from the plan. The loop bends. Each pass, the agent sees what actually happened and adjusts. That is why an agent can muddle through a messy task that you could not have scripted in advance: it is not following your steps, it is finding its own, one at a time.
 
-It is also why agents can *recover*. Ask it to save a file and the folder does not exist? A good agent observes the error, plans a new step — create the folder — and tries again. You did not tell it to. The loop did.
+It is also why agents can *recover*. Ask it to save a file and the folder does not exist? A good agent observes the error, plans a new step - create the folder - and tries again. You did not tell it to. The loop did.
 
 ## Why the loop is also where it goes wrong
 
 The same loop that gives an agent its power gives it three classic failure modes. Watch for all three.
 
-**It misreads the result.** The agent observes the wrong thing — thinks a step worked when it failed, or grabs the wrong number from a page — and then confidently builds the next step on a bad foundation. One misread early can poison everything after it.
+**It misreads the result.** The agent observes the wrong thing - thinks a step worked when it failed, or grabs the wrong number from a page - and then confidently builds the next step on a bad foundation. One misread early can poison everything after it.
 
-**It loops without making progress.** It tries something, it fails, it tries almost the same thing, fails again, and again. Without a stop condition it can churn — sometimes burning real money on tool calls — getting nowhere. This is why serious agents have limits: a maximum number of steps, a budget, a timeout. When you hear an agent "got stuck in a loop," this is it.
+**It loops without making progress.** It tries something, it fails, it tries almost the same thing, fails again, and again. Without a stop condition it can churn - sometimes burning real money on tool calls - getting nowhere. This is why serious agents have limits: a maximum number of steps, a budget, a timeout. When you hear an agent "got stuck in a loop," this is it.
 
 **It decides "done" too early or too late.** That `Done?` check is a judgment call the model makes, and it can be wrong. Stop too early and it hands you half a job and calls it finished. Stop too late and it keeps "improving" things you never asked it to touch.
 
-None of these mean agents are useless. They mean the loop is doing exactly what it does — making decisions step by step — and sometimes a step is wrong. The fix is not to trust the loop blindly. It is to watch the steps and put limits around them.
+None of these mean agents are useless. They mean the loop is doing exactly what it does - making decisions step by step - and sometimes a step is wrong. The fix is not to trust the loop blindly. It is to watch the steps and put limits around them.
 
 ## What this means for you
 

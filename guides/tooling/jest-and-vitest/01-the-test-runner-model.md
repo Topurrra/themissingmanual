@@ -2,7 +2,7 @@
 title: "The model: what a test runner does"
 guide: jest-and-vitest
 phase: 1
-summary: "JavaScript and TypeScript testing: Jest's batteries-included matchers, mocks, and snapshots — and Vitest, the faster, Vite-native drop-in with the same API."
+summary: "JavaScript and TypeScript testing: Jest's batteries-included matchers, mocks, and snapshots - and Vitest, the faster, Vite-native drop-in with the same API."
 tags: [jest, vitest, testing, javascript, typescript, mocks, snapshots]
 difficulty: intermediate
 synonyms: ["jest vs vitest", "how to test javascript", "jest mocks", "vitest setup", "snapshot testing", "jest fake timers", "testing async code js"]
@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The model: what a test runner does
 
-Here's the reality most tutorials skip. A test is not magic. It's a function that runs your code and then checks whether the result is what you expected. If the check fails, the function throws. That's the whole idea. Everything else — `describe`, `it`, mocks, snapshots — is sugar on top of "run code, throw if wrong."
+Here's the reality most tutorials skip. A test is not magic. It's a function that runs your code and then checks whether the result is what you expected. If the check fails, the function throws. That's the whole idea. Everything else - `describe`, `it`, mocks, snapshots - is sugar on top of "run code, throw if wrong."
 
 A **test runner** is the program that finds those functions, runs them, catches the throws, and prints a report. Jest and Vitest are both test runners. They give you four things you'd otherwise build yourself: a way to *find* test files, a way to *group and name* tests, a library of *assertions* (matchers), and tooling for the hard parts (mocks, timers, coverage). Once you see them as "the same four jobs," the two tools stop being two things to learn.
 
@@ -53,9 +53,9 @@ describe("add", () => {
 
 *What just happened:* `describe` groups related tests under a label. `it` (its alias `test` is identical) declares one test with a sentence describing the behavior. `expect(...)` wraps the value you got, and `.toBe(...)` is the matcher that throws if it doesn't match. Read the `it` line as a sentence: "add sums two numbers." If that sentence is true after the test runs, it passes.
 
-The naming matters more than it looks. A good `it` description tells a future reader *what the code is supposed to do*, so a failing test reads like a bug report: "add sums two numbers — FAILED." Write the sentence first, then make it true.
+The naming matters more than it looks. A good `it` description tells a future reader *what the code is supposed to do*, so a failing test reads like a bug report: "add sums two numbers - FAILED." Write the sentence first, then make it true.
 
-> **Jest vs Vitest, line one.** The only difference in the block above is the import: `vitest` vs `@jest/globals`. Jest also injects `describe`/`it`/`expect` as globals by default, so you often see no import at all. Vitest can do the same with `globals: true` in its config. The test bodies are otherwise identical — that sameness is the whole reason this guide covers both at once.
+> **Jest vs Vitest, line one.** The only difference in the block above is the import: `vitest` vs `@jest/globals`. Jest also injects `describe`/`it`/`expect` as globals by default, so you often see no import at all. Vitest can do the same with `globals: true` in its config. The test bodies are otherwise identical - that sameness is the whole reason this guide covers both at once.
 
 ## Where the runner looks
 
@@ -72,7 +72,7 @@ src/
     routing.test.ts    ← found: inside __tests__
 ```
 
-*What just happened:* you didn't register these files anywhere. You named them by convention and the runner discovered them. Co-locating `math.test.js` next to `math.js` is the common style — the test sits next to the thing it tests, so it's quick to find and stays in sync.
+*What just happened:* you didn't register these files anywhere. You named them by convention and the runner discovered them. Co-locating `math.test.js` next to `math.js` is the common style - the test sits next to the thing it tests, so it's quick to find and stays in sync.
 
 ## Running it
 
@@ -88,7 +88,7 @@ npx jest --watch      # Jest's watch mode (opt-in)
 
 *What just happened:* one command finds every test file, runs every `it`, and prints pass/fail counts plus the file and line of any failure. In watch mode the runner re-runs only the tests affected by the file you saved, which is why a tight test loop feels instant. Note the defaults differ: Vitest watches unless you say `run`; Jest runs once unless you say `--watch`.
 
-For builders: keep `"test": "vitest"` (or `jest`) as your dev script and add `"test:ci": "vitest run --coverage"` for the pipeline. Same tool, two intentions — fast feedback locally, a clean one-shot run with coverage in CI. For where unit tests sit relative to integration and end-to-end tests, see [Unit, Integration, and E2E](/guides/unit-integration-e2e).
+For builders: keep `"test": "vitest"` (or `jest`) as your dev script and add `"test:ci": "vitest run --coverage"` for the pipeline. Same tool, two intentions - fast feedback locally, a clean one-shot run with coverage in CI. For where unit tests sit relative to integration and end-to-end tests, see [Unit, Integration, and E2E](/guides/unit-integration-e2e).
 
 ```quiz
 [

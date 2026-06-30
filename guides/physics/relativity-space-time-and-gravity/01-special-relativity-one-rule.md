@@ -2,7 +2,7 @@
 title: "Special Relativity: One Rule, Strange Consequences"
 guide: "relativity-space-time-and-gravity"
 phase: 1
-summary: "The speed of light is the same for every observer — and that one unbending fact forces moving clocks to run slow, lengths to shrink, and mass to be frozen energy."
+summary: "The speed of light is the same for every observer - and that one unbending fact forces moving clocks to run slow, lengths to shrink, and mass to be frozen energy."
 tags: [physics, special-relativity, speed-of-light, time-dilation, length-contraction, simultaneity, e-equals-mc-squared]
 difficulty: intermediate
 synonyms: ["special relativity explained", "why is the speed of light constant", "light clock thought experiment", "time dilation explained", "length contraction", "relativity of simultaneity", "what does e=mc2 mean", "is everything relative"]
@@ -14,7 +14,7 @@ updated: 2026-06-30
 Most weird ideas in physics come from a pile of complicated facts. Special relativity is the opposite.
 It comes from *one* fact, plain enough to state in a sentence, and everything strange about it is the
 universe being forced to obey that fact no matter what it costs. So we start with the fact, we make
-sure you believe it, and then we follow it wherever it leads — even when it leads somewhere that feels
+sure you believe it, and then we follow it wherever it leads - even when it leads somewhere that feels
 impossible.
 
 The destination: time is not a universal clock ticking the same for everyone, and space is not a fixed
@@ -44,7 +44,7 @@ ship to tell whether you're moving or sitting still. Physics looks identical to 
 
 > The myth to kill right now: people say relativity means "everything is relative." It means almost
 > the opposite. The speed of light is *not* relative. The laws of physics are *not* relative. They are
-> the bedrock everyone shares — and it's precisely because they refuse to bend that *time and space*
+> the bedrock everyone shares - and it's precisely because they refuse to bend that *time and space*
 > have to bend instead.
 
 ## The light clock: where time starts to give
@@ -52,7 +52,7 @@ ship to tell whether you're moving or sitting still. Physics looks identical to 
 Now we make a clock out of nothing but light, and we watch what the one rule does to it.
 
 Picture two mirrors facing each other, a fixed distance apart, with a single pulse of light bouncing
-straight up and down between them. Each bounce is one tick. It's a real clock — a perfectly good way to
+straight up and down between them. Each bounce is one tick. It's a real clock - a perfectly good way to
 measure time.
 
 ```text
@@ -72,17 +72,17 @@ measure time.
 You hold one of these clocks. It ticks away, light going straight up and down, all is calm.
 
 Now I take an identical clock and fly past you at enormous speed. From *my* point of view, inside my
-ship, my light still goes straight up and down — nothing's weird for me. But from *your* point of view
+ship, my light still goes straight up and down - nothing's weird for me. But from *your* point of view
 watching me streak by, my light pulse can't go straight up and down. By the time it reaches the top
 mirror, the whole clock has moved sideways. So *you* see the light travel a longer, diagonal path
 between bounces.
 
-Here's the hammer blow. That light, on its longer diagonal path, is still moving at *c* — because the
+Here's the hammer blow. That light, on its longer diagonal path, is still moving at *c* - because the
 one rule says it must, for you too. Same speed, longer distance. There's only one way that math works
 out: from your point of view, my clock takes *more time* between ticks. My clock is running slow.
 
 *What just happened:* Because light's speed is locked, and my moving light has farther to travel, my
-clock must tick slower as seen by you. This is **time dilation** — moving clocks run slow — and it
+clock must tick slower as seen by you. This is **time dilation** - moving clocks run slow - and it
 falls straight out of the one rule, no extra assumptions needed.
 
 This is not an illusion or a glitch in the clock. *Every* clock on my ship slows by the same amount,
@@ -91,31 +91,31 @@ The slowdown is tiny at everyday speeds and enormous near light speed, but it's 
 
 ## "But who's actually moving?"
 
-Good — you should be uneasy. From my ship, *you're* the one flying past, so by the exact same
+Good - you should be uneasy. From my ship, *you're* the one flying past, so by the exact same
 argument, *your* clock looks slow to *me*. We each see the other's clock running slow. That sounds like
 a contradiction, and the fact that it isn't one is the deepest part of special relativity.
 
 The escape is that there's no universal "now." If I want to compare our clocks, I have to decide which
-events count as happening "at the same time" — and observers moving relative to each other *disagree
+events count as happening "at the same time" - and observers moving relative to each other *disagree
 about what is simultaneous*. Two flashes you judge to go off together, I judge to go off one after the
 other. This is the **relativity of simultaneity**, and it's the hinge the whole thing turns on. There's
 no paradox because there's no single shared clock-reading to contradict; "at the same time" is itself a
 point of view.
 
 The seeming contradiction only resolves into a real difference when someone turns around and comes
-back — and turning around means *accelerating*, which breaks the symmetry. The traveler who actually
+back - and turning around means *accelerating*, which breaks the symmetry. The traveler who actually
 went somewhere and returned is the one who comes home younger. That's not a thought experiment anymore;
 it's been measured with atomic clocks flown on airplanes.
 
 ## Space gives too: length contraction
 
 Time isn't the only thing that bends. If you and I disagree about how much time passes, and we both
-measure that same light moving at the same *c*, then we must also disagree about *distance* — because
+measure that same light moving at the same *c*, then we must also disagree about *distance* - because
 speed is distance over time, and *c* won't budge.
 
 The result: **objects moving fast are measured as shorter** along their direction of motion. A
 spaceship streaking past you is measured shorter than its rest length. From the ship's own crew,
-nothing is squished — but the distance *they* travel through is shortened instead. A journey that looks
+nothing is squished - but the distance *they* travel through is shortened instead. A journey that looks
 like four light-years to you can be a much shorter trip to a fast enough traveler, because for them the
 distance itself contracts. Time and space trade off to keep the speed of light sacred.
 
@@ -131,7 +131,7 @@ out that nobody was looking for:
    energy = mass × (speed of light)²
 ```
 
-Read it as a sentence: **mass is a form of energy** — a fantastically concentrated form, because *c²*
+Read it as a sentence: **mass is a form of energy** - a fantastically concentrated form, because *c²*
 is a huge number. A tiny amount of mass holds an enormous amount of energy locked inside it. The mass
 in a paperclip, fully converted, would release energy on the scale of a large bomb. That's not a
 metaphor; it's where the energy of the Sun and of nuclear reactors comes from. They convert a sliver of
@@ -145,7 +145,7 @@ like light itself can ride along it.
 
 ## Pulling it together
 
-Everything in this phase came from one rule — light's speed is the same for everyone — plus the refusal
+Everything in this phase came from one rule - light's speed is the same for everyone - plus the refusal
 to fudge it. Hold the speed of light fixed and the universe pays for it by bending time and space:
 
 ```text
@@ -157,7 +157,7 @@ to fudge it. Hold the speed of light fixed and the universe pays for it by bendi
 ```
 
 None of this is "everything is relative." It's the opposite: because the deepest things *refuse* to be
-relative, the things you thought were absolute — time, length, mass — turn out to be the flexible ones.
+relative, the things you thought were absolute - time, length, mass - turn out to be the flexible ones.
 
 In the next phase we add gravity, and watch space itself stop being a flat stage and start to curve.
 
@@ -172,7 +172,7 @@ In the next phase we add gravity, and watch space itself stop being a flat stage
       "Time always passes at the same rate for everyone"
     ],
     "answer": 1,
-    "explain": "The whole theory follows from light traveling at the same speed c for every observer. That constancy is what forces time and space to bend — it is the one thing that does not bend."
+    "explain": "The whole theory follows from light traveling at the same speed c for every observer. That constancy is what forces time and space to bend - it is the one thing that does not bend."
   },
   {
     "q": "In the light-clock thought experiment, why does a moving clock tick slower as seen by a stationary observer?",
@@ -183,18 +183,18 @@ In the next phase we add gravity, and watch space itself stop being a flat stage
       "Moving clocks are poorly built"
     ],
     "answer": 2,
-    "explain": "Because the clock moves sideways, the light's path becomes a longer diagonal. Since light's speed stays fixed at c, covering more distance takes more time — so each tick takes longer. That is time dilation."
+    "explain": "Because the clock moves sideways, the light's path becomes a longer diagonal. Since light's speed stays fixed at c, covering more distance takes more time - so each tick takes longer. That is time dilation."
   },
   {
     "q": "What does E = mc² actually tell us?",
     "choices": [
-      "Energy and mass are the same thing, with c² as the exchange rate — mass is frozen energy",
+      "Energy and mass are the same thing, with c² as the exchange rate - mass is frozen energy",
       "Light has no energy",
       "Mass can never be converted into anything",
       "Energy only exists in moving objects"
     ],
     "answer": 0,
-    "explain": "Mass is a hugely concentrated form of energy. Because c² is enormous, a tiny mass holds vast energy — which is why the Sun and nuclear reactors release so much by converting a little mass."
+    "explain": "Mass is a hugely concentrated form of energy. Because c² is enormous, a tiny mass holds vast energy - which is why the Sun and nuclear reactors release so much by converting a little mass."
   }
 ]
 ```

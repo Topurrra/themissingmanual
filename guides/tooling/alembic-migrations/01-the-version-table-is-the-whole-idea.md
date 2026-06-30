@@ -58,12 +58,12 @@ Because the order lives inside the files, two people can write migrations at the
 
 A few terms you will see constantly. Learn them now and the rest reads easily.
 
-- **Revision** — one migration. A file in `alembic/versions/` with an `upgrade()` and a `downgrade()`.
-- **`upgrade()`** — the function that moves the schema forward (create a table, add a column).
-- **`downgrade()`** — the function that reverses that exact change. You write both, even when you doubt you'll downgrade.
-- **Head** — the newest revision in a chain; the one you upgrade *to* by default.
-- **`alembic_version`** — the table in your database holding the currently-applied revision id.
-- **`env.py`** — Alembic's config script. It knows your database URL and your models' metadata, so autogenerate has both pictures to compare.
+- **Revision** - one migration. A file in `alembic/versions/` with an `upgrade()` and a `downgrade()`.
+- **`upgrade()`** - the function that moves the schema forward (create a table, add a column).
+- **`downgrade()`** - the function that reverses that exact change. You write both, even when you doubt you'll downgrade.
+- **Head** - the newest revision in a chain; the one you upgrade *to* by default.
+- **`alembic_version`** - the table in your database holding the currently-applied revision id.
+- **`env.py`** - Alembic's config script. It knows your database URL and your models' metadata, so autogenerate has both pictures to compare.
 
 ```text
 alembic/
@@ -77,7 +77,7 @@ alembic.ini           # the .ini Alembic reads first
 
 *What just happened:* you saw the standard layout `alembic init` creates. The `versions/` folder is your migration history; `env.py` is where Alembic learns about your specific database and models. Everything in Phase 2 happens in this structure.
 
-> The pairing with SQLAlchemy matters: Alembic does not invent its own model system. It reads the same `MetaData` your app already defines. That shared metadata is what makes autogenerate possible — and, as Phase 3 explains, what bounds its blind spots. If the ORM side feels fuzzy, [How an ORM works](/guides/how-an-orm-works) is the companion for that.
+> The pairing with SQLAlchemy matters: Alembic does not invent its own model system. It reads the same `MetaData` your app already defines. That shared metadata is what makes autogenerate possible - and, as Phase 3 explains, what bounds its blind spots. If the ORM side feels fuzzy, [How an ORM works](/guides/how-an-orm-works) is the companion for that.
 
 ## In the wild
 

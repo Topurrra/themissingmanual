@@ -2,7 +2,7 @@
 title: "The four nouns: jobs, executors, steps, workflows"
 guide: circleci-from-zero
 phase: 1
-summary: "Cloud-native CI/CD with config.yml: jobs, workflows, executors, and orbs — fast parallel pipelines without running your own server."
+summary: "Cloud-native CI/CD with config.yml: jobs, workflows, executors, and orbs - fast parallel pipelines without running your own server."
 tags: [circleci, ci, cd, pipelines, devops, yaml]
 difficulty: intermediate
 synonyms: ["circleci tutorial", "circleci config.yml", "circleci workflows", "circleci orbs", "circleci vs github actions", "how does circleci work"]
@@ -24,7 +24,7 @@ steps:
   - run: npm test
 ```
 
-*What just happened:* `checkout` is a built-in step that clones your repo into the working directory. The two `run` steps execute shell commands in order — install dependencies, then run tests. If `npm ci` fails (non-zero exit), CircleCI stops and never reaches `npm test`. Steps run top to bottom and the first failure ends the show.
+*What just happened:* `checkout` is a built-in step that clones your repo into the working directory. The two `run` steps execute shell commands in order - install dependencies, then run tests. If `npm ci` fails (non-zero exit), CircleCI stops and never reaches `npm test`. Steps run top to bottom and the first failure ends the show.
 
 A `run` step can be a one-liner like above, or a named multi-line block when you want it to read clearly in the UI:
 
@@ -35,7 +35,7 @@ steps:
       command: npm test
 ```
 
-*What just happened:* same command, but now the CircleCI dashboard labels this step "Run the test suite" instead of showing the raw command. The `name` is purely for humans reading the build output — worth it for anything non-obvious.
+*What just happened:* same command, but now the CircleCI dashboard labels this step "Run the test suite" instead of showing the raw command. The `name` is purely for humans reading the build output - worth it for anything non-obvious.
 
 ## A job is a list of steps on one machine
 
@@ -58,7 +58,7 @@ If you come from GitHub Actions, a CircleCI **job** maps to an Actions **job**, 
 
 ## An executor is the machine the job runs on
 
-That `docker:` key under the job is the **executor** — your choice of *what kind of machine* the steps run on. This is where CircleCI gives you a real decision, so it's worth understanding the main options.
+That `docker:` key under the job is the **executor** - your choice of *what kind of machine* the steps run on. This is where CircleCI gives you a real decision, so it's worth understanding the main options.
 
 ```yaml
 jobs:
@@ -73,15 +73,15 @@ jobs:
       xcode: "15.3.0"                # a macOS machine for iOS/Mac builds
 ```
 
-*What just happened:* three jobs, three executor types. The `docker` executor is the default workhorse — fast to start, your commands run inside the named container. The `machine` executor gives you a full virtual machine, which you need when your job itself runs Docker (building images, docker-compose) or needs kernel-level access a container can't give. The `macos` executor is a real Mac, required for anything Apple.
+*What just happened:* three jobs, three executor types. The `docker` executor is the default workhorse - fast to start, your commands run inside the named container. The `machine` executor gives you a full virtual machine, which you need when your job itself runs Docker (building images, docker-compose) or needs kernel-level access a container can't give. The `macos` executor is a real Mac, required for anything Apple.
 
-The mental rule: **reach for `docker` first** because it boots fastest. Move up to `machine` only when a container genuinely can't do the job — almost always because you need to build or run Docker images yourself.
+The mental rule: **reach for `docker` first** because it boots fastest. Move up to `machine` only when a container genuinely can't do the job - almost always because you need to build or run Docker images yourself.
 
 > The `cimg/` images (short for "CircleCI image") come pre-loaded with the language plus common build tools, so they start faster than a raw `node` or `python` image where CircleCI has to install extras. Prefer them when one exists for your language.
 
 ## A workflow orchestrates the jobs
 
-One job is rarely the whole story. You might want to lint, test, and build — and only deploy if all three pass. A **workflow** is the conductor: it says which jobs run, in what order, and what depends on what.
+One job is rarely the whole story. You might want to lint, test, and build - and only deploy if all three pass. A **workflow** is the conductor: it says which jobs run, in what order, and what depends on what.
 
 ```yaml
 workflows:
@@ -97,7 +97,7 @@ workflows:
             - build
 ```
 
-*What just happened:* `lint`, `test`, and `build` have no `requires`, so they start at the same time — they **fan out** and run in parallel. `deploy` lists all three under `requires`, so CircleCI holds it back until every one of them succeeds. If `test` goes red, `deploy` never runs at all. This dependency graph is the entire point of workflows: cheap parallelism where work is independent, hard gates where order matters.
+*What just happened:* `lint`, `test`, and `build` have no `requires`, so they start at the same time - they **fan out** and run in parallel. `deploy` lists all three under `requires`, so CircleCI holds it back until every one of them succeeds. If `test` goes red, `deploy` never runs at all. This dependency graph is the entire point of workflows: cheap parallelism where work is independent, hard gates where order matters.
 
 ```mermaid
 graph LR
@@ -120,9 +120,9 @@ workflows:
   # ... your workflows here
 ```
 
-*What just happened:* `version: 2.1` is the modern config format — it unlocks orbs, reusable commands, and parameters, which we lean on in the next phase. Always start a new config with it.
+*What just happened:* `version: 2.1` is the modern config format - it unlocks orbs, reusable commands, and parameters, which we lean on in the next phase. Always start a new config with it.
 
-In the wild: a healthy repo's config is mostly workflow plumbing plus two or three focused jobs. When you see a single giant job doing everything in sequence, that's usually a config that grew without anyone splitting it — and a slow pipeline as a result, because nothing can run in parallel.
+In the wild: a healthy repo's config is mostly workflow plumbing plus two or three focused jobs. When you see a single giant job doing everything in sequence, that's usually a config that grew without anyone splitting it - and a slow pipeline as a result, because nothing can run in parallel.
 
 ```quiz
 [

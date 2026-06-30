@@ -16,15 +16,15 @@ updated: 2026-06-30
 
 # Usernames and Join/Leave
 
-Anonymous text is hard to follow. "good morning" — from whom? This phase gives every message an owner. People pick a name when they join, that name rides along with everything they say, and the room announces when someone arrives or drops off.
+Anonymous text is hard to follow. "good morning" - from whom? This phase gives every message an owner. People pick a name when they join, that name rides along with everything they say, and the room announces when someone arrives or drops off.
 
-To do this cleanly, we'll stop sending bare strings and start sending **structured messages** as JSON. That one change unlocks usernames, system notices, and — in the next phase — rooms.
+To do this cleanly, we'll stop sending bare strings and start sending **structured messages** as JSON. That one change unlocks usernames, system notices, and - in the next phase - rooms.
 
 Built on your machine. Server and `index.html` from before.
 
 ## From strings to JSON
 
-So far a message is a string. But now a message needs more than text — it needs a type ("is this a chat line or a join announcement?") and a sender. A plain object handles that, and `JSON.stringify` turns it into a string the socket can carry.
+So far a message is a string. But now a message needs more than text - it needs a type ("is this a chat line or a join announcement?") and a sender. A plain object handles that, and `JSON.stringify` turns it into a string the socket can carry.
 
 We'll use a few message shapes:
 
@@ -35,7 +35,7 @@ We'll use a few message shapes:
 | `chat` | server → clients | `name`, `text` | "this person said this" |
 | `system` | server → clients | `text` | "so-and-so joined/left" |
 
-The trick that makes usernames work: the server remembers each socket's name. When phase 1 gave you a `socket` per connection, that object is yours to scribble on. We'll store the name right on it — `socket.username` — so the server always knows who owns which pipe.
+The trick that makes usernames work: the server remembers each socket's name. When phase 1 gave you a `socket` per connection, that object is yours to scribble on. We'll store the name right on it - `socket.username` - so the server always knows who owns which pipe.
 
 ## Update the server
 
@@ -95,10 +95,10 @@ wss.on("connection", (socket) => {
 What changed and why:
 
 - **`broadcast` now takes an object** and stringifies it. Every client receives JSON now.
-- **The `try/catch` around `JSON.parse`** matters. Anything can connect to a public socket and send garbage; if a non-JSON message arrives, parsing throws, and without the guard that exception crashes the handler. We catch it and ignore the message. This is a trust boundary — keep the guard.
+- **The `try/catch` around `JSON.parse`** matters. Anything can connect to a public socket and send garbage; if a non-JSON message arrives, parsing throws, and without the guard that exception crashes the handler. We catch it and ignore the message. This is a trust boundary - keep the guard.
 - **`socket.username`** starts as `null` and gets set on `join`. We clamp the name to 24 characters with `.slice(0, 24)` so nobody sends a 10,000-character "name."
-- **A `chat` message is only relayed if the socket has a name.** No name, no talking — that stops messages from people who never joined.
-- **On `close`,** if the socket had a name, we announce the departure. If they never joined (closed before naming themselves), we stay quiet — there's nobody to say goodbye to.
+- **A `chat` message is only relayed if the socket has a name.** No name, no talking - that stops messages from people who never joined.
+- **On `close`,** if the socket had a name, we announce the departure. If they never joined (closed before naming themselves), we stay quiet - there's nobody to say goodbye to.
 
 ## Update the client
 
@@ -157,17 +157,17 @@ function addMessage(text, isSystem) {
 
 The flow now:
 
-- On load, the page asks for a name with `prompt()`. (It's the quickest input there is — you'd swap it for a proper form later.)
+- On load, the page asks for a name with `prompt()`. (It's the quickest input there is - you'd swap it for a proper form later.)
 - When the socket opens, the client sends a `join` message with that name. This is why the server needs `join` separate from `chat`: the name has to register *before* any chatting.
 - Incoming messages are parsed as JSON and routed by `type`. A `chat` becomes "name: text"; a `system` notice is shown in gray.
 - Sending wraps the text in a `chat` object. Your own line still shows locally as "You: ...", same as before.
 
 ## Try it
 
-Restart the server (Ctrl+C, then `node server.js` — it ingests no files, but you changed the code, so it needs a restart). Open `index.html` in two tabs.
+Restart the server (Ctrl+C, then `node server.js` - it ingests no files, but you changed the code, so it needs a restart). Open `index.html` in two tabs.
 
-Each tab prompts for a name. Call one "alice" and one "bob." As soon as bob joins, alice's window shows a gray line: **"bob joined the chat."** Now messages read "alice: hi" and "bob: hey" — you can tell who's talking. Close bob's tab and alice sees **"bob left the chat."**
+Each tab prompts for a name. Call one "alice" and one "bob." As soon as bob joins, alice's window shows a gray line: **"bob joined the chat."** Now messages read "alice: hi" and "bob: hey" - you can tell who's talking. Close bob's tab and alice sees **"bob left the chat."**
 
 ## What you have now
 
-A chat with identity. People have names, messages are attributed, and the room reacts when folks come and go — all carried over structured JSON instead of loose strings. That JSON foundation is exactly what we need for the last piece: rooms, so two separate conversations can run on the same server without mixing.
+A chat with identity. People have names, messages are attributed, and the room reacts when folks come and go - all carried over structured JSON instead of loose strings. That JSON foundation is exactly what we need for the last piece: rooms, so two separate conversations can run on the same server without mixing.

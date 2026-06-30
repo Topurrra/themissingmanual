@@ -16,13 +16,13 @@ updated: 2026-06-30
 
 # Catching Common Passwords
 
-Here's the uncomfortable truth the last three phases led us to: a password can pass every rule, score a perfect 5, and still be one an attacker tries first. `P@ssw0rd!` looks varied — upper, lower, digit, symbol, long enough — but it's a textbook pattern. Cracking tools have the common substitutions (`a` to `@`, `o` to `0`, `s` to `$`) built in. They guess it almost as fast as `password`.
+Here's the uncomfortable truth the last three phases led us to: a password can pass every rule, score a perfect 5, and still be one an attacker tries first. `P@ssw0rd!` looks varied - upper, lower, digit, symbol, long enough - but it's a textbook pattern. Cracking tools have the common substitutions (`a` to `@`, `o` to `0`, `s` to `$`) built in. They guess it almost as fast as `password`.
 
 No character-class rule can catch this, because the password genuinely satisfies them all. The only fix is to *know* which passwords are common and refuse them outright. That's a blocklist: a set of known-bad passwords that get rejected regardless of score.
 
 ## A small built-in blocklist
 
-For a hobby checker, a short hardcoded set covers the worst offenders. Store them as a Python `set`, not a list — checking membership in a set is instant no matter how big it gets, while a list has to scan item by item. We also lowercase the password before checking, so `Password` and `password` both get caught.
+For a hobby checker, a short hardcoded set covers the worst offenders. Store them as a Python `set`, not a list - checking membership in a set is instant no matter how big it gets, while a list has to scan item by item. We also lowercase the password before checking, so `Password` and `password` both get caught.
 
 ```python runnable
 COMMON = {
@@ -40,11 +40,11 @@ print(is_common("hunter2"))    # False
 print(is_common("QWERTY"))     # True
 ```
 
-The lowercasing matters. Attackers don't care about your capitalization tricks — `Qwerty` is the same guess as `qwerty` to them. Folding case before the lookup means our one-line set already covers the obvious variants.
+The lowercasing matters. Attackers don't care about your capitalization tricks - `Qwerty` is the same guess as `qwerty` to them. Folding case before the lookup means our one-line set already covers the obvious variants.
 
 ## Catching the substitution trick
 
-`P@ssw0rd!` won't be in our set as written, because it's `password` wearing a disguise. We can undo the most common disguises before checking: map `@` back to `a`, `0` to `o`, `1` to `i`, `$` to `s`, strip trailing punctuation, and *then* look it up. This is a small `str.translate` table — we're not trying to reverse every trick, only the handful that catch the bulk of real-world cases.
+`P@ssw0rd!` won't be in our set as written, because it's `password` wearing a disguise. We can undo the most common disguises before checking: map `@` back to `a`, `0` to `o`, `1` to `i`, `$` to `s`, strip trailing punctuation, and *then* look it up. This is a small `str.translate` table - we're not trying to reverse every trick, only the handful that catch the bulk of real-world cases.
 
 ```python runnable
 COMMON = {"password", "123456", "qwerty", "admin", "letmein", "welcome", "iloveyou"}
@@ -64,7 +64,7 @@ print(is_common("w3lc0me"))    # -> 'welcome' -> True
 print(is_common("hunter2"))    # genuinely not common -> False
 ```
 
-Run it. `P@ssw0rd!` is caught now. Notice `Welcome1` slips through this naive normalizer — a digit in the *middle* of the strip set isn't removed, and we don't strip trailing digits. That's a real limit, and it's the honest signal that hand-rolled normalization only gets you so far. Catching everything is what a real wordlist and a real breach database are for, which we'll get to.
+Run it. `P@ssw0rd!` is caught now. Notice `Welcome1` slips through this naive normalizer - a digit in the *middle* of the strip set isn't removed, and we don't strip trailing digits. That's a real limit, and it's the honest signal that hand-rolled normalization only gets you so far. Catching everything is what a real wordlist and a real breach database are for, which we'll get to.
 
 ## The full checker
 
@@ -102,7 +102,7 @@ def label(s):
 def check_password(password):
     if is_common(password):
         return {"score": 0, "label": "weak",
-                "feedback": ["This is a commonly used password — pick something unique"]}
+                "feedback": ["This is a commonly used password - pick something unique"]}
     passed = [rule(password) for rule, _ in RULES]
     s = sum(passed)
     fixes = [msg for (rule, msg), ok in zip(RULES, passed) if not ok]
@@ -119,7 +119,7 @@ for p in samples:
         print(f"   - {line}")
 ```
 
-Run it. This is the finished tool. `password` and `P@ssw0rd!` are both slapped down as common no matter how they'd otherwise score. `correct horse battery staple` and `Tr0ub4dour&3xtra` come through as strong with "Looks good!". You can drop `check_password` into any Python project as-is — it takes a string and returns a dictionary, the shape an API or web form wants.
+Run it. This is the finished tool. `password` and `P@ssw0rd!` are both slapped down as common no matter how they'd otherwise score. `correct horse battery staple` and `Tr0ub4dour&3xtra` come through as strong with "Looks good!". You can drop `check_password` into any Python project as-is - it takes a string and returns a dictionary, the shape an API or web form wants.
 
 ## Wiring a real wordlist on your machine
 
@@ -133,7 +133,7 @@ def load_common(path):
 COMMON = load_common("rockyou.txt")   # a few hundred thousand to millions of entries
 ```
 
-A `set` of a million strings still answers `in` in a microsecond, so this scales fine. The only thing to watch is memory — a huge wordlist loads entirely into RAM. For really large lists, production systems keep them in a database or a Bloom filter instead, but a `set` is the right call up to a few million entries.
+A `set` of a million strings still answers `in` in a microsecond, so this scales fine. The only thing to watch is memory - a huge wordlist loads entirely into RAM. For really large lists, production systems keep them in a database or a Bloom filter instead, but a `set` is the right call up to a few million entries.
 
 ## Where real systems go further
 
@@ -141,7 +141,7 @@ Our checker is honest about what it is: a good floor and a friendly nudge. Produ
 
 | Idea | What it adds | Why ours doesn't |
 |------|--------------|------------------|
-| **Entropy / zxcvbn** | Estimates actual guessability — patterns, dates, keyboard walks, repeated chars | Class-counting can't see that `aaaaaaaa1A!` is bad |
+| **Entropy / zxcvbn** | Estimates actual guessability - patterns, dates, keyboard walks, repeated chars | Class-counting can't see that `aaaaaaaa1A!` is bad |
 | **Breach checks (HaveIBeenPwned)** | Tests if the exact password appeared in a real leak, via a privacy-preserving hash range query | We only know our own small list |
 | **Length-weighted scoring** | Rewards long passphrases properly | Our score barely rewards length past the floor |
 | **Rate limiting + hashing** | Protects the stored password even if your DB leaks | That's storage, not strength checking |
@@ -150,4 +150,4 @@ The single biggest upgrade, if you only do one: stop rewarding clever substituti
 
 ## What you built
 
-You started with a fuzzy idea — "strong password" — and ended with a function that scores it, labels it, tells the user what to fix, and refuses the obvious bad ones. Every piece runs, every piece is small, and the whole thing reads top to bottom in under sixty lines. That's a real tool, and the patterns in it — one function per rule, a list of rules as the single source of truth, a set for fast lookups, a dict as the return shape — are the same ones you'll reuse far beyond passwords.
+You started with a fuzzy idea - "strong password" - and ended with a function that scores it, labels it, tells the user what to fix, and refuses the obvious bad ones. Every piece runs, every piece is small, and the whole thing reads top to bottom in under sixty lines. That's a real tool, and the patterns in it - one function per rule, a list of rules as the single source of truth, a set for fast lookups, a dict as the return shape - are the same ones you'll reuse far beyond passwords.

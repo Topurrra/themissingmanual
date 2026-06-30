@@ -20,7 +20,7 @@ You have a working stack. Now make it fit to leave your laptop. Three things sta
 
 ## Get secrets out of the compose file
 
-Right now `compose.yaml` has `POSTGRES_PASSWORD: secret` written in it. That file is in version control, which means your password is in version control — for everyone, forever, even after you "delete" it from a later commit.
+Right now `compose.yaml` has `POSTGRES_PASSWORD: secret` written in it. That file is in version control, which means your password is in version control - for everyone, forever, even after you "delete" it from a later commit.
 
 The first step up is an **`.env` file** that Compose reads automatically. Create `.env` next to `compose.yaml`:
 
@@ -73,13 +73,13 @@ POSTGRES_PASSWORD=change-me
 POSTGRES_DB=appdb
 ```
 
-A word on what `.env` is and isn't. It keeps secrets out of your committed files, which is the big win. It is *not* a vault. For real production you'd graduate to your platform's secret manager (Docker secrets, Kubernetes secrets, a cloud KMS) — but the contract stays identical: **the app reads its config from the environment**, and where that environment comes from is someone else's problem. Because your app already reads `DATABASE_URL` from `os.environ`, you change nothing in the code to move up the ladder.
+A word on what `.env` is and isn't. It keeps secrets out of your committed files, which is the big win. It is *not* a vault. For real production you'd graduate to your platform's secret manager (Docker secrets, Kubernetes secrets, a cloud KMS) - but the contract stays identical: **the app reads its config from the environment**, and where that environment comes from is someone else's problem. Because your app already reads `DATABASE_URL` from `os.environ`, you change nothing in the code to move up the ladder.
 
 ## Add a healthcheck
 
 You may have noticed a race in Phase 3: Compose starts `db` before `web` because of `depends_on`, but "started" isn't "ready." Postgres takes a second or two to accept connections, and if `web` connects in that window, it crashes.
 
-The compose file above already fixes this. The `healthcheck` on `db` runs `pg_isready` every few seconds until Postgres answers, marking the container *healthy*. Then `depends_on` with `condition: service_healthy` makes `web` wait for that healthy state — not start, but *healthy* — before it launches.
+The compose file above already fixes this. The `healthcheck` on `db` runs `pg_isready` every few seconds until Postgres answers, marking the container *healthy*. Then `depends_on` with `condition: service_healthy` makes `web` wait for that healthy state - not start, but *healthy* - before it launches.
 
 A healthcheck is also useful on its own. It tells Docker (and orchestrators like Kubernetes) whether a container is alive, so a wedged container gets noticed and restarted instead of silently failing. Bring it up and watch the states:
 
@@ -92,9 +92,9 @@ You'll see `db` go from `starting` to `healthy`, and `web` only comes up after. 
 
 ## Tag the image for a registry
 
-Your image is called `myapp` and lives only on your machine. To share it, you push it to a **registry** — a server that stores images. Docker Hub is the default and has a free tier; cloud providers and `ghcr.io` (GitHub) work the same way.
+Your image is called `myapp` and lives only on your machine. To share it, you push it to a **registry** - a server that stores images. Docker Hub is the default and has a free tier; cloud providers and `ghcr.io` (GitHub) work the same way.
 
-Registry image names follow a pattern: `registry/username/name:tag`. For Docker Hub the registry part is implied, so it's only `username/name:tag`. The `tag` is a version label — `latest` is the default, but a real version is better.
+Registry image names follow a pattern: `registry/username/name:tag`. For Docker Hub the registry part is implied, so it's only `username/name:tag`. The `tag` is a version label - `latest` is the default, but a real version is better.
 
 Tag your existing image (replace `yourname` with your Docker Hub username):
 
@@ -103,7 +103,7 @@ docker tag myapp yourname/dockerize-demo:1.0.0
 docker tag myapp yourname/dockerize-demo:latest
 ```
 
-Tagging doesn't copy anything — it only adds names pointing at the same image. Confirm:
+Tagging doesn't copy anything - it only adds names pointing at the same image. Confirm:
 
 ```bash
 docker images yourname/dockerize-demo
@@ -119,9 +119,9 @@ docker push yourname/dockerize-demo:1.0.0
 docker push yourname/dockerize-demo:latest
 ```
 
-Docker uploads the layers. Layers you've pushed before are skipped, so the slim base you chose in Phase 2 pays off again here — smaller image, faster push. When it finishes, your image is on the registry.
+Docker uploads the layers. Layers you've pushed before are skipped, so the slim base you chose in Phase 2 pays off again here - smaller image, faster push. When it finishes, your image is on the registry.
 
-Now the proof. From any machine with Docker — or after deleting your local copy with `docker rmi yourname/dockerize-demo:1.0.0` — anyone can run it:
+Now the proof. From any machine with Docker - or after deleting your local copy with `docker rmi yourname/dockerize-demo:1.0.0` - anyone can run it:
 
 ```bash
 docker run -p 8080:5000 \
@@ -129,7 +129,7 @@ docker run -p 8080:5000 \
   yourname/dockerize-demo:1.0.0
 ```
 
-No clone, no Python, no pip. They pull the image and run it, passing in their own `DATABASE_URL`. That's the "works on my machine" problem fully closed — it now works on *any* machine.
+No clone, no Python, no pip. They pull the image and run it, passing in their own `DATABASE_URL`. That's the "works on my machine" problem fully closed - it now works on *any* machine.
 
 ## A few production tips
 

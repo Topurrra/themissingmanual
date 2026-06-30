@@ -2,7 +2,7 @@
 title: "Recursion, Finally"
 guide: recursion-finally-clicks
 phase: 0
-summary: "The mental model that makes recursion stop being scary: a base case, a step toward it, and trust — plus when it blows the stack and how to avoid it."
+summary: "The mental model that makes recursion stop being scary: a base case, a step toward it, and trust - plus when it blows the stack and how to avoid it."
 tags: [recursion, base-case, call-stack, stack-overflow, iteration, algorithms]
 category: programming-concepts
 group: ""
@@ -20,12 +20,12 @@ This guide gives you that model. Recursion is two small parts and one act of tru
 
 ## How to read this
 
-Read the phases in order; each one builds the next. Phase 1 is the model — do not skip it, because everything else rests on it. Type the examples out yourself. Recursion is one of those topics where reading along feels fine and then your fingers freeze on a blank file; the cure is to write the small ones by hand until the shape feels obvious.
+Read the phases in order; each one builds the next. Phase 1 is the model - do not skip it, because everything else rests on it. Type the examples out yourself. Recursion is one of those topics where reading along feels fine and then your fingers freeze on a blank file; the cure is to write the small ones by hand until the shape feels obvious.
 
 ## The phases
 
-1. [The mental model: stop, shrink, trust](01-the-mental-model.md) — what recursion actually is and why your brain fights it.
-2. [Writing recursion that works](02-writing-recursion-that-works.md) — the everyday patterns and how to build one without losing the thread.
-3. [When it breaks: the stack, and when to use a loop instead](03-when-it-breaks.md) — stack overflow, depth limits, and recursion versus iteration in real code.
+1. [The mental model: stop, shrink, trust](01-the-mental-model.md) - what recursion actually is and why your brain fights it.
+2. [Writing recursion that works](02-writing-recursion-that-works.md) - the everyday patterns and how to build one without losing the thread.
+3. [When it breaks: the stack, and when to use a loop instead](03-when-it-breaks.md) - stack overflow, depth limits, and recursion versus iteration in real code.
 
 [Phase 1: The mental model: stop, shrink, trust](01-the-mental-model.md) →

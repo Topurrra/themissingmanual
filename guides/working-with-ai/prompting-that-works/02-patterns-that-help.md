@@ -2,7 +2,7 @@
 title: "Patterns That Help"
 guide: prompting-that-works
 phase: 2
-summary: "A handful of reliable moves — assign a role, ask for steps, show an example, pin the output format, and let it think first — that lift answer quality across almost any task."
+summary: "A handful of reliable moves - assign a role, ask for steps, show an example, pin the output format, and let it think first - that lift answer quality across almost any task."
 tags: [prompting, patterns, few-shot, output-format, productivity]
 difficulty: beginner
 synonyms:
@@ -28,13 +28,13 @@ melts down at bedtime, in plain language, like you're talking to a tired
 parent.
 ```
 
-versus the same question with no role — which tends to come back clinical and hedged. A role isn't roleplay for its own sake; it's a shortcut for "answer the way this kind of person would." "Act as a skeptical editor." "You're a budget-conscious financial planner." "Respond like a patient IT helpdesk person." Each one shifts what the model emphasizes and what it leaves out.
+versus the same question with no role - which tends to come back clinical and hedged. A role isn't roleplay for its own sake; it's a shortcut for "answer the way this kind of person would." "Act as a skeptical editor." "You're a budget-conscious financial planner." "Respond like a patient IT helpdesk person." Each one shifts what the model emphasizes and what it leaves out.
 
-Keep it honest, though. A role makes the *style* fit; it does not make the model an actual licensed professional. "Act as a doctor" doesn't turn it into one — treat medical, legal, and financial output as a starting point to verify, not advice to follow.
+Keep it honest, though. A role makes the *style* fit; it does not make the model an actual licensed professional. "Act as a doctor" doesn't turn it into one - treat medical, legal, and financial output as a starting point to verify, not advice to follow.
 
 ## Ask for steps
 
-For anything with reasoning or sequence — planning, troubleshooting, comparing options, math — ask the model to lay out its thinking or work through it in steps rather than blurting a final answer.
+For anything with reasoning or sequence - planning, troubleshooting, comparing options, math - ask the model to lay out its thinking or work through it in steps rather than blurting a final answer.
 
 ```text
 Walk me through how to decide whether to repair or replace my 9-year-old
@@ -56,7 +56,7 @@ Turn my messy notes into action items. Match this format exactly:
 Example input: "talk to sam about budget, the report is late, maybe move
 the launch"
 Example output:
-- [ ] Sam — discuss budget (owner: me)
+- [ ] Sam - discuss budget (owner: me)
 - [ ] Chase the late report (owner: ?)
 - [ ] Decide whether to move the launch date (owner: me)
 
@@ -64,7 +64,7 @@ Now do these notes:
 [your notes]
 ```
 
-Showing one example beats three paragraphs describing the format. This trick — giving examples — is often called "few-shot" prompting; giving none is "zero-shot." You don't need the jargon, but you'll see it around.
+Showing one example beats three paragraphs describing the format. This trick - giving examples - is often called "few-shot" prompting; giving none is "zero-shot." You don't need the jargon, but you'll see it around.
 
 ## Pin the output format
 
@@ -75,7 +75,7 @@ Phase one mentioned format; it's worth its own line because it saves the most cl
 - "Reply with only the rewritten text, nothing else."
 - "Bullet points, no longer than one line each."
 
-"No preamble" and "nothing else" are quietly effective — they cut the "Certainly! Here's..." throat-clearing and the unsolicited summary at the end.
+"No preamble" and "nothing else" are quietly effective - they cut the "Certainly! Here's..." throat-clearing and the unsolicited summary at the end.
 
 ## Let it think before it answers
 
@@ -86,8 +86,8 @@ Before you write the cover letter, first list the 3 things this job posting
 seems to care about most. Then write the letter to hit those three.
 ```
 
-You can also ask it to review its own work: *"Now reread that and flag anything that sounds generic or untrue."* It won't catch everything — a model checking itself has real limits and will still miss its own mistakes — but it catches more than zero, and it's free.
+You can also ask it to review its own work: *"Now reread that and flag anything that sounds generic or untrue."* It won't catch everything - a model checking itself has real limits and will still miss its own mistakes - but it catches more than zero, and it's free.
 
 ## Combine them, don't overload
 
-These stack. A genuinely strong prompt might assign a role, give context, show one example, and pin the format — all in a few lines. But don't pile on every pattern for a question that didn't need any of them. "What's a good substitute for buttermilk?" needs none of this. Match the effort to the stakes. The patterns are tools in a drawer, not a checklist you run every time.
+These stack. A genuinely strong prompt might assign a role, give context, show one example, and pin the format - all in a few lines. But don't pile on every pattern for a question that didn't need any of them. "What's a good substitute for buttermilk?" needs none of this. Match the effort to the stakes. The patterns are tools in a drawer, not a checklist you run every time.

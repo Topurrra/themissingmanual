@@ -18,12 +18,12 @@ You have a handful of servers, and right now they drift. You SSH in, run a few c
 
 ## How to read this
 
-Go in order. Phase 1 builds the mental model: agentless push over SSH, and the one idea that makes Ansible click — idempotency. Phase 2 is the everyday loop: inventory, playbooks, variables, roles, handlers. Phase 3 is production reality — what breaks, where Ansible is the wrong tool, and how it sits next to provisioning tools. You can run every example on one Linux box or a cheap VM; you don't need a fleet.
+Go in order. Phase 1 builds the mental model: agentless push over SSH, and the one idea that makes Ansible click - idempotency. Phase 2 is the everyday loop: inventory, playbooks, variables, roles, handlers. Phase 3 is production reality - what breaks, where Ansible is the wrong tool, and how it sits next to provisioning tools. You can run every example on one Linux box or a cheap VM; you don't need a fleet.
 
 ## The phases
 
-1. [What Ansible Actually Is](01-the-mental-model.md) — agentless config management, push over SSH, and why idempotency changes everything.
-2. [The Everyday Loop](02-the-everyday-loop.md) — inventory, playbooks, modules, variables, roles, and handlers in the order you'll actually use them.
-3. [Production Reality](03-production-reality.md) — gotchas, scaling, secrets, and where Ansible ends and Terraform begins.
+1. [What Ansible Actually Is](01-the-mental-model.md) - agentless config management, push over SSH, and why idempotency changes everything.
+2. [The Everyday Loop](02-the-everyday-loop.md) - inventory, playbooks, modules, variables, roles, and handlers in the order you'll actually use them.
+3. [Production Reality](03-production-reality.md) - gotchas, scaling, secrets, and where Ansible ends and Terraform begins.
 
 [Phase 1: What Ansible Actually Is](01-the-mental-model.md) →

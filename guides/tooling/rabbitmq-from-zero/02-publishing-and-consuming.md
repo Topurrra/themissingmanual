@@ -17,7 +17,7 @@ The examples use the AMQP CLI shape and pseudocode that maps cleanly onto every 
 
 ## Declare before you use
 
-Exchanges and queues do not spring into being. You **declare** them — an idempotent operation that creates the thing if missing and otherwise checks it matches. Declaring is safe to run every time your app starts; both producer and consumer typically declare what they need, so neither depends on the other booting first.
+Exchanges and queues do not spring into being. You **declare** them - an idempotent operation that creates the thing if missing and otherwise checks it matches. Declaring is safe to run every time your app starts; both producer and consumer typically declare what they need, so neither depends on the other booting first.
 
 ```text
 exchange.declare  name="orders"  type="topic"  durable=true
@@ -25,13 +25,13 @@ queue.declare     name="email_q" durable=true
 queue.bind        queue="email_q" exchange="orders" routing_key="order.placed"
 ```
 
-*What just happened:* you created a durable topic exchange, a durable queue, and a binding that routes `order.placed` messages into `email_q`. `durable=true` means the broker remembers these definitions across a restart (we cover durability of the *messages* in Phase 3 — declaration durability and message durability are separate things).
+*What just happened:* you created a durable topic exchange, a durable queue, and a binding that routes `order.placed` messages into `email_q`. `durable=true` means the broker remembers these definitions across a restart (we cover durability of the *messages* in Phase 3 - declaration durability and message durability are separate things).
 
-## The exchange types — pick by routing shape
+## The exchange types - pick by routing shape
 
 There are four exchange types. You will use three of them constantly; the fourth is a niche tool.
 
-**Direct** — exact-match routing. A message goes to queues whose binding key equals the routing key, string for string.
+**Direct** - exact-match routing. A message goes to queues whose binding key equals the routing key, string for string.
 
 ```text
 exchange type=direct
@@ -44,7 +44,7 @@ publish routing_key="image" → image_q only
 
 *What just happened:* direct is the workhorse for "route this job to the worker that handles its type." One routing key, one matching queue (or several if multiple queues share the same binding key).
 
-**Topic** — pattern routing on dotted keys. Bindings use wildcards: `*` matches exactly one word, `#` matches zero or more words.
+**Topic** - pattern routing on dotted keys. Bindings use wildcards: `*` matches exactly one word, `#` matches zero or more words.
 
 ```text
 exchange type=topic
@@ -57,7 +57,7 @@ publish routing_key="order.us.refunded" → all_orders only
 
 *What just happened:* topic exchanges let one publish fan out by category. `order.#` catches everything under `order`; `order.eu.*` catches one more word after `order.eu`. This is the flexible default most teams reach for.
 
-**Fanout** — ignore the routing key entirely; copy to *every* bound queue.
+**Fanout** - ignore the routing key entirely; copy to *every* bound queue.
 
 ```text
 exchange type=fanout
@@ -68,7 +68,7 @@ bind queue=search_q
 publish (any routing key) → cache_q AND audit_q AND search_q
 ```
 
-*What just happened:* fanout is broadcast. Every consumer gets its own copy. Use it for "this event happened, everyone who cares should react" — cache invalidation, live notifications.
+*What just happened:* fanout is broadcast. Every consumer gets its own copy. Use it for "this event happened, everyone who cares should react" - cache invalidation, live notifications.
 
 The fourth type, **headers**, routes on message header attributes instead of the routing key. It is rarely worth the complexity; reach for topic first and only consider headers if you genuinely need to match on multiple non-hierarchical attributes.
 
@@ -76,7 +76,7 @@ The fourth type, **headers**, routes on message header attributes instead of the
 
 ## Work queues: one queue, many workers
 
-The most common real pattern is not fancy routing — it is one queue with several identical consumers chewing through jobs in parallel. When multiple consumers subscribe to the same queue, RabbitMQ delivers each message to *one* of them. That is competing consumers, and it is how you scale a worker pool: start more processes, they share the load automatically.
+The most common real pattern is not fancy routing - it is one queue with several identical consumers chewing through jobs in parallel. When multiple consumers subscribe to the same queue, RabbitMQ delivers each message to *one* of them. That is competing consumers, and it is how you scale a worker pool: start more processes, they share the load automatically.
 
 ```text
 queue=task_q  ← consumer #1
@@ -86,11 +86,11 @@ queue=task_q  ← consumer #1
 100 messages → spread across the three, each message to exactly one worker
 ```
 
-*What just happened:* a single queue with three consumers triples your throughput with zero code change. Each message is handled once. Contrast this with fanout, where each *queue* gets a copy — here it is one queue, and the *consumers* compete.
+*What just happened:* a single queue with three consumers triples your throughput with zero code change. Each message is handled once. Contrast this with fanout, where each *queue* gets a copy - here it is one queue, and the *consumers* compete.
 
 ## Acknowledgements: the broker needs to know you finished
 
-Here is the part people skip and regret. When a consumer receives a message, the broker does not consider it done. It waits for an **acknowledgement** (ack). Until the ack arrives, the broker considers the message "in flight" — delivered but unconfirmed.
+Here is the part people skip and regret. When a consumer receives a message, the broker does not consider it done. It waits for an **acknowledgement** (ack). Until the ack arrives, the broker considers the message "in flight" - delivered but unconfirmed.
 
 ```text
 broker → deliver message → consumer
@@ -117,7 +117,7 @@ on_message(msg):
 
 ## Prefetch: stop one greedy worker from hoarding
 
-By default a consumer will accept as many unacknowledged messages as the broker wants to push. So if you have three workers and 300 messages, one fast-connecting worker might grab 200 while the others sit idle — then if it is slow, your queue drains slowly even though two workers are bored.
+By default a consumer will accept as many unacknowledged messages as the broker wants to push. So if you have three workers and 300 messages, one fast-connecting worker might grab 200 while the others sit idle - then if it is slow, your queue drains slowly even though two workers are bored.
 
 The fix is **prefetch** (`basic.qos` with `prefetch_count`): cap how many unacknowledged messages one consumer may hold at once.
 

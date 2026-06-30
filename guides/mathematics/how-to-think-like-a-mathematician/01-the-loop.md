@@ -12,12 +12,12 @@ updated: 2026-06-30
 # The Loop: Understand, Plan, Do, Look Back
 
 Watch what most people do with a hard problem: they read it once, feel the panic,
-and immediately start writing equations — any equations — hoping the right ones fall
+and immediately start writing equations - any equations - hoping the right ones fall
 out. That's not solving. That's flailing with a pencil.
 
 In 1945 a mathematician named George Polya wrote down what the people who *don't*
 flail actually do. It turned out to be four plain steps, run in a loop. Not a magic
-formula — a checklist. The value isn't that the steps are clever. It's that having
+formula - a checklist. The value isn't that the steps are clever. It's that having
 them stops you from skipping the two steps everyone skips, which are the first one
 and the last one.
 
@@ -30,7 +30,7 @@ and the last one.
 4. **Look back.** Did it answer the actual question? Does the answer make sense? What
    did you learn that you could reuse?
 
-That's it. The whole loop. And if step 3 falls apart, you don't quit — you loop back
+That's it. The whole loop. And if step 3 falls apart, you don't quit - you loop back
 to step 2 and try a different plan. Getting stuck is part of the machine, not a sign
 the machine broke.
 
@@ -60,7 +60,7 @@ it not by being clever but by refusing to move until the words were yours.
 
 ## Step 4 is the one that compounds
 
-Look back is where amateurs stop early and pros pull ahead. You got an answer — now
+Look back is where amateurs stop early and pros pull ahead. You got an answer - now
 ask: does it pass a sanity check? Could I have gotten it a faster way? Is there a
 pattern here I'll see again?
 
@@ -71,17 +71,17 @@ Look back:
 - Sanity: in 2 hours the 60 km/h train goes 120 km, the other goes 80 km.
   120 + 80 = 200. The gap closes exactly. ✓
 - Reusable idea: "closing speed = sum of speeds when moving toward each
-  other." That'll show up again — two pipes filling a tank, two people
+  other." That'll show up again - two pipes filling a tank, two people
   raking leaves, two processes draining a queue.
 ```
 
-*What just happened:* the sanity check caught nothing this time, which is the point —
+*What just happened:* the sanity check caught nothing this time, which is the point -
 you now *trust* the 2 hours instead of hoping. And naming the reusable idea means the
 next "two things working together" problem is already half-solved.
 
 ## For builders
 
-You already run this loop — you call it debugging. "Understand the problem" is
+You already run this loop - you call it debugging. "Understand the problem" is
 reproducing the bug before you touch code. "Devise a plan" is forming a hypothesis.
 "Carry out" is the fix. "Look back" is writing the test that proves it stays fixed.
 The engineers who skip reproduction and patch the first plausible line are doing the
@@ -90,7 +90,7 @@ than merely convincing, [/guides/what-a-proof-is](/guides/what-a-proof-is) picks
 where "look back" leaves off.
 
 > The loop is not linear. You will loop from step 3 back to step 2 many times on a
-> real problem. That's not failure — that's the loop working as designed.
+> real problem. That's not failure - that's the loop working as designed.
 
 ```quiz
 [

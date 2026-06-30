@@ -2,7 +2,7 @@
 title: "Deploying to a VPS (From Zero to Live)"
 guide: "deploying-to-a-vps"
 phase: 0
-summary: "How to get your app onto a rented Linux box and reachable on the real internet — from spinning up the server and SSHing in, to running your app as a service that survives crashes and reboots, to a domain, a reverse proxy, and HTTPS."
+summary: "How to get your app onto a rented Linux box and reachable on the real internet - from spinning up the server and SSHing in, to running your app as a service that survives crashes and reboots, to a domain, a reverse proxy, and HTTPS."
 tags: [vps, deployment, linux, systemd, nginx, https, dns, ssh, infrastructure]
 category: infrastructure
 order: 5
@@ -13,7 +13,7 @@ updated: 2026-06-19
 
 # Deploying to a VPS (From Zero to Live)
 
-Your app runs on your laptop. It works. And now you need it to run *somewhere else* — somewhere that's
+Your app runs on your laptop. It works. And now you need it to run *somewhere else* - somewhere that's
 on all night, that strangers can reach at a real URL, that doesn't vanish when you close the lid. That
 gap, between "works on my machine" and "live on the internet," is where a lot of otherwise-confident
 developers freeze. Not because it's hard, but because nobody ever walked them through the whole arc:
@@ -36,18 +36,18 @@ locally. It does *not* assume you've ever touched a server.
 
 ## The phases
 
-1. **[Get a Box and Get In](01-get-a-box-and-get-in.md)** — what a VPS actually is, renting one, your
+1. **[Get a Box and Get In](01-get-a-box-and-get-in.md)** - what a VPS actually is, renting one, your
    first SSH login, and the three pieces of first-login hardening (a non-root user, updates, a firewall)
    that everyone skips and later regrets.
-2. **[Run Your App as a Service](02-run-your-app-as-a-service.md)** — getting your code onto the box,
+2. **[Run Your App as a Service](02-run-your-app-as-a-service.md)** - getting your code onto the box,
    running it, and then handing it to **systemd** so it restarts on crash, comes back after a reboot, and
    doesn't die when you close your terminal. Plus how to confirm it's actually listening on its port.
-3. **[Make It Public & Safe](03-make-it-public-and-safe.md)** — pointing a domain at the box with a DNS
+3. **[Make It Public & Safe](03-make-it-public-and-safe.md)** - pointing a domain at the box with a DNS
    **A record**, putting **nginx** in front as a reverse proxy, and getting a free **HTTPS** certificate
-   from Let's Encrypt — without exposing your app port directly to the world.
+   from Let's Encrypt - without exposing your app port directly to the world.
 
 > This guide gets you to a single live box running your app behind HTTPS. Multi-server setups, zero-
-> downtime deploys, containers, and CI/CD pipelines are bigger topics that build on this foundation —
+> downtime deploys, containers, and CI/CD pipelines are bigger topics that build on this foundation -
 > they each deserve their own guide rather than a rushed paragraph here.
 
 **Related guides:** [SSH and Keys](/guides/ssh-and-keys) · [Linux for Servers](/guides/linux-for-servers) ·

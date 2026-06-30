@@ -23,8 +23,8 @@ Read the phases in order. Phase 1 rewires how you picture your project so the th
 
 ## The phases
 
-1. [Your code is mostly other people's code](01-the-real-attack-surface.md) — the mental model: why dependencies are an attack surface and who is trying to abuse it.
-2. [Pinning, scanning, and seeing what you ship](02-everyday-defenses.md) — lockfiles, vulnerability scans, install scripts, and the SBOM.
-3. [The terrible day, and what stops it](03-when-it-breaks.md) — real incidents, least-privilege CI, and a survivable response.
+1. [Your code is mostly other people's code](01-the-real-attack-surface.md) - the mental model: why dependencies are an attack surface and who is trying to abuse it.
+2. [Pinning, scanning, and seeing what you ship](02-everyday-defenses.md) - lockfiles, vulnerability scans, install scripts, and the SBOM.
+3. [The terrible day, and what stops it](03-when-it-breaks.md) - real incidents, least-privilege CI, and a survivable response.
 
 [Phase 1: Your code is mostly other people's code](01-the-real-attack-surface.md) →

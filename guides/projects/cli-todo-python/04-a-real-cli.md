@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 # A Real CLI
 
-You've got every piece: adding, saving, loading, completing, deleting, filtering. They work — but only when *you* call them inside the code. A real tool flips that around. You type a command in your terminal, and the program figures out which function to run. That's the last piece, and once it clicks you'll have a to-do app you actually use.
+You've got every piece: adding, saving, loading, completing, deleting, filtering. They work - but only when *you* call them inside the code. A real tool flips that around. You type a command in your terminal, and the program figures out which function to run. That's the last piece, and once it clicks you'll have a to-do app you actually use.
 
 ## How a command line tool thinks
 
@@ -35,7 +35,7 @@ print("Command word:", sys.argv[1])
 print("The rest:", sys.argv[2:])
 ```
 
-`sys.argv[0]` is always the script name — we ignore it. `sys.argv[1]` is the **command word**: `add`, `list`, or `done`. Everything after that is the command's argument: the task text, or the id. Read those three slots and you know what the user wants. That's the whole idea behind a CLI — there's no magic underneath.
+`sys.argv[0]` is always the script name - we ignore it. `sys.argv[1]` is the **command word**: `add`, `list`, or `done`. Everything after that is the command's argument: the task text, or the id. Read those three slots and you know what the user wants. That's the whole idea behind a CLI - there's no magic underneath.
 
 > The `argparse` module in the standard library does this for you with help text and validation, and for a bigger tool you'd reach for it. We're dispatching by hand first so you can see exactly what it's doing. Same shape, no mystery.
 
@@ -74,11 +74,11 @@ dispatch(["todo.py", "fly"])
 dispatch(["todo.py"])
 ```
 
-Each call routes to the right place. Notice `int(argv[2])` for the `done` command — everything in `argv` arrives as text, so `"3"` is a string until we convert it to the number 3 that `complete_task` expects. The last two calls show the guards earning their keep: an unknown command and a missing command word both get a clear message instead of a crash.
+Each call routes to the right place. Notice `int(argv[2])` for the `done` command - everything in `argv` arrives as text, so `"3"` is a string until we convert it to the number 3 that `complete_task` expects. The last two calls show the guards earning their keep: an unknown command and a missing command word both get a clear message instead of a crash.
 
 ## The whole app, assembled
 
-Time to put every function from the project together with the dispatcher. This is `todo.py` in full — the real thing. It runs here in your browser against a temporary file so you can see it end to end, then we'll show how to run it on your own machine.
+Time to put every function from the project together with the dispatcher. This is `todo.py` in full - the real thing. It runs here in your browser against a temporary file so you can see it end to end, then we'll show how to run it on your own machine.
 
 ```python runnable
 import sys, json, os, tempfile
@@ -146,7 +146,7 @@ print("\n--- todo.py list ---")
 main(["todo.py", "list"])
 ```
 
-Read the output top to bottom and you're watching real usage. Two tasks added, one marked done, then the list shows `[x] 1` and `[ ] 2`. And here's the payoff: every `main(...)` call loads from the file at the start and saves at the end. Each "command" is an independent run that picks up exactly where the last left off — which is precisely how it behaves when you type these in a terminal one at a time. The data persists across runs because it lives on disk between them.
+Read the output top to bottom and you're watching real usage. Two tasks added, one marked done, then the list shows `[x] 1` and `[ ] 2`. And here's the payoff: every `main(...)` call loads from the file at the start and saves at the end. Each "command" is an independent run that picks up exactly where the last left off - which is precisely how it behaves when you type these in a terminal one at a time. The data persists across runs because it lives on disk between them.
 
 ## Running it for real on your machine
 
@@ -160,7 +160,7 @@ python --version
 
 If that prints a version (3.8 or newer), you're set. If not, grab it from python.org.
 
-**2. Save the code.** Create a file named `todo.py` and paste in everything from the assembled block above — but make two changes so it reads from a normal file and runs from the real command line:
+**2. Save the code.** Create a file named `todo.py` and paste in everything from the assembled block above - but make two changes so it reads from a normal file and runs from the real command line:
 
 Change the path line to:
 
@@ -175,7 +175,7 @@ if __name__ == "__main__":
     main(sys.argv)
 ```
 
-That `if __name__ == "__main__":` line means "run this when the file is executed directly." `sys.argv` now holds whatever you typed in the terminal — the real version of the fake lists we used above.
+That `if __name__ == "__main__":` line means "run this when the file is executed directly." `sys.argv` now holds whatever you typed in the terminal - the real version of the fake lists we used above.
 
 **3. Use it.** From the folder with `todo.py`:
 
@@ -187,7 +187,7 @@ python todo.py done 1
 python todo.py list
 ```
 
-You'll see a `tasks.json` file appear next to the script. Open it in any text editor — it's your tasks in plain JSON, exactly the format from Phase 2. Close the terminal, come back tomorrow, run `python todo.py list`, and your tasks are still there.
+You'll see a `tasks.json` file appear next to the script. Open it in any text editor - it's your tasks in plain JSON, exactly the format from Phase 2. Close the terminal, come back tomorrow, run `python todo.py list`, and your tasks are still there.
 
 ## What you built
 
@@ -200,6 +200,6 @@ graph LR
   C --> D[save tasks.json]
 ```
 
-You modeled data as a list of dicts, made it permanent with JSON, gave it the verbs to complete and delete, and wrapped it in a command line you drive yourself. Nothing was installed beyond Python — the standard library carried the whole project.
+You modeled data as a list of dicts, made it permanent with JSON, gave it the verbs to complete and delete, and wrapped it in a command line you drive yourself. Nothing was installed beyond Python - the standard library carried the whole project.
 
 From here, the obvious next moves are yours to take: add a `delete` command (you already wrote the function in Phase 3), wire in the open/done filters as a `list open` flag, or swap the hand-rolled dispatcher for `argparse` to get help text for free. You've got a real foundation now. Go finish your list.

@@ -2,7 +2,7 @@
 title: "Build a Web Scraper (Python)"
 guide: web-scraper-python
 phase: 0
-summary: "Build a real web scraper in Python with requests and BeautifulSoup — fetch, parse, extract structured data, paginate politely, and save it — run on your own machine."
+summary: "Build a real web scraper in Python with requests and BeautifulSoup - fetch, parse, extract structured data, paginate politely, and save it - run on your own machine."
 tags: [python, project, web-scraping, beautifulsoup, requests]
 category: projects
 group: "Build On Your Machine"
@@ -22,7 +22,7 @@ updated: 2026-06-30
 
 This weekend you and I are going to build a web scraper that actually pulls
 data off real pages and saves it to a file you can open in a spreadsheet. Not
-a toy that prints "hello" — a small program you'd be comfortable pointing at a
+a toy that prints "hello" - a small program you'd be comfortable pointing at a
 catalog of books, a list of quotes, or a directory of listings, and walking
 away while it does the boring work.
 
@@ -54,7 +54,7 @@ with a real, runnable piece of it.
 | `beautifulsoup4` | parses HTML | forgiving with messy real-world markup |
 | `csv` / `json` | save the output | both ship with Python, nothing to install |
 
-We use a practice site built for exactly this — `https://books.toscrape.com`
+We use a practice site built for exactly this - `https://books.toscrape.com`
 and `https://quotes.toscrape.com`. They exist so people can learn scraping
 without bothering anyone's production servers. We'll talk about why that
 matters in Phase 4.
@@ -69,11 +69,11 @@ the satisfying part where data lands in a file.
 
 - How an HTTP request and response actually work, in code you can read.
 - How to find the elements you want using both BeautifulSoup's `find` family
-  and CSS selectors — and when to reach for which.
+  and CSS selectors - and when to reach for which.
 - How to write extraction that doesn't crash the moment a field is missing.
 - The etiquette and the law of scraping: robots.txt, rate limits, terms of
   service, and what "be polite" means in practice.
-- How to persist structured data and where you'd take this next — a database,
+- How to persist structured data and where you'd take this next - a database,
   a schedule, or a headless browser for sites that build themselves with
   JavaScript.
 

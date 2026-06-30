@@ -11,11 +11,11 @@ updated: 2026-06-30
 
 # The everyday core: fixtures, parametrize, and marks
 
-The basics get you writing tests. The day-to-day gets you writing them without repeating yourself. Two patterns show up in almost every test file: "I need the same setup in many tests" and "I need to run the same test against many inputs." Pytest has a clean answer for each — fixtures and `parametrize` — and a third tool, marks, for choosing which tests to run. Learn these three and you have the working vocabulary for real test suites.
+The basics get you writing tests. The day-to-day gets you writing them without repeating yourself. Two patterns show up in almost every test file: "I need the same setup in many tests" and "I need to run the same test against many inputs." Pytest has a clean answer for each - fixtures and `parametrize` - and a third tool, marks, for choosing which tests to run. Learn these three and you have the working vocabulary for real test suites.
 
 ## Fixtures: setup and teardown as dependency injection
 
-A fixture is a function that builds something a test needs — a temp file, a database connection, a sample object — and hands it over. You declare it with `@pytest.fixture`. A test asks for it by naming it as a parameter. Pytest sees the parameter name, runs the matching fixture, and passes in whatever the fixture returns.
+A fixture is a function that builds something a test needs - a temp file, a database connection, a sample object - and hands it over. You declare it with `@pytest.fixture`. A test asks for it by naming it as a parameter. Pytest sees the parameter name, runs the matching fixture, and passes in whatever the fixture returns.
 
 ```python
 # test_user.py
@@ -41,7 +41,7 @@ def test_user_has_name(sample_user):
 
 ### Teardown with `yield`
 
-Setup is half the job. When a fixture opens something — a file, a connection, a temp directory — you need to close it after the test, pass or fail. Use `yield` instead of `return`: everything before `yield` is setup, everything after is teardown, and pytest runs the teardown even if the test fails.
+Setup is half the job. When a fixture opens something - a file, a connection, a temp directory - you need to close it after the test, pass or fail. Use `yield` instead of `return`: everything before `yield` is setup, everything after is teardown, and pytest runs the teardown even if the test fails.
 
 ```python
 import pytest
@@ -58,11 +58,11 @@ def test_write(temp_file):
     assert not temp_file.closed
 ```
 
-*What just happened:* the fixture opened a file, yielded it to the test, and closed it afterward. The code after `yield` is the cleanup, and pytest guarantees it runs even if the test raises. The `tmp_path` here is a fixture pytest gives you for free — a unique temporary directory per test, cleaned up automatically — so you never write to a real path or collide between tests.
+*What just happened:* the fixture opened a file, yielded it to the test, and closed it afterward. The code after `yield` is the cleanup, and pytest guarantees it runs even if the test raises. The `tmp_path` here is a fixture pytest gives you for free - a unique temporary directory per test, cleaned up automatically - so you never write to a real path or collide between tests.
 
 ### Scope: how often a fixture runs
 
-By default a fixture runs once per test that uses it (`scope="function"`). For expensive setup you don't want to repeat — a database connection, a large loaded file — you widen the scope so the fixture runs once and is shared.
+By default a fixture runs once per test that uses it (`scope="function"`). For expensive setup you don't want to repeat - a database connection, a large loaded file - you widen the scope so the fixture runs once and is shared.
 
 ```python
 @pytest.fixture(scope="module")
@@ -74,7 +74,7 @@ def db_connection():
 
 *What just happened:* `scope="module"` means the fixture runs once for the whole file and every test in that file shares the same connection, instead of reconnecting per test. The scopes, from narrowest to widest, are `function` (default), `class`, `module`, `package`, and `session`. Wider scope is faster but riskier: shared state between tests can let one test's leftovers leak into the next, so reserve it for things that are genuinely expensive and safe to share.
 
-> **Mental model for scope:** narrow scope is safe and slow, wide scope is fast and shared. Start at `function`. Widen only when a profiler or the wall clock tells you the setup is the bottleneck — not before.
+> **Mental model for scope:** narrow scope is safe and slow, wide scope is fast and shared. Start at `function`. Widen only when a profiler or the wall clock tells you the setup is the bottleneck - not before.
 
 ## Parametrize: one test, many cases
 
@@ -102,7 +102,7 @@ test_calc.py::test_add[-1-1-0] PASSED
 test_calc.py::test_add[-5--5--10] PASSED
 ```
 
-*What just happened:* one test function became four independent tests, one per row in the table. The first argument is a string naming the parameters; the second is a list of tuples, one per case. Each case shows up as its own line with the values in brackets, so when row three fails you see exactly which inputs broke it — and the other rows still run. This is table-driven testing, and it's the cleanest way to cover edge cases like zero, negatives, and empty inputs.
+*What just happened:* one test function became four independent tests, one per row in the table. The first argument is a string naming the parameters; the second is a list of tuples, one per case. Each case shows up as its own line with the values in brackets, so when row three fails you see exactly which inputs broke it - and the other rows still run. This is table-driven testing, and it's the cleanest way to cover edge cases like zero, negatives, and empty inputs.
 
 ## Marks: tag and select tests
 
@@ -129,7 +129,7 @@ pytest -m slow               # run ONLY tests marked slow
 pytest -m "not slow"         # run everything EXCEPT slow tests
 ```
 
-*What just happened:* `skip` always skips with a reason in the report; `skipif` skips only when a condition holds, which is how you handle version- or platform-specific tests. The custom `slow` mark does nothing on its own — it's a tag — but `-m slow` and `-m "not slow"` let you split a fast inner-loop run from the slow full suite. To avoid a warning on custom marks, register them in your config:
+*What just happened:* `skip` always skips with a reason in the report; `skipif` skips only when a condition holds, which is how you handle version- or platform-specific tests. The custom `slow` mark does nothing on its own - it's a tag - but `-m slow` and `-m "not slow"` let you split a fast inner-loop run from the slow full suite. To avoid a warning on custom marks, register them in your config:
 
 ```text
 # pytest.ini
@@ -148,7 +148,7 @@ A mature test suite leans on all three together: fixtures build the world (a log
 [
   {
     "q": "In a fixture, what does the code after `yield` do?",
-    "choices": ["It runs only if the test passes", "It is the teardown — it runs after the test, pass or fail", "It is dead code; yield ends the fixture", "It runs before the test as extra setup"],
+    "choices": ["It runs only if the test passes", "It is the teardown - it runs after the test, pass or fail", "It is dead code; yield ends the fixture", "It runs before the test as extra setup"],
     "answer": 1,
     "explain": "Everything before yield is setup, everything after is teardown, and pytest runs the teardown even when the test fails."
   },

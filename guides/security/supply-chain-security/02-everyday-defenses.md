@@ -31,7 +31,7 @@ Open a `package.json` and you will see version ranges, not versions.
 The fix is the lockfile. It records the exact resolved version *and a cryptographic hash* of every package, direct and transitive.
 
 ```text
-# inside package-lock.json (npm) — one entry, simplified
+# inside package-lock.json (npm) - one entry, simplified
 "node_modules/axios": {
   "version": "1.6.2",
   "resolved": "https://registry.npmjs.org/axios/-/axios-1.6.2.tgz",
@@ -129,7 +129,7 @@ Wire these into the pipeline, not your memory. Make CI run the strict install (`
       "`npm install` is for production and `npm ci` is for development"
     ],
     "answer": 1,
-    "explain": "`npm ci` enforces the lockfile exactly and errors on mismatches or bad hashes — the strict, reproducible install you want in automation."
+    "explain": "`npm ci` enforces the lockfile exactly and errors on mismatches or bad hashes - the strict, reproducible install you want in automation."
   },
   {
     "q": "A scanner reports a 'high' vulnerability in a transitive dev-only dependency that never runs in production. What is the right first move?",

@@ -26,8 +26,8 @@ If you already use one tool and are eyeing the other, you can skip to Phase 2 an
 
 ## The phases
 
-1. [Phase 1: Two ways to order change](01-the-mental-model.md) — what these tools actually are, and why timestamps and dependency graphs are different answers to the same question.
-2. [Phase 2: The everyday loop](02-the-everyday-loop.md) — create, apply, and revert migrations with dbmate and Sqitch, command by command.
-3. [Phase 3: Production reality](03-production-reality.md) — drift, half-applied deploys, verify scripts, and the gotchas that cost you a weekend.
+1. [Phase 1: Two ways to order change](01-the-mental-model.md) - what these tools actually are, and why timestamps and dependency graphs are different answers to the same question.
+2. [Phase 2: The everyday loop](02-the-everyday-loop.md) - create, apply, and revert migrations with dbmate and Sqitch, command by command.
+3. [Phase 3: Production reality](03-production-reality.md) - drift, half-applied deploys, verify scripts, and the gotchas that cost you a weekend.
 
 [Phase 1: Two ways to order change](01-the-mental-model.md) →

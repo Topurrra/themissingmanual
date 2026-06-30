@@ -35,7 +35,7 @@ export const bucketName = logs.id;
 
 ## The part that's different from Terraform: it's real code
 
-If you've seen Terraform, this is declarative too. The difference is the *language*. Terraform uses HCL, a domain-specific language built only for this. Pulumi uses a general-purpose language — TypeScript, Python, Go, C#, Java — running on its normal runtime.
+If you've seen Terraform, this is declarative too. The difference is the *language*. Terraform uses HCL, a domain-specific language built only for this. Pulumi uses a general-purpose language - TypeScript, Python, Go, C#, Java - running on its normal runtime.
 
 That means the things you already do in code, you do here. Need ten buckets? A loop. Need to compute a name from two values? A function. Need a type checked before you deploy? Your language's type system does it.
 
@@ -51,13 +51,13 @@ for env in environments:
         tags={"env": env})
 ```
 
-*What just happened:* a plain Python `for` loop created three bucket declarations, named `data-dev`, `data-staging`, and `data-prod`. There's no new looping construct to memorize — it's the same loop you'd write in any other Python program.
+*What just happened:* a plain Python `for` loop created three bucket declarations, named `data-dev`, `data-staging`, and `data-prod`. There's no new looping construct to memorize - it's the same loop you'd write in any other Python program.
 
 Compare that to HCL, where you'd reach for `for_each` and a `toset(...)` expression. Neither is wrong; the Pulumi version is the language you already think in. That's the entire pitch in one example.
 
 ## State: how it remembers what it built
 
-A declaration alone isn't enough. To know whether to create, update, or delete, Pulumi needs to remember what it made last time. That memory is the **state** — a record mapping each resource in your program to the real cloud resource it manages, including its current properties.
+A declaration alone isn't enough. To know whether to create, update, or delete, Pulumi needs to remember what it made last time. That memory is the **state** - a record mapping each resource in your program to the real cloud resource it manages, including its current properties.
 
 ```text
 your program          state file              real cloud
@@ -68,7 +68,7 @@ your program          state file              real cloud
 
 *What just happened:* the state sits between your code and the cloud as the source of truth for "what I manage." When you run a command, Pulumi reads state, reads your program, and diffs the two. This is the same model Terraform uses; if you know `terraform.tfstate`, you know the concept.
 
-State lives somewhere — by default the Pulumi Cloud service (a free tier exists), or a backend you control like an S3 bucket, a GCS bucket, or even a local file. The backend is a choice, not a lock-in.
+State lives somewhere - by default the Pulumi Cloud service (a free tier exists), or a backend you control like an S3 bucket, a GCS bucket, or even a local file. The backend is a choice, not a lock-in.
 
 > Treat state as precious and shared. It is the only thing that knows which real resources your code owns. Lose it or let two people write it at once and Pulumi can lose track of resources or try to recreate things that already exist. Phase 3 returns to this.
 
@@ -76,9 +76,9 @@ State lives somewhere — by default the Pulumi Cloud service (a free tier exist
 
 Three verbs carry most of the work, and they mirror the mental model exactly:
 
-- `pulumi preview` — diff only. "Here's what I *would* change." No mutations.
-- `pulumi up` — apply the diff. Create, update, delete to match your program.
-- `pulumi destroy` — tear down everything in this stack.
+- `pulumi preview` - diff only. "Here's what I *would* change." No mutations.
+- `pulumi up` - apply the diff. Create, update, delete to match your program.
+- `pulumi destroy` - tear down everything in this stack.
 
 ```console
 $ pulumi preview
@@ -92,11 +92,11 @@ Resources:
     + 2 to create
 ```
 
-*What just happened:* `preview` showed a plan with `+ 2 to create` and changed nothing. The `+` marks creations, much like `terraform plan`. You read this before every `up` so there are no surprises — it's the "measure twice" step.
+*What just happened:* `preview` showed a plan with `+ 2 to create` and changed nothing. The `+` marks creations, much like `terraform plan`. You read this before every `up` so there are no surprises - it's the "measure twice" step.
 
 ## For builders
 
-The "real language" idea pays off most when infrastructure has logic in it: derive a config from an environment, generate resources from a list pulled at runtime, share a helper across projects as a normal package. If your infra is mostly static and flat, the advantage is smaller — and the extra power becomes extra rope, which is exactly what phase 3 is about.
+The "real language" idea pays off most when infrastructure has logic in it: derive a config from an environment, generate resources from a list pulled at runtime, share a helper across projects as a normal package. If your infra is mostly static and flat, the advantage is smaller - and the extra power becomes extra rope, which is exactly what phase 3 is about.
 
 If Pulumi's state and diff model feels familiar, that's because it shares DNA with [/guides/infrastructure-as-code-terraform](/guides/infrastructure-as-code-terraform). And if "what's a bucket, a VPC, an IAM role" is the fuzzy part, [/guides/cloud-platforms-explained](/guides/cloud-platforms-explained) fills that in.
 

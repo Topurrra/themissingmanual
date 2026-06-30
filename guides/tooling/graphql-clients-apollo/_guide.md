@@ -26,8 +26,8 @@ If you've never written a GraphQL query at all, skim [GraphQL Explained](/guides
 
 ## The phases
 
-1. [The cache is the point](01-the-cache-is-the-point.md) — what Apollo Client actually is, and why a normalized cache changes everything
-2. [Queries and mutations in real components](02-queries-and-mutations.md) — the hooks you use daily, and updating the cache after a write
-3. [When the cache lies to you](03-production-reality.md) — cache misses, refetch storms, and the tradeoffs you signed up for
+1. [The cache is the point](01-the-cache-is-the-point.md) - what Apollo Client actually is, and why a normalized cache changes everything
+2. [Queries and mutations in real components](02-queries-and-mutations.md) - the hooks you use daily, and updating the cache after a write
+3. [When the cache lies to you](03-production-reality.md) - cache misses, refetch storms, and the tradeoffs you signed up for
 
 [Phase 1: The cache is the point](01-the-cache-is-the-point.md) →

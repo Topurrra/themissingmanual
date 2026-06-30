@@ -16,7 +16,7 @@
   $: allHealthy =
     brokenLinks.length === 0 && missingAssets.length === 0 && orphanedAssets.length === 0;
 
-  // `from` is "<guide-slug>/<phase_no>" — link the whole thing to the phase
+  // `from` is "<guide-slug>/<phase_no>" - link the whole thing to the phase
   // editor at /admin/content/<guide-slug> (split on the first slash only).
   function editorHref(from) {
     const slug = String(from ?? '').split('/')[0];
@@ -31,7 +31,7 @@
       if (res.changed) {
         syncMsg = `Re-ingested ${res.guides} guide(s), ${res.phases} phase(s) ✓`;
       } else {
-        syncMsg = 'No changes detected — content already up to date.';
+        syncMsg = 'No changes detected - content already up to date.';
       }
     } catch (e) {
       syncMsg = `Sync failed: ${e.message}`;

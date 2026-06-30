@@ -1,11 +1,11 @@
 // Cheat-sheet data: one entry per technology, each a list of {cmd, desc, example}.
-// Examples are REAL and runnable as written — no <placeholders>. Rendered by
+// Examples are REAL and runnable as written - no <placeholders>. Rendered by
 // /cheat-sheet and (later) folded into global search with command-query boosting.
 
 export const CHEATSHEETS = [
   {
     id: 'git', name: 'Git', icon: 'ti-git-branch',
-    blurb: 'Everyday version control — stage, commit, branch, sync, and undo.',
+    blurb: 'Everyday version control - stage, commit, branch, sync, and undo.',
     commands: [
       { cmd: 'git init', desc: 'Start a new repository in the current folder.', example: 'git init' },
       { cmd: 'git clone', desc: 'Copy a remote repository to your machine.', example: 'git clone https://github.com/torvalds/linux.git' },
@@ -151,7 +151,7 @@ export const CHEATSHEETS = [
   },
   {
     id: 'npm', name: 'npm / pnpm / yarn', icon: 'ti-brand-npm',
-    blurb: 'Install, run, and publish Node packages — npm, with pnpm and yarn equivalents.',
+    blurb: 'Install, run, and publish Node packages - npm, with pnpm and yarn equivalents.',
     commands: [
       { cmd: 'npm init', desc: 'Create a package.json.', example: `npm init -y` },
       { cmd: 'npm install', desc: 'Install everything listed in package.json.', example: `npm install` },
@@ -214,7 +214,7 @@ export const CHEATSHEETS = [
   },
   {
     id: 'curl', name: 'curl', icon: 'ti-world-www',
-    blurb: 'Make HTTP requests from the terminal — test APIs, download files, debug.',
+    blurb: 'Make HTTP requests from the terminal - test APIs, download files, debug.',
     commands: [
       { cmd: 'curl <url>', desc: 'GET a URL and print the response.', example: `curl https://api.github.com/zen` },
       { cmd: 'curl -s', desc: 'Silent: hide the progress meter.', example: `curl -s https://api.github.com` },
@@ -305,7 +305,7 @@ export const CHEATSHEETS = [
       { cmd: '302 Found', desc: 'Temporary redirect.', example: `/login → 302 to /home` },
       { cmd: '304 Not Modified', desc: 'Your cached copy is still fresh.', example: `If-None-Match match → 304` },
       { cmd: '400 Bad Request', desc: 'The request itself is malformed.', example: `invalid JSON body → 400` },
-      { cmd: '401 Unauthorized', desc: 'Not authenticated — you need to log in.', example: `missing/invalid token → 401` },
+      { cmd: '401 Unauthorized', desc: 'Not authenticated - you need to log in.', example: `missing/invalid token → 401` },
       { cmd: '403 Forbidden', desc: 'Authenticated, but not allowed.', example: `normal user hits /admin → 403` },
       { cmd: '404 Not Found', desc: 'No such resource.', example: `GET /users/9999 → 404` },
       { cmd: '409 Conflict', desc: 'Conflicts with current state.', example: `duplicate email on signup → 409` },
@@ -324,7 +324,7 @@ export const CHEATSHEETS = [
       { cmd: 'octal digits', desc: 'Add them: 4=read, 2=write, 1=execute.', example: `7 = rwx · 6 = rw- · 5 = r-x` },
       { cmd: 'chmod 755', desc: 'Owner rwx; group and others r-x.', example: `chmod 755 script.sh` },
       { cmd: 'chmod 644', desc: 'Owner rw-; group and others r--.', example: `chmod 644 notes.txt` },
-      { cmd: 'chmod 600', desc: 'Owner rw- only — private file.', example: `chmod 600 ~/.ssh/id_ed25519` },
+      { cmd: 'chmod 600', desc: 'Owner rw- only - private file.', example: `chmod 600 ~/.ssh/id_ed25519` },
       { cmd: 'chmod +x', desc: 'Make a file executable.', example: `chmod +x deploy.sh` },
       { cmd: 'chmod -R', desc: 'Apply recursively to a folder.', example: `chmod -R 755 public/` },
       { cmd: 'chmod g-w', desc: 'Symbolic: remove write for the group.', example: `chmod g-w shared.txt` },
@@ -372,7 +372,7 @@ export const CHEATSHEETS = [
   },
   {
     id: 'gh', name: 'GitHub CLI (gh)', icon: 'ti-brand-github',
-    blurb: 'Do GitHub from the terminal — PRs, issues, repos, releases, CI.',
+    blurb: 'Do GitHub from the terminal - PRs, issues, repos, releases, CI.',
     commands: [
       { cmd: 'gh auth login', desc: 'Sign in to GitHub.', example: `gh auth login` },
       { cmd: 'gh repo clone', desc: 'Clone a repository.', example: `gh repo clone cli/cli` },
@@ -410,7 +410,7 @@ export const CHEATSHEETS = [
   },
   {
     id: 'powershell', name: 'PowerShell', icon: 'ti-terminal',
-    blurb: 'The Windows shell — files, processes, and the object pipeline (Unix aliases in parens).',
+    blurb: 'The Windows shell - files, processes, and the object pipeline (Unix aliases in parens).',
     commands: [
       { cmd: 'Get-ChildItem (ls)', desc: 'List a directory.', example: `Get-ChildItem -Force` },
       { cmd: 'Set-Location (cd)', desc: 'Change directory.', example: `Set-Location C:\\Projects` },
@@ -431,7 +431,7 @@ export const CHEATSHEETS = [
   },
   {
     id: 'psql', name: 'psql (Postgres)', icon: 'ti-database',
-    blurb: 'The PostgreSQL command-line client — connect, inspect, and run SQL.',
+    blurb: 'The PostgreSQL command-line client - connect, inspect, and run SQL.',
     commands: [
       { cmd: 'psql connect', desc: 'Connect to a database.', example: `psql -h localhost -U postgres -d mydb` },
       { cmd: 'psql (URL)', desc: 'Connect with a connection string.', example: `psql postgresql://ana:secret@localhost:5432/mydb` },
@@ -451,7 +451,7 @@ export const CHEATSHEETS = [
   },
   {
     id: 'redis', name: 'redis-cli', icon: 'ti-brand-redis',
-    blurb: 'Talk to a Redis server — keys, strings, hashes, lists, and expiry.',
+    blurb: 'Talk to a Redis server - keys, strings, hashes, lists, and expiry.',
     commands: [
       { cmd: 'connect', desc: 'Connect to a Redis server.', example: `redis-cli -h localhost -p 6379` },
       { cmd: 'SET / GET', desc: 'Store and read a string value.', example: `SET user:1 "Ana"` },
@@ -532,7 +532,7 @@ export const CHEATSHEETS = [
       { cmd: 'git commit --amend', desc: 'Fix up the most recent commit.', example: `git commit --amend` },
       { cmd: 'git cherry-pick', desc: 'Apply a single commit onto your branch.', example: `git cherry-pick 1a2b3c4` },
       { cmd: 'git bisect', desc: 'Binary-search history for the bad commit.', example: `git bisect start && git bisect bad && git bisect good v1.0` },
-      { cmd: 'git reflog', desc: 'See every move HEAD made — recover lost work.', example: `git reflog` },
+      { cmd: 'git reflog', desc: 'See every move HEAD made - recover lost work.', example: `git reflog` },
       { cmd: 'git reset (to reflog)', desc: 'Jump back to a remembered state.', example: `git reset --hard HEAD@{2}` },
       { cmd: 'git worktree', desc: 'Check out a second branch in a sibling folder.', example: `git worktree add ../hotfix main` },
       { cmd: 'git stash push -m', desc: 'Stash with a label.', example: `git stash push -m "wip login"` },

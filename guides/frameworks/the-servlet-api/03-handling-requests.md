@@ -2,7 +2,7 @@
 title: "Handling Requests with HttpServlet"
 guide: "the-servlet-api"
 phase: 3
-summary: "Override doGet/doPost on HttpServlet, read params, headers, and the raw body from the request, write status, headers, and JSON to the response — the unglamorous truth beneath @GetMapping."
+summary: "Override doGet/doPost on HttpServlet, read params, headers, and the raw body from the request, write status, headers, and JSON to the response - the unglamorous truth beneath @GetMapping."
 tags: [servlet, httpservlet, doget, dopost, httpservletrequest, httpservletresponse, http-methods]
 difficulty: beginner
 synonyms: ["httpservlet doget dopost", "httpservletrequest parameters", "httpservletresponse write", "servlet read request body", "servlet set status header", "servlet handle post", "servlet json response"]
@@ -12,18 +12,18 @@ updated: 2026-06-22
 # Handling Requests with HttpServlet
 
 In Phase 2 you saw the container create one instance of your servlet and feed every request through a
-single `service` method. That `service` method is where the real work happens — but you almost never
+single `service` method. That `service` method is where the real work happens - but you almost never
 override it directly. Instead you extend `HttpServlet`, which has already done the tedious part for you:
 it looks at the HTTP method on the incoming request and routes it to a method named after that verb.
 
-📝 **The mental model for this whole phase:** an HTTP request is two things glued together — a *method*
+📝 **The mental model for this whole phase:** an HTTP request is two things glued together - a *method*
 (GET, POST, ...) and a *payload* (the URL, headers, and body). `HttpServlet` splits those apart for you.
 The method picks which of your functions runs; the payload arrives as a `HttpServletRequest` object you
 read from. You write your answer into a `HttpServletResponse` object. Read request, write response. That's
 the entire job. Everything a web framework does is a fancier version of exactly this.
 
 > If "method," "header," "status code," and "body" feel fuzzy, spend ten minutes in
-> [HTTP & JSON: the API Building Blocks](/guides/http-and-json-api-basics) first — this phase assumes you
+> [HTTP & JSON: the API Building Blocks](/guides/http-and-json-api-basics) first - this phase assumes you
 > can read a raw request and response.
 
 ## HttpServlet & the doXxx methods
@@ -38,7 +38,7 @@ calls the right one based on the request line:
 | `PUT /users/7` | `doPut` |
 | `DELETE /users/7` | `doDelete` |
 
-Here's a servlet that handles both reading and creating — GET to list, POST to add:
+Here's a servlet that handles both reading and creating - GET to list, POST to add:
 
 ```java
 public class UserServlet extends HttpServlet {
@@ -60,11 +60,11 @@ public class UserServlet extends HttpServlet {
 ```
 
 *What just happened:* `HttpServlet`'s built-in `service` method inspected the request line. A `GET`
-landed in `doGet`; a `POST` landed in `doPost`. You never wrote a single `if (method.equals("POST"))` —
+landed in `doGet`; a `POST` landed in `doPost`. You never wrote a single `if (method.equals("POST"))` -
 inheritance did the dispatch. Any verb you *don't* override (say `DELETE`) gets a polite automatic `405
 Method Not Allowed` from the parent class, which is exactly what you want.
 
-💡 If you ever override a `doXxx` method, don't call `super.doGet(...)` unless you mean it — the parent's
+💡 If you ever override a `doXxx` method, don't call `super.doGet(...)` unless you mean it - the parent's
 default is to return that `405`, which will clobber your response.
 
 ## Reading the request (HttpServletRequest)
@@ -80,7 +80,7 @@ constantly:
 | The raw body (for JSON) | `req.getReader()` or `req.getInputStream()` |
 
 `getParameter` is the workhorse. It pulls from the query string for a GET and from a URL-encoded form
-body for a POST — same call, the container figures out where to look:
+body for a POST - same call, the container figures out where to look:
 
 ```java
 @Override
@@ -95,10 +95,10 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 ```
 
 *What just happened:* the container parsed `?name=Ada` off the URL and handed you the value through
-`getParameter`. Note it returns `null` when the param is absent — there's no exception, so you check for
+`getParameter`. Note it returns `null` when the param is absent - there's no exception, so you check for
 it yourself. `getHeader` reads any header by name, case-insensitively.
 
-For a JSON API, the data doesn't arrive as named params — it's a raw body you read as a stream of text:
+For a JSON API, the data doesn't arrive as named params - it's a raw body you read as a stream of text:
 
 ```java
 @Override
@@ -121,12 +121,12 @@ protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 ```
 
 *What just happened:* `getReader()` gave you the request body as character text, which you drained
-line by line into a string. At this point you have raw JSON — a real app would hand that string to a
+line by line into a string. At this point you have raw JSON - a real app would hand that string to a
 parser (more on that below). The `try`-with-resources block closes the reader for you.
 
 ⚠️ **Read the body once.** `getParameter` on a POST quietly *consumes* the form body to find its values,
 and `getReader`/`getInputStream` consume the body too. You can't have both, and you can't read the stream
-twice — the second read comes back empty. Decide up front: form params *or* raw body, not both, and read
+twice - the second read comes back empty. Decide up front: form params *or* raw body, not both, and read
 the body a single time.
 
 ## Writing the response (HttpServletResponse)
@@ -159,7 +159,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 
 *What just happened:* you set the status, declared the content type so the client knows to parse it as
 JSON, then wrote the body string through the writer. Notice you built the JSON by hand-concatenating a
-string with escaped quotes — clumsy and error-prone, but it shows there's no magic. It's just text going
+string with escaped quotes - clumsy and error-prone, but it shows there's no magic. It's just text going
 down a socket.
 
 The wire result of that code looks like this:
@@ -171,8 +171,8 @@ Content-Type: application/json;charset=UTF-8
 {"id":7,"name":"Ada","role":"admin"}
 ```
 
-💡 In real code you would never hand-build that string. You'd hand an object to a JSON library — Jackson
-or Gson — and let it serialize:
+💡 In real code you would never hand-build that string. You'd hand an object to a JSON library - Jackson
+or Gson - and let it serialize:
 
 ```java
 // What you'd actually do: let Jackson turn an object into JSON text
@@ -183,7 +183,7 @@ resp.getWriter().write(json);
 ```
 
 *What just happened:* the `ObjectMapper` walked the fields of your `user` object and produced the JSON
-text for you — same bytes as the hand-built string, none of the escaping. This is the one part of raw
+text for you - same bytes as the hand-built string, none of the escaping. This is the one part of raw
 servlet work that frameworks really do save you from. Seeing it bare once is the point; you won't do it
 this way again.
 
@@ -192,15 +192,15 @@ this way again.
 Step back and look at what all that code actually did, in order:
 
 1. The container picked `doGet` or `doPost` based on the HTTP method.
-2. You pulled values out of the request — params, headers, body.
+2. You pulled values out of the request - params, headers, body.
 3. You ran your logic.
 4. You serialized a result and wrote it back with a status code.
 
-💡 That list **is** what a Spring controller does — the framework has just hidden each step behind an
+💡 That list **is** what a Spring controller does - the framework has just hidden each step behind an
 annotation:
 
 ```java
-// Spring MVC — the same four steps, annotated
+// Spring MVC - the same four steps, annotated
 @GetMapping("/users/{id}")          // step 1: route GET to this method
 public User getUser(@PathVariable int id,        // step 2: bind from the request
                     @RequestParam String fields) {
@@ -211,7 +211,7 @@ public User getUser(@PathVariable int id,        // step 2: bind from the reques
 *What just happened:* `@GetMapping` is doing the `doGet`-style dispatch. `@PathVariable` and
 `@RequestParam` are doing your `getParameter`/`getPathInfo` reads. Returning a `User` object instead of
 writing a string is the framework calling Jackson and `getWriter().write(...)` for you. Same servlet
-machinery underneath — `@GetMapping` is convenience over `doGet`, nothing more. The servlet is the
+machinery underneath - `@GetMapping` is convenience over `doGet`, nothing more. The servlet is the
 unglamorous truth beneath the annotations; once you've seen it, the annotations stop being magic and start
 being shorthand.
 
@@ -243,18 +243,18 @@ public class CounterServlet extends HttpServlet {
 ```
 
 *What just happened:* `hits` is an instance field on the one shared servlet, so two threads incrementing
-it at once will trample each other and lose counts — a classic race. But anything you derive from `req`
+it at once will trample each other and lose counts - a classic race. But anything you derive from `req`
 is yours alone, because `req` was minted for this one call. The rule that falls out: **keep per-request
 state in local variables and in the request object, never in servlet fields.** Method-local variables
 live on each thread's own stack, so they can't collide.
 
-This per-call request object is also what makes routing possible — the next phase reads `req.getPathInfo()`
+This per-call request object is also what makes routing possible - the next phase reads `req.getPathInfo()`
 to decide *which* handler should run, letting a single servlet dispatch to many. That's the
 front-controller pattern, and it's where DispatcherServlet's secret lives.
 
 ## Recap
 
-- `HttpServlet` routes each request to a `doXxx` method by HTTP verb — override `doGet`, `doPost`, etc.;
+- `HttpServlet` routes each request to a `doXxx` method by HTTP verb - override `doGet`, `doPost`, etc.;
   unhandled verbs auto-return `405`.
 - Read the request with `getParameter` (query + form), `getHeader`, `getPathInfo`, and `getReader`/
   `getInputStream` for a raw JSON body.
@@ -262,10 +262,10 @@ front-controller pattern, and it's where DispatcherServlet's secret lives.
   stream/reader can't be re-read.
 - Build the response status and headers *before* the body: `setStatus`, `setContentType`, `setHeader`,
   then `getWriter().write(...)`.
-- Hand-writing JSON is the raw truth; real apps let Jackson/Gson serialize — and `@GetMapping` /
+- Hand-writing JSON is the raw truth; real apps let Jackson/Gson serialize - and `@GetMapping` /
   `@RequestParam` / returning an object is exactly these steps with annotations on top.
 - The request and response are created per request, so they're safe to use even though the servlet
-  instance is shared — keep state in locals, not fields.
+  instance is shared - keep state in locals, not fields.
 
 ## Quick check
 

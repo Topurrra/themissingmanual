@@ -14,7 +14,7 @@ updated: 2026-06-19
 # Reading Logs Without Drowning
 
 Something's broken, and someone says "check the logs." So you open the log file, and thousands of lines
-scroll past — timestamps, cryptic codes, the word `ERROR` in a dozen places that may or may not matter.
+scroll past - timestamps, cryptic codes, the word `ERROR` in a dozen places that may or may not matter.
 It feels like being handed the transcript of every conversation in a building and asked to find the one
 where somebody lied. The flood is real, and the panic is normal.
 
@@ -25,14 +25,14 @@ wrong. This guide gets you there.
 
 ## How to read this
 - **Mid-incident, need the line that matters right now?** Jump to [Phase 2: Finding the Needle](02-finding-the-needle.md) and use the cheat-card at the top.
-- **Want logs to finally make sense?** Read in order — each phase builds on the last, starting with what a log line actually *is*.
+- **Want logs to finally make sense?** Read in order - each phase builds on the last, starting with what a log line actually *is*.
 
 ## The phases
-1. **[What Logs Actually Are](01-what-logs-actually-are.md)** — a log is a program's running diary; learn to read the anatomy of a single line and what the levels (DEBUG/INFO/WARN/ERROR/FATAL) really mean.
-2. **[Finding the Needle](02-finding-the-needle.md)** — the practical moves: watch logs live with `tail -f`, filter with `grep`, zoom to the moment of failure by timestamp, and follow one request all the way through.
-3. **[Logs That Help Future-You](03-logs-that-help-future-you.md)** — what separates a log that saves your evening from one that wastes it, plus the habits that make your own logs worth reading.
+1. **[What Logs Actually Are](01-what-logs-actually-are.md)** - a log is a program's running diary; learn to read the anatomy of a single line and what the levels (DEBUG/INFO/WARN/ERROR/FATAL) really mean.
+2. **[Finding the Needle](02-finding-the-needle.md)** - the practical moves: watch logs live with `tail -f`, filter with `grep`, zoom to the moment of failure by timestamp, and follow one request all the way through.
+3. **[Logs That Help Future-You](03-logs-that-help-future-you.md)** - what separates a log that saves your evening from one that wastes it, plus the habits that make your own logs worth reading.
 
-> This guide is about reading logs on your own machine or a single server — `tail`, `grep`, your terminal.
+> This guide is about reading logs on your own machine or a single server - `tail`, `grep`, your terminal.
 > When logs from *many* servers get streamed into a central search tool (Graylog, Dynatrace, and friends),
 > that's a related-but-bigger topic you'll meet in a later performance guide. The reading skills here are
-> exactly what you'll use there — the tools just put a search box on top.
+> exactly what you'll use there - the tools just put a search box on top.

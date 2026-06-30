@@ -20,13 +20,13 @@ Here is the whole discipline in one sentence: you read every change the AI propo
 
 ## Why this is the hard part
 
-The danger of editor AI isn't that it produces nonsense. Nonsense is quick to catch — it doesn't run, or it's visibly gibberish, and you throw it away. The real danger is the opposite: code that looks completely reasonable, reads cleanly, and is wrong in a way you won't notice until it bites.
+The danger of editor AI isn't that it produces nonsense. Nonsense is quick to catch - it doesn't run, or it's visibly gibberish, and you throw it away. The real danger is the opposite: code that looks completely reasonable, reads cleanly, and is wrong in a way you won't notice until it bites.
 
 The AI is, in effect, a confident pattern-matcher. It produces text that *resembles* correct code because it has seen mountains of correct code. Resemblance is not correctness. It will invent a function that doesn't exist because a function with that name *should* exist. It will swap `>` for `>=` in a way that's subtly off. It will "fix" your bug by deleting the check that was protecting you. None of these look alarming on the page. That's exactly the problem.
 
 ## What a diff is, and why you read it
 
-When the AI changes code, it shows you a *diff* — the before and after, with removed lines marked one way (usually red) and added lines another (usually green). This is your review surface. Reading the diff means looking at every red and every green line and asking: do I understand why this changed, and is it right?
+When the AI changes code, it shows you a *diff* - the before and after, with removed lines marked one way (usually red) and added lines another (usually green). This is your review surface. Reading the diff means looking at every red and every green line and asking: do I understand why this changed, and is it right?
 
 Don't accept a multi-file agent edit by glancing at the summary and clicking the button. Open the changes. Walk them. The few seconds you save by accepting blind is borrowed against the hour you'll spend later figuring out why something broke.
 
@@ -54,12 +54,12 @@ Reads fine. But pause: is `0` the right answer for "no scores," or should it be 
 
 ## Run it, don't only read it
 
-Reading catches a lot. Running catches the rest. After you accept a change, exercise it — run the tests, click the button, hit the endpoint. The AI can write code that passes your eyes and fails on real input. The loop that actually keeps you safe is: review the diff, accept what you understand, then run it to confirm reality agrees.
+Reading catches a lot. Running catches the rest. After you accept a change, exercise it - run the tests, click the button, hit the endpoint. The AI can write code that passes your eyes and fails on real input. The loop that actually keeps you safe is: review the diff, accept what you understand, then run it to confirm reality agrees.
 
 ## The mindset that makes this sustainable
 
-Treat the AI as a fast, tireless junior who writes a lot of code and is wrong often enough that you can never rubber-stamp it. You'd never merge a junior's work unread. Same rule here. The speed-up is real — the AI handles the boring bulk and you stay in the judgment seat — but it only stays a speed-up if you keep reading.
+Treat the AI as a fast, tireless junior who writes a lot of code and is wrong often enough that you can never rubber-stamp it. You'd never merge a junior's work unread. Same rule here. The speed-up is real - the AI handles the boring bulk and you stay in the judgment seat - but it only stays a speed-up if you keep reading.
 
 People who get burned by editor AI almost always got burned the same way: they stopped reading the diffs. The suggestions were good for long enough that they got comfortable, started accepting on faith, and one confident wrong edit sailed through. The habit isn't paranoia. It's the price of going fast without falling.
 
-So: let the AI write. Give it the context to write well. And read every change before it's yours. Do those three things and editor AI becomes one of the most useful tools you own — a genuine accelerant that almost never costs you what an unread bad edit would.
+So: let the AI write. Give it the context to write well. And read every change before it's yours. Do those three things and editor AI becomes one of the most useful tools you own - a genuine accelerant that almost never costs you what an unread bad edit would.

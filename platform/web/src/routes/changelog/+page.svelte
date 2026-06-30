@@ -4,13 +4,13 @@
 </script>
 
 <Seo
-  title="What's New — The Missing Manual"
-  description="Recent additions and improvements to The Missing Manual — new guides, topics, themes, and features, newest first." />
+  title="What's New - The Missing Manual"
+  description="Recent additions and improvements to The Missing Manual - new guides, topics, themes, and features, newest first." />
 
 <header class="cl-intro">
   <span class="eyebrow">Changelog</span>
   <h1>What's new</h1>
-  <p class="tagline">Recent additions and improvements — newest first.</p>
+  <p class="tagline">Recent additions and improvements - newest first.</p>
 </header>
 
 {#each CHANGELOG as release}

@@ -24,8 +24,8 @@ Read the phases in order the first time. Phase 1 builds the two mental models si
 
 ## The phases
 
-1. [Two Tools, Two Architectures](01-two-tools-two-architectures.md) — the mental model: in-browser runner vs. the W3C standard.
-2. [Writing and Running Tests](02-writing-and-running-tests.md) — what real Cypress and Selenium tests look like day to day.
-3. [Limits, Flake, and Choosing](03-limits-flake-and-choosing.md) — where each breaks, how to scale, and how they stack up against Playwright.
+1. [Two Tools, Two Architectures](01-two-tools-two-architectures.md) - the mental model: in-browser runner vs. the W3C standard.
+2. [Writing and Running Tests](02-writing-and-running-tests.md) - what real Cypress and Selenium tests look like day to day.
+3. [Limits, Flake, and Choosing](03-limits-flake-and-choosing.md) - where each breaks, how to scale, and how they stack up against Playwright.
 
 [Phase 1: Two Tools, Two Architectures](01-two-tools-two-architectures.md) →

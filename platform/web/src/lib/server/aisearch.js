@@ -1,7 +1,7 @@
 // Server-only. Optional Cloudflare AI Search (RAG) layer behind the "/ask" feature.
 //
 // Config + usage + ask-log live in a small embedded SQLite DB on the WEB tier
-// (node:sqlite, built in to Node 22.5+), never in the public API — so the API
+// (node:sqlite, built in to Node 22.5+), never in the public API - so the API
 // token is never exposed. Admin → AI Search edits the config; env vars are a
 // fallback when nothing is stored yet. If node:sqlite is unavailable, we degrade
 // to an in-memory store rather than crash the site.

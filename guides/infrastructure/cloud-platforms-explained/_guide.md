@@ -21,29 +21,29 @@ supposed to.
 Here's the secret the console hides: underneath the sprawl, a cloud platform sells a very small number of
 things, and AWS, Google Cloud, and Azure all sell the *same* small number of things with different
 names. Once you have that mental model, the two hundred service names stop being a wall and become a
-catalog you can skim. This guide gives you that model — the shape, not the encyclopedia.
+catalog you can skim. This guide gives you that model - the shape, not the encyclopedia.
 
 ## How to read this
 
-- **Want the gist fast?** Read [Phase 1](01-what-the-cloud-sells.md) — it installs the one idea
+- **Want the gist fast?** Read [Phase 1](01-what-the-cloud-sells.md) - it installs the one idea
   everything else hangs on. Then skim the vendor-mapping table in [Phase 2](02-the-building-blocks.md).
 - **Want it to finally make sense?** Read in order. Each phase builds on the last: what the cloud
   *is*, the blocks it's made of, and how to choose among them without getting burned.
 
 ## The phases
 
-1. **[What "The Cloud" Actually Sells](01-what-the-cloud-sells.md)** — renting computing on demand
+1. **[What "The Cloud" Actually Sells](01-what-the-cloud-sells.md)** - renting computing on demand
    instead of owning servers, and why all three big platforms are the same shape underneath.
-2. **[The Building Blocks (Across Vendors)](02-the-building-blocks.md)** — the five or six pieces that
-   matter — compute, object storage, managed databases, networking, identity — name-mapped across AWS,
+2. **[The Building Blocks (Across Vendors)](02-the-building-blocks.md)** - the five or six pieces that
+   matter - compute, object storage, managed databases, networking, identity - name-mapped across AWS,
    GCP, and Azure in one table.
-3. **[IaaS vs PaaS vs Serverless, and Staying Sane](03-iaas-paas-serverless.md)** — the spectrum from
+3. **[IaaS vs PaaS vs Serverless, and Staying Sane](03-iaas-paas-serverless.md)** - the spectrum from
    raw VMs to managed platforms to functions, and the three gotchas that actually hurt: surprise bills,
    IAM complexity, and lock-in.
 
 > Deliberately out of scope: this is the mental model, not a certification course. We don't walk through
 > the console click-by-click, and we don't cover any single service in depth. When you're ready to
-> *manage* cloud resources as code instead of clicking, that's a different skill —
+> *manage* cloud resources as code instead of clicking, that's a different skill -
 > [Infrastructure as Code with Terraform](/guides/infrastructure-as-code-terraform).
 
 ---

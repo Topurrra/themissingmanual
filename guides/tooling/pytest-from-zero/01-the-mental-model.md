@@ -104,7 +104,7 @@ myproject/
     └── helpers.py          ← NOT discovered (no test_ prefix)
 ```
 
-*What just happened:* pytest walks the directory tree from where you ran it, collects every file matching the naming pattern, and runs the matching functions. The `helpers.py` file is ignored as a test file, which is exactly what you want for shared helper code. A common first confusion is naming a file `calc_test.py` but the function `check_add` instead of `test_add` — the file is found, but the function silently never runs because it lacks the `test_` prefix.
+*What just happened:* pytest walks the directory tree from where you ran it, collects every file matching the naming pattern, and runs the matching functions. The `helpers.py` file is ignored as a test file, which is exactly what you want for shared helper code. A common first confusion is naming a file `calc_test.py` but the function `check_add` instead of `test_add` - the file is found, but the function silently never runs because it lacks the `test_` prefix.
 
 > **The one early gotcha:** if you have two test files with the same name in different folders and no `__init__.py` or package layout, pytest can collide on the module name and error out. The simplest fix early on is to keep test filenames unique, or add a `conftest.py` at the project root (an empty file works) so pytest treats the root as the base for imports. More on `conftest.py` in phase 3.
 
@@ -127,7 +127,7 @@ If you've never written a unit test before, the companion guide [/guides/your-fi
 
 ## For builders
 
-Reach for pytest on any new Python project unless you have a specific reason not to. It runs `unittest`-style `TestCase` classes too, so adopting it on a legacy codebase doesn't mean rewriting old tests — pytest discovers and runs them as-is, and you write new tests the pytest way alongside them. There's almost no migration cost, which is a big part of why it became the default.
+Reach for pytest on any new Python project unless you have a specific reason not to. It runs `unittest`-style `TestCase` classes too, so adopting it on a legacy codebase doesn't mean rewriting old tests - pytest discovers and runs them as-is, and you write new tests the pytest way alongside them. There's almost no migration cost, which is a big part of why it became the default.
 
 ```quiz
 [

@@ -5,7 +5,7 @@
     { cs: 'SYN-SENT', ss: 'LISTEN', pkt: { dir: 'cs', label: 'SYN  seq=100' }, cap: 'Client → SYN: "let’s talk", carrying its initial sequence number.' },
     { cs: 'SYN-SENT', ss: 'SYN-RCVD', pkt: { dir: 'sc', label: 'SYN-ACK  seq=300 ack=101' }, cap: 'Server → SYN-ACK: acknowledges the client (ack=101) and sends its own seq.' },
     { cs: 'ESTABLISHED', ss: 'ESTABLISHED', pkt: { dir: 'cs', label: 'ACK  ack=301' }, cap: 'Client → ACK: acknowledges the server. Three-way handshake complete.' },
-    { cs: 'ESTABLISHED', ss: 'ESTABLISHED', pkt: null, cap: 'Connection established — data can now flow both ways.' }
+    { cs: 'ESTABLISHED', ss: 'ESTABLISHED', pkt: null, cap: 'Connection established - data can now flow both ways.' }
   ];
   let i = 0, playing = false, timer = null;
   $: s = S[i];

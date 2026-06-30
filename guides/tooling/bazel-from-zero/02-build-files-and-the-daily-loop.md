@@ -2,7 +2,7 @@
 title: "BUILD Files and the Daily Loop"
 guide: bazel-from-zero
 phase: 2
-summary: "Google's build system for huge, multi-language repos: hermetic, reproducible builds with aggressive caching and parallelism — and the steep tradeoff that buys."
+summary: "Google's build system for huge, multi-language repos: hermetic, reproducible builds with aggressive caching and parallelism - and the steep tradeoff that buys."
 tags: [bazel, build, monorepo, caching, hermetic, tooling]
 difficulty: advanced
 synonyms: ["bazel tutorial", "what is bazel", "bazel build system", "bazel monorepo", "bazel vs make", "starlark build", "hermetic builds", "remote cache bazel"]
@@ -15,7 +15,7 @@ Phase 1 was the why. This is the part your hands actually do: writing the files 
 
 ## Where the graph comes from: BUILD files
 
-Bazel doesn't infer your graph by reading source code. You write it down, in a `BUILD` (or `BUILD.bazel`) file that lives in each directory you want to be a **package**. Inside, you declare targets using **rules** — `cc_binary`, `java_library`, `py_test`, and so on — in a Python-like language called Starlark.
+Bazel doesn't infer your graph by reading source code. You write it down, in a `BUILD` (or `BUILD.bazel`) file that lives in each directory you want to be a **package**. Inside, you declare targets using **rules** - `cc_binary`, `java_library`, `py_test`, and so on - in a Python-like language called Starlark.
 
 Here's a real package for a small Python app:
 
@@ -39,9 +39,9 @@ py_test(
 )
 ```
 
-*What just happened:* You declared three targets in one package. `name` is how you'll refer to each one. `srcs` lists the source files this target owns. `deps` lists the other targets it needs — `:greet` means "the target named greet in this same package." Bazel reads this and now knows the graph: `server` and `greet_test` both point at `greet`. Notice you never wrote a single compile command. The rule (`py_binary`) knows how to build a Python binary; you only supply the pieces.
+*What just happened:* You declared three targets in one package. `name` is how you'll refer to each one. `srcs` lists the source files this target owns. `deps` lists the other targets it needs - `:greet` means "the target named greet in this same package." Bazel reads this and now knows the graph: `server` and `greet_test` both point at `greet`. Notice you never wrote a single compile command. The rule (`py_binary`) knows how to build a Python binary; you only supply the pieces.
 
-This is the trade Phase 1 described, made concrete. You spend effort declaring inputs and deps precisely. In return, Bazel can do correct incremental builds, caching, and parallelism — because you told it the truth.
+This is the trade Phase 1 described, made concrete. You spend effort declaring inputs and deps precisely. In return, Bazel can do correct incremental builds, caching, and parallelism - because you told it the truth.
 
 ## How to name a target: labels
 
@@ -54,7 +54,7 @@ Every target has a globally unique address called a **label**. You'll read and t
  └────── package path from the repo root (the // means "workspace root")
 ```
 
-*What just happened:* `//app:server` means "the target named `server` in the package at `app/`." The `//` always anchors to the root of your workspace, so the same label means the same thing from anywhere in the repo. Inside the same BUILD file you can shorten it to `:server`. A common shorthand `//app` (no colon) means `//app:app` — the target whose name matches its directory.
+*What just happened:* `//app:server` means "the target named `server` in the package at `app/`." The `//` always anchors to the root of your workspace, so the same label means the same thing from anywhere in the repo. Inside the same BUILD file you can shorten it to `:server`. A common shorthand `//app` (no colon) means `//app:app` - the target whose name matches its directory.
 
 ## The three commands you'll actually use
 
@@ -70,7 +70,7 @@ INFO: Elapsed time: 2.1s, Critical Path: 1.8s
 INFO: Build completed successfully, 4 total actions
 ```
 
-*What just happened:* `bazel build` produced the binary and put it under `bazel-bin/`. Run it again with no code changes and it finishes in milliseconds with `0 total actions` — nothing changed, so there was nothing to do. That's the incremental graph working.
+*What just happened:* `bazel build` produced the binary and put it under `bazel-bin/`. Run it again with no code changes and it finishes in milliseconds with `0 total actions` - nothing changed, so there was nothing to do. That's the incremental graph working.
 
 ```console
 $ bazel test //app:greet_test
@@ -80,7 +80,7 @@ INFO: Analyzed target //app:greet_test (0 packages loaded, 0 targets configured)
 Executed 1 out of 1 test: 1 test passes.
 ```
 
-*What just happened:* `bazel test` built the test's dependencies, ran it in a sandbox, and reported the result. Run it again without touching anything and you'll see `(cached) PASSED` — Bazel knows the inputs are identical, so the outcome is guaranteed identical and it skips the run.
+*What just happened:* `bazel test` built the test's dependencies, ran it in a sandbox, and reported the result. Run it again without touching anything and you'll see `(cached) PASSED` - Bazel knows the inputs are identical, so the outcome is guaranteed identical and it skips the run.
 
 ```console
 $ bazel run //app:server
@@ -99,7 +99,7 @@ $ bazel test //app/...        # every test under app/, recursively
 $ bazel build //...           # build everything in the workspace
 ```
 
-*What just happened:* `...` means "this package and all packages beneath it." `bazel test //...` is the classic "did I break anything anywhere" command — and because of caching, after the first run it only re-tests what your change actually touched.
+*What just happened:* `...` means "this package and all packages beneath it." `bazel test //...` is the classic "did I break anything anywhere" command - and because of caching, after the first run it only re-tests what your change actually touched.
 
 When you need to understand the graph itself, `bazel query` answers questions the BUILD files can't at a glance:
 
@@ -114,7 +114,7 @@ $ bazel query "rdeps(//..., //app:greet)"   # everything that depends on :greet
 
 ## For builders
 
-The `WORKSPACE` / `MODULE.bazel` file at your repo root is where external dependencies get declared — pinned versions, fetched and cached the same hermetic way as everything else. You won't touch it daily, but know it's the seam between your code and the outside world. Adding a third-party library means declaring it there once, then referencing its label from your `deps`, never reaching out to a global package install.
+The `WORKSPACE` / `MODULE.bazel` file at your repo root is where external dependencies get declared - pinned versions, fetched and cached the same hermetic way as everything else. You won't touch it daily, but know it's the seam between your code and the outside world. Adding a third-party library means declaring it there once, then referencing its label from your `deps`, never reaching out to a global package install.
 
 ```quiz
 [

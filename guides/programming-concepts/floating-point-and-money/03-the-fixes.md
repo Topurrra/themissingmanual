@@ -11,61 +11,61 @@ updated: 2026-06-30
 
 # The Fixes (and When Floats Are Fine)
 
-Here's the good news: you don't need to understand IEEE 754 to a deeper level to be safe. You need a small kit of three habits, matched to the three bites from the last phase. Money gets an exact representation, comparisons get a tolerance, and — the part people forget — you let floats keep doing the jobs they're great at.
+Here's the good news: you don't need to understand IEEE 754 to a deeper level to be safe. You need a small kit of three habits, matched to the three bites from the last phase. Money gets an exact representation, comparisons get a tolerance, and - the part people forget - you let floats keep doing the jobs they're great at.
 
 ## Fix #1: store money as integer minor units (cents)
 
-The cleanest money fix is to stop storing fractions at all. A dollar is 100 cents; a price isn't `19.99` dollars, it's `1999` cents. Integers are stored *exactly* — no binary-fraction problem, because there's no fraction. You do all the math in whole cents and only format with a decimal point when you show it to a human.
+The cleanest money fix is to stop storing fractions at all. A dollar is 100 cents; a price isn't `19.99` dollars, it's `1999` cents. Integers are stored *exactly* - no binary-fraction problem, because there's no fraction. You do all the math in whole cents and only format with a decimal point when you show it to a human.
 
 ```python runnable
 price_cents = 1999          # $19.99, stored as a whole number
 quantity = 3
 total_cents = price_cents * quantity
-print(total_cents)                          # 5997 — exact, always
+print(total_cents)                          # 5997 - exact, always
 print(f"${total_cents // 100}.{total_cents % 100:02d}")
 ```
-*What just happened:* Every value and every operation stays a whole number, so there is no rounding error to accumulate — `1999 * 3` is exactly `5997`. The decimal point only appears at the very end, for display. This is what most payment systems do under the hood, and it's the default you should reach for.
+*What just happened:* Every value and every operation stays a whole number, so there is no rounding error to accumulate - `1999 * 3` is exactly `5997`. The decimal point only appears at the very end, for display. This is what most payment systems do under the hood, and it's the default you should reach for.
 
-The catch to know about: division. Splitting `5997` cents three ways is `1999` each with `0` left over — clean. But `100` cents split three ways is `33, 33, 33` with `1` cent left over, and *someone* has to get that extra cent. Integer cents doesn't make that decision for you; it makes the leftover **visible and exact** so you can assign it on purpose instead of losing it to rounding.
+The catch to know about: division. Splitting `5997` cents three ways is `1999` each with `0` left over - clean. But `100` cents split three ways is `33, 33, 33` with `1` cent left over, and *someone* has to get that extra cent. Integer cents doesn't make that decision for you; it makes the leftover **visible and exact** so you can assign it on purpose instead of losing it to rounding.
 
 ## Fix #2: use a decimal type when you need fractions of a cent
 
-Sometimes whole cents aren't enough — tax rates, interest, currencies with more than two decimal places, per-unit prices like fuel. For those, most languages offer a **decimal** type that stores numbers in base 10, exactly, the way you write them. It's slower than a float, but it doesn't round `0.1`.
+Sometimes whole cents aren't enough - tax rates, interest, currencies with more than two decimal places, per-unit prices like fuel. For those, most languages offer a **decimal** type that stores numbers in base 10, exactly, the way you write them. It's slower than a float, but it doesn't round `0.1`.
 
 ```python runnable
 from decimal import Decimal
 
 a = Decimal("0.1") + Decimal("0.2")
-print(a)              # 0.3 — exactly
+print(a)              # 0.3 - exactly
 print(a == Decimal("0.3"))
 ```
-*What just happened:* `Decimal` stores `0.1`, `0.2`, and `0.3` as exact base-10 values, so the sum is exactly `0.3` and the equality check is `True`. The catch you must respect: build decimals from **strings** (`Decimal("0.1")`), not from floats — `Decimal(0.1)` would copy the float's rounding error straight in. Most languages have an equivalent: `BigDecimal`, `decimal`, `NUMERIC`/`DECIMAL` in SQL.
+*What just happened:* `Decimal` stores `0.1`, `0.2`, and `0.3` as exact base-10 values, so the sum is exactly `0.3` and the equality check is `True`. The catch you must respect: build decimals from **strings** (`Decimal("0.1")`), not from floats - `Decimal(0.1)` would copy the float's rounding error straight in. Most languages have an equivalent: `BigDecimal`, `decimal`, `NUMERIC`/`DECIMAL` in SQL.
 
 > ⚠️ A decimal type only helps if you keep floats out of it. `Decimal("0.1")` is exact; `Decimal(0.1)` inherits the float error and defeats the entire point. Same rule in databases: store money in a `DECIMAL`/`NUMERIC` column, never `FLOAT`/`REAL`.
 
 ## Fix #3: compare floats with a tolerance, not ==
 
-When you genuinely are working with floats (you'll see good reasons in a moment), stop asking "exactly equal?" Ask "close enough?" — within a small tolerance that absorbs rounding noise.
+When you genuinely are working with floats (you'll see good reasons in a moment), stop asking "exactly equal?" Ask "close enough?" - within a small tolerance that absorbs rounding noise.
 
 ```python runnable
 a = 0.1 + 0.2
 b = 0.3
-print(a == b)                       # False — exact comparison
-print(abs(a - b) < 1e-9)            # True — within tolerance
+print(a == b)                       # False - exact comparison
+print(abs(a - b) < 1e-9)            # True - within tolerance
 import math
-print(math.isclose(a, b))           # True — the built-in way
+print(math.isclose(a, b))           # True - the built-in way
 ```
-*What just happened:* `abs(a - b) < 1e-9` checks whether the two values differ by less than a tiny threshold, which they don't — so it treats them as equal. Better still, many languages ship a ready-made `isclose` that handles the tricky scaling for big and small numbers. The rule: **never `==` two computed floats; compare the difference against a tolerance** (often called an *epsilon*).
+*What just happened:* `abs(a - b) < 1e-9` checks whether the two values differ by less than a tiny threshold, which they don't - so it treats them as equal. Better still, many languages ship a ready-made `isclose` that handles the tricky scaling for big and small numbers. The rule: **never `==` two computed floats; compare the difference against a tolerance** (often called an *epsilon*).
 
 📝 **Terminology.** *Minor units* are the smallest whole unit of a currency (cents for USD). A *decimal type* stores numbers in base 10 exactly. *Tolerance* / *epsilon* is the small allowed difference when comparing floats for "close enough."
 
 ## The other half of the truth: floats are often exactly right
 
-It would be wrong to leave you afraid of floats. They're not a mistake to be avoided — they're the correct tool for a huge class of problems. Reach for floats freely when:
+It would be wrong to leave you afraid of floats. They're not a mistake to be avoided - they're the correct tool for a huge class of problems. Reach for floats freely when:
 
-- **The values are measurements, not exact counts.** Temperatures, distances, sensor readings, weights — these are already approximate; a float's tiny error is far smaller than the real-world uncertainty.
+- **The values are measurements, not exact counts.** Temperatures, distances, sensor readings, weights - these are already approximate; a float's tiny error is far smaller than the real-world uncertainty.
 - **You're doing graphics, audio, simulation, or geometry.** Pixel positions, 3D coordinates, physics steps, signal samples. Speed matters enormously and a 16th-digit error is invisible on screen or in the ear.
-- **You're doing science or statistics.** Averages, models, probabilities — float's range and speed are exactly what you want, and you compare with tolerances anyway.
+- **You're doing science or statistics.** Averages, models, probabilities - float's range and speed are exactly what you want, and you compare with tolerances anyway.
 
 ```text
 USE A FLOAT FOR:        DON'T USE A FLOAT FOR:
@@ -91,7 +91,7 @@ USE A FLOAT FOR:        DON'T USE A FLOAT FOR:
       "A double rounded to two places"
     ],
     "answer": 2,
-    "explain": "Integer minor units (cents) are stored exactly — no binary-fraction rounding. You only add the decimal point when formatting for display."
+    "explain": "Integer minor units (cents) are stored exactly - no binary-fraction rounding. You only add the decimal point when formatting for display."
   },
   {
     "q": "When using a decimal type, why must you write Decimal(\"0.1\") instead of Decimal(0.1)?",

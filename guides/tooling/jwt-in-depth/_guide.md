@@ -22,8 +22,8 @@ Read phase 1 first, slowly. The whole point of a JWT lives in the relationship b
 
 ## The phases
 
-1. [Phase 1: Three Parts and a Signature](01-three-parts-and-a-signature.md) — what a JWT actually is and why it exists
-2. [Phase 2: Issuing, Sending, and Verifying](02-issuing-sending-verifying.md) — how you really use tokens day to day
-3. [Phase 3: Where It Breaks](03-where-it-breaks.md) — the attacks, the revocation problem, and production reality
+1. [Phase 1: Three Parts and a Signature](01-three-parts-and-a-signature.md) - what a JWT actually is and why it exists
+2. [Phase 2: Issuing, Sending, and Verifying](02-issuing-sending-verifying.md) - how you really use tokens day to day
+3. [Phase 3: Where It Breaks](03-where-it-breaks.md) - the attacks, the revocation problem, and production reality
 
 [Phase 1: Three Parts and a Signature](01-three-parts-and-a-signature.md) →

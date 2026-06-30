@@ -98,9 +98,9 @@ The response comes back sorted by `_score`, highest first:
 
 The default scoring algorithm is **BM25**. You do not need its formula, you need its intuition, which is three forces:
 
-- **Term frequency** — a document that uses your search word more often is more relevant, but with *diminishing returns*. The tenth mention of "mouse" barely moves the needle past the third.
-- **Inverse document frequency** — a word that appears in *few* documents is more informative. Matching "ergonomic" tells you far more than matching "the," so rare terms are weighted up and common ones down.
-- **Field length** — a match in a short field counts for more. Your term appearing in a five-word title is a stronger signal than the same term buried in a thousand-word description.
+- **Term frequency** - a document that uses your search word more often is more relevant, but with *diminishing returns*. The tenth mention of "mouse" barely moves the needle past the third.
+- **Inverse document frequency** - a word that appears in *few* documents is more informative. Matching "ergonomic" tells you far more than matching "the," so rare terms are weighted up and common ones down.
+- **Field length** - a match in a short field counts for more. Your term appearing in a five-word title is a stronger signal than the same term buried in a thousand-word description.
 
 ```text
 search "wireless mouse":

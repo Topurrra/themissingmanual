@@ -2,7 +2,7 @@
 title: "Spring Framework (Core) From Zero"
 guide: "spring-framework-from-zero"
 phase: 0
-summary: "Learn the Spring that Spring Boot auto-configures: the IoC container and ApplicationContext, defining beans with @Configuration and @Bean, dependency injection in depth, bean scopes and lifecycle, AOP and the proxies that power @Transactional, and Spring MVC without Boot. Write the config Boot hides — and the magic disappears."
+summary: "Learn the Spring that Spring Boot auto-configures: the IoC container and ApplicationContext, defining beans with @Configuration and @Bean, dependency injection in depth, bean scopes and lifecycle, AOP and the proxies that power @Transactional, and Spring MVC without Boot. Write the config Boot hides - and the magic disappears."
 tags: [spring, spring-framework, ioc-container, dependency-injection, beans, aop, spring-mvc, java]
 category: frameworks
 order: 6
@@ -16,31 +16,31 @@ updated: 2026-06-22
 
 Here's a secret that makes [Spring Boot](/guides/spring-boot-from-zero) stop being magic:
 **Spring Boot is just core Spring with the configuration written for you.** Every `@Bean` Boot
-auto-creates, every component it wires, every default it sets — that's plain Spring Framework underneath,
+auto-creates, every component it wires, every default it sets - that's plain Spring Framework underneath,
 which Boot generates based on what's on your classpath. This guide is the one where you write that
-configuration *yourself*. It's more typing and less convenience — and that's exactly the point. Once
+configuration *yourself*. It's more typing and less convenience - and that's exactly the point. Once
 you've assembled a Spring app by hand, Boot's "magic" becomes "oh, that's the thing I now know how to do,
 done automatically."
 
 This is a **roots guide**: it's about *understanding*, not about the fastest way to ship (Boot is that).
-But the payoff is large — you'll debug Spring apps with X-ray vision, understand error messages that
+But the payoff is large - you'll debug Spring apps with X-ray vision, understand error messages that
 baffle Boot-only developers, and see why `@Transactional` and `@Async` behave the way they do. We build
 the mental model first the whole way: the container, beans, injection, lifecycle, and the proxies that
 make the annotations work.
 
 > 📝 This assumes **Java** (classes, interfaces, generics, annotations) and is far more valuable *after*
-> [Spring Boot From Zero](/guides/spring-boot-from-zero) — do Boot first to be productive, then this to
+> [Spring Boot From Zero](/guides/spring-boot-from-zero) - do Boot first to be productive, then this to
 > understand it. New to frameworks generally? [What a Framework Even Is](/guides/what-a-framework-even-is).
 
 ## How to read this
 
-Read in order — it assembles a small app by hand (a notification service, then a web layer), revealing
+Read in order - it assembles a small app by hand (a notification service, then a web layer), revealing
 one piece of "what Boot does for you" per phase. Phases carry difficulty badges.
 
 ## The phases
 
-**Part 1 — The container (🟢 Basic → 🟡)**
-1. **[Spring Without Boot — Why Core Spring?](01-spring-without-boot.md)** 🟢 — what Spring *is* vs Boot, and standing up an `ApplicationContext` by hand.
+**Part 1 - The container (🟢 Basic → 🟡)**
+1. **[Spring Without Boot - Why Core Spring?](01-spring-without-boot.md)** 🟢 — what Spring *is* vs Boot, and standing up an `ApplicationContext` by hand.
 2. **[The IoC Container & ApplicationContext](02-the-ioc-container.md)** 🟡 — the container deeply: what it is, how it bootstraps, what a "bean" really means.
 3. **[Defining Beans: @Configuration & @Bean](03-defining-beans.md)** 🟡 — declaring beans by hand (the explicit version of Boot's auto-config) vs component scanning.
 

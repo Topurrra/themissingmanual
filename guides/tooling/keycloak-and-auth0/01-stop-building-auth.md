@@ -34,7 +34,7 @@ Write down everything "let users log in" actually contains:
 
 *What just happened:* the line item "login" exploded into a dozen sub-projects, each with its own security failure mode. Every one of these is a place an attacker probes, and getting any single one wrong can hand over accounts.
 
-This is the core insight of the whole guide: **identity is not a feature of your app, it is a product in its own right** — one that other people have already built, hardened over years, and been attacked through so you don't have to be.
+This is the core insight of the whole guide: **identity is not a feature of your app, it is a product in its own right** - one that other people have already built, hardened over years, and been attacked through so you don't have to be.
 
 > The cost of getting auth wrong is not a bug ticket. It is an account takeover, a breach disclosure, and a customer who never comes back. That asymmetry is why "buy or host, don't build" is the default for everyone who has been burned once.
 
@@ -54,7 +54,7 @@ An **identity provider** (IdP) is a separate service whose entire job is to answ
 
 *What just happened:* your app never touches the password. The IdP runs the login screen, checks credentials (or a Google account, or a passkey), and returns a token your app verifies with a public key. Your codebase shrinks to "validate this token, read the user out of it."
 
-The protocol underneath that token exchange is OIDC — the same authorization-code flow covered in /guides/oauth2-and-oidc. An IdP is, in one sentence, a polished product wrapped around an OIDC server plus a user database plus an admin console.
+The protocol underneath that token exchange is OIDC - the same authorization-code flow covered in /guides/oauth2-and-oidc. An IdP is, in one sentence, a polished product wrapped around an OIDC server plus a user database plus an admin console.
 
 ## What you get the day you adopt one
 
@@ -78,8 +78,8 @@ The same checklist from the swamp, except now it ships in the box:
 
 There are two shapes of IdP, and the whole rest of this guide hangs on the difference:
 
-- **Auth0** — *managed.* A company runs the servers; you sign up, configure through a dashboard, and pay per active user. Zero ops, fastest to a working login, priced by usage.
-- **Keycloak** — *self-hosted, open source.* You run the server (a Java application, usually in a container) on your own infrastructure. No per-user fee, full control of the data, and you own the upgrades, backups, and uptime.
+- **Auth0** - *managed.* A company runs the servers; you sign up, configure through a dashboard, and pay per active user. Zero ops, fastest to a working login, priced by usage.
+- **Keycloak** - *self-hosted, open source.* You run the server (a Java application, usually in a container) on your own infrastructure. No per-user fee, full control of the data, and you own the upgrades, backups, and uptime.
 
 ```text
  MANAGED (Auth0)              SELF-HOSTED (Keycloak)
@@ -97,7 +97,7 @@ The good news: both speak the same protocols. Whichever door you walk through, y
 
 ## For builders
 
-Reach for an IdP the moment auth stops being trivial — the first time someone asks for "Log in with Google," for MFA, or for SSO. Even a weekend project benefits, because the hosted login screen and password-reset flow alone save you the riskiest code you'd otherwise write. The rare case for building it yourself is when your auth requirements are genuinely strange and tiny, and even then most teams regret it by the second feature request.
+Reach for an IdP the moment auth stops being trivial - the first time someone asks for "Log in with Google," for MFA, or for SSO. Even a weekend project benefits, because the hosted login screen and password-reset flow alone save you the riskiest code you'd otherwise write. The rare case for building it yourself is when your auth requirements are genuinely strange and tiny, and even then most teams regret it by the second feature request.
 
 ```quiz
 [

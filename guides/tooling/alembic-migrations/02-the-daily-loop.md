@@ -78,7 +78,7 @@ INFO  [alembic.autogenerate.compare] Detected added column 'users.created_at'
   Generating alembic/versions/9f3b2c7d1e08_add_created_at_to_users.py ... done
 ```
 
-*What just happened:* Alembic connected to the database, compared its real tables to your `target_metadata`, found one difference, and wrote a new migration file. The line `Detected added column` is Alembic narrating what it noticed. It did **not** change the database — it only wrote a file.
+*What just happened:* Alembic connected to the database, compared its real tables to your `target_metadata`, found one difference, and wrote a new migration file. The line `Detected added column` is Alembic narrating what it noticed. It did **not** change the database - it only wrote a file.
 
 Compare this with plain `alembic revision -m "..."` (no `--autogenerate`), which writes an empty migration with blank `upgrade()`/`downgrade()` bodies for you to fill in by hand. You'll want that for changes autogenerate can't see; Phase 3 covers which ones.
 
@@ -100,7 +100,7 @@ def downgrade():
 
 *What just happened:* Alembic turned the detected difference into `op.add_column` (forward) and `op.drop_column` (reverse). Read both. Ask: is the forward change what I meant? Does the downgrade truly reverse it? Here, both are correct.
 
-But notice the trap already: `nullable=False` on a table that already has rows will fail, because every existing row would have a NULL `created_at`. Autogenerate wrote what your model says, not what your data needs. You'd fix this by adding a `server_default` or doing it in two steps. The lesson is permanent — **autogenerate drafts, you decide.** Phase 3 catalogs the rest of its blind spots.
+But notice the trap already: `nullable=False` on a table that already has rows will fail, because every existing row would have a NULL `created_at`. Autogenerate wrote what your model says, not what your data needs. You'd fix this by adding a `server_default` or doing it in two steps. The lesson is permanent - **autogenerate drafts, you decide.** Phase 3 catalogs the rest of its blind spots.
 
 ## Beat 4: apply it
 
@@ -129,13 +129,13 @@ alembic current               # which revision is this DB on right now?
 alembic history               # the full ordered chain of revisions
 ```
 
-*What just happened:* you saw the full daily vocabulary. `current` reads the `alembic_version` table from Phase 1; `history` prints the chain. `downgrade -1` is your undo button when you applied something wrong locally — though on production, undoing a migration that already dropped data does not bring the data back.
+*What just happened:* you saw the full daily vocabulary. `current` reads the `alembic_version` table from Phase 1; `history` prints the chain. `downgrade -1` is your undo button when you applied something wrong locally - though on production, undoing a migration that already dropped data does not bring the data back.
 
 > Downgrade is for recovering from a mistake you catch quickly, mostly in development. In production, treat a deployed migration as one-way unless you've thought hard about it: `downgrade` of an `add_column` is a `drop_column`, and dropping a column is destroying data. The reverse path exists; it is not free.
 
 ## For builders
 
-Wire this into your workflow so the loop is automatic. Most teams run `alembic upgrade head` as a deploy step before the new app code starts, so the schema is always ready when the code that needs it boots. In CI, a useful check is to autogenerate against a fresh database and assert that it produces *no* changes — if it does, someone changed a model without writing a migration, and the build should catch that before it reaches production.
+Wire this into your workflow so the loop is automatic. Most teams run `alembic upgrade head` as a deploy step before the new app code starts, so the schema is always ready when the code that needs it boots. In CI, a useful check is to autogenerate against a fresh database and assert that it produces *no* changes - if it does, someone changed a model without writing a migration, and the build should catch that before it reaches production.
 
 ```quiz
 [

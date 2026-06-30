@@ -19,7 +19,7 @@ updated: 2026-06-30
 
 # Bytes Are Not Characters
 
-Here is the thing nobody tells you up front, and it is the source of nearly every text bug you will ever hit: **a computer never stores characters. It stores numbers.** A file on disk, a packet on the wire, a string in memory — all of it is bytes, which are nothing more than numbers from 0 to 255. The letter `A` is not in that file. A *number* is in that file, and somewhere there is an agreement that says "when you see this number, draw an `A`."
+Here is the thing nobody tells you up front, and it is the source of nearly every text bug you will ever hit: **a computer never stores characters. It stores numbers.** A file on disk, a packet on the wire, a string in memory - all of it is bytes, which are nothing more than numbers from 0 to 255. The letter `A` is not in that file. A *number* is in that file, and somewhere there is an agreement that says "when you see this number, draw an `A`."
 
 That agreement is called an **encoding**. The whole topic of character encoding is the story of who agreed on what, what happens when two parties disagree, and how the world slowly built one table big enough to hold every character humans use.
 
@@ -38,7 +38,7 @@ The catch is the decode step. To turn bytes back into characters, the decoder ha
 
 ## Where it all started: ASCII
 
-The original agreement was **ASCII**. It is a tiny table — 128 entries — mapping numbers 0 through 127 to the characters an American typewriter cared about: the uppercase and lowercase Latin letters, the digits, basic punctuation, and a handful of control codes like newline and tab.
+The original agreement was **ASCII**. It is a tiny table - 128 entries - mapping numbers 0 through 127 to the characters an American typewriter cared about: the uppercase and lowercase Latin letters, the digits, basic punctuation, and a handful of control codes like newline and tab.
 
 ```text
 65 -> A      97  -> a      48 -> 0
@@ -62,13 +62,13 @@ byte 233 decoded as Windows-1251 (Cyrillic)   ->  щ
 byte 233 decoded as Mac Roman                 ->  È
 ```
 
-*What just happened:* One identical byte, 233, produces three completely different characters depending on which code page the decoder assumes. The byte carries no label saying which table it belongs to. The reader has to guess — and when it guesses wrong, you get garbage.
+*What just happened:* One identical byte, 233, produces three completely different characters depending on which code page the decoder assumes. The byte carries no label saying which table it belongs to. The reader has to guess - and when it guesses wrong, you get garbage.
 
 > A byte does not know its own encoding. Nothing inside the number 233 tells you it means `é`. The encoding is context the reader supplies, and if that context is wrong, the text is wrong.
 
 ## Mojibake: the wrong-decoder bug
 
-When bytes are decoded with the wrong agreement, the result is **mojibake** (a Japanese word, roughly "character transformation"). It is the `Ã©` and `â€™` you have seen in badly handled text. It is not random corruption — the bytes are perfectly intact. They are being *read* through the wrong table.
+When bytes are decoded with the wrong agreement, the result is **mojibake** (a Japanese word, roughly "character transformation"). It is the `Ã©` and `â€™` you have seen in badly handled text. It is not random corruption - the bytes are perfectly intact. They are being *read* through the wrong table.
 
 ```text
 Author writes:   café
@@ -77,17 +77,17 @@ Read as Latin-1: c  a  f  Ã   ©
 You see:         cafÃ©
 ```
 
-*What just happened:* The é was encoded as two bytes in UTF-8 (195 and 169 — Phase 2 explains why two). When a reader decodes those same two bytes one at a time using Latin-1, byte 195 draws `Ã` and byte 169 draws `©`. The data is fine. The interpretation is broken. Re-decode the *same bytes* with UTF-8 and `café` comes right back.
+*What just happened:* The é was encoded as two bytes in UTF-8 (195 and 169 - Phase 2 explains why two). When a reader decodes those same two bytes one at a time using Latin-1, byte 195 draws `Ã` and byte 169 draws `©`. The data is fine. The interpretation is broken. Re-decode the *same bytes* with UTF-8 and `café` comes right back.
 
 This is the single most important takeaway of the whole guide: **mojibake is a decode-side mismatch, not data loss.** When you see it, the fix is almost never "the file is corrupt." The fix is "tell the reader the correct encoding."
 
-For builders: this is why "what encoding?" is the first question to ask whenever text looks wrong. Not "is the file broken" — the file is usually fine. The reader was handed the wrong table.
+For builders: this is why "what encoding?" is the first question to ask whenever text looks wrong. Not "is the file broken" - the file is usually fine. The reader was handed the wrong table.
 
 ```quiz
 [
   {
     "q": "A text file contains the byte 233. What character does it represent?",
-    "choices": ["é, always", "It depends on which encoding you decode it with", "A question mark", "Nothing — 233 is invalid"],
+    "choices": ["é, always", "It depends on which encoding you decode it with", "A question mark", "Nothing - 233 is invalid"],
     "answer": 1,
     "explain": "A byte carries no encoding label. The same byte 233 is é in Latin-1, щ in Windows-1251, and so on. The decoder's chosen table decides."
   },

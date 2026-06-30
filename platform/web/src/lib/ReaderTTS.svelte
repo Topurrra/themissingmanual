@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
 
-  // "Listen to this guide" — reads the current .reader content aloud with the
+  // "Listen to this guide" - reads the current .reader content aloud with the
   // browser's SpeechSynthesis (no server, no cost). Reads block-by-block so it
   // can highlight what's being spoken and survive engine limits. Voice + speed
   // are user-selectable and persisted. Mounted inside the page's {#key} block.
@@ -57,7 +57,7 @@
       .replace(/\([^)]*\)/g, '')
       .replace(/Microsoft|Google|Apple|Desktop|Online|Natural|Enhanced|Premium/gi, '')
       .replace(/\benglish\b/gi, '')
-      .replace(/[-–—]/g, ' ')
+      .replace(/[-–-]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
     let r = REGION[(v.lang.split('-')[1] || '').toUpperCase()] || '';

@@ -21,7 +21,7 @@ game adds to them as the player guesses. This phase builds the part that takes a
 single letter, records it, and reports back what happened: a hit, a miss, or a
 letter the player already tried.
 
-Carry the `show` function from Phase 1 with you — every example here re-declares
+Carry the `show` function from Phase 1 with you - every example here re-declares
 it so the blocks run on their own.
 
 ## The set does the bookkeeping
@@ -33,7 +33,7 @@ quietly drops duplicates, so a repeated guess never piles up:
 guessed = set()      # empty to start
 guessed.add("p")
 guessed.add("y")
-guessed.add("p")     # repeat — the set ignores it
+guessed.add("p")     # repeat - the set ignores it
 print(guessed)
 print("Total letters tracked:", len(guessed))
 ```
@@ -55,7 +55,7 @@ flowchart TD
   D -- no --> M[miss]
 ```
 
-Read the diagram top to bottom. First we check if the letter was already tried —
+Read the diagram top to bottom. First we check if the letter was already tried -
 if so, it's a repeat and nothing changes. Otherwise we record it, then check
 whether it's actually in the word: in means hit, not in means miss.
 
@@ -84,7 +84,7 @@ one `letter.lower()` line saves you from "I typed P and it said miss" complaints
 
 ## Wiring it to the display
 
-A guess on its own isn't satisfying — you want to *see* the word change. So after
+A guess on its own isn't satisfying - you want to *see* the word change. So after
 each guess we print the result and the freshly masked word together. Here we
 simulate a few guesses in a row, the way a real game would over several turns:
 
@@ -102,7 +102,7 @@ def guess(letter, word, guessed):
 word = "python"
 guessed = set()
 
-# A simulated run of four turns (no input() — we feed the letters in):
+# A simulated run of four turns (no input() - we feed the letters in):
 for letter in ["p", "z", "y", "p"]:
     result = guess(letter, word, guessed)
     print(f"You guessed '{letter}': {result:6}  ->  {show(word, guessed)}")
@@ -110,10 +110,10 @@ for letter in ["p", "z", "y", "p"]:
 
 Run it and read the four lines:
 
-- `p` is a **hit** — the first blank fills in.
-- `z` is a **miss** — `z` isn't in "python", the display doesn't change.
-- `y` is a **hit** — another blank fills.
-- `p` again is a **repeat** — we already had it, so nothing changes.
+- `p` is a **hit** - the first blank fills in.
+- `z` is a **miss** - `z` isn't in "python", the display doesn't change.
+- `y` is a **hit** - another blank fills.
+- `p` again is a **repeat** - we already had it, so nothing changes.
 
 That `{result:6}` in the f-string pads the result word out to six characters so
 the arrows line up in a neat column. A small touch, but a tidy readout is easier
@@ -123,7 +123,7 @@ to follow.
 
 You might wonder why `guess` returns `"hit"` / `"miss"` / `"repeat"` rather than
 printing the message itself. Because the function's job is to *decide* what
-happened, not to *display* it. The caller decides how to show it — maybe print it,
+happened, not to *display* it. The caller decides how to show it - maybe print it,
 maybe count the misses, maybe both. Keeping "figure it out" separate from "show
 it" means we can reuse `guess` in Phase 3 to drive the life counter without
 touching it. One function, one job.
@@ -149,12 +149,12 @@ print("All three outcomes behave. Guess logic is solid.")
 ```
 
 Run it. If you see the confirmation line, the guess handling works. If an assert
-ever failed, Python would stop and point at the broken line — a fast way to know
+ever failed, Python would stop and point at the broken line - a fast way to know
 the moment something's off.
 
 ## Where you are
 
 You can hand the game a letter and it does the right thing: records it, ignores
 repeats, and tells you hit or miss while the masked word updates. What's missing
-is stakes — a miss should cost something, and the game should end. That's next:
+is stakes - a miss should cost something, and the game should end. That's next:
 lives, winning, and losing.

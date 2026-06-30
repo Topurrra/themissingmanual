@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 # Formatting the Report
 
-Time to put it all together. We have the grand totals from phase 2 and the per-group breakdown from phase 3. This phase turns those numbers into a single report that lines up cleanly, then wires the whole thing into one function — and shows you how to run it on a real CSV on your own machine.
+Time to put it all together. We have the grand totals from phase 2 and the per-group breakdown from phase 3. This phase turns those numbers into a single report that lines up cleanly, then wires the whole thing into one function - and shows you how to run it on a real CSV on your own machine.
 
 ## Lining numbers up
 
@@ -27,7 +27,7 @@ Raw `print()` output looks ragged because names and numbers are different widths
 | `{name:<10}` | left-align in 10 chars | `North     ` |
 | `{value:>10.2f}` | right-align in 10 chars, 2 decimals | `    642.50` |
 
-Left-align text, right-align numbers — that's the whole secret to a column that reads well. Numbers line up on their right edge so the decimal points stack.
+Left-align text, right-align numbers - that's the whole secret to a column that reads well. Numbers line up on their right edge so the decimal points stack.
 
 A thousands separator helps too: `{value:,.2f}` prints `1884.5` as `1,884.50`. Easier to read large totals at a glance.
 
@@ -82,13 +82,13 @@ report = build_report(rows)
 print(report)
 ```
 
-That's the project. One function takes the rows and gives you the formatted report as a string. Building the report into a list of lines and joining at the end (instead of printing as you go) means you can return it, write it to a file, or print it — your choice, decided by the caller.
+That's the project. One function takes the rows and gives you the formatted report as a string. Building the report into a list of lines and joining at the end (instead of printing as you go) means you can return it, write it to a file, or print it - your choice, decided by the caller.
 
 Try changing `build_report(rows)` to `build_report(rows, group_col="product")` and rerun. Same report, broken out by product instead. That flexibility came free from passing the column name as an argument.
 
 ## A quick sanity check
 
-When you write aggregation code, check it against a number you can verify by hand. The per-group totals must add up to the grand total — if they don't, something's double-counting or dropping rows. Let's assert exactly that:
+When you write aggregation code, check it against a number you can verify by hand. The per-group totals must add up to the grand total - if they don't, something's double-counting or dropping rows. Let's assert exactly that:
 
 ```python runnable
 import csv
@@ -117,11 +117,11 @@ print(f"Sum of groups:   {group_sum:.2f}")
 print("Check passed: the groups add up.")
 ```
 
-The `abs(...) < 0.001` is there because floats don't always compare exactly — `0.1 + 0.2` famously isn't `0.3` to a computer. Comparing with a small tolerance instead of `==` is the right habit for any money math.
+The `abs(...) < 0.001` is there because floats don't always compare exactly - `0.1 + 0.2` famously isn't `0.3` to a computer. Comparing with a small tolerance instead of `==` is the right habit for any money math.
 
 ## Running it on a real file
 
-Everything so far ran in the browser using `StringIO`. On your own machine you read an actual file instead — and that's the only line that changes. The rest of `build_report` is identical.
+Everything so far ran in the browser using `StringIO`. On your own machine you read an actual file instead - and that's the only line that changes. The rest of `build_report` is identical.
 
 You don't need to install anything; `csv` ships with Python. Save this as `report.py` next to your CSV, then run `python report.py sales.csv`:
 
@@ -180,12 +180,12 @@ python report.py sales.csv
 
 Three things to notice about the file version:
 
-- `open(path, newline="", encoding="utf-8")` — the `newline=""` is the one `csv` quirk worth remembering. It stops Python from mangling line endings on Windows; the `csv` docs ask for it every time you open a CSV file. `encoding="utf-8"` handles names with accents.
+- `open(path, newline="", encoding="utf-8")` - the `newline=""` is the one `csv` quirk worth remembering. It stops Python from mangling line endings on Windows; the `csv` docs ask for it every time you open a CSV file. `encoding="utf-8"` handles names with accents.
 - `sys.argv[1]` lets you pass the filename on the command line, with `sales.csv` as a fallback. No argument-parsing library needed.
 - We write the report to `report.txt` as well as printing it, so you've got a file to email. Same string, two destinations.
 
 ## What you built
 
-A working CSV summary tool. It reads rows, totals and averages a numeric column, breaks the total out by any category, and prints a clean aligned report — from an embedded sample in the browser, or from a real file on your machine with one changed line.
+A working CSV summary tool. It reads rows, totals and averages a numeric column, breaks the total out by any category, and prints a clean aligned report - from an embedded sample in the browser, or from a real file on your machine with one changed line.
 
-The shape you learned here — parse to dicts, convert to numbers, accumulate into a `defaultdict`, format with alignment specs — is the backbone of nearly every quick data script you'll write. Next time someone asks "what's the total per X?", you won't open a spreadsheet. You'll write ten lines and have the answer.
+The shape you learned here - parse to dicts, convert to numbers, accumulate into a `defaultdict`, format with alignment specs - is the backbone of nearly every quick data script you'll write. Next time someone asks "what's the total per X?", you won't open a spreadsheet. You'll write ten lines and have the answer.

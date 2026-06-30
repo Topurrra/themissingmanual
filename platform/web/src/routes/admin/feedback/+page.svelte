@@ -53,7 +53,7 @@
             <span class="fb-vote down"><i class="ti ti-thumb-down" aria-hidden="true"></i> Down</span>
           {/if}
         </td>
-        <td class="fb-note">{f.note || '—'}</td>
+        <td class="fb-note">{f.note || '-'}</td>
       </tr>
     {:else}
       <tr><td colspan="4" class="admin-empty">No feedback yet.</td></tr>

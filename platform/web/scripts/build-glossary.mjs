@@ -59,7 +59,7 @@ function cleanDef(body) {
 
 const files = walk(GUIDES);
 const entries = [];
-const RE = /^(?:A|An|The)?\s*\*\*?([A-Za-z][A-Za-z0-9 /+.\-]{1,28}?)\*\*?\s*(=|—|–|\bis\b|\bare\b|\bmeans\b|\bstands for\b|\brefers to\b)/u;
+const RE = /^(?:A|An|The)?\s*\*\*?([A-Za-z][A-Za-z0-9 /+.\-]{1,28}?)\*\*?\s*(=|-|–|\bis\b|\bare\b|\bmeans\b|\bstands for\b|\brefers to\b)/u;
 for (const f of files) {
   const text = readFileSync(f, 'utf8');
   const fm = frontmatter(text);
@@ -69,7 +69,7 @@ for (const f of files) {
   for (const para of text.split(/\n[ \t]*\n/)) {
     const line = para.replace(/\s*\n\s*/g, ' ').trim();
     if (!/^📝/.test(line) || !/Terminology/.test(line)) continue;
-    const body = line.replace(/^📝\s*\*\*Terminology[^*]*\*\*[.\s—-]*/u, '').trim();
+    const body = line.replace(/^📝\s*\*\*Terminology[^*]*\*\*[.\s--]*/u, '').trim();
     const hm = body.match(RE);
     if (!hm) continue;
     const term = hm[1].trim().replace(/[.\s]+$/, '');

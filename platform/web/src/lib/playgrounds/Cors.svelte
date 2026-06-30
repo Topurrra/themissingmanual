@@ -9,7 +9,7 @@
     [PAGE, 'app.example.com (exact)'],
     ['*', '* (any origin)'],
     ['https://other.com', 'other.com (different)'],
-    ['', '(none — header absent)']
+    ['', '(none - header absent)']
   ];
 
   // A request is "simple" only for GET/HEAD/POST with no custom headers.
@@ -20,7 +20,7 @@
   $: reason = (() => {
     if (!allow) return 'The server sent no Access-Control-Allow-Origin header, so the browser blocks the page from reading the response.';
     if (allow === 'https://other.com') return `The server only allows other.com, but the page is ${PAGE}. The origin doesn't match, so the browser blocks it.`;
-    if (credClash) return 'With credentials (cookies) the server may NOT use "*" — it must echo the exact origin. The browser blocks it.';
+    if (credClash) return 'With credentials (cookies) the server may NOT use "*" - it must echo the exact origin. The browser blocks it.';
     if (allow === '*') return 'The server allows any origin ("*"), so the browser lets the page read the response.';
     return 'The server explicitly allows this exact origin, so the browser lets the page read the response.';
   })();
@@ -43,7 +43,7 @@
     <div class="co-flow">
       <div class="co-step" class:show={!simple}>
         <span class="co-tag pre">PREFLIGHT</span>
-        <code>OPTIONS /data</code> — non-simple request ({method}{customHeader ? ' + custom header' : ''}), so the browser asks permission first.
+        <code>OPTIONS /data</code> - non-simple request ({method}{customHeader ? ' + custom header' : ''}), so the browser asks permission first.
       </div>
       <div class="co-step" class:show={simple}>
         <span class="co-tag">SIMPLE</span>

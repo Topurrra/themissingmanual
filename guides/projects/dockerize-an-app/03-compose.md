@@ -16,9 +16,9 @@ updated: 2026-06-30
 
 # docker compose: App Plus Database
 
-Your app runs in a container. Now it needs a database — and a database is its own piece of software, with its own version and config and storage. You could install Postgres on your machine, but that drags you right back to "works on my machine." Instead you run Postgres as a second container.
+Your app runs in a container. Now it needs a database - and a database is its own piece of software, with its own version and config and storage. You could install Postgres on your machine, but that drags you right back to "works on my machine." Instead you run Postgres as a second container.
 
-Two containers means two `docker run` commands with the right ports, names, networks, and environment variables — and you'd type them in the right order every time. That gets old fast. **Docker Compose** is the fix: you describe the whole stack once in a file, and bring it all up or down with one command.
+Two containers means two `docker run` commands with the right ports, names, networks, and environment variables - and you'd type them in the right order every time. That gets old fast. **Docker Compose** is the fix: you describe the whole stack once in a file, and bring it all up or down with one command.
 
 ## Give the app something to store
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 ```
 
-Notice the app reads its database connection from `os.environ["DATABASE_URL"]`. It doesn't hard-code where the database is — that comes from the environment, which is exactly what lets the same image run against different databases. Compose will set that variable for us.
+Notice the app reads its database connection from `os.environ["DATABASE_URL"]`. It doesn't hard-code where the database is - that comes from the environment, which is exactly what lets the same image run against different databases. Compose will set that variable for us.
 
 ## The compose file
 
@@ -94,7 +94,7 @@ volumes:
 Walk through it:
 
 - **Two services**, `web` and `db`. Each becomes a container.
-- `build: .` — `web` is built from your Dockerfile in the current folder. `db` instead pulls the official `postgres:16` image — no Dockerfile needed.
+- `build: .` - `web` is built from your Dockerfile in the current folder. `db` instead pulls the official `postgres:16` image - no Dockerfile needed.
 - `ports` on `web` does what `-p` did: maps host 8080 to container 5000.
 - `environment` sets variables inside each container. The `db` service uses Postgres's own variables to create a user, password, and database on first start. The `web` service gets the `DATABASE_URL` its code reads.
 - `depends_on: [db]` tells Compose to start `db` before `web`.
@@ -102,7 +102,7 @@ Walk through it:
 
 ## The magic word: `db`
 
-Look closely at the connection string: `postgresql://appuser:secret@db:5432/appdb`. The host is `db` — the name of the service. Compose puts every service on a shared private network and lets them find each other by service name. Inside the `web` container, `db` resolves to the Postgres container's address. You never deal with IP addresses.
+Look closely at the connection string: `postgresql://appuser:secret@db:5432/appdb`. The host is `db` - the name of the service. Compose puts every service on a shared private network and lets them find each other by service name. Inside the `web` container, `db` resolves to the Postgres container's address. You never deal with IP addresses.
 
 ```mermaid
 flowchart LR
@@ -111,13 +111,13 @@ flowchart LR
     D --- V[(dbdata volume)]
 ```
 
-Note that 5432 is *not* published to your host — only `web` can reach Postgres, over the private network. That's a sensible default: your database shouldn't be exposed to the outside world. (If you want to inspect it with a desktop tool, you can add a `ports` entry to `db`, but you don't need to.)
+Note that 5432 is *not* published to your host - only `web` can reach Postgres, over the private network. That's a sensible default: your database shouldn't be exposed to the outside world. (If you want to inspect it with a desktop tool, you can add a `ports` entry to `db`, but you don't need to.)
 
 ## Volumes: why your data survives
 
 Containers are disposable. Delete one and everything written inside it is gone. That's fine for your stateless app, but a database that forgets everything on restart is useless.
 
-A **volume** is storage that lives outside the container's lifecycle. The line `dbdata:/var/lib/postgresql/data` says "keep the contents of Postgres's data directory in a named volume called `dbdata`." Destroy and recreate the `db` container and the data is still there, because it never lived inside the container — it lived in the volume.
+A **volume** is storage that lives outside the container's lifecycle. The line `dbdata:/var/lib/postgresql/data` says "keep the contents of Postgres's data directory in a named volume called `dbdata`." Destroy and recreate the `db` container and the data is still there, because it never lived inside the container - it lived in the volume.
 
 ## Bring it up
 
@@ -147,7 +147,7 @@ docker compose logs -f         # follow all logs
 
 ## Prove the volume works
 
-Here's the satisfying test. Bring the stack down — but keep the volume:
+Here's the satisfying test. Bring the stack down - but keep the volume:
 
 ```bash
 docker compose down
@@ -165,6 +165,6 @@ curl http://localhost:8080
 # You are visit number 1
 ```
 
-Back to one — the data is gone because you destroyed the volume. That `-v` flag is the difference between "restart the stack" and "start fresh," and knowing which is which will save you a panic someday.
+Back to one - the data is gone because you destroyed the volume. That `-v` flag is the difference between "restart the stack" and "start fresh," and knowing which is which will save you a panic someday.
 
-You now have a real two-container application defined in one file, brought up and down with one command, with data that persists exactly as long as you want it to. The only thing left is making it fit to hand to someone else — secrets, health, and a registry. That's Phase 4.
+You now have a real two-container application defined in one file, brought up and down with one command, with data that persists exactly as long as you want it to. The only thing left is making it fit to hand to someone else - secrets, health, and a registry. That's Phase 4.

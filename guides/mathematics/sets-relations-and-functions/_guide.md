@@ -19,22 +19,22 @@ all three in code. A **set** is a collection of distinct things (a `Set` in your
 turns each input into exactly one output (a pure function, or a lookup `map`). Get these three solid and
 you've got the vocabulary the rest of math is written in.
 
-This guide assumes nothing beyond [Why Math Isn't Your Enemy](/guides/why-math-isnt-your-enemy) — if you
+This guide assumes nothing beyond [Why Math Isn't Your Enemy](/guides/why-math-isnt-your-enemy) - if you
 can read the notation from that guide, you're ready. We'll build each idea from the ground up, with
 real examples and runnable code, and keep showing how the math object you're learning is the same thing
 as a tool you already reach for.
 
 ## How to read this
 - **Want the foundation fast?** [Phase 1](01-sets.md) on sets is the bedrock everything else stands on.
-- **Want it to stick?** Read in order — relations and functions are defined in terms of sets, so Phase 1
+- **Want it to stick?** Read in order - relations and functions are defined in terms of sets, so Phase 1
   earns the rest.
 
 ## The phases
-1. **[Sets: Collections of Distinct Things](01-sets.md)** — membership, subsets, and the operations
-   (union, intersection, difference) — with the empty set and why duplicates don't count.
-2. **[Relations & Functions](02-relations-and-functions.md)** — ordered pairs, what makes a relation a
+1. **[Sets: Collections of Distinct Things](01-sets.md)** - membership, subsets, and the operations
+   (union, intersection, difference) - with the empty set and why duplicates don't count.
+2. **[Relations & Functions](02-relations-and-functions.md)** - ordered pairs, what makes a relation a
    *function*, and domain/codomain/range without the fog.
-3. **[Why This Is the Vocabulary of Everything](03-the-vocabulary-of-everything.md)** — how sets and
+3. **[Why This Is the Vocabulary of Everything](03-the-vocabulary-of-everything.md)** - how sets and
    functions quietly power types, databases, and data structures.
 
 > With this vocabulary in hand, the Mathematics track moves on to numbers and number systems, counting,

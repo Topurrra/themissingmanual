@@ -16,13 +16,13 @@ updated: 2026-06-30
 
 # Saving to a File
 
-Last phase ended on a sour note: the moment the program stops, your tasks are gone. Memory is temporary by design. To make a to-do app worth using, the list has to outlive a single run — you add a task today and it's still there tomorrow. That means writing it to a file and reading it back. Let's do exactly that.
+Last phase ended on a sour note: the moment the program stops, your tasks are gone. Memory is temporary by design. To make a to-do app worth using, the list has to outlive a single run - you add a task today and it's still there tomorrow. That means writing it to a file and reading it back. Let's do exactly that.
 
 ## Why JSON
 
 Our task list is a list of dicts. We need to turn that into text we can save, then turn the text back into a list of dicts later. Python has a module built for precisely this: `json`.
 
-JSON is a text format that looks almost identical to Python lists and dicts. That's not a coincidence — it was designed to carry data like ours. The `json` module gives us two pairs of functions:
+JSON is a text format that looks almost identical to Python lists and dicts. That's not a coincidence - it was designed to carry data like ours. The `json` module gives us two pairs of functions:
 
 | Function | Direction | What it does |
 |----------|-----------|--------------|
@@ -54,11 +54,11 @@ print("\nBack to Python:")
 print(restored[0]["text"], "- done?", restored[0]["done"])
 ```
 
-Run it. The middle is a clean JSON string — `indent=2` makes it readable with line breaks and spacing instead of one long line. Then `json.loads` reads that string and hands you back a real Python list you can index into. Out and back, no data lost. `False` came back as `False`, the text came back as text. That round trip is the whole idea behind saving.
+Run it. The middle is a clean JSON string - `indent=2` makes it readable with line breaks and spacing instead of one long line. Then `json.loads` reads that string and hands you back a real Python list you can index into. Out and back, no data lost. `False` came back as `False`, the text came back as text. That round trip is the whole idea behind saving.
 
 ## Writing to a file and reading it back
 
-Now the real thing. In your browser, we'll use a temporary file so the code runs in isolation — and the file path stays the same when you move to your own machine.
+Now the real thing. In your browser, we'll use a temporary file so the code runs in isolation - and the file path stays the same when you move to your own machine.
 
 ```python runnable
 import json
@@ -86,7 +86,7 @@ for task in loaded:
     print(task["id"], "-", task["text"])
 ```
 
-The `with open(...)` block opens the file and closes it automatically when the block ends, even if something goes wrong inside — that's why we use `with` rather than opening and closing by hand. The `"w"` means write (and replace whatever was there); `"r"` means read.
+The `with open(...)` block opens the file and closes it automatically when the block ends, even if something goes wrong inside - that's why we use `with` rather than opening and closing by hand. The `"w"` means write (and replace whatever was there); `"r"` means read.
 
 This block proves the loop that matters: data went to disk, the program could have ended right there, and we still read every task back. That's persistence.
 
@@ -117,7 +117,7 @@ def save_tasks(path, tasks):
 if os.path.exists(path):
     os.remove(path)
 
-# First run: no file yet, so we get an empty list — no crash.
+# First run: no file yet, so we get an empty list - no crash.
 tasks = load_tasks(path)
 print("First run, tasks:", tasks)
 
@@ -130,12 +130,12 @@ tasks_again = load_tasks(path)
 print("Second run, tasks:", tasks_again)
 ```
 
-Look at the two prints. The first is `[]` — an empty list, because the file didn't exist and `load_tasks` caught the `FileNotFoundError` and returned `[]` instead of crashing. Then we add a task, save, and "run again" by calling `load_tasks` a second time. This time the task comes back. That's the full life cycle of saved data, handled cleanly.
+Look at the two prints. The first is `[]` - an empty list, because the file didn't exist and `load_tasks` caught the `FileNotFoundError` and returned `[]` instead of crashing. Then we add a task, save, and "run again" by calling `load_tasks` a second time. This time the task comes back. That's the full life cycle of saved data, handled cleanly.
 
-The `try/except` here is the kind of error handling worth keeping. It's not guarding against something impossible — a missing file on first run is *guaranteed* to happen. Catching it turns a crash into a sensible default.
+The `try/except` here is the kind of error handling worth keeping. It's not guarding against something impossible - a missing file on first run is *guaranteed* to happen. Catching it turns a crash into a sensible default.
 
 ## Where we are
 
-You've got `load_tasks` and `save_tasks`, and together they make the list permanent. Add a task, save, quit, come back, load — it's still there. These two functions are the storage layer of the app, and we won't change them again. On your own machine you'd point `path` at `"tasks.json"` and it would behave exactly as you saw here.
+You've got `load_tasks` and `save_tasks`, and together they make the list permanent. Add a task, save, quit, come back, load - it's still there. These two functions are the storage layer of the app, and we won't change them again. On your own machine you'd point `path` at `"tasks.json"` and it would behave exactly as you saw here.
 
 Next we make the list do more than grow: marking tasks done, deleting them, and filtering open from finished.

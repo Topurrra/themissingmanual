@@ -10,7 +10,7 @@ use crate::models::{Phase, SearchHit, SearchResults};
 
 /// Name of our custom analyzer: lowercase → drop stop words → English stemmer.
 const ANALYZER: &str = "en_stem";
-/// Lowercase-only analyzer (no stemming) for the `raw` field — fuzzy matches whole words.
+/// Lowercase-only analyzer (no stemming) for the `raw` field - fuzzy matches whole words.
 const LOWER: &str = "lower";
 
 pub struct Fields {
@@ -219,7 +219,7 @@ impl SearchIndex {
             let doc: TantivyDocument = searcher.doc(addr)?;
             let slug = doc.get_first(f.guide_slug).and_then(|v| v.as_str()).unwrap_or("").to_string();
             if !seen.insert(slug.clone()) {
-                continue; // one result per guide — show its best phase
+                continue; // one result per guide - show its best phase
             }
             let snippet = snip.snippet_from_doc(&doc).to_html();
             hits.push(SearchHit {
@@ -257,7 +257,7 @@ impl SearchIndex {
             }
             let max = if w.chars().count() >= 7 { 2 } else { 1 };
             // Within the edit-distance budget, prefer the smallest distance, then the most
-            // frequent term, then lexicographic order — so ties are deterministic regardless of
+            // frequent term, then lexicographic order - so ties are deterministic regardless of
             // map iteration order (the bug that let a growing index land "mrge" on "urge").
             let best = vocab
                 .iter()

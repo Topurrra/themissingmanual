@@ -1,6 +1,6 @@
-# The Missing Manual — Writer's Manual
+# The Missing Manual - Writer's Manual
 
-Everything a writer needs to add guides. **You only ever edit Markdown files** —
+Everything a writer needs to add guides. **You only ever edit Markdown files** -
 no code. The server reads the `guides/` folder on startup, so new/edited guides
 appear after a restart (or the periodic sync).
 
@@ -29,7 +29,7 @@ guides/
 
 **Every file** starts with YAML frontmatter.
 
-`_guide.md` (the overview — note `phase: 0`, plus `category` and `order`):
+`_guide.md` (the overview - note `phase: 0`, plus `category` and `order`):
 
 ```yaml
 ---
@@ -46,7 +46,7 @@ updated: 2026-06-22                 # YYYY-MM-DD, bump when you edit
 ---
 ```
 
-Each phase file (`NN-*.md`) — same shape, no `category`/`order`, real `phase` number:
+Each phase file (`NN-*.md`) - same shape, no `category`/`order`, real `phase` number:
 
 ```yaml
 ---
@@ -67,7 +67,7 @@ questions a person would type.
 
 ---
 
-## 3. The body — normal Markdown
+## 3. The body - normal Markdown
 
 Headings (`##`), prose, lists, `code`, bold, links, images. End each phase with
 the standard navigation line:
@@ -118,7 +118,7 @@ Call 555-1234 or 555-9876.
 **sorting**, **ds**, **json**, cron, **unittest**, eventloop, dns, tcp, lru, lb,
 cors, http, join, gc, tokens, embed.
 
-(`eventloop` illustrates the JavaScript event loop — fine for context, but
+(`eventloop` illustrates the JavaScript event loop - fine for context, but
 Python's async model differs, so use sparingly in Python guides.)
 
 ---
@@ -137,7 +137,7 @@ print(greet("world"))
 ```
 ````
 
-Use this generously in Python guides — let readers run and tweak each example.
+Use this generously in Python guides - let readers run and tweak each example.
 
 ---
 
@@ -189,7 +189,7 @@ What quizzes do automatically:
 - Finishing a quiz enrolls the chapter into **spaced review**.
 - The questions also feed **FAQ structured data** (helps search/answer engines).
 
-(If a phase has no `quiz` block, no quiz shows — totally fine to add them later.)
+(If a phase has no `quiz` block, no quiz shows - totally fine to add them later.)
 
 ---
 

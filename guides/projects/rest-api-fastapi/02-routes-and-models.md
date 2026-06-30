@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 # Routes and Pydantic Models
 
-Last phase you served a fixed response. A real API takes input — an ID in the
+Last phase you served a fixed response. A real API takes input - an ID in the
 URL, a filter in the query string, a JSON body on a POST. This phase covers all
 three, and shows you the part of FastAPI that does the most work for the least
 code: validation driven by type hints.
@@ -26,7 +26,7 @@ as you save.
 
 ## Path parameters: data in the URL
 
-A path parameter is a piece of the URL that changes — the `42` in `/notes/42`.
+A path parameter is a piece of the URL that changes - the `42` in `/notes/42`.
 You declare it with curly braces in the route and as an argument to the
 function:
 
@@ -66,7 +66,7 @@ FastAPI converted the string `"42"` from the URL into an actual integer. Now try
 ```
 
 You wrote zero validation code. The type hint did it. This is the core idea of
-FastAPI — you describe the shape of your data with normal Python types, and the
+FastAPI - you describe the shape of your data with normal Python types, and the
 framework enforces it.
 
 ## Query parameters: data after the ?
@@ -84,7 +84,7 @@ Two things to read carefully:
 
 - `limit: int = 10` has a default, so it's optional. Visit `/notes` and you get
   `limit: 10`. Visit `/notes?limit=3` and you get `3`. Pass `/notes?limit=abc`
-  and you get a 422 — the `int` hint is doing its job again.
+  and you get a 422 - the `int` hint is doing its job again.
 - `q: str | None = None` means "an optional string". It's there when you want a
   search term and absent otherwise.
 
@@ -94,13 +94,13 @@ Path vs query, side by side:
 |---|---|---|
 | Lives in | the URL path: `/notes/42` | after the `?`: `/notes?limit=5` |
 | Declared by | `{name}` in the route | a function arg not in the path |
-| Optional? | no — it's part of the address | yes, if it has a default |
+| Optional? | no - it's part of the address | yes, if it has a default |
 | Good for | identifying *which* resource | filtering, sorting, paging |
 
 ## Request bodies: a Pydantic model
 
 GET requests carry data in the URL. But to *create* a note you need to send a
-chunk of JSON — a title and some content — in the request body. For that you
+chunk of JSON - a title and some content - in the request body. For that you
 define the expected shape as a Pydantic model.
 
 Add this to the top of `main.py`:
@@ -131,13 +131,13 @@ def create_note(note: NoteIn):
 
 Because `note` is typed as your model, FastAPI knows the data comes from the
 request body. It reads the incoming JSON, checks it against `NoteIn`, and hands
-you a fully-typed `note` object — `note.title`, `note.pinned`, with editor
+you a fully-typed `note` object - `note.title`, `note.pinned`, with editor
 autocomplete and everything.
 
 ## Try it from the docs
 
 Go to `http://127.0.0.1:8000/docs`. The `POST /notes` endpoint is there, and so
-is a schema showing exactly which fields it expects — FastAPI generated that from
+is a schema showing exactly which fields it expects - FastAPI generated that from
 your model. Click it, hit **Try it out**, and send this body:
 
 ```json
@@ -147,7 +147,7 @@ your model. Click it, hit **Try it out**, and send this body:
 }
 ```
 
-You'll get back the parsed data plus the title length. Now break it on purpose —
+You'll get back the parsed data plus the title length. Now break it on purpose -
 send a body with `title` missing:
 
 ```json
@@ -182,7 +182,7 @@ gets the checks, the 422 errors, *and* the docs.
 
 ## Where we are
 
-You can now take input three ways — path, query, and body — and FastAPI
+You can now take input three ways - path, query, and body - and FastAPI
 validates all of it from your type hints. The data still vanishes the moment the
 request ends, though; nothing is stored. Next phase we give the notes a place to
 live and wire up all four CRUD operations.

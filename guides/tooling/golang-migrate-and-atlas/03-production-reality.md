@@ -17,26 +17,26 @@ Both tools are calm on your laptop. Production is where their differences turn i
 
 golang-migrate's bookkeeping table, `schema_migrations`, holds two things: the current `version` and a `dirty` boolean. The dirty flag is the single most important thing to understand about this tool.
 
-When golang-migrate starts a migration, it sets `dirty = true`. If the migration finishes, it clears the flag and bumps the version. If the migration *fails partway* — a bad `ALTER`, a constraint violation, a dropped connection — the flag stays `true`, and every future run refuses to proceed:
+When golang-migrate starts a migration, it sets `dirty = true`. If the migration finishes, it clears the flag and bumps the version. If the migration *fails partway* - a bad `ALTER`, a constraint violation, a dropped connection - the flag stays `true`, and every future run refuses to proceed:
 
 ```console
 $ migrate -database "$DATABASE_URL" -path migrations up
 error: Dirty database version 3. Fix and force version.
 ```
 
-*What just happened:* migration 3 died mid-flight. golang-migrate has no idea how much of it ran, so it stops and demands a human. It will not guess. This is a feature, not a bug — but it means *you* have to inspect the database, figure out what actually got applied, finish or revert it by hand, and then tell golang-migrate the truth:
+*What just happened:* migration 3 died mid-flight. golang-migrate has no idea how much of it ran, so it stops and demands a human. It will not guess. This is a feature, not a bug - but it means *you* have to inspect the database, figure out what actually got applied, finish or revert it by hand, and then tell golang-migrate the truth:
 
 ```console
 $ migrate -database "$DATABASE_URL" -path migrations force 3
 ```
 
-*What just happened:* `force 3` cleared the dirty flag and set the recorded version to 3 — *without running any SQL*. You are asserting "the database is genuinely at version 3, trust me." Get this wrong and you'll skip or re-run a migration. The deeper lesson: golang-migrate does not wrap migrations in a transaction for you. If your database supports transactional DDL (PostgreSQL mostly does; MySQL mostly does not), the engine may roll back a failed statement — but the dirty flag is still your responsibility to clear.
+*What just happened:* `force 3` cleared the dirty flag and set the recorded version to 3 - *without running any SQL*. You are asserting "the database is genuinely at version 3, trust me." Get this wrong and you'll skip or re-run a migration. The deeper lesson: golang-migrate does not wrap migrations in a transaction for you. If your database supports transactional DDL (PostgreSQL mostly does; MySQL mostly does not), the engine may roll back a failed statement - but the dirty flag is still your responsibility to clear.
 
 > The dirty flag is golang-migrate keeping you honest. It would rather halt and make you look than silently continue on a half-applied schema. Respect it: never `force` a version without first checking the real schema with your own eyes.
 
 ## Atlas: drift and the dev database
 
-Atlas attacks the same danger from a different angle. Because declarative mode *computes* the plan from the live database, it can also *detect* when the live database doesn't match what it expects — that's drift.
+Atlas attacks the same danger from a different angle. Because declarative mode *computes* the plan from the live database, it can also *detect* when the live database doesn't match what it expects - that's drift.
 
 ```console
 $ atlas migrate apply --dir "file://migrations" --url "$DATABASE_URL"
@@ -45,7 +45,7 @@ Error: migration files mismatch: checksum of 20260630090000_add_users.sql ...
 
 *What just happened:* Atlas keeps a checksum file (`atlas.sum`) over your migration directory. Someone edited an already-applied migration file, the checksum no longer matches, and Atlas refused to run rather than apply a tampered history. Editing a migration that has already shipped is the cardinal sin of versioned migrations, and Atlas turns it into a hard stop. The fix is to add a *new* migration, never to mutate an old one.
 
-The `--dev-url` you keep passing is also a production safeguard, not a formality. Atlas uses that throwaway database to *plan and validate* a migration before it touches the real one — normalizing SQL, catching invalid statements, and computing a clean diff in a place where mistakes cost nothing.
+The `--dev-url` you keep passing is also a production safeguard, not a formality. Atlas uses that throwaway database to *plan and validate* a migration before it touches the real one - normalizing SQL, catching invalid statements, and computing a clean diff in a place where mistakes cost nothing.
 
 ```text
    schema.sql ──┐
@@ -53,11 +53,11 @@ The `--dev-url` you keep passing is also a production safeguard, not a formality
  migration dir ─┘    (throwaway)          (reviewed)         (applied)
 ```
 
-*What just happened:* the dev database sits between your intent and production. Atlas rehearses there first. Skip `--dev-url` and you lose that rehearsal — Atlas can still run, but with weaker guarantees about the plan it generates.
+*What just happened:* the dev database sits between your intent and production. Atlas rehearses there first. Skip `--dev-url` and you lose that rehearsal - Atlas can still run, but with weaker guarantees about the plan it generates.
 
 ## The destructive-change trap (declarative's sharp edge)
 
-Declarative mode's convenience hides a real risk. When you remove a table from `schema.sql`, you are telling Atlas "this should not exist" — and Atlas will plan a `DROP TABLE` to make it so. The same goes for narrowing a column type or removing a column. The tool is doing exactly what you said; the problem is that "what you said" was a deletion you may not have meant.
+Declarative mode's convenience hides a real risk. When you remove a table from `schema.sql`, you are telling Atlas "this should not exist" - and Atlas will plan a `DROP TABLE` to make it so. The same goes for narrowing a column type or removing a column. The tool is doing exactly what you said; the problem is that "what you said" was a deletion you may not have meant.
 
 ```console
 $ atlas schema apply --url "$DATABASE_URL" --to "file://schema.sql" --dev-url "..."
@@ -87,13 +87,13 @@ Reach for Atlas when:
   - (versioned mode) you want both: generated files, committed and ordered
 ```
 
-*What just happened:* the choice comes down to control versus leverage, and to whether your team will *read generated plans*. A team that auto-approves Atlas plans without looking is more dangerous than a team writing careful golang-migrate files. A team drowning in hand-written deltas is better served by Atlas generating and linting them. There's no universally right answer — there's the one that matches your review culture.
+*What just happened:* the choice comes down to control versus leverage, and to whether your team will *read generated plans*. A team that auto-approves Atlas plans without looking is more dangerous than a team writing careful golang-migrate files. A team drowning in hand-written deltas is better served by Atlas generating and linting them. There's no universally right answer - there's the one that matches your review culture.
 
 ## In the wild
 
-The pattern that survives contact with real on-call: never run rollbacks against production data, gate every migration behind code review, run `atlas migrate lint` (or your own destructive-change check) in CI, and keep migrations *small* so a failure leaves a small mess. golang-migrate's dirty flag and Atlas's checksum both exist for the same reason — to stop a tired human from applying a broken or tampered history. Treat their refusals as the tool doing its job, not an obstacle to `force` past.
+The pattern that survives contact with real on-call: never run rollbacks against production data, gate every migration behind code review, run `atlas migrate lint` (or your own destructive-change check) in CI, and keep migrations *small* so a failure leaves a small mess. golang-migrate's dirty flag and Atlas's checksum both exist for the same reason - to stop a tired human from applying a broken or tampered history. Treat their refusals as the tool doing its job, not an obstacle to `force` past.
 
-For the principles underneath both tools — ordering, idempotency, forward-only discipline — see [/guides/database-migrations](/guides/database-migrations).
+For the principles underneath both tools - ordering, idempotency, forward-only discipline - see [/guides/database-migrations](/guides/database-migrations).
 
 ```quiz
 [
@@ -128,7 +128,7 @@ For the principles underneath both tools — ordering, idempotency, forward-only
       "Run it twice to be sure"
     ],
     "answer": 1,
-    "explain": "Declarative apply does exactly what the schema file says — including DROPs for things you removed. Reviewing the plan and linting for destructive changes is what keeps that safe."
+    "explain": "Declarative apply does exactly what the schema file says - including DROPs for things you removed. Reviewing the plan and linting for destructive changes is what keeps that safe."
   }
 ]
 ```

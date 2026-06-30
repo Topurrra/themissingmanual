@@ -16,23 +16,23 @@ updated: 2026-06-30
 
 # Scenarios & Modules
 
-A **scenario** is one automation. It has a start, a sequence of steps, and an end. If you've ever written down "when X happens, do Y, then Z," that's a scenario. In Make, you build it on a canvas — a blank space where you drop steps and connect them with lines.
+A **scenario** is one automation. It has a start, a sequence of steps, and an end. If you've ever written down "when X happens, do Y, then Z," that's a scenario. In Make, you build it on a canvas - a blank space where you drop steps and connect them with lines.
 
 Each step is a **module**. A module is one action in one app: "Watch new rows in Google Sheets," "Create a contact in HubSpot," "Send a message in Slack." Modules look like circles on the canvas, each branded with the app's logo, joined left-to-right by curved lines. Data flows along those lines in the direction of the arrows.
 
 ## The trigger comes first
 
-The first module in a scenario is the **trigger** — the thing that kicks everything off. Triggers come in two flavors, and the difference matters more than it sounds.
+The first module in a scenario is the **trigger** - the thing that kicks everything off. Triggers come in two flavors, and the difference matters more than it sounds.
 
 A **polling trigger** checks an app on a schedule. "Watch new emails" doesn't know the instant an email arrives; it wakes up every few minutes, asks Gmail "anything new since last time?", and processes whatever it finds. You set how often it wakes up.
 
 An **instant trigger** (Make calls these webhooks, or labels the module "instant") fires the moment something happens, because the other app pushes the news to Make. "Watch responses (instant)" in a form tool reacts within a second of submission. Instant is faster but only available where the source app supports pushing.
 
-Most triggers process one item at a time. If your "watch new rows" trigger finds five new rows since it last ran, it runs the whole scenario five times — once per row. Hold that thought; it comes back when we talk about cost.
+Most triggers process one item at a time. If your "watch new rows" trigger finds five new rows since it last ran, it runs the whole scenario five times - once per row. Hold that thought; it comes back when we talk about cost.
 
 ## Bundles: the data between modules
 
-Here's the concept that unlocks Make. When a module runs, it hands the next module a **bundle** — a packet of data with named fields. A "Watch new rows" module outputs a bundle like:
+Here's the concept that unlocks Make. When a module runs, it hands the next module a **bundle** - a packet of data with named fields. A "Watch new rows" module outputs a bundle like:
 
 ```json
 {
@@ -42,9 +42,9 @@ Here's the concept that unlocks Make. When a module runs, it hands the next modu
 }
 ```
 
-The next module reaches into that bundle and pulls out the fields it needs. When you set up a "Send email" module, you don't type the address — you click the email field, and a panel pops up showing every field from every earlier module. You pick `email` from the bundle, and Make wires it in. That picking-and-wiring is called **mapping**, and it's the whole job of building a scenario. Phase 2 is dedicated to it.
+The next module reaches into that bundle and pulls out the fields it needs. When you set up a "Send email" module, you don't type the address - you click the email field, and a panel pops up showing every field from every earlier module. You pick `email` from the bundle, and Make wires it in. That picking-and-wiring is called **mapping**, and it's the whole job of building a scenario. Phase 2 is dedicated to it.
 
-After a run, Make shows you the actual bundles that flowed through — click the little bubble above any module and you see exactly what data went in and came out. This is the single best thing about debugging in Make: you're never guessing what a step received.
+After a run, Make shows you the actual bundles that flowed through - click the little bubble above any module and you see exactly what data went in and came out. This is the single best thing about debugging in Make: you're never guessing what a step received.
 
 ## How a run unfolds
 
@@ -57,7 +57,7 @@ flowchart LR
   C --> D[Send Slack message]
 ```
 
-If a trigger emits multiple bundles in one run, Make doesn't run four separate scenarios — it pushes each bundle through the chain in turn, within the same run. Each module "executes" once per bundle. Those executions are the unit Make charges for. (Again, phase 3.)
+If a trigger emits multiple bundles in one run, Make doesn't run four separate scenarios - it pushes each bundle through the chain in turn, within the same run. Each module "executes" once per bundle. Those executions are the unit Make charges for. (Again, phase 3.)
 
 ## How this differs from Zapier
 

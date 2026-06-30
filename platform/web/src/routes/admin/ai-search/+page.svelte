@@ -36,7 +36,7 @@
   </label>
   <label class="row toggle">
     <input type="checkbox" name="generate" checked={c.generate} />
-    <span>Generate written answers <em class="hint">uses Workers AI — billed separately, may cost beyond the free tier. Off = semantic search only (free).</em></span>
+    <span>Generate written answers <em class="hint">uses Workers AI - billed separately, may cost beyond the free tier. Off = semantic search only (free).</em></span>
   </label>
   <label class="row">
     <span class="lbl">Cloudflare Account ID</span>
@@ -47,7 +47,7 @@
     <input name="name" value={c.name} autocomplete="off" spellcheck="false" />
   </label>
   <label class="row">
-    <span class="lbl">API token {#if c.hasToken}<em class="hint">stored: {c.tokenHint} — leave blank to keep</em>{/if}</span>
+    <span class="lbl">API token {#if c.hasToken}<em class="hint">stored: {c.tokenHint} - leave blank to keep</em>{/if}</span>
     <input name="token" type="password" placeholder={c.hasToken ? '•••••••• (unchanged)' : 'paste token'} autocomplete="off" />
   </label>
   <label class="row">

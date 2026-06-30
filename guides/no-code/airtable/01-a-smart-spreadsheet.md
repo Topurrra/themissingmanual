@@ -2,7 +2,7 @@
 title: "A Spreadsheet That's Really a Database"
 guide: airtable
 phase: 1
-summary: "How bases, tables, typed fields, and records work — and why linked records make Airtable behave like a database instead of a flat grid."
+summary: "How bases, tables, typed fields, and records work - and why linked records make Airtable behave like a database instead of a flat grid."
 tags: [airtable, database, fields, records, linked-records]
 difficulty: beginner
 synonyms:
@@ -17,14 +17,14 @@ updated: 2026-06-30
 # A Spreadsheet That's Really a Database
 
 Open Airtable and the first thing you see is a grid. Rows, columns, cells.
-Your hands already know what to do. That familiarity is deliberate — and it's
+Your hands already know what to do. That familiarity is deliberate - and it's
 also the trap, because the moment you treat it like a spreadsheet, you'll
 miss the parts that actually matter.
 
 Let's get the vocabulary straight, because Airtable renames things you
 already know.
 
-- A **base** is the whole project. Think of it as one workbook — your CRM,
+- A **base** is the whole project. Think of it as one workbook - your CRM,
   your content calendar, your inventory system. Everything for that one job
   lives inside it.
 - A **table** is one sheet inside the base. A base usually has several:
@@ -58,7 +58,7 @@ in. You set it once, and the field enforces it forever after.
 | Attachment | Files and images | The grid holds the photo, not a link to it |
 
 The single select field is the one that converts spreadsheet skeptics. You
-define the allowed options — say, `Lead`, `Negotiating`, `Won`, `Lost` — and
+define the allowed options - say, `Lead`, `Negotiating`, `Won`, `Lost` - and
 from then on a status field can only ever be one of those four. No typos, no
 drift, no "wait, is 'Closed' the same as 'Won'?" The data stays clean because
 the field won't let it get dirty.
@@ -74,7 +74,7 @@ In a spreadsheet, a row is a horizontal strip of cells. If you want to see
 one customer's full story, you scroll sideways past thirty columns and lose
 your place.
 
-In Airtable, click a record and it opens as a **card** — every field for that
+In Airtable, click a record and it opens as a **card** - every field for that
 one customer laid out top to bottom, like a contact in your phone. You can
 attach files to it, leave comments on it, see its history. The record feels
 like a thing you can hold, because that's what it is. This matters more than
@@ -95,12 +95,12 @@ in ten places, and ten places means ten chances to be wrong.
 Airtable's answer is the **Linked record** field. You keep one Customers
 table and one Orders table. On the Orders table, instead of typing the
 customer's details, you add a link field that points to the right record in
-the Customers table. You're not copying the customer — you're pointing at the
+the Customers table. You're not copying the customer - you're pointing at the
 one true copy.
 
 ```text
 Customers table
-  - Acme Co   (email, address, phone — stored ONCE)
+  - Acme Co   (email, address, phone - stored ONCE)
 
 Orders table
   - Order #1001  →  linked to: Acme Co
@@ -108,8 +108,8 @@ Orders table
   - Order #1003  →  linked to: Acme Co
 ```
 
-Now the customer moves. You update their address in one place — the Customers
-record — and every order pointing at them reflects it instantly. Nothing to
+Now the customer moves. You update their address in one place - the Customers
+record - and every order pointing at them reflects it instantly. Nothing to
 hunt down, nothing to miss. This is the principle databases are built on:
 **store each fact once, and refer to it from everywhere else.**
 
@@ -128,8 +128,8 @@ connection.
 
 That's the whole leap from spreadsheet to database, in one feature. A
 spreadsheet stores values. Airtable stores values *and the relationships
-between them* — which customer placed which order, which task belongs to
+between them* - which customer placed which order, which task belongs to
 which project, which invoice covers which line items. Once your data knows how
 its pieces connect, you can do things a grid of disconnected cells never
-could. Those things — pulling linked data across tables, summarizing it, and
-making the whole base do work on its own — are where we go next.
+could. Those things - pulling linked data across tables, summarizing it, and
+making the whole base do work on its own - are where we go next.

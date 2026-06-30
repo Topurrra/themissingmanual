@@ -15,10 +15,10 @@ The first time Ansible bites you, it's usually one of a few well-worn ways: a pl
 
 ## The idempotency trap: command and shell
 
-Phase 1 said modules are idempotent. The escape hatches — `command` and `shell` — are not, and they're the single most common source of "why does this report changed every time."
+Phase 1 said modules are idempotent. The escape hatches - `command` and `shell` - are not, and they're the single most common source of "why does this report changed every time."
 
 ```yaml
-# NOT idempotent — runs every time, always reports 'changed'
+# NOT idempotent - runs every time, always reports 'changed'
 - name: Build the app
   ansible.builtin.shell: make build
 ```
@@ -34,11 +34,11 @@ You fix this by telling Ansible how to check:
     creates: /opt/app/dist/bundle.js   # skip if this file exists
 ```
 
-*What just happened:* `creates:` tells the task "if this file already exists, you're done — skip me." Now it runs once and reports `ok` thereafter. For the inverse there's `removes:`, and for arbitrary conditions you pair a check task with `changed_when:` and `when:`. The rule of thumb: every `command`/`shell` task needs a guard, or it's a lie about idempotency.
+*What just happened:* `creates:` tells the task "if this file already exists, you're done - skip me." Now it runs once and reports `ok` thereafter. For the inverse there's `removes:`, and for arbitrary conditions you pair a check task with `changed_when:` and `when:`. The rule of thumb: every `command`/`shell` task needs a guard, or it's a lie about idempotency.
 
 ## Secrets: never commit them in plain text
 
-Database passwords, API tokens, TLS private keys — they end up in variables, and variables end up in git. Ansible ships a built-in answer: **Ansible Vault**, which encrypts files (or individual values) with a passphrase, so the ciphertext is safe to commit.
+Database passwords, API tokens, TLS private keys - they end up in variables, and variables end up in git. Ansible ships a built-in answer: **Ansible Vault**, which encrypts files (or individual values) with a passphrase, so the ciphertext is safe to commit.
 
 ```console
 $ ansible-vault encrypt group_vars/production/secrets.yml
@@ -50,7 +50,7 @@ $ ansible-playbook -i inventory.ini site.yml --ask-vault-pass
 Vault password:
 ```
 
-*What just happened:* `ansible-vault encrypt` turned the secrets file into an encrypted blob — open it and you'll see ciphertext, not your password. At run time, `--ask-vault-pass` (or a password file referenced by `--vault-password-file`) decrypts it in memory. The plaintext never touches disk in the repo. Commit the encrypted file freely; guard the passphrase like any other credential.
+*What just happened:* `ansible-vault encrypt` turned the secrets file into an encrypted blob - open it and you'll see ciphertext, not your password. At run time, `--ask-vault-pass` (or a password file referenced by `--vault-password-file`) decrypts it in memory. The plaintext never touches disk in the repo. Commit the encrypted file freely; guard the passphrase like any other credential.
 
 ## Scaling: SSH fan-out has limits
 
@@ -61,11 +61,11 @@ Agentless is elegant, but "one control node opens an SSH connection to every tar
 $ ansible-playbook -i inventory.ini site.yml --forks 50
 ```
 
-*What just happened:* `--forks 50` lets Ansible work 50 hosts in parallel instead of the conservative default. Higher fan-out finishes faster but loads the control node's CPU, memory, and network harder. For genuinely large fleets people add SSH pipelining, mitogen, or pull-mode (`ansible-pull`, where each node pulls and runs its own config from git on a schedule — flipping the push model). The honest summary: Ansible is superb for tens to low hundreds of hosts and needs care beyond that.
+*What just happened:* `--forks 50` lets Ansible work 50 hosts in parallel instead of the conservative default. Higher fan-out finishes faster but loads the control node's CPU, memory, and network harder. For genuinely large fleets people add SSH pipelining, mitogen, or pull-mode (`ansible-pull`, where each node pulls and runs its own config from git on a schedule - flipping the push model). The honest summary: Ansible is superb for tens to low hundreds of hosts and needs care beyond that.
 
 ## Order, failure, and not breaking everything at once
 
-A naive run hits every host in a group at full speed. For a rolling deploy you want the opposite — update a few, verify, move on — so one bad change doesn't take down the whole fleet simultaneously.
+A naive run hits every host in a group at full speed. For a rolling deploy you want the opposite - update a few, verify, move on - so one bad change doesn't take down the whole fleet simultaneously.
 
 ```yaml
 - name: Rolling update
@@ -80,7 +80,7 @@ A naive run hits every host in a group at full speed. For a rolling deploy you w
         version: v2.1.0
 ```
 
-*What just happened:* `serial: 2` updates the web group two hosts at a time instead of all at once, so a broken release fails on a small batch first. `max_fail_percentage: 25` aborts the whole run if more than a quarter of hosts fail — a circuit breaker that stops a bad change before it reaches everything. This is how you turn "config management" into a safe deploy.
+*What just happened:* `serial: 2` updates the web group two hosts at a time instead of all at once, so a broken release fails on a small batch first. `max_fail_percentage: 25` aborts the whole run if more than a quarter of hosts fail - a circuit breaker that stops a bad change before it reaches everything. This is how you turn "config management" into a safe deploy.
 
 ## The big one: config management vs provisioning
 
@@ -88,7 +88,7 @@ This is the distinction that decides whether you've picked the right tool at all
 
 Ansible configures machines that **already exist**. It assumes there's a server at an IP, reachable over SSH, and it installs packages, writes configs, and starts services on it. It does not natively create the server, the network, the load balancer, or the DNS record. It's weak at managing the *lifecycle* of cloud resources, because it has no real state model of "what should exist."
 
-Terraform is the mirror image. It **provisions** infrastructure — it creates and destroys cloud resources (VMs, networks, DNS, IAM) and tracks them in a state file so it knows exactly what exists and can reconcile drift in the resource graph. It's weak at the inside-the-box config that Ansible is great at.
+Terraform is the mirror image. It **provisions** infrastructure - it creates and destroys cloud resources (VMs, networks, DNS, IAM) and tracks them in a state file so it knows exactly what exists and can reconcile drift in the resource graph. It's weak at the inside-the-box config that Ansible is great at.
 
 ```text
   Terraform                          Ansible

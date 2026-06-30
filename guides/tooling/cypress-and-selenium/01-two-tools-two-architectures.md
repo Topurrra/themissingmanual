@@ -19,7 +19,7 @@ People talk about them as if they're interchangeable. They're not. They're built
 
 When your test says "click the Submit button," something has to reach into the browser and make that click happen. The question is: **where does the code doing the reaching actually run?**
 
-- **Cypress runs your test code *inside* the browser**, in the same run loop as your app. The test and the app share a process. When you ask Cypress to click something, it's not sending a command across a wire — it's already in the room.
+- **Cypress runs your test code *inside* the browser**, in the same run loop as your app. The test and the app share a process. When you ask Cypress to click something, it's not sending a command across a wire - it's already in the room.
 - **Selenium runs your test code *outside* the browser**, as a separate program that sends commands to the browser over a network protocol. Your test is in one process; the browser is in another; a standardized protocol carries instructions between them.
 
 That's it. That's the fork in the road. Hold onto it.
@@ -35,18 +35,18 @@ That's it. That's the fork in the road. Hold onto it.
   └─────────────────────┘
 ```
 
-*What just happened:* the left box is one process — test and app together. The right side is two processes talking over a wire. Every tradeoff below grows out of this picture.
+*What just happened:* the left box is one process - test and app together. The right side is two processes talking over a wire. Every tradeoff below grows out of this picture.
 
 ## What Selenium actually is (and why it's everywhere)
 
-Selenium is old, and that's a compliment. It predates almost every modern testing tool, and over the years its remote-control protocol became **WebDriver** — a formal W3C standard. That word *standard* is the whole point.
+Selenium is old, and that's a compliment. It predates almost every modern testing tool, and over the years its remote-control protocol became **WebDriver** - a formal W3C standard. That word *standard* is the whole point.
 
-Because WebDriver is a published spec, the browser vendors themselves ship the piece that obeys it. Chrome has `chromedriver`, Firefox has `geckodriver`, Edge has `msedgedriver`, Safari has one built in. Your Selenium test sends standard WebDriver commands; the browser's own driver carries them out. Nobody at the Selenium project has to reverse-engineer Chrome — Google maintains the Chrome side, Mozilla maintains the Firefox side.
+Because WebDriver is a published spec, the browser vendors themselves ship the piece that obeys it. Chrome has `chromedriver`, Firefox has `geckodriver`, Edge has `msedgedriver`, Safari has one built in. Your Selenium test sends standard WebDriver commands; the browser's own driver carries them out. Nobody at the Selenium project has to reverse-engineer Chrome - Google maintains the Chrome side, Mozilla maintains the Firefox side.
 
 Two big consequences fall out of being a cross-process standard:
 
 - **Every language.** Since the test only speaks a protocol, the client library can be written in anything. Selenium has official bindings for Java, Python, JavaScript, C#, Ruby, and more. A Java shop writes Selenium in Java; a Python shop in Python. Same protocol underneath.
-- **Every real browser, including remote ones.** The browser doesn't have to be on your machine. Point your test at a remote WebDriver endpoint and you're driving a browser somewhere else — which is exactly how **Selenium Grid** (more on that in phase 3) lets you run hundreds of tests across many browsers and machines at once.
+- **Every real browser, including remote ones.** The browser doesn't have to be on your machine. Point your test at a remote WebDriver endpoint and you're driving a browser somewhere else - which is exactly how **Selenium Grid** (more on that in phase 3) lets you run hundreds of tests across many browsers and machines at once.
 
 ```python
 from selenium import webdriver
@@ -57,10 +57,10 @@ driver.get("https://example.com")
 driver.find_element(By.NAME, "q").send_keys("hello")
 driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 print(driver.title)
-driver.quit()                            # always quit — it's a separate process
+driver.quit()                            # always quit - it's a separate process
 ```
 
-*What just happened:* this Python program is not the browser. It launched a real Chrome, then sent it a sequence of WebDriver commands — navigate, find, type, click — and read the page title back across the protocol. The `driver.quit()` matters because the browser is a separate process that won't clean up after itself.
+*What just happened:* this Python program is not the browser. It launched a real Chrome, then sent it a sequence of WebDriver commands - navigate, find, type, click - and read the page title back across the protocol. The `driver.quit()` matters because the browser is a separate process that won't clean up after itself.
 
 ## What Cypress actually is (and why developers fall for it)
 
@@ -85,11 +85,11 @@ describe('search', () => {
 
 *What just happened:* no driver, no `quit`, no explicit waits. The `cy.*` commands queue up and run inside the browser; each one retries on its own until the DOM cooperates. That ergonomic difference is the whole reason developers reach for Cypress.
 
-> The Cypress experience is so smooth that teams adopt it before checking whether its architecture fits their app. Phase 3 is where that bill comes due — same-origin limits and the single-tab model are direct costs of living inside the browser. The convenience and the constraints are the *same coin*.
+> The Cypress experience is so smooth that teams adopt it before checking whether its architecture fits their app. Phase 3 is where that bill comes due - same-origin limits and the single-tab model are direct costs of living inside the browser. The convenience and the constraints are the *same coin*.
 
 ## For builders: the tradeoff in one sentence
 
-Cypress trades architectural reach for developer experience; Selenium trades developer experience for architectural reach. Cypress is a delight to write and debug but boxed in by the browser it lives in. Selenium can drive anything in any language but makes you assemble more of the machine yourself and manage the flake that comes with talking over a wire. Neither is "better" — they're optimized for different worlds, and phase 2 shows you what each world feels like to actually work in.
+Cypress trades architectural reach for developer experience; Selenium trades developer experience for architectural reach. Cypress is a delight to write and debug but boxed in by the browser it lives in. Selenium can drive anything in any language but makes you assemble more of the machine yourself and manage the flake that comes with talking over a wire. Neither is "better" - they're optimized for different worlds, and phase 2 shows you what each world feels like to actually work in.
 
 ```quiz
 [
@@ -124,7 +124,7 @@ Cypress trades architectural reach for developer experience; Selenium trades dev
       "The W3C spec mandates it"
     ],
     "answer": 1,
-    "explain": "Living in the same process as the app, Cypress sees render state directly and retries each command until it succeeds or times out — no manual sleeps."
+    "explain": "Living in the same process as the app, Cypress sees render state directly and retries each command until it succeeds or times out - no manual sleeps."
   }
 ]
 ```

@@ -72,7 +72,7 @@ for (const f of files) {
   }
 }
 
-console.log('\n— Summary —');
+console.log('\n- Summary -');
 console.log(`Files scanned: ${files.length}`);
 console.log(`Errors:   ${errors}`);
 console.log(`Warnings: ${warnings}`);

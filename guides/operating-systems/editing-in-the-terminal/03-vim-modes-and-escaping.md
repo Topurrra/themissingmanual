@@ -31,13 +31,13 @@ flowchart LR
 ```
 
 **Normal mode** is where vim starts. In normal mode, the letter keys are *commands*, not text. Pressing `i`
-doesn't type the letter "i" — it's a command that means "start inserting." Pressing `x` deletes a character.
+doesn't type the letter "i" - it's a command that means "start inserting." Pressing `x` deletes a character.
 This is exactly why beginners panic: they start typing their text, and instead of words appearing, the
 cursor jumps around and things vanish. Nothing is broken. vim is reading every keystroke as a command,
 because that's what normal mode does.
 
 **Insert mode** is where you actually type text. Once you switch into insert mode, the keyboard behaves the
-way you expect — letters appear, Backspace deletes, Enter makes a new line. This is the mode you spend your
+way you expect - letters appear, Backspace deletes, Enter makes a new line. This is the mode you spend your
 typing time in.
 
 💡 **Key point.** The entire "vim is impossible" experience comes from not knowing you start in *normal*
@@ -61,13 +61,13 @@ tell. If you don't see it, you're in normal mode.
 -- INSERT --
 ```
 *What just happened:* That `-- INSERT --` marker at the bottom is vim confirming you're in insert mode, so
-the keys you press now become text. (The `~` lines mark rows below the end of the file — they aren't
+the keys you press now become text. (The `~` lines mark rows below the end of the file - they aren't
 content.) Press `Esc` and that marker disappears, telling you you're back in normal mode where keys are
 commands again.
 
 ⚠️ **Gotcha.** When you're lost, your reflex should be **`Esc`**. It's harmless to press in normal mode (it
 stays put) and it always escapes insert mode. Pressing `Esc` first is what makes the `:wq` / `:q!`
-commands work — those commands are only understood in normal mode, so you *must* leave insert mode before
+commands work - those commands are only understood in normal mode, so you *must* leave insert mode before
 typing them.
 
 ## The colon: giving vim a command
@@ -83,10 +83,10 @@ command, ending with Enter. This is how you save and quit. The colon commands yo
 ```
 *What just happened:* These four cover everything for survival. `:w` saves, `:q` quits a clean file, `:wq`
 does both in one go, and `:q!` forces a quit even with unsaved changes. The `!` means "I mean it, do it
-anyway" — it's what you use when you've made a mess and want to bail without saving.
+anyway" - it's what you use when you've made a mess and want to bail without saving.
 
 📝 **Why `:q` sometimes refuses.** If you try `:q` after changing the file, vim stops you with
-`E37: No write since last change` — it's refusing to silently lose your edits, the same protective instinct
+`E37: No write since last change` - it's refusing to silently lose your edits, the same protective instinct
 nano has. Your two honest answers are `:wq` (keep the changes) or `:q!` (throw them away). vim won't decide
 for you.
 
@@ -97,7 +97,7 @@ Put the pieces together and editing a file in vim is a clear sequence:
 ```console
 ada@laptop:~$ vim notes.txt
 ```
-*What just happened:* vim opened the file in **normal mode** — so don't start typing your text yet. The
+*What just happened:* vim opened the file in **normal mode** - so don't start typing your text yet. The
 keyboard is in command mode right now.
 
 Now the loop, step by step:
@@ -109,9 +109,9 @@ Now the loop, step by step:
 4. press  Esc       → back to NORMAL mode
 5. type  :wq  Enter → save and quit
 ```
-*What just happened:* That's the complete, safe round trip — open, `i` to insert, type, `Esc`, `:wq`. The
+*What just happened:* That's the complete, safe round trip - open, `i` to insert, type, `Esc`, `:wq`. The
 two moments that trip everyone are step 2 (you must enter insert mode before typing) and step 4 (you must
-press `Esc` before the `:wq` command). Once those are muscle memory, vim is no longer scary — it's only an
+press `Esc` before the `:wq` command). Once those are muscle memory, vim is no longer scary - it's only an
 editor with one extra concept.
 
 ## When you've made a mess and want out clean
@@ -126,7 +126,7 @@ accidental damage you did. Here's the calm exit:
 3. Press  Enter     → you're back at the shell, file untouched
 ```
 *What just happened:* `Esc` got you to normal mode no matter what you'd been doing, and `:q!` quit while
-throwing away every change since you opened the file — so the accidental edits never hit disk. The file on
+throwing away every change since you opened the file - so the accidental edits never hit disk. The file on
 disk is exactly as it was before you opened it. This is the sequence to remember for the rest of your life;
 it's the answer to "help, I'm stuck in vim."
 
@@ -135,21 +135,21 @@ it's the answer to "help, I'm stuck in vim."
 You can survive on insert mode and `Esc` alone, but a handful of normal-mode commands make vim pleasant.
 Press `Esc` first to be sure you're in normal mode, then:
 
-- **`h` `j` `k` `l`** — move the cursor left, down, up, right. (The arrow keys also work in modern vim; the
+- **`h` `j` `k` `l`** - move the cursor left, down, up, right. (The arrow keys also work in modern vim; the
   letters are the classic muscle memory.)
-- **`x`** — delete the character under the cursor.
-- **`dd`** — delete (cut) the whole current line.
-- **`u`** — undo the last change. Press it repeatedly to walk back through your edits.
-- **`/word`** then Enter — search forward for `word`; press `n` for the next match.
+- **`x`** - delete the character under the cursor.
+- **`dd`** - delete (cut) the whole current line.
+- **`u`** - undo the last change. Press it repeatedly to walk back through your edits.
+- **`/word`** then Enter - search forward for `word`; press `n` for the next match.
 
 💡 **Key point.** That `u` for undo is the gentle companion to `:q!`. If you only damaged one thing, you
-don't have to throw away everything with `:q!` — press `Esc`, tap `u` until the damage is undone, then save
+don't have to throw away everything with `:q!` - press `Esc`, tap `u` until the damage is undone, then save
 normally with `:wq`. Undo first, nuke only as a last resort.
 
-## vi vs vim — the same survival skills
+## vi vs vim - the same survival skills
 
 On older or minimal systems the command might be `vi` rather than `vim` ("vim" stands for *vi improved*).
-For everything in this guide — modes, `i`, `Esc`, `:wq`, `:q!` — they behave the same. The escape you
+For everything in this guide - modes, `i`, `Esc`, `:wq`, `:q!` - they behave the same. The escape you
 learned works in both. If `vim` isn't found, try `vi`; if `vi` opens, you already know what to do.
 
 ## For builders
@@ -167,12 +167,12 @@ still shaky, [/guides/the-terminal-and-shell](/guides/the-terminal-and-shell) an
 2. Press **`i`** to enter insert mode (you'll see `-- INSERT --`); press **`Esc`** to return to normal mode.
 3. Colon commands run in normal mode: `:w` save, `:q` quit, **`:wq`** save-and-quit, **`:q!`** quit and
    discard.
-4. The universal escape: **`Esc`** then **`:q!`** then **Enter** quits and throws away every change — the
+4. The universal escape: **`Esc`** then **`:q!`** then **Enter** quits and throws away every change - the
    file on disk is untouched.
 5. `u` undoes one change at a time, so you can fix a small mistake instead of discarding all your work; and
    `vi` behaves like `vim` for all of this.
 
-That's it — you can now open, edit, save, and (the part everyone feared) *quit* both editors you'll ever
+That's it - you can now open, edit, save, and (the part everyone feared) *quit* both editors you'll ever
 meet in a terminal, on your laptop or on a server you've never seen.
 
 ```quiz
@@ -187,7 +187,7 @@ meet in a terminal, on your laptop or on a server you've never seen.
     "q": "You've made accidental edits and want to quit vim WITHOUT saving them. What's the sequence?",
     "choices": ["Type :wq and press Enter", "Press Esc, type :q!, press Enter", "Press Ctrl+X", "Type :save then quit"],
     "answer": 1,
-    "explain": "Esc guarantees normal mode, and :q! forces a quit while discarding all changes — the file on disk stays untouched."
+    "explain": "Esc guarantees normal mode, and :q! forces a quit while discarding all changes - the file on disk stays untouched."
   },
   {
     "q": "What's the difference between :wq and :q! in vim?",
@@ -200,4 +200,4 @@ meet in a terminal, on your laptop or on a server you've never seen.
 
 ---
 
-[← Phase 2: nano — the gentle default](02-nano-the-gentle-default.md) · [Guide overview](_guide.md)
+[← Phase 2: nano - the gentle default](02-nano-the-gentle-default.md) · [Guide overview](_guide.md)

@@ -15,7 +15,7 @@ Everything in Phase 2 works on a good day. This phase is about the bad days: the
 
 ## Durability: surviving a broker restart
 
-By default, queues and messages live in memory. Restart the broker and they vanish. Reliability needs three things turned on together — miss any one and you still lose data:
+By default, queues and messages live in memory. Restart the broker and they vanish. Reliability needs three things turned on together - miss any one and you still lose data:
 
 ```text
 1. queue.declare  durable=true        # the queue definition survives restart
@@ -23,13 +23,13 @@ By default, queues and messages live in memory. Restart the broker and they vani
 3. exchange.declare durable=true      # the exchange definition survives restart
 ```
 
-*What just happened:* a durable queue holding non-persistent messages still loses the messages on restart — the queue comes back empty. You need the queue durable *and* each message marked persistent (`delivery_mode=2`, sometimes exposed as a `persistent=true` flag). Persistence costs disk writes, so it is a deliberate trade: durability for throughput.
+*What just happened:* a durable queue holding non-persistent messages still loses the messages on restart - the queue comes back empty. You need the queue durable *and* each message marked persistent (`delivery_mode=2`, sometimes exposed as a `persistent=true` flag). Persistence costs disk writes, so it is a deliberate trade: durability for throughput.
 
-> Durable does not mean instant. There is a brief window where a confirmed-to-the-app message is still in the OS buffer, not yet on disk. If you need a hard guarantee that the broker has the message, use **publisher confirms** — the broker sends back a confirmation once it has taken responsibility for the message. Without confirms, a publish that "succeeds" only means it left your process.
+> Durable does not mean instant. There is a brief window where a confirmed-to-the-app message is still in the OS buffer, not yet on disk. If you need a hard guarantee that the broker has the message, use **publisher confirms** - the broker sends back a confirmation once it has taken responsibility for the message. Without confirms, a publish that "succeeds" only means it left your process.
 
 ## Redelivery and the poison message problem
 
-Phase 2's safety net — unacked messages get redelivered — has a sharp edge. Suppose a message is malformed and your consumer throws every single time it tries. The flow becomes a loop:
+Phase 2's safety net - unacked messages get redelivered - has a sharp edge. Suppose a message is malformed and your consumer throws every single time it tries. The flow becomes a loop:
 
 ```text
 deliver → consumer throws → no ack → broker redelivers → consumer throws → ...forever
@@ -41,8 +41,8 @@ deliver → consumer throws → no ack → broker redelivers → consumer throws
 
 A consumer is not limited to ack. It can also refuse a message:
 
-- **`basic.nack`** (or `basic.reject`) with `requeue=true` — "I could not handle this, put it back." The message returns to the queue for another attempt.
-- **`basic.nack`** with `requeue=false` — "I could not handle this, and do not give it back." The message is removed from the queue — and *this* is the hook that sends it to a dead-letter queue.
+- **`basic.nack`** (or `basic.reject`) with `requeue=true` - "I could not handle this, put it back." The message returns to the queue for another attempt.
+- **`basic.nack`** with `requeue=false` - "I could not handle this, and do not give it back." The message is removed from the queue - and *this* is the hook that sends it to a dead-letter queue.
 
 ```text
 on_message(msg):
@@ -55,7 +55,7 @@ on_message(msg):
         basic.nack(msg, requeue=true)    # retry later
 ```
 
-*What just happened:* you decide per-error whether a failure is worth retrying. A network blip is transient — requeue it. A message your code can never parse is permanent — `requeue=false` so it leaves the main queue instead of poisoning it. The difference between these two branches is the difference between self-healing and an infinite loop.
+*What just happened:* you decide per-error whether a failure is worth retrying. A network blip is transient - requeue it. A message your code can never parse is permanent - `requeue=false` so it leaves the main queue instead of poisoning it. The difference between these two branches is the difference between self-healing and an infinite loop.
 
 ## Dead-letter queues: the hospital for failed messages
 
@@ -74,7 +74,7 @@ queue.declare  name="task_dead_q"
 queue.bind     queue="task_dead_q" exchange="dlx" routing_key="task.failed"
 ```
 
-*What just happened:* failed messages from `task_q` are not lost and do not loop — they are routed through the DLX into `task_dead_q`, where you can inspect them, alert on them, or replay them after a fix. The dead-letter queue is your evidence locker: it tells you *what* failed and lets you decide what to do, instead of silently dropping or silently retrying forever.
+*What just happened:* failed messages from `task_q` are not lost and do not loop - they are routed through the DLX into `task_dead_q`, where you can inspect them, alert on them, or replay them after a fix. The dead-letter queue is your evidence locker: it tells you *what* failed and lets you decide what to do, instead of silently dropping or silently retrying forever.
 
 ```text
 task_q ──(nack requeue=false)──▶ DLX ──▶ task_dead_q ──▶ you, reading the failures
@@ -91,15 +91,15 @@ People reach for Kafka and RabbitMQ for overlapping reasons, but they are built 
 | Core model | Smart broker, dumb consumer | Dumb broker, smart consumer |
 | What it is | A router that pushes messages to queues | A durable, ordered log readers pull from |
 | After delivery | Message is acked and **deleted** | Message **stays** in the log (retention window) |
-| Re-read old messages | No — once consumed and acked, it is gone | Yes — rewind your offset and replay |
+| Re-read old messages | No - once consumed and acked, it is gone | Yes - rewind your offset and replay |
 | Routing | Rich: exchanges, topics, bindings | Minimal: topics and partitions |
 | Best fit | Task queues, RPC, complex routing, per-message workflows | High-volume event streams, replay, many independent readers |
 
-*What just happened:* the deciding question is *do consumers need to re-read history?* RabbitMQ treats a message as work to be done once and removed — perfect for "resize this image," "send this email," "charge this card." Kafka treats messages as a permanent log you can replay — perfect for "every page view, forever, read by analytics and billing and ML independently." If you want rich routing and fire-and-forget jobs, RabbitMQ. If you want a replayable stream consumed at each reader's own pace, Kafka. Using one where the other belongs is the most expensive RabbitMQ mistake there is.
+*What just happened:* the deciding question is *do consumers need to re-read history?* RabbitMQ treats a message as work to be done once and removed - perfect for "resize this image," "send this email," "charge this card." Kafka treats messages as a permanent log you can replay - perfect for "every page view, forever, read by analytics and billing and ML independently." If you want rich routing and fire-and-forget jobs, RabbitMQ. If you want a replayable stream consumed at each reader's own pace, Kafka. Using one where the other belongs is the most expensive RabbitMQ mistake there is.
 
 ## In the wild
 
-A production-grade RabbitMQ queue almost never stands alone. It comes with: durable + persistent messages, manual acks, a dead-letter exchange catching permanent failures, and usually a delayed retry queue in front of the DLX. Set those up once as your default template and most reliability questions answer themselves. When you find yourself wanting infinite retention and replay, that is the signal you have outgrown the queue model — not a reason to fight RabbitMQ into being a log.
+A production-grade RabbitMQ queue almost never stands alone. It comes with: durable + persistent messages, manual acks, a dead-letter exchange catching permanent failures, and usually a delayed retry queue in front of the DLX. Set those up once as your default template and most reliability questions answer themselves. When you find yourself wanting infinite retention and replay, that is the signal you have outgrown the queue model - not a reason to fight RabbitMQ into being a log.
 
 ```quiz
 [
@@ -113,7 +113,7 @@ A production-grade RabbitMQ queue almost never stands alone. It comes with: dura
     "q": "What sends a message to a dead-letter exchange?",
     "choices": ["Acking it successfully", "Nacking it with requeue=false (or TTL expiry, or queue overflow)", "Publishing to a topic exchange", "Setting prefetch_count=1"],
     "answer": 1,
-    "explain": "Dead-lettering happens on nack/reject with requeue=false, on message TTL expiry, or on queue length overflow — routing the message out of the hot path."
+    "explain": "Dead-lettering happens on nack/reject with requeue=false, on message TTL expiry, or on queue length overflow - routing the message out of the hot path."
   },
   {
     "q": "The biggest difference between RabbitMQ and Kafka is:",

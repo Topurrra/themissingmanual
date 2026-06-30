@@ -2,7 +2,7 @@
 title: "Equivalences & De Morgan's Laws"
 guide: "propositional-logic"
 phase: 3
-summary: "Two statements are logically equivalent when they have identical truth tables. De Morgan's laws — how to correctly distribute a NOT across AND/OR — are the equivalence you'll use most when negating and simplifying conditions."
+summary: "Two statements are logically equivalent when they have identical truth tables. De Morgan's laws - how to correctly distribute a NOT across AND/OR - are the equivalence you'll use most when negating and simplifying conditions."
 tags: [logic, equivalence, de-morgan, simplification, propositional-logic]
 difficulty: beginner
 synonyms: ["what is logical equivalence", "de morgan's laws", "how to negate an and condition", "simplify a boolean expression", "not (a and b)"]
@@ -11,11 +11,11 @@ updated: 2026-06-25
 
 # Equivalences & De Morgan's Laws
 
-In Phase 2 you learned to build truth tables — the row-by-row record of when a statement
+In Phase 2 you learned to build truth tables - the row-by-row record of when a statement
 is true and when it's false. This phase puts that tool to work. Once you can write a
 statement's truth table, you can answer a deeper question: *are these two statements
-actually the same?* And from that comes the single most useful rule in everyday logic —
-De Morgan's laws — what you reach for every time you need to flip a condition around.
+actually the same?* And from that comes the single most useful rule in everyday logic -
+De Morgan's laws - what you reach for every time you need to flip a condition around.
 
 ## When two statements are the same
 
@@ -27,7 +27,7 @@ Look at these two sentences:
 Different words, same meaning. In logic we want a way to say "same meaning" that doesn't
 depend on how clever you are with English. The answer is the truth table.
 
-Two statements are **logically equivalent** when they have the *same truth table* — the
+Two statements are **logically equivalent** when they have the *same truth table* - the
 same true/false result in every single row, for every combination of inputs. We write it
 with a three-bar sign:
 
@@ -47,7 +47,7 @@ columns match top to bottom.
 ## De Morgan's laws
 
 Here's the situation you'll hit constantly. You have a statement built with AND or OR, and
-you need its opposite — its negation. The tempting move is to stick a NOT in front and
+you need its opposite - its negation. The tempting move is to stick a NOT in front and
 leave everything else alone. That move is a trap, and De Morgan's laws get it right.
 
 There are two of them:
@@ -66,7 +66,7 @@ In plain English:
 
 A real example for the first law. Say the rule is "you need both a ticket AND a passport."
 When is that rule violated? When you're missing the ticket, OR missing the passport, OR
-missing both. You don't need to be missing both to fail — missing *one* is enough. That's
+missing both. You don't need to be missing both to fail - missing *one* is enough. That's
 exactly `¬A ∨ ¬B`.
 
 ### Proving one of them
@@ -84,7 +84,7 @@ side. If the last two columns match in every row, they're equivalent.
 ```
 
 Compare the `¬(A∧B)` column with the `¬A∨¬B` column: `F, T, T, T` in both. They agree in
-all four rows. That's the proof — they're equivalent. The other law,
+all four rows. That's the proof - they're equivalent. The other law,
 `¬(A ∨ B) ≡ ¬A ∧ ¬B`, checks out the same way; building that table is a worthwhile exercise
 to convince yourself.
 
@@ -106,10 +106,10 @@ habit prevents the most common logic bug there is.
 De Morgan is the star, but a handful of others round out your toolkit. Each is worth a
 single line:
 
-- **Double negation:** `¬¬A ≡ A` — two NOTs cancel out. "Not not raining" means "raining."
-- **Commutativity:** `A ∧ B ≡ B ∧ A` and `A ∨ B ≡ B ∨ A` — order doesn't matter for a plain
+- **Double negation:** `¬¬A ≡ A` - two NOTs cancel out. "Not not raining" means "raining."
+- **Commutativity:** `A ∧ B ≡ B ∧ A` and `A ∨ B ≡ B ∨ A` - order doesn't matter for a plain
   AND or OR.
-- **Distribution:** `A ∧ (B ∨ C) ≡ (A ∧ B) ∨ (A ∧ C)` — an AND spreads across an OR much
+- **Distribution:** `A ∧ (B ∨ C) ≡ (A ∧ B) ∨ (A ∧ C)` - an AND spreads across an OR much
   like multiplication spreads across addition.
 
 You don't need to memorize these the way you need De Morgan. But recognizing them helps
@@ -117,7 +117,7 @@ when you're simplifying a messy expression and want to know which rewrites are l
 
 ## Two equivalences that change how you read code
 
-These two are less about simplification and more about *translation* — they let you
+These two are less about simplification and more about *translation* - they let you
 rewrite a condition into a shape that's easier to think about.
 
 **Implication as disjunction:** `P → Q ≡ ¬P ∨ Q`
@@ -125,12 +125,12 @@ rewrite a condition into a shape that's easier to think about.
 An "if… then…" is logically the same as "either the if-part is false, or the then-part
 is true." This is the bridge between propositional logic and the `if` statements you
 write. When you see `if (P) { Q }`, the condition that makes the block *not* run is
-`¬P` — and the whole statement `P → Q` is only false when `P` is true and `Q` is false.
+`¬P` - and the whole statement `P → Q` is only false when `P` is true and `Q` is false.
 
 **Biconditional (if and only if):** `P ↔ Q ≡ (P → Q) ∧ (Q → P)`
 
 "P if and only if Q" means both directions hold: P implies Q *and* Q implies P. In code,
-this is the "both or neither" pattern — you want either both conditions true or both
+this is the "both or neither" pattern - you want either both conditions true or both
 false. The biconditional is `true` when P and Q agree (both true or both false) and
 `false` when they differ.
 
@@ -157,7 +157,7 @@ if (isAdmin || isOwner) { canEdit() }
 ```
 
 The *only* case where `canEdit()` does *not* run is when both `isAdmin` and `isOwner`
-are false — which is exactly `¬(isAdmin ∨ isOwner) ≡ ¬isAdmin ∧ ¬isOwner` by De Morgan.
+are false - which is exactly `¬(isAdmin ∨ isOwner) ≡ ¬isAdmin ∧ ¬isOwner` by De Morgan.
 The "block" branch is the negated condition, and De Morgan tells you its shape.
 
 The biconditional shows up in validation: "the form is valid *if and only if* all required
@@ -176,12 +176,12 @@ RIGHT:   not (a && b)   →   !a || !b
 ```
 
 The wrong version says "*both* are false." But the opposite of "both true" isn't "both
-false" — it's "*not* both true," which means at least one is false. That's an OR, not an AND.
+false" - it's "*not* both true," which means at least one is false. That's an OR, not an AND.
 
 Concrete check: suppose `a` is true and `b` is false. Then `a && b` is false, so its
 negation should be **true**. The wrong version `!a && !b` evaluates to `false && true`
-= `false` — wrong answer. The right version `!a || !b` evaluates to `false || true` = `true`
-— correct. The AND-to-OR flip is doing real work, and skipping it silently breaks your logic.
+= `false` - wrong answer. The right version `!a || !b` evaluates to `false || true` = `true`
+- correct. The AND-to-OR flip is doing real work, and skipping it silently breaks your logic.
 
 ## For builders
 
@@ -193,7 +193,7 @@ Suppose you let someone through only when they're logged in *and* verified:
 if (loggedIn && verified) { allow() }
 ```
 
-Now you want the "block them" branch — the inverse condition. De Morgan tells you exactly
+Now you want the "block them" branch - the inverse condition. De Morgan tells you exactly
 how to write it:
 
 ```text
@@ -210,16 +210,16 @@ conditions hold:
 while (hasNext && !error) { ... }
 ```
 
-stops when that guard goes false — that is, when `!hasNext || error`. Reading the stop
+stops when that guard goes false - that is, when `!hasNext || error`. Reading the stop
 condition correctly means applying De Morgan in your head.
 
 Two practical habits:
 
-- **When you invert a condition, apply De Morgan — don't eyeball it.** Negate each part and
+- **When you invert a condition, apply De Morgan - don't eyeball it.** Negate each part and
   flip every `&&` to `||` and every `||` to `&&`. Mishandling this is a frequent source of
   "the check passes when it shouldn't" bugs.
 - **Use it to simplify.** A condition like `!(x > 0 && x < 10)` is often clearer rewritten as
-  `x <= 0 || x >= 10`. (Note the comparisons flipped too — the negation of `>` is `<=`, and of
+  `x <= 0 || x >= 10`. (Note the comparisons flipped too - the negation of `>` is `<=`, and of
   `<` is `>=`.) Same meaning, easier to read.
 
 ## Recap, and where this guide lands
@@ -230,14 +230,14 @@ You now have the three ideas that make propositional logic *useful* rather than 
   them interchangeable.
 - **De Morgan's laws** let you correctly negate AND/OR: `¬(A ∧ B) ≡ ¬A ∨ ¬B` and
   `¬(A ∨ B) ≡ ¬A ∧ ¬B`.
-- **Pushing a NOT inward flips the connective** — AND becomes OR, OR becomes AND — and that
+- **Pushing a NOT inward flips the connective** - AND becomes OR, OR becomes AND - and that
   flip is the part everyone forgets.
 
 Across this guide you went from "what is a proposition" to building truth tables to
 transforming statements while preserving their meaning. That's the whole core of
 propositional logic, and it's the machinery underneath every conditional you'll ever write.
 
-There's one connective we've been circling but never opened up: implication — "if A, then B."
+There's one connective we've been circling but never opened up: implication - "if A, then B."
 It surprises almost everyone the first time (an implication can be true even when its "if"
 part never happens), and it's the backbone of reasoning, proofs, and the conditionals in your
 code. That's the natural next step: implication and conditionals, where logic starts to look a
@@ -246,7 +246,7 @@ lot like the `if` statements you already write.
 ## Logic you already use: regular expressions
 
 If you've written a regex, you've written propositional logic. A regex pattern is a
-compound condition over a string — exactly the kind of thing you've been studying.
+compound condition over a string - exactly the kind of thing you've been studying.
 
 - `a && b` in code is `a.*b` in regex: both must appear, in order.
 - `a || b` is `a|b`: either one matches.
@@ -258,7 +258,7 @@ works on regex conditions too: the opposite of "must contain a digit *and* a let
 is "missing a digit *or* missing a letter."
 
 Regex adds one thing pure logic doesn't: **repetition** (`*`, `+`, `?`) and **capture**.
-But the core — what counts as a match, what the pattern requires — is propositional
+But the core - what counts as a match, what the pattern requires - is propositional
 logic wearing a different costume.
 
 ## A bridge to computer science: Boolean satisfiability
@@ -277,11 +277,11 @@ the engine behind a surprising range of real systems:
 
 The reason SAT matters is that many real problems can be *translated* into a boolean
 expression. Once you have the expression, asking "is it satisfiable?" is asking "does
-any solution exist?" The P vs NP question — one of the biggest open problems in math —
+any solution exist?" The P vs NP question - one of the biggest open problems in math -
 is fundamentally about how hard it is to answer that question for large expressions.
 
 You don't need to solve SAT instances today. But knowing that "can this be true?" is
-a *named, studied problem* — not just a casual question — changes how you see the
+a *named, studied problem* - not just a casual question - changes how you see the
 boolean expressions in your own code. They're not just guards; they're constraints,
 and there's a whole field that thinks about them systematically.
 
@@ -293,7 +293,7 @@ A quick check before you go:
     "q": "Two statements are logically equivalent when:",
     "choices": [
       "They use the same connectives",
-      "They have identical truth tables — the same result in every row",
+      "They have identical truth tables - the same result in every row",
       "They are both true right now",
       "They contain the same variables"
     ],
@@ -320,7 +320,7 @@ A quick check before you go:
       "!(a || b)"
     ],
     "answer": 1,
-    "explain": "The opposite of 'both true' is 'not both true' — at least one is false — which is !a || !b. Keeping the AND (!a && !b) is the classic bug; that says 'both false.'"
+    "explain": "The opposite of 'both true' is 'not both true' - at least one is false - which is !a || !b. Keeping the AND (!a && !b) is the classic bug; that says 'both false.'"
   }
 ]
 ```

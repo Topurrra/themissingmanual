@@ -51,7 +51,7 @@
             <b>#{o.id}</b><span class="gc-ref">→ {o.ref != null ? `#${o.ref}` : '∅'}</span>
           </div>
         {:else}
-          <span class="gc-empty">Heap is empty — allocate an object from a root.</span>
+          <span class="gc-empty">Heap is empty - allocate an object from a root.</span>
         {/each}
       </div>
     </div>
@@ -62,7 +62,7 @@
     </div>
     <p class="gc-note">
       {#if phase === 'swept'}Swept! Everything not reachable from a root was freed. The rest survives.
-      {:else}Allocate objects, then <b>drop</b> a root to orphan its chain. Unreachable objects (red) are exactly what GC collects — even if they still point at each other.{/if}
+      {:else}Allocate objects, then <b>drop</b> a root to orphan its chain. Unreachable objects (red) are exactly what GC collects - even if they still point at each other.{/if}
     </p>
   </div>
 </figure>

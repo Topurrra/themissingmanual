@@ -9,8 +9,8 @@
   // FAB / popover state
   let open = false;        // popover visible
   let sending = false;     // POST in flight
-  let rated = false;       // a vote succeeded — both surfaces show the "Thanks" state
-  let failed = false;      // last POST failed — keep the form, show a hint
+  let rated = false;       // a vote succeeded - both surfaces show the "Thanks" state
+  let failed = false;      // last POST failed - keep the form, show a hint
 
   // Shared select-then-send state (drives both surfaces).
   let selected = null;     // 'up' | 'down' once a thumb is chosen, else null
@@ -138,14 +138,14 @@
       {/if}
 
       {#if failed}
-        <p class="fb-err" role="alert">Couldn't send — try again.</p>
+        <p class="fb-err" role="alert">Couldn't send - try again.</p>
       {/if}
     {/if}
   </div>
 {/if}
 
 <style>
-  /* A) FAB — the floating "Rate this page" pill, stacked above the bookmark FAB. */
+  /* A) FAB - the floating "Rate this page" pill, stacked above the bookmark FAB. */
   .fb-fab {
     position: fixed; right: 22px; bottom: calc(78px + var(--fab-lift, 0px)); z-index: 55;
     display: inline-flex; align-items: center;
@@ -166,13 +166,13 @@
   .fb-fab.rated { background: var(--accent); color: #fff; border-color: var(--accent); }
   .fb-fab.rated:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
 
-  /* Click-away — mirrors .pop-backdrop (below the popover, above the FAB stack). */
+  /* Click-away - mirrors .pop-backdrop (below the popover, above the FAB stack). */
   .fb-backdrop {
     position: fixed; inset: 0; z-index: 56;
     background: transparent; border: 0; cursor: default;
   }
 
-  /* Popover anchored above the FAB — styled like .settings-pop / .resume-pill. */
+  /* Popover anchored above the FAB - styled like .settings-pop / .resume-pill. */
   .fb-pop {
     position: fixed; right: 22px; bottom: calc(132px + var(--fab-lift, 0px)); z-index: 57;
     width: 264px;

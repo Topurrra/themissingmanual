@@ -11,11 +11,11 @@ updated: 2026-06-30
 
 # The everyday core: POM, coordinates, and the lifecycle
 
-Now you live in the tool. Day to day, Maven is three things: coordinates that name everything, dependencies and plugins you declare in the POM, and a lifecycle of phases you trigger from the command line. Get these three solid and the 300-line POM you were afraid of becomes readable — it is the same handful of ideas repeated.
+Now you live in the tool. Day to day, Maven is three things: coordinates that name everything, dependencies and plugins you declare in the POM, and a lifecycle of phases you trigger from the command line. Get these three solid and the 300-line POM you were afraid of becomes readable - it is the same handful of ideas repeated.
 
 ## Coordinates: the address of everything
 
-Every artifact in the Maven world — your project, every library you depend on, every plugin — has the same three-part address:
+Every artifact in the Maven world - your project, every library you depend on, every plugin - has the same three-part address:
 
 ```text
 groupId    : com.fasterxml.jackson.core    ← who publishes it (reverse-domain namespace)
@@ -23,9 +23,9 @@ artifactId : jackson-databind              ← the specific project
 version    : 2.17.0                         ← which release
 ```
 
-*What just happened:* you saw the universal naming scheme. Written compactly, coordinates are `groupId:artifactId:version` — so the above is `com.fasterxml.jackson.core:jackson-databind:2.17.0`. The `groupId` is a reverse-domain name to keep namespaces from colliding; the `artifactId` is the project's short name; the `version` pins the exact release. These three values are how Maven finds anything, locally or in a repository.
+*What just happened:* you saw the universal naming scheme. Written compactly, coordinates are `groupId:artifactId:version` - so the above is `com.fasterxml.jackson.core:jackson-databind:2.17.0`. The `groupId` is a reverse-domain name to keep namespaces from colliding; the `artifactId` is the project's short name; the `version` pins the exact release. These three values are how Maven finds anything, locally or in a repository.
 
-This matters because coordinates are the *only* identity that exists. There is no "the latest Jackson" floating around — there is `2.17.0` and `2.18.1` and so on, each a distinct, immutable artifact. Pinning versions is not bureaucracy; it is what makes a build reproducible.
+This matters because coordinates are the *only* identity that exists. There is no "the latest Jackson" floating around - there is `2.17.0` and `2.18.1` and so on, each a distinct, immutable artifact. Pinning versions is not bureaucracy; it is what makes a build reproducible.
 
 ## Dependencies: declaring what you need
 
@@ -74,7 +74,7 @@ $ mvn package
 [INFO] BUILD SUCCESS
 ```
 
-*What just happened:* one command, `mvn package`, ran four phases. It validated, compiled, ran all 14 tests, and only then built the jar. If a test had failed, the build would have stopped before `package` — you would get no jar, by design. The jar lands in `target/`, named from your coordinates: `my-app-1.0.0.jar`.
+*What just happened:* one command, `mvn package`, ran four phases. It validated, compiled, ran all 14 tests, and only then built the jar. If a test had failed, the build would have stopped before `package` - you would get no jar, by design. The jar lands in `target/`, named from your coordinates: `my-app-1.0.0.jar`.
 
 > A clean rebuild is `mvn clean package`. `clean` is a different lifecycle whose job is to delete `target/`. Chaining it guarantees no stale class files from a previous build sneak into the new jar.
 
@@ -87,11 +87,11 @@ mvn install   →  puts your jar in the LOCAL repo (~/.m2/repository on your mac
 mvn deploy    →  uploads your jar to a REMOTE repo (shared, e.g. a company Nexus/Artifactory)
 ```
 
-*What just happened:* `install` is local and offline — it makes your artifact available to other Maven projects *on your own machine*, which is exactly what you want when project B depends on a library you are actively developing in project A. `deploy` is the publish step — it pushes to a server so other people and CI can pull your artifact. You run `install` constantly during local development; you run `deploy` rarely, usually only from a release pipeline. For where `deploy` fits in shipping software, see [Build & Release Basics](/guides/build-and-release-basics).
+*What just happened:* `install` is local and offline - it makes your artifact available to other Maven projects *on your own machine*, which is exactly what you want when project B depends on a library you are actively developing in project A. `deploy` is the publish step - it pushes to a server so other people and CI can pull your artifact. You run `install` constantly during local development; you run `deploy` rarely, usually only from a release pipeline. For where `deploy` fits in shipping software, see [Build & Release Basics](/guides/build-and-release-basics).
 
 ## Plugins: where the actual work happens
 
-One more layer to make the POM fully readable. Maven's core does almost nothing on its own — every phase is implemented by a **plugin** bound to it. Compiling is the `maven-compiler-plugin`; running tests is `maven-surefire-plugin`; building the jar is `maven-jar-plugin`. You mostly never name these because the defaults are wired in. You configure a plugin only to override a default — for example, to set the Java version you compile against:
+One more layer to make the POM fully readable. Maven's core does almost nothing on its own - every phase is implemented by a **plugin** bound to it. Compiling is the `maven-compiler-plugin`; running tests is `maven-surefire-plugin`; building the jar is `maven-jar-plugin`. You mostly never name these because the defaults are wired in. You configure a plugin only to override a default - for example, to set the Java version you compile against:
 
 ```xml
 <build>
@@ -107,11 +107,11 @@ One more layer to make the POM fully readable. Maven's core does almost nothing 
 </build>
 ```
 
-*What just happened:* you reached into one phase — compilation — and changed one setting, the target Java version, without touching anything else. That is the normal shape of POM customization: find the plugin behind the phase, configure the one knob you need, leave the rest of the convention alone. When you read a long POM, most of its bulk is exactly this — plugins with a few overrides each.
+*What just happened:* you reached into one phase - compilation - and changed one setting, the target Java version, without touching anything else. That is the normal shape of POM customization: find the plugin behind the phase, configure the one knob you need, leave the rest of the convention alone. When you read a long POM, most of its bulk is exactly this - plugins with a few overrides each.
 
 ## In the wild
 
-A real project's `pom.xml` looks long, but skim it and you will see only these pieces: coordinates at the top, a `<dependencies>` block with scopes, and a `<build>` block of plugins with small `<configuration>` overrides. The fear comes from the volume of XML, not from complexity. Once you can name each section — *that is coordinates, that is a test-scoped dependency, that is the compiler plugin set to Java 21* — the file goes quiet.
+A real project's `pom.xml` looks long, but skim it and you will see only these pieces: coordinates at the top, a `<dependencies>` block with scopes, and a `<build>` block of plugins with small `<configuration>` overrides. The fear comes from the volume of XML, not from complexity. Once you can name each section - *that is coordinates, that is a test-scoped dependency, that is the compiler plugin set to Java 21* - the file goes quiet.
 
 ```quiz
 [
@@ -120,7 +120,7 @@ A real project's `pom.xml` looks long, but skim it and you will see only these p
     "choices": [
       "Only package, in isolation",
       "package and deploy",
-      "validate, compile, test, then package — every phase up to and including package",
+      "validate, compile, test, then package - every phase up to and including package",
       "compile and package, but tests are skipped by default"
     ],
     "answer": 2,

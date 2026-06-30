@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The Authorization Code Flow and the Three Tokens
 
-You know the four roles. Now watch them actually move. OAuth2 defines several "grant types" (ways to get a token), but in 2026 there is essentially one you should use for apps where a user is present: **Authorization Code flow with PKCE**. Older flows like the *implicit grant* exist in the spec but are deprecated for being leaky — skip them. Learn this one well and you've learned the flow that powers virtually every "Log in with…" button you'll build.
+You know the four roles. Now watch them actually move. OAuth2 defines several "grant types" (ways to get a token), but in 2026 there is essentially one you should use for apps where a user is present: **Authorization Code flow with PKCE**. Older flows like the *implicit grant* exist in the spec but are deprecated for being leaky - skip them. Learn this one well and you've learned the flow that powers virtually every "Log in with…" button you'll build.
 
 ## The flow, step by step
 
@@ -41,9 +41,9 @@ Here is the dance. A user wants to log into your app ("the Client") using their 
      { "access_token": "...", "id_token": "...", "refresh_token": "...", "expires_in": 3600 }
 ```
 
-*What just happened:* The browser only ever carries a short-lived **authorization code** (steps 2–4), never the real tokens. The actual tokens come back over a direct server-to-server POST (step 5) that the browser never sees. That two-step shuffle — code in the front channel, tokens in the back channel — is the entire security design.
+*What just happened:* The browser only ever carries a short-lived **authorization code** (steps 2–4), never the real tokens. The actual tokens come back over a direct server-to-server POST (step 5) that the browser never sees. That two-step shuffle - code in the front channel, tokens in the back channel - is the entire security design.
 
-Why bother with the intermediate code at all? Because the redirect in step 4 travels through the user's browser, where it can land in logs, history, or a malicious extension. A code is useless on its own — exchanging it requires the second request. So even if someone steals the code, they're missing a piece.
+Why bother with the intermediate code at all? Because the redirect in step 4 travels through the user's browser, where it can land in logs, history, or a malicious extension. A code is useless on its own - exchanging it requires the second request. So even if someone steals the code, they're missing a piece.
 
 ## PKCE: the piece that stops code theft
 
@@ -65,7 +65,7 @@ At step 5 (token exchange):
 
 PKCE started life as protection for mobile and single-page apps that can't keep a client secret, but current guidance is to use it for **every** authorization-code flow, server-side ones included. Treat it as mandatory.
 
-> **What about `state`?** Different job. `code_challenge`/PKCE stops *code interception*. The `state` parameter (a random value you send and check came back unchanged) stops **CSRF** — an attacker tricking your app into completing *their* login. Send both, always. They guard against different attacks.
+> **What about `state`?** Different job. `code_challenge`/PKCE stops *code interception*. The `state` parameter (a random value you send and check came back unchanged) stops **CSRF** - an attacker tricking your app into completing *their* login. Send both, always. They guard against different attacks.
 
 ## Scopes: asking for exactly what you need
 
@@ -79,9 +79,9 @@ scope=https://www.googleapis.com/auth/calendar.readonly
                            → read-only access to their calendar
 ```
 
-*What just happened:* Each scope is one slice of permission. The golden rule is **least privilege**: ask only for what your feature actually needs. Requesting `calendar` (read-write) when you only display events trains users to rubber-stamp scary permissions and widens your blast radius if a token leaks. Note the literal scope `openid` — that single word is what turns a plain OAuth2 request into an OIDC request and makes the server return an ID token.
+*What just happened:* Each scope is one slice of permission. The golden rule is **least privilege**: ask only for what your feature actually needs. Requesting `calendar` (read-write) when you only display events trains users to rubber-stamp scary permissions and widens your blast radius if a token leaks. Note the literal scope `openid` - that single word is what turns a plain OAuth2 request into an OIDC request and makes the server return an ID token.
 
-## The three tokens — the part everyone confuses
+## The three tokens - the part everyone confuses
 
 Step 6 returned three different tokens. They look identical (often base64-ish blobs) but have completely different jobs. Mixing them up is the single most common OAuth mistake.
 
@@ -91,7 +91,7 @@ Step 6 returned three different tokens. They look identical (often base64-ish bl
 | **ID token** | "Who is the user?" | The **Client** (your app) | Short, single-use at login |
 | **Refresh token** | "Get me a new access token" | The **Authorization Server** only | Long (days to months) |
 
-**Access token** — your proof to the *API*. You attach it to API calls and the Resource Server checks it:
+**Access token** - your proof to the *API*. You attach it to API calls and the Resource Server checks it:
 
 ```text
 GET /v1/photos HTTP/1.1
@@ -99,9 +99,9 @@ Host: photos.googleapis.com
 Authorization: Bearer <access_token>
 ```
 
-*What just happened:* The API trusts the bearer token and returns the data. Critically, the access token is **opaque to the client** — your app should not crack it open to learn who the user is. It is addressed to the API, not to you. Using it for login is the classic mistake from Phase 1.
+*What just happened:* The API trusts the bearer token and returns the data. Critically, the access token is **opaque to the client** - your app should not crack it open to learn who the user is. It is addressed to the API, not to you. Using it for login is the classic mistake from Phase 1.
 
-**ID token** — this is the OIDC addition and the thing that actually logs the user in. It is always a **JWT** (a signed JSON Web Token) with claims about the user:
+**ID token** - this is the OIDC addition and the thing that actually logs the user in. It is always a **JWT** (a signed JSON Web Token) with claims about the user:
 
 ```text
 {
@@ -115,9 +115,9 @@ Authorization: Bearer <access_token>
 }
 ```
 
-*What just happened:* Your app reads these claims to know who logged in. The `sub` ("subject") is the stable user identifier — use that as your primary key, never the email, because emails change. But you must **verify the signature and check the claims** before trusting any of it: confirm `iss` is the expected issuer, `aud` equals your own `client_id`, and `exp` is in the future. An ID token you didn't validate is just a base64 string anyone could forge.
+*What just happened:* Your app reads these claims to know who logged in. The `sub` ("subject") is the stable user identifier - use that as your primary key, never the email, because emails change. But you must **verify the signature and check the claims** before trusting any of it: confirm `iss` is the expected issuer, `aud` equals your own `client_id`, and `exp` is in the future. An ID token you didn't validate is just a base64 string anyone could forge.
 
-**Refresh token** — the long-lived ticket for getting fresh access tokens without dragging the user back through login. When the access token expires:
+**Refresh token** - the long-lived ticket for getting fresh access tokens without dragging the user back through login. When the access token expires:
 
 ```text
 POST /token
@@ -126,7 +126,7 @@ POST /token
   client_id=abc123
 ```
 
-*What just happened:* You trade the refresh token for a brand-new access token (and sometimes a new refresh token). This is why you stay logged into apps for weeks despite access tokens expiring in an hour. Because it's long-lived and powerful, the refresh token is the **most sensitive** of the three — it goes only to the Authorization Server, lives only on a trusted back end, and never near a browser if you can help it. More on guarding it in Phase 3.
+*What just happened:* You trade the refresh token for a brand-new access token (and sometimes a new refresh token). This is why you stay logged into apps for weeks despite access tokens expiring in an hour. Because it's long-lived and powerful, the refresh token is the **most sensitive** of the three - it goes only to the Authorization Server, lives only on a trusted back end, and never near a browser if you can help it. More on guarding it in Phase 3.
 
 ## For builders
 
@@ -143,7 +143,7 @@ A clean mental shorthand: the **access token is for machines** (one API checking
       "It lets the user copy the code manually"
     ],
     "answer": 2,
-    "explain": "A stolen code is worthless alone — redeeming it needs the direct server-to-server token request, keeping real tokens off the front channel."
+    "explain": "A stolen code is worthless alone - redeeming it needs the direct server-to-server token request, keeping real tokens off the front channel."
   },
   {
     "q": "What specific attack does PKCE defend against?",
@@ -159,10 +159,10 @@ A clean mental shorthand: the **access token is for machines** (one API checking
   {
     "q": "Your app needs to know which user just logged in. Which token do you read, and how?",
     "choices": [
-      "The access token — decode it to read the user's name",
-      "The refresh token — it contains the user id",
-      "The ID token — verify its signature and claims, then read 'sub'",
-      "Any of them — they all carry identity"
+      "The access token - decode it to read the user's name",
+      "The refresh token - it contains the user id",
+      "The ID token - verify its signature and claims, then read 'sub'",
+      "Any of them - they all carry identity"
     ],
     "answer": 2,
     "explain": "Identity lives in the ID token (a JWT). Verify signature, iss, aud, and exp, then use the stable 'sub' as the user key. Access tokens are opaque and addressed to the API, not to you."

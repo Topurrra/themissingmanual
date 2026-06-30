@@ -441,7 +441,7 @@ async fn rss_feed_lists_published_guides() {
     assert!(xml.contains("<pubDate>")); // feed carries dates now
 }
 
-// ===== admin console — first wave (bulk · settings · feedback · status · backlog) =====
+// ===== admin console - first wave (bulk · settings · feedback · status · backlog) =====
 
 #[tokio::test]
 async fn bulk_recategorize_and_guards() {
@@ -540,7 +540,7 @@ async fn status_and_backlog_endpoints() {
     assert!(v["items"].is_array());
 }
 
-// ===== admin console — second wave (revisions/revert · reorder · link audit) =====
+// ===== admin console - second wave (revisions/revert · reorder · link audit) =====
 
 #[tokio::test]
 async fn phase_revisions_and_revert() {

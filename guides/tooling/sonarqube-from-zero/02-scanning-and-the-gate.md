@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Scanning and the quality gate
 
-Now the everyday loop: you change some code, a scan runs, you read the result, and either the gate is green or you fix the one thing that's red. Most days you never touch the SonarQube server itself — the scanner runs in CI and posts a verdict. But knowing how to run it locally and read it by hand is what makes the CI result legible instead of mysterious.
+Now the everyday loop: you change some code, a scan runs, you read the result, and either the gate is green or you fix the one thing that's red. Most days you never touch the SonarQube server itself - the scanner runs in CI and posts a verdict. But knowing how to run it locally and read it by hand is what makes the CI result legible instead of mysterious.
 
 ## Running a scan
 
@@ -28,7 +28,7 @@ sonar.tests=test
 sonar.javascript.lcov.reportPaths=coverage/lcov.info
 ```
 
-*What just happened:* you told the scanner what to call this project (`projectKey` is its unique id on the server), where the real code lives versus the tests, and where to find the coverage report. SonarQube does not measure coverage itself — it reads a report your test runner already produced.
+*What just happened:* you told the scanner what to call this project (`projectKey` is its unique id on the server), where the real code lives versus the tests, and where to find the coverage report. SonarQube does not measure coverage itself - it reads a report your test runner already produced.
 
 To run it, you point the scanner at a server and authenticate with a token:
 
@@ -51,7 +51,7 @@ INFO:   https://sonar.acme.internal/dashboard?id=acme-checkout
 INFO: QUALITY GATE STATUS: FAILED - View details on the link above
 ```
 
-*What just happened:* the scanner indexed your files, imported the coverage report, uploaded everything, and the server replied with the gate verdict. "ANALYSIS SUCCESSFUL" only means the scan ran — the line that matters is "QUALITY GATE STATUS." Successful scan, failed gate is the normal state when there's work to do.
+*What just happened:* the scanner indexed your files, imported the coverage report, uploaded everything, and the server replied with the gate verdict. "ANALYSIS SUCCESSFUL" only means the scan ran - the line that matters is "QUALITY GATE STATUS." Successful scan, failed gate is the normal state when there's work to do.
 
 > Never hardcode `sonar.token` in the properties file or commit it. It's a credential. Pass it as an environment variable in CI, the same way you'd treat any secret.
 
@@ -68,11 +68,11 @@ Quality Gate: FAILED
   ✓ Duplicated Lines on New Code: 1.2% (required ≤ 3.0%)
 ```
 
-*What just happened:* one condition failed — new code coverage. The fix is scoped and obvious: the lines you added or changed aren't tested enough, so add tests for them. You are not on the hook for the project's overall coverage, only the new code. That scoping is the single most important idea in this guide.
+*What just happened:* one condition failed - new code coverage. The fix is scoped and obvious: the lines you added or changed aren't tested enough, so add tests for them. You are not on the hook for the project's overall coverage, only the new code. That scoping is the single most important idea in this guide.
 
 ## Clean as you code
 
-Here's the idea that makes SonarQube livable on a real, old, large codebase. Picture inheriting a project with 40% coverage and ten thousand existing code smells. If the gate judged the *whole* project, it would be red forever and you'd never dig out. So Sonar's default gate judges **new code** — code added or changed since a baseline (typically the previous release, or for a PR, the lines that differ from the target branch).
+Here's the idea that makes SonarQube livable on a real, old, large codebase. Picture inheriting a project with 40% coverage and ten thousand existing code smells. If the gate judged the *whole* project, it would be red forever and you'd never dig out. So Sonar's default gate judges **new code** - code added or changed since a baseline (typically the previous release, or for a PR, the lines that differ from the target branch).
 
 This is called **clean as you code**. The legacy heap is frozen as-is; the gate only asks that *what you touch* meets the bar. Write tested, clean new code and the project's overall numbers improve on their own, file by file, as old code gets revisited. No big-bang cleanup project, no blocking the team on debt nobody scheduled.
 
@@ -96,7 +96,7 @@ In practice the scan runs on every PR. A typical pipeline step runs your tests (
 - run: sonar-scanner -Dsonar.qualitygate.wait=true   # block until gate returns
 ```
 
-*What just happened:* tests run first so coverage exists, the scanner uploads, and `qualitygate.wait=true` makes the step block until the server finishes evaluating — so the CI step's pass/fail mirrors the gate. Without `wait`, the scanner returns immediately and your pipeline goes green before the gate has even decided.
+*What just happened:* tests run first so coverage exists, the scanner uploads, and `qualitygate.wait=true` makes the step block until the server finishes evaluating - so the CI step's pass/fail mirrors the gate. Without `wait`, the scanner returns immediately and your pipeline goes green before the gate has even decided.
 
 For the bigger picture of where this step sits in a pipeline, see [/guides/what-cicd-does](/guides/what-cicd-does).
 
@@ -106,7 +106,7 @@ For the bigger picture of where this step sits in a pipeline, see [/guides/what-
     "q": "On a default 'clean as you code' gate, what does the gate evaluate for a pull request?",
     "choices": ["The entire project's coverage and issues", "Only the new or changed code", "Only files in the src directory", "Nothing until the next release"],
     "answer": 1,
-    "explain": "The default gate judges new code — the lines added or changed since the baseline — so a messy legacy project isn't held against your PR."
+    "explain": "The default gate judges new code - the lines added or changed since the baseline - so a messy legacy project isn't held against your PR."
   },
   {
     "q": "Where does SonarQube get a project's code coverage number?",

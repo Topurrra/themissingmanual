@@ -2,7 +2,7 @@
 title: "The Core Toolkit"
 guide: "regular-expressions-explained"
 phase: 2
-summary: "The pieces you'll use 90% of the time: literals, character classes (\\d \\w \\s and [...]), quantifiers (* + ? {n}), anchors (^ $), and groups (...) — built up to matching a real date."
+summary: "The pieces you'll use 90% of the time: literals, character classes (\\d \\w \\s and [...]), quantifiers (* + ? {n}), anchors (^ $), and groups (...) - built up to matching a real date."
 tags: [regex, character-classes, quantifiers, anchors, groups, beginner-friendly]
 difficulty: beginner
 synonyms: ["regex character classes", "what does \\d mean in regex", "regex quantifiers explained", "regex anchors ^ $", "regex groups parentheses", "regex cheat sheet beginner"]
@@ -12,14 +12,14 @@ updated: 2026-06-19
 # The Core Toolkit
 
 Now that you know a regex *describes a shape*, you need a vocabulary for describing shapes more
-richly than "these exact letters." This phase is that vocabulary — and the good news is it's small.
+richly than "these exact letters." This phase is that vocabulary - and the good news is it's small.
 There are dozens of regex features in the world, but a handful do almost all the work. Learn these,
 and you can read and write the vast majority of patterns you'll ever meet.
 
 We'll go piece by piece, each with a tiny example you can picture matching, then assemble them into
 something real at the end.
 
-## Literals — characters that mean themselves
+## Literals - characters that mean themselves
 
 You already met these in Phase 1. Most characters in a regex are **literals**: they match exactly
 themselves. `a` matches an `a`, `7` matches a `7`, `-` matches a dash.
@@ -32,14 +32,14 @@ themselves. `a` matches an `a`, `7` matches a `7`, `-` matches a dash.
   "cat"        ►  no match
 ```
 
-*What just happened:* nothing fancy — each character stood for itself, in order. Literals are the
+*What just happened:* nothing fancy - each character stood for itself, in order. Literals are the
 floor everything else builds on. The special power comes from the few characters that *don't* mean
 themselves, which we'll cover now.
 
-## Character classes — "any one of these"
+## Character classes - "any one of these"
 
 Often you don't want one exact character; you want "any digit" or "any letter." That's a
-**character class** — a description of a *set* of characters, any one of which matches a single
+**character class** - a description of a *set* of characters, any one of which matches a single
 position.
 
 The everyday shortcuts:
@@ -50,7 +50,7 @@ The everyday shortcuts:
   \s   any whitespace            space, tab, newline
 ```
 
-📝 **Terminology.** A **character class** matches *exactly one* character — one position in the
+📝 **Terminology.** A **character class** matches *exactly one* character - one position in the
 text. `\d` doesn't mean "a number," it means "one digit." To match several, you'll add a quantifier
 (next section).
 
@@ -62,7 +62,7 @@ text. `\d` doesn't mean "a number," it means "one digit." To match several, you'
 ```
 
 *What just happened:* `\d` matched the single character `7`. It would also have matched the `3` in
-`B3` or the `0` in `2026` — any one digit, wherever it sits.
+`B3` or the `0` in `2026` - any one digit, wherever it sits.
 
 You can also build your *own* class with square brackets. `[aeiou]` means "any one of these
 vowels." A range with a dash, like `[a-f]`, means "any one character from a to f."
@@ -71,7 +71,7 @@ vowels." A range with a dash, like `[a-f]`, means "any one character from a to f
   pattern:  [aeiou]
 
   "sky"        ►  no match (no vowels)
-  "fly by"     ►  MATCH   (... actually "fly by" has no a/e/i/o/u either —)
+  "fly by"     ►  MATCH   (... actually "fly by" has no a/e/i/o/u either -)
 ```
 
 Let me give that one honest output instead:
@@ -84,11 +84,11 @@ Let me give that one honest output instead:
 ```
 
 *What just happened:* the brackets describe a custom set, and the engine matched the first character
-that fell inside it — the `a` in `cat`. ⚠️ **Gotcha — a dash inside brackets is a range.** `[a-z]`
+that fell inside it - the `a` in `cat`. ⚠️ **Gotcha - a dash inside brackets is a range.** `[a-z]`
 means "a through z," *not* "the letters a, dash, z." If you actually want to match a literal dash
 inside a class, put it first or last: `[-az]` or `[az-]`. This trips up everyone once.
 
-## Quantifiers — "how many"
+## Quantifiers - "how many"
 
 A character class matches one position. **Quantifiers** say how many times the thing right before
 them may repeat. These four cover almost everything:
@@ -104,12 +104,12 @@ them may repeat. These four cover almost everything:
   pattern:  \d+
 
   "room 7"       ►  MATCH on "7"      (one or more digits)
-  "year 2026"    ►  MATCH on "2026"   (grabs all four — "one or more" keeps going)
+  "year 2026"    ►  MATCH on "2026"   (grabs all four - "one or more" keeps going)
   "no digits"    ►  no match
 ```
 
 *What just happened:* `\d+` means "one or more digits in a row." On `year 2026` it didn't stop at
-the first digit — it kept matching as long as the next character was also a digit, capturing the
+the first digit - it kept matching as long as the next character was also a digit, capturing the
 whole `2026`. That "keep going" behavior is important, and it's the seed of the *greedy matching*
 trap we'll meet in Phase 3.
 
@@ -120,14 +120,14 @@ A quick tour of the others:
 
   "color"        ►  MATCH   (zero u's)
   "colour"       ►  MATCH   (one u)
-  "colouur"      ►  no match (two u's — ? allows at most one)
+  "colouur"      ►  no match (two u's - ? allows at most one)
 ```
 
 *What just happened:* `?` made the `u` optional, so one pattern matched both the US and British
-spellings. That's a tiny taste of why regex is worth it — one description, several real-world
+spellings. That's a tiny taste of why regex is worth it - one description, several real-world
 variations.
 
-## Anchors — "where in the text"
+## Anchors - "where in the text"
 
 By default a pattern matches anywhere (Phase 1). **Anchors** pin a pattern to a position instead of
 matching a character:
@@ -137,10 +137,10 @@ matching a character:
   $   the end of the line/text
 ```
 
-Anchors match a *position*, not a character — think of them as "right here at the edge."
+Anchors match a *position*, not a character - think of them as "right here at the edge."
 
 ```text
-  pattern:  ^cat$         start, then c-a-t, then end — nothing else allowed
+  pattern:  ^cat$         start, then c-a-t, then end - nothing else allowed
 
   "cat"          ►  MATCH   (the whole text is exactly "cat")
   "category"     ►  no match (there's more after "cat", so it's not the end)
@@ -148,13 +148,13 @@ Anchors match a *position*, not a character — think of them as "right here at 
 ```
 
 *What just happened:* wrapping `cat` in `^...$` turned "find cat anywhere" into "the text must be
-*exactly* cat." This is the answer to the Phase 1 gotcha — anchors are how you demand a *whole*
-match instead of a found-somewhere match. ⚠️ **Gotcha — `^` means two different things.** At the
+*exactly* cat." This is the answer to the Phase 1 gotcha - anchors are how you demand a *whole*
+match instead of a found-somewhere match. ⚠️ **Gotcha - `^` means two different things.** At the
 *start* of a pattern, `^` is the start-anchor. But *inside square brackets*, `[^abc]` means "any
-character *except* a, b, or c" — a negation. Same symbol, totally different job depending on where
+character *except* a, b, or c" - a negation. Same symbol, totally different job depending on where
 it sits. Read carefully.
 
-## Groups — "treat this as one unit"
+## Groups - "treat this as one unit"
 
 Parentheses **group** part of a pattern so a quantifier (or other operator) applies to the whole
 group, not one character. They also "capture" what matched, so a tool can pull it out later.
@@ -169,12 +169,12 @@ group, not one character. They also "capture" what matched, so a tool can pull i
 
 *What just happened:* without the parentheses, `ab+` would mean "an `a`, then one or more `b`s."
 The group made `+` apply to the *pair* `ab`. Grouping is how you describe repeated *structures*, not
-only repeated single characters — and capturing is how search-and-replace knows which piece to keep.
+only repeated single characters - and capturing is how search-and-replace knows which piece to keep.
 
 ## Building something real: a simple date
 
 Now assemble the toolkit. A date like `2026-06-19` has a clear shape: four digits, a dash, two
-digits, a dash, two digits — and we want the *whole* string to be that and nothing else.
+digits, a dash, two digits - and we want the *whole* string to be that and nothing else.
 
 ```text
   pattern:  ^\d{4}-\d{2}-\d{2}$
@@ -191,7 +191,7 @@ the toolkit.
 
 💡 **Key point.** This pattern checks the *shape*, not the *meaning*. It happily matches
 `9999-99-99`, which is not a real date. Regex describes how text *looks*, not whether it's
-*sensible*. Knowing where that line falls — and not asking regex to cross it — is half of using it
+*sensible*. Knowing where that line falls - and not asking regex to cross it - is half of using it
 well.
 
 ## An honest word: the "perfect email regex" is a trap
@@ -201,7 +201,7 @@ every invalid one. Don't. The rules for what's technically a valid email are gen
 sprawling, and the "complete" regex people pass around is hundreds of characters long, unreadable,
 and *still* not fully correct.
 
-What you actually want in real life is a *good-enough* shape check — "looks roughly like an email" —
+What you actually want in real life is a *good-enough* shape check - "looks roughly like an email" -
 and then to confirm it's real by sending a message to it. A practical, readable pattern:
 
 ```text
@@ -213,9 +213,9 @@ and then to confirm it's real by sending a message to it. A practical, readable 
 ```
 
 *What just happened:* `\S` means "any non-whitespace character" (the uppercase counterpart of `\s`).
-So this reads: start, some non-spaces, an `@`, some non-spaces, a literal dot (`\.` — escaped,
+So this reads: start, some non-spaces, an `@`, some non-spaces, a literal dot (`\.` - escaped,
 because a bare `.` is special; more on that in Phase 3), some non-spaces, end. It's not airtight,
-and it's not meant to be. It catches obvious typos and stays readable — which is the right trade.
+and it's not meant to be. It catches obvious typos and stays readable - which is the right trade.
 Chasing perfection here is how regex earns its scary reputation.
 
 ## Recap
@@ -225,9 +225,9 @@ Chasing perfection here is how regex earns its scary reputation.
    (whitespace), or your own `[...]`.
 3. **Quantifiers** say how many: `*` (zero or more), `+` (one or more), `?` (optional), `{n}`
    (exactly n).
-4. **Anchors** pin to a position: `^` (start), `$` (end) — this is how you demand a *whole* match.
+4. **Anchors** pin to a position: `^` (start), `$` (end) - this is how you demand a *whole* match.
 5. **Groups** `(...)` apply a quantifier to a whole unit and capture what matched.
-6. Regex checks **shape, not meaning** — and "the perfect email regex" is a trap; aim for
+6. Regex checks **shape, not meaning** - and "the perfect email regex" is a trap; aim for
    good-enough and readable.
 
 ---
@@ -240,5 +240,5 @@ Edit the pattern or the sample text and watch the matches highlight live:
 
 ```playground-regex
 \b[\w.]+@[\w.]+\.\w+\b
-Email alice@example.com or bob@test.org — but "hello world" matches nothing.
+Email alice@example.com or bob@test.org - but "hello world" matches nothing.
 ```

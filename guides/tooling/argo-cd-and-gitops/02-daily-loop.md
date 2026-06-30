@@ -11,15 +11,15 @@ updated: 2026-06-30
 
 # Your daily loop: apps, sync, and rollback
 
-You've got the mental model. Now the practical question: what do you actually touch day to day? Almost less than you'd expect. The whole point of GitOps is that your normal workflow is editing files and merging pull requests — Argo CD does the rest. But you'll lean on a handful of concepts and commands often enough that they should become reflex. This phase walks the loop you'll run dozens of times a week.
+You've got the mental model. Now the practical question: what do you actually touch day to day? Almost less than you'd expect. The whole point of GitOps is that your normal workflow is editing files and merging pull requests - Argo CD does the rest. But you'll lean on a handful of concepts and commands often enough that they should become reflex. This phase walks the loop you'll run dozens of times a week.
 
 ## The Application is the unit of work
 
 In Argo CD, the thing you manage is an **Application**. It's a small piece of config that answers three questions: *where does the desired state live, what's in it, and where does it go?*
 
-- **source** — the Git repo, a path inside it, and a revision (a branch, tag, or commit).
-- **destination** — the cluster and namespace to deploy into.
-- **syncPolicy** — whether Argo CD applies changes automatically or waits for you.
+- **source** - the Git repo, a path inside it, and a revision (a branch, tag, or commit).
+- **destination** - the cluster and namespace to deploy into.
+- **syncPolicy** - whether Argo CD applies changes automatically or waits for you.
 
 Here's a minimal one as YAML, which itself usually lives in Git:
 
@@ -44,13 +44,13 @@ spec:
       selfHeal: true              # undo manual cluster edits
 ```
 
-*What just happened:* this tells Argo CD to watch `apps/payments` on the `main` branch and keep the `payments` namespace matching it — automatically, including deleting things you remove from Git (`prune`) and reverting manual edits (`selfHeal`).
+*What just happened:* this tells Argo CD to watch `apps/payments` on the `main` branch and keep the `payments` namespace matching it - automatically, including deleting things you remove from Git (`prune`) and reverting manual edits (`selfHeal`).
 
-Notice the Application is *itself* a Kubernetes resource. That leads to a common pattern: one root Application that points at a folder of other Applications, so adding a new app to the cluster is — you guessed it — a Git commit. That's the "app of apps" pattern, and it's how teams scale to dozens of services without clicking around a UI.
+Notice the Application is *itself* a Kubernetes resource. That leads to a common pattern: one root Application that points at a folder of other Applications, so adding a new app to the cluster is - you guessed it - a Git commit. That's the "app of apps" pattern, and it's how teams scale to dozens of services without clicking around a UI.
 
 ## The sync: making the cluster match Git
 
-A **sync** is the act of applying Git's desired state to the cluster. With `automated` syncPolicy, Argo CD syncs on its own whenever it detects a new commit (it polls the repo on an interval, or reacts instantly if you wire up a webhook). With manual policy, you trigger it yourself — useful when you want a human to press the button on prod.
+A **sync** is the act of applying Git's desired state to the cluster. With `automated` syncPolicy, Argo CD syncs on its own whenever it detects a new commit (it polls the repo on an interval, or reacts instantly if you wire up a webhook). With manual policy, you trigger it yourself - useful when you want a human to press the button on prod.
 
 The everyday CLI rhythm:
 
@@ -74,10 +74,10 @@ Health:      Healthy
 
 Two status fields ride along and you read both constantly:
 
-- **Sync Status** — does the cluster match Git? (Synced / OutOfSync)
-- **Health** — are the running resources actually OK? (Healthy / Progressing / Degraded)
+- **Sync Status** - does the cluster match Git? (Synced / OutOfSync)
+- **Health** - are the running resources actually OK? (Healthy / Progressing / Degraded)
 
-They're independent, and the difference matters. A freshly-applied Deployment can be **Synced** (Git applied successfully) but **Progressing** or **Degraded** because the new pods are crash-looping. Synced means "Git was applied"; Health means "the result is working." Watch both — Synced-but-Degraded is exactly the state a broken deploy lives in.
+They're independent, and the difference matters. A freshly-applied Deployment can be **Synced** (Git applied successfully) but **Progressing** or **Degraded** because the new pods are crash-looping. Synced means "Git was applied"; Health means "the result is working." Watch both - Synced-but-Degraded is exactly the state a broken deploy lives in.
 
 ## The deploy flow, end to end
 
@@ -91,13 +91,13 @@ Putting it together, here's how a real change rides to production:
 5. Verify:  Health goes Progressing → Healthy
 ```
 
-*What just happened:* CI's only job is steps 1–2 — build the image and write the new tag into Git. From step 3 on, Argo CD owns the deploy. Your CI system never touched the cluster; it touched a file.
+*What just happened:* CI's only job is steps 1–2 - build the image and write the new tag into Git. From step 3 on, Argo CD owns the deploy. Your CI system never touched the cluster; it touched a file.
 
-> Keep image tags immutable and specific. Pin `acme/payments:v1.4.2` (or a digest), never `:latest`. If Git says `:latest`, two syncs can produce two different clusters from the same commit — which quietly destroys the "Git is the source of truth" guarantee. See /guides/what-cicd-does for where tag promotion fits in the pipeline.
+> Keep image tags immutable and specific. Pin `acme/payments:v1.4.2` (or a digest), never `:latest`. If Git says `:latest`, two syncs can produce two different clusters from the same commit - which quietly destroys the "Git is the source of truth" guarantee. See /guides/what-cicd-does for where tag promotion fits in the pipeline.
 
 ## Rollback: deploy in reverse
 
-Something's wrong in prod. In a push world you'd scramble for the previous tag. Here, rollback is the same loop pointed backward — and you have two clean ways to do it.
+Something's wrong in prod. In a push world you'd scramble for the previous tag. Here, rollback is the same loop pointed backward - and you have two clean ways to do it.
 
 The GitOps-pure way is to revert the commit. Argo CD reconciles the cluster to the reverted state, and your Git history stays honest about what happened:
 
@@ -107,7 +107,7 @@ $ git push
 # Argo CD detects the new commit and syncs the cluster back
 ```
 
-*What just happened:* the revert creates a *new* commit that undoes the bad one. The cluster follows Git back to the good state, and the revert is recorded — your history shows both the break and the fix.
+*What just happened:* the revert creates a *new* commit that undoes the bad one. The cluster follows Git back to the good state, and the revert is recorded - your history shows both the break and the fix.
 
 Argo CD also keeps a deploy history and can roll back directly, handy when prod is on fire and you want speed before tidiness:
 
@@ -138,7 +138,7 @@ Most teams structure the infra repo so each environment is a folder or branch (`
       "The list of developers allowed to deploy"
     ],
     "answer": 1,
-    "explain": "An Application maps a Git source to a cluster destination and says how to sync them — it's the unit Argo CD reconciles."
+    "explain": "An Application maps a Git source to a cluster destination and says how to sync them - it's the unit Argo CD reconciles."
   },
   {
     "q": "An app shows Sync Status: Synced but Health: Degraded. What does that mean?",
@@ -160,7 +160,7 @@ Most teams structure the infra repo so each environment is a folder or branch (`
       "It reduces the size of the manifest"
     ],
     "answer": 2,
-    "explain": "If Git says :latest, two syncs of the same commit may run different images — so Git no longer fully determines cluster state."
+    "explain": "If Git says :latest, two syncs of the same commit may run different images - so Git no longer fully determines cluster state."
   }
 ]
 ```

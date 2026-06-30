@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # When the numbers lie and the system breaks
 
-You ran the test. It passed. The graph is green, p95 is comfortable, and you are ready to call it done. This phase is the friend who pulls you aside and asks whether the test measured what you think it did — because a load test that passes for the wrong reason is more dangerous than no test at all. It hands you confidence you did not earn, and you spend it in production.
+You ran the test. It passed. The graph is green, p95 is comfortable, and you are ready to call it done. This phase is the friend who pulls you aside and asks whether the test measured what you think it did - because a load test that passes for the wrong reason is more dangerous than no test at all. It hands you confidence you did not earn, and you spend it in production.
 
 Let us walk through the ways a green run lies, and then what production does that no test fully captures.
 
@@ -25,7 +25,7 @@ WARN[0012] Request Failed   error="dial: i/o timeout"
 WARN[0014] Request Failed   error="socket: too many open files"
 ```
 
-*What just happened:* those errors are not your server failing — they are the *generator* failing. The server may be perfectly healthy and starved of traffic. Always watch the generator's own CPU and network during a run. When one box cannot push enough load, you move to distributed generation (k6 supports running across multiple machines; JMeter has a controller/worker setup) rather than trusting numbers from a saturated client.
+*What just happened:* those errors are not your server failing - they are the *generator* failing. The server may be perfectly healthy and starved of traffic. Always watch the generator's own CPU and network during a run. When one box cannot push enough load, you move to distributed generation (k6 supports running across multiple machines; JMeter has a controller/worker setup) rather than trusting numbers from a saturated client.
 
 ## Your test data is too clean
 
@@ -44,14 +44,14 @@ http.get(`https://api.example.com/orders/${id}`);
 
 ## You forgot to check whether requests succeeded
 
-A fast response is worthless if it is an error. Under load, a server protecting itself often returns `429 Too Many Requests` or `503 Service Unavailable` *instantly* — those failures are blazing fast, and they will drag your average latency *down* while your error rate quietly climbs. If you only watch latency, the test looks like it got faster under load. It got faster because it stopped working.
+A fast response is worthless if it is an error. Under load, a server protecting itself often returns `429 Too Many Requests` or `503 Service Unavailable` *instantly* - those failures are blazing fast, and they will drag your average latency *down* while your error rate quietly climbs. If you only watch latency, the test looks like it got faster under load. It got faster because it stopped working.
 
 ```console
 http_req_duration..........: avg=31ms  p(95)=44ms     ← looks great!
 http_req_failed............: 73.0%   ✗ 14209         ← it's on fire
 ```
 
-*What just happened:* p95 dropped to 44 ms not because the system sped up but because three-quarters of requests were fast rejections. This is why error rate sits next to latency in every report from Phase 1 — latency without error rate is a number that can lie to your face. In k6, an `http_req_failed` threshold catches it; in JMeter, watch the **Error %** column.
+*What just happened:* p95 dropped to 44 ms not because the system sped up but because three-quarters of requests were fast rejections. This is why error rate sits next to latency in every report from Phase 1 - latency without error rate is a number that can lie to your face. In k6, an `http_req_failed` threshold catches it; in JMeter, watch the **Error %** column.
 
 ## Find the bottleneck, do not only name a number
 

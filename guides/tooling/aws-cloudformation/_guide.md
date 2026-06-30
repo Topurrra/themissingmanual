@@ -24,8 +24,8 @@ If you have never touched infrastructure as code, the broader idea is worth a de
 
 ## The phases
 
-1. [The mental model: templates and stacks](01-templates-and-stacks.md) — what you're actually declaring, and why a stack is one unit.
-2. [Writing and changing stacks for real](02-writing-and-changing-stacks.md) — parameters, outputs, intrinsic functions, and change sets.
-3. [When it breaks: rollback, drift, and Terraform](03-rollback-drift-and-reality.md) — the gotchas, the recovery moves, and where each tool wins.
+1. [The mental model: templates and stacks](01-templates-and-stacks.md) - what you're actually declaring, and why a stack is one unit.
+2. [Writing and changing stacks for real](02-writing-and-changing-stacks.md) - parameters, outputs, intrinsic functions, and change sets.
+3. [When it breaks: rollback, drift, and Terraform](03-rollback-drift-and-reality.md) - the gotchas, the recovery moves, and where each tool wins.
 
 [Phase 1: The mental model: templates and stacks](01-templates-and-stacks.md) →

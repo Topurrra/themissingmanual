@@ -25,7 +25,7 @@ you ──► kubectl ──► (HTTPS) ──► API server ──► etcd (the
                               make reality match the request
 ```
 
-*What just happened:* every command you run is a read or a write against one API. `kubectl get pods` is a GET. `kubectl apply` is roughly a PATCH. This is why the commands feel so regular — they're all CRUD against the same set of resources.
+*What just happened:* every command you run is a read or a write against one API. `kubectl get pods` is a GET. `kubectl apply` is roughly a PATCH. This is why the commands feel so regular - they're all CRUD against the same set of resources.
 
 Why does this matter on a normal Tuesday? Because it tells you where to look when things are weird. If a command hangs, the question is "can I reach the API server?" not "is kubectl broken?" If a change "didn't take," the question is "did the write reach the API, and did a controller act on it?" You stop blaming the tool and start reading the system.
 
@@ -47,7 +47,7 @@ kubectl logs web-7c9f             # logs is special: it targets a pod by name di
 
 *What just happened:* the same four pieces rearrange into different commands. Learn the verbs (`get`, `describe`, `logs`, `exec`, `apply`, `delete`) and the common resources (`pods`, `deployments`, `services`, `nodes`, `events`) and you can already express most of what you need.
 
-A few resources have short aliases you'll see constantly — `po` for pods, `deploy` for deployments, `svc` for services, `ns` for namespaces. They're typing savers, nothing more:
+A few resources have short aliases you'll see constantly - `po` for pods, `deploy` for deployments, `svc` for services, `ns` for namespaces. They're typing savers, nothing more:
 
 ```bash
 kubectl get po          # same as kubectl get pods
@@ -61,7 +61,7 @@ kubectl get svc         # services
 
 Two settings silently shape every command, and forgetting them is the number-one source of "it works on my machine but not in the demo."
 
-**Context** = which cluster (and which user/credentials) you're talking to. Your `kubectl` config can hold many clusters — laptop minikube, staging, production — and exactly one is "current."
+**Context** = which cluster (and which user/credentials) you're talking to. Your `kubectl` config can hold many clusters - laptop minikube, staging, production - and exactly one is "current."
 
 ```bash
 kubectl config current-context        # which cluster am I pointed at RIGHT NOW?
@@ -69,9 +69,9 @@ kubectl config get-contexts           # list all of them; the * marks current
 kubectl config use-context staging    # switch
 ```
 
-*What just happened:* `current-context` answers the scariest question in Kubernetes — "wait, is this prod?" Run it before any command that changes things. The asterisk in `get-contexts` is your you-are-here marker.
+*What just happened:* `current-context` answers the scariest question in Kubernetes - "wait, is this prod?" Run it before any command that changes things. The asterisk in `get-contexts` is your you-are-here marker.
 
-**Namespace** = a folder inside one cluster. Pods, services, and deployments live in a namespace. By default kubectl looks only at the `default` namespace, which is why `get pods` can come back empty even though the cluster is busy — your workload is in `payments` or `kube-system`, not `default`.
+**Namespace** = a folder inside one cluster. Pods, services, and deployments live in a namespace. By default kubectl looks only at the `default` namespace, which is why `get pods` can come back empty even though the cluster is busy - your workload is in `payments` or `kube-system`, not `default`.
 
 ```bash
 kubectl get pods                       # only the 'default' namespace
@@ -81,7 +81,7 @@ kubectl get pods -A                     # ALL namespaces (the honest full pictur
 
 *What just happened:* `-A` (short for `--all-namespaces`) is the command that ends the "but there's nothing running!" confusion. When a cluster looks empty, run `get pods -A` and the truth appears.
 
-> **Two-question habit:** before any command that matters, ask *which context* and *which namespace*. Ninety percent of "kubectl is lying to me" moments are actually "I was looking in the wrong place." A wrong context can also mean you're about to change the wrong cluster — that one isn't only confusing, it's dangerous.
+> **Two-question habit:** before any command that matters, ask *which context* and *which namespace*. Ninety percent of "kubectl is lying to me" moments are actually "I was looking in the wrong place." A wrong context can also mean you're about to change the wrong cluster - that one isn't only confusing, it's dangerous.
 
 If typing `-n payments` on every command gets old, you can pin the default namespace for your current context:
 
@@ -89,11 +89,11 @@ If typing `-n payments` on every command gets old, you can pin the default names
 kubectl config set-context --current --namespace=payments
 ```
 
-*What just happened:* from now on, in this context, bare commands target `payments`. It's a per-context setting, so switching clusters with `use-context` resets you to that cluster's default — which is exactly what you want.
+*What just happened:* from now on, in this context, bare commands target `payments`. It's a per-context setting, so switching clusters with `use-context` resets you to that cluster's default - which is exactly what you want.
 
 ## Why this mental model pays off
 
-Everything in the next two phases is built from these pieces. "Read what's happening" is `get` and `describe` and `logs`. "Change it" is `apply`. "Get inside" is `exec` and `port-forward`. The debugging loop is nothing more than running the read verbs in a deliberate order. You're not memorizing a phrasebook — you're learning a grammar, and grammar generalizes.
+Everything in the next two phases is built from these pieces. "Read what's happening" is `get` and `describe` and `logs`. "Change it" is `apply`. "Get inside" is `exec` and `port-forward`. The debugging loop is nothing more than running the read verbs in a deliberate order. You're not memorizing a phrasebook - you're learning a grammar, and grammar generalizes.
 
 In the wild, the engineers who look fastest with kubectl aren't the ones who memorized the most. They're the ones who always know their context and namespace, and who read the output instead of skimming it.
 

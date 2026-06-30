@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # A Moment Is Not a Clock Reading
 
-Here's the reality you start from: you think of "time" as the number on a clock. 3:00pm. You and a friend agree to meet at 3pm and you both know what that means. So when you write code, you reach for the same thing — you store "3:00pm" and assume it's a fixed point. That assumption is the source of nearly every time bug you will ever write.
+Here's the reality you start from: you think of "time" as the number on a clock. 3:00pm. You and a friend agree to meet at 3pm and you both know what that means. So when you write code, you reach for the same thing - you store "3:00pm" and assume it's a fixed point. That assumption is the source of nearly every time bug you will ever write.
 
 Because "3:00pm" is not a point in time. It's a clock reading. And clocks all over the world read different things at the same actual instant.
 
@@ -19,7 +19,7 @@ Because "3:00pm" is not a point in time. It's a clock reading. And clocks all ov
 
 There are really two different concepts hiding under the word *time*, and confusing them is the original sin.
 
-**An instant** is a single point on the universe's timeline. The moment a payment cleared. The moment a sensor fired. It happens once, everywhere, simultaneously. When that payment cleared, it cleared *at the same instant* for someone in Tokyo and someone in New York — even though one of them was eating breakfast and the other was asleep.
+**An instant** is a single point on the universe's timeline. The moment a payment cleared. The moment a sensor fired. It happens once, everywhere, simultaneously. When that payment cleared, it cleared *at the same instant* for someone in Tokyo and someone in New York - even though one of them was eating breakfast and the other was asleep.
 
 **A wall-clock reading** is what a clock on a particular wall, in a particular place, says at that instant. At the one instant the payment cleared, the clock in Tokyo said 11:00pm and the clock in New York said 9:00am.
 
@@ -33,28 +33,28 @@ New York wall clock:   9:00 AM   (Monday)
 Los Angeles clock:     6:00 AM   (Monday)
 ```
 
-*What just happened:* a single instant produced four different clock readings — and even a different *day* in some places. The instant didn't change. The wall it's read off did. "3:00pm" with no location attached is not enough information to know *when* you mean.
+*What just happened:* a single instant produced four different clock readings - and even a different *day* in some places. The instant didn't change. The wall it's read off did. "3:00pm" with no location attached is not enough information to know *when* you mean.
 
 ## So what is an instant, in a computer?
 
 If wall-clock strings are ambiguous, you need a way to name an instant that means the same thing everywhere. There are two common ones, and they're really the same idea.
 
-**UTC** (Coordinated Universal Time) is a single global reference clock — think of it as the world's neutral wall clock, sitting at the prime meridian, that never shifts for daylight saving. When you say "this happened at 14:00 UTC," every machine on Earth agrees on exactly which instant you mean. UTC is the anchor everyone converts *to* and *from*.
+**UTC** (Coordinated Universal Time) is a single global reference clock - think of it as the world's neutral wall clock, sitting at the prime meridian, that never shifts for daylight saving. When you say "this happened at 14:00 UTC," every machine on Earth agrees on exactly which instant you mean. UTC is the anchor everyone converts *to* and *from*.
 
-**A Unix timestamp** is the same instant expressed as a plain number: the count of seconds (or milliseconds) since one fixed reference instant, midnight UTC on 1 January 1970, called the *epoch*. No time zone, no formatting, no ambiguity — only a number that ticks up by one every second, identically, on every computer in the world.
+**A Unix timestamp** is the same instant expressed as a plain number: the count of seconds (or milliseconds) since one fixed reference instant, midnight UTC on 1 January 1970, called the *epoch*. No time zone, no formatting, no ambiguity - only a number that ticks up by one every second, identically, on every computer in the world.
 
 ```text
 Instant:           2026-06-30  14:00:00 UTC
 Unix timestamp:    1782655200          (seconds since 1970-01-01 00:00 UTC)
 ```
 
-*What just happened:* the same instant, written two ways. The UTC string is human-readable; the Unix number is what machines love — comparing two instants becomes comparing two integers, and arithmetic ("five minutes later") becomes adding `300`. Neither carries any "where," because an instant doesn't need one.
+*What just happened:* the same instant, written two ways. The UTC string is human-readable; the Unix number is what machines love - comparing two instants becomes comparing two integers, and arithmetic ("five minutes later") becomes adding `300`. Neither carries any "where," because an instant doesn't need one.
 
-> A Unix timestamp is *not* "UTC time." It's a count of seconds with no zone at all. You convert it *into* a UTC string, or into a local clock reading, for display. The number itself is zone-free — that's the whole point of it.
+> A Unix timestamp is *not* "UTC time." It's a count of seconds with no zone at all. You convert it *into* a UTC string, or into a local clock reading, for display. The number itself is zone-free - that's the whole point of it.
 
 ## Why "3pm" needs a "where" to become a moment
 
-Put the two ideas together and the rule falls out. A wall-clock reading by itself ("2026-06-30 15:00:00") is not an instant. It's an instant *only once you attach the place* — because the place tells you how far that wall clock sits from UTC.
+Put the two ideas together and the rule falls out. A wall-clock reading by itself ("2026-06-30 15:00:00") is not an instant. It's an instant *only once you attach the place* - because the place tells you how far that wall clock sits from UTC.
 
 ```text
 "2026-06-30 15:00:00" in Berlin   -> instant: 2026-06-30 13:00:00 UTC
@@ -63,11 +63,11 @@ Put the two ideas together and the rule falls out. A wall-clock reading by itsel
 
 *What just happened:* the exact same string of digits, "15:00:00," named two instants six hours apart, because Berlin's clock and New York's clock sit at different distances from UTC. The string alone is a riddle. The string plus the place is an answer.
 
-This is the mental model to carry into everything else: **inside your program, work with instants** (UTC, or a timestamp) — unambiguous points on the timeline. **At the edges — when a human types a time or reads one — convert** between that instant and a local clock reading. The bugs happen when a wall-clock reading sneaks into the middle of your system pretending to be a moment.
+This is the mental model to carry into everything else: **inside your program, work with instants** (UTC, or a timestamp) - unambiguous points on the timeline. **At the edges - when a human types a time or reads one - convert** between that instant and a local clock reading. The bugs happen when a wall-clock reading sneaks into the middle of your system pretending to be a moment.
 
 ## For builders
 
-When a value crosses a boundary — comes out of a database, arrives in an API request, gets logged — ask one question: *is this an instant, or a clock reading?* An instant is safe to compare, sort, and store. A clock reading is display-only until you pair it with a zone. Training yourself to ask that one question, every time a date crosses a wire, prevents more time bugs than any library will. (If you're fuzzy on what "crossing a boundary" even means at runtime, [What Happens When Your Code Runs](/guides/what-happens-when-code-runs) lays out where data lives as a program executes.)
+When a value crosses a boundary - comes out of a database, arrives in an API request, gets logged - ask one question: *is this an instant, or a clock reading?* An instant is safe to compare, sort, and store. A clock reading is display-only until you pair it with a zone. Training yourself to ask that one question, every time a date crosses a wire, prevents more time bugs than any library will. (If you're fuzzy on what "crossing a boundary" even means at runtime, [What Happens When Your Code Runs](/guides/what-happens-when-code-runs) lays out where data lives as a program executes.)
 
 ```quiz
 [

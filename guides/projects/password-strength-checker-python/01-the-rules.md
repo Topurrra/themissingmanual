@@ -2,7 +2,7 @@
 title: "The Rules"
 guide: password-strength-checker-python
 phase: 1
-summary: "Write one small function per password rule — length and the four character classes — and test them on sample passwords."
+summary: "Write one small function per password rule - length and the four character classes - and test them on sample passwords."
 tags: [python, validation, security, functions, beginner]
 difficulty: beginner
 synonyms:
@@ -24,7 +24,7 @@ Before we can score a password we have to decide what we're even measuring. "Str
 - A digit?
 - A symbol (anything that isn't a letter or digit)?
 
-Five questions. Five tiny functions. Each one takes a password and returns `True` or `False`. That's the whole phase. Keeping them separate matters — later we'll count how many passed, and we'll tell the user which one failed. If we mashed them into one big check we couldn't do either.
+Five questions. Five tiny functions. Each one takes a password and returns `True` or `False`. That's the whole phase. Keeping them separate matters - later we'll count how many passed, and we'll tell the user which one failed. If we mashed them into one big check we couldn't do either.
 
 ## One rule at a time
 
@@ -45,7 +45,7 @@ See how the function says nothing about whether `12345678` is a *good* password?
 
 Now the character classes. We need to know if a password contains *at least one* lowercase letter, uppercase letter, and digit. Python strings have methods that test a single character: `"a".islower()`, `"A".isupper()`, `"5".isdigit()`. We loop over the password and ask if *any* character passes.
 
-`any(...)` is the right tool here. It walks a sequence and returns `True` the moment one item is true, `False` if none are. Compare that to writing a loop with a flag variable — `any` says what we mean in one line.
+`any(...)` is the right tool here. It walks a sequence and returns `True` the moment one item is true, `False` if none are. Compare that to writing a loop with a flag variable - `any` says what we mean in one line.
 
 ```python runnable
 def has_lower(password):
@@ -65,9 +65,9 @@ print(has_digit("abcdef"))  # no digits    -> False
 
 ## The tricky one: symbols
 
-A symbol is "not a letter, not a digit". You could try to list every symbol — `!@#$%...` — but you'll forget some, and different keyboards have different ones. Don't enumerate. Define a symbol as *the absence of letter-and-digit-ness*. A character is a symbol if it isn't alphanumeric: `not c.isalnum()`.
+A symbol is "not a letter, not a digit". You could try to list every symbol - `!@#$%...` - but you'll forget some, and different keyboards have different ones. Don't enumerate. Define a symbol as *the absence of letter-and-digit-ness*. A character is a symbol if it isn't alphanumeric: `not c.isalnum()`.
 
-One catch: a space is also "not alphanumeric", and so is a tab. For a password checker that's fine — a space is a perfectly good password character and many people use passphrases with spaces. So we'll count anything non-alphanumeric, including spaces, as a symbol. If you ever want to exclude spaces, that's a one-line change you can see in the code.
+One catch: a space is also "not alphanumeric", and so is a tab. For a password checker that's fine - a space is a perfectly good password character and many people use passphrases with spaces. So we'll count anything non-alphanumeric, including spaces, as a symbol. If you ever want to exclude spaces, that's a one-line change you can see in the code.
 
 ```python runnable
 def has_symbol(password):
@@ -106,13 +106,13 @@ for p in samples:
           f"upper={has_upper(p)!s:5} digit={has_digit(p)!s:5} symbol={has_symbol(p)}")
 ```
 
-Run it. Look at the table. `"cat"` fails almost everything. `"P@ssw0rd!"` passes everything — even though, as we'll see in the last phase, it's a terrible password that any cracking tool guesses in seconds. That gap is the lesson of this whole project: passing the rules and being safe are not the same thing. The rules are a floor, not a guarantee.
+Run it. Look at the table. `"cat"` fails almost everything. `"P@ssw0rd!"` passes everything - even though, as we'll see in the last phase, it's a terrible password that any cracking tool guesses in seconds. That gap is the lesson of this whole project: passing the rules and being safe are not the same thing. The rules are a floor, not a guarantee.
 
 ## Try it yourself
 
 Edit the `samples` list. Add your own passwords (don't use real ones). Watch which rules pass. A few things worth poking at:
 
 - Add `"12345678"`. It's long but fails every character class except `digit`. The rules already tell you it's lopsided.
-- Lower the `minimum` to 6 in `long_enough` and notice nothing else has to change — that's the payoff of one function per rule.
+- Lower the `minimum` to 6 in `long_enough` and notice nothing else has to change - that's the payoff of one function per rule.
 
 Next phase we stop reading a table of booleans by eye and let the code do the judging: we'll turn these five `True`/`False` answers into a single score and a label.

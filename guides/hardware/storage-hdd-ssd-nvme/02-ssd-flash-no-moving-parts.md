@@ -1,31 +1,31 @@
 ---
-title: "SSD — Flash, No Moving Parts"
+title: "SSD - Flash, No Moving Parts"
 guide: "storage-hdd-ssd-nvme"
 phase: 2
-summary: "A solid-state drive stores data in flash memory cells with no moving parts, so reaching scattered data costs almost nothing and random access becomes dramatically faster than an HDD; the trade-offs are higher cost per gigabyte and cells that wear out with writes, which wear-leveling spreads out — and this is why an SSD makes an old computer feel new."
+summary: "A solid-state drive stores data in flash memory cells with no moving parts, so reaching scattered data costs almost nothing and random access becomes dramatically faster than an HDD; the trade-offs are higher cost per gigabyte and cells that wear out with writes, which wear-leveling spreads out - and this is why an SSD makes an old computer feel new."
 tags: [storage, ssd, flash, nand, wear-leveling, random-access, trim]
 difficulty: intermediate
 synonyms: ["how does an ssd work", "what is flash memory", "why is an ssd faster than a hard drive", "do ssds wear out", "what is wear leveling", "why does an ssd make my computer faster", "what is nand flash"]
 updated: 2026-06-19
 ---
 
-# SSD — Flash, No Moving Parts
+# SSD - Flash, No Moving Parts
 
 In the last phase, every slow thing about an HDD traced back to one cause: it has to physically move to your
-data. So here's the obvious question an engineer eventually asks — *what if we got rid of the moving parts
+data. So here's the obvious question an engineer eventually asks - *what if we got rid of the moving parts
 entirely?* That question is the **solid-state drive**, or SSD. "Solid-state" literally means "no moving
 mechanical parts," and removing that arm and that spinning platter changes everything about how the drive
 behaves.
 
 ## What's actually inside
 
-**What it actually is.** An SSD stores data in **flash memory** — silicon chips full of microscopic cells,
+**What it actually is.** An SSD stores data in **flash memory** - silicon chips full of microscopic cells,
 each holding an electrical charge that represents your bits. There's no platter, no head, no arm. Reading a
 piece of data means *electronically addressing* the cell that holds it. Writing means changing the charge in
 a cell. Nothing physically travels anywhere.
 
 📝 **Terminology.** The flash inside almost every SSD is called **NAND flash** (NAND is the type of logic gate
-the cells are built from — you don't need the electronics, just the name). A small onboard computer called the
+the cells are built from - you don't need the electronics, just the name). A small onboard computer called the
 **controller** manages the chips: it decides where data goes, tracks where everything is, and handles the
 housekeeping we'll get to below.
 
@@ -58,12 +58,12 @@ gone.** That whole category of cost doesn't exist when nothing moves.
 ```
 
 **What it does in real life.** Remember that booting and launching apps means thousands of small scattered
-reads — the workload that made an HDD crawl. That's precisely the workload an SSD demolishes. Random access is
-dramatically faster on flash than on a spinning disk — not a little faster, but in a different class entirely.
+reads - the workload that made an HDD crawl. That's precisely the workload an SSD demolishes. Random access is
+dramatically faster on flash than on a spinning disk - not a little faster, but in a different class entirely.
 Sequential reads are faster too, but it's the random-access difference you actually *feel* day to day.
 
-💡 **Key point — this is why an old machine "feels new" with an SSD.** When people swap an HDD for an SSD in an
-aging laptop, they describe it as the single biggest speedup they've ever felt — boot, login, opening apps,
+💡 **Key point - this is why an old machine "feels new" with an SSD.** When people swap an HDD for an SSD in an
+aging laptop, they describe it as the single biggest speedup they've ever felt - boot, login, opening apps,
 switching between them, all snappy. Nothing else changed: same CPU, same RAM. What changed is that every
 operation that was secretly waiting on a moving arm now isn't. The computer was rarely slow at *thinking*;
 it was slow at *fetching*.
@@ -85,7 +85,7 @@ kill those cells while the rest of the drive sat untouched.
 
 📝 **Terminology.** **Wear-leveling** is how the controller solves this. Instead of repeatedly writing to the
 same physical cells, it spreads writes evenly across *all* the cells, so they age together rather than a few
-dying early. You never see this happening — the controller quietly remaps where data physically lives behind
+dying early. You never see this happening - the controller quietly remaps where data physically lives behind
 the scenes.
 
 ```text
@@ -95,8 +95,8 @@ the scenes.
       to death, rest unused           so the whole drive ages evenly
 ```
 
-⚠️ **Gotcha — don't defragment or "optimize" an SSD.** From Phase 1: defragmenting exists to make an HDD's
-head travel less. An SSD has no head, so defragmenting buys you nothing — and worse, it's a giant pile of
+⚠️ **Gotcha - don't defragment or "optimize" an SSD.** From Phase 1: defragmenting exists to make an HDD's
+head travel less. An SSD has no head, so defragmenting buys you nothing - and worse, it's a giant pile of
 *writes*, which is the one thing that actually wears flash. Modern operating systems know this and won't
 defrag an SSD; they run a different maintenance command instead (often called **TRIM**), which tells the
 drive which blocks are no longer in use so it can keep write performance high. Let the OS handle it; don't run
@@ -110,17 +110,17 @@ the laptop on your desk, it's good to *understand* the mechanism, but it's not s
 
 ## Recap
 
-1. An **SSD** stores data in **flash (NAND) cells** with **no moving parts** — a **controller** addresses any
+1. An **SSD** stores data in **flash (NAND) cells** with **no moving parts** - a **controller** addresses any
    cell electronically.
 2. Because nothing moves, **seek time and rotational latency are gone**, so **random access is dramatically
-   faster** than an HDD — that's the speedup you feel when booting and launching apps.
+   faster** than an HDD - that's the speedup you feel when booting and launching apps.
 3. Trade-off one: flash costs **more per gigabyte**, so SSD + HDD together is often the smart split.
 4. Trade-off two: cells **wear out with writes**, but **wear-leveling** spreads writes so the drive ages
-   evenly — rarely a worry for everyday use. Don't defragment an SSD; let the OS run **TRIM**.
+   evenly - rarely a worry for everyday use. Don't defragment an SSD; let the OS run **TRIM**.
 
 There's one more twist, and it's the one almost nobody tells you: even with all this flash speed, your SSD can
-still be held back — not by the flash, but by the *cable it plugs into*. That's the next phase.
+still be held back - not by the flash, but by the *cable it plugs into*. That's the next phase.
 
 ---
 
-[← Phase 1: HDD — Spinning Rust](01-hdd-spinning-rust.md) · [Guide overview](_guide.md) · [Phase 3: NVMe vs SATA →](03-nvme-vs-sata.md)
+[← Phase 1: HDD - Spinning Rust](01-hdd-spinning-rust.md) · [Guide overview](_guide.md) · [Phase 3: NVMe vs SATA →](03-nvme-vs-sata.md)

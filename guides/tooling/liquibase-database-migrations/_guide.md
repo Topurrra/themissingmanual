@@ -31,8 +31,8 @@ If migrations as a concept are new to you, read [the migrations guide](/guides/d
 
 ## The phases
 
-1. [The mental model: changelog and changeset](01-the-changelog-and-the-changeset.md) — what Liquibase actually tracks and why it never re-runs a change.
-2. [The everyday loop: write, update, status, rollback](02-the-everyday-loop.md) — the commands and changeset patterns you use daily.
-3. [When the abstraction earns its keep](03-when-abstraction-earns-its-keep.md) — contexts, labels, DB-agnostic changes, and the gotchas of production.
+1. [The mental model: changelog and changeset](01-the-changelog-and-the-changeset.md) - what Liquibase actually tracks and why it never re-runs a change.
+2. [The everyday loop: write, update, status, rollback](02-the-everyday-loop.md) - the commands and changeset patterns you use daily.
+3. [When the abstraction earns its keep](03-when-abstraction-earns-its-keep.md) - contexts, labels, DB-agnostic changes, and the gotchas of production.
 
 [Phase 1: The mental model: changelog and changeset](01-the-changelog-and-the-changeset.md) →

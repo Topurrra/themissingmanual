@@ -19,32 +19,32 @@
   function f1(id, msg) { flash = id; note = msg; }
 
   // array
-  function append() { n++; list = [...list, { id: n, v: n }]; f1(n, 'Appended to the end — O(1).'); }
-  function prepend() { n++; list = [{ id: n, v: n }, ...list]; fa('Inserted at the front — every element shifts right. O(n).'); }
-  function popEnd() { if (!list.length) return; const last = list[list.length - 1]; f1(last.id, mode === 'stack' ? 'Popped the top — O(1).' : 'Removed the last element — O(1).'); list = list.slice(0, -1); }
-  function removeFront() { if (!list.length) return; flash = list[0].id; fa('Removed from the front — everything shifts left. O(n).'); list = list.slice(1); }
-  function access(it, i) { f1(it.id, `Jumped to index ${i} directly — O(1), no scanning.`); }
+  function append() { n++; list = [...list, { id: n, v: n }]; f1(n, 'Appended to the end - O(1).'); }
+  function prepend() { n++; list = [{ id: n, v: n }, ...list]; fa('Inserted at the front - every element shifts right. O(n).'); }
+  function popEnd() { if (!list.length) return; const last = list[list.length - 1]; f1(last.id, mode === 'stack' ? 'Popped the top - O(1).' : 'Removed the last element - O(1).'); list = list.slice(0, -1); }
+  function removeFront() { if (!list.length) return; flash = list[0].id; fa('Removed from the front - everything shifts left. O(n).'); list = list.slice(1); }
+  function access(it, i) { f1(it.id, `Jumped to index ${i} directly - O(1), no scanning.`); }
   // stack / queue
-  function push() { n++; list = [...list, { id: n, v: n }]; f1(n, mode === 'stack' ? 'Pushed onto the top — O(1).' : 'Enqueued at the back — O(1).'); }
-  function dequeue() { if (!list.length) return; flash = list[0].id; note = 'Dequeued from the front — O(1).'; list = list.slice(1); }
+  function push() { n++; list = [...list, { id: n, v: n }]; f1(n, mode === 'stack' ? 'Pushed onto the top - O(1).' : 'Enqueued at the back - O(1).'); }
+  function dequeue() { if (!list.length) return; flash = list[0].id; note = 'Dequeued from the front - O(1).'; list = list.slice(1); }
   // map
   function setKey() {
     const k = KEYS[pairs.length % KEYS.length];
     const ex = pairs.find((p) => p.k === k);
     n++;
     if (ex) { pairs = pairs.map((p) => p.k === k ? { k, v: n } : p); f1('k:' + k, `Key "${k}" already exists → its value is replaced. Keys are unique.`); }
-    else { pairs = [...pairs, { k, v: n }]; f1('k:' + k, `Inserted "${k}" — hashed straight to a slot. O(1) average.`); }
+    else { pairs = [...pairs, { k, v: n }]; f1('k:' + k, `Inserted "${k}" - hashed straight to a slot. O(1) average.`); }
   }
-  function getKey(k) { f1('k:' + k, `Looked up "${k}" by key — O(1), no scanning the others.`); }
-  function delKey() { if (pairs.length) { pairs = pairs.slice(0, -1); note = 'Removed a key — O(1) average.'; } }
+  function getKey(k) { f1('k:' + k, `Looked up "${k}" by key - O(1), no scanning the others.`); }
+  function delKey() { if (pairs.length) { pairs = pairs.slice(0, -1); note = 'Removed a key - O(1) average.'; } }
   // set
   function addVal() {
     const v = SVALS[(sset.length + n) % SVALS.length];
-    if (sset.includes(v)) { f1('s:' + v, `"${v}" is already in the set — duplicates are ignored.`); }
+    if (sset.includes(v)) { f1('s:' + v, `"${v}" is already in the set - duplicates are ignored.`); }
     else { sset = [...sset, v]; n++; f1('s:' + v, `Added "${v}". A set keeps only unique values.`); }
   }
-  function hasVal(v) { f1('s:' + v, `"${v}" is in the set? Yes — membership is O(1).`); }
-  function delVal() { if (sset.length) { sset = sset.slice(0, -1); note = 'Removed a value — O(1).'; } }
+  function hasVal(v) { f1('s:' + v, `"${v}" is in the set? Yes - membership is O(1).`); }
+  function delVal() { if (sset.length) { sset = sset.slice(0, -1); note = 'Removed a value - O(1).'; } }
 </script>
 
 <figure class="pg pg-ds">
@@ -115,10 +115,10 @@
     <p class="ds-note">
       {#if note}{note}
       {:else if mode === 'array'}An <b>array/list</b> is indexed: reaching item <code>i</code> is instant, but inserting or removing in the middle/front shifts everything after it.
-      {:else if mode === 'stack'}A <b>stack</b> is last-in, first-out — push and pop at the same end. Think undo history or the call stack.
-      {:else if mode === 'queue'}A <b>queue</b> is first-in, first-out — enqueue at the back, dequeue from the front. Think a print queue.
-      {:else if mode === 'map'}A <b>map/dictionary</b> jumps to a value by its key via hashing — no scanning. Each key is unique.
-      {:else}A <b>set</b> stores unique values with instant membership tests — adding a duplicate does nothing.{/if}
+      {:else if mode === 'stack'}A <b>stack</b> is last-in, first-out - push and pop at the same end. Think undo history or the call stack.
+      {:else if mode === 'queue'}A <b>queue</b> is first-in, first-out - enqueue at the back, dequeue from the front. Think a print queue.
+      {:else if mode === 'map'}A <b>map/dictionary</b> jumps to a value by its key via hashing - no scanning. Each key is unique.
+      {:else}A <b>set</b> stores unique values with instant membership tests - adding a duplicate does nothing.{/if}
     </p>
   </div>
 </figure>

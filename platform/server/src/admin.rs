@@ -598,7 +598,7 @@ pub async fn status(State(state): State<Arc<AppState>>) -> Response {
 
 // ===== content backlog (demand vs. coverage) =====
 
-/// Admin: top searches scored by how many results they return today — fewest hits + highest
+/// Admin: top searches scored by how many results they return today - fewest hits + highest
 /// demand first, so "people search this and find little" rises to the top as a content backlog.
 pub async fn backlog(State(state): State<Arc<AppState>>, Query(q): Query<HashMap<String, String>>) -> Response {
     let days: i64 = q.get("days").and_then(|s| s.parse().ok()).unwrap_or(30).clamp(1, 365);

@@ -16,16 +16,16 @@ updated: 2026-06-30
 
 # A Tiny CLI, and Where to Take It
 
-The logic is finished. `shorten()` and `resolve()` do everything a URL shortener does. But right now the only way to use it is to edit the source code, which is no way to hand it to a friend. This phase wraps it in a small command interface — type a command, get an answer — and then lays out the paths from this toy to something real.
+The logic is finished. `shorten()` and `resolve()` do everything a URL shortener does. But right now the only way to use it is to edit the source code, which is no way to hand it to a friend. This phase wraps it in a small command interface - type a command, get an answer - and then lays out the paths from this toy to something real.
 
 ## A command loop
 
 A command-line tool is a loop: read what the user typed, figure out which command it is, do the thing, print the result, repeat. We'll support two commands:
 
-- `shorten <url>` — mint a code for a URL and print it.
-- `get <code>` — resolve a code back to its URL.
+- `shorten <url>` - mint a code for a URL and print it.
+- `get <code>` - resolve a code back to its URL.
 
-On your own machine you'd read commands with Python's `input()` in a `while True:` loop. Here in the browser there's no keyboard prompt, so we'll feed the loop a fixed list of commands and process them the same way `input()` would. The command-parsing logic is identical — only the source of the lines changes.
+On your own machine you'd read commands with Python's `input()` in a `while True:` loop. Here in the browser there's no keyboard prompt, so we'll feed the loop a fixed list of commands and process them the same way `input()` would. The command-parsing logic is identical - only the source of the lines changes.
 
 Run this. It's the whole thing, end to end:
 
@@ -126,7 +126,7 @@ Here are the next steps in roughly increasing order of effort. Each one is a rea
 | **Unguessable codes** | Codes no one can walk through sequentially | Mix randomness into the counter, or hash + base62 the count |
 | **Click counts** | Track how many times each link is followed | A third dict, `code -> count`, bumped in `resolve()` |
 
-**File persistence** is the most rewarding first step — right now everything evaporates when the program stops. The standard-library `json` module turns your two dictionaries into a file and back:
+**File persistence** is the most rewarding first step - right now everything evaporates when the program stops. The standard-library `json` module turns your two dictionaries into a file and back:
 
 ```python
 import json
@@ -145,12 +145,12 @@ def load(path="links.json"):
     counter = data["counter"]
 ```
 
-Call `load()` at startup (wrapped in a `try`/`except FileNotFoundError` for the first run) and `save()` after each `shorten()`. Now your links persist across restarts — the leap from a toy to something you'd actually keep.
+Call `load()` at startup (wrapped in a `try`/`except FileNotFoundError` for the first run) and `save()` after each `shorten()`. Now your links persist across restarts - the leap from a toy to something you'd actually keep.
 
-**A real web server** is the upgrade that makes it feel like the real product. With `http.server` from the standard library you can answer `GET /aZ4` by looking up the code and returning an HTTP redirect to the long URL — at which point clicking your short link in a browser genuinely sends you somewhere. That's the moment it stops being a script and starts being a service.
+**A real web server** is the upgrade that makes it feel like the real product. With `http.server` from the standard library you can answer `GET /aZ4` by looking up the code and returning an HTTP redirect to the long URL - at which point clicking your short link in a browser genuinely sends you somewhere. That's the moment it stops being a script and starts being a service.
 
 ## What you built
 
-You started with a single sentence — a map from short code to long URL — and ended with a working program: a dictionary store, a base62 generator fed by a counter, `shorten()` and `resolve()` that handle the awkward cases, and a command loop to drive it. The same architecture, scaled up with a database and a web server, is what runs behind every short link you've ever clicked.
+You started with a single sentence - a map from short code to long URL - and ended with a working program: a dictionary store, a base62 generator fed by a counter, `shorten()` and `resolve()` that handle the awkward cases, and a command loop to drive it. The same architecture, scaled up with a database and a web server, is what runs behind every short link you've ever clicked.
 
 The mechanism was never the hard part. Now you've seen it bare, and you know exactly which dials to turn to take it further.

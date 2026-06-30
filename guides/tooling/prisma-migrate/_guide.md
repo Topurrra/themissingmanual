@@ -33,8 +33,8 @@ If you've never touched a migration tool before, the sibling guide [/guides/data
 
 ## The phases
 
-1. [Schema is the source of truth](01-schema-is-the-source-of-truth.md) — what Prisma Migrate actually is, and what a migration file really contains.
-2. [The everyday loop](02-the-everyday-loop.md) — `migrate dev`, `migrate deploy`, and the workflow you'll repeat hundreds of times.
-3. [Drift, shadows, and production](03-drift-shadows-and-production.md) — the shadow database, drift detection, failed migrations, and the rules that keep a team sane.
+1. [Schema is the source of truth](01-schema-is-the-source-of-truth.md) - what Prisma Migrate actually is, and what a migration file really contains.
+2. [The everyday loop](02-the-everyday-loop.md) - `migrate dev`, `migrate deploy`, and the workflow you'll repeat hundreds of times.
+3. [Drift, shadows, and production](03-drift-shadows-and-production.md) - the shadow database, drift detection, failed migrations, and the rules that keep a team sane.
 
 [Phase 1: Schema is the source of truth](01-schema-is-the-source-of-truth.md) →

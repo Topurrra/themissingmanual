@@ -56,7 +56,7 @@ You do not need to memorize this rule. You need to understand what it means: the
 
 In economics, the **marginal cost** is the cost of producing one more unit. If you have made 100 widgets and you are considering the 101st, the marginal cost is the derivative of the total cost function at 100.
 
-Suppose the total cost of producing `x` widgets is `C(x) = x^2 + 10x + 50`. The marginal cost at `x = 100` is `C'(100) = 2 * 100 + 10 = 210`, so the 101st widget costs about $210. (The exact cost of that one unit, `C(101) - C(100)`, is $211 — the derivative is the instantaneous rate, a fast and very close estimate.)
+Suppose the total cost of producing `x` widgets is `C(x) = x^2 + 10x + 50`. The marginal cost at `x = 100` is `C'(100) = 2 * 100 + 10 = 210`, so the 101st widget costs about $210. (The exact cost of that one unit, `C(101) - C(100)`, is $211 - the derivative is the instantaneous rate, a fast and very close estimate.)
 
 The derivative turns a question about totals ("how much does 100 widgets cost?") into a question about rates ("how much does one more cost?"). That translation is the whole point of calculus.
 

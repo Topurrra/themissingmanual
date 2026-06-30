@@ -11,11 +11,11 @@ updated: 2026-06-30
 
 # Where the rope gets you
 
-Phase 1 sold you on the upside: a real language means real loops, functions, and types. This phase is the bill for that power. A general-purpose language can express things infrastructure shouldn't do, and the most common Pulumi surprises come from forgetting that your program describes a desired state — it isn't a script that runs top to bottom the way you read it.
+Phase 1 sold you on the upside: a real language means real loops, functions, and types. This phase is the bill for that power. A general-purpose language can express things infrastructure shouldn't do, and the most common Pulumi surprises come from forgetting that your program describes a desired state - it isn't a script that runs top to bottom the way you read it.
 
 ## Outputs aren't values yet
 
-This is the single biggest source of confusion for newcomers. A resource property like a bucket's name or an instance's IP doesn't exist until Pulumi creates the resource. So Pulumi gives you an **Output** — a promise of a future value, not the value itself. You can't treat it like a plain string.
+This is the single biggest source of confusion for newcomers. A resource property like a bucket's name or an instance's IP doesn't exist until Pulumi creates the resource. So Pulumi gives you an **Output** - a promise of a future value, not the value itself. You can't treat it like a plain string.
 
 ```typescript
 const bucket = new aws.s3.Bucket("data");
@@ -28,7 +28,7 @@ const url = "https://" + bucket.id + ".example.com";
 const url = pulumi.interpolate`https://${bucket.id}.example.com`;
 ```
 
-*What just happened:* the first line tried to concatenate an Output as if it were already a string, producing garbage. `pulumi.interpolate` (or `bucket.id.apply(id => ...)`) waits for the real value and computes the URL once it exists. The rule: to use what's *inside* an Output, you go through `.apply` or `interpolate` — you never read it directly.
+*What just happened:* the first line tried to concatenate an Output as if it were already a string, producing garbage. `pulumi.interpolate` (or `bucket.id.apply(id => ...)`) waits for the real value and computes the URL once it exists. The rule: to use what's *inside* an Output, you go through `.apply` or `interpolate` - you never read it directly.
 
 > If you find yourself logging an Output and seeing `Calculating...` or `[object Object]`, that's the tell. The value isn't ready; you need `.apply`.
 
@@ -77,7 +77,7 @@ const tiers = computeTiersFromSomeHeuristic(loadExternalPlan());
 tiers.forEach(t => buildEntireSubsystem(t));   // good luck reviewing the diff
 ```
 
-*What just happened:* the readable, reviewable property of IaC quietly evaporated — the `preview` diff is now a function of code nobody can trace. Keep infra code boring. Loops and small helpers, yes; a framework, no. The goal is still that a reviewer reads the plan and understands it.
+*What just happened:* the readable, reviewable property of IaC quietly evaporated - the `preview` diff is now a function of code nobody can trace. Keep infra code boring. Loops and small helpers, yes; a framework, no. The goal is still that a reviewer reads the plan and understands it.
 
 ## So when should you reach for Pulumi over HCL?
 
@@ -93,7 +93,7 @@ Lean **HCL/Terraform** when:
 - Infrastructure is mostly static and flat, where a constrained DSL is a feature, not a limit.
 - You want the guardrail of a language that *can't* do clever things.
 
-Both share the same core model — declarative, state, plan-then-apply — so this is a choice of ergonomics and team fit, not of capability. If you want the other side of that comparison, [/guides/infrastructure-as-code-terraform](/guides/infrastructure-as-code-terraform) covers HCL directly.
+Both share the same core model - declarative, state, plan-then-apply - so this is a choice of ergonomics and team fit, not of capability. If you want the other side of that comparison, [/guides/infrastructure-as-code-terraform](/guides/infrastructure-as-code-terraform) covers HCL directly.
 
 ## In the wild
 
@@ -105,7 +105,7 @@ The teams that stay happy on Pulumi treat the language as a tool for clarity, no
     "q": "Why can't you concatenate bucket.id directly into a string?",
     "choices": [
       "Pulumi forbids string operations on resources",
-      "bucket.id is an Output — a future value that doesn't exist until the resource is created",
+      "bucket.id is an Output - a future value that doesn't exist until the resource is created",
       "The id is always null in TypeScript",
       "You must call pulumi up first, then hard-code the result"
     ],
@@ -118,7 +118,7 @@ The teams that stay happy on Pulumi treat the language as a tool for clarity, no
       "Random numbers aren't allowed in Python",
       "It's slower than a fixed name",
       "The name differs every run, so Pulumi sees drift and replaces the resource each deploy",
-      "Nothing — it's the recommended way to get unique names"
+      "Nothing - it's the recommended way to get unique names"
     ],
     "answer": 2,
     "explain": "Programs should be deterministic descriptions. Side-effecting randomness changes the declaration each run. Use the random provider's resources, which store the value in state."

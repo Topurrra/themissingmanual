@@ -11,15 +11,15 @@ updated: 2026-06-30
 
 # Closures You'll Actually Write
 
-Phase 1 gave you the model: a function carries a backpack of captured variables. That sounds abstract until you see what it *buys* you. Three patterns cover most of what closures are actually for, and once you recognize them you'll spot them everywhere in real code — and start reaching for them on purpose.
+Phase 1 gave you the model: a function carries a backpack of captured variables. That sounds abstract until you see what it *buys* you. Three patterns cover most of what closures are actually for, and once you recognize them you'll spot them everywhere in real code - and start reaching for them on purpose.
 
 ## Pattern 1: private state
 
-A variable inside a function is invisible to the outside world. Combine that with a closure and you get state that *persists* between calls but that nothing else can reach, read, or corrupt. No class, no `private` keyword — the scope itself is the wall.
+A variable inside a function is invisible to the outside world. Combine that with a closure and you get state that *persists* between calls but that nothing else can reach, read, or corrupt. No class, no `private` keyword - the scope itself is the wall.
 
 ```javascript
 function makeAccount(start) {
-  let balance = start;                  // private — only the closures below can touch it
+  let balance = start;                  // private - only the closures below can touch it
 
   return {
     deposit(amount) { balance += amount; return balance; },
@@ -35,10 +35,10 @@ function makeAccount(start) {
 const acct = makeAccount(100);
 console.log(acct.deposit(50));   // 150
 console.log(acct.withdraw(30));  // 120
-console.log(acct.balance);       // undefined — there is no such property
+console.log(acct.balance);       // undefined - there is no such property
 ```
 
-*What just happened:* `balance` lives in `makeAccount`'s scope. The three returned functions all share that one `balance` through their backpacks, so they stay coordinated. But there's no way to reach `balance` from outside — `acct.balance` is `undefined` because `balance` was never a property, only a captured variable. The only way to change it is through `deposit` and `withdraw`, exactly as intended.
+*What just happened:* `balance` lives in `makeAccount`'s scope. The three returned functions all share that one `balance` through their backpacks, so they stay coordinated. But there's no way to reach `balance` from outside - `acct.balance` is `undefined` because `balance` was never a property, only a captured variable. The only way to change it is through `deposit` and `withdraw`, exactly as intended.
 
 This is real encapsulation, built from nothing but scope. The data is protected not by a rule the language enforces with a keyword, but by the simple fact that no code outside the closure has any name for the variable.
 
@@ -61,13 +61,13 @@ print(double(10))   # 20
 print(triple(10))   # 30
 ```
 
-*What just happened:* Calling `multiplier(2)` baked `factor = 2` into the `double` closure's backpack; `multiplier(3)` baked `3` into `triple`. Each returned function remembers its own `factor`, so `double` and `triple` are genuinely different functions made from the same template. This pattern — fixing one argument to produce a more specific function — is called **partial application**, and closures are how it's built.
+*What just happened:* Calling `multiplier(2)` baked `factor = 2` into the `double` closure's backpack; `multiplier(3)` baked `3` into `triple`. Each returned function remembers its own `factor`, so `double` and `triple` are genuinely different functions made from the same template. This pattern - fixing one argument to produce a more specific function - is called **partial application**, and closures are how it's built.
 
 You'll see this constantly: a logger pre-loaded with a category, a fetch helper pre-loaded with a base URL, a validator pre-loaded with a set of rules. One general function becomes a family of tailored ones, each carrying its own configuration.
 
 ## Pattern 3: callbacks that remember
 
-This is where closures earn their keep most often. A callback is a function you hand to someone else to call *later* — when a button is clicked, when data arrives, when a timer fires. By the time it runs, the code that created it has long since moved on. The callback needs to remember the context it was born in, and a closure is precisely that memory.
+This is where closures earn their keep most often. A callback is a function you hand to someone else to call *later* - when a button is clicked, when data arrives, when a timer fires. By the time it runs, the code that created it has long since moved on. The callback needs to remember the context it was born in, and a closure is precisely that memory.
 
 ```javascript
 function setupButtons(labels) {
@@ -82,9 +82,9 @@ function setupButtons(labels) {
 setupButtons(["Save", "Cancel", "Delete"]);
 ```
 
-*What just happened:* Each click handler is created inside the loop body and captures the `label` that existed at that moment. When a click happens much later, the handler reaches into its backpack and finds the right label — "Save", "Cancel", or "Delete" — even though `setupButtons` finished running the instant it was called. The callback carried its context with it.
+*What just happened:* Each click handler is created inside the loop body and captures the `label` that existed at that moment. When a click happens much later, the handler reaches into its backpack and finds the right label - "Save", "Cancel", or "Delete" - even though `setupButtons` finished running the instant it was called. The callback carried its context with it.
 
-Notice this works cleanly here because `label` is declared with `const` *inside the loop body*, so each iteration creates a fresh `label`. That detail is doing quiet, critical work — and in Phase 3 you'll see exactly what goes wrong when that detail is missing.
+Notice this works cleanly here because `label` is declared with `const` *inside the loop body*, so each iteration creates a fresh `label`. That detail is doing quiet, critical work - and in Phase 3 you'll see exactly what goes wrong when that detail is missing.
 
 > **For builders.** Callbacks are everywhere async code lives. When you pass a function to `setTimeout`, an event listener, or a promise's `.then`, you're handing off a closure that has to remember what it was working on. The same backpack that makes a counter work makes async callbacks coherent. For how those callbacks get scheduled and run later, see [Async/Await & the Event Loop](/guides/async-await-and-the-event-loop).
 
@@ -92,11 +92,11 @@ Notice this works cleanly here because `label` is declared with `const` *inside 
 
 All three patterns are the same physics from Phase 1, pointed at different jobs:
 
-- **Private state** — captured variables outlive the function, and outsiders have no name for them.
-- **Pre-loading** — a captured argument specializes a general function.
-- **Callbacks** — a captured context travels with a function to wherever it's called later.
+- **Private state** - captured variables outlive the function, and outsiders have no name for them.
+- **Pre-loading** - a captured argument specializes a general function.
+- **Callbacks** - a captured context travels with a function to wherever it's called later.
 
-You don't need three mental models. You need one — *a function carries the variables it was born next to* — and the uses fall out of it.
+You don't need three mental models. You need one - *a function carries the variables it was born next to* - and the uses fall out of it.
 
 ```quiz
 [

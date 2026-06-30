@@ -76,11 +76,11 @@ pip install requests beautifulsoup4
 ```
 
 `requests` handles the talking-to-servers part. `beautifulsoup4` (you import it
-as `bs4`) handles the reading-the-HTML part — we'll meet it properly in Phase 2,
+as `bs4`) handles the reading-the-HTML part - we'll meet it properly in Phase 2,
 but installing it now keeps us from a second trip to pip.
 
-It's worth recording exactly what you installed so you — or anyone you share
-this with — can recreate the environment:
+It's worth recording exactly what you installed so you - or anyone you share
+this with - can recreate the environment:
 
 ```bash
 pip freeze > requirements.txt
@@ -115,7 +115,7 @@ python fetch.py
 
 You should see something like a `200` status code, a content type mentioning
 `text/html`, a body that's many thousands of characters long, and the opening of
-an HTML document. That `200` is the whole point of this phase — the server
+an HTML document. That `200` is the whole point of this phase - the server
 heard you and sent back the page.
 
 ## Read what came back
@@ -163,7 +163,7 @@ print("Got", len(response.text), "characters of HTML")
 ```
 
 Two changes earn their keep here. `timeout=10` means the request gives up after
-ten seconds instead of hanging your program forever when a server goes quiet —
+ten seconds instead of hanging your program forever when a server goes quiet -
 never make a real request without a timeout. And `raise_for_status()` turns a
 bad status into a loud crash, so you find out something's wrong immediately
 rather than parsing an error page as if it were data.

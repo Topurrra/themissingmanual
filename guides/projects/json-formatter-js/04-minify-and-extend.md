@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 # Minify and Extend
 
-Pretty-printing makes JSON readable. Sometimes you want the opposite — the smallest possible string to send over the wire or stuff into a config field. This phase adds a minify mode, then a key-sorting option that makes output stable enough to diff, and finishes with directions to keep going after the weekend's over.
+Pretty-printing makes JSON readable. Sometimes you want the opposite - the smallest possible string to send over the wire or stuff into a config field. This phase adds a minify mode, then a key-sorting option that makes output stable enough to diff, and finishes with directions to keep going after the weekend's over.
 
 ## Minify is the same call, minus the indent
 
@@ -38,7 +38,7 @@ console.log(small);
 console.log("from", spaced.length, "chars down to", small.length);
 ```
 
-Run it. The multi-line input collapses to one line and you'll see the character count drop. Parsing first matters — it guarantees the output is valid JSON, not a clumsy find-and-replace on whitespace that would mangle spaces *inside* string values.
+Run it. The multi-line input collapses to one line and you'll see the character count drop. Parsing first matters - it guarantees the output is valid JSON, not a clumsy find-and-replace on whitespace that would mangle spaces *inside* string values.
 
 ## One function, both directions
 
@@ -65,7 +65,7 @@ Run it and watch the same input come out two ways. That's your formatter and you
 
 Here's a problem you hit the moment you try to compare two JSON files: object key order. `{"a":1,"b":2}` and `{"b":2,"a":1}` are the *same data*, but as text they're different lines, and any diff tool will light up red. The fix is to sort keys before stringifying, so the same data always produces the same text.
 
-That third argument to `JSON.stringify` — the replacer we skipped in Phase 1 — has a second form: pass it an *array of keys* and it outputs only those keys, in that order. Hand it the sorted list of every key and you get sorted output.
+That third argument to `JSON.stringify` - the replacer we skipped in Phase 1 - has a second form: pass it an *array of keys* and it outputs only those keys, in that order. Hand it the sorted list of every key and you get sorted output.
 
 ```js runnable
 function sortedFormat(text, indent = 2) {
@@ -88,11 +88,11 @@ console.log("--- keys sorted ---");
 console.log(sortedFormat(messy));
 ```
 
-Run it. The first block keeps the original key order; the second alphabetizes every key. We use the *replacer-as-function* form once to collect all keys, then the *replacer-as-array* form to emit them in sorted order. Now two files holding the same data, formatted this way, produce identical text — and a diff between them shows only real differences.
+Run it. The first block keeps the original key order; the second alphabetizes every key. We use the *replacer-as-function* form once to collect all keys, then the *replacer-as-array* form to emit them in sorted order. Now two files holding the same data, formatted this way, produce identical text - and a diff between them shows only real differences.
 
 ## The whole tool, assembled
 
-Here's everything from all four phases in one place — parse, pretty-print, explain errors, check shape, minify, sort. This is the thing you set out to build.
+Here's everything from all four phases in one place - parse, pretty-print, explain errors, check shape, minify, sort. This is the thing you set out to build.
 
 ```js runnable
 function typeOf(v) {
@@ -151,7 +151,7 @@ Run it. One function, one options object, every behavior we built. Pretty by def
 
 ## Where to take it next
 
-You've got a working formatter and validator. Here are directions worth a future afternoon — each builds on what's already here, none needs a library.
+You've got a working formatter and validator. Here are directions worth a future afternoon - each builds on what's already here, none needs a library.
 
 | Idea | The seed |
 | --- | --- |
@@ -160,7 +160,7 @@ You've got a working formatter and validator. Here are directions worth a future
 | Highlight | Wrap strings, numbers, keys in spans for colour in a page |
 | Sort + diff combo | Sort both inputs first so the diff shows only real changes |
 
-The diff is the most fun, so here's a starting sketch — a shallow compare of two flat objects that reports what changed.
+The diff is the most fun, so here's a starting sketch - a shallow compare of two flat objects that reports what changed.
 
 ```js runnable
 function diff(a, b) {
@@ -182,6 +182,6 @@ const after = { name: "Ada", age: 37, admin: true, email: "a@x.io" };
 console.log(diff(before, after));
 ```
 
-Run it. You get `age` changed, `admin` changed, and `email` added — a small, honest diff. Notice it uses `JSON.stringify` to compare values, the same trick that lets it tell `[1,2]` apart from `[1,3]` without writing a deep-equality function. Make it recurse into nested objects and you've got something genuinely useful.
+Run it. You get `age` changed, `admin` changed, and `email` added - a small, honest diff. Notice it uses `JSON.stringify` to compare values, the same trick that lets it tell `[1,2]` apart from `[1,3]` without writing a deep-equality function. Make it recurse into nested objects and you've got something genuinely useful.
 
-That's the build. You started with a one-line mess and ended with a tool that formats it, tells you when it's broken and where, checks it's the data you meant, shrinks it back down, and can even tell you what changed between two versions — every line of which you understand, because you ran all of it yourself.
+That's the build. You started with a one-line mess and ended with a tool that formats it, tells you when it's broken and where, checks it's the data you meant, shrinks it back down, and can even tell you what changed between two versions - every line of which you understand, because you ran all of it yourself.

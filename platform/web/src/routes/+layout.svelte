@@ -36,7 +36,7 @@
     || ['/about', '/contribute', '/rss', '/paths', '/glossary', '/train'].includes(path)
     || (path === '/review' && !$page.url.searchParams.get('guides'));
   $: currentGuide = (path.match(/^\/guides\/([^/]+)/) || [])[1] || null;
-  // The active phase number on /guides/[slug]/[phase] — null on the guide overview.
+  // The active phase number on /guides/[slug]/[phase] - null on the guide overview.
   $: currentPhase = (() => {
     const m = path.match(/^\/guides\/[^/]+\/(\d+)/);
     return m ? Number(m[1]) : null;
@@ -224,7 +224,7 @@
 
   function toggleSidebar() {
     collapsed = !collapsed;
-    // Don't persist the mobile drawer state — it's transient, not a layout preference.
+    // Don't persist the mobile drawer state - it's transient, not a layout preference.
     if (!mobile) {
       try { localStorage.setItem('tmm-sidebar', collapsed ? 'collapsed' : 'open'); } catch (e) {}
     }
@@ -247,7 +247,7 @@
   {/if}
   {#if $beginnerMode}
     <div class="beginner-banner" role="status">
-      <span><i class="ti ti-sparkles" aria-hidden="true"></i> Beginner mode — showing beginner-level guides only.</span>
+      <span><i class="ti ti-sparkles" aria-hidden="true"></i> Beginner mode - showing beginner-level guides only.</span>
       <button type="button" on:click={() => setBeginner(false)}>Show everything</button>
     </div>
   {/if}
@@ -435,7 +435,7 @@
     font-size: 0.86rem;
     line-height: 1.4;
   }
-  /* Beginner-mode indicator — explains why advanced guides are hidden + a way out. */
+  /* Beginner-mode indicator - explains why advanced guides are hidden + a way out. */
   .beginner-banner {
     display: flex; align-items: center; justify-content: center; gap: 0.9rem; flex-wrap: wrap;
     padding: 0.5rem 1.25rem;

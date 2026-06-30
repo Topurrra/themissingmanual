@@ -51,7 +51,7 @@
   $: paged = filtered.slice((pageNum - 1) * PER_PAGE, pageNum * PER_PAGE);
 
   // Reset to page 1 whenever the filtered view changes (filter/sort/search).
-  // Keyed on the inputs so changing a filter — not paging — triggers it.
+  // Keyed on the inputs so changing a filter - not paging - triggers it.
   $: resetKey = `${fStatus}|${fCategory}|${fDifficulty}|${q}|${sort}`;
   let lastResetKey = resetKey;
   $: if (resetKey !== lastResetKey) {

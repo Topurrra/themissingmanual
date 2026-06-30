@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The verdict: what to actually upgrade
 
-You have the mental model and you can read the gauges. Now comes the part that saves you money: turning a reading into a decision. This is where most people go wrong — they feel slowness and reach for "new computer" when a sixty-dollar part would have made the old one feel new. Let's match each diagnosis to its fix, and explain why one upgrade wins so often that it should be your default suspect.
+You have the mental model and you can read the gauges. Now comes the part that saves you money: turning a reading into a decision. This is where most people go wrong - they feel slowness and reach for "new computer" when a sixty-dollar part would have made the old one feel new. Let's match each diagnosis to its fix, and explain why one upgrade wins so often that it should be your default suspect.
 
 ## The decision table
 
@@ -21,7 +21,7 @@ What you measured                          What to buy
 Memory Pressure RED / RAM+Disk pinned      Add RAM
 Slow boot & launches, disk pinned, HDD     Add an SSD
 CPU pinned only during heavy tasks         CPU (often a new machine)
-One process pinning CPU all the time       Nothing — fix the software
+One process pinning CPU all the time       Nothing - fix the software
 ```
 
 *What just happened:* Each row is a clean if-this-then-that. No guessing, no "more power is always better." You buy the part that widens your actual bottleneck, and nothing else.
@@ -30,7 +30,7 @@ One process pinning CPU all the time       Nothing — fix the software
 
 If you take one thing from this whole guide, take this: **on an old machine with a spinning hard disk, swapping it for an SSD is the single most dramatic upgrade you can make, and one of the cheapest.**
 
-Here is why it hits so hard. Remember the speed cliff between RAM and a spinning disk — millions of times slower. Every time your machine boots, opens an app, or loads a file, it walks to that slow freezer. An SSD has no moving parts; it answers electronically. Replacing an HDD with an SSD does not make the freezer a little closer. It teleports it next to the counter.
+Here is why it hits so hard. Remember the speed cliff between RAM and a spinning disk - millions of times slower. Every time your machine boots, opens an app, or loads a file, it walks to that slow freezer. An SSD has no moving parts; it answers electronically. Replacing an HDD with an SSD does not make the freezer a little closer. It teleports it next to the counter.
 
 ```text
 The same old laptop, HDD → SSD:
@@ -40,7 +40,7 @@ The same old laptop, HDD → SSD:
   General feel     "is it frozen?" → "this feels like a new machine"
 ```
 
-*What just happened:* Those are the kinds of changes people describe after this one swap — not "a bit faster" but "a different computer." Numbers vary by machine, but the *category* of improvement is the point: the slowest link in the chain goes from millions-of-times-slow to genuinely fast.
+*What just happened:* Those are the kinds of changes people describe after this one swap - not "a bit faster" but "a different computer." Numbers vary by machine, but the *category* of improvement is the point: the slowest link in the chain goes from millions-of-times-slow to genuinely fast.
 
 > If your machine still has an HDD, stop reading and plan the SSD. It is the highest payoff-per-dollar move in personal computing, and almost nothing else comes close on an aging machine.
 
@@ -59,9 +59,9 @@ Two cautions before you buy a RAM stick:
 
 ## When CPU is the answer (and why it's the trap)
 
-CPU is the upgrade people *want* it to be and the one it rarely is. If your reading showed the CPU pinned only during genuinely heavy work — long video exports, big compiles, serious number-crunching — then yes, a faster CPU helps *that* work.
+CPU is the upgrade people *want* it to be and the one it rarely is. If your reading showed the CPU pinned only during genuinely heavy work - long video exports, big compiles, serious number-crunching - then yes, a faster CPU helps *that* work.
 
-But here is the honest part: on most machines, especially laptops, the CPU is soldered and not replaceable. A "CPU upgrade" usually means a whole new computer. That is the expensive path, which is exactly why you want to be *certain* the CPU is the bottleneck before you walk it — and certain that the cheaper RAM or SSD fix would not have solved your actual problem.
+But here is the honest part: on most machines, especially laptops, the CPU is soldered and not replaceable. A "CPU upgrade" usually means a whole new computer. That is the expensive path, which is exactly why you want to be *certain* the CPU is the bottleneck before you walk it - and certain that the cheaper RAM or SSD fix would not have solved your actual problem.
 
 ```text
 The expensive mistake:

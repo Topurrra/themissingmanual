@@ -13,7 +13,7 @@ updated: 2026-06-30
 
 The loop from Phase 2 works on your machine, for you. Phase 3 is about the rest of reality: the moment you need to bypass a hook, the fact that a local hook is a suggestion and not a wall, and how teams turn it into actual enforcement. This is where pre-commit goes from "nice for me" to "trusted by the team."
 
-## The escape hatch — and why it's a trap door
+## The escape hatch - and why it's a trap door
 
 A local hook can always be skipped. Git itself provides the flag.
 
@@ -25,9 +25,9 @@ git commit --no-verify -m "wip: debugging prod, fix lint later"
 [hotfix 9b2e1aa] wip: debugging prod, fix lint later
 ```
 
-*What just happened:* `--no-verify` (short flag `-n`) told git to skip every hook entirely. The commit landed with zero checks. There are real reasons for this — a 2am hotfix where the linter is the last thing you care about — and it's fine that the escape hatch exists.
+*What just happened:* `--no-verify` (short flag `-n`) told git to skip every hook entirely. The commit landed with zero checks. There are real reasons for this - a 2am hotfix where the linter is the last thing you care about - and it's fine that the escape hatch exists.
 
-The trap is the lesson it teaches: **a local pre-commit hook is advisory, not enforcement.** Anyone can bypass it, on purpose or by forgetting to run `pre-commit install` after cloning. If your team's quality bar lives *only* in local hooks, it isn't really a bar — it's a polite request. That single fact is why the next section exists.
+The trap is the lesson it teaches: **a local pre-commit hook is advisory, not enforcement.** Anyone can bypass it, on purpose or by forgetting to run `pre-commit install` after cloning. If your team's quality bar lives *only* in local hooks, it isn't really a bar - it's a polite request. That single fact is why the next section exists.
 
 You can also skip *one* hook instead of all of them, which is the honest middle ground:
 
@@ -39,7 +39,7 @@ SKIP=ruff git commit -m "intentional pattern ruff flags here"
 
 ## Enforcement lives in CI, not on the laptop
 
-Because local hooks are skippable, the real wall is a server that re-runs the same checks and won't merge until they pass. The beauty of pre-commit is that you don't write a second config for this — CI runs the *exact same* `.pre-commit-config.yaml`.
+Because local hooks are skippable, the real wall is a server that re-runs the same checks and won't merge until they pass. The beauty of pre-commit is that you don't write a second config for this - CI runs the *exact same* `.pre-commit-config.yaml`.
 
 ```yaml
 # .github/workflows/lint.yml
@@ -62,11 +62,11 @@ LOCAL hook   fast, on your machine, skippable    → convenience
 CI run       slower, on a server, unskippable    → enforcement
 ```
 
-*What just happened:* this split is the mental model to keep. Don't try to make the local hook unbypassable — you can't, and you'd only frustrate people. Make CI the source of truth and let the local hook be the head start. This pairs naturally with the rest of your [CI/CD pipeline](/guides/what-cicd-does).
+*What just happened:* this split is the mental model to keep. Don't try to make the local hook unbypassable - you can't, and you'd only frustrate people. Make CI the source of truth and let the local hook be the head start. This pairs naturally with the rest of your [CI/CD pipeline](/guides/what-cicd-does).
 
 ## The high-value hook: catching secrets
 
-If you add one thing beyond formatters, make it a secret scanner. A leaked API key or password in git history is a genuine emergency — git remembers it forever, even after you delete the line.
+If you add one thing beyond formatters, make it a secret scanner. A leaked API key or password in git history is a genuine emergency - git remembers it forever, even after you delete the line.
 
 ```yaml
   - repo: https://github.com/gitleaks/gitleaks
@@ -87,7 +87,7 @@ Secret:      AKIA...REDACTED...
 RuleID:      aws-access-token
 ```
 
-*What just happened:* the scanner found something shaped like an AWS key and aborted the commit before the secret ever entered history. This is the single highest-value check on the list — it turns a credential-rotation fire drill into a five-second "oh, right, move that to an env var." Pair it with a strong [.gitignore](/guides/gitignore-lfs-submodules) so secret-bearing files like `.env` never get staged in the first place.
+*What just happened:* the scanner found something shaped like an AWS key and aborted the commit before the secret ever entered history. This is the single highest-value check on the list - it turns a credential-rotation fire drill into a five-second "oh, right, move that to an env var." Pair it with a strong [.gitignore](/guides/gitignore-lfs-submodules) so secret-bearing files like `.env` never get staged in the first place.
 
 ## Gotchas that actually bite
 
@@ -111,11 +111,11 @@ A handful of real-world snags, each with the fix.
      stop this; make sure CI isn't pip-installing the tool separately.
 ```
 
-*What just happened:* every one of these traces back to a Phase 1 idea — hooks are local (so they can be missed), and pinning exists to keep environments identical. The fixes are about respecting those facts, not fighting them.
+*What just happened:* every one of these traces back to a Phase 1 idea - hooks are local (so they can be missed), and pinning exists to keep environments identical. The fixes are about respecting those facts, not fighting them.
 
 > One mindset note: hooks that are too strict or too slow get bypassed, and a bypassed hook protects nothing. A fast, well-scoped, mostly-auto-fixing config that people actually keep enabled beats a perfect config they route around with `--no-verify` every day. Tune for "people leave it on."
 
-For builders: a healthy setup is three layers — `.gitignore` keeps junk and secrets out of staging, local pre-commit hooks give instant feedback as you work, and CI re-runs the identical config as the unskippable gate. No single layer is trusted alone; together they stop the bad commit at the door and keep it stopped.
+For builders: a healthy setup is three layers - `.gitignore` keeps junk and secrets out of staging, local pre-commit hooks give instant feedback as you work, and CI re-runs the identical config as the unskippable gate. No single layer is trusted alone; together they stop the bad commit at the door and keep it stopped.
 
 ```quiz
 [

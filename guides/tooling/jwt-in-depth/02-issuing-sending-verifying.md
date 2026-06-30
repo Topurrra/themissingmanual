@@ -33,7 +33,7 @@ sequenceDiagram
 
 ## Moment one: issuing
 
-The user proves who they are the slow, careful way — a password (stored hashed, never plaintext; see [/guides/how-passwords-are-stored](/guides/how-passwords-are-stored)). Once that checks out, the server builds the claims and signs them.
+The user proves who they are the slow, careful way - a password (stored hashed, never plaintext; see [/guides/how-passwords-are-stored](/guides/how-passwords-are-stored)). Once that checks out, the server builds the claims and signs them.
 
 ```text
 POST /login
@@ -62,7 +62,7 @@ Most claims are short, three-letter names. They're abbreviated on purpose (token
 
 | Claim | Name | What it means |
 |-------|------|---------------|
-| `sub` | subject | who the token is about — the user id |
+| `sub` | subject | who the token is about - the user id |
 | `iss` | issuer | who minted the token (`auth.myapp.com`) |
 | `aud` | audience | who the token is *for* (`api.myapp.com`) |
 | `exp` | expiration | Unix time after which the token is dead |
@@ -71,11 +71,11 @@ Most claims are short, three-letter names. They're abbreviated on purpose (token
 
 `exp`, `iss`, and `aud` are the three that earn their keep:
 
-- **`exp`** is your seatbelt. A token is a bearer credential — whoever holds it *is* you, no questions asked. So you want it to die quickly. Short lifetimes (minutes, not weeks) limit the blast radius if one leaks. More on this tension in phase 3.
+- **`exp`** is your seatbelt. A token is a bearer credential - whoever holds it *is* you, no questions asked. So you want it to die quickly. Short lifetimes (minutes, not weeks) limit the blast radius if one leaks. More on this tension in phase 3.
 - **`iss`** lets a verifier reject tokens from the wrong source.
 - **`aud`** stops a token meant for one service from being replayed against another. A token your billing API issued shouldn't unlock your admin API.
 
-> Adding your own claims (like `role` or `tenant_id`) is normal and useful — that's how you avoid a database lookup on every request. The rule from phase 1 still holds: nothing secret. A `role` is fine; a credit card number is not.
+> Adding your own claims (like `role` or `tenant_id`) is normal and useful - that's how you avoid a database lookup on every request. The rule from phase 1 still holds: nothing secret. A `role` is fine; a credit card number is not.
 
 ## Moment two: sending
 
@@ -87,17 +87,17 @@ Host: api.myapp.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI...
 ```
 
-*What just happened:* "Bearer" literally means "the bearer of this token is authorized." That word is a warning label: anyone who gets the token gets your access. Treat it like cash. Send it only over HTTPS, never log it, and store it somewhere a stray script can't scrape it. (Where exactly to store it — cookie versus JS-readable storage — is a real debate with real tradeoffs; the short version is that a cookie with the right flags resists token theft better than putting it where page scripts can read it.)
+*What just happened:* "Bearer" literally means "the bearer of this token is authorized." That word is a warning label: anyone who gets the token gets your access. Treat it like cash. Send it only over HTTPS, never log it, and store it somewhere a stray script can't scrape it. (Where exactly to store it - cookie versus JS-readable storage - is a real debate with real tradeoffs; the short version is that a cookie with the right flags resists token theft better than putting it where page scripts can read it.)
 
 ## Moment three: verifying
 
 This is the moment that matters most, and the one people skip when they're moving fast. On every protected request, the server must **verify** the token before trusting a single byte of it.
 
-Verification is not "decode the payload and read the role." Decoding is free and meaningless — an attacker can hand you any payload they like. Verification is the full check:
+Verification is not "decode the payload and read the role." Decoding is free and meaningless - an attacker can hand you any payload they like. Verification is the full check:
 
 ```text
 1. Split into header.payload.signature
-2. Read alg from header — but VERIFY against the algorithm YOU expect, not what the token claims
+2. Read alg from header - but VERIFY against the algorithm YOU expect, not what the token claims
 3. Recompute the signature over header.payload using YOUR key
 4. Constant-time compare: does it match the attached signature?   -> if no, REJECT
 5. Check exp:  is it past?         -> if expired, REJECT
@@ -108,7 +108,7 @@ Verification is not "decode the payload and read the role." Decoding is free and
 
 *What just happened:* the signature check proves the token is genuine; the claim checks prove it's still valid and meant for you. Skip step 4 and any forged token passes. Skip step 5 and a stolen token works forever. Every step is load-bearing.
 
-In real code you never hand-roll this — you use a vetted library and let it do all eight steps. The shape, in pseudocode:
+In real code you never hand-roll this - you use a vetted library and let it do all eight steps. The shape, in pseudocode:
 
 ```text
 try:
@@ -124,17 +124,17 @@ except InvalidSignature, ExpiredToken, InvalidAudience:
     return 401 Unauthorized
 ```
 
-*What just happened:* one call did the signature recompute, the comparison, and the `exp`/`iss`/`aud` checks, and threw if anything failed. The single most important argument there is `algorithms = ["HS256"]` — you are telling the library which algorithm to accept, instead of trusting the token's own header. Phase 3 shows the breach that happens when you forget it.
+*What just happened:* one call did the signature recompute, the comparison, and the `exp`/`iss`/`aud` checks, and threw if anything failed. The single most important argument there is `algorithms = ["HS256"]` - you are telling the library which algorithm to accept, instead of trusting the token's own header. Phase 3 shows the breach that happens when you forget it.
 
-> **For builders:** the line that separates "I decoded a JWT" from "I verified a JWT" is the secret key and the algorithm pin. If your verify call doesn't take a key, you didn't verify anything — you merely parsed attacker-controlled JSON. Libraries sometimes offer a `decode` that skips verification for debugging; never let that path touch a real request.
+> **For builders:** the line that separates "I decoded a JWT" from "I verified a JWT" is the secret key and the algorithm pin. If your verify call doesn't take a key, you didn't verify anything - you merely parsed attacker-controlled JSON. Libraries sometimes offer a `decode` that skips verification for debugging; never let that path touch a real request.
 
 ## Why bother with all this? The stateless payoff
 
-After all these steps, here's the reward: the server verified Sam, learned his id, name, and role, and decided what he's allowed to do — **without touching a database or session store.** The token carried everything. That's stateless auth.
+After all these steps, here's the reward: the server verified Sam, learned his id, name, and role, and decided what he's allowed to do - **without touching a database or session store.** The token carried everything. That's stateless auth.
 
 That's genuinely powerful at scale. Ten API servers behind a load balancer don't need a shared session store or sticky sessions; each one can verify a token on its own with only the key. Add a server, it works immediately. There's no "where do sessions live" problem.
 
-But — and phase 3 is built around this — statelessness has a sharp edge. If the server doesn't look anything up, the server can't easily *un*-trust a token mid-life. You handed out a signed note that says "valid until 3:00"; you can't reach into the user's pocket and tear it up. That's the revocation problem, and it's where the next phase begins.
+But - and phase 3 is built around this - statelessness has a sharp edge. If the server doesn't look anything up, the server can't easily *un*-trust a token mid-life. You handed out a signed note that says "valid until 3:00"; you can't reach into the user's pocket and tear it up. That's the revocation problem, and it's where the next phase begins.
 
 ```quiz
 [
@@ -147,7 +147,7 @@ But — and phase 3 is built around this — statelessness has a sharp edge. If 
       "Checking that the token has two dots in it"
     ],
     "answer": 1,
-    "explain": "Decoding is free and proves nothing. Verification recomputes the signature using your secret/key and rejects the token if it doesn't match — that's what catches forgeries."
+    "explain": "Decoding is free and proves nothing. Verification recomputes the signature using your secret/key and rejects the token if it doesn't match - that's what catches forgeries."
   },
   {
     "q": "What is the `aud` (audience) claim for?",
@@ -169,7 +169,7 @@ But — and phase 3 is built around this — statelessness has a sharp edge. If 
       "Revoking a token is instant and easy"
     ],
     "answer": 1,
-    "explain": "Statelessness means each server verifies a token using only the key — no shared session store. The cost is that revocation becomes hard, which phase 3 covers."
+    "explain": "Statelessness means each server verifies a token using only the key - no shared session store. The cost is that revocation becomes hard, which phase 3 covers."
   }
 ]
 ```

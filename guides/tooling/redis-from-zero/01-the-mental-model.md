@@ -2,7 +2,7 @@
 title: "The mental model: one RAM-speed dictionary"
 guide: redis-from-zero
 phase: 1
-summary: "The in-memory data store that does ten jobs: cache, session store, queue, rate limiter, and lock — with data structures, TTLs, and the persistence tradeoff."
+summary: "The in-memory data store that does ten jobs: cache, session store, queue, rate limiter, and lock - with data structures, TTLs, and the persistence tradeoff."
 tags: [redis, cache, in-memory, data-structures, ttl, pub-sub, persistence, distributed-lock]
 difficulty: intermediate
 synonyms: ["what is redis", "redis cache tutorial", "redis data types", "redis ttl expire", "rdb vs aof", "redis distributed lock", "cache aside pattern", "redis vs memcached"]
@@ -11,13 +11,13 @@ updated: 2026-06-30
 
 # The mental model: one RAM-speed dictionary
 
-Here's the thing that trips people up: Redis looks like a database, so you assume it works like one — rows, tables, queries, a disk you trust. It doesn't. The fastest way to understand Redis is to stop comparing it to Postgres and start comparing it to a Python dict or a Java HashMap. It's a giant key-value dictionary that lives in RAM, that one process owns, that happens to be reachable over the network.
+Here's the thing that trips people up: Redis looks like a database, so you assume it works like one - rows, tables, queries, a disk you trust. It doesn't. The fastest way to understand Redis is to stop comparing it to Postgres and start comparing it to a Python dict or a Java HashMap. It's a giant key-value dictionary that lives in RAM, that one process owns, that happens to be reachable over the network.
 
-Once that clicks, everything else — why it's fast, why it's single-threaded, why caching is its natural job — falls out of it.
+Once that clicks, everything else - why it's fast, why it's single-threaded, why caching is its natural job - falls out of it.
 
 ## A dictionary that lives in memory and answers over the network
 
-A normal database keeps your data on disk and pulls it into memory when you ask. Redis flips that: your data lives in RAM all the time, and disk is only a backup copy (more on that in phase 3). Reading from RAM is roughly a hundred thousand times faster than a random read from a spinning disk and still far faster than an SSD. That single fact — data is already in memory — is most of why Redis is fast.
+A normal database keeps your data on disk and pulls it into memory when you ask. Redis flips that: your data lives in RAM all the time, and disk is only a backup copy (more on that in phase 3). Reading from RAM is roughly a hundred thousand times faster than a random read from a spinning disk and still far faster than an SSD. That single fact - data is already in memory - is most of why Redis is fast.
 
 The other part is that Redis does almost no work per request. A `GET` is a hash lookup. There's no query planner, no join, no scanning rows. You hand it a key, it hands you a value.
 
@@ -33,7 +33,7 @@ OK
 (integer) 1
 ```
 
-*What just happened:* you stored a value under a key, read it back, asked whether it exists (1 = yes), and deleted it. The colons in `user:42:name` are pure convention — Redis has no namespaces or tables, but `type:id:field` keys keep a flat keyspace readable, and most tooling assumes that style.
+*What just happened:* you stored a value under a key, read it back, asked whether it exists (1 = yes), and deleted it. The colons in `user:42:name` are pure convention - Redis has no namespaces or tables, but `type:id:field` keys keep a flat keyspace readable, and most tooling assumes that style.
 
 ## Single-threaded is a feature, not a flaw
 
@@ -54,9 +54,9 @@ OK
 (integer) 12
 ```
 
-*What just happened:* `INCR` did read-add-write as one atomic step. In application code you'd have a race — two threads read 1, both write 2, you lost a view. Redis can't race here because no two commands overlap. This is why Redis is a natural fit for counters, rate limiters, and ID generators.
+*What just happened:* `INCR` did read-add-write as one atomic step. In application code you'd have a race - two threads read 1, both write 2, you lost a view. Redis can't race here because no two commands overlap. This is why Redis is a natural fit for counters, rate limiters, and ID generators.
 
-> The flip side: one slow command blocks everything. A `KEYS *` on a million-key database, or a huge `SORT`, freezes every other client until it finishes. The single thread that gives you atomicity also gives you one shared lane — phase 3 covers the commands that abuse it.
+> The flip side: one slow command blocks everything. A `KEYS *` on a million-key database, or a huge `SORT`, freezes every other client until it finishes. The single thread that gives you atomicity also gives you one shared lane - phase 3 covers the commands that abuse it.
 
 ## The data types are the whole point
 
@@ -66,14 +66,14 @@ Here are the five you'll use constantly, and the shape of problem each one is fo
 
 ```text
 String   "Ada"                       a value, a counter, a cached JSON blob, a flag
-Hash     {name: "Ada", age: 36}      an object with fields — a user, a session
-List     [a, b, c]                   ordered, push/pop both ends — a queue or stack
-Set      {a, b, c}                   unique members, no order — tags, unique visitors
-Sorted   {a:1.0, b:2.5, c:9.0}       members each with a score — leaderboards, ranges
+Hash     {name: "Ada", age: 36}      an object with fields - a user, a session
+List     [a, b, c]                   ordered, push/pop both ends - a queue or stack
+Set      {a, b, c}                   unique members, no order - tags, unique visitors
+Sorted   {a:1.0, b:2.5, c:9.0}       members each with a score - leaderboards, ranges
   Set
 ```
 
-*What just happened:* same key-value model, but the value carries structure. The skill of using Redis well is mostly matching a problem to the right type — a leaderboard is a sorted set, a session is a hash, a job queue is a list.
+*What just happened:* same key-value model, but the value carries structure. The skill of using Redis well is mostly matching a problem to the right type - a leaderboard is a sorted set, a session is a hash, a job queue is a list.
 
 A hash is worth seeing concretely, because storing an object as one hash beats jamming JSON into a string when you want to read or update single fields:
 
@@ -93,9 +93,9 @@ A hash is worth seeing concretely, because storing an object as one hash beats j
 6) "pro"
 ```
 
-*What just happened:* you stored a user as a hash, read one field without fetching the rest, and bumped `age` atomically in place. With a JSON-in-a-string approach you'd have to read the whole blob, parse it, change one number, and write it all back — three round trips and a race condition where a hash gives you one atomic command.
+*What just happened:* you stored a user as a hash, read one field without fetching the rest, and bumped `age` atomically in place. With a JSON-in-a-string approach you'd have to read the whole blob, parse it, change one number, and write it all back - three round trips and a race condition where a hash gives you one atomic command.
 
-And a sorted set, the type people are most surprised Redis has built in — a leaderboard in four commands:
+And a sorted set, the type people are most surprised Redis has built in - a leaderboard in four commands:
 
 ```text
 127.0.0.1:6379> ZADD scores 100 "ada" 250 "linus" 175 "grace"
@@ -111,15 +111,15 @@ And a sorted set, the type people are most surprised Redis has built in — a le
 6) "175"
 ```
 
-*What just happened:* each member carries a score; Redis keeps them sorted for you. `ZADD scores 300 "ada"` returned `0` because ada already existed — it updated her score rather than adding a new member. `ZREVRANGE 0 2` pulled the top three highest-first. Building this yourself means re-sorting on every write; Redis maintains the order as a side effect of insertion.
+*What just happened:* each member carries a score; Redis keeps them sorted for you. `ZADD scores 300 "ada"` returned `0` because ada already existed - it updated her score rather than adding a new member. `ZREVRANGE 0 2` pulled the top three highest-first. Building this yourself means re-sorting on every write; Redis maintains the order as a side effect of insertion.
 
 ## Where this fits
 
-This same dictionary, with these same types, is what people mean by all those different uses. A cache is strings (or hashes) with an expiry. A session store is a hash per user. A job queue is a list you push to and pop from. A rate limiter is a counter with a TTL. A leaderboard is a sorted set. There is no separate "Redis cache product" versus "Redis queue product" — it's one in-memory dictionary, and the use case is which type you pick and what you do with it.
+This same dictionary, with these same types, is what people mean by all those different uses. A cache is strings (or hashes) with an expiry. A session store is a hash per user. A job queue is a list you push to and pop from. A rate limiter is a counter with a TTL. A leaderboard is a sorted set. There is no separate "Redis cache product" versus "Redis queue product" - it's one in-memory dictionary, and the use case is which type you pick and what you do with it.
 
 That's the whole mental model. Phase 2 turns it into the patterns you'll actually write: caching with TTLs, the cache-aside flow, and how Redis decides what to evict when RAM fills up.
 
-> **For builders:** this is the same idea behind any cache layer — see [Caching Explained](/guides/caching-explained) for the why-and-when of caching in general, then come back here for the how with Redis specifically.
+> **For builders:** this is the same idea behind any cache layer - see [Caching Explained](/guides/caching-explained) for the why-and-when of caching in general, then come back here for the how with Redis specifically.
 
 ```quiz
 [
@@ -127,18 +127,18 @@ That's the whole mental model. Phase 2 turns it into the patterns you'll actuall
     "q": "Why is Redis fast, in one sentence?",
     "choices": [
       "It uses a smarter query planner than relational databases",
-      "Data already lives in RAM and each command does almost no work — typically a hash lookup",
+      "Data already lives in RAM and each command does almost no work - typically a hash lookup",
       "It runs every command on a separate CPU core in parallel",
       "It compresses data so disk reads are smaller"
     ],
     "answer": 1,
-    "explain": "Data is in memory all the time and commands like GET are simple lookups — no planning, no joins, no disk read on the hot path."
+    "explain": "Data is in memory all the time and commands like GET are simple lookups - no planning, no joins, no disk read on the hot path."
   },
   {
     "q": "What does Redis being single-threaded give you, besides simplicity?",
     "choices": [
       "Automatic sharding across cores",
-      "Every command is atomic — no two commands overlap, so counters can't race",
+      "Every command is atomic - no two commands overlap, so counters can't race",
       "Unlimited memory because threads share the heap",
       "Faster disk persistence"
     ],

@@ -1,7 +1,7 @@
-# Guides Path — The Missing Manual content roadmap
+# Guides Path - The Missing Manual content roadmap
 
 The master backlog of guides, organized by category and by learning track. This is the planning doc we
-pick the next guide from — it is **not** an ingested guide (it lives at repo root, outside `guides/`).
+pick the next guide from - it is **not** an ingested guide (it lives at repo root, outside `guides/`).
 
 Every shipped guide is a small phased series in our "battle-hardened friend" voice (see
 `.claude/skills/missing-manual-writer/SKILL.md`). Source of truth is Markdown under `guides/<slug>/`;
@@ -9,7 +9,7 @@ content auto-syncs from that folder. Each `_guide.md` carries `category`, `diffi
 integer (position within its category).
 
 **Two rules this roadmap is built around:**
-1. **A→Z, every category.** Each category opens with a *"…From Zero"* rung (the absolute basics — what
+1. **A→Z, every category.** Each category opens with a *"…From Zero"* rung (the absolute basics - what
    the thing *is*) and ladders **beginner → intermediate → advanced**, the way `version-control` does.
    No category may start mid-mountain (the old "databases starts at JOINs" mistake).
 2. **Concept first, then the tool.** Teach the idea, then make it concrete with a tool guide that
@@ -20,18 +20,18 @@ The 17 categories below match `content-core::categories::DEFS` (the canonical ta
 that display order.
 
 ## Legend
-- ✅ **done** — written and live
-- 🔜 **next-priority** — strong candidate for the next build
-- ⬜ **planned** — on the backlog
-- ⭐ **feeds a learning-path track step** (lights up a "coming soon" step in the wizard — higher leverage)
-- 🛠️ **tool guide** — concept-first, "what it's showing you"
+- ✅ **done** - written and live
+- 🔜 **next-priority** - strong candidate for the next build
+- ⬜ **planned** - on the backlog
+- ⭐ **feeds a learning-path track step** (lights up a "coming soon" step in the wizard - higher leverage)
+- 🛠️ **tool guide** - concept-first, "what it's showing you"
 
 ---
 
 ## Categories
 
 ### operating-systems ✅ COMPLETE
-*Windows, macOS, and Linux — what they're really doing under the hood. The broadest on-ramp; great for non-developers too.*
+*Windows, macOS, and Linux - what they're really doing under the hood. The broadest on-ramp; great for non-developers too.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -45,7 +45,7 @@ that display order.
 | 8 | `linux-for-servers` | Linux for Servers | advanced | ✅ |
 
 ### hardware ✅ COMPLETE
-*How the machine is built and talks to itself — from the chip to the device on your desk.*
+*How the machine is built and talks to itself - from the chip to the device on your desk.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -57,7 +57,7 @@ that display order.
 | 6 | `inside-a-server-and-data-center` | Inside a Server & Data-Center Hardware | advanced | ✅ |
 
 ### networking ✅ COMPLETE
-*How the internet really works, and how to design networks that hold up — home to enterprise.*
+*How the internet really works, and how to design networks that hold up - home to enterprise.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -70,7 +70,7 @@ that display order.
 | 7 | `designing-an-enterprise-network` | Designing an Enterprise Network | advanced | ✅ |
 
 ### programming-concepts ✅ COMPLETE
-*The ideas under every language — how code runs, data structures, async, memory, big-O, and choosing a
+*The ideas under every language - how code runs, data structures, async, memory, big-O, and choosing a
 language. Language-agnostic; split out of `programming-languages` so the languages category holds only
 actual languages.*
 
@@ -82,7 +82,7 @@ actual languages.*
 | 4 | `regular-expressions-explained` | Regular Expressions, Explained | beginner | ✅ |
 | 5 | `async-await-and-the-event-loop` | Async/Await & the Event Loop | intermediate | ✅ |
 | 6 | `memory-and-garbage-collection` | Memory & Garbage Collection, Explained | intermediate | ✅ |
-| 7 | `languages-explained-like-a-human` | Python, JavaScript, Go & Rust — Explained Like a Human ⭐ | beginner | ✅ |
+| 7 | `languages-explained-like-a-human` | Python, JavaScript, Go & Rust - Explained Like a Human ⭐ | beginner | ✅ |
 | 8 | `oop-vs-functional` | Object-Oriented vs Functional, Honestly | intermediate | ✅ |
 
 ### programming-languages ✅ COMPLETE
@@ -96,7 +96,7 @@ actual languages.*
 | 4 | `rust-from-zero` | Rust From Zero (A→Z, 10 phases; big idea = ownership & borrowing) | beginner→advanced | ✅ |
 
 ### version-control ✅ COMPLETE
-*The flagship ladder — a full beginner→advanced run. The model every other category should copy.*
+*The flagship ladder - a full beginner→advanced run. The model every other category should copy.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -119,7 +119,7 @@ actual languages.*
 | 7 | `when-prod-is-down` | When Prod Is Down: Staying Calm | advanced | ✅ |
 
 ### testing ✅ COMPLETE
-*Unit, integration, E2E, and load tests — plus TDD/BDD — that actually catch the bug.*
+*Unit, integration, E2E, and load tests - plus TDD/BDD - that actually catch the bug.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -147,7 +147,7 @@ actual languages.*
 | 9 | `scaling-a-database` | Scaling a Database (Replication & Sharding) | advanced | ✅ |
 
 ### data-analytics ✅ COMPLETE
-*Data pipelines, engineering, BI, and the ML basics — turning raw data into answers you trust.*
+*Data pipelines, engineering, BI, and the ML basics - turning raw data into answers you trust.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -160,7 +160,7 @@ actual languages.*
 | 7 | `data-quality-and-observability` | Data Quality & Pipeline Observability | advanced | ✅ |
 
 ### apis ✅ COMPLETE
-*REST, GraphQL, gRPC, webhooks, and message queues — how systems actually talk.*
+*REST, GraphQL, gRPC, webhooks, and message queues - how systems actually talk.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -185,7 +185,7 @@ actual languages.*
 | 5 | `designing-for-failure` | Designing for Failure (Retries, Timeouts, Circuit Breakers) | advanced | ✅ |
 
 ### devops ✅ COMPLETE
-*CI/CD, automation, and infrastructure as code — shipping safely and repeatedly.*
+*CI/CD, automation, and infrastructure as code - shipping safely and repeatedly.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -198,7 +198,7 @@ actual languages.*
 | 7 | `infrastructure-as-code-terraform` | Infrastructure as Code (Terraform Basics) | advanced | ✅ |
 
 ### infrastructure ✅ COMPLETE
-*Servers, containers, and cloud platforms — where your code actually runs.*
+*Servers, containers, and cloud platforms - where your code actually runs.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -241,7 +241,7 @@ actual languages.*
 | 8 | `secrets-management` | Secrets Management (Don't Commit Your Keys) | intermediate | ✅ |
 
 ### ai-ml ✅ COMPLETE
-*Models, training, and putting AI into real products — without the hype or the hand-waving.*
+*Models, training, and putting AI into real products - without the hype or the hand-waving.*
 
 | order | slug | guide | difficulty | status |
 |---|---|---|---|---|
@@ -261,17 +261,17 @@ actual languages.*
 Tracks string guides into a roadmap. **All six are wired and resolve to live guides** (the earlier
 taxonomy sync + deferred fixes are done; choice options map to real per-language/api/deployment guides):
 
-1. **Backend Developer** — version control → language (py/js/go/rust) → databases → API style
+1. **Backend Developer** - version control → language (py/js/go/rust) → databases → API style
    (REST/GraphQL/gRPC) → deployment (Docker/K8s/VPS) → testing.
-2. **DevOps Engineer** — version control → Linux for servers → containers & deployment → CI/CD →
+2. **DevOps Engineer** - version control → Linux for servers → containers & deployment → CI/CD →
    observability.
-3. **Computer Foundations** — how a computer works → what an OS is → how the internet works → the
+3. **Computer Foundations** - how a computer works → what an OS is → how the internet works → the
    terminal & shell.
-4. **Observability & On-Call** — reading logs → logs/metrics/traces → dashboards (Prometheus/Grafana) →
+4. **Observability & On-Call** - reading logs → logs/metrics/traces → dashboards (Prometheus/Grafana) →
    reading Dynatrace → when prod is down.
-5. **Data Engineer** — what data engineering is → ETL/ELT → warehouses vs lakes → spreadsheets→SQL→pipelines
+5. **Data Engineer** - what data engineering is → ETL/ELT → warehouses vs lakes → spreadsheets→SQL→pipelines
    → data quality & observability.
-6. **Ship It** — a server → SSH → Docker → domain & DNS → HTTPS & a proxy → auto-deploy → the
+6. **Ship It** - a server → SSH → Docker → domain & DNS → HTTPS & a proxy → auto-deploy → the
    `ship-your-side-project` capstone.
 
 *(Adding a track = a `TrackDef` in `content-core::tracks`; update the track tests' count. Choice
@@ -286,6 +286,6 @@ dimensions live in `dimension()`.)*
 - **Category** must be one of the 17 canonical slugs in `content-core::categories::DEFS`. Adding a category =
   one `DEFS` entry (it re-seeds on boot).
 - Internal links: relative `.md` *within the same guide* (ingest rewrites them). **Cross-guide links must use
-  the absolute web route** `/guides/<slug>` — the rewriter only handles same-guide prefix-less `.md` names.
+  the absolute web route** `/guides/<slug>` - the rewriter only handles same-guide prefix-less `.md` names.
 - Tool guides: concept-first, explain *what the tool is showing you*, avoid click-by-click UI tours (they age).
 - New content auto-syncs from `guides/` (files win on change); no rebuild needed for content, only for code.

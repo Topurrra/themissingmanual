@@ -56,7 +56,7 @@
         ]
       });
     } catch (e) {
-      /* ignore — best-effort progressive enhancement */
+      /* ignore - best-effort progressive enhancement */
     }
   });
 </script>

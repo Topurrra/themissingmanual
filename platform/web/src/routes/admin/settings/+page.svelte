@@ -20,7 +20,7 @@
   let runnable = isOn(data.flag_runnable);
   let mermaid = isOn(data.flag_mermaid);
 
-  // Lofi playlist — a JSON string of [{ title, artist, src }] stored under
+  // Lofi playlist - a JSON string of [{ title, artist, src }] stored under
   // lofi_tracks. Seed defensively: invalid/empty ⇒ [].
   let tracks = (() => {
     try {
@@ -85,7 +85,7 @@
     await savePlaylist();
   }
 
-  // Persist ONLY the playlist immediately — so adding/removing a track is live
+  // Persist ONLY the playlist immediately - so adding/removing a track is live
   // without hunting for "Save settings". invalidateAll re-fetches the public
   // site config so the header player swaps to the new list without a reload.
   async function savePlaylist() {
@@ -215,7 +215,7 @@
 
   <section class="set-group">
     <h2 class="admin-h2">Lofi music</h2>
-    <p class="set-hint">Upload audio and build the lofi playlist. Adding or removing a track <strong>saves immediately</strong> — the header player updates live (no need to hit "Save settings").</p>
+    <p class="set-hint">Upload audio and build the lofi playlist. Adding or removing a track <strong>saves immediately</strong> - the header player updates live (no need to hit "Save settings").</p>
 
     <div class="lofi-add">
       <label class="admin-field set-field">
@@ -225,7 +225,7 @@
       {#if uploading}<span class="set-hint">Uploading…</span>{/if}
       {#if uploadErr}<p class="admin-err set-jsonerr">{uploadErr}</p>{/if}
       {#if pendingFiles.length}
-        <p class="set-hint">Ready: <code>{pendingFiles.length} file{pendingFiles.length === 1 ? '' : 's'}</code> — {pendingFiles.map(f => f.name).join(', ')}</p>
+        <p class="set-hint">Ready: <code>{pendingFiles.length} file{pendingFiles.length === 1 ? '' : 's'}</code> - {pendingFiles.map(f => f.name).join(', ')}</p>
       {/if}
 
       <label class="admin-field set-field">
@@ -248,7 +248,7 @@
           <li class="lofi-item">
             <div class="lofi-item-meta">
               <span class="lofi-item-title">{t.title || 'Untitled'}</span>
-              {#if t.artist}<span class="lofi-item-artist">— {t.artist}</span>{/if}
+              {#if t.artist}<span class="lofi-item-artist">- {t.artist}</span>{/if}
             </div>
             <audio class="lofi-item-audio" controls preload="none" src={t.src}></audio>
             <button type="button" class="lofi-item-x" on:click={() => removeTrack(i)}
@@ -259,7 +259,7 @@
         {/each}
       </ul>
     {:else}
-      <p class="set-hint">No tracks yet — the player falls back to the built-in placeholders.</p>
+      <p class="set-hint">No tracks yet - the player falls back to the built-in placeholders.</p>
     {/if}
 
     <div class="set-actions">
@@ -284,7 +284,7 @@
         bind:value={sponsors}
         on:input={() => (sponsorsErr = '')}
       ></textarea>
-      <small class="set-hint">JSON array — <code>[{'{'}"name","url","logo"{'}'}]</code>. Blank uses defaults.</small>
+      <small class="set-hint">JSON array - <code>[{'{'}"name","url","logo"{'}'}]</code>. Blank uses defaults.</small>
       {#if sponsorsErr}<p class="admin-err set-jsonerr">Sponsors: {sponsorsErr}</p>{/if}
     </label>
 
@@ -298,7 +298,7 @@
         bind:value={social}
         on:input={() => (socialErr = '')}
       ></textarea>
-      <small class="set-hint">JSON object — <code>{'{'}"github","x","linkedin"{'}'}</code>. Blank uses defaults.</small>
+      <small class="set-hint">JSON object - <code>{'{'}"github","x","linkedin"{'}'}</code>. Blank uses defaults.</small>
       {#if socialErr}<p class="admin-err set-jsonerr">Social: {socialErr}</p>{/if}
     </label>
   </section>

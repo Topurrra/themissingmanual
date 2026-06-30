@@ -29,7 +29,7 @@
       <span class="hs-lbl">SHA-256</span>
       <code class="hs-hash">{hash}</code>
     </div>
-    <p class="hs-note">Change one character and the whole hash changes — that's the avalanche effect. A unique salt per user means identical passwords hash differently.</p>
+    <p class="hs-note">Change one character and the whole hash changes - that's the avalanche effect. A unique salt per user means identical passwords hash differently.</p>
   </div>
 </figure>
 

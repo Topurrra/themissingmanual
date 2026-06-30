@@ -17,7 +17,7 @@ The core idea is two words: **template** and **stack**. Get those two clear and 
 
 ## A template is the recipe
 
-A template is a text file — YAML or JSON — that *describes* the AWS resources you want. Not the clicks to make them. The end state. You say "I want a bucket named like this, a queue with this retention, a role with these permissions," and CloudFormation figures out the order to create them in and the calls to make.
+A template is a text file - YAML or JSON - that *describes* the AWS resources you want. Not the clicks to make them. The end state. You say "I want a bucket named like this, a queue with this retention, a role with these permissions," and CloudFormation figures out the order to create them in and the calls to make.
 
 Here's a small but complete template that creates one S3 bucket:
 
@@ -38,9 +38,9 @@ Resources:
         RestrictPublicBuckets: true
 ```
 
-*What just happened:* you declared one resource. `AppBucket` is a **logical ID** — a name *you* pick that's local to this template. `Type` says what AWS thing it is. `Properties` are the settings. Notice you never wrote "create" or "make an API call" anywhere — the file is a description, not a script.
+*What just happened:* you declared one resource. `AppBucket` is a **logical ID** - a name *you* pick that's local to this template. `Type` says what AWS thing it is. `Properties` are the settings. Notice you never wrote "create" or "make an API call" anywhere - the file is a description, not a script.
 
-That's the whole shift in thinking. A shell script that calls the AWS CLI is a list of *steps*. A CloudFormation template is a *declaration of the result*. If you run a script twice you get two buckets (or an error). If you apply a template twice, CloudFormation sees the bucket already matches and does nothing. This property — same input, same end state, no matter how many times you run it — is **idempotence**, and it's the foundation of every infrastructure-as-code tool. The broader idea is covered tool-agnostically in [/guides/infrastructure-as-code-terraform](/guides/infrastructure-as-code-terraform).
+That's the whole shift in thinking. A shell script that calls the AWS CLI is a list of *steps*. A CloudFormation template is a *declaration of the result*. If you run a script twice you get two buckets (or an error). If you apply a template twice, CloudFormation sees the bucket already matches and does nothing. This property - same input, same end state, no matter how many times you run it - is **idempotence**, and it's the foundation of every infrastructure-as-code tool. The broader idea is covered tool-agnostically in [/guides/infrastructure-as-code-terraform](/guides/infrastructure-as-code-terraform).
 
 ## A stack is the running unit
 
@@ -48,7 +48,7 @@ When you hand that template to CloudFormation, what comes back is a **stack**. T
 
 That unit-ness buys you three things you cannot get from a folder of scripts:
 
-- **Delete the stack, delete everything in it.** One command tears down the bucket, the queue, the role, the function — in the right order, cleaning up dependencies. No orphans.
+- **Delete the stack, delete everything in it.** One command tears down the bucket, the queue, the role, the function - in the right order, cleaning up dependencies. No orphans.
 - **CloudFormation knows what it owns.** It keeps a record of every resource and its current state. Ask it and it tells you exactly what's in the stack.
 - **An update is a diff, not a redo.** Change the template and re-apply, and CloudFormation works out what actually changed and touches only that.
 
@@ -62,7 +62,7 @@ flowchart LR
   CF -.->|delete-stack| X[All removed in order]
 ```
 
-*What just happened:* the template flows in once, and from then on the stack is the thing you operate on. You don't manage the bucket and the queue separately — you manage the stack, and the stack manages them.
+*What just happened:* the template flows in once, and from then on the stack is the thing you operate on. You don't manage the bucket and the queue separately - you manage the stack, and the stack manages them.
 
 ## Why declare it at all
 
@@ -70,16 +70,16 @@ If you've only ever clicked through consoles, the payoff might still feel abstra
 
 **Repeatability.** The same template makes the same stack in `us-east-1`, in `eu-west-1`, in a teammate's sandbox account. Environments stop drifting apart because they come from one source.
 
-**Review.** The template is a file. It lives in Git. A change to your infrastructure becomes a pull request someone can read, comment on, and approve — *before* it touches a real account. Infrastructure changes get the same safety net as code changes.
+**Review.** The template is a file. It lives in Git. A change to your infrastructure becomes a pull request someone can read, comment on, and approve - *before* it touches a real account. Infrastructure changes get the same safety net as code changes.
 
 **Honesty.** The template is the source of truth for what exists. Six months from now, the answer to "what's running?" is "read the template," not "spelunk through the console and hope."
 
 > [!NOTE]
-> CloudFormation is AWS's *native* tool — it's part of AWS, free to use (you pay only for the resources it creates), and it knows every AWS service the moment that service launches. That nativeness is its biggest strength and, as you'll see in Phase 3, the root of its main limitation too.
+> CloudFormation is AWS's *native* tool - it's part of AWS, free to use (you pay only for the resources it creates), and it knows every AWS service the moment that service launches. That nativeness is its biggest strength and, as you'll see in Phase 3, the root of its main limitation too.
 
 ## For builders
 
-You don't have to write a template to read one. When you adopt an AWS feature, search for its CloudFormation resource type — `AWS::Lambda::Function`, `AWS::DynamoDB::Table`, `AWS::EC2::Instance`. Every property maps to something you'd otherwise set by clicking. Reading the resource reference for a service is one of the fastest ways to learn what that service can actually do, because the template surface *is* the configuration surface.
+You don't have to write a template to read one. When you adopt an AWS feature, search for its CloudFormation resource type - `AWS::Lambda::Function`, `AWS::DynamoDB::Table`, `AWS::EC2::Instance`. Every property maps to something you'd otherwise set by clicking. Reading the resource reference for a service is one of the fastest ways to learn what that service can actually do, because the template surface *is* the configuration surface.
 
 ```quiz
 [

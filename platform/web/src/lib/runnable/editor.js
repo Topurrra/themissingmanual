@@ -27,7 +27,7 @@ import { tags as t } from '@lezer/highlight';
 
 // JetBrains "Darcula"-style highlighting. The editor surface is always dark
 // (--code-bg is dark in both site themes), so CM6's default light style left
-// keywords (#708 etc.) nearly invisible — these are bright tokens tuned for a
+// keywords (#708 etc.) nearly invisible - these are bright tokens tuned for a
 // dark background: orange keywords, yellow functions, green strings, blue
 // numbers, purple constants/fields, grey-italic comments.
 const FG = '#a9b7c6';

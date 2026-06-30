@@ -26,9 +26,9 @@ If you already run load tests and only want the comparison, skim Phase 1 and liv
 
 ## The phases
 
-1. [What load testing actually measures](01-what-load-testing-measures.md) — load vs stress vs soak, virtual users, and why p95 beats the average.
-2. [Writing the same test in k6 and JMeter](02-k6-and-jmeter-in-practice.md) — a realistic ramping scenario, side by side, plus thresholds and CI.
-3. [When the numbers lie and the system breaks](03-gotchas-and-production-reality.md) — the traps that fake a passing test and what breaks under real load.
+1. [What load testing actually measures](01-what-load-testing-measures.md) - load vs stress vs soak, virtual users, and why p95 beats the average.
+2. [Writing the same test in k6 and JMeter](02-k6-and-jmeter-in-practice.md) - a realistic ramping scenario, side by side, plus thresholds and CI.
+3. [When the numbers lie and the system breaks](03-gotchas-and-production-reality.md) - the traps that fake a passing test and what breaks under real load.
 
 For a wider view of where load testing fits, see [/guides/load-and-performance-testing](/guides/load-and-performance-testing) and [/guides/what-performance-means](/guides/what-performance-means).
 

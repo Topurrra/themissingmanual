@@ -1,4 +1,4 @@
-# Agent discovery — what's implemented & what you must do at your DNS host
+# Agent discovery - what's implemented & what you must do at your DNS host
 
 This site implements the agent-readiness checks that make sense for a free,
 public, no-auth content platform. Endpoints below are served by
@@ -31,7 +31,7 @@ curl -s -I $SITE/ | grep -i '^link'
 curl -s -X POST https://isitagentready.com/api/scan -H 'content-type: application/json' -d "{\"url\":\"$SITE\"}"
 ```
 
-## DNS-AID — you must add these records (cannot be done from the codebase)
+## DNS-AID - you must add these records (cannot be done from the codebase)
 
 DNS-AID advertises an agent entrypoint via DNS. This site's entrypoint is the
 HTTPS website itself (agents then fetch `/.well-known/api-catalog`, `/llms.txt`,
@@ -47,7 +47,7 @@ Notes:
 - Use `HTTPS` (an HTTPS-specific `SVCB`) since the entrypoint is a web origin.
   Priority `1` = ServiceMode. `alpn` and `port` are the connection params.
 - Only advertise `_a2a` / `_mcp` sub-records if you actually run an A2A or MCP
-  **server** — you currently don't, so don't publish them (a record pointing at
+  **server** - you currently don't, so don't publish them (a record pointing at
   nothing breaks agents that trust it).
 - **Enable DNSSEC** for the zone (one toggle on Cloudflare / Route 53 / most
   hosts). The scanner validates DNS-AID over DNS-over-HTTPS and expects signed,

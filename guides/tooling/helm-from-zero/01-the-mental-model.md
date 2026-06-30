@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The Mental Model: A Chart Is Templated Manifests
 
-Let's start with the pain, because that's where Helm earns its keep. You've got a working app on Kubernetes — a Deployment, a Service, maybe an Ingress. It runs in dev. Now you need it in staging and prod too.
+Let's start with the pain, because that's where Helm earns its keep. You've got a working app on Kubernetes - a Deployment, a Service, maybe an Ingress. It runs in dev. Now you need it in staging and prod too.
 
 The manifests are nearly identical across environments. What changes is small: the image tag, the number of replicas, the hostname, a memory limit. So the obvious move is to copy the YAML into three folders and hand-edit the differences.
 
@@ -23,7 +23,7 @@ Here's the whole mental model. A Helm **chart** is your Kubernetes manifests wit
 
 Instead of three copies of a Deployment, you have **one template** and **one set of values per environment**. The template never changes between environments. Only the values do.
 
-Think of it the way you already think of a function. The template is the function body. The values are the arguments. You don't copy-paste a function for every caller — you call it with different arguments. Helm brings that same idea to YAML.
+Think of it the way you already think of a function. The template is the function body. The values are the arguments. You don't copy-paste a function for every caller - you call it with different arguments. Helm brings that same idea to YAML.
 
 Here's a normal Kubernetes Deployment, the kind you'd write by hand:
 
@@ -41,7 +41,7 @@ spec:
           image: myapp:1.4.0
 ```
 
-*What just happened:* That's a fine manifest, but `replicas: 2` and `image: myapp:1.4.0` are baked in. To run it in prod with 5 replicas and a different tag, you'd copy the whole file and edit two lines — the exact drift trap we're trying to escape.
+*What just happened:* That's a fine manifest, but `replicas: 2` and `image: myapp:1.4.0` are baked in. To run it in prod with 5 replicas and a different tag, you'd copy the whole file and edit two lines - the exact drift trap we're trying to escape.
 
 Now here's the same thing as a chart template:
 
@@ -59,7 +59,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 ```
 
-*What just happened:* The hard-coded numbers became `{{ .Values.something }}` placeholders. The `{{ }}` is Helm's template syntax — at install time, Helm replaces each one with a value. `.Values` reads from your `values.yaml`; `.Release.Name` is the name you give this particular deployment. The shape is identical to the plain manifest; the changeable parts are now inputs.
+*What just happened:* The hard-coded numbers became `{{ .Values.something }}` placeholders. The `{{ }}` is Helm's template syntax - at install time, Helm replaces each one with a value. `.Values` reads from your `values.yaml`; `.Release.Name` is the name you give this particular deployment. The shape is identical to the plain manifest; the changeable parts are now inputs.
 
 And the `values.yaml` that feeds it:
 
@@ -76,11 +76,11 @@ image:
 
 ## What's actually in a chart
 
-A chart is a directory with a specific layout. You don't have to memorize it — `helm create` scaffolds it for you — but knowing the four pieces that matter makes everything else click:
+A chart is a directory with a specific layout. You don't have to memorize it - `helm create` scaffolds it for you - but knowing the four pieces that matter makes everything else click:
 
 ```text
 mychart/
-  Chart.yaml          # name, version, description — the chart's identity card
+  Chart.yaml          # name, version, description - the chart's identity card
   values.yaml         # default values that fill the templates
   templates/          # the templated manifests
     deployment.yaml
@@ -88,7 +88,7 @@ mychart/
   charts/             # other charts this one depends on (subcharts)
 ```
 
-*What just happened:* `Chart.yaml` is metadata about the chart itself (its name and version). `values.yaml` holds the defaults. `templates/` is where your manifests-with-placeholders live — Helm renders every file in here. `charts/` holds dependencies, which you can ignore until you actually need one. That's the whole structure.
+*What just happened:* `Chart.yaml` is metadata about the chart itself (its name and version). `values.yaml` holds the defaults. `templates/` is where your manifests-with-placeholders live - Helm renders every file in here. `charts/` holds dependencies, which you can ignore until you actually need one. That's the whole structure.
 
 One naming distinction that trips people up: `Chart.yaml` has a `version` (the version of the *chart*) and an `appVersion` (the version of the *app inside it*). They're different things. The chart version goes up when you change the templates; the app version tracks the software you're deploying. Keeping them straight saves confusion later.
 
@@ -96,9 +96,9 @@ One naming distinction that trips people up: `Chart.yaml` has a `version` (the v
 
 Here's the second big idea, and it's the one that makes Helm feel safe.
 
-When you `helm install` a chart, you give that installation a name — say `web-prod`. Helm renders the templates with your values, sends the resulting manifests to Kubernetes, and **records what it sent** as a *release*. A release is a named, versioned snapshot of "this chart, with these values, applied at this time."
+When you `helm install` a chart, you give that installation a name - say `web-prod`. Helm renders the templates with your values, sends the resulting manifests to Kubernetes, and **records what it sent** as a *release*. A release is a named, versioned snapshot of "this chart, with these values, applied at this time."
 
-When you change a value and run `helm upgrade web-prod`, Helm renders again and records release **revision 2**. The old revision doesn't vanish — Helm remembers it. So when revision 2 turns out to be broken, `helm rollback web-prod 1` puts you back exactly where you were.
+When you change a value and run `helm upgrade web-prod`, Helm renders again and records release **revision 2**. The old revision doesn't vanish - Helm remembers it. So when revision 2 turns out to be broken, `helm rollback web-prod 1` puts you back exactly where you were.
 
 ```text
 revision 1  →  myapp:1.4.0, 2 replicas   (helm install)
@@ -106,7 +106,7 @@ revision 2  →  myapp:1.4.1, 2 replicas   (helm upgrade)   ← broken!
 revision 3  →  myapp:1.4.0, 2 replicas   (helm rollback web-prod 1)
 ```
 
-*What just happened:* Each deploy is a numbered revision, and Helm keeps the history. A rollback isn't a frantic re-edit of YAML under pressure — it's one command that re-applies a known-good past revision. This is the difference between "we deployed a bad version" being a five-minute fix versus a midnight incident.
+*What just happened:* Each deploy is a numbered revision, and Helm keeps the history. A rollback isn't a frantic re-edit of YAML under pressure - it's one command that re-applies a known-good past revision. This is the difference between "we deployed a bad version" being a five-minute fix versus a midnight incident.
 
 That's the entire foundation. A **chart** is templated manifests plus default values. A **values file** parameterizes the chart per environment. A **release** is a named, versioned install you can upgrade and roll back. Everything in the next phase is the commands that drive these three ideas.
 

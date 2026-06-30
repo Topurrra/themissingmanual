@@ -29,7 +29,7 @@
   ];
 </script>
 
-<Seo title={`${guide.title} — The Missing Manual`} description={guide.summary} type="article" image={`/guides/${guide.slug}/og.svg`} {jsonld} />
+<Seo title={`${guide.title} - The Missing Manual`} description={guide.summary} type="article" image={`/guides/${guide.slug}/og.svg`} {jsonld} />
 
 <div class="crumb"><a href="/">All topics</a> <span>/</span> <span>{guide.title}</span></div>
 <h1 class="page-title">{guide.title}</h1>

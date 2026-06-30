@@ -1,8 +1,8 @@
 /* =============================================================================
-   The Missing Manual — design system (global stylesheet)
+   The Missing Manual - design system (global stylesheet)
    Minimal-technical, teal accent, reading-first. See DESIGN.md before changing.
    NOTE: this file is GLOBAL (not Svelte-scoped). Namespace component styles
-   (.admin-*, .road-*, .cmdk-*, .bars .bar — never a bare .bar) to avoid collisions.
+   (.admin-*, .road-*, .cmdk-*, .bars .bar - never a bare .bar) to avoid collisions.
    ============================================================================= */
 
 :root {
@@ -20,7 +20,7 @@
   --accent-tint: rgba(14, 124, 134, 0.10);
   --accent-tint-2: rgba(14, 124, 134, 0.05);
 
-  /* Semantic status tokens — danger (destructive) + warn (draft/pending).
+  /* Semantic status tokens - danger (destructive) + warn (draft/pending).
      Tuned for the off-white base; see the dark override for the dark values. */
   --danger: #c0392b;
   --danger-strong: #962a1f;
@@ -59,7 +59,7 @@
   --accent-tint: rgba(77, 150, 156, 0.16);
   --accent-tint-2: rgba(47, 182, 192, 0.07);
 
-  /* Semantic status tokens — brighter red + warmer amber so they read on #101012. */
+  /* Semantic status tokens - brighter red + warmer amber so they read on #101012. */
   --danger: #e2685a;
   --danger-strong: #ef8275;
   --warn: #d9b455;
@@ -186,7 +186,7 @@
   --shadow-pop: 0 16px 48px -12px rgba(0, 0, 0, 0.8);
 }
 
-/* Scrollbars — subtle, themed (track transparent, thin rounded thumb that uses
+/* Scrollbars - subtle, themed (track transparent, thin rounded thumb that uses
    the theme's line/faint tokens, so it adapts to every theme). */
 html { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
 ::-webkit-scrollbar { width: 11px; height: 11px; }
@@ -297,7 +297,7 @@ p { margin: 1rem 0; }
 .nav-foot { font-size: 0.95rem; margin: 1.5rem 0; }
 
 /* -----------------------------------------------------------------------------
-   Header — sticky, blurred, with a ⌘K search affordance
+   Header - sticky, blurred, with a ⌘K search affordance
    --------------------------------------------------------------------------- */
 .site-header {
   position: sticky;
@@ -327,7 +327,7 @@ p { margin: 1rem 0; }
 }
 .brand:hover { color: var(--ink); }
 
-/* Header sidebar toggle — single affordance, mirrors the admin console's
+/* Header sidebar toggle - single affordance, mirrors the admin console's
    .adm-rail-btn. Replaces the old in-sidebar collapse + floating expand pair. */
 .site-rail-btn {
   flex: none;
@@ -346,7 +346,7 @@ p { margin: 1rem 0; }
 
 .header-search { flex: 1 1 0; display: flex; justify-content: center; }
 
-/* Search field — ONE clean focus treatment: border + soft ring on the wrapper;
+/* Search field - ONE clean focus treatment: border + soft ring on the wrapper;
    the inner input has no outline of its own. Never stack the two. */
 .search-field {
   display: flex;
@@ -425,11 +425,11 @@ p { margin: 1rem 0; }
 }
 @keyframes pop { from { opacity: 0; transform: scale(0.96) translateY(-4px); } to { opacity: 1; transform: none; } }
 
-/* Settings drawer — slides in from the right, smooth like the sidebar collapse. */
+/* Settings drawer - slides in from the right, smooth like the sidebar collapse. */
 .settings-scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.28); border: 0; z-index: 60; opacity: 0; animation: scrim-in 0.2s var(--ease) forwards; cursor: default; }
 @keyframes scrim-in { to { opacity: 1; } }
 .settings-drawer {
-  position: fixed; top: 0; right: 0; height: 100%; width: 340px; max-width: 88vw; z-index: 61;
+  position: fixed; top: 0; right: 0; height: 100%; width: 350px; max-width: 88vw; z-index: 61;
   background: var(--raise); border-left: 1px solid var(--line); box-shadow: var(--shadow-pop);
   padding: 1.1rem 1.2rem 2rem; overflow-y: auto;
   transform: translateX(100%); animation: drawer-in 0.26s var(--ease-out) forwards;
@@ -466,7 +466,7 @@ p { margin: 1rem 0; }
 .settings-soon { font-size: 0.78rem; color: var(--faint); margin: 0.8rem 0 0; }
 
 /* font picker */
-.font-list { display: flex; flex-direction: column; gap: 3px; max-height: 232px; overflow-y: auto; margin: 0 0 0.2rem; }
+.font-list { display: flex; flex-direction: column; gap: 3px; max-height: 180px; overflow-y: auto; margin: 0 0 0.2rem; }
 .font-opt {
   display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
   text-align: left; border: 1px solid transparent; background: none;
@@ -495,7 +495,7 @@ p { margin: 1rem 0; }
 }
 
 /* -----------------------------------------------------------------------------
-   Shell + sidebar — collapse animates the sidebar WIDTH (grid track follows it).
+   Shell + sidebar - collapse animates the sidebar WIDTH (grid track follows it).
    Never animate grid-template-columns; several engines won't.
    --------------------------------------------------------------------------- */
 .shell {
@@ -567,7 +567,7 @@ p { margin: 1rem 0; }
   line-height: 1.4;
   transition: color 0.15s var(--ease), background 0.15s var(--ease);
 }
-/* Leading icon — matches the admin nav's icon+label rows. */
+/* Leading icon - matches the admin nav's icon+label rows. */
 .nav-items a > .ti { font-size: 18px; flex: none; }
 .nav-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .nav-items a:hover { color: var(--ink); background: var(--surface); text-decoration: none; }
@@ -580,7 +580,7 @@ p { margin: 1rem 0; }
 .nav-items a.muted:hover { color: var(--muted); }
 .nav-soon { color: var(--faint); font-size: 0.85rem; padding: 0.2rem 0 0.2rem 0.6rem; }
 
-/* Learning-path steps nested under the active path — subordinate to the track:
+/* Learning-path steps nested under the active path - subordinate to the track:
    indented past the path's border, smaller, with their own thin guide-line. */
 .nav-substeps {
   list-style: none;
@@ -646,7 +646,7 @@ p { margin: 1rem 0; }
 .nav-group-count { flex: none; margin-left: auto; font-family: var(--font-mono); font-size: 0.62rem; color: var(--faint); }
 .nav-sub { margin-left: 0.7rem; padding-left: 0.55rem; border-left: 1px solid var(--line); }
 
-/* scoped per-topic sidebar headings — text left-aligned with the nav pills below */
+/* scoped per-topic sidebar headings - text left-aligned with the nav pills below */
 .rail-topic {
   display: flex; align-items: center; gap: 0.5rem;
   font-family: var(--font-display); font-weight: 600; font-size: 1rem;
@@ -781,7 +781,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .result-cat { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; }
 
 /* -----------------------------------------------------------------------------
-   Category page — difficulty groups
+   Category page - difficulty groups
    --------------------------------------------------------------------------- */
 .crumb { font-family: var(--font-mono); font-size: 0.74rem; color: var(--faint); letter-spacing: 0.04em; margin-bottom: 0.9rem; display: flex; gap: 0.5rem; align-items: center; }
 .crumb a { color: var(--muted); }
@@ -882,7 +882,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 
 /* Structured phase footer (.phasenav): prev / overview / next cards built from
    guidePhases. When present we hide the author-written nav line at the end of
-   the Markdown — reliably the final <hr> + the final <p> of the rendered HTML. */
+   the Markdown - reliably the final <hr> + the final <p> of the rendered HTML. */
 .reader.has-phasenav > hr:last-of-type,
 .reader.has-phasenav > hr:last-of-type + p { display: none; }
 
@@ -918,7 +918,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 }
 
 /* -----------------------------------------------------------------------------
-   Resume reading — save-your-place bookmark (reader pages)
+   Resume reading - save-your-place bookmark (reader pages)
    --------------------------------------------------------------------------- */
 .read-fab {
   position: fixed; right: 22px; bottom: calc(22px + var(--fab-lift, 0px)); z-index: 55;
@@ -1019,14 +1019,12 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 /* -----------------------------------------------------------------------------
    Footer colophon
    --------------------------------------------------------------------------- */
-.colophon { border-top: 1px solid var(--line); margin-top: 4rem; }
+.colophon { border-top: 1px solid var(--line); margin-top: 0rem; }
 .colophon-inner {
-  max-width: 1100px;
-  margin: 0 auto;
   padding: 2.4rem 1.5rem 1.5rem;
 }
 /* Top: identity block (left) + grouped link columns (right). Wraps to stacked on
-   narrow screens. Grouped columns scale — a new page is one more line in a column,
+   narrow screens. Grouped columns scale - a new page is one more line in a column,
    never a longer single row. */
 .co-grid { display: flex; flex-wrap: wrap; gap: 2rem 3rem; justify-content: space-between; }
 .co-id { max-width: 360px; }
@@ -1037,7 +1035,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 
 .co-cols { display: flex; flex-wrap: wrap; gap: 1.8rem 3rem; }
 .co-col { display: flex; flex-direction: column; gap: 0.5rem; min-width: 118px; }
-/* Group label — JetBrains-Mono micro-label, matching .spon-label / eyebrows. */
+/* Group label - JetBrains-Mono micro-label, matching .spon-label / eyebrows. */
 .co-col-h {
   font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600;
   letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin: 0 0 0.25rem;
@@ -1060,10 +1058,10 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .spon-name { color: var(--body); font-weight: 600; }
 .spon-name:hover { color: var(--ink); }
 .spon-sep { color: var(--faint); font-size: 0.85rem; }
-/* "IT" green — readable on light footer; brightened in dark. Not the teal --accent. */
+/* "IT" green - readable on light footer; brightened in dark. Not the teal --accent. */
 .spon-name .spon-it { color: #2e9e4f; }
 :root[data-mode="dark"] .spon-name .spon-it { color: #45c46a; }
-/* "X" fire — red→orange gradient clipped to the glyph, solid fallback first. */
+/* "X" fire - red→orange gradient clipped to the glyph, solid fallback first. */
 .spon-name .spon-x {
   color: #ff5722; /* fallback for no background-clip support */
   background: linear-gradient(90deg, #e8331f 0%, #ff5e1a 45%, #ff9100 100%);
@@ -1081,7 +1079,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .co-social i { font-size: 18px; }
 
 /* -----------------------------------------------------------------------------
-   Focus visibility (single, consistent — never doubled)
+   Focus visibility (single, consistent - never doubled)
    --------------------------------------------------------------------------- */
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 .search-field input:focus-visible { outline: none; }
@@ -1163,7 +1161,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .admin-brand span { color: var(--accent); font-weight: 500; }
 .admin-brand:hover { text-decoration: none; color: var(--ink); }
 .admin-spacer { margin-left: auto; }
-/* header settings gear — active state mirrors a sidebar 'on' link */
+/* header settings gear - active state mirrors a sidebar 'on' link */
 .adm-gear.on { color: var(--accent); border-color: var(--accent); }
 .admin-logout { margin-left: 0; }
 .admin-logout button, .admin-btn {
@@ -1219,7 +1217,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .adm-nav a .ti { font-size: 18px; flex: none; }
 .adm-nav-label { overflow: hidden; text-overflow: ellipsis; }
 
-/* header collapse toggle — same affordance as the public .rail-btn */
+/* header collapse toggle - same affordance as the public .rail-btn */
 .adm-rail-btn {
   flex: none;
   background: none;
@@ -1369,7 +1367,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .cat-blurb-input { flex: 1; min-width: 180px; }
 .cat-slug { color: var(--faint); font-size: 0.8rem; font-family: var(--font-mono); }
 
-/* account — change-password form */
+/* account - change-password form */
 .acct-form { max-width: 360px; display: flex; flex-direction: column; gap: 0.9rem; }
 .acct-field { display: flex; flex-direction: column; gap: 0.3rem; }
 .acct-field > span { font-size: 0.85rem; color: var(--muted); }
@@ -1412,7 +1410,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .ed-pick { padding: 2rem 0; }
 @media (max-width: 800px) { .ed-body { grid-template-columns: 1fr; } .ed-split { grid-template-columns: 1fr; } }
 
-/* Admin field layer — ONE consistent radius + focus treatment for every admin
+/* Admin field layer - ONE consistent radius + focus treatment for every admin
    text input/select. Mirrors the public .search-field house style: accent border
    + soft ring on the field, outline suppressed so the global :focus-visible
    (2px outline + 4px radius) never clashes with the 9px corners. */
@@ -1455,7 +1453,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .bars:hover .bar { opacity: 0.35; }
 .bars .bar.active { opacity: 1; }
 
-/* Ranked lists (top topics / referrers / searches) — rank #, label, proportional
+/* Ranked lists (top topics / referrers / searches) - rank #, label, proportional
    bar, then the count, so the number reads as its own value and rows compare visually. */
 .rank-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2.5rem; }
 .ranks { display: flex; flex-direction: column; gap: 2px; margin-bottom: 0.5rem; }

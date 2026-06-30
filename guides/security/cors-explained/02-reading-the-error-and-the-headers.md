@@ -12,11 +12,11 @@ updated: 2026-06-19
 # Reading the Error & the Headers
 
 The CORS error in the console looks like a wall of jargon, but it's actually telling you exactly what's
-wrong — once you know which words to read. In this phase you'll learn to decode the message, then see the
+wrong - once you know which words to read. In this phase you'll learn to decode the message, then see the
 two headers that the whole dance comes down to, and finally meet the surprise extra request (the
 *preflight*) that confuses people the first time they spot it in the Network tab.
 
-> ⏭️ New here? Read [Phase 1](01-why-the-browser-blocks-you.md) first — "the browser enforces, the server
+> ⏭️ New here? Read [Phase 1](01-why-the-browser-blocks-you.md) first - "the browser enforces, the server
 > permits" makes everything below land.
 
 ## Decoding the classic error
@@ -29,7 +29,7 @@ Access to fetch at 'http://localhost:3000/api/users' from origin
 'Access-Control-Allow-Origin' header is present on the requested resource.
 ```
 
-Read it slowly, phrase by phrase — it's a complete diagnosis:
+Read it slowly, phrase by phrase - it's a complete diagnosis:
 
 ```text
    Access to fetch at 'http://localhost:3000/api/users'   ← WHAT you tried to read
@@ -41,7 +41,7 @@ Read it slowly, phrase by phrase — it's a complete diagnosis:
 
 *What this is telling you:* your page on `localhost:5173` asked `localhost:3000` for data, the browser
 checked the response for a permission header, found none, and refused to hand you the body. The fix lives
-entirely on the server at `localhost:3000` — it needs to send that header. (Phase 3.)
+entirely on the server at `localhost:3000` - it needs to send that header. (Phase 3.)
 
 ⚠️ **Don't get sent on a wild goose chase by the word "fetch."** The error is not about your `fetch()`
 code being wrong. Your request was fine. The browser blocked the *reading of the response*. No amount of
@@ -60,10 +60,10 @@ You'll see a few variants of this message; they all point at the same server-sid
 
 CORS, in its simplest form, is a short conversation between exactly two headers.
 
-**The request header — `Origin`.** The browser adds this *automatically* to cross-origin requests. You
+**The request header - `Origin`.** The browser adds this *automatically* to cross-origin requests. You
 don't set it; you can't fake it from JavaScript. It tells the server where the calling page lives.
 
-**The response header — `Access-Control-Allow-Origin`.** The server sends this back to name which origin
+**The response header - `Access-Control-Allow-Origin`.** The server sends this back to name which origin
 is allowed to read the response. The browser compares it against the `Origin` it sent.
 
 Here is a healthy exchange, annotated:
@@ -82,7 +82,7 @@ Access-Control-Allow-Origin: http://localhost:5173   ← server: "that origin ma
 ```
 *What just happened:* the browser announced its origin, the server echoed back the *same* origin in
 `Access-Control-Allow-Origin`, the browser saw a match, and your JavaScript got the JSON. When the server
-*omits* that response header — or returns a different origin — the body is the same, but the browser
+*omits* that response header - or returns a different origin - the body is the same, but the browser
 refuses to let you read it, and you get the console error above.
 
 💡 **Key point:** the browser doesn't trust *intent*, it checks a *header*. The server has to literally
@@ -94,7 +94,7 @@ The first time you open the Network tab and see an `OPTIONS` request you never w
 your actual request, it's genuinely baffling. Here's what's going on.
 
 📝 **Preflight request.** For requests that could *change data* or carry unusual headers, the browser
-sends a small `OPTIONS` request *first* — a "may I?" — and only sends the real request if the server says
+sends a small `OPTIONS` request *first* - a "may I?" - and only sends the real request if the server says
 yes. This is the **preflight**.
 
 **Why it exists.** Some requests are too risky to fire blindly. A `DELETE`, or a `POST` with a JSON
@@ -102,7 +102,7 @@ content type, or any request with a custom header like `Authorization` could cau
 server wasn't expecting cross-origin callers. So the browser checks *permission in advance* instead of
 sending the dangerous request and apologizing afterward.
 
-**Simple vs. non-simple — what triggers a preflight.** Not every request gets one. A "simple" request
+**Simple vs. non-simple - what triggers a preflight.** Not every request gets one. A "simple" request
 skips the preflight; anything else triggers it.
 
 ```text
@@ -117,7 +117,7 @@ skips the preflight; anything else triggers it.
                                          some cases
 ```
 
-Most real API calls — a JSON `POST`, anything with an auth token — are *non-simple*, which is why you see
+Most real API calls - a JSON `POST`, anything with an auth token - are *non-simple*, which is why you see
 preflights so often. Here's a preflight conversation in full:
 
 ```http
@@ -134,9 +134,9 @@ Access-Control-Allow-Methods: GET, POST, DELETE      ← "…these methods are o
 Access-Control-Allow-Headers: content-type           ← "…that header is okay"
 ```
 *What just happened:* before sending your real `POST`, the browser asked the server "I'm from
-`localhost:5173`, I want to `POST` with a `content-type` header — allowed?" The server answered "yes, that
+`localhost:5173`, I want to `POST` with a `content-type` header - allowed?" The server answered "yes, that
 origin, those methods, that header." The browser saw approval and *then* sent the actual `POST`. If the
-server had not approved the method or header, the browser would stop here — and you'd see *"Response to
+server had not approved the method or header, the browser would stop here - and you'd see *"Response to
 preflight request doesn't pass access control check."*
 
 The two-step "may I? / yes / now the real one" shape is the whole idea of a preflight:
@@ -153,7 +153,7 @@ sequenceDiagram
 
 ⚠️ **The preflight is a separate request with its own rules.** Your real request can fail at the
 preflight stage and never even run. If the error mentions "preflight," the problem is the `OPTIONS`
-response — the server isn't allowing your method or your headers, not (yet) the data request itself.
+response - the server isn't allowing your method or your headers, not (yet) the data request itself.
 
 **Why this saves you later.** When you can read the error and know the two headers, debugging becomes
 mechanical: open the Network tab, find the failing request (or its `OPTIONS` preflight), look at the
@@ -163,7 +163,7 @@ is always right there.
 ## Recap
 
 1. The console error names *where you called from*, *what you tried to read*, and *which header was
-   missing* — read it phrase by phrase.
+   missing* - read it phrase by phrase.
 2. "Blocked by CORS" is a **server header problem**, not a bug in your `fetch`.
 3. The browser auto-sends **`Origin`**; the server must answer with a matching
    **`Access-Control-Allow-Origin`**.

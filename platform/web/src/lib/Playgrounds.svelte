@@ -47,7 +47,7 @@
       if (destroyed) return;
       const reader = document.querySelector('.reader');
       if (!reader) return;
-      // Remove any ```quiz block from the body — it is rendered as the Quiz widget.
+      // Remove any ```quiz block from the body - it is rendered as the Quiz widget.
       reader.querySelectorAll('code.language-quiz').forEach((code) => {
         const host = code.closest('pre') || code;
         host.remove();

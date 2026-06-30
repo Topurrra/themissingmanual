@@ -15,7 +15,7 @@
 </script>
 
 <figure class="pg pg-emb">
-  <figcaption class="pg-cap"><i class="ti ti-vector-triangle" aria-hidden="true"></i> Embeddings — meaning as coordinates</figcaption>
+  <figcaption class="pg-cap"><i class="ti ti-vector-triangle" aria-hidden="true"></i> Embeddings - meaning as coordinates</figcaption>
   <div class="em-body">
     <svg viewBox="0 0 100 100" class="em-svg" role="img" aria-label="Word embedding scatter plot">
       {#if sel != null}
@@ -31,8 +31,8 @@
       {/each}
     </svg>
     <p class="em-note">
-      {#if sel != null}Closest in meaning to <b>{PTS[sel].w}</b>: {near.map((o) => PTS[o.i].w).join(', ')}. Words about the same thing land near each other — that's what an embedding captures.
-      {:else}Each word is a point. Click one to see its nearest neighbours. Notice the clusters — animals, royalty, tech, food — form on their own from meaning, not spelling.{/if}
+      {#if sel != null}Closest in meaning to <b>{PTS[sel].w}</b>: {near.map((o) => PTS[o.i].w).join(', ')}. Words about the same thing land near each other - that's what an embedding captures.
+      {:else}Each word is a point. Click one to see its nearest neighbours. Notice the clusters - animals, royalty, tech, food - form on their own from meaning, not spelling.{/if}
     </p>
   </div>
 </figure>

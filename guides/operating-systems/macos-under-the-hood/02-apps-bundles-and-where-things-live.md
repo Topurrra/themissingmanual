@@ -14,13 +14,13 @@ updated: 2026-06-19
 On Windows a program is a `.exe` file. So when you drag a Mac app to the trash and it just… vanishes
 cleanly, with no installer and no uninstaller, it can feel like magic. It isn't. The Mac's approach to
 "where an app and its stuff live" is unusually tidy, but it only makes sense once you know two secrets:
-**an app is really a folder**, and **your settings live in a place called Library** — three of them,
+**an app is really a folder**, and **your settings live in a place called Library** - three of them,
 actually. Let's open the hood on both, then install some real tools.
 
 ## A `.app` is a folder, not a file
 
 **What it actually is.** That `Safari.app` or `VLC.app` you double-click is not a single file. It's a
-**folder** — a special kind macOS calls a **bundle** — with a strict layout inside, holding the program,
+**folder** - a special kind macOS calls a **bundle** - with a strict layout inside, holding the program,
 its icons, its images, and everything else it needs. The Finder *pretends* it's one icon so you can move
 it around as a single thing, but on disk it's a directory full of parts.
 
@@ -28,7 +28,7 @@ it around as a single thing, but on disk it's a directory full of parts.
 end in `.app`; there are other bundle types too (`.framework`, `.bundle`). The "it's one icon but really
 a folder" trick is the whole idea.
 
-**Prove it to yourself — the Finder way.** Right-click any app and choose **Show Package Contents**.
+**Prove it to yourself - the Finder way.** Right-click any app and choose **Show Package Contents**.
 Finder opens it like the folder it is. But the Terminal makes the truth even plainer:
 
 ```console
@@ -38,25 +38,25 @@ Calculator.app
 $ ls Calculator.app/Contents
 Info.plist      MacOS           PkgInfo         Resources       _CodeSignature
 ```
-*What just happened:* `Calculator.app` looked like a file in Finder, but `ls` walked right into it — it's
+*What just happened:* `Calculator.app` looked like a file in Finder, but `ls` walked right into it - it's
 a folder. Inside is a `Contents` directory with a predictable structure. The important parts:
 
-- `MacOS/` — the **actual executable**, the real program that runs.
-- `Resources/` — icons, images, sounds, translated text: the app's assets.
-- `Info.plist` — a settings file describing the app (its name, version, what it needs). We'll meet
+- `MacOS/` - the **actual executable**, the real program that runs.
+- `Resources/` - icons, images, sounds, translated text: the app's assets.
+- `Info.plist` - a settings file describing the app (its name, version, what it needs). We'll meet
   `.plist` files again in a moment.
-- `_CodeSignature/` — Apple's cryptographic signature proving the app hasn't been tampered with (Phase 3
+- `_CodeSignature/` - Apple's cryptographic signature proving the app hasn't been tampered with (Phase 3
   covers why that matters).
 
 💡 **Key point.** Because an app is a self-contained folder carrying everything it needs, **installing is
 just copying the folder into `/Applications`, and uninstalling is just dragging it to the trash.** No
 installer wizard, no registry, no leftover system files for the app itself. (Its *preferences* live
-elsewhere — coming up next — which is why a stray settings file can linger after you trash an app.)
+elsewhere - coming up next - which is why a stray settings file can linger after you trash an app.)
 
 ## The Library folders: where your settings actually live
 
 If the app is a tidy self-contained folder, where do your preferences, caches, and saved data go? Not
-inside the app — that would get wiped on every update. They go into **Library**, and here's the part that
+inside the app - that would get wiped on every update. They go into **Library**, and here's the part that
 trips everyone up: **there are several Library folders, at different levels.**
 
 ```text
@@ -84,13 +84,13 @@ Application Support   Caches               Logs                 Saved Applicatio
 Application Scripts   Containers           Mobile Documents     Preferences
 Autosave Information  Fonts                Preferences          ...
 ```
-*What just happened:* You listed your personal Library — the real home of your settings. The three
+*What just happened:* You listed your personal Library - the real home of your settings. The three
 folders worth knowing by name:
 
-- **`Preferences/`** — your app settings, one file per app, stored as `.plist` files.
-- **`Application Support/`** — an app's larger saved data (databases, profiles, plugins) — anything
+- **`Preferences/`** - your app settings, one file per app, stored as `.plist` files.
+- **`Application Support/`** - an app's larger saved data (databases, profiles, plugins) - anything
   bigger than a few preferences.
-- **`Caches/`** — disposable temporary data an app keeps to be faster. Safe to lose; the app rebuilds it.
+- **`Caches/`** - disposable temporary data an app keeps to be faster. Safe to lose; the app rebuilds it.
 
 📝 **Terminology.** *plist* (property list) = macOS's standard settings-file format, ending in `.plist`.
 It's a structured key/value file (often XML or a compact binary form) storing one app's preferences.
@@ -104,12 +104,12 @@ $ ls | grep -i finder
 com.apple.finder.plist
 ```
 *What just happened:* That's the Finder's own settings file. Notice the naming convention:
-**reverse-DNS**, like `com.apple.finder` — vendor's domain backwards, then the app name. Every Mac app's
+**reverse-DNS**, like `com.apple.finder` - vendor's domain backwards, then the app name. Every Mac app's
 preferences follow this `com.company.app.plist` pattern, so once you know it, you can find any app's
 settings file by guessing its name.
 
 🪖 **War story.** An app of mine kept launching with a corrupted, broken window every time, and
-reinstalling it changed nothing — because reinstalling only replaces the *app folder*, and the problem
+reinstalling it changed nothing - because reinstalling only replaces the *app folder*, and the problem
 was in its **preferences**. Deleting that one `com.vendor.app.plist` from `~/Library/Preferences` (the
 app rewrites a fresh one on next launch) fixed in seconds what an hour of reinstalling couldn't. Knowing
 the app and its settings live in *different places* is what made the fix obvious.
@@ -121,7 +121,7 @@ are separate. Now you know exactly where each lives.
 ## Installing real CLI tools with Homebrew
 
 macOS ships with a Unix userland (Phase 1), but Apple keeps it conservative and doesn't include
-everything a developer wants — and there's no built-in package manager like Linux's `apt` or `dnf` for
+everything a developer wants - and there's no built-in package manager like Linux's `apt` or `dnf` for
 adding more. The community filled that gap with **Homebrew**, and it's the standard way Mac developers
 install command-line software.
 
@@ -140,7 +140,7 @@ $ brew install wget
 ==> Running `brew cleanup wget`...
 ```
 *What just happened:* `brew` downloaded `wget` (and the dependency it needs, `openssl@3`), unpacked the
-prebuilt copy — Homebrew calls a prebuilt binary a **bottle** — into its own storage, and made it
+prebuilt copy - Homebrew calls a prebuilt binary a **bottle** - into its own storage, and made it
 available to run. You didn't compile anything or hunt for an installer; one command did it.
 
 Notice the install path: `/opt/homebrew`. That ties straight back to Phase 1's filesystem map:
@@ -152,31 +152,31 @@ Notice the install path: `/opt/homebrew`. That ties straight back to Phase 1's f
 
 ⚠️ **Gotcha: Homebrew keeps its world separate from Apple's.** It installs into its own prefix
 (`/opt/homebrew` or `/usr/local`) rather than mixing into Apple's `/usr/bin`. That's deliberate and good
-— Apple can update the system without clobbering your tools, and you can remove Homebrew cleanly. But it
+- Apple can update the system without clobbering your tools, and you can remove Homebrew cleanly. But it
 means your shell has to know to look there. On a fresh Apple-silicon Mac, after installing Homebrew you
-have to add it to your `PATH` (the list of folders your shell searches for commands) — the installer
+have to add it to your `PATH` (the list of folders your shell searches for commands) - the installer
 prints the exact lines to paste, and if you skip that step, `brew` "isn't found" even though it's
 installed. If you've met the shell and `PATH` before, this will feel familiar; if not, Phase 3 and
 [The Terminal & Shell](/guides/the-terminal-and-shell) explain it.
 
 **Why this saves you later.** When a tutorial says "just run `brew install ...`" and your Mac says
 `command not found`, you won't be stuck. You'll know Homebrew lives in its own prefix, that your shell
-needs that prefix on its `PATH`, and exactly where to look — `/opt/homebrew` on modern Macs.
+needs that prefix on its `PATH`, and exactly where to look - `/opt/homebrew` on modern Macs.
 
 ## Recap
 
-1. A **`.app` is a folder** (a *bundle*), not a single file — `Show Package Contents` (or `cd` into it)
+1. A **`.app` is a folder** (a *bundle*), not a single file - `Show Package Contents` (or `cd` into it)
    reveals the executable, resources, and `Info.plist` inside.
 2. Because the app is self-contained, **installing = copy to `/Applications`, uninstalling = drag to
-   trash** — but its settings live elsewhere.
+   trash** - but its settings live elsewhere.
 3. There are **several Library folders**: `/System/Library` (Apple's, off-limits), `/Library`
-   (machine-wide), and **`~/Library`** (yours — and hidden by default).
+   (machine-wide), and **`~/Library`** (yours - and hidden by default).
 4. Inside `~/Library`: **`Preferences/`** (per-app `.plist` settings, named `com.company.app.plist`),
    **`Application Support/`** (bigger app data), and **`Caches/`** (disposable).
-5. **Homebrew** is the package manager for real CLI tools — it installs into its own prefix
+5. **Homebrew** is the package manager for real CLI tools - it installs into its own prefix
    (`/opt/homebrew` on Apple silicon, `/usr/local` on Intel), kept separate from Apple's `/usr`.
 
-Next, the surface you already touch every day — the Terminal and zsh — plus the service manager that
+Next, the surface you already touch every day - the Terminal and zsh - plus the service manager that
 keeps the Mac running and the security walls a power user runs into.
 
 ---

@@ -41,7 +41,7 @@ A developer in a hurry runs an install. Their finger slips, or autocomplete betr
 # What they meant:
 $ npm install crossenv
 
-# Wait — the real one is `cross-env`. `crossenv` was a known typosquat.
+# Wait - the real one is `cross-env`. `crossenv` was a known typosquat.
 # It bundled the real behavior PLUS stole environment variables on install.
 ```
 
@@ -128,13 +128,13 @@ Run the drill once before you need it: pretend a package you ship turned malicio
       "The developer manually installed it"
     ],
     "answer": 1,
-    "explain": "Unpinned transitive ranges resolve to whatever is 'newest in range' — including a freshly poisoned release — which is exactly what a committed lockfile prevents."
+    "explain": "Unpinned transitive ranges resolve to whatever is 'newest in range' - including a freshly poisoned release - which is exactly what a committed lockfile prevents."
   },
   {
     "q": "Why is putting a long-lived prod-admin token in the build-and-test CI job dangerous?",
     "choices": [
       "It slows the build down",
-      "Every dependency in that build — including malicious install scripts — runs with access to that token's full power",
+      "Every dependency in that build - including malicious install scripts - runs with access to that token's full power",
       "Tokens expire too quickly to be useful there",
       "It is only dangerous if the repo is public"
     ],

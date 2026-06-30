@@ -11,11 +11,11 @@ updated: 2026-06-25
 
 # What a Proof Actually Is
 
-The word "proof" can feel like a wall — something with a velvet rope in front of
+The word "proof" can feel like a wall - something with a velvet rope in front of
 it, open only to people with chalk dust on their sleeves. You hear "prove it" and a
 small voice says: *that's not for me.*
 
-Here's the reality. A proof is an ordinary argument — the kind you make when you
+Here's the reality. A proof is an ordinary argument - the kind you make when you
 explain why the restaurant must be closed, or why the missing ten dollars has to be
 in your other coat. The only difference is that a proof has the gaps taken out. Every
 place a normal argument says "and so, clearly," a proof stops and fills the space with
@@ -30,21 +30,21 @@ step at a time, to the claim you want to establish.
 
 The things you start from come in three kinds:
 
-- **Axioms** — starting assumptions everyone in the room has agreed to accept
+- **Axioms** - starting assumptions everyone in the room has agreed to accept
   without further argument.
-- **Definitions** — the agreed meanings of your words. If "even number" means
+- **Definitions** - the agreed meanings of your words. If "even number" means
   "a whole number you can write as two times some whole number," that meaning is
   yours to use, free, whenever you need it.
-- **Previously-proven results** — anything already established the same way. Once
+- **Previously-proven results** - anything already established the same way. Once
   proven, a result is yours to lean on forever; you never re-prove it.
 
 From that bedrock, you take **valid** steps. A step is valid when the truth of
-what came before *forces* the truth of what comes next — the conclusion can't be
+what came before *forces* the truth of what comes next - the conclusion can't be
 false if the premises are true. (That word "valid" carries a lot of weight, and it
 has a precise meaning; see [what logic actually is](/guides/what-logic-actually-is).)
 
 You keep taking valid steps until you reach your claim. When you do, the claim isn't
-*likely* true. It is true, with the same certainty as the bricks you started from —
+*likely* true. It is true, with the same certainty as the bricks you started from -
 because each step only ever passed that certainty along.
 
 So the test for a proof is brutally simple, and you can apply it yourself:
@@ -57,7 +57,7 @@ A proof is exactly an argument where the honest answer is always "no."
 
 ## Axioms: where the chain is anchored
 
-📝 **Axiom** — a statement accepted as a starting point, without proof, by
+📝 **Axiom** - a statement accepted as a starting point, without proof, by
 agreement. Not because it's been proven (it hasn't), and not because it's beyond
 question, but because *we have to start somewhere.* You can't prove everything
 from nothing; every chain needs a first link that hangs from open air.
@@ -65,14 +65,14 @@ from nothing; every chain needs a first link that hangs from open air.
 This can feel like cheating. It isn't. Think of axioms as the rules of a game you
 and your reader agree to play. "Two points determine a line" is an axiom of one kind
 of geometry. Nobody proves it. You agree to it, then see what follows. Change the
-axioms and you get a different game with different — but equally valid — conclusions.
+axioms and you get a different game with different - but equally valid - conclusions.
 
 Definitions are the other half of your bedrock. An axiom says *what is true to
 start with*; a definition says *what your words mean*. Both are accepted, not
 proven. Everything else in the chain has to earn its place.
 
-💡 If an argument ever feels circular or bottomless — "but why is *that* true?"
-forever — you've usually hit the place where someone forgot to name their axioms.
+💡 If an argument ever feels circular or bottomless - "but why is *that* true?"
+forever - you've usually hit the place where someone forgot to name their axioms.
 Name them, and the bottom appears.
 
 ## Proof vs evidence
@@ -82,11 +82,11 @@ This distinction changes how you see almost everything, so slow down here.
 **Evidence** makes a claim *more believable*. You test, you observe, you collect
 examples, and your confidence goes up. This is how science, courts, and daily life
 work, and it is enormously powerful. But evidence reasons from particular cases
-toward a general pattern — that direction is called **inductive** — and it can never
+toward a general pattern - that direction is called **inductive** - and it can never
 reach certainty. There is always one more case you haven't checked.
 
 **A proof** makes a claim *certain*. It reasons from general accepted truths down
-to the specific conclusion — that direction is called **deductive** — and when
+to the specific conclusion - that direction is called **deductive** - and when
 every step is valid, the conclusion is locked. Not 99.9% likely. Locked.
 
 Here is the asymmetry that makes the whole thing sharp. Consider a claim of the
@@ -104,18 +104,18 @@ Evidence FOR it:
 
 Does this PROVE it?   No.
    It supports it. The very next number could be the one that fails.
-   No pile of confirming examples — however huge — proves a universal claim.
+   No pile of confirming examples - however huge - proves a universal claim.
 
 A single COUNTEREXAMPLE, on the other hand:
    one even number that is NOT a sum of two primes
    would destroy the claim instantly and forever.
 ```
 
-(That example is real — it's an unsolved problem. Billions of confirming cases,
+(That example is real - it's an unsolved problem. Billions of confirming cases,
 still not a proof.)
 
 Read that box twice. Examples can only *support* a "for all" claim; they can never
-finish it. But one counterexample *settles* it — in the negative. That's why
+finish it. But one counterexample *settles* it - in the negative. That's why
 mathematicians hunt counterexamples so eagerly: a single one does what infinite
 examples cannot.
 
@@ -125,11 +125,11 @@ You already live with this distinction every day. You call it something else.
 
 A **passing test** is evidence. A test runs your code on *particular* inputs and
 checks the output for those inputs. That's induction: "it worked on the cases I
-tried." A green test suite raises your confidence — and it should — but it checks a
+tried." A green test suite raises your confidence - and it should - but it checks a
 finite handful of the (often infinite) inputs your code might see.
 
-A **proof** about your code — the kind you do informally when you reason "this loop
-can't go out of bounds because `i` is always less than `len`" — guarantees *all*
+A **proof** about your code - the kind you do informally when you reason "this loop
+can't go out of bounds because `i` is always less than `len`" - guarantees *all*
 inputs at once, by argument rather than by trial.
 
 ```text
@@ -144,12 +144,12 @@ Proof:  an argument that add(a, b) == a + b for EVERY a and b
 
 This is the exact reason "the tests pass" is not the same as "the code is correct."
 Tests sample reality; proofs cover it. Most of the time sampling is all you can
-afford, and that's fine — but knowing *which* kind of certainty you have keeps you
+afford, and that's fine - but knowing *which* kind of certainty you have keeps you
 honest about what could still break.
 
 ⚠️ **The gotcha that catches everyone.** "It works on the cases I tried" is not
 "it works always." A handful of green checks, a few hand-traced examples, a demo
-that didn't crash — these are evidence, not proof. The moment you say "so it always
+that didn't crash - these are evidence, not proof. The moment you say "so it always
 works" on the strength of examples alone, you've quietly swapped support for
 certainty, and the bug you ship will be in the case you never tried.
 
@@ -162,8 +162,8 @@ not a proof."* That one sentence has saved more shipped code than any linter.
   claim. Every step must be one no honest reader could deny.
 - The accepted truths are **axioms** (agreed starting assumptions), **definitions**
   (agreed meanings), and **previously-proven results**.
-- A correct proof gives **certainty** (deductive reasoning). **Evidence** —
-  examples, tests, observations — gives **support** (inductive reasoning), never
+- A correct proof gives **certainty** (deductive reasoning). **Evidence** -
+  examples, tests, observations - gives **support** (inductive reasoning), never
   certainty.
 - No pile of examples proves a "for all" claim; a single **counterexample**
   disproves one.
@@ -172,7 +172,7 @@ not a proof."* That one sentence has saved more shipped code than any linter.
 
 ## Open-ended exercise
 
-A teammate claims: "Our cache never returns stale data — we've tested it on a hundred
+A teammate claims: "Our cache never returns stale data - we've tested it on a hundred
 requests and every one was fresh." Is this a proof? Why or why not? Distinguish between
 what kind of certainty the tests provide and what kind would be needed to *prove* the
 claim "the cache never returns stale data" for all possible inputs and all possible

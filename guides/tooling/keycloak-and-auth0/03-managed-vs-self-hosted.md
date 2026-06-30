@@ -60,7 +60,7 @@ Reach for self-hosted when control, cost-at-scale, or data location dominate:
 
 ## Self-hosted reality: config as code
 
-The professional way to run Keycloak is not clicking in the admin UI in production — it's exporting realm configuration to a file you commit, so environments are reproducible:
+The professional way to run Keycloak is not clicking in the admin UI in production - it's exporting realm configuration to a file you commit, so environments are reproducible:
 
 ```bash
 # export a realm to a JSON file you can version-control
@@ -72,7 +72,7 @@ kc.sh export --dir /tmp/export --realm acme-customers
 kc.sh import --dir /tmp/export
 ```
 
-*What just happened:* your realm — clients, roles, login settings — became a reviewable artifact in git, not a pile of manual clicks someone has to remember. This is the difference between "we have an auth server" and "we can rebuild our auth server." Auth0 has the same discipline via its CLI/Terraform provider; whichever you pick, config-as-code is the line between hobby and production.
+*What just happened:* your realm - clients, roles, login settings - became a reviewable artifact in git, not a pile of manual clicks someone has to remember. This is the difference between "we have an auth server" and "we can rebuild our auth server." Auth0 has the same discipline via its CLI/Terraform provider; whichever you pick, config-as-code is the line between hobby and production.
 
 ## The gotchas that bite everyone
 
@@ -82,7 +82,7 @@ These cut across both Auth0 and Keycloak. Each has wrecked a real launch.
 - token lifetime: too long = a stolen token is valid for hours.
   Keep access tokens short; rely on refresh tokens to renew.
 - the master/management realm: never put app users in it, and
-  lock down its admin account hard — it owns everything.
+  lock down its admin account hard - it owns everything.
 - redirect URI sloppiness: a wildcard or a forgotten dev URL
   on the allow-list is an open door for token theft.
 - clock skew: token validation checks 'exp'; if your server's
@@ -94,17 +94,17 @@ These cut across both Auth0 and Keycloak. Each has wrecked a real launch.
   upgrade notes, back up the database, and test before prod.
 ```
 
-*What just happened:* every item is a place where a default left alone leaks accounts. Auth handed off is not auth ignored — you still own the configuration choices, and these are the ones that matter.
+*What just happened:* every item is a place where a default left alone leaks accounts. Auth handed off is not auth ignored - you still own the configuration choices, and these are the ones that matter.
 
 > The cardinal rule survives the handoff: do not roll your own. Adopting an IdP and then reaching back into its token signing, password hashing, or flow internals to "improve" them rebuilds the swamp you escaped. Configure it; don't reinvent it.
 
 ## A migration note, so you don't get trapped
 
-Because both speak OIDC, moving between them is *possible* but not free. The protocol-facing parts of your app (token validation, the issuer URL) port cleanly. What doesn't port automatically: password hashes (you may need a gradual "rehash on next login" migration), vendor-specific extensions, and the exact shape of custom claims. Plan migrations as a project, not a config swap — and lean on standards (OIDC, standard claims) over vendor extensions so the door stays open.
+Because both speak OIDC, moving between them is *possible* but not free. The protocol-facing parts of your app (token validation, the issuer URL) port cleanly. What doesn't port automatically: password hashes (you may need a gradual "rehash on next login" migration), vendor-specific extensions, and the exact shape of custom claims. Plan migrations as a project, not a config swap - and lean on standards (OIDC, standard claims) over vendor extensions so the door stays open.
 
 ## In the wild
 
-A frequent path: a startup launches on Auth0 to get to market fast, runs happily for a couple of years, then watches the per-user bill cross the cost of an engineer and migrates to self-hosted Keycloak. Because they kept to standard OIDC and standard claims, the app code barely changed; the work was operational — stand up Keycloak, migrate users, cut over the issuer URL. The teams that suffer are the ones who leaned hard on one vendor's proprietary features and found the exit welded shut.
+A frequent path: a startup launches on Auth0 to get to market fast, runs happily for a couple of years, then watches the per-user bill cross the cost of an engineer and migrates to self-hosted Keycloak. Because they kept to standard OIDC and standard claims, the app code barely changed; the work was operational - stand up Keycloak, migrate users, cut over the issuer URL. The teams that suffer are the ones who leaned hard on one vendor's proprietary features and found the exit welded shut.
 
 ```quiz
 [
@@ -117,7 +117,7 @@ A frequent path: a startup launches on Auth0 to get to market fast, runs happily
       "Only Auth0 can do social login and MFA"
     ],
     "answer": 1,
-    "explain": "Both remove security-critical code; the difference is where the work and bill land — rent (Auth0) versus own (Keycloak)."
+    "explain": "Both remove security-critical code; the difference is where the work and bill land - rent (Auth0) versus own (Keycloak)."
   },
   {
     "q": "Why export a Keycloak realm to a committed file?",
@@ -128,7 +128,7 @@ A frequent path: a startup launches on Auth0 to get to market fast, runs happily
       "It disables HTTPS for local testing"
     ],
     "answer": 1,
-    "explain": "Config-as-code (export/import to git) turns manual clicks into a reproducible artifact — the line between hobby and production."
+    "explain": "Config-as-code (export/import to git) turns manual clicks into a reproducible artifact - the line between hobby and production."
   },
   {
     "q": "Which is a genuine production gotcha that applies to both providers?",

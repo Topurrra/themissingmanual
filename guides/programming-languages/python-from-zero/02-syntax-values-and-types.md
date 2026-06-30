@@ -2,7 +2,7 @@
 title: "Syntax, Values & Types"
 guide: "python-from-zero"
 phase: 2
-summary: "Python uses indentation as structure (not braces), variables are names pointing at values, the core types are int/float/str/bool/None, f-strings format text, and typing is dynamic — plus the = vs == and integer-vs-float-division traps."
+summary: "Python uses indentation as structure (not braces), variables are names pointing at values, the core types are int/float/str/bool/None, f-strings format text, and typing is dynamic - plus the = vs == and integer-vs-float-division traps."
 tags: [python, types, variables, indentation, f-strings, syntax, int, float, str, bool, none]
 difficulty: beginner
 synonyms: ["python indentation explained", "python variables and types", "what is none in python", "python f-string", "python int vs float division", "= vs == in python", "dynamic typing python"]
@@ -19,13 +19,13 @@ in Python is built from.
 
 ## The big surprise: indentation *is* structure
 
-**What it actually is.** In Python, the *indentation* of a line — how many spaces it's pushed in from
-the left — is what groups lines into a block. Where other languages write `{ ... }`, Python says "these
+**What it actually is.** In Python, the *indentation* of a line - how many spaces it's pushed in from
+the left - is what groups lines into a block. Where other languages write `{ ... }`, Python says "these
 lines are indented under that line, so they belong to it." The indentation isn't decoration; it's the
 grammar.
 
 Here's a block of code that runs only when a condition is true (we'll cover `if` properly in
-[Phase 4](04-control-flow-and-functions.md) — focus on the *shape* for now):
+[Phase 4](04-control-flow-and-functions.md) - focus on the *shape* for now):
 ```python runnable
 temperature = 30
 if temperature > 25:
@@ -34,7 +34,7 @@ if temperature > 25:
 print("Done checking")
 ```
 *What just happened:* The line ending in `:` opens a block. The two **indented** lines beneath it are
-*inside* that block — they run only when `temperature > 25`. The last `print`, back at the left margin,
+*inside* that block - they run only when `temperature > 25`. The last `print`, back at the left margin,
 is *outside* the block, so it always runs. Since 30 is greater than 25, all three lines print:
 ```console
 It's warm
@@ -43,7 +43,7 @@ Done checking
 ```
 
 📝 **Terminology.** The `:` and the indented lines under it form a **block** (also called a *suite*).
-The standard is **4 spaces** per level of indentation. Don't mix tabs and spaces — pick spaces and let
+The standard is **4 spaces** per level of indentation. Don't mix tabs and spaces - pick spaces and let
 your editor insert four when you press Tab.
 
 ⚠️ **`IndentationError` and `TabError`.** Because spacing *is* the structure, getting it wrong is a real
@@ -59,14 +59,14 @@ This confuses *everyone* at first. The fix is almost always: make every line in 
 the exact same column, using spaces only. Any decent editor highlights this for you once you set it to
 "insert spaces for tabs."
 
-💡 **Key point.** In Python, you don't indent because it looks nice — you indent because the indentation
+💡 **Key point.** In Python, you don't indent because it looks nice - you indent because the indentation
 *is* how you tell Python which lines belong together. Read indentation the way you'd read braces in
 other languages.
 
-## Variables — names pointing at values
+## Variables - names pointing at values
 
 **What it actually is.** A variable is a *name* you attach to a value so you can refer to it later. You
-create one with `=` — read it as "let this name refer to this value," not as math equality.
+create one with `=` - read it as "let this name refer to this value," not as math equality.
 ```python runnable
 name = "Ada"
 age = 36
@@ -80,7 +80,7 @@ Ada
 36
 ```
 
-You can re-point a name at a new value any time — that's the whole idea of a *variable*:
+You can re-point a name at a new value any time - that's the whole idea of a *variable*:
 ```python runnable
 score = 10
 score = score + 5
@@ -92,7 +92,7 @@ didn't "change"; you pointed it somewhere new.
 
 ## The core types
 
-Every value in Python has a **type** — what kind of thing it is. You'll use five constantly. You can
+Every value in Python has a **type** - what kind of thing it is. You'll use five constantly. You can
 ask any value its type with the built-in `type()`:
 ```python runnable
 print(type(36))
@@ -112,26 +112,26 @@ print(type(None))
 
 Here's what each is *for*:
 
-- **`int`** — a whole number, with no decimal point: `36`, `0`, `-7`. Integers in Python have no size
+- **`int`** - a whole number, with no decimal point: `36`, `0`, `-7`. Integers in Python have no size
   limit; they grow as large as your memory allows.
-- **`float`** — a number *with* a decimal point: `3.14`, `2.0`, `-0.5`. The "float" is short for
+- **`float`** - a number *with* a decimal point: `3.14`, `2.0`, `-0.5`. The "float" is short for
   *floating-point*, the standard way computers store fractional numbers.
-- **`str`** — a **string**: text, written in quotes. `"hello"`, `'Ada'`. Single or double quotes both
+- **`str`** - a **string**: text, written in quotes. `"hello"`, `'Ada'`. Single or double quotes both
   work; pick one and be consistent.
-- **`bool`** — a **boolean**: either `True` or `False` (capitalized — Python is picky). This is the type
+- **`bool`** - a **boolean**: either `True` or `False` (capitalized - Python is picky). This is the type
   of every yes/no answer, like the result of a comparison.
-- **`None`** — a special value meaning "nothing here / no value yet." Its type is `NoneType`, and there
+- **`None`** - a special value meaning "nothing here / no value yet." Its type is `NoneType`, and there
   is only ever one `None`. You'll meet it as the default "result" of functions that don't return
   anything.
 
-📝 **Terminology.** A **string** is a sequence of characters — text. The quotes aren't part of the
+📝 **Terminology.** A **string** is a sequence of characters - text. The quotes aren't part of the
 value; they just tell Python "the text starts here and ends there."
 
-## Dynamic typing — names don't have a fixed type
+## Dynamic typing - names don't have a fixed type
 
 **What it actually is.** In some languages you must declare "this variable holds an integer" and it can
 *only* ever hold integers. Python doesn't work that way. A name can point at a value of one type now and
-a different type later — the *value* has a type, but the *name* is just a label.
+a different type later - the *value* has a type, but the *name* is just a label.
 ```python runnable
 x = 42
 print(type(x))
@@ -148,7 +148,7 @@ This is called **dynamic typing**. It's flexible and quick to write, but it has 
 you from accidentally putting the wrong kind of value in a name, and you'll only find out when something
 breaks later. Keep your variables holding one *kind* of thing, and you avoid most of that pain.
 
-## f-strings — putting values into text
+## f-strings - putting values into text
 
 You'll constantly want to build a string out of fixed text plus some values. The clean, modern way is an
 **f-string**: a string prefixed with the letter `f`, where anything inside `{ }` is replaced by the
@@ -174,12 +174,12 @@ Two coffees cost 8 dollars
 ```
 
 💡 **Key point.** Reach for f-strings whenever you mix text and values. They're readable, they're fast,
-and they're what Python code looks like today. (Older code uses `"%s" % x` or `.format()` — you'll see
+and they're what Python code looks like today. (Older code uses `"%s" % x` or `.format()` - you'll see
 those around, but you don't need to write them.)
 
 ## Two number traps that bite beginners
 
-⚠️ **`=` vs `==` — assignment vs comparison.** A single `=` *assigns* (points a name at a value). A
+⚠️ **`=` vs `==` - assignment vs comparison.** A single `=` *assigns* (points a name at a value). A
 double `==` *compares* two values and gives back a boolean. Mixing them up is one of the most common
 early mistakes:
 ```python runnable
@@ -187,15 +187,15 @@ x = 5
 print(x == 5)
 print(x == 6)
 ```
-*What just happened:* `x = 5` assigned. Then `x == 5` *asked* "is x equal to 5?" — `True` — and
-`x == 6` asked the same about 6 — `False`:
+*What just happened:* `x = 5` assigned. Then `x == 5` *asked* "is x equal to 5?" - `True` - and
+`x == 6` asked the same about 6 - `False`:
 ```console
 True
 False
 ```
 Say it in your head as you type: `=` is "set to," `==` is "is equal to?"
 
-⚠️ **Integer vs float division — `/` always gives a float.** Plain division with `/` *always* produces
+⚠️ **Integer vs float division - `/` always gives a float.** Plain division with `/` *always* produces
 a `float`, even when the numbers divide evenly. If you want whole-number division, use `//`:
 ```python runnable
 print(7 / 2)
@@ -203,7 +203,7 @@ print(8 / 2)
 print(7 // 2)
 print(7 % 2)
 ```
-*What just happened:* `/` gave you floats (note `4.0`, not `4`). `//` did *floor division* — divide and
+*What just happened:* `/` gave you floats (note `4.0`, not `4`). `//` did *floor division* - divide and
 throw away the remainder, giving a whole number. `%` (the *modulo* operator) gave the **remainder** of
 the division:
 ```console
@@ -214,17 +214,17 @@ the division:
 ```
 This surprises people coming from languages where `/` on two integers stays an integer. In Python, the
 moment you write `/`, expect a decimal. Use `//` when you specifically want the whole part, and `%` when
-you want what's left over (handy for "is this number even?" — `n % 2 == 0`).
+you want what's left over (handy for "is this number even?" - `n % 2 == 0`).
 
 ## Recap
 
 1. **Indentation is structure.** A `:` opens a block; the indented lines under it belong to it. Use 4
-   spaces, never mixed with tabs — getting it wrong is a real `IndentationError`.
+   spaces, never mixed with tabs - getting it wrong is a real `IndentationError`.
 2. A **variable** is a name pointing at a value; `=` means "let this name refer to," and you can
    re-point it any time.
 3. The five everyday types: **`int`** (whole), **`float`** (decimal), **`str`** (text), **`bool`**
    (`True`/`False`), and **`None`** (no value). `type(x)` tells you which.
-4. Python is **dynamically typed** — a name can hold any type, and change type. Flexible, but keep each
+4. Python is **dynamically typed** - a name can hold any type, and change type. Flexible, but keep each
    name to one *kind* of thing.
 5. **f-strings** (`f"{name} is {age}"`) slot values into text; reach for them by default.
 6. `=` assigns, `==` compares. `/` always yields a `float`; use `//` for whole-number division and `%`

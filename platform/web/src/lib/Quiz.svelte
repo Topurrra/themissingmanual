@@ -33,7 +33,7 @@
       const d = JSON.parse(localStorage.getItem(PATH_DONE) || '[]');
       const arr = Array.isArray(d) ? d : [];
       if (!arr.includes(guideSlug)) { arr.push(guideSlug); localStorage.setItem(PATH_DONE, JSON.stringify(arr)); }
-      // Notify same-tab listeners (the path rail) — 'storage' only fires cross-tab.
+      // Notify same-tab listeners (the path rail) - 'storage' only fires cross-tab.
       window.dispatchEvent(new CustomEvent('tmm-progress'));
     } catch (e) {}
   }

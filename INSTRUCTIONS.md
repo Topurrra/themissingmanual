@@ -1,4 +1,4 @@
-# INSTRUCTIONS — running & working on The Missing Manual
+# INSTRUCTIONS - running & working on The Missing Manual
 
 Operational guide: how to start, stop, rebuild, manage content & admin, and troubleshoot.
 For *what the project is* and *how to write guides*, see `README.md`, `CONTRIBUTING.md` (voice),
@@ -12,7 +12,7 @@ For *what the project is* and *how to write guides*, see `README.md`, `CONTRIBUT
 ## 1. What's where
 
 ```
-guides/                     Markdown content — the source of truth for guides
+guides/                     Markdown content - the source of truth for guides
   <slug>/_guide.md          a guide's overview (phase 0) + frontmatter
   <slug>/NN-*.md            its phases
 platform/                   Rust + web app (a Cargo workspace + a SvelteKit app)
@@ -45,14 +45,14 @@ docker compose up -d --build
 ```
 Open http://localhost:5173.
 
-**Stop** (keeps your data — guides, admin, analytics):
+**Stop** (keeps your data - guides, admin, analytics):
 ```bash
 docker compose down
 ```
 > ⚠️ Never `docker compose down -v` unless you truly want to wipe the database. `-v` deletes the
 > `manual-data` volume (all CMS content, the admin password, and analytics).
 
-**Restart a service** (no rebuild — re-runs startup, re-applies content sync, picks up env changes):
+**Restart a service** (no rebuild - re-runs startup, re-applies content sync, picks up env changes):
 ```bash
 docker compose restart api
 ```
@@ -65,7 +65,7 @@ docker compose logs -f api            # follow
 # PowerShell: docker compose logs api | Select-String "content sync"
 ```
 
-### After you change code — rebuild
+### After you change code - rebuild
 Docker runs the *image's* compiled binary, so code changes need a rebuild **and** a recreate:
 ```bash
 docker compose up -d --build --force-recreate api     # Rust/api change
@@ -78,7 +78,7 @@ docker compose up -d --build --force-recreate web     # web change
   docker compose up -d --force-recreate api
   ```
 
-### After you change content (`guides/`) — nothing
+### After you change content (`guides/`) - nothing
 `./guides` is bind-mounted into the `api` container, and the server **auto-syncs**: new/edited guide
 folders are picked up within `SYNC_INTERVAL_SECS` (default 300s = 5 min). To apply instantly, use the
 admin **"Sync now"** button, or restart the api (`docker compose restart api`). See §5.
@@ -89,19 +89,19 @@ admin **"Sync now"** button, or restart the api (`docker compose restart api`). 
 
 Prerequisites: **Rust** (stable, with `cargo`) and **Node.js 20+** with `npm`.
 
-**Terminal 1 — the API** (run from the repo root so `CONTENT_ROOT="."` finds `guides/`):
+**Terminal 1 - the API** (run from the repo root so `CONTENT_ROOT="."` finds `guides/`):
 ```bash
 cargo run --manifest-path platform/Cargo.toml -p server
 # serves http://127.0.0.1:3000, ingests guides/ on startup, writes ./data/manual.db
 ```
 
-**Terminal 2 — the web app:**
+**Terminal 2 - the web app:**
 ```bash
 cd platform/web
 npm install          # first time only
 npm run dev          # serves http://localhost:5173, SSR loaders call the API
 ```
-> **Windows:** run npm via a subshell — `(cd platform/web && npm run dev)` — **not** `npm --prefix platform/web …` (it misreads `package.json`).
+> **Windows:** run npm via a subshell - `(cd platform/web && npm run dev)` - **not** `npm --prefix platform/web …` (it misreads `package.json`).
 
 The local web dev server talks to the API at `API_BASE` (default `http://127.0.0.1:3000`). The local API
 also auto-syncs `guides/` just like in Docker.
@@ -127,7 +127,7 @@ cargo run --manifest-path platform/Cargo.toml -p server -- create-admin "your-pa
 ```
 Then log in at **http://localhost:5173/admin/login**.
 
-- Forgot it? Just run `create-admin` again — that's the reset/lockout path.
+- Forgot it? Just run `create-admin` again - that's the reset/lockout path.
 - Change it from the console once logged in (Settings → change password), or via `POST /api/admin/password`.
 - `ADMIN_PASSWORD_HASH` (env) is only a first-run bootstrap fallback; `create-admin` is the simple path.
   (Generate a hash with `docker compose run --rm api server hash-password "…"` if you want to use the env.)
@@ -141,7 +141,7 @@ Guides are Markdown under `guides/<slug>/`. Author them per `CONTRIBUTING.md` an
 
 **Files & frontmatter:**
 ```
-guides/<slug>/_guide.md     # phase 0 — the overview; carries category + order
+guides/<slug>/_guide.md     # phase 0 - the overview; carries category + order
 guides/<slug>/01-*.md       # phase 1, 02-*, 03-* …
 ```
 `_guide.md` frontmatter:
@@ -169,13 +169,13 @@ Phase files are the same, with their `phase:` number and **no** `category`/`orde
 - **Difficulty:** `beginner` / `intermediate` / `advanced` (shown as Basic / Intermediate / Advanced).
 - **Order:** set `order:` on `_guide.md` to control position within a category (lower = earlier).
 
-**How it goes live:** the auto-sync imports `guides/` into the DB + search index — **files win on
+**How it goes live:** the auto-sync imports `guides/` into the DB + search index - **files win on
 change**. Drop or edit a folder and it appears within `SYNC_INTERVAL_SECS` (default 300s), or instantly
 via the admin **"Sync now"** (`POST /api/admin/sync`). Guides created only in the CMS (no folder) are
 never overwritten by the sync.
 
 > Note: a *content* change (editing `guides/`) needs **no rebuild**. A *code* change to the ingest
-> logic does — and the server now force-re-imports on every boot, so a rebuild re-applies it automatically.
+> logic does - and the server now force-re-imports on every boot, so a rebuild re-applies it automatically.
 
 ---
 
@@ -200,9 +200,9 @@ Set these in `docker-compose.yml` (per service) or the shell when running locall
 | `DB_PATH` | `./data/manual.db` (local) / `/data/manual.db` (Docker) | SQLite file |
 | `SYNC_INTERVAL_SECS` | `300` | content auto-sync interval |
 | `SITE_URL` | `http://localhost:5173` | base URL for RSS item links |
-| `ADMIN_PASSWORD_HASH` | — | first-run admin bootstrap (prefer `create-admin`) |
+| `ADMIN_PASSWORD_HASH` | - | first-run admin bootstrap (prefer `create-admin`) |
 | `COOKIE_SECURE` | off | `1`/`true` → mark the session cookie `Secure` (HTTPS prod) |
-| `BEACON_KEY` | — | optional shared secret required on `/api/events` |
+| `BEACON_KEY` | - | optional shared secret required on `/api/events` |
 | `ASSET_MAX_BYTES` | `5242880` (5 MiB) | max uploaded asset size |
 | `EVENTS_RETENTION_DAYS` | `365` | analytics event retention |
 
@@ -227,15 +227,15 @@ Set these in `docker-compose.yml` (per service) or the shell when running locall
 (not `CACHED`). Verify the running build via logs: `docker compose logs api --tail 20` should show
 `listening on http://0.0.0.0:3000` (and `content sync: imported …` on boot).
 
-**Admin login returns 403.** That's SvelteKit's CSRF check — the web container's `ORIGIN` must equal the
+**Admin login returns 403.** That's SvelteKit's CSRF check - the web container's `ORIGIN` must equal the
 URL in your browser. It's set to `http://localhost:5173` in `docker-compose.yml`; for a real domain set
 `ORIGIN=https://your-domain`. Recreate web after changing it: `docker compose up -d --force-recreate web`.
 
-**Admin login says the password is wrong** — especially after putting `ADMIN_PASSWORD_HASH` in `.env`.
-Two traps: (1) the argon2 hash is full of `$`, and **Docker Compose interpolates `$word` in `.env`** — it
+**Admin login says the password is wrong** - especially after putting `ADMIN_PASSWORD_HASH` in `.env`.
+Two traps: (1) the argon2 hash is full of `$`, and **Docker Compose interpolates `$word` in `.env`** - it
 silently eats `$argon2id…` and blanks the `$salt`/`$hash` segments (you'll see `"…" variable is not set`
 warnings), so the container gets a mangled hash; (2) `ADMIN_PASSWORD_HASH` only seeds on a **first boot
-with an empty DB**, so once the `manual-data` volume exists it's ignored anyway. Fix — set the password
+with an empty DB**, so once the `manual-data` volume exists it's ignored anyway. Fix - set the password
 straight in the DB (no `.env`, no `$` problem):
 ```bash
 docker compose run --rm api server create-admin "your-password"
@@ -244,10 +244,10 @@ Don't keep the hash in `.env`; `create-admin` is the canonical path. (If you mus
 `$` as `$$` **and** start from an empty DB.)
 
 **"Address already in use" on :3000 or :5173.** A stale container or a local server holds the port.
-`docker compose down`, or kill the local process — Windows: `netstat -ano | findstr :3000` then
+`docker compose down`, or kill the local process - Windows: `netstat -ano | findstr :3000` then
 `taskkill /F /PID <pid>`.
 
-**Inspect the database** to see raw values (e.g. why ordering or draft/published status looks off) —
+**Inspect the database** to see raw values (e.g. why ordering or draft/published status looks off) -
 see **§9 Querying the database**.
 
 **PowerShell equivalents:** `grep` → `Select-String`; `curl -X POST …` → `curl.exe -X POST …` or
@@ -257,24 +257,24 @@ see **§9 Querying the database**.
 
 ## 9. Querying the database
 
-Yes — it's a plain **SQLite** file you can query directly.
+Yes - it's a plain **SQLite** file you can query directly.
 - **Docker:** `/data/manual.db` inside the `api` container (on the `manual-data` volume).
 - **Local (no Docker):** `./data/manual.db`.
 
 Most data is also readable without SQL via the API (`/api/guides`, `/api/categories`, `/api/search?q=…`,
-the admin endpoints) — reach for SQL when you need raw columns like `sort_order` or the analytics tables.
+the admin endpoints) - reach for SQL when you need raw columns like `sort_order` or the analytics tables.
 
 > Reads are safe while the server is running (SQLite allows concurrent readers). Avoid manual **writes**
-> while `api` is up — let the app own writes.
+> while `api` is up - let the app own writes.
 
-### Option A — one-off SQLite container against the volume (nothing to install in the app)
+### Option A - one-off SQLite container against the volume (nothing to install in the app)
 ```bash
 docker volume ls | grep manual-data        # find the exact name, e.g. knowledgebase_manual-data
 docker run --rm -v knowledgebase_manual-data:/data alpine \
   sh -c "apk add -q sqlite && sqlite3 /data/manual.db 'SELECT slug, sort_order, status FROM guides ORDER BY sort_order, slug;'"
 ```
 
-### Option B — sqlite3 inside the running api container
+### Option B - sqlite3 inside the running api container
 The api image ships without `sqlite3`; install it ad hoc (gone on the next rebuild):
 ```bash
 docker compose exec api sh -c "command -v sqlite3 >/dev/null || { apt-get update -qq && apt-get install -y -qq sqlite3; }; \
@@ -282,12 +282,12 @@ docker compose exec api sh -c "command -v sqlite3 >/dev/null || { apt-get update
 ```
 Drop the trailing SQL for an interactive `sqlite>` prompt (`.tables`, `.schema guides`, `.quit`).
 
-### Option C — copy it out and use a GUI
+### Option C - copy it out and use a GUI
 ```bash
 docker compose cp api:/data/manual.db ./manual.db     # Docker (local: it's already ./data/manual.db)
 ```
 Open `manual.db` in **DB Browser for SQLite** (https://sqlitebrowser.org) or any SQLite client. That's a
-*copy* — edits don't sync back; for live changes use the CMS/API.
+*copy* - edits don't sync back; for live changes use the CMS/API.
 
 ### Tables & handy queries
 Tables: `guides`, `phases`, `categories`, `assets`, `sessions`, `events`, `settings`.
@@ -316,7 +316,7 @@ SELECT path, COUNT(*) AS c FROM events
 -- active sessions
 SELECT COUNT(*) FROM sessions WHERE expires_at > datetime('now');
 ```
-> Don't `SELECT *` from `assets` — its `bytes` column holds binary blobs. Select `id, filename, mime`.
+> Don't `SELECT *` from `assets` - its `bytes` column holds binary blobs. Select `id, filename, mime`.
 
 PowerShell: `grep` → `Select-String` (e.g. `docker volume ls | Select-String manual-data`); the
 `docker run …` and `docker compose exec …` commands work unchanged.
@@ -341,7 +341,7 @@ and when committing, stage only the files you own.
 
 - `ORIGIN=https://your-domain` (web) and `SITE_URL=https://your-domain` (api).
 - `COOKIE_SECURE=1` (serve over HTTPS).
-- A strong admin password via `create-admin` (not a default). **Do not put the hash in `.env`** — Docker
+- A strong admin password via `create-admin` (not a default). **Do not put the hash in `.env`** - Docker
   Compose's `$`-interpolation mangles an argon2 hash, and the env only seeds a first-boot empty DB anyway.
 - Keep the API internal (only expose the web service publicly); optionally set `BEACON_KEY` and have the
   web collector send `x-beacon-key`.

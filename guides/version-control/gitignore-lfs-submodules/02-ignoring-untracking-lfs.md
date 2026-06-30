@@ -27,7 +27,7 @@ build/             # ignores a folder and everything in it
 # this is a comment
 ```
 
-*What just happened:* Each pattern is a rule. The two that surprise people: a leading `/` anchors to the root (so `/secret.txt` ignores the root one but not `docs/secret.txt`), and a leading `!` *re-includes* a file an earlier pattern ignored. Order matters for `!` — the exception must come *after* the rule it overrides.
+*What just happened:* Each pattern is a rule. The two that surprise people: a leading `/` anchors to the root (so `/secret.txt` ignores the root one but not `docs/secret.txt`), and a leading `!` *re-includes* a file an earlier pattern ignored. Order matters for `!` - the exception must come *after* the rule it overrides.
 
 A common real pattern: ignore a whole folder but keep one file in it.
 
@@ -42,7 +42,7 @@ logs/
 
 ## Untracking a file you already committed
 
-This is the fix for the Phase 1 mystery. You committed `config.local.json`, *then* realized it shouldn't be tracked. Adding it to `.gitignore` did nothing because it's already in the index. You need to remove it from the index — but keep it on disk.
+This is the fix for the Phase 1 mystery. You committed `config.local.json`, *then* realized it shouldn't be tracked. Adding it to `.gitignore` did nothing because it's already in the index. You need to remove it from the index - but keep it on disk.
 
 ```bash
 # Stop tracking the file, but DO NOT delete it from your folder
@@ -54,7 +54,7 @@ echo "config.local.json" >> .gitignore
 git commit -m "Stop tracking config.local.json"
 ```
 
-*What just happened:* `git rm --cached` removes the file from the index (untracks it) while leaving the actual file untouched on your disk — that's what `--cached` means. Now the file is *untracked*, so the `.gitignore` rule finally applies and Git stops nagging you. Drop `--cached` and `git rm` would delete the file from disk too, which is usually not what you want here.
+*What just happened:* `git rm --cached` removes the file from the index (untracks it) while leaving the actual file untouched on your disk - that's what `--cached` means. Now the file is *untracked*, so the `.gitignore` rule finally applies and Git stops nagging you. Drop `--cached` and `git rm` would delete the file from disk too, which is usually not what you want here.
 
 For a whole folder you committed by mistake (the classic `node_modules/`):
 
@@ -66,7 +66,7 @@ git commit -m "Stop tracking node_modules"
 
 *What just happened:* `-r` recurses into the folder. After this commit, the folder still sits on your disk (your app still runs), but it's gone from Git's tracking and won't come back. Teammates who pull this commit will have it untracked too.
 
-> Important nuance: this stops *future* tracking, but the file still lives in past commits and in history. For build junk that's harmless. For a *secret*, it is not enough — the secret is still recoverable from history. That's the whole of Phase 3.
+> Important nuance: this stops *future* tracking, but the file still lives in past commits and in history. For build junk that's harmless. For a *secret*, it is not enough - the secret is still recoverable from history. That's the whole of Phase 3.
 
 ## When to reach for LFS
 
@@ -97,7 +97,7 @@ git add .gitattributes
 git commit -m "Track PSD and MP4 files with LFS"
 ```
 
-*What just happened:* `git lfs install` sets up the LFS hooks. `git lfs track` records a pattern in a file called `.gitattributes` — from now on any `*.psd` or `*.mp4` you add gets stored as an LFS pointer automatically. Committing `.gitattributes` is what makes it work for everyone, not just you. After this, you `git add` and `git commit` big files exactly as normal; LFS handles the swap invisibly.
+*What just happened:* `git lfs install` sets up the LFS hooks. `git lfs track` records a pattern in a file called `.gitattributes` - from now on any `*.psd` or `*.mp4` you add gets stored as an LFS pointer automatically. Committing `.gitattributes` is what makes it work for everyone, not just you. After this, you `git add` and `git commit` big files exactly as normal; LFS handles the swap invisibly.
 
 You can confirm what LFS is managing:
 
@@ -109,7 +109,7 @@ git lfs ls-files
 
 ## For builders
 
-Decide your LFS rules at project start, the same as `.gitignore`. If your repo will hold design files, datasets, or media, run `git lfs track` and commit `.gitattributes` in the first commit — retrofitting LFS onto files already in history means rewriting history (the same painful operation as scrubbing a secret, covered next). One more rule of thumb: LFS is for *large binaries you need to version*, not a dumping ground. If a file is reproducible build output, ignore it instead — LFS storage isn't free and has quotas.
+Decide your LFS rules at project start, the same as `.gitignore`. If your repo will hold design files, datasets, or media, run `git lfs track` and commit `.gitattributes` in the first commit - retrofitting LFS onto files already in history means rewriting history (the same painful operation as scrubbing a secret, covered next). One more rule of thumb: LFS is for *large binaries you need to version*, not a dumping ground. If a file is reproducible build output, ignore it instead - LFS storage isn't free and has quotas.
 
 ```quiz
 [

@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Enforcement and gotchas
 
-A config that lives only on your laptop helps only you. The point of these tools is that the *whole team* writes consistent, bug-checked code — and that takes enforcement at three layers, each catching what the one before it missed. Then there are the few traps that waste an afternoon the first time you hit them. Let's cover both so they don't surprise you.
+A config that lives only on your laptop helps only you. The point of these tools is that the *whole team* writes consistent, bug-checked code - and that takes enforcement at three layers, each catching what the one before it missed. Then there are the few traps that waste an afternoon the first time you hit them. Let's cover both so they don't surprise you.
 
 ## Three layers, each a safety net for the last
 
@@ -23,7 +23,7 @@ PRE-COMMIT    → blocks the commit if it's not clean  (can be bypassed)
 CI            → blocks the merge, no exceptions       (the real gate)
 ```
 
-*What just happened:* the editor is convenience, pre-commit is a polite gate, CI is the gate that actually holds. The deeper you go, the harder it is to bypass — which is exactly the order you want, because the last layer is the one that protects the shared codebase.
+*What just happened:* the editor is convenience, pre-commit is a polite gate, CI is the gate that actually holds. The deeper you go, the harder it is to bypass - which is exactly the order you want, because the last layer is the one that protects the shared codebase.
 
 ### Layer 1: the editor
 
@@ -43,7 +43,7 @@ Install the Prettier and ESLint extensions for your editor and turn on format-on
 
 ### Layer 2: pre-commit hook
 
-A pre-commit hook runs before a commit is recorded and can reject it. The standard combo is **husky** (manages the git hook) plus **lint-staged** (runs the tools on *only the files you're committing*, not the whole repo — fast).
+A pre-commit hook runs before a commit is recorded and can reject it. The standard combo is **husky** (manages the git hook) plus **lint-staged** (runs the tools on *only the files you're committing*, not the whole repo - fast).
 
 ```bash
 npm install --save-dev husky lint-staged
@@ -63,7 +63,7 @@ npx husky init
 
 ### Layer 3: CI
 
-Editors can be misconfigured and hooks can be bypassed with `--no-verify`. CI is the layer with no escape hatch. In CI you run the tools in *check* mode — they don't fix anything, they fail if the code isn't already clean.
+Editors can be misconfigured and hooks can be bypassed with `--no-verify`. CI is the layer with no escape hatch. In CI you run the tools in *check* mode - they don't fix anything, they fail if the code isn't already clean.
 
 ```bash
 # in CI: check only, never write
@@ -71,11 +71,11 @@ npx prettier --check .
 npx eslint .
 ```
 
-*What just happened:* `prettier --check` exits with an error if any file isn't already formatted (note `--check`, not `--write` — CI reports, it doesn't edit). `eslint .` fails on any error-level rule. A pull request that isn't clean can't merge. This is the layer that actually keeps the codebase consistent, because it's the one nobody can skip.
+*What just happened:* `prettier --check` exits with an error if any file isn't already formatted (note `--check`, not `--write` - CI reports, it doesn't edit). `eslint .` fails on any error-level rule. A pull request that isn't clean can't merge. This is the layer that actually keeps the codebase consistent, because it's the one nobody can skip.
 
 ## Gotchas that waste an afternoon
 
-**The conflict loop is back.** If Prettier and ESLint seem to undo each other's work, you almost certainly forgot `eslint-config-prettier`, or it isn't last in your flat-config array. Re-read Phase 2's handshake — order is everything.
+**The conflict loop is back.** If Prettier and ESLint seem to undo each other's work, you almost certainly forgot `eslint-config-prettier`, or it isn't last in your flat-config array. Re-read Phase 2's handshake - order is everything.
 
 **`--write` versus `--check`.** Run `prettier --write` in CI by accident and CI will silently "pass" by reformatting files in a throwaway container, fixing nothing in your repo. CI must use `--check`. Use `--write` only locally and in pre-commit.
 
@@ -89,7 +89,7 @@ export default [
 ];
 ```
 
-*What just happened:* a config object with only an `ignores` key tells ESLint to skip those paths entirely. `node_modules` is ignored by default, but your own build output is not — list it explicitly or you'll get errors about code you didn't write.
+*What just happened:* a config object with only an `ignores` key tells ESLint to skip those paths entirely. `node_modules` is ignored by default, but your own build output is not - list it explicitly or you'll get errors about code you didn't write.
 
 **Don't fix the whole repo in one commit.** The first time you add Prettier to an old codebase, `prettier --write .` will touch hundreds of files. Do that as a *single isolated commit* with no logic changes, and record it so `git blame` can skip it:
 
@@ -100,13 +100,13 @@ echo "<commit-hash>" >> .git-blame-ignore-revs
 
 *What just happened:* `.git-blame-ignore-revs` tells `git blame` to look past that giant formatting commit, so blame still points at whoever wrote the real logic instead of "the day we adopted Prettier." Keeping the reformat separate from feature work also keeps your diffs reviewable.
 
-**Warnings that everyone ignores.** If a rule is set to `"warn"`, it shows up but never fails CI — and warnings nobody is forced to fix pile up until they're noise. Decide deliberately: a rule that matters should be `"error"`; a rule that's truly advisory can be `"warn"`; a rule you don't care about should be `"off"`, not a warning that trains the team to ignore the linter.
+**Warnings that everyone ignores.** If a rule is set to `"warn"`, it shows up but never fails CI - and warnings nobody is forced to fix pile up until they're noise. Decide deliberately: a rule that matters should be `"error"`; a rule that's truly advisory can be `"warn"`; a rule you don't care about should be `"off"`, not a warning that trains the team to ignore the linter.
 
-> The honest test of your setup: clone the repo fresh, make a deliberately messy and slightly buggy change, and try to merge it. If the editor cleans the mess, the hook catches what's left, and CI blocks the bug — your three nets hold.
+> The honest test of your setup: clone the repo fresh, make a deliberately messy and slightly buggy change, and try to merge it. If the editor cleans the mess, the hook catches what's left, and CI blocks the bug - your three nets hold.
 
 ## In the wild
 
-Mature teams treat a clean lint as non-negotiable as a passing test suite — same CI gate, same "fix it before merge" expectation. The payoff compounds: reviewers stop commenting on style entirely and spend their attention on logic and design, which is the only place human review was ever worth more than a machine.
+Mature teams treat a clean lint as non-negotiable as a passing test suite - same CI gate, same "fix it before merge" expectation. The payoff compounds: reviewers stop commenting on style entirely and spend their attention on logic and design, which is the only place human review was ever worth more than a machine.
 
 ```quiz
 [

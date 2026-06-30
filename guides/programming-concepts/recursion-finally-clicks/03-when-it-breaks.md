@@ -2,7 +2,7 @@
 title: "When it breaks: the stack, and when to use a loop instead"
 guide: recursion-finally-clicks
 phase: 3
-summary: "The mental model that makes recursion stop being scary: a base case, a step toward it, and trust — plus when it blows the stack and how to avoid it."
+summary: "The mental model that makes recursion stop being scary: a base case, a step toward it, and trust - plus when it blows the stack and how to avoid it."
 tags: [recursion, base-case, call-stack, stack-overflow, iteration, algorithms]
 difficulty: beginner
 synonyms: ["how does recursion work", "what is a base case", "recursive function explained", "stack overflow recursion", "recursion vs iteration", "function that calls itself"]
@@ -25,7 +25,7 @@ def countdown(n):
 countdown(3)
 ```
 
-*What just happened:* this prints `3, 2, 1, 0, -1, -2, ...` and keeps going. There is no `if n == 0: return`, so nothing ever stops the descent. Python eventually raises `RecursionError: maximum recursion depth exceeded`. The fix is not subtle — add the base case back.
+*What just happened:* this prints `3, 2, 1, 0, -1, -2, ...` and keeps going. There is no `if n == 0: return`, so nothing ever stops the descent. Python eventually raises `RecursionError: maximum recursion depth exceeded`. The fix is not subtle - add the base case back.
 
 The sneakier version of this bug *has* a base case but never reaches it, because the recursive call does not actually shrink toward it:
 
@@ -37,7 +37,7 @@ def countdown(n):
     countdown(n)        # bug: passes n, not n - 1
 ```
 
-*What just happened:* the base case exists, but `n` never changes, so `n == 0` is never true for a call that started above zero. Same crash. The lesson: a base case is necessary but not sufficient — **every recursive call must move strictly closer to it.** When you debug a stack overflow, check both: is there a base case, and does each call genuinely get smaller?
+*What just happened:* the base case exists, but `n` never changes, so `n == 0` is never true for a call that started above zero. Same crash. The lesson: a base case is necessary but not sufficient - **every recursive call must move strictly closer to it.** When you debug a stack overflow, check both: is there a base case, and does each call genuinely get smaller?
 
 ## Failure two: correct, but too deep
 
@@ -52,9 +52,9 @@ def sum_list(nums):
 sum_list(list(range(100_000)))   # RecursionError
 ```
 
-*What just happened:* this is the exact correct function from phase 2, but it needs one stack frame per element. Many language runtimes cap recursion depth (Python's default limit is in the low thousands) specifically to turn a silent memory blowout into a clean error. The function is not buggy — it is merely too deep for a linear walk. The right move here is not "recurse harder"; it is to use a loop.
+*What just happened:* this is the exact correct function from phase 2, but it needs one stack frame per element. Many language runtimes cap recursion depth (Python's default limit is in the low thousands) specifically to turn a silent memory blowout into a clean error. The function is not buggy - it is merely too deep for a linear walk. The right move here is not "recurse harder"; it is to use a loop.
 
-> Raising the recursion limit (for example, Python's `sys.setrecursionlimit`) is almost always the wrong fix. You are not solving the depth problem, you are moving the cliff edge a little further out — and risking a real, uncatchable crash if you overshoot the actual stack memory. If depth is the problem, change the algorithm.
+> Raising the recursion limit (for example, Python's `sys.setrecursionlimit`) is almost always the wrong fix. You are not solving the depth problem, you are moving the cliff edge a little further out - and risking a real, uncatchable crash if you overshoot the actual stack memory. If depth is the problem, change the algorithm.
 
 ## Recursion versus iteration
 
@@ -72,13 +72,13 @@ def countdown(n):
 countdown(3)
 ```
 
-*What just happened:* identical behavior, no stack growth. The `while` condition plays the role of the base case, and `n -= 1` plays the role of the shrink step. Notice the parts did not disappear — they are the same two ideas, written as a loop instead of as calls. A loop uses one stack frame no matter how many times it runs, so it never overflows on depth.
+*What just happened:* identical behavior, no stack growth. The `while` condition plays the role of the base case, and `n -= 1` plays the role of the shrink step. Notice the parts did not disappear - they are the same two ideas, written as a loop instead of as calls. A loop uses one stack frame no matter how many times it runs, so it never overflows on depth.
 
 So when do you reach for which?
 
-- **Prefer a loop** when the work is a straight linear walk — summing, counting, scanning a flat list. It is clearer to most readers and it cannot overflow.
-- **Prefer recursion** when the structure is itself nested or branching — trees, nested data, "this thing contains smaller versions of this thing." Forcing that into a loop means hand-managing your own stack, which is more code and more bugs.
-- **If recursion is the clear fit but depth is a risk** (a very deep tree), you can convert to an iterative version with an explicit list acting as the stack — you do by hand what the call stack did for free, but you control the memory.
+- **Prefer a loop** when the work is a straight linear walk - summing, counting, scanning a flat list. It is clearer to most readers and it cannot overflow.
+- **Prefer recursion** when the structure is itself nested or branching - trees, nested data, "this thing contains smaller versions of this thing." Forcing that into a loop means hand-managing your own stack, which is more code and more bugs.
+- **If recursion is the clear fit but depth is a risk** (a very deep tree), you can convert to an iterative version with an explicit list acting as the stack - you do by hand what the call stack did for free, but you control the memory.
 
 ```text
 linear, flat data          -> loop        (clear, no overflow)
@@ -90,7 +90,7 @@ nested data, but very deep  -> explicit stack loop (control the memory)
 
 ## For builders
 
-In day-to-day code, most recursion you write is shallow and safe — walking a config tree, a DOM, a modest folder hierarchy. The depth limit only bites when the structure can grow without bound (user-supplied nesting, a linked list of every event ever) or when you accidentally recurse over a flat collection that should have been a loop. When you read a `RecursionError` in production, your first two questions are always the same: *is the base case ever reached*, and *is this depth legitimate or should this have been a loop?* That diagnosis covers nearly every case you will hit.
+In day-to-day code, most recursion you write is shallow and safe - walking a config tree, a DOM, a modest folder hierarchy. The depth limit only bites when the structure can grow without bound (user-supplied nesting, a linked list of every event ever) or when you accidentally recurse over a flat collection that should have been a loop. When you read a `RecursionError` in production, your first two questions are always the same: *is the base case ever reached*, and *is this depth legitimate or should this have been a loop?* That diagnosis covers nearly every case you will hit.
 
 ```quiz
 [

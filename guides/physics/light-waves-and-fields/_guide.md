@@ -23,8 +23,8 @@ If you have not read [/guides/what-physics-actually-is](/guides/what-physics-act
 
 ## The phases
 
-1. [What a wave actually is](01-what-a-wave-actually-is.md) — the pattern moves, the stuff stays; frequency, wavelength, amplitude.
-2. [Light is one wave on a giant dial](02-light-is-one-wave-on-a-dial.md) — the electromagnetic spectrum, fields, and what color and pitch really are.
-3. [When waves meet themselves](03-when-waves-meet-themselves.md) — interference, why soap bubbles are rainbow, and the deeper payoff.
+1. [What a wave actually is](01-what-a-wave-actually-is.md) - the pattern moves, the stuff stays; frequency, wavelength, amplitude.
+2. [Light is one wave on a giant dial](02-light-is-one-wave-on-a-dial.md) - the electromagnetic spectrum, fields, and what color and pitch really are.
+3. [When waves meet themselves](03-when-waves-meet-themselves.md) - interference, why soap bubbles are rainbow, and the deeper payoff.
 
 [Phase 1: What a wave actually is](01-what-a-wave-actually-is.md) →

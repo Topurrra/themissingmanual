@@ -32,13 +32,13 @@ flyway.password=devsecret
 flyway.locations=filesystem:./db/migration
 ```
 
-*What just happened:* `url` is a JDBC connection string (the `jdbc:postgresql://...` shape works for Postgres; MySQL, SQL Server, and others have their own). `locations` tells Flyway which folder to scan for migrations — `filesystem:` for a directory on disk. Put real passwords in environment variables or a secrets store for anything but local play; the config file is the same idea regardless of where the value comes from.
+*What just happened:* `url` is a JDBC connection string (the `jdbc:postgresql://...` shape works for Postgres; MySQL, SQL Server, and others have their own). `locations` tells Flyway which folder to scan for migrations - `filesystem:` for a directory on disk. Put real passwords in environment variables or a secrets store for anything but local play; the config file is the same idea regardless of where the value comes from.
 
 > **For builders:** every config key has an environment-variable and command-line-flag equivalent (`FLYWAY_URL`, `-url=...`). In CI you'll usually set them as environment variables rather than committing a config file with credentials in it.
 
 ## Step 1: write the migration
 
-A migration is plain SQL. No special syntax, no Flyway-specific dialect — whatever your database understands, you write. The only Flyway part is the filename.
+A migration is plain SQL. No special syntax, no Flyway-specific dialect - whatever your database understands, you write. The only Flyway part is the filename.
 
 ```sql
 -- V1__create_users.sql
@@ -53,7 +53,7 @@ CREATE TABLE users (
 
 ## Step 2: see what's pending with `info`
 
-Before you change anything, `flyway info` shows you the plan — what's applied, what's pending, in what order. Make this your reflex; it's the read-only "what would happen" view.
+Before you change anything, `flyway info` shows you the plan - what's applied, what's pending, in what order. Make this your reflex; it's the read-only "what would happen" view.
 
 ```console
 $ flyway info
@@ -66,7 +66,7 @@ $ flyway info
 +-----------+---------+---------------+------+---------------------+---------+
 ```
 
-*What just happened:* V1 already ran (it has an install date and `Success`). V2 exists on disk but hasn't run yet — `State: Pending`, no install date. Flyway is telling you exactly one migration is waiting. No surprises, no guessing.
+*What just happened:* V1 already ran (it has an install date and `Success`). V2 exists on disk but hasn't run yet - `State: Pending`, no install date. Flyway is telling you exactly one migration is waiting. No surprises, no guessing.
 
 ## Step 3: apply with `migrate`
 
@@ -81,13 +81,13 @@ Migrating schema "public" to version "2 - add email idx"
 Successfully applied 1 migration to schema "public" (execution time 00:00.018s)
 ```
 
-*What just happened:* Flyway saw the schema was at version 1, found V2 pending, ran it, and recorded a new history row. The schema is now at version 2. Run `migrate` again right now and it does nothing — there's nothing pending — which is exactly why it's safe to run on every single deploy. Re-running is a no-op, not a duplicate.
+*What just happened:* Flyway saw the schema was at version 1, found V2 pending, ran it, and recorded a new history row. The schema is now at version 2. Run `migrate` again right now and it does nothing - there's nothing pending - which is exactly why it's safe to run on every single deploy. Re-running is a no-op, not a duplicate.
 
 > The fact that `migrate` is safe to run repeatedly is called *idempotence*, and it's the property that lets you wire Flyway into automated deploys without fear. "Apply whatever isn't applied yet" is the only thing it ever does.
 
 ## Repeatable migrations: for things you want to re-run
 
-Versioned migrations (`V...`) run exactly once. But some database objects you'd rather *redefine* every time they change — views, stored procedures, functions. You don't want a new `V` file each time you tweak a view's definition. That's what repeatable migrations are for. They use the prefix `R` and have **no version number**:
+Versioned migrations (`V...`) run exactly once. But some database objects you'd rather *redefine* every time they change - views, stored procedures, functions. You don't want a new `V` file each time you tweak a view's definition. That's what repeatable migrations are for. They use the prefix `R` and have **no version number**:
 
 ```sql
 -- R__active_users_view.sql
@@ -97,7 +97,7 @@ FROM users
 WHERE last_login_at > now() - INTERVAL '30 days';
 ```
 
-*What just happened:* an `R` migration runs after all pending versioned ones, and it re-runs whenever its checksum changes — that is, whenever you edit the file. So you keep one canonical file for the view, edit it in place, and Flyway re-applies it on the next `migrate`. Notice the `CREATE OR REPLACE`: repeatable migrations must be written to be safe to run again, because that's the entire point of them.
+*What just happened:* an `R` migration runs after all pending versioned ones, and it re-runs whenever its checksum changes - that is, whenever you edit the file. So you keep one canonical file for the view, edit it in place, and Flyway re-applies it on the next `migrate`. Notice the `CREATE OR REPLACE`: repeatable migrations must be written to be safe to run again, because that's the entire point of them.
 
 ```text
 R__active_users_view.sql   ← no version, re-runs when its contents change
@@ -119,7 +119,7 @@ $ flyway info      # 4. confirm V3 now shows Success
 
 *What just happened:* write, inspect, apply, confirm. The `info` calls bracketing `migrate` aren't required, but they turn "I hope that did what I think" into "I watched it do exactly what I expected." Commit the migration file alongside the code that needs it, and every teammate and every environment gets the same change by running the same `migrate`.
 
-> **In the wild:** in a Spring Boot service you rarely type `flyway migrate` at all — Boot runs it for you at startup, so the act of deploying the new app version *is* the act of applying its migrations. The command-line loop here is what's happening under the hood, and it's still how you'd drive Flyway in CI, scripts, or any non-Spring stack.
+> **In the wild:** in a Spring Boot service you rarely type `flyway migrate` at all - Boot runs it for you at startup, so the act of deploying the new app version *is* the act of applying its migrations. The command-line loop here is what's happening under the hood, and it's still how you'd drive Flyway in CI, scripts, or any non-Spring stack.
 
 ```quiz
 [
@@ -127,13 +127,13 @@ $ flyway info      # 4. confirm V3 now shows Success
     "q": "What is the difference between a V migration and an R migration?",
     "choices": ["V runs on Postgres, R runs on MySQL", "V runs once in version order; R has no version and re-runs whenever its contents change", "V is for data, R is for schema", "There is no difference; both run every time"],
     "answer": 1,
-    "explain": "Versioned (V) migrations run exactly once in order. Repeatable (R) migrations have no version and re-apply whenever their checksum changes — ideal for views and procedures."
+    "explain": "Versioned (V) migrations run exactly once in order. Repeatable (R) migrations have no version and re-apply whenever their checksum changes - ideal for views and procedures."
   },
   {
     "q": "You run flyway migrate, it succeeds, then you immediately run it again. What happens?",
     "choices": ["It re-applies the last migration", "It errors because nothing is pending", "It does nothing, because there is nothing pending to apply", "It drops and rebuilds the schema"],
     "answer": 2,
-    "explain": "migrate applies only what is pending. With nothing pending it's a no-op, which is why it's safe to run on every deploy — that's idempotence."
+    "explain": "migrate applies only what is pending. With nothing pending it's a no-op, which is why it's safe to run on every deploy - that's idempotence."
   },
   {
     "q": "Which command shows you what is applied and what is pending, without changing anything?",

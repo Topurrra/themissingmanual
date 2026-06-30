@@ -1,29 +1,29 @@
 ---
-title: "Records, Pattern Matching & Modern C# — Less Boilerplate, More Safety"
+title: "Records, Pattern Matching & Modern C# - Less Boilerplate, More Safety"
 guide: "csharp-from-zero"
 phase: 13
-summary: "Records give you immutable value types in one line. Pattern matching lets you ask 'what shape is this data?' cleanly. Plus init/required members and nullable reference types — the features that make modern C# concise and safe."
+summary: "Records give you immutable value types in one line. Pattern matching lets you ask 'what shape is this data?' cleanly. Plus init/required members and nullable reference types - the features that make modern C# concise and safe."
 tags: [csharp, records, pattern-matching, switch-expressions, nullable-reference-types, init-only, modern-csharp]
 difficulty: intermediate
 synonyms: ["c# records explained", "c# record vs class", "c# pattern matching switch", "c# nullable reference types", "c# init only properties", "c# with expression", "c# required members"]
 updated: 2026-06-22
 ---
 
-# Records, Pattern Matching & Modern C# — Less Boilerplate, More Safety
+# Records, Pattern Matching & Modern C# - Less Boilerplate, More Safety
 
-Back in [Phase 5](05-classes-and-objects.md) you wrote a `class` by hand: fields, a constructor that copies parameters into them, maybe an overridden `ToString`, and — if you wanted two objects with the same data to count as equal — a pile of equality code you didn't even attempt. That's a lot of typing for what's really a simple idea: "a little bundle of values."
+Back in [Phase 5](05-classes-and-objects.md) you wrote a `class` by hand: fields, a constructor that copies parameters into them, maybe an overridden `ToString`, and - if you wanted two objects with the same data to count as equal - a pile of equality code you didn't even attempt. That's a lot of typing for what's really a simple idea: "a little bundle of values."
 
 Modern C# noticed. Over the last several versions the language has grown a set of features whose whole purpose is to *delete boilerplate* while making your code *safer* at the same time. This phase is a tour of the big ones, and the frame for every single one is the same: **here's the old verbose way, and here's the new concise way that the compiler now writes for you.**
 
-The two headliners — **records** and **pattern matching** — pair up beautifully. Records let you *define* small immutable data types in a line; pattern matching lets you *ask questions* about that data — "what shape is this? what's inside it?" — without a ladder of `if`/`else`. Together they're C#'s answer to modeling "this value is one of a fixed set of possibilities" cleanly. Let's build up to that.
+The two headliners - **records** and **pattern matching** - pair up beautifully. Records let you *define* small immutable data types in a line; pattern matching lets you *ask questions* about that data - "what shape is this? what's inside it?" - without a ladder of `if`/`else`. Together they're C#'s answer to modeling "this value is one of a fixed set of possibilities" cleanly. Let's build up to that.
 
-## Records — immutable data types in one line
+## Records - immutable data types in one line
 
-📝 **Record** — a type (class or struct) declared with the `record` keyword, designed for holding data. From a single line, the compiler generates the constructor, the properties, value-based `Equals` and `GetHashCode`, a readable `ToString`, and deconstruction support. You write the *intent*; the compiler writes the ceremony.
+📝 **Record** - a type (class or struct) declared with the `record` keyword, designed for holding data. From a single line, the compiler generates the constructor, the properties, value-based `Equals` and `GetHashCode`, a readable `ToString`, and deconstruction support. You write the *intent*; the compiler writes the ceremony.
 
 Remember the `Account == ` gotcha from Phase 5? Two class objects with identical data were *not* equal, because classes compare by reference (same object in memory?) rather than by value (same contents?). Records flip that default. They exist for exactly the kind of "a point is its X and Y, nothing more" value that *should* compare by its contents.
 
-Here's the old way — a hand-written class for a simple point:
+Here's the old way - a hand-written class for a simple point:
 
 ```csharp
 class PointClass
@@ -45,14 +45,14 @@ class PointClass
     public override int GetHashCode() => HashCode.Combine(X, Y);
 }
 ```
-*What just happened:* That's roughly twenty lines to say "a point is two ints, and two points with the same numbers are equal." The constructor copies parameters into properties, `ToString` builds a readable string, and `Equals`/`GetHashCode` do the value comparison by hand — easy to get subtly wrong (forget a field and equality silently breaks).
+*What just happened:* That's roughly twenty lines to say "a point is two ints, and two points with the same numbers are equal." The constructor copies parameters into properties, `ToString` builds a readable string, and `Equals`/`GetHashCode` do the value comparison by hand - easy to get subtly wrong (forget a field and equality silently breaks).
 
 Now watch the whole thing collapse:
 
 ```csharp
 record Point(int X, int Y);
 ```
-*What just happened:* That one line — a **positional record** — generates *all* of the above. The `(int X, int Y)` is the **primary constructor**: it declares two init-only properties `X` and `Y` *and* a constructor that fills them. You get value equality, a tidy `ToString`, and deconstruction for free. Twenty lines became one, and the compiler-generated version can't drift out of sync the way hand-written equality does.
+*What just happened:* That one line - a **positional record** - generates *all* of the above. The `(int X, int Y)` is the **primary constructor**: it declares two init-only properties `X` and `Y` *and* a constructor that fills them. You get value equality, a tidy `ToString`, and deconstruction for free. Twenty lines became one, and the compiler-generated version can't drift out of sync the way hand-written equality does.
 
 Here it is in action:
 
@@ -73,9 +73,9 @@ True
 1
 x=1, y=2
 ```
-*What just happened:* `a == b` is `True` — the exact opposite of the class behavior in Phase 5 — because records compare by *contents*. `Console.WriteLine(a)` printed a readable summary instead of the type name. And `var (x, y) = a` pulled the two values straight out (deconstruction), all without a line of code you had to write.
+*What just happened:* `a == b` is `True` - the exact opposite of the class behavior in Phase 5 - because records compare by *contents*. `Console.WriteLine(a)` printed a readable summary instead of the type name. And `var (x, y) = a` pulled the two values straight out (deconstruction), all without a line of code you had to write.
 
-**Non-destructive mutation with `with`.** Records are immutable by default — those generated properties are init-only, so you can't change a `Point` after you build it. But you'll often want "the same thing, with one field different." That's the `with` expression: it makes a *copy*, changing only what you name, and leaves the original untouched.
+**Non-destructive mutation with `with`.** Records are immutable by default - those generated properties are init-only, so you can't change a `Point` after you build it. But you'll often want "the same thing, with one field different." That's the `with` expression: it makes a *copy*, changing only what you name, and leaves the original untouched.
 
 ```csharp
 var p1 = new Point(1, 2);
@@ -88,19 +88,19 @@ Console.WriteLine(p2);          // the modified copy
 Point { X = 1, Y = 2 }
 Point { X = 1, Y = 99 }
 ```
-*What just happened:* `p1 with { Y = 99 }` produced a brand-new `Point` carrying `p1`'s `X` and an overridden `Y`. `p1` itself never changed — that's why this is called *non-destructive* mutation. You get the convenience of "tweak this value" without the bugs that come from objects mutating under you while other code holds a reference to them.
+*What just happened:* `p1 with { Y = 99 }` produced a brand-new `Point` carrying `p1`'s `X` and an overridden `Y`. `p1` itself never changed - that's why this is called *non-destructive* mutation. You get the convenience of "tweak this value" without the bugs that come from objects mutating under you while other code holds a reference to them.
 
-💡 **When to reach for a record.** Use records for **data that's defined by its values** — DTOs (the objects you serialize to/from JSON or send across an API), value objects (`Money`, `Coordinate`, `DateRange`), events, query results. Use a regular `class` for things with *identity and behavior* that mutate over their lifetime — a `ShoppingCart`, a database connection, a game's `Player`. The quick test: if "two of these are the same when their contents match," it wants to be a record.
+💡 **When to reach for a record.** Use records for **data that's defined by its values** - DTOs (the objects you serialize to/from JSON or send across an API), value objects (`Money`, `Coordinate`, `DateRange`), events, query results. Use a regular `class` for things with *identity and behavior* that mutate over their lifetime - a `ShoppingCart`, a database connection, a game's `Player`. The quick test: if "two of these are the same when their contents match," it wants to be a record.
 
-📝 **`record struct`.** `record` defaults to a reference type (a class). Write `record struct Point(int X, int Y);` and you get the same conveniences on a *value type* — copied on assignment, lives on the stack when local, no separate heap allocation. Reach for `record struct` for tiny, short-lived values where you want to avoid heap pressure; plain `record` is the right default until you've measured a reason to switch.
+📝 **`record struct`.** `record` defaults to a reference type (a class). Write `record struct Point(int X, int Y);` and you get the same conveniences on a *value type* - copied on assignment, lives on the stack when local, no separate heap allocation. Reach for `record struct` for tiny, short-lived values where you want to avoid heap pressure; plain `record` is the right default until you've measured a reason to switch.
 
-## `init` and `required` members — immutability without a giant constructor
+## `init` and `required` members - immutability without a giant constructor
 
 Records bake in init-only properties, but you can use the same tools on any class. You met `init` briefly in Phase 5; here's why it matters.
 
-📝 **`init` accessor** — like `set`, but it can *only* run during object construction (in a constructor or an object initializer). After the object exists, the property is frozen. **`required` member** — a property the compiler *forces* the caller to set when creating the object, or the code won't compile.
+📝 **`init` accessor** - like `set`, but it can *only* run during object construction (in a constructor or an object initializer). After the object exists, the property is frozen. **`required` member** - a property the compiler *forces* the caller to set when creating the object, or the code won't compile.
 
-The old tension: object initializers (`new Thing { A = 1, B = 2 }`) read beautifully, but a plain `set` property leaves the object mutable forever, and nothing stops a caller from forgetting a field. `init` + `required` resolve both — you get initializer syntax, guaranteed-set fields, and immutability afterward.
+The old tension: object initializers (`new Thing { A = 1, B = 2 }`) read beautifully, but a plain `set` property leaves the object mutable forever, and nothing stops a caller from forgetting a field. `init` + `required` resolve both - you get initializer syntax, guaranteed-set fields, and immutability afterward.
 
 ```csharp
 class Config
@@ -117,11 +117,11 @@ Console.WriteLine($"{c.Host}:{c.Port}");
 ```console
 localhost:5432
 ```
-*What just happened:* `required string Host` made the compiler refuse any `new Config { ... }` that doesn't set `Host` — a whole class of "forgot to initialize it" bugs becomes a compile error instead of a runtime `null`. Both properties are `init`, so once `c` is built, its values are locked. You got the readability of object initializers *and* the safety of immutability, with no sprawling constructor to maintain.
+*What just happened:* `required string Host` made the compiler refuse any `new Config { ... }` that doesn't set `Host` - a whole class of "forgot to initialize it" bugs becomes a compile error instead of a runtime `null`. Both properties are `init`, so once `c` is built, its values are locked. You got the readability of object initializers *and* the safety of immutability, with no sprawling constructor to maintain.
 
-## Pattern matching — asking "what shape is this data?"
+## Pattern matching - asking "what shape is this data?"
 
-This is the star of the phase, so it gets room. **Pattern matching** is C#'s way of testing a value's *shape* — its type, its contents, its structure — and pulling pieces out of it, all in one concise expression. It's what replaces tall stacks of `if (x is SomeType) { var y = (SomeType)x; if (y.Prop > 5) ... }`.
+This is the star of the phase, so it gets room. **Pattern matching** is C#'s way of testing a value's *shape* - its type, its contents, its structure - and pulling pieces out of it, all in one concise expression. It's what replaces tall stacks of `if (x is SomeType) { var y = (SomeType)x; if (y.Prop > 5) ... }`.
 
 **The `is` pattern.** The simplest form tests a type *and* binds a variable in one move:
 
@@ -134,7 +134,7 @@ if (o is string s)                 // is it a string? if so, call it s
 ```console
 5
 ```
-*What just happened:* `o is string s` did two jobs at once: it checked whether `o` is a `string`, and — if so — assigned it to a properly-typed variable `s` you can use immediately. No separate cast, no second variable declaration. The old way was a type check followed by an explicit `(string)o` cast; this fuses them and is impossible to get out of sync.
+*What just happened:* `o is string s` did two jobs at once: it checked whether `o` is a `string`, and - if so - assigned it to a properly-typed variable `s` you can use immediately. No separate cast, no second variable declaration. The old way was a type check followed by an explicit `(string)o` cast; this fuses them and is impossible to get out of sync.
 
 **`switch` expressions with patterns.** The real power shows up in the `switch` *expression* (note: an expression that *produces a value*, distinct from the older `switch` statement). It matches a value against a series of patterns and returns the arm that fits.
 
@@ -164,7 +164,7 @@ empty string
 null
 something else
 ```
-*What just happened:* The `switch` expression tested `value` top to bottom and returned the first matching arm. `int n` is a **type pattern** that binds the matched value to `n`. `when n < 0` adds a **guard** — an extra condition. `string { Length: 0 }` is a **property pattern**: it matches a string *and* checks its `Length` is 0. `_` is the discard — the catch-all when nothing else fits. Compare this to the old nest of `if`/`else if` with manual casts: same logic, a fraction of the noise, and the compiler warns you if you've left a case unhandled.
+*What just happened:* The `switch` expression tested `value` top to bottom and returned the first matching arm. `int n` is a **type pattern** that binds the matched value to `n`. `when n < 0` adds a **guard** - an extra condition. `string { Length: 0 }` is a **property pattern**: it matches a string *and* checks its `Length` is 0. `_` is the discard - the catch-all when nothing else fits. Compare this to the old nest of `if`/`else if` with manual casts: same logic, a fraction of the noise, and the compiler warns you if you've left a case unhandled.
 
 **Relational and logical patterns.** Inside a pattern you can use `<`, `>`, `<=`, `>=` and combine patterns with `and`, `or`, `not`. This reads like the math you'd say out loud:
 
@@ -187,9 +187,9 @@ A
 C
 invalid
 ```
-*What just happened:* `< 0 or > 100` is a **logical pattern** combining two **relational patterns** — "less than zero *or* greater than 100." The arms below it lean on order: once `>= 90` fails, `>= 80` only sees scores under 90, so you don't repeat the upper bound. This is dramatically clearer than `if (score < 0 || score > 100)` chains, and the intent reads straight off the page.
+*What just happened:* `< 0 or > 100` is a **logical pattern** combining two **relational patterns** - "less than zero *or* greater than 100." The arms below it lean on order: once `>= 90` fails, `>= 80` only sees scores under 90, so you don't repeat the upper bound. This is dramatically clearer than `if (score < 0 || score > 100)` chains, and the intent reads straight off the page.
 
-**Property and positional patterns — matching deep into data.** Property patterns shine on records. You can match on nested fields, and because records support deconstruction, you can also use **positional patterns** that match by position:
+**Property and positional patterns - matching deep into data.** Property patterns shine on records. You can match on nested fields, and because records support deconstruction, you can also use **positional patterns** that match by position:
 
 ```csharp
 record Person(string Name, int Age);
@@ -214,44 +214,44 @@ Bo is an adult
 Hi Sam, whatever your age
 Kit is a minor
 ```
-*What just happened:* `{ Age: > 64 }` is a **property pattern** reaching into the record's `Age`. `{ Age: >= 18 and < 65 }` combines a property pattern with a logical-relational pattern — "Age is at least 18 and under 65." `("Sam", _)` is a **positional pattern**: it deconstructs the `Person` by position (`Name`, `Age`) and matches when the first slot is `"Sam"` and the second is anything (`_`). This is the records-plus-patterns combo in full: define data cheaply, then interrogate its shape declaratively.
+*What just happened:* `{ Age: > 64 }` is a **property pattern** reaching into the record's `Age`. `{ Age: >= 18 and < 65 }` combines a property pattern with a logical-relational pattern - "Age is at least 18 and under 65." `("Sam", _)` is a **positional pattern**: it deconstructs the `Person` by position (`Name`, `Age`) and matches when the first slot is `"Sam"` and the second is anything (`_`). This is the records-plus-patterns combo in full: define data cheaply, then interrogate its shape declaratively.
 
-💡 **Why this pairing matters.** Records + pattern matching is how C# models "this value is one of a fixed set of cases" — a shape that's an `Empty`, a `Circle`, or a `Rectangle`; a result that's a `Success` or a `Failure`. Define the cases as records, then `switch` over them with type and property patterns. The compiler can even tell you when you've forgotten a case. It's concise, it's safe, and it's the modern idiom — reach for it instead of a tower of `if`/`else` whenever you're branching on the *kind* of data you have.
+💡 **Why this pairing matters.** Records + pattern matching is how C# models "this value is one of a fixed set of cases" - a shape that's an `Empty`, a `Circle`, or a `Rectangle`; a result that's a `Success` or a `Failure`. Define the cases as records, then `switch` over them with type and property patterns. The compiler can even tell you when you've forgotten a case. It's concise, it's safe, and it's the modern idiom - reach for it instead of a tower of `if`/`else` whenever you're branching on the *kind* of data you have.
 
-## Nullable reference types — the compiler hunts your null bugs
+## Nullable reference types - the compiler hunts your null bugs
 
-📝 **Nullable reference types (NRT)** — a compiler feature (on by default in new projects via `<Nullable>enable</Nullable>` in the `.csproj`) that splits reference types into two: `string` means "never null," and `string?` means "might be null." The compiler then *warns* you wherever you might dereference something that could be null.
+📝 **Nullable reference types (NRT)** - a compiler feature (on by default in new projects via `<Nullable>enable</Nullable>` in the `.csproj`) that splits reference types into two: `string` means "never null," and `string?` means "might be null." The compiler then *warns* you wherever you might dereference something that could be null.
 
-You met this in [Phase 2](02-syntax-values-and-types.md). Here's the deeper why. The single most common crash in C# history is the `NullReferenceException` — calling `.Length` or `.Name` on something that turned out to be `null`. NRT's goal is to move that discovery from *3 a.m. in production* to *right now, as a squiggle in your editor*.
+You met this in [Phase 2](02-syntax-values-and-types.md). Here's the deeper why. The single most common crash in C# history is the `NullReferenceException` - calling `.Length` or `.Name` on something that turned out to be `null`. NRT's goal is to move that discovery from *3 a.m. in production* to *right now, as a squiggle in your editor*.
 
 ```csharp
 // With <Nullable>enable</Nullable>:
 string name = "Ada";       // non-null: the compiler guarantees it
 string? maybe = null;      // nullable: explicitly allowed to be null
 
-Console.WriteLine(name.Length);    // fine — name can't be null
+Console.WriteLine(name.Length);    // fine - name can't be null
 
 // Console.WriteLine(maybe.Length);   // WARNING: 'maybe' may be null here
 
 if (maybe is not null)             // once you check...
-    Console.WriteLine(maybe.Length);   // ...the warning is gone — compiler knows it's safe
+    Console.WriteLine(maybe.Length);   // ...the warning is gone - compiler knows it's safe
 ```
 ```console
 3
 ```
-*What just happened:* `string name` is non-nullable, so the compiler lets you use `name.Length` freely. `string? maybe` is nullable, so dereferencing it without a check earns a *compile-time warning* — the bug surfaces before you ever run the program. After `if (maybe is not null)`, the compiler's **flow analysis** understands `maybe` can't be null inside that block, so the warning disappears. You're being guided to handle null exactly where it can actually happen.
+*What just happened:* `string name` is non-nullable, so the compiler lets you use `name.Length` freely. `string? maybe` is nullable, so dereferencing it without a check earns a *compile-time warning* - the bug surfaces before you ever run the program. After `if (maybe is not null)`, the compiler's **flow analysis** understands `maybe` can't be null inside that block, so the warning disappears. You're being guided to handle null exactly where it can actually happen.
 
-**The null-forgiving operator `!`.** Occasionally you know more than the compiler — you're certain a value isn't null even though it can't prove it. The `!` operator says "trust me, this isn't null" and silences the warning:
+**The null-forgiving operator `!`.** Occasionally you know more than the compiler - you're certain a value isn't null even though it can't prove it. The `!` operator says "trust me, this isn't null" and silences the warning:
 
 ```csharp
 string? maybe = GetItMaybe();
 string definitely = maybe!;        // 'I promise this isn't null'
 ```
-*What just happened:* `maybe!` tells the compiler to treat the value as non-null and drop the warning. ⚠️ Use this *rarely* and only when you're genuinely certain — it's a promise *you* are making, not a check. If you're wrong, you get the very `NullReferenceException` the feature was meant to prevent, now with the compiler's safety net deliberately switched off. Prefer an actual null check almost every time.
+*What just happened:* `maybe!` tells the compiler to treat the value as non-null and drop the warning. ⚠️ Use this *rarely* and only when you're genuinely certain - it's a promise *you* are making, not a check. If you're wrong, you get the very `NullReferenceException` the feature was meant to prevent, now with the compiler's safety net deliberately switched off. Prefer an actual null check almost every time.
 
-⚠️ **NRT is compile-time analysis, not a runtime guarantee.** This is the crucial caveat. `string` (non-nullable) is a *promise the compiler tries to verify*, not a wall enforced when the program runs. A `null` can still sneak in — from older code compiled without NRT, from JSON deserialization, from reflection, from a library that ignores the annotations. NRT makes nulls *visible* and *much rarer*; it does not make them *impossible*. Treat the warnings as a sharp early-warning system, not as a force field.
+⚠️ **NRT is compile-time analysis, not a runtime guarantee.** This is the crucial caveat. `string` (non-nullable) is a *promise the compiler tries to verify*, not a wall enforced when the program runs. A `null` can still sneak in - from older code compiled without NRT, from JSON deserialization, from reflection, from a library that ignores the annotations. NRT makes nulls *visible* and *much rarer*; it does not make them *impossible*. Treat the warnings as a sharp early-warning system, not as a force field.
 
-## Other modern niceties — small wins that add up
+## Other modern niceties - small wins that add up
 
 A grab-bag of recent features that quietly trim noise from everyday code. None is profound on its own; together they make modern C# read cleaner than the C# of a few years ago.
 
@@ -266,9 +266,9 @@ List<string> names2 = new();
 Dictionary<string, int> counts = new();
 Point origin = new(0, 0);
 ```
-*What just happened:* `new()` lets the compiler fill in the type from the variable's declared type on the left. `List<string> names2 = new()` is unambiguous and shorter — no `List<string>` echoed on both sides. It's purely about removing repetition.
+*What just happened:* `new()` lets the compiler fill in the type from the variable's declared type on the left. `List<string> names2 = new()` is unambiguous and shorter - no `List<string>` echoed on both sides. It's purely about removing repetition.
 
-**`using` declarations.** Phase 11's `using` statement needed braces and an extra indent. A `using` *declaration* drops both — the resource is disposed automatically at the end of the enclosing scope:
+**`using` declarations.** Phase 11's `using` statement needed braces and an extra indent. A `using` *declaration* drops both - the resource is disposed automatically at the end of the enclosing scope:
 
 ```csharp
 // old: using statement, extra braces and nesting
@@ -277,11 +277,11 @@ using (var reader = new StreamReader("data.txt"))
     Console.WriteLine(reader.ReadLine());
 }
 
-// new: using declaration — disposed at end of the method, no braces
+// new: using declaration - disposed at end of the method, no braces
 using var reader2 = new StreamReader("data.txt");
 Console.WriteLine(reader2.ReadLine());
 ```
-*What just happened:* `using var reader2 = ...` schedules `reader2.Dispose()` for the end of the current scope, exactly like the block form, but without the extra braces and indentation. Cleaner code, identical safety — the file still gets closed no matter how the method exits.
+*What just happened:* `using var reader2 = ...` schedules `reader2.Dispose()` for the end of the current scope, exactly like the block form, but without the extra braces and indentation. Cleaner code, identical safety - the file still gets closed no matter how the method exits.
 
 **File-scoped namespaces.** Declare the namespace once with a semicolon and skip the wrapping braces that indented your whole file:
 
@@ -292,42 +292,42 @@ namespace MyApp
     class Thing { }
 }
 
-// new: file-scoped — one line, no indentation tax
+// new: file-scoped - one line, no indentation tax
 namespace MyApp;
 
 class Thing { }
 ```
 *What just happened:* `namespace MyApp;` applies to the entire file, so everything below sits at the left margin instead of being indented inside braces. Since almost every file has exactly one namespace, this is the modern default.
 
-**Top-level statements (recap).** As you saw back in Phase 1, a simple program doesn't need the `class Program { static void Main() { ... } }` scaffolding — you can write executable statements straight in `Program.cs`, and the compiler generates the `Main` for you. It's the same boilerplate-deletion instinct as everything else here: say what you mean, let the compiler write the ritual.
+**Top-level statements (recap).** As you saw back in Phase 1, a simple program doesn't need the `class Program { static void Main() { ... } }` scaffolding - you can write executable statements straight in `Program.cs`, and the compiler generates the `Main` for you. It's the same boilerplate-deletion instinct as everything else here: say what you mean, let the compiler write the ritual.
 
 ## Recap
 
 1. **Records** (`record Point(int X, int Y);`) generate the constructor, properties, value equality, `ToString`, and deconstruction from one line. They compare by *contents* (fixing the Phase 5 `==` gotcha), are immutable by default, and support `with` for non-destructive copies. Use them for DTOs and value objects; `record struct` for tiny value-type versions.
-2. **`init` and `required`** give you object-initializer syntax with immutability: `init` freezes a property after construction, `required` forces callers to set it — turning "forgot a field" into a compile error.
-3. **Pattern matching** — `is` patterns, `switch` expressions, and type/property/relational/logical/positional patterns — lets you test a value's *shape* and extract its parts declaratively, replacing tall `if`/cast ladders.
-4. **Nullable reference types** split `string` (non-null) from `string?` (nullable) and warn you at compile time about possible null dereferences; `!` silences a warning when you're certain (use rarely). ⚠️ It's compile-time analysis, **not** a runtime guarantee — nulls can still slip in.
-5. **Modern niceties** — target-typed `new()`, `using` declarations, file-scoped namespaces, top-level statements — each delete a bit of repetition.
-6. 💡 **Records + pattern matching together** are C#'s clean way to model "one of a fixed set of cases" — define the cases as records, `switch` over them by shape.
+2. **`init` and `required`** give you object-initializer syntax with immutability: `init` freezes a property after construction, `required` forces callers to set it - turning "forgot a field" into a compile error.
+3. **Pattern matching** - `is` patterns, `switch` expressions, and type/property/relational/logical/positional patterns - lets you test a value's *shape* and extract its parts declaratively, replacing tall `if`/cast ladders.
+4. **Nullable reference types** split `string` (non-null) from `string?` (nullable) and warn you at compile time about possible null dereferences; `!` silences a warning when you're certain (use rarely). ⚠️ It's compile-time analysis, **not** a runtime guarantee - nulls can still slip in.
+5. **Modern niceties** - target-typed `new()`, `using` declarations, file-scoped namespaces, top-level statements - each delete a bit of repetition.
+6. 💡 **Records + pattern matching together** are C#'s clean way to model "one of a fixed set of cases" - define the cases as records, `switch` over them by shape.
 
-You can now write modern C# that's both shorter and safer than the verbose style — less boilerplate to maintain, more bugs caught before you run. Next, we tackle the feature that lets your programs do many things at once without freezing: **async/await and Tasks**.
+You can now write modern C# that's both shorter and safer than the verbose style - less boilerplate to maintain, more bugs caught before you run. Next, we tackle the feature that lets your programs do many things at once without freezing: **async/await and Tasks**.
 
 ## Quick check
 
-Test yourself on the two ideas that define this phase — records' value equality and pattern matching:
+Test yourself on the two ideas that define this phase - records' value equality and pattern matching:
 
 ```quiz
 [
   {
     "q": "You define `record Point(int X, int Y);`, then create `var a = new Point(1, 2);` and `var b = new Point(1, 2);`. What does `a == b` return, and why?",
     "choices": [
-      "True — records compare by value (their contents), so two points with the same X and Y are equal",
-      "False — like all C# types, == compares whether they're the same object in memory",
+      "True - records compare by value (their contents), so two points with the same X and Y are equal",
+      "False - like all C# types, == compares whether they're the same object in memory",
       "A compile error, because you can't use == on a record",
       "True, but only because they were created in the same method"
     ],
     "answer": 0,
-    "explain": "Records generate value-based equality, so `a == b` is True when their contents match — the opposite of a plain class, where == compares object identity. This is exactly why records suit DTOs and value objects."
+    "explain": "Records generate value-based equality, so `a == b` is True when their contents match - the opposite of a plain class, where == compares object identity. This is exactly why records suit DTOs and value objects."
   },
   {
     "q": "What does the pattern `{ Age: >= 18 and < 65 }` match in a switch expression over a record?",
@@ -343,13 +343,13 @@ Test yourself on the two ideas that define this phase — records' value equalit
   {
     "q": "Under `<Nullable>enable</Nullable>`, what does declaring a variable as `string` (no `?`) actually give you?",
     "choices": [
-      "A compile-time promise the compiler tries to verify (warning you about possible null dereferences) — not a runtime guarantee that it can never be null",
+      "A compile-time promise the compiler tries to verify (warning you about possible null dereferences) - not a runtime guarantee that it can never be null",
       "A runtime guarantee that the value can never, under any circumstances, be null",
-      "Exactly the same behavior as `string?` — the `?` is purely cosmetic",
+      "Exactly the same behavior as `string?` - the `?` is purely cosmetic",
       "A value that automatically converts null into an empty string"
     ],
     "answer": 0,
-    "explain": "Nullable reference types are compile-time flow analysis: `string` means 'intended non-null' and the compiler warns where a null might slip through. But it's not enforced at runtime — nulls can still arrive from deserialization, reflection, or older code, so a NullReferenceException remains possible."
+    "explain": "Nullable reference types are compile-time flow analysis: `string` means 'intended non-null' and the compiler warns where a null might slip through. But it's not enforced at runtime - nulls can still arrive from deserialization, reflection, or older code, so a NullReferenceException remains possible."
   }
 ]
 ```

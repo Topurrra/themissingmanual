@@ -32,8 +32,8 @@ If you want the vendor-neutral picture of why migrations exist at all, the compa
 
 ## The phases
 
-1. [The version table is the whole idea](01-the-version-table-is-the-whole-idea.md) — what a migration is and how Alembic tracks where your database is.
-2. [The daily loop: autogenerate, review, upgrade](02-the-daily-loop.md) — the workflow you run every time a model changes.
-3. [The autogenerate trap, heads, and merges](03-the-autogenerate-trap-and-heads.md) — what autogenerate misses, and how branching and merging work on a team.
+1. [The version table is the whole idea](01-the-version-table-is-the-whole-idea.md) - what a migration is and how Alembic tracks where your database is.
+2. [The daily loop: autogenerate, review, upgrade](02-the-daily-loop.md) - the workflow you run every time a model changes.
+3. [The autogenerate trap, heads, and merges](03-the-autogenerate-trap-and-heads.md) - what autogenerate misses, and how branching and merging work on a team.
 
 [Phase 1: The version table is the whole idea](01-the-version-table-is-the-whole-idea.md) →

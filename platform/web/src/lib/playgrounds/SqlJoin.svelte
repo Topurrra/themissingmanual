@@ -63,7 +63,7 @@
         {/each}
       </tbody></table>
     </div>
-    <p class="jn-note">Dimmed rows are dropped by this join. <b>NULL</b> appears where one side has no match — that's what makes outer joins different from inner.</p>
+    <p class="jn-note">Dimmed rows are dropped by this join. <b>NULL</b> appears where one side has no match - that's what makes outer joins different from inner.</p>
   </div>
 </figure>
 

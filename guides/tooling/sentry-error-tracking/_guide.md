@@ -22,8 +22,8 @@ Read the phases in order. Phase 1 builds the mental model: what an error tracker
 
 ## The phases
 
-1. [What Sentry actually is](01-what-sentry-actually-is.md) — the mental model: exceptions captured with full context, not lines in a log.
-2. [Capturing and reading an issue](02-capturing-and-reading-an-issue.md) — install the SDK, group events into issues, add tags and context.
-3. [Releases, source maps, and noise](03-releases-source-maps-and-noise.md) — production reality: which deploy broke it, un-minifying traces, taming alerts.
+1. [What Sentry actually is](01-what-sentry-actually-is.md) - the mental model: exceptions captured with full context, not lines in a log.
+2. [Capturing and reading an issue](02-capturing-and-reading-an-issue.md) - install the SDK, group events into issues, add tags and context.
+3. [Releases, source maps, and noise](03-releases-source-maps-and-noise.md) - production reality: which deploy broke it, un-minifying traces, taming alerts.
 
 [Phase 1: What Sentry actually is](01-what-sentry-actually-is.md) →

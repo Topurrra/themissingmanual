@@ -6,7 +6,7 @@
 
   // DefinedTermSet: the canonical schema for a glossary. Lets AI answer engines
   // and search treat each term as a defined entity sourced here, linked to the
-  // guide it comes from. ponytail: emits every definition once more as JSON-LD —
+  // guide it comes from. ponytail: emits every definition once more as JSON-LD -
   // acceptable on this one reference page; trim to name+url if payload bites.
   $: origin = siteOrigin($page.url.origin);
   $: termSet = {
@@ -41,14 +41,14 @@
 </script>
 
 <Seo
-  title="Glossary — The Missing Manual"
+  title="Glossary - The Missing Manual"
   description="Plain-language definitions for the developer terms used across The Missing Manual guides."
   jsonld={termSet} />
 
 <header class="gloss-intro">
   <span class="eyebrow">Reference</span>
   <h1>Glossary</h1>
-  <p class="tagline">Plain-language definitions for the terms used across the guides — {glossary.length} and counting. Each term links to the guide it comes from.</p>
+  <p class="tagline">Plain-language definitions for the terms used across the guides - {glossary.length} and counting. Each term links to the guide it comes from.</p>
 </header>
 
 <div class="gloss-search">

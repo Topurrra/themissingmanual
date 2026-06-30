@@ -33,9 +33,9 @@ page.getByText('Welcome back');
 page.getByTestId('cart-total'); // matches data-testid="cart-total"
 ```
 
-*What just happened:* each call returned a locator keyed to something stable — a role, a label, visible text, or an explicit test id. None of them depend on CSS classes or DOM nesting, so a restyle or a wrapper `<div>` won't break them.
+*What just happened:* each call returned a locator keyed to something stable - a role, a label, visible text, or an explicit test id. None of them depend on CSS classes or DOM nesting, so a restyle or a wrapper `<div>` won't break them.
 
-> Avoid `page.locator('.btn-primary')` and deep CSS/XPath chains when you can. They're glued to your markup's current shape and snap the moment a developer refactors the HTML. `getByTestId` is the escape hatch when nothing semantic fits — add a `data-testid` attribute rather than reaching for a class.
+> Avoid `page.locator('.btn-primary')` and deep CSS/XPath chains when you can. They're glued to your markup's current shape and snap the moment a developer refactors the HTML. `getByTestId` is the escape hatch when nothing semantic fits - add a `data-testid` attribute rather than reaching for a class.
 
 When a locator could match several elements, narrow it instead of guessing an index:
 
@@ -49,10 +49,10 @@ await row.getByRole('button', { name: 'Delete' }).click();
 
 ## Web-first assertions: the other half of auto-waiting
 
-You met auto-waiting on *actions*. Assertions get it too. The `expect()` calls that take a locator are **web-first** — they retry until the condition holds or the timeout hits. This is the difference between checking a value once (and racing the UI) and checking it patiently.
+You met auto-waiting on *actions*. Assertions get it too. The `expect()` calls that take a locator are **web-first** - they retry until the condition holds or the timeout hits. This is the difference between checking a value once (and racing the UI) and checking it patiently.
 
 ```js
-// Retries automatically until visible — or fails with a clear timeout
+// Retries automatically until visible - or fails with a clear timeout
 await expect(page.getByText('Order confirmed')).toBeVisible();
 
 // Other common web-first assertions
@@ -62,7 +62,7 @@ await expect(page).toHaveURL(/\/dashboard/);
 await expect(page.getByTestId('cart-total')).toHaveText('$42.00');
 ```
 
-*What just happened:* each `await expect(locator)...` polled the page until the assertion passed. No `sleep` before checking the confirmation message — the assertion itself does the waiting.
+*What just happened:* each `await expect(locator)...` polled the page until the assertion passed. No `sleep` before checking the confirmation message - the assertion itself does the waiting.
 
 The trap to avoid: don't pull a value out and assert on the plain value, because that snapshots a single moment.
 
@@ -75,7 +75,7 @@ expect(text).toBe('$42.00'); // may run before the total updates
 await expect(page.getByTestId('cart-total')).toHaveText('$42.00');
 ```
 
-*What just happened:* the first version grabbed the text immediately and compared once — flaky if the total updates a beat later. The second keeps re-checking until the text matches or it times out.
+*What just happened:* the first version grabbed the text immediately and compared once - flaky if the total updates a beat later. The second keeps re-checking until the text matches or it times out.
 
 ## Codegen: record a test by clicking
 
@@ -85,7 +85,7 @@ You don't have to write the first draft by hand. `codegen` opens a browser, watc
 npx playwright codegen https://example.com
 ```
 
-*What just happened:* a browser window and an inspector opened side by side. As you clicked and typed, the inspector filled with real test code — `getByRole`, `getByLabel`, and the actions you performed — which you copy into a spec and clean up.
+*What just happened:* a browser window and an inspector opened side by side. As you clicked and typed, the inspector filled with real test code - `getByRole`, `getByLabel`, and the actions you performed - which you copy into a spec and clean up.
 
 Treat codegen output as a **starting point**, not the final test. It captures the actions; you still add the assertions that say what *should* be true, and you trim any noise.
 
@@ -109,17 +109,17 @@ npx playwright test --headed
 # One browser only (faster feedback loop)
 npx playwright test --project=chromium
 
-# The interactive UI mode — the nicest way to develop
+# The interactive UI mode - the nicest way to develop
 npx playwright test --ui
 ```
 
-*What just happened:* each flag narrowed or changed how the run executes. `--ui` is the standout: it opens a panel where you pick tests, watch them step through, and inspect each action — the tightest write-run-debug loop Playwright offers.
+*What just happened:* each flag narrowed or changed how the run executes. `--ui` is the standout: it opens a panel where you pick tests, watch them step through, and inspect each action - the tightest write-run-debug loop Playwright offers.
 
 By default tests run **headless** (no visible window) and in **parallel**, which is why a suite finishes fast. `--headed` and a single `--project` slow things down on purpose so you can see what's going on.
 
 ## The trace viewer: time-travel debugging
 
-This is the feature that pays for itself the first time a test fails on CI and you can't reproduce it locally. A **trace** is a recorded bundle of everything that happened during a run — a DOM snapshot before and after every action, console logs, network requests, and screenshots. Open it and you scrub through the run like a video, clicking any step to see the page exactly as it was.
+This is the feature that pays for itself the first time a test fails on CI and you can't reproduce it locally. A **trace** is a recorded bundle of everything that happened during a run - a DOM snapshot before and after every action, console logs, network requests, and screenshots. Open it and you scrub through the run like a video, clicking any step to see the page exactly as it was.
 
 Turn it on in `playwright.config.ts`:
 
@@ -145,9 +145,9 @@ npx playwright show-report
 npx playwright show-trace trace.zip
 ```
 
-*What just happened:* `show-trace` launched the viewer with a timeline of every action. Clicking a step shows the before/after DOM snapshot, the locator that was used, network activity, and console output at that exact moment — so "why did this fail on CI?" becomes a thing you can watch instead of guess.
+*What just happened:* `show-trace` launched the viewer with a timeline of every action. Clicking a step shows the before/after DOM snapshot, the locator that was used, network activity, and console output at that exact moment - so "why did this fail on CI?" becomes a thing you can watch instead of guess.
 
-**In the wild:** the common workflow is `trace: 'on-first-retry'` in CI plus the HTML report uploaded as a build artifact. A test goes red, you download the report, open the trace, and within a minute you see the spinner that was still covering the button — no re-running CI ten times.
+**In the wild:** the common workflow is `trace: 'on-first-retry'` in CI plus the HTML report uploaded as a build artifact. A test goes red, you download the report, open the trace, and within a minute you see the spinner that was still covering the button - no re-running CI ten times.
 
 ```quiz
 [

@@ -15,7 +15,7 @@ The SDK is reporting and your issues are readable. This phase is the difference 
 
 ## Releases: which deploy introduced this
 
-A **release** is a version identifier you attach to every event — you saw it in the `init` call as `release="web@2026.06.30-a1b2c3"`. On its own it's a tag. Its power comes from telling Sentry *when each release was deployed*, so it can line up issues against your deploy history.
+A **release** is a version identifier you attach to every event - you saw it in the `init` call as `release="web@2026.06.30-a1b2c3"`. On its own it's a tag. Its power comes from telling Sentry *when each release was deployed*, so it can line up issues against your deploy history.
 
 ```bash
 # create the release and mark it deployed (run in CI after a deploy)
@@ -25,7 +25,7 @@ sentry-cli releases finalize "web@2026.06.30-a1b2c3"
 sentry-cli releases deploys "web@2026.06.30-a1b2c3" new -e production
 ```
 
-*What just happened:* you registered the release, attached the commits in it, finalized it, and recorded the deploy. Sentry can now show an issue's "first seen" against your deploy timeline and frequently name the **suspect commit** — the change most likely to have introduced the bug.
+*What just happened:* you registered the release, attached the commits in it, finalized it, and recorded the deploy. Sentry can now show an issue's "first seen" against your deploy timeline and frequently name the **suspect commit** - the change most likely to have introduced the bug.
 
 The payoff on an issue page:
 
@@ -33,10 +33,10 @@ The payoff on an issue page:
 Issue: TypeError: cannot read properties of undefined (reading 'name')
   First seen:  in release web@2026.06.30-a1b2c3   (deployed 2h ago)
   Regression:  was resolved in web@2026.06.29-f0e1d2
-  Suspect commit:  a1b2c3  "refactor user profile loader"  — by dev@team
+  Suspect commit:  a1b2c3  "refactor user profile loader"  - by dev@team
 ```
 
-*What just happened:* instead of "something is broken," you have "this started with this deploy, here's the likely commit, here's who wrote it." That's the line between an hour of bisecting and a one-minute fix. The release field you set in phase 2 is what makes all of this possible — skip it and you lose the single most useful diagnostic Sentry offers.
+*What just happened:* instead of "something is broken," you have "this started with this deploy, here's the likely commit, here's who wrote it." That's the line between an hour of bisecting and a one-minute fix. The release field you set in phase 2 is what makes all of this possible - skip it and you lose the single most useful diagnostic Sentry offers.
 
 ## Source maps: un-minifying JavaScript traces
 
@@ -48,7 +48,7 @@ TypeError: undefined is not a function
   at app.min.js:1:51992
 ```
 
-*What just happened:* the stack trace points into a single minified line. It's true and completely useless — you can't map column 48210 to anything in your source.
+*What just happened:* the stack trace points into a single minified line. It's true and completely useless - you can't map column 48210 to anything in your source.
 
 A **source map** is the translation table from minified code back to your original files and line numbers. Upload your source maps to Sentry alongside the matching release, and it rewrites the trace:
 
@@ -66,7 +66,7 @@ TypeError: undefined is not a function
   at handleClick     (src/profile/view.js:54:5)
 ```
 
-*What just happened:* the trace is back in your source coordinates — real function names, real files, real lines. The catch that bites everyone: source maps are matched to events **by release**. If the `release` in your SDK init doesn't exactly match the release you uploaded maps for, Sentry can't connect them and your traces stay minified. Same string, both places.
+*What just happened:* the trace is back in your source coordinates - real function names, real files, real lines. The catch that bites everyone: source maps are matched to events **by release**. If the `release` in your SDK init doesn't exactly match the release you uploaded maps for, Sentry can't connect them and your traces stay minified. Same string, both places.
 
 > Upload source maps but do not deploy them publicly. Source maps reveal your original source. Upload them to Sentry in CI, then keep them out of your public web root so strangers can't reconstruct your code. Sentry only needs its own copy.
 
@@ -74,7 +74,7 @@ TypeError: undefined is not a function
 
 Default fingerprinting is good, not perfect. Two failure modes:
 
-- **One bug, many issues.** An error message contains a changing value — `User 90431 not found`, `User 88110 not found` — and each variant becomes its own issue.
+- **One bug, many issues.** An error message contains a changing value - `User 90431 not found`, `User 88110 not found` - and each variant becomes its own issue.
 - **Many bugs, one issue.** A generic wrapper like `RequestError` swallows distinct underlying failures into a single group.
 
 You fix the first by giving Sentry a stable fingerprint so the varying part is ignored:
@@ -89,13 +89,13 @@ def collapse_user_not_found(event, hint):
     return event
 ```
 
-*What just happened:* every "user not found" variant now shares the fingerprint `["user-not-found"]`, collapsing into a single issue. `before_send` runs on every event before it leaves your process — it's also where you split an over-grouped issue, by adding a distinguishing value to the fingerprint instead.
+*What just happened:* every "user not found" variant now shares the fingerprint `["user-not-found"]`, collapsing into a single issue. `before_send` runs on every event before it leaves your process - it's also where you split an over-grouped issue, by adding a distinguishing value to the fingerprint instead.
 
 ## Keeping the noise down
 
 An error tracker everyone has muted catches nothing. Two levers keep alerts meaningful.
 
-First, drop events you don't care about — bot noise, browser-extension errors, expected exceptions — in the same `before_send`:
+First, drop events you don't care about - bot noise, browser-extension errors, expected exceptions - in the same `before_send`:
 
 ```python
 def before_send(event, hint):
@@ -105,9 +105,9 @@ def before_send(event, hint):
     return event
 ```
 
-*What just happened:* returning `None` from `before_send` drops the event so it's never sent or stored. `BrokenPipeError` from a client hanging up isn't your bug — filtering it keeps the dashboard honest.
+*What just happened:* returning `None` from `before_send` drops the event so it's never sent or stored. `BrokenPipeError` from a client hanging up isn't your bug - filtering it keeps the dashboard honest.
 
-Second, alert on **state changes**, not on every event. The useful triggers are "a *new* issue appeared" and "a resolved issue *regressed*" — not "an event happened," which fires constantly for known issues.
+Second, alert on **state changes**, not on every event. The useful triggers are "a *new* issue appeared" and "a resolved issue *regressed*" - not "an event happened," which fires constantly for known issues.
 
 ```text
 GOOD alert rule:   notify when a NEW issue is created in production
@@ -115,11 +115,11 @@ GOOD alert rule:   notify when a RESOLVED issue regresses
 NOISY alert rule:   notify on every event  ← everyone mutes this by day two
 ```
 
-*What just happened:* the good rules fire only when something genuinely changed — a fresh bug or a fix that broke again — so the notification still means "look now." That's the entire game: an alert people trust enough to act on.
+*What just happened:* the good rules fire only when something genuinely changed - a fresh bug or a fix that broke again - so the notification still means "look now." That's the entire game: an alert people trust enough to act on.
 
 ## One last gotcha: scrub the sensitive data
 
-Sentry captures request bodies, headers, and local variables — which means passwords, tokens, and personal data can ride along into an event. Many SDKs scrub common fields by default, but treat that as a starting point, not a guarantee.
+Sentry captures request bodies, headers, and local variables - which means passwords, tokens, and personal data can ride along into an event. Many SDKs scrub common fields by default, but treat that as a starting point, not a guarantee.
 
 ```python
 def scrub(event, hint):
@@ -129,9 +129,9 @@ def scrub(event, hint):
     return event
 ```
 
-*What just happened:* the auth header is redacted before the event leaves your server. Decide what must never reach Sentry and strip it in `before_send` — it's far easier than explaining later why secrets ended up in your error tracker.
+*What just happened:* the auth header is redacted before the event leaves your server. Decide what must never reach Sentry and strip it in `before_send` - it's far easier than explaining later why secrets ended up in your error tracker.
 
-**In the wild:** the teams that get the most out of Sentry treat releases as non-negotiable in CI — every deploy creates a release, uploads source maps, and finalizes it automatically. Once that pipeline exists, "which deploy broke it and what was the exact line" stops being a question you have to investigate.
+**In the wild:** the teams that get the most out of Sentry treat releases as non-negotiable in CI - every deploy creates a release, uploads source maps, and finalizes it automatically. Once that pipeline exists, "which deploy broke it and what was the exact line" stops being a question you have to investigate.
 
 ```quiz
 [
@@ -166,7 +166,7 @@ def scrub(event, hint):
       "Doubles the event's severity"
     ],
     "answer": 1,
-    "explain": "Returning None from before_send drops the event entirely — useful for filtering out noise like expected exceptions before they're stored."
+    "explain": "Returning None from before_send drops the event entirely - useful for filtering out noise like expected exceptions before they're stored."
   }
 ]
 ```

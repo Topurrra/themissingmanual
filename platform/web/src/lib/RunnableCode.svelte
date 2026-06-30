@@ -12,13 +12,13 @@
   //
   // Lifecycle mirrors Mermaid.svelte: this component is mounted INSIDE the phase
   // page's {#key} block, so it re-mounts on every phase navigation. We register a
-  // SYNCHRONOUS destroy callback (onMount must return one directly — an async
+  // SYNCHRONOUS destroy callback (onMount must return one directly - an async
   // onMount's cleanup is ignored), so each nav tears down all editors, workers and
   // runtime handles, leaving no leaks and no duplicate widgets.
   //
   // Coexistence: Mermaid targets `code.language-mermaid`; we target `[data-runnable]`
   // (mermaid is never marked runnable, so no overlap). ReaderTools snapshots
-  // `.reader > *` blocks for the bookmark — we replace each <pre> with a
+  // `.reader > *` blocks for the bookmark - we replace each <pre> with a
   // `figure.run-widget`, which is a fine block-level anchor for that.
   //
   // Everything heavy (CodeMirror, Pyodide, sql.js) is lazy-loaded: the editor
@@ -117,7 +117,7 @@
       try {
         editor = createEditor({ parent: editorHost, doc: original, langExtension: null });
       } catch (e) {
-        // CM failed to build — restore the original block so code stays visible.
+        // CM failed to build - restore the original block so code stays visible.
         if (fig.parentNode) fig.parentNode.replaceChild(pre, fig);
         return;
       }
@@ -202,7 +202,7 @@
 
       const run = async () => {
         if (running) return;
-        if (adapter.unsupported) return; // shouldn't fire — button is disabled
+        if (adapter.unsupported) return; // shouldn't fire - button is disabled
         setRunning(true);
         try {
           // First-run load shows a status line (Pyodide/sql.js take a few seconds).
@@ -238,7 +238,7 @@
           copyBtn.classList.add('copied');
           setTimeout(() => copyBtn.classList.remove('copied'), 1200);
         } catch (e) {
-          /* clipboard blocked — no-op */
+          /* clipboard blocked - no-op */
         }
       });
 
@@ -248,7 +248,7 @@
         runBtn.title = `Running ${adapter.label} isn't supported yet`;
         const note = document.createElement('div');
         note.className = 'rw-note';
-        note.textContent = `Running ${adapter.label} isn't supported yet — the editor is read-along only.`;
+        note.textContent = `Running ${adapter.label} isn't supported yet - the editor is read-along only.`;
         fig.appendChild(note);
       }
     };
@@ -261,7 +261,7 @@
       if (!reader) return;
 
       const blocks = [...reader.querySelectorAll('pre[data-runnable]')];
-      if (!blocks.length) return; // nothing runnable — never load CodeMirror
+      if (!blocks.length) return; // nothing runnable - never load CodeMirror
 
       // Lazy-load the editor factory + adapter registry (code-split chunks).
       let mod, adapters;
@@ -271,7 +271,7 @@
           import('./runnable/adapters.js')
         ]);
       } catch (e) {
-        return; // couldn't load the editor — leave the static blocks untouched
+        return; // couldn't load the editor - leave the static blocks untouched
       }
       if (destroyed) return;
       createEditor = mod.createEditor;
@@ -396,7 +396,7 @@
     color: var(--accent);
   }
 
-  /* editor host — CodeMirror renders inside */
+  /* editor host - CodeMirror renders inside */
   :global(.run-widget .rw-editor) {
     max-height: 460px;
     overflow: auto;

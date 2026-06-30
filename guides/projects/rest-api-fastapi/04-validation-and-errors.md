@@ -18,7 +18,7 @@ updated: 2026-06-30
 
 Right now, ask the API for note 999 and it throws a `KeyError`, which FastAPI
 turns into a 500 Internal Server Error and a stack trace. To anyone calling your
-API, a 500 means "the server is broken" — but the server isn't broken, the
+API, a 500 means "the server is broken" - but the server isn't broken, the
 caller asked for something that doesn't exist. That's a 404, and saying so
 plainly is the difference between an API people can build against and one they
 have to guess at.
@@ -44,7 +44,7 @@ when a note is missing and **201** when a note is created.
 ## Raise HTTPException for missing notes
 
 FastAPI gives you `HTTPException` for exactly this. You `raise` it, and FastAPI
-turns it into a proper HTTP response with your status code and message — no
+turns it into a proper HTTP response with your status code and message - no
 stack trace, no 500.
 
 Update the import at the top of `main.py`:
@@ -86,7 +86,7 @@ def delete_note(note_id: int):
 
 The `get_or_404` helper is the kind of small thing that pays off fast: the
 existence check lives in one place, and every route that needs a real note calls
-it. Try it now — ask for a note that doesn't exist:
+it. Try it now - ask for a note that doesn't exist:
 
 ```bash
 curl -i http://127.0.0.1:8000/notes/999
@@ -116,7 +116,7 @@ def create_note(note: NoteIn):
     return record
 ```
 
-`status.HTTP_201_CREATED` is the integer 201 with a readable name — easier
+`status.HTTP_201_CREATED` is the integer 201 with a readable name - easier
 to read in six months than a bare number. Create a note and check the status:
 
 ```bash
@@ -129,7 +129,7 @@ The first line now reads `HTTP/1.1 201 Created`.
 
 ## Richer input validation
 
-So far `title: str` accepts any string — including an empty one. A note with a
+So far `title: str` accepts any string - including an empty one. A note with a
 blank title isn't useful. Pydantic lets you tighten the rules right in the model
 with `Field`, and the failures still come back as clean 422s.
 

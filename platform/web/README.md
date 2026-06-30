@@ -1,7 +1,7 @@
-# web — The Missing Manual front-end (SvelteKit)
+# web - The Missing Manual front-end (SvelteKit)
 
 Server-rendered reading + search UI over the `server` API. All data loading is server-side
-(`+page.server.js` loaders call the Rust API), so the browser never calls the API directly — no CORS,
+(`+page.server.js` loaders call the Rust API), so the browser never calls the API directly - no CORS,
 and pages are SSR'd for SEO.
 
 ## Run (dev)
@@ -11,7 +11,7 @@ and pages are SSR'd for SEO.
 Set `API_BASE` to point at a non-default API origin in production.
 
 ## Routes
-- `/` — guide list + search box
-- `/guides/<slug>` — guide overview + phases
-- `/guides/<slug>/<n>` — the phase reader
-- `/search?q=` — server-rendered search results
+- `/` - guide list + search box
+- `/guides/<slug>` - guide overview + phases
+- `/guides/<slug>/<n>` - the phase reader
+- `/search?q=` - server-rendered search results

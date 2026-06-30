@@ -33,8 +33,8 @@
   $: hasFooterNav = !!(prevPhase || prevIsOverview || nextPhase || showOverview);
   $: isLastPhase = phase.phase_no > 0 && !nextPhase;
 
-  // SEO/AEO structured data: the phase as an Article, a breadcrumb, and — when the
-  // phase has quiz questions — a FAQPage (answer-engine friendly).
+  // SEO/AEO structured data: the phase as an Article, a breadcrumb, and - when the
+  // phase has quiz questions - a FAQPage (answer-engine friendly).
   $: origin = siteOrigin($page.url.origin);
   $: guideTitle = $page.data.guideTitle ?? slug;
   $: mdQuiz = parseQuizBlock(phase.markdown);
@@ -69,7 +69,7 @@
   ];
 </script>
 
-<Seo title={`${phase.title} — The Missing Manual`} description={phase.summary} type="article" image={`/guides/${slug}/og.svg`} {jsonld} />
+<Seo title={`${phase.title} - The Missing Manual`} description={phase.summary} type="article" image={`/guides/${slug}/og.svg`} {jsonld} />
 
 <div class="crumb">
   <a href={`/guides/${phase.guide_slug}${q}`}>← Back to guide</a>

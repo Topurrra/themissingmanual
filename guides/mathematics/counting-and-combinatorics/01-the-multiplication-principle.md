@@ -2,7 +2,7 @@
 title: "The Multiplication Principle"
 guide: "counting-and-combinatorics"
 phase: 1
-summary: "If one choice can be made m ways and the next n ways, the two together can be made m × n ways. This single rule — multiply independent choices — is the engine behind almost all counting."
+summary: "If one choice can be made m ways and the next n ways, the two together can be made m × n ways. This single rule - multiply independent choices - is the engine behind almost all counting."
 tags: [mathematics, counting, multiplication-principle, combinatorics]
 difficulty: beginner
 synonyms: ["multiplication principle", "the counting principle", "how many combinations", "and vs or counting", "counting without listing"]
@@ -17,7 +17,7 @@ Someone asks: how many outfits can you make from your shirts and pants? Your ins
 is to start listing. Blue shirt with jeans, blue shirt with khakis, white shirt with
 jeans… and around outfit five you lose track of what you've already counted.
 
-That instinct — *list everything, then count the list* — works for tiny problems and
+That instinct - *list everything, then count the list* - works for tiny problems and
 collapses for real ones. How many 4-digit PINs are there? How many ways can a deck of
 cards be shuffled? You can't list those by hand in one lifetime. The point of counting
 (the branch of math, not the nursery-rhyme kind) is to get the exact number *without
@@ -25,7 +25,7 @@ ever writing the list down*.
 
 The good news: most of counting rests on one short rule. Once it clicks, a surprising
 amount of "how many ways" falls out of it. If numbers still feel shaky,
-[Why math isn't your enemy](/guides/why-math-isnt-your-enemy) is a gentle warm-up —
+[Why math isn't your enemy](/guides/why-math-isnt-your-enemy) is a gentle warm-up -
 but you don't need it to follow along here.
 
 ## The multiplication principle
@@ -36,7 +36,7 @@ The rule, in one sentence:
 > **n** options, the two choices **together** can be made in **m × n** ways.
 
 Back to the outfits. Say you have 2 shirts and 3 pants. Pick a shirt (2 ways), then
-pick pants (3 ways). The total is 2 × 3 = **6**. Not 2 + 3 = 5 — multiply, don't add.
+pick pants (3 ways). The total is 2 × 3 = **6**. Not 2 + 3 = 5 - multiply, don't add.
 Here's why, drawn as a tree:
 
 ```text
@@ -51,7 +51,7 @@ start ──┤
 ```
 
 Look at the structure. For **each** of the 2 shirts, the same 3 pants branch out. You
-get 3 outfits, then another 3 — the 3 repeats once per shirt. "The same n options,
+get 3 outfits, then another 3 - the 3 repeats once per shirt. "The same n options,
 repeated for each of the m" is what multiplication means. The tree has 6 leaves, and
 m × n gives 6 without drawing anything.
 
@@ -74,7 +74,7 @@ each with 10 options:
 10 × 10 × 10 × 10 = 10,000
 ```
 
-So there are exactly **10,000** possible PINs (0000 through 9999 — count them, that's
+So there are exactly **10,000** possible PINs (0000 through 9999 - count them, that's
 ten thousand numbers). You found that without listing one. That's the multiplication
 principle earning its keep.
 
@@ -97,11 +97,11 @@ Concretely. For lunch you order from the soup menu (4 soups) **or** the salad me
 4 soups  OR  3 salads   →   4 + 3 = 7 possible lunches
 ```
 
-You add, because you choose a single lunch from one list *or* the other — never both.
+You add, because you choose a single lunch from one list *or* the other - never both.
 Contrast: if lunch is a soup **and** a salad together, you multiply: 4 × 3 = 12 combos.
 
 The test: do the choices stack up (and → multiply) or compete as alternatives (or →
-add)? Keep this sharp — mixing them up is the single most common counting mistake.
+add)? Keep this sharp - mixing them up is the single most common counting mistake.
 
 > ℹ️ The two rules combine freely. "A main dish, plus a soup **or** a salad" is
 > mains × (soups + salads). Group the "or" with parentheses, then multiply the stages.
@@ -113,7 +113,7 @@ it.
 
 - **Nested loops multiply.** A loop of 1,000 iterations inside a loop of 1,000 runs the
   inner body 1,000 × 1,000 = 1,000,000 times. The total work is the product of the loop
-  counts — that's the multiplication principle, and it's why innocent-looking nesting
+  counts - that's the multiplication principle, and it's why innocent-looking nesting
   blows up.
 - **State spaces are products.** A struct with 3 boolean fields has 2 × 2 × 2 = 8
   possible states. A config with one of 4 log levels and one of 5 regions has 4 × 5 = 20
@@ -122,7 +122,7 @@ it.
   multiplication-principle count over each parameter's range. It tells you at once why
   exhaustive testing is usually impossible.
 
-If choices remind you of picking elements from sets, that's no coincidence —
+If choices remind you of picking elements from sets, that's no coincidence -
 [Sets, relations, and functions](/guides/sets-relations-and-functions) frames a
 combined choice as picking one element from each of several sets, and the size of all
 such combinations is exactly the product of the set sizes.
@@ -142,7 +142,7 @@ someone sits, only 3 remain for the second chair, then 2, then 1. The options sh
 4 × 3 × 2 × 1 = 24   (not 4 × 4 × 4 × 4)
 ```
 
-You still *multiply* — but you multiply the *actual* number of options at each stage,
+You still *multiply* - but you multiply the *actual* number of options at each stage,
 which now decreases because each pick removes a candidate. That adjustment, where order
 matters and repeats aren't allowed, is exactly what **permutations** are about, and
 it's where the next phase picks up.
@@ -157,7 +157,7 @@ it's where the next phase picks up.
   mutually exclusive alternatives where only one happens → add.
 - **For builders:** nested-loop counts, state spaces, and input spaces are all products.
 - **The catch:** multiplication assumes the next choice's option count is fixed. When
-  picks remove options (no repeats), you adjust each factor — that's permutations, next.
+  picks remove options (no repeats), you adjust each factor - that's permutations, next.
 
 A quick check before you move on:
 

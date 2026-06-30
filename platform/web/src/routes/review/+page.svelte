@@ -59,7 +59,7 @@
   });
 </script>
 
-<svelte:head><title>Review — The Missing Manual</title></svelte:head>
+<svelte:head><title>Review - The Missing Manual</title></svelte:head>
 
 {#if stage === 'loading'}
   <div style="min-height:40vh"></div>
@@ -67,13 +67,13 @@
   <header class="rv-intro">
     <span class="eyebrow">Review</span>
     <h1>You're all caught up</h1>
-    <p class="tagline">Nothing is due right now. As you read guides and take quizzes, cards appear here for spaced review — the proven way to make what you learn actually stick. Check back tomorrow.</p>
+    <p class="tagline">Nothing is due right now. As you read guides and take quizzes, cards appear here for spaced review - the proven way to make what you learn actually stick. Check back tomorrow.</p>
   </header>
   <div class="rv-actions"><a class="rv-btn" href="/train">Train your brain →</a><a class="rv-link" href="/paths">Your learning path</a></div>
 {:else if stage === 'done'}
   <header class="rv-intro">
     <span class="eyebrow">Review</span>
-    <h1>Done — {reviewed} card{reviewed === 1 ? '' : 's'} reviewed</h1>
+    <h1>Done - {reviewed} card{reviewed === 1 ? '' : 's'} reviewed</h1>
     <p class="tagline">Nice. Spacing your reviews out over days is what moves this into long-term memory. Come back tomorrow for the next batch.</p>
   </header>
   <div class="rv-actions"><a class="rv-btn" href="/">Back home →</a><a class="rv-link" href="/train">Train</a></div>
@@ -119,7 +119,7 @@
             <button class="rv-g good" on:click={() => grade('good')}>Good</button>
             <button class="rv-g easy" on:click={() => grade('easy')}>Easy</button>
           {:else}
-            <button class="rv-g again" on:click={() => grade('again')}>Got it — show again</button>
+            <button class="rv-g again" on:click={() => grade('again')}>Got it - show again</button>
           {/if}
         </div>
       {/if}

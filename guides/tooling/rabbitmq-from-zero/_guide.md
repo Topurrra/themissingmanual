@@ -24,8 +24,8 @@ Read the phases in order. Phase 1 builds the picture in your head: the broker, t
 
 ## The phases
 
-1. [Phase 1: The Smart Post Office](01-the-smart-post-office.md) — the mental model: broker, exchanges, queues, bindings, and why the producer never names a queue.
-2. [Phase 2: Publishing and Consuming for Real](02-publishing-and-consuming.md) — the everyday loop: exchange types, routing keys, acknowledgements, and prefetch.
-3. [Phase 3: When Delivery Goes Wrong](03-when-delivery-goes-wrong.md) — durability, redelivery, poison messages, dead-letter queues, and RabbitMQ versus Kafka.
+1. [Phase 1: The Smart Post Office](01-the-smart-post-office.md) - the mental model: broker, exchanges, queues, bindings, and why the producer never names a queue.
+2. [Phase 2: Publishing and Consuming for Real](02-publishing-and-consuming.md) - the everyday loop: exchange types, routing keys, acknowledgements, and prefetch.
+3. [Phase 3: When Delivery Goes Wrong](03-when-delivery-goes-wrong.md) - durability, redelivery, poison messages, dead-letter queues, and RabbitMQ versus Kafka.
 
 [Phase 1: The Smart Post Office](01-the-smart-post-office.md) →

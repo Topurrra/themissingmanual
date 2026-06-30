@@ -10,13 +10,13 @@
   const S = [
     { stack: [], micro: [], macro: [], out: [], line: -1, cap: 'The script runs top to bottom on the one call stack.' },
     { stack: ["console.log('A')"], micro: [], macro: [], out: [], line: 0, cap: "console.log('A') is pushed onto the call stack." },
-    { stack: [], micro: [], macro: [], out: ['A'], line: 0, cap: "It runs — 'A' prints — then pops off." },
+    { stack: [], micro: [], macro: [], out: ['A'], line: 0, cap: "It runs - 'A' prints - then pops off." },
     { stack: ['setTimeout(…)'], micro: [], macro: [], out: ['A'], line: 1, cap: 'setTimeout hands its callback to the timer, not the stack.' },
     { stack: [], micro: [], macro: ["() => log('B')"], out: ['A'], line: 1, cap: 'After 0 ms the callback waits in the task (macrotask) queue.' },
     { stack: ['Promise.then(…)'], micro: [], macro: ["() => log('B')"], out: ['A'], line: 2, cap: 'Promise.resolve().then(…) registers its callback.' },
     { stack: [], micro: ["() => log('C')"], macro: ["() => log('B')"], out: ['A'], line: 2, cap: 'That callback goes to the microtask queue.' },
     { stack: ["console.log('D')"], micro: ["() => log('C')"], macro: ["() => log('B')"], out: ['A'], line: 3, cap: "console.log('D') runs next." },
-    { stack: [], micro: ["() => log('C')"], macro: ["() => log('B')"], out: ['A', 'D'], line: 3, cap: "'D' prints. Script done — the stack is now empty." },
+    { stack: [], micro: ["() => log('C')"], macro: ["() => log('B')"], out: ['A', 'D'], line: 3, cap: "'D' prints. Script done - the stack is now empty." },
     { stack: [], micro: [], macro: ["() => log('B')"], out: ['A', 'D', 'C'], line: -1, cap: 'Stack empty → drain ALL microtasks first. C runs.' },
     { stack: [], micro: [], macro: [], out: ['A', 'D', 'C', 'B'], line: -1, cap: 'Only then the next macrotask: B runs. Final order: A · D · C · B.' }
   ];
@@ -37,8 +37,8 @@
 {/each}</pre>
     <div class="el-cols">
       <div class="el-col"><span class="el-h">Call stack</span>{#each [...s.stack].reverse() as f}<div class="el-frame">{f}</div>{:else}<div class="el-empty">empty</div>{/each}</div>
-      <div class="el-col"><span class="el-h">Microtasks</span>{#each s.micro as f}<div class="el-frame micro">{f}</div>{:else}<div class="el-empty">—</div>{/each}</div>
-      <div class="el-col"><span class="el-h">Macrotasks</span>{#each s.macro as f}<div class="el-frame macro">{f}</div>{:else}<div class="el-empty">—</div>{/each}</div>
+      <div class="el-col"><span class="el-h">Microtasks</span>{#each s.micro as f}<div class="el-frame micro">{f}</div>{:else}<div class="el-empty">-</div>{/each}</div>
+      <div class="el-col"><span class="el-h">Macrotasks</span>{#each s.macro as f}<div class="el-frame macro">{f}</div>{:else}<div class="el-empty">-</div>{/each}</div>
     </div>
     <div class="el-console"><span class="el-h">Console</span> <span class="el-out">{s.out.join('  ')}</span></div>
     <p class="el-cap">{s.cap}</p>

@@ -136,7 +136,7 @@
     if (it.soon) { close(); return; }
     close();
     // External targets (e.g. the /rss.xml feed endpoint) are server responses,
-    // not in-app routes — goto() can't handle them, so do a real navigation.
+    // not in-app routes - goto() can't handle them, so do a real navigation.
     if (it.external) window.location.href = it.url;
     else goto(it.url);
   }

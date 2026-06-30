@@ -26,7 +26,7 @@
 <figure class="pg pg-ut">
   <figcaption class="pg-cap"><i class="ti ti-flask" aria-hidden="true"></i> Unit test runner</figcaption>
   <div class="ut-body">
-    <span class="ut-h">Code under test — try breaking it (change <code>+</code> to <code>-</code>)</span>
+    <span class="ut-h">Code under test - try breaking it (change <code>+</code> to <code>-</code>)</span>
     <textarea bind:value={code} rows="3" spellcheck="false" aria-label="Function under test"></textarea>
     <div class="ut-bar">
       <button class="ut-run" on:click={run}><i class="ti ti-player-play-filled"></i> Run tests</button>

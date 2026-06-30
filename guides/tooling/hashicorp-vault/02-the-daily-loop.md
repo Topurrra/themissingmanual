@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The Daily Loop
 
-Most days you won't unseal anything or split a root key. You'll log in, read a secret or two, maybe write one, and your apps will fetch credentials at startup. This phase walks the loop you'll actually live in. To follow along without touching real infrastructure, run a dev server — it starts unsealed, in memory, with a known root token, and it prints a warning because it's only for learning.
+Most days you won't unseal anything or split a root key. You'll log in, read a secret or two, maybe write one, and your apps will fetch credentials at startup. This phase walks the loop you'll actually live in. To follow along without touching real infrastructure, run a dev server - it starts unsealed, in memory, with a known root token, and it prints a warning because it's only for learning.
 
 ```console
 $ vault server -dev
@@ -33,7 +33,7 @@ Version    1.x.x
 
 ## Static secrets: the KV engine
 
-The simplest engine is `kv` — a versioned key-value store for secrets you hold and rotate yourself, like a third-party API key. Write one, read it back:
+The simplest engine is `kv` - a versioned key-value store for secrets you hold and rotate yourself, like a third-party API key. Write one, read it back:
 
 ```console
 $ vault kv put secret/myapp/stripe api_key=sk_live_abc123 webhook_secret=whsec_xyz
@@ -44,9 +44,9 @@ api_key           sk_live_abc123
 webhook_secret    whsec_xyz
 ```
 
-*What just happened:* you stored two fields under one path and read them back. In a dev server, `secret/` is a KV v2 mount, so it keeps version history — overwrite `api_key` and the old value is still retrievable by version until you delete it.
+*What just happened:* you stored two fields under one path and read them back. In a dev server, `secret/` is a KV v2 mount, so it keeps version history - overwrite `api_key` and the old value is still retrievable by version until you delete it.
 
-To pull only one field, ask for it directly — handy in scripts:
+To pull only one field, ask for it directly - handy in scripts:
 
 ```console
 $ vault kv get -field=api_key secret/myapp/stripe
@@ -59,7 +59,7 @@ sk_live_abc123
 
 The root token can do anything, which is exactly why apps and people should never use it. Real access starts with an **auth method** that maps an identity to a **policy**. Let's build the smallest real example: a policy that allows reading one path, and an AppRole identity bound to it.
 
-First the policy — written in HCL, granting capabilities on paths:
+First the policy - written in HCL, granting capabilities on paths:
 
 ```hcl
 # myapp-policy.hcl
@@ -89,13 +89,13 @@ token_policies    ["default" "myapp"]
 token_ttl         1h
 ```
 
-*What just happened:* the app authenticated and got a token scoped to exactly what the `myapp` policy allows. That token can read `secret/myapp/*` and nothing else — a leaked copy can't touch the rest of Vault, and it expires in an hour.
+*What just happened:* the app authenticated and got a token scoped to exactly what the `myapp` policy allows. That token can read `secret/myapp/*` and nothing else - a leaked copy can't touch the rest of Vault, and it expires in an hour.
 
 > Pick the auth method that matches the identity you already have. A pod in Kubernetes should use the `kubernetes` method (it proves itself with its service-account token, no extra secret to manage). Humans should use OIDC/SSO. AppRole is the fallback when nothing better fits. The goal is always: stop inventing new credentials to protect other credentials.
 
 ## The magic trick: dynamic secrets
 
-Here's where Vault stops being a fancier password file. The `database` secrets engine doesn't *store* a database password — it *creates a fresh one on demand* and deletes it later. Set it up once by telling Vault how to connect as an admin and what kind of user to mint:
+Here's where Vault stops being a fancier password file. The `database` secrets engine doesn't *store* a database password - it *creates a fresh one on demand* and deletes it later. Set it up once by telling Vault how to connect as an admin and what kind of user to mint:
 
 ```console
 $ vault secrets enable database
@@ -110,7 +110,7 @@ $ vault write database/roles/readonly \
     default_ttl="1h" max_ttl="24h"
 ```
 
-*What just happened:* you taught Vault to log into Postgres as an admin and defined a `readonly` role whose users get SELECT and self-destruct. Nothing's been issued yet — this is the recipe, not a meal.
+*What just happened:* you taught Vault to log into Postgres as an admin and defined a `readonly` role whose users get SELECT and self-destruct. Nothing's been issued yet - this is the recipe, not a meal.
 
 Now any app with permission asks for credentials, and Vault generates a brand-new database user each time:
 
@@ -136,11 +136,11 @@ sequenceDiagram
   Vault->>DB: DROP ROLE
 ```
 
-*What just happened:* the secret's whole lifecycle — birth, hand-off, death — is owned by Vault. The app never holds a long-lived credential, and the database never has a stale account lying around.
+*What just happened:* the secret's whole lifecycle - birth, hand-off, death - is owned by Vault. The app never holds a long-lived credential, and the database never has a stale account lying around.
 
 ## Encryption as a service: transit
 
-One more engine worth knowing, because it solves a different problem. Sometimes you don't want Vault to *hold* a secret — you want it to encrypt *your* data without your app ever touching a key. That's the `transit` engine:
+One more engine worth knowing, because it solves a different problem. Sometimes you don't want Vault to *hold* a secret - you want it to encrypt *your* data without your app ever touching a key. That's the `transit` engine:
 
 ```console
 $ vault secrets enable transit
@@ -149,7 +149,7 @@ $ vault write transit/encrypt/orders plaintext=$(echo -n "card-4242" | base64)
 ciphertext    vault:v1:abcDEF123...
 ```
 
-*What just happened:* Vault encrypted your data and handed back ciphertext tagged with a key version. Your app stores that ciphertext in its own database. The encryption key never leaves Vault, so a dump of your database is useless without a `transit/decrypt` call — which is policy-gated and audited like everything else.
+*What just happened:* Vault encrypted your data and handed back ciphertext tagged with a key version. Your app stores that ciphertext in its own database. The encryption key never leaves Vault, so a dump of your database is useless without a `transit/decrypt` call - which is policy-gated and audited like everything else.
 
 For builders: transit is how you get strong encryption and key rotation without becoming a cryptographer or shipping keys in your binary. Rotate the key in Vault and old ciphertext (`vault:v1:`) still decrypts while new writes use `vault:v2:`.
 
@@ -169,7 +169,7 @@ For builders: transit is how you get strong encryption and key rotation without 
   },
   {
     "q": "What does the transit secrets engine store?",
-    "choices": ["Your encrypted application data", "Nothing of yours — it encrypts/decrypts data you keep, the key stays in Vault", "Database credentials", "Unseal keys"],
+    "choices": ["Your encrypted application data", "Nothing of yours - it encrypts/decrypts data you keep, the key stays in Vault", "Database credentials", "Unseal keys"],
     "answer": 1,
     "explain": "Transit is encryption-as-a-service: the key never leaves Vault, and you store the resulting ciphertext yourself."
   }

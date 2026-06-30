@@ -12,7 +12,7 @@ updated: 2026-06-19
 # Building an Image: the Dockerfile & Layers
 
 Now you'll make an image of your own. The thing that turns a frozen template from Phase 1 into something
-you can actually build is a file called a **Dockerfile** — a plain-text recipe Docker reads top to bottom.
+you can actually build is a file called a **Dockerfile** - a plain-text recipe Docker reads top to bottom.
 The single most useful thing to understand here isn't any one command; it's **layers**, because layers
 explain why two Dockerfiles that produce the identical image can rebuild in 2 seconds or 2 minutes.
 
@@ -26,7 +26,7 @@ Here's a realistic one for a small Node.js app, annotated:
 
 ```dockerfile
 # Start from an official image that already has Node installed.
-# This becomes our base layer — we build on top of it.
+# This becomes our base layer - we build on top of it.
 FROM node:20-slim
 
 # Set the working directory inside the image. Commands below run here,
@@ -49,27 +49,27 @@ EXPOSE 3000
 CMD ["node", "server.js"]
 ```
 
-📝 **Terminology.** *Base image* — the image named in `FROM` that you build on top of. You almost never
+📝 **Terminology.** *Base image* - the image named in `FROM` that you build on top of. You almost never
 start from nothing; you start from an official image (like `node`, `python`, `nginx`) that someone else
 already assembled. *`RUN`* executes a command *while building the image*. *`CMD`* is the command that runs
-*when a container starts*. Confusing those two is one of the most common Dockerfile mistakes — `RUN`
+*when a container starts*. Confusing those two is one of the most common Dockerfile mistakes - `RUN`
 happens at build time, `CMD` at run time.
 
 ## Layers: every instruction is a cached step
 
-**What a layer actually is.** Each instruction in the Dockerfile produces a **layer** — a saved diff of
+**What a layer actually is.** Each instruction in the Dockerfile produces a **layer** - a saved diff of
 what changed in the filesystem at that step. The final image is those layers stacked, read-only, one on
 top of the next:
 
 ```mermaid
 flowchart TD
-  L6["CMD [node, server.js] — metadata, tiny"]
-  L5["EXPOSE 3000 — metadata, tiny"]
-  L4["COPY . . — your source code"]
-  L3["RUN npm ci — installed node_modules (BIG)"]
-  L2["COPY package.json ... — the manifests"]
+  L6["CMD [node, server.js] - metadata, tiny"]
+  L5["EXPOSE 3000 - metadata, tiny"]
+  L4["COPY . . - your source code"]
+  L3["RUN npm ci - installed node_modules (BIG)"]
+  L2["COPY package.json ... - the manifests"]
   L1["WORKDIR /app"]
-  L0["FROM node:20-slim — the base image"]
+  L0["FROM node:20-slim - the base image"]
   L6 --> L5 --> L4 --> L3 --> L2 --> L1 --> L0
 ```
 
@@ -82,10 +82,10 @@ cache is a streak that breaks the moment something upstream changes.
 
 That single rule is why the Dockerfile above copies `package.json` *before* the source code. Your
 dependencies change rarely; your source changes constantly. By installing dependencies before copying
-source, an ordinary code edit leaves the `npm ci` layer untouched — Docker reuses it from cache, and the
+source, an ordinary code edit leaves the `npm ci` layer untouched - Docker reuses it from cache, and the
 rebuild is fast.
 
-⚠️ **Gotcha.** Flip those two lines — `COPY . .` *before* `RUN npm ci` — and every code change invalidates
+⚠️ **Gotcha.** Flip those two lines - `COPY . .` *before* `RUN npm ci` - and every code change invalidates
 the copy layer, which forces `npm ci` to re-run on every single build, reinstalling every dependency. The
 image is identical; the build is agonizing. **Order your Dockerfile from least-frequently-changed to
 most-frequently-changed.** That's the whole art of a fast Dockerfile.
@@ -106,9 +106,9 @@ $ docker build -t my-app:1.0 .
 ```
 
 *What just happened:* `docker build` read the Dockerfile and built each layer in order. `-t my-app:1.0`
-**tags** the result — `my-app` is the name, `1.0` is the *tag* (usually a version). The `.` at the end is
+**tags** the result - `my-app` is the name, `1.0` is the *tag* (usually a version). The `.` at the end is
 the **build context**: the folder Docker hands to the build so `COPY` has something to copy from. Notice
-`[4/5] RUN npm ci` took 14.8s — the slow step.
+`[4/5] RUN npm ci` took 14.8s - the slow step.
 
 Now change one line of `server.js` and build again:
 
@@ -123,13 +123,13 @@ $ docker build -t my-app:1.1 .
  => exporting to image                                        0.4s
 ```
 
-*What just happened:* this is the payoff for ordering the Dockerfile well. Steps 1–4 say `CACHED` — your
+*What just happened:* this is the payoff for ordering the Dockerfile well. Steps 1–4 say `CACHED` - your
 dependencies didn't change, so Docker reused those layers, including the expensive `npm ci`. Only `COPY .
 .` re-ran, because only your source changed. The build dropped from ~18s to under 2s. Same image,
 fraction of the time.
 
 📝 **Terminology.** A *tag* (`my-app:1.0`) is a human-readable label for an image version. If you leave it
-off, Docker assigns `latest` — which is a name, not a promise of newness, and is a common source of "wait,
+off, Docker assigns `latest` - which is a name, not a promise of newness, and is a common source of "wait,
 which version is this?" confusion later.
 
 ## `docker run`: bring the image to life
@@ -143,16 +143,16 @@ $ docker run -d -p 8080:3000 --name web my-app:1.0
 
 *What just happened:* `docker run` started a container from `my-app:1.0`. The flags carry the meaning:
 
-- `-d` — **detached**: run in the background and hand you back the terminal (it printed the container's
+- `-d` - **detached**: run in the background and hand you back the terminal (it printed the container's
   long ID).
-- `-p 8080:3000` — **publish a port**: forward port `8080` on your machine to port `3000` inside the
+- `-p 8080:3000` - **publish a port**: forward port `8080` on your machine to port `3000` inside the
   container. The format is `HOST:CONTAINER`, and getting it backwards is a classic mistake.
-- `--name web` — give the container a friendly name instead of a random one, so you can refer to it later.
+- `--name web` - give the container a friendly name instead of a random one, so you can refer to it later.
 
-⚠️ **Gotcha.** `EXPOSE 3000` in the Dockerfile **does not** open the port to your machine — it's only
+⚠️ **Gotcha.** `EXPOSE 3000` in the Dockerfile **does not** open the port to your machine - it's only
 documentation of what the app listens on. The port is only reachable from your laptop because of
 `-p 8080:3000` on `docker run`. Forgetting `-p` is the single most common "it works in the container but I
-can't reach it" mistake — we'll return to it in [Phase 3](03-volumes-and-the-gotchas.md).
+can't reach it" mistake - we'll return to it in [Phase 3](03-volumes-and-the-gotchas.md).
 
 Check it's running and reach it:
 
@@ -166,14 +166,14 @@ Hello from inside the container!
 ```
 
 *What just happened:* `docker ps` lists *running* containers (add `-a` to also see stopped ones). The
-`PORTS` column confirms the mapping `0.0.0.0:8080->3000/tcp` — traffic to your port 8080 reaches the app's
+`PORTS` column confirms the mapping `0.0.0.0:8080->3000/tcp` - traffic to your port 8080 reaches the app's
 port 3000. The `curl` proves it end to end. When you're done, `docker stop web` halts it and `docker rm
 web` removes it.
 
 ## The registry: where images live so others can pull them
 
 An image on your laptop helps only you. A **registry** is a server that stores images so anyone (or any
-deploy server) can download them — Docker Hub is the default public one; companies run private ones.
+deploy server) can download them - Docker Hub is the default public one; companies run private ones.
 
 📝 **Terminology.** *Registry* = the image store. *`pull`* = download an image from it. *`push`* = upload
 one to it. This is the actual mechanism behind "works on my machine" finally being true everywhere: you
@@ -194,7 +194,7 @@ The push refers to repository [docker.io/yourname/my-app]
 1.0: digest: sha256:9c1e... size: 1986
 ```
 
-*What just happened:* `pull` downloaded `nginx` layer by layer (notice it pulls *layers* — if you already
+*What just happened:* `pull` downloaded `nginx` layer by layer (notice it pulls *layers* - if you already
 have a layer, it's skipped, which is why related images share storage). To `push` your own image you first
 `tag` it with your registry username (`yourname/my-app`), then `push` sends up each layer Docker Hub
 doesn't already have. The deploy target later runs `docker pull yourname/my-app:1.0` and gets a
@@ -204,11 +204,11 @@ byte-for-byte identical environment to the one you built.
 
 1. A **Dockerfile** is an ordered recipe; each instruction builds a read-only **layer**.
 2. The **build cache** reuses unchanged layers and rebuilds everything from the first changed step
-   onward — so order instructions least-changed first (dependencies before source).
+   onward - so order instructions least-changed first (dependencies before source).
 3. **`docker build -t name:tag .`** turns the recipe into a tagged image.
 4. **`docker run -d -p HOST:CONTAINER --name … image`** starts a container; `-p` is what actually opens a
    port to your machine (`EXPOSE` alone does not).
-5. A **registry** stores images: **`pull`** to download, **`push`** to upload — the real machinery that
+5. A **registry** stores images: **`pull`** to download, **`push`** to upload - the real machinery that
    makes an environment reproducible everywhere.
 
 Next, the part that surprises everyone: where your data goes when the container stops, and the traps that

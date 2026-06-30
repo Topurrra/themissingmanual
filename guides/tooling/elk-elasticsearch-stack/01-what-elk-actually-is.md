@@ -24,7 +24,7 @@ $ tail -f /var/log/app/server.log | grep "order_id=88213"
 $ exit
 $ ssh web-07
 $ tail -f /var/log/app/server.log | grep "order_id=88213"
-# found it — but the request also touched the payment service. which box was that?
+# found it - but the request also touched the payment service. which box was that?
 ```
 
 *What just happened:* you spent five minutes guessing which machine held the line you needed, and the trail went cold the moment the request crossed a service boundary. Multiply that by every box and every incident. SSH-and-grep is fine for one server; it does not survive a fleet.
@@ -39,7 +39,7 @@ ELK is three tools, plus a fourth that joined later and quietly took over the fr
   [your apps]          write logs to files / stdout
        │
    ┌───▼────┐
-   │ Beats  │  lightweight shippers on each host — read & forward
+   │ Beats  │  lightweight shippers on each host - read & forward
    └───┬────┘
        │   (optionally through)
    ┌───▼──────┐
@@ -47,7 +47,7 @@ ELK is three tools, plus a fourth that joined later and quietly took over the fr
    └───┬──────┘
        │
  ┌─────▼─────────┐
- │ Elasticsearch │  index & store — the searchable database
+ │ Elasticsearch │  index & store - the searchable database
  └─────┬─────────┘
        │
    ┌───▼────┐
@@ -55,11 +55,11 @@ ELK is three tools, plus a fourth that joined later and quietly took over the fr
    └────────┘
 ```
 
-*What just happened:* logs flow left to right. **Beats** ship, **Logstash** parses, **Elasticsearch** indexes and stores, **Kibana** is the window you look through. The name "ELK" predates Beats; you'll also hear "Elastic Stack," which is the same thing with Beats included. Many setups skip Logstash entirely and let Beats send straight to Elasticsearch — more on that in phase 2.
+*What just happened:* logs flow left to right. **Beats** ship, **Logstash** parses, **Elasticsearch** indexes and stores, **Kibana** is the window you look through. The name "ELK" predates Beats; you'll also hear "Elastic Stack," which is the same thing with Beats included. Many setups skip Logstash entirely and let Beats send straight to Elasticsearch - more on that in phase 2.
 
 Take each one on its own terms:
 
-- **Elasticsearch** is the heart. It's a distributed search engine that stores your logs as JSON *documents* and builds an *inverted index* over them — the same trick a search engine uses, so "find every log mentioning `timeout` in the last hour" comes back in milliseconds instead of a full-file scan.
+- **Elasticsearch** is the heart. It's a distributed search engine that stores your logs as JSON *documents* and builds an *inverted index* over them - the same trick a search engine uses, so "find every log mentioning `timeout` in the last hour" comes back in milliseconds instead of a full-file scan.
 - **Logstash** is the pipeline. It takes messy input (a raw log line), pulls structure out of it (timestamp, level, request ID), and hands clean JSON to Elasticsearch. It's powerful and heavy; it runs on the JVM and likes a lot of memory.
 - **Kibana** is the face. Search bar, tables, charts, dashboards, saved queries. It's where humans actually live during an incident.
 - **Beats** are the couriers. Small, single-purpose agents you install on each host. **Filebeat** tails log files; **Metricbeat** collects metrics; there are others. They're deliberately dumb and cheap so you can run one on every box without thinking about it.
@@ -68,7 +68,7 @@ Take each one on its own terms:
 
 ## Why "search engine" is the key word
 
-A normal log file is a flat stream of text. To find something you read it top to bottom. Elasticsearch instead breaks every document into terms and builds an index from term back to document — exactly like the index at the back of a book.
+A normal log file is a flat stream of text. To find something you read it top to bottom. Elasticsearch instead breaks every document into terms and builds an index from term back to document - exactly like the index at the back of a book.
 
 ```text
 Document 1: "GET /orders 200 ok in 14ms"
@@ -81,15 +81,15 @@ inverted index (term → which docs contain it):
   "timeout" → [2]
 ```
 
-*What just happened:* asking "which logs say `timeout`?" is now a single lookup, not a scan of every line. This is why Elasticsearch search feels instant — and it's also the seed of the cost story in phase 3, because building and holding that index for *every field of every log* is not free.
+*What just happened:* asking "which logs say `timeout`?" is now a single lookup, not a scan of every line. This is why Elasticsearch search feels instant - and it's also the seed of the cost story in phase 3, because building and holding that index for *every field of every log* is not free.
 
 ## What this is, and what it isn't
 
-ELK gives you centralized, searchable **logs**. That's one of the three pillars of observability — logs, metrics, and traces. ELK can stretch toward metrics (Metricbeat) and there are tracing add-ons, but its center of gravity is log search. If you want the full picture of how logs sit next to metrics and traces, see /guides/observability-logs-metrics-traces. And for the underlying skill of actually reading what you find — not drowning in volume — see /guides/reading-logs-without-drowning.
+ELK gives you centralized, searchable **logs**. That's one of the three pillars of observability - logs, metrics, and traces. ELK can stretch toward metrics (Metricbeat) and there are tracing add-ons, but its center of gravity is log search. If you want the full picture of how logs sit next to metrics and traces, see /guides/observability-logs-metrics-traces. And for the underlying skill of actually reading what you find - not drowning in volume - see /guides/reading-logs-without-drowning.
 
 ## For builders
 
-You don't have to run ELK yourself to get the model. Cloud providers and Elastic itself offer managed Elasticsearch, and the mental model is identical: something ships logs, Elasticsearch indexes them, a UI searches them. The pieces you'll spend real time on are the *edges* — getting clean, structured logs in (phase 2) and keeping storage from eating you alive (phase 3). The middle mostly takes care of itself.
+You don't have to run ELK yourself to get the model. Cloud providers and Elastic itself offer managed Elasticsearch, and the mental model is identical: something ships logs, Elasticsearch indexes them, a UI searches them. The pieces you'll spend real time on are the *edges* - getting clean, structured logs in (phase 2) and keeping storage from eating you alive (phase 3). The middle mostly takes care of itself.
 
 ```quiz
 [

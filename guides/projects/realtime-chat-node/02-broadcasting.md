@@ -18,7 +18,7 @@ updated: 2026-06-30
 
 Right now your server hears a message and logs it. A real chat does something more useful: it takes that message and sends it back out to everyone in the room. One person types, everyone reads. That fan-out is called **broadcasting**, and it's the single most important pattern in the whole project.
 
-This phase turns your logger into a relay. By the end, two connected clients will see each other's messages — and you'll prove it with two test clients before we ever touch a browser.
+This phase turns your logger into a relay. By the end, two connected clients will see each other's messages - and you'll prove it with two test clients before we ever touch a browser.
 
 Built on your machine, same as before. Keep that server terminal handy.
 
@@ -26,7 +26,7 @@ Built on your machine, same as before. Keep that server terminal handy.
 
 When a message lands on one socket, you want to send it to all the *other* sockets. To do that, the server needs to know who's connected. The good news: `ws` already keeps that list for you.
 
-Your `WebSocketServer` has a `.clients` property — a `Set` of every socket currently connected. To broadcast, you loop over that set and call `.send()` on each one.
+Your `WebSocketServer` has a `.clients` property - a `Set` of every socket currently connected. To broadcast, you loop over that set and call `.send()` on each one.
 
 ```mermaid
 graph TD
@@ -77,7 +77,7 @@ wss.on("connection", (socket) => {
 The new part is the `broadcast` function. Walk through it:
 
 - `wss.clients` is the set of every connected socket. We loop over all of them.
-- `client.readyState === client.OPEN` checks the socket is actually ready to receive. A connection that's mid-close will throw if you `send()` to it, so we skip anything that isn't open. This guard prevents real crashes — don't drop it.
+- `client.readyState === client.OPEN` checks the socket is actually ready to receive. A connection that's mid-close will throw if you `send()` to it, so we skip anything that isn't open. This guard prevents real crashes - don't drop it.
 - `client !== sender` skips the person who sent the message, so they don't get their own words bounced back.
 
 That's the broadcast pattern in full. Every chat server you've ever used has a version of this loop at its core.
@@ -155,6 +155,6 @@ Relaying: bob says: morning back
 
 ## What you have now
 
-A working relay. Whatever one client sends, every other client receives. That is, functionally, a chat server — the only thing missing is a pleasant way for humans to use it instead of throwaway scripts.
+A working relay. Whatever one client sends, every other client receives. That is, functionally, a chat server - the only thing missing is a pleasant way for humans to use it instead of throwaway scripts.
 
-That's the next phase: a browser page with an input box and a message list, talking to this exact server over a WebSocket. The server you've got won't change at all — it already does the hard part.
+That's the next phase: a browser page with an input box and a message list, talking to this exact server over a WebSocket. The server you've got won't change at all - it already does the hard part.

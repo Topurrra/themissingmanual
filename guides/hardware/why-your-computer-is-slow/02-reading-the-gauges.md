@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Reading the gauges: Task Manager and Activity Monitor
 
-Guessing from feel got you a hypothesis. Now you confirm it. Your computer is already keeping a live scoreboard of how hard each part is working — you have walked past it a hundred times without opening it. The trick is knowing which row to look at and what "too high" actually means. Once you can read it, the machine stops being mysterious and starts telling you exactly where it hurts.
+Guessing from feel got you a hypothesis. Now you confirm it. Your computer is already keeping a live scoreboard of how hard each part is working - you have walked past it a hundred times without opening it. The trick is knowing which row to look at and what "too high" actually means. Once you can read it, the machine stops being mysterious and starts telling you exactly where it hurts.
 
 ## Open the scoreboard
 
@@ -33,7 +33,7 @@ Disk activity    Disk 0 (%, active time)   Disk tab, reads/writes
 
 ## Do this while the machine is actually slow
 
-A scoreboard read when everything is calm tells you nothing. Open the tool, then go reproduce the slowness — load up your normal tabs, open the apps you always have running, do the thing that drags. Watch the numbers *during* the pain. The part that pegs while you suffer is your bottleneck.
+A scoreboard read when everything is calm tells you nothing. Open the tool, then go reproduce the slowness - load up your normal tabs, open the apps you always have running, do the thing that drags. Watch the numbers *during* the pain. The part that pegs while you suffer is your bottleneck.
 
 ## Reading the RAM row (the most common culprit)
 
@@ -41,7 +41,7 @@ This is where most everyday slowness lives, so look here first.
 
 On Windows, the Memory graph shows how much of your RAM is in use. But the number that truly matters is harder to see, so check two things together: is Memory near 100%, **and** is the Disk graph also busy at the same time?
 
-On macOS, Apple made this beautifully direct. The **Memory Pressure** graph is the one to trust — not the raw gigabyte numbers.
+On macOS, Apple made this beautifully direct. The **Memory Pressure** graph is the one to trust - not the raw gigabyte numbers.
 
 ```text
 macOS Memory Pressure:
@@ -50,7 +50,7 @@ macOS Memory Pressure:
   RED     = you are out. The machine is swapping to disk. This is the slowness.
 ```
 
-*What just happened:* Green means RAM is not your problem, full stop, even if the gigabyte number looks scary-high (macOS deliberately uses spare RAM as cache — high usage is healthy, not a warning). Red is the smoking gun for "buy more RAM."
+*What just happened:* Green means RAM is not your problem, full stop, even if the gigabyte number looks scary-high (macOS deliberately uses spare RAM as cache - high usage is healthy, not a warning). Red is the smoking gun for "buy more RAM."
 
 On Windows, the equivalent smoking gun is the combination: **Memory pinned high while Disk activity is also pinned high.** That pairing is the machine frantically using your slow disk as fake, overflow RAM. It is the exact moment the chef gives up on the full counter and starts sprinting to the freezer for every single item.
 
@@ -79,19 +79,19 @@ Task Manager → Performance tab, left column:
 CPU is the easiest to read and the rarest cause of everyday slowness. Look at the CPU percentage while the machine is slow:
 
 - **CPU pinned near 100% during a specific heavy task** (export, compile, big recalculation) and dropping back down afterward → the CPU is genuinely the limit *for that task*. This is a real CPU bottleneck.
-- **CPU pinned near 100% all the time, even when you are doing nothing** → suspect a runaway program, not weak hardware. Sort the process list by CPU (click the CPU column header) and see what is eating it. A misbehaving browser tab or background updater is a free fix — no new hardware needed.
+- **CPU pinned near 100% all the time, even when you are doing nothing** → suspect a runaway program, not weak hardware. Sort the process list by CPU (click the CPU column header) and see what is eating it. A misbehaving browser tab or background updater is a free fix - no new hardware needed.
 
 ```text
 Sort by CPU, top of the list:
 
-  chrome.exe           48%   ← one tab gone wild — close it, don't buy a CPU
-  Antimalware Service  31%   ← a scan running — it'll finish on its own
+  chrome.exe           48%   ← one tab gone wild - close it, don't buy a CPU
+  Antimalware Service  31%   ← a scan running - it'll finish on its own
   System Idle Process  ...   ← "idle" means FREE capacity, not a problem
 ```
 
-*What just happened:* High CPU from one process is a software problem with a free fix. High CPU spread across everything *only during heavy work* is the real hardware signal. And on Windows, "System Idle Process" eating 90% means your CPU is 90% *free* — it is the most misread row in the whole tool.
+*What just happened:* High CPU from one process is a software problem with a free fix. High CPU spread across everything *only during heavy work* is the real hardware signal. And on Windows, "System Idle Process" eating 90% means your CPU is 90% *free* - it is the most misread row in the whole tool.
 
-For builders: this is your first profiler. Sorting processes by resource use to find the one hog is the same move as reading a flame graph to find the hot function. The habit transfers directly — measure, sort, find the one thing actually doing the damage, ignore the noise.
+For builders: this is your first profiler. Sorting processes by resource use to find the one hog is the same move as reading a flame graph to find the hot function. The habit transfers directly - measure, sort, find the one thing actually doing the damage, ignore the noise.
 
 ## Putting a reading together
 
@@ -101,7 +101,7 @@ Run this checklist while the machine is slow, and you will have your answer:
 2. Disk near 100% during boot/launches while RAM is fine, and it is an HDD? → **Disk is the bottleneck.**
 3. CPU pinned only during one heavy task, RAM and Disk fine? → **CPU is the bottleneck.**
 
-Most old, sluggish machines light up #1 or #2 — and both have cheap fixes. The next phase turns each of these readings into a specific thing to buy.
+Most old, sluggish machines light up #1 or #2 - and both have cheap fixes. The next phase turns each of these readings into a specific thing to buy.
 
 ```quiz
 [
@@ -136,7 +136,7 @@ Most old, sluggish machines light up #1 or #2 — and both have cheap fixes. The
       "You need a faster CPU immediately"
     ],
     "answer": 1,
-    "explain": "'Idle' is the opposite of busy. 90% idle means 90% of your CPU capacity is free — it's the most misread row in the tool."
+    "explain": "'Idle' is the opposite of busy. 90% idle means 90% of your CPU capacity is free - it's the most misread row in the tool."
   }
 ]
 ```

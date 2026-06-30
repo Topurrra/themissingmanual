@@ -13,12 +13,12 @@ updated: 2026-06-30
 
 A handful of passing tests on your laptop is one thing. A suite that runs on every pull request, stays fast, and doesn't cry wolf is another. This phase is the gap between the two: how to skip logging in on every test, how parallelism really works, how to stop depending on a flaky backend, and the traps that catch almost everyone once.
 
-## Don't log in a hundred times — reuse auth state
+## Don't log in a hundred times - reuse auth state
 
 If every test starts by filling the login form, your suite is slow and the login flow is tested a hundred redundant times. The fix: log in once, save the browser's storage (cookies and localStorage) to a file, and load it into every test. Playwright calls this **storage state**.
 
 ```js
-// auth.setup.ts — runs once before the tests that need a logged-in user
+// auth.setup.ts - runs once before the tests that need a logged-in user
 import { test as setup, expect } from '@playwright/test';
 
 const authFile = 'playwright/.auth/user.json';
@@ -35,7 +35,7 @@ setup('authenticate', async ({ page }) => {
 });
 ```
 
-*What just happened:* a setup test logged in like a normal user, then wrote the resulting cookies and localStorage to `user.json`. Every test that loads this file starts already authenticated — the login form runs once, not once per test.
+*What just happened:* a setup test logged in like a normal user, then wrote the resulting cookies and localStorage to `user.json`. Every test that loads this file starts already authenticated - the login form runs once, not once per test.
 
 Wire it up in the config so real tests depend on it and inherit the saved state:
 
@@ -53,11 +53,11 @@ export default defineConfig({
 });
 ```
 
-*What just happened:* the `chromium` project depends on `setup`, so Playwright runs the login once first, then runs every chromium test with the saved storage state already loaded. (Add `playwright/.auth/` to `.gitignore` — those files hold session credentials.)
+*What just happened:* the `chromium` project depends on `setup`, so Playwright runs the login once first, then runs every chromium test with the saved storage state already loaded. (Add `playwright/.auth/` to `.gitignore` - those files hold session credentials.)
 
 ## Fixtures: the `page` you've been getting for free
 
-Every test so far destructured `{ page }`. That `page` is a **fixture** — a piece of test environment Playwright builds for you, fresh per test, and tears down afterward. Built-in fixtures include `page`, `context` (an isolated browser session), and `browser`. The point of per-test fixtures is **isolation**: each test gets a clean context with no leftover cookies or state from the last one, which is a huge source of cross-test flakiness eliminated by default.
+Every test so far destructured `{ page }`. That `page` is a **fixture** - a piece of test environment Playwright builds for you, fresh per test, and tears down afterward. Built-in fixtures include `page`, `context` (an isolated browser session), and `browser`. The point of per-test fixtures is **isolation**: each test gets a clean context with no leftover cookies or state from the last one, which is a huge source of cross-test flakiness eliminated by default.
 
 You can define your own to remove repeated setup:
 
@@ -93,11 +93,11 @@ npx playwright test --workers=2
 # test.describe.configure({ mode: 'serial' }) inside the file
 ```
 
-*What just happened:* `--workers=2` capped parallelism for the whole run. `mode: 'serial'` is the in-file escape hatch when tests genuinely must share order — use it sparingly, because serial mode also means one failure skips the rest of that group.
+*What just happened:* `--workers=2` capped parallelism for the whole run. `mode: 'serial'` is the in-file escape hatch when tests genuinely must share order - use it sparingly, because serial mode also means one failure skips the rest of that group.
 
 ## Stop depending on a flaky backend: mock the network
 
-E2E tests that hit a real API inherit that API's flakiness and slowness. When you're testing the *front end's* behavior — does it render this data, does it handle this error — intercept the request and return a fixed response. This makes the test fast, deterministic, and able to exercise error states you can't easily trigger for real.
+E2E tests that hit a real API inherit that API's flakiness and slowness. When you're testing the *front end's* behavior - does it render this data, does it handle this error - intercept the request and return a fixed response. This makes the test fast, deterministic, and able to exercise error states you can't easily trigger for real.
 
 ```js
 test('shows empty state when no orders', async ({ page }) => {
@@ -111,7 +111,7 @@ test('shows empty state when no orders', async ({ page }) => {
 });
 ```
 
-*What just happened:* `page.route(...)` caught the request to `/api/orders` and answered with an empty array — no real backend involved. The test then asserted the empty-state message, deterministically, every run.
+*What just happened:* `page.route(...)` caught the request to `/api/orders` and answered with an empty array - no real backend involved. The test then asserted the empty-state message, deterministically, every run.
 
 > Mock for front-end behavior tests; keep a few unmocked, full-stack "smoke" tests that hit the real system end to end. The mocked tests give you speed and coverage of edge cases; the smoke tests prove the pieces actually connect. You want both, not one or the other.
 
@@ -128,7 +128,7 @@ projects: [
 ],
 ```
 
-*What just happened:* every test now runs three times, once per engine, catching the Safari-only and Firefox-only bugs that Chromium-only suites miss. The tradeoff is roughly triple the runtime — many teams run all three on the main branch and a single engine on routine pull requests.
+*What just happened:* every test now runs three times, once per engine, catching the Safari-only and Firefox-only bugs that Chromium-only suites miss. The tradeoff is roughly triple the runtime - many teams run all three on the main branch and a single engine on routine pull requests.
 
 ## CI and the classic traps
 
@@ -142,15 +142,15 @@ npx playwright install --with-deps
 npx playwright test
 ```
 
-*What just happened:* `--with-deps` installed the system libraries the browsers need on a bare CI image — the single most common reason a suite that works locally explodes on first CI run.
+*What just happened:* `--with-deps` installed the system libraries the browsers need on a bare CI image - the single most common reason a suite that works locally explodes on first CI run.
 
 The traps that catch nearly everyone at least once:
 
-- **Real waits sneaking back in.** `await page.waitForTimeout(2000)` is the new `sleep` — it's in the API for rare cases, but if it's in normal tests you've reintroduced flakiness. Use web-first assertions instead. See /guides/flaky-tests for the full pattern.
+- **Real waits sneaking back in.** `await page.waitForTimeout(2000)` is the new `sleep` - it's in the API for rare cases, but if it's in normal tests you've reintroduced flakiness. Use web-first assertions instead. See /guides/flaky-tests for the full pattern.
 - **Asserting on a value instead of a locator.** Re-read phase 2's `toHaveText` vs `textContent` example; this is the number-one source of "passes locally, fails in CI."
 - **Order-dependent tests.** They pass serially on your machine and fail under parallel workers. Make each test self-contained.
 - **Committing auth/storage-state files.** They contain live session tokens. Gitignore them and regenerate in CI.
-- **Strict-mode violations.** If a locator matches more than one element, Playwright errors on purpose rather than silently picking the first. That error is a feature — narrow the locator (scope it, or use an accessible name) instead of suppressing it.
+- **Strict-mode violations.** If a locator matches more than one element, Playwright errors on purpose rather than silently picking the first. That error is a feature - narrow the locator (scope it, or use an accessible name) instead of suppressing it.
 
 **For builders:** a healthy suite is mostly mocked behavior tests for speed, a thin layer of real-backend smoke tests for confidence, `trace: 'on-first-retry'` so failures are diagnosable, and storage-state auth so it stays fast. Get those four right and your E2E tests become something the team trusts instead of mutes.
 

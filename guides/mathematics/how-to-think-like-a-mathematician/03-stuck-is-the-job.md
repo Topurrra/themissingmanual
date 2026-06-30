@@ -13,7 +13,7 @@ updated: 2026-06-30
 
 Here's the secret no one tells you in school: being stuck is not the failure state of
 problem-solving. It *is* problem-solving. The mathematician at the chalkboard and the
-beginner at the kitchen table are in the exact same place most of the time — stuck —
+beginner at the kitchen table are in the exact same place most of the time - stuck -
 and the only difference is what they do about it.
 
 School trains you to feel that stuck = stupid, because in school the problems were
@@ -27,7 +27,7 @@ When you're stuck, you've learned something: the obvious approach doesn't work. 
 narrows the search. Treat the stuck moment as a fork with a list of moves, not a wall.
 
 ```text
-Stuck checklist — run these out loud:
+Stuck checklist - run these out loud:
   1. Did I actually understand the question? (Re-state it. Phase 1.)
   2. Have I tried the smallest case? The next one?
   3. What happens if I work backwards from the goal?
@@ -37,7 +37,7 @@ Stuck checklist — run these out loud:
 ```
 
 *What just happened:* "I'm stuck" became six concrete things to try. Item 6 alone
-rescues a shocking number of problems — an unused fact in the problem statement is
+rescues a shocking number of problems - an unused fact in the problem statement is
 almost always the key you walked past.
 
 ## Re-explain it to a rubber duck
@@ -53,7 +53,7 @@ they are. Opposite corners are the SAME color. ...Oh. That's the whole thing.
 The colors don't balance."
 ```
 
-*What just happened:* nobody answered you — the duck is rubber. Saying it forced you
+*What just happened:* nobody answered you - the duck is rubber. Saying it forced you
 to be specific about "two corners," and the specificity *was* the insight. Vagueness
 hides in your head and dies the moment you have to speak it.
 
@@ -61,13 +61,13 @@ hides in your head and dies the moment you have to speak it.
 
 Phase 2 introduced invariants; they earn the spotlight here because finding one is the
 closest thing to a superpower in this whole craft. The question that unlocks them:
-**"As I make the allowed moves, what quantity never changes — or only changes in a
+**"As I make the allowed moves, what quantity never changes - or only changes in a
 fixed way?"**
 
 ```text
 Puzzle: numbers 1 to 10 on a board. A move: erase two numbers a, b and
 write a + b - 1 in their place. Repeat until one number remains.
-What's the final number — and does the order of moves matter?
+What's the final number - and does the order of moves matter?
 
 Ask the invariant question: each move replaces a, b with a + b - 1.
 The total on the board goes from (... + a + b) to (... + (a+b-1)):
@@ -78,14 +78,14 @@ Final = 55 - 9 = 46. The order never mattered.
 ```
 
 *What just happened:* the messy "try every order of moves" problem collapsed because
-one quantity — the total — changed by a fixed amount every move regardless of choice.
+one quantity - the total - changed by a fixed amount every move regardless of choice.
 You didn't simulate anything. You found the thing the chaos couldn't touch.
 
 ## Talent is mostly a story about persistence
 
 The people who look talented are, overwhelmingly, the people who didn't stop when it
-got uncomfortable. Productive struggle — wrestling a problem at the edge of your
-ability, getting it wrong, trying another move — is not the cost of getting good. It
+got uncomfortable. Productive struggle - wrestling a problem at the edge of your
+ability, getting it wrong, trying another move - is not the cost of getting good. It
 *is* the mechanism. The discomfort is the muscle working.
 
 So when you feel the locked-door panic from the very first page of this guide,
@@ -95,7 +95,7 @@ doesn't change. Loop back to step 2.
 
 ## For builders
 
-The hardest bugs are won the same way — not by a flash of genius but by a calm
+The hardest bugs are won the same way - not by a flash of genius but by a calm
 checklist run while everyone else panics. Rubber-duck debugging is named for exactly
 this trick. And the invariant you hunt in a proof is the same assertion you'd add to
 catch a regression: "this should always be true." When it isn't, you've found the
@@ -114,7 +114,7 @@ problem. To turn a found pattern into a result no one can argue with, head to
     "q": "Why does explaining a problem aloud to a rubber duck help so often?",
     "choices": ["The duck gives hints", "Forming sentences forces hidden vagueness in your thinking to the surface", "It passes the time", "It lowers stress, nothing more"],
     "answer": 1,
-    "explain": "Vagueness survives in your head but dies when you must say it precisely — and the precision is frequently the missing insight itself."
+    "explain": "Vagueness survives in your head but dies when you must say it precisely - and the precision is frequently the missing insight itself."
   },
   {
     "q": "In the 'a + b - 1' board puzzle, why doesn't the order of moves matter?",

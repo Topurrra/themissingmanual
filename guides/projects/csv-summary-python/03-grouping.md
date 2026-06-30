@@ -20,7 +20,7 @@ A single grand total is fine, but the question people really have is "where's it
 
 ## The idea
 
-We walk through every row, look at its `region`, and add its `amount` to a running total for that region. We need somewhere to keep those running totals — one slot per region — and that's a dict:
+We walk through every row, look at its `region`, and add its `amount` to a running total for that region. We need somewhere to keep those running totals - one slot per region - and that's a dict:
 
 ```
 {"North": 330.50, "South": 223.00, "East": 465.50}
@@ -64,7 +64,7 @@ It works, but that `if region not in totals` line is noise we repeat in every gr
 
 `collections.defaultdict(float)` is a dict that, when you ask for a key it's never seen, quietly creates it with a default value first. Pass `float` and missing keys start at `0.0`. Pass `int` and they start at `0`. Pass `list` and they start at `[]`.
 
-That means `totals[region] += amount` works even the first time — the slot gets created as `0.0` on the spot, then the amount is added. The `if` disappears:
+That means `totals[region] += amount` works even the first time - the slot gets created as `0.0` on the spot, then the amount is added. The `if` disappears:
 
 ```python runnable
 import csv
@@ -93,7 +93,7 @@ Same result, less ceremony. `sorted(totals)` prints the regions alphabetically s
 
 ## Count and total per group
 
-Usually you want more than the total — you also want how many sales made up that total. Keep two defaultdicts side by side, or keep one dict of small lists. Two is the readable choice:
+Usually you want more than the total - you also want how many sales made up that total. Keep two defaultdicts side by side, or keep one dict of small lists. Two is the readable choice:
 
 ```python runnable
 import csv
@@ -126,7 +126,7 @@ Now each line shows the region, how many sales, the total, and the per-region av
 
 ## Group by a different column
 
-The grouping key is only a column name. Swap `region` for `product` and the same loop totals sales per product instead — no other change:
+The grouping key is only a column name. Swap `region` for `product` and the same loop totals sales per product instead - no other change:
 
 ```python runnable
 import csv
@@ -158,6 +158,6 @@ Pulling the column into a `GROUP_BY` variable means you can repoint the whole sc
 
 ## What you've got
 
-The per-group breakdown — total and count for each region (or product, or anything). Combined with the grand totals from the last phase, you now have every number the report needs. The only thing left is presentation: lining it all up so it reads like a report instead of debug output.
+The per-group breakdown - total and count for each region (or product, or anything). Combined with the grand totals from the last phase, you now have every number the report needs. The only thing left is presentation: lining it all up so it reads like a report instead of debug output.
 
-That's the final phase, where the pieces become one script — and where you'll learn to point it at a real file on your machine.
+That's the final phase, where the pieces become one script - and where you'll learn to point it at a real file on your machine.

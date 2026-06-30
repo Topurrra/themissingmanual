@@ -36,7 +36,7 @@ Shrink it:
 ```
 
 *What just happened:* you stopped trying to leap at 100 and did the parts you can do
-in your head. Now you have data — 1, 3, 6, 10 — and data is something to look at,
+in your head. Now you have data - 1, 3, 6, 10 - and data is something to look at,
 which a blank page never was.
 
 ## Move 2: Find a pattern
@@ -55,14 +55,14 @@ That's exactly double each sum. So sum = n(n+1)/2.
 Check at n = 100:  100 × 101 / 2 = 5050.
 ```
 
-*What just happened:* the pattern n(n+1)/2 didn't fall from the sky — you found it by
+*What just happened:* the pattern n(n+1)/2 didn't fall from the sky - you found it by
 poking the small cases until the numbers confessed. You also *checked* it on a fresh
 case before trusting it, which is the look-back habit from phase 1 doing its job.
 
 ## Move 3: Work backwards
 
 Some problems are a maze. Walking forward from the start, every turn looks equally
-plausible. So start at the exit and walk back — the goal often has only one thing
+plausible. So start at the exit and walk back - the goal often has only one thing
 that could lead to it.
 
 ```text
@@ -76,7 +76,7 @@ Read it forwards and you have the solution.
 ```
 
 *What just happened:* forwards, the jug puzzle has a dozen pointless moves you could
-make. Backwards, each step had almost no choice — "to get here, I must have come from
+make. Backwards, each step had almost no choice - "to get here, I must have come from
 there" pruned the maze down to a path.
 
 ## Move 4: Solve a simpler version
@@ -87,24 +87,24 @@ hardness back.
 
 ```text
 Real: shortest route visiting 12 cities.
-Simpler: shortest route visiting 3 cities — trivial, only a few orders.
+Simpler: shortest route visiting 3 cities - trivial, only a few orders.
          Then 4. You start to see why it explodes, and which ideas
          (nearest-neighbor, swapping two stops) even make sense to try.
 ```
 
 *What just happened:* the simpler version didn't solve the 12-city problem, but it
-taught you the shape of it and which approaches are worth scaling up — far better than
+taught you the shape of it and which approaches are worth scaling up - far better than
 guessing at the full thing cold.
 
 ## Move 5: Look for an invariant or symmetry
 
-This is the deepest move, so it gets its own home in phase 3 — but meet it now. An
+This is the deepest move, so it gets its own home in phase 3 - but meet it now. An
 **invariant** is something that *doesn't change* no matter what moves you make. If you
 can find one, it often settles the whole problem in a line.
 
 ```text
 Tile a chessboard with dominoes, each covering one black + one white square.
-Now remove two opposite corners — both the same color, say both white.
+Now remove two opposite corners - both the same color, say both white.
 
 Invariant: every domino covers exactly one white and one black, always.
 So any tiling covers equal whites and blacks.
@@ -112,7 +112,7 @@ But the mutilated board has 32 black and 30 white. Unequal → impossible.
 ```
 
 *What just happened:* you didn't try a single tiling. The invariant ("one white, one
-black, every time") made *all* tilings answer the question at once. That's the power —
+black, every time") made *all* tilings answer the question at once. That's the power -
 one unchanging fact replacing infinite case-checking.
 
 ## For builders
@@ -120,7 +120,7 @@ one unchanging fact replacing infinite case-checking.
 These map straight onto how you cut down a bug. "Smallest case" is the minimal
 reproduction. "Solve a simpler version" is commenting out half the system to localize
 the fault. "Work backwards" is reading a stack trace from the crash up to the cause.
-"Find an invariant" is the assertion that should always hold — and the moment it
+"Find an invariant" is the assertion that should always hold - and the moment it
 doesn't, you've found your bug.
 
 ```quiz
@@ -139,7 +139,7 @@ doesn't, you've found your bug.
   },
   {
     "q": "Why does the invariant settle the mutilated-chessboard problem without trying any tiling?",
-    "choices": ["Because the board is small", "Because every domino always covers one black and one white, so all tilings need equal counts — which the board lacks", "Because corners don't matter", "Because dominoes are symmetric"],
+    "choices": ["Because the board is small", "Because every domino always covers one black and one white, so all tilings need equal counts - which the board lacks", "Because corners don't matter", "Because dominoes are symmetric"],
     "answer": 1,
     "explain": "One unchanging fact about every domino applies to every possible tiling at once, replacing infinite case-checking with a single contradiction."
   }

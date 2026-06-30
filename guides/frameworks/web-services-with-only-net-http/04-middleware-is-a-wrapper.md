@@ -17,7 +17,7 @@ middleware type, no registration system, no framework magic. It's a function tha
 `http.Handler`, holds onto it in a closure, and hands you back a *new* `http.Handler` that does
 something extra before or after calling the one you gave it.
 
-The mental model, in one line: **middleware is `func(next http.Handler) http.Handler`** — a function
+The mental model, in one line: **middleware is `func(next http.Handler) http.Handler`** - a function
 that takes the "next" handler and returns a wrapped version of it. The wrapper runs your code, then
 calls `next.ServeHTTP(w, r)` to let the real work happen, then optionally runs more code on the way
 back out. It's an onion: each layer wraps the one inside it, the request travels inward through every
@@ -26,7 +26,7 @@ layer, and the response travels back outward through them in reverse.
 > 📝 You already know everything you need for this. A `Handler` is anything with `ServeHTTP(w, r)`
 > (Phase 1), and a closure is a function that remembers a variable from where it was created (Go From
 > Zero). Middleware is just those two ideas shaken together. If "closure over `next`" feels fuzzy,
-> that's the only new thing here — everything else you've seen.
+> that's the only new thing here - everything else you've seen.
 
 ## The shape of every middleware
 
@@ -45,16 +45,16 @@ func Logging(next http.Handler) http.Handler {
 
 *What just happened:* `Logging` takes one handler (`next`) and returns a brand-new one built with
 `http.HandlerFunc`. Inside that new handler, we record the start time, call `next.ServeHTTP(w, r)` to
-run whatever was wrapped (the mux, another middleware, your actual route handler — we don't care
+run whatever was wrapped (the mux, another middleware, your actual route handler - we don't care
 which), and *then*, after it returns, we log how long it took. The returned function is a closure: it
 "remembers" `next` and `start` even though `Logging` has long since returned. Code before
 `next.ServeHTTP` runs on the way *in*; code after it runs on the way *out*. That before/after split is
-the entire vocabulary of middleware — auth checks go before, timing and cleanup go after.
+the entire vocabulary of middleware - auth checks go before, timing and cleanup go after.
 
 ## Applying it: wrap the mux
 
 A handler that wraps a handler is useless until you actually wrap something. Your router (the
-`ServeMux` from Phase 2) is an `http.Handler` — so you wrap *it*, and hand the wrapped result to the
+`ServeMux` from Phase 2) is an `http.Handler` - so you wrap *it*, and hand the wrapped result to the
 server instead of the bare mux.
 
 ```go
@@ -69,7 +69,7 @@ http.ListenAndServe(":8080", h)
 
 *What just happened:* We declared `h` as an `http.Handler` and started it as the mux. Then
 `h = Logging(h)` replaced it with the logging wrapper, which still has the mux tucked inside it as
-`next`. When a request arrives, the server calls `h.ServeHTTP` — that's the logging layer, which logs
+`next`. When a request arrives, the server calls `h.ServeHTTP` - that's the logging layer, which logs
 and then calls the mux, which routes to `listMessages`. We pass `h`, not `mux`, to `ListenAndServe`.
 The mux didn't change at all; we just put a coat on it.
 
@@ -109,15 +109,15 @@ h := Chain(mux, Logging, Auth)   // same as Logging(Auth(mux))
 
 *What just happened:* `Chain` takes the base handler plus a variadic list of middlewares. It applies
 them **back to front** (the loop counts down from the last index) so that the *first* one you list ends
-up as the outermost wrapper — matching how you'd read it: "Logging, then Auth, then the mux." Now
+up as the outermost wrapper - matching how you'd read it: "Logging, then Auth, then the mux." Now
 adding a middleware is appending a name to the list, not re-nesting parentheses. This is the same
 helper, give or take, that every Go middleware library ships under names like `Use` or `With`.
 
 ## Auth middleware: when *not* to call next
 
-Logging always calls `next` — it never blocks a request, it just observes. Auth is the interesting
+Logging always calls `next` - it never blocks a request, it just observes. Auth is the interesting
 case, because its whole job is to *sometimes refuse*. The rule is simple: if the request fails the
-check, write an error response and **`return` without calling `next`.** That short-circuits the onion —
+check, write an error response and **`return` without calling `next`.** That short-circuits the onion -
 the inner layers never run.
 
 ```go
@@ -126,7 +126,7 @@ func Auth(next http.Handler) http.Handler {
         token := r.Header.Get("Authorization")
         if token == "" {
             http.Error(w, "missing Authorization header", http.StatusUnauthorized)
-            return // stop here — do NOT call next
+            return // stop here - do NOT call next
         }
         next.ServeHTTP(w, r) // authorized: let the request continue
     })
@@ -134,16 +134,16 @@ func Auth(next http.Handler) http.Handler {
 ```
 
 *What just happened:* We read the `Authorization` header. If it's empty, we write a `401 Unauthorized`
-and `return` immediately — the wrapped handler never runs, so the protected route is never reached.
+and `return` immediately - the wrapped handler never runs, so the protected route is never reached.
 That bare `return` is load-bearing: forget it, and after writing the 401 you'd *also* call `next`,
 running the real handler and writing a second response on top of the error. Only when the header is
 present do we fall through to `next.ServeHTTP(w, r)`.
 
 > ⚠️ Once you've written to `w` (status or body), you can't un-write it. After `http.Error` the
-> response is committed, so the `return` isn't optional politeness — it prevents a corrupt
+> response is committed, so the `return` isn't optional politeness - it prevents a corrupt
 > double-response. The pattern "write the error, then `return`" is one you'll repeat constantly.
 
-Real auth doesn't just check that a token *exists* — it validates it and figures out *who* the user is.
+Real auth doesn't just check that a token *exists* - it validates it and figures out *who* the user is.
 You'll want to pass that identity down to the handlers inside. You can't add a field to `*http.Request`,
 but you *can* attach values to its `context`. Here's the shape (Phase 6 goes deep on context):
 
@@ -155,12 +155,12 @@ next.ServeHTTP(w, r.WithContext(ctx))
 *What just happened:* `context.WithValue` produces a new context carrying `user` under a key, and
 `r.WithContext(ctx)` makes a copy of the request using that context. We pass the copy down, so any
 inner handler can call `r.Context().Value(userKey)` to retrieve the user the middleware authenticated.
-This is how middleware talks to the handlers it wraps — not by mutating the request, but by enriching
+This is how middleware talks to the handlers it wraps - not by mutating the request, but by enriching
 its context on the way in. We'll do this properly, with a typed key and a getter, in
 [Phase 6](06-structure-and-shutdown.md).
 
 > 💡 Look back at that `func(http.Handler) http.Handler` signature. It is *exactly* what
-> [chi](/guides/chi-from-zero) uses — chi middleware is plain net/http middleware, no translation
+> [chi](/guides/chi-from-zero) uses - chi middleware is plain net/http middleware, no translation
 > needed, which is why chi feels like "net/http with a nicer router." [Gin](/guides/gin-from-zero) and
 > Echo wrap the same before/after idea around their *own* context type (`c.Next()` is their version of
 > `next.ServeHTTP`), but it's the identical onion. Learn it once here and every framework's middleware
@@ -168,7 +168,7 @@ its context on the way in. We'll do this properly, with a typed key and a getter
 
 ## Recap
 
-- **Middleware is `func(next http.Handler) http.Handler`** — a function that takes a handler and
+- **Middleware is `func(next http.Handler) http.Handler`** - a function that takes a handler and
   returns a new handler wrapping it. No special type, just a closure over `next`.
 - Code **before** `next.ServeHTTP` runs on the way in; code **after** it runs on the way out. The
   request travels inward through the layers and the response unwinds back outward.
@@ -176,9 +176,9 @@ its context on the way in. We'll do this properly, with a typed key and a getter
   mux, to the server. **Chain** by nesting (`Logging(Auth(mux))`) or with a small `Chain` helper; the
   outermost wrapper runs first.
 - An **auth** middleware that rejects a request must write its error and **`return` without calling
-  `next`** — otherwise the protected handler runs anyway and you write two responses.
+  `next`** - otherwise the protected handler runs anyway and you write two responses.
 - Pass data (like the authenticated user) to inner handlers via `context.WithValue` +
-  `r.WithContext`, not by mutating the request — expanded in Phase 6.
+  `r.WithContext`, not by mutating the request - expanded in Phase 6.
 
 ## Quick check
 
@@ -195,7 +195,7 @@ Three quick ones to make sure the wrapper model stuck.
       "func(mux *http.ServeMux) error"
     ],
     "answer": 1,
-    "explain": "Middleware takes the next http.Handler and returns a new http.Handler that wraps it. It's a plain function over a closure — no special type involved."
+    "explain": "Middleware takes the next http.Handler and returns a new http.Handler that wraps it. It's a plain function over a closure - no special type involved."
   },
   {
     "q": "In an auth middleware, what must you do when the request is unauthorized?",
@@ -217,7 +217,7 @@ Three quick ones to make sure the wrapper model stuck.
       "They run in parallel"
     ],
     "answer": 2,
-    "explain": "Read it inside-out: Logging wraps Auth wraps mux. The outermost wrapper (Logging) runs first on the way in, then Auth, then the mux — and the response unwinds in reverse."
+    "explain": "Read it inside-out: Logging wraps Auth wraps mux. The outermost wrapper (Logging) runs first on the way in, then Auth, then the mux - and the response unwinds in reverse."
   }
 ]
 ```

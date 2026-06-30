@@ -7,7 +7,7 @@ use content_core::ingest::{html_to_text, ingest_dir};
 use content_core::store::Store;
 use content_core::index::SearchIndex;
 
-/// Shared application state: the SQLite store (behind a mutex — rusqlite is !Sync),
+/// Shared application state: the SQLite store (behind a mutex - rusqlite is !Sync),
 /// the Tantivy index (Send + Sync), request config, and a login rate-limit map.
 pub struct AppState {
     pub store: Mutex<Store>,
@@ -24,7 +24,7 @@ pub struct AppState {
 }
 
 impl AppState {
-    /// In-memory build by ingesting `repo_root` — used by tests and the legacy path.
+    /// In-memory build by ingesting `repo_root` - used by tests and the legacy path.
     pub fn build(repo_root: &Path) -> Result<Self, Box<dyn std::error::Error>> {
         let store = Store::open_in_memory()?;
         let index = SearchIndex::create_in_ram()?;
@@ -131,7 +131,7 @@ impl AppState {
 
     /// Sync `guides/` into the DB + index, but only when the on-disk content actually
     /// changed ("files win on change"). Returns the ingest stats if it re-imported, or
-    /// `None` if nothing changed. Guides created in the CMS (no folder) are never touched —
+    /// `None` if nothing changed. Guides created in the CMS (no folder) are never touched -
     /// `ingest_dir` only visits guides that exist on disk.
     pub fn sync_content(&self, force: bool) -> Result<Option<content_core::ingest::Stats>, Box<dyn std::error::Error>> {
         let root = match &self.content_root {

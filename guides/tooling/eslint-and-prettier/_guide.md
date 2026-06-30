@@ -22,8 +22,8 @@ Read it in order the first time. Phase 1 builds the mental model of two tools wi
 
 ## The phases
 
-1. [Two tools, two jobs](01-two-tools-two-jobs.md) — the mental model: formatting versus linting, and why they're separate.
-2. [Config and autofix](02-config-and-autofix.md) — how you really use them: config files, fixing on save, the everyday commands.
-3. [Enforcement and gotchas](03-enforcement-and-gotchas.md) — editor, pre-commit, CI, and the conflicts that waste an afternoon.
+1. [Two tools, two jobs](01-two-tools-two-jobs.md) - the mental model: formatting versus linting, and why they're separate.
+2. [Config and autofix](02-config-and-autofix.md) - how you really use them: config files, fixing on save, the everyday commands.
+3. [Enforcement and gotchas](03-enforcement-and-gotchas.md) - editor, pre-commit, CI, and the conflicts that waste an afternoon.
 
 [Phase 1: Two tools, two jobs](01-two-tools-two-jobs.md) →

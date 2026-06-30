@@ -18,7 +18,7 @@ You ship a change to Kubernetes, and a week later nobody can say for sure what's
 
 ## How to read this
 
-Read the three phases in order. Phase 1 builds the mental model so the rest stops feeling like magic. Phase 2 is the everyday loop: defining an app, syncing, rolling back. Phase 3 is where it bites — drift, sync waves, secrets, and the failures you'll actually be paged for. If you've never run Kubernetes, skim /guides/kubernetes-without-the-hype first; if "CI vs CD" is fuzzy, /guides/what-cicd-does sets the frame.
+Read the three phases in order. Phase 1 builds the mental model so the rest stops feeling like magic. Phase 2 is the everyday loop: defining an app, syncing, rolling back. Phase 3 is where it bites - drift, sync waves, secrets, and the failures you'll actually be paged for. If you've never run Kubernetes, skim /guides/kubernetes-without-the-hype first; if "CI vs CD" is fuzzy, /guides/what-cicd-does sets the frame.
 
 ## The phases
 

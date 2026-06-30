@@ -35,22 +35,22 @@ scrape_configs:
 
 *What just happened:* the agent tails every file matching `__path__`, and stamps each line it ships with `app="checkout"` and `env="prod"`. Those labels are exactly what Loki will index, so they're the dimensions you'll be able to query and correlate on later. The `__path__` is a directive telling the agent what to read; it does not become a label.
 
-The single most important discipline here lives in this config block: **choose labels that have few possible values.** `app`, `env`, `level`, `namespace` — good. Anything per-request or per-user — bad, for reasons Phase 3 makes painful. Promtail can extract fields from log content into labels with pipeline stages, and that power is exactly where people accidentally create cardinality disasters. When in doubt, attach fewer labels.
+The single most important discipline here lives in this config block: **choose labels that have few possible values.** `app`, `env`, `level`, `namespace` - good. Anything per-request or per-user - bad, for reasons Phase 3 makes painful. Promtail can extract fields from log content into labels with pipeline stages, and that power is exactly where people accidentally create cardinality disasters. When in doubt, attach fewer labels.
 
-> In Kubernetes, you don't hand-write paths. The agent runs as a DaemonSet, auto-discovers pods, and turns Kubernetes metadata — namespace, pod, container, app — into labels for you. The model is the same; the label values come from the cluster instead of a static file.
+> In Kubernetes, you don't hand-write paths. The agent runs as a DaemonSet, auto-discovers pods, and turns Kubernetes metadata - namespace, pod, container, app - into labels for you. The model is the same; the label values come from the cluster instead of a static file.
 
 ## LogQL: pick the streams, then filter the lines
 
-LogQL has a deliberate two-step shape that mirrors how Loki works internally. First you select streams by their labels — this is the cheap, indexed part. Then you filter the content of those streams — this is the scan.
+LogQL has a deliberate two-step shape that mirrors how Loki works internally. First you select streams by their labels - this is the cheap, indexed part. Then you filter the content of those streams - this is the scan.
 
 ```logql
 {app="checkout", env="prod"} |= "payment declined"
 └──── stream selector ──────┘ └── line filter ──┘
 ```
 
-*What just happened:* the part in braces is the **stream selector** — Loki uses the label index to find only the checkout/prod streams, fast. Then `|=` is a **line filter** meaning "keep lines containing this string," applied by scanning just those streams. This is the brute-force scan from Phase 1, made visible in the query.
+*What just happened:* the part in braces is the **stream selector** - Loki uses the label index to find only the checkout/prod streams, fast. Then `|=` is a **line filter** meaning "keep lines containing this string," applied by scanning just those streams. This is the brute-force scan from Phase 1, made visible in the query.
 
-The stream selector is mandatory — every LogQL query must start with one. You cannot ask Loki "find this string everywhere," because there is no global content index to answer that. You always narrow by label first. The line filter operators are worth memorizing:
+The stream selector is mandatory - every LogQL query must start with one. You cannot ask Loki "find this string everywhere," because there is no global content index to answer that. You always narrow by label first. The line filter operators are worth memorizing:
 
 ```text
 |=  "text"      line contains the string
@@ -59,7 +59,7 @@ The stream selector is mandatory — every LogQL query must start with one. You 
 !~  "regex"     line does NOT match the regex
 ```
 
-*What just happened:* these four operators are most of what you'll ever use for reading logs. Chain them — `{app="checkout"} |= "error" != "timeout"` — and each one further narrows the scan, left to right.
+*What just happened:* these four operators are most of what you'll ever use for reading logs. Chain them - `{app="checkout"} |= "error" != "timeout"` - and each one further narrows the scan, left to right.
 
 ## Parse fields out of the line at query time
 
@@ -69,11 +69,11 @@ Because Loki stores raw content, you often want to pull structured fields out of
 {app="checkout"} | json | status_code >= 500
 ```
 
-*What just happened:* `| json` parses each line's JSON body into fields, then `status_code >= 500` filters on a parsed field. Crucially, `status_code` is **not** an indexed label — it's extracted at query time, so it costs you nothing in cardinality. This is the Loki way to get rich filtering without paying the index price: keep indexed labels tiny, parse the detail on demand.
+*What just happened:* `| json` parses each line's JSON body into fields, then `status_code >= 500` filters on a parsed field. Crucially, `status_code` is **not** an indexed label - it's extracted at query time, so it costs you nothing in cardinality. This is the Loki way to get rich filtering without paying the index price: keep indexed labels tiny, parse the detail on demand.
 
 ## Turn logs into metrics with a range query
 
-LogQL has a second mode. Wrap a log query in a **range aggregation** and Loki computes a number over time — letting a stream of log lines behave like a Prometheus metric.
+LogQL has a second mode. Wrap a log query in a **range aggregation** and Loki computes a number over time - letting a stream of log lines behave like a Prometheus metric.
 
 ```logql
 sum by (status_code) (
@@ -81,9 +81,9 @@ sum by (status_code) (
 )
 ```
 
-*What just happened:* `rate(...[5m])` counts matching lines per second over a 5-minute window, and `sum by (status_code)` groups the result. You've turned raw logs into a graphable time series — error rate straight from log volume, no separate metric needed. This is why Loki panels sit so comfortably next to Prometheus panels in Grafana: the query language and the output shape match. (The [prometheus-and-grafana](/guides/prometheus-and-grafana) guide covers the `rate` and `sum by` machinery in depth.)
+*What just happened:* `rate(...[5m])` counts matching lines per second over a 5-minute window, and `sum by (status_code)` groups the result. You've turned raw logs into a graphable time series - error rate straight from log volume, no separate metric needed. This is why Loki panels sit so comfortably next to Prometheus panels in Grafana: the query language and the output shape match. (The [prometheus-and-grafana](/guides/prometheus-and-grafana) guide covers the `rate` and `sum by` machinery in depth.)
 
-**For builders:** start every dashboard query with the narrowest stream selector that's correct, and add a small time range. The selector and the range together decide how much data Loki has to scan — and an unscoped query over a wide window is the number-one way to make Loki feel slow when it shouldn't.
+**For builders:** start every dashboard query with the narrowest stream selector that's correct, and add a small time range. The selector and the range together decide how much data Loki has to scan - and an unscoped query over a wide window is the number-one way to make Loki feel slow when it shouldn't.
 
 ```quiz
 [
@@ -118,7 +118,7 @@ sum by (status_code) (
       "It isn't safe; it creates a new stream per status code"
     ],
     "answer": 1,
-    "explain": "Parsers extract fields at query time only. The parsed field is not an indexed label, so it adds no streams and no cardinality cost — that's how you get rich filtering cheaply."
+    "explain": "Parsers extract fields at query time only. The parsed field is not an indexed label, so it adds no streams and no cardinality cost - that's how you get rich filtering cheaply."
   }
 ]
 ```

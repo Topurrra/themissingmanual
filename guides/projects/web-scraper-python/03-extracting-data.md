@@ -2,7 +2,7 @@
 title: "Extracting Structured Data"
 guide: web-scraper-python
 phase: 3
-summary: "Turn loose page elements into clean dictionaries — one record per item — with tidy text and code that survives a missing field."
+summary: "Turn loose page elements into clean dictionaries - one record per item - with tidy text and code that survives a missing field."
 tags: [python, data-extraction, dictionaries, text-cleaning, defensive-code]
 difficulty: intermediate
 synonyms:
@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 # Extracting Structured Data
 
-So far we've printed pieces — a title here, a price there. A real scraper
+So far we've printed pieces - a title here, a price there. A real scraper
 produces *records*: one structured object per thing, with the same fields every
 time, clean enough to drop into a spreadsheet without hand-fixing. This phase
 builds that. By the end you'll have a function that turns one book's HTML into
@@ -24,7 +24,7 @@ one tidy dictionary, and a loop that gives you a list of them.
 
 The dictionary is our record. Each book becomes
 `{"title": ..., "price": ..., "rating": ..., "in_stock": ..., "url": ...}`.
-Same keys, every book. That sameness is what makes the next phase — saving —
+Same keys, every book. That sameness is what makes the next phase - saving -
 trivial.
 
 ## Extract one book into a dict
@@ -72,7 +72,7 @@ first = soup.select("article.product_pod")[0]
 print(parse_book(first))
 ```
 
-Run `python extract.py`. You'll get a dictionary — but a slightly grubby one.
+Run `python extract.py`. You'll get a dictionary - but a slightly grubby one.
 The stock text is wrapped in whitespace and newlines, and the price has a stray
 character on the front. Let's clean it.
 
@@ -116,7 +116,7 @@ def parse_book(book):
 ```
 
 Now `price` is `51.77`, a float, not a string. Decide on the *type* you want for
-each field at extraction time — a scraper that emits clean, typed records is
+each field at extraction time - a scraper that emits clean, typed records is
 worth ten that emit strings someone has to scrub later.
 
 ## Survive a missing field
@@ -165,7 +165,7 @@ def parse_book(book):
 ```
 
 Now a missing price becomes `None`, not a stack trace. `None` is a deliberate
-"we looked and it wasn't there" — far more useful than an empty string, because
+"we looked and it wasn't there" - far more useful than an empty string, because
 later you can ask "which records are missing a price?" and get a real answer.
 
 ## Pull the whole page into records
@@ -220,4 +220,4 @@ as you extract it.
 You have a list of clean, structured, typed records, and code that won't fall
 over when a page leaves a field blank. One problem remains: this is only the
 first 20 books. There are a thousand. Next phase we follow the "next" link
-through every page — and we do it without being a nuisance to the server.
+through every page - and we do it without being a nuisance to the server.

@@ -2,7 +2,7 @@
 title: "Jest and Vitest"
 guide: jest-and-vitest
 phase: 0
-summary: "JavaScript and TypeScript testing: Jest's batteries-included matchers, mocks, and snapshots — and Vitest, the faster, Vite-native drop-in with the same API."
+summary: "JavaScript and TypeScript testing: Jest's batteries-included matchers, mocks, and snapshots - and Vitest, the faster, Vite-native drop-in with the same API."
 tags: [jest, vitest, testing, javascript, typescript, mocks, snapshots]
 category: tooling
 group: "Testing Tools"
@@ -18,7 +18,7 @@ You wrote some JavaScript, it works on your machine, and now someone wants tests
 
 ## How to read this
 
-Read it in order the first time. Phase 1 gives you the shape of a test and why these tools exist. Phase 2 is the daily work: matchers, mocks, async, timers — the stuff you'll use every hour. Phase 3 is where tests go wrong: snapshot rot, flaky timers, mock leakage, and choosing between the two runners. If you've never written a unit test, read [Your First Unit Test](/guides/your-first-unit-test) first; this guide assumes you know what an assertion is.
+Read it in order the first time. Phase 1 gives you the shape of a test and why these tools exist. Phase 2 is the daily work: matchers, mocks, async, timers - the stuff you'll use every hour. Phase 3 is where tests go wrong: snapshot rot, flaky timers, mock leakage, and choosing between the two runners. If you've never written a unit test, read [Your First Unit Test](/guides/your-first-unit-test) first; this guide assumes you know what an assertion is.
 
 ## The phases
 

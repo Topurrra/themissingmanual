@@ -8,7 +8,7 @@
   // tick() ensures the new {@html phase.html} is in the DOM before we snapshot.
   onMount(() => {
     // Cleanup state lives out here so the synchronous destroy callback below can
-    // tear down everything init() creates — even though init() runs after tick().
+    // tear down everything init() creates - even though init() runs after tick().
     // (onMount only registers a destroy callback when it returns one synchronously;
     // an async onMount returns a Promise and its cleanup would be silently ignored.)
     let destroyed = false;
@@ -92,7 +92,7 @@
       if (cur && cur.i === i) { clearMark(); return; }
       const m = { i, label: labelFor(i) };
       write(m); placeRibbon(i); setMarked(true); hidePill();
-      showToast(cur ? 'Place updated — resume here next time' : 'Place saved — resume here next time');
+      showToast(cur ? 'Place updated - resume here next time' : 'Place saved - resume here next time');
     });
 
     const saved = read();

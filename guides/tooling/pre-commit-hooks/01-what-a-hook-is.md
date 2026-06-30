@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # What a Hook Actually Is
 
-Here's the reality you're starting from. You make a change, you commit, you push, and *then* a linter somewhere decides it doesn't like your code. The feedback loop is long and it happens far from where the mistake was made. What you want is for the check to run at the exact moment the mistake exists — when you type `git commit` — so you can fix it while the code is still fresh in your head and still on your machine.
+Here's the reality you're starting from. You make a change, you commit, you push, and *then* a linter somewhere decides it doesn't like your code. The feedback loop is long and it happens far from where the mistake was made. What you want is for the check to run at the exact moment the mistake exists - when you type `git commit` - so you can fix it while the code is still fresh in your head and still on your machine.
 
 That moment-of-commit check is what a *git hook* is. Understanding the plain git mechanism first makes the framework on top of it obvious, so let's start there.
 
@@ -42,7 +42,7 @@ Try to run a real team on raw `.git/hooks/` scripts and you hit three walls fast
 
 The first is that **`.git/hooks/` is not part of the repo.** Everything inside `.git/` is local to your clone and is never committed or pushed. Write a perfect hook, and your teammate who clones the repo gets... nothing. There's no way to share the hook through git itself, which is the one tool everyone already has.
 
-The second is that **a hook is one script, but you want many checks** — a Python formatter, a YAML validator, a secret scanner, a "did you leave a merge conflict marker in" check. Cramming all of those into one bash script, each with its own install steps and versions, turns into a maintenance pit.
+The second is that **a hook is one script, but you want many checks** - a Python formatter, a YAML validator, a secret scanner, a "did you leave a merge conflict marker in" check. Cramming all of those into one bash script, each with its own install steps and versions, turns into a maintenance pit.
 
 The third is **language and version drift.** Your formatter needs a specific version to behave consistently. If it's installed differently on every machine, "it formats fine on mine" becomes a daily argument. You want the *same* tool at the *same* version for everyone, isolated from whatever else is on the machine.
 
@@ -54,11 +54,11 @@ one bash script        (rigid) →  many checks, tangled together
 "works on my machine"  (drift) →  different tool versions everywhere
 ```
 
-*What just happened:* each weakness of the raw mechanism maps to exactly one thing the framework provides — sharing, composition, and pinned isolated tools.
+*What just happened:* each weakness of the raw mechanism maps to exactly one thing the framework provides - sharing, composition, and pinned isolated tools.
 
 ## The framework: hooks as managed, shared config
 
-The pre-commit framework (the tool is literally named `pre-commit`) is a thin manager that solves all three. Instead of writing a script, you write a small config file — `.pre-commit-config.yaml` — that *lists* the checks you want. You commit that file. Now it travels with the repo like any other source.
+The pre-commit framework (the tool is literally named `pre-commit`) is a thin manager that solves all three. Instead of writing a script, you write a small config file - `.pre-commit-config.yaml` - that *lists* the checks you want. You commit that file. Now it travels with the repo like any other source.
 
 When someone runs one setup command, the framework writes the actual `.git/hooks/pre-commit` script for them, pointed back at the shared config. Each check (called a "hook") is pulled from a repo at a pinned version and installed into its own isolated environment, so everyone runs the identical tool.
 
@@ -82,7 +82,7 @@ runs each hook from a pinned repo, in its own env
 
 The payoff is a class of mistakes that can't reach the shared history anymore: unformatted code, broken YAML, leftover `print` debugging, a leaked credential. They get caught on the laptop, in the second before the commit, by the same checks for every single person on the team. Nobody waits on CI to learn they left a trailing space.
 
-For builders: this is the local half of a quality strategy. The same checks can run again in CI as a backstop — if [continuous integration](/guides/what-cicd-does) is the net at the end, pre-commit is the catch at the source. Phase 3 covers running both from one config.
+For builders: this is the local half of a quality strategy. The same checks can run again in CI as a backstop - if [continuous integration](/guides/what-cicd-does) is the net at the end, pre-commit is the catch at the source. Phase 3 covers running both from one config.
 
 ```quiz
 [

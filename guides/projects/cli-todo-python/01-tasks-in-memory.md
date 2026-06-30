@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 # Tasks in Memory
 
-Before a to-do app can save anything or take commands, it needs one thing: a way to hold a task in the program's memory. Get the shape of the data right and everything after this gets shorter. So that's where we start — no files, no commands yet, only tasks living in a list while the program runs.
+Before a to-do app can save anything or take commands, it needs one thing: a way to hold a task in the program's memory. Get the shape of the data right and everything after this gets shorter. So that's where we start - no files, no commands yet, only tasks living in a list while the program runs.
 
 ## What is a task, really?
 
@@ -31,7 +31,7 @@ print("The text is:", task["text"])
 print("Done yet?", task["done"])
 ```
 
-Run that. You get the whole dict, then two values pulled out by name. The keys — `id`, `text`, `done` — are how we reach inside. That's the entire data model for one task. No class, no library. A dict is plenty.
+Run that. You get the whole dict, then two values pulled out by name. The keys - `id`, `text`, `done` - are how we reach inside. That's the entire data model for one task. No class, no library. A dict is plenty.
 
 ## Many tasks: a list of dicts
 
@@ -49,7 +49,7 @@ for task in tasks:
     print(task["id"], "-", task["text"])
 ```
 
-A list of dictionaries is one of the most common shapes in all of Python. Rows from a database, items in a shopping cart, results from an API — they almost always arrive looking like this. Learn it here and you'll recognize it everywhere.
+A list of dictionaries is one of the most common shapes in all of Python. Rows from a database, items in a shopping cart, results from an API - they almost always arrive looking like this. Learn it here and you'll recognize it everywhere.
 
 ## Adding a task
 
@@ -76,7 +76,7 @@ for task in tasks:
 
 Walk through it. We start with an empty list. The first `add_task` sees no tasks, so `new_id` is 1. The next sees a max id of 1, so it picks 2. Then 3. The list grew from nothing to three tasks, each with its own id, and we never had to track a counter ourselves.
 
-Why `max` instead of `len(tasks) + 1`? Because later we'll delete tasks. If you delete task 2 from a list of three, `len` is now 2 — and `len + 1` would hand the next task an id of 3, which already exists. Reading the actual max id keeps every id unique no matter what you've removed. It's a small choice now that saves a real bug later.
+Why `max` instead of `len(tasks) + 1`? Because later we'll delete tasks. If you delete task 2 from a list of three, `len` is now 2 - and `len + 1` would hand the next task an id of 3, which already exists. Reading the actual max id keeps every id unique no matter what you've removed. It's a small choice now that saves a real bug later.
 
 ## Listing what you have
 
@@ -103,7 +103,7 @@ tasks[0]["done"] = True   # pretend we finished the first one
 list_tasks(tasks)
 ```
 
-A couple of things to notice. We tightened `add_task` using `max(..., default=0)` — the `default` kicks in when the list is empty, so the `if/else` disappears and the function is one line of logic. Same behavior, less code.
+A couple of things to notice. We tightened `add_task` using `max(..., default=0)` - the `default` kicks in when the list is empty, so the `if/else` disappears and the function is one line of logic. Same behavior, less code.
 
 In `list_tasks`, the `mark` line is a small conditional: `"x"` if the task is done, a space if not. The `f"..."` string drops the values straight into the text. The result reads like an actual checklist:
 
@@ -112,10 +112,10 @@ In `list_tasks`, the `mark` line is a small conditional: `"x"` if the task is do
 [ ] 2. call the bank
 ```
 
-That bracket-and-number format is something you can scan in a real terminal. We set `tasks[0]["done"] = True` by hand here only to show the marker working — in Phase 3 we'll write a proper function for it.
+That bracket-and-number format is something you can scan in a real terminal. We set `tasks[0]["done"] = True` by hand here only to show the marker working - in Phase 3 we'll write a proper function for it.
 
 ## Where we are
 
 You now have the spine of the app: a task is a dict, the list is a list of dicts, `add_task` grows it, and `list_tasks` shows it. Everything from here builds on this shape.
 
-The catch — and you may have felt it — is that the moment the program ends, the list vanishes. Run it again and you're back to empty. That's the next problem to solve: making your tasks stick around. On to saving them to a file.
+The catch - and you may have felt it - is that the moment the program ends, the list vanishes. Run it again and you're back to empty. That's the next problem to solve: making your tasks stick around. On to saving them to a file.

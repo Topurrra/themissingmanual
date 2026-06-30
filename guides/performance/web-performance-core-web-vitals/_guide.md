@@ -13,9 +13,9 @@ updated: 2026-06-30
 
 # Web Performance and Core Web Vitals
 
-Your page "works." It loads, eventually. But someone — a user, a manager, a Lighthouse report glaring red — says it feels slow, and you're not sure what that means or what to touch first. You open dev tools, see a wall of numbers, and close it again.
+Your page "works." It loads, eventually. But someone - a user, a manager, a Lighthouse report glaring red - says it feels slow, and you're not sure what that means or what to touch first. You open dev tools, see a wall of numbers, and close it again.
 
-Here's the relief: web performance isn't a vague vibe, and it isn't a thousand micro-tricks. It's a small set of things users actually feel, three numbers that measure those feelings, and a short list of levers that move them. This guide gives you the mental model, the everyday tools, and the fixes that actually pay — so the next time a page feels slow, you know exactly where to look.
+Here's the relief: web performance isn't a vague vibe, and it isn't a thousand micro-tricks. It's a small set of things users actually feel, three numbers that measure those feelings, and a short list of levers that move them. This guide gives you the mental model, the everyday tools, and the fixes that actually pay - so the next time a page feels slow, you know exactly where to look.
 
 ## How to read this
 
@@ -25,10 +25,10 @@ Here's the relief: web performance isn't a vague vibe, and it isn't a thousand m
 
 ## The phases
 
-1. **[Perceived Performance and the Three Vitals](01-perceived-performance-and-the-three-vitals.md)** — performance is what the user *feels*, not what a server log says. The three Core Web Vitals — LCP, CLS, and INP — turn those feelings into numbers you can chase.
-2. **[Measuring What Users Feel](02-measuring-what-users-feel.md)** — lab versus field data, why Lighthouse and real users disagree, and how to read the Network tab to see where the time and the bytes actually go.
-3. **[The Levers That Move the Numbers](03-the-levers-that-move-the-numbers.md)** — the fixes that pay: bundle size and code splitting, images, caching and a CDN, render-blocking resources, and sizing media so the layout stops jumping.
+1. **[Perceived Performance and the Three Vitals](01-perceived-performance-and-the-three-vitals.md)** - performance is what the user *feels*, not what a server log says. The three Core Web Vitals - LCP, CLS, and INP - turn those feelings into numbers you can chase.
+2. **[Measuring What Users Feel](02-measuring-what-users-feel.md)** - lab versus field data, why Lighthouse and real users disagree, and how to read the Network tab to see where the time and the bytes actually go.
+3. **[The Levers That Move the Numbers](03-the-levers-that-move-the-numbers.md)** - the fixes that pay: bundle size and code splitting, images, caching and a CDN, render-blocking resources, and sizing media so the layout stops jumping.
 
-> This guide assumes you already know what "fast" means in the abstract — latency, throughput, measure-before-you-optimize. If that's shaky, start with [What "Performance" Even Means](/guides/what-performance-means). For the disciplined loop that turns a measurement into durable speed, see [Optimizing Real Systems](/guides/optimizing-real-systems).
+> This guide assumes you already know what "fast" means in the abstract - latency, throughput, measure-before-you-optimize. If that's shaky, start with [What "Performance" Even Means](/guides/what-performance-means). For the disciplined loop that turns a measurement into durable speed, see [Optimizing Real Systems](/guides/optimizing-real-systems).
 
 [Phase 1: Perceived Performance and the Three Vitals](01-perceived-performance-and-the-three-vitals.md) →

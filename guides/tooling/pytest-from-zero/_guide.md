@@ -22,8 +22,8 @@ Read the phases in order the first time. Phase 1 builds the mental model: what p
 
 ## The phases
 
-1. [The mental model: plain assert and zero-config discovery](01-the-mental-model.md) — what pytest is, how it finds tests, and why `assert` beats `self.assertEqual`.
-2. [The everyday core: fixtures, parametrize, and marks](02-fixtures-parametrize-marks.md) — dependency-injected setup, table-driven tests, and selecting what runs.
-3. [Production reality: conftest, monkeypatch, and the gotchas](03-conftest-monkeypatch-gotchas.md) — sharing fixtures, faking the outside world, and the traps that bite.
+1. [The mental model: plain assert and zero-config discovery](01-the-mental-model.md) - what pytest is, how it finds tests, and why `assert` beats `self.assertEqual`.
+2. [The everyday core: fixtures, parametrize, and marks](02-fixtures-parametrize-marks.md) - dependency-injected setup, table-driven tests, and selecting what runs.
+3. [Production reality: conftest, monkeypatch, and the gotchas](03-conftest-monkeypatch-gotchas.md) - sharing fixtures, faking the outside world, and the traps that bite.
 
 [Phase 1: The mental model: plain assert and zero-config discovery](01-the-mental-model.md) →

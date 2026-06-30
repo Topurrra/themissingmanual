@@ -19,7 +19,7 @@ updated: 2026-06-30
 `GROUP BY` is great at one thing and bad at another. Great: collapsing many rows
 into one total. Bad: keeping the original rows *and* showing a total next to
 each. The moment you want "this expense, and the running total up to and
-including it," `GROUP BY` can't help — it already threw the individual rows away.
+including it," `GROUP BY` can't help - it already threw the individual rows away.
 
 Window functions are the fix. They compute across a set of rows like an
 aggregate does, but they hand the answer back **on every row** instead of
@@ -28,7 +28,7 @@ collapsing them. You keep your detail and get the rolling math too.
 ## The shape of a window function
 
 A window function is an aggregate followed by `OVER (...)`. The `OVER` clause
-defines the "window" — which rows this calculation looks at, and in what order.
+defines the "window" - which rows this calculation looks at, and in what order.
 
 ```
 SUM(amount) OVER (ORDER BY spent_on)
@@ -38,14 +38,14 @@ SUM(amount) OVER (ORDER BY spent_on)
 
 Two pieces inside `OVER` matter most:
 
-- `ORDER BY` — sets the order the window walks through rows. For a running
+- `ORDER BY` - sets the order the window walks through rows. For a running
   total, that's chronological.
-- `PARTITION BY` (optional) — splits the rows into independent groups, and the
+- `PARTITION BY` (optional) - splits the rows into independent groups, and the
   window resets at each group boundary. Think of it as "do this separately per
   category" or "per month."
 
-If you've ever wanted a cumulative column in a spreadsheet — each cell adding
-the one above — that's exactly a `SUM() OVER (ORDER BY ...)`.
+If you've ever wanted a cumulative column in a spreadsheet - each cell adding
+the one above - that's exactly a `SUM() OVER (ORDER BY ...)`.
 
 ## A running total of spending
 
@@ -100,7 +100,7 @@ ORDER BY spent_on, id;
 
 Read the `running_total` column down the page. It starts at the January rent and
 climbs with every expense, ending at your grand total on the last row. Every
-detail row is still there — that's the whole point. You'd never get this from
+detail row is still there - that's the whole point. You'd never get this from
 `GROUP BY`.
 
 Two small but important details:
@@ -115,7 +115,7 @@ Two small but important details:
 ## A running total that resets each month
 
 Add `PARTITION BY` and the window restarts at each boundary. Here's the same
-running total, but reset at the start of every month — useful for "how far into
+running total, but reset at the start of every month - useful for "how far into
 this month's spending am I?"
 
 ```sql runnable
@@ -181,7 +181,7 @@ last month, and by how much?
 
 `LAG` is the tool. It reaches back to a previous row and pulls a value from it.
 `LAG(total)` over months ordered by date means "the total from the row before
-this one" — last month's number, sitting right next to this month's.
+this one" - last month's number, sitting right next to this month's.
 
 The trick is doing it in two steps. First collapse to monthly totals with
 `GROUP BY` (a subquery), then run `LAG` over those monthly rows. Window
@@ -240,7 +240,7 @@ FROM (
 ORDER BY month;
 ```
 
-January's `prev_month` is empty — there's no month before it, so `LAG` returns
+January's `prev_month` is empty - there's no month before it, so `LAG` returns
 nothing, and the subtraction is empty too. That's correct, not a bug: the first
 row has nothing to compare against. February shows last month's total beside
 this month's and the difference between them. Positive `change` means you spent
@@ -249,6 +249,6 @@ more; the February travel and dining pushed it up.
 ## What you can do now
 
 You can keep every detail row and still answer "how much so far?" and "up or
-down from last time?" — two questions `GROUP BY` alone can't touch. In the final
+down from last time?" - two questions `GROUP BY` alone can't touch. In the final
 phase, you'll fold the category breakdown, the share-of-total, and this monthly
 trend into one report query. Onward.

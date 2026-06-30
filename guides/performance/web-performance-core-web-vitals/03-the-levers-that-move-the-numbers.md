@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The Levers That Move the Numbers
 
-You've measured. You know which vital is red and you've seen the heavy resources in the waterfall. Now comes the part everyone wants to skip to — the fixes. The good news is there's no thousand-item checklist. A small number of levers account for the overwhelming majority of real wins, and each one maps to a vital you already understand.
+You've measured. You know which vital is red and you've seen the heavy resources in the waterfall. Now comes the part everyone wants to skip to - the fixes. The good news is there's no thousand-item checklist. A small number of levers account for the overwhelming majority of real wins, and each one maps to a vital you already understand.
 
 The trap here is the same one from [Optimizing Real Systems](/guides/optimizing-real-systems): don't reach for a lever before you've confirmed it's the bottleneck. Shrinking a bundle that was already small, or hand-tuning an image on a page whose problem is the server, is motion without progress. Pull the lever the measurement pointed you at.
 
@@ -31,7 +31,7 @@ Here's the map. Each lever, and the vital it moves:
 
 ## 1. Bundle size and code splitting
 
-JavaScript is the most expensive kind of byte on the web. An image of the same size only gets decoded; a JavaScript bundle has to be downloaded, *parsed*, *compiled*, and *executed* — all on the main thread, the same thread that handles your user's clicks. That's why a fat bundle wrecks INP and drags LCP: while the browser chews through your JS, it can't paint and it can't respond.
+JavaScript is the most expensive kind of byte on the web. An image of the same size only gets decoded; a JavaScript bundle has to be downloaded, *parsed*, *compiled*, and *executed* - all on the main thread, the same thread that handles your user's clicks. That's why a fat bundle wrecks INP and drags LCP: while the browser chews through your JS, it can't paint and it can't respond.
 
 The first move is to **ship less**. Audit what's in the bundle (most bundlers have an analyzer), drop dependencies you don't need, and prefer a small library over a kitchen-sink one. A surprising amount of bundle weight is a date library or a UI kit you use one function from.
 
@@ -47,9 +47,9 @@ The second move is **code splitting**: instead of one giant bundle the user down
    admin.js       ▕████████▏        (most users never load this at all)
 ```
 
-*What just happened:* The home page now ships 80 kB instead of 480 kB, because the checkout and admin code load lazily, only when a user actually goes there. Many users never touch those routes, so that code is work you never do for them — the "do less work" principle, applied to bytes. Less JavaScript up front means faster parsing, a faster first paint (LCP), and a main thread free to handle clicks (INP).
+*What just happened:* The home page now ships 80 kB instead of 480 kB, because the checkout and admin code load lazily, only when a user actually goes there. Many users never touch those routes, so that code is work you never do for them - the "do less work" principle, applied to bytes. Less JavaScript up front means faster parsing, a faster first paint (LCP), and a main thread free to handle clicks (INP).
 
-## 2. Images — usually your LCP element
+## 2. Images - usually your LCP element
 
 On most content pages the largest contentful element is an image: the hero, the product shot, the article header. That means image weight *is* your LCP. The fixes are well-trodden and they stack:
 
@@ -66,15 +66,15 @@ On most content pages the largest contentful element is an image: the hero, the 
    hero.avif (1200px)                       110 kB   ← ~16× smaller, same apparent quality
 ```
 
-*What just happened:* The same hero went from 1.8 MB to roughly 110 kB by resizing it to the size it's actually shown at and switching to a modern format. On a slow connection that's the difference between a multi-second LCP and a fast one — and it's the single change most likely to move the needle on an image-heavy page.
+*What just happened:* The same hero went from 1.8 MB to roughly 110 kB by resizing it to the size it's actually shown at and switching to a modern format. On a slow connection that's the difference between a multi-second LCP and a fast one - and it's the single change most likely to move the needle on an image-heavy page.
 
 ## 3. Caching and a CDN
 
 Two different "where do the bytes come from" wins, and they compound.
 
-**Caching** tells the browser to keep a copy of a resource so the *next* visit doesn't re-download it. You do this with HTTP cache headers (`Cache-Control`). For files that never change — your hashed JS and CSS bundles, images — you can cache them for a long time. The user's second visit, and every page-to-page navigation, loads those from disk instead of the network: effectively zero load time.
+**Caching** tells the browser to keep a copy of a resource so the *next* visit doesn't re-download it. You do this with HTTP cache headers (`Cache-Control`). For files that never change - your hashed JS and CSS bundles, images - you can cache them for a long time. The user's second visit, and every page-to-page navigation, loads those from disk instead of the network: effectively zero load time.
 
-**A CDN** (Content Delivery Network) puts copies of your static files on servers physically close to your users, all over the world. Instead of every byte traveling from your one origin server in, say, Virginia, a user in Tokyo gets it from a Tokyo edge node. Less distance means lower latency, which improves TTFB and LCP — and CDNs cache aggressively, taking load off your origin.
+**A CDN** (Content Delivery Network) puts copies of your static files on servers physically close to your users, all over the world. Instead of every byte traveling from your one origin server in, say, Virginia, a user in Tokyo gets it from a Tokyo edge node. Less distance means lower latency, which improves TTFB and LCP - and CDNs cache aggressively, taking load off your origin.
 
 ```text
    WITHOUT CDN                         WITH CDN
@@ -84,11 +84,11 @@ Two different "where do the bytes come from" wins, and they compound.
                                                         origin (Virginia)
 ```
 
-*What just happened:* The CDN moves the bytes geographically closer, so most requests are answered by a nearby edge node in a few milliseconds instead of crossing an ocean. Caching and a CDN are the cheapest LCP/TTFB wins for a global audience precisely because, like all caching, they delete work rather than speed it up — the request that hits a warm edge cache barely touches your servers at all.
+*What just happened:* The CDN moves the bytes geographically closer, so most requests are answered by a nearby edge node in a few milliseconds instead of crossing an ocean. Caching and a CDN are the cheapest LCP/TTFB wins for a global audience precisely because, like all caching, they delete work rather than speed it up - the request that hits a warm edge cache barely touches your servers at all.
 
 ## 4. Kill render-blocking resources
 
-When the browser parses your HTML and hits a `<link>` to a stylesheet or a synchronous `<script>` in the `<head>`, it can stop and wait — fetching and processing that resource *before* it paints anything. A few of these stacked in the head is a blank screen the user stares at. That's render-blocking, and it's a direct hit to LCP.
+When the browser parses your HTML and hits a `<link>` to a stylesheet or a synchronous `<script>` in the `<head>`, it can stop and wait - fetching and processing that resource *before* it paints anything. A few of these stacked in the head is a blank screen the user stares at. That's render-blocking, and it's a direct hit to LCP.
 
 The fixes:
 
@@ -104,9 +104,9 @@ The fixes:
 <script src="analytics.js" defer></script>
 ```
 
-*What just happened:* Adding `defer` tells the browser it doesn't need this script before showing the page, so the script downloads in the background and runs after the document is parsed. Analytics, chat widgets, and most third-party scripts have no business blocking the first paint — defer them and LCP improves with no visible downside.
+*What just happened:* Adding `defer` tells the browser it doesn't need this script before showing the page, so the script downloads in the background and runs after the document is parsed. Analytics, chat widgets, and most third-party scripts have no business blocking the first paint - defer them and LCP improves with no visible downside.
 
-## 5. Size your media — the CLS fix
+## 5. Size your media - the CLS fix
 
 CLS comes almost entirely from elements that arrive without having reserved their space, so when they appear they shove everything else. The fix is to tell the browser how big they'll be *before* they load, so it holds the space open.
 
@@ -126,13 +126,13 @@ CLS comes almost entirely from elements that arrive without having reserved thei
 
 ## Recap
 
-1. **Bundle size and code splitting** — JS is the most expensive byte; ship less and load the rest on demand. Moves INP and LCP.
-2. **Images** — the hero is usually the LCP element; resize, compress, use AVIF/WebP, and don't lazy-load it. Moves LCP.
-3. **Caching and a CDN** — cache immutable assets and serve from edges near the user; this deletes work rather than speeding it. Moves LCP and TTFB.
-4. **Kill render-blocking resources** — `defer` non-critical scripts and tame head CSS so the browser paints sooner. Moves LCP.
-5. **Size your media** — set width/height and reserve space so nothing jumps. Moves CLS.
+1. **Bundle size and code splitting** - JS is the most expensive byte; ship less and load the rest on demand. Moves INP and LCP.
+2. **Images** - the hero is usually the LCP element; resize, compress, use AVIF/WebP, and don't lazy-load it. Moves LCP.
+3. **Caching and a CDN** - cache immutable assets and serve from edges near the user; this deletes work rather than speeding it. Moves LCP and TTFB.
+4. **Kill render-blocking resources** - `defer` non-critical scripts and tame head CSS so the browser paints sooner. Moves LCP.
+5. **Size your media** - set width/height and reserve space so nothing jumps. Moves CLS.
 
-The throughline is the one from the rest of performance: **measure first, pull the lever the measurement pointed at, then confirm the win in field data.** A page that loads its main content fast, holds still while it does, and responds the instant you touch it — that's not a vibe. It's three numbers you now know how to read and move.
+The throughline is the one from the rest of performance: **measure first, pull the lever the measurement pointed at, then confirm the win in field data.** A page that loads its main content fast, holds still while it does, and responds the instant you touch it - that's not a vibe. It's three numbers you now know how to read and move.
 
 ```quiz
 [
@@ -140,7 +140,7 @@ The throughline is the one from the rest of performance: **measure first, pull t
     "q": "Why is JavaScript considered the most expensive kind of byte for performance, hurting both INP and LCP?",
     "choices": [
       "It's always the largest file on the page",
-      "It must be downloaded, parsed, compiled, and executed on the main thread — the same thread that paints and handles clicks",
+      "It must be downloaded, parsed, compiled, and executed on the main thread - the same thread that paints and handles clicks",
       "Browsers refuse to cache JavaScript",
       "It can't be compressed"
     ],
@@ -156,7 +156,7 @@ The throughline is the one from the rest of performance: **measure first, pull t
       "Removing a render-blocking script in the head"
     ],
     "answer": 1,
-    "explain": "Lazy-loading is for below-the-fold images. Lazy-loading the LCP element delays the very thing LCP measures — load the hero eagerly, even prioritize it."
+    "explain": "Lazy-loading is for below-the-fold images. Lazy-loading the LCP element delays the very thing LCP measures - load the hero eagerly, even prioritize it."
   },
   {
     "q": "Adding width and height attributes to your images primarily improves which vital, and why?",
@@ -167,7 +167,7 @@ The throughline is the one from the rest of performance: **measure first, pull t
       "TTFB, because the server responds sooner"
     ],
     "answer": 2,
-    "explain": "Knowing the dimensions up front lets the browser hold open a correctly-shaped box, so the image fills it without shoving anything — eliminating the layout shift that drives CLS."
+    "explain": "Knowing the dimensions up front lets the browser hold open a correctly-shaped box, so the image fills it without shoving anything - eliminating the layout shift that drives CLS."
   }
 ]
 ```

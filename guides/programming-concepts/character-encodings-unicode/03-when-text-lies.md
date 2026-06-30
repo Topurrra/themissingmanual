@@ -32,7 +32,7 @@ Take what looks like a single emoji: 👍🏽 (thumbs-up with a medium skin tone
   graphemes:         1   (what the user sees and calls "one character")
 ```
 
-*What just happened:* The same visible symbol is 8 bytes, 2 code points, or 1 grapheme depending on which layer you measure. The skin tone is a separate code point that *combines* with the base thumbs-up. A **grapheme** (or "grapheme cluster") is the real "character" a human perceives — and it can be built from several code points stuck together.
+*What just happened:* The same visible symbol is 8 bytes, 2 code points, or 1 grapheme depending on which layer you measure. The skin tone is a separate code point that *combines* with the base thumbs-up. A **grapheme** (or "grapheme cluster") is the real "character" a human perceives - and it can be built from several code points stuck together.
 
 This is not an emoji curiosity. It is fundamental to how Unicode handles accents, scripts, and combining marks. The letter `é` can be stored two completely different ways:
 
@@ -45,7 +45,7 @@ This is not an emoji curiosity. It is fundamental to how Unicode handles accents
 
 ## Why string length lies
 
-Most programming languages report string length in code points or, worse, in their internal code units — not in graphemes. So the number your code reports and the number a user would count diverge the moment emoji or combining marks appear.
+Most programming languages report string length in code points or, worse, in their internal code units - not in graphemes. So the number your code reports and the number a user would count diverge the moment emoji or combining marks appear.
 
 ```python runnable
 s = "👍🏽"
@@ -58,11 +58,11 @@ print("bytes:", len(s.encode("utf-8")))
 
 > "How long is this string?" is an ambiguous question. Always answer the real one: bytes (for storage and network), code points (for Unicode processing), or graphemes (for anything a human reads). Picking the wrong one silently is how you ship a bug.
 
-This three-layer model — bytes underneath, code points in the middle, graphemes on top — is the complete picture. If you have read the [/guides/data-structures-explained](/guides/data-structures-explained) guide, it is the same lesson as arrays versus the things stored in them: the container's count and the meaningful count are different questions.
+This three-layer model - bytes underneath, code points in the middle, graphemes on top - is the complete picture. If you have read the [/guides/data-structures-explained](/guides/data-structures-explained) guide, it is the same lesson as arrays versus the things stored in them: the container's count and the meaningful count are different questions.
 
 ## The byte-order mark: an invisible saboteur
 
-There is one more gremlin that produces "impossible" bugs: the **byte-order mark**, or BOM. It is an optional invisible marker (the code point U+FEFF) that some tools — Windows Notepad and Excel are the usual culprits — stick at the very front of a UTF-8 file. In UTF-8 it is the three bytes `[239, 187, 191]`.
+There is one more gremlin that produces "impossible" bugs: the **byte-order mark**, or BOM. It is an optional invisible marker (the code point U+FEFF) that some tools - Windows Notepad and Excel are the usual culprits - stick at the very front of a UTF-8 file. In UTF-8 it is the three bytes `[239, 187, 191]`.
 
 ```text
 file saved with BOM:
@@ -72,11 +72,11 @@ file saved with BOM:
 Naive reader sees the first character as:  "{   (with an invisible  before it)
 ```
 
-*What just happened:* The reader, not knowing about the BOM, treats those three leading bytes as part of the content. Your JSON parser chokes because the file does not "start with `{`" — it starts with an invisible character. Your config key `name` is silently stored as `name`. Two files that look byte-for-byte identical in your editor behave differently because one has three ghost bytes at the front.
+*What just happened:* The reader, not knowing about the BOM, treats those three leading bytes as part of the content. Your JSON parser chokes because the file does not "start with `{`" - it starts with an invisible character. Your config key `name` is silently stored as `name`. Two files that look byte-for-byte identical in your editor behave differently because one has three ghost bytes at the front.
 
-UTF-8 does not need a BOM (recall from Phase 2 that UTF-8 has no endianness to mark), so the cleanest rule is: **write UTF-8 without a BOM, and strip a BOM when reading if one sneaks in.** When a file mysteriously fails to parse on the very first character — especially a file that round-tripped through Excel or Notepad — check the first three bytes before you suspect anything else.
+UTF-8 does not need a BOM (recall from Phase 2 that UTF-8 has no endianness to mark), so the cleanest rule is: **write UTF-8 without a BOM, and strip a BOM when reading if one sneaks in.** When a file mysteriously fails to parse on the very first character - especially a file that round-tripped through Excel or Notepad - check the first three bytes before you suspect anything else.
 
-For builders: your debugging toolkit for any "weird text" bug is now three questions, asked in order. (1) *Wrong decoder?* — if whole runs of text are garbled, it is a Phase 1 mojibake mismatch; find who chose the encoding. (2) *Length surprise?* — if counts or comparisons are off near accents or emoji, you are confusing bytes, code points, and graphemes; pick the layer you actually mean. (3) *Fails on the first byte?* — suspect a BOM. Those three cover the overwhelming majority of text bugs you will ever meet.
+For builders: your debugging toolkit for any "weird text" bug is now three questions, asked in order. (1) *Wrong decoder?* - if whole runs of text are garbled, it is a Phase 1 mojibake mismatch; find who chose the encoding. (2) *Length surprise?* - if counts or comparisons are off near accents or emoji, you are confusing bytes, code points, and graphemes; pick the layer you actually mean. (3) *Fails on the first byte?* - suspect a BOM. Those three cover the overwhelming majority of text bugs you will ever meet.
 
 ```quiz
 [
@@ -84,7 +84,7 @@ For builders: your debugging toolkit for any "weird text" bug is now three quest
     "q": "A user sees 👍🏽 as one character. Why does len() in many languages report 2?",
     "choices": ["The function is buggy", "It counts code points, and this emoji is a base character plus a separate skin-tone modifier (2 code points)", "It counts bytes", "Emoji always count as 2 for billing"],
     "answer": 1,
-    "explain": "Length functions usually count code points (or internal code units), not graphemes. This emoji is 2 code points combined into 1 grapheme — the single symbol the user perceives."
+    "explain": "Length functions usually count code points (or internal code units), not graphemes. This emoji is 2 code points combined into 1 grapheme - the single symbol the user perceives."
   },
   {
     "q": "Two strings both display as \"é\" but a == comparison says they are different. What is the most likely cause?",
@@ -94,7 +94,7 @@ For builders: your debugging toolkit for any "weird text" bug is now three quest
   },
   {
     "q": "A JSON file fails to parse, complaining about the very first character, even though it clearly starts with {. What should you suspect first?",
-    "choices": ["The JSON is invalid", "A byte-order mark (BOM) — three invisible bytes prepended by an editor like Notepad or Excel", "The disk is full", "JSON does not support objects"],
+    "choices": ["The JSON is invalid", "A byte-order mark (BOM) - three invisible bytes prepended by an editor like Notepad or Excel", "The disk is full", "JSON does not support objects"],
     "answer": 1,
     "explain": "A BOM (U+FEFF, the bytes 239 187 191 in UTF-8) is invisible but sits before your {. A naive parser treats it as content and fails on the first character. Write UTF-8 without a BOM."
   }

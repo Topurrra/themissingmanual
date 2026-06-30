@@ -20,7 +20,7 @@ updated: 2026-06-30
 
 You'll spend almost all your Prisma time in one short loop: change the schema, make a migration, keep coding. There are really only two commands you need to internalize, and the most common mistake is using the wrong one in the wrong place. So let's nail down which is which.
 
-## `migrate dev` — your machine, your loop
+## `migrate dev` - your machine, your loop
 
 On your laptop, you run `prisma migrate dev`. It does three things in one shot, and understanding all three is what makes it feel less like magic:
 
@@ -39,7 +39,7 @@ The following migration(s) have been created and applied:
 
 *What just happened:* three steps, in order. (1) Prisma diffed your edited `schema.prisma` against the recorded migration history and wrote a new `migration.sql`. (2) It applied that SQL to your dev database. (3) It regenerated the Prisma Client so your TypeScript types match the new schema immediately. That third step is why your editor knows about the new column the moment the command finishes.
 
-The `--name` is a human label, not a requirement — leave it off and Prisma will prompt you for one. Pick names that read like a changelog: `add_user_bio`, `make_email_required`, `drop_legacy_orders`.
+The `--name` is a human label, not a requirement - leave it off and Prisma will prompt you for one. Pick names that read like a changelog: `add_user_bio`, `make_email_required`, `drop_legacy_orders`.
 
 > `migrate dev` is for development databases only. It is allowed to be destructive and will reset your dev database if history and database have diverged. Pointing it at production is the classic, painful mistake. Production gets `migrate deploy`, which we'll cover next.
 
@@ -48,12 +48,12 @@ The `--name` is a human label, not a requirement — leave it off and Prisma wil
 Here's the loop, start to finish, for adding a field:
 
 ```bash
-# 1. Edit prisma/schema.prisma — add `bio String?` to model User
+# 1. Edit prisma/schema.prisma - add `bio String?` to model User
 
 # 2. Create + apply the migration, regenerate the client
 npx prisma migrate dev --name add_user_bio
 
-# 3. Use the new field in code — types already updated
+# 3. Use the new field in code - types already updated
 #    await prisma.user.update({ data: { bio: "..." } })
 
 # 4. Commit the schema AND the new migration folder together
@@ -61,9 +61,9 @@ git add prisma/schema.prisma prisma/migrations
 git commit -m "Add bio to User"
 ```
 
-*What just happened:* the schema change and the generated migration travel together in one commit. This is non-negotiable — a teammate who pulls your branch runs the same migration and lands on the same database shape. If you commit the schema but forget the migration folder, their database and yours silently diverge.
+*What just happened:* the schema change and the generated migration travel together in one commit. This is non-negotiable - a teammate who pulls your branch runs the same migration and lands on the same database shape. If you commit the schema but forget the migration folder, their database and yours silently diverge.
 
-## `migrate deploy` — every other environment
+## `migrate deploy` - every other environment
 
 In CI, staging, and production, you never generate migrations. They already exist in your repo. You only *apply* the ones that haven't run yet:
 
@@ -77,7 +77,7 @@ Applying migration `20260630131500_add_user_bio`
 All migrations have been successfully applied.
 ```
 
-*What just happened:* `migrate deploy` looked at the database's record of which migrations it has already run, found the ones it hasn't, and applied them in order. It never creates a migration, never prompts, never resets anything. It is safe to run on every deploy — if there's nothing new, it does nothing.
+*What just happened:* `migrate deploy` looked at the database's record of which migrations it has already run, found the ones it hasn't, and applied them in order. It never creates a migration, never prompts, never resets anything. It is safe to run on every deploy - if there's nothing new, it does nothing.
 
 How does the database know what it has run? Prisma keeps a bookkeeping table called `_prisma_migrations`:
 
@@ -97,7 +97,7 @@ SELECT migration_name, finished_at FROM "_prisma_migrations";
 ```text
                   migrate dev            migrate deploy
   Where           your laptop            CI / staging / prod
-  Creates SQL?    yes                    no — only applies existing
+  Creates SQL?    yes                    no - only applies existing
   Applies SQL?    yes                    yes
   Regen client?   yes                    no
   Can reset DB?   yes (destructive)      no, never
@@ -116,7 +116,7 @@ A typical deploy pipeline runs `npx prisma migrate deploy` as a release step *be
     "q": "Which command do you run on production to apply migrations?",
     "choices": ["prisma migrate dev", "prisma migrate deploy", "prisma db push", "prisma generate"],
     "answer": 1,
-    "explain": "migrate deploy only applies existing migrations, never creates or resets — safe for prod. migrate dev is for your laptop."
+    "explain": "migrate deploy only applies existing migrations, never creates or resets - safe for prod. migrate dev is for your laptop."
   },
   {
     "q": "What are the THREE things `prisma migrate dev` does in one run?",

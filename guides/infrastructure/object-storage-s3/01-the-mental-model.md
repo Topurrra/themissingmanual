@@ -2,7 +2,7 @@
 title: "What it actually is: a giant key-to-blob map"
 guide: object-storage-s3
 phase: 1
-summary: "Buckets, keys, and signed URLs — how cloud object storage really works, what it is good and bad at, and the public-bucket leak that makes the news."
+summary: "Buckets, keys, and signed URLs - how cloud object storage really works, what it is good and bad at, and the public-bucket leak that makes the news."
 tags: [object-storage, s3, cloud, buckets, infrastructure]
 difficulty: intermediate
 synonyms: [what is s3, how does object storage work, s3 bucket explained, signed url, presigned url, s3 public bucket leak, store files in the cloud]
@@ -27,13 +27,13 @@ KEY                                  ->  VALUE (the object's bytes + metadata)
 "invoices/2026/06/inv-90021.pdf"     ->  <the PDF bytes...>
 ```
 
-*What just happened:* every object is found by its exact key and nothing else. There is no "open the avatars folder and look inside." There is only "fetch the object whose key is `avatars/u-1843/profile.jpg`." If you think of it as a Python dict or a JavaScript object — `store[key]` returns the bytes — you already understand the core.
+*What just happened:* every object is found by its exact key and nothing else. There is no "open the avatars folder and look inside." There is only "fetch the object whose key is `avatars/u-1843/profile.jpg`." If you think of it as a Python dict or a JavaScript object - `store[key]` returns the bytes - you already understand the core.
 
 ## The slashes are a lie your eyes tell you
 
 This is the single most important thing in the guide, so read it twice: **the `/` characters in a key are part of the key string. They are not directories.**
 
-The key `invoices/2026/06/inv-90021.pdf` is one flat string. The storage system does not create a folder called `invoices`, then `2026` inside it, and so on. There is no tree. The console *renders* a fake folder view by splitting keys on `/` so your brain has something familiar to click — but underneath, it's a flat list of strings.
+The key `invoices/2026/06/inv-90021.pdf` is one flat string. The storage system does not create a folder called `invoices`, then `2026` inside it, and so on. There is no tree. The console *renders* a fake folder view by splitting keys on `/` so your brain has something familiar to click - but underneath, it's a flat list of strings.
 
 ```text
 What you see in the console        What actually exists (flat list of keys)
@@ -44,7 +44,7 @@ What you see in the console        What actually exists (flat list of keys)
          📄 inv-90021.pdf
 ```
 
-*What just happened:* the console grouped three flat strings by their `/` segments and drew folders, but no folder object exists anywhere. This is why you can't "rename a folder" — there's nothing to rename. To "move a folder," you copy every object to new keys and delete the old ones. There's no atomic directory rename because there's no directory.
+*What just happened:* the console grouped three flat strings by their `/` segments and drew folders, but no folder object exists anywhere. This is why you can't "rename a folder" - there's nothing to rename. To "move a folder," you copy every object to new keys and delete the old ones. There's no atomic directory rename because there's no directory.
 
 > The technical term for the `/`-grouped view is a **prefix**. When a tool says "list objects with prefix `invoices/2026/`," it means "give me every key that starts with that string." Same idea as autocomplete, not folder navigation.
 
@@ -64,14 +64,14 @@ key:     avatars/u-1843/profile.jpg
 Throwing away the filesystem buys three things that matter enormously at scale:
 
 - **It scales almost without limit.** There's no directory tree to lock, no inode table to grow, no single disk to fill. A key is a string in a distributed index, and the bytes get spread across many machines. You can store a handful of files or trillions; the model doesn't change.
-- **It's cheap.** Because it's dumb and flat, the bytes can sit on commodity disks in bulk, and providers charge a small amount per gigabyte per month. Storing a terabyte costs roughly the price of a sandwich per month at standard tiers — far less than the equivalent always-on server disk.
-- **It's extremely durable.** Each object is copied across multiple machines and often multiple buildings automatically. Providers quote durability like "eleven nines" (99.999999999%) for their standard class — a qualitative way of saying *they expect to essentially never lose your object*. You don't manage the copies; that's the deal.
+- **It's cheap.** Because it's dumb and flat, the bytes can sit on commodity disks in bulk, and providers charge a small amount per gigabyte per month. Storing a terabyte costs roughly the price of a sandwich per month at standard tiers - far less than the equivalent always-on server disk.
+- **It's extremely durable.** Each object is copied across multiple machines and often multiple buildings automatically. Providers quote durability like "eleven nines" (99.999999999%) for their standard class - a qualitative way of saying *they expect to essentially never lose your object*. You don't manage the copies; that's the deal.
 
 The price you pay for all that is the subject of phase 3: you give up in-place edits, instant directory operations, and the low latency of a local disk. For storing whole files you rarely change, that trade is a steal. For a database's hot files, it's a disaster.
 
 ## Where this fits
 
-A regular server keeps your files on its own disk — fast, but it fills up and lives or dies with that one machine. (If "what a server even is" is fuzzy, see /guides/what-a-server-is.) Object storage is the cloud's answer to "I have a lot of files and I don't want to babysit disks." It's one of the foundational building blocks every cloud platform offers, alongside compute and databases — see /guides/cloud-platforms-explained for the bigger map.
+A regular server keeps your files on its own disk - fast, but it fills up and lives or dies with that one machine. (If "what a server even is" is fuzzy, see /guides/what-a-server-is.) Object storage is the cloud's answer to "I have a lot of files and I don't want to babysit disks." It's one of the foundational building blocks every cloud platform offers, alongside compute and databases - see /guides/cloud-platforms-explained for the bigger map.
 
 For builders: the next time you reach for "save the uploaded file to `./uploads/`," pause. That works until you run a second server, or the box reboots, or the disk fills. Object storage is the standard home for user uploads precisely because it's not tied to any one machine.
 
@@ -103,7 +103,7 @@ For builders: the next time you reach for "save the uploaded file to `./uploads/
     "q": "Why can't you cheaply rename a 'folder' in object storage?",
     "choices": [
       "Renames require admin permissions you rarely have",
-      "There is no folder — you must copy every object to new keys and delete the old ones",
+      "There is no folder - you must copy every object to new keys and delete the old ones",
       "The provider charges a large fee per rename",
       "Folder names are immutable by law"
     ],

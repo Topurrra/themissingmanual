@@ -13,21 +13,21 @@ updated: 2026-06-19
 
 # Async/Await & the Event Loop
 
-You've written `await` because the tutorial told you to, and the code worked — most of the time. Then one day a function returned `Promise { <pending> }` instead of the value you wanted, or a missing `await` let the next line run too early, or someone said "don't block the event loop" and you nodded along without really knowing what the event loop *is*. Async code has a way of working until it suddenly doesn't, and then it feels like magic that turned on you.
+You've written `await` because the tutorial told you to, and the code worked - most of the time. Then one day a function returned `Promise { <pending> }` instead of the value you wanted, or a missing `await` let the next line run too early, or someone said "don't block the event loop" and you nodded along without really knowing what the event loop *is*. Async code has a way of working until it suddenly doesn't, and then it feels like magic that turned on you.
 
-It isn't magic. Async is one of the most reasoned-about ideas in programming, built on a problem so ordinary you've felt it yourself: waiting is slow, and a worker who stands idle while waiting is a worker wasted. This guide builds the mental model from the ground up — the problem first, then the engine that solves it, then the syntax that finally makes it readable. By the end, `await` won't be a spell you cast. It'll be a thing you can reason about.
+It isn't magic. Async is one of the most reasoned-about ideas in programming, built on a problem so ordinary you've felt it yourself: waiting is slow, and a worker who stands idle while waiting is a worker wasted. This guide builds the mental model from the ground up - the problem first, then the engine that solves it, then the syntax that finally makes it readable. By the end, `await` won't be a spell you cast. It'll be a thing you can reason about.
 
-We'll use JavaScript for the examples because it has the clearest, most-visible async model — but the underlying idea (waiting is wasteful; let the worker do other things) is universal. Python's `asyncio`, Rust's `async`/`.await`, C#'s `async`/`await`, and Kotlin's coroutines are all the same idea wearing different clothes.
+We'll use JavaScript for the examples because it has the clearest, most-visible async model - but the underlying idea (waiting is wasteful; let the worker do other things) is universal. Python's `asyncio`, Rust's `async`/`.await`, C#'s `async`/`await`, and Kotlin's coroutines are all the same idea wearing different clothes.
 
 ## How to read this
 - **Want the one-sentence version?** Async exists so a single worker doesn't sit frozen while waiting on the network, disk, or a timer. Read [Phase 1](01-why-async-exists.md) and you'll have the whole point.
 - **Want it to finally make sense?** Read in order. Each phase builds on the last: the *problem* (Phase 1), the *engine* (Phase 2), then the *syntax* (Phase 3).
 
 ## The phases
-1. **[Why Async Exists](01-why-async-exists.md)** — the problem nobody states plainly: a huge fraction of programming is *waiting*. We compare blocking (stop and wait) against non-blocking (start it, do other work, come back) with a restaurant-waiter analogy and a timeline you can see.
-2. **[The Event Loop](02-the-event-loop.md)** — the engine that makes non-blocking work: one thread running your code, plus a queue of "things ready to continue." Why "single-threaded but concurrent" isn't a contradiction, and what "don't block the event loop" actually means.
-3. **[Promises & async/await](03-promises-and-async-await.md)** — how the syntax maps to the model. A promise is "a value that isn't here yet"; `await` means "pause *this* function until it's ready, without freezing the loop." Annotated before/after, plus the two gotchas that bite everyone.
+1. **[Why Async Exists](01-why-async-exists.md)** - the problem nobody states plainly: a huge fraction of programming is *waiting*. We compare blocking (stop and wait) against non-blocking (start it, do other work, come back) with a restaurant-waiter analogy and a timeline you can see.
+2. **[The Event Loop](02-the-event-loop.md)** - the engine that makes non-blocking work: one thread running your code, plus a queue of "things ready to continue." Why "single-threaded but concurrent" isn't a contradiction, and what "don't block the event loop" actually means.
+3. **[Promises & async/await](03-promises-and-async-await.md)** - how the syntax maps to the model. A promise is "a value that isn't here yet"; `await` means "pause *this* function until it's ready, without freezing the loop." Annotated before/after, plus the two gotchas that bite everyone.
 
-> This guide is about the *model* — why async exists and how to read it. Deep operational topics (cancellation, backpressure, parallelism across multiple cores, async streams) are deliberately deferred to a follow-up so this one stays a clean mental model rather than a reference manual.
+> This guide is about the *model* - why async exists and how to read it. Deep operational topics (cancellation, backpressure, parallelism across multiple cores, async streams) are deliberately deferred to a follow-up so this one stays a clean mental model rather than a reference manual.
 
 Related reading: [What Happens When Code Runs](/guides/what-happens-when-code-runs) · [Processes, Memory & the CPU](/guides/processes-memory-and-cpu)

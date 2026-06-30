@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Why It's Fast, and Where It Bites
 
-The first time you run a Gradle build it's slow — minutes, maybe. The second time, if you changed nothing, it finishes in under a second. That isn't magic and it isn't caching gone wrong. It's the core reason teams tolerate Gradle's complexity: it works hard to never redo work it has already done. This phase explains how that speed actually works, the one file that makes your builds reproducible everywhere, and the gotchas that turn a fast build slow.
+The first time you run a Gradle build it's slow - minutes, maybe. The second time, if you changed nothing, it finishes in under a second. That isn't magic and it isn't caching gone wrong. It's the core reason teams tolerate Gradle's complexity: it works hard to never redo work it has already done. This phase explains how that speed actually works, the one file that makes your builds reproducible everywhere, and the gotchas that turn a fast build slow.
 
 ## Up-to-date checks: the foundation of speed
 
@@ -36,15 +36,15 @@ BUILD SUCCESSFUL in 0.8s
 Up-to-date checks help *one* checkout over time. The **build cache** goes further: it stores task outputs keyed by a hash of their inputs, so a result computed once can be reused by a *different* checkout, a *different* branch, or a *different* machine.
 
 ```
-# gradle.properties — turn on the build cache for the project
+# gradle.properties - turn on the build cache for the project
 org.gradle.caching=true
 ```
 
-*What just happened:* With caching enabled, when Gradle is about to run a task it computes the input hash and checks the cache first. A hit means it pulls the prior output instead of recomputing. Switch to a teammate's branch and back, and the tasks you already built come straight from the local cache. Teams point this at a shared remote cache so CI builds and developer laptops reuse each other's compiled output — the first person to compile a given input pays the cost, everyone else gets it free.
+*What just happened:* With caching enabled, when Gradle is about to run a task it computes the input hash and checks the cache first. A hit means it pulls the prior output instead of recomputing. Switch to a teammate's branch and back, and the tasks you already built come straight from the local cache. Teams point this at a shared remote cache so CI builds and developer laptops reuse each other's compiled output - the first person to compile a given input pays the cost, everyone else gets it free.
 
 > The mental model: up-to-date checks ask "did *I* already do this?" The build cache asks "did *anyone* already do this?" Same input hash, same output, no reason to recompute.
 
-For a task to be cacheable, its inputs and outputs must be fully declared and it must be deterministic — same inputs always produce the same output. A task that reads the system clock or a random value breaks this, which is a classic cause of a build that "should be cached but never is."
+For a task to be cacheable, its inputs and outputs must be fully declared and it must be deterministic - same inputs always produce the same output. A task that reads the system clock or a random value breaks this, which is a classic cause of a build that "should be cached but never is."
 
 ## The wrapper: the file that makes "works on my machine" true
 
@@ -63,7 +63,7 @@ gradle/wrapper/
 distributionUrl=https\://services.gradle.org/distributions/gradle-8.7-bin.zip
 ```
 
-*What just happened:* The wrapper properties file pins the exact Gradle version this project uses. When you run `./gradlew build`, the wrapper script reads that URL, downloads that exact Gradle version if it isn't already present, and runs your build with it. Nobody has to install Gradle by hand, and everybody — your laptop, a new hire, the CI server — uses the identical version. This is why the rule is **always run `./gradlew`, never a globally installed `gradle`**. The wrapper files belong in version control; commit them.
+*What just happened:* The wrapper properties file pins the exact Gradle version this project uses. When you run `./gradlew build`, the wrapper script reads that URL, downloads that exact Gradle version if it isn't already present, and runs your build with it. Nobody has to install Gradle by hand, and everybody - your laptop, a new hire, the CI server - uses the identical version. This is why the rule is **always run `./gradlew`, never a globally installed `gradle`**. The wrapper files belong in version control; commit them.
 
 To move the whole team to a new Gradle version, you change it in one place:
 
@@ -73,17 +73,17 @@ $ git add gradle/wrapper gradlew gradlew.bat
 $ git commit -m "Bump Gradle wrapper to 8.8"
 ```
 
-*What just happened:* The `wrapper` task rewrote the properties file (and refreshed the scripts) to point at 8.8. You commit the change, and the next time any teammate runs `./gradlew`, they transparently get 8.8. One commit migrates the entire team — no "please install Gradle X" message in the group chat.
+*What just happened:* The `wrapper` task rewrote the properties file (and refreshed the scripts) to point at 8.8. You commit the change, and the next time any teammate runs `./gradlew`, they transparently get 8.8. One commit migrates the entire team - no "please install Gradle X" message in the group chat.
 
 ## Where it bites: the real gotchas
 
 Gradle's flexibility is also its sharpest edge. The same "it's all code" power that lets you do anything lets you do anything *wrong*.
 
-**Configuration-phase work.** As covered in Phase 1, code in a bare task body runs on *every* build during configuration. Put an expensive operation there — a network call, a file scan — and every single build pays for it, even `./gradlew help`. Symptom: builds feel slow even when nothing changed. Fix: move real work into `doLast` or a proper task action.
+**Configuration-phase work.** As covered in Phase 1, code in a bare task body runs on *every* build during configuration. Put an expensive operation there - a network call, a file scan - and every single build pays for it, even `./gradlew help`. Symptom: builds feel slow even when nothing changed. Fix: move real work into `doLast` or a proper task action.
 
-**Cache misses from undeclared inputs.** If a task reads a file it didn't declare as an input, Gradle can't see the change and may wrongly report `UP-TO-DATE` — or, if the task is non-deterministic, never cache at all. Symptom: stale outputs, or a task that always reruns. Fix: declare every input and output honestly.
+**Cache misses from undeclared inputs.** If a task reads a file it didn't declare as an input, Gradle can't see the change and may wrongly report `UP-TO-DATE` - or, if the task is non-deterministic, never cache at all. Symptom: stale outputs, or a task that always reruns. Fix: declare every input and output honestly.
 
-**Reaching for `clean` reflexively.** Coming from other tools, people run `./gradlew clean build` out of habit. But `clean` deletes the build directory, which throws away exactly the up-to-date state that makes Gradle fast — you've forced a full rebuild. Use `clean` only when you genuinely suspect corrupted output, not as a ritual.
+**Reaching for `clean` reflexively.** Coming from other tools, people run `./gradlew clean build` out of habit. But `clean` deletes the build directory, which throws away exactly the up-to-date state that makes Gradle fast - you've forced a full rebuild. Use `clean` only when you genuinely suspect corrupted output, not as a ritual.
 
 ```console
 $ ./gradlew clean build     # almost always slower than you want
@@ -96,7 +96,7 @@ $ ./gradlew build           # let incremental builds do their job
 
 ## In the wild
 
-A team's build went from forty seconds to four after one change: someone had a JSON config being parsed in a bare `build.gradle` body, so it reparsed on every invocation of every task. Moving it into the task that needed it fixed the configuration-phase tax. The lesson generalizes — when a Gradle build is slow, suspect the configuration phase and undeclared inputs before you suspect Gradle itself. The graph (Phase 1) and `--dry-run` are still your best diagnostic tools. For shipping the artifacts you build, the broader release picture lives over at [/guides/build-and-release-basics](/guides/build-and-release-basics).
+A team's build went from forty seconds to four after one change: someone had a JSON config being parsed in a bare `build.gradle` body, so it reparsed on every invocation of every task. Moving it into the task that needed it fixed the configuration-phase tax. The lesson generalizes - when a Gradle build is slow, suspect the configuration phase and undeclared inputs before you suspect Gradle itself. The graph (Phase 1) and `--dry-run` are still your best diagnostic tools. For shipping the artifacts you build, the broader release picture lives over at [/guides/build-and-release-basics](/guides/build-and-release-basics).
 
 ```quiz
 [

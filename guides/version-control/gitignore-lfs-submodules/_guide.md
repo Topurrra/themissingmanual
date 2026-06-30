@@ -13,15 +13,15 @@ updated: 2026-06-30
 
 # gitignore, LFS, and Submodules
 
-Your repo should hold your work and nothing else. But somehow it keeps filling up with junk: a `node_modules/` folder the size of a small planet, build output, an `.env` file with a live API key in it, a 2GB demo video that makes every clone crawl. And then there's the submodule — that nested repo someone added that now shows up as a confusing single line in your diff and dumps you into "detached HEAD" the moment you `cd` into it.
+Your repo should hold your work and nothing else. But somehow it keeps filling up with junk: a `node_modules/` folder the size of a small planet, build output, an `.env` file with a live API key in it, a 2GB demo video that makes every clone crawl. And then there's the submodule - that nested repo someone added that now shows up as a confusing single line in your diff and dumps you into "detached HEAD" the moment you `cd` into it.
 
 This guide is about the three tools that draw the line between *your work* and *everything else*: the ignore file (what Git pretends not to see), Git LFS (how to version huge binaries without bloating history), and submodules (a repo inside a repo, with all the pain that implies). By the end you'll know why a file you ignored *still* shows up, how to get a leaked secret out, and when a submodule is the right call versus a trap.
 
 ## How to read this
 
-Read the phases in order — each builds on the last. Phase 1 gives you the mental model for all three (what Git is actually tracking, and why "ignore" is narrower than you think). Phase 2 is the everyday core: writing ignore patterns that work, untracking files, and reaching for LFS when a binary is too big. Phase 3 is where it bites: leaked secrets, submodule detached-HEAD pain, and knowing when to walk away from a submodule entirely.
+Read the phases in order - each builds on the last. Phase 1 gives you the mental model for all three (what Git is actually tracking, and why "ignore" is narrower than you think). Phase 2 is the everyday core: writing ignore patterns that work, untracking files, and reaching for LFS when a binary is too big. Phase 3 is where it bites: leaked secrets, submodule detached-HEAD pain, and knowing when to walk away from a submodule entirely.
 
-If you're new to how Git tracks files at all, skim [/guides/git-from-zero](/guides/git-from-zero) first — this guide assumes you've committed before.
+If you're new to how Git tracks files at all, skim [/guides/git-from-zero](/guides/git-from-zero) first - this guide assumes you've committed before.
 
 ## The phases
 

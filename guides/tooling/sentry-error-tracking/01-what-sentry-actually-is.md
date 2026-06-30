@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # What Sentry actually is
 
-Here is the reality Sentry is built for. Something throws an exception in production. Maybe a user sees a white screen, maybe an API returns a 500, maybe a background job dies quietly and nobody notices for a week. The information you need to fix it — the type of error, the file and line, the values that caused it, what the user did right before — all exists for a fraction of a second and then it's gone. Your logs might have caught a sliver of it, if you happened to log the right thing, and if you can find it among ten thousand other lines.
+Here is the reality Sentry is built for. Something throws an exception in production. Maybe a user sees a white screen, maybe an API returns a 500, maybe a background job dies quietly and nobody notices for a week. The information you need to fix it - the type of error, the file and line, the values that caused it, what the user did right before - all exists for a fraction of a second and then it's gone. Your logs might have caught a sliver of it, if you happened to log the right thing, and if you can find it among ten thousand other lines.
 
 Sentry's whole job is to grab that moment and keep it. When an exception is thrown, Sentry's SDK catches it, packages up everything around it, and sends it to a server you can search. You stop asking users "what were you doing?" because Sentry already knows.
 
@@ -38,15 +38,15 @@ AttributeError: 'NoneType' object has no attribute 'email'
   10 breadcrumbs leading up to the crash
 ```
 
-*What just happened:* the same failure now comes with the exact function and line, the variable that was `None`, the deploy it happened on, the request that triggered it, and a trail of what led there. You didn't write any of that by hand — the SDK collected it automatically when the exception bubbled up.
+*What just happened:* the same failure now comes with the exact function and line, the variable that was `None`, the deploy it happened on, the request that triggered it, and a trail of what led there. You didn't write any of that by hand - the SDK collected it automatically when the exception bubbled up.
 
-If reading a stack trace still feels like guesswork, the [reading-a-stack-trace](/guides/reading-a-stack-trace) guide is worth a detour — Sentry shows you traces all day, and they only help if you can read them.
+If reading a stack trace still feels like guesswork, the [reading-a-stack-trace](/guides/reading-a-stack-trace) guide is worth a detour - Sentry shows you traces all day, and they only help if you can read them.
 
 ## Events get grouped into issues
 
 If one bad deploy crashes for ten thousand users, you do not want ten thousand notifications. You want one: "this is broken, it's affecting ten thousand people."
 
-That is the difference between an **event** and an **issue**. An event is a single occurrence — one crash, one user, one moment. An **issue** is a group of events that Sentry decided are the same bug.
+That is the difference between an **event** and an **issue**. An event is a single occurrence - one crash, one user, one moment. An **issue** is a group of events that Sentry decided are the same bug.
 
 ```text
 Issue:  AttributeError: 'NoneType' object has no attribute 'email'
@@ -62,13 +62,13 @@ Events inside it:
 
 *What just happened:* twelve thousand individual crashes collapsed into one issue you can read, assign, and resolve once. The event count tells you severity; the user count tells you blast radius.
 
-How does Sentry decide two events are "the same"? It computes a **fingerprint** — by default, derived from the exception type and the top frames of the stack trace. Same error type thrown from the same place becomes the same issue. This is the most important idea in the tool: get fingerprinting right and your dashboard is a clean list of distinct bugs; get it wrong and one bug splinters into hundreds of issues, or hundreds of bugs collapse into one. Phase 3 covers how to steer it.
+How does Sentry decide two events are "the same"? It computes a **fingerprint** - by default, derived from the exception type and the top frames of the stack trace. Same error type thrown from the same place becomes the same issue. This is the most important idea in the tool: get fingerprinting right and your dashboard is a clean list of distinct bugs; get it wrong and one bug splinters into hundreds of issues, or hundreds of bugs collapse into one. Phase 3 covers how to steer it.
 
-> Issues have a lifecycle, not a delete button. You **resolve** an issue when you've shipped a fix. If a matching event arrives after that, Sentry **regresses** it — reopens it and flags that your fix didn't hold. That regression signal is one of the most useful things Sentry does, and you only get it because issues persist instead of being cleared like logs.
+> Issues have a lifecycle, not a delete button. You **resolve** an issue when you've shipped a fix. If a matching event arrives after that, Sentry **regresses** it - reopens it and flags that your fix didn't hold. That regression signal is one of the most useful things Sentry does, and you only get it because issues persist instead of being cleared like logs.
 
 ## Where Sentry sits in the bigger picture
 
-Sentry is not a replacement for logs, metrics, or traces — it's the specialist for one question: *what exceptions are happening, and exactly why?* Metrics tell you error rates are up; Sentry tells you which error and which line. They're complementary, and the [observability-logs-metrics-traces](/guides/observability-logs-metrics-traces) guide maps how the three pillars fit together.
+Sentry is not a replacement for logs, metrics, or traces - it's the specialist for one question: *what exceptions are happening, and exactly why?* Metrics tell you error rates are up; Sentry tells you which error and which line. They're complementary, and the [observability-logs-metrics-traces](/guides/observability-logs-metrics-traces) guide maps how the three pillars fit together.
 
 ```text
 Metrics   "error rate jumped from 0.1% to 4%"     ── what & how much
@@ -78,7 +78,7 @@ Sentry    "AttributeError at mail.py:42, 12k hits" ── the exact failure
 
 *What just happened:* each tool answers a different question. You reach for Sentry the moment "something is throwing" becomes the thing you need to chase down.
 
-**For builders:** Sentry is open source and can be self-hosted, but most teams use the hosted service because running the storage and processing pipeline yourself is real work. Either way the SDK and concepts are identical — what you learn here transfers.
+**For builders:** Sentry is open source and can be self-hosted, but most teams use the hosted service because running the storage and processing pipeline yourself is real work. Either way the SDK and concepts are identical - what you learn here transfers.
 
 ```quiz
 [

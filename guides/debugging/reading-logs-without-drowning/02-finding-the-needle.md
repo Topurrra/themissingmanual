@@ -13,7 +13,7 @@ updated: 2026-06-19
 
 This is the phase you came for: you have a flood of log lines and you need the one that explains the
 failure. The good news is that a handful of small commands handle almost every case, and they all do the
-same thing in different shapes — **shrink the flood until only the relevant part is left.** Start with the
+same thing in different shapes - **shrink the flood until only the relevant part is left.** Start with the
 cheat-card, then read the sections beneath for what each move actually does.
 
 ## The cheat-card
@@ -31,18 +31,18 @@ cheat-card, then read the sections beneath for what each move actually does.
 | Combine: live + filtered | `tail -f app.log \| grep ERROR` | §1 |
 
 > ⏭️ New to pipes (`\|`) and `grep`? They get a full, gentle treatment in
-> [The Terminal and Shell](/guides/the-terminal-and-shell). The quick version is below — enough to use
+> [The Terminal and Shell](/guides/the-terminal-and-shell). The quick version is below - enough to use
 > them here.
 
 ---
 
-## 1. `tail -f` — watch the diary as it's written
+## 1. `tail -f` - watch the diary as it's written
 
 **What it actually is.** `tail` shows you the *end* of a file (its last few lines). Add `-f` (for
-"follow") and it doesn't stop — it stays open and prints each new line the instant the program writes it.
+"follow") and it doesn't stop - it stays open and prints each new line the instant the program writes it.
 It's a live window onto the program's diary.
 
-**Why you want it.** When you're about to *reproduce* a bug — click the button, submit the form — you want
+**Why you want it.** When you're about to *reproduce* a bug - click the button, submit the form - you want
 to watch the log react in real time. `tail -f` lets you trigger the action and see exactly which lines it
 produces, right then.
 
@@ -52,10 +52,10 @@ $ tail -f app.log
 2026-06-19T14:45:18.402Z  INFO   [api]      Received request GET /health
 2026-06-19T14:45:18.405Z  INFO   [api]      Responded 200 OK
 ```
-*What just happened:* `tail -f` printed the last lines of `app.log` and then *kept running* — the cursor
+*What just happened:* `tail -f` printed the last lines of `app.log` and then *kept running* - the cursor
 just sits there, waiting. Now every time the program logs something new, it appears here live. You go do
 the thing that breaks, flip back, and watch the new lines roll in. (Press `Ctrl-C` to stop following and
-get your prompt back — `tail -f` won't end on its own.)
+get your prompt back - `tail -f` won't end on its own.)
 
 The real power move is `tail -f` piped into `grep`, so you watch *only* the lines you care about as they
 happen:
@@ -66,17 +66,17 @@ $ tail -f app.log | grep ERROR
 ```
 *What just happened:* The live stream from `tail -f` flowed through `grep ERROR`, which threw away every
 calm INFO line and showed you only errors as they occurred. You reproduced the bug and the error appeared
-by itself, with nothing to scroll past. This one line — live, filtered to errors — is something you'll use
+by itself, with nothing to scroll past. This one line - live, filtered to errors - is something you'll use
 for the rest of your career.
 
-## 2. `grep` — keep only the lines that match
+## 2. `grep` - keep only the lines that match
 
 **What it actually is.** `grep` reads a file (or a stream) line by line and prints **only the lines that
 contain the text you asked for.** It's a filter. You hand it a word and a file; it hands back the matching
 lines and silently drops the rest.
 
 This is the core needle-finding tool. The flood is huge, but you usually know *something* about the line
-you want — an order number, an error word, a username. `grep` turns "somewhere in 50,000 lines" into "here
+you want - an order number, an error word, a username. `grep` turns "somewhere in 50,000 lines" into "here
 are the 6 lines that mention it."
 
 ```console
@@ -122,7 +122,7 @@ happened." Reach for `-B` and `-A` almost every time you grep for an error.
 
 ## 3. Use timestamps to zoom to the moment of failure
 
-Often you don't have a word to search for — you have a *time*. A user says "it broke around 2:32," or a
+Often you don't have a word to search for - you have a *time*. A user says "it broke around 2:32," or a
 monitoring alert fired at a known minute. Since every line is stamped with its time, you can grep for the
 time itself and land right at the moment:
 
@@ -134,10 +134,10 @@ $ grep "14:32" app.log
 2026-06-19T14:32:07.214Z  ERROR  [payment]   Charge failed for order 4821: card declined
 ```
 *What just happened:* `grep "14:32"` matched every line whose timestamp falls in that minute and showed
-you exactly what the program was doing then — no need to scroll. You can widen or narrow the window by how
+you exactly what the program was doing then - no need to scroll. You can widen or narrow the window by how
 much of the time you type: `"14:3"` catches 14:30 through 14:39; `"14:32:07"` pins it to a single second.
 
-⚠️ **Gotcha — the time zone again.** As covered in [Phase 1](01-what-logs-actually-are.md), the log may be
+⚠️ **Gotcha - the time zone again.** As covered in [Phase 1](01-what-logs-actually-are.md), the log may be
 in UTC. If the user's "2:32" is local time and the server logs UTC, grepping `"14:32"` may show you a calm,
 unrelated minute. Confirm the zone first, do the math, then grep the *server's* time. A surprising number
 of "I can't find anything at that time" dead ends are just a time-zone offset.
@@ -166,7 +166,7 @@ $ grep "req=8f3a2" app.log
 2026-06-19T14:32:07.220Z  INFO   [api]       req=8f3a2 Responded 402 Payment Required
 ```
 *What just happened:* By grepping for one request ID (`req=8f3a2`), you pulled *only* that request's
-lines — across three different parts of the program (`api`, `inventory`, `payment`) — out of a log full of
+lines - across three different parts of the program (`api`, `inventory`, `payment`) - out of a log full of
 other users' interleaved activity. You're reading one clean story instead of a tangle. This is why request
 IDs exist, and it's the gentle on-ramp to "tracing," which you'll meet properly in a later guide.
 
@@ -176,15 +176,15 @@ read the ID off one of those lines, then grep for the ID to get the complete thr
 ## The trap that wastes the most time: the loud ERROR that isn't the cause
 
 This deserves its own section because it burns everyone, repeatedly. **The first ERROR you see is not
-always the real cause — and sometimes the real cause is a quieter WARN above it.**
+always the real cause - and sometimes the real cause is a quieter WARN above it.**
 
 Two flavors of this trap:
 
-**Flavor 1 — the harmless ERROR.** Some programs log noisy ERROR lines for things that are routine and
+**Flavor 1 - the harmless ERROR.** Some programs log noisy ERROR lines for things that are routine and
 self-correcting: a health check that failed once and immediately passed, a retry that succeeded on the
 next attempt, a client that disconnected normally. The word ERROR is loud, but the situation was fine.
 
-**Flavor 2 — the real cause is upstream.** Often the eye-catching ERROR is just the *last* domino. The
+**Flavor 2 - the real cause is upstream.** Often the eye-catching ERROR is just the *last* domino. The
 thing that actually started the fall is a WARN (or even an INFO) several lines *earlier*:
 
 ```console
@@ -193,25 +193,25 @@ thing that actually started the fall is a WARN (or even an INFO) several lines *
 2026-06-19T14:32:00.118Z  WARN   [db]      Still waiting for a database connection (5s)
 2026-06-19T14:32:07.214Z  ERROR  [api]     Request failed: timed out waiting for the database
 ```
-*What just happened:* The loud line is the ERROR at the bottom — "request timed out." But the *cause* is
+*What just happened:* The loud line is the ERROR at the bottom - "request timed out." But the *cause* is
 the WARN at the top: the database connection pool ran out, so the request sat waiting until it gave up.
 Fixing the timeout error itself would do nothing; the real problem is the exhausted pool announced calmly,
-in a WARN, sixteen seconds earlier. **This is why you grep with `-B` context** — so the quiet cause shows
+in a WARN, sixteen seconds earlier. **This is why you grep with `-B` context** - so the quiet cause shows
 up alongside the loud symptom.
 
 💡 **Key point.** Don't stop at the first ERROR. Read *upward* from it. Ask: "what's the earliest sign of
-trouble in this stretch?" — that's usually the real cause. The loudest line is the symptom; the cause is
+trouble in this stretch?" - that's usually the real cause. The loudest line is the symptom; the cause is
 often quieter and earlier.
 
 ## Recap
 
-1. **`tail -f`** — a live window on the diary; pair it with `grep` (`tail -f app.log | grep ERROR`) to
+1. **`tail -f`** - a live window on the diary; pair it with `grep` (`tail -f app.log | grep ERROR`) to
    watch only what matters as you reproduce a bug. `Ctrl-C` to stop.
-2. **`grep "word" file`** — keep only matching lines. Your first move on an unfamiliar log is usually
+2. **`grep "word" file`** - keep only matching lines. Your first move on an unfamiliar log is usually
    `grep ERROR`. Add `-i` to ignore case.
-3. **`grep -B 5 -A 5`** — show the lines *around* a match. Use it almost every time you grep an error; the
+3. **`grep -B 5 -A 5`** - show the lines *around* a match. Use it almost every time you grep an error; the
    *why* lives in the surrounding lines.
-4. **Grep a timestamp** (`grep "14:32"`) to jump to the moment of failure — but mind the **UTC** offset.
+4. **Grep a timestamp** (`grep "14:32"`) to jump to the moment of failure - but mind the **UTC** offset.
 5. **Correlation / request IDs** let you `grep` one request's complete story out of an interleaved flood.
 6. **The trap:** the loud ERROR isn't always the cause. Read *upward*; the real cause is often a quiet
    **WARN** above it.
@@ -222,7 +222,7 @@ often quieter and earlier.
 
 ## Try it yourself
 
-Find the lines that matter — edit the pattern and watch matches highlight:
+Find the lines that matter - edit the pattern and watch matches highlight:
 
 ```playground-regex
 ERROR|WARN

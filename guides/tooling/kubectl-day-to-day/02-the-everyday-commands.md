@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The commands you actually run
 
-This is the working set — the commands you'll type dozens of times a day. There aren't many. Split them into two jobs: **seeing** what's happening (get, describe, logs, exec) and **changing** it (apply, port-forward). Get fluent in these and you can handle the large majority of real work without looking anything up.
+This is the working set - the commands you'll type dozens of times a day. There aren't many. Split them into two jobs: **seeing** what's happening (get, describe, logs, exec) and **changing** it (apply, port-forward). Get fluent in these and you can handle the large majority of real work without looking anything up.
 
 ## See the shape: `get`
 
@@ -28,7 +28,7 @@ web-7c9f5d8b6-9mlpq     1/1     Running   0          3d
 worker-5f6c8d9b-tq2vn   0/1     Pending   0          12s
 ```
 
-*What just happened:* one line per pod. Read the columns: `READY` is `running-containers / desired-containers` (so `0/1` means it's not up yet), `STATUS` is the headline, `RESTARTS` is a smell — a climbing number means something keeps dying, and `AGE` tells you if this is fresh or has been limping for days.
+*What just happened:* one line per pod. Read the columns: `READY` is `running-containers / desired-containers` (so `0/1` means it's not up yet), `STATUS` is the headline, `RESTARTS` is a smell - a climbing number means something keeps dying, and `AGE` tells you if this is fresh or has been limping for days.
 
 Two flags turn `get` from a snapshot into a tool:
 
@@ -37,13 +37,13 @@ kubectl get pods -o wide          # adds node + pod IP columns
 kubectl get pods -w               # WATCH: stream changes live, don't re-run
 ```
 
-*What just happened:* `-o wide` answers "which node is this on, and what's its IP?" `-w` keeps the command open and prints a new line every time a pod's state changes — perfect for watching a rollout settle without spamming the up-arrow key. Ctrl-C to stop.
+*What just happened:* `-o wide` answers "which node is this on, and what's its IP?" `-w` keeps the command open and prints a new line every time a pod's state changes - perfect for watching a rollout settle without spamming the up-arrow key. Ctrl-C to stop.
 
 You can `get` any resource the same way: `kubectl get deploy`, `kubectl get svc`, `kubectl get nodes`. Same grammar, different noun.
 
 ## Get the full story: `describe`
 
-`get` gives you the headline; `describe` gives you the article. When a pod looks wrong, `describe` is where the *why* lives — especially the **Events** section at the bottom.
+`get` gives you the headline; `describe` gives you the article. When a pod looks wrong, `describe` is where the *why* lives - especially the **Events** section at the bottom.
 
 ```bash
 kubectl describe pod worker-5f6c8d9b-tq2vn
@@ -65,7 +65,7 @@ Events:
   Warning  Failed     20s (x3 over 1m) kubelet  Failed to pull image "...worker:1.4.2": not found
 ```
 
-*What just happened:* the Events section narrated the failure in plain language — Kubernetes tried to pull an image that doesn't exist. `get` only showed you `Pending`; `describe` told you exactly why. **When something is stuck, the Events at the bottom of `describe` are usually the answer.** Train your eyes to scroll straight there.
+*What just happened:* the Events section narrated the failure in plain language - Kubernetes tried to pull an image that doesn't exist. `get` only showed you `Pending`; `describe` told you exactly why. **When something is stuck, the Events at the bottom of `describe` are usually the answer.** Train your eyes to scroll straight there.
 
 ## Read the program's own voice: `logs`
 
@@ -79,13 +79,13 @@ kubectl logs web-7c9f5d8b-2xk4p --tail=50    # last 50 lines only
 
 *What just happened:* `logs` printed whatever your app logs. `-f` follows it live; `--tail=50` spares you scrolling through a day of output to see the last few lines.
 
-One flag earns its keep over and over. When a pod has restarted, the *current* container's logs are often empty or boring — the interesting crash is in the container that died:
+One flag earns its keep over and over. When a pod has restarted, the *current* container's logs are often empty or boring - the interesting crash is in the container that died:
 
 ```bash
 kubectl logs web-7c9f5d8b-2xk4p --previous
 ```
 
-*What just happened:* `--previous` (or `-p`) shows the logs of the *prior* container instance — the one that crashed and got replaced. For anything in a restart loop, this is where the real error message hides.
+*What just happened:* `--previous` (or `-p`) shows the logs of the *prior* container instance - the one that crashed and got replaced. For anything in a restart loop, this is where the real error message hides.
 
 If a pod runs more than one container, `logs` needs to know which:
 
@@ -97,7 +97,7 @@ kubectl logs web-7c9f5d8b-2xk4p -c sidecar    # pick a container by name
 
 ## Step inside: `exec`
 
-Sometimes you need to be *in* the container — check a file, hit localhost, see what an env var actually resolved to. `exec` runs a command inside a running container; with `-it` it gives you an interactive shell.
+Sometimes you need to be *in* the container - check a file, hit localhost, see what an env var actually resolved to. `exec` runs a command inside a running container; with `-it` it gives you an interactive shell.
 
 ```bash
 kubectl exec -it web-7c9f5d8b-2xk4p -- /bin/sh
@@ -111,7 +111,7 @@ postgres://db.internal:5432/app
 /app # exit
 ```
 
-*What just happened:* `-it` gave you a terminal inside the container; everything after `--` is the command to run there (here, a shell). The `--` matters — it tells kubectl "stop reading flags, the rest is the container's command." Use a slim image's `/bin/sh` if `/bin/bash` isn't present.
+*What just happened:* `-it` gave you a terminal inside the container; everything after `--` is the command to run there (here, a shell). The `--` matters - it tells kubectl "stop reading flags, the rest is the container's command." Use a slim image's `/bin/sh` if `/bin/bash` isn't present.
 
 You don't need a full shell for a one-off check:
 
@@ -135,7 +135,7 @@ Forwarding from 127.0.0.1:8080 -> 80
 Forwarding from [::1]:8080 -> 80
 ```
 
-*What just happened:* traffic to `localhost:8080` on your machine now flows to port 80 of the `web` service in the cluster. Open `http://localhost:8080` and you're hitting the in-cluster app. The tunnel lives only as long as the command runs — Ctrl-C closes it. The format is `LOCAL:REMOTE`, so `8080:80` means "my 8080 → its 80."
+*What just happened:* traffic to `localhost:8080` on your machine now flows to port 80 of the `web` service in the cluster. Open `http://localhost:8080` and you're hitting the in-cluster app. The tunnel lives only as long as the command runs - Ctrl-C closes it. The format is `LOCAL:REMOTE`, so `8080:80` means "my 8080 → its 80."
 
 ## Change it: `apply`
 
@@ -149,9 +149,9 @@ kubectl apply -f deployment.yaml
 deployment.apps/web configured
 ```
 
-*What just happened:* Kubernetes compared your file to what's running and made the difference real. The output verb tells you what it did — `created` (new), `configured` (changed), or `unchanged` (already matched). `apply` is declarative: the file is the source of truth, and you can run it repeatedly with the same result.
+*What just happened:* Kubernetes compared your file to what's running and made the difference real. The output verb tells you what it did - `created` (new), `configured` (changed), or `unchanged` (already matched). `apply` is declarative: the file is the source of truth, and you can run it repeatedly with the same result.
 
-> **apply vs edit:** `kubectl edit deploy web` opens the live object in your editor for a quick in-place change. It's handy for a hotfix at 3am — but the change exists only in the cluster, not in your YAML or git, so it vanishes the next time someone runs `apply`. Treat `edit` as a temporary probe; treat `apply -f` (from version-controlled files) as how real changes ship. If you `edit` something to recover, port the fix back into the YAML before you forget.
+> **apply vs edit:** `kubectl edit deploy web` opens the live object in your editor for a quick in-place change. It's handy for a hotfix at 3am - but the change exists only in the cluster, not in your YAML or git, so it vanishes the next time someone runs `apply`. Treat `edit` as a temporary probe; treat `apply -f` (from version-controlled files) as how real changes ship. If you `edit` something to recover, port the fix back into the YAML before you forget.
 
 A few change commands you'll use alongside `apply`:
 
@@ -161,7 +161,7 @@ kubectl rollout restart deploy/web       # restart all pods (e.g. to reload conf
 kubectl rollout undo deploy/web          # roll back to the previous version
 ```
 
-*What just happened:* `rollout status` blocks until the new version is fully up (or fails), so you know when a deploy is actually done. `rollout restart` cycles the pods without changing the spec. `rollout undo` is your panic button — it reverts to the last known-good revision.
+*What just happened:* `rollout status` blocks until the new version is fully up (or fails), so you know when a deploy is actually done. `rollout restart` cycles the pods without changing the spec. `rollout undo` is your panic button - it reverts to the last known-good revision.
 
 ## The 90-percent set, in one place
 
@@ -189,7 +189,7 @@ kubectl apply -f <file>.yaml             # change it, declaratively
       "kubectl apply -f again"
     ],
     "answer": 0,
-    "explain": "`--previous` shows logs from the container instance that just crashed — where the real error usually is — instead of the fresh, empty one."
+    "explain": "`--previous` shows logs from the container instance that just crashed - where the real error usually is - instead of the fresh, empty one."
   },
   {
     "q": "What's the key risk of fixing something with `kubectl edit` instead of `kubectl apply -f`?",

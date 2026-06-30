@@ -18,12 +18,12 @@ updated: 2026-06-30
 
 Last phase we labeled each line. Now we make those labels do work: a heading line becomes
 an `<h1>`, a bullet becomes an `<li>` inside a `<ul>`, and everything else becomes a
-`<p>`. This is block-level conversion — deciding what each line *is*.
+`<p>`. This is block-level conversion - deciding what each line *is*.
 
 ## Regex with capture groups
 
 A regular expression can do two things at once: confirm a line matches a pattern *and*
-pull out the part you care about. The part you pull out is a **capture group** —
+pull out the part you care about. The part you pull out is a **capture group** -
 anything inside parentheses.
 
 Take a heading. The pattern is "a hash, a space, then the rest of the line":
@@ -40,7 +40,7 @@ console.log("Matched?", match !== null);
 console.log("Captured text:", match[1]);
 ```
 
-`match[0]` is the whole match; `match[1]` is the first capture group — the heading text
+`match[0]` is the whole match; `match[1]` is the first capture group - the heading text
 without the `#`. That captured text is exactly what goes between `<h1>` and `</h1>`.
 
 ## Headings at six levels
@@ -95,7 +95,7 @@ graph TD
 ## The block converter
 
 Here it all comes together. We walk the lines, track whether we are inside a list, and
-emit the right tags. Paragraphs are the fallback — any non-blank line that is not a
+emit the right tags. Paragraphs are the fallback - any non-blank line that is not a
 heading or list item.
 
 ```js runnable
@@ -153,7 +153,7 @@ console.log(toBlocks(sample));
 
 Run it. You get a clean tree: an `<h1>`, a `<p>`, a `<ul>` with three `<li>`s, and a
 final `<p>`. Notice the list opens once and closes once, even though three items went into
-it — that is the `inList` flag earning its keep.
+it - that is the `inList` flag earning its keep.
 
 That last `closeList()` after the loop is the kind of detail that bites people. Without
 it, a document that ends on a list item never emits its closing `</ul>`. Delete that line,
@@ -163,6 +163,6 @@ re-run, and watch the broken output. Then put it back.
 
 Your converter now produces real block structure: headings at any level, lists that wrap
 correctly, and paragraphs for everything else. What it does *not* do yet is anything
-inside those blocks — `**milk**` would come out as literal asterisks.
+inside those blocks - `**milk**` would come out as literal asterisks.
 
 That is Phase 3: reaching inside each block and formatting the spans.

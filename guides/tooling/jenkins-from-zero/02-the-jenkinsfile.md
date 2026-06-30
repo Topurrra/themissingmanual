@@ -168,7 +168,7 @@ pipeline {
 
     post {
         failure {
-            echo 'Pipeline failed — see the stage view above.'
+            echo 'Pipeline failed - see the stage view above.'
         }
     }
 }
@@ -184,7 +184,7 @@ In the wild: most teams keep one `Jenkinsfile` per repo at the root, and Jenkins
     "q": "In a Declarative pipeline, what does the `steps` block contain?",
     "choices": ["The list of agents to use", "The actual commands to run, like `sh` and `echo`", "The names of all stages", "Post-build notifications"],
     "answer": 1,
-    "explain": "`steps` lives inside each `stage` and holds the real commands — `sh` for shell on Unix agents, `bat` on Windows, `echo` for log output."
+    "explain": "`steps` lives inside each `stage` and holds the real commands - `sh` for shell on Unix agents, `bat` on Windows, `echo` for log output."
   },
   {
     "q": "When does the `post { failure { ... } }` block run?",

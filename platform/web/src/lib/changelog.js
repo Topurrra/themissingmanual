@@ -1,12 +1,12 @@
-// Curated "What's new" — newest first. Each release is { date: 'YYYY-MM', items: [string] }.
+// Curated "What's new" - newest first. Each release is { date: 'YYYY-MM', items: [string] }.
 // Hand-maintained: when you ship something worth telling readers about, add a line to the
-// latest month (or start a new one). Rendered at /changelog. Dates are by month on purpose —
+// latest month (or start a new one). Rendered at /changelog. Dates are by month on purpose -
 // readers care about roughly when, not the exact day.
 export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
-      'Faster page loads on mobile — fonts and icons no longer block the first paint.',
+      'Faster page loads on mobile - fonts and icons no longer block the first paint.',
       'New high-contrast dark theme, alongside the existing high-contrast light.',
       'Cheat sheets now show up in instant search and the ⌘K command palette, with a shortcut on the homepage.',
       'Built for AI assistants: a complete sitemap, structured data for the glossary, an llms.txt index, and a Model Context Protocol server at /mcp so tools like Claude and Cursor can search and read the guides directly.',
@@ -16,7 +16,7 @@ export const CHANGELOG = [
   {
     date: '2026-06',
     items: [
-      'New themes — Sepia, Nord, Dracula, and high-contrast — plus a font picker in Settings.',
+      'New themes - Sepia, Nord, Dracula, and high-contrast - plus a font picker in Settings.',
       'The lofi player moved into the header, with clearer volume controls and a scrolling track title.',
       'Brain games at /train.',
       'New guides on no-code / low-code tools and working with AI.',

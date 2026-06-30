@@ -2,7 +2,7 @@
 title: "Bases: Binary, Decimal, Hex"
 guide: "numbers-and-number-systems"
 phase: 2
-summary: "A base is how many digits you count with before carrying. Decimal uses ten, binary two, hex sixteen. Positional notation explains all three — and why computers store binary and humans read it as hex."
+summary: "A base is how many digits you count with before carrying. Decimal uses ten, binary two, hex sixteen. Positional notation explains all three - and why computers store binary and humans read it as hex."
 tags: [mathematics, binary, hexadecimal, base-conversion, positional-notation]
 difficulty: beginner
 synonyms: ["what is binary", "decimal to binary", "what is hexadecimal", "convert binary to decimal", "why do computers use binary", "what does 0x mean"]
@@ -11,7 +11,7 @@ updated: 2026-06-25
 
 # Bases: Binary, Decimal, Hex
 
-You already count in base ten — you've done it your whole life without calling it
+You already count in base ten - you've done it your whole life without calling it
 that. This phase shows you that base ten is one choice among many. Once you see the
 pattern underneath it, binary and hex stop being cryptic computer trivia and become
 the same idea in different clothes.
@@ -55,7 +55,7 @@ machinery. That one insight unlocks binary and hex.
 ## Binary (base 2): two digits, powers of two
 
 Binary uses exactly two digits: `0` and `1`. With only two symbols, you carry much
-sooner — after `1` you're already out, so `1 + 1 = 10` in binary (which is *two*,
+sooner - after `1` you're already out, so `1 + 1 = 10` in binary (which is *two*,
 not ten). The places are powers of two instead of powers of ten:
 
 ```text
@@ -92,11 +92,11 @@ digits. Let's convert `13`:
 
 Read the remainders from bottom to top: `1101`. Check it: `8 + 4 + 0 + 1 = 13`.
 It works because each division strips off the smallest place value and asks "is
-it odd?" — and odd-or-even is exactly what the bottom bit records.
+it odd?" - and odd-or-even is exactly what the bottom bit records.
 
 ## Hex (base 16): a compact shorthand for binary
 
-Hexadecimal — "hex" — is base 16. That's a problem at first glance: we only have
+Hexadecimal - "hex" - is base 16. That's a problem at first glance: we only have
 ten digit symbols (0–9), and base 16 needs sixteen. The fix is to borrow letters.
 After `9`, hex keeps counting with `A` through `F`:
 
@@ -116,7 +116,7 @@ decimal:
    = 47
 ```
 
-So `2F₁₆ = 47`. Going back uses repeated division by 16, the same trick as binary —
+So `2F₁₆ = 47`. Going back uses repeated division by 16, the same trick as binary -
 but nobody does that by hand, because of the real reason hex exists, which is the
 next section.
 
@@ -124,14 +124,14 @@ next section.
 
 Computers use **binary** because the physical hardware has two stable states. A
 transistor is either conducting or not; a wire is either at high voltage or low.
-Two clean states map perfectly onto `1` and `0` — no ambiguity, no in-between to
+Two clean states map perfectly onto `1` and `0` - no ambiguity, no in-between to
 misread. Everything a machine "knows" is built from billions of these on/off
 switches, combined by logic gates (the building blocks you'll meet properly in a
 hardware guide). Binary isn't a stylistic choice; it's what the silicon can
 physically hold.
 
 Humans use **hex** because raw binary is exhausting to read. Eight bits look like
-`11111111` — easy to miscount. But here's the magic: **one hex digit is exactly
+`11111111` - easy to miscount. But here's the magic: **one hex digit is exactly
 four bits.** Four bits can represent 0 through 15, and so can one hex digit, so
 they line up perfectly. Group a binary string into chunks of four and translate
 each chunk to a single hex digit:
@@ -162,7 +162,7 @@ print(hex(255))      # decimal -> hex string
 binary," so `0b1011` is evaluated as `8 + 2 + 1 = 11` and prints `11`. The
 prefix `0x` means hex, so `0xFF` is `15×16 + 15 = 255` and prints `255`.
 `int("1011", 2)` takes the *string* `"1011"` and the base `2`, parsing it as
-binary — again `11`. Going the other direction, `bin(11)` converts the decimal
+binary - again `11`. Going the other direction, `bin(11)` converts the decimal
 `11` into a binary string and prints `0b1011`, and `hex(255)` converts `255`
 into a hex string and prints `0xff` (Python writes hex letters in lowercase).
 Notice the round trips: `0b1011` and `bin(11)` are the same number seen from
@@ -174,17 +174,17 @@ A few things you'll bump into constantly once you're writing code:
 
 - **Literals.** Most languages let you write numbers in binary with a `0b`
   prefix and in hex with `0x`. So `0b1010`, `0xFF`, and `255` can all describe
-  the same or related values — they're only different spellings.
+  the same or related values - they're only different spellings.
 - **A byte is 8 bits.** It's the standard chunk of memory. One byte holds 256
   distinct values, `0` through `255`.
 - **`0xFF` = 255.** Two hex digits cover exactly one byte (4 bits + 4 bits), so
   hex is the natural way to write byte values. `0x00` is 0, `0xFF` is 255.
-- **CSS colors are hex.** A color like `#FF8800` is three bytes — red `FF`
-  (255), green `88` (136), blue `00` (0) — written as six hex digits. Now you
+- **CSS colors are hex.** A color like `#FF8800` is three bytes - red `FF`
+  (255), green `88` (136), blue `00` (0) - written as six hex digits. Now you
   can read them: `#FFFFFF` is all channels maxed (white), `#000000` is all off
   (black).
 
-> ⚠️ **Gotcha:** One hex digit is *exactly* four bits — never three, never
+> ⚠️ **Gotcha:** One hex digit is *exactly* four bits - never three, never
 > five. That's the whole reason hex is convenient. When you read a binary
 > string, mentally chop it into groups of four *from the right*, and each group
 > becomes one hex digit. Grouping from the left instead will give you the wrong

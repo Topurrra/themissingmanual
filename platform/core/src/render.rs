@@ -9,7 +9,7 @@ use syntect::parsing::SyntaxSet;
 use syntect::util::LinesWithEndings;
 
 /// Token classes are emitted as `tok-…` so the frontend owns the palette via CSS
-/// (the code-block background stays whatever the design system sets — we never bake colors in).
+/// (the code-block background stays whatever the design system sets - we never bake colors in).
 const CLASS_STYLE: ClassStyle = ClassStyle::SpacedPrefixed { prefix: "tok-" };
 
 /// Highlights fenced code with syntect, emitting CSS *classes* (not inline colors).
@@ -54,7 +54,7 @@ impl SyntaxHighlighterAdapter for ClassedHighlighter {
     ) -> io::Result<()> {
         // Intentionally emit nothing here. comrak surfaces a fence's extra info words (e.g. the
         // `runnable` flag in ```python runnable) only on the *code* attributes (`data-meta`),
-        // which arrive in write_code_tag — after this call. So both the <pre> and <code> tags are
+        // which arrive in write_code_tag - after this call. So both the <pre> and <code> tags are
         // emitted there, where we can stamp data-runnable onto the <pre>. (Our render options set
         // no <pre> attributes, so nothing is lost by skipping them here.)
         Ok(())
@@ -66,7 +66,7 @@ impl SyntaxHighlighterAdapter for ClassedHighlighter {
         attributes: HashMap<String, String>,
     ) -> io::Result<()> {
         // Keep the language class (e.g. `language-rust`) so the frontend can still see the
-        // language — and so ```mermaid blocks stay detectable for client-side rendering.
+        // language - and so ```mermaid blocks stay detectable for client-side rendering.
         let class = attributes.get("class").map(String::as_str).unwrap_or("");
         let lang = class.strip_prefix("language-").unwrap_or("");
 

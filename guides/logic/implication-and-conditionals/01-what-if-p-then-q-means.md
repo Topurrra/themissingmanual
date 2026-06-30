@@ -2,7 +2,7 @@
 title: "What \"If P Then Q\" Really Means"
 guide: "implication-and-conditionals"
 phase: 1
-summary: "A conditional 'if P then Q' is false in exactly one situation: P true and Q false. Everywhere else it's true — including the surprising 'vacuously true' cases where P is false."
+summary: "A conditional 'if P then Q' is false in exactly one situation: P true and Q false. Everywhere else it's true - including the surprising 'vacuously true' cases where P is false."
 tags: [logic, implication, conditional, vacuous-truth]
 difficulty: beginner
 synonyms: ["what does if then mean in logic", "truth table of implication", "when is a conditional true", "vacuous truth", "material implication"]
@@ -30,16 +30,16 @@ first time.
 
 A few names so we can talk precisely.
 
-- **Implication** — the *if… then…* connection itself. We write it `P → Q` and read it
+- **Implication** - the *if… then…* connection itself. We write it `P → Q` and read it
   out loud as **"if P then Q"** (or "P implies Q"). The arrow is the operator.
-- **Antecedent** — the part after *if*. It's the **hypothesis**, the condition being
+- **Antecedent** - the part after *if*. It's the **hypothesis**, the condition being
   supposed. In `P → Q`, that's `P`. ("If **it rains**…")
-- **Consequent** — the part after *then*. It's what's claimed to follow. In `P → Q`,
+- **Consequent** - the part after *then*. It's what's claimed to follow. In `P → Q`,
   that's `Q`. ("…**the street is wet**.")
 
 So `P → Q` means: *supposing P, then Q.* Antecedent first, consequent second.
 
-Each of `P` and `Q` is either true or false. That gives four combinations to check — which is
+Each of `P` and `Q` is either true or false. That gives four combinations to check - which is
 exactly what a truth table does.
 
 ## The truth table
@@ -61,7 +61,7 @@ Look at the second column from the right. `P → Q` is **true in every case exce
 
 That single false row is the broken promise. Back to "if it rains, the street is wet." The only way
 to catch that claim lying is to find a moment when **it is raining** (P true) and yet **the street
-is dry** (Q false). Rain, but no wet street — promise broken. That's row two.
+is dry** (Q false). Rain, but no wet street - promise broken. That's row two.
 
 Every other row keeps the promise:
 
@@ -69,10 +69,10 @@ Every other row keeps the promise:
 - The two rows where it *isn't* raining: we'll get to those next, because they're the
   surprising ones.
 
-## The surprising part — vacuous truth
+## The surprising part - vacuous truth
 
 The bottom two rows are where intuition pushes back. Both have a **false antecedent**, and in both,
-`P → Q` comes out **true** — no matter what `Q` is.
+`P → Q` comes out **true** - no matter what `Q` is.
 
 This is **vacuous truth**: when the *if* part is false, the whole conditional is true by default,
 because the promise was never tested.
@@ -89,21 +89,21 @@ promise?
   100*, and that condition never happened.
 
 Either way, you can't accuse me of breaking the promise. The only scenario that catches me lying is
-**you score 100 and I withhold the ice cream** — true antecedent, false consequent. That's the one
+**you score 100 and I withhold the ice cream** - true antecedent, false consequent. That's the one
 false row again.
 
-So when the condition doesn't fire, the promise can't be broken — and "not broken" is exactly what
+So when the condition doesn't fire, the promise can't be broken - and "not broken" is exactly what
 **true** means. The conditional holds vacuously.
 
 ## A quick honesty note: this is about truth, not causes
 
-One thing worth being upfront about. Logical implication — sometimes called **material
-implication** — is purely a rule about **truth values**. `P → Q` does *not* claim that P
+One thing worth being upfront about. Logical implication - sometimes called **material
+implication** - is purely a rule about **truth values**. `P → Q` does *not* claim that P
 **causes** Q, or that they're related at all.
 
 "If 2 + 2 = 5, then the moon is cheese" is a true implication, purely because its antecedent is
 false (vacuous truth again). There's no causal story, and the logic doesn't pretend there is.
-Implication answers one narrow question — *is the promise broken?* — and nothing more. Everyday
+Implication answers one narrow question - *is the promise broken?* - and nothing more. Everyday
 "if… then…" smuggles in cause and timing; the logical operator doesn't. Keep them separate and the
 truth table stops feeling weird.
 
@@ -124,7 +124,7 @@ if (P) {
 ```
 
 When `P` is false, the block doesn't run. Nothing fires, nothing is violated. If someone asserted
-"whenever P, we doSomething," that claim still **holds** on every run where P was false — there was
+"whenever P, we doSomething," that claim still **holds** on every run where P was false - there was
 no chance to violate it. Same logic as the ice cream: condition didn't trigger, so no promise was
 broken.
 
@@ -148,14 +148,14 @@ which makes proofs and logic enormously cleaner. (We lean on this all the time o
   **consequent**.
 - A conditional is a **promise**, and there's exactly **one** way to break it:
   **P true, Q false.** That's the only false row.
-- Every other case is true — including the two **vacuously true** cases where `P` is false.
+- Every other case is true - including the two **vacuously true** cases where `P` is false.
   No condition fired, so no promise was broken.
 - Material implication is about **truth values, not causation**. `P → Q` doesn't say P
   causes Q.
-- For builders: it's the logic of guards and `if` blocks that don't fire — the claim still
+- For builders: it's the logic of guards and `if` blocks that don't fire - the claim still
   holds.
 
-If the truth table still feels strange, you understood it correctly — the strangeness is the point,
+If the truth table still feels strange, you understood it correctly - the strangeness is the point,
 and it's worth getting comfortable with. For why this kind of careful reasoning is less intimidating
 than it looks, see [why math isn't your enemy](/guides/why-math-isnt-your-enemy)
 and [what logic actually is](/guides/what-logic-actually-is).
@@ -171,7 +171,7 @@ if (user.isAdmin) { allowDelete(); }
 They argue: "If the user is an admin, they can delete. That's the rule." But a security
 review points out that non-admins can also delete in some edge cases. Is the original
 conditional `user.isAdmin → allowDelete()` *false* in those edge cases? Why or why not?
-Think carefully about what the conditional actually promises — and what it doesn't.
+Think carefully about what the conditional actually promises - and what it doesn't.
 
 Quick check before moving on:
 
@@ -193,7 +193,7 @@ Quick check before moving on:
     "choices": [
       "False, because the street might be dry",
       "It depends on whether the street is wet",
-      "True — with a false antecedent, the conditional is vacuously true",
+      "True - with a false antecedent, the conditional is vacuously true",
       "Undefined, since the condition didn't happen"
     ],
     "answer": 2,

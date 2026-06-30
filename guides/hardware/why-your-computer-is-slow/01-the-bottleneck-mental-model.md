@@ -31,7 +31,7 @@ Disk     the freezer     holds everything when the power is off, slow
 
 *What just happened:* These are the three parts that cause almost all everyday slowness. The screen, keyboard, and graphics card matter for specific jobs, but day-to-day "ugh, why is this slow" almost always traces back to one of these three.
 
-The key numbers are about distance and speed. The CPU works in fractions of a billionth of a second. RAM answers in tens of billionths of a second. A spinning hard disk answers in *milliseconds* — that is millions of times slower than RAM. An SSD sits in between, far faster than a spinning disk but still slower than RAM. (The full tour of these parts lives in [/guides/cpu-ram-and-storage](/guides/cpu-ram-and-storage).)
+The key numbers are about distance and speed. The CPU works in fractions of a billionth of a second. RAM answers in tens of billionths of a second. A spinning hard disk answers in *milliseconds* - that is millions of times slower than RAM. An SSD sits in between, far faster than a spinning disk but still slower than RAM. (The full tour of these parts lives in [/guides/cpu-ram-and-storage](/guides/cpu-ram-and-storage).)
 
 > The gap between RAM and a spinning hard disk is the single biggest speed cliff inside your computer. Most "my machine is unbearable" stories are a story about falling off that cliff.
 
@@ -54,15 +54,15 @@ same chef (CPU)    +  near freezer (fast SSD)  =  feels new
 
 You can already make a rough guess from how the slowness *feels*, before you measure anything:
 
-- **The machine freezes, the disk light blinks like crazy, everything stutters when you have many tabs or apps open** — your counter is full and the chef keeps running to the freezer. That is a RAM problem (the technical name is *swapping*).
-- **Booting takes forever, apps take ages to launch, opening a big file makes you wait, but once things are open they run fine** — your freezer is slow. That is a disk problem, fixed by an SSD.
-- **One specific heavy task pins the fans on full and everything else crawls during it** — video editing, compiling, a big spreadsheet recalculating — the chef genuinely cannot chop fast enough. That is a CPU problem, and it is the rarest of the three for everyday users.
+- **The machine freezes, the disk light blinks like crazy, everything stutters when you have many tabs or apps open** - your counter is full and the chef keeps running to the freezer. That is a RAM problem (the technical name is *swapping*).
+- **Booting takes forever, apps take ages to launch, opening a big file makes you wait, but once things are open they run fine** - your freezer is slow. That is a disk problem, fixed by an SSD.
+- **One specific heavy task pins the fans on full and everything else crawls during it** - video editing, compiling, a big spreadsheet recalculating - the chef genuinely cannot chop fast enough. That is a CPU problem, and it is the rarest of the three for everyday users.
 
-For builders: this is the same skill you use to profile a slow program. You do not guess which line is slow and optimize it — you measure, find the actual hot path, and fix *that*. Hardware is the same instinct at the scale of a whole machine. Guessing wastes money; measuring spends it well.
+For builders: this is the same skill you use to profile a slow program. You do not guess which line is slow and optimize it - you measure, find the actual hot path, and fix *that*. Hardware is the same instinct at the scale of a whole machine. Guessing wastes money; measuring spends it well.
 
 ## The honest caveat
 
-These feel-based guesses are a starting hypothesis, not a verdict. Two parts can be slow at once, and a symptom can mislead you — a machine low on RAM also hammers the disk, so heavy disk activity can be a RAM problem wearing a disk costume. That is exactly why the next phase puts a real gauge in front of you. You will stop guessing from feel and start reading the actual numbers your computer is already tracking.
+These feel-based guesses are a starting hypothesis, not a verdict. Two parts can be slow at once, and a symptom can mislead you - a machine low on RAM also hammers the disk, so heavy disk activity can be a RAM problem wearing a disk costume. That is exactly why the next phase puts a real gauge in front of you. You will stop guessing from feel and start reading the actual numbers your computer is already tracking.
 
 ```quiz
 [

@@ -2,7 +2,7 @@
 title: "Control Flow & Functions"
 guide: "go-from-zero"
 phase: 4
-summary: "Make decisions with if (including its init statement) and switch, loop with Go's single for (it has no other), write functions that return multiple values — the signature that defines Go — and meet defer."
+summary: "Make decisions with if (including its init statement) and switch, loop with Go's single for (it has no other), write functions that return multiple values - the signature that defines Go - and meet defer."
 tags: [go, if, for, switch, functions, multiple-return, defer, control-flow]
 difficulty: beginner
 synonyms: ["go for loop syntax", "go has only one loop", "if statement with init go", "go switch statement", "go multiple return values", "go function returns error", "what does defer do in go"]
@@ -13,10 +13,10 @@ updated: 2026-06-19
 
 Up to now your programs run straight down, top to bottom. Real logic *branches* (do this if that),
 *repeats* (do this for each item), and is *organized into reusable pieces* (functions). Go's take on all
-three is unusually lean — there's one loop, not three, and functions can hand back more than one value at
+three is unusually lean - there's one loop, not three, and functions can hand back more than one value at
 a time. That second feature shapes how *all* Go code reads, so we'll spend real time on it.
 
-## `if` — branching, with a twist
+## `if` - branching, with a twist
 
 The basic `if` looks like you'd expect, with one Go quirk: **no parentheses around the condition, but
 braces are mandatory.**
@@ -40,10 +40,10 @@ adult
 ```
 *What just happened:* `if age >= 18` checked the condition; since `20 >= 18` is true, the first block ran
 and printed `adult`. Note there are no `( )` around `age >= 18` (Go doesn't use them), but the `{ }` are
-required even for a single line (Go never lets you omit them — this prevents a famous class of bugs where
+required even for a single line (Go never lets you omit them - this prevents a famous class of bugs where
 an unbraced `if` silently covers only one statement).
 
-Go's distinctive touch is the **`if` with an init statement** — you can declare a variable right in the
+Go's distinctive touch is the **`if` with an init statement** - you can declare a variable right in the
 `if`, scoped to just that block:
 ```go
 if n := len("hello"); n > 3 {
@@ -55,10 +55,10 @@ long word, length 5
 ```
 *What just happened:* `if n := len("hello"); n > 3` does two things separated by the semicolon: first it
 declares `n` (the length, 5), then it tests `n > 3`. The variable `n` exists *only* inside the `if`/`else`
-blocks and vanishes after. This keeps short-lived helper values from leaking into the surrounding code —
+blocks and vanishes after. This keeps short-lived helper values from leaking into the surrounding code -
 you'll see it constantly with error checks in [phase 7](07-errors-and-io.md).
 
-## `for` — Go's one and only loop
+## `for` - Go's one and only loop
 
 Here's a genuine surprise: **Go has exactly one loop keyword, `for`.** No `while`, no `do-while`, no
 separate `foreach` statement. The designers decided one flexible loop was clearer than four, and `for`
@@ -83,7 +83,7 @@ $ go run main.go
 2
 ```
 *What just happened:* `for i := 0; i < 3; i++` has the three familiar parts separated by semicolons:
-**init** (`i := 0`, runs once), **condition** (`i < 3`, checked before each pass — keep going while
+**init** (`i := 0`, runs once), **condition** (`i < 3`, checked before each pass - keep going while
 true), and **post** (`i++`, runs after each pass; `i++` means "add one to `i`"). So it printed `0`, `1`,
 `2` and stopped when `i` hit `3`.
 
@@ -100,9 +100,9 @@ for n > 0 {
 2
 1
 ```
-*What just happened:* `for n > 0` loops as long as the condition holds — this is exactly what other
+*What just happened:* `for n > 0` loops as long as the condition holds - this is exactly what other
 languages spell `while (n > 0)`. Go just reuses `for`. (`n--` means "subtract one from `n`.") Drop the
-condition too — `for { ... }` — and you get an infinite loop, which you exit with `break` or `return`.
+condition too - `for { ... }` - and you get an infinite loop, which you exit with `break` or `return`.
 
 And you've already seen the third form: `for ... range` over a collection, back in
 [phase 3](03-collections.md). One keyword, three shapes.
@@ -110,7 +110,7 @@ And you've already seen the third form: `for ... range` over a collection, back 
 💡 **Key point.** Whenever you'd reach for `while` in another language, in Go you write `for condition`.
 There's nothing to memorize beyond "it's always `for`."
 
-## `switch` — cleaner than a stack of `if`s
+## `switch` - cleaner than a stack of `if`s
 
 When you're comparing one value against several options, `switch` reads better than a tower of
 `else if`:
@@ -139,13 +139,13 @@ weekend
 case (which lists two values, `"Sat", "Sun"`, either of which matches) and printed `weekend`. `default`
 runs when nothing else matches. 
 
-⚠️ **Gotcha (the good kind) — Go's `switch` does not fall through.** If you've used C, Java, or
+⚠️ **Gotcha (the good kind) - Go's `switch` does not fall through.** If you've used C, Java, or
 JavaScript, you're used to needing `break` at the end of every `case` or execution "falls through" into
 the next one. **Go is the opposite: each case stops on its own**, no `break` needed. This removes the
 classic "I forgot the `break` and three cases ran" bug. (If you ever *want* fall-through, there's an
-explicit `fallthrough` keyword — but you'll rarely need it.)
+explicit `fallthrough` keyword - but you'll rarely need it.)
 
-## Functions — and the multiple-return signature that defines Go
+## Functions - and the multiple-return signature that defines Go
 
 A **function** is a named, reusable block of code that takes inputs (**parameters**) and hands back
 outputs (**return values**). Here's one that adds two numbers:
@@ -167,7 +167,7 @@ $ go run main.go
 7
 ```
 *What just happened:* `func add(a int, b int) int` reads as "a function named `add`, taking two `int`
-parameters `a` and `b`, and *returning* an `int`." The return type sits **after** the parameters — that
+parameters `a` and `b`, and *returning* an `int`." The return type sits **after** the parameters - that
 ordering takes a moment if you're used to `int add(...)`, but it reads naturally left-to-right once it
 clicks. `return a + b` hands the sum back, and `main` printed it.
 
@@ -180,7 +180,7 @@ import "fmt"
 
 func divide(a, b int) (int, bool) {
 	if b == 0 {
-		return 0, false   // can't divide by zero — signal failure
+		return 0, false   // can't divide by zero - signal failure
 	}
 	return a / b, true
 }
@@ -198,14 +198,14 @@ $ go run main.go
 5 true
 0 false
 ```
-*What just happened:* `func divide(a, b int) (int, bool)` returns *two* values — the result and a boolean
+*What just happened:* `func divide(a, b int) (int, bool)` returns *two* values - the result and a boolean
 saying whether it worked. (Notice `a, b int` is shorthand for "both are `int`.") The caller catches both
 with `result, ok := divide(...)`. When we divided by zero, the function returned `0, false` instead of
-crashing, and the caller could check `ok` and react. This `(value, ok)` or — far more commonly —
+crashing, and the caller could check `ok` and react. This `(value, ok)` or - far more commonly -
 `(value, error)` shape is *the* Go signature. You'll see it on nearly every function that can fail, and
 it's why Go doesn't need exceptions, which we'll unpack in [phase 7](07-errors-and-io.md).
 
-Here's that decision in one picture — exactly the shape of code you'll write hundreds of times:
+Here's that decision in one picture - exactly the shape of code you'll write hundreds of times:
 
 ```mermaid
 flowchart TD
@@ -218,7 +218,7 @@ flowchart TD
   Caller -- ok is true --> Use[use the result]
 ```
 
-## `defer` — a teaser for cleanup done right
+## `defer` - a teaser for cleanup done right
 
 One more keyword you'll meet constantly: **`defer`**. It schedules a function call to run *when the
 surrounding function is about to return*, no matter how it returns:
@@ -237,7 +237,7 @@ $ go run main.go
 hello
 goodbye
 ```
-*What just happened:* `defer fmt.Println("goodbye")` didn't run immediately — Go *deferred* it until
+*What just happened:* `defer fmt.Println("goodbye")` didn't run immediately - Go *deferred* it until
 `main` was finishing. So `hello` printed first (the normal line), then `goodbye` ran on the way out. The
 reason `defer` is everywhere: it's how Go guarantees cleanup. When you open a file or a connection, you
 `defer` closing it right next to opening it, and Go runs the close no matter which path the function takes
@@ -248,15 +248,15 @@ guaranteed."
 
 1. **`if`** uses no parentheses but requires braces; its **init form** (`if x := …; cond`) scopes a
    helper variable to the block.
-2. Go has **one loop, `for`** — it covers counting (`for i := 0; …`), while (`for cond`), infinite
+2. Go has **one loop, `for`** - it covers counting (`for i := 0; …`), while (`for cond`), infinite
    (`for {}`), and `for … range`.
-3. **`switch`** compares a value against cases and **does not fall through** — no `break` needed.
+3. **`switch`** compares a value against cases and **does not fall through** - no `break` needed.
 4. **Functions** put the return type after the parameters; **multiple return values** (especially
    `(value, error)`) are the defining Go signature.
-5. **`defer`** schedules a call to run when the function returns — the idiomatic way to guarantee cleanup.
+5. **`defer`** schedules a call to run when the function returns - the idiomatic way to guarantee cleanup.
 
 Next, we stop writing single files and start building *projects*: modules, packages, why a capital letter
-makes something public, and a sane layout — the groundwork for the goroutines in phase 6.
+makes something public, and a sane layout - the groundwork for the goroutines in phase 6.
 
 ---
 

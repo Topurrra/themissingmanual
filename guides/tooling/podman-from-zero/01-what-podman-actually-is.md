@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # What Podman Actually Is
 
-Here is the thing nobody tells you about Docker until you have to explain it to a security team: when you run `docker run`, your command barely does anything. It hands a request to a long-running background service — the Docker daemon, `dockerd` — and that service, running as root, does the actual work of pulling images and starting containers. Your terminal is a remote control. The daemon is the machine.
+Here is the thing nobody tells you about Docker until you have to explain it to a security team: when you run `docker run`, your command barely does anything. It hands a request to a long-running background service - the Docker daemon, `dockerd` - and that service, running as root, does the actual work of pulling images and starting containers. Your terminal is a remote control. The daemon is the machine.
 
 Podman's whole pitch is: get rid of the machine. There is no daemon. When you run `podman run`, *that process* pulls the image and starts the container. When the container runs, it is a child of your shell, not a child of a root service you never see. That one architectural choice ripples into everything else, so it is worth slowing down on.
 
@@ -35,7 +35,7 @@ you ──> podman ──> conmon ──> your container
 
 *What just happened:* there is no central privileged broker. `podman` does the setup itself and then hands the running container to a tiny monitor process called `conmon` (container monitor), which babysits it so the container keeps running after your `podman` command exits. No root daemon sits in the middle.
 
-> The shorthand you will hear is "daemonless." It does not mean nothing runs in the background — `conmon` does, one per container. It means there is no single long-lived root service that owns every container on the box.
+> The shorthand you will hear is "daemonless." It does not mean nothing runs in the background - `conmon` does, one per container. It means there is no single long-lived root service that owns every container on the box.
 
 ## Rootless: the part that actually matters
 
@@ -60,28 +60,28 @@ chris    48213 sleep 600
 
 This mapping is driven by two files, `/etc/subuid` and `/etc/subgid`, which grant your user a range of "subordinate" UIDs to hand out inside containers. If Podman ever complains about user namespaces on a fresh box, those files (or the `newuidmap`/`newgidmap` helpers) are almost always the missing piece.
 
-## "Drop-in for Docker" — true, with footnotes
+## "Drop-in for Docker" - true, with footnotes
 
-Podman implements the same command-line interface as Docker on purpose. The verbs, flags, and image format (OCI — the Open Container Initiative standard, which Docker also produces) are shared. So this works:
+Podman implements the same command-line interface as Docker on purpose. The verbs, flags, and image format (OCI - the Open Container Initiative standard, which Docker also produces) are shared. So this works:
 
 ```console
 $ alias docker=podman
 $ docker run --rm -p 8080:80 docker.io/library/nginx
 ```
 
-*What just happened:* you aliased `docker` to `podman` and a standard `docker run` line worked unchanged. Most scripts, most tutorials, most muscle memory carry straight over. Note the full image name `docker.io/library/nginx` — Podman does not assume Docker Hub the way Docker does, a difference phase 2 returns to.
+*What just happened:* you aliased `docker` to `podman` and a standard `docker run` line worked unchanged. Most scripts, most tutorials, most muscle memory carry straight over. Note the full image name `docker.io/library/nginx` - Podman does not assume Docker Hub the way Docker does, a difference phase 2 returns to.
 
 The footnotes are real, though, and they all trace back to the missing daemon:
 
 - There is no `docker.sock` by default, so tools that talk to the Docker API need Podman's compatibility socket switched on (phase 3).
-- Containers do not auto-restart on reboot via a daemon, because there is no daemon to do it — you use systemd instead (phase 3).
+- Containers do not auto-restart on reboot via a daemon, because there is no daemon to do it - you use systemd instead (phase 3).
 - Rootless networking and low ports behave differently, because you are not root (phase 2 and 3).
 
 None of these are dealbreakers. They are the bill that comes due for not running a privileged daemon, and for many teams it is a bill worth paying.
 
 ## For builders
 
-If you are coming from [/guides/docker-without-the-magic](/guides/docker-without-the-magic), the mental shift is small but load-bearing: stop thinking of "the container engine" as a service you talk to, and start thinking of it as a command you run. Everything that used to be the daemon's job — restarts, the API socket, owning the container lifecycle — becomes either your job or systemd's job. That reframing is most of what makes Podman click.
+If you are coming from [/guides/docker-without-the-magic](/guides/docker-without-the-magic), the mental shift is small but load-bearing: stop thinking of "the container engine" as a service you talk to, and start thinking of it as a command you run. Everything that used to be the daemon's job - restarts, the API socket, owning the container lifecycle - becomes either your job or systemd's job. That reframing is most of what makes Podman click.
 
 ```quiz
 [

@@ -1,6 +1,6 @@
 // Sandboxed JS execution worker.
 //
-// Runs user code with `eval` inside a Web Worker — no DOM, no window, no
+// Runs user code with `eval` inside a Web Worker - no DOM, no window, no
 // SvelteKit globals. We capture console.* and the value of the last expression,
 // then post the result back. The main thread enforces a timeout and terminates
 // us if a runaway loop (e.g. `while (true) {}`) never yields.
@@ -56,7 +56,7 @@ self.onmessage = (e) => {
   };
 
   try {
-    // Indirect eval runs in the global (worker) scope — no closure leakage from
+    // Indirect eval runs in the global (worker) scope - no closure leakage from
     // this function. The trailing wrap captures the completion value of the last
     // expression the same way a REPL does.
     const indirectEval = eval;

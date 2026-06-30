@@ -2,7 +2,7 @@
 title: "Under the Surface"
 guide: "macos-under-the-hood"
 phase: 3
-summary: "The Terminal runs zsh, macOS's default shell; launchd is the service manager that starts and supervises everything (macOS's answer to Linux's systemd); and Gatekeeper, SIP, and permission prompts are the security layers a power user meets — plus where macOS really differs from Linux."
+summary: "The Terminal runs zsh, macOS's default shell; launchd is the service manager that starts and supervises everything (macOS's answer to Linux's systemd); and Gatekeeper, SIP, and permission prompts are the security layers a power user meets - plus where macOS really differs from Linux."
 tags: [macos, terminal, zsh, launchd, gatekeeper, sip, security, linux]
 difficulty: intermediate
 synonyms: ["what shell does macos use", "what is zsh", "what is launchd", "launchd vs systemd", "what is gatekeeper", "what is sip macos", "system integrity protection", "macos permission prompts", "macos vs linux differences"]
@@ -12,7 +12,7 @@ updated: 2026-06-19
 # Under the Surface
 
 You've got the foundation (macOS is Unix) and the layout (apps are folders, settings live in Library).
-This last phase is about the parts you *operate* — the Terminal you type into, the invisible manager
+This last phase is about the parts you *operate* - the Terminal you type into, the invisible manager
 that keeps services running, and the security walls that occasionally stop you with a prompt or a flat
 "Operation not permitted." None of these are obstacles once you know what they're doing and why. Let's
 finish the tour.
@@ -35,33 +35,33 @@ $ echo $SHELL
 $ zsh --version
 zsh 5.9 (arm64-apple-darwin24.0)
 ```
-*What just happened:* `$SHELL` is the environment variable holding the path to your login shell — here
+*What just happened:* `$SHELL` is the environment variable holding the path to your login shell - here
 `/bin/zsh`, confirming zsh is the default. The version line even says `darwin24.0`: a quiet reminder
 that under this familiar shell sits **Darwin**, the Unix core from Phase 1. The whole reason this feels
 like Linux is that it's the same kind of shell over the same kind of Unix.
 
 ⚠️ **Gotcha: your startup file is `.zshrc`, not `.bashrc`.** Coming from Linux (or old Macs), muscle
-memory says edit `~/.bashrc` to set up your shell. On a default Mac that file is ignored — zsh reads
+memory says edit `~/.bashrc` to set up your shell. On a default Mac that file is ignored - zsh reads
 **`~/.zshrc`**. Put your aliases, your `PATH` additions (including the Homebrew line from Phase 2), and
 your prompt tweaks there. Editing the wrong file and wondering why nothing takes effect is a classic
 first-week-on-a-Mac afternoon lost.
 
 > ⏭️ If shells, `PATH`, aliases, and startup files are new, [The Terminal & Shell](/guides/the-terminal-and-shell)
-> is the dedicated guide — this section just names the macOS specifics (zsh, `~/.zshrc`).
+> is the dedicated guide - this section just names the macOS specifics (zsh, `~/.zshrc`).
 
 ## `launchd`: the manager that starts everything
 
 Back in [What an Operating System Is](/guides/what-an-operating-system-is) you saw that after the kernel
 boots, it starts **one first process** whose job is to start everything else. On macOS, that first
-process — and the manager that keeps services running for the rest of the time the Mac is on — is
+process - and the manager that keeps services running for the rest of the time the Mac is on - is
 **`launchd`**.
 
 **What it actually is.** `launchd` is macOS's **service manager**. It's the very first process the kernel
 launches (process ID 1), and it's responsible for starting, stopping, and supervising background
-services — Spotlight indexing, Time Machine, networking helpers, and any background agents apps install.
+services - Spotlight indexing, Time Machine, networking helpers, and any background agents apps install.
 If a service it's watching dies, `launchd` can bring it back.
 
-**Why people get this wrong / the Linux bridge.** If you know Linux, you know **systemd** — the thing you
+**Why people get this wrong / the Linux bridge.** If you know Linux, you know **systemd** - the thing you
 poke with `systemctl start ...`. `launchd` is **macOS's counterpart to systemd**: same role (start and
 supervise services), different tool. They are *not* the same software and the commands differ, but the
 *concept* maps cleanly, which is the useful part:
@@ -74,7 +74,7 @@ supervise services), different tool. They are *not* the same software and the co
 | A service is defined by | a `.plist` file | a `.service` unit file |
 
 📝 **Terminology.** *Service* (also *daemon*, or on macOS an *agent*) = a program that runs in the
-background without a window, doing ongoing work — indexing, syncing, listening on the network. *`launchctl`*
+background without a window, doing ongoing work - indexing, syncing, listening on the network. *`launchctl`*
 is the command-line tool for talking to `launchd`.
 
 You can watch `launchd` reporting on the services it manages:
@@ -88,43 +88,43 @@ PID     Status  Label
 ```
 *What just happened:* `launchctl list` asked `launchd` for the jobs it's overseeing. Each row is a
 managed service: a `PID` if it's currently running (or `-` if it's loaded but idle), a status code (`0`
-means it exited cleanly last time), and a reverse-DNS **Label** — the same `com.company.thing` naming
+means it exited cleanly last time), and a reverse-DNS **Label** - the same `com.company.thing` naming
 convention you saw on preference files in Phase 2. You're looking at the supervisor's roster of
 everything keeping your Mac alive in the background.
 
-**Why this saves you later.** When something background-y misbehaves — a sync agent stuck, a helper
-eating CPU — you now know there's a single manager responsible for it, with a tool (`launchctl`) to
+**Why this saves you later.** When something background-y misbehaves - a sync agent stuck, a helper
+eating CPU - you now know there's a single manager responsible for it, with a tool (`launchctl`) to
 inspect and control it, and that it's the *same idea* as `systemctl` if you've used Linux. The
 background of your Mac stops being a black box.
 
 ## The security walls a power user meets
 
 macOS is locked down by default, and as a power user you'll bump into three protections. Each one looks
-like it's "in your way" until you understand it's protecting you — then it just becomes something you know
+like it's "in your way" until you understand it's protecting you - then it just becomes something you know
 how to handle. Here's the cheat-card; explanations follow.
 
 | You see this | What's doing it | Calm response |
 |---|---|---|
-| *"App can't be opened — unidentified developer"* | **Gatekeeper** | Verify the source, then allow it in **System Settings → Privacy & Security**. |
+| *"App can't be opened - unidentified developer"* | **Gatekeeper** | Verify the source, then allow it in **System Settings → Privacy & Security**. |
 | *"Operation not permitted"* editing a `/System` file | **SIP** | That file is protected on purpose; you almost never should edit it. Find the right, unprotected place instead. |
 | *"App wants to access your Camera / Files / Desktop"* | **TCC permission prompts** | Grant or deny per app in **System Settings → Privacy & Security**. |
 
-### Gatekeeper — checking apps before they run
+### Gatekeeper - checking apps before they run
 
 **What it actually is.** **Gatekeeper** checks an app's signature and origin the first time you open it,
 to make sure it's from an identified developer and hasn't been tampered with. (This is what the
-`_CodeSignature` folder inside every `.app` from Phase 2 is *for*.) If an app fails the check — often
-because it's from an unidentified developer — Gatekeeper refuses to open it and shows a warning.
+`_CodeSignature` folder inside every `.app` from Phase 2 is *for*.) If an app fails the check - often
+because it's from an unidentified developer - Gatekeeper refuses to open it and shows a warning.
 
 ⚠️ **Gotcha:** the right move is *not* to reflexively disable security. When you trust the source, open
 **System Settings → Privacy & Security**, where macOS shows an **"Open Anyway"** button for the
 just-blocked app. That allows that one app without lowering the wall for everything else.
 
-### SIP — System Integrity Protection
+### SIP - System Integrity Protection
 
 **What it actually is.** **SIP** (System Integrity Protection) is a kernel-enforced wall that stops
 *even the administrator* from modifying protected system locations like `/System`. This is why, in Phase
-1, `/System` was "read-only" — SIP is the reason. It exists so that malware (or a careless command)
+1, `/System` was "read-only" - SIP is the reason. It exists so that malware (or a careless command)
 can't corrupt the core OS, even with admin rights.
 
 📝 **Terminology.** *SIP* = a protection that puts critical system files and processes off-limits to
@@ -132,27 +132,27 @@ modification, enforced by the kernel itself rather than ordinary file permission
 sometimes *still* says "Operation not permitted."
 
 🪖 **War story.** A teammate from Linux tried to drop a file into a `/System` path the way he would on a
-server, hit `sudo`, and got `Operation not permitted` anyway — and assumed his Mac was broken. It wasn't;
+server, hit `sudo`, and got `Operation not permitted` anyway - and assumed his Mac was broken. It wasn't;
 that was SIP doing exactly its job. The lesson: on a Mac, "permission denied even with `sudo`" usually
-isn't a permissions bug — it's SIP telling you you're trying to edit something that's protected on
-purpose. The fix is almost never "turn SIP off"; it's "I'm in the wrong place — put this where it
+isn't a permissions bug - it's SIP telling you you're trying to edit something that's protected on
+purpose. The fix is almost never "turn SIP off"; it's "I'm in the wrong place - put this where it
 belongs" (your `~/Library`, `/opt/homebrew`, `/usr/local`, or your own folders).
 
-### Permission prompts — apps asking for access
+### Permission prompts - apps asking for access
 
 **What it actually is.** The "*[App] would like to access your Camera / Microphone / Photos / Desktop
 folder*" prompts come from a system that requires apps to get your explicit consent before touching
-sensitive things. (Apple's internal name for it is **TCC** — Transparency, Consent, and Control.) Every
+sensitive things. (Apple's internal name for it is **TCC** - Transparency, Consent, and Control.) Every
 grant is recorded, and you can review and revoke them all in **System Settings → Privacy & Security**.
 
 **Why this saves you later.** All three walls share one logic: *the system, not just file permissions,
-decides what's allowed* — Gatekeeper for app origin, SIP for system files, TCC for sensitive data. When
-one stops you, you'll know which one it is and the calm, correct response — not a panicked "how do I turn
+decides what's allowed* - Gatekeeper for app origin, SIP for system files, TCC for sensitive data. When
+one stops you, you'll know which one it is and the calm, correct response - not a panicked "how do I turn
 off all security."
 
 ## Where macOS really differs from Linux
 
-You've seen how alike they are — same Unix shape, same shell feel, same service-manager concept. To close
+You've seen how alike they are - same Unix shape, same shell feel, same service-manager concept. To close
 the tour, here's an honest list of where the Mac genuinely goes its own way, so the similarities don't
 lull you into wrong assumptions:
 
@@ -165,7 +165,7 @@ lull you into wrong assumptions:
 | An app is | a `.app` **bundle** (a folder) | usually files spread across `/usr/bin`, `/etc`, … |
 | Your home | `/Users/you` | `/home/you` |
 | Settings format | `.plist` files | mostly plain-text config in `/etc` and dotfiles |
-| Command flavor | BSD-style (e.g. BSD `ls`, `sed`) | GNU-style (GNU `ls`, `sed`) — flags can differ |
+| Command flavor | BSD-style (e.g. BSD `ls`, `sed`) | GNU-style (GNU `ls`, `sed`) - flags can differ |
 
 💡 **Key point.** macOS and Linux are close enough that your Unix instincts transfer, and different enough
 that the details will occasionally bite. The win from this whole guide is exactly that double awareness:
@@ -179,13 +179,13 @@ The Mac isn't a sealed appliance anymore. Under the Dock and the wallpaper is **
 system: a kernel (XNU) managing the hardware, a familiar shell (zsh) over a familiar filesystem, apps
 that are really folders, settings tucked in `~/Library`, services supervised by `launchd`, and security
 walls (Gatekeeper, SIP, TCC) standing guard for good reasons. You can open the Terminal and recognize
-every layer — and that's the whole point: a Mac you can *reason* about.
+every layer - and that's the whole point: a Mac you can *reason* about.
 
 ## Recap
 
 1. The **Terminal** is a window; **zsh** is the default **shell** inside it. Your startup file is
    **`~/.zshrc`** (not `~/.bashrc`).
-2. **`launchd`** is macOS's **service manager** and first process — the counterpart to Linux's
+2. **`launchd`** is macOS's **service manager** and first process - the counterpart to Linux's
    **systemd**; control it with **`launchctl`**, services are defined by `.plist` files.
 3. Three security walls: **Gatekeeper** (checks apps before they run), **SIP** (protects `/System` from
    everyone, even admin), and **permission prompts / TCC** (apps ask before touching sensitive data).

@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Two tools, two jobs
 
-Here's the moment that makes this click. You open a pull request and get two comments. One says "indent this with 2 spaces, not 4." The other says "you wrote `if (user = admin)` — that's an assignment, not a comparison; it'll always be true." Both are about your code. They are not the same kind of problem at all. The first is taste dressed up as a rule. The second is a bug that will page someone at 3am.
+Here's the moment that makes this click. You open a pull request and get two comments. One says "indent this with 2 spaces, not 4." The other says "you wrote `if (user = admin)` - that's an assignment, not a comparison; it'll always be true." Both are about your code. They are not the same kind of problem at all. The first is taste dressed up as a rule. The second is a bug that will page someone at 3am.
 
 Prettier handles the first kind. ESLint handles the second. Once you feel that split in your bones, every confusing thing about these tools straightens out.
 
@@ -34,7 +34,7 @@ spacing                       accidental globals
 
 *What just happened:* the left column is cosmetic and has one defensible answer per project; the right column is about whether your code is correct. Different problems want different tools.
 
-The reason this matters: a formatter can be *deterministic*. Feed Prettier the same file twice and you get byte-for-byte the same output, every time, on every machine. It doesn't have opinions you argue with — it has one opinion and applies it everywhere. A linter can't work that way, because "is this a bug?" is a judgment call with hundreds of separate rules, each one on or off.
+The reason this matters: a formatter can be *deterministic*. Feed Prettier the same file twice and you get byte-for-byte the same output, every time, on every machine. It doesn't have opinions you argue with - it has one opinion and applies it everywhere. A linter can't work that way, because "is this a bug?" is a judgment call with hundreds of separate rules, each one on or off.
 
 ## Why Prettier wins the style argument
 
@@ -53,11 +53,11 @@ const user = { name: "Ada", role: "admin", skills: ["math", "logic"] };
 
 *What just happened:* Prettier didn't ask your preference. It normalized spacing, unified the quotes, added the trailing semicolon, and collapsed the object onto one line because it fit within the print width. Run it on a teammate's machine and the output is identical.
 
-> The deepest value of a formatter isn't pretty code — it's that formatting stops being a *decision*. A decision nobody has to make is a meeting nobody has to have.
+> The deepest value of a formatter isn't pretty code - it's that formatting stops being a *decision*. A decision nobody has to make is a meeting nobody has to have.
 
 ## Why ESLint stays in its lane
 
-ESLint is the opposite kind of tool: a big, configurable engine that walks your code's structure and checks it against rules you choose. `no-unused-vars`, `no-undef`, `eqeqeq` (require `===`), `no-console` — each is a separate rule you can turn on, turn off, or set to warn instead of error. Plugins add rules for React, TypeScript, accessibility, imports, and more.
+ESLint is the opposite kind of tool: a big, configurable engine that walks your code's structure and checks it against rules you choose. `no-unused-vars`, `no-undef`, `eqeqeq` (require `===`), `no-console` - each is a separate rule you can turn on, turn off, or set to warn instead of error. Plugins add rules for React, TypeScript, accessibility, imports, and more.
 
 Because ESLint *can* check formatting too (it has old rules for indentation and quotes), people used to make it do both jobs. That's the classic mistake. When ESLint and Prettier both have an opinion about indentation, they fight: Prettier reformats a line, ESLint flags it, you fix it to satisfy ESLint, Prettier reformats it back. You spend an afternoon refereeing two tools that should never have overlapped.
 
@@ -74,7 +74,7 @@ The clean mental model: **Prettier owns how the code looks. ESLint owns whether 
 
 ## For builders
 
-If your project uses JavaScript or TypeScript — a Node service, a React app, a CLI — you almost certainly want both. Prettier alone leaves real bugs in your code. ESLint alone leaves you arguing about commas. The combination is the default for a reason: it splits a messy human problem into two clean machine problems. And if you're still shaky on the language itself, the [JavaScript from zero](/guides/javascript-from-zero) guide is the foundation these tools sit on top of.
+If your project uses JavaScript or TypeScript - a Node service, a React app, a CLI - you almost certainly want both. Prettier alone leaves real bugs in your code. ESLint alone leaves you arguing about commas. The combination is the default for a reason: it splits a messy human problem into two clean machine problems. And if you're still shaky on the language itself, the [JavaScript from zero](/guides/javascript-from-zero) guide is the foundation these tools sit on top of.
 
 ```quiz
 [
@@ -82,7 +82,7 @@ If your project uses JavaScript or TypeScript — a Node service, a React app, a
     "q": "Which problem is Prettier's job, not ESLint's?",
     "choices": ["Using == instead of ===", "An unused variable", "Inconsistent indentation", "A React hook called inside an if"],
     "answer": 2,
-    "explain": "Indentation is purely cosmetic formatting — Prettier's territory. The other three are correctness/quality concerns that ESLint catches."
+    "explain": "Indentation is purely cosmetic formatting - Prettier's territory. The other three are correctness/quality concerns that ESLint catches."
   },
   {
     "q": "Why can Prettier be deterministic but ESLint cannot?",

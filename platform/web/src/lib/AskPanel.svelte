@@ -1,5 +1,5 @@
 <script>
-  // Explicit "Ask the guides" panel — only rendered when AI Search is configured.
+  // Explicit "Ask the guides" panel - only rendered when AI Search is configured.
   // Calls /ask.json ONCE per button press (never on keystroke), so it can't drain
   // the query budget. Keyword (Tantivy) results stay on the page as the fallback.
   export let query = '';
@@ -101,15 +101,15 @@
       const res = await fetch(`/ask.json?q=${encodeURIComponent(text)}`);
       const data = await res.json();
       if (!data.enabled) { message = 'AI answers are not enabled.'; state = 'error'; return; }
-      if (data.capReached) { message = 'AI answers have hit this month’s limit — keyword results are below.'; state = 'error'; return; }
-      if (data.error) { message = 'AI answer is unavailable right now — see keyword results below.'; state = 'error'; return; }
+      if (data.capReached) { message = 'AI answers have hit this month’s limit - keyword results are below.'; state = 'error'; return; }
+      if (data.error) { message = 'AI answer is unavailable right now - see keyword results below.'; state = 'error'; return; }
       mode = data.mode || (data.answer ? 'answer' : 'search');
       answer = data.answer || '';
       results = data.results || [];
       sources = data.sources || [];
       state = 'done';
     } catch (e) {
-      message = 'AI answer is unavailable right now — see keyword results below.';
+      message = 'AI answer is unavailable right now - see keyword results below.';
       state = 'error';
     }
   }
@@ -122,7 +122,7 @@
       {#if state === 'loading'}<i class="ti ti-loader-2 spin" aria-hidden="true"></i> Thinking…{:else}Ask AI{/if}
     </button>
   </div>
-  <p class="ask-hint">Semantic search across the guides — finds the right passages even when the words don't match. One query per ask; keyword results below are instant.</p>
+  <p class="ask-hint">Semantic search across the guides - finds the right passages even when the words don't match. One query per ask; keyword results below are instant.</p>
 
   {#if state === 'done'}
     {#if mode === 'answer'}
@@ -149,7 +149,7 @@
         {/each}
       </ul>
     {:else}
-      <p class="ask-msg">No close matches — see the keyword results below.</p>
+      <p class="ask-msg">No close matches - see the keyword results below.</p>
     {/if}
   {:else if state === 'error'}
     <p class="ask-msg">{message}</p>

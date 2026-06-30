@@ -27,7 +27,7 @@ pre-commit install          # the git hook, once per clone
 pre-commit installed at .git/hooks/pre-commit
 ```
 
-*What just happened:* the framework generated `.git/hooks/pre-commit` for this clone. From now on, every `git commit` in this repo triggers the framework. Note what's still missing — you haven't told it *what to run* yet. That's the config file.
+*What just happened:* the framework generated `.git/hooks/pre-commit` for this clone. From now on, every `git commit` in this repo triggers the framework. Note what's still missing - you haven't told it *what to run* yet. That's the config file.
 
 ## Step two: write the config
 
@@ -50,7 +50,7 @@ repos:
       - id: ruff-format    # the formatter
 ```
 
-*What just happened:* you declared two source repos. `rev` pins each to an exact version — this is the "everyone runs the identical tool" guarantee from Phase 1. Under each, `hooks:` lists the specific checks by their `id`. The framework knows how to fetch and install each one; you don't manage their dependencies yourself.
+*What just happened:* you declared two source repos. `rev` pins each to an exact version - this is the "everyone runs the identical tool" guarantee from Phase 1. Under each, `hooks:` lists the specific checks by their `id`. The framework knows how to fetch and install each one; you don't manage their dependencies yourself.
 
 A few of these earn their place in almost any repo, so it's worth knowing what they do:
 
@@ -61,11 +61,11 @@ check-yaml               parses YAML files, fails on syntax errors
 check-added-large-files  blocks accidentally committed big binaries
 ```
 
-*What just happened:* these are cheap, language-agnostic safety nets. They catch the dull mistakes — a giant file you `git add`-ed by accident, a YAML you broke with a stray indent — that would otherwise surface much later.
+*What just happened:* these are cheap, language-agnostic safety nets. They catch the dull mistakes - a giant file you `git add`-ed by accident, a YAML you broke with a stray indent - that would otherwise surface much later.
 
 ## Step three: the commit loop
 
-Now the payoff. You stage a change and commit. The framework runs your hooks **on the staged files only** — not your whole repo, only what this commit touches. That's what keeps it fast.
+Now the payoff. You stage a change and commit. The framework runs your hooks **on the staged files only** - not your whole repo, only what this commit touches. That's what keeps it fast.
 
 ```console
 $ git add app.py
@@ -78,7 +78,7 @@ ruff.....................................................................Passed
 ruff-format..............................................................Passed
 ```
 
-*What just happened:* `trailing-whitespace` found a problem **and fixed it** — see "files were modified by this hook." The overall run Failed, so the commit was *aborted*. This is the key behavior of fixing hooks: they edit the file, but the fix is now an *unstaged* change, so git won't include it silently. You're being told to look.
+*What just happened:* `trailing-whitespace` found a problem **and fixed it** - see "files were modified by this hook." The overall run Failed, so the commit was *aborted*. This is the key behavior of fixing hooks: they edit the file, but the fix is now an *unstaged* change, so git won't include it silently. You're being told to look.
 
 This trips up everyone once. A formatter that "passes by fixing" still fails the commit, on purpose, so a machine never rewrites your code into a commit without you seeing it. The fix is to re-stage and commit again.
 
@@ -124,7 +124,7 @@ ruff-format..............................................................Passed
 
 *What just happened:* `--all-files` ignores staging and checks the entire repo. Run this right after adding the config so you fix the whole codebase in one pass, instead of being ambushed file-by-file over the next week of commits.
 
-> First-run note: the very first commit (or first `run`) after adding a hook is slow — the framework is downloading and building each tool's isolated environment. It caches them, so every run after is fast. Don't panic at the initial pause.
+> First-run note: the very first commit (or first `run`) after adding a hook is slow - the framework is downloading and building each tool's isolated environment. It caches them, so every run after is fast. Don't panic at the initial pause.
 
 For builders: keep the config small at first. Three or four cheap hooks that everyone tolerates beat twenty strict ones that make people reach for `--no-verify` (Phase 3) on day one. You can always add more once the team trusts the loop.
 
@@ -138,7 +138,7 @@ For builders: keep the config small at first. Three or four cheap hooks that eve
   },
   {
     "q": "A formatter hook reports 'files were modified by this hook' and the commit fails. What do you do?",
-    "choices": ["Run git commit --amend", "Delete the hook from the config", "Re-stage the fixed file with git add, then commit again", "Nothing — the commit already went through"],
+    "choices": ["Run git commit --amend", "Delete the hook from the config", "Re-stage the fixed file with git add, then commit again", "Nothing - the commit already went through"],
     "answer": 2,
     "explain": "The auto-fix is left unstaged on purpose; stage it with git add and commit again."
   },

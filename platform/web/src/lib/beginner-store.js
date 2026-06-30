@@ -4,7 +4,7 @@
 // the layout sidebar, category pages, and home. Persisted to localStorage.
 //
 // Default is OFF. The learning path / right rail are intentionally NOT filtered
-// by this — they follow the level chosen in the path wizard.
+// by this - they follow the level chosen in the path wizard.
 import { writable } from 'svelte/store';
 
 export const BEGINNER_KEY = 'tmm-beginner';

@@ -15,7 +15,7 @@ Open any identity provider for the first time and the dashboard throws nouns at 
 
 ## Realm: the walled garden of users
 
-A **realm** is a self-contained universe of users, credentials, roles, and settings. Users in one realm cannot see or log into another. Everything you configure — login policy, social providers, MFA rules — lives inside a realm.
+A **realm** is a self-contained universe of users, credentials, roles, and settings. Users in one realm cannot see or log into another. Everything you configure - login policy, social providers, MFA rules - lives inside a realm.
 
 ```text
 Keycloak instance
@@ -26,7 +26,7 @@ Keycloak instance
 └── realm: master            ← admin-only; do NOT put app users here
 ```
 
-*What just happened:* you separated two completely different populations. Staff and customers never mix, have different login rules, and can't authenticate across the boundary. The `master` realm exists only to administer Keycloak itself — putting application users there is a classic first mistake.
+*What just happened:* you separated two completely different populations. Staff and customers never mix, have different login rules, and can't authenticate across the boundary. The `master` realm exists only to administer Keycloak itself - putting application users there is a classic first mistake.
 
 In Auth0 the equivalent boundary is the **tenant** (one per environment, e.g. `acme-dev`, `acme-prod`), with **connections** carrying the user populations inside it. Different word, same job: an isolated container of identities.
 
@@ -37,14 +37,14 @@ A **client** is a registration for one application that wants to use the realm t
 ```text
 realm: acme-customers
 ├── client: web-spa
-│     type: public (no secret — runs in a browser)
+│     type: public (no secret - runs in a browser)
 │     redirect URIs: https://app.acme.com/callback
 │     flow: authorization code + PKCE
 ├── client: mobile-app
 │     type: public
 │     redirect URIs: com.acme.app://callback
 └── client: orders-api
-      type: confidential (has a secret — runs on a server)
+      type: confidential (has a secret - runs on a server)
       used to validate incoming tokens
 ```
 
@@ -52,8 +52,8 @@ realm: acme-customers
 
 Two client types matter:
 
-- **public** — runs somewhere a secret can't be hidden (a browser SPA, a mobile app). It proves itself with PKCE instead of a secret.
-- **confidential** — runs on a server where a secret stays secret. It can use a client secret to authenticate.
+- **public** - runs somewhere a secret can't be hidden (a browser SPA, a mobile app). It proves itself with PKCE instead of a secret.
+- **confidential** - runs on a server where a secret stays secret. It can use a client secret to authenticate.
 
 Auth0 calls a client an **application**, with the same public/confidential split (it labels them "Single Page App," "Native," "Regular Web App," "Machine to Machine"). The mental model is identical.
 
@@ -66,10 +66,10 @@ To connect an app you need three values from the realm and one decision. Here is
 issuer:    https://id.acme.com/realms/acme-customers
 client_id: web-spa
 redirect_uri: https://app.acme.com/callback
-# no client_secret — this is a public client using PKCE
+# no client_secret - this is a public client using PKCE
 ```
 
-*What just happened:* `issuer` points at the realm, `client_id` names your registered client, and `redirect_uri` matches one you allow-listed. From the issuer URL the app can discover everything else automatically — every OIDC provider publishes its endpoints and signing keys at a well-known address:
+*What just happened:* `issuer` points at the realm, `client_id` names your registered client, and `redirect_uri` matches one you allow-listed. From the issuer URL the app can discover everything else automatically - every OIDC provider publishes its endpoints and signing keys at a well-known address:
 
 ```bash
 curl https://id.acme.com/realms/acme-customers/.well-known/openid-configuration
@@ -86,11 +86,11 @@ curl https://id.acme.com/realms/acme-customers/.well-known/openid-configuration
 }
 ```
 
-*What just happened:* you fetched the realm's public directory. Your auth library reads this once and knows where to send the user to log in, where to exchange the code for a token, and (via `jwks_uri`) which public keys verify the token's signature. You configured one URL; the standard filled in the rest. This is why swapping Auth0 for Keycloak later is mostly a change of issuer URL — both publish the same well-known document.
+*What just happened:* you fetched the realm's public directory. Your auth library reads this once and knows where to send the user to log in, where to exchange the code for a token, and (via `jwks_uri`) which public keys verify the token's signature. You configured one URL; the standard filled in the rest. This is why swapping Auth0 for Keycloak later is mostly a change of issuer URL - both publish the same well-known document.
 
 ## Roles: who is allowed to do what
 
-Login tells you *who* the user is. **Roles** are how the realm records *what they may do* — the authorization half of the story (the full distinction lives in /guides/auth-vs-authz). You define roles in the realm, assign them to users, and the IdP stamps them into the token.
+Login tells you *who* the user is. **Roles** are how the realm records *what they may do* - the authorization half of the story (the full distinction lives in /guides/auth-vs-authz). You define roles in the realm, assign them to users, and the IdP stamps them into the token.
 
 ```text
 realm roles:  admin, editor, viewer
@@ -112,9 +112,9 @@ When `asha` logs in, her token carries her roles. Decoded, the relevant slice lo
 }
 ```
 
-*What just happened:* your API doesn't query a database to learn Asha is an editor — it reads `realm_access.roles` straight out of the verified token. The IdP is the single source of truth for both identity and roles, and your app trusts the signature. (Auth0 delivers the same thing through roles/permissions surfaced as custom claims in the token.)
+*What just happened:* your API doesn't query a database to learn Asha is an editor - it reads `realm_access.roles` straight out of the verified token. The IdP is the single source of truth for both identity and roles, and your app trusts the signature. (Auth0 delivers the same thing through roles/permissions surfaced as custom claims in the token.)
 
-> Keep roles coarse — `admin`, `editor`, `viewer` — and decide fine-grained, data-specific permissions ("can edit *this* document") in your own app. The IdP knows roles; it does not know your business objects. Cramming per-record rules into the token bloats it and couples your domain to your auth vendor.
+> Keep roles coarse - `admin`, `editor`, `viewer` - and decide fine-grained, data-specific permissions ("can edit *this* document") in your own app. The IdP knows roles; it does not know your business objects. Cramming per-record rules into the token bloats it and couples your domain to your auth vendor.
 
 ## The everyday loop
 

@@ -71,7 +71,7 @@
   }
 </script>
 
-<svelte:head><title>Learn — build your path</title></svelte:head>
+<svelte:head><title>Learn - build your path</title></svelte:head>
 
 {#if !ready}
   <div class="path-loading" aria-hidden="true"></div>
@@ -79,7 +79,7 @@
   <header class="path-intro">
     <span class="eyebrow">Learn</span>
     <h1>Build your learning path</h1>
-    <p class="tagline">Tell us where you're starting and what you care about. We'll put the guides in a sensible order so you always know what to read next — and we'll keep track of how far you've come.</p>
+    <p class="tagline">Tell us where you're starting and what you care about. We'll put the guides in a sensible order so you always know what to read next - and we'll keep track of how far you've come.</p>
   </header>
 
   <section class="wiz-block">

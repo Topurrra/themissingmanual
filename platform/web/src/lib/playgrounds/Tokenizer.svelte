@@ -35,7 +35,7 @@
       <span class="tk-stat"><b>{chars ? (chars / tokens.length).toFixed(1) : 0}</b> chars/token</span>
     </div>
     <div class="tk-ctx"><div class="tk-fill" style={`width:${pct}%`}></div></div>
-    <p class="tk-note">≈ {pct.toFixed(2)}% of an 8K context window. Models bill by the token, not the word — short common words are one token, rare/long words split into several. (This is an approximation; real tokenizers use a learned vocabulary.)</p>
+    <p class="tk-note">≈ {pct.toFixed(2)}% of an 8K context window. Models bill by the token, not the word - short common words are one token, rare/long words split into several. (This is an approximation; real tokenizers use a learned vocabulary.)</p>
   </div>
 </figure>
 

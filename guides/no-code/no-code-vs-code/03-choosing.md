@@ -23,19 +23,19 @@ You don't need a 40-row spreadsheet to choose a tier. You need a handful of hone
 Run down this list. The first strong "yes" usually points at your tier.
 
 **1. Does a finished product already do this?**
-If a scheduling tool, a form tool, or a help-desk tool already solves your problem, you're not building anything — you're buying. Buy it. This is the cheapest, fastest, lowest-maintenance answer there is, and it's the most overlooked. Don't build what you can rent.
+If a scheduling tool, a form tool, or a help-desk tool already solves your problem, you're not building anything - you're buying. Buy it. This is the cheapest, fastest, lowest-maintenance answer there is, and it's the most overlooked. Don't build what you can rent.
 
 **2. Is this logic the core of your business, or a chore around the edges?**
-Edge chores — routing form responses, sending reminders, syncing two systems — are perfect no-code territory. Your *core* — the thing customers pay you for, the logic that has to be exactly right and uniquely yours — leans toward code, because that's the one place control is worth its price.
+Edge chores - routing form responses, sending reminders, syncing two systems - are perfect no-code territory. Your *core* - the thing customers pay you for, the logic that has to be exactly right and uniquely yours - leans toward code, because that's the one place control is worth its price.
 
 **3. How predictable are the requirements?**
-If you can see the whole need today and it sits inside a tool's menu, no-code is a fine bet. If requirements are fuzzy and you expect to bend the rules in ways you can't yet name, you'll hit the ceiling — favor low-code or code.
+If you can see the whole need today and it sits inside a tool's menu, no-code is a fine bet. If requirements are fuzzy and you expect to bend the rules in ways you can't yet name, you'll hit the ceiling - favor low-code or code.
 
 **4. Who will own this in a year?**
 If the answer is "a non-technical teammate, occasionally," keep it inside an approachable tool. If it's "our engineers, continuously," you'll want something they can version, test, and document like real software.
 
 **5. What does it cost if it breaks at 2am?**
-Low stakes — a form goes down, you fix it in the morning — tolerate no-code happily. High stakes — payments, customer data, the thing that stops revenue if it stops — demand the control and observability that code gives you.
+Low stakes - a form goes down, you fix it in the morning - tolerate no-code happily. High stakes - payments, customer data, the thing that stops revenue if it stops - demand the control and observability that code gives you.
 
 ```text
 Quick read:
@@ -64,7 +64,7 @@ One or two of these is normal life. Three or more, on something that matters, is
 
 Here's the move that resolves the whole debate: **you don't have to pick one tier for the whole system.** The strongest setups put each piece at the rung that fits it.
 
-The common shape is a no-code or low-code surface — the parts that change often and don't need to be perfect — sitting on top of a small amount of real code for the parts that do.
+The common shape is a no-code or low-code surface - the parts that change often and don't need to be perfect - sitting on top of a small amount of real code for the parts that do.
 
 ```mermaid
 graph TD
@@ -75,10 +75,10 @@ graph TD
 
 Concretely:
 
-- Keep your **data** in a place you own and can leave with — a real database — rather than trapped inside a tool's format. This alone defuses most lock-in.
+- Keep your **data** in a place you own and can leave with - a real database - rather than trapped inside a tool's format. This alone defuses most lock-in.
 - Use **no-code for the surface**: the forms, the dashboards, the internal tools your team clicks through daily. These change constantly and benefit from being fast to edit.
-- Write **code for the core**: the pricing, the matching, the validation — the one or two pieces where being wrong is expensive and being unique is the point. Expose them so the no-code surface can call them.
+- Write **code for the core**: the pricing, the matching, the validation - the one or two pieces where being wrong is expensive and being unique is the point. Expose them so the no-code surface can call them.
 
-This is why no-code and code were never really enemies. The skill isn't loyalty to a tier; it's reading each piece of the job and placing it at the right rung — buy the finished thing where you can, configure where you can, and write code only where the control is genuinely worth the cost.
+This is why no-code and code were never really enemies. The skill isn't loyalty to a tier; it's reading each piece of the job and placing it at the right rung - buy the finished thing where you can, configure where you can, and write code only where the control is genuinely worth the cost.
 
 Pick deliberately, watch for the warning signs, keep your data portable, and let the boring 80% be fast while the critical 20% is yours. That's the whole framework. Everything else is choosing well, one piece at a time.

@@ -1,5 +1,5 @@
 // Remote MCP server (Model Context Protocol, Streamable HTTP transport) for
-// external AI tools — Claude Desktop, Cursor, etc. Stateless and read-only:
+// external AI tools - Claude Desktop, Cursor, etc. Stateless and read-only:
 // each POST is a self-contained JSON-RPC 2.0 message, answered with application/json
 // (the spec permits a JSON response instead of an SSE stream for simple req/reply).
 // Tools reuse the same pipeline the in-browser WebMcp uses: /search.json for search

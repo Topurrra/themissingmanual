@@ -2,7 +2,7 @@
 title: "Writing a real config: caching, orbs, and fan-out"
 guide: circleci-from-zero
 phase: 2
-summary: "Cloud-native CI/CD with config.yml: jobs, workflows, executors, and orbs — fast parallel pipelines without running your own server."
+summary: "Cloud-native CI/CD with config.yml: jobs, workflows, executors, and orbs - fast parallel pipelines without running your own server."
 tags: [circleci, ci, cd, pipelines, devops, yaml]
 difficulty: intermediate
 synonyms: ["circleci tutorial", "circleci config.yml", "circleci workflows", "circleci orbs", "circleci vs github actions", "how does circleci work"]
@@ -38,7 +38,7 @@ jobs:
 
 *What just happened:* `restore_cache` looks for a saved cache whose key starts with one of the listed prefixes, newest match wins. The key embeds `checksum "package-lock.json"`, so when your lockfile is unchanged the exact cache is restored and `npm ci` finishes in seconds. When the lockfile changes the checksum changes, the exact key misses, the fallback `deps-v1-` restores the most recent old cache (a warm start), and `save_cache` writes a fresh one under the new key.
 
-Two things bite people here. **Cache keys are immutable** — once a key is written, CircleCI never overwrites it. That's why the checksum is in the key: a new lockfile means a new key. And the `deps-v1-` prefix is a manual version: bump it to `deps-v2-` when you want to throw the whole cache away.
+Two things bite people here. **Cache keys are immutable** - once a key is written, CircleCI never overwrites it. That's why the checksum is in the key: a new lockfile means a new key. And the `deps-v1-` prefix is a manual version: bump it to `deps-v2-` when you want to throw the whole cache away.
 
 > Caching is an optimization, never a source of truth. Your build must still pass with an empty cache, because that's exactly what happens on a fresh branch or after a key bump. If a green build depends on a warm cache, you have a bug, not a cache.
 
@@ -62,7 +62,7 @@ jobs:
 
 *What just happened:* the `orbs` block imports `circleci/node` at version `5.2.0`. That gives us `node/install-packages`, a single command that does the restore-cache, install, and save-cache sequence we wrote by hand above. The config got shorter and harder to get wrong, because the caching logic is maintained by the orb's authors instead of by you.
 
-Orbs are named `namespace/name@version`. Pin the version (don't float to "latest") so a pipeline that's green today doesn't break tomorrow when the orb publishes a change. There are orbs for AWS, Slack notifications, Docker, browser tools, and most things you'd otherwise script — but each one is third-party code running in your pipeline, so prefer the `circleci/` official orbs and read what an unfamiliar orb does before trusting it with credentials.
+Orbs are named `namespace/name@version`. Pin the version (don't float to "latest") so a pipeline that's green today doesn't break tomorrow when the orb publishes a change. There are orbs for AWS, Slack notifications, Docker, browser tools, and most things you'd otherwise script - but each one is third-party code running in your pipeline, so prefer the `circleci/` official orbs and read what an unfamiliar orb does before trusting it with credentials.
 
 ## Approval gates: putting a human in the loop
 
@@ -85,7 +85,7 @@ workflows:
             - hold-for-approval
 ```
 
-*What just happened:* `hold-for-approval` has `type: approval`, which is a special job that runs no commands — it pauses the workflow and shows a button in the CircleCI UI. Nothing downstream of it runs until someone with access clicks approve. Because `deploy` requires `hold-for-approval`, your code is built and tested automatically, then waits for a human green light before it ships. That's the standard pattern for "automate everything up to production, then ask."
+*What just happened:* `hold-for-approval` has `type: approval`, which is a special job that runs no commands - it pauses the workflow and shows a button in the CircleCI UI. Nothing downstream of it runs until someone with access clicks approve. Because `deploy` requires `hold-for-approval`, your code is built and tested automatically, then waits for a human green light before it ships. That's the standard pattern for "automate everything up to production, then ask."
 
 ## Filters: run jobs only on the right branches
 
@@ -108,7 +108,7 @@ workflows:
 
 ## Putting it together
 
-A real, readable config for a Node service ends up looking like this — orb for the boring parts, a clear workflow, a filtered deploy:
+A real, readable config for a Node service ends up looking like this - orb for the boring parts, a clear workflow, a filtered deploy:
 
 ```yaml
 version: 2.1
@@ -141,7 +141,7 @@ workflows:
               only: main
 ```
 
-*What just happened:* every push runs `test`. Only a push to `main` that passes `test` runs `deploy`. The caching is handled by the orb, the dependency graph is one `requires`, and the whole thing fits on a screen. That's the target shape — boring, short, and obvious.
+*What just happened:* every push runs `test`. Only a push to `main` that passes `test` runs `deploy`. The caching is handled by the orb, the dependency graph is one `requires`, and the whole thing fits on a screen. That's the target shape - boring, short, and obvious.
 
 For builders: keep the config as flat as you can. When you feel the urge to add a fifth job or a clever conditional, ask whether an orb already solves it. The best CircleCI configs are the ones a teammate can read in thirty seconds.
 

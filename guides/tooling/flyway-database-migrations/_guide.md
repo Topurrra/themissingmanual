@@ -27,12 +27,12 @@ This guide gets you from "I have a database and some SQL" to "every environment 
 
 ## How to read this
 
-Read the phases in order. Phase 1 builds the mental model: why a schema is code, and the three rules Flyway enforces. Phase 2 is the everyday loop: writing migrations, running them, repeatable migrations. Phase 3 is production reality: baselining a database that already exists, what happens when a migration fails, and why "rollback" mostly means writing the next migration. If you only have five minutes, read Phase 1 — it's the part that changes how you think.
+Read the phases in order. Phase 1 builds the mental model: why a schema is code, and the three rules Flyway enforces. Phase 2 is the everyday loop: writing migrations, running them, repeatable migrations. Phase 3 is production reality: baselining a database that already exists, what happens when a migration fails, and why "rollback" mostly means writing the next migration. If you only have five minutes, read Phase 1 - it's the part that changes how you think.
 
 ## The phases
 
-1. [Phase 1: A Schema Is Code](01-schema-is-code.md) — what Flyway actually is, the history table, and the three rules
-2. [Phase 2: The Everyday Loop](02-the-everyday-loop.md) — writing V-migrations, running them, repeatable migrations
-3. [Phase 3: Production Reality](03-production-reality.md) — baselining, failed migrations, and the rollback truth
+1. [Phase 1: A Schema Is Code](01-schema-is-code.md) - what Flyway actually is, the history table, and the three rules
+2. [Phase 2: The Everyday Loop](02-the-everyday-loop.md) - writing V-migrations, running them, repeatable migrations
+3. [Phase 3: Production Reality](03-production-reality.md) - baselining, failed migrations, and the rollback truth
 
 [Phase 1: A Schema Is Code](01-schema-is-code.md) →

@@ -20,7 +20,7 @@ updated: 2026-06-30
 
 Here's the mental shift that makes everything else fall into place: with Prisma, you don't write SQL to change your database by hand. You edit one file that describes the shape you want, and Prisma figures out the SQL to get there. That file is `schema.prisma`, and it is the single source of truth for what your database *should* look like.
 
-Most database tools start the other way around — you write the SQL, the database is the truth, and your code chases it. Prisma flips that. You declare the destination; Prisma writes the directions.
+Most database tools start the other way around - you write the SQL, the database is the truth, and your code chases it. Prisma flips that. You declare the destination; Prisma writes the directions.
 
 ## What the schema looks like
 
@@ -52,7 +52,7 @@ model Post {
 }
 ```
 
-*What just happened:* you described two tables, their columns, types, a unique constraint on `email`, and a foreign-key relationship — all without writing a line of SQL. The `?` on `name` means nullable. `User` is the truth; the database doesn't exist yet.
+*What just happened:* you described two tables, their columns, types, a unique constraint on `email`, and a foreign-key relationship - all without writing a line of SQL. The `?` on `name` means nullable. `User` is the truth; the database doesn't exist yet.
 
 ## A migration is a frozen snapshot of one change
 
@@ -85,7 +85,7 @@ CREATE TABLE "User" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 ```
 
-*What just happened:* Prisma translated your declarative schema into concrete `CREATE TABLE` statements. This SQL is now frozen on disk. It is a fact about history — "on this date, we made these tables." That permanence is the whole point, and it's why phase 3 will tell you never to edit it after it's applied.
+*What just happened:* Prisma translated your declarative schema into concrete `CREATE TABLE` statements. This SQL is now frozen on disk. It is a fact about history - "on this date, we made these tables." That permanence is the whole point, and it's why phase 3 will tell you never to edit it after it's applied.
 
 ## Three states, and the gap between them
 
@@ -98,7 +98,7 @@ flowchart LR
   D -. compared back to .-> S
 ```
 
-*What just happened:* the schema is intent, the migrations folder is the recorded path, and the database is reality. Prisma's job is to keep these three agreeing. When they disagree, that's **drift**, and detecting it is one of the things that makes Prisma trustworthy on a team — more on that in phase 3.
+*What just happened:* the schema is intent, the migrations folder is the recorded path, and the database is reality. Prisma's job is to keep these three agreeing. When they disagree, that's **drift**, and detecting it is one of the things that makes Prisma trustworthy on a team - more on that in phase 3.
 
 > Migrations are *generated*, but they are not disposable. Once a migration has run anywhere real, it's part of your project's history, the same way a Git commit is. You add new ones; you don't rewrite old ones.
 

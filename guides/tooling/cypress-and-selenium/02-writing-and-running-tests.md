@@ -13,7 +13,7 @@ updated: 2026-06-30
 
 Phase 1 gave you the why. Now the day-to-day. You'll spend most of your time doing four things: finding elements, acting on them, waiting for the app to catch up, and asserting that something is true. Each tool has a distinct rhythm for those four, and once you feel the rhythm, both tools become predictable.
 
-We'll walk the same little flow in each — open a page, search, check a result — and point out where the experience genuinely diverges.
+We'll walk the same little flow in each - open a page, search, check a result - and point out where the experience genuinely diverges.
 
 ## Getting each one running
 
@@ -22,7 +22,7 @@ Cypress installs as a single npm dev dependency and brings its own bundled brows
 ```bash
 npm install --save-dev cypress
 npx cypress open      # opens the interactive runner with time-travel UI
-npx cypress run       # headless, for CI — prints results to the terminal
+npx cypress run       # headless, for CI - prints results to the terminal
 ```
 
 *What just happened:* one install gave you the test framework, the assertion library, and a browser, all wired together. `open` is for writing and debugging; `run` is what your CI uses.
@@ -31,15 +31,15 @@ Selenium needs two pieces: a client library in your language and the browser's d
 
 ```bash
 pip install selenium          # the Python client binding
-# No manual chromedriver download — Selenium Manager resolves it on first run.
+# No manual chromedriver download - Selenium Manager resolves it on first run.
 python my_test.py             # runs as a plain program; pair with pytest for structure
 ```
 
-*What just happened:* Selenium isn't a test runner — it's a browser-control library. You bring your own test framework (pytest, JUnit, NUnit) to organize and report. That's more assembly, and also more freedom.
+*What just happened:* Selenium isn't a test runner - it's a browser-control library. You bring your own test framework (pytest, JUnit, NUnit) to organize and report. That's more assembly, and also more freedom.
 
 ## Finding elements: the shared vocabulary
 
-Both tools locate elements with familiar selectors — CSS selectors most of the time, occasionally XPath or by-text. The mental difference is what you get *back*.
+Both tools locate elements with familiar selectors - CSS selectors most of the time, occasionally XPath or by-text. The mental difference is what you get *back*.
 
 Selenium returns an **element object right now**. If the element isn't there yet, you get an error unless you've set up waiting (next section).
 
@@ -50,7 +50,7 @@ el = driver.find_element(By.CSS_SELECTOR, "input[name=q]")   # found now, or rai
 el.send_keys("hello")
 ```
 
-*What just happened:* `find_element` resolved immediately to a concrete handle. There's no retry baked in — the lookup is a single attempt at that instant.
+*What just happened:* `find_element` resolved immediately to a concrete handle. There's no retry baked in - the lookup is a single attempt at that instant.
 
 Cypress returns a **chainable subject that retries**. `cy.get` doesn't hand you an element so much as a promise-like queue that keeps re-querying until the element shows up.
 
@@ -74,17 +74,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-# WRONG — a fixed sleep is either too short (flaky) or too long (slow)
+# WRONG - a fixed sleep is either too short (flaky) or too long (slow)
 time.sleep(5)
 driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
-# RIGHT — an explicit wait polls until the condition is true, then proceeds
+# RIGHT - an explicit wait polls until the condition is true, then proceeds
 wait = WebDriverWait(driver, timeout=10)
 btn = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type=submit]")))
 btn.click()
 ```
 
-*What just happened:* the sleep gambles on a guess and loses both ways. The explicit wait polls the page repeatedly for up to ten seconds and continues the instant the button is clickable — fast when the app is fast, patient when it's slow. If your Selenium suite is flaky, this pattern fixes most of it. The [flaky-tests](/guides/flaky-tests) guide goes deeper on why fixed sleeps are a trap.
+*What just happened:* the sleep gambles on a guess and loses both ways. The explicit wait polls the page repeatedly for up to ten seconds and continues the instant the button is clickable - fast when the app is fast, patient when it's slow. If your Selenium suite is flaky, this pattern fixes most of it. The [flaky-tests](/guides/flaky-tests) guide goes deeper on why fixed sleeps are a trap.
 
 Selenium also offers an **implicit wait** (a global default applied to every `find_element`), but mixing implicit and explicit waits causes confusing timeouts. Pick explicit waits and stick with them.
 
@@ -95,7 +95,7 @@ cy.get('button[type=submit]').click()    // already waits for existence + action
 cy.contains('Results for hello')          // retries the assertion until it passes or times out
 ```
 
-*What just happened:* both lines retry internally. You wrote zero wait code and got the polling behavior Selenium made you spell out. Avoid `cy.wait(5000)` for the same reason you avoid `time.sleep` — it's the one anti-pattern Cypress can't save you from.
+*What just happened:* both lines retry internally. You wrote zero wait code and got the polling behavior Selenium made you spell out. Avoid `cy.wait(5000)` for the same reason you avoid `time.sleep` - it's the one anti-pattern Cypress can't save you from.
 
 ## Asserting: same idea, different ergonomics
 
@@ -107,7 +107,7 @@ title = driver.title
 assert title == "Example Domain"
 ```
 
-*What just happened:* Selenium gave you raw values; pytest's `assert` did the checking. The assertion runs once, against whatever the page held at that instant — which is why the *wait* before it matters so much.
+*What just happened:* Selenium gave you raw values; pytest's `assert` did the checking. The assertion runs once, against whatever the page held at that instant - which is why the *wait* before it matters so much.
 
 Cypress folds assertions into the same retrying chain, so the assertion and the waiting are one motion.
 
@@ -116,7 +116,7 @@ cy.get('[data-test="result"]').should('contain.text', 'Results for hello')
 cy.title().should('eq', 'Example Domain')
 ```
 
-*What just happened:* `should` doesn't check once — it retries the whole `get` + assertion until it passes or the timeout fires. The wait and the check are the same operation, which is the core reason Cypress assertions feel less brittle.
+*What just happened:* `should` doesn't check once - it retries the whole `get` + assertion until it passes or the timeout fires. The wait and the check are the same operation, which is the core reason Cypress assertions feel less brittle.
 
 ## A full Cypress test, end to end
 
@@ -135,7 +135,7 @@ describe('product search', () => {
 })
 ```
 
-*What just happened:* `beforeEach` reset state before the test, then the body searched and asserted. Every command auto-waited, so there isn't a single explicit timing line — that's a representative, readable Cypress test.
+*What just happened:* `beforeEach` reset state before the test, then the body searched and asserted. Every command auto-waited, so there isn't a single explicit timing line - that's a representative, readable Cypress test.
 
 ## The same flow in Selenium with pytest
 
@@ -150,7 +150,7 @@ from selenium.webdriver.support import expected_conditions as EC
 def driver():
     d = webdriver.Chrome()
     yield d
-    d.quit()                                  # teardown — the separate process must be closed
+    d.quit()                                  # teardown - the separate process must be closed
 
 def test_shows_matching_products(driver):
     driver.get("http://localhost:3000/search")
@@ -167,7 +167,7 @@ def test_shows_matching_products(driver):
 
 ## In the wild
 
-Real suites layer two habits on top of these basics. First, the **Page Object pattern**: wrap each page's selectors and actions in a class (`SearchPage.search("keyboard")`) so a redesign changes one file, not fifty tests. Both tools use it; Selenium teams especially live by it. Second, **stub the network for speed and determinism** — Cypress does this natively with `cy.intercept`, while Selenium leans on a proxy or backend test mode. A test that hits the real backend is a test that fails when the backend has a bad day.
+Real suites layer two habits on top of these basics. First, the **Page Object pattern**: wrap each page's selectors and actions in a class (`SearchPage.search("keyboard")`) so a redesign changes one file, not fifty tests. Both tools use it; Selenium teams especially live by it. Second, **stub the network for speed and determinism** - Cypress does this natively with `cy.intercept`, while Selenium leans on a proxy or backend test mode. A test that hits the real backend is a test that fails when the backend has a bad day.
 
 ```quiz
 [
@@ -191,7 +191,7 @@ Real suites layer two habits on top of these basics. First, the **Page Object pa
       "find_element automatically waits but cy.get does not"
     ],
     "answer": 0,
-    "explain": "find_element is a single attempt at that instant. cy.get keeps re-querying the DOM until the element exists or the timeout fires — that's Cypress's built-in waiting."
+    "explain": "find_element is a single attempt at that instant. cy.get keeps re-querying the DOM until the element exists or the timeout fires - that's Cypress's built-in waiting."
   },
   {
     "q": "Why must a Selenium test call driver.quit() (often in a fixture teardown)?",

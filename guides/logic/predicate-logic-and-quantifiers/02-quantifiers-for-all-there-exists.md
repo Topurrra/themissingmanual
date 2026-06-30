@@ -11,7 +11,7 @@ updated: 2026-06-25
 
 # Quantifiers: For All and There Exists
 
-In Phase 1 you met predicates — statements with a hole in them, like `P(x): x is even`.
+In Phase 1 you met predicates - statements with a hole in them, like `P(x): x is even`.
 A predicate isn't true or false on its own; it's waiting for an `x`. This phase is about the
 two words that fill that hole all at once and turn a predicate into a real claim:
 **for all** and **there exists**.
@@ -23,13 +23,13 @@ like hieroglyphics. So let's go slowly and tie every symbol back to a concrete d
 ## First, what's a domain again?
 
 Every quantified claim lives inside a **domain**: the collection of things `x` is allowed to be.
-Without a domain, "for all x" means nothing — all *what*? People? Numbers? Files on disk?
+Without a domain, "for all x" means nothing - all *what*? People? Numbers? Files on disk?
 
 For most of this phase the domain is the **natural numbers**: `0, 1, 2, 3, …`. When you read a
 quantifier, whisper the domain to yourself. "For all `x`" really means "for all `x`
 *in this collection*". If domains feel shaky, the
 [Sets, Relations & Functions](/guides/sets-relations-and-functions) guide builds them up
-properly — but "the bag of things `x` ranges over" is enough for now.
+properly - but "the bag of things `x` ranges over" is enough for now.
 
 ## The universal quantifier: ∀ ("for all")
 
@@ -41,7 +41,7 @@ The symbol `∀` is an upside-down A (think **A** for "All"). You write:
 
 and you read it: **"for all x in the domain, P(x) is true."**
 
-Here's the part that matters most. `∀x P(x)` is a single statement — true or false, no leftover
+Here's the part that matters most. `∀x P(x)` is a single statement - true or false, no leftover
 hole. And it's true under exactly one condition:
 
 > `∀x P(x)` is **true** only when *every single element* of the domain makes `P` true.
@@ -56,7 +56,7 @@ Concrete example, domain = natural numbers:
 ∀n (n + 1 > n)        "every natural number is smaller than its successor"
 ```
 
-Pick any `n` — `0`, `7`, `1000000`. Adding 1 always lands you somewhere bigger. There's no number
+Pick any `n` - `0`, `7`, `1000000`. Adding 1 always lands you somewhere bigger. There's no number
 where this breaks. So `∀n (n + 1 > n)` is **true**.
 
 Now a false one:
@@ -66,7 +66,7 @@ Now a false one:
 ```
 
 This bets that *nothing* is odd. But `1` is right there. One number wrecks it. So `∀n (n is even)`
-is **false** — and the number that wrecks it has a name.
+is **false** - and the number that wrecks it has a name.
 
 ## The existential quantifier: ∃ ("there exists")
 
@@ -90,7 +90,7 @@ Concrete example, domain = natural numbers:
 ∃n (n is even)        "some natural number is even"
 ```
 
-Is there even one even number? Yes — `2` works. (So do `0`, `4`, `100`.) You only needed one. So
+Is there even one even number? Yes - `2` works. (So do `0`, `4`, `100`.) You only needed one. So
 `∃n (n is even)` is **true**.
 
 Notice we did *not* check every number. The moment we found `2`, we were done. That "one is enough"
@@ -123,15 +123,15 @@ flowchart LR
 ```
 
 Same letters, opposite meaning. The outer quantifier sets the rhythm; the inner one
-fills in the detail. Swapping them is not a style choice — it changes the claim.
+fills in the detail. Swapping them is not a style choice - it changes the claim.
 
 ## The asymmetry that matters most
 
 Here is the single most useful idea in this entire guide. Read it twice.
 
-- To **disprove** a `∀` claim, you need exactly **one counterexample** — one element where
+- To **disprove** a `∀` claim, you need exactly **one counterexample** - one element where
   the predicate fails.
-- To **prove** an `∃` claim, you need exactly **one witness** — one element where the
+- To **prove** an `∃` claim, you need exactly **one witness** - one element where the
   predicate holds.
 
 That's it. The two quantifiers are mirror images:
@@ -142,7 +142,7 @@ That's it. The two quantifiers are mirror images:
 ```
 
 This asymmetry is *why* the symbols are worth learning. It tells you how to argue about collections
-you could never fully inspect — even infinite ones.
+you could never fully inspect - even infinite ones.
 
 Think about `∀n (n is even)` over the natural numbers. You can't check infinitely many numbers. But
 you don't have to. You produce `n = 1`, point at it, and say "this is odd, so the claim that *all*
@@ -153,7 +153,7 @@ number line. You hand over `n = 3` and say "there's your witness." One example b
 "there exists" search.
 
 ⚠️ **Watch the direction.** One example does *not* prove a `∀`. Showing that `2` is even tells you
-*nothing* about whether *all* numbers are even. And one example does not *disprove* an `∃` — finding
+*nothing* about whether *all* numbers are even. And one example does not *disprove* an `∃` - finding
 one odd number doesn't mean no even number exists. Examples prove `∃` and kill `∀`; they do not
 prove `∀` or kill `∃`. Getting this backwards is the classic mistake.
 
@@ -161,22 +161,22 @@ prove `∀` or kill `∃`. Getting this backwards is the classic mistake.
 
 Sit with the lopsidedness, because it shapes how careful people talk.
 
-A `∀` claim is *strong* — it says a lot — which is exactly why it's *fragile*. It has to be right
+A `∀` claim is *strong* - it says a lot - which is exactly why it's *fragile*. It has to be right
 about everything, so one overlooked case brings it all down. "All swans are white" survives thousands
 of white swans and dies the instant one black swan walks in.
 
-A `∃` claim is *weak* — it says very little — which is exactly why it's *sturdy*. It needs one thing
+A `∃` claim is *weak* - it says very little - which is exactly why it's *sturdy*. It needs one thing
 to go right, and that one thing is usually easy to point at.
 
 So when someone makes a sweeping "every… / all… / always…" statement, the experienced move is to hunt
 for the one case that breaks it. And when someone says "that can never happen / no input ever does
-X," they've made a `∀` in disguise (a `∀` that says "for all x, *not* X") — so again, one example
+X," they've made a `∀` in disguise (a `∀` that says "for all x, *not* X") - so again, one example
 settles it. You'll see exactly how "never" becomes a hidden `∀` in
 [Phase 3](03-negating-and-nesting-quantifiers.md), where we flip quantifiers with negation.
 
 ## For builders
 
-If you write code, you use both quantifiers constantly — under different names. A quantifier ranges
+If you write code, you use both quantifiers constantly - under different names. A quantifier ranges
 over a domain; a loop or a collection method ranges over a list.
 
 - `∀x P(x)` is **`all(...)`** in Python, **`.every(...)`** in JavaScript. It returns true
@@ -191,9 +191,9 @@ over a domain; a loop or a collection method ranges over a list.
 
 And the asymmetry shows up as a real optimization: these functions **short-circuit**.
 
-- `all()` / `.every()` stops at the **first element that fails** — that failing element is
+- `all()` / `.every()` stops at the **first element that fails** - that failing element is
   your counterexample. (`all` over an empty list is `true`: there's no failure to find.)
-- `any()` / `.some()` stops at the **first element that passes** — that passing element is
+- `any()` / `.some()` stops at the **first element that passes** - that passing element is
   your witness. (`any` over an empty list is `false`: there's nothing to witness.)
 
 So "falsify a `∀`" and "find the first failing element" are *literally the same operation*. The
@@ -201,12 +201,12 @@ logic you learned is the control flow your language already implements.
 
 ## Recap
 
-- **`∀x P(x)`** — "for all x, P(x)." True only when **every** element of the domain
+- **`∀x P(x)`** - "for all x, P(x)." True only when **every** element of the domain
   satisfies `P`. The upside-down A is for **A**ll.
-- **`∃x P(x)`** — "there exists an x such that P(x)." True when **at least one** element
+- **`∃x P(x)`** - "there exists an x such that P(x)." True when **at least one** element
   satisfies `P`. The backwards E is for **E**xists.
 - The key asymmetry: **one counterexample** makes a `∀` false; **one witness** makes an `∃`
-  true. This is how you reason about whole collections — even infinite ones — without
+  true. This is how you reason about whole collections - even infinite ones - without
   inspecting them all.
 - Examples *prove* `∃` and *kill* `∀`. They do **not** prove `∀` or kill `∃`. Don't mix up
   the direction.
@@ -240,7 +240,7 @@ Quick check before you move on:
       "Exactly one natural number satisfies n + 1 > n"
     ],
     "answer": 0,
-    "explain": "∀ means 'for all.' ∀n (n + 1 > n) says that for every n in the domain, n + 1 > n holds — every number is smaller than the next."
+    "explain": "∀ means 'for all.' ∀n (n + 1 > n) says that for every n in the domain, n + 1 > n holds - every number is smaller than the next."
   },
   {
     "q": "What is the minimum you need to show that ∀x P(x) is FALSE?",
@@ -251,7 +251,7 @@ Quick check before you move on:
       "Check half of the domain"
     ],
     "answer": 2,
-    "explain": "A 'for all' claim is fragile: one counterexample — a single element where the predicate fails — makes the whole statement false. You never need more than one."
+    "explain": "A 'for all' claim is fragile: one counterexample - a single element where the predicate fails - makes the whole statement false. You never need more than one."
   },
   {
     "q": "Which statement correctly describes ∃x P(x)?",

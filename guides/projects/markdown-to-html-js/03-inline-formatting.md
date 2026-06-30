@@ -2,7 +2,7 @@
 title: "Inline Formatting"
 guide: markdown-to-html-js
 phase: 3
-summary: "Format the text inside blocks — bold, italic, inline code, and links — with a chain of regex replacements applied in the right order."
+summary: "Format the text inside blocks - bold, italic, inline code, and links - with a chain of regex replacements applied in the right order."
 tags: [javascript, markdown, regex, inline, links]
 difficulty: intermediate
 synonyms:
@@ -40,7 +40,7 @@ text = text.replace(/\*(.+?)\*/g, "<em>$1</em>");
 console.log(text);
 ```
 
-Two things to notice. The `g` flag means *global* — replace every match, not only the
+Two things to notice. The `g` flag means *global* - replace every match, not only the
 first. And `.+?` is **non-greedy**: the `?` tells it to grab as few characters as
 possible. Without it, `*a* and *b*` would match from the first star all the way to the
 last, swallowing the text between. Try removing the `?` and re-running to see the mess.
@@ -64,7 +64,7 @@ console.log(inline("a *little* emphasis here"));
 ```
 
 Run it. Both come out clean. Swap the two lines so italic runs first, re-run, and you will
-see the bold break — the italic rule eats the inner stars and leaves a stray `**`. Order
+see the bold break - the italic rule eats the inner stars and leaves a stray `**`. Order
 is not cosmetic here; it is correctness.
 
 ## Inline code
@@ -79,7 +79,7 @@ text = text.replace(/`(.+?)`/g, "<code>$1</code>");
 console.log(text);
 ```
 
-In a fuller parser you would also want code spans to be *immune* to the other rules —
+In a fuller parser you would also want code spans to be *immune* to the other rules -
 `` `**not bold**` `` should stay literal. We are keeping it small here, but it is worth
 knowing that real parsers pull code out first and stitch it back last for exactly that
 reason.
@@ -87,7 +87,7 @@ reason.
 ## Links
 
 Links are the one with two captures. `[text](url)` becomes
-`<a href="url">text</a>` — the text and the URL land in different places, so we capture
+`<a href="url">text</a>` - the text and the URL land in different places, so we capture
 both and reorder them:
 
 ```js runnable
@@ -100,13 +100,13 @@ text = text.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
 console.log(text);
 ```
 
-`$1` is the link text, `$2` is the URL. Notice they swap places in the output — that
+`$1` is the link text, `$2` is the URL. Notice they swap places in the output - that
 reordering is something a plain find-and-replace could never do, but a capture group makes
 trivial.
 
 ## All inline rules together
 
-Here is the complete inline pass — the function we will plug into the converter next
+Here is the complete inline pass - the function we will plug into the converter next
 phase. Order is deliberate: links and code first (they have distinctive delimiters), then
 bold, then italic.
 
@@ -141,6 +141,6 @@ graph LR
 ## Where we are
 
 You now have two halves of a converter. `toBlocks` from Phase 2 builds the structure;
-`inline` from this phase decorates the text. They do not talk to each other yet — that is
+`inline` from this phase decorates the text. They do not talk to each other yet - that is
 the final phase, where we wire them together, add HTML escaping, and end up with one
 function you can throw a whole document at.

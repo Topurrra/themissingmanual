@@ -22,8 +22,8 @@ Read the phases in order the first time. Phase 1 builds the mental model: Maven 
 
 ## The phases
 
-1. [The mental model: convention over configuration](01-convention-over-configuration.md) — what Maven is, why it exists, and the POM as a single source of truth.
-2. [The everyday core: POM, coordinates, and the lifecycle](02-pom-coordinates-lifecycle.md) — dependencies, repositories, and the commands you actually run.
-3. [Production reality: conflicts, the local repo, and multi-module](03-conflicts-and-multi-module.md) — transitive dependency hell, stale caches, and projects with more than one module.
+1. [The mental model: convention over configuration](01-convention-over-configuration.md) - what Maven is, why it exists, and the POM as a single source of truth.
+2. [The everyday core: POM, coordinates, and the lifecycle](02-pom-coordinates-lifecycle.md) - dependencies, repositories, and the commands you actually run.
+3. [Production reality: conflicts, the local repo, and multi-module](03-conflicts-and-multi-module.md) - transitive dependency hell, stale caches, and projects with more than one module.
 
 [Phase 1: The mental model: convention over configuration](01-convention-over-configuration.md) →

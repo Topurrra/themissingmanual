@@ -20,7 +20,7 @@ pub fn health_router() -> Router {
 pub fn app(state: Arc<AppState>) -> Router {
     // Cap the asset-upload request body just above the stored-asset size limit.
     let upload_limit = state.asset_max.saturating_add(1024 * 1024);
-    // Admin content routes — guarded by the require_admin middleware.
+    // Admin content routes - guarded by the require_admin middleware.
     let protected = Router::new()
         .route("/guides", get(admin::list_guides).post(admin::create_guide))
         .route("/guides/bulk", post(admin::bulk_guides))
@@ -47,7 +47,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/status", get(admin::status))
         .route("/backlog", get(admin::backlog))
         .route_layer(middleware::from_fn_with_state(state.clone(), auth::require_admin));
-    // Auth routes — not behind require_admin (login establishes the session; me/logout self-check).
+    // Auth routes - not behind require_admin (login establishes the session; me/logout self-check).
     let auth_routes = Router::new()
         .route("/login", post(auth::login))
         .route("/logout", post(auth::logout))
@@ -148,7 +148,7 @@ async fn search(State(state): State<Arc<AppState>>, Query(params): Query<SearchP
 }
 
 /// RSS 2.0 feed of published guides. Item links point at the public web origin
-/// (`SITE_URL`, default http://localhost:5173) — set SITE_URL in production.
+/// (`SITE_URL`, default http://localhost:5173) - set SITE_URL in production.
 /// Format an ISO date ("YYYY-MM-DD") as an RFC-822 datetime for RSS pubDate.
 /// Weekday via Sakamoto's algorithm (no date crate in the tree). None if unparseable.
 fn rfc822_date(iso: &str) -> Option<String> {

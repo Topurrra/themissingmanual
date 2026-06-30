@@ -147,7 +147,7 @@ pub struct ChangePassword {
 }
 
 /// Change the admin password (behind `require_admin`). Verifies the current password,
-/// then stores a new argon2 hash. Takes effect immediately — the DB is authoritative.
+/// then stores a new argon2 hash. Takes effect immediately - the DB is authoritative.
 pub async fn change_password(State(state): State<Arc<AppState>>, Json(b): Json<ChangePassword>) -> Response {
     if b.new_password.len() < 8 {
         return (StatusCode::BAD_REQUEST, Json(json!({ "error": "new password must be at least 8 characters" }))).into_response();

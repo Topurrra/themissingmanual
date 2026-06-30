@@ -1,27 +1,27 @@
 ---
-title: "Collections — Arrays, Lists, Maps & Sets"
+title: "Collections - Arrays, Lists, Maps & Sets"
 guide: "java-from-zero"
 phase: 3
-summary: "Arrays are fixed and rigid; the Collections Framework is where real Java lives. Here's the List/Map/Set mental model, ArrayList, HashMap, and HashSet — and why you program to the interface."
+summary: "Arrays are fixed and rigid; the Collections Framework is where real Java lives. Here's the List/Map/Set mental model, ArrayList, HashMap, and HashSet - and why you program to the interface."
 tags: [java, collections, arrays, arraylist, hashmap, hashset, generics, list]
 difficulty: beginner
 synonyms: ["java arraylist vs array", "java list interface", "java hashmap explained", "java hashset", "java collections framework", "java generics list", "java for each loop collection"]
 updated: 2026-06-22
 ---
 
-# Collections — Arrays, Lists, Maps & Sets
+# Collections - Arrays, Lists, Maps & Sets
 
 Up to now you've held one value at a time. Real programs deal in *many*: a roster of users, a table of
-prices, the unique tags on a post. Java gives you two layers for this — the old, low-level **array**, and
+prices, the unique tags on a post. Java gives you two layers for this - the old, low-level **array**, and
 the rich **Collections Framework** sitting on top of it. Newcomers waste a lot of energy fighting arrays
 when they should have reached for a `List`. So we'll meet the array, understand exactly when it earns its
 keep, and then spend the rest of the phase on the collections you'll actually use every day.
 
 The mental model to carry through: an **array** is a fixed slab of memory you size once and live with. A
-**collection** is a smart, growable object that manages that slab for you — and lets you ask for it by
+**collection** is a smart, growable object that manages that slab for you - and lets you ask for it by
 *behavior* ("I want an ordered list," "I want fast lookup by key") instead of wrestling the memory yourself.
 
-## Arrays — the fixed-size foundation
+## Arrays - the fixed-size foundation
 
 **What it actually is.** An **array** is a fixed-length sequence of values, all the same type, laid out
 back-to-back in memory. You choose the length when you create it, and that length never changes. `int[]`
@@ -40,32 +40,32 @@ System.out.println(nums.length);  // how many slots
 ```
 *What just happened:* `{1, 2, 3}` created an array with exactly three slots, already filled. `nums[0]` reads
 the **first** element (Java counts from zero, like most languages), and `nums[2]` reads the third. `nums.length`
-tells you the size — note it's a **field, no parentheses**, not a method call. Reaching past the end (say
+tells you the size - note it's a **field, no parentheses**, not a method call. Reaching past the end (say
 `nums[3]`) throws an `ArrayIndexOutOfBoundsException`, because there's no fourth slot to read.
 
 The catch is right there in "fixed-length": you can't add a fourth number to `nums`. There's no `add`. If you
-need more room, you have to allocate a brand-new, bigger array and copy everything over by hand — which is
+need more room, you have to allocate a brand-new, bigger array and copy everything over by hand - which is
 exactly the chore the Collections Framework does for you.
 
 💡 **When you'd reach for an array.** When the size is known and never changes (the 12 months, an RGB triple),
 when you're working with primitives and want the leanest possible memory, or when an API hands you one. For
-nearly everything else — anything that grows, shrinks, or you're not sure how big it'll get — reach for a
+nearly everything else - anything that grows, shrinks, or you're not sure how big it'll get - reach for a
 `List`. That's the next section, and it's where most of your collection work will live.
 
-## The Collections Framework — the mental model
+## The Collections Framework - the mental model
 
 Here's the idea that unlocks the rest of Java's collections. The framework splits into two halves:
 
-📝 **Interfaces vs. implementations.** An **interface** describes *behavior* — what a collection can do,
+📝 **Interfaces vs. implementations.** An **interface** describes *behavior* - what a collection can do,
 not how. `List`, `Map`, and `Set` are interfaces. A **concrete class** is an actual implementation that
 provides the how. `ArrayList`, `HashMap`, and `HashSet` are the workhorse implementations. The interface is
 the *contract*; the class is the *machine* that fulfills it.
 
 Three interfaces cover almost everything you'll need:
 
-- **`List`** — an *ordered* sequence you access by position. Duplicates allowed. (Think: a numbered to-do list.)
-- **`Map`** — a table of **key → value** pairs you look up by key. (Think: a dictionary, a phone book.)
-- **`Set`** — an *unordered* bag of **unique** elements. (Think: the distinct words in a document.)
+- **`List`** - an *ordered* sequence you access by position. Duplicates allowed. (Think: a numbered to-do list.)
+- **`Map`** - a table of **key → value** pairs you look up by key. (Think: a dictionary, a phone book.)
+- **`Set`** - an *unordered* bag of **unique** elements. (Think: the distinct words in a document.)
 
 💡 **Program to the interface.** The strong Java convention is to *type your variable as the interface* but
 *create the concrete class*:
@@ -76,15 +76,15 @@ List<String> names = new ArrayList<>();
 
 The variable is a `List` (the behavior you care about); the object is an `ArrayList` (the implementation
 doing the work). Why bother? Because the rest of your code only depends on "it's a list," so the day you
-decide a `LinkedList` suits better, you change one line — the `new` — and nothing else breaks. You're
+decide a `LinkedList` suits better, you change one line - the `new` - and nothing else breaks. You're
 coding against the *promise*, not the *machinery*.
 
 The `<String>` part is **generics**: it tells Java "this list holds `String`s and nothing else." More on
-that as we go — it's the feature that makes collections type-safe.
+that as we go - it's the feature that makes collections type-safe.
 
-## `List` and `ArrayList` — the growable sequence
+## `List` and `ArrayList` - the growable sequence
 
-**What it actually is.** A `List` is an ordered, indexed sequence — like an array, but it grows and shrinks
+**What it actually is.** A `List` is an ordered, indexed sequence - like an array, but it grows and shrinks
 on demand. `ArrayList` is the implementation you'll use 95% of the time; under the hood it manages a real
 array for you, quietly allocating a bigger one and copying when it fills up. You never see that happen.
 
@@ -115,11 +115,11 @@ Ada
 Alan
 Grace
 ```
-*What just happened:* We declared `names` as a `List<String>` but built an `ArrayList<>()` — programming to
+*What just happened:* We declared `names` as a `List<String>` but built an `ArrayList<>()` - programming to
 the interface, exactly as above. (The empty `<>` is the "diamond"; Java infers `String` from the left side,
 so you don't repeat it.) `add` appended each name to the end. `get(0)` read the first element by index, and
-`size()` reported the count — note it's `size()` *with* parentheses here, unlike an array's `length` field.
-Finally the **for-each** loop (`for (String name : names)`) visited every element in order, no index needed —
+`size()` reported the count - note it's `size()` *with* parentheses here, unlike an array's `length` field.
+Finally the **for-each** loop (`for (String name : names)`) visited every element in order, no index needed -
 the cleanest way to walk a collection.
 
 The generics payoff shows up the moment you slip. Because `names` is a `List<String>`, this won't even
@@ -132,14 +132,14 @@ names.add(42);   // compile error: int is not a String
 before your program ever runs, not as a surprise crash later. That's the whole point of generics: type
 mistakes become red squiggles at compile time instead of `ClassCastException`s in production.
 
-## `Map` and `HashMap` — lookup by key
+## `Map` and `HashMap` - lookup by key
 
 A `List` is perfect when you care about *order* and *position*. But often you want to look something up by
 *name*: a user's score by their username, a setting's value by its key. That's a `Map`.
 
 **What it actually is.** A `Map` stores **key → value** pairs and lets you fetch a value instantly by its
 key. `HashMap` is the standard implementation. `Map<String, Integer>` reads as "a map from `String` keys to
-`Integer` values." (Other languages call this a dictionary, hash, or associative array — same idea.)
+`Integer` values." (Other languages call this a dictionary, hash, or associative array - same idea.)
 
 ```java
 import java.util.HashMap;
@@ -169,18 +169,18 @@ Alan -> 41
 *What just happened:* `put` stored two key→value pairs. `get("Ada")` looked up Ada's value and returned `36`.
 The interesting one is `getOrDefault("Nobody", 0)`: plain `get` on a missing key returns `null` (which often
 turns into a `NullPointerException` two lines later), so `getOrDefault` lets you say "give me the value, or
-this fallback if the key isn't there" — here, `0`. To visit every pair, we looped over `entrySet()`, which
+this fallback if the key isn't there" - here, `0`. To visit every pair, we looped over `entrySet()`, which
 hands back each pair as a `Map.Entry` with `getKey()` and `getValue()`. That's the standard way to iterate a
 map.
 
-⚠️ **Gotcha — `get` returns `null` for a missing key.** It does *not* throw. If you blindly use the result,
+⚠️ **Gotcha - `get` returns `null` for a missing key.** It does *not* throw. If you blindly use the result,
 a missing key turns into a `NullPointerException` somewhere downstream, far from the real cause. Reach for
-`getOrDefault` (or check `containsKey` first) whenever a key might be absent — it's the difference between a
+`getOrDefault` (or check `containsKey` first) whenever a key might be absent - it's the difference between a
 clean default and a 2 a.m. stack trace.
 
-## `Set` and `HashSet` — uniqueness, fast
+## `Set` and `HashSet` - uniqueness, fast
 
-**What it actually is.** A `Set` holds **unique** elements — add the same value twice and the second add is
+**What it actually is.** A `Set` holds **unique** elements - add the same value twice and the second add is
 silently ignored. `HashSet` is the standard implementation, and it answers "is this in here?" almost
 instantly.
 
@@ -193,7 +193,7 @@ public class Main {
         Set<String> tags = new HashSet<>();
         tags.add("java");
         tags.add("beginner");
-        tags.add("java");          // duplicate — ignored
+        tags.add("java");          // duplicate - ignored
 
         System.out.println(tags.size());            // 2, not 3
         System.out.println(tags.contains("java"));  // fast membership test
@@ -205,7 +205,7 @@ public class Main {
 true
 ```
 *What just happened:* We added `"java"` twice, but the set kept only one copy, so `size()` is `2`. `contains`
-checked membership and returned `true` immediately — `HashSet` is built for exactly that "have I seen this
+checked membership and returned `true` immediately - `HashSet` is built for exactly that "have I seen this
 before?" question. Use a `Set` whenever uniqueness is the point: de-duplicating a list, tracking which items
 you've already processed, or testing membership in a hot loop.
 
@@ -213,24 +213,24 @@ you've already processed, or testing membership in a hot loop.
 duplicates)? → `List`. Need **lookup by key**? → `Map`. Need **uniqueness or fast membership**? → `Set`.
 Nail this choice and your code reads like its own intent.
 
-⚠️ **Gotcha — `HashMap` and `HashSet` have no order.** They're optimized for speed, not for keeping things in
-the order you inserted them — iterate one and the order can look random and even differ between runs. Don't
+⚠️ **Gotcha - `HashMap` and `HashSet` have no order.** They're optimized for speed, not for keeping things in
+the order you inserted them - iterate one and the order can look random and even differ between runs. Don't
 build logic that assumes "first added comes out first." If you need order, the framework has drop-in
 replacements: **`LinkedHashMap`/`LinkedHashSet`** preserve *insertion* order, and **`TreeMap`/`TreeSet`**
-keep keys *sorted*. Same interfaces (`Map`, `Set`), so swapping one in is a one-line change — programming to
+keep keys *sorted*. Same interfaces (`Map`, `Set`), so swapping one in is a one-line change - programming to
 the interface paying off again.
 
 ## Recap
 
-1. An **array** (`int[]`) is fixed-size and lean — great when the count never changes, awkward when it does.
+1. An **array** (`int[]`) is fixed-size and lean - great when the count never changes, awkward when it does.
    `.length` is a field, not a method.
-2. The **Collections Framework** splits into **interfaces** (`List`, `Map`, `Set` — behavior) and **concrete
-   classes** (`ArrayList`, `HashMap`, `HashSet` — implementation).
+2. The **Collections Framework** splits into **interfaces** (`List`, `Map`, `Set` - behavior) and **concrete
+   classes** (`ArrayList`, `HashMap`, `HashSet` - implementation).
 3. **Program to the interface:** `List<String> names = new ArrayList<>();`. Your code depends on the
    contract, so swapping implementations costs one line.
 4. **`List`/`ArrayList`** is the growable ordered sequence: `add`, `get`, `size`, and the **for-each** loop.
    **Generics** (`<String>`) make it type-safe at compile time.
-5. **`Map`/`HashMap`** does key→value lookup: `put`, `get`, `getOrDefault`, and `entrySet()` to iterate —
+5. **`Map`/`HashMap`** does key→value lookup: `put`, `get`, `getOrDefault`, and `entrySet()` to iterate -
    but `get` returns `null` for a missing key.
 6. **`Set`/`HashSet`** holds unique elements with fast `contains`. ⚠️ `HashMap`/`HashSet` are **unordered**;
    use `LinkedHashMap`/`TreeMap` (and the `Set` equivalents) when order matters.
@@ -240,7 +240,7 @@ code its shape.
 
 ## Quick check
 
-Test yourself on the one habit that makes Java collections click — choosing by behavior and coding to the
+Test yourself on the one habit that makes Java collections click - choosing by behavior and coding to the
 interface:
 
 ```quiz
@@ -254,12 +254,12 @@ interface:
       "It automatically makes the list unmodifiable"
     ],
     "answer": 0,
-    "explain": "Programming to the interface means the rest of your code only knows it has a `List`. The concrete class lives in one place — the `new` — so switching to, say, a `LinkedList` changes that single line and nothing else."
+    "explain": "Programming to the interface means the rest of your code only knows it has a `List`. The concrete class lives in one place - the `new` - so switching to, say, a `LinkedList` changes that single line and nothing else."
   },
   {
     "q": "You call `ages.get(\"Nobody\")` on a `HashMap<String, Integer>` that has no \"Nobody\" key. What happens?",
     "choices": [
-      "It returns `null` (which can cause a NullPointerException downstream) — use `getOrDefault` to avoid this",
+      "It returns `null` (which can cause a NullPointerException downstream) - use `getOrDefault` to avoid this",
       "It throws a KeyNotFoundException immediately",
       "It returns 0 because the value type is Integer",
       "It adds the key with a null value and returns it"
@@ -270,13 +270,13 @@ interface:
   {
     "q": "You need to store the distinct tags on a post and quickly check whether a given tag is already present. Which collection fits best?",
     "choices": [
-      "A Set (HashSet) — it keeps elements unique and answers `contains` fast",
-      "A List (ArrayList) — it preserves insertion order",
-      "A Map (HashMap) — it stores key→value pairs",
-      "An array — it has a fixed size"
+      "A Set (HashSet) - it keeps elements unique and answers `contains` fast",
+      "A List (ArrayList) - it preserves insertion order",
+      "A Map (HashMap) - it stores key→value pairs",
+      "An array - it has a fixed size"
     ],
     "answer": 0,
-    "explain": "Uniqueness plus fast membership is exactly what a `Set` is for. A `HashSet` ignores duplicate adds and answers `contains` almost instantly — the right tool when 'is this already in here?' is the core question."
+    "explain": "Uniqueness plus fast membership is exactly what a `Set` is for. A `HashSet` ignores duplicate adds and answers `contains` almost instantly - the right tool when 'is this already in here?' is the core question."
   }
 ]
 ```

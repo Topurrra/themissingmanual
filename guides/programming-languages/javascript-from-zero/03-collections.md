@@ -1,5 +1,5 @@
 ---
-title: "Collections — Arrays & Objects"
+title: "Collections - Arrays & Objects"
 guide: "javascript-from-zero"
 phase: 3
 summary: "Arrays are ordered lists with powerful methods like map, filter, and reduce; objects are labeled key/value bundles; Map and Set exist for special cases. Plus the reference-vs-value rule that explains why two equal-looking arrays aren't equal."
@@ -9,9 +9,9 @@ synonyms: ["javascript arrays explained", "what is map filter reduce", "javascri
 updated: 2026-06-19
 ---
 
-# Collections — Arrays & Objects
+# Collections - Arrays & Objects
 
-Single values only get you so far. Real programs deal with *many* things — a list of users, the fields of
+Single values only get you so far. Real programs deal with *many* things - a list of users, the fields of
 a form, the items in a cart. JavaScript has two workhorse collections for this, and almost everything you
 build leans on them: the **array** (an ordered list) and the **object** (a labeled bundle). Get these two
 fluent and a huge amount of JavaScript opens up.
@@ -19,7 +19,7 @@ fluent and a huge amount of JavaScript opens up.
 ## Arrays: ordered lists
 
 **What an array actually is.** An array is an ordered list of values, written with square brackets. The
-values can be any type, and you reach into the list by *position* — counting from **0**, not 1.
+values can be any type, and you reach into the list by *position* - counting from **0**, not 1.
 ```javascript runnable
 const fruits = ["apple", "banana", "cherry"];
 console.log(fruits[0]);     // first item
@@ -31,7 +31,7 @@ apple
 cherry
 3
 ```
-*What just happened:* `fruits[0]` is the first element, because array positions ("indexes") start at zero —
+*What just happened:* `fruits[0]` is the first element, because array positions ("indexes") start at zero -
 this is universal across most languages and worth burning into memory now. `fruits[2]` is the third.
 `.length` tells you how many items there are. Asking for an index that doesn't exist (`fruits[99]`) gives
 you `undefined` rather than an error.
@@ -47,13 +47,13 @@ console.log(fruits);
 [ 'apricot', 'banana', 'cherry' ]
 ```
 *What just happened:* `.push(...)` appended `"cherry"` to the end. `fruits[0] = "apricot"` overwrote the
-first slot. Notice the array is a `const` and yet we changed its *contents* — that's allowed, and the
+first slot. Notice the array is a `const` and yet we changed its *contents* - that's allowed, and the
 reason why is the most important idea in this phase. We'll get to it.
 
 ### A taste of array methods: `map`, `filter`, `reduce`
 
 Arrays come with built-in methods that transform lists without you writing manual loops. These three are
-the ones you'll reach for constantly, so meet them now — even if they feel like a lot at first.
+the ones you'll reach for constantly, so meet them now - even if they feel like a lot at first.
 
 **`map`** makes a *new* array by transforming every item:
 ```javascript runnable
@@ -65,7 +65,7 @@ console.log(doubled);
 [ 2, 4, 6 ]
 ```
 *What just happened:* `.map(...)` walked through `numbers`, ran the little function `(n) => n * 2` on each
-item, and collected the results into a brand-new array. (That `(n) => n * 2` is an **arrow function** — a
+item, and collected the results into a brand-new array. (That `(n) => n * 2` is an **arrow function** - a
 compact function we'll cover properly in [Phase 4](04-control-flow-and-functions.md); for now, read it as
 "given `n`, give back `n * 2`.") The original `numbers` is untouched.
 
@@ -79,7 +79,7 @@ console.log(evens);
 [ 2, 4, 6 ]
 ```
 *What just happened:* `.filter(...)` kept each item only when the test `n % 2 === 0` ("the remainder when
-dividing by 2 is zero" — i.e. it's even) returned `true`. The odd numbers were dropped. Again, a new array
+dividing by 2 is zero" - i.e. it's even) returned `true`. The odd numbers were dropped. Again, a new array
 comes out; the original stays put.
 
 **`reduce`** boils a whole array down to a single value:
@@ -93,7 +93,7 @@ console.log(total);
 ```
 *What just happened:* `.reduce(...)` carries a running value (`sum`) across the list. It starts at `0` (the
 second argument), then for each item adds it on: `0+10`, then `+20`, then `+30`, landing on `60`. `reduce`
-is the most powerful and least obvious of the three — don't worry if it takes a few uses to click. The
+is the most powerful and least obvious of the three - don't worry if it takes a few uses to click. The
 mental model: "fold the list into one result, one item at a time."
 
 💡 **Key point.** `map`, `filter`, and `reduce` all return *new* values and leave the original array alone.
@@ -103,7 +103,7 @@ like a sentence: "take the numbers, *filter* the evens, *map* them doubled."
 ## Objects: labeled bundles
 
 **What an object actually is.** Where an array holds values by *position*, an object holds values by
-*name*. It's a bundle of `key: value` pairs in curly braces — perfect for representing one "thing" with
+*name*. It's a bundle of `key: value` pairs in curly braces - perfect for representing one "thing" with
 several properties.
 ```javascript runnable
 const user = {
@@ -119,7 +119,7 @@ Ada
 36
 ```
 *What just happened:* `user` bundles three labeled values. You read a value by its key, either with a dot
-(`user.name` — what you'll use most) or with brackets and the key as a string (`user["age"]` — needed when
+(`user.name` - what you'll use most) or with brackets and the key as a string (`user["age"]` - needed when
 the key is in a variable or has unusual characters). The keys are `name`, `age`, `isAdmin`; the values are
 whatever you stored.
 
@@ -138,7 +138,7 @@ console.log(user);
 
 📝 **Terminology.** A **property** is one `key: value` pair on an object. A **method** is a property whose
 value happens to be a function (e.g. `console.log` is the `log` method of the `console` object). Arrays are
-technically a special kind of object too — which is why they have methods like `.push()`.
+technically a special kind of object too - which is why they have methods like `.push()`.
 
 ## A one-line note on `Map` and `Set`
 
@@ -151,10 +151,10 @@ and objects cover the vast majority of real code.
 ## ⚠️ The big one: reference vs. value
 
 This single idea explains the `const`-but-still-changeable puzzle from earlier, *and* a bug that bites
-every JavaScript developer. Pay attention here — it's worth more than the rest of the phase combined.
+every JavaScript developer. Pay attention here - it's worth more than the rest of the phase combined.
 
 **Primitives are copied by value. Objects and arrays are shared by reference.** When you assign a number
-or string, you copy the value. When you assign an object or array, you copy a *reference* — a pointer to
+or string, you copy the value. When you assign an object or array, you copy a *reference* - a pointer to
 the same underlying thing. Two names, one object.
 ```javascript runnable
 const a = { count: 1 };
@@ -165,7 +165,7 @@ console.log(a.count);
 ```console
 99
 ```
-*What just happened:* `const b = a` did **not** make a second object — it made `b` point at the *exact same*
+*What just happened:* `const b = a` did **not** make a second object - it made `b` point at the *exact same*
 object `a` points at. So changing `b.count` also changed `a.count`, because they're two names for one
 thing. This surprises everyone the first time. (Compare with primitives: `let x = 1; let y = x; y = 99;`
 leaves `x` as `1`, because the number was copied.)
@@ -184,13 +184,13 @@ false
 true
 ```
 *What just happened:* The first comparison is `false` because those are *two different objects* that merely
-*look* alike — `===` on objects asks "are these the same object?", not "do they contain the same stuff?"
+*look* alike - `===` on objects asks "are these the same object?", not "do they contain the same stuff?"
 The second is `true` because both sides are literally the same object. To compare *contents*, you compare
 the fields yourself (or use a library). This is the source of countless "but they're the same!" debugging
 sessions.
 
 🪖 **War story.** A classic bug: you copy an array with `const copy = original`, tweak `copy`, and later
-discover `original` changed too — they were always the same array. The fix is to make a *real* copy:
+discover `original` changed too - they were always the same array. The fix is to make a *real* copy:
 `const copy = [...original]` for an array, or `const copy = { ...original }` for an object. That `...` is
 the "spread" syntax; it builds a new collection with the old one's items shallow-copied in. Keep it in your
 back pocket.
@@ -202,11 +202,11 @@ back pocket.
    alone.
 3. **Objects** are `key: value` bundles read with `.dot` or `["bracket"]` notation; properties can be
    added and changed freely.
-4. **`Map`** (any-type keys) and **`Set`** (no duplicates) exist for special cases — know the names.
+4. **`Map`** (any-type keys) and **`Set`** (no duplicates) exist for special cases - know the names.
 5. **Reference vs. value:** objects and arrays are *shared*, not copied, on assignment. This explains
    `const` arrays you can still mutate, and why `{x:1} === {x:1}` is `false`. Copy with `[...a]` / `{...o}`.
 
-Next: the logic that decides *which* code runs and *how often* — control flow — and the functions that let
+Next: the logic that decides *which* code runs and *how often* - control flow - and the functions that let
 you name and reuse blocks of behavior.
 
 ---

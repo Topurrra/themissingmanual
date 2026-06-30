@@ -1,6 +1,6 @@
 // Self-check for the brain-game generators: run `node src/lib/games.test.mjs`.
-// Guards the one bug that silently ruins the games — the answer index pointing
-// at the wrong choice — plus the scoring formula. No framework on purpose.
+// Guards the one bug that silently ruins the games - the answer index pointing
+// at the wrong choice - plus the scoring formula. No framework on purpose.
 import { makeMath, makeSequence, makePattern, makeRotation, challengeScore } from './games.js';
 import assert from 'node:assert';
 
@@ -12,7 +12,7 @@ function structural(q, label) {
   assert.equal(new Set(q.choices).size, 4, `${label}: choices must be unique (a duplicate can mis-align the answer)`);
 }
 
-// makeMath — answer is fully verifiable from the prompt.
+// makeMath - answer is fully verifiable from the prompt.
 for (const diff of ['easy', 'medium', 'hard']) {
   for (let i = 0; i < N; i++) {
     const q = makeMath(diff);
@@ -24,7 +24,7 @@ for (const diff of ['easy', 'medium', 'hard']) {
   }
 }
 
-// makeSequence — structural + the marked answer is a positive integer.
+// makeSequence - structural + the marked answer is a positive integer.
 for (let lvl = 1; lvl <= 8; lvl++) {
   for (let i = 0; i < N; i++) {
     const q = makeSequence(lvl);
@@ -33,7 +33,7 @@ for (let lvl = 1; lvl <= 8; lvl++) {
   }
 }
 
-// makePattern — structural; the marked answer SVG is one of the rendered choices.
+// makePattern - structural; the marked answer SVG is one of the rendered choices.
 for (let lvl = 1; lvl <= 8; lvl++) {
   for (let i = 0; i < N; i++) {
     const q = makePattern(lvl);
@@ -42,7 +42,7 @@ for (let lvl = 1; lvl <= 8; lvl++) {
   }
 }
 
-// makeRotation — the correct choice must be the ONLY non-mirrored glyph.
+// makeRotation - the correct choice must be the ONLY non-mirrored glyph.
 for (let lvl = 1; lvl <= 8; lvl++) {
   for (let i = 0; i < N; i++) {
     const q = makeRotation(lvl);
@@ -53,7 +53,7 @@ for (let lvl = 1; lvl <= 8; lvl++) {
   }
 }
 
-// challengeScore — bounds + band thresholds.
+// challengeScore - bounds + band thresholds.
 const allRightFast = challengeScore(Array.from({ length: 12 }, () => ({ ok: true, ms: 1000 })));
 assert.equal(allRightFast.score, 100, 'perfect + fast should cap at 100');
 const allRightSlow = challengeScore(Array.from({ length: 12 }, () => ({ ok: true, ms: 5000 })));
@@ -65,4 +65,4 @@ assert.equal(allWrong.band, 'Keep training');
 const half = challengeScore(Array.from({ length: 12 }, (_, i) => ({ ok: i % 2 === 0, ms: 9000 })));
 assert.ok(half.score >= 40 && half.score <= 60, `half-right score out of expected band: ${half.score}`);
 
-console.log('games.test.mjs — all checks passed');
+console.log('games.test.mjs - all checks passed');

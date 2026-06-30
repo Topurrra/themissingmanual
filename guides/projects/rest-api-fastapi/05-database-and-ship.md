@@ -19,7 +19,7 @@ updated: 2026-06-30
 The API works, but every restart wipes it clean. Real data has to outlive the
 process, so this phase swaps the dictionary for SQLite. SQLite is a full SQL
 database that stores everything in one file, and it ships with Python as the
-`sqlite3` module — nothing to install, no server to run. Perfect for this.
+`sqlite3` module - nothing to install, no server to run. Perfect for this.
 
 The thing worth noticing as we go: your routes barely change. That's the payoff
 of having kept the storage logic small. We'll put the database code in its own
@@ -58,14 +58,14 @@ def init_db():
 Two details to call out:
 
 - `conn.row_factory = sqlite3.Row` makes each result row act like a dictionary,
-  so `dict(row)` gives you `{"id": 1, "title": ...}` — the same shape your API
+  so `dict(row)` gives you `{"id": 1, "title": ...}` - the same shape your API
   already returns.
 - `id INTEGER PRIMARY KEY AUTOINCREMENT` means SQLite hands out the ids itself.
   That `global next_id` counter from earlier? Gone. The database owns ids now.
 
 ## Rewrite main.py to use the database
 
-Replace `main.py` with this. The models and the error handling are unchanged —
+Replace `main.py` with this. The models and the error handling are unchanged -
 only the storage swaps from a dict to SQL calls:
 
 ```python
@@ -143,14 +143,14 @@ def delete_note(note_id: int):
 A few things to take away from this:
 
 - **The routes look the same.** Same paths, same methods, same status codes, same
-  404s. Callers can't tell the storage changed — which is the whole point.
+  404s. Callers can't tell the storage changed - which is the whole point.
 - **Those `?` placeholders matter.** Never build SQL by pasting values into the
   string. The `?` lets SQLite insert the value safely, which is what stops SQL
   injection. Always pass values as the tuple, never with f-strings.
 - **`@app.on_event("startup")`** runs `init_db()` once when the server boots, so
   the table exists before the first request. `CREATE TABLE IF NOT EXISTS` makes
   that safe to run every time.
-- **`int(note.pinned)`** because SQLite has no boolean type — we store `True`/
+- **`int(note.pinned)`** because SQLite has no boolean type - we store `True`/
   `False` as `1`/`0`.
 
 ## Run and test it
@@ -161,7 +161,7 @@ Start the server the same way as before:
 uvicorn main:app --reload
 ```
 
-On the first request a file called `notes.db` appears in your folder — that's
+On the first request a file called `notes.db` appears in your folder - that's
 your database. Run the same curl commands from phase 3 to create and read notes:
 
 ```bash
@@ -188,7 +188,7 @@ We used the built-in `sqlite3` module because it's already there and the SQL is
 short. On a bigger project you'll likely reach for **SQLAlchemy**, an ORM that
 lets you work with Python objects instead of writing SQL by hand, and lets you
 switch from SQLite to PostgreSQL by changing a connection string. It's the right
-tool once your queries grow — but the concepts you learned here (a connection, a
+tool once your queries grow - but the concepts you learned here (a connection, a
 table, the CRUD statements, parameterized values) are exactly what it wraps. You
 haven't learned a throwaway version; you've learned the layer underneath.
 
@@ -201,7 +201,7 @@ what's next:
 |---------|------------|
 | **Pin your deps** | Run `pip freeze > requirements.txt` so anyone (or any server) can recreate your environment with `pip install -r requirements.txt`. |
 | **Production server** | `--reload` is for development. In production you run something like `uvicorn main:app --host 0.0.0.0 --port 8000` (no reload), often behind a process manager. |
-| **A real database** | SQLite is great for one machine. For a service that scales, move to PostgreSQL — this is where SQLAlchemy earns its keep. |
+| **A real database** | SQLite is great for one machine. For a service that scales, move to PostgreSQL - this is where SQLAlchemy earns its keep. |
 | **Containerize** | A small `Dockerfile` makes the app run the same everywhere. |
 
 A minimal `Dockerfile` for this project looks like:
@@ -227,18 +227,18 @@ this image and put it on the internet. Each has its own steps, but they all want
 the same thing you now have: an app that starts with one command and listens on a
 port.
 
-## Where we are — and what you built
+## Where we are - and what you built
 
 Step back and look at the folder. Two files, `main.py` and `db.py`, and you have:
 
 - five REST endpoints covering full CRUD
 - input validated from type hints and Pydantic `Field` rules
-- proper status codes — 201 on create, 404 on missing, 422 on bad input
+- proper status codes - 201 on create, 404 on missing, 422 on bad input
 - a SQLite database that keeps your data across restarts
 - auto-generated interactive docs at `/docs`
 - a `Dockerfile` and a clear path to deployment
 
-That's a real REST API, built the way you'd build one at work — start small, add
+That's a real REST API, built the way you'd build one at work - start small, add
 validation, separate the storage, and only then worry about shipping. The
 "notes" subject was an excuse; swap it for tasks, users, products, or anything
 else and the same five-phase shape holds. You've got the pattern now.

@@ -2,7 +2,7 @@
 title: "The Contract, Not the Docs"
 guide: openapi-and-swagger
 phase: 1
-summary: "Describe your REST API once in OpenAPI, and get interactive docs, client SDKs, request validation, and contract tests for free — the API as a spec."
+summary: "Describe your REST API once in OpenAPI, and get interactive docs, client SDKs, request validation, and contract tests for free - the API as a spec."
 tags: [openapi, swagger, rest, api, documentation, tooling]
 difficulty: intermediate
 synonyms: ["what is openapi", "swagger vs openapi", "openapi spec", "swagger ui", "generate api docs from openapi", "design first api", "openapi codegen"]
@@ -17,9 +17,9 @@ OpenAPI exists to kill that gap. Instead of describing your API in prose that hu
 
 ## What OpenAPI actually is
 
-OpenAPI is a specification format — a standard shape for a document that describes a REST API. The document is plain YAML or JSON. It lists every endpoint, every method, every parameter, the shape of every request body, the shape of every response, and the meaning of every status code. Nothing executes. It's a description, not a program.
+OpenAPI is a specification format - a standard shape for a document that describes a REST API. The document is plain YAML or JSON. It lists every endpoint, every method, every parameter, the shape of every request body, the shape of every response, and the meaning of every status code. Nothing executes. It's a description, not a program.
 
-That's the whole trick: it's *machine-readable*. Because the format is standardized, any tool that understands OpenAPI can read your file and do something useful with it — render docs, generate a client, validate a request — without knowing anything else about your project.
+That's the whole trick: it's *machine-readable*. Because the format is standardized, any tool that understands OpenAPI can read your file and do something useful with it - render docs, generate a client, validate a request - without knowing anything else about your project.
 
 Here's the smallest version that's still real:
 
@@ -52,20 +52,20 @@ paths:
           description: No bookmark with that id
 ```
 
-*What just happened:* in about 25 lines you've stated a complete fact — "there's a `GET /bookmarks/{id}`, it takes an integer `id` in the path, and it returns either a 200 with `{ id, url }` or a 404." A human can read it, but more importantly a tool can *parse* it. The `{id}` in the path and the `parameters` block aren't decoration; they're the formal declaration that this endpoint is parameterized.
+*What just happened:* in about 25 lines you've stated a complete fact - "there's a `GET /bookmarks/{id}`, it takes an integer `id` in the path, and it returns either a 200 with `{ id, url }` or a 404." A human can read it, but more importantly a tool can *parse* it. The `{id}` in the path and the `parameters` block aren't decoration; they're the formal declaration that this endpoint is parameterized.
 
 ## So what is "Swagger," then?
 
 This trips up everyone, so let's settle it plainly.
 
-"Swagger" was the original name. It started as a spec format *and* a set of tools. In 2015 the spec itself was donated to a foundation and renamed **OpenAPI** — that's the standard, the thing your file conforms to. The name "Swagger" stayed on the *tooling* built around it.
+"Swagger" was the original name. It started as a spec format *and* a set of tools. In 2015 the spec itself was donated to a foundation and renamed **OpenAPI** - that's the standard, the thing your file conforms to. The name "Swagger" stayed on the *tooling* built around it.
 
 So the rule of thumb:
 
 - **OpenAPI** = the specification (the format your file is written in). Versions look like 3.0, 3.1.
-- **Swagger** = a family of tools that work with OpenAPI files — Swagger UI (renders docs), Swagger Editor (writes specs), Swagger Codegen (generates code).
+- **Swagger** = a family of tools that work with OpenAPI files - Swagger UI (renders docs), Swagger Editor (writes specs), Swagger Codegen (generates code).
 
-When someone says "the Swagger file," they almost always mean the OpenAPI document. When they say "let me check the Swagger," they usually mean Swagger UI — the interactive docs page. The terms blur in conversation; the distinction that matters is *spec vs. tool*.
+When someone says "the Swagger file," they almost always mean the OpenAPI document. When they say "let me check the Swagger," they usually mean Swagger UI - the interactive docs page. The terms blur in conversation; the distinction that matters is *spec vs. tool*.
 
 > The version number on the first line (`openapi: 3.1.0`) is the spec version your document follows, not your API's version. Your API's version goes under `info.version`. Mixing these up is a classic first-day confusion.
 
@@ -81,7 +81,7 @@ Once the description is something a machine can read, the same file feeds a whol
                        └─→ contract test (does the real API still match?)
 ```
 
-*What just happened:* one file fans out into five different jobs that teams otherwise do by hand. The docs can't drift from the client SDK, because both are generated from the same source. That's the payoff — not "nice docs," but *one source of truth* that everything else derives from.
+*What just happened:* one file fans out into five different jobs that teams otherwise do by hand. The docs can't drift from the client SDK, because both are generated from the same source. That's the payoff - not "nice docs," but *one source of truth* that everything else derives from.
 
 This is the mental shift. Without OpenAPI, the truth about your API lives in the code, and everything else (docs, clients, test fixtures) is a hand-maintained copy that rots. With OpenAPI, the truth lives in the spec, and the copies are generated. Copies you regenerate can't lie.
 
@@ -96,7 +96,7 @@ If you've read [the broader story of how to design APIs that don't rot](/guides/
 
 ## For builders
 
-You don't need to adopt the whole toolchain to get value. The cheapest possible win is this: write the spec, point Swagger UI at it, and now you have docs that live next to your code in version control. Every other tool — codegen, validation, mocking — is something you bolt on later when the pain shows up. Start with the file. The file is the asset.
+You don't need to adopt the whole toolchain to get value. The cheapest possible win is this: write the spec, point Swagger UI at it, and now you have docs that live next to your code in version control. Every other tool - codegen, validation, mocking - is something you bolt on later when the pain shows up. Start with the file. The file is the asset.
 
 ```quiz
 [
@@ -131,7 +131,7 @@ You don't need to adopt the whole toolchain to get value. The cheapest possible 
       "It removes the need to write any code"
     ],
     "answer": 2,
-    "explain": "One source of truth fans out to docs, SDKs, validation, and tests — generated copies cannot lie about the API."
+    "explain": "One source of truth fans out to docs, SDKs, validation, and tests - generated copies cannot lie about the API."
   }
 ]
 ```

@@ -34,7 +34,7 @@ db
 ansible_user=deploy
 ```
 
-*What just happened:* We defined two groups, `web` and `db`, with hosts in each. `production:children` makes a parent group containing both, so `production` means all five-ish boxes at once. `[web:vars]` sets `ansible_user=deploy` for every web host. Groups are how you target a slice of your fleet — "run this on `web`" — without listing machines one by one.
+*What just happened:* We defined two groups, `web` and `db`, with hosts in each. `production:children` makes a parent group containing both, so `production` means all five-ish boxes at once. `[web:vars]` sets `ansible_user=deploy` for every web host. Groups are how you target a slice of your fleet - "run this on `web`" - without listing machines one by one.
 
 You can sanity-check what Ansible thinks your inventory looks like before touching anything:
 
@@ -52,7 +52,7 @@ $ ansible-inventory -i inventory.ini --graph
 
 *What just happened:* `ansible-inventory --graph` renders the group tree so you can confirm grouping before you run a playbook. Cheap insurance against accidentally targeting the wrong set of hosts.
 
-A quick connectivity check uses the `ping` module — which isn't ICMP ping, it's "can I SSH in and run Python here":
+A quick connectivity check uses the `ping` module - which isn't ICMP ping, it's "can I SSH in and run Python here":
 
 ```console
 $ ansible -i inventory.ini web -m ping
@@ -60,14 +60,14 @@ web-01 | SUCCESS => { "ping": "pong" }
 web-02 | SUCCESS => { "ping": "pong" }
 ```
 
-*What just happened:* The ad-hoc `ansible` command (not `ansible-playbook`) ran the `ping` module against the `web` group. `pong` back from both means SSH auth and Python are working. If this fails, fix it before writing playbooks — every playbook depends on this working.
+*What just happened:* The ad-hoc `ansible` command (not `ansible-playbook`) ran the `ping` module against the `web` group. `pong` back from both means SSH auth and Python are working. If this fails, fix it before writing playbooks - every playbook depends on this working.
 
 ## Playbooks: plays, tasks, modules
 
 A playbook is a YAML file describing what to do. The structure has three nested layers, and the names matter:
 
 - A **play** maps a group of hosts to a list of tasks (`hosts: web` plus the tasks for web servers).
-- A **task** is one step — it calls one module with some arguments and gets a `name` for the run log.
+- A **task** is one step - it calls one module with some arguments and gets a `name` for the run log.
 - A **module** is the idempotent unit of work from Phase 1 (`apt`, `copy`, `service`).
 
 ```yaml
@@ -107,16 +107,16 @@ web-01  : ok=3  changed=2  unreachable=0  failed=0
 web-02  : ok=3  changed=2  unreachable=0  failed=0
 ```
 
-*What just happened:* Both tasks reported `changed` on the first run because nginx wasn't there yet. The `ok=3` includes an implicit fact-gathering step Ansible runs first. Run the exact same command again and you'll get `changed=0` — everything is already in the desired state. That `changed=0` on a re-run is your proof the playbook is idempotent.
+*What just happened:* Both tasks reported `changed` on the first run because nginx wasn't there yet. The `ok=3` includes an implicit fact-gathering step Ansible runs first. Run the exact same command again and you'll get `changed=0` - everything is already in the desired state. That `changed=0` on a re-run is your proof the playbook is idempotent.
 
 > Before a risky change, run with `--check` (a dry run that reports what *would* change without doing it) and `--diff` (shows the actual file/line differences). Together they're your "show me what you're about to do" button.
 
 ## Variables: one playbook, many machines
 
-Hardcoding `nginx` and version numbers into tasks doesn't scale. Variables let you parameterize. They can live in the playbook, in the inventory, or — the clean way — in `group_vars/` and `host_vars/` directories that Ansible loads automatically by group or host name.
+Hardcoding `nginx` and version numbers into tasks doesn't scale. Variables let you parameterize. They can live in the playbook, in the inventory, or - the clean way - in `group_vars/` and `host_vars/` directories that Ansible loads automatically by group or host name.
 
 ```yaml
-# group_vars/web.yml  — applies to every host in the 'web' group
+# group_vars/web.yml  - applies to every host in the 'web' group
 app_port: 8080
 worker_count: 4
 ```
@@ -138,7 +138,7 @@ server {
 }
 ```
 
-*What just happened:* The `template` module renders `nginx.conf.j2` through Jinja2, substituting `{{ worker_count }}` and `{{ app_port }}` from `group_vars/web.yml`, and writes the result to the target. Change the variable, re-run, and the config updates everywhere — one source of truth, many machines. The `notify:` line is a trigger we'll explain next.
+*What just happened:* The `template` module renders `nginx.conf.j2` through Jinja2, substituting `{{ worker_count }}` and `{{ app_port }}` from `group_vars/web.yml`, and writes the result to the target. Change the variable, re-run, and the config updates everywhere - one source of truth, many machines. The `notify:` line is a trigger we'll explain next.
 
 ## Handlers: do something only when something changed
 
@@ -156,7 +156,7 @@ Restarting nginx on every run is wasteful and disruptive. You only want to reloa
 
 ## Roles: packaging it so you can reuse it
 
-Once a playbook grows past a screen or two, you'll want structure. A **role** is a standard directory layout that bundles tasks, handlers, templates, defaults, and files for one responsibility — say, "set up an nginx web server" — so you can drop it into any playbook.
+Once a playbook grows past a screen or two, you'll want structure. A **role** is a standard directory layout that bundles tasks, handlers, templates, defaults, and files for one responsibility - say, "set up an nginx web server" - so you can drop it into any playbook.
 
 ```text
 roles/
@@ -168,7 +168,7 @@ roles/
 ```
 
 ```yaml
-# site.yml — now it just composes roles
+# site.yml - now it just composes roles
 - name: Configure web servers
   hosts: web
   become: true
@@ -177,7 +177,7 @@ roles/
     - app_deploy
 ```
 
-*What just happened:* Ansible auto-discovers `tasks/main.yml`, `handlers/main.yml`, and `templates/` inside a role by convention — no paths to wire up. The playbook shrinks to a list of roles, and each role is independently reusable across projects. This is also how you consume other people's work: the public Ansible Galaxy registry is full of community roles for common software, installable with `ansible-galaxy`.
+*What just happened:* Ansible auto-discovers `tasks/main.yml`, `handlers/main.yml`, and `templates/` inside a role by convention - no paths to wire up. The playbook shrinks to a list of roles, and each role is independently reusable across projects. This is also how you consume other people's work: the public Ansible Galaxy registry is full of community roles for common software, installable with `ansible-galaxy`.
 
 > In the wild: most real Ansible repos are a thin top-level playbook plus a `roles/` tree and `group_vars/`. The playbook reads like a table of contents; the roles hold the actual logic. When you inherit an Ansible codebase, read `site.yml` first, then the roles it lists.
 

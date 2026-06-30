@@ -19,20 +19,20 @@ It doesn't. Most messaging needs are small. A service emits "an order was placed
 
 Strip away the marketing and a broker does one thing: it sits between a sender and a receiver so they don't have to know about each other. The sender drops a message in. The receiver picks it up later. Neither has to be online at the same moment, neither has to know the other's address, and you can add more receivers without touching the sender.
 
-That decoupling is the whole point. If you've read [the message queues guide](/guides/webhooks-and-message-queues), this is the same mental model — we're now looking at two specific tools and when to pick each.
+That decoupling is the whole point. If you've read [the message queues guide](/guides/webhooks-and-message-queues), this is the same mental model - we're now looking at two specific tools and when to pick each.
 
 ## NATS: a broker that fits in one binary
 
 NATS is a single small server. You download one file, run it, and you have a broker. No JVM, no ZooKeeper, no cluster required to get started. It speaks a simple text protocol and connects clients in milliseconds.
 
-The core idea in NATS is the **subject** — a dotted string that names what a message is about, like `orders.placed` or `sensors.kitchen.temp`. Publishers send to a subject. Subscribers listen on a subject, and they can use wildcards: `orders.*` matches one token, `sensors.>` matches everything below `sensors`.
+The core idea in NATS is the **subject** - a dotted string that names what a message is about, like `orders.placed` or `sensors.kitchen.temp`. Publishers send to a subject. Subscribers listen on a subject, and they can use wildcards: `orders.*` matches one token, `sensors.>` matches everything below `sensors`.
 
 ```text
 publisher  ──▶  subject: orders.placed  ──▶  subscriber A (orders.*)
                                           └─▶  subscriber B (orders.placed)
 ```
 
-*What just happened:* the publisher named the message by subject and walked away. NATS fanned it out to every subscriber whose pattern matched. The publisher has no idea how many subscribers exist — zero, one, or a thousand — and doesn't care.
+*What just happened:* the publisher named the message by subject and walked away. NATS fanned it out to every subscriber whose pattern matched. The publisher has no idea how many subscribers exist - zero, one, or a thousand - and doesn't care.
 
 By default, core NATS is **fire-and-forget**. If no one is listening when you publish, the message is gone. That sounds scary until you realize how often it's exactly right: live metrics, presence pings, cache-invalidation signals. You don't want yesterday's "user is typing" event. When you *do* need messages to survive, NATS has **JetStream**, a persistence layer that stores messages in a stream and lets consumers replay them. We'll use it in Phase 2.
 
@@ -42,7 +42,7 @@ By default, core NATS is **fire-and-forget**. If no one is listening when you pu
 
 Amazon SQS is the opposite philosophy. You don't run anything. There's no server, no version to upgrade, no disk to fill. You create a queue through the AWS console or API, and from then on you only send and receive messages. AWS handles durability, scaling, and availability. (For the broader picture of managed services, see [cloud platforms explained](/guides/cloud-platforms-explained).)
 
-SQS is a **queue**, not a pub/sub bus. A message goes in once and is delivered to one consumer, who then deletes it. There's no built-in fan-out to multiple independent readers — if you need that on AWS, you put SNS in front of several SQS queues. Keep SQS in the "work queue" mental slot: a list of tasks that workers pull from.
+SQS is a **queue**, not a pub/sub bus. A message goes in once and is delivered to one consumer, who then deletes it. There's no built-in fan-out to multiple independent readers - if you need that on AWS, you put SNS in front of several SQS queues. Keep SQS in the "work queue" mental slot: a list of tasks that workers pull from.
 
 SQS comes in two flavors, and the difference matters:
 
@@ -56,7 +56,7 @@ FIFO queue       →  strict ordering within a message group
                  →  lower throughput than Standard
 ```
 
-*What just happened:* you traded one property for another. Standard gives you huge throughput but can deliver a message more than once and out of order. FIFO guarantees order and de-duplicates, at the cost of throughput. Most workloads want Standard plus idempotent consumers — we'll get to why in Phase 3.
+*What just happened:* you traded one property for another. Standard gives you huge throughput but can deliver a message more than once and out of order. FIFO guarantees order and de-duplicates, at the cost of throughput. Most workloads want Standard plus idempotent consumers - we'll get to why in Phase 3.
 
 ## How to choose
 
@@ -86,7 +86,7 @@ The thing to internalize: brokers are not a ladder where bigger is better. They'
 [
   {
     "q": "By default, what happens to a core NATS message published to a subject with no subscribers?",
-    "choices": ["It's stored until a subscriber connects", "It's discarded — core NATS is fire-and-forget", "It's sent to a dead-letter subject", "The publish call blocks until someone subscribes"],
+    "choices": ["It's stored until a subscriber connects", "It's discarded - core NATS is fire-and-forget", "It's sent to a dead-letter subject", "The publish call blocks until someone subscribes"],
     "answer": 1,
     "explain": "Core NATS is fire-and-forget; no subscriber means the message is gone. JetStream is what you add when you need persistence."
   },

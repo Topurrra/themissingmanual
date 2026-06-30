@@ -15,7 +15,7 @@ updated: 2026-06-25
 
 In [What Logic Actually Is](/guides/what-logic-actually-is) you met two words that look
 similar but do different jobs. An argument is **valid** when its conclusion follows from its
-premises — if the premises are true, the conclusion has to be true. An argument is **sound**
+premises - if the premises are true, the conclusion has to be true. An argument is **sound**
 when it's valid *and* the premises are actually true. Validity is about shape. Soundness is
 shape plus facts.
 
@@ -23,8 +23,8 @@ Now notice the gap between them. There's a third thing neither word covers, and 
 world: how convincing an argument *feels*. Feeling convincing isn't the same as being valid,
 and it isn't the same as being true. They come apart all the time.
 
-A **fallacy** lives in that gap. It's an argument that is invalid or unsound — broken on the
-inside — yet still feels like it should work. That last part matters. A clumsy, unconvincing
+A **fallacy** lives in that gap. It's an argument that is invalid or unsound - broken on the
+inside - yet still feels like it should work. That last part matters. A clumsy, unconvincing
 mistake isn't dangerous; you'll catch it. The dangerous fallacy slides past you because it
 *feels* right. This guide is about learning to feel the click of "wait, that doesn't actually
 follow" before the conclusion settles in.
@@ -37,11 +37,11 @@ different reasons, and you catch them with different instincts.
 A **formal fallacy** is broken in its *structure*. The shape is bad, so the argument fails no
 matter what you plug into it. You don't even need to know what the words mean.
 
-An **informal fallacy** has a fine structure but cheats in its *content* — it leans on
+An **informal fallacy** has a fine structure but cheats in its *content* - it leans on
 something irrelevant, applies emotional pressure, plays with ambiguous words, or yanks your
 attention elsewhere. The shape looks okay; the problem is what's poured into it.
 
-Think of a bridge. A formal fallacy is a bridge with a flawed design — it collapses under any
+Think of a bridge. A formal fallacy is a bridge with a flawed design - it collapses under any
 load. An informal fallacy is a well-designed bridge built out of cardboard: the blueprint is
 fine, the materials are a lie.
 
@@ -62,7 +62,7 @@ Therefore, it rained.              (Therefore P)
 
 Feel how natural that sounds? But the street could be wet because a truck spilled water, or
 someone washed their car, or a pipe burst. The conditional never promised that *only* rain wets
-the street. The structure pulled you from "Q" back to "P", and that move isn't allowed — no
+the street. The structure pulled you from "Q" back to "P", and that move isn't allowed - no
 matter what P and Q are.
 
 That's the signature of a formal fallacy: the error is in the wiring. Swap rain and wet streets
@@ -72,14 +72,14 @@ first.
 
 ## Informal: when the content cheats
 
-Now the other family. The shape is usually fine — what fails is relevance, honesty, or clarity.
+Now the other family. The shape is usually fine - what fails is relevance, honesty, or clarity.
 A few flavors, to show the range:
 
 - **Irrelevance.** The argument brings in something that has nothing to do with whether the
   claim is true. "You can't trust her budget plan; she got divorced last year." The divorce has
   no bearing on the math.
-- **Emotional pressure.** Instead of giving reasons, the argument makes you feel something —
-  fear, pity, belonging — and lets the feeling stand in for the reason.
+- **Emotional pressure.** Instead of giving reasons, the argument makes you feel something -
+  fear, pity, belonging - and lets the feeling stand in for the reason.
 - **Ambiguity.** A word quietly changes meaning partway through. "Only man is rational; no woman
   is a man; therefore no woman is rational." The word "man" flips from "human" to "male" mid-
   argument, and the whole thing rides on you not noticing.
@@ -94,7 +94,7 @@ but isn't connected to the truth of the claim.
 
 Here's the uncomfortable part. Fallacies aren't rare glitches that fool careless people. They
 work on careful people too, because they exploit how every human brain is built. Reasoning
-carefully is slow and effortful, so your mind runs on shortcuts most of the time — and those
+carefully is slow and effortful, so your mind runs on shortcuts most of the time - and those
 shortcuts are usually *fine*. The trouble is that a fallacy is a shortcut pointed in the wrong
 direction.
 
@@ -106,13 +106,13 @@ A few of the levers they pull:
 - **Emotion.** A claim wrapped in fear or anger or warmth feels more true than the same claim
   stated flatly. The feeling is real; the extra truth is imaginary.
 - **Authority and the crowd.** "An expert said so" and "everyone believes it" are decent first
-  guesses in an uncertain world. But they're guesses, not proof — and a fallacy dresses a guess
+  guesses in an uncertain world. But they're guesses, not proof - and a fallacy dresses a guess
   up as a verdict.
 - **Effort avoidance.** Checking an argument is work, and a clean, confident conclusion lets you
   skip it. We take the offer.
 
 None of these are stupidity. They're features that mostly serve you well. A fallacy is what
-happens when someone — by accident or on purpose — aims one of those features at a false
+happens when someone - by accident or on purpose - aims one of those features at a false
 conclusion. The one sentence to carry out of this section: **persuasiveness and truth are
 different properties, and the gap between them is the entire vulnerability.**
 
@@ -121,7 +121,7 @@ different properties, and the gap between them is the entire vulnerability.**
 There's a reason this guide exists, and it isn't to win arguments at dinner.
 
 When you can *name* a manipulation, it stops working on you. A fallacy's whole power is that it
-operates below your notice — it feels like a reason, so you accept it like a reason. The moment
+operates below your notice - it feels like a reason, so you accept it like a reason. The moment
 you can say "that's affirming the consequent" or "that's an appeal to fear," the spell breaks.
 You're no longer reacting; you're examining.
 
@@ -133,32 +133,32 @@ of this whole guide.
 
 ## For builders
 
-If you write software — or work alongside an AI that does — this lands close to home.
+If you write software - or work alongside an AI that does - this lands close to home.
 
 The everyday fallacy in your work is the **confident, fluent, wrong answer.** It shows up when a
 teammate explains a bug's cause smoothly and completely, and is completely mistaken. It shows up
 when documentation reads beautifully and describes behavior the code doesn't have. And it shows
 up constantly in AI output: a model can produce a polished, authoritative, well-formatted answer
-that is false — and the polish is doing the persuading, not the correctness.
+that is false - and the polish is doing the persuading, not the correctness.
 
 This is the emotion-and-authority lever from earlier, in technical clothing. Fluency reads as
 competence. A clean explanation *feels* verified. But fluency is a property of the wording, and
-correctness is a property of reality — same lesson as the whole phase — and they're not the same
+correctness is a property of reality - same lesson as the whole phase - and they're not the same
 thing. The fix is boring and reliable: run the code, check the source, reproduce the claim.
 Trust the test, not the tone.
 
 ## Recap
 
-- A **fallacy** is an argument that's invalid or unsound but still feels convincing — and the
+- A **fallacy** is an argument that's invalid or unsound but still feels convincing - and the
   convincing-but-broken kind is the one that actually fools people.
 - **Formal fallacies** break in their structure (like affirming the consequent); the wiring is
   bad regardless of content.
-- **Informal fallacies** keep a fine structure but cheat in their content — irrelevance,
+- **Informal fallacies** keep a fine structure but cheat in their content - irrelevance,
   emotion, ambiguity, or distraction.
 - They work because human brains run on shortcuts, respond to feeling, defer to authority and
   the crowd, and avoid effort. **Persuasive is not the same as valid, and neither is the same as
   true.**
-- Naming a manipulation is the first step to being immune to it — and "fluent and confident"
+- Naming a manipulation is the first step to being immune to it - and "fluent and confident"
   (from a person or an AI) is not evidence of "correct."
 
 ## Open-ended exercise
@@ -170,7 +170,7 @@ Read this argument carefully:
 
 Name at least two different moves happening in this short paragraph. For each one,
 say whether it's a good reason to adopt the framework, a fallacy, or something in
-between — and what additional evidence would turn it from persuasion into a sound
+between - and what additional evidence would turn it from persuasion into a sound
 argument.
 
 Quick gut-check before you move on:
@@ -186,7 +186,7 @@ Quick gut-check before you move on:
       "An argument that uses big or technical words"
     ],
     "answer": 1,
-    "explain": "A fallacy is about the reasoning being broken — invalid or unsound — while still feeling persuasive. The conclusion of a fallacious argument can even happen to be true; what's broken is how you got there."
+    "explain": "A fallacy is about the reasoning being broken - invalid or unsound - while still feeling persuasive. The conclusion of a fallacious argument can even happen to be true; what's broken is how you got there."
   },
   {
     "q": "What's the difference between a formal and an informal fallacy?",
@@ -203,12 +203,12 @@ Quick gut-check before you move on:
     "q": "A friend gives a smooth, confident explanation for why a bug happened, and it sounds completely right. What does this phase say you should conclude?",
     "choices": [
       "It's persuasive, so it's almost certainly correct",
-      "Persuasiveness isn't evidence of truth — fluency can be wrong, so verify it",
+      "Persuasiveness isn't evidence of truth - fluency can be wrong, so verify it",
       "Confident people are usually trying to manipulate you",
       "Only AI answers need checking; people's explanations don't"
     ],
     "answer": 1,
-    "explain": "Persuasiveness and truth are different properties. A fluent, confident answer — from a person or an AI — can still be false, so the move is to check it (run the code, reproduce the claim), not trust the tone."
+    "explain": "Persuasiveness and truth are different properties. A fluent, confident answer - from a person or an AI - can still be false, so the move is to check it (run the code, reproduce the claim), not trust the tone."
   }
 ]
 ```
