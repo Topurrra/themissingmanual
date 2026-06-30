@@ -11,10 +11,12 @@ export function sendPageview(url) {
       query = q;
     }
   }
+  // utm_source from tagged links (the admin link builder) -> "traffic by source".
+  const source = (url.searchParams.get('utm_source') || '').slice(0, 64);
   try {
     navigator.sendBeacon(
       '/analytics/collect',
-      JSON.stringify({ path, kind, query, referrer: document.referrer || '' })
+      JSON.stringify({ path, kind, query, referrer: document.referrer || '', source })
     );
   } catch {}
 }

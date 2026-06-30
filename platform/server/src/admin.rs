@@ -349,6 +349,8 @@ pub struct EventInput {
     query: String,
     #[serde(default)]
     device: String,
+    #[serde(default)]
+    source: String,
 }
 
 // Public: the analytics collector posts here (server-to-server from the web origin).
@@ -372,6 +374,7 @@ pub async fn record_event(State(state): State<Arc<AppState>>, headers: HeaderMap
             &truncate(&e.visitor, 64),
             &truncate(&e.query, 255),
             &truncate(&e.device, 16),
+            &truncate(&e.source, 64),
         )
     };
     match r {
@@ -398,6 +401,7 @@ pub async fn analytics(State(state): State<Arc<AppState>>, Query(q): Query<HashM
             "topReferrers": store.top_referrers(days, 10)?.into_iter().map(|(p, c)| json!({"referrer": p, "count": c})).collect::<Vec<_>>(),
             "topSearches": store.top_searches(days, 10)?.into_iter().map(|(p, c)| json!({"query": p, "count": c})).collect::<Vec<_>>(),
             "devices": store.top_devices(days, 5)?.into_iter().map(|(p, c)| json!({"device": p, "count": c})).collect::<Vec<_>>(),
+            "topSources": store.top_sources(days, 10)?.into_iter().map(|(p, c)| json!({"source": p, "count": c})).collect::<Vec<_>>(),
         }))
     };
     match build() {

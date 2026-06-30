@@ -42,7 +42,8 @@ export async function POST({ request, getClientAddress, url }) {
     referrer,
     visitor,
     query: (data.query || '').slice(0, 255),
-    device
+    device,
+    source: (data.source || '').slice(0, 64)
   };
   try {
     await fetch(`${API_BASE}/api/events`, {

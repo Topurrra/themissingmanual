@@ -82,7 +82,8 @@ impl Store {
                  referrer TEXT,
                  visitor TEXT NOT NULL,
                  query TEXT,
-                 device TEXT NOT NULL DEFAULT ''
+                 device TEXT NOT NULL DEFAULT '',
+                 source TEXT NOT NULL DEFAULT ''
              );
              CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
              CREATE TABLE IF NOT EXISTS settings (
@@ -109,8 +110,9 @@ impl Store {
              );
              CREATE INDEX IF NOT EXISTS idx_revisions_phase ON phase_revisions(guide_slug, phase_no);",
         )?;
-        // Additive migration for pre-existing events tables (no-op once present).
+        // Additive migrations for pre-existing events tables (no-op once present).
         let _ = conn.execute("ALTER TABLE events ADD COLUMN device TEXT NOT NULL DEFAULT ''", []);
+        let _ = conn.execute("ALTER TABLE events ADD COLUMN source TEXT NOT NULL DEFAULT ''", []);
         Ok(Self { conn })
     }
 
@@ -576,10 +578,10 @@ impl Store {
 
     // ---- analytics ----
 
-    pub fn record_event(&self, kind: &str, path: &str, referrer: &str, visitor: &str, query: &str, device: &str) -> Result<(), StoreError> {
+    pub fn record_event(&self, kind: &str, path: &str, referrer: &str, visitor: &str, query: &str, device: &str, source: &str) -> Result<(), StoreError> {
         self.conn.execute(
-            "INSERT INTO events (kind, path, referrer, visitor, query, device) VALUES (?1,?2,?3,?4,?5,?6)",
-            params![kind, path, referrer, visitor, query, device],
+            "INSERT INTO events (kind, path, referrer, visitor, query, device, source) VALUES (?1,?2,?3,?4,?5,?6,?7)",
+            params![kind, path, referrer, visitor, query, device, source],
         )?;
         Ok(())
     }
@@ -642,6 +644,10 @@ impl Store {
     }
     pub fn top_devices(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
         self.top_by("AND kind='pageview' AND device<>''", "device", days, limit)
+    }
+    /// Tagged-link sources (utm_source) — "traffic by source" for posted campaign links.
+    pub fn top_sources(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        self.top_by("AND kind='pageview' AND source<>''", "source", days, limit)
     }
     /// Totals for the period before the current window (for trend comparison):
     /// events in [now-2*days, now-days).
@@ -819,10 +825,10 @@ mod tests {
     #[test]
     fn analytics_counts_and_uniques() {
         let s = Store::open_in_memory().unwrap();
-        s.record_event("pageview", "/guides/git", "google.com", "vA", "", "").unwrap();
-        s.record_event("pageview", "/guides/git", "", "vA", "", "").unwrap(); // same visitor
-        s.record_event("pageview", "/", "reddit.com", "vB", "", "").unwrap();
-        s.record_event("search", "/search", "", "vB", "rebase", "").unwrap();
+        s.record_event("pageview", "/guides/git", "google.com", "vA", "", "", "twitter").unwrap();
+        s.record_event("pageview", "/guides/git", "", "vA", "", "", "").unwrap(); // same visitor
+        s.record_event("pageview", "/", "reddit.com", "vB", "", "", "").unwrap();
+        s.record_event("search", "/search", "", "vB", "rebase", "", "").unwrap();
         let (views, uniq, searches) = s.analytics_totals(30).unwrap();
         assert_eq!(views, 3);
         assert_eq!(uniq, 2);
@@ -830,6 +836,7 @@ mod tests {
         assert_eq!(s.top_paths(30, 10).unwrap()[0], ("/guides/git".to_string(), 2));
         assert_eq!(s.top_searches(30, 10).unwrap()[0], ("rebase".to_string(), 1));
         assert!(s.top_referrers(30, 10).unwrap().iter().any(|(r, _)| r == "google.com"));
+        assert!(s.top_sources(30, 10).unwrap().iter().any(|(r, c)| r == "twitter" && *c == 1));
         assert_eq!(s.views_per_day(30).unwrap().iter().map(|(_, c)| c).sum::<i64>(), 3);
     }
 
@@ -844,7 +851,7 @@ mod tests {
                 [],
             )
             .unwrap();
-        s.record_event("pageview", "/new", "", "v", "", "").unwrap();
+        s.record_event("pageview", "/new", "", "v", "", "", "").unwrap();
 
         let removed = s.prune_events(365).unwrap();
         assert_eq!(removed, 1);
