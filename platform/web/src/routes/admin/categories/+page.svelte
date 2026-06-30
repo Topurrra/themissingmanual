@@ -41,7 +41,7 @@
 <svelte:head><title>Admin · Categories</title></svelte:head>
 
 <h1 class="admin-h1">Categories</h1>
-{#if msg}<p class="admin-note">{msg}</p>{/if}
+{#if msg}<p class="admin-ok">{msg}</p>{/if}
 
 <div class="cat-rows">
   {#each categories as c (c.slug)}

@@ -305,7 +305,7 @@
 </div>
 {/if}
 
-{#if msg}<p class="admin-note" aria-live="polite">{msg}</p>{/if}
+{#if msg}<p class="admin-ok" aria-live="polite">{msg}</p>{/if}
 {#if err}<p class="admin-err" aria-live="assertive">{err}</p>{/if}
 
 {#if !reorderMode}

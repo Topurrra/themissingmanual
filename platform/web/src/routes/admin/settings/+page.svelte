@@ -266,7 +266,7 @@
       <button type="button" class="admin-btn" on:click={savePlaylist}>
         <i class="ti ti-device-floppy" aria-hidden="true"></i> Save playlist
       </button>
-      {#if playlistMsg}<span class="admin-note">{playlistMsg}</span>{/if}
+      {#if playlistMsg}<span class="admin-ok">{playlistMsg}</span>{/if}
       {#if playlistErr}<span class="admin-err">{playlistErr}</span>{/if}
     </div>
   </section>
@@ -307,7 +307,7 @@
     <button type="submit" class="admin-btn primary" disabled={saving}>
       <i class="ti ti-device-floppy" aria-hidden="true"></i> {saving ? 'Saving…' : 'Save settings'}
     </button>
-    {#if ok}<span class="admin-note">{ok}</span>{/if}
+    {#if ok}<span class="admin-ok">{ok}</span>{/if}
     {#if err}<span class="admin-err">{err}</span>{/if}
   </div>
 </form>

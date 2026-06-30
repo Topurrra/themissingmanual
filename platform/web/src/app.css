@@ -1266,7 +1266,16 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .admin-empty { color: var(--faint); }
 .admin-note { color: var(--accent); font-size: 0.9rem; }
-.admin-err { color: var(--danger); font-size: 0.9rem; }
+/* Action feedback as subtle chips: success (green) clearly distinct from error
+   (red) and from .admin-note (cyan inline info). */
+.admin-ok, .admin-err {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.35rem 0.7rem; border-radius: 8px; font-size: 0.88rem; font-weight: 500;
+}
+.admin-ok { color: #2e9e6b; background: color-mix(in srgb, #2e9e6b 14%, transparent); }
+.admin-err { color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, transparent); }
+/* Page subtitle under .admin-h1 (one-line description, consistent across pages). */
+.admin-sub { color: var(--muted); font-size: 0.9rem; margin: 0.2rem 0 1.2rem; max-width: 64ch; }
 
 .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
 .metric {

@@ -58,7 +58,7 @@
   </label>
 
   {#if err}<p class="admin-err">{err}</p>{/if}
-  {#if ok}<p class="admin-note">{ok}</p>{/if}
+  {#if ok}<p class="admin-ok">{ok}</p>{/if}
 
   <div class="acct-actions">
     <button type="submit" class="admin-btn primary" disabled={busy}>

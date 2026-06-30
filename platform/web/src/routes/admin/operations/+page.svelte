@@ -63,7 +63,7 @@
   </button>
 </div>
 
-{#if note}<p class="admin-note" aria-live="polite">{note}</p>{/if}
+{#if note}<p class="admin-ok" aria-live="polite">{note}</p>{/if}
 {#if err}<p class="admin-err" aria-live="assertive">{err}</p>{/if}
 
 <div class="ops-grid">
