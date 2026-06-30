@@ -1,5 +1,5 @@
 ---
-title: "GitLab CI/CD, From Zero"
+title: "Phase 1: The Mental Model — One File, A Pipeline, A Machine"
 guide: gitlab-ci-cd
 phase: 1
 summary: "Pipelines defined in .gitlab-ci.yml: stages, jobs, and runners that build, test, and deploy on every push — with artifacts, caching, and environments."

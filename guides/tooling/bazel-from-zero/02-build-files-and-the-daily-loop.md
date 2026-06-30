@@ -1,5 +1,5 @@
 ---
-title: "Bazel, From Zero"
+title: "BUILD Files and the Daily Loop"
 guide: bazel-from-zero
 phase: 2
 summary: "Google's build system for huge, multi-language repos: hermetic, reproducible builds with aggressive caching and parallelism — and the steep tradeoff that buys."

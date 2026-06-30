@@ -1,5 +1,5 @@
 ---
-title: "GitLab CI/CD, From Zero"
+title: "Phase 3: Production Reality — Environments, Gates, and Secrets"
 guide: gitlab-ci-cd
 phase: 3
 summary: "Pipelines defined in .gitlab-ci.yml: stages, jobs, and runners that build, test, and deploy on every push — with artifacts, caching, and environments."

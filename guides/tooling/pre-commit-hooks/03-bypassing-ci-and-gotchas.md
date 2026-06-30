@@ -1,5 +1,5 @@
 ---
-title: "pre-commit Hooks"
+title: "Bypassing, CI, and the Gotchas"
 guide: pre-commit-hooks
 phase: 3
 summary: "Catch problems before they're committed: the pre-commit framework runs formatters, linters, and secret scanners automatically on every git commit."

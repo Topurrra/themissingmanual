@@ -1,5 +1,5 @@
 ---
-title: "Artifact Registries: Docker Hub, Nexus, Artifactory"
+title: "Pushing, Pulling, and Private Packages"
 guide: artifact-registries
 phase: 2
 summary: "Where your builds live: container and package registries that store, version, and serve your artifacts — with the proxying and access control teams rely on."

@@ -1,5 +1,5 @@
 ---
-title: "Redis, From Zero"
+title: "Production reality: persistence, locks, and the sharp edges"
 guide: redis-from-zero
 phase: 3
 summary: "The in-memory data store that does ten jobs: cache, session store, queue, rate limiter, and lock — with data structures, TTLs, and the persistence tradeoff."

@@ -1,5 +1,5 @@
 ---
-title: "Testcontainers, From Zero"
+title: "Why mocks lie and what a container gives you"
 guide: testcontainers-from-zero
 phase: 1
 summary: "Integration tests against the real thing: spin up a throwaway Postgres, Kafka, or Redis in Docker for each test run, then tear it down automatically."

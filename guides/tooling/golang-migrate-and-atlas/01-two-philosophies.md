@@ -1,5 +1,5 @@
 ---
-title: "golang-migrate and Atlas"
+title: "Two philosophies of change"
 guide: golang-migrate-and-atlas
 phase: 1
 summary: "Database migrations for Go and beyond: golang-migrate's plain up/down SQL files versus Atlas's declarative, diff-the-desired-state approach."

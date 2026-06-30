@@ -1,5 +1,5 @@
 ---
-title: "RabbitMQ, From Zero"
+title: "Phase 1: The Smart Post Office"
 guide: rabbitmq-from-zero
 phase: 1
 summary: "The classic message broker: exchanges, queues, and bindings route messages to workers, with acknowledgements and dead-letter queues for reliable delivery."

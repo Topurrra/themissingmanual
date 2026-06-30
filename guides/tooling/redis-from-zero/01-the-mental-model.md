@@ -1,5 +1,5 @@
 ---
-title: "Redis, From Zero"
+title: "The mental model: one RAM-speed dictionary"
 guide: redis-from-zero
 phase: 1
 summary: "The in-memory data store that does ten jobs: cache, session store, queue, rate limiter, and lock — with data structures, TTLs, and the persistence tradeoff."

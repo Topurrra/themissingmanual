@@ -1,5 +1,5 @@
 ---
-title: "Make and Makefiles"
+title: "The Tab, Stale Builds, and Why It Endures"
 guide: make-and-makefiles
 phase: 3
 summary: "The 50-year-old build tool that still runs everything: targets, prerequisites, and recipes — a dependency graph that rebuilds only what changed."

@@ -6,7 +6,7 @@ summary: "A graph is a map of relationships: who is friends with whom, which fil
 tags: [mathematics, graph-theory, networks, nodes, edges, paths, beginner-friendly]
 category: mathematics
 order: 8
-difficulty: beginner
+difficulty: intermediate
 synonyms: ["what is graph theory", "nodes and edges explained", "shortest path", "graph algorithms", "BFS DFS", "dependency graphs"]
 updated: 2026-06-28
 ---

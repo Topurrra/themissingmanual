@@ -1,5 +1,5 @@
 ---
-title: "Helm, From Zero"
+title: "The Mental Model: A Chart Is Templated Manifests"
 guide: helm-from-zero
 phase: 1
 summary: "The package manager for Kubernetes: charts template your manifests, values parameterize them per environment, and releases are versioned and rollback-able."

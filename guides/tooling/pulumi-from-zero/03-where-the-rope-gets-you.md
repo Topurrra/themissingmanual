@@ -1,5 +1,5 @@
 ---
-title: "Pulumi, From Zero"
+title: "Where the rope gets you"
 guide: pulumi-from-zero
 phase: 3
 summary: "Infrastructure as actual code: define cloud resources in TypeScript, Python, or Go, with real loops and functions, while Pulumi tracks state like Terraform."

@@ -1,5 +1,5 @@
 ---
-title: "Object Storage (S3)"
+title: "Where it bites: leaks, edits, and consistency"
 guide: object-storage-s3
 phase: 3
 summary: "Buckets, keys, and signed URLs — how cloud object storage really works, what it is good and bad at, and the public-bucket leak that makes the news."

@@ -1,5 +1,5 @@
 ---
-title: "Python Packaging: pip, venv, Poetry, uv"
+title: "Why Environments Exist (and the Global-Install Trap)"
 guide: python-packaging-pip-poetry-uv
 phase: 1
 summary: "Taming Python environments: virtual environments, pip and requirements, the modern pyproject.toml with Poetry, and uv's blazing resolver — without dependency hell."

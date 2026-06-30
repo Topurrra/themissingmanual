@@ -1,5 +1,5 @@
 ---
-title: "Light, Waves, and Fields"
+title: "When waves meet themselves"
 guide: light-waves-and-fields
 phase: 3
 summary: "Why light, radio, sound, and ripples on a pond are the same idea: waves and fields, the electromagnetic spectrum, and what color really is."

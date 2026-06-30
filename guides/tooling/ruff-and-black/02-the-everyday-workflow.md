@@ -1,5 +1,5 @@
 ---
-title: "Ruff and Black"
+title: "The everyday workflow"
 guide: ruff-and-black
 phase: 2
 summary: "Python code quality at speed: Black formats with no options to argue about, and Ruff lints and now formats astonishingly fast, replacing a stack of older tools."

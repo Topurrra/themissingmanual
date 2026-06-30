@@ -1,5 +1,5 @@
 ---
-title: "HashiCorp Vault"
+title: "Leases, Revocation, and Reality"
 guide: hashicorp-vault
 phase: 3
 summary: "Stop hardcoding secrets: Vault stores them encrypted, gates access by policy, issues short-lived dynamic credentials, and keeps an audit trail."

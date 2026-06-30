@@ -1,5 +1,5 @@
 ---
-title: "CircleCI, From Zero"
+title: "Writing a real config: caching, orbs, and fan-out"
 guide: circleci-from-zero
 phase: 2
 summary: "Cloud-native CI/CD with config.yml: jobs, workflows, executors, and orbs — fast parallel pipelines without running your own server."

@@ -6,7 +6,7 @@ summary: "How to count possibilities without listing them: multiply independent 
 tags: [mathematics, combinatorics, permutations, combinations, counting, beginner-friendly]
 category: mathematics
 order: 4
-difficulty: beginner
+difficulty: intermediate
 synonyms: ["how to count possibilities", "permutations vs combinations", "what is a factorial", "multiplication principle", "how many combinations", "combinatorics basics"]
 updated: 2026-06-25
 ---

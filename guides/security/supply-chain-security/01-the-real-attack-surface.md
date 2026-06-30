@@ -1,5 +1,5 @@
 ---
-title: "Supply-Chain Security"
+title: "Your code is mostly other people's code"
 guide: supply-chain-security
 phase: 1
 summary: "Your dependencies are your attack surface: the npm install that owned you, lockfiles, typosquatting, and how to trust code you did not write."

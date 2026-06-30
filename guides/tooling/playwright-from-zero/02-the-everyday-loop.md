@@ -1,5 +1,5 @@
 ---
-title: "Playwright, From Zero"
+title: "The everyday loop: write, run, debug"
 guide: playwright-from-zero
 phase: 2
 summary: "Reliable browser end-to-end tests: auto-waiting locators that kill flakiness, cross-browser runs, tracing, and codegen to record a test by clicking."

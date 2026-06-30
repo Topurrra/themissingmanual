@@ -1,5 +1,5 @@
 ---
-title: "Protobuf and Avro"
+title: "The mental model: schema-first binary data"
 guide: protobuf-and-avro
 phase: 1
 summary: "Binary serialization with a schema: Protocol Buffers and Avro make data small and fast across services, and force you to think about schema evolution."

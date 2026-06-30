@@ -1,5 +1,5 @@
 ---
-title: "Pytest, From Zero"
+title: "The mental model: plain assert and zero-config discovery"
 guide: pytest-from-zero
 phase: 1
 summary: "Python testing that gets out of your way: plain assert, fixtures for setup and teardown, parametrize for table-driven tests, and a rich plugin ecosystem."

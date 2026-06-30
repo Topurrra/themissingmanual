@@ -1,5 +1,5 @@
 ---
-title: "NATS and Amazon SQS"
+title: "Phase 2: Sending and Receiving for Real"
 guide: nats-and-sqs
 phase: 2
 summary: "Two lighter messaging options: NATS for fast, simple pub/sub and request-reply, and SQS for a fully managed, zero-ops cloud queue."

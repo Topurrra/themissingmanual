@@ -1,5 +1,5 @@
 ---
-title: "CircleCI, From Zero"
+title: "The four nouns: jobs, executors, steps, workflows"
 guide: circleci-from-zero
 phase: 1
 summary: "Cloud-native CI/CD with config.yml: jobs, workflows, executors, and orbs — fast parallel pipelines without running your own server."

@@ -1,5 +1,5 @@
 ---
-title: "ESLint and Prettier"
+title: "Two tools, two jobs"
 guide: eslint-and-prettier
 phase: 1
 summary: "Stop arguing about code style: Prettier formats automatically, ESLint catches real bugs and bad patterns, and together they end the bikeshedding."

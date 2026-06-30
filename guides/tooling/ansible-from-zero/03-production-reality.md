@@ -1,5 +1,5 @@
 ---
-title: "Ansible, From Zero"
+title: "Production Reality"
 guide: ansible-from-zero
 phase: 3
 summary: "Configuration management without agents: SSH into your servers and run idempotent playbooks that bring them to a desired state, every time."

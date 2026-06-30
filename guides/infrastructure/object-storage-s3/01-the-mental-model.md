@@ -1,5 +1,5 @@
 ---
-title: "Object Storage (S3)"
+title: "What it actually is: a giant key-to-blob map"
 guide: object-storage-s3
 phase: 1
 summary: "Buckets, keys, and signed URLs — how cloud object storage really works, what it is good and bad at, and the public-bucket leak that makes the news."

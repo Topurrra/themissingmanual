@@ -1,5 +1,5 @@
 ---
-title: "dbmate and Sqitch"
+title: "The everyday loop"
 guide: dbmate-and-sqitch
 phase: 2
 summary: "Lightweight, framework-agnostic database migrations: dbmate's simple timestamped SQL files and Sqitch's dependency-graph approach with verify and revert."

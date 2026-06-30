@@ -1,5 +1,5 @@
 ---
-title: "Prisma Migrate, From Zero"
+title: "Schema is the source of truth"
 guide: prisma-migrate
 phase: 1
 summary: "Schema-first migrations in the Node world: edit your Prisma schema, generate a migration, and keep dev and production in sync without drift."

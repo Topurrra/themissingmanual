@@ -1,5 +1,5 @@
 ---
-title: "Make and Makefiles"
+title: "The Dependency Graph in Your Head"
 guide: make-and-makefiles
 phase: 1
 summary: "The 50-year-old build tool that still runs everything: targets, prerequisites, and recipes — a dependency graph that rebuilds only what changed."

@@ -1,5 +1,5 @@
 ---
-title: "Datadog, From Zero"
+title: "The bill, and how it sneaks up"
 guide: datadog-from-zero
 phase: 3
 summary: "The all-in-one observability platform: the agent, metrics and dashboards, APM traces, log management, and monitors — plus the bill that surprises teams."

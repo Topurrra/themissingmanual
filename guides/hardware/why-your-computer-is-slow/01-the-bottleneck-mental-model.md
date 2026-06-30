@@ -1,5 +1,5 @@
 ---
-title: "Why Your Computer Is Slow"
+title: "The bottleneck: your computer is only as fast as its slowest link"
 guide: why-your-computer-is-slow
 phase: 1
 summary: "What to actually upgrade (RAM versus SSD versus CPU) instead of guessing, by learning to read which part is the real bottleneck."

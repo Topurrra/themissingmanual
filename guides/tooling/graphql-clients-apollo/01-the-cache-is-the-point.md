@@ -1,5 +1,5 @@
 ---
-title: "GraphQL Clients (Apollo)"
+title: "The cache is the point"
 guide: graphql-clients-apollo
 phase: 1
 summary: "Consuming GraphQL from the front end: how Apollo Client's normalized cache, queries, and mutations change data fetching versus REST calls."

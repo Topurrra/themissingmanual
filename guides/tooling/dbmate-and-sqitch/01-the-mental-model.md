@@ -1,5 +1,5 @@
 ---
-title: "dbmate and Sqitch"
+title: "Two ways to order change"
 guide: dbmate-and-sqitch
 phase: 1
 summary: "Lightweight, framework-agnostic database migrations: dbmate's simple timestamped SQL files and Sqitch's dependency-graph approach with verify and revert."

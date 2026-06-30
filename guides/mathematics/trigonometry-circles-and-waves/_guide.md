@@ -6,7 +6,7 @@ summary: "Trigonometry is not 'memorize SOH CAH TOA.' It is the math of anything
 tags: [mathematics, trigonometry, sine, cosine, tangent, unit-circle, waves, beginner-friendly]
 category: mathematics
 order: 10
-difficulty: beginner
+difficulty: intermediate
 synonyms: ["what is trigonometry", "sine and cosine explained", "unit circle", "waves and frequencies", "trigonometry for programmers", "rotation and trigonometry"]
 updated: 2026-06-28
 ---

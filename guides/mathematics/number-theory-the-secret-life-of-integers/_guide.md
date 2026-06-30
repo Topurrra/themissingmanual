@@ -6,7 +6,7 @@ summary: "Number theory is the math of which numbers behave nicely - and it is t
 tags: [mathematics, number-theory, primes, modular-arithmetic, cryptography, beginner-friendly]
 category: mathematics
 order: 7
-difficulty: beginner
+difficulty: intermediate
 synonyms: ["what is number theory", "primes explained", "modular arithmetic deep dive", "RSA encryption for beginners", "how does cryptography work", "GCD and primes"]
 updated: 2026-06-28
 ---

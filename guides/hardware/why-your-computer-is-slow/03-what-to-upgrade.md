@@ -1,5 +1,5 @@
 ---
-title: "Why Your Computer Is Slow"
+title: "The verdict: what to actually upgrade"
 guide: why-your-computer-is-slow
 phase: 3
 summary: "What to actually upgrade (RAM versus SSD versus CPU) instead of guessing, by learning to read which part is the real bottleneck."

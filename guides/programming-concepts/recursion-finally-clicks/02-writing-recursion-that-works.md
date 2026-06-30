@@ -1,5 +1,5 @@
 ---
-title: "Recursion, Finally"
+title: "Writing recursion that works"
 guide: recursion-finally-clicks
 phase: 2
 summary: "The mental model that makes recursion stop being scary: a base case, a step toward it, and trust — plus when it blows the stack and how to avoid it."

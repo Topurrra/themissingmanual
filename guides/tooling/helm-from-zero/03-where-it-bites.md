@@ -1,5 +1,5 @@
 ---
-title: "Helm, From Zero"
+title: "Where It Bites: Templating Gotchas and When Not to Use Helm"
 guide: helm-from-zero
 phase: 3
 summary: "The package manager for Kubernetes: charts template your manifests, values parameterize them per environment, and releases are versioned and rollback-able."

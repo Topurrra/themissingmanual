@@ -1,5 +1,5 @@
 ---
-title: "pre-commit Hooks"
+title: "The Config and the Commit Loop"
 guide: pre-commit-hooks
 phase: 2
 summary: "Catch problems before they're committed: the pre-commit framework runs formatters, linters, and secret scanners automatically on every git commit."

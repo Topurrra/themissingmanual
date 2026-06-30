@@ -1,5 +1,5 @@
 ---
-title: "CircleCI, From Zero"
+title: "When it breaks: flaky tests, slow builds, and managed-CI tradeoffs"
 guide: circleci-from-zero
 phase: 3
 summary: "Cloud-native CI/CD with config.yml: jobs, workflows, executors, and orbs — fast parallel pipelines without running your own server."

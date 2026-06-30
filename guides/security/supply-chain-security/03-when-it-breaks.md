@@ -1,5 +1,5 @@
 ---
-title: "Supply-Chain Security"
+title: "The terrible day, and what stops it"
 guide: supply-chain-security
 phase: 3
 summary: "Your dependencies are your attack surface: the npm install that owned you, lockfiles, typosquatting, and how to trust code you did not write."

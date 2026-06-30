@@ -1,5 +1,5 @@
 ---
-title: "OpenTelemetry, From Zero"
+title: "Instrumenting and exporting"
 guide: opentelemetry-from-zero
 phase: 2
 summary: "The vendor-neutral standard for telemetry: traces, metrics, and logs from one instrumentation, exported anywhere via the OTel collector."

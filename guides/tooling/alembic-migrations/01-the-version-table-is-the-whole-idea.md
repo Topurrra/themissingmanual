@@ -1,5 +1,5 @@
 ---
-title: "Alembic, From Zero"
+title: "The version table is the whole idea"
 guide: alembic-migrations
 phase: 1
 summary: "Schema migrations for Python and SQLAlchemy with Alembic: autogenerate from your models, review the diff, and apply with upgrade/downgrade."

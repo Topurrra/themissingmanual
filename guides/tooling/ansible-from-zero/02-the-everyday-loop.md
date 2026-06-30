@@ -1,5 +1,5 @@
 ---
-title: "Ansible, From Zero"
+title: "The Everyday Loop"
 guide: ansible-from-zero
 phase: 2
 summary: "Configuration management without agents: SSH into your servers and run idempotent playbooks that bring them to a desired state, every time."

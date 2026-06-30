@@ -1,5 +1,5 @@
 ---
-title: "The ELK Stack"
+title: "Shipping, structuring, and searching"
 guide: elk-elasticsearch-stack
 phase: 2
 summary: "Centralized logging with Elasticsearch, Logstash, and Kibana: ship logs from everywhere, index them, and search and visualize across your whole fleet."

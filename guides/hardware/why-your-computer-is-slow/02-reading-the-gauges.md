@@ -1,5 +1,5 @@
 ---
-title: "Why Your Computer Is Slow"
+title: "Reading the gauges: Task Manager and Activity Monitor"
 guide: why-your-computer-is-slow
 phase: 2
 summary: "What to actually upgrade (RAM versus SSD versus CPU) instead of guessing, by learning to read which part is the real bottleneck."

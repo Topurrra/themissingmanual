@@ -1,5 +1,5 @@
 ---
-title: "Azure Fundamentals"
+title: "The container hierarchy: how Azure is organized"
 guide: azure-fundamentals
 phase: 1
 summary: "Microsoft's cloud for people who know AWS or none: resource groups and subscriptions, the core compute/storage/database services, and Entra ID for identity."

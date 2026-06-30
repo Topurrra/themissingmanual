@@ -1,5 +1,5 @@
 ---
-title: "kubectl, Day to Day"
+title: "The mental model: kubectl talks to one API"
 guide: kubectl-day-to-day
 phase: 1
 summary: "The Kubernetes commands you actually use: get/describe/logs/exec to see what's happening, apply to change it, and the debugging loop when a pod won't start."

@@ -1,5 +1,5 @@
 ---
-title: "OAuth2 and OpenID Connect"
+title: "Production Reality and the Gotchas"
 guide: oauth2-and-oidc
 phase: 3
 summary: "The standard behind 'Log in with Google': OAuth2 grants delegated access, OIDC adds identity on top, and the authorization-code-with-PKCE flow ties it together."

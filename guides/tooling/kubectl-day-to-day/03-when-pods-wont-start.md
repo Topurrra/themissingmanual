@@ -1,5 +1,5 @@
 ---
-title: "kubectl, Day to Day"
+title: "When a pod won't start: the debugging loop"
 guide: kubectl-day-to-day
 phase: 3
 summary: "The Kubernetes commands you actually use: get/describe/logs/exec to see what's happening, apply to change it, and the debugging loop when a pod won't start."

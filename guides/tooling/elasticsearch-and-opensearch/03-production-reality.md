@@ -1,5 +1,5 @@
 ---
-title: "Elasticsearch and OpenSearch"
+title: "Phase 3: Near-real-time, consistency, and when to add search at all"
 guide: elasticsearch-and-opensearch
 phase: 3
 summary: "Full-text search at scale: the inverted index, analyzers and relevance scoring, and how a search engine differs from a database WHERE clause."

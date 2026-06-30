@@ -1,5 +1,5 @@
 ---
-title: "SonarQube, From Zero"
+title: "What SonarQube actually is"
 guide: sonarqube-from-zero
 phase: 1
 summary: "The enterprise code-quality gate: static analysis for bugs, vulnerabilities, and code smells, with coverage and a quality gate that can block a merge."

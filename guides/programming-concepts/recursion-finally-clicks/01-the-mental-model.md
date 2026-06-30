@@ -1,5 +1,5 @@
 ---
-title: "Recursion, Finally"
+title: "The mental model: stop, shrink, trust"
 guide: recursion-finally-clicks
 phase: 1
 summary: "The mental model that makes recursion stop being scary: a base case, a step toward it, and trust — plus when it blows the stack and how to avoid it."

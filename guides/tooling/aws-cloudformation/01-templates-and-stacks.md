@@ -1,5 +1,5 @@
 ---
-title: "AWS CloudFormation"
+title: "The mental model: templates and stacks"
 guide: aws-cloudformation
 phase: 1
 summary: "AWS's native infrastructure as code: declare resources in a template, and CloudFormation creates, updates, and rolls back the whole stack as one unit."

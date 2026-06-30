@@ -1,5 +1,5 @@
 ---
-title: "The Twelve-Factor App"
+title: "One codebase, clean dependencies, config outside the code"
 guide: the-twelve-factor-app
 phase: 1
 summary: "The canonical checklist for an app that is actually shippable and scalable: config in the environment, stateless processes, logs as streams, and more."

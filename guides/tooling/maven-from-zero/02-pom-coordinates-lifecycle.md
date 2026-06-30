@@ -1,5 +1,5 @@
 ---
-title: "Maven, From Zero"
+title: "The everyday core: POM, coordinates, and the lifecycle"
 guide: maven-from-zero
 phase: 2
 summary: "Java's build tool and dependency manager: the POM, the build lifecycle, coordinates and repositories, and why 'it works on Maven Central' is the default."

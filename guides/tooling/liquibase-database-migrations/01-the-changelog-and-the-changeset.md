@@ -1,5 +1,5 @@
 ---
-title: "Liquibase, From Zero"
+title: "The mental model: changelog and changeset"
 guide: liquibase-database-migrations
 phase: 1
 summary: "Database migrations with Liquibase: changesets in SQL, YAML, or XML, a tracked changelog, and database-agnostic changes when you need to target more than one engine."

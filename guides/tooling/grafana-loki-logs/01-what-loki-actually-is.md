@@ -1,5 +1,5 @@
 ---
-title: "Grafana Loki"
+title: "What Loki actually is"
 guide: grafana-loki-logs
 phase: 1
 summary: "Logs that act like Prometheus: Loki indexes only labels (not full text), making centralized logging cheap, and ties them to your metrics in Grafana."

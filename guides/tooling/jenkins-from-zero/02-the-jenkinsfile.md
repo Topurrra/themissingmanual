@@ -1,5 +1,5 @@
 ---
-title: "Jenkins, From Zero"
+title: "The Jenkinsfile: pipeline, agent, stages, steps"
 guide: jenkins-from-zero
 phase: 2
 summary: "The CI server that still runs much of enterprise: the Jenkinsfile pipeline-as-code, stages and steps, agents, and the plugin ecosystem for better and worse."

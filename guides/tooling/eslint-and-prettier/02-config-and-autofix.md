@@ -1,5 +1,5 @@
 ---
-title: "ESLint and Prettier"
+title: "Config and autofix"
 guide: eslint-and-prettier
 phase: 2
 summary: "Stop arguing about code style: Prettier formats automatically, ESLint catches real bugs and bad patterns, and together they end the bikeshedding."

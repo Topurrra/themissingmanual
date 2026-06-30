@@ -1,5 +1,5 @@
 ---
-title: "AWS Core Services"
+title: "The five services that matter"
 guide: aws-core-services
 phase: 1
 summary: "The handful of AWS services behind most apps: S3, EC2, RDS, IAM, and Lambda — what each does, how they fit together, and the IAM model that gates it all."

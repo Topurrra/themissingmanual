@@ -1,5 +1,5 @@
 ---
-title: "Supply-Chain Security"
+title: "Pinning, scanning, and seeing what you ship"
 guide: supply-chain-security
 phase: 2
 summary: "Your dependencies are your attack surface: the npm install that owned you, lockfiles, typosquatting, and how to trust code you did not write."

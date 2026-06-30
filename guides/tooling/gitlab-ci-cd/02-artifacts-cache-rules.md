@@ -1,5 +1,5 @@
 ---
-title: "GitLab CI/CD, From Zero"
+title: "Phase 2: The Everyday Core — Artifacts, Cache, and Rules"
 guide: gitlab-ci-cd
 phase: 2
 summary: "Pipelines defined in .gitlab-ci.yml: stages, jobs, and runners that build, test, and deploy on every push — with artifacts, caching, and environments."

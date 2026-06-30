@@ -6,7 +6,7 @@ summary: "Linear algebra is the math of transformation: what happens when you st
 tags: [mathematics, linear-algebra, vectors, matrices, transformations, beginner-friendly]
 category: mathematics
 order: 6
-difficulty: beginner
+difficulty: advanced
 synonyms: ["what is linear algebra", "vectors explained", "matrices explained", "matrix multiplication", "linear transformations", "linear algebra for programmers"]
 updated: 2026-06-28
 ---

@@ -1,5 +1,5 @@
 ---
-title: "Database Connection Pools"
+title: "How a pool works and how to size it"
 guide: connection-pools
 phase: 2
 summary: "Why too many connections takes down production, what a database connection actually costs, and how pool sizing keeps app and database alive."

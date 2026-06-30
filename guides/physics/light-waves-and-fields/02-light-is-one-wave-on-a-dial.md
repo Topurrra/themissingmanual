@@ -1,5 +1,5 @@
 ---
-title: "Light, Waves, and Fields"
+title: "Light is one wave on a giant dial"
 guide: light-waves-and-fields
 phase: 2
 summary: "Why light, radio, sound, and ripples on a pond are the same idea: waves and fields, the electromagnetic spectrum, and what color really is."

@@ -1,5 +1,5 @@
 ---
-title: "Alembic, From Zero"
+title: "The daily loop: autogenerate, review, upgrade"
 guide: alembic-migrations
 phase: 2
 summary: "Schema migrations for Python and SQLAlchemy with Alembic: autogenerate from your models, review the diff, and apply with upgrade/downgrade."

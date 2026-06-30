@@ -39,7 +39,7 @@
   {#each phases.filter((p) => p.phase_no > 0) as p}
     <li>
       <a href={`/guides/${guide.slug}/${p.phase_no}${q}`}>{p.title}</a>
-      <span class="summary">{p.summary}</span>
+      {#if p.summary && p.summary !== guide.summary}<span class="summary">{p.summary}</span>{/if}
     </li>
   {/each}
 </ol>

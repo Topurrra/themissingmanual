@@ -1,5 +1,5 @@
 ---
-title: "Elasticsearch and OpenSearch"
+title: "Phase 1: The inverted index, or why search is a different problem"
 guide: elasticsearch-and-opensearch
 phase: 1
 summary: "Full-text search at scale: the inverted index, analyzers and relevance scoring, and how a search engine differs from a database WHERE clause."

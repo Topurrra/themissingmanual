@@ -1,5 +1,5 @@
 ---
-title: "golang-migrate and Atlas"
+title: "Production reality"
 guide: golang-migrate-and-atlas
 phase: 3
 summary: "Database migrations for Go and beyond: golang-migrate's plain up/down SQL files versus Atlas's declarative, diff-the-desired-state approach."

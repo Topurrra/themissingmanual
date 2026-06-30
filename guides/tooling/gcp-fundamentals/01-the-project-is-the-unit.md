@@ -1,5 +1,5 @@
 ---
-title: "GCP Fundamentals"
+title: "The project is the unit of everything"
 guide: gcp-fundamentals
 phase: 1
 summary: "Google Cloud essentials: projects as the unit of organization, the core compute and storage services, and IAM — with a quick map from AWS terms."

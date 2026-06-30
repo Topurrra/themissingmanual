@@ -1,5 +1,5 @@
 ---
-title: "OpenAPI and Swagger"
+title: "The Spec at Work in Production"
 guide: openapi-and-swagger
 phase: 3
 summary: "Describe your REST API once in OpenAPI, and get interactive docs, client SDKs, request validation, and contract tests for free — the API as a spec."

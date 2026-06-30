@@ -1,5 +1,5 @@
 ---
-title: "Keycloak and Auth0"
+title: "Managed vs Self-Hosted, and the Gotchas"
 guide: keycloak-and-auth0
 phase: 3
 summary: "Don't build auth yourself: a managed identity provider (Auth0) or a self-hosted one (Keycloak) gives you login, social sign-on, MFA, and OIDC out of the box."

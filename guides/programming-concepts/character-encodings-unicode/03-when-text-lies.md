@@ -1,5 +1,5 @@
 ---
-title: "Character Encodings and Unicode"
+title: "When Text Lies: Emoji, Graphemes, and the BOM"
 guide: character-encodings-unicode
 phase: 3
 summary: "Why text turns into garbled symbols, how UTF-8 actually works, and the difference between bytes, code points, and the characters a user sees."

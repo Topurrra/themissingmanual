@@ -6,7 +6,7 @@ summary: "The three ideas almost all of math (and a lot of code) is built from: 
 tags: [mathematics, sets, functions, relations, foundations, beginner-friendly]
 category: mathematics
 order: 2
-difficulty: beginner
+difficulty: intermediate
 synonyms: ["what is a set in math", "what is a function in math", "what is a relation in math", "union intersection difference", "domain and range", "set theory basics"]
 updated: 2026-06-25
 ---

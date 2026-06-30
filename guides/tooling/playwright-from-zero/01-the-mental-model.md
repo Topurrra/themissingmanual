@@ -1,5 +1,5 @@
 ---
-title: "Playwright, From Zero"
+title: "The mental model: a browser you can boss around"
 guide: playwright-from-zero
 phase: 1
 summary: "Reliable browser end-to-end tests: auto-waiting locators that kill flakiness, cross-browser runs, tracing, and codegen to record a test by clicking."

@@ -1,5 +1,5 @@
 ---
-title: "Protobuf and Avro"
+title: "Using them day to day"
 guide: protobuf-and-avro
 phase: 2
 summary: "Binary serialization with a schema: Protocol Buffers and Avro make data small and fast across services, and force you to think about schema evolution."

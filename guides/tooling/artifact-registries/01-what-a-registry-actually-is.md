@@ -1,5 +1,5 @@
 ---
-title: "Artifact Registries: Docker Hub, Nexus, Artifactory"
+title: "What a Registry Actually Is"
 guide: artifact-registries
 phase: 1
 summary: "Where your builds live: container and package registries that store, version, and serve your artifacts — with the proxying and access control teams rely on."

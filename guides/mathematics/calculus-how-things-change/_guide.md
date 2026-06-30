@@ -6,7 +6,7 @@ summary: "Calculus is not about memorizing derivative rules. It is the math of c
 tags: [mathematics, calculus, derivatives, optimization, integrals, rates-of-change, beginner-friendly]
 category: mathematics
 order: 9
-difficulty: beginner
+difficulty: advanced
 synonyms: ["what is calculus", "derivatives explained", "how to find the maximum", "integrals explained", "rates of change", "optimization math"]
 updated: 2026-06-28
 ---

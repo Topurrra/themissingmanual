@@ -1,5 +1,5 @@
 ---
-title: "GCP Fundamentals"
+title: "The services you'll actually use"
 guide: gcp-fundamentals
 phase: 2
 summary: "Google Cloud essentials: projects as the unit of organization, the core compute and storage services, and IAM — with a quick map from AWS terms."

@@ -1,5 +1,5 @@
 ---
-title: "Grafana Loki"
+title: "Shipping logs and querying with LogQL"
 guide: grafana-loki-logs
 phase: 2
 summary: "Logs that act like Prometheus: Loki indexes only labels (not full text), making centralized logging cheap, and ties them to your metrics in Grafana."

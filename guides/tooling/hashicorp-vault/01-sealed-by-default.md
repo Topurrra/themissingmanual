@@ -1,5 +1,5 @@
 ---
-title: "HashiCorp Vault"
+title: "Sealed by Default"
 guide: hashicorp-vault
 phase: 1
 summary: "Stop hardcoding secrets: Vault stores them encrypted, gates access by policy, issues short-lived dynamic credentials, and keeps an audit trail."

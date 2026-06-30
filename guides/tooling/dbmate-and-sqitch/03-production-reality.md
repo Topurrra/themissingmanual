@@ -1,5 +1,5 @@
 ---
-title: "dbmate and Sqitch"
+title: "Production reality"
 guide: dbmate-and-sqitch
 phase: 3
 summary: "Lightweight, framework-agnostic database migrations: dbmate's simple timestamped SQL files and Sqitch's dependency-graph approach with verify and revert."

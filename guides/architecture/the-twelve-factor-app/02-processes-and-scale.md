@@ -1,5 +1,5 @@
 ---
-title: "The Twelve-Factor App"
+title: "Stateless processes, port binding, and scaling out"
 guide: the-twelve-factor-app
 phase: 2
 summary: "The canonical checklist for an app that is actually shippable and scalable: config in the environment, stateless processes, logs as streams, and more."

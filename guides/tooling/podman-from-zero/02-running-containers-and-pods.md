@@ -1,5 +1,5 @@
 ---
-title: "Podman, From Zero"
+title: "Running Containers and Pods"
 guide: podman-from-zero
 phase: 2
 summary: "The daemonless, rootless container engine: a drop-in for most Docker commands, plus pods and the security win of running without a root daemon."

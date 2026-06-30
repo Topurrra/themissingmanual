@@ -1,5 +1,5 @@
 ---
-title: "Elasticsearch and OpenSearch"
+title: "Phase 2: Indexing, mappings, analyzers, and getting ranked results"
 guide: elasticsearch-and-opensearch
 phase: 2
 summary: "Full-text search at scale: the inverted index, analyzers and relevance scoring, and how a search engine differs from a database WHERE clause."

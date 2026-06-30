@@ -1,5 +1,5 @@
 ---
-title: "AWS Core Services"
+title: "IAM, least privilege, and what bites you"
 guide: aws-core-services
 phase: 3
 summary: "The handful of AWS services behind most apps: S3, EC2, RDS, IAM, and Lambda — what each does, how they fit together, and the IAM model that gates it all."

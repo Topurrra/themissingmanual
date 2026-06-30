@@ -1,5 +1,5 @@
 ---
-title: "Argo CD and GitOps"
+title: "When reconciliation bites: drift, waves, and secrets"
 guide: argo-cd-and-gitops
 phase: 3
 summary: "Deployment by pull, not push: GitOps makes a Git repo the source of truth for your cluster, and Argo CD continuously reconciles reality to match it."

@@ -1,5 +1,5 @@
 ---
-title: "Sentry, From Zero"
+title: "Capturing and reading an issue"
 guide: sentry-error-tracking
 phase: 2
 summary: "Error tracking that turns a vague bug report into a stack trace: grouped issues, the breadcrumbs and context around a crash, releases, and source maps."

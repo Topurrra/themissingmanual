@@ -1,5 +1,5 @@
 ---
-title: "Jest and Vitest"
+title: "Production reality: snapshots, flakiness, and Jest vs Vitest"
 guide: jest-and-vitest
 phase: 3
 summary: "JavaScript and TypeScript testing: Jest's batteries-included matchers, mocks, and snapshots — and Vitest, the faster, Vite-native drop-in with the same API."

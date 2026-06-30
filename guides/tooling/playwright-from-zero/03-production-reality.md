@@ -1,5 +1,5 @@
 ---
-title: "Playwright, From Zero"
+title: "Production reality: the things that bite"
 guide: playwright-from-zero
 phase: 3
 summary: "Reliable browser end-to-end tests: auto-waiting locators that kill flakiness, cross-browser runs, tracing, and codegen to record a test by clicking."

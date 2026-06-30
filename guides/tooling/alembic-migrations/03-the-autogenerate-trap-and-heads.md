@@ -1,5 +1,5 @@
 ---
-title: "Alembic, From Zero"
+title: "The autogenerate trap, heads, and merges"
 guide: alembic-migrations
 phase: 3
 summary: "Schema migrations for Python and SQLAlchemy with Alembic: autogenerate from your models, review the diff, and apply with upgrade/downgrade."

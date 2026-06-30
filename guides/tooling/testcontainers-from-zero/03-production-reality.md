@@ -1,5 +1,5 @@
 ---
-title: "Testcontainers, From Zero"
+title: "Production reality: Docker, speed, and CI"
 guide: testcontainers-from-zero
 phase: 3
 summary: "Integration tests against the real thing: spin up a throwaway Postgres, Kafka, or Redis in Docker for each test run, then tear it down automatically."

@@ -1,5 +1,5 @@
 ---
-title: "Bazel, From Zero"
+title: "Caching, Cold Starts, and When Not To"
 guide: bazel-from-zero
 phase: 3
 summary: "Google's build system for huge, multi-language repos: hermetic, reproducible builds with aggressive caching and parallelism — and the steep tradeoff that buys."

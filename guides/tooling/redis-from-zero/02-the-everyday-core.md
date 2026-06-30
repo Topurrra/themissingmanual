@@ -1,5 +1,5 @@
 ---
-title: "Redis, From Zero"
+title: "The everyday core: caching, TTLs, and the patterns"
 guide: redis-from-zero
 phase: 2
 summary: "The in-memory data store that does ten jobs: cache, session store, queue, rate limiter, and lock — with data structures, TTLs, and the persistence tradeoff."

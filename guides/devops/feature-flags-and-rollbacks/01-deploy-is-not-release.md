@@ -1,5 +1,5 @@
 ---
-title: "Feature Flags and Rollbacks"
+title: "The switch in your code"
 guide: feature-flags-and-rollbacks
 phase: 1
 summary: "Ship code dark, flip it on for a few users, and turn it off instantly when it breaks: feature flags decouple deploy from release."

@@ -1,5 +1,5 @@
 ---
-title: "Pytest, From Zero"
+title: "Production reality: conftest, monkeypatch, and the gotchas"
 guide: pytest-from-zero
 phase: 3
 summary: "Python testing that gets out of your way: plain assert, fixtures for setup and teardown, parametrize for table-driven tests, and a rich plugin ecosystem."

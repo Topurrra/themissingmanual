@@ -1,5 +1,5 @@
 ---
-title: "SQL Window Functions"
+title: "Frames, moving averages, and top-N-per-group"
 guide: sql-window-functions
 phase: 3
 summary: "The analyst superpower: running totals, rankings, and row-to-row comparisons without collapsing rows. OVER, PARTITION BY, and lag and lead."

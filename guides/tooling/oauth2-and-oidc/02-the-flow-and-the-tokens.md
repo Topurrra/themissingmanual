@@ -1,5 +1,5 @@
 ---
-title: "OAuth2 and OpenID Connect"
+title: "The Authorization Code Flow and the Three Tokens"
 guide: oauth2-and-oidc
 phase: 2
 summary: "The standard behind 'Log in with Google': OAuth2 grants delegated access, OIDC adds identity on top, and the authorization-code-with-PKCE flow ties it together."

@@ -1,5 +1,5 @@
 ---
-title: "The N+1 Query Problem"
+title: "Seeing it in your logs"
 guide: n-plus-one-queries
 phase: 2
 summary: "The ORM trap that is fast on seed data and dead in production: one query quietly becomes N+1. How to spot it and fix it."

@@ -1,5 +1,5 @@
 ---
-title: "Bazel, From Zero"
+title: "The Graph, and Why Hermetic"
 guide: bazel-from-zero
 phase: 1
 summary: "Google's build system for huge, multi-language repos: hermetic, reproducible builds with aggressive caching and parallelism — and the steep tradeoff that buys."

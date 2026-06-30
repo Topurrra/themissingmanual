@@ -1,5 +1,5 @@
 ---
-title: "Recursion, Finally"
+title: "When it breaks: the stack, and when to use a loop instead"
 guide: recursion-finally-clicks
 phase: 3
 summary: "The mental model that makes recursion stop being scary: a base case, a step toward it, and trust — plus when it blows the stack and how to avoid it."

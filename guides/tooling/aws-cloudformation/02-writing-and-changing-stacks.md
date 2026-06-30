@@ -1,5 +1,5 @@
 ---
-title: "AWS CloudFormation"
+title: "Writing and changing stacks for real"
 guide: aws-cloudformation
 phase: 2
 summary: "AWS's native infrastructure as code: declare resources in a template, and CloudFormation creates, updates, and rolls back the whole stack as one unit."

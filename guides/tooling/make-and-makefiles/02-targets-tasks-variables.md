@@ -1,5 +1,5 @@
 ---
-title: "Make and Makefiles"
+title: "Targets, Tasks, and Variables"
 guide: make-and-makefiles
 phase: 2
 summary: "The 50-year-old build tool that still runs everything: targets, prerequisites, and recipes — a dependency graph that rebuilds only what changed."

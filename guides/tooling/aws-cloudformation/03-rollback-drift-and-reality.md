@@ -1,5 +1,5 @@
 ---
-title: "AWS CloudFormation"
+title: "When it breaks: rollback, drift, and Terraform"
 guide: aws-cloudformation
 phase: 3
 summary: "AWS's native infrastructure as code: declare resources in a template, and CloudFormation creates, updates, and rolls back the whole stack as one unit."

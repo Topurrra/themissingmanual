@@ -6,7 +6,7 @@ summary: "Probability measures how likely something is; statistics makes sense o
 tags: [mathematics, probability, statistics, data, beginner-friendly]
 category: mathematics
 order: 5
-difficulty: beginner
+difficulty: intermediate
 synonyms: ["what is probability", "probability basics", "mean median mode", "standard deviation explained", "how statistics lie", "correlation vs causation", "what is a normal distribution"]
 updated: 2026-06-25
 ---

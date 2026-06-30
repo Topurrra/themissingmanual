@@ -1,5 +1,5 @@
 ---
-title: "JWT, In Depth"
+title: "Where It Breaks"
 guide: jwt-in-depth
 phase: 3
 summary: "What a JSON Web Token really is: three base64 parts, a signature you must verify, and the stateless-auth tradeoffs (plus the mistakes that cause breaches)."

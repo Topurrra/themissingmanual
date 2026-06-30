@@ -1,5 +1,5 @@
 ---
-title: "Flyway, From Zero"
+title: "A Schema Is Code"
 guide: flyway-database-migrations
 phase: 1
 summary: "Version-control your database schema with Flyway: numbered, immutable migration files applied in order, so every environment ends up with the exact same schema."

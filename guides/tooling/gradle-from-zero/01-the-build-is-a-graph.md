@@ -1,5 +1,5 @@
 ---
-title: "Gradle, From Zero"
+title: "The Build Is a Graph"
 guide: gradle-from-zero
 phase: 1
 summary: "The flexible build tool behind Java, Kotlin, and Android: tasks and the build graph, the Groovy/Kotlin DSL, dependency configurations, and the build cache."

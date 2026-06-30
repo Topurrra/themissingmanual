@@ -1,5 +1,5 @@
 ---
-title: "Liquibase, From Zero"
+title: "When the abstraction earns its keep"
 guide: liquibase-database-migrations
 phase: 3
 summary: "Database migrations with Liquibase: changesets in SQL, YAML, or XML, a tracked changelog, and database-agnostic changes when you need to target more than one engine."

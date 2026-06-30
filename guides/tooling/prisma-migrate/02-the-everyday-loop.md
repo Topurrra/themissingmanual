@@ -1,5 +1,5 @@
 ---
-title: "Prisma Migrate, From Zero"
+title: "The everyday loop"
 guide: prisma-migrate
 phase: 2
 summary: "Schema-first migrations in the Node world: edit your Prisma schema, generate a migration, and keep dev and production in sync without drift."

@@ -1,5 +1,5 @@
 ---
-title: "Datadog, From Zero"
+title: "The everyday loop"
 guide: datadog-from-zero
 phase: 2
 summary: "The all-in-one observability platform: the agent, metrics and dashboards, APM traces, log management, and monitors — plus the bill that surprises teams."

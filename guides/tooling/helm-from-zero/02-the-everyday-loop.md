@@ -1,5 +1,5 @@
 ---
-title: "Helm, From Zero"
+title: "The Everyday Loop: Install, Upgrade, Rollback"
 guide: helm-from-zero
 phase: 2
 summary: "The package manager for Kubernetes: charts template your manifests, values parameterize them per environment, and releases are versioned and rollback-able."

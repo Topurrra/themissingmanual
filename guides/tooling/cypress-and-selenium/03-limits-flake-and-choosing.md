@@ -1,5 +1,5 @@
 ---
-title: "Cypress and Selenium"
+title: "Limits, Flake, and Choosing"
 guide: cypress-and-selenium
 phase: 3
 summary: "Two more ways to test in a browser: Cypress's developer-friendly in-browser runner, and Selenium/WebDriver, the long-standing cross-language standard."

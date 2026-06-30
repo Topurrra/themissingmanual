@@ -1,5 +1,5 @@
 ---
-title: "Pulumi, From Zero"
+title: "The everyday loop"
 guide: pulumi-from-zero
 phase: 2
 summary: "Infrastructure as actual code: define cloud resources in TypeScript, Python, or Go, with real loops and functions, while Pulumi tracks state like Terraform."

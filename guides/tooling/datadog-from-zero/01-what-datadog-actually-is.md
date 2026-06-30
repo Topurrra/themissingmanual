@@ -1,5 +1,5 @@
 ---
-title: "Datadog, From Zero"
+title: "What Datadog actually is"
 guide: datadog-from-zero
 phase: 1
 summary: "The all-in-one observability platform: the agent, metrics and dashboards, APM traces, log management, and monitors — plus the bill that surprises teams."

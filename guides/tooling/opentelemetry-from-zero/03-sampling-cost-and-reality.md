@@ -1,5 +1,5 @@
 ---
-title: "OpenTelemetry, From Zero"
+title: "Sampling, cost, and reality"
 guide: opentelemetry-from-zero
 phase: 3
 summary: "The vendor-neutral standard for telemetry: traces, metrics, and logs from one instrumentation, exported anywhere via the OTel collector."

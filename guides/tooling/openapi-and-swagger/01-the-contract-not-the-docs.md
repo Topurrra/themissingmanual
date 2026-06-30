@@ -1,5 +1,5 @@
 ---
-title: "OpenAPI and Swagger"
+title: "The Contract, Not the Docs"
 guide: openapi-and-swagger
 phase: 1
 summary: "Describe your REST API once in OpenAPI, and get interactive docs, client SDKs, request validation, and contract tests for free — the API as a spec."

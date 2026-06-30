@@ -1,5 +1,5 @@
 ---
-title: "GraphQL Clients (Apollo)"
+title: "Queries and mutations in real components"
 guide: graphql-clients-apollo
 phase: 2
 summary: "Consuming GraphQL from the front end: how Apollo Client's normalized cache, queries, and mutations change data fetching versus REST calls."

@@ -1,5 +1,5 @@
 ---
-title: "Argo CD and GitOps"
+title: "The pull model: Git as the source of truth"
 guide: argo-cd-and-gitops
 phase: 1
 summary: "Deployment by pull, not push: GitOps makes a Git repo the source of truth for your cluster, and Argo CD continuously reconciles reality to match it."

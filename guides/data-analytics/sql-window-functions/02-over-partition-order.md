@@ -1,5 +1,5 @@
 ---
-title: "SQL Window Functions"
+title: "OVER, PARTITION BY, ORDER BY"
 guide: sql-window-functions
 phase: 2
 summary: "The analyst superpower: running totals, rankings, and row-to-row comparisons without collapsing rows. OVER, PARTITION BY, and lag and lead."

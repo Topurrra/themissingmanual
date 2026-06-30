@@ -1,5 +1,5 @@
 ---
-title: "Ruff and Black"
+title: "What a formatter and a linter actually do"
 guide: ruff-and-black
 phase: 1
 summary: "Python code quality at speed: Black formats with no options to argue about, and Ruff lints and now formats astonishingly fast, replacing a stack of older tools."

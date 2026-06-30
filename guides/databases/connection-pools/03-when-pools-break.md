@@ -1,5 +1,5 @@
 ---
-title: "Database Connection Pools"
+title: "When pools break: exhaustion, leaks, and serverless storms"
 guide: connection-pools
 phase: 3
 summary: "Why too many connections takes down production, what a database connection actually costs, and how pool sizing keeps app and database alive."

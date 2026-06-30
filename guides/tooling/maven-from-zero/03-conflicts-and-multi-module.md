@@ -1,5 +1,5 @@
 ---
-title: "Maven, From Zero"
+title: "Production reality: conflicts, the local repo, and multi-module"
 guide: maven-from-zero
 phase: 3
 summary: "Java's build tool and dependency manager: the POM, the build lifecycle, coordinates and repositories, and why 'it works on Maven Central' is the default."

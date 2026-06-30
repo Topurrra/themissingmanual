@@ -1,5 +1,5 @@
 ---
-title: "kubectl, Day to Day"
+title: "The commands you actually run"
 guide: kubectl-day-to-day
 phase: 2
 summary: "The Kubernetes commands you actually use: get/describe/logs/exec to see what's happening, apply to change it, and the debugging loop when a pod won't start."

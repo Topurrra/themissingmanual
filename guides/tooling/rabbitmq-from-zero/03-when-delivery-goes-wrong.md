@@ -1,5 +1,5 @@
 ---
-title: "RabbitMQ, From Zero"
+title: "Phase 3: When Delivery Goes Wrong"
 guide: rabbitmq-from-zero
 phase: 3
 summary: "The classic message broker: exchanges, queues, and bindings route messages to workers, with acknowledgements and dead-letter queues for reliable delivery."

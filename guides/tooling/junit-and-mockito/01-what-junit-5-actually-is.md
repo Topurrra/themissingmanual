@@ -1,5 +1,5 @@
 ---
-title: "JUnit and Mockito"
+title: "What JUnit 5 actually is"
 guide: junit-and-mockito
 phase: 1
 summary: "The Java testing duo: JUnit 5 for structuring and running tests with assertions and lifecycle, and Mockito for mocking the collaborators you want to isolate."
