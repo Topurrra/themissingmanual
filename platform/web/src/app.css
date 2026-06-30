@@ -1465,13 +1465,23 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 /* Ranked lists (top topics / referrers / searches) - rank #, label, proportional
    bar, then the count, so the number reads as its own value and rows compare visually. */
 .rank-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2.5rem; }
-.ranks { display: flex; flex-direction: column; gap: 1px; margin-bottom: 0.5rem; }
-.rank-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.55rem; border-radius: 9px; font-size: 0.9rem; color: var(--body); transition: background 0.12s var(--ease); }
-.rank-row:hover, a.rank-row:hover { background: var(--surface); text-decoration: none; }
-.rank-i { flex: none; width: 1.4rem; text-align: right; font-family: var(--font-mono); font-size: 0.72rem; color: var(--faint); }
-.rank-row:first-child .rank-i { color: var(--accent); font-weight: 700; }
-.rank-label { flex: 0 1 auto; min-width: 4ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-weight: 500; }
-.rank-meter { flex: 1 1 40px; min-width: 30px; height: 8px; border-radius: 999px; background: var(--surface); overflow: hidden; }
-.rank-fill { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.35s var(--ease); }
-.rank-count { flex: none; min-width: 2.5ch; text-align: right; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; color: var(--ink); }
+.ranks { display: flex; flex-direction: column; gap: 5px; margin-bottom: 0.5rem; }
+/* Each row is its own track: a light surface bar with a proportional accent-tint
+   fill behind the text. Label left, count right — no squeezed middle column, so
+   rows read at a glance and don't crowd each other. */
+.rank-row {
+  position: relative; isolation: isolate;
+  display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+  padding: 0.55rem 0.75rem; border-radius: 8px; font-size: 0.9rem; color: var(--body);
+  background: var(--surface);
+}
+.rank-fill {
+  position: absolute; left: 0; top: 0; bottom: 0; z-index: -1; min-width: 6px;
+  background: var(--accent-tint); border-radius: 8px; transition: width 0.35s var(--ease);
+}
+a.rank-row { text-decoration: none; }
+a.rank-row:hover .rank-label { color: var(--accent-strong); }
+a.rank-row:hover .rank-fill { background: var(--accent-tint-2, var(--accent-tint)); }
+.rank-label { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-weight: 500; }
+.rank-count { flex: none; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; color: var(--ink); }
 @media (max-width: 760px) { .rank-cols { grid-template-columns: 1fr; } }

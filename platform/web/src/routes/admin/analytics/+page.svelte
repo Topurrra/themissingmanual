@@ -170,7 +170,7 @@
       {#each analytics.devices as r}
         <div class="rank-row">
           <span class="rank-label" style="text-transform:capitalize;">{r.device}</span>
-          <span class="rank-meter"><span class="rank-fill" style={`width:${devTotal ? (r.count / devTotal) * 100 : 0}%`}></span></span>
+          <span class="rank-fill" style={`width:${devTotal ? (r.count / devTotal) * 100 : 0}%`}></span>
           <b class="rank-count">{devTotal ? Math.round((r.count / devTotal) * 100) : 0}%</b>
         </div>
       {/each}
@@ -184,9 +184,8 @@
         {#each analytics.topGuides || [] as r, i}
           {@const mx = peak(analytics.topGuides)}
           <a class="rank-row" href={r.path} title={r.path}>
-            <span class="rank-i">{i + 1}</span>
             <span class="rank-label">{pretty(r.path)}</span>
-            <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+            <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span>
             <b class="rank-count">{r.count.toLocaleString()}</b>
           </a>
         {:else}<p class="admin-empty">-</p>{/each}
@@ -196,9 +195,8 @@
         {#each analytics.topCategories || [] as r, i}
           {@const mx = peak(analytics.topCategories)}
           <a class="rank-row" href={r.path} title={r.path}>
-            <span class="rank-i">{i + 1}</span>
             <span class="rank-label">{pretty(r.path)}</span>
-            <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+            <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span>
             <b class="rank-count">{r.count.toLocaleString()}</b>
           </a>
         {:else}<p class="admin-empty">-</p>{/each}
@@ -210,9 +208,8 @@
         {#each analytics.topSources || [] as r, i}
           {@const mx = peak(analytics.topSources || [])}
           <div class="rank-row">
-            <span class="rank-i">{i + 1}</span>
             <span class="rank-label">{r.source}</span>
-            <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+            <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span>
             <b class="rank-count">{r.count.toLocaleString()}</b>
           </div>
         {:else}<p class="admin-empty">No tagged-link clicks yet. Build one above.</p>{/each}
@@ -222,9 +219,8 @@
         {#each analytics.topReferrers as r, i}
           {@const mx = peak(analytics.topReferrers)}
           <div class="rank-row">
-            <span class="rank-i">{i + 1}</span>
             <span class="rank-label">{r.referrer}</span>
-            <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+            <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span>
             <b class="rank-count">{r.count.toLocaleString()}</b>
           </div>
         {:else}<p class="admin-empty">Direct / none yet</p>{/each}
@@ -234,9 +230,8 @@
         {#each analytics.topSearches as r, i}
           {@const mx = peak(analytics.topSearches)}
           <div class="rank-row">
-            <span class="rank-i">{i + 1}</span>
             <span class="rank-label">{r.query}</span>
-            <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+            <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span>
             <b class="rank-count">{r.count.toLocaleString()}</b>
           </div>
         {:else}<p class="admin-empty">No searches yet</p>{/each}
@@ -250,9 +245,8 @@
           {#each ai.top as r, i}
             {@const mx = peak(ai.top)}
             <div class="rank-row">
-              <span class="rank-i">{i + 1}</span>
-              <span class="rank-label">{r.query}</span>
-              <span class="rank-meter"><span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span></span>
+                <span class="rank-label">{r.query}</span>
+              <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}></span>
               <b class="rank-count">{r.count.toLocaleString()}</b>
             </div>
           {:else}<p class="admin-empty">No AI questions yet</p>{/each}
