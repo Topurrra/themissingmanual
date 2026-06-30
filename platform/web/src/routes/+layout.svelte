@@ -401,6 +401,7 @@
         <a href="/glossary">Glossary</a>
         <a href="/cheat-sheet">Cheat Sheet</a>
         <a href="/train">Train</a>
+        <a href="/changelog">What's New</a>
         <a href="/review">Review</a>
       </nav>
     </div>

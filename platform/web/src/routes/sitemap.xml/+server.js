@@ -7,7 +7,7 @@ export async function GET({ fetch, url }) {
   const origin = url.origin;
   const guides = (await listGuides(fetch)) ?? [];
   const cats = (await listCategories(fetch)) ?? [];
-  const entries = ['/', '/paths', '/glossary', '/cheat-sheet', '/about', '/train', '/contribute'].map((loc) => ({ loc }));
+  const entries = ['/', '/paths', '/glossary', '/cheat-sheet', '/changelog', '/about', '/train', '/contribute'].map((loc) => ({ loc }));
   for (const c of cats) entries.push({ loc: `/categories/${c.slug}` });
   for (const g of guides) entries.push({ loc: `/guides/${g.slug}`, lastmod: g.updated });
   // Phase URLs. The API serializes these at its SQLite mutex and the response is
