@@ -161,6 +161,18 @@ Trust the test, not the tone.
 - Naming a manipulation is the first step to being immune to it — and "fluent and confident"
   (from a person or an AI) is not evidence of "correct."
 
+## Open-ended exercise
+
+Read this argument carefully:
+
+> "We should adopt framework X. The top three companies in our industry use it, and
+> their engineering blogs all say it's transformed their deployment speed."
+
+Name at least two different moves happening in this short paragraph. For each one,
+say whether it's a good reason to adopt the framework, a fallacy, or something in
+between — and what additional evidence would turn it from persuasion into a sound
+argument.
+
 Quick gut-check before you move on:
 
 ```quiz

@@ -195,6 +195,17 @@ reasoning that runs perfectly — is most of debugging, and it's pure logic.
 - It's the foundation under math, code, and every argument you'll judge — and it's
   a learnable skill, not a gift.
 
+## Open-ended exercise
+
+Write out, in plain English, the logical structure of this argument:
+
+> "The tests passed on staging, so the deploy is safe."
+
+Identify the premises, the conclusion, and whether the reasoning is deductive,
+inductive, or abductive. Then ask: is the conclusion *guaranteed* by the premises,
+or only *supported* by them? The answer determines what kind of certainty you actually
+have.
+
 Quick gut-check before you move on:
 
 ```quiz

@@ -179,6 +179,42 @@ and *some* without ambiguity, learn what a real **proof** looks like step by ste
 and train your eye to **spot fallacies** — the arguments that feel valid but aren't.
 The three engines are the *what*. The rest of the track is the *how*.
 
+## Where logic meets its limits: paradoxes
+
+Logic works beautifully — until it meets a statement that turns its own rules against
+itself. These are **paradoxes**, and they aren't mistakes. They're signposts that show
+where the boundaries of a system are.
+
+The simplest is the **liar paradox**:
+
+```text
+"This sentence is false."
+```
+
+If the sentence is true, then what it says is correct — so it's false. If it's false,
+then what it says is incorrect — so it's true. Round and round. No consistent truth
+value exists.
+
+Why does this matter to you as a builder? Because every formal system you use has
+boundaries, and hitting them produces bugs that look like nothing else.
+
+- **Type systems** are logic's answer to Russell's paradox (the set of all sets that
+  don't contain themselves). A type says "this value belongs to this collection" — and
+  by drawing the boundary, it prevents the paradox from forming. When you get a type
+  error that feels like the compiler is being pedantic, it may be the compiler
+  protecting you from a contradiction.
+- **Recursion without a base case** is a practical paradox: a function that calls
+  itself with no way out is a logical loop that never resolves, like a sentence that
+  never finishes evaluating.
+- **Null / undefined** is a logic gap: a value that is "nothing" breaks the assumption
+  that every variable holds something you can reason about. That's why null checks are
+  everywhere — they're patching a hole in the logical foundation.
+
+Paradoxes don't mean logic is broken. They mean logic has edges, and knowing where
+those edges are — and how your tools handle them — is part of reasoning well.
+
+The three engines are the *what*. The rest of the track is the *how*.
+
 Quick gut-check before you go — for each scenario, name the engine.
 
 ```quiz

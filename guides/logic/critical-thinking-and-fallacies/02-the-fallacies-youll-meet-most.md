@@ -189,6 +189,36 @@ Sometimes that's true. Often it isn't. A deploy is one event in a noisy system �
 
 Same discipline applies to "latency dropped after we added the cache, so the cache fixed it." Maybe. Or maybe traffic dropped at the same time. Correlation points your flashlight; it doesn't close the case.
 
+## Practice: find the fallacy
+
+Read each short argument and name the move. The goal is to feel the shape before you
+reach for the label.
+
+```text
+1. "We shouldn't listen to her proposal — she's from a competing team."
+2. "If we add this feature, users will ask for more, and soon we'll have no
+   deadlines left. It's a slippery slope to chaos."
+3. "Every engineer I know uses Vim, so it must be the best editor."
+4. "The new deploy went out at 2pm and the site went down at 2:05pm. The deploy
+   caused the outage."
+5. "You want more tests? So you want us to miss every deadline from now on?"
+```
+
+<details>
+<summary>Answers</summary>
+
+1. **Ad hominem** — attacks the person's affiliation instead of engaging with the
+   proposal.
+2. **Slippery slope** — asserts an unstoppable cascade without showing why each link
+   follows.
+3. **Bandwagon** — popularity is offered as proof of quality.
+4. **Post hoc** — temporal overlap is treated as causation without checking other
+   explanations.
+5. **Straw man** — distorts "more tests" into "miss every deadline" and defeats the
+   distortion.
+
+</details>
+
 ## Recap
 
 - A fallacy means the argument failed, not that the conclusion is false — ask for a better argument, don't celebrate.

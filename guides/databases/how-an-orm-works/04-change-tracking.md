@@ -156,7 +156,7 @@ names differ.
 ## 💡 Tracking isn't free — and you can turn it off
 
 Dirty checking buys you a lot of convenience, but it has a real cost: the session has to *hold a snapshot for
-every loaded object* and *scan all of them at every flush* to find what changed. Load 10,000 rows just to
+every loaded object* and *scan all of them at every flush* to find what changed. Load 10,000 rows to
 render a report, and you've paid for 10,000 snapshots and a 10,000-object diff — for data you never intend to
 write back.
 

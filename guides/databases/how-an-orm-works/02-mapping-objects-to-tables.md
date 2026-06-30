@@ -13,7 +13,7 @@ updated: 2026-06-23
 
 In [Phase 1](01-what-an-orm-is.md) we named the four jobs an ORM does. This phase is about the first and most foundational one: **mapping**. Before an ORM can track your changes or build a query, it has to know one thing — *which object goes with which row*. Everything else is built on top of that answer.
 
-Here's the mental model to hold the whole way through: **mapping is a small set of correspondence rules.** It's not magic, and it's not a lot of rules. The ORM looks at your classes and your schema and lines them up, piece by piece, following the same handful of correspondences every single time. Once you've internalized those rules, you can predict what *any* ORM will do with *any* class — and, just as usefully, you can predict the SQL it'll generate.
+Here's the mental model to hold the whole way through: **mapping is a small set of correspondence rules.** It's not magic, and it's not a lot of rules. The ORM looks at your classes and your schema and lines them up, piece by piece, following the same handful of correspondences every single time. Once you've internalized those rules, you can predict what *any* ORM will do with *any* class — and, equally usefully, you can predict the SQL it'll generate.
 
 ## The correspondence rules
 
@@ -25,7 +25,7 @@ Five rules cover almost everything you'll meet:
 - an **object reference ↔ a foreign key** — `order.customer` (a pointer to another object) lines up with `orders.customer_id` (a foreign key column).
 - a **collection ↔ a one-to-many** — `customer.orders` (a list of objects) lines up with many rows in `orders` that share the same `customer_id`. And the special case: a **many-to-many ↔ a join table**.
 
-The first three are the "shape of one thing" rules. The last two are the interesting ones, because that's where the [object-relational mismatch](01-what-an-orm-is.md) really bites: your code holds a *reference* (a direct pointer from one object to another), but the database has no pointers — it has foreign keys, which are just columns holding the *value* of some other row's primary key. The ORM's job is to fake the pointer using the key.
+The first three are the "shape of one thing" rules. The last two are the interesting ones, because that's where the [object-relational mismatch](01-what-an-orm-is.md) really bites: your code holds a *reference* (a direct pointer from one object to another), but the database has no pointers — it has foreign keys, which are columns holding the *value* of some other row's primary key. The ORM's job is to fake the pointer using the key.
 
 ## Seeing the rules on real classes
 
@@ -55,7 +55,7 @@ class Student:        class Course:           join table enrollments:
 
 *What just happened:* The `enrollments` join table holds one row per (student, course) pairing. `student.courses` and `course.students` are *both* reverse views into that table — the ORM reads it from whichever side you asked. You typically never write a class for `enrollments`; the ORM manages it for you behind the collection. (If the relationship needs its own data — say, an enrollment *date* — most ORMs make you promote it to a real class. That's covered in [Relationships & Keys](/guides/relationships-and-keys).)
 
-> 💡 If a relationship ever confuses you, find the foreign key. The FK is the source of truth; the object reference and the collection are just two convenient views of it. "Which table has the `_id` column?" answers "who owns this relationship?"
+> 💡 If a relationship ever confuses you, find the foreign key. The FK is the source of truth; the object reference and the collection are two convenient views of it. "Which table has the `_id` column?" answers "who owns this relationship?"
 
 ## Convention, then configuration
 
@@ -81,7 +81,7 @@ Here's where the mismatch cuts deepest. Your classes can *inherit* — `SavingsA
 - **Joined / table-per-subclass** — a base table (`accounts`) plus one table per subclass (`savings_accounts`, `checking_accounts`), linked by sharing the primary key. Clean and fully normalized, but loading a subclass means a **join** between the base and subclass tables on every read.
 - **Table-per-class** — each concrete class gets its own standalone table with *all* its columns (inherited ones copied in). No joins for a single type, but querying "all accounts regardless of type" forces a `UNION` across every table.
 
-The tradeoff in one line: **single-table buys query speed with nullable clutter; joined buys normalization with extra joins; table-per-class buys per-type simplicity with painful cross-type queries.** Most teams reach for single-table unless the hierarchy is wide or the nulls become genuinely misleading. You don't need to master these now — just know the ORM is making this choice on your behalf, and that the strategy you pick shows up directly in the SQL you'll later debug.
+The tradeoff in one line: **single-table buys query speed with nullable clutter; joined buys normalization with extra joins; table-per-class buys per-type simplicity with painful cross-type queries.** Most teams reach for single-table unless the hierarchy is wide or the nulls become genuinely misleading. You don't need to master these now — know that the ORM is making this choice on your behalf, and that the strategy you pick shows up directly in the SQL you'll later debug.
 
 ## Mapping runs both directions
 
@@ -97,7 +97,7 @@ This load/save round-trip is why the relationship modeling you do in [Relationsh
 
 - **Mapping is a small, fixed set of correspondence rules** — learn them once and you can predict any ORM's behavior and its SQL.
 - The core five: **class ↔ table**, **field ↔ column**, **PK field ↔ PK column**, **object reference ↔ foreign key**, **collection ↔ one-to-many** (with **many-to-many ↔ a join table**).
-- An object **reference** and a **collection** are just two views of the *same* foreign key; the FK is the source of truth for who owns a relationship.
+- An object **reference** and a **collection** are two views of the *same* foreign key; the FK is the source of truth for who owns a relationship.
 - ORMs map by **convention** (defaults from names/types) plus **configuration** (annotations / declarative models / struct tags / Fluent API) — configure only to override what the convention got wrong.
 - **Inheritance** has no SQL equivalent, so the ORM picks a strategy — **single-table**, **joined**, or **table-per-class** — each trading query speed against normalization.
 - Mapping is **bidirectional**: **hydration** turns rows into objects on load; the reverse turns objects into rows on save.

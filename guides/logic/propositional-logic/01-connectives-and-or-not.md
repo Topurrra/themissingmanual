@@ -118,6 +118,19 @@ We're studying truth values here, not evaluation order. But the short-circuit is
 
 You now have the three building blocks. Next, we lay them out properly — not as inline lists, but as full **truth tables**, the tool that lets you analyze *any* compound statement no matter how tangled.
 
+## Open-ended exercise
+
+Take this real condition from a codebase:
+
+```text
+if (!(user.isGuest || user.isBanned)) { allowAccess(); }
+```
+
+Rewrite it — without changing its meaning — into a condition that uses `&&` instead of
+`||`, by applying De Morgan's law. Then write, in one sentence, what the rewritten
+condition checks for. The goal is to make the guard so clear that a teammate can read
+it and immediately understand the rule.
+
 Here's a quick check before you move on.
 
 ```quiz

@@ -160,6 +160,19 @@ and it's worth getting comfortable with. For why this kind of careful reasoning 
 than it looks, see [why math isn't your enemy](/guides/why-math-isnt-your-enemy)
 and [what logic actually is](/guides/what-logic-actually-is).
 
+## Open-ended exercise
+
+A teammate writes this API guard:
+
+```text
+if (user.isAdmin) { allowDelete(); }
+```
+
+They argue: "If the user is an admin, they can delete. That's the rule." But a security
+review points out that non-admins can also delete in some edge cases. Is the original
+conditional `user.isAdmin → allowDelete()` *false* in those edge cases? Why or why not?
+Think carefully about what the conditional actually promises — and what it doesn't.
+
 Quick check before moving on:
 
 ```quiz

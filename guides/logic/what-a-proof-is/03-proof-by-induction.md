@@ -193,6 +193,13 @@ conclusion, fallacy-spotting is how you withhold it when it hasn't been earned.
 That's the last Logic foundation, and it's where the whole toolkit starts paying off
 in everyday life.
 
+## Open-ended exercise
+
+Prove by induction that the sum of the first `n` natural numbers is `n(n+1)/2`. Write
+out the base case (n = 1) and the inductive step (assume true for n, prove for n+1).
+The structure is identical to a recursive function that builds on a smaller input — see
+the connection?
+
 A quick check before you go:
 
 ```quiz

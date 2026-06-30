@@ -218,6 +218,13 @@ in math and in the systems you build.
 That's the core of predicate logic. From here, the Logic track keeps going in two directions. One is
 *proof* — once you can state a precise claim with quantifiers, the natural next question is how you
 actually establish that a `∀` is true (you can't check every case) or that an `∃` exists (you produce
+
+## Open-ended exercise
+
+A system requirement states: "Every user has exactly one primary role." Translate this
+into a statement with quantifiers. Then write its negation — what would it mean for the
+requirement to be *false*? Your negation should be a concrete claim a tester could check.
+
 a witness). The other is *spotting fallacies* — a surprising number of bad arguments in the wild are
 quantifier mistakes in disguise: a counterexample mistaken for a counter-claim, or a "some" quietly
 swapped for an "all." You now have the eyes for both. If you ever want to step back and remember why

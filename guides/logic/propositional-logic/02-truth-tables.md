@@ -169,6 +169,13 @@ each one mechanically. It cannot lie, and it cannot skip the case that would hav
 - For builders: a truth table is full case coverage, a contradiction is dead code, a tautology
   is a redundant check.
 
+## Open-ended exercise
+
+Build a truth table for the statement `(P ∧ Q) → R`. List all eight rows (three variables),
+compute the output for each, and then ask: is this statement a tautology, a contradiction,
+or neither? A tautology is true in every row; a contradiction is false in every row.
+If it's neither, point to the rows that make it true and the rows that make it false.
+
 Check yourself:
 
 ```quiz

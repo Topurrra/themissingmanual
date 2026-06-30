@@ -180,6 +180,18 @@ produce something true or false — without pinning `x` to a single value. That'
   a function that takes a predicate.
 - Next up: how *for all* and *there exists* turn a predicate plus a domain into a real truth value.
 
+## Open-ended exercise
+
+Consider this code:
+
+```text
+const admins = users.filter(u => u.role === 'admin');
+```
+
+The `filter` method takes a predicate — here, `u.role === 'admin'`. Now write, in
+plain English, what the *domain* is for this predicate, and what the predicate claims
+about each element. Then: is `filter` checking a `∀` claim or an `∃` claim? Why?
+
 Quick check before you move on:
 
 ```quiz

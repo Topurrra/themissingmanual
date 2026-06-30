@@ -187,6 +187,15 @@ those transistors are etched onto a chip, how memory and clocks are built for re
 hardware story, and a great one, but it's the physics underneath the logic you now understand.
 You've finished the logic. The foundation is solid, and it's yours.
 
+## Open-ended exercise
+
+A half-adder takes two single-bit inputs (A and B) and produces two outputs: Sum and
+Carry. The Sum is `A XOR B` and the Carry is `A AND B`. Now imagine chaining two
+half-adders (plus an OR gate) to make a **full-adder** that also takes a carry-in from
+a previous stage. Sketch the gate-level diagram for a full-adder, labeling each gate
+and showing how the carry propagates. The goal is to see how a multi-bit adder — and
+ultimately a CPU's arithmetic unit — is just gates all the way down.
+
 A quick check before you go:
 
 ```quiz

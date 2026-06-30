@@ -200,6 +200,14 @@ where intuition gets sharpened into something you can measure. That's the Mathem
 the natural continuation of what you started here. You've learned to think clearly in words.
 Next you learn to think clearly in quantities.
 
+## Open-ended exercise
+
+Read this product claim: "Our new feature increased user engagement by 40%." Apply the
+toolkit from this phase: (1) steelman the claim — what's the strongest version of it?
+(2) separate the claim from the evidence — what would you need to see to verify it?
+(3) name at least one cognitive bias that could make the claim feel true before you've
+checked it. The goal is to turn a persuasive sentence into a checklist you can act on.
+
 Here's a quick check on the habits worth keeping.
 
 ```quiz

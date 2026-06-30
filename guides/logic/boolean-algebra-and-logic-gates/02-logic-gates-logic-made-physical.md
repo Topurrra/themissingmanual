@@ -116,6 +116,24 @@ digit before carrying is exactly XOR. You'll see that in Phase 3.
 > `1 XOR 1` is `0`. If you ever wonder which you want, ask: should "both true" count? OR says
 > yes, XOR says no.
 
+## Gate diagrams: how they wire together
+
+The truth tables tell you what a gate does. A diagram shows how gates *talk* to each other. Here's a half-adder — the circuit that adds two single bits — built from the gates you just met:
+
+```mermaid
+flowchart LR
+    A[A] --> AND[AND]
+    A --> XOR[XOR]
+    B[B] --> AND
+    B --> XOR
+    AND --> Cout[Cout]
+    XOR --> Sum[Sum]
+```
+
+Two inputs, `A` and `B`, flow into both an AND gate and an XOR gate. The AND gate produces the **carry-out** (`Cout`): it's `1` only when both inputs are `1`. The XOR gate produces the **sum** (`Sum`): it's `1` when the inputs differ, which is exactly the "sum" digit before carrying in binary addition.
+
+This is the circuit that lives inside every adder in your CPU. From this, engineers chain more gates to add multi-bit numbers, and from there you get everything else.
+
 ## Universality: why NAND is special
 
 Here's a result that sounds too good to be true: **the NAND gate, all by itself, can build every
@@ -135,6 +153,17 @@ A  A  | A NAND A
 ```
 
 The output is the flip of the input — that's NOT, made from one NAND.
+
+```mermaid
+flowchart LR
+    A[A] --> NAND[NAND]
+    A --> NAND
+    NAND --> NOT[NOT output]
+```
+
+Once you have NOT, the rest follows. NAND is already "AND then flip," so flipping a NAND's output
+(with another NAND wired as NOT) gives you back a plain **AND**. Getting **OR** takes more wiring,
+but it's the same idea — chain NANDs until the truth table matches.
 
 Once you have NOT, the rest follows. NAND is already "AND then flip," so flipping a NAND's output
 (with another NAND wired as NOT) gives you back a plain **AND**. Getting **OR** takes more wiring,
@@ -180,6 +209,13 @@ by bit. The gates aren't an abstraction sitting above your code; they run undern
   NAND with tied inputs, and the rest follows.
 - The bitwise operators `&`, `|`, `^`, `~` are these gates run across all the bits of a number
   at once.
+
+## Open-ended exercise
+
+Sketch (in text or on paper) a circuit that uses AND, OR, and NOT gates to implement
+this condition: `(A AND B) OR (NOT C)`. Then ask: if you only had NAND gates, could you
+build the same circuit? Why or why not? (Hint: you already know NAND can make NOT, AND,
+and OR.)
 
 Quick check before you move on:
 

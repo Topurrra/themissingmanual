@@ -103,7 +103,7 @@ for n in [10, 100, 1000, 10000]:
 
 ## For builders
 
-Integrals are not just for math class. They are the way you compute totals from rates.
+Integrals are not only for math class. They are the way you compute totals from rates.
 
 - **Profiling and monitoring** - If you have a graph of requests per second over time, the integral of that graph is the total number of requests. Integrating a latency distribution gives you the total time spent waiting.
 - **Physics simulations** - If you know the acceleration of an object, integrating once gives velocity, and integrating again gives position. Game engines and physics simulators do this every frame.

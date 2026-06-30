@@ -65,7 +65,7 @@ A **phase shift** slides the wave left or right. It answers the question: "where
 y = sin(x - C)
 ```
 
-`C` is the phase shift. If `C = pi/2`, the wave starts at its peak instead of at zero. It is the same wave, just starting at a different point in the cycle.
+`C` is the phase shift. If `C = pi/2`, the wave starts at its peak instead of at zero. It is the same wave, starting at a different point in the cycle.
 
 Phase shift matters when you combine waves. Two sine waves with the same frequency but different phases can add up to anything from zero to twice the amplitude, depending on whether they are in sync or out of sync.
 
@@ -73,9 +73,9 @@ Phase shift matters when you combine waves. Two sine waves with the same frequen
 
 When you add two sine waves together, you get a new wave. If the waves have the same frequency and are in phase, they add constructively: the result is a taller sine wave. If they are out of phase, they add destructively: the result is a smaller wave, or even zero.
 
-This is the seed of the **Fourier transform**, the idea that any repeating pattern can be built by adding together sine waves of different frequencies and amplitudes. A musical chord is just several sine waves played at once. A square wave is an infinite sum of odd harmonics.
+This is the seed of the **Fourier transform**, the idea that any repeating pattern can be built by adding together sine waves of different frequencies and amplitudes. A musical chord is several sine waves played at once. A square wave is an infinite sum of odd harmonics.
 
-You do not need the full Fourier transform to use the insight. The insight is: complex waves are just simple waves stacked on top of each other.
+You do not need the full Fourier transform to use the insight. The insight is: complex waves are simple waves stacked on top of each other.
 
 ## See it run
 
@@ -110,7 +110,7 @@ for i, s in enumerate(samples[:10]):
 
 ## For builders
 
-Sine waves are not just for math class. They are the raw material of sound, light, and signal processing.
+Sine waves are not only for math class. They are the raw material of sound, light, and signal processing.
 
 - **Audio synthesis** - A pure tone is a sine wave. Musical notes are sine waves at specific frequencies. Combining sine waves creates timbre. This is how synthesizers work.
 - **Signal processing** - Filters, modulators, and demodulators all manipulate sine waves. A radio tuner selects one frequency from the many that fill the air.

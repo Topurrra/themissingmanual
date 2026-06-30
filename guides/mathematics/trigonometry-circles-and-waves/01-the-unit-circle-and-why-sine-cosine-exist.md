@@ -5,7 +5,7 @@ phase: 1
 summary: "Trigonometry starts with a point moving around a circle. The height of that point is sine. The horizontal position is cosine. This phase explains why those functions exist, how to read the unit circle, and why radians are the natural way to measure angles."
 tags: [mathematics, trigonometry, unit-circle, sine, cosine, radians, angles, beginner-friendly]
 difficulty: beginner
-synonyms: ["what is sine and cosine", "unit circle explained", "what are radians", "trigonometry basics", "sine cosine explained simply"]
+synonyms: ["what is sine and cosine", "unit circle explained", "what are radians", "trigonometry basics", "sine and cosine for beginners"]
 updated: 2026-06-28
 ---
 
@@ -61,7 +61,7 @@ Angle 2*pi:       (1, 0)       -> cos(2*pi) = 1, sin(2*pi) = 0
 
 The cosine is the x coordinate. The sine is the y coordinate. As the angle increases, the point moves around the circle, and the coordinates oscillate between -1 and 1.
 
-That oscillation is the wave. Every sine wave is just a point moving around a circle, projected onto one axis.
+That oscillation is the wave. Every sine wave is a point moving around a circle, projected onto one axis.
 
 ## Tangent: the slope of the radius
 
@@ -105,7 +105,7 @@ for angle in angles:
 
 ## For builders
 
-Sine and cosine are not just for math class. They are the functions behind most visual and audio software.
+Sine and cosine are not only for math class. They are the functions behind most visual and audio software.
 
 - **Graphics and animation** - A character moving in a circle, a camera orbiting a target, a pulsing glow effect: all use sine and cosine to convert an angle into x and y coordinates.
 - **Audio synthesis** - A pure musical note is a sine wave. Combining sine waves of different frequencies creates complex sounds. The Fourier transform decomposes any sound into its component sine waves.

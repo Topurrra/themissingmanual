@@ -8,6 +8,8 @@ Legend: `[ ]` todo · `[x]` done · 🔝 high-impact · ⚠ placement = category
 
 ---
 
+> **SHIPPED 2026-06-30 (big batch, 31 guides):** the high-impact picks across every category — OS `editing-in-the-terminal`; HW `why-your-computer-is-slow`; Net `what-a-vpn-does` + `email-demystified`; **programming-concepts** `dates-and-time-zones` + `character-encodings-unicode` + `floating-point-and-money` (moved here, not programming-languages); VC `gitignore-lfs-submodules`; Debug `debugging-in-the-browser`; Test `flaky-tests`; DB `n-plus-one-queries` + `connection-pools` + `database-backups-and-restores`; Data `sql-window-functions` + `metrics-that-lie`; API `rate-limits-and-retries` + `realtime-apis-websockets-sse`; Arch `event-driven-architecture` + `the-twelve-factor-app`; DevOps `zero-downtime-deploys` + `feature-flags-and-rollbacks`; Infra `backups-and-disaster-recovery` + `object-storage-s3`; Perf `web-performance-core-web-vitals`; Sec `supply-chain-security` + `security-headers-csp-hsts`; AI `evaluating-llm-output` + `building-an-ai-agent` + `prompt-injection-and-guardrails`. Plus Logic `formal-methods-and-specification` and Math `how-to-think-like-a-mathematician`. **NEW Physics pillar** seeded (4: what-physics-actually-is, energy-forces-and-motion, the-quantum-world-for-humans, light-waves-and-fields). All gate-clean + content-core green. Remaining Part-1 items below are still open.
+
 ## Part 1 — Standalone new guides (fill gaps in existing categories)
 
 Slugs are proposals; set the real `order:` (next free rung in that category) when writing. Each line:

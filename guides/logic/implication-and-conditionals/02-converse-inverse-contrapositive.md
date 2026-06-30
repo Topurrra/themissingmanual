@@ -191,6 +191,13 @@ the contrapositive comes along for the ride.
 - In practice: "if error then log" does not mean "if logged then error" — but "output correct"
   validly clears a stage.
 
+## Open-ended exercise
+
+A security policy states: "If a user has admin privileges, then their sessions are logged."
+Write out the converse, inverse, and contrapositive of this conditional in plain English.
+Then evaluate: which of the three, if any, would you want to *enforce* as a separate rule,
+and why? The answer reveals which form carries the same guarantee as the original.
+
 A quick check before you move on.
 
 ```quiz

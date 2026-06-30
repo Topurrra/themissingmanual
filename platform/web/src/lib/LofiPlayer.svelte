@@ -155,23 +155,15 @@
   }
 
   function onEnded() {
-    if (repeat === 'one') {
-      audio.currentTime = 0;
-      const onSeeked = () => {
-        audio.removeEventListener('seeked', onSeeked);
-        audio.play().catch(() => {});
-      };
-      audio.addEventListener('seeked', onSeeked);
-      // Fallback in case seeked never fires (e.g., already at 0)
-      setTimeout(() => {
-        audio.removeEventListener('seeked', onSeeked);
-        if (audio.currentTime === 0) audio.play().catch(() => {});
-      }, 100);
-    } else if (repeat === 'all' || index < list.length - 1) {
+    // repeat-one is handled natively by the <audio loop> attribute, so `ended`
+    // doesn't even fire in that mode. Here we only auto-advance.
+    if (repeat === 'all' || index < list.length - 1) {
+      // A natural end can fire `pause` (flipping `playing` false) before `ended`;
+      // we're advancing, so force the play flag so next() actually starts the track.
+      playing = true;
       next();
     } else {
-      // repeat === 'none' and we're at the last track: stop
-      playing = false;
+      playing = false; // repeat: none and on the last track — stop.
     }
   }
   function onKeydown(e) {
@@ -187,6 +179,7 @@
     bind:this={audio}
     src={track.src}
     preload="none"
+    loop={repeat === 'one'}
     on:ended={onEnded}
     on:pause={() => (playing = false)}
     on:play={() => (playing = true)}

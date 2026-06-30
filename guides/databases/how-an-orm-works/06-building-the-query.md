@@ -57,7 +57,7 @@ Different vocabulary, identical idea: an object-shaped description in, parameter
 
 ## Building a query runs no SQL
 
-> ⚠️ This is the one that trips people: **constructing a query does not touch the database.** Each `.where(...)` or `.order_by(...)` just adds to a *description*. The SQL fires only when you ask for results — when you enumerate the query, or call `.all()`, `.first()`, `.count()`, or iterate it in a loop.
+> ⚠️ This is the one that trips people: **constructing a query does not touch the database.** Each `.where(...)` or `.order_by(...)` only adds to a *description*. The SQL fires only when you ask for results — when you enumerate the query, or call `.all()`, `.first()`, `.count()`, or iterate it in a loop.
 
 This is called **deferred** (or **lazy**) **execution**, and it's why you can compose a query in steps:
 
@@ -92,7 +92,7 @@ SELECT * FROM customers WHERE status = ?
 -- parameter 1: active'; DROP TABLE customers; --
 ```
 
-*What just happened:* in the safe version, the entire hostile string — semicolons, `DROP TABLE`, and all — arrives as the *value* of parameter 1. The database compares it against `status` as plain text. It is never parsed as SQL, so it can't do anything. You get this for free just by using `.where(...)` instead of building strings yourself. The mechanics of `WHERE` and the injection trap it avoids are covered in [Querying Basics: SELECT & WHERE](/guides/querying-basics-select-where).
+*What just happened:* in the safe version, the entire hostile string — semicolons, `DROP TABLE`, and all — arrives as the *value* of parameter 1. The database compares it against `status` as plain text. It is never parsed as SQL, so it can't do anything. You get this for free by using `.where(...)` instead of building strings yourself. The mechanics of `WHERE` and the injection trap it avoids are covered in [Querying Basics: SELECT & WHERE](/guides/querying-basics-select-where).
 
 ## The leaky abstraction (read the SQL anyway)
 
@@ -104,7 +104,7 @@ Two ways it leaks:
 
 1. **Same query, different SQL.** Whether you eager-load a relation, how you express a filter, whether you select whole entities or a projection — each can change the generated SQL from one tidy join into a pile of extra queries (the N+1 problem from [Phase 5: Lazy Loading & the N+1 Trap](05-lazy-loading-and-n-plus-1.md)), or from an indexed lookup into a full scan. The object code looks innocent; the SQL tells the real story.
 
-2. **Untranslatable expressions.** If you put logic in your query that the ORM can't express in SQL — a call to one of your own language functions, an operation with no SQL equivalent — it has two unhappy options. Some ORMs (older EF, for instance) silently fall back to pulling rows into memory and filtering there (**client-side evaluation**), which can drag your whole table across the wire. Others just throw an error and make you rewrite it. Either way, "it compiled in my language" does not mean "it became efficient SQL."
+2. **Untranslatable expressions.** If you put logic in your query that the ORM can't express in SQL — a call to one of your own language functions, an operation with no SQL equivalent — it has two unhappy options. Some ORMs (older EF, for instance) silently fall back to pulling rows into memory and filtering there (**client-side evaluation**), which can drag your whole table across the wire. Others throw an error and make you rewrite it. Either way, "it compiled in my language" does not mean "it became efficient SQL."
 
 The takeaway isn't "don't trust ORMs." It's that **the ORM does not free you from understanding SQL.** On a cold path, fine — let it generate whatever. On a hot path, turn on the query log, read the SQL it produced, and judge it like you'd judge SQL you wrote by hand. When a query is mysteriously slow, [Why Is My Query Slow?](/guides/why-is-my-query-slow) is where you go next.
 

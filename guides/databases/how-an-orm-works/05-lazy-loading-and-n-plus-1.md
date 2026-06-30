@@ -46,7 +46,7 @@ realizing.
 ## Eager loading: bring it along up front
 
 With eager loading, you tell the ORM up front "I'll need the orders too," and it fetches them in the same
-round trip — either by a JOIN, or by a single follow-up batched query keyed on the parents it just loaded.
+round trip — either by a JOIN, or by a single follow-up batched query keyed on the parents it loaded.
 
 ```text
 customer = repo.query(Customer).with_related("orders").find(5)
@@ -84,7 +84,8 @@ that supports lazy loading can produce it.
 The reason it's so dangerous is that it **hides**. The code reads beautifully — a clean loop over objects,
 no SQL in sight. With ten rows in your dev database it runs in milliseconds and every test passes. Then
 production has a hundred thousand rows, the page takes nine seconds, and the database is on fire. It only
-bites under real data volume, which is exactly when you can least afford it. (If you've ever stared at a slow
+bites under real data volume, which is exactly when you can least afford it. For the full
+diagnosis-and-fix playbook, see [The N+1 Query Problem](/guides/n-plus-one-queries). (If you've ever stared at a slow
 endpoint wondering where the time went, see [Why Is My Query Slow?](/guides/why-is-my-query-slow) — N+1 is
 near the top of the suspect list, and the fix is to *look at the generated SQL*.)
 

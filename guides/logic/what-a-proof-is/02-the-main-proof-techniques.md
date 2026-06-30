@@ -20,6 +20,19 @@ This phase walks through five of those shapes. None is a trick. Each is a sane
 response to a specific kind of statement, and we'll say *why* each one fits where
 it does.
 
+```mermaid
+flowchart LR
+    A[Claim] --> B{Shape?}
+    B -->|if P then Q| C[Direct proof]
+    B -->|if P then Q| D[Contrapositive]
+    B -->|any claim| E[Contradiction]
+    B -->|for all x| F[Cases / Counterexample]
+    C --> G[Conclusion]
+    D --> G
+    E --> G
+    F --> G
+```
+
 ## Direct proof: assume the hypothesis, walk to the conclusion
 
 The most common shape, and the one you reach for first. A claim of the form "if `P`,
@@ -214,6 +227,16 @@ that the reasoning you do daily and the reasoning in proofs are the same muscle.
   miss nothing.
 - **Disproof by counterexample** — one failing `x` kills a "for all" claim; no number
   of examples ever proves one.
+
+## Open-ended exercise
+
+Pick a claim you believe is true — something small and concrete, like "the sum of two
+odd numbers is even" or "a function that checks `x > 0` and `x < 10` can be rewritten
+as `x >= 1 && x <= 9`." Now choose *one* of the five proof shapes from this phase and
+sketch how you'd structure a proof for it. You don't need to write every step — just
+identify: what's the hypothesis, what's the conclusion, and which shape fits best?
+The exercise is to feel the difference between "I think this is true" and "I can show
+why it must be true."
 
 Pick a quiz to check the parts that trip people up most:
 

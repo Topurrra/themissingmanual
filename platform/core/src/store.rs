@@ -168,7 +168,7 @@ impl Store {
 
     pub fn list_guides(&self) -> Result<Vec<GuideSummary>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT slug, title, summary, category, difficulty, status, group_name FROM guides WHERE status='published' ORDER BY sort_order, slug",
+            "SELECT slug, title, summary, category, difficulty, status, group_name, (SELECT MAX(updated) FROM phases WHERE phases.guide_slug = guides.slug) FROM guides WHERE status='published' ORDER BY sort_order, slug",
         )?;
         let rows = stmt.query_map([], Self::row_to_guide)?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
@@ -177,7 +177,7 @@ impl Store {
     /// Admin listing: every guide regardless of status.
     pub fn list_all_guides(&self) -> Result<Vec<GuideSummary>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT slug, title, summary, category, difficulty, status, group_name FROM guides ORDER BY sort_order, slug",
+            "SELECT slug, title, summary, category, difficulty, status, group_name, (SELECT MAX(updated) FROM phases WHERE phases.guide_slug = guides.slug) FROM guides ORDER BY sort_order, slug",
         )?;
         let rows = stmt.query_map([], Self::row_to_guide)?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
@@ -194,9 +194,9 @@ impl Store {
 
     fn get_guide_inner(&self, slug: &str, published_only: bool) -> Result<Option<GuideSummary>, StoreError> {
         let sql = if published_only {
-            "SELECT slug, title, summary, category, difficulty, status, group_name FROM guides WHERE slug = ?1 AND status='published'"
+            "SELECT slug, title, summary, category, difficulty, status, group_name, (SELECT MAX(updated) FROM phases WHERE phases.guide_slug = guides.slug) FROM guides WHERE slug = ?1 AND status='published'"
         } else {
-            "SELECT slug, title, summary, category, difficulty, status, group_name FROM guides WHERE slug = ?1"
+            "SELECT slug, title, summary, category, difficulty, status, group_name, (SELECT MAX(updated) FROM phases WHERE phases.guide_slug = guides.slug) FROM guides WHERE slug = ?1"
         };
         let mut stmt = self.conn.prepare(sql)?;
         let mut rows = stmt.query(params![slug])?;
@@ -208,7 +208,7 @@ impl Store {
 
     pub fn guides_for_category(&self, category: &str) -> Result<Vec<GuideSummary>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT slug, title, summary, category, difficulty, status, group_name FROM guides WHERE category = ?1 AND status='published' ORDER BY sort_order, title",
+            "SELECT slug, title, summary, category, difficulty, status, group_name, (SELECT MAX(updated) FROM phases WHERE phases.guide_slug = guides.slug) FROM guides WHERE category = ?1 AND status='published' ORDER BY sort_order, title",
         )?;
         let rows = stmt.query_map(params![category], Self::row_to_guide)?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
@@ -226,6 +226,7 @@ impl Store {
                 let g: String = row.get(6)?;
                 if g.is_empty() { None } else { Some(g) }
             },
+            updated: row.get::<_, Option<String>>(7)?.unwrap_or_default(),
         })
     }
 

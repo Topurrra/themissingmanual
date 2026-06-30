@@ -2,7 +2,7 @@
 title: "Graph Theory: The Math of What's Connected to What"
 guide: "graph-theory-whats-connected-to-what"
 phase: 0
-summary: "A graph is just a map of relationships: who is friends with whom, which files import which other files, how data flows through a network. This guide teaches you to think in connections, find the shortest path, and see the graph theory running your package manager, your social feed, and the internet itself."
+summary: "A graph is a map of relationships: who is friends with whom, which files import which other files, how data flows through a network. This guide teaches you to think in connections, find the shortest path, and see the graph theory running your package manager, your social feed, and the internet itself."
 tags: [mathematics, graph-theory, networks, nodes, edges, paths, beginner-friendly]
 category: mathematics
 order: 8

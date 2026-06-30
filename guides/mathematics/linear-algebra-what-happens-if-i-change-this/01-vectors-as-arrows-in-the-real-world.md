@@ -2,7 +2,7 @@
 title: "Vectors as Arrows in the Real World"
 guide: "linear-algebra-what-happens-if-i-change-this"
 phase: 1
-summary: "A vector is nothing more than an arrow: it has a direction and a length. Adding vectors is just combining movements. By the end, you will have built the mental model that makes every later idea in linear algebra feel obvious."
+summary: "A vector is nothing more than an arrow: it has a direction and a length. Adding vectors is combining movements. By the end, you will have built the mental model that makes every later idea in linear algebra feel obvious."
 tags: [mathematics, linear-algebra, vectors, direction, magnitude, beginner-friendly]
 difficulty: beginner
 synonyms: ["what is a vector", "vector explained", "vector addition", "what is magnitude and direction", "vectors in programming"]
@@ -17,7 +17,7 @@ Stand up. Face north. Walk three blocks. Turn right. Walk four blocks. Stop.
 
 Where are you relative to where you started?
 
-You did not need a calculator. You just know: you are five blocks away, in a direction that is slightly east of northeast. Your brain just performed vector addition.
+You did not need a calculator. You already know: you are five blocks away, in a direction that is slightly east of northeast. Your brain performed vector addition.
 
 That is what this phase is about. Not symbols. Not formulas. The simple, physical fact that movements combine, and that the combination has a direction and a distance.
 
@@ -35,7 +35,7 @@ In math we write a vector as a list of numbers inside parentheses, like this:
 (3, 4)
 ```
 
-But do not let the parentheses scare you. That is just a way of writing "three units in the first direction, four units in the second direction." On a city grid, it might mean "three blocks east, four blocks north." In a game, it might mean "move three pixels right, four pixels down."
+But do not let the parentheses scare you. That is a way of writing "three units in the first direction, four units in the second direction." On a city grid, it might mean "three blocks east, four blocks north." In a game, it might mean "move three pixels right, four pixels down."
 
 The numbers are called **components**. The first component is the east-west part. The second is the north-south part. If you had a 3D game, there would be a third component for up-down.
 
@@ -55,7 +55,7 @@ To add vectors, you add matching components:
 C = (3 + 1, 4 + (-2)) = (4, 2)
 ```
 
-Four east, two north. That is where you end up. The math is just writing down what your legs already did.
+Four east, two north. That is where you end up. The math is writing down what your legs already did.
 
 ## Scaling a vector: walking faster or slower
 
@@ -73,7 +73,7 @@ If you halve it, you walk half as far:
 0.5 * (3, 4) = (1.5, 2)
 ```
 
-The number you multiply by is called a **scalar**. A scalar is just a regular number that stretches or shrinks the arrow without turning it.
+The number you multiply by is called a **scalar**. A scalar is a regular number that stretches or shrinks the arrow without turning it.
 
 ## The vector that does nothing
 
@@ -114,11 +114,11 @@ scaled_move = [2 * move1[0], 2 * move1[1]]
 print("Scaled move (double):", scaled_move)
 ```
 
-*What just happened:* The character started at `[0, 0]`. After the first move it was at `[3, 4]`. After the second move it was at `[4, 2]`. Then we took the first move and doubled it to `[6, 8]` - same direction, twice the distance. Every line is just adding or scaling vectors.
+*What just happened:* The character started at `[0, 0]`. After the first move it was at `[3, 4]`. After the second move it was at `[4, 2]`. Then we took the first move and doubled it to `[6, 8]` - same direction, twice the distance. Every line is adding or scaling vectors.
 
 ## For builders
 
-If you write code, you already use vectors. You just do not call them that.
+If you write code, you already use vectors. You do not call them that.
 
 - **2D and 3D positions** in a game or UI are vectors. A character at `(x, y)` is a vector from the origin.
 - **Velocities** are vectors. "Move 3 pixels per frame right and 2 pixels per frame down" is a velocity vector `(3, 2)`.

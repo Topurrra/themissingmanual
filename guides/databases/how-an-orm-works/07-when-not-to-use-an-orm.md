@@ -103,7 +103,7 @@ memorizing landmines anymore — you're reading a machine you understand.
 ## Where to go next
 
 The four concrete ORM guides will now read completely differently. Where they once looked like four unrelated
-APIs to memorize, you'll see **the same four jobs, just configured**:
+APIs to memorize, you'll see **the same four jobs, only configured**:
 
 - [Hibernate & JPA from Zero](/guides/hibernate-and-jpa-from-zero) — Java's ORM and the JPA spec.
 - [SQLAlchemy from Zero](/guides/sqlalchemy-from-zero) — Python's, with its explicit session.

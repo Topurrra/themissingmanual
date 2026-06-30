@@ -20,6 +20,8 @@ mermaid ≤12, cross-guide slugs exist) + `cargo test -p content-core --test rea
 
 ---
 
+> **BUILT 2026-06-30 — the whole list shipped.** All ~54 tools landed in a dedicated new **`tooling`** category ("Tools & Workflow"), sub-grouped by the A–M themes via the `group:` frontmatter field. Gate-clean (structural 224/224, banned clean, content-core green) and correctness spot-checked (Flyway, Maven, Kafka, Redis, JWT, OAuth2, Pytest). The checkboxes below are left unticked as the original wishlist; the category is the source of truth now.
+
 ## A. Database migrations & schema tooling — *deepens `databases/database-migrations`*
 - [ ] Flyway ⭐⭐ (JVM default)
 - [ ] Liquibase ⭐

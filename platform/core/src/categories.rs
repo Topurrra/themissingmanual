@@ -23,6 +23,7 @@ struct Def {
 const DEFS: &[Def] = &[
     Def { slug: "logic", name: "Logic", icon: "ti-logic-and", blurb: "Clear reasoning from the ground up — true/false, if-then, proof, and spotting bad arguments. The thinking that sits under all code and math." },
     Def { slug: "mathematics", name: "Mathematics", icon: "ti-math-symbols", blurb: "The language reality is written in — sets, numbers, probability, and more — taught from intuition, for anyone who was told they're 'bad at math'." },
+    Def { slug: "physics", name: "Physics", icon: "ti-atom", blurb: "How the physical world really works, in plain language — motion, energy, light, and the genuinely strange rules of the quantum world. The 'why' beneath the machine." },
     Def { slug: "operating-systems", name: "Operating Systems", icon: "ti-device-desktop", blurb: "Windows, macOS, and Linux — what they're really doing under the hood, from first login to power user." },
     Def { slug: "hardware", name: "Hardware", icon: "ti-cpu", blurb: "How the machine is actually built and talks to itself — from the chip to the device on your desk." },
     Def { slug: "networking", name: "Networking", icon: "ti-network", blurb: "How the internet really works, and how to design networks that hold up — from your home router to the enterprise." },
@@ -41,6 +42,7 @@ const DEFS: &[Def] = &[
     Def { slug: "performance", name: "Performance", icon: "ti-gauge", blurb: "Finding the slow thing, and the tools that show you where it hides." },
     Def { slug: "security", name: "Security", icon: "ti-shield-lock", blurb: "The threats, the defaults, and the habits that keep you out of the news." },
     Def { slug: "ai-ml", name: "AI & Machine Learning", icon: "ti-brain", blurb: "Models, training, and putting AI into real products — without the hype or the hand-waving." },
+    Def { slug: "tooling", name: "Tools & Workflow", icon: "ti-tools", blurb: "The tools a job expects you to already know — migrations, build systems, message queues, CI/CD, containers, cloud, auth, and observability — each explained for the day you have to use it." },
 ];
 
 /// Upsert the canonical category taxonomy. `DEFS` is the source of truth, so this runs on every
@@ -94,9 +96,10 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         let cats = categories_with_counts(&store).unwrap();
-        assert_eq!(cats.len(), 20);
+        assert_eq!(cats.len(), 22);
         assert_eq!(cats[0].slug, "logic"); // DEFS array order = display order; foundations lead
         assert_eq!(cats[1].slug, "mathematics");
+        assert_eq!(cats[2].slug, "physics");
         assert!(cats.iter().any(|c| c.slug == "version-control"));
         assert!(cats.iter().any(|c| c.slug == "infrastructure")); // the DevOps split
         assert!(cats.iter().any(|c| c.slug == "programming-concepts")); // split out of programming-languages
@@ -127,7 +130,7 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         seed_categories(&store).unwrap();
-        assert_eq!(categories_with_counts(&store).unwrap().len(), 20);
+        assert_eq!(categories_with_counts(&store).unwrap().len(), 22);
     }
 
     #[test]

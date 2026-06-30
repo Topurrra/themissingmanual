@@ -211,6 +211,18 @@ when a condition is more complicated than the logic requires.
   they clean up most real-world conditions.
 - `+` means OR, so `1 + 1 = 1`. It is not arithmetic.
 
+## Open-ended exercise
+
+Here's a condition from a real access-control system:
+
+```text
+if (isAdmin && !(isAdmin && isSuspended)) { allow(); }
+```
+
+Apply the boolean algebra laws you've learned to simplify this expression step by step.
+Name the law at each step. Then write the final simplified condition in plain English:
+what rule is it actually checking?
+
 A quick check before you move on:
 
 ```quiz

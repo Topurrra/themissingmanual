@@ -48,7 +48,7 @@ For a graph with thousands of nodes and edges, Dijkstra runs fast enough for rea
 
 ## Detecting cycles: the loop that breaks everything
 
-A **cycle** is a path that starts and ends at the same node. In a social network, a cycle is just a friend group. In a dependency graph, a cycle is a disaster: A depends on B, B depends on C, C depends on A. Nothing can be installed because everything is waiting for something else.
+A **cycle** is a path that starts and ends at the same node. In a social network, a cycle is a friend group. In a dependency graph, a cycle is a disaster: A depends on B, B depends on C, C depends on A. Nothing can be installed because everything is waiting for something else.
 
 Detecting a cycle is straightforward with DFS. As you walk through the graph, keep track of the nodes you are currently visiting (the "recursion stack"). If you ever reach a node that is already in the stack, you have found a cycle.
 
@@ -69,14 +69,14 @@ Here is BFS for shortest path in an unweighted graph, and a cycle detection func
 ```python runnable
 from collections import deque
 
-# An unweighted graph as an adjacency list
+# A directed, unweighted graph (a dependency graph) as an adjacency list
 graph = {
     "A": ["B", "C"],
-    "B": ["A", "D", "E"],
-    "C": ["A", "F"],
-    "D": ["B"],
-    "E": ["B", "F"],
-    "F": ["C", "E"]
+    "B": ["D", "E"],
+    "C": ["F"],
+    "D": [],
+    "E": ["F"],
+    "F": []
 }
 
 def bfs_shortest_path(graph, start, target):
@@ -119,10 +119,11 @@ print("Graph has cycle:", has_cycle_dfs(graph))
 # Add a cycle: F connects back to A
 graph_cyclic = {
     "A": ["B", "C"],
-    "B": ["A", "D"],
-    "C": ["A", "F"],
-    "D": ["B"],
-    "F": ["C", "A"]  # cycle: A -> C -> F -> A
+    "B": ["D", "E"],
+    "C": ["F"],
+    "D": [],
+    "E": ["F"],
+    "F": ["A"]  # back-edge -> cycle A -> C -> F -> A
 }
 print("Cyclic graph has cycle:", has_cycle_dfs(graph_cyclic))
 ```

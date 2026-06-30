@@ -17,7 +17,7 @@ Picture a group chat with four people: Alice, Bob, Cara, and Dave. Alice can mes
 
 If you draw a dot for each person and a line between any two people who can message each other, you have drawn a graph. The dots are **nodes** (or vertices). The lines are **edges**.
 
-That is all a graph is. Nodes and edges. Everything else in graph theory is just asking questions about that picture.
+That is all a graph is. Nodes and edges. Everything else in graph theory is asking questions about that picture.
 
 ## What a graph is
 

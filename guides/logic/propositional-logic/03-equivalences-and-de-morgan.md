@@ -115,6 +115,56 @@ single line:
 You don't need to memorize these the way you need De Morgan. But recognizing them helps
 when you're simplifying a messy expression and want to know which rewrites are legal.
 
+## Two equivalences that change how you read code
+
+These two are less about simplification and more about *translation* — they let you
+rewrite a condition into a shape that's easier to think about.
+
+**Implication as disjunction:** `P → Q ≡ ¬P ∨ Q`
+
+An "if… then…" is logically the same as "either the if-part is false, or the then-part
+is true." This is the bridge between propositional logic and the `if` statements you
+write. When you see `if (P) { Q }`, the condition that makes the block *not* run is
+`¬P` — and the whole statement `P → Q` is only false when `P` is true and `Q` is false.
+
+**Biconditional (if and only if):** `P ↔ Q ≡ (P → Q) ∧ (Q → P)`
+
+"P if and only if Q" means both directions hold: P implies Q *and* Q implies P. In code,
+this is the "both or neither" pattern — you want either both conditions true or both
+false. The biconditional is `true` when P and Q agree (both true or both false) and
+`false` when they differ.
+
+```text
+P ↔ Q   is true when:
+  P = true,  Q = true   (both)
+  P = false, Q = false  (neither)
+
+P ↔ Q   is false when:
+  P = true,  Q = false  (mismatch)
+  P = false, Q = true   (mismatch)
+```
+
+The XOR gate you met in [boolean algebra](/guides/boolean-algebra-and-logic-gates) is
+the *negation* of the biconditional: `P ⊕ Q ≡ ¬(P ↔ Q)`. XOR fires on mismatch;
+biconditional fires on match.
+
+## For builders
+
+The implication-as-disjunction rewrite is how you read complex guards. Suppose you have:
+
+```text
+if (isAdmin || isOwner) { canEdit() }
+```
+
+The *only* case where `canEdit()` does *not* run is when both `isAdmin` and `isOwner`
+are false — which is exactly `¬(isAdmin ∨ isOwner) ≡ ¬isAdmin ∧ ¬isOwner` by De Morgan.
+The "block" branch is the negated condition, and De Morgan tells you its shape.
+
+The biconditional shows up in validation: "the form is valid *if and only if* all required
+fields are filled." That means filling all fields is *necessary* (without them, invalid)
+and *sufficient* (with them, valid). Both directions. [Implication & Conditionals](/guides/implication-and-conditionals)
+explores necessary and sufficient in depth.
+
 ## ⚠️ The classic bug: negating an AND wrong
 
 This mistake is everywhere. You have a condition `a && b` and you want its opposite. Your
@@ -192,6 +242,48 @@ It surprises almost everyone the first time (an implication can be true even whe
 part never happens), and it's the backbone of reasoning, proofs, and the conditionals in your
 code. That's the natural next step: implication and conditionals, where logic starts to look a
 lot like the `if` statements you already write.
+
+## Logic you already use: regular expressions
+
+If you've written a regex, you've written propositional logic. A regex pattern is a
+compound condition over a string — exactly the kind of thing you've been studying.
+
+- `a && b` in code is `a.*b` in regex: both must appear, in order.
+- `a || b` is `a|b`: either one matches.
+- `!a` is `[^a]` or a negative lookahead `(?!a)`: "not this character."
+- `(a && b) || c` is `(a.*b)|c`: group the AND, then OR with c.
+
+The operators are different, but the *shape* of the reasoning is identical. De Morgan
+works on regex conditions too: the opposite of "must contain a digit *and* a letter"
+is "missing a digit *or* missing a letter."
+
+Regex adds one thing pure logic doesn't: **repetition** (`*`, `+`, `?`) and **capture**.
+But the core — what counts as a match, what the pattern requires — is propositional
+logic wearing a different costume.
+
+## A bridge to computer science: Boolean satisfiability
+
+There's one question propositional logic asks that turns out to be deeply important in
+computer science: **"Is there any assignment of true/false that makes this whole
+expression true?"**
+
+That question is called **Boolean satisfiability**, or SAT. It sounds simple, but it's
+the engine behind a surprising range of real systems:
+
+- **Constraint solvers** in package managers, build systems, and databases.
+- **Type checkers** that ask "can these types line up?"
+- **Model checkers** that verify hardware designs have no deadlock.
+- **SMT solvers** that power formal verification tools.
+
+The reason SAT matters is that many real problems can be *translated* into a boolean
+expression. Once you have the expression, asking "is it satisfiable?" is asking "does
+any solution exist?" The P vs NP question — one of the biggest open problems in math —
+is fundamentally about how hard it is to answer that question for large expressions.
+
+You don't need to solve SAT instances today. But knowing that "can this be true?" is
+a *named, studied problem* — not just a casual question — changes how you see the
+boolean expressions in your own code. They're not just guards; they're constraints,
+and there's a whole field that thinks about them systematically.
 
 A quick check before you go:
 

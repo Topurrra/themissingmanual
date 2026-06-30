@@ -46,7 +46,7 @@ In [Linear Algebra](/guides/linear-algebra-what-happens-if-i-change-this) you le
 [sin(theta)   cos(theta)]
 ```
 
-Multiply this matrix by any point (x, y) and you get the rotated point. The matrix encodes the same formulas as above, just in a compact form.
+Multiply this matrix by any point (x, y) and you get the rotated point. The matrix encodes the same formulas as above, in a compact form.
 
 This is what a graphics card does when it rotates a 3D model. It applies a rotation matrix to every vertex. The CPU computes the matrix once. The GPU multiplies it by thousands of vertices in parallel.
 
@@ -72,11 +72,11 @@ Polar coordinates are natural for anything that involves rotation or direction: 
 
 Suppose you are lost in a field. You can see two radio towers. You know the position of each tower. You can measure the angle from your position to each tower. Can you find your position?
 
-Yes. This is **triangulation**, and it is how GPS works.
+Yes. This is **triangulation**: finding your position from angles.
 
 Draw lines from each tower in the direction you measured. Where the lines intersect is your position. The math uses the law of sines, which relates the angles of a triangle to the lengths of its sides. But the core idea is simple: two angles and a known baseline determine a triangle.
 
-In practice, GPS uses three or more satellites and measures the time it takes for a signal to travel, which gives distance instead of angle. The principle is the same: geometry plus trigonometry turns measurements into position.
+GPS works by the close cousin, **trilateration**: it uses three or more satellites and measures how long each signal takes to arrive, which gives *distance* rather than angle. The principle is the same: geometry plus trigonometry turns measurements into position.
 
 ## See it run
 

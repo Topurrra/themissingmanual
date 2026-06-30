@@ -92,7 +92,7 @@ print("Final x:", x)
 
 ## For builders
 
-Optimization is not just for math class. It is the engine behind much of the software you write and use.
+Optimization is not only for math class. It is the engine behind much of the software you write and use.
 
 - **Machine learning** - Training any model is optimization. The model has parameters. The loss function measures error. Gradient descent (or a variant) finds the parameters that minimize the loss.
 - **Hyperparameter tuning** - Choosing the learning rate, the batch size, the number of layers: all of these are optimization problems. You want the settings that produce the best validation score.

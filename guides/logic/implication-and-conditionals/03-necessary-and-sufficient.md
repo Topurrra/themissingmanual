@@ -212,6 +212,14 @@ Here's a check to make sure these clicked.
 ]
 ```
 
+## Open-ended exercise
+
+A job posting says: "A bachelor's degree is required for this role." Is the degree a
+*necessary* condition, a *sufficient* condition, both, or neither? Now the posting
+adds: "A bachelor's degree is required, and with it you're guaranteed an interview."
+What changed? Write the two claims as conditionals and identify which direction each
+one asserts.
+
 ## Where this leaves you
 
 You can now name both ends of an arrow. **Sufficient** means *enough to guarantee* — the arrow points

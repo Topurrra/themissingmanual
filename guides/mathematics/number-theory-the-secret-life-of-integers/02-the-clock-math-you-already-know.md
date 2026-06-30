@@ -38,7 +38,7 @@ You can add and multiply inside modular arithmetic, and the wrap-around happens 
 (8 * 4) mod 12 = 32 mod 12 = 8
 ```
 
-The first line says "8 o'clock plus 5 hours wraps to 1 o'clock." The second says "8 times 4 is 32, which is 8 past two full cycles of 12."
+The first line says "7 o'clock plus 5 hours lands on 12, which the clock counts as 0." The second says "8 times 4 is 32, which is 8 past two full cycles of 12."
 
 This is useful because it keeps numbers small. In cryptography, you often work with numbers that have hundreds of digits. Modular arithmetic lets you reduce them to a manageable size at every step, without losing the security properties that make the system work.
 
@@ -53,7 +53,7 @@ Suppose you want to compute `7^4 mod 12`. That means "multiply 7 by itself 4 tim
 
 So `7^4 mod 12 = 1`.
 
-For small numbers you can just compute the power and then take the remainder. For the huge numbers used in cryptography, that approach is far too slow. The trick is to reduce modulo at every step:
+For small numbers you can compute the power and then take the remainder. For the huge numbers used in cryptography, that approach is far too slow. The trick is to reduce modulo at every step:
 
 ```
 7^2 mod 12 = 49 mod 12 = 1
@@ -122,14 +122,14 @@ print("GCD(1071, 462) =", gcd(1071, 462))
 
 ## For builders
 
-Modular arithmetic is not just for clocks and cryptography. It is hiding in tools you use every day.
+Modular arithmetic is not only for clocks and cryptography. It is hiding in tools you use every day.
 
 - **Hash tables** - The `hash(key) % num_buckets` operation that decides which bucket a key goes into is modular arithmetic. The hash might be a huge number. The modulus folds it into a valid index.
 - **Circular buffers** - A ring buffer of size `n` uses `index mod n` to wrap around from the end back to the start. No `if` statement needed.
 - **Checksums and parity bits** - A parity bit records whether the number of 1-bits is even or odd. That is `count mod 2`. Larger checksums use bigger moduli but the same remainder idea.
 - **Time and date math** - Days of the week, months of the year, leap years: all modular arithmetic. "What day is it in 100 days?" is `100 mod 7` steps forward from today.
 
-> The key insight: modular arithmetic is the math of cycles. Any time something repeats - hours, days, buffer positions, hash buckets - the same operation `a mod n` tells you where you are in the cycle. Cryptography just uses very large cycles with very special properties.
+> The key insight: modular arithmetic is the math of cycles. Any time something repeats - hours, days, buffer positions, hash buckets - the same operation `a mod n` tells you where you are in the cycle. Cryptography uses very large cycles with very special properties.
 
 ## What we have built
 

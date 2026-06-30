@@ -170,6 +170,14 @@ not a proof."* That one sentence has saved more shipped code than any linter.
 - For builders: passing tests are evidence (particular cases); a proof guarantees
   all inputs. That's why "tests pass" ≠ "code is correct."
 
+## Open-ended exercise
+
+A teammate claims: "Our cache never returns stale data — we've tested it on a hundred
+requests and every one was fresh." Is this a proof? Why or why not? Distinguish between
+what kind of certainty the tests provide and what kind would be needed to *prove* the
+claim "the cache never returns stale data" for all possible inputs and all possible
+future states.
+
 A quick check before you move on:
 
 ```quiz

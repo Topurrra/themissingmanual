@@ -50,7 +50,7 @@ fn real_guides_categorized() {
     let (store, _index) = ingested();
     let cats = content_core::categories::categories_with_counts(&store).unwrap();
     let vc = cats.iter().find(|c| c.slug == "version-control").unwrap();
-    assert_eq!(vc.count, 4, "the Git track guides should be in version-control");
+    assert_eq!(vc.count, 5, "the Git track guides (4) plus gitignore-lfs-submodules should be in version-control");
     let (_cat, guides) = content_core::categories::category_with_guides(&store, "version-control").unwrap().unwrap();
     let slugs: Vec<&str> = guides.iter().map(|g| g.slug.as_str()).collect();
     assert!(slugs.contains(&"git-explained-like-a-human"), "flagship guide present");

@@ -77,27 +77,27 @@ The point `(100, 50)` became `(50, -100)`. It moved from the lower-right quadran
 
 ## Combining transformations: matrix multiplication
 
-Here is the part that feels like magic. Suppose you want to scale by 2 and then rotate 90 degrees. You can do it in two steps, or you can combine the two matrices into one.
+Here is the part that feels like magic. Suppose you want to scale (doubling the width) and *then* rotate 90 degrees. You can do it in two steps, or combine the two matrices into one.
 
-The combined matrix is the **product** of the two matrices. The order matters: scale then rotate is different from rotate then scale.
+The combined matrix is the **product** of the two matrices, and the order matters: scale then rotate is different from rotate then scale. The rule to remember: the transformation you apply **first** goes on the **right**. So "scale, then rotate" is `Rotate * Scale`.
 
 ```
 Scale:  [2  0]     Rotate: [ 0  1]
-         [0  1]            [-1  0]
+        [0  1]             [-1  0]
 
-Scale then rotate:
-[2*0 + 0*(-1)   2*1 + 0*0]   [0  2]
-[0*0 + 1*(-1)   0*1 + 1*0] = [-1  0]
+Scale then rotate = Rotate * Scale:
+[ 0*2 + 1*0    0*0 + 1*1]   [ 0   1]
+[-1*2 + 0*0   -1*0 + 0*1] = [-2   0]
 ```
 
 The result is a new matrix that does both operations in one shot. Apply it to `(100, 50)`:
 
 ```
-new_x = 0 * 100 + 2 * 50 = 100
-new_y = -1 * 100 + 0 * 50 = -100
+new_x =  0 * 100 + 1 * 50 =  50
+new_y = -2 * 100 + 0 * 50 = -200
 ```
 
-Same result as doing the two steps separately. Matrix multiplication is just the notation for "do this transformation, then that one."
+This matches doing the two steps by hand: scaling `(100, 50)` to `(200, 50)`, then rotating that to `(50, -200)`. Matrix multiplication is the notation for "do this transformation, then that one."
 
 ## Shearing: the transformation nobody talks about
 
@@ -148,7 +148,7 @@ print("Sheared:", apply_matrix(shear, point))
 
 You encounter these transformations constantly, even if you never write a matrix by hand.
 
-- **CSS transforms** - `scale(2)`, `rotate(90deg)`, `skewX(20deg)` are exactly the scaling, rotation, and shear matrices we just built. The browser does the matrix math for you.
+- **CSS transforms** - `scale(2)`, `rotate(90deg)`, `skewX(20deg)` are exactly the scaling, rotation, and shear matrices we built. The browser does the matrix math for you.
 - **Image processing** - resizing a photo is scaling. Rotating a thumbnail is rotation. The "lens correction" that straightens tilted photos is a combination of rotation and shear.
 - **2D and 3D graphics** - every vertex in a game world is a vector. Every model view matrix is a recipe for where that vertex should appear on screen.
 - **Data visualization** - mapping data coordinates to pixel coordinates is a linear transformation. The axes you see on a chart are the result of scaling and translating the data space.

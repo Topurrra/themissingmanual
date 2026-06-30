@@ -38,7 +38,7 @@ You do not need to implement PageRank to use the insight. Every time you search 
 
 Netflix, Spotify, and Amazon all face the same problem: they have millions of users and millions of items, and they need to guess what you want before you know you want it.
 
-One approach: represent each user as a vector of preferences, and each movie or song as a vector of features. Then the "match score" between a user and an item is just a simple operation on two vectors.
+One approach: represent each user as a vector of preferences, and each movie or song as a vector of features. Then the "match score" between a user and an item is a simple operation on two vectors.
 
 If the user vector is `(5, 2, 0, 4)` meaning "I love action, I like comedy, I hate horror, I love sci-fi" and the movie vector is `(4, 1, 0, 5)` meaning "this is an action-comedy with no horror and lots of sci-fi," then the system can compute how well they align.
 
@@ -56,7 +56,7 @@ What happened under the hood? The app took every pixel in the image, treated its
 - The "black and white" filter uses a matrix that averages the three color channels into one.
 - The "vignette" darkens the edges by scaling down vectors that are far from the center.
 
-Each filter is a 3x3 matrix. The operation is the same matrix multiplication you practiced in Phase 2, just applied to millions of pixels in parallel. Your phone does this in milliseconds because the hardware is built for it.
+Each filter is a 3x3 matrix. The operation is the same matrix multiplication you practiced in Phase 2, applied to millions of pixels in parallel. Your phone does this in milliseconds because the hardware is built for it.
 
 ## Neural networks: layers of linear algebra
 
@@ -70,9 +70,9 @@ When a neural network recognizes a cat in a photo, it is doing this:
 3. The second layer transforms that into a space where shapes are highlighted.
 4. The final layer transforms that into a space where "cat" and "not cat" are far apart.
 
-Every transformation is a matrix multiplication. The "learning" is the process of finding the right matrices. The inference - actually recognizing the cat - is just applying the matrices to the input vector.
+Every transformation is a matrix multiplication. The "learning" is the process of finding the right matrices. The inference - actually recognizing the cat - is applying the matrices to the input vector.
 
-You do not need to build a neural network to appreciate this. You just need to know that the intimidating phrase "deep learning" is mostly linear algebra with a little bit of nonlinearity on top.
+You do not need to build a neural network to appreciate this. You need to know that the intimidating phrase "deep learning" is mostly linear algebra with a little bit of nonlinearity on top.
 
 ## For builders
 

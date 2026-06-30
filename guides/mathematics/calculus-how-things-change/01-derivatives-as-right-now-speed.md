@@ -15,7 +15,7 @@ updated: 2026-06-28
 
 You are driving down a highway. The speedometer reads 65 miles per hour. That number is a derivative.
 
-It tells you how fast you are moving *right now*. Not how far you traveled in the last hour. Not how far you will travel in the next hour. Just this instant. That is what a derivative is: the rate of change at a single point in time.
+It tells you how fast you are moving *right now*. Not how far you traveled in the last hour. Not how far you will travel in the next hour. Only this instant. That is what a derivative is: the rate of change at a single point in time.
 
 If you press the gas, the speedometer climbs. If you let off, it falls. The speedometer is tracking the derivative of your position with respect to time.
 
@@ -56,7 +56,7 @@ You do not need to memorize this rule. You need to understand what it means: the
 
 In economics, the **marginal cost** is the cost of producing one more unit. If you have made 100 widgets and you are considering the 101st, the marginal cost is the derivative of the total cost function at 100.
 
-Suppose the total cost of producing `x` widgets is `C(x) = x^2 + 10x + 50`. The marginal cost at `x = 100` is `C'(100) = 2 * 100 + 10 = 210`. Producing the 101st widget will cost approximately $210.
+Suppose the total cost of producing `x` widgets is `C(x) = x^2 + 10x + 50`. The marginal cost at `x = 100` is `C'(100) = 2 * 100 + 10 = 210`, so the 101st widget costs about $210. (The exact cost of that one unit, `C(101) - C(100)`, is $211 — the derivative is the instantaneous rate, a fast and very close estimate.)
 
 The derivative turns a question about totals ("how much does 100 widgets cost?") into a question about rates ("how much does one more cost?"). That translation is the whole point of calculus.
 
@@ -89,7 +89,7 @@ for x in [0, 1, 2, 3, 4]:
 
 ## For builders
 
-Derivatives are not just for math class. They are the engine behind much of modern computing.
+Derivatives are not only for math class. They are the engine behind much of modern computing.
 
 - **Machine learning** - Training a neural network is minimizing a loss function. The gradient of the loss function tells you which direction to nudge the parameters to reduce the loss. That nudge is a derivative.
 - **Physics simulations** - In a game or physics engine, the position of an object changes over time. The velocity is the derivative of position. The acceleration is the derivative of velocity. Simulating motion means integrating these derivatives over time.

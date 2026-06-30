@@ -93,6 +93,9 @@ pub struct GuideSummary {
     /// Optional sub-group within the category for sidebar nesting (e.g. "Java"). None = ungrouped.
     #[serde(default)]
     pub group: Option<String>,
+    /// Most recent `updated` across the guide's phases (ISO date), for recency sorting. "" if none.
+    #[serde(default)]
+    pub updated: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

@@ -13,9 +13,9 @@ updated: 2026-06-28
 
 ## The LEGO brick analogy
 
-Think about building with LEGO. Some bricks are basic: the 1x1, the 2x4, the 2x2. Others are fancy: a wheel, a window, a minifigure head. But every model you build, no matter how complex, is just a combination of those basic bricks.
+Think about building with LEGO. Some bricks are basic: the 1x1, the 2x4, the 2x2. Others are fancy: a wheel, a window, a minifigure head. But every model you build, no matter how complex, is a combination of those basic bricks.
 
-Numbers work the same way. The basic bricks are **prime numbers** - numbers that cannot be broken down into smaller whole-number pieces. Every other number is just a combination of primes, and that combination is unique.
+Numbers work the same way. The basic bricks are **prime numbers** - numbers that cannot be broken down into smaller whole-number pieces. Every other number is a combination of primes, and that combination is unique.
 
 That is not a metaphor. It is a theorem, and it is one of the most useful facts in all of mathematics.
 
@@ -53,7 +53,7 @@ Here is the remarkable part. Take any composite number and break it into primes.
 
 The primes are always two 2s and one 3. The order does not matter. The combination is unique.
 
-This is called the **fundamental theorem of arithmetic**. It means primes are the unique building blocks of the whole numbers. Just as every LEGO model can be taken apart into basic bricks, every number can be factored into primes, and there is only one way to do it.
+This is called the **fundamental theorem of arithmetic**. It means primes are the unique building blocks of the whole numbers. As every LEGO model can be taken apart into basic bricks, every number can be factored into primes, and there is only one way to do it.
 
 That uniqueness is what makes primes useful for cryptography. If a number has only one factorization, then knowing the factors is a very special piece of information.
 
@@ -141,7 +141,7 @@ print("GCD(1071, 462):", gcd(1071, 462))
 
 ## For builders
 
-Primes and GCD are not just school topics. They are the tools that make modern security possible.
+Primes and GCD are not only school topics. They are the tools that make modern security possible.
 
 - **Hashing and checksums** - A good hash function spreads inputs evenly across its output range. Prime-number table sizes help avoid the clustering that causes collisions.
 - **Cryptography** - RSA encryption relies on the fact that multiplying two large primes is fast, but factoring their product back into the original primes is slow. That one-way street is what keeps your data private.

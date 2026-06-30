@@ -96,6 +96,35 @@ Is there even one even number? Yes — `2` works. (So do `0`, `4`, `100`.) You o
 Notice we did *not* check every number. The moment we found `2`, we were done. That "one is enough"
 feeling is the whole personality of `∃`.
 
+## Quantifier scope: how far does the claim reach?
+
+A quantifier's **scope** is the part of the statement it controls. When you write
+`∀x (P(x) → Q(x))`, the quantifier reaches across the whole parentheses. When you
+nest quantifiers, the order changes what's claimed:
+
+```mermaid
+flowchart LR
+    subgraph Outer[∀x outer]
+        subgraph Inner[∃y inner]
+            P[P x y]
+        end
+    end
+    Outer --> Result["For every x, there is SOME y"]
+```
+
+```mermaid
+flowchart LR
+    subgraph Outer2[∃y outer]
+        subgraph Inner2[∀x inner]
+            P2[P x y]
+        end
+    end
+    Outer2 --> Result2["There is ONE y that works for ALL x"]
+```
+
+Same letters, opposite meaning. The outer quantifier sets the rhythm; the inner one
+fills in the detail. Swapping them is not a style choice — it changes the claim.
+
 ## The asymmetry that matters most
 
 Here is the single most useful idea in this entire guide. Read it twice.
@@ -190,6 +219,13 @@ formal claims even are, [What Logic Actually Is](/guides/what-logic-actually-is)
 [Propositional Logic](/guides/propositional-logic) sit underneath everything here. And if the
 symbols still trigger a flinch, [Why Math Isn't Your Enemy](/guides/why-math-isnt-your-enemy)
 is a gentler on-ramp.
+
+## Open-ended exercise
+
+A database query returns 10,000 rows. A teammate says: "All of them have a non-null email
+address." Is this a `∀` claim or an `∃` claim? What would it take to *prove* it versus
+what would it take to *disprove* it? Now suppose the teammate instead says: "At least one
+row has a non-null email address." How does the burden of proof flip?
 
 Quick check before you move on:
 

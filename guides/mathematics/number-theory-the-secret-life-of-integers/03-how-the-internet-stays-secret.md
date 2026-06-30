@@ -35,7 +35,7 @@ The public key is built from two large primes, `p` and `q`, and their product `n
 
 When you send a message to the website:
 1. You look up its public key `(n, e)`.
-2. You encrypt your message using `n` and `e`. The encryption is just modular exponentiation: `ciphertext = message^e mod n`.
+2. You encrypt your message using `n` and `e`. The encryption is modular exponentiation: `ciphertext = message^e mod n`.
 3. The website receives the ciphertext and decrypts it using its private key `d`: `message = ciphertext^d mod n`.
 
 The magic is that anyone can compute step 2, but only someone who knows `d` can reverse it in step 3. And `d` is derived from `p` and `q`, which are hidden inside `n`. Without factoring `n`, you cannot find `d`.
