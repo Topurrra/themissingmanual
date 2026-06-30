@@ -47,7 +47,7 @@
     border-top: 1px solid var(--line);
   }
   .cl-when {
-    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600;
+    font-family: var(--font-mono); font-size: 0.78rem;
     letter-spacing: 0.04em; color: var(--faint); padding-top: 0.2rem;
   }
 
@@ -60,7 +60,7 @@
   /* Tag chip - mono micro-label, fixed width so the text lines up. */
   .cl-tag {
     flex: none; width: 78px; box-sizing: border-box; text-align: center;
-    font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
+    font-family: var(--font-mono); font-size: 0.62rem;
     letter-spacing: 0.08em; text-transform: uppercase;
     padding: 0.22rem 0.5rem; border-radius: 999px;
     position: relative; top: -1px;

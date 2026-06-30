@@ -147,7 +147,7 @@
 <style>
   /* A) FAB - the floating "Rate this page" pill, stacked above the bookmark FAB. */
   .fb-fab {
-    position: fixed; right: 22px; bottom: calc(78px + var(--fab-lift, 0px)); z-index: 55;
+    position: fixed; right: 54px; bottom: calc(78px + var(--fab-lift, 0px)); z-index: 35;
     display: inline-flex; align-items: center;
     height: 46px; padding: 0 13px;
     border: 1px solid var(--line); border-radius: 999px;
