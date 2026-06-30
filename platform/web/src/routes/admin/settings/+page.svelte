@@ -169,6 +169,7 @@
   <h1 class="admin-h1">Settings</h1>
   {#if dirty}<span class="set-dirty">Unsaved changes</span>{/if}
 </div>
+<p class="admin-sub">Site identity, feature flags, lofi music, sponsors, and social links.</p>
 
 <form class="set-form" on:submit|preventDefault={save}>
   <section class="set-group">

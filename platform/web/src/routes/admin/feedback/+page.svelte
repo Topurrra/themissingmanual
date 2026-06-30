@@ -31,6 +31,7 @@
     </div>
   {/if}
 </div>
+<p class="admin-sub">Reader thumbs-up and thumbs-down on each phase, newest first.</p>
 
 <table class="admin-table">
   <thead>

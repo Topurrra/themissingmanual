@@ -62,6 +62,7 @@
     {busy ? 'Re-ingesting…' : 'Re-ingest content'}
   </button>
 </div>
+<p class="admin-sub">Build info, database size, and content maintenance.</p>
 
 {#if note}<p class="admin-ok" aria-live="polite">{note}</p>{/if}
 {#if err}<p class="admin-err" aria-live="assertive">{err}</p>{/if}

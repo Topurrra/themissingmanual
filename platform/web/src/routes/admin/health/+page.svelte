@@ -46,6 +46,7 @@
 <div class="admin-head">
   <h1 class="admin-h1">Content Health</h1>
 </div>
+<p class="admin-sub">Broken links, missing or orphaned assets, and content re-sync.</p>
 
 {#if allHealthy}
   <p class="admin-note hc-ok">Everything looks healthy ✓</p>

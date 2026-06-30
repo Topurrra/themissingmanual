@@ -41,6 +41,7 @@
 <svelte:head><title>Admin · Categories</title></svelte:head>
 
 <h1 class="admin-h1">Categories</h1>
+<p class="admin-sub">Topics that group your guides in the sidebar and on the homepage.</p>
 {#if msg}<p class="admin-ok">{msg}</p>{/if}
 
 <div class="cat-rows">

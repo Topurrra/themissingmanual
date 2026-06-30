@@ -246,6 +246,7 @@
     <button class="admin-btn" on:click={() => (showNew = !showNew)}><i class="ti ti-plus" aria-hidden="true"></i> New topic</button>
   </div>
 </div>
+<p class="admin-sub">Create, edit, publish, and reorder guides.</p>
 
 {#if showNew}
   <form method="POST" action="?/create" use:enhance class="new-topic">

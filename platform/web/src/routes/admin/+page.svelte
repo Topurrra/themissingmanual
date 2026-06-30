@@ -6,6 +6,7 @@
 <svelte:head><title>Admin · Dashboard</title></svelte:head>
 
 <h1 class="admin-h1">Dashboard</h1>
+<p class="admin-sub">Your library at a glance — what's live, what's in progress, and what changed recently.</p>
 <div class="metrics">
   <div class="metric"><span class="metric-k">Live</span><span class="metric-n">{published}</span><span class="metric-l">Published</span></div>
   <div class="metric"><span class="metric-k">In progress</span><span class="metric-n">{drafts}</span><span class="metric-l">Drafts</span></div>

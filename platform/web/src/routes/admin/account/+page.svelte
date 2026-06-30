@@ -38,6 +38,7 @@
 <svelte:head><title>Admin · Account</title></svelte:head>
 
 <h1 class="admin-h1">Account</h1>
+<p class="admin-sub">Change your admin password.</p>
 
 <form class="acct-form" on:submit|preventDefault={changePassword}>
   <h2 class="admin-h2">Change password</h2>
