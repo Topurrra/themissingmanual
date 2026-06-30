@@ -41,6 +41,10 @@ services:
       # Must match the URL in the browser, or logins/forms get 403. Override for
       # production, e.g. ORIGIN=https://your-domain.
       ORIGIN: ${ORIGIN:-http://localhost:5173}
+      # Public site URL for SEO: canonical <link> tags and JSON-LD URLs read this
+      # ($env/dynamic/public, runtime). Unset, they fall back to the request origin,
+      # which behind Cloudflare can be an internal host. Set in .env for production.
+      PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-}
       # adapter-node caps request bodies at 512KB by default, which 500s any
       # audio upload (the admin asset proxy buffers the whole body). Raise it
       # above the API's asset limit (~21 MiB) so music uploads go through.
