@@ -61,6 +61,7 @@
 
   // ---- Selection (tracked by slug, across the whole filtered set) ----
   let selected = new Set();
+  let bulkConfirm = false; // inline "confirm delete" armed state for the bulk bar
   $: filteredSlugs = filtered.map((g) => g.slug);
   // Drop selections that fall out of the current filtered view.
   $: if (filteredSlugs) {
@@ -111,8 +112,7 @@
   }
 
   function bulkDelete() {
-    const n = selected.size;
-    if (!confirm(`Delete ${n} topic${n === 1 ? '' : 's'}? This cannot be undone.`)) return;
+    bulkConfirm = false;
     runBulk('delete');
   }
 
@@ -332,7 +332,12 @@
       </select>
       <button class="admin-btn sm" on:click={() => runBulk('difficulty', bulkDifficulty)} disabled={busy}>Set</button>
     </label>
-    <button class="admin-btn sm danger" on:click={bulkDelete} disabled={busy}>Delete</button>
+    {#if bulkConfirm}
+      <button class="admin-btn sm danger" on:click={bulkDelete} disabled={busy}>Confirm delete {selectedCount}</button>
+      <button class="admin-btn sm" on:click={() => (bulkConfirm = false)} disabled={busy}>Cancel</button>
+    {:else}
+      <button class="admin-btn sm danger" on:click={() => (bulkConfirm = true)} disabled={busy}>Delete</button>
+    {/if}
   </div>
 {/if}
 

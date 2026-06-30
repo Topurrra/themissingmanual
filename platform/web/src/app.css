@@ -1406,6 +1406,8 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .ed-phase.on { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
 .ed-del { background: none; border: 0; color: var(--faint); cursor: pointer; padding: 2px; }
 .ed-del:hover { color: var(--danger); }
+.ed-del-confirm { font-size: 0.7rem; font-weight: 600; color: var(--danger); padding: 2px 5px; }
+.ed-rev-confirm { display: inline-flex; gap: 0.4rem; }
 .ed-phase-meta { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
 .ed-phase-meta input { flex: 1; padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 7px; font: inherit; background: var(--bg); color: var(--ink); }
 .ed-toolbar { display: flex; align-items: center; gap: 0.3rem; padding: 0.4rem 0; border-bottom: 1px solid var(--line); margin-bottom: 0.6rem; flex-wrap: wrap; }

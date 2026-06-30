@@ -76,9 +76,10 @@
       phaseMsg = e.message;
     }
   }
+  let confirmDelPhase = null; // phase_no awaiting inline delete confirmation
   async function removePhase(no) {
-    if (!confirm('Delete this phase?')) return;
     await adminDelete(`/guides/${guide.slug}/phases/${no}`);
+    confirmDelPhase = null;
     if (current && current.phase_no === no) current = null;
     await invalidateAll();
   }
@@ -201,9 +202,10 @@
     return isNaN(d) ? s : d.toLocaleString();
   }
 
+  let confirmRevert = false; // inline "confirm revert" armed state
   async function revertTo(id) {
     if (reverting) return;
-    if (!confirm('Revert the phase to this revision? Your current unsaved working copy will be replaced.')) return;
+    confirmRevert = false;
     reverting = true;
     selectedMsg = 'Reverting…';
     try {
@@ -269,7 +271,12 @@
           <button class="ed-phase" class:on={current && current.phase_no === p.phase_no} on:click={() => openPhase(p.phase_no)}>
             {p.phase_no === 0 ? 'Overview' : `${p.phase_no} · ${p.title}`}
           </button>
-          <button class="ed-del" on:click={() => removePhase(p.phase_no)} aria-label="Delete phase"><i class="ti ti-x" aria-hidden="true"></i></button>
+          {#if confirmDelPhase === p.phase_no}
+            <button class="ed-del ed-del-confirm" on:click={() => removePhase(p.phase_no)} aria-label="Confirm delete phase">Delete?</button>
+            <button class="ed-del" on:click={() => (confirmDelPhase = null)} aria-label="Cancel"><i class="ti ti-x" aria-hidden="true"></i></button>
+          {:else}
+            <button class="ed-del" on:click={() => (confirmDelPhase = p.phase_no)} aria-label="Delete phase"><i class="ti ti-trash" aria-hidden="true"></i></button>
+          {/if}
         </li>
       {:else}
         <li class="admin-empty">No phases yet.</li>
@@ -350,9 +357,16 @@
                     <div class="ed-rev-title">{selected.title || 'Untitled'}</div>
                     <div class="ed-rev-date">{fmtDate(selected.created_at)}</div>
                   </div>
-                  <button class="admin-btn sm danger" on:click={() => revertTo(selected.id)} disabled={reverting}>
-                    Revert to this revision
-                  </button>
+                  {#if confirmRevert}
+                    <span class="ed-rev-confirm">
+                      <button class="admin-btn sm danger" on:click={() => revertTo(selected.id)} disabled={reverting}>Confirm revert</button>
+                      <button class="admin-btn sm" on:click={() => (confirmRevert = false)} disabled={reverting}>Cancel</button>
+                    </span>
+                  {:else}
+                    <button class="admin-btn sm danger" on:click={() => (confirmRevert = true)} disabled={reverting}>
+                      Revert to this revision
+                    </button>
+                  {/if}
                 </header>
                 {#if selectedMsg}<p class="ed-hist-msg">{selectedMsg}</p>{/if}
                 <p class="ed-diff-hint">Changes from this revision to the current working copy:</p>

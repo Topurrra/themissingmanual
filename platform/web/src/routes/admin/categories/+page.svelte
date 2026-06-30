@@ -5,6 +5,7 @@
   $: ({ categories } = data);
 
   let msg = '';
+  let confirmSlug = null; // category slug awaiting inline delete confirmation
   let neu = { slug: '', name: '', icon: 'ti-folder', blurb: '' };
 
   async function save(c) {
@@ -27,10 +28,10 @@
     }
   }
   async function del(slug) {
-    if (!confirm(`Delete category "${slug}"?`)) return;
     msg = '';
     try {
       await adminDelete(`/categories/${slug}`);
+      confirmSlug = null;
       await invalidateAll();
     } catch (e) {
       msg = e.message;
@@ -55,7 +56,12 @@
       </div>
       <span class="cat-slug">{c.slug}</span>
       <button class="admin-btn sm" on:click={() => save(c)}>Save</button>
-      <button class="admin-btn sm danger" on:click={() => del(c.slug)} aria-label="Delete"><i class="ti ti-trash" aria-hidden="true"></i></button>
+      {#if confirmSlug === c.slug}
+        <button class="admin-btn sm danger" on:click={() => del(c.slug)}>Delete?</button>
+        <button class="admin-btn sm" on:click={() => (confirmSlug = null)}>Cancel</button>
+      {:else}
+        <button class="admin-btn sm danger" on:click={() => (confirmSlug = c.slug)} aria-label="Delete category"><i class="ti ti-trash" aria-hidden="true"></i></button>
+      {/if}
     </div>
   {/each}
 </div>
