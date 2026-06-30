@@ -1,6 +1,7 @@
 <script>
   import { goto } from '$app/navigation';
   import { guardSearchSubmit } from '$lib/search.js';
+  import { CHEATSHEETS } from '$lib/cheatsheets.js';
 
   let q = '';
   let hits = []; // top guide/phase hits from the search API
@@ -10,8 +11,43 @@
   let wrapEl;
   let formEl;
 
-  // Show at most 3 instant options under the field.
-  $: shown = hits.slice(0, 3);
+  // Cheat-sheet hits for the typeahead. A command match (e.g. "git init")
+  // deep-links to that command via ?q=; a tool-name match (e.g. "docker")
+  // opens the whole sheet via ?tool=. Mirrors the ⌘K palette's ranking.
+  function cheatHitsFor(ql) {
+    if (!ql) return [];
+    const out = [];
+    for (const s of CHEATSHEETS) {
+      const id = s.id, name = s.name.toLowerCase();
+      let toolScore = 0;
+      if (id === ql || name === ql) toolScore = 100;
+      else if (id.startsWith(ql) || name.startsWith(ql)) toolScore = 80;
+      else if (`${name} ${id}`.includes(ql)) toolScore = 55;
+      let cmd = null, cmdScore = 0;
+      for (const c of s.commands) {
+        const cl = c.cmd.toLowerCase();
+        const sc = cl === ql ? 95 : cl.startsWith(ql) ? 70 : cl.includes(ql) ? 50 : 0;
+        if (sc > cmdScore) { cmdScore = sc; cmd = c; }
+      }
+      if (!toolScore && !cmdScore) continue;
+      if (cmd && cmdScore >= toolScore) {
+        out.push({ kind: 'cheat', score: cmdScore, icon: s.icon, title: cmd.cmd,
+          sub: `${s.name} · ${cmd.desc}`, url: `/cheat-sheet?q=${encodeURIComponent(cmd.cmd)}` });
+      } else {
+        out.push({ kind: 'cheat', score: toolScore, icon: s.icon, title: `${s.name} cheat sheet`,
+          sub: s.blurb, url: `/cheat-sheet?tool=${s.id}` });
+      }
+    }
+    return out.sort((a, b) => b.score - a.score).slice(0, 2);
+  }
+
+  // Up to 2 high-intent cheat hits first, then up to 3 guide hits.
+  $: cheatRows = cheatHitsFor(q.trim().toLowerCase());
+  $: guideRows = hits.slice(0, 3).map((h) => ({
+    kind: 'guide', icon: 'ti-file-text', title: h.title, snippet: h.snippet,
+    url: `/guides/${h.guide_slug}/${h.phase_no}`
+  }));
+  $: shown = [...cheatRows, ...guideRows].slice(0, 5);
   $: showDropdown = open && q.trim().length > 0;
 
   async function runSearch(query) {
@@ -34,9 +70,9 @@
 
   function close() { open = false; active = -1; }
 
-  function go(hit) {
+  function go(item) {
     close();
-    goto(`/guides/${hit.guide_slug}/${hit.phase_no}`);
+    goto(item.url);
   }
 
   // Full results page — what Enter / the Search button has always done.
@@ -111,11 +147,13 @@
               on:mousemove={() => (active = i)}
               on:mousedown|preventDefault={() => go(h)}
             >
-              <i class="ti ti-file-text" aria-hidden="true"></i>
+              <i class="ti {h.icon}" aria-hidden="true"></i>
               <span class="th-body">
                 <span class="th-title">{h.title}</span>
-                {#if h.snippet}<span class="th-snippet">{@html h.snippet}</span>{/if}
+                {#if h.kind === 'cheat'}<span class="th-snippet th-cheat">{h.sub}</span>
+                {:else if h.snippet}<span class="th-snippet">{@html h.snippet}</span>{/if}
               </span>
+              {#if h.kind === 'cheat'}<span class="th-tag">cheat</span>{/if}
             </button>
           {/each}
         {:else}
@@ -189,6 +227,13 @@
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .th-snippet :global(mark) { background: var(--accent-tint); color: var(--accent-strong); padding: 0 1px; border-radius: 2px; }
+  .typeahead-hit .th-title { font-family: inherit; }
+  .th-tag {
+    flex: none; margin-left: auto; align-self: center;
+    font-size: 0.62rem; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-tint);
+    padding: 1px 6px; border-radius: 999px;
+  }
 
   .typeahead-all {
     margin-top: 1px;

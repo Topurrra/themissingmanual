@@ -96,7 +96,7 @@ async fn lists_categories_with_counts() {
     assert_eq!(res.status(), StatusCode::OK);
     let bytes = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
     let cats: Vec<Category> = serde_json::from_slice(&bytes).unwrap();
-    assert_eq!(cats.len(), 18);
+    assert_eq!(cats.len(), 25); // DEFS taxonomy count (see categories.rs)
     assert!(cats.iter().find(|c| c.slug == "version-control").unwrap().count >= 1);
 }
 
@@ -436,8 +436,9 @@ async fn rss_feed_lists_published_guides() {
     );
     let bytes = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
     let xml = String::from_utf8(bytes.to_vec()).unwrap();
-    assert!(xml.contains("<rss version=\"2.0\">"));
+    assert!(xml.contains("<rss version=\"2.0\""));
     assert!(xml.contains("/guides/git-explained-like-a-human"));
+    assert!(xml.contains("<pubDate>")); // feed carries dates now
 }
 
 // ===== admin console — first wave (bulk · settings · feedback · status · backlog) =====

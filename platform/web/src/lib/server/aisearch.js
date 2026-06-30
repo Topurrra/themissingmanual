@@ -292,13 +292,16 @@ export async function ask(query, { titleMap } = {}) {
 
   // chat/completions returns chunks at top level; /search nests them under result.
   const chunks = (c.generate ? j?.chunks : j?.result?.chunks) || [];
-  const seen = new Set();
+  // Dedup by GUIDE slug, not by file key: Cloudflare returns chunks in relevance
+  // order and several can come from different phases of the same guide. Keep the
+  // top-ranked chunk per guide so each guide appears once.
+  const seenSlug = new Set();
   const sources = [];
   for (const ch of chunks) {
-    const k = ch?.item?.key;
-    if (!k || seen.has(k)) continue;
-    seen.add(k);
-    sources.push(keyToSource(k, titleMap));
+    const src = keyToSource(ch?.item?.key, titleMap);
+    if (!src.slug || seenSlug.has(src.slug)) continue;
+    seenSlug.add(src.slug);
+    sources.push(src);
   }
 
   let data;
@@ -306,10 +309,16 @@ export async function ask(query, { titleMap } = {}) {
     const answer = rewriteAnswerLinks(j?.choices?.[0]?.message?.content || '');
     data = { enabled: true, mode: 'answer', answer, sources: sources.slice(0, 6) };
   } else {
-    const results = chunks
-      .map((ch) => ({ text: cleanSnippet(ch?.text), ...keyToSource(ch?.item?.key, titleMap) }))
-      .filter((r) => r.text)
-      .slice(0, 6);
+    const seenR = new Set();
+    const results = [];
+    for (const ch of chunks) {
+      const src = keyToSource(ch?.item?.key, titleMap);
+      const text = cleanSnippet(ch?.text);
+      if (!text || !src.slug || seenR.has(src.slug)) continue;
+      seenR.add(src.slug);
+      results.push({ text, ...src });
+      if (results.length >= 6) break;
+    }
     data = { enabled: true, mode: 'search', results, sources: sources.slice(0, 6) };
   }
   cacheSet(key, data);

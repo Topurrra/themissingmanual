@@ -31,6 +31,27 @@
                 return { content: [{ type: 'text', text: '[]' }], isError: true };
               }
             }
+          },
+          {
+            name: 'read_guide',
+            description:
+              'Fetch the full Markdown of a Missing Manual guide or phase by its URL (use a URL returned by search_guides).',
+            inputSchema: {
+              type: 'object',
+              properties: { url: { type: 'string', description: 'A /guides/... path or full URL' } },
+              required: ['url']
+            },
+            async execute({ url }) {
+              try {
+                const u = String(url || '');
+                const target = u.startsWith('http') ? u : location.origin + u;
+                const res = await fetch(target, { headers: { Accept: 'text/markdown' } });
+                const text = res.ok ? await res.text() : '';
+                return { content: [{ type: 'text', text: text || 'Guide not found.' }] };
+              } catch (e) {
+                return { content: [{ type: 'text', text: 'Error fetching guide.' }], isError: true };
+              }
+            }
           }
         ]
       });

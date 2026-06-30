@@ -1,5 +1,26 @@
 <script>
   import glossary from '$lib/glossary.json';
+  import Seo from '$lib/Seo.svelte';
+  import { page } from '$app/stores';
+  import { siteOrigin } from '$lib/site.js';
+
+  // DefinedTermSet: the canonical schema for a glossary. Lets AI answer engines
+  // and search treat each term as a defined entity sourced here, linked to the
+  // guide it comes from. ponytail: emits every definition once more as JSON-LD —
+  // acceptable on this one reference page; trim to name+url if payload bites.
+  $: origin = siteOrigin($page.url.origin);
+  $: termSet = {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTermSet',
+    name: 'The Missing Manual Glossary',
+    url: `${origin}/glossary`,
+    hasDefinedTerm: glossary.map((e) => ({
+      '@type': 'DefinedTerm',
+      name: e.term,
+      description: e.def,
+      url: `${origin}/guides/${e.guide}`
+    }))
+  };
 
   let q = '';
   $: needle = q.trim().toLowerCase();
@@ -19,7 +40,10 @@
   const pretty = (s) => s.replace(/-/g, ' ');
 </script>
 
-<svelte:head><title>Glossary — The Missing Manual</title></svelte:head>
+<Seo
+  title="Glossary — The Missing Manual"
+  description="Plain-language definitions for the developer terms used across The Missing Manual guides."
+  jsonld={termSet} />
 
 <header class="gloss-intro">
   <span class="eyebrow">Reference</span>

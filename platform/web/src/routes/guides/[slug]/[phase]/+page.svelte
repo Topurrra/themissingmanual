@@ -78,6 +78,10 @@
 </div>
 <div style="margin: 0.1rem 0 1.2rem;"><Freshness date={phase.updated} /></div>
 
+{#key `${phase.guide_slug}/${phase.phase_no}`}
+  <ReaderTTS />
+{/key}
+
 <article class="reader" class:has-phasenav={hasFooterNav}>
   {@html phase.html}
 
@@ -125,7 +129,6 @@
   <ReaderTools />
   <Glossary />
   <Playgrounds />
-  <ReaderTTS />
   {#if mermaidOn}<Mermaid />{/if}
   {#if runnableOn}<RunnableCode />{/if}
 {/key}

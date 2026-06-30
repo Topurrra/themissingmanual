@@ -28,6 +28,14 @@ export async function GET({ fetch, url }) {
     out += '\n';
   }
 
+  out +=
+    '## Reference\n' +
+    `- [Cheat Sheet](${origin}/cheat-sheet): copy-paste command reference for Git, Bash, Docker, SQL, regex, jq, and more.\n` +
+    `- [Glossary](${origin}/glossary): plain-language definitions of the terms used across the guides.\n\n` +
+    '## For agents\n' +
+    'Every guide page is also available as clean Markdown via the `Accept: text/markdown` header.\n' +
+    `MCP server (Streamable HTTP, read-only): \`${origin}/mcp\` — tools: search_guides, read_guide.\n\n`;
+
   return new Response(out, {
     headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'max-age=3600' }
   });

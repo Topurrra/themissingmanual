@@ -70,6 +70,134 @@
   --shadow-pop: 0 16px 48px -12px rgba(0, 0, 0, 0.6);
 }
 
+/* Named themes. Light-mode themes inherit :root for unset tokens; dark-mode
+   themes (data-mode="dark") must set the full set. The dark-specific polish
+   (icon swap, button hovers) keys off data-mode, not data-theme. */
+:root[data-theme="sepia"] {
+  --bg: #f4ecd8;
+  --surface: #ece2c9;
+  --raise: #fbf5e7;
+  --ink: #3a3322;
+  --body: #574b34;
+  --muted: #7a6c4f;
+  --faint: #a08e6c;
+  --line: #e0d4b8;
+  --line-soft: #ebe0c6;
+  --accent: #b06a2c;
+  --accent-strong: #8a4f1c;
+  --accent-tint: rgba(176, 106, 44, 0.12);
+  --accent-tint-2: rgba(176, 106, 44, 0.06);
+  --warn-bg: #ece0c0;
+  --code-bg: #2c2718;
+  --code-fg: #ece2c9;
+}
+
+:root[data-theme="nord"] {
+  --bg: #2e3440;
+  --surface: #3b4252;
+  --raise: #353c4a;
+  --ink: #eceff4;
+  --body: #d8dee9;
+  --muted: #a3acc0;
+  --faint: #727c92;
+  --line: #434c5e;
+  --line-soft: #3b4252;
+  --accent: #88c0d0;
+  --accent-strong: #8fbcbb;
+  --accent-tint: rgba(136, 192, 208, 0.16);
+  --accent-tint-2: rgba(136, 192, 208, 0.07);
+  --danger: #bf616a;
+  --danger-strong: #d08770;
+  --warn: #ebcb8b;
+  --warn-bg: #3a3724;
+  --code-bg: #2b303b;
+  --code-fg: #e5e9f0;
+  --shadow-md: 0 6px 24px -8px rgba(0, 0, 0, 0.5);
+  --shadow-pop: 0 16px 48px -12px rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="dracula"] {
+  --bg: #282a36;
+  --surface: #343746;
+  --raise: #2d3040;
+  --ink: #f8f8f2;
+  --body: #e2e2ee;
+  --muted: #abb0ce;
+  --faint: #6272a4;
+  --line: #44475a;
+  --line-soft: #383b4a;
+  --accent: #bd93f9;
+  --accent-strong: #d6b3ff;
+  --accent-tint: rgba(189, 147, 249, 0.18);
+  --accent-tint-2: rgba(189, 147, 249, 0.08);
+  --danger: #ff5555;
+  --danger-strong: #ff7b7b;
+  --warn: #f1fa8c;
+  --warn-bg: #3b3b22;
+  --code-bg: #21222c;
+  --code-fg: #f8f8f2;
+  --shadow-md: 0 6px 24px -8px rgba(0, 0, 0, 0.55);
+  --shadow-pop: 0 16px 48px -12px rgba(0, 0, 0, 0.65);
+}
+
+:root[data-theme="contrast"] {
+  --bg: #ffffff;
+  --surface: #f2f2f2;
+  --raise: #ffffff;
+  --ink: #000000;
+  --body: #161616;
+  --muted: #2b2b2b;
+  --faint: #444444;
+  --line: #1a1a1a;
+  --line-soft: #555555;
+  --accent: #0a5560;
+  --accent-strong: #063d45;
+  --accent-tint: rgba(10, 85, 96, 0.14);
+  --accent-tint-2: rgba(10, 85, 96, 0.07);
+  --danger: #9e0000;
+  --danger-strong: #7a0000;
+  --warn: #6b5200;
+  --warn-bg: #f0e6c8;
+  --code-bg: #000000;
+  --code-fg: #ffffff;
+}
+
+:root[data-theme="contrast-dark"] {
+  --bg: #000000;
+  --surface: #0c0c0c;
+  --raise: #000000;
+  --ink: #ffffff;
+  --body: #f2f2f2;
+  --muted: #d2d2d2;
+  --faint: #a6a6a6;
+  --line: #e0e0e0;
+  --line-soft: #6a6a6a;
+  --accent: #5fd0e0;
+  --accent-strong: #9fe8f4;
+  --accent-tint: rgba(95, 208, 224, 0.18);
+  --accent-tint-2: rgba(95, 208, 224, 0.08);
+  --danger: #ff6b6b;
+  --danger-strong: #ff9a9a;
+  --warn: #ffd24a;
+  --warn-bg: #2a2410;
+  --code-bg: #000000;
+  --code-fg: #ffffff;
+  --shadow-md: 0 6px 24px -8px rgba(0, 0, 0, 0.7);
+  --shadow-pop: 0 16px 48px -12px rgba(0, 0, 0, 0.8);
+}
+
+/* Scrollbars — subtle, themed (track transparent, thin rounded thumb that uses
+   the theme's line/faint tokens, so it adapts to every theme). */
+html { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--line); border-radius: 999px;
+  border: 3px solid transparent; background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--faint); }
+::-webkit-scrollbar-corner { background: transparent; }
+
 * { box-sizing: border-box; }
 
 html {
@@ -296,6 +424,28 @@ p { margin: 1rem 0; }
   animation: pop 0.16s var(--ease-out);
 }
 @keyframes pop { from { opacity: 0; transform: scale(0.96) translateY(-4px); } to { opacity: 1; transform: none; } }
+
+/* Settings drawer — slides in from the right, smooth like the sidebar collapse. */
+.settings-scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.28); border: 0; z-index: 60; opacity: 0; animation: scrim-in 0.2s var(--ease) forwards; cursor: default; }
+@keyframes scrim-in { to { opacity: 1; } }
+.settings-drawer {
+  position: fixed; top: 0; right: 0; height: 100%; width: 340px; max-width: 88vw; z-index: 61;
+  background: var(--raise); border-left: 1px solid var(--line); box-shadow: var(--shadow-pop);
+  padding: 1.1rem 1.2rem 2rem; overflow-y: auto;
+  transform: translateX(100%); animation: drawer-in 0.26s var(--ease-out) forwards;
+}
+@keyframes drawer-in { to { transform: translateX(0); } }
+.settings-drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
+.settings-drawer-head h2 { margin: 0; font-size: 1.05rem; font-family: var(--font-display); }
+.settings-x { background: none; border: 0; color: var(--faint); cursor: pointer; width: 30px; height: 30px; border-radius: 8px; display: inline-grid; place-items: center; }
+.settings-x:hover { background: var(--surface); color: var(--ink); }
+.settings-x .ti { font-size: 18px; }
+.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.theme-opt { display: flex; align-items: center; gap: 0.55rem; cursor: pointer; font: inherit; font-size: 0.85rem; color: var(--body); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 0.5rem 0.6rem; transition: border-color 0.15s var(--ease); }
+.theme-opt:hover { border-color: var(--accent); }
+.theme-opt.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.theme-sw { width: 26px; height: 18px; border-radius: 5px; border: 1px solid var(--line); flex: none; display: inline-grid; place-items: center; }
+.theme-dot { width: 8px; height: 8px; border-radius: 999px; }
 .settings-label { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin: 0 0 0.6rem; }
 .settings-hint { font-size: 0.76rem; color: var(--muted); margin: 0.4rem 0 0; line-height: 1.4; }
 .seg { display: flex; gap: 4px; background: var(--surface); padding: 4px; border-radius: 10px; }
@@ -330,8 +480,8 @@ p { margin: 1rem 0; }
 .font-opt.on .fo-vibe { color: var(--accent); }
 
 /* theme quick-toggle icons */
-:root:not([data-theme="dark"]) .icon-sun { display: none; }
-:root[data-theme="dark"] .icon-moon { display: none; }
+:root:not([data-mode="dark"]) .icon-sun { display: none; }
+:root[data-mode="dark"] .icon-moon { display: none; }
 
 /* reading progress bar (guide pages) */
 .progress {
@@ -561,10 +711,10 @@ a.rail-back:hover { color: var(--accent); }
    so filled buttons would lighten on hover and wash out their white label. Darken
    instead, keeping white text readable. Covers the public filled CTAs/buttons.
    (Global rules beat the components' scoped :hover via higher specificity.) */
-:root[data-theme="dark"] .cta-primary:hover,
-:root[data-theme="dark"] .build-btn:hover,
-:root[data-theme="dark"] .tr-start:hover:not(:disabled),
-:root[data-theme="dark"] .admin-btn.primary:hover {
+:root[data-mode="dark"] .cta-primary:hover,
+:root[data-mode="dark"] .build-btn:hover,
+:root[data-mode="dark"] .tr-start:hover:not(:disabled),
+:root[data-mode="dark"] .admin-btn.primary:hover {
   background: #3f8389;
   color: #fff;
 }
@@ -771,7 +921,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
    Resume reading — save-your-place bookmark (reader pages)
    --------------------------------------------------------------------------- */
 .read-fab {
-  position: fixed; right: 22px; bottom: 22px; z-index: 55;
+  position: fixed; right: 22px; bottom: calc(22px + var(--fab-lift, 0px)); z-index: 55;
   display: inline-flex; align-items: center;
   height: 46px; padding: 0 13px;
   border: 1px solid var(--line); border-radius: 999px;
@@ -898,7 +1048,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .spon-sep { color: var(--faint); font-size: 0.85rem; }
 /* "IT" green — readable on light footer; brightened in dark. Not the teal --accent. */
 .spon-name .spon-it { color: #2e9e4f; }
-:root[data-theme="dark"] .spon-name .spon-it { color: #45c46a; }
+:root[data-mode="dark"] .spon-name .spon-it { color: #45c46a; }
 /* "X" fire — red→orange gradient clipped to the glyph, solid fallback first. */
 .spon-name .spon-x {
   color: #ff5722; /* fallback for no background-clip support */

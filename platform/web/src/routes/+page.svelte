@@ -9,11 +9,22 @@
 
   export let data;
   $: origin = siteOrigin($page.url.origin);
-  $: homeLd = {
-    '@context': 'https://schema.org', '@type': 'WebSite',
-    name: 'The Missing Manual', url: origin,
-    description: 'Free, in-depth guides to how software really works.'
-  };
+  $: homeLd = [
+    {
+      '@context': 'https://schema.org', '@type': 'WebSite',
+      name: 'The Missing Manual', url: origin,
+      description: 'Free, in-depth guides to how software really works.',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: { '@type': 'EntryPoint', urlTemplate: `${origin}/search?q={search_term_string}` },
+        'query-input': 'required name=search_term_string'
+      }
+    },
+    {
+      '@context': 'https://schema.org', '@type': 'Organization',
+      name: 'The Missing Manual', url: origin, logo: `${origin}/icon-256.png`
+    }
+  ];
   $: ({ categories, recent, guides } = data);
   $: iconFor = Object.fromEntries(categories.map((c) => [c.slug, c.icon]));
 
@@ -100,6 +111,7 @@
       <a class="cta-primary" href="/paths">Start learning →</a>
     {/if}
     <a class="cta-secondary" href="#topics">Browse topics</a>
+    <a class="cta-secondary" href="/cheat-sheet">Cheat sheets</a>
   </div>
   <div class="hero-stats">
     <span><b>{totalGuides}</b> guide{totalGuides === 1 ? '' : 's'}</span>

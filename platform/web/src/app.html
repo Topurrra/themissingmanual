@@ -23,11 +23,14 @@
       // Restore theme + font before first paint (no flash of wrong theme/font).
       (function () {
         try {
+          var DARK = { dark: 1, nord: 1, dracula: 1, 'contrast-dark': 1 };
+          var VALID = { light: 1, dark: 1, sepia: 1, nord: 1, dracula: 1, contrast: 1, 'contrast-dark': 1 };
           var t = localStorage.getItem('tmm-theme');
-          if (t !== 'dark' && t !== 'light') {
+          if (!VALID[t]) {
             t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           }
           document.documentElement.dataset.theme = t;
+          document.documentElement.dataset.mode = DARK[t] ? 'dark' : 'light';
           var f = localStorage.getItem('tmm-font');
           if (f) {
             var stack = '"' + f + '", system-ui, -apple-system, "Segoe UI", sans-serif';

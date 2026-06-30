@@ -1,6 +1,7 @@
 <script>
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
+  import { CHEATSHEETS } from '$lib/cheatsheets.js';
 
   export let nav = []; // [{ slug, name, icon, guides: [] }]
 
@@ -18,8 +19,28 @@
     { title: 'Home', type: 'Page', icon: 'ti-home', url: '/' },
     { title: 'About', type: 'Page', icon: 'ti-info-circle', url: '/about' },
     { title: 'Contribute', type: 'Page', icon: 'ti-pencil', url: '/contribute' },
+    { title: 'Cheat Sheet', type: 'Page', icon: 'ti-terminal-2', url: '/cheat-sheet' },
     { title: 'Subscribe via RSS', type: 'Page', icon: 'ti-rss', url: '/rss.xml', external: true }
   ];
+
+  // Cheat-sheet tools, indexed for ranked matching: tool name/id beats a command
+  // name beats deep description text (so "tar" finds tar, not "start"/"restart").
+  const CHEAT_INDEX = CHEATSHEETS.map((s) => ({
+    id: s.id,
+    name: s.name,
+    icon: s.icon,
+    nme: (s.name + ' ' + s.id).toLowerCase(),
+    cmds: s.commands.map((c) => c.cmd.toLowerCase()),
+    hay: (s.blurb + ' ' + s.commands.map((c) => `${c.desc} ${c.example}`).join(' ')).toLowerCase()
+  }));
+  function cheatScore(t, ql) {
+    if (t.id === ql || t.name.toLowerCase() === ql) return 100;
+    if (t.id.startsWith(ql) || t.name.toLowerCase().startsWith(ql)) return 80;
+    if (t.nme.includes(ql)) return 60;
+    if (t.cmds.some((c) => c.includes(ql))) return 40;
+    if (t.hay.includes(ql)) return 15;
+    return 0;
+  }
 
   function matches(text, query) {
     if (!query) return true;
@@ -39,6 +60,22 @@
       group: 'Topics'
     }));
   $: pages = PAGES.filter((p) => matches(p.title, q)).map((p) => ({ ...p, group: 'Pages' }));
+  // Cheat-sheet tools surface on any query that matches a tool name or a command.
+  $: cheatHits = (() => {
+    const ql = q.trim().toLowerCase();
+    if (!ql) return [];
+    return CHEAT_INDEX.map((t) => ({ t, s: cheatScore(t, ql) }))
+      .filter((x) => x.s > 0)
+      .sort((a, b) => b.s - a.s)
+      .slice(0, 5)
+      .map(({ t }) => ({
+        title: `${t.name} cheat sheet`,
+        type: 'Cheat',
+        icon: t.icon,
+        url: `/cheat-sheet?tool=${t.id}`,
+        group: 'Cheat Sheet'
+      }));
+  })();
   $: guideHits = live.map((h) => ({
     title: h.title,
     type: 'Guide',
@@ -46,7 +83,7 @@
     url: `/guides/${h.guide_slug}/${h.phase_no}`,
     group: 'Guides'
   }));
-  $: items = [...guideHits, ...topics, ...pages];
+  $: items = [...guideHits, ...cheatHits, ...topics, ...pages];
   $: if (active >= items.length) active = Math.max(0, items.length - 1);
 
   // grouped view for rendering (keeps the flat index in `items`)

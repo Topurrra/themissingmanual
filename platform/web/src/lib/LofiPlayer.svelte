@@ -186,158 +186,78 @@
   ></audio>
 {/if}
 
-{#if enabled}
-  <div class="lofi-wrap">
-    <button
-      class="icon-btn lofi-trigger"
-      class:on={playing}
-      on:click={() => (open = !open)}
-      aria-label="Lofi player"
-      aria-expanded={open}
-      title="Lofi player"
-    >
-      <i class="ti ti-music" aria-hidden="true"></i>
-      {#if playing}<span class="lofi-dot" aria-hidden="true"></span>{/if}
+{#if enabled && hasTracks}
+  <div class="lofi-bar" role="group" aria-label="Lofi player">
+    <button class="lofi-ib lofi-adv" class:on={shuffle} on:click={toggleShuffle} aria-label="Shuffle" title="Shuffle">
+      <i class="ti ti-arrows-shuffle" aria-hidden="true"></i>
     </button>
-
-    {#if open}
-      <button class="pop-backdrop" tabindex="-1" aria-hidden="true" on:click={() => (open = false)}></button>
-      <div class="settings-pop lofi-pop" role="dialog" aria-label="Lofi player">
-        <div class="lofi-head">
-          <p class="settings-label" style="margin:0">Lofi player</p>
-          <button class="lofi-x" on:click={quickHide} aria-label="Hide player" title="Hide player">
-            <i class="ti ti-x" aria-hidden="true"></i>
-          </button>
-        </div>
-
-        {#if hasTracks}
-          <div class="lofi-now" aria-live="polite">
-            <span class="lofi-title">{track.title}</span>
-            <span class="lofi-artist">{track.artist}</span>
-          </div>
-
-          <div class="lofi-transport">
-            <button class="lofi-btn" on:click={toggleShuffle} aria-label="Shuffle" title="Shuffle" class:on={shuffle}>
-              <i class="ti ti-arrows-shuffle" aria-hidden="true"></i>
-            </button>
-            <button class="lofi-btn" on:click={prev} aria-label="Previous track" title="Previous">
-              <i class="ti ti-player-skip-back" aria-hidden="true"></i>
-            </button>
-            <button class="lofi-btn lofi-play" on:click={toggle}
-              aria-label={playing ? 'Pause' : 'Play'} aria-pressed={playing} title={playing ? 'Pause' : 'Play'}>
-              <i class={`ti ${playing ? 'ti-player-pause' : 'ti-player-play'}`} aria-hidden="true"></i>
-            </button>
-            <button class="lofi-btn" on:click={next} aria-label="Next track" title="Next">
-              <i class="ti ti-player-skip-forward" aria-hidden="true"></i>
-            </button>
-            <button class="lofi-btn" on:click={cycleRepeat} aria-label={repeat === 'none' ? 'Repeat off' : repeat === 'all' ? 'Repeat all' : 'Repeat one'} title={repeat === 'none' ? 'Repeat off' : repeat === 'all' ? 'Repeat all' : 'Repeat one'} class:on={repeat !== 'none'}>
-              <i class={`ti ${repeat === 'one' ? 'ti-repeat-once' : 'ti-repeat'}`} aria-hidden="true"></i>
-            </button>
-          </div>
-
-          <div class="lofi-vol">
-            <button class="lofi-btn lofi-btn-sm" on:click={volDown} aria-label="Volume down" title="Volume down">
-              <i class="ti ti-volume-3" aria-hidden="true"></i>
-            </button>
-            <div class="lofi-meter" role="progressbar" aria-label="Volume"
-              aria-valuemin="0" aria-valuemax="100" aria-valuenow={volPct}>
-              <span class="lofi-meter-fill" style={`width:${volPct}%`}></span>
-            </div>
-            <button class="lofi-btn lofi-btn-sm" on:click={volUp} aria-label="Volume up" title="Volume up">
-              <i class="ti ti-volume" aria-hidden="true"></i>
-            </button>
-          </div>
-        {:else}
-          <p class="lofi-empty">No tracks yet. Add licensed audio to <code>static/audio/</code> and edit <code>lofi-tracks.js</code>.</p>
-        {/if}
-      </div>
-    {/if}
+    <button class="lofi-ib" on:click={prev} aria-label="Previous track" title="Previous">
+      <i class="ti ti-player-skip-back" aria-hidden="true"></i>
+    </button>
+    <button class="lofi-ib lofi-ib-play" on:click={toggle}
+      aria-label={playing ? 'Pause' : 'Play'} aria-pressed={playing} title={playing ? 'Pause' : 'Play'}>
+      <i class={`ti ${playing ? 'ti-player-pause' : 'ti-player-play'}`} aria-hidden="true"></i>
+    </button>
+    <button class="lofi-ib" on:click={next} aria-label="Next track" title="Next">
+      <i class="ti ti-player-skip-forward" aria-hidden="true"></i>
+    </button>
+    <button class="lofi-ib lofi-adv" class:on={repeat !== 'none'} on:click={cycleRepeat}
+      aria-label={repeat === 'none' ? 'Repeat off' : repeat === 'all' ? 'Repeat all' : 'Repeat one'}
+      title={repeat === 'none' ? 'Repeat off' : repeat === 'all' ? 'Repeat all' : 'Repeat one'}>
+      <i class={`ti ${repeat === 'one' ? 'ti-repeat-once' : 'ti-repeat'}`} aria-hidden="true"></i>
+    </button>
+    <span class="lofi-bar-title" class:playing aria-live="polite" title={track.title}><span class="lofi-ttl">{track.title}</span></span>
+    <button class="lofi-ib lofi-ib-sm lofi-adv" on:click={volDown} aria-label={`Volume down (${volPct}%)`} title={`Volume down (${volPct}%)`}>
+      <i class="ti ti-minus" aria-hidden="true"></i>
+    </button>
+    <span class="lofi-vol-ico lofi-adv" aria-hidden="true"><i class="ti ti-volume"></i></span>
+    <button class="lofi-ib lofi-ib-sm lofi-adv" on:click={volUp} aria-label={`Volume up (${volPct}%)`} title={`Volume up (${volPct}%)`}>
+      <i class="ti ti-plus" aria-hidden="true"></i>
+    </button>
+    <button class="lofi-ib lofi-ib-sm" on:click={quickHide} aria-label="Hide player" title="Hide player">
+      <i class="ti ti-x" aria-hidden="true"></i>
+    </button>
   </div>
 {/if}
 
 <style>
-  /* Lofi player — namespaced (.lofi-*) so it can't collide with global classes.
-     Reuses global tokens + the .icon-btn / .settings-pop / .pop-backdrop pattern. */
-  .lofi-wrap { position: relative; display: inline-flex; }
-
-  .lofi-trigger { position: relative; }
-  .lofi-trigger.on { color: var(--accent); border-color: var(--accent); }
-  .lofi-dot {
-    position: absolute;
-    top: 5px; right: 5px;
-    width: 6px; height: 6px;
-    border-radius: 999px;
-    background: var(--accent);
-    box-shadow: 0 0 0 2px var(--raise);
+  /* Inline lofi player in the header — namespaced (.lofi-*), uses global tokens. */
+  .lofi-bar {
+    display: inline-flex; align-items: center; gap: 1px;
+    padding: 2px 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--raise);
   }
-
-  .lofi-pop { width: 355px; }
-  .lofi-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.7rem; }
-  .lofi-x {
-    background: none; border: 0; color: var(--faint); cursor: pointer;
-    width: 24px; height: 24px; border-radius: 7px; display: inline-grid; place-items: center;
+  .lofi-ib {
+    background: none; border: 0; color: var(--muted); cursor: pointer;
+    width: 30px; height: 30px; border-radius: 999px; display: inline-grid; place-items: center;
     transition: background 0.15s var(--ease), color 0.15s var(--ease);
   }
-  .lofi-x:hover { background: var(--surface); color: var(--ink); }
-  .lofi-x .ti { font-size: 16px; }
-
-  .lofi-now { display: flex; flex-direction: column; gap: 1px; margin-bottom: 0.8rem; min-height: 2.4em; }
-  .lofi-title { font-size: 0.92rem; color: var(--ink); line-height: 1.25; }
-  .lofi-artist { font-size: 0.74rem; color: var(--faint); line-height: 1.2; }
-
-  .lofi-transport { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.7rem; }
-  .lofi-vol { display: flex; align-items: center; gap: 0.5rem; }
-
-  .lofi-btn {
-    background: none;
-    border: 1px solid var(--line);
-    color: var(--muted);
-    cursor: pointer;
-    width: 36px; height: 36px;
-    border-radius: 9px;
-    display: inline-grid; place-items: center;
-    transition: background 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease);
+  .lofi-ib:hover { background: var(--surface); color: var(--ink); }
+  .lofi-ib.on { color: var(--accent); }
+  .lofi-ib .ti { font-size: 17px; }
+  .lofi-ib-sm { width: 28px; height: 28px; }
+  .lofi-ib-sm .ti { font-size: 15px; }
+  .lofi-ib-play { color: var(--accent); }
+  .lofi-ib-play .ti { font-size: 21px; }
+  .lofi-vol-ico { display: inline-grid; place-items: center; color: var(--faint); width: 16px; }
+  .lofi-vol-ico .ti { font-size: 14px; }
+  .lofi-bar-title {
+    font-size: 0.8rem; color: var(--ink); max-width: 140px;
+    overflow: hidden; white-space: nowrap; padding: 0 0.45rem;
   }
-  .lofi-btn:hover { background: var(--surface); color: var(--ink); }
-  .lofi-btn .ti { font-size: 18px; }
-  .lofi-btn-sm { width: 30px; height: 30px; }
-  .lofi-btn-sm .ti { font-size: 16px; }
-  .lofi-btn.on { color: var(--accent); border-color: var(--accent); }
-
-  .lofi-play {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    width: 42px; height: 42px;
+  .lofi-bar-title .lofi-ttl {
+    display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom;
   }
-  .lofi-play:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
-  .lofi-play .ti { font-size: 20px; }
-
-  .lofi-meter {
-    flex: 1;
-    height: 6px;
-    border-radius: 999px;
-    background: var(--surface);
-    overflow: hidden;
+  /* Scroll the title only while playing, and only if it actually overflows:
+     min(0px, …) clamps short titles to no movement. */
+  .lofi-bar-title.playing .lofi-ttl {
+    max-width: none; overflow: visible; text-overflow: clip;
+    animation: lofi-marquee 9s linear infinite alternate;
   }
-  .lofi-meter-fill {
-    display: block;
-    height: 100%;
-    border-radius: 999px;
-    background: var(--accent);
-    transition: width 0.12s var(--ease);
+  @keyframes lofi-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(min(0px, calc(120px - 100%))); }
   }
-
-  .lofi-empty { font-size: 0.8rem; color: var(--muted); line-height: 1.5; margin: 0.2rem 0 0; }
-  .lofi-empty code {
-    font-family: var(--font-mono); font-size: 0.86em;
-    background: var(--surface); color: var(--accent-strong);
-    padding: 1px 5px; border-radius: 5px;
-  }
-
-  /* Tight on phones: the music trigger stays a single 34px icon-button in the
-     header (no inline strip), so it never crowds brand · search · settings. */
-  @media (max-width: 560px) {
-    .lofi-pop { width: 208px; }
-  }
+  @media (prefers-reduced-motion: reduce) { .lofi-bar-title.playing .lofi-ttl { animation: none; } }
+  @media (max-width: 1000px) { .lofi-bar-title { display: none; } }
+  @media (max-width: 640px) { .lofi-adv { display: none; } }
 </style>

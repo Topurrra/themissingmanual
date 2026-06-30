@@ -48,7 +48,7 @@
   .tk-body textarea:focus { outline: none; border-color: var(--accent); }
   .tk-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.8rem; min-height: 1.5rem; }
   .tk-chip { font-family: var(--font-mono); font-size: 0.8rem; padding: 0.15rem 0.4rem; border-radius: 5px; background: hsl(var(--h) 55% 90%); color: hsl(var(--h) 60% 28%); border: 1px solid hsl(var(--h) 45% 80%); }
-  :global(:root[data-theme="dark"]) .tk-chip { background: hsl(var(--h) 35% 22%); color: hsl(var(--h) 55% 82%); border-color: hsl(var(--h) 35% 32%); }
+  :global(:root[data-mode="dark"]) .tk-chip { background: hsl(var(--h) 35% 22%); color: hsl(var(--h) 55% 82%); border-color: hsl(var(--h) 35% 32%); }
   .tk-stats { display: flex; gap: 1rem; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.6rem; }
   .tk-stat b { color: var(--ink); font-family: var(--font-mono); }
   .tk-ctx { height: 8px; background: var(--surface); border-radius: 999px; overflow: hidden; margin-bottom: 0.6rem; }

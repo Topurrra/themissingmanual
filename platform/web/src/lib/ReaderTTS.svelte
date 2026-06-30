@@ -185,10 +185,10 @@
 
 <style>
   .tts {
-    position: fixed; left: 16px; bottom: 16px; z-index: 38;
-    display: flex; align-items: center; gap: 6px; max-width: calc(100vw - 32px);
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    width: fit-content; max-width: 100%; margin: 0 0 1.5rem;
     background: var(--raise); border: 1px solid var(--line); border-radius: 999px;
-    padding: 4px; box-shadow: var(--shadow-md);
+    padding: 4px;
   }
   .tts-main {
     display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; flex: none;

@@ -149,37 +149,81 @@ async fn search(State(state): State<Arc<AppState>>, Query(params): Query<SearchP
 
 /// RSS 2.0 feed of published guides. Item links point at the public web origin
 /// (`SITE_URL`, default http://localhost:5173) — set SITE_URL in production.
+/// Format an ISO date ("YYYY-MM-DD") as an RFC-822 datetime for RSS pubDate.
+/// Weekday via Sakamoto's algorithm (no date crate in the tree). None if unparseable.
+fn rfc822_date(iso: &str) -> Option<String> {
+    let p: Vec<&str> = iso.split('-').collect();
+    if p.len() != 3 {
+        return None;
+    }
+    let y: i32 = p[0].parse().ok()?;
+    let m: usize = p[1].parse().ok()?;
+    let d: u32 = p[2].parse().ok()?;
+    if !(1..=12).contains(&m) || !(1..=31).contains(&d) {
+        return None;
+    }
+    const MON: [&str; 12] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const T: [i32; 12] = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4];
+    let yy = if m < 3 { y - 1 } else { y };
+    let dow = (yy + yy / 4 - yy / 100 + yy / 400 + T[m - 1] + d as i32).rem_euclid(7) as usize;
+    const WD: [&str; 7] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    Some(format!("{}, {:02} {} {} 00:00:00 GMT", WD[dow], d, MON[m - 1], y))
+}
+
 async fn rss(State(state): State<Arc<AppState>>) -> Response {
     let guides = {
         let store = state.store.lock().unwrap();
         store.list_guides()
     };
-    let guides = match guides {
+    let mut guides = match guides {
         Ok(g) => g,
         Err(e) => return server_error(e),
     };
+    // Newest first; the feed should lead with what changed recently.
+    guides.sort_by(|a, b| b.updated.cmp(&a.updated));
+
     fn xml_escape(s: &str) -> String {
         s.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;")
     }
     let site = std::env::var("SITE_URL").unwrap_or_else(|_| "http://localhost:5173".to_string());
     let site = site.trim_end_matches('/');
+
     let mut items = String::new();
     for g in &guides {
         let link = format!("{site}/guides/{}", g.slug);
+        let pubdate = rfc822_date(&g.updated)
+            .map(|d| format!("<pubDate>{d}</pubDate>"))
+            .unwrap_or_default();
+        let category = if g.category.is_empty() {
+            String::new()
+        } else {
+            format!("<category>{}</category>", xml_escape(&g.category))
+        };
         items.push_str(&format!(
-            "<item><title>{}</title><link>{}</link><guid isPermaLink=\"true\">{}</guid><description>{}</description></item>",
+            "<item><title>{}</title><link>{}</link><guid isPermaLink=\"true\">{}</guid>{}{}<description>{}</description></item>",
             xml_escape(&g.title),
             xml_escape(&link),
             xml_escape(&link),
+            pubdate,
+            category,
             xml_escape(&g.summary),
         ));
     }
+    let last_build = guides
+        .first()
+        .and_then(|g| rfc822_date(&g.updated))
+        .map(|d| format!("<lastBuildDate>{d}</lastBuildDate>"))
+        .unwrap_or_default();
+
     let body = format!(
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
-         <rss version=\"2.0\"><channel>\
+         <rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><channel>\
          <title>The Missing Manual</title>\
          <link>{site}</link>\
+         <atom:link href=\"{site}/rss.xml\" rel=\"self\" type=\"application/rss+xml\"/>\
          <description>Real-world developer knowledge, explained with zero ego.</description>\
+         <language>en</language>\
+         {last_build}\
          {items}</channel></rss>"
     );
     ([(header::CONTENT_TYPE, "application/rss+xml; charset=utf-8")], body).into_response()
@@ -211,6 +255,20 @@ async fn category_detail(State(state): State<Arc<AppState>>, Path(slug): Path<St
         Ok(Some((category, guides))) => Json(CategoryPage { category, guides }).into_response(),
         Ok(None) => (StatusCode::NOT_FOUND, Json(serde_json::json!({ "error": "category not found" }))).into_response(),
         Err(e) => server_error(e),
+    }
+}
+
+#[cfg(test)]
+mod rss_tests {
+    use super::rfc822_date;
+
+    #[test]
+    fn rfc822_known_weekdays() {
+        // 2024-01-01 was a Monday; 2026-06-30 is a Tuesday.
+        assert_eq!(rfc822_date("2024-01-01").unwrap(), "Mon, 01 Jan 2024 00:00:00 GMT");
+        assert_eq!(rfc822_date("2026-06-30").unwrap(), "Tue, 30 Jun 2026 00:00:00 GMT");
+        assert!(rfc822_date("").is_none());
+        assert!(rfc822_date("2026-13-01").is_none());
     }
 }
 

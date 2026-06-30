@@ -12,6 +12,7 @@
   import PathRail from '$lib/PathRail.svelte';
   import WebMcp from '$lib/WebMcp.svelte';
   import { beginnerMode, setBeginner } from '$lib/beginner-store.js';
+  import { CHEATSHEETS } from '$lib/cheatsheets.js';
 
   export let data;
   $: nav = data?.nav ?? [];
@@ -22,6 +23,10 @@
   $: pathGuides = nav.flatMap((c) => c.guides);
   $: path = $page.url.pathname;
   $: isHome = path === '/';
+  // Cheat sheet gets the real app rail (like guides): tools listed in the sidebar,
+  // the active one driven by ?tool= so it stays in sync with the page.
+  $: isCheatSheet = path === '/cheat-sheet';
+  $: activeTool = $page.url.searchParams.get('tool') || CHEATSHEETS[0].id;
   $: isAdmin = path.startsWith('/admin');
   // info pages + the learning-path wizard render centred, no sidebar (like home)
   // Centered (no sidebar) pages. Review is centered on its own, but when reached
@@ -187,6 +192,31 @@
     return () => window.removeEventListener('resize', syncMobile);
   });
 
+  // Keep the corner FABs (bookmark + feedback) above the footer instead of
+  // floating over it. --fab-lift = how far the footer pokes into the viewport;
+  // each FAB adds it to its `bottom` so they rise to rest just above the footer.
+  onMount(() => {
+    const footer = document.querySelector('.colophon');
+    if (!footer) return;
+    let raf = 0;
+    const apply = () => {
+      raf = 0;
+      const peek = window.innerHeight - footer.getBoundingClientRect().top;
+      // 22 = bookmark FAB's resting offset; 16 = gap kept above the footer.
+      const lift = Math.max(0, peek - 22 + 16);
+      document.documentElement.style.setProperty('--fab-lift', lift + 'px');
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(apply); };
+    apply();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  });
+
   afterNavigate(({ to }) => {
     // Navigating (e.g. tapping a sidebar link) closes the mobile drawer.
     if (mobile) collapsed = true;
@@ -258,7 +288,16 @@
           <a href="/" class="all-topics"><i class="ti ti-layout-grid" aria-hidden="true"></i> All topics</a>
         </div>
         <nav class="sidebar-nav">
-          {#if currentGuide && guidePhases}
+          {#if isCheatSheet}
+            <div class="rail-topic"><i class="ti ti-terminal-2" aria-hidden="true"></i> Cheat Sheet</div>
+            <ul class="nav-items">
+              {#each CHEATSHEETS as s}
+                <li><a href={`/cheat-sheet?tool=${s.id}`} class:on={activeTool === s.id}
+                  aria-current={activeTool === s.id ? 'page' : undefined}>
+                  <i class={`ti ${s.icon}`} aria-hidden="true"></i><span class="nav-label">{s.name}</span></a></li>
+              {/each}
+            </ul>
+          {:else if currentGuide && guidePhases}
             {#if activeCat}
               <a class="rail-back" href={`/categories/${activeCat.slug}`}><i class="ti ti-chevron-left" aria-hidden="true"></i> {activeCat.name}</a>
             {/if}
@@ -360,6 +399,7 @@
       <nav>
         <a href="/about">About</a>
         <a href="/glossary">Glossary</a>
+        <a href="/cheat-sheet">Cheat Sheet</a>
         <a href="/train">Train</a>
         <a href="/review">Review</a>
       </nav>
