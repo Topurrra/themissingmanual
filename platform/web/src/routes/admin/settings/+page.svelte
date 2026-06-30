@@ -14,8 +14,45 @@
   let siteName = data.site_name;
   let tagline = data.tagline;
   let announcement = data.announcement;
-  let sponsors = data.sponsors;
-  let social = data.social;
+  // Sponsors & social are edited as friendly form rows, then serialized back to
+  // the `sponsors`/`social` JSON strings via the reactive declarations below, so
+  // save()/dirty stay unchanged. Empty ⇒ "" ⇒ the public site uses its defaults.
+  const SOCIAL_ICONS = {
+    github: 'ti-brand-github', x: 'ti-brand-x', twitter: 'ti-brand-twitter',
+    linkedin: 'ti-brand-linkedin', mastodon: 'ti-brand-mastodon',
+    youtube: 'ti-brand-youtube', discord: 'ti-brand-discord', bluesky: 'ti-brand-bluesky'
+  };
+  const SOCIAL_PLATFORMS = Object.keys(SOCIAL_ICONS);
+  function serSponsors(rows) {
+    const clean = (rows || [])
+      .map((s) => {
+        const o = { name: (s.name || '').trim(), url: (s.url || '').trim() };
+        if ((s.logo || '').trim()) o.logo = s.logo.trim();
+        return o;
+      })
+      .filter((s) => s.name || s.url);
+    return clean.length ? JSON.stringify(clean) : '';
+  }
+  function serSocial(obj) {
+    const clean = {};
+    for (const [k, v] of Object.entries(obj || {})) if ((v || '').trim()) clean[k] = v.trim();
+    return Object.keys(clean).length ? JSON.stringify(clean) : '';
+  }
+  let sponsorRows = (() => {
+    try { const p = JSON.parse(data.sponsors || ''); if (Array.isArray(p)) return p.map((s) => ({ name: s.name || '', url: s.url || '', logo: s.logo || '' })); } catch (e) {}
+    return [];
+  })();
+  let socialObj = (() => {
+    const o = {};
+    try { const p = JSON.parse(data.social || ''); if (p && typeof p === 'object' && !Array.isArray(p)) Object.assign(o, p); } catch (e) {}
+    return o;
+  })();
+  $: socialKeys = [...new Set([...SOCIAL_PLATFORMS, ...Object.keys(socialObj)])];
+  $: sponsors = serSponsors(sponsorRows);
+  $: social = serSocial(socialObj);
+  function addSponsor() { sponsorRows = [...sponsorRows, { name: '', url: '', logo: '' }]; }
+  function removeSponsor(i) { sponsorRows = sponsorRows.filter((_, idx) => idx !== i); }
+
   let lofi = isOn(data.flag_lofi);
   let runnable = isOn(data.flag_runnable);
   let mermaid = isOn(data.flag_mermaid);
@@ -105,8 +142,8 @@
     siteName: data.site_name,
     tagline: data.tagline,
     announcement: data.announcement,
-    sponsors: data.sponsors,
-    social: data.social,
+    sponsors: serSponsors(sponsorRows),
+    social: serSocial(socialObj),
     lofi: isOn(data.flag_lofi),
     runnable: isOn(data.flag_runnable),
     mermaid: isOn(data.flag_mermaid)
@@ -275,33 +312,34 @@
   <section class="set-group">
     <h2 class="admin-h2">Sponsors &amp; social</h2>
 
-    <label class="admin-field set-field">
-      <span>Sponsors (JSON)</span>
-      <textarea
-        class="set-textarea set-code"
-        class:set-invalid={sponsorsErr}
-        rows="6"
-        spellcheck="false"
-        bind:value={sponsors}
-        on:input={() => (sponsorsErr = '')}
-      ></textarea>
-      <small class="set-hint">JSON array - <code>[{'{'}"name","url","logo"{'}'}]</code>. Blank uses defaults.</small>
-      {#if sponsorsErr}<p class="admin-err set-jsonerr">Sponsors: {sponsorsErr}</p>{/if}
-    </label>
+    <div class="admin-field set-field">
+      <span>Sponsors</span>
+      <div class="set-rows">
+        {#each sponsorRows as s (s)}
+          <div class="set-row">
+            <input class="set-row-in" placeholder="Name" bind:value={s.name} on:input={() => (sponsorRows = sponsorRows)} />
+            <input class="set-row-in" placeholder="https://link" bind:value={s.url} on:input={() => (sponsorRows = sponsorRows)} />
+            <input class="set-row-in" placeholder="Logo URL (optional)" bind:value={s.logo} on:input={() => (sponsorRows = sponsorRows)} />
+            <button type="button" class="admin-btn sm danger" on:click={() => removeSponsor(sponsorRows.indexOf(s))} aria-label="Remove sponsor"><i class="ti ti-trash" aria-hidden="true"></i></button>
+          </div>
+        {/each}
+      </div>
+      <button type="button" class="admin-btn sm set-add" on:click={addSponsor}><i class="ti ti-plus" aria-hidden="true"></i> Add sponsor</button>
+      <small class="set-hint">No sponsors here ⇒ the built-in defaults show in the footer.</small>
+    </div>
 
-    <label class="admin-field set-field">
-      <span>Social (JSON)</span>
-      <textarea
-        class="set-textarea set-code"
-        class:set-invalid={socialErr}
-        rows="5"
-        spellcheck="false"
-        bind:value={social}
-        on:input={() => (socialErr = '')}
-      ></textarea>
-      <small class="set-hint">JSON object - <code>{'{'}"github","x","linkedin"{'}'}</code>. Blank uses defaults.</small>
-      {#if socialErr}<p class="admin-err set-jsonerr">Social: {socialErr}</p>{/if}
-    </label>
+    <div class="admin-field set-field">
+      <span>Social links</span>
+      <div class="set-rows">
+        {#each socialKeys as k}
+          <div class="set-row set-social-row">
+            <span class="set-social-lbl"><i class="ti {SOCIAL_ICONS[k] || 'ti-link'}" aria-hidden="true"></i> {k}</span>
+            <input class="set-row-in" placeholder="https://…" value={socialObj[k] || ''} on:input={(e) => (socialObj = { ...socialObj, [k]: e.target.value })} />
+          </div>
+        {/each}
+      </div>
+      <small class="set-hint">Leave a field blank to hide that icon.</small>
+    </div>
   </section>
 
   <div class="set-actions">
@@ -360,6 +398,22 @@
     font-family: var(--font-mono);
     font-size: 0.78rem;
   }
+  /* Sponsors / social form rows (replaced the raw JSON textareas). */
+  .set-rows { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .set-row { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; }
+  .set-row .set-row-in {
+    width: auto; flex: 1 1 140px; min-width: 0;
+    padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 8px;
+    font: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink);
+  }
+  .set-row .admin-btn { flex: none; }
+  .set-add { align-self: flex-start; margin-bottom: 0.35rem; }
+  .set-social-row { flex-wrap: nowrap; gap: 0.6rem; }
+  .set-social-lbl {
+    flex: none; width: 8.5rem; display: inline-flex; align-items: center; gap: 0.45rem;
+    font-size: 0.88rem; color: var(--muted); text-transform: capitalize;
+  }
+  .set-social-lbl .ti { font-size: 16px; color: var(--faint); }
   .set-jsonerr {
     margin: 0.1rem 0 0;
   }
