@@ -1456,12 +1456,13 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 /* Ranked lists (top topics / referrers / searches) - rank #, label, proportional
    bar, then the count, so the number reads as its own value and rows compare visually. */
 .rank-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2.5rem; }
-.ranks { display: flex; flex-direction: column; gap: 2px; margin-bottom: 0.5rem; }
-.rank-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.4rem 0.55rem; border-radius: 9px; font-size: 0.9rem; color: var(--body); }
-a.rank-row:hover { background: var(--surface); text-decoration: none; }
-.rank-i { flex: none; width: 1.3rem; text-align: right; font-family: var(--font-mono); font-size: 0.72rem; color: var(--faint); }
-.rank-label { flex: 0 1 auto; min-width: 4ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
-.rank-meter { flex: 1 1 30px; min-width: 24px; height: 6px; border-radius: 999px; background: var(--surface); overflow: hidden; }
-.rank-fill { display: block; height: 100%; background: var(--accent); opacity: 0.85; border-radius: 999px; }
-.rank-count { flex: none; min-width: 2.5ch; text-align: right; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--ink); }
+.ranks { display: flex; flex-direction: column; gap: 1px; margin-bottom: 0.5rem; }
+.rank-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.55rem; border-radius: 9px; font-size: 0.9rem; color: var(--body); transition: background 0.12s var(--ease); }
+.rank-row:hover, a.rank-row:hover { background: var(--surface); text-decoration: none; }
+.rank-i { flex: none; width: 1.4rem; text-align: right; font-family: var(--font-mono); font-size: 0.72rem; color: var(--faint); }
+.rank-row:first-child .rank-i { color: var(--accent); font-weight: 700; }
+.rank-label { flex: 0 1 auto; min-width: 4ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-weight: 500; }
+.rank-meter { flex: 1 1 40px; min-width: 30px; height: 8px; border-radius: 999px; background: var(--surface); overflow: hidden; }
+.rank-fill { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.35s var(--ease); }
+.rank-count { flex: none; min-width: 2.5ch; text-align: right; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; color: var(--ink); }
 @media (max-width: 760px) { .rank-cols { grid-template-columns: 1fr; } }
