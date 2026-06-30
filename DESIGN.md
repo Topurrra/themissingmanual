@@ -69,8 +69,9 @@ sidebar, palette, footer).
 - **Resume reading:** a "Save my place" pill (bottom-right) anchors a marker to the *paragraph*
   you're on (survives font/zoom changes), stored as `tmm-place:<path>`. On return a gentle
   "Continue reading — <section>" prompt scrolls back. Tap again at the marked line to clear.
-- **Footer colophon:** brand + "Free forever." + About/Contribute/RSS links + GitHub/LinkedIn icons
-  (set the URLs in the layout's `SOCIAL` constant).
+- **Footer colophon:** grouped multi-column — an identity block (brand + tagline + RSS) and labeled
+  link columns (Learn / Reference / Project, mono micro-label headers) over a hairline sponsor bar.
+  Columns wrap to stacked on mobile. Add a page as one line in a column, not a longer row.
 
 ## Motion
 - Minimal-functional. Link/hover/focus transitions, a smooth sidebar collapse, gentle palette/pill

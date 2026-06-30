@@ -375,8 +375,34 @@
 
   <footer class="colophon">
     <div class="colophon-inner">
-      <div class="co-top">
-        <div class="co-brand">{siteName}</div>
+      <div class="co-grid">
+        <div class="co-id">
+          <div class="co-brand">{siteName}</div>
+          <p class="co-line">{tagline}</p>
+          <a class="co-rss" href="/rss.xml"><i class="ti ti-rss" aria-hidden="true"></i> RSS feed</a>
+        </div>
+        <nav class="co-cols" aria-label="Footer">
+          <div class="co-col">
+            <h3 class="co-col-h">Learn</h3>
+            <a href="/paths">Learning paths</a>
+            <a href="/#topics">Browse topics</a>
+            <a href="/train">Brain games</a>
+          </div>
+          <div class="co-col">
+            <h3 class="co-col-h">Reference</h3>
+            <a href="/cheat-sheet">Cheat sheets</a>
+            <a href="/glossary">Glossary</a>
+          </div>
+          <div class="co-col">
+            <h3 class="co-col-h">Project</h3>
+            <a href="/about">About</a>
+            <a href="/changelog">What's new</a>
+            <a href="/contribute">Contribute</a>
+            <a href="/review">Review</a>
+          </div>
+        </nav>
+      </div>
+      <div class="co-foot">
         <div class="sponsors">
           <span class="spon-label">Sponsored by</span>
           <span class="spon-names">
@@ -395,15 +421,6 @@
           </span>
         </div>
       </div>
-      <div class="co-line">{tagline}</div>
-      <nav>
-        <a href="/about">About</a>
-        <a href="/glossary">Glossary</a>
-        <a href="/cheat-sheet">Cheat Sheet</a>
-        <a href="/train">Train</a>
-        <a href="/changelog">What's New</a>
-        <a href="/review">Review</a>
-      </nav>
     </div>
   </footer>
 

@@ -1021,16 +1021,36 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
    --------------------------------------------------------------------------- */
 .colophon { border-top: 1px solid var(--line); margin-top: 4rem; }
 .colophon-inner {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 1.3rem 1.5rem 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+  padding: 2.4rem 1.5rem 1.5rem;
 }
-/* Top row: brand on the left, sponsors on the right, on one line. */
-.co-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem 2rem; flex-wrap: wrap; }
-.colophon .co-brand { font-family: var(--font-display); font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
-.colophon .co-line { color: var(--faint); font-family: var(--font-mono); font-size: 0.76rem; }
+/* Top: identity block (left) + grouped link columns (right). Wraps to stacked on
+   narrow screens. Grouped columns scale — a new page is one more line in a column,
+   never a longer single row. */
+.co-grid { display: flex; flex-wrap: wrap; gap: 2rem 3rem; justify-content: space-between; }
+.co-id { max-width: 320px; }
+.colophon .co-brand { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink); letter-spacing: -0.02em; }
+.colophon .co-line { color: var(--muted); font-size: 0.86rem; line-height: 1.6; margin: 0.45rem 0 0.75rem; }
+.co-rss { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.82rem; }
+.co-rss:hover { color: var(--accent); }
+.co-rss .ti { font-size: 15px; }
+
+.co-cols { display: flex; flex-wrap: wrap; gap: 1.8rem 3rem; }
+.co-col { display: flex; flex-direction: column; gap: 0.5rem; min-width: 118px; }
+/* Group label — JetBrains-Mono micro-label, matching .spon-label / eyebrows. */
+.co-col-h {
+  font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin: 0 0 0.25rem;
+}
+.co-col a { color: var(--muted); font-size: 0.9rem; }
+.co-col a:hover { color: var(--accent); }
+
+/* Bottom bar — sponsors, hairline-separated from the columns. */
+.co-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem 2rem;
+  flex-wrap: wrap; margin-top: 2.2rem; padding-top: 1.2rem; border-top: 1px solid var(--line);
+}
 
 /* Sponsored-by row. Names keep exact brand casing; per-letter colour spans
    (.spon-it / .spon-x) win over the link colour, so they survive a:hover. */
@@ -1061,9 +1081,6 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 @supports not ((background-clip: text) or (-webkit-background-clip: text)) {
   .spon-name .spon-x { color: #ff5722; -webkit-text-fill-color: #ff5722; background: none; }
 }
-.colophon nav { display: flex; gap: 1.4rem; flex-wrap: wrap; align-items: center; }
-.colophon nav a { color: var(--muted); font-size: 0.9rem; }
-.colophon nav a:hover { color: var(--accent); }
 .co-social { display: inline-flex; gap: 0.5rem; }
 .co-social a { display: inline-grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); }
 .co-social a:hover { color: var(--accent); border-color: var(--accent); }
