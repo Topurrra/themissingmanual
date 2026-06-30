@@ -53,7 +53,6 @@
   const flagOn = (v) => !['0', 'false', 'off', 'no'].includes(String(v ?? '').trim().toLowerCase());
 
   $: siteName = (siteConfig.site_name || '').trim() || 'The Missing Manual';
-  $: tagline = (siteConfig.tagline || '').trim() || 'Free forever';
   $: announcement = (siteConfig.announcement || '').trim();
   $: lofiOn = flagOn(siteConfig.flag_lofi);
 
@@ -378,8 +377,24 @@
       <div class="co-grid">
         <div class="co-id">
           <div class="co-brand">{siteName}</div>
-          <p class="co-line">{tagline}</p>
           <a class="co-rss" href="/rss.xml"><i class="ti ti-rss" aria-hidden="true"></i> RSS feed</a>
+          <div class="sponsors">
+            <span class="spon-label">Sponsored by</span>
+            <span class="spon-names">
+              {#each sponsors as s, i}
+                {#if i > 0}<span class="spon-sep" aria-hidden="true">and</span>{/if}
+                <a class="spon-name" href={s.url} target="_blank" rel="noopener">
+                  {#if s.logo}
+                    <img src={s.logo} alt={s.name} />
+                  {:else if sponsorParts(s.name)}
+                    {@const p = sponsorParts(s.name)}{p.pre}<span class={p.midClass}>{p.mid}</span>{p.post}
+                  {:else}
+                    {s.name}
+                  {/if}
+                </a>
+              {/each}
+            </span>
+          </div>
         </div>
         <nav class="co-cols" aria-label="Footer">
           <div class="co-col">
@@ -401,25 +416,6 @@
             <a href="/review">Review</a>
           </div>
         </nav>
-      </div>
-      <div class="co-foot">
-        <div class="sponsors">
-          <span class="spon-label">Sponsored by</span>
-          <span class="spon-names">
-            {#each sponsors as s, i}
-              {#if i > 0}<span class="spon-sep" aria-hidden="true">and</span>{/if}
-              <a class="spon-name" href={s.url} target="_blank" rel="noopener">
-                {#if s.logo}
-                  <img src={s.logo} alt={s.name} />
-                {:else if sponsorParts(s.name)}
-                  {@const p = sponsorParts(s.name)}{p.pre}<span class={p.midClass}>{p.mid}</span>{p.post}
-                {:else}
-                  {s.name}
-                {/if}
-              </a>
-            {/each}
-          </span>
-        </div>
       </div>
     </div>
   </footer>
