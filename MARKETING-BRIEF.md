@@ -1,8 +1,9 @@
 # Marketing Post Brief: The Missing Manual
 
-Paste this whole file to any AI agent (Grok, Cline, ChatGPT, Claude, etc.) and ask it to
-write posts for **x.com** or **dev.to**. It contains everything the agent needs: what the
-product is, the tone to match, the hard rules, and the exact link format.
+Paste this whole file to any AI agent (Grok, Cline, ChatGPT, Claude, etc.) and ask it for a
+**short post** (X) or a **long-form article** (X Articles, dev.to, Medium, Substack). It
+contains everything the agent needs: what the product is, the tone to match, the hard rules,
+and the exact link format. Tell the agent which platform and which format you want.
 
 ---
 
@@ -45,7 +46,8 @@ Do not:
 1. **No em dashes.** Do not use `—` or `–`. Use a period, a comma, parentheses, or just
    rewrite the sentence. (Em dashes are a dead giveaway that a bot wrote it.)
 2. **One link per post**, pointing to a real guide or topic, in the exact UTM format below.
-3. **Keep it tight.** Max reading time 2 to 3 minutes. See per-platform limits.
+3. **Right length for the format.** Short posts stay short (see limits). Long-form articles
+   are bigger but never padded: make every paragraph earn its place, then stop.
 4. **Never invent** guide titles, slugs, or URLs. Use a real one (see "Finding a real link").
 5. **Match the tone above.** If it reads like an ad, rewrite it.
 6. Plain ASCII quotes and hyphens. No smart quotes.
@@ -61,8 +63,17 @@ platform you are posting on. Keep `utm_medium=social` and `utm_campaign=launch`.
 <page-url>?utm_source=<PLATFORM>&utm_medium=social&utm_campaign=launch
 ```
 
-- On **x.com**, use `utm_source=x.com`
-- On **dev.to**, use `utm_source=dev.to`
+Set `utm_source` to the platform. Keep `utm_medium=social` and `utm_campaign=launch` the
+same everywhere. Only `utm_source` changes.
+
+| Where you post | `utm_source` |
+| --- | --- |
+| X (short post or Article) | `x.com` |
+| dev.to | `dev.to` |
+| Medium | `medium.com` |
+| Substack | `substack.com` |
+
+(X short posts and X Articles share `x.com`.)
 
 **Full examples:**
 
@@ -70,6 +81,10 @@ platform you are posting on. Keep `utm_medium=social` and `utm_campaign=launch`.
   `https://themissingmanual.dev/guides/git-from-zero?utm_source=x.com&utm_medium=social&utm_campaign=launch`
 - The same guide, on dev.to:
   `https://themissingmanual.dev/guides/git-from-zero?utm_source=dev.to&utm_medium=social&utm_campaign=launch`
+- The same guide, on Medium:
+  `https://themissingmanual.dev/guides/git-from-zero?utm_source=medium.com&utm_medium=social&utm_campaign=launch`
+- The same guide, on Substack:
+  `https://themissingmanual.dev/guides/git-from-zero?utm_source=substack.com&utm_medium=social&utm_campaign=launch`
 - A topic/category, on X:
   `https://themissingmanual.dev/categories/databases?utm_source=x.com&utm_medium=social&utm_campaign=launch`
 - The whole site (only when the post is about the project as a whole), on X:
@@ -103,10 +118,12 @@ If you are unsure a slug is real, fetch `llms.txt` and pick from it.
 
 ---
 
-## X (x.com) posts
+## Short posts (X)
+
+Short, standalone posts. One idea, one link.
 
 - One post: under 280 characters including the link. A short thread (2 to 4 posts) is fine for
-  a bigger topic; only the first or last post carries the link.
+  a bigger idea; only the first or last post carries the link.
 - Open with the pain or the surprising fact. End with the link. No hashtags, or one at most.
 - No thread-bait ("a 🧵 that will change how you..."). Just say the useful thing.
 
@@ -123,31 +140,51 @@ https://themissingmanual.dev/guides/git-from-zero?utm_source=x.com&utm_medium=so
 
 ---
 
-## dev.to posts
+## Long-form articles (X Articles, dev.to, Medium, Substack)
 
-- 2 to 3 minute read (roughly 350 to 600 words). Short intro, 2 to 4 small sections, a close.
-- Give real value in the post itself. The link is a "go deeper", not the whole point.
-- Format: a plain title, a one-line hook, the body, then the link near the end.
-- Tags: 3 to 4 relevant dev.to tags (e.g. `git`, `beginners`, `webdev`, `career`). Lowercase.
+Real articles. Teach something useful in the piece itself; the link is a "go deeper", not the
+whole point. Same voice as everything else: the battle-hardened friend, no fluff.
 
-**Example skeleton (fill with one real topic):**
+- **Length:** about 800 to 1500 words (roughly 5 to 8 minute read). Long enough to be worth
+  it, short enough to finish. Cut anything that does not help the reader.
+- **Structure:** a plain title, a one or two line hook, 3 to 5 short sections with real
+  examples, then a short "go deeper" with the link, then a one-line close.
+- **Value first:** give away the mental model and a concrete example. Do not gate the point
+  behind the link.
+- One link, inside the article, in the UTM format, `utm_source` set to the platform you post on.
+
+**Per platform:**
+- **X Articles** (long-form on X): give it a real title. `utm_source=x.com`.
+- **dev.to:** add 3 to 4 lowercase tags (e.g. `git`, `beginners`, `webdev`, `career`). `utm_source=dev.to`.
+- **Medium:** a clean title and subtitle, 3 to 5 topics (no tag spam). `utm_source=medium.com`.
+- **Substack:** a newsletter issue; a slightly more personal opening is fine. `utm_source=substack.com`.
+
+**Example skeleton (fill with one real topic; expand each section into real paragraphs):**
 
 ```
 Title: What nobody tells you about <topic>
 
-<One or two sentences naming the exact pain a developer hits with this topic.>
+<One or two sentences naming the exact pain a developer hits with this topic. Make them nod.>
 
-## The part the tutorials skip
-<The mental model or the "why" in plain language. One concrete example.>
+## Why this trips people up
+<The missing mental model, in plain language. The thing tutorials skip and docs assume.>
 
-## What to actually do
-<2 to 4 practical points or a short, real command/snippet. Honest about the catches.>
+## How it actually works
+<Walk through the real model with one concrete example. A short, real snippet helps.>
+
+## What to do about it
+<2 to 4 practical steps. Be honest about the catches and the hacks.>
+
+## A worked example
+<Optional: one end-to-end example the reader can follow. This is where the length goes.>
 
 ## Go deeper
-The full walkthrough, free and no signup, is here:
-https://themissingmanual.dev/guides/<slug>?utm_source=dev.to&utm_medium=social&utm_campaign=launch
+The full, free walkthrough (no signup) is here:
+https://themissingmanual.dev/guides/<slug>?utm_source=<PLATFORM>&utm_medium=social&utm_campaign=launch
 
-Tags: <tag1>, <tag2>, <tag3>
+<One-line close.>
+
+Tags (dev.to / Medium): <tag1>, <tag2>, <tag3>
 ```
 
 ---
@@ -155,7 +192,7 @@ Tags: <tag1>, <tag2>, <tag3>
 ## Before you post, check:
 
 - [ ] No em dashes anywhere.
-- [ ] Exactly one link, real URL, correct `utm_source` for the platform, `utm_medium=social`, `utm_campaign=launch`.
-- [ ] Under the length limit (X: 280 chars; dev.to: 2 to 3 min read).
+- [ ] Exactly one link, real URL, with `utm_source` matching the platform (x.com / dev.to / medium.com / substack.com), `utm_medium=social`, `utm_campaign=launch`.
+- [ ] Right length for the format (short post: under 280 chars; long-form article: about 800 to 1500 words, and not padded).
 - [ ] Reads like the battle-hardened friend, not an ad. No hype words, no emoji spam.
-- [ ] Links to a specific guide or topic, not the homepage (unless the post is about the whole project).
+- [ ] Links to a specific guide or topic, not the homepage (unless it is about the whole project).
