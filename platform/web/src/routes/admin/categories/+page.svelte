@@ -51,7 +51,7 @@
       <i class={`ti ${c.icon}`} aria-hidden="true"></i>
       <div class="cat-fields">
         <input bind:value={c.name} placeholder="Name" />
-        <input bind:value={c.icon} placeholder="ti-icon" class="cat-icon-input" />
+        <input bind:value={c.icon} placeholder="ti-icon" class="cat-icon-input" list="ti-icons" />
         <input bind:value={c.blurb} placeholder="Blurb" class="cat-blurb-input" />
       </div>
       <span class="cat-slug">{c.slug}</span>
@@ -68,11 +68,18 @@
 
 <h2 class="admin-h2">Add category</h2>
 <div class="cat-row">
+  <i class={`ti ${neu.icon || 'ti-folder'}`} aria-hidden="true"></i>
   <div class="cat-fields">
     <input bind:value={neu.slug} placeholder="slug" />
     <input bind:value={neu.name} placeholder="Name" />
-    <input bind:value={neu.icon} placeholder="ti-icon" class="cat-icon-input" />
+    <input bind:value={neu.icon} placeholder="ti-icon" class="cat-icon-input" list="ti-icons" />
     <input bind:value={neu.blurb} placeholder="Blurb" class="cat-blurb-input" />
   </div>
   <button class="admin-btn sm" on:click={add}>Add</button>
 </div>
+
+<datalist id="ti-icons">
+  {#each ['ti-folder', 'ti-code', 'ti-terminal-2', 'ti-database', 'ti-server', 'ti-network', 'ti-cpu', 'ti-brain', 'ti-shield', 'ti-cloud', 'ti-git-branch', 'ti-api', 'ti-bug', 'ti-test-pipe', 'ti-chart-bar', 'ti-book', 'ti-rocket', 'ti-settings', 'ti-lock', 'ti-world', 'ti-device-desktop', 'ti-stack-2', 'ti-binary', 'ti-math-symbols', 'ti-atom', 'ti-palette', 'ti-music', 'ti-robot', 'ti-key', 'ti-file-text'] as ic}
+    <option value={ic}></option>
+  {/each}
+</datalist>

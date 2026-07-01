@@ -1450,9 +1450,9 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 
 /* analytics dashboard */
 .range-pills { display: flex; gap: 4px; }
-.range-pills a { font-size: 12px; padding: 4px 10px; border-radius: 8px; background: var(--surface); color: var(--muted); }
-.range-pills a:hover { color: var(--ink); text-decoration: none; }
-.range-pills a.on { background: var(--accent-tint); color: var(--accent); font-weight: 500; }
+.range-pills a, .range-pills button { font-size: 12px; padding: 4px 10px; border-radius: 8px; background: var(--surface); color: var(--muted); border: 0; cursor: pointer; font-family: inherit; }
+.range-pills a:hover, .range-pills button:hover { color: var(--ink); text-decoration: none; }
+.range-pills a.on, .range-pills button.on { background: var(--accent-tint); color: var(--accent); font-weight: 500; }
 .panel { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; margin: 1.25rem 0; }
 .panel-label { font-size: 0.85rem; color: var(--muted); }
 .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.8rem; }

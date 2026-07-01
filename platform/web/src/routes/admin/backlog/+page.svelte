@@ -46,7 +46,7 @@
 <table class="admin-table">
   <thead>
     <tr>
-      <th>Query</th><th class="bk-num">Demand</th><th class="bk-num">Hits</th><th></th>
+      <th>Query</th><th class="bk-num" title="How many times readers searched this">Searches</th><th class="bk-num" title="How many guides matched — a low number is a content gap">Results</th><th></th>
     </tr>
   </thead>
   <tbody>

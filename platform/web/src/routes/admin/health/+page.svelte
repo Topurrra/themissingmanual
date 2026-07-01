@@ -59,7 +59,7 @@
   {#if syncMsg}<span class="admin-note">{syncMsg}</span>{/if}
 </div>
 
-<h2 class="admin-h2">Broken links <span class="hc-count">{brokenLinks.length}</span></h2>
+<h2 class="admin-h2">Broken links <span class="hc-count" class:hc-zero={brokenLinks.length === 0}>{brokenLinks.length}</span></h2>
 <table class="admin-table">
   <thead>
     <tr><th>From</th><th>Href</th></tr>
@@ -76,7 +76,7 @@
   </tbody>
 </table>
 
-<h2 class="admin-h2">Missing assets <span class="hc-count">{missingAssets.length}</span></h2>
+<h2 class="admin-h2">Missing assets <span class="hc-count" class:hc-zero={missingAssets.length === 0}>{missingAssets.length}</span></h2>
 <table class="admin-table">
   <thead>
     <tr><th>From</th><th>Href</th></tr>
@@ -93,7 +93,7 @@
   </tbody>
 </table>
 
-<h2 class="admin-h2">Orphaned assets <span class="hc-count">{orphanedAssets.length}</span></h2>
+<h2 class="admin-h2">Orphaned assets <span class="hc-count" class:hc-zero={orphanedAssets.length === 0}>{orphanedAssets.length}</span></h2>
 <table class="admin-table">
   <thead>
     <tr><th>Asset</th></tr>
@@ -143,10 +143,18 @@
   }
   .hc-count {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: var(--muted);
-    margin-left: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    padding: 1px 8px;
+    border-radius: 999px;
+    vertical-align: middle;
+    color: var(--warn);
+    background: var(--warn-bg);
+  }
+  .hc-count.hc-zero {
+    color: #2e9e6b;
+    background: color-mix(in srgb, #2e9e6b 13%, transparent);
   }
   .hc-href {
     font-family: var(--font-mono);

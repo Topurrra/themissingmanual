@@ -5,6 +5,22 @@
   $: upCount = items.filter((f) => f.vote === 'up').length;
   $: downCount = items.filter((f) => f.vote === 'down').length;
 
+  let voteFilter = 'all'; // 'all' | 'up' | 'down'
+  $: shown = voteFilter === 'all' ? items : items.filter((f) => f.vote === voteFilter);
+
+  // Compact relative time ("2h ago"); the absolute time rides in the cell title.
+  function relTime(ts) {
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return ts;
+    const s = Math.floor((Date.now() - d.getTime()) / 1000);
+    if (s < 60) return 'just now';
+    const m = Math.floor(s / 60); if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60); if (h < 24) return `${h}h ago`;
+    const dd = Math.floor(h / 24); if (dd < 30) return `${dd}d ago`;
+    const mo = Math.floor(dd / 30); if (mo < 12) return `${mo}mo ago`;
+    return `${Math.floor(mo / 12)}y ago`;
+  }
+
   // Format the API timestamp into a readable local date-time. Falls back to the
   // raw value if it isn't a parseable date.
   function fmtTs(ts) {
@@ -33,6 +49,14 @@
 </div>
 <p class="admin-sub">Reader thumbs-up and thumbs-down on each phase, newest first.</p>
 
+{#if items.length}
+  <div class="range-pills fb-filter">
+    <button class:on={voteFilter === 'all'} on:click={() => (voteFilter = 'all')}>All {items.length}</button>
+    <button class:on={voteFilter === 'up'} on:click={() => (voteFilter = 'up')}>Up {upCount}</button>
+    <button class:on={voteFilter === 'down'} on:click={() => (voteFilter = 'down')}>Down {downCount}</button>
+  </div>
+{/if}
+
 <table class="admin-table">
   <thead>
     <tr>
@@ -40,9 +64,9 @@
     </tr>
   </thead>
   <tbody>
-    {#each items as f (`${f.ts}-${f.guide_slug}-${f.phase_no}`)}
+    {#each shown as f (`${f.ts}-${f.guide_slug}-${f.phase_no}`)}
       <tr>
-        <td class="fb-ts">{fmtTs(f.ts)}</td>
+        <td class="fb-ts" title={fmtTs(f.ts)}>{relTime(f.ts)}</td>
         <td>
           <a href={`/guides/${f.guide_slug}/${f.phase_no}`}>{f.guide_slug}</a>
           <span class="fb-phase">· phase {f.phase_no}</span>
@@ -57,12 +81,13 @@
         <td class="fb-note">{f.note || '-'}</td>
       </tr>
     {:else}
-      <tr><td colspan="4" class="admin-empty">No feedback yet.</td></tr>
+      <tr><td colspan="4" class="admin-empty">{items.length ? `No ${voteFilter} votes.` : 'No feedback yet.'}</td></tr>
     {/each}
   </tbody>
 </table>
 
 <style>
+  .fb-filter { margin: 0 0 1rem; }
   .fb-totals {
     display: flex;
     gap: 0.6rem;
