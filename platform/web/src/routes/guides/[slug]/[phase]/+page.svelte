@@ -69,7 +69,7 @@
   ];
 </script>
 
-<Seo title={`${phase.title} - The Missing Manual`} description={phase.summary} type="article" image={`/guides/${slug}/og.svg`} {jsonld} />
+<Seo title={`${phase.title} - The Missing Manual`} description={phase.summary} type="article" image={`/guides/${slug}/og.png`} {jsonld} />
 
 <div class="crumb">
   <a href={`/guides/${phase.guide_slug}${q}`}>← Back to guide</a>
