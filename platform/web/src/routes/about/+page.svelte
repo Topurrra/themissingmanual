@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import Seo from '$lib/Seo.svelte';
 
   let halcyonText = $state(''); let halcyonMark = $state(''); let halcyonOpen = $state(false);
   let activePointerId = $state(null);
@@ -47,7 +48,9 @@
   onMount(() => { window.addEventListener('keydown', halcyonKeydown); return () => { window.removeEventListener('keydown', halcyonKeydown); clearArmTimeout(); }; });
 </script>
 
-<svelte:head><title>About - The Missing Manual</title></svelte:head>
+<Seo
+  title="About - The Missing Manual"
+  description="Why The Missing Manual exists: free, plain-language guides to how software really works, written like advice from a senior who actually cares." />
 
 <div style="position: relative;" onpointerdown={startGesture} onpointermove={trackGesture} onpointerup={endGesture} onpointercancel={endGesture}>
   <button onclick={halcyonArm} onblur={halcyonStop} tabindex="-1" aria-label="about-corner" style="position: absolute; left: 4px; top: 4px; width: 12px; height: 12px; opacity: 0; cursor: default; z-index: 50; padding: 0; border: 0; background: transparent;"></button>

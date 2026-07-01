@@ -1,4 +1,10 @@
-<svelte:head><title>Subscribe via RSS - The Missing Manual</title></svelte:head>
+<script>
+  import Seo from '$lib/Seo.svelte';
+</script>
+
+<Seo
+  title="Subscribe via RSS - The Missing Manual"
+  description="Follow The Missing Manual by RSS: new guides and phases the moment they go live. No account, no newsletter." />
 
 <article class="reader" style="max-width: 760px; margin: 0 auto;">
   <span class="eyebrow">RSS</span>

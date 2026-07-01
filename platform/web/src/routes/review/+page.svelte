@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { allCards, loadState, saveState, dueQueue, schedule } from '$lib/srs.js';
   import { confetti } from '$lib/confetti.js';
+  import Seo from '$lib/Seo.svelte';
 
   let stage = 'loading'; // loading | empty | review | done
   let cards = [], state = {}, queue = [], idx = 0, initialLen = 0, reviewed = 0;
@@ -59,7 +60,9 @@
   });
 </script>
 
-<svelte:head><title>Review - The Missing Manual</title></svelte:head>
+<Seo
+  title="Review - The Missing Manual"
+  description="Spaced-repetition review: quick self-check questions to lock in what you've learned." />
 
 {#if stage === 'loading'}
   <div style="min-height:40vh"></div>

@@ -2,6 +2,7 @@
   import { highlight, guardSearchSubmit } from '$lib/search.js';
   import { page } from '$app/stores';
   import AskPanel from '$lib/AskPanel.svelte';
+  import Seo from '$lib/Seo.svelte';
   export let data;
   $: ({ q, hits, suggestion, cmdHits, cmdFirst } = data);
   $: askEnabled = $page.data.askEnabled;
@@ -16,7 +17,9 @@
   }
 </script>
 
-<svelte:head><title>{q ? `Search: ${q}` : 'Search'}</title></svelte:head>
+<Seo
+  title={q ? `Search: ${q} - The Missing Manual` : 'Search - The Missing Manual'}
+  description="Search The Missing Manual's developer guides, cheat sheets, and glossary." />
 
 <h1>Search</h1>
 <form method="GET" action="/search" class="search-field page-search" on:submit={guardSearchSubmit}>

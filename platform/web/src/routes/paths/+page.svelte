@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { LEVELS, generatePath } from '$lib/pathgen.js';
   import { levelLabel } from '$lib/difficulty.js';
+  import Seo from '$lib/Seo.svelte';
 
   export let data;
   $: ({ categories, guides } = data);
@@ -71,7 +72,9 @@
   }
 </script>
 
-<svelte:head><title>Learn - build your path</title></svelte:head>
+<Seo
+  title="Learn - build your path - The Missing Manual"
+  description="Build a personalized learning path through the guides, tuned to your level and interests." />
 
 {#if !ready}
   <div class="path-loading" aria-hidden="true"></div>

@@ -10,7 +10,10 @@
 
   $: origin = siteOrigin($page.url.origin);
   $: canonical = origin + $page.url.pathname;
-  $: ogImage = image ? (image.startsWith('http') ? image : origin + image) : '';
+  // Fall back to the site-wide brand card so every page has a share image.
+  $: ogImage = image
+    ? (image.startsWith('http') ? image : origin + image)
+    : origin + '/og.svg';
   // Build the ld+json script as a string (closing tag split so it can't terminate
   // this component's own <script> block).
   $: ld = jsonld ? '<scr' + 'ipt type="application/ld+json">' + JSON.stringify(jsonld) + '</scr' + 'ipt>' : '';

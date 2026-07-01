@@ -5,6 +5,7 @@
   import { beginnerMode } from '$lib/beginner-store.js';
   import { rand, shuffle, makeMath, makeSequence, makePattern, makeRotation, challengeScore } from '$lib/games.js';
   import { makeWordSearch, WS_PACKS } from '$lib/wordsearch.js';
+  import Seo from '$lib/Seo.svelte';
 
   export let data;
   $: beginnerSlugs = data?.beginnerSlugs ?? [];
@@ -353,7 +354,9 @@
   onDestroy(() => { clearInterval(timer); memGen++; nbGen++; });
 </script>
 
-<svelte:head><title>Train your brain - The Missing Manual</title></svelte:head>
+<Seo
+  title="Train your brain - The Missing Manual"
+  description="Brain games and quizzes to sharpen memory, logic, and the fundamentals." />
 <svelte:window on:keydown={onKey} on:pointerup={wsRelease} />
 
 {#if stage === 'menu'}

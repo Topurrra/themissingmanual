@@ -1,4 +1,10 @@
-<svelte:head><title>Contribute - The Missing Manual</title></svelte:head>
+<script>
+  import Seo from '$lib/Seo.svelte';
+</script>
+
+<Seo
+  title="Contribute - The Missing Manual"
+  description="How to help improve The Missing Manual: suggest topics, fix mistakes, and write guides." />
 
 <article class="reader" style="max-width: 760px; margin: 0 auto;">
   <span class="eyebrow">Contribute</span>
