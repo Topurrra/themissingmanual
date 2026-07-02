@@ -147,13 +147,13 @@
 <style>
   /* A) FAB - the floating "Rate this page" pill, stacked above the bookmark FAB. */
   .fb-fab {
-    position: fixed; right: 54px; bottom: calc(78px + var(--fab-lift, 0px)); z-index: 35;
+    position: fixed; right: calc(54px + var(--tutor-shift, 0px)); bottom: calc(78px + var(--fab-lift, 0px)); z-index: 35;
     display: inline-flex; align-items: center;
     height: 46px; padding: 0 13px;
     border: 1px solid var(--line); border-radius: 999px;
     background: var(--raise); color: var(--muted);
     box-shadow: var(--shadow-md); cursor: pointer; white-space: nowrap;
-    transition: color 0.18s var(--ease), background 0.18s var(--ease), border-color 0.18s var(--ease);
+    transition: color 0.18s var(--ease), background 0.18s var(--ease), border-color 0.18s var(--ease), right 0.3s var(--ease);
   }
   .fb-fab > i { font-size: 20px; flex: none; }
   .fb-label {
@@ -174,7 +174,7 @@
 
   /* Popover anchored above the FAB - styled like .settings-pop / .resume-pill. */
   .fb-pop {
-    position: fixed; right: 22px; bottom: calc(132px + var(--fab-lift, 0px)); z-index: 57;
+    position: fixed; right: calc(22px + var(--tutor-shift, 0px)); bottom: calc(132px + var(--fab-lift, 0px)); z-index: 57;
     width: 264px;
     background: var(--raise);
     border: 1px solid var(--line);
@@ -183,6 +183,7 @@
     padding: 0.9rem 1rem;
     transform-origin: bottom right;
     animation: fb-pop 0.16s var(--ease-out);
+    transition: right 0.3s var(--ease);
   }
   @keyframes fb-pop {
     from { opacity: 0; transform: scale(0.96) translateY(4px); }
@@ -249,4 +250,11 @@
     color: var(--accent-strong); font-weight: 600; font-size: 0.95rem;
   }
   .fb-thanks > i { font-size: 1.05rem; }
+
+  /* The tutor becomes a full overlay at this width (see TutorChat.svelte) -
+     no room being made for it, so this shouldn't dodge it either. */
+  @media (max-width: 920px) {
+    .fb-fab { right: 54px; }
+    .fb-pop { right: 22px; }
+  }
 </style>

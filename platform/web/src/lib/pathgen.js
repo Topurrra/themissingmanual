@@ -51,7 +51,7 @@ export const LEVELS = [
   }
 ];
 
-const DIFF_RANK = { beginner: 0, intermediate: 1, advanced: 2 };
+export const DIFF_RANK = { beginner: 0, intermediate: 1, advanced: 2 };
 
 export function levelById(id) {
   return LEVELS.find((l) => l.id === id) || LEVELS[0];

@@ -99,6 +99,13 @@ When you read "8-core, 3.5 GHz" on an ad, you can now translate it:
 
 The CPU is the worker. But a worker needs a workspace to spread out the things it's using right now — and that's RAM, next.
 
+## Watch the clock
+
+Clock speed isn't just a spec-sheet number - it's a real, continuous signal ticking billions of times a second. Watch it, and see what an unstable clock looks like:
+
+```explainer-clock
+```
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: RAM — the Workspace →](02-ram-the-workspace.md)

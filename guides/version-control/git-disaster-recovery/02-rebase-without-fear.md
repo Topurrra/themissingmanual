@@ -190,3 +190,10 @@ Run commands and watch the history graph build - `commit -m "first"`, `branch de
 
 ```playground-git
 ```
+
+## Watch a rebase happen
+
+Step through what "replay the commits on a new base" actually means, one commit at a time:
+
+```explainer-rebase
+```

@@ -3,10 +3,14 @@
   import { siteOrigin } from '$lib/site.js';
   import Seo from '$lib/Seo.svelte';
   import { quizFor, parseQuizBlock } from '$lib/quizzes.js';
+  import { parseExerciseBlock } from '$lib/exercises.js';
+  import Exercise from '$lib/Exercise.svelte';
+  import ShareTil from '$lib/ShareTil.svelte';
   import Freshness from '$lib/Freshness.svelte';
   import ReaderTools from '$lib/ReaderTools.svelte';
   import Glossary from '$lib/Glossary.svelte';
   import Playgrounds from '$lib/Playgrounds.svelte';
+  import Explainers from '$lib/Explainers.svelte';
   import ReaderTTS from '$lib/ReaderTTS.svelte';
   import Quiz from '$lib/Quiz.svelte';
   import Mermaid from '$lib/Mermaid.svelte';
@@ -39,6 +43,7 @@
   $: guideTitle = $page.data.guideTitle ?? slug;
   $: mdQuiz = parseQuizBlock(phase.markdown);
   $: quiz = mdQuiz && mdQuiz.length ? mdQuiz : quizFor(slug, phase.phase_no);
+  $: exerciseItems = parseExerciseBlock(phase.markdown);
   $: faq = quiz;
   $: jsonld = [
     {
@@ -87,6 +92,10 @@
 
   {#key `${phase.guide_slug}/${phase.phase_no}`}
     <Quiz guideSlug={phase.guide_slug} phaseNo={phase.phase_no} isLast={isLastPhase} questions={quiz} />
+    {#if exerciseItems}
+      <Exercise guideSlug={phase.guide_slug} phaseNo={phase.phase_no} items={exerciseItems} />
+    {/if}
+    <ShareTil guideSlug={phase.guide_slug} phaseNo={phase.phase_no} />
   {/key}
 
   {#if hasFooterNav}
@@ -129,6 +138,7 @@
   <ReaderTools />
   <Glossary />
   <Playgrounds />
+  <Explainers />
   {#if mermaidOn}<Mermaid />{/if}
   {#if runnableOn}<RunnableCode />{/if}
 {/key}

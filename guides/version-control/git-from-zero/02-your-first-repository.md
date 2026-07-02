@@ -182,3 +182,28 @@ Run commands and watch the history graph build - `commit -m "first"`, `branch de
 
 ```playground-git
 ```
+
+## Practice
+
+```exercise
+[
+  {
+    "type": "predict",
+    "task": "You run `git init` in an empty folder, then immediately run `git status`. What does it print?",
+    "accept": ["nothing to commit", "/nothing to commit, working tree clean/i"],
+    "hint": "A brand-new repo has no changes yet - status has nothing to report."
+  },
+  {
+    "type": "predict",
+    "task": "You edit a tracked file but never run `git add`. What does `git commit -m \"update\"` do?",
+    "accept": ["nothing", "/nothing to commit/i", "fails", "/it fails/i", "does nothing"],
+    "hint": "Commit only seals what's staged. An edited-but-unstaged file isn't in the box yet."
+  },
+  {
+    "type": "task",
+    "task": "Create a new folder, turn it into a Git repo, add one file, and make your first commit - from memory, no looking back at the guide.",
+    "reveal": "mkdir my-project && cd my-project, then git init, create a file, git add <file>, then git commit -m \"first commit\".",
+    "checklist": ["Ran git init before anything else", "Checked git status before staging", "Wrote a real commit message, not \"update\"", "Confirmed it worked with git log"]
+  }
+]
+```

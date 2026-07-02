@@ -1,6 +1,7 @@
 import { listCategories, listGuides, getGuide } from '$lib/api.js';
 import { API_BASE } from '$lib/server/adminApi.js';
 import { isAskEnabled } from '$lib/server/aisearch.js';
+import { isTutorEnabled } from '$lib/server/tutor.js';
 
 // Public site config (PUBLIC endpoint). All fields are strings; "" when unset.
 // On any failure we return an all-empty object so the layout's fallbacks render
@@ -50,5 +51,5 @@ export async function load({ fetch, url }) {
     }
   }
 
-  return { nav, guidePhases, guideTitle, siteConfig, askEnabled: isAskEnabled() };
+  return { nav, guidePhases, guideTitle, siteConfig, askEnabled: isAskEnabled(), tutorEnabled: isTutorEnabled() };
 }

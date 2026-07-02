@@ -500,7 +500,7 @@ p { margin: 1rem 0; }
    --------------------------------------------------------------------------- */
 .shell {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: start;
 }
 .sidebar {
@@ -921,13 +921,13 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
    Resume reading - save-your-place bookmark (reader pages)
    --------------------------------------------------------------------------- */
 .read-fab {
-  position: fixed; right: 54px; bottom: calc(22px + var(--fab-lift, 0px)); z-index: 55;
+  position: fixed; right: calc(54px + var(--tutor-shift, 0px)); bottom: calc(22px + var(--fab-lift, 0px)); z-index: 55;
   display: inline-flex; align-items: center;
   height: 46px; padding: 0 13px;
   border: 1px solid var(--line); border-radius: 999px;
   background: var(--raise); color: var(--muted);
   box-shadow: var(--shadow-md); cursor: pointer; white-space: nowrap;
-  transition: color 0.18s var(--ease), background 0.18s var(--ease), border-color 0.18s var(--ease);
+  transition: color 0.18s var(--ease), background 0.18s var(--ease), border-color 0.18s var(--ease), right 0.3s var(--ease);
 }
 .read-fab > i { font-size: 20px; flex: none; }
 .read-fab .rf-label { max-width: 0; opacity: 0; margin-left: 0; overflow: hidden; transition: max-width 0.26s var(--ease), opacity 0.2s var(--ease), margin 0.26s var(--ease); font-size: 0.9rem; }
@@ -964,12 +964,12 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .rp-x:hover { color: var(--ink); }
 
 .read-toast {
-  position: fixed; right: 22px; bottom: 80px; z-index: 56;
+  position: fixed; right: calc(22px + var(--tutor-shift, 0px)); bottom: 80px; z-index: 56;
   background: var(--ink); color: var(--bg);
   font-size: 0.85rem; padding: 0.5rem 0.85rem; border-radius: 10px;
   box-shadow: var(--shadow-md); max-width: 270px;
   opacity: 0; transform: translateY(8px); pointer-events: none;
-  transition: opacity 0.22s var(--ease), transform 0.22s var(--ease);
+  transition: opacity 0.22s var(--ease), transform 0.22s var(--ease), right 0.3s var(--ease);
 }
 .read-toast.show { opacity: 1; transform: none; }
 
@@ -1130,6 +1130,10 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
     animation: backdrop-in 0.2s var(--ease);
   }
   .page-main { padding: 2rem 1.5rem 4rem; }
+  /* The tutor becomes a full overlay at this width (see TutorChat.svelte) -
+     no room being made for it, so these shouldn't dodge it either. */
+  .read-fab { right: 54px; }
+  .read-toast { right: 22px; }
 }
 /* Backdrop is mobile-only; never show it on desktop even if the element renders. */
 @media (min-width: 921px) { .sidebar-backdrop { display: none; } }
@@ -1487,3 +1491,89 @@ a.rank-row:hover .rank-fill { background: var(--accent-tint-2, var(--accent-tint
 .rank-label { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-weight: 500; }
 .rank-count { flex: none; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; color: var(--ink); }
 @media (max-width: 760px) { .rank-cols { grid-template-columns: 1fr; } }
+
+/* -----------------------------------------------------------------------------
+   Interactive explainers - shared "instrument" chrome (platform/web/src/lib/explainers)
+   Every explainer is continuously animated (requestAnimationFrame, not discrete state
+   swaps) and shares this visual shell: a themed bezel holding a fixed-dark "screen"
+   (canvas/SVG lives here - always dark, like a real device display, regardless of
+   site theme) plus a control strip that DOES follow the site theme. Global classes
+   (not component-scoped) so every future explainer component can use them directly,
+   the same way the quiz, exercise, and range-pills classes are already shared.
+   --------------------------------------------------------------------------- */
+.ins-bezel { background: var(--raise); border: 1px solid var(--line); border-radius: 16px; padding: 0.9rem 0.9rem 1rem; }
+.ins-screen { position: relative; background: #0b0f0f; border-radius: 10px; overflow: hidden; display: block; width: 100%; height: 200px; }
+.ins-label {
+  position: absolute; top: 9px; left: 12px; font-family: var(--font-mono); font-size: 10px;
+  color: #5b6266; letter-spacing: 0.06em; text-transform: uppercase; pointer-events: none;
+}
+.ins-live {
+  position: absolute; top: 10px; right: 12px; width: 8px; height: 8px; border-radius: 50%;
+  background: #ff5f5f; box-shadow: 0 0 6px #ff5f5f; animation: ins-pulse 1.6s ease-in-out infinite;
+}
+.ins-live.paused { animation-play-state: paused; opacity: 0.15; }
+@keyframes ins-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+.ins-row { display: flex; align-items: center; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+.ins-lbl { font-size: 12px; color: var(--muted); font-weight: 500; min-width: 80px; }
+.ins-chip {
+  font-family: var(--font-mono); font-size: 11.5px; color: var(--accent-strong);
+  background: var(--accent-tint); border: 1px solid var(--line); border-radius: 7px;
+  padding: 5px 10px; white-space: nowrap;
+}
+.ins-btn {
+  font: inherit; font-size: 12.5px; font-weight: 500; padding: 7px 12px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; transition: border-color 0.15s var(--ease);
+}
+.ins-btn:hover { border-color: var(--accent); }
+.ins-btn .ti { font-size: 15px; }
+
+.ins-range { -webkit-appearance: none; appearance: none; flex: 1; min-width: 100px; height: 4px; border-radius: 999px; background: var(--line); outline: none; }
+.ins-range::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+.ins-range::-moz-range-thumb { width: 16px; height: 16px; border: 0; border-radius: 50%; background: var(--accent); cursor: pointer; }
+
+.ins-switch { position: relative; display: inline-block; width: 38px; height: 22px; flex: none; }
+.ins-switch input { opacity: 0; width: 0; height: 0; }
+.ins-switch-track {
+  position: absolute; inset: 0; background: var(--line); border-radius: 999px; cursor: pointer; transition: background 0.15s var(--ease);
+}
+.ins-switch-track::before {
+  content: ''; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--raise); box-shadow: var(--shadow-sm); transition: transform 0.15s var(--ease);
+}
+.ins-switch input:checked + .ins-switch-track { background: var(--accent); }
+.ins-switch input:checked + .ins-switch-track::before { transform: translateX(16px); }
+
+/* Rendered AI-response markdown - shared by the reader-facing tutor chat
+   (TutorChat.svelte) and the admin chat-test/Compare views. Same color
+   tokens as .reader's own markdown styling, tighter spacing for a narrow
+   chat bubble instead of full article prose. */
+.md-content p { margin: 0 0 0.6rem; }
+.md-content p:last-child { margin-bottom: 0; }
+.md-content h1, .md-content h2, .md-content h3, .md-content h4 { margin: 0.8rem 0 0.4rem; line-height: 1.3; }
+.md-content h1 { font-size: 1.3em; }
+.md-content h2 { font-size: 1.15em; }
+.md-content h3 { font-size: 1.05em; }
+.md-content ul, .md-content ol { margin: 0.3rem 0 0.6rem; padding-left: 1.3rem; }
+.md-content li { margin: 0.15rem 0; }
+.md-content a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.md-content hr { border: none; border-top: 1px solid var(--line); margin: 0.8rem 0; }
+.md-content blockquote {
+  margin: 0.4rem 0; padding: 0.3rem 0 0.3rem 0.8rem; color: var(--muted);
+  border-left: 3px solid var(--accent); background: linear-gradient(90deg, var(--accent-tint-2), transparent);
+  border-radius: 0 8px 8px 0;
+}
+.md-content blockquote p { margin: 0.2rem 0; }
+.md-content table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85em; display: block; overflow-x: auto; max-width: 100%; }
+.md-content th, .md-content td { border: 1px solid var(--line); padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
+.md-content th { background: var(--surface); font-weight: 700; }
+.md-content code.ins-code-inline { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface); color: var(--accent-strong); padding: 0.13em 0.4em; border-radius: 5px; }
+.md-content .code-wrap { margin: 0.5rem 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--code-bg); }
+.md-content .code-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.35rem 0.6rem; background: rgba(255, 255, 255, 0.04); border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+.md-content .code-lang { font-size: 0.7rem; color: var(--muted); font-family: var(--font-mono); text-transform: lowercase; letter-spacing: 0.03em; }
+.md-content .copy-btn { font: inherit; font-size: 0.7rem; font-weight: 600; color: var(--code-fg); background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.12); padding: 0.15rem 0.5rem; border-radius: 6px; cursor: pointer; }
+.md-content .copy-btn:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+.md-content .copy-btn.done { color: #2ecf6b; border-color: rgba(46, 207, 107, 0.4); }
+.md-content .code-wrap pre { margin: 0; padding: 0.7rem 0.75rem; overflow-x: auto; }
+.md-content .code-wrap code { font-family: var(--font-mono); font-size: 0.8rem; color: var(--code-fg); line-height: 1.6; background: none; padding: 0; }

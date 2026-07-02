@@ -193,14 +193,102 @@ What quizzes do automatically:
 
 ---
 
-## 8. Pre-publish checklist
+## 8. Exercises  ← practice, not just multiple choice
+
+Add an `exercise` fenced block holding a **JSON array**. Two item shapes, mix freely:
+
+**`predict`** - deterministic, checked automatically:
+
+````
+```exercise
+[
+  {
+    "type": "predict",
+    "task": "What does `git status` print right after `git init`?",
+    "accept": ["nothing to commit", "/nothing to commit, working tree clean/i"],
+    "hint": "An empty repo has no changes to report yet."
+  }
+]
+```
+````
+
+- `accept` is a list of acceptable answers. A plain string is matched trimmed and
+  case-insensitively; a `"/pattern/flags"` entry is matched as a regex.
+- `hint` (optional) appears after a wrong attempt - it nudges, it doesn't give the answer away.
+- The reader can keep trying; nothing locks until they get it right.
+
+**`task`** - open-ended, self-graded:
+
+````
+```exercise
+[
+  {
+    "type": "task",
+    "task": "Write a function that reverses a string without using [::-1].",
+    "reveal": "Loop from the last index to 0, appending each character - or use reduce.",
+    "checklist": ["Handles an empty string", "Handles a single character", "No built-in reverse used"]
+  }
+]
+```
+````
+
+- `reveal` (optional) is shown behind a "Reveal reference solution" disclosure.
+- `checklist` items are plain self-ticked checkboxes - no right/wrong grading, just a nudge to
+  actually check your own work against real criteria.
+
+Rules:
+- Only add exercises **where they earn their place** - a conceptual phase may have none.
+- Keep each exercise scoped to the ONE thing that phase just taught.
+- Valid **JSON**: double quotes, commas between items, no trailing commas.
+- Place it **just above the navigation line**, like quizzes and playgrounds, with a lead-in
+  sentence.
+
+(If a phase has no `exercise` block, no practice section shows - fine to add later.)
+
+---
+
+## 9. Interactive explainers  ← animated, instrument-style teaching widgets
+
+Different from playgrounds: a playground is a try-it tool (a regex tester, a base
+converter). An explainer teaches **one specific concept** with a continuously
+animated, instrument-styled widget - a live oscilloscope-like trace, a stepper
+with eased motion, always in motion, never a static diagram. Same embedding
+mechanism as playgrounds - drop a fenced block, the site swaps it in:
+
+````
+```explainer-clock
+```
+````
+
+**Available types today:**
+
+| Type | Concept | Lives in |
+|------|---------|----------|
+| `explainer-clock` | CPU clock signal - frequency, period, jitter | Hardware |
+| `explainer-latency` | Network round-trip time - jitter, packet loss | Networking |
+| `explainer-rebase` | Git rebase, replayed step by step | Version control |
+
+None take config - each is a self-contained, ready-to-drop widget. Only add one
+where the concept genuinely benefits from watching it move, not as decoration.
+
+Adding a new type is a code change, not a Markdown-only feature (unlike
+quizzes/exercises) - it's a new Svelte component under
+`platform/web/src/lib/explainers/`, registered in `Explainers.svelte`. Every one
+must be continuously animated (a real animation loop, not a discrete on/off
+state) and use the shared `.ins-*` instrument chrome in `app.css` (the bezel,
+screen, chips, sliders, and switches) so new explainers look like they belong
+next to the existing ones.
+
+---
+
+## 10. Pre-publish checklist
 
 - [ ] Folder named with the slug; files `NN-title.md` + `_guide.md`.
 - [ ] Frontmatter complete on every file; `guide:` equals the folder name; `updated:` set.
 - [ ] `summary` + `synonyms` written as real reader questions.
 - [ ] Each phase ends with the `[← prev] · [Guide overview] · [next →]` line.
-- [ ] Playgrounds/quizzes placed above that line, with a lead-in sentence.
-- [ ] Quiz JSON is valid (answers are 0-based).
+- [ ] Playgrounds/quizzes/exercises placed above that line, with a lead-in sentence.
+- [ ] Quiz JSON is valid (answers are 0-based). Exercise JSON is valid.
 - [ ] Runnable Python snippets actually run.
 
 New guides go live after the server restarts / re-syncs the `guides/` folder.
@@ -215,3 +303,5 @@ New guides go live after the server restarts / re-syncs the `guides/` folder.
 | Runnable Python | ` ```python runnable ` |
 | Diagram | ` ```mermaid ` |
 | Quiz | ` ```quiz ` + JSON array |
+| Practice exercise | ` ```exercise ` + JSON array (`predict` or `task` items) |
+| Animated explainer | ` ```explainer-<type> ` (see the list in section 9) |

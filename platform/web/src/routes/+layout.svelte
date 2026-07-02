@@ -8,6 +8,9 @@
   import CommandPalette from '$lib/CommandPalette.svelte';
   import HeaderSearch from '$lib/HeaderSearch.svelte';
   import Appearance from '$lib/Appearance.svelte';
+  import TutorChat from '$lib/TutorChat.svelte';
+  import TutorToggleButton from '$lib/TutorToggleButton.svelte';
+  import { tutorOpen } from '$lib/tutor-store.js';
   import LofiPlayer from '$lib/LofiPlayer.svelte';
   import PathRail from '$lib/PathRail.svelte';
   import WebMcp from '$lib/WebMcp.svelte';
@@ -33,7 +36,7 @@
   // from a learning-path "Review {topic}" link (?guides=…) we keep the shell so
   // the path rail stays visible and the user can continue.
   $: bare = isHome
-    || ['/about', '/contribute', '/rss', '/paths', '/glossary', '/train', '/changelog'].includes(path)
+    || ['/about', '/contribute', '/rss', '/paths', '/roadmap', '/glossary', '/train', '/changelog'].includes(path)
     || (path === '/review' && !$page.url.searchParams.get('guides'));
   $: currentGuide = (path.match(/^\/guides\/([^/]+)/) || [])[1] || null;
   // The active phase number on /guides/[slug]/[phase] - null on the guide overview.
@@ -272,6 +275,7 @@
         <LofiPlayer />
       {/if}
       <Appearance />
+      <TutorToggleButton />
     </div>
   </header>
 
@@ -368,7 +372,10 @@
         </nav>
       </aside>
       <main class="page-main"><slot /></main>
-      <PathRail guides={pathGuides} categories={pathCategories} currentSlug={currentGuide} />
+      {#if !$tutorOpen}
+        <PathRail guides={pathGuides} categories={pathCategories} currentSlug={currentGuide} />
+      {/if}
+      <TutorChat />
     </div>
   {/if}
 

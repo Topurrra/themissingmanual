@@ -16,6 +16,7 @@
     { href: '/admin/categories', label: 'Categories', icon: 'ti-category' },
     { href: '/admin/analytics', label: 'Analytics', icon: 'ti-chart-bar' },
     { href: '/admin/ai-search', label: 'AI Search', icon: 'ti-sparkles' },
+    { href: '/admin/tutor', label: 'AI Tutor', icon: 'ti-school' },
     { href: '/admin/feedback', label: 'Feedback', icon: 'ti-message-2' },
     { href: '/admin/health', label: 'Health', icon: 'ti-stethoscope' },
     { href: '/admin/operations', label: 'Operations', icon: 'ti-server-cog' },

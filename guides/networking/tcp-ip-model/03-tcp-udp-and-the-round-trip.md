@@ -114,6 +114,13 @@ Walk the three-way handshake one packet at a time:
 ```playground-tcp
 ```
 
+## Watch latency happen
+
+Round-trip time isn't a fixed number - it wobbles, and on a bad connection packets get dropped outright. Watch a live connection and turn the dials:
+
+```explainer-latency
+```
+
 ---
 
 [← Phase 2: The Four Layers](02-the-four-layers.md) · [Guide overview](_guide.md)
