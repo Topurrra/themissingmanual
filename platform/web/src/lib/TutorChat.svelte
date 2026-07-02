@@ -313,7 +313,7 @@
   .tutor-drawer {
     width: 370px; height: 100%; box-sizing: border-box;
     background: var(--raise);
-    padding: 1.1rem 1.2rem 1rem; overflow-y: auto;
+    padding: 1.1rem 1.2rem 1rem; overflow-y: auto; overflow-x: hidden;
     display: flex; flex-direction: column;
   }
   /* Below the sidebar's own off-canvas breakpoint there's no room to push
@@ -329,7 +329,7 @@
     .tutor-drawer { border-left: 1px solid var(--line); box-shadow: -12px 0 32px -8px rgba(19, 19, 22, 0.18); }
   }
   .tutor-sub { color: var(--muted); font-size: 0.82rem; line-height: 1.4; margin: 0 0 0.9rem; }
-  .tutor-log { flex: 1; display: flex; flex-direction: column; gap: 0.6rem; overflow-y: auto; margin-bottom: 0.7rem; min-height: 120px; }
+  .tutor-log { flex: 1; display: flex; flex-direction: column; gap: 0.6rem; overflow-y: auto; overflow-x: hidden; margin-bottom: 0.7rem; min-height: 120px; min-width: 0; }
   .tutor-empty { color: var(--faint); font-size: 0.85rem; }
   .mascot { display: block; width: 56px; height: 56px; margin-bottom: 0.6rem; }
   .mascot-eyes { transform-box: fill-box; transform-origin: center; animation: mascot-blink 5s ease-in-out infinite; }
@@ -343,10 +343,10 @@
     transition: color 0.15s var(--ease), border-color 0.15s var(--ease), background 0.15s var(--ease);
   }
   .tutor-chip:hover { color: var(--ink); border-color: var(--accent); background: var(--accent-tint); }
-  .tutor-msg { max-width: 92%; }
+  .tutor-msg { max-width: 92%; min-width: 0; }
   .tutor-msg.user { align-self: flex-end; text-align: right; }
   .tutor-msg .who { display: block; font-size: 0.7rem; color: var(--faint); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.15rem; }
-  .tutor-msg .bubble { margin: 0; font-size: 0.88rem; line-height: 1.5; white-space: pre-wrap; display: inline-block; padding: 0.5rem 0.7rem; border-radius: 10px; background: var(--surface); text-align: left; }
+  .tutor-msg .bubble { margin: 0; font-size: 0.88rem; line-height: 1.5; white-space: pre-wrap; display: inline-block; max-width: 100%; overflow-wrap: break-word; box-sizing: border-box; padding: 0.5rem 0.7rem; border-radius: 10px; background: var(--surface); text-align: left; }
   .tutor-msg.user .bubble { background: var(--accent-tint); }
   .tutor-msg .bubble.md-content { white-space: normal; }
   .tutor-msg p.thinking { margin: 0; font-size: 0.88rem; display: inline-block; padding: 0.5rem 0.7rem; border-radius: 10px; background: var(--surface); color: var(--muted); font-style: italic; }

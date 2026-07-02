@@ -62,6 +62,21 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ---
 
+## Effort policy
+- Medium by default.
+- High only for: hard debugging, multi-file refactors,
+  architecture calls.
+- Low for: formatting, renames, boilerplate.
+
+## Model routing
+- Default to Sonnet 5 for everything.
+- Escalate to Opus 4.8 only after two failed Sonnet attempts,
+  or for the deepest reasoning tasks.
+
+## Cost note
+- Intro pricing ($2/$10) ends Aug 31, 2026. Run large batch
+  jobs before then where possible.
+
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
 # The Missing Manual — project notes
