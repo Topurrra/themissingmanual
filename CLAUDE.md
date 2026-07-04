@@ -94,7 +94,7 @@ guide, drop it in the folder matching its `category:` frontmatter. The category 
 category slug in `platform/core/src/categories.rs` `DEFS`.
 
 ## Design system
-Read `DESIGN.md` before any visual or UI change. Fonts, colors, spacing, and aesthetic are defined
+Read `docs/DESIGN.md` before any visual or UI change. Fonts, colors, spacing, and aesthetic are defined
 there. Don't deviate without explicit approval.
 
 ## Run the platform (dev)

@@ -10,13 +10,24 @@ Thumbs.db
 /.cache/
 # Rust
 /platform/target/
-# Ingest output (generated SQLite DB + Tantivy index)
+# Ingest output (generated SQLite DB + Tantivy index) - every variant that has
+# shown up across dev/verify runs, not just one path
+.data/
 platform/.data/
+platform/web/.data/
+platform/web/data/
+*.db
+*.sqlite
+*.sqlite3
 # Web (SvelteKit)
 platform/web/node_modules/
 platform/web/.svelte-kit/
 platform/web/build/
 .gstack/
+# Internal-only: planning docs, dev notes, and AI-tooling config - not part of
+# the public-facing repo (README.md + LICENSE* at root cover that).
+/docs/
+.claude/
 # Project data dir: ignore its contents, but keep the AI Search folder. The
 # aisearch .db files stay ignored; the .gitkeep placeholder is tracked so the
 # docker-compose bind mount (./data/aisearch) always has a target.
