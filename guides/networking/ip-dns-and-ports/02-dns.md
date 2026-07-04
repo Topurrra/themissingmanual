@@ -118,6 +118,8 @@ Follow a single lookup as it travels from your machine out to the root, TLD, and
 ```playground-dns
 ```
 
+Watch it animated: [DNS resolution](/explainers/DNS.dc.html)
+
 ---
 
 [← Phase 1: IP Addresses](01-ip-addresses.md) · [Guide overview](_guide.md) · [Phase 3: Ports - One Machine, Many Doors →](03-ports.md)

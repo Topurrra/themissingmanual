@@ -87,6 +87,8 @@ Step through exactly what happens - watch the call stack empty, then microtasks 
 ```playground-eventloop
 ```
 
+Watch it animated: [the event loop](/explainers/EventLoop.dc.html)
+
 ---
 
 [← Phase 1: Why Async Exists](01-why-async-exists.md) · [Guide overview](_guide.md) · [Phase 3: Promises & async/await →](03-promises-and-async-await.md)

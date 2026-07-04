@@ -101,4 +101,6 @@ Click a word to see its nearest neighbours. Similar meanings sit close together 
 ```playground-embed
 ```
 
+Watch it animated: [embeddings](/explainers/Embeddings.dc.html)
+
 [← Guide overview](_guide.md) · [Phase 2: Measuring Similarity →](02-measuring-similarity.md)

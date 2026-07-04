@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Explained — All Topics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { margin: 0; }
+    .home-card:hover { transform: translateY(-3px); }
+    [data-theme="missingmanual"] .git-card,
+    [data-theme="missingmanual"] .git-badge {
+      border-width: 1px !important;
+      border-color: oklch(0.9 0.003 260) !important;
+      box-shadow: none !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    [data-theme="missingmanual"] .git-card:hover {
+      border-color: oklch(0.5 0.08 200) !important;
+    }
+    [data-theme="missingmanual"] .mm-brand {
+      visibility: visible !important;
+    }
+  </style>
+</helmet>
+
+<div data-screen-label="Home" data-theme="{{ activeThemeKey }}" style="min-height:100vh;{{ themeVars }}background:var(--bg);background-image:radial-gradient(var(--dot) 1.4px, transparent 1.4px);background-size:26px 26px;font-family:var(--font-heading);color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:40px 24px 60px;box-sizing:border-box;">
+
+  <div style="max-width:1100px;width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <span class="mm-brand" style="display:inline-flex;visibility:hidden;align-items:center;gap:6px;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:0.02em;color:var(--muted);">The Missing Manual</span>
+    <div style="display:flex;align-items:center;gap:7px;">
+      <sc-for list="{{ swatches }}" as="sw" hint-placeholder-count="4">
+        <div onClick="{{ sw.onClick }}" title="{{ sw.label }}" style="{{ sw.style }}"></div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="max-width:760px;width:100%;text-align:center;margin-bottom:48px;">
+    <div class="git-badge" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);background:var(--paper);border:2px solid var(--ink);border-radius:999px;padding:6px 16px;margin-bottom:24px;box-shadow:3px 3px 0 var(--ink);">
+      <span>interactive guides</span>
+    </div>
+    <h1 style="font-size:52px;line-height:1.1;margin:0 0 16px;font-weight:700;letter-spacing:-0.02em;">Explained, one step at a time.</h1>
+    <p style="font-size:18px;line-height:1.6;color:var(--muted);max-width:560px;margin:0 auto;">Pick a topic below — every course is the same click-through format: pick a step, see it change, move on.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;max-width:1100px;width:100%;">
+
+    <sc-for list="{{ topics }}" as="topic" hint-placeholder-count="15">
+      <a class="home-card git-card" href="{{ topic.href }}" style="{{ topic.style }}">
+        <div style="font-family:var(--font-mono);font-size:12px;color:var(--muted);margin-bottom:8px;">{{ topic.num }}</div>
+        <h2 style="font-size:19px;margin:0 0 6px;font-weight:600;">{{ topic.title }}</h2>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.4;margin:0;">{{ topic.desc }}</p>
+      </a>
+    </sc-for>
+
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('gitExplainerTheme')) || 'paper' };
+
+  topicDefs = [
+    { href: 'index.dc.html', title: 'Git, Explained', desc: 'Staging, commits, branching, merging, rebasing, remotes.' },
+    { href: 'ProgConcepts.dc.html', title: 'Programming Concepts', desc: 'Stack/heap, pointers, recursion, closures, async.' },
+    { href: 'Networking.dc.html', title: 'Networking', desc: 'DNS, TCP, HTTP, TLS, load balancing, NAT.' },
+    { href: 'Databases.dc.html', title: 'Databases', desc: 'ACID, indexes, joins, keys, replication, sharding.' },
+    { href: 'OperatingSystems.dc.html', title: 'Operating Systems', desc: 'Boot, processes, memory, scheduling, deadlocks.' },
+    { href: 'Architecture.dc.html', title: 'Architecture', desc: 'Monoliths, caching, queues, gateways, CAP theorem.' },
+    { href: 'Security.dc.html', title: 'Security', desc: 'Encryption, hashing, auth, injection, XSS, 2FA.' },
+    { href: 'DevOps.dc.html', title: 'DevOps & Infrastructure', desc: 'CI/CD, containers, IaC, deployments, scaling.' },
+    { href: 'APIs.dc.html', title: 'APIs & Integration', desc: 'REST/GraphQL, webhooks, OAuth, rate limits.' },
+    { href: 'AIML.dc.html', title: 'AI & Machine Learning', desc: 'Neural nets, training, gradient descent, embeddings.' },
+    { href: 'Debugging.dc.html', title: 'Debugging & Troubleshooting', desc: 'Stack traces, bisecting, breakpoints, root cause.' },
+    { href: 'Performance.dc.html', title: 'Performance', desc: 'Big O, N+1 queries, lazy loading, caching, debouncing.' },
+    { href: 'Hardware.dc.html', title: 'Hardware', desc: 'CPU vs GPU, RAM, SSD/HDD, caches, cores, bits.' },
+    { href: 'DataAnalytics.dc.html', title: 'Data & Analytics', desc: 'ETL, OLTP/OLAP, streaming, warehouses, A/B tests.' },
+    { href: 'Logic.dc.html', title: 'Logic', desc: 'Boolean operators, truth tables, gates, branching.' },
+  ];
+
+  themes = {
+    paper: { bg: '0.975 0.01 85', dot: '0.23 0.02 75', dotA: 0.08, ink: '0.23 0.02 75', muted: '0.5 0.015 75', paper: '0.99 0.01 95', accent: '0.68 0.17 45', accentText: 'white', secondary: '0.6 0.13 250', chipBg: '0.23 0.02 75', chipText: '0.97 0.01 85', font: "'Space Grotesk', sans-serif", fontMono: "'IBM Plex Mono', monospace" },
+    chalkboard: { bg: '0.27 0.03 250', dot: '0.96 0.01 90', dotA: 0.08, ink: '0.95 0.01 90', muted: '0.78 0.02 250', paper: '0.34 0.03 250', accent: '0.8 0.14 85', accentText: 'oklch(0.2 0.02 250)', secondary: '0.78 0.1 220', chipBg: '0.18 0.02 250', chipText: '0.9 0.05 85', font: "'Space Grotesk', sans-serif", fontMono: "'IBM Plex Mono', monospace" },
+    terminal: { bg: '0.16 0.01 240', dot: '0.75 0.15 145', dotA: 0.12, ink: '0.88 0.03 145', muted: '0.55 0.1 145', paper: '0.21 0.01 240', accent: '0.72 0.17 145', accentText: 'oklch(0.1 0.02 240)', secondary: '0.72 0.15 195', chipBg: '0.1 0.01 240', chipText: '0.75 0.15 145', font: "'IBM Plex Mono', monospace", fontMono: "'IBM Plex Mono', monospace" },
+    missingmanual: { bg: '0.99 0.002 260', dot: '0.99 0.002 260', dotA: 0, ink: '0.15 0.005 260', muted: '0.42 0.02 265', paper: '1 0 0', accent: '0.5 0.09 200', accentText: 'white', secondary: '0.5 0.09 200', chipBg: '0.15 0.005 260', chipText: '0.99 0.002 260', font: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", fontMono: "'JetBrains Mono', 'SF Mono', Consolas, monospace" },
+  };
+  themeOptions = [
+    { key: 'paper', label: 'Paper', swatch: 'oklch(0.94 0.02 85)' },
+    { key: 'chalkboard', label: 'Chalkboard', swatch: 'oklch(0.3 0.03 250)' },
+    { key: 'terminal', label: 'Terminal', swatch: 'oklch(0.18 0.02 240)' },
+    { key: 'missingmanual', label: 'Missing Manual', swatch: 'oklch(0.5 0.09 200)' },
+  ];
+
+  col(vals, alpha) { return alpha != null ? `oklch(${vals} / ${alpha})` : `oklch(${vals})`; }
+  get t() { return this.themes[this.state.theme] || this.themes.paper; }
+  setTheme(key) { this.setState({ theme: key }); try { localStorage.setItem('gitExplainerTheme', key); } catch (e) {} }
+
+  renderVals() {
+    const t = this.t;
+    const themeVars = `--bg:${this.col(t.bg)};--dot:${this.col(t.dot, t.dotA)};--ink:${this.col(t.ink)};--muted:${this.col(t.muted)};--paper:${this.col(t.paper)};--accent:${this.col(t.accent)};--accent-text:${t.accentText};--chip-bg:${this.col(t.chipBg)};--chip-text:${this.col(t.chipText)};--font-heading:${t.font};--font-mono:${t.fontMono};`;
+
+    const topics = this.topicDefs.map((d, i) => ({
+      href: d.href, title: d.title, desc: d.desc,
+      num: String(i + 1).padStart(2, '0'),
+      style: `text-decoration:none;color:inherit;display:block;background:${this.col(t.paper)};border:2.5px solid ${this.col(t.ink)};border-radius:12px;padding:20px;box-shadow:4px 4px 0 ${this.col(t.ink)};transition:transform 0.15s ease;`,
+    }));
+
+    const swatches = this.themeOptions.map(o => ({
+      label: o.label, onClick: () => this.setTheme(o.key),
+      style: `width:22px;height:22px;border-radius:50%;cursor:pointer;background:${o.swatch};border:2px solid ${o.key === this.state.theme ? this.col(t.ink) : 'rgba(120,110,95,0.35)'};box-shadow:${o.key === this.state.theme ? `0 0 0 2px ${this.col(t.bg)}, 0 0 0 4px ${this.col(t.ink)}` : 'none'};transition:all 0.2s ease;`,
+    }));
+
+    return { themeVars, swatches, topics, activeThemeKey: this.state.theme };
+  }
+}
+
+</script>
+</body>
+</html>

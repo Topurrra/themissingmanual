@@ -131,6 +131,8 @@ That's it. Powerful, genuinely useful, occasionally surprising — but not magic
 downhill, an honest exam at the end, and numbers that are only ever as good as the examples that shaped
 them.
 
+Watch it animated: [overfitting](/explainers/Overfitting.dc.html)
+
 ---
 
 [← Phase 2: Learning by Being Wrong](02-learning-by-being-wrong.md) · [Guide overview](_guide.md)

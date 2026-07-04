@@ -98,6 +98,8 @@ When something goes wrong with HTTPS, knowing the handshake order tells you *whe
 5. The handshake authenticates the **server to you** by default; your login authenticates **you to the server** afterward, inside the tunnel.
 6. TLS sits between **HTTP** and **TCP** - it secures the reliable connection that TCP/IP already built.
 
+Watch it animated: [the TLS handshake](/explainers/TLSHandshake.dc.html) and [encryption](/explainers/Encryption.dc.html)
+
 ---
 
 [← Phase 1: What HTTPS Protects (and Doesn't)](01-what-https-protects.md) · [Phase 3: Certificates & Trust →](03-certificates-and-trust.md)

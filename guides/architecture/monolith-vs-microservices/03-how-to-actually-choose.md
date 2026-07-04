@@ -97,6 +97,8 @@ That's the whole decision, told fairly: two real architectures, each with genuin
 
 > To go deeper on the pieces this guide touched: [What "Architecture" Means](/guides/what-architecture-means) for the foundations, [Designing for Scale](/guides/designing-for-scale) for scaling any service well, and [Webhooks and Message Queues](/guides/webhooks-and-message-queues) for the communication glue between services.
 
+Watch it animated: [monolith vs. microservices](/explainers/MonolithMicroservices.dc.html)
+
 ---
 
 [← Phase 2: Microservices](02-microservices.md) · [Guide overview](_guide.md)

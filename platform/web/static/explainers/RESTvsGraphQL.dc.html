@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>REST vs. GraphQL — APIs &amp; Integration, Explained</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { margin: 0; }
+    .git-nav-btn:disabled { opacity: 0.35; cursor: default; }
+    [data-theme="missingmanual"] .git-nav-btn,
+    [data-theme="missingmanual"] .mm-zone,
+    [data-theme="missingmanual"] .mm-box {
+      border-width: 1px !important;
+      border-color: oklch(0.9 0.003 260) !important;
+      box-shadow: none !important;
+      transition: none !important;
+    }
+    [data-theme="missingmanual"] .mm-brand {
+      visibility: visible !important;
+    }
+  </style>
+</helmet>
+
+<div data-screen-label="{{ stepLabel }}" data-theme="{{ activeThemeKey }}" style="min-height:100vh;{{ themeVars }}background:var(--bg);background-image:radial-gradient(var(--dot) 1.4px, transparent 1.4px);background-size:26px 26px;font-family:var(--font-heading);color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:28px 24px 40px;box-sizing:border-box;">
+
+  <div style="max-width:1080px;width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <a href="APIs.dc.html" style="text-decoration:none;color:var(--ink);font-family:var(--font-mono);font-size:14px;display:flex;align-items:center;gap:6px;">&larr; all concepts</a>
+      <span class="mm-brand" style="display:inline-flex;visibility:hidden;align-items:center;gap:6px;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:0.02em;color:var(--muted);">The Missing Manual</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-family:var(--font-mono);font-size:13px;color:var(--muted);">01</span>
+      <h1 style="font-size:20px;margin:0;font-weight:600;">REST vs. GraphQL</h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="display:flex;align-items:center;gap:7px;">
+        <sc-for list="{{ swatches }}" as="sw" hint-placeholder-count="4">
+          <div onClick="{{ sw.onClick }}" title="{{ sw.label }}" style="{{ sw.style }}"></div>
+        </sc-for>
+      </div>
+      <span style="font-family:var(--font-mono);font-size:13px;color:var(--muted);">{{ stepCounter }}</span>
+    </div>
+  </div>
+
+  <div style="max-width:1080px;width:100%;text-align:left;margin-bottom:18px;">
+    <h2 style="font-size:26px;line-height:1.4;font-weight:600;margin:0 0 12px;max-width:780px;">{{ caption }}</h2>
+    <sc-if value="{{ hasCommand }}" hint-placeholder-val="{{ false }}">
+      <div style="display:inline-block;font-family:var(--font-mono);font-size:15px;background:var(--chip-bg);color:var(--chip-text);padding:8px 16px;border-radius:8px;white-space:pre-line;">
+        <span style="opacity:0.5;">&gt;</span> {{ command }}
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="position:relative;width:860px;max-width:100%;height:320px;">
+
+    <div class="mm-zone" style="{{ restZoneStyle }}">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--muted);margin-bottom:8px;">REST</div>
+      <div class="mm-box" style="{{ restClientStyle }}">Client</div>
+      <div class="mm-box" style="{{ usersEndpointStyle }}">GET /users/42<br/><span style="font-size:11px;opacity:0.7;">{{ usersResponse }}</span></div>
+      <div class="mm-box" style="{{ postsEndpointStyle }}">GET /users/42/posts</div>
+    </div>
+
+    <div class="mm-zone" style="{{ gqlZoneStyle }}">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--muted);margin-bottom:8px;">GraphQL</div>
+      <div class="mm-box" style="{{ gqlClientStyle }}">Client</div>
+      <div class="mm-box" style="{{ gqlEndpointStyle }}">POST /graphql<br/><span style="font-size:11px;opacity:0.7;">{{ gqlResponse }}</span></div>
+    </div>
+
+  </div>
+
+  <div style="max-width:1080px;width:100%;display:flex;align-items:center;justify-content:center;gap:20px;margin-top:20px;">
+    <button class="git-nav-btn" onClick="{{ prevStep }}" disabled="{{ atStart }}" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:10px 20px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;color:var(--ink);">&larr; Back</button>
+
+    <div style="display:flex;gap:8px;">
+      <sc-for list="{{ dots }}" as="dot" hint-placeholder-count="5">
+        <div onClick="{{ dot.goTo }}" style="{{ dot.style }}"></div>
+      </sc-for>
+    </div>
+
+    <button class="git-nav-btn" onClick="{{ nextStep }}" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;background:var(--accent);border:2px solid var(--ink);border-radius:8px;padding:10px 20px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;color:var(--accent-text);">{{ nextLabel }}</button>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { step: 0, theme: (typeof localStorage !== 'undefined' && localStorage.getItem('gitExplainerTheme')) || 'paper' };
+
+  steps = [
+    { caption: "Both REST and GraphQL let a client ask a server for data — but they structure that conversation very differently.", command: null, restActive: false, gqlActive: false, usersResp: 'name, email, address, bio...', gqlResp: '' },
+    { caption: "REST: fetching a user's profile and their posts takes TWO separate requests to two different endpoints.", command: 'GET /users/42\nGET /users/42/posts', restActive: true, gqlActive: false, usersResp: 'name, email, address, bio...', gqlResp: '' },
+    { caption: "Worse, that response might include fields you don't need — name, email, address, bio — even if you only wanted the name (over-fetching).", command: null, restActive: true, gqlActive: false, usersResp: 'name, email, address, bio... \u26a0 unused', gqlResp: '' },
+    { caption: "GraphQL: the client sends ONE query describing exactly what fields it wants, from multiple resources, in a single round trip.", command: 'query { user(id:42){ name posts{title} } }', restActive: false, gqlActive: true, usersResp: '', gqlResp: '{ name, posts: [title] }' },
+    { caption: "One request, exactly the shape you asked for — no over-fetching, no extra round trips.", command: null, restActive: false, gqlActive: true, usersResp: '', gqlResp: '{ name, posts: [title] }' },
+  ];
+
+  themes = {
+    paper: {
+      bg: '0.975 0.01 85', dot: '0.23 0.02 75', dotA: 0.08, ink: '0.23 0.02 75', muted: '0.5 0.015 75',
+      paper: '0.99 0.01 95', accent: '0.68 0.17 45', accentText: 'white', secondary: '0.6 0.13 250',
+      chipBg: '0.23 0.02 75', chipText: '0.97 0.01 85', font: "'Space Grotesk', sans-serif",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    chalkboard: {
+      bg: '0.27 0.03 250', dot: '0.96 0.01 90', dotA: 0.08, ink: '0.95 0.01 90', muted: '0.78 0.02 250',
+      paper: '0.34 0.03 250', accent: '0.8 0.14 85', accentText: 'oklch(0.2 0.02 250)', secondary: '0.78 0.1 220',
+      chipBg: '0.18 0.02 250', chipText: '0.9 0.05 85', font: "'Space Grotesk', sans-serif",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    terminal: {
+      bg: '0.16 0.01 240', dot: '0.75 0.15 145', dotA: 0.12, ink: '0.88 0.03 145', muted: '0.55 0.1 145',
+      paper: '0.21 0.01 240', accent: '0.72 0.17 145', accentText: 'oklch(0.1 0.02 240)', secondary: '0.72 0.15 195',
+      chipBg: '0.1 0.01 240', chipText: '0.75 0.15 145', font: "'IBM Plex Mono', monospace",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    missingmanual: {
+      bg: '0.99 0.002 260', dot: '0.99 0.002 260', dotA: 0, ink: '0.15 0.005 260', muted: '0.42 0.02 265',
+      paper: '1 0 0', accent: '0.5 0.09 200', accentText: 'white', secondary: '0.5 0.09 200',
+      chipBg: '0.15 0.005 260', chipText: '0.99 0.002 260',
+      font: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      fontMono: "'JetBrains Mono', 'SF Mono', Consolas, monospace",
+    },
+  };
+  themeOptions = [
+    { key: 'paper', label: 'Paper', swatch: 'oklch(0.94 0.02 85)' },
+    { key: 'chalkboard', label: 'Chalkboard', swatch: 'oklch(0.3 0.03 250)' },
+    { key: 'terminal', label: 'Terminal', swatch: 'oklch(0.18 0.02 240)' },
+    { key: 'missingmanual', label: 'Missing Manual', swatch: 'oklch(0.5 0.09 200)' },
+  ];
+
+  col(vals, alpha) {
+    return alpha != null ? `oklch(${vals} / ${alpha})` : `oklch(${vals})`;
+  }
+
+  get t() {
+    return this.themes[this.state.theme] || this.themes.paper;
+  }
+
+  setTheme(key) {
+    this.setState({ theme: key });
+    try { localStorage.setItem('gitExplainerTheme', key); } catch (e) {}
+  }
+
+  renderVals() {
+    const t = this.t;
+    const step = this.steps[this.state.step];
+
+    const zoneStyle = (top, active) => `position:absolute;left:0px;top:${top}px;width:860px;height:140px;border:2.5px solid ${active ? this.col(t.accent) : this.col(t.ink)};border-radius:14px;background:${this.col(t.paper, 0.35)};padding:16px;box-sizing:border-box;transition:border-color 0.4s ease;`;
+    const restZoneStyle = zoneStyle(0, step.restActive);
+    const gqlZoneStyle = zoneStyle(170, step.gqlActive);
+
+    const nodeStyle = (x, y, w, active) => `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:70px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;background:${this.col(t.paper)};border:2px solid ${active ? this.col(t.accent) : this.col(t.ink)};border-radius:10px;font-family:var(--font-mono);font-size:12px;font-weight:500;transition:border-color 0.4s ease;`;
+
+    const restClientStyle = nodeStyle(30, 50, 140, step.restActive);
+    const usersEndpointStyle = nodeStyle(340, 20, 230, step.restActive);
+    const postsEndpointStyle = nodeStyle(340, 90, 230, step.restActive);
+
+    const gqlClientStyle = nodeStyle(30, 50, 140, step.gqlActive);
+    const gqlEndpointStyle = nodeStyle(340, 55, 260, step.gqlActive);
+
+    const dots = this.steps.map((s, i) => ({
+      goTo: () => this.setState({ step: i }),
+      style: `width:${i === this.state.step ? 22 : 10}px;height:10px;border-radius:6px;background:${i === this.state.step ? this.col(t.ink) : this.col(t.ink, 0.25)};cursor:pointer;transition:all 0.25s ease;`,
+    }));
+
+    const swatches = this.themeOptions.map(o => ({
+      label: o.label,
+      onClick: () => this.setTheme(o.key),
+      style: `width:22px;height:22px;border-radius:50%;cursor:pointer;background:${o.swatch};border:2px solid ${o.key === this.state.theme ? this.col(t.ink) : 'rgba(120,110,95,0.35)'};box-shadow:${o.key === this.state.theme ? `0 0 0 2px ${this.col(t.bg)}, 0 0 0 4px ${this.col(t.ink)}` : 'none'};transition:all 0.2s ease;`,
+    }));
+
+    const themeVars = `--bg:${this.col(t.bg)};--dot:${this.col(t.dot, t.dotA)};--ink:${this.col(t.ink)};--muted:${this.col(t.muted)};--paper:${this.col(t.paper)};--accent:${this.col(t.accent)};--accent-text:${t.accentText};--chip-bg:${this.col(t.chipBg)};--chip-text:${this.col(t.chipText)};--font-heading:${t.font};--font-mono:${t.fontMono};`;
+
+    return {
+      themeVars, swatches, activeThemeKey: this.state.theme,
+      stepLabel: `REST vs GraphQL – step ${this.state.step + 1}/${this.steps.length}`,
+      stepCounter: `${this.state.step + 1} / ${this.steps.length}`,
+      caption: step.caption,
+      command: step.command,
+      hasCommand: !!step.command,
+      restZoneStyle, gqlZoneStyle,
+      restClientStyle, usersEndpointStyle, postsEndpointStyle, usersResponse: step.usersResp,
+      gqlClientStyle, gqlEndpointStyle, gqlResponse: step.gqlResp,
+      dots,
+      atStart: this.state.step === 0,
+      nextLabel: this.state.step === this.steps.length - 1 ? 'Restart ↺' : 'Next →',
+      prevStep: () => this.setState(s => ({ step: Math.max(0, s.step - 1) })),
+      nextStep: () => this.setState(s => ({ step: s.step === this.steps.length - 1 ? 0 : s.step + 1 })),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

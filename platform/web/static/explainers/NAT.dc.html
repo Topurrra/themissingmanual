@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>NAT &amp; Ports — Networking, Explained</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { margin: 0; }
+    .git-nav-btn:disabled { opacity: 0.35; cursor: default; }
+    [data-theme="missingmanual"] .git-nav-btn,
+    [data-theme="missingmanual"] .mm-zone,
+    [data-theme="missingmanual"] .mm-node {
+      border-width: 1px !important;
+      border-color: oklch(0.9 0.003 260) !important;
+      box-shadow: none !important;
+      transition: none !important;
+    }
+    [data-theme="missingmanual"] .mm-brand {
+      visibility: visible !important;
+    }
+  </style>
+</helmet>
+
+<div data-screen-label="{{ stepLabel }}" data-theme="{{ activeThemeKey }}" style="min-height:100vh;{{ themeVars }}background:var(--bg);background-image:radial-gradient(var(--dot) 1.4px, transparent 1.4px);background-size:26px 26px;font-family:var(--font-heading);color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:28px 24px 40px;box-sizing:border-box;">
+
+  <div style="max-width:1080px;width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <a href="Networking.dc.html" style="text-decoration:none;color:var(--ink);font-family:var(--font-mono);font-size:14px;display:flex;align-items:center;gap:6px;">&larr; all concepts</a>
+      <span class="mm-brand" style="display:inline-flex;visibility:hidden;align-items:center;gap:6px;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:0.02em;color:var(--muted);">The Missing Manual</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-family:var(--font-mono);font-size:13px;color:var(--muted);">06</span>
+      <h1 style="font-size:20px;margin:0;font-weight:600;">NAT &amp; Ports</h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="display:flex;align-items:center;gap:7px;">
+        <sc-for list="{{ swatches }}" as="sw" hint-placeholder-count="4">
+          <div onClick="{{ sw.onClick }}" title="{{ sw.label }}" style="{{ sw.style }}"></div>
+        </sc-for>
+      </div>
+      <span style="font-family:var(--font-mono);font-size:13px;color:var(--muted);">{{ stepCounter }}</span>
+    </div>
+  </div>
+
+  <div style="max-width:1080px;width:100%;text-align:left;margin-bottom:18px;">
+    <h2 style="font-size:26px;line-height:1.4;font-weight:600;margin:0 0 12px;max-width:780px;">{{ caption }}</h2>
+    <sc-if value="{{ hasCommand }}" hint-placeholder-val="{{ false }}">
+      <div style="display:inline-block;font-family:var(--font-mono);font-size:15px;background:var(--chip-bg);color:var(--chip-text);padding:8px 16px;border-radius:8px;">
+        <span style="opacity:0.5;">&gt;</span> {{ command }}
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="position:relative;width:860px;max-width:100%;height:380px;">
+
+    <div class="mm-zone" style="{{ homeZoneStyle }}">
+      <div style="font-family:var(--font-mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);">Home Network</div>
+    </div>
+
+    <div class="mm-zone" style="{{ internetZoneStyle }}">
+      <div style="font-family:var(--font-mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);">Public Internet</div>
+    </div>
+
+    <div class="mm-node" style="{{ laptopStyle }}">Laptop<br/><span style="font-size:11px;opacity:0.7;">192.168.1.10</span></div>
+    <div class="mm-node" style="{{ phoneStyle }}">Phone<br/><span style="font-size:11px;opacity:0.7;">192.168.1.11</span></div>
+    <div class="mm-node" style="{{ routerStyle }}">Router (NAT)</div>
+    <div class="mm-node" style="{{ publicStyle }}">Public IP<br/><span style="font-size:11px;opacity:0.7;">203.0.113.7</span></div>
+
+    <sc-for list="{{ tableRows }}" as="row" hint-placeholder-count="2">
+      <div style="{{ row.style }}">{{ row.text }}</div>
+    </sc-for>
+
+    <div style="{{ packetStyle }}">{{ packetLabel }}</div>
+
+  </div>
+
+  <div style="max-width:1080px;width:100%;display:flex;align-items:center;justify-content:center;gap:20px;margin-top:20px;">
+    <button class="git-nav-btn" onClick="{{ prevStep }}" disabled="{{ atStart }}" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:10px 20px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;color:var(--ink);">&larr; Back</button>
+
+    <div style="display:flex;gap:8px;">
+      <sc-for list="{{ dots }}" as="dot" hint-placeholder-count="5">
+        <div onClick="{{ dot.goTo }}" style="{{ dot.style }}"></div>
+      </sc-for>
+    </div>
+
+    <button class="git-nav-btn" onClick="{{ nextStep }}" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;background:var(--accent);border:2px solid var(--ink);border-radius:8px;padding:10px 20px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;color:var(--accent-text);">{{ nextLabel }}</button>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { step: 0, theme: (typeof localStorage !== 'undefined' && localStorage.getItem('gitExplainerTheme')) || 'paper' };
+
+  laptop = { x: 50, y: 50, w: 200, h: 70 };
+  phone = { x: 50, y: 160, w: 200, h: 70 };
+  router = { x: 320, y: 130, w: 180, h: 100 };
+  pub = { x: 580, y: 130, w: 220, h: 100 };
+  home = { x: 20, y: 20, w: 260, h: 300 };
+  internet = { x: 560, y: 20, w: 280, h: 300 };
+
+  steps = [
+    { caption: "Your home devices each have a private IP address that only works inside your own network.", command: null, rows: {}, packet: null },
+    { caption: "When your laptop sends a request out, the router's NAT swaps its private address for its own public IP \u2014 and assigns a port to track the connection.", command: 'src: 192.168.1.10:5555 \u2192 203.0.113.7:40001', rows: { laptop: true }, packet: { at: 'internet', label: 'from laptop \u2192 :40001' } },
+    { caption: "Your phone does the same thing at the same moment \u2014 same public IP, but a different port keeps the two connections apart.", command: 'src: 192.168.1.11:5555 \u2192 203.0.113.7:40002', rows: { laptop: true, phone: true }, packet: { at: 'internet', label: 'from phone \u2192 :40002' } },
+    { caption: "When a reply comes back addressed to port 40001, the NAT table tells the router exactly which device gets it.", command: 'dst: 203.0.113.7:40001 \u2192 192.168.1.10:5555', rows: { laptop: true, phone: true }, packet: { at: 'laptop', label: ':40001 \u2192 laptop' } },
+    { caption: "One public IP, many devices at once \u2014 the port number is what makes it work.", command: null, rows: { laptop: true, phone: true }, packet: null },
+  ];
+
+  themes = {
+    paper: {
+      bg: '0.975 0.01 85', dot: '0.23 0.02 75', dotA: 0.08, ink: '0.23 0.02 75', muted: '0.5 0.015 75',
+      paper: '0.99 0.01 95', accent: '0.68 0.17 45', accentText: 'white', secondary: '0.6 0.13 250',
+      chipBg: '0.23 0.02 75', chipText: '0.97 0.01 85', font: "'Space Grotesk', sans-serif",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    chalkboard: {
+      bg: '0.27 0.03 250', dot: '0.96 0.01 90', dotA: 0.08, ink: '0.95 0.01 90', muted: '0.78 0.02 250',
+      paper: '0.34 0.03 250', accent: '0.8 0.14 85', accentText: 'oklch(0.2 0.02 250)', secondary: '0.78 0.1 220',
+      chipBg: '0.18 0.02 250', chipText: '0.9 0.05 85', font: "'Space Grotesk', sans-serif",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    terminal: {
+      bg: '0.16 0.01 240', dot: '0.75 0.15 145', dotA: 0.12, ink: '0.88 0.03 145', muted: '0.55 0.1 145',
+      paper: '0.21 0.01 240', accent: '0.72 0.17 145', accentText: 'oklch(0.1 0.02 240)', secondary: '0.72 0.15 195',
+      chipBg: '0.1 0.01 240', chipText: '0.75 0.15 145', font: "'IBM Plex Mono', monospace",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    missingmanual: {
+      bg: '0.99 0.002 260', dot: '0.99 0.002 260', dotA: 0, ink: '0.15 0.005 260', muted: '0.42 0.02 265',
+      paper: '1 0 0', accent: '0.5 0.09 200', accentText: 'white', secondary: '0.5 0.09 200',
+      chipBg: '0.15 0.005 260', chipText: '0.99 0.002 260',
+      font: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      fontMono: "'JetBrains Mono', 'SF Mono', Consolas, monospace",
+    },
+  };
+  themeOptions = [
+    { key: 'paper', label: 'Paper', swatch: 'oklch(0.94 0.02 85)' },
+    { key: 'chalkboard', label: 'Chalkboard', swatch: 'oklch(0.3 0.03 250)' },
+    { key: 'terminal', label: 'Terminal', swatch: 'oklch(0.18 0.02 240)' },
+    { key: 'missingmanual', label: 'Missing Manual', swatch: 'oklch(0.5 0.09 200)' },
+  ];
+
+  col(vals, alpha) {
+    return alpha != null ? `oklch(${vals} / ${alpha})` : `oklch(${vals})`;
+  }
+
+  get t() {
+    return this.themes[this.state.theme] || this.themes.paper;
+  }
+
+  setTheme(key) {
+    this.setState({ theme: key });
+    try { localStorage.setItem('gitExplainerTheme', key); } catch (e) {}
+  }
+
+  zoneStyle(z) {
+    const t = this.t;
+    return `position:absolute;left:${z.x}px;top:${z.y}px;width:${z.w}px;height:${z.h}px;border:2.5px solid ${this.col(t.ink)};border-radius:12px;background:${this.col(t.paper, 0.4)};padding:16px;box-sizing:border-box;`;
+  }
+
+  nodeStyle(n, highlight) {
+    const t = this.t;
+    return `position:absolute;left:${n.x}px;top:${n.y}px;width:${n.w}px;height:${n.h}px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;background:${this.col(t.paper)};border:2.5px solid ${highlight ? this.col(t.accent) : this.col(t.ink)};border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;line-height:1.4;transition:border-color 0.4s ease;z-index:2;`;
+  }
+
+  renderVals() {
+    const t = this.t;
+    const step = this.steps[this.state.step];
+    const packet = step.packet;
+
+    const posMap = {
+      laptop: { x: this.laptop.x + this.laptop.w + 30, y: this.laptop.y + this.laptop.h / 2 - 22 },
+      internet: { x: this.pub.x + this.pub.w / 2 - 100, y: this.pub.y + this.pub.h + 20 },
+    };
+    const p = packet ? posMap[packet.at] : posMap.laptop;
+
+    const tableRows = [
+      { id: 'laptop', text: '192.168.1.10:5555 \u2192 :40001' },
+      { id: 'phone', text: '192.168.1.11:5555 \u2192 :40002' },
+    ].map((r, i) => ({
+      text: r.text,
+      style: `position:absolute;left:${this.router.x - 10}px;top:${this.router.y + this.router.h + 20 + i * 32}px;width:${this.router.w + 20}px;font-family:var(--font-mono);font-size:11px;text-align:center;color:${this.col(t.muted)};transition:opacity 0.4s ease;opacity:${step.rows[r.id] ? 1 : 0};z-index:2;`,
+    }));
+
+    const dots = this.steps.map((s, i) => ({
+      goTo: () => this.setState({ step: i }),
+      style: `width:${i === this.state.step ? 22 : 10}px;height:10px;border-radius:6px;background:${i === this.state.step ? this.col(t.ink) : this.col(t.ink, 0.25)};cursor:pointer;transition:all 0.25s ease;`,
+    }));
+
+    const swatches = this.themeOptions.map(o => ({
+      label: o.label,
+      onClick: () => this.setTheme(o.key),
+      style: `width:22px;height:22px;border-radius:50%;cursor:pointer;background:${o.swatch};border:2px solid ${o.key === this.state.theme ? this.col(t.ink) : 'rgba(120,110,95,0.35)'};box-shadow:${o.key === this.state.theme ? `0 0 0 2px ${this.col(t.bg)}, 0 0 0 4px ${this.col(t.ink)}` : 'none'};transition:all 0.2s ease;`,
+    }));
+
+    const themeVars = `--bg:${this.col(t.bg)};--dot:${this.col(t.dot, t.dotA)};--ink:${this.col(t.ink)};--muted:${this.col(t.muted)};--paper:${this.col(t.paper)};--accent:${this.col(t.accent)};--accent-text:${t.accentText};--chip-bg:${this.col(t.chipBg)};--chip-text:${this.col(t.chipText)};--font-heading:${t.font};--font-mono:${t.fontMono};`;
+
+    return {
+      themeVars, swatches,
+      activeThemeKey: this.state.theme,
+      stepLabel: `NAT – step ${this.state.step + 1}/${this.steps.length}`,
+      stepCounter: `${this.state.step + 1} / ${this.steps.length}`,
+      caption: step.caption,
+      command: step.command,
+      hasCommand: !!step.command,
+      homeZoneStyle: this.zoneStyle(this.home),
+      internetZoneStyle: this.zoneStyle(this.internet),
+      laptopStyle: this.nodeStyle(this.laptop, packet && packet.at === 'laptop'),
+      phoneStyle: this.nodeStyle(this.phone, false),
+      routerStyle: this.nodeStyle(this.router, false),
+      publicStyle: this.nodeStyle(this.pub, packet && packet.at === 'internet'),
+      tableRows,
+      packetStyle: `position:absolute;left:${p.x}px;top:${p.y}px;width:200px;padding:10px 14px;box-sizing:border-box;background:${this.col(t.chipBg)};color:${this.col(t.chipText)};border-radius:8px;font-family:var(--font-mono);font-size:12px;text-align:center;transition:left 0.6s ease, top 0.6s ease, opacity 0.3s ease;opacity:${packet ? 1 : 0};z-index:3;`,
+      packetLabel: packet ? packet.label : '',
+      dots,
+      atStart: this.state.step === 0,
+      nextLabel: this.state.step === this.steps.length - 1 ? 'Restart ↺' : 'Next →',
+      prevStep: () => this.setState(s => ({ step: Math.max(0, s.step - 1) })),
+      nextStep: () => this.setState(s => ({ step: s.step === this.steps.length - 1 ? 0 : s.step + 1 })),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

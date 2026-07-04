@@ -177,6 +177,8 @@ consistent REST API that your whole team can read is worth more than a clever on
 That's REST, honestly. You can now read an unfamiliar API on sight, design one others can navigate, and
 recognize the moment its style stops serving you — which is exactly when the related guides pick up.
 
+Watch it animated: [REST vs. GraphQL](/explainers/RESTvsGraphQL.dc.html)
+
 ---
 
 [← Phase 2: Designing Endpoints](02-designing-endpoints.md) · [Guide overview](_guide.md)

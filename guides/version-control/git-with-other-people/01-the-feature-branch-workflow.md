@@ -165,6 +165,8 @@ state. The catch is that `main` doesn't sit still while you work. Keeping up wit
 4. **Push with `-u origin <branch>`** the first time - it's backup and visibility, not merging.
 5. **Name branches** so humans can read them; use **`.gitignore`** to keep junk and secrets out.
 
+Watch it animated: [branching](/explainers/Branching.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Staying in Sync →](02-staying-in-sync.md)

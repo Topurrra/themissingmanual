@@ -14,6 +14,7 @@
   import LofiPlayer from '$lib/LofiPlayer.svelte';
   import PathRail from '$lib/PathRail.svelte';
   import WebMcp from '$lib/WebMcp.svelte';
+  import OnboardingModal from '$lib/OnboardingModal.svelte';
   import { beginnerMode, setBeginner } from '$lib/beginner-store.js';
   import { CHEATSHEETS } from '$lib/cheatsheets.js';
 
@@ -245,6 +246,7 @@
 {#if isAdmin}
   <slot />
 {:else}
+  <OnboardingModal />
   {#if announcement}
     <div class="announce-banner" role="status">{announcement}</div>
   {/if}

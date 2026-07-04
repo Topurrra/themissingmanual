@@ -218,6 +218,8 @@ everywhere.
 You can now drive any debugger through a normal bug. Next, the moves that crack the bugs `print()` can't
 touch.
 
+Watch it animated: [using breakpoints](/explainers/Breakpoints.dc.html)
+
 ---
 
 [← Phase 1: Why a Debugger Beats print()](01-why-a-debugger-beats-print.md) · [Guide overview](_guide.md) · [Phase 3: Debugging for Real →](03-debugging-for-real.md)

@@ -88,6 +88,8 @@ Atomicity and Consistency are about *one* transaction being whole and legal. Iso
 4. **Durability** — once `COMMIT` succeeds, the change survives crashes and reboots.
 5. Isolation is the one with a tunable dial — and the source of the real-world surprises in Phase 3.
 
+Watch it animated: [ACID transactions](/explainers/ACIDTransactions.dc.html)
+
 ---
 
 [← Phase 1: What a Transaction Is](01-what-a-transaction-is.md) · [Phase 3: Isolation & Concurrency in Real Life →](03-isolation-and-concurrency.md)

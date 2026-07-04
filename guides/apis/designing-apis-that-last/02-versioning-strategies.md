@@ -210,6 +210,8 @@ lens forward — designing the API so that you land in step 1 far more often tha
 5. Before flipping a version off, **check who's still calling it** — the silent majority never reads your
    announcements.
 
+Watch it animated: [API versioning](/explainers/APIVersioning.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 3: Designing for Longevity →](03-designing-for-longevity.md)

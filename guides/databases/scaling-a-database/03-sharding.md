@@ -108,6 +108,8 @@ If you can't tick all three, you're probably not ready — and that's good news,
 5. **You largely lose cross-shard transactions** — the atomic, all-or-nothing operation you relied on no longer spans shards cheaply. Much of sharding's pain is this.
 6. **It's the last resort.** Exhaust optimization, caching, and replication first; prefer a managed/distributed database to hand-rolling it.
 
+Watch it animated: [database sharding](/explainers/Sharding.dc.html)
+
 ---
 
 [← Phase 2: Replication](02-replication.md) · [Guide overview →](_guide.md)

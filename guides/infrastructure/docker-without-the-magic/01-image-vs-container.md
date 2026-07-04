@@ -134,6 +134,8 @@ defuses a whole row of future headaches:
 
 Next, we'll build an image ourselves and watch it come together one cached layer at a time.
 
+Watch it animated: [containers vs. VMs](/explainers/ContainersVMs.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Building an Image - the Dockerfile & Layers →](02-the-dockerfile-and-layers.md)

@@ -102,6 +102,8 @@ a tool that picks the midpoints, checks out the code, and does the bookkeeping f
 4. The yes/no test is the engine - and it has to give the **same answer every time**, or the whole search
    goes wrong.
 
+Watch it animated: [binary-searching for a bug](/explainers/BinarySearchDebug.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: git bisect →](02-git-bisect.md)

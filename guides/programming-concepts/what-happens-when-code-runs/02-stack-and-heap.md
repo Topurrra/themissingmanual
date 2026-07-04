@@ -136,6 +136,8 @@ RecursionError: maximum recursion depth exceeded
 
 You now know how code is translated, and where its data lives while it runs. The last piece is the one wrapping all of it: what does it actually *mean* for a program to be "running"? Let's connect the whole chain.
 
+Watch it animated: [the stack and the heap](/explainers/StackHeap.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 3: What "Running" Means →](03-what-running-means.md)

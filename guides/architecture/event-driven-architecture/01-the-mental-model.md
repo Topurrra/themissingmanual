@@ -101,4 +101,6 @@ That sounds strictly better, which is exactly the trap. You're trading a problem
 ]
 ```
 
+Watch it animated: [event-driven architecture](/explainers/EventDriven.dc.html)
+
 [← Overview](_guide.md) | [Phase 2: How Events Really Flow →](02-how-events-flow.md)

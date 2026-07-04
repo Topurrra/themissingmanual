@@ -126,6 +126,8 @@ moment.
 4. CI runs on a **clean machine**, which is why "works on my machine" failures are real and worth listening
    to.
 
+Watch it animated: [continuous integration](/explainers/CICD.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: CD — Delivery vs Deployment →](02-delivery-vs-deployment.md)

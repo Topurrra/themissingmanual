@@ -108,4 +108,6 @@ For builders: if you're fuzzy on what an ORM is actually doing when you write `o
 ]
 ```
 
+Watch it animated: [the N+1 query problem](/explainers/NPlusOne.dc.html)
+
 [← Overview](_guide.md) | [Phase 2: Seeing it in your logs →](02-seeing-it-in-the-logs.md)

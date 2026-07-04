@@ -183,6 +183,8 @@ as part of "wiring up the webhook," not an optional hardening step you'll get to
 That's how another company tells *you* something happened. Next, the mirror image: how your *own*
 services hand work to each other without anyone waiting around.
 
+Watch it animated: [webhooks](/explainers/Webhooks.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Message Queues →](02-message-queues.md)

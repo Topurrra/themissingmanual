@@ -2,8 +2,10 @@
   import { groupByLevel, levelLabel } from '$lib/difficulty.js';
   import { beginnerMode } from '$lib/beginner-store.js';
   import Seo from '$lib/Seo.svelte';
+  import { EXPLAINER_HUBS } from '$lib/explainer-hubs.js';
   export let data;
   $: ({ category, guides } = data);
+  $: explainerHub = EXPLAINER_HUBS[category.slug];
 
   // In beginner mode, show only Basic-level guides.
   $: visibleGuides = guides.filter((g) => !$beginnerMode || levelLabel(g.difficulty) === 'Basic');
@@ -40,6 +42,13 @@
 <h1 class="page-title">{category.name}</h1>
 <p class="tagline">{category.blurb}</p>
 
+{#if explainerHub}
+  <a class="explainer-hub-card" href={`/explainers/${explainerHub}`} target="_blank" rel="noopener noreferrer">
+    <span class="ehc-title">Watch it animated →</span>
+    <span class="ehc-sub">Interactive, click-through walkthroughs for {category.name} concepts.</span>
+  </a>
+{/if}
+
 {#if guides.length === 0}
   <p class="cat-empty">Guides for {category.name} are on the way. In the meantime, browse what's live from the home page.</p>
 {:else if visibleGuides.length === 0}
@@ -73,6 +82,17 @@
 {/if}
 
 <style>
+  .explainer-hub-card {
+    display: flex; flex-direction: column; gap: 0.15rem;
+    margin: 1rem 0 1.7rem;
+    padding: 0.75rem 1rem;
+    background: var(--raise); border: 1px solid var(--line); border-radius: 12px;
+    text-decoration: none;
+    transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
+  }
+  .explainer-hub-card:hover { border-color: var(--accent); background: var(--accent-tint); text-decoration: none; }
+  .ehc-title { font-size: 0.95rem; font-weight: 600; color: var(--ink); }
+  .ehc-sub { font-size: 0.82rem; color: var(--muted); }
   .lang-head {
     display: flex;
     align-items: baseline;

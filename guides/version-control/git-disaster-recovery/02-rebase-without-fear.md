@@ -180,6 +180,8 @@ entries. The commit just before the start (`HEAD@{6}` here) is your branch exact
 4. **The Golden Rule:** never rebase commits others already have - keep it to your own un-shared work.
 5. **Undo a finished bad rebase** via the reflog: `git reset --hard <pre-rebase-hash>`.
 
+Watch it animated: [rebasing](/explainers/Rebasing.dc.html)
+
 ---
 
 [← Phase 1: The Reflog](01-the-reflog.md) · [Guide overview](_guide.md) · [Phase 3: Undoing What You've Already Pushed →](03-undoing-pushed-history.md)

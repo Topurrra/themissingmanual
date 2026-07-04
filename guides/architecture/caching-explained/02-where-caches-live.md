@@ -98,6 +98,8 @@ flowchart LR
 
 Every one of these layers holds a *copy* of an answer whose truth lives further down the line. Which means every one of them can end up holding a copy that's *out of date*. That gap — between the copy and the truth — is the genuinely hard part of caching, and it's next.
 
+Watch it animated: [CDN caching](/explainers/CDNCaching.dc.html)
+
 ---
 
 [← Phase 1: What a Cache Actually Is](01-what-a-cache-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: The Hard Part — Invalidation & Staleness →](03-invalidation-and-staleness.md)

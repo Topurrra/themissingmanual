@@ -92,6 +92,8 @@ can reason about all of it instead of treating it as a black box.
 
 Now we know *what* training changes. Next: *how* it figures out which way to nudge each number.
 
+Watch it animated: [training vs. inference](/explainers/TrainingInference.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Learning by Being Wrong →](02-learning-by-being-wrong.md)

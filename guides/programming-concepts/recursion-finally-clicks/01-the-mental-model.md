@@ -97,4 +97,6 @@ When you size up a new problem, the tell for recursion is self-similarity: does 
 ]
 ```
 
+Watch it animated: [recursion](/explainers/Recursion.dc.html)
+
 [← Overview](_guide.md) | [Phase 2: Writing recursion that works →](02-writing-recursion-that-works.md)

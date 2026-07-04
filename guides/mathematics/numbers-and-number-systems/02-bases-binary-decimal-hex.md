@@ -233,4 +233,6 @@ Quick check before you move on:
 ]
 ```
 
+Watch it animated: [binary and number bases](/explainers/BinaryBits.dc.html)
+
 [← Phase 1: The Families of Numbers](01-the-families-of-numbers.md) · [Guide overview](_guide.md) · [Phase 3: Modular Arithmetic: Clock Math →](03-modular-arithmetic-clock-math.md)

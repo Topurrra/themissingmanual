@@ -112,4 +112,6 @@ phase 3:    0% ──► [v1]    100% ──► [v2]   full rollout
 ]
 ```
 
+Watch it animated: [zero-downtime deployment strategies](/explainers/Deployments.dc.html)
+
 [← Phase 1: Why Naive Deploys Hurt](01-why-naive-deploys-hurt.md) | [Overview](_guide.md) | [Phase 3: The Hard Part →](03-migrations-and-health.md)

@@ -134,6 +134,8 @@ small and ongoing; the cost of skipping it is a swamp you can't drain.
 You can now hold your own in the "warehouse or lake?" conversation — and gently point out that the real
 answer is usually "both, on purpose, with governance."
 
+Watch it animated: [data warehouses vs. data lakes](/explainers/DataWarehouseLake.dc.html)
+
 ---
 
 [← Phase 2: The Lake (and Lakehouse)](02-the-lake-and-lakehouse.md) · [Guide overview](_guide.md)

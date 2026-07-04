@@ -169,6 +169,8 @@ Send traffic and watch how each algorithm spreads it across the backends:
 ```playground-lb
 ```
 
+Watch it animated: [load balancing](/explainers/LoadBalancing.dc.html)
+
 ---
 
 [← Phase 1: What a Reverse Proxy Is](01-what-a-reverse-proxy-is.md) · [Guide overview](_guide.md) · [Phase 3: What nginx Does in Practice →](03-what-nginx-does-in-practice.md)

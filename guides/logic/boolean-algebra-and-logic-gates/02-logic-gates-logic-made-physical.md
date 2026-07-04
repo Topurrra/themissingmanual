@@ -257,4 +257,6 @@ Quick check before you move on:
 ]
 ```
 
+Watch it animated: [logic gates](/explainers/LogicGates.dc.html)
+
 [← Phase 1: Boolean Algebra: The Laws](01-boolean-algebra-the-laws.md) · [Guide overview](_guide.md) · [Phase 3: From Gates to a Computer →](03-from-gates-to-a-computer.md)

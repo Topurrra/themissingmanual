@@ -121,6 +121,8 @@ the laptop on your desk, it's good to *understand* the mechanism, but it's not s
 There's one more twist, and it's the one almost nobody tells you: even with all this flash speed, your SSD can
 still be held back - not by the flash, but by the *cable it plugs into*. That's the next phase.
 
+Watch it animated: [SSD vs. HDD](/explainers/SSDvsHDD.dc.html)
+
 ---
 
 [← Phase 1: HDD - Spinning Rust](01-hdd-spinning-rust.md) · [Guide overview](_guide.md) · [Phase 3: NVMe vs SATA →](03-nvme-vs-sata.md)

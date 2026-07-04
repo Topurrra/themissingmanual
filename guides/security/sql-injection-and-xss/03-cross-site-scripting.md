@@ -204,6 +204,8 @@ to the browser.
 That's both holes closed, and both with the same move you learned in Phase 1: keep data as data. For the
 wider landscape of web risks beyond these two, head to [The OWASP Top 10](/guides/owasp-top-10).
 
+Watch it animated: [cross-site scripting](/explainers/XSS.dc.html)
+
 ---
 
 [← Phase 2: SQL Injection](02-sql-injection.md) · [Guide overview](_guide.md)

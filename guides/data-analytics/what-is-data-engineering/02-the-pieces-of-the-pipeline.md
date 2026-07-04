@@ -188,6 +188,8 @@ of work*: building the pipeline (engineer) vs. analyzing what's in it (analyst) 
 Next, we'll ask why this is hard enough to be its own discipline — what makes building a reliable river
 genuinely difficult.
 
+Watch it animated: [batch vs. stream processing](/explainers/BatchVsStream.dc.html)
+
 ---
 
 [← Phase 1: From Raw Data to a Trusted Answer](01-from-raw-data-to-a-trusted-answer.md) · [Phase 3: Why It's Its Own Discipline →](03-why-its-its-own-discipline.md)

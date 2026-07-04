@@ -188,6 +188,8 @@ that surfaces the day someone's details change.
 Now that every row has a dependable name, the next phase is the other half of a relationship: the column
 in *another* table that holds that name and points back — the **foreign key**.
 
+Watch it animated: [primary and foreign keys](/explainers/Keys.dc.html)
+
 ---
 
 [← Phase 1: Why Split Data Into Tables](01-why-split-data-into-tables.md) · [Guide overview](_guide.md) · [Phase 3: Foreign Keys & Referential Integrity →](03-foreign-keys-and-referential-integrity.md)

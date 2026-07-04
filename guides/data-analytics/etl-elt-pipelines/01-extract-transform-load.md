@@ -117,6 +117,8 @@ Done.
 
 You now have the shape of every pipeline. The next question is one of order: do you transform the data *before* you load it, or load it raw and transform it *after*? That single swap is the difference between ETL and ELT.
 
+Watch it animated: [ETL pipelines](/explainers/ETLPipelines.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: ETL vs ELT →](02-etl-vs-elt.md)

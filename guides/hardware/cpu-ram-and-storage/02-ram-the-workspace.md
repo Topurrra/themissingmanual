@@ -88,6 +88,8 @@ And notice what RAM is *not*: it's not where your files live. "16 GB of RAM, 512
 
 We've leaned on "slow storage" twice now to explain why RAM matters. Time to give storage its own proper introduction — and to finally draw the ladder that connects cache, RAM, and storage into one picture.
 
+Watch it animated: [how RAM works](/explainers/HowRAMWorks.dc.html)
+
 ---
 
 [← Phase 1: The CPU — the Worker](01-the-cpu-the-worker.md) · [Guide overview](_guide.md) · [Phase 3: Storage — the Filing Cabinet →](03-storage-the-filing-cabinet.md)

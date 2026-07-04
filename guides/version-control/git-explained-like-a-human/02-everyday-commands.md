@@ -351,6 +351,8 @@ shuffling work between the three places (`add`, `diff`, `stash`), or syncing cop
 Which means you're ready for the part that used to be terrifying: **[Phase 3 - When It Breaks](03-when-it-breaks.md)**,
 where things go wrong and you fix them without breaking a sweat.
 
+Watch it animated: [merging two branches](/explainers/Merging.dc.html)
+
 ---
 
 [← Phase 1: The Mental Model](01-the-mental-model.md) · [Guide overview](_guide.md) · [Phase 3: When It Breaks →](03-when-it-breaks.md)

@@ -128,6 +128,8 @@ That's the whole arc: async exists because waiting is wasteful; the event loop i
 
 Related reading: [What Happens When Code Runs](/guides/what-happens-when-code-runs) · [Processes, Memory & the CPU](/guides/processes-memory-and-cpu)
 
+Watch it animated: [async/await](/explainers/AsyncAwait.dc.html)
+
 ---
 
 [← Phase 2: The Event Loop](02-the-event-loop.md) · [Guide overview](_guide.md)

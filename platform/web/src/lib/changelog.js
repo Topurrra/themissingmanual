@@ -10,6 +10,8 @@ export const CHANGELOG = [
       { tag: 'New', text: 'Cheat sheets now appear in instant search and the command palette.', href: '/cheat-sheet' },
       { tag: 'New', text: 'Built for AI assistants: a sitemap, structured data, and a server that tools like Claude and Cursor can read directly.' },
       { tag: 'New', text: 'AI tutor: ask questions about the phase you’re reading, right from the guide.' },
+      { tag: 'New', text: 'Animated, click-through explainers for core concepts across every topic.', href: '/explainers/Home.dc.html' },
+      { tag: 'New', text: 'A quick first-visit question sets beginner-friendly defaults automatically.' },
       { tag: 'Improved', text: 'Listen (text-to-speech) and feedback now sit inside the reader instead of floating over the page.' },
       { tag: 'Improved', text: 'Faster page loads on mobile.' }
     ]

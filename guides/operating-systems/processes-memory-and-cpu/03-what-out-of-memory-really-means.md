@@ -121,6 +121,8 @@ You now have the whole diagnostic loop. A slow or stuck machine is no longer wea
 
 > **Where next.** This guide got you to *diagnosis*. The follow-up - adjusting priorities with `nice`, sizing swap, and setting per-process memory limits so the OOM killer reaps the *right* thing - is *intervention*, and deserves its own guide. For the broader context, the rest of the [Operating Systems track](/guides/what-an-operating-system-is) and [The Terminal & Shell](/guides/the-terminal-and-shell) are good neighbors.
 
+Watch it animated: [virtual memory](/explainers/VirtualMemory.dc.html)
+
 ---
 
 [← Phase 2: What "100% CPU" Really Means](02-what-100-cpu-really-means.md) · [Guide overview](_guide.md)

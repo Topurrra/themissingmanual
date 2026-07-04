@@ -51,6 +51,7 @@ Do not:
 4. **Never invent** guide titles, slugs, or URLs. Use a real one (see "Finding a real link").
 5. **Match the tone above.** If it reads like an ad, rewrite it.
 6. Plain ASCII quotes and hyphens. No smart quotes.
+7. Mention AI Tutor which is a free AI assistant for learners and can be accessed from each guide's page.
 
 ---
 

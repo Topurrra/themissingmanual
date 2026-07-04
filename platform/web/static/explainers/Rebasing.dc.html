@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Rebasing — Git, Explained</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { margin: 0; }
+    .git-nav-btn:disabled { opacity: 0.35; cursor: default; }
+    [data-theme="missingmanual"] .git-nav-btn,
+    [data-theme="missingmanual"] .mm-node {
+      border-width: 1px !important;
+      border-color: oklch(0.9 0.003 260) !important;
+      box-shadow: none !important;
+      transition: none !important;
+    }
+    [data-theme="missingmanual"] .mm-brand {
+      visibility: visible !important;
+    }
+  </style>
+</helmet>
+
+<div data-screen-label="{{ stepLabel }}" data-theme="{{ activeThemeKey }}" style="min-height:100vh;{{ themeVars }}background:var(--bg);background-image:radial-gradient(var(--dot) 1.4px, transparent 1.4px);background-size:26px 26px;font-family:var(--font-heading);color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:28px 24px 40px;box-sizing:border-box;">
+
+  <div style="max-width:1080px;width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <a href="index.dc.html" style="text-decoration:none;color:var(--ink);font-family:var(--font-mono);font-size:14px;display:flex;align-items:center;gap:6px;">&larr; all concepts</a>
+      <span class="mm-brand" style="display:inline-flex;visibility:hidden;align-items:center;gap:6px;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:0.02em;color:var(--muted);">The Missing Manual</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-family:var(--font-mono);font-size:13px;color:var(--muted);">05</span>
+      <h1 style="font-size:20px;margin:0;font-weight:600;">Rebasing</h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="display:flex;align-items:center;gap:7px;">
+        <sc-for list="{{ swatches }}" as="sw" hint-placeholder-count="4">
+          <div onClick="{{ sw.onClick }}" title="{{ sw.label }}" style="{{ sw.style }}"></div>
+        </sc-for>
+      </div>
+      <span style="font-family:var(--font-mono);font-size:13px;color:var(--muted);">{{ stepCounter }}</span>
+    </div>
+  </div>
+
+  <div style="max-width:1080px;width:100%;text-align:left;margin-bottom:18px;">
+    <h2 style="font-size:26px;line-height:1.4;font-weight:600;margin:0 0 12px;max-width:780px;">{{ caption }}</h2>
+    <sc-if value="{{ hasCommand }}" hint-placeholder-val="{{ false }}">
+      <div style="display:inline-block;font-family:var(--font-mono);font-size:15px;background:var(--chip-bg);color:var(--chip-text);padding:8px 16px;border-radius:8px;">
+        <span style="opacity:0.5;">$</span> {{ command }}
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="position:relative;width:860px;max-width:100%;height:400px;">
+
+    <sc-for list="{{ edges }}" as="edge" hint-placeholder-count="6">
+      <div style="{{ edge.style }}"></div>
+    </sc-for>
+
+    <sc-for list="{{ nodes }}" as="node" hint-placeholder-count="7">
+      <div style="{{ node.wrapStyle }}">
+        <div class="mm-node" style="{{ node.circleStyle }}"></div>
+        <div style="{{ node.labelWrapStyle }}">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;">{{ node.msg }}</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:2px;">{{ node.hash }}</div>
+        </div>
+      </div>
+    </sc-for>
+
+    <sc-for list="{{ tags }}" as="tag" hint-placeholder-count="3">
+      <div style="{{ tag.style }}">{{ tag.text }}</div>
+    </sc-for>
+
+  </div>
+
+  <div style="max-width:1080px;width:100%;display:flex;align-items:center;justify-content:center;gap:20px;margin-top:20px;">
+    <button class="git-nav-btn" onClick="{{ prevStep }}" disabled="{{ atStart }}" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:10px 20px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;color:var(--ink);">&larr; Back</button>
+
+    <div style="display:flex;gap:8px;">
+      <sc-for list="{{ dots }}" as="dot" hint-placeholder-count="4">
+        <div onClick="{{ dot.goTo }}" style="{{ dot.style }}"></div>
+      </sc-for>
+    </div>
+
+    <button class="git-nav-btn" onClick="{{ nextStep }}" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;background:var(--accent);border:2px solid var(--ink);border-radius:8px;padding:10px 20px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;color:var(--accent-text);">{{ nextLabel }}</button>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { step: 0, theme: (typeof localStorage !== 'undefined' && localStorage.getItem('gitExplainerTheme')) || 'paper' };
+
+  // Fixed geometry for every node the scene ever uses; steps only toggle
+  // opacity/position so nothing shifts index mid-story.
+  nodeDefs = {
+    c1: { x: 80, y: 260, hash: 'a1b2c3', msg: '"Init"', kind: 'main' },
+    c2: { x: 210, y: 260, hash: '4d5e6f', msg: '"Add app"', kind: 'main' },
+    c3: { x: 340, y: 260, hash: '7g8h9i', msg: '"Setup routes"', kind: 'main' },
+    c4: { x: 470, y: 140, hash: 'j1k2l3', msg: '"Add tests"', kind: 'feature' },
+    c5: { x: 600, y: 140, hash: 'm4n5o6', msg: '"Fix typo"', kind: 'feature' },
+    c4n: { x: 470, y: 260, hash: 'q7r8s9', msg: '"Add tests"', kind: 'feature' },
+    c5n: { x: 600, y: 260, hash: 'u1v2w3', msg: '"Fix typo"', kind: 'feature' },
+  };
+  edgeDefs = {
+    e1: ['c1', 'c2'], e2: ['c2', 'c3'],
+    e3old: ['c3', 'c4'], e4old: ['c4', 'c5'],
+    e3new: ['c3', 'c4n'], e4new: ['c4n', 'c5n'],
+  };
+
+  steps = [
+    {
+      caption: "Same starting point as before \u2014 main and feature have diverged, each with their own commits.",
+      command: null,
+      nodeState: { c1: 1, c2: 1, c3: 1, c4: 1, c5: 1, c4n: 0, c5n: 0 },
+      edgeState: { e1: 1, e2: 1, e3old: 1, e4old: 1, e3new: 0, e4new: 0 },
+      ghosts: {},
+      tags: [{ text: 'main', x: 340, y: 195, kind: 'main' }, { text: 'feature', x: 600, y: 70, kind: 'feature' }, { text: 'HEAD', x: 600, y: 30, kind: 'head' }],
+    },
+    {
+      caption: "git rebase main replays feature's commits one at a time on top of main's tip \u2014 same changes, brand-new commit hashes.",
+      command: 'git rebase main',
+      nodeState: { c1: 1, c2: 1, c3: 1, c4: 0.35, c5: 0.35, c4n: 1, c5n: 1 },
+      edgeState: { e1: 1, e2: 1, e3old: 0.25, e4old: 0.25, e3new: 1, e4new: 1 },
+      ghosts: { c4: true, c5: true },
+      tags: [{ text: 'main', x: 340, y: 195, kind: 'main' }, { text: 'feature', x: 600, y: 195, kind: 'feature' }, { text: 'HEAD', x: 600, y: 155, kind: 'head' }],
+    },
+    {
+      caption: "The old commits are gone \u2014 replaced by new ones with identical content but different hashes. History is now one straight line.",
+      command: null,
+      nodeState: { c1: 1, c2: 1, c3: 1, c4: 0, c5: 0, c4n: 1, c5n: 1 },
+      edgeState: { e1: 1, e2: 1, e3old: 0, e4old: 0, e3new: 1, e4new: 1 },
+      ghosts: {},
+      tags: [{ text: 'main', x: 340, y: 195, kind: 'main' }, { text: 'feature', x: 600, y: 195, kind: 'feature' }, { text: 'HEAD', x: 600, y: 155, kind: 'head' }],
+    },
+    {
+      caption: "Since it's all one line now, merging feature into main is just a fast-forward \u2014 no merge commit needed.",
+      command: 'git checkout main && git merge feature',
+      nodeState: { c1: 1, c2: 1, c3: 1, c4: 0, c5: 0, c4n: 1, c5n: 1 },
+      edgeState: { e1: 1, e2: 1, e3old: 0, e4old: 0, e3new: 1, e4new: 1 },
+      ghosts: {},
+      tags: [{ text: 'HEAD', x: 600, y: 155, kind: 'head' }, { text: 'main', x: 578, y: 195, kind: 'main' }, { text: 'feature', x: 622, y: 195, kind: 'feature' }],
+    },
+  ];
+
+  themes = {
+    paper: {
+      bg: '0.975 0.01 85', dot: '0.23 0.02 75', dotA: 0.08, ink: '0.23 0.02 75', muted: '0.5 0.015 75',
+      paper: '0.99 0.01 95', accent: '0.68 0.17 45', accentText: 'white',
+      chipBg: '0.23 0.02 75', chipText: '0.97 0.01 85', font: "'Space Grotesk', sans-serif",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    chalkboard: {
+      bg: '0.27 0.03 250', dot: '0.96 0.01 90', dotA: 0.08, ink: '0.95 0.01 90', muted: '0.78 0.02 250',
+      paper: '0.34 0.03 250', accent: '0.8 0.14 85', accentText: 'oklch(0.2 0.02 250)',
+      chipBg: '0.18 0.02 250', chipText: '0.9 0.05 85', font: "'Space Grotesk', sans-serif",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    terminal: {
+      bg: '0.16 0.01 240', dot: '0.75 0.15 145', dotA: 0.12, ink: '0.88 0.03 145', muted: '0.55 0.1 145',
+      paper: '0.21 0.01 240', accent: '0.72 0.17 145', accentText: 'oklch(0.1 0.02 240)',
+      chipBg: '0.1 0.01 240', chipText: '0.75 0.15 145', font: "'IBM Plex Mono', monospace",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    missingmanual: {
+      bg: '0.99 0.002 260', dot: '0.99 0.002 260', dotA: 0, ink: '0.15 0.005 260', muted: '0.42 0.02 265',
+      paper: '1 0 0', accent: '0.5 0.09 200', accentText: 'white',
+      chipBg: '0.15 0.005 260', chipText: '0.99 0.002 260',
+      font: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      fontMono: "'JetBrains Mono', 'SF Mono', Consolas, monospace",
+    },
+  };
+  themeOptions = [
+    { key: 'paper', label: 'Paper', swatch: 'oklch(0.94 0.02 85)' },
+    { key: 'chalkboard', label: 'Chalkboard', swatch: 'oklch(0.3 0.03 250)' },
+    { key: 'terminal', label: 'Terminal', swatch: 'oklch(0.18 0.02 240)' },
+    { key: 'missingmanual', label: 'Missing Manual', swatch: 'oklch(0.5 0.09 200)' },
+  ];
+
+  col(vals, alpha) {
+    return alpha != null ? `oklch(${vals} / ${alpha})` : `oklch(${vals})`;
+  }
+
+  get t() {
+    return this.themes[this.state.theme] || this.themes.paper;
+  }
+
+  setTheme(key) {
+    this.setState({ theme: key });
+    try { localStorage.setItem('gitExplainerTheme', key); } catch (e) {}
+  }
+
+  tagStyle(kind) {
+    const t = this.t;
+    if (kind === 'head') return `background:${this.col(t.chipBg)};color:${this.col(t.chipText)};`;
+    if (kind === 'feature') return `background:${this.col(t.accent)};color:${t.accentText};border:2px solid ${this.col(t.ink)};`;
+    return `background:${this.col(t.paper)};color:${this.col(t.ink)};border:2px solid ${this.col(t.ink)};`;
+  }
+
+  edgeStyle(a, b, opacity) {
+    const r = 30;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    const ux = dx / len, uy = dy / len;
+    const x1 = a.x + ux * r, y1 = a.y + uy * r;
+    const x2 = b.x - ux * r, y2 = b.y - uy * r;
+    const segLen = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+    return `position:absolute;left:${x1}px;top:${y1 - 1.5}px;width:${segLen}px;height:3px;background:${this.col(this.t.ink)};transform-origin:left center;transform:rotate(${angle}deg);transition:all 0.6s ease, opacity 0.4s ease;opacity:${opacity};z-index:0;`;
+  }
+
+  renderVals() {
+    const t = this.t;
+    const step = this.steps[this.state.step];
+    const r = 60;
+
+    const nodes = Object.keys(this.nodeDefs).map(id => {
+      const n = this.nodeDefs[id];
+      const opacity = step.nodeState[id];
+      const isGhost = !!step.ghosts[id];
+      const fill = n.kind === 'feature' ? this.col(t.accent) : this.col(t.paper);
+      return {
+        hash: n.hash, msg: n.msg,
+        wrapStyle: `position:absolute;left:${n.x - r / 2}px;top:${n.y - r / 2}px;width:${r}px;height:${r}px;transition:left 0.6s ease, top 0.6s ease, opacity 0.4s ease;opacity:${opacity};z-index:2;`,
+        circleStyle: `width:${r}px;height:${r}px;border-radius:50%;background:${isGhost ? 'transparent' : fill};border:2.5px ${isGhost ? 'dashed' : 'solid'} ${this.col(t.ink)};`,
+        labelWrapStyle: `position:absolute;left:50%;top:76px;transform:translateX(-50%);white-space:nowrap;text-align:center;`,
+      };
+    });
+
+    const edges = Object.keys(this.edgeDefs).map(id => {
+      const [aId, bId] = this.edgeDefs[id];
+      const opacity = step.edgeState[id];
+      return { style: this.edgeStyle(this.nodeDefs[aId], this.nodeDefs[bId], opacity) };
+    });
+
+    const tags = step.tags.map(tg => ({
+      text: tg.text,
+      style: `position:absolute;left:${tg.x}px;top:${tg.y}px;transform:translate(-50%,-50%);white-space:nowrap;font-family:var(--font-mono);font-size:12px;font-weight:600;padding:5px 12px;border-radius:6px;transition:left 0.6s ease, top 0.6s ease;z-index:3;${this.tagStyle(tg.kind)}`,
+    }));
+
+    const dots = this.steps.map((s, i) => ({
+      goTo: () => this.setState({ step: i }),
+      style: `width:${i === this.state.step ? 22 : 10}px;height:10px;border-radius:6px;background:${i === this.state.step ? this.col(t.ink) : this.col(t.ink, 0.25)};cursor:pointer;transition:all 0.25s ease;`,
+    }));
+
+    const swatches = this.themeOptions.map(o => ({
+      label: o.label,
+      onClick: () => this.setTheme(o.key),
+      style: `width:22px;height:22px;border-radius:50%;cursor:pointer;background:${o.swatch};border:2px solid ${o.key === this.state.theme ? this.col(t.ink) : 'rgba(120,110,95,0.35)'};box-shadow:${o.key === this.state.theme ? `0 0 0 2px ${this.col(t.bg)}, 0 0 0 4px ${this.col(t.ink)}` : 'none'};transition:all 0.2s ease;`,
+    }));
+
+    const themeVars = `--bg:${this.col(t.bg)};--dot:${this.col(t.dot, t.dotA)};--ink:${this.col(t.ink)};--muted:${this.col(t.muted)};--paper:${this.col(t.paper)};--accent:${this.col(t.accent)};--accent-text:${t.accentText};--chip-bg:${this.col(t.chipBg)};--chip-text:${this.col(t.chipText)};--font-heading:${t.font};--font-mono:${t.fontMono};`;
+
+    return {
+      themeVars,
+      swatches,
+      activeThemeKey: this.state.theme,
+      stepLabel: `Rebasing – step ${this.state.step + 1}/${this.steps.length}`,
+      stepCounter: `${this.state.step + 1} / ${this.steps.length}`,
+      caption: step.caption,
+      command: step.command,
+      hasCommand: !!step.command,
+      nodes, edges, tags, dots,
+      atStart: this.state.step === 0,
+      nextLabel: this.state.step === this.steps.length - 1 ? 'Restart ↺' : 'Next →',
+      prevStep: () => this.setState(s => ({ step: Math.max(0, s.step - 1) })),
+      nextStep: () => this.setState(s => ({ step: s.step === this.steps.length - 1 ? 0 : s.step + 1 })),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

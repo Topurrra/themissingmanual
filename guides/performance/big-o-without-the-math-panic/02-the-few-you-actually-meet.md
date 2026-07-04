@@ -183,6 +183,8 @@ a worse shape is *nesting* - work happening *per item, for every item*.
 Next, why this isn't academic - the same code that's fine at 100 items and dies at 10 million, and how
 your choice of data structure secretly sets your Big-O.
 
+Watch it animated: [Big O notation](/explainers/BigO.dc.html)
+
 ---
 
 [← Phase 1: It's About How Things GROW](01-its-about-how-things-grow.md) · [Guide overview](_guide.md) · [Phase 3: Why It Matters in Real Life →](03-why-it-matters-in-real-life.md)

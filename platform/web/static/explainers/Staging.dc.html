@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Staging &amp; the working directory — Git, Explained</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { margin: 0; }
+    .git-nav-btn:disabled { opacity: 0.35; cursor: default; }
+    [data-theme="missingmanual"] .git-nav-btn,
+    [data-theme="missingmanual"] .mm-zone,
+    [data-theme="missingmanual"] .mm-card,
+    [data-theme="missingmanual"] .mm-node {
+      border-width: 1px !important;
+      border-color: oklch(0.9 0.003 260) !important;
+      box-shadow: none !important;
+      transition: none !important;
+    }
+    [data-theme="missingmanual"] .mm-brand {
+      visibility: visible !important;
+    }
+  </style>
+</helmet>
+
+<div data-screen-label="{{ stepLabel }}" data-theme="{{ activeThemeKey }}" style="min-height:100vh;{{ themeVars }}background:var(--bg);background-image:radial-gradient(var(--dot) 1.4px, transparent 1.4px);background-size:26px 26px;font-family:var(--font-heading);color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:28px 24px 40px;box-sizing:border-box;">
+
+  <div style="max-width:1080px;width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <a href="index.dc.html" style="text-decoration:none;color:var(--ink);font-family:var(--font-mono);font-size:14px;display:flex;align-items:center;gap:6px;">&larr; all concepts</a>
+      <span class="mm-brand" style="display:inline-flex;visibility:hidden;align-items:center;gap:6px;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:0.02em;color:var(--muted);">The Missing Manual</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-family:var(--font-mono);font-size:13px;color:var(--muted);">01</span>
+      <h1 style="font-size:20px;margin:0;font-weight:600;">Staging &amp; the working directory</h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="display:flex;align-items:center;gap:7px;">
+        <sc-for list="{{ swatches }}" as="sw" hint-placeholder-count="4">
+          <div onClick="{{ sw.onClick }}" title="{{ sw.label }}" style="{{ sw.style }}"></div>
+        </sc-for>
+      </div>
+      <span style="font-family:var(--font-mono);font-size:13px;color:var(--muted);">{{ stepCounter }}</span>
+    </div>
+  </div>
+
+  <div style="max-width:1080px;width:100%;text-align:left;margin-bottom:18px;">
+    <h2 style="font-size:26px;line-height:1.4;font-weight:600;margin:0 0 12px;max-width:760px;">{{ caption }}</h2>
+    <sc-if value="{{ hasCommand }}" hint-placeholder-val="{{ false }}">
+      <div style="display:inline-block;font-family:var(--font-mono);font-size:15px;background:var(--chip-bg);color:var(--chip-text);padding:8px 16px;border-radius:8px;">
+        <span style="opacity:0.5;">$</span> {{ command }}
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="position:relative;width:1040px;max-width:100%;height:460px;">
+
+    <div class="mm-zone" style="{{ workZoneStyle }}">
+      <div style="font-family:var(--font-mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);">Working Directory</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px;">files you edit</div>
+    </div>
+
+    <div class="mm-zone" style="{{ stageZoneStyle }}">
+      <div style="font-family:var(--font-mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);">Staging Area</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px;">git add</div>
+    </div>
+
+    <div class="mm-zone" style="{{ repoZoneStyle }}">
+      <div style="font-family:var(--font-mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);">Repository</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px;">git commit</div>
+    </div>
+
+    <sc-for list="{{ files }}" as="file" hint-placeholder-count="3">
+      <div class="mm-card" style="{{ file.cardStyle }}">
+        <div style="display:flex;flex-direction:column;gap:3px;margin-bottom:8px;">
+          <div style="{{ file.lineStyle }}width:70%;"></div>
+          <div style="{{ file.lineStyle }}width:50%;"></div>
+          <div style="{{ file.lineStyle }}width:60%;"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="{{ file.dotStyle }}"></span>
+          <span style="font-family:var(--font-mono);font-size:13px;">{{ file.name }}</span>
+        </div>
+      </div>
+    </sc-for>
+
+    <sc-if value="{{ commitVisible }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ commitNodeStyle }}">
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);position:absolute;top:-22px;left:50%;transform:translateX(-50%);white-space:nowrap;">{{ commitHash }}</div>
+        <div class="mm-node" style="{{ commitCircleStyle }}"></div>
+        <div style="font-family:var(--font-mono);font-size:12px;color:var(--ink);position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);white-space:nowrap;font-weight:500;">{{ commitMsg }}</div>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <div style="max-width:1080px;width:100%;display:flex;align-items:center;justify-content:center;gap:20px;margin-top:20px;">
+    <button class="git-nav-btn" onClick="{{ prevStep }}" disabled="{{ atStart }}" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:10px 20px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;color:var(--ink);">&larr; Back</button>
+
+    <div style="display:flex;gap:8px;">
+      <sc-for list="{{ dots }}" as="dot" hint-placeholder-count="5">
+        <div onClick="{{ dot.goTo }}" style="{{ dot.style }}"></div>
+      </sc-for>
+    </div>
+
+    <button class="git-nav-btn" onClick="{{ nextStep }}" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;background:var(--accent);border:2px solid var(--ink);border-radius:8px;padding:10px 20px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;color:var(--accent-text);">{{ nextLabel }}</button>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { step: 0, theme: (typeof localStorage !== 'undefined' && localStorage.getItem('gitExplainerTheme')) || 'paper' };
+
+  steps = [
+    {
+      caption: "Every file you edit lives in the working directory. Right now, git sees three modified files.",
+      command: null,
+      activeZone: 'work',
+      pos: { html: [95, 130], css: [95, 230], js: [95, 330] },
+      opacity: { html: 1, css: 1, js: 1 },
+      commit: false,
+    },
+    {
+      caption: "git add copies a file's current state into the staging area — a preview of what your next commit will contain.",
+      command: 'git add style.css',
+      activeZone: 'stage',
+      pos: { html: [95, 130], css: [435, 130], js: [95, 230] },
+      opacity: { html: 1, css: 1, js: 1 },
+      commit: false,
+    },
+    {
+      caption: "Stage as many files as you like before committing — staging and committing are separate steps on purpose.",
+      command: 'git add app.js',
+      activeZone: 'stage',
+      pos: { html: [95, 130], css: [435, 130], js: [435, 230] },
+      opacity: { html: 1, css: 1, js: 1 },
+      commit: false,
+    },
+    {
+      caption: 'git commit takes a permanent snapshot of everything staged and adds it to your project\u2019s history.',
+      command: 'git commit -m "Add styles"',
+      activeZone: 'repo',
+      pos: { html: [95, 130], css: [435, 130], js: [435, 230] },
+      opacity: { html: 1, css: 0, js: 0 },
+      commit: true,
+    },
+    {
+      caption: "index.html was never staged, so it isn't part of this commit — git still sees it as modified.",
+      command: 'git status',
+      activeZone: 'work',
+      pos: { html: [95, 130], css: [435, 130], js: [435, 230] },
+      opacity: { html: 1, css: 0, js: 0 },
+      commit: true,
+    },
+  ];
+
+  themes = {
+    paper: {
+      bg: '0.975 0.01 85', dot: '0.23 0.02 75', dotA: 0.08, ink: '0.23 0.02 75', muted: '0.5 0.015 75',
+      paper: '0.99 0.01 95', accent: '0.68 0.17 45', accentText: 'white',
+      chipBg: '0.23 0.02 75', chipText: '0.97 0.01 85', font: "'Space Grotesk', sans-serif",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    chalkboard: {
+      bg: '0.27 0.03 250', dot: '0.96 0.01 90', dotA: 0.08, ink: '0.95 0.01 90', muted: '0.78 0.02 250',
+      paper: '0.34 0.03 250', accent: '0.8 0.14 85', accentText: 'oklch(0.2 0.02 250)',
+      chipBg: '0.18 0.02 250', chipText: '0.9 0.05 85', font: "'Space Grotesk', sans-serif",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    terminal: {
+      bg: '0.16 0.01 240', dot: '0.75 0.15 145', dotA: 0.12, ink: '0.88 0.03 145', muted: '0.55 0.1 145',
+      paper: '0.21 0.01 240', accent: '0.72 0.17 145', accentText: 'oklch(0.1 0.02 240)',
+      chipBg: '0.1 0.01 240', chipText: '0.75 0.15 145', font: "'IBM Plex Mono', monospace",
+      fontMono: "'IBM Plex Mono', monospace",
+    },
+    missingmanual: {
+      bg: '0.99 0.002 260', dot: '0.99 0.002 260', dotA: 0, ink: '0.15 0.005 260', muted: '0.42 0.02 265',
+      paper: '1 0 0', accent: '0.5 0.09 200', accentText: 'white',
+      chipBg: '0.15 0.005 260', chipText: '0.99 0.002 260',
+      font: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      fontMono: "'JetBrains Mono', 'SF Mono', Consolas, monospace",
+    },
+  };
+  themeOptions = [
+    { key: 'paper', label: 'Paper', swatch: 'oklch(0.94 0.02 85)' },
+    { key: 'chalkboard', label: 'Chalkboard', swatch: 'oklch(0.3 0.03 250)' },
+    { key: 'terminal', label: 'Terminal', swatch: 'oklch(0.18 0.02 240)' },
+    { key: 'missingmanual', label: 'Missing Manual', swatch: 'oklch(0.5 0.09 200)' },
+  ];
+
+  col(vals, alpha) {
+    return alpha != null ? `oklch(${vals} / ${alpha})` : `oklch(${vals})`;
+  }
+
+  get t() {
+    return this.themes[this.state.theme] || this.themes.paper;
+  }
+
+  setTheme(key) {
+    this.setState({ theme: key });
+    try { localStorage.setItem('gitExplainerTheme', key); } catch (e) {}
+  }
+
+  zoneBaseStyle(x, w, active) {
+    const t = this.t;
+    const border = active ? this.col(t.accent) : this.col(t.ink);
+    const bg = active ? this.col(t.accent, 0.08) : this.col(t.paper, 0.5);
+    return `position:absolute;left:${x}px;top:0px;width:${w}px;height:430px;border:2.5px ${active ? 'solid' : 'dashed'} ${border};border-radius:12px;background:${bg};padding:16px;box-sizing:border-box;transition:border-color 0.4s ease, background 0.4s ease;`;
+  }
+
+  renderVals() {
+    const t = this.t;
+    const step = this.steps[this.state.step];
+    const fileDefs = [
+      { id: 'html', name: 'index.html' },
+      { id: 'css', name: 'style.css' },
+      { id: 'js', name: 'app.js' },
+    ];
+    const cardW = 150, cardH = 78;
+    const files = fileDefs.map(f => {
+      const [x, y] = step.pos[f.id];
+      const op = step.opacity[f.id];
+      return {
+        name: f.name,
+        cardStyle: `position:absolute;left:${x}px;top:${y}px;width:${cardW}px;min-height:${cardH}px;background:${this.col(t.paper)};border:2px solid ${this.col(t.ink)};border-radius:10px;padding:12px;box-sizing:border-box;box-shadow:3px 3px 0 ${this.col(t.ink, 0.6)};transition:left 0.6s ease, top 0.6s ease, opacity 0.4s ease;opacity:${op};pointer-events:${op === 0 ? 'none' : 'auto'};z-index:2;`,
+        lineStyle: `height:2.5px;background:${this.col(t.ink, 0.35)};`,
+        dotStyle: `width:7px;height:7px;border-radius:50%;background:${this.col(t.accent)};flex-shrink:0;`,
+      };
+    });
+
+    const dots = this.steps.map((s, i) => ({
+      goTo: () => this.setState({ step: i }),
+      style: `width:${i === this.state.step ? 22 : 10}px;height:10px;border-radius:6px;background:${i === this.state.step ? this.col(t.ink) : this.col(t.ink, 0.25)};cursor:pointer;transition:all 0.25s ease;`,
+    }));
+
+    const swatches = this.themeOptions.map(o => ({
+      label: o.label,
+      onClick: () => this.setTheme(o.key),
+      style: `width:22px;height:22px;border-radius:50%;cursor:pointer;background:${o.swatch};border:2px solid ${o.key === this.state.theme ? this.col(t.ink) : 'rgba(120,110,95,0.35)'};box-shadow:${o.key === this.state.theme ? `0 0 0 2px ${this.col(t.bg)}, 0 0 0 4px ${this.col(t.ink)}` : 'none'};transition:all 0.2s ease;`,
+    }));
+
+    const themeVars = `--bg:${this.col(t.bg)};--dot:${this.col(t.dot, t.dotA)};--ink:${this.col(t.ink)};--muted:${this.col(t.muted)};--paper:${this.col(t.paper)};--accent:${this.col(t.accent)};--accent-text:${t.accentText};--chip-bg:${this.col(t.chipBg)};--chip-text:${this.col(t.chipText)};--font-heading:${t.font};--font-mono:${t.fontMono};`;
+
+    return {
+      themeVars,
+      swatches,
+      activeThemeKey: this.state.theme,
+      stepLabel: `Staging – step ${this.state.step + 1}/${this.steps.length}`,
+      stepCounter: `${this.state.step + 1} / ${this.steps.length}`,
+      caption: step.caption,
+      command: step.command,
+      hasCommand: !!step.command,
+      workZoneStyle: this.zoneBaseStyle(20, 300, step.activeZone === 'work'),
+      stageZoneStyle: this.zoneBaseStyle(360, 300, step.activeZone === 'stage'),
+      repoZoneStyle: this.zoneBaseStyle(700, 320, step.activeZone === 'repo'),
+      files,
+      commitVisible: step.commit,
+      commitHash: 'a1c9e2f',
+      commitMsg: 'Add styles',
+      commitNodeStyle: `position:absolute;left:828px;top:228px;width:64px;height:64px;transition:left 0.6s ease, top 0.6s ease, opacity 0.5s ease;opacity:${step.commit ? 1 : 0};z-index:1;`,
+      commitCircleStyle: `width:64px;height:64px;border-radius:50%;background:${this.col(t.paper)};border:2.5px solid ${this.col(t.ink)};`,
+      dots,
+      atStart: this.state.step === 0,
+      nextLabel: this.state.step === this.steps.length - 1 ? 'Restart ↺' : 'Next →',
+      prevStep: () => this.setState(s => ({ step: Math.max(0, s.step - 1) })),
+      nextStep: () => this.setState(s => ({ step: s.step === this.steps.length - 1 ? 0 : s.step + 1 })),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

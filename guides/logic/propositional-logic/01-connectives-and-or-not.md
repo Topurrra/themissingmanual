@@ -156,4 +156,6 @@ Here's a quick check before you move on.
 ]
 ```
 
+Watch it animated: [boolean operators](/explainers/BooleanOperators.dc.html)
+
 [← Guide overview](_guide.md) · [Phase 2: Truth Tables →](02-truth-tables.md)

@@ -102,6 +102,8 @@ Authentication is the front door: it establishes identity once. Authorization is
 
 Now that you know how the server *figures out* who you are and what you can do, the next question is practical: after that first login, how does it remember you across every following request without asking for your password each time? That's sessions versus tokens.
 
+Watch it animated: [authentication vs. authorization](/explainers/AuthAuthz.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Keeping You Logged In →](02-sessions-vs-tokens.md)

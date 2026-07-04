@@ -121,4 +121,6 @@ You don't need three mental models. You need one - *a function carries the varia
 ]
 ```
 
+Watch it animated: [closures](/explainers/Closures.dc.html)
+
 [← Phase 1: Scope and the Backpack](01-scope-and-the-backpack.md) · [Guide overview](_guide.md) · [Phase 3: The Loop Bug and Other Gotchas →](03-the-loop-bug-and-gotchas.md)

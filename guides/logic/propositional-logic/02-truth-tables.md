@@ -201,4 +201,6 @@ Check yourself:
 ]
 ```
 
+Watch it animated: [truth tables](/explainers/TruthTables.dc.html)
+
 [← Phase 1: Connectives: AND, OR, NOT](01-connectives-and-or-not.md) · [Guide overview](_guide.md) · [Phase 3: Equivalences & De Morgan's Laws →](03-equivalences-and-de-morgan.md)

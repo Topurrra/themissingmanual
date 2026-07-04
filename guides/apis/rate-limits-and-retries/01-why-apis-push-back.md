@@ -168,6 +168,8 @@ most rate-limit pain comes from clients that ignore those signals and retry blin
 ]
 ```
 
+Watch it animated: [API rate limiting](/explainers/RateLimiting.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Retrying Without Making It Worse →](02-retrying-without-making-it-worse.md)

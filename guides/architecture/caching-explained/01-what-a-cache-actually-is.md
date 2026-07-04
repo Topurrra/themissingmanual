@@ -95,6 +95,8 @@ See why a small cache still helps — repeated keys are instant hits, and the le
 ```playground-lru
 ```
 
+Watch it animated: [caching](/explainers/Caching.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Where Caches Live →](02-where-caches-live.md)

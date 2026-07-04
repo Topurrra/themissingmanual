@@ -65,6 +65,8 @@ That reframe is the entire point of this phase. The trace isn't the bug yelling 
 3. A **stack trace** is that stack **frozen at the moment of failure** - "where it broke" plus "the chain of who-called-whom that led there."
 4. Languages print the trace from **opposite ends** (crash-point-first or crash-point-last) - same picture, and you'll learn to tell them apart next.
 
+Watch it animated: [reading a stack trace](/explainers/StackTrace.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: How to Read One (Without Panicking) →](02-how-to-read-one.md)

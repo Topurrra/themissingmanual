@@ -96,6 +96,8 @@ flowchart LR
 
 Next: the tool itself. How Terraform turns a description into reality, and the one file you must respect to use it on a team.
 
+Watch it animated: [infrastructure as code](/explainers/InfrastructureAsCode.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: How Terraform Works →](02-how-terraform-works.md)

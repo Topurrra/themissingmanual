@@ -121,6 +121,8 @@ Round-trip time isn't a fixed number - it wobbles, and on a bad connection packe
 ```explainer-latency
 ```
 
+Watch it animated: [the TCP handshake](/explainers/TCPHandshake.dc.html)
+
 ---
 
 [← Phase 2: The Four Layers](02-the-four-layers.md) · [Guide overview](_guide.md)

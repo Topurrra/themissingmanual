@@ -216,6 +216,8 @@ often quieter and earlier.
 6. **The trap:** the loud ERROR isn't always the cause. Read *upward*; the real cause is often a quiet
    **WARN** above it.
 
+Watch it animated: [debugging with logs](/explainers/LogDebugging.dc.html)
+
 ---
 
 [← Phase 1: What Logs Actually Are](01-what-logs-actually-are.md) · [Phase 3: Logs That Help Future-You →](03-logs-that-help-future-you.md)

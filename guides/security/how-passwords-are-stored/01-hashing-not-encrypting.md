@@ -123,6 +123,8 @@ You now have the core idea. But there's a crack in it: hashing the same password
 hash - which an attacker can exploit. Next, we close that crack with a *salt*, and find out why the
 fast hash we just used is the wrong one for passwords.
 
+Watch it animated: [password hashing](/explainers/Hashing.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Salt (and Why Plain SHA-256 Isn't Enough) →](02-salt-and-fast-hashes.md)

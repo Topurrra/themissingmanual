@@ -170,4 +170,6 @@ A clean mental shorthand: the **access token is for machines** (one API checking
 ]
 ```
 
+Watch it animated: [the OAuth authorization code flow](/explainers/OAuthFlow.dc.html)
+
 [← Phase 1: The Problem and the Four Roles](01-the-problem-and-the-roles.md) | [Overview](_guide.md) | [Phase 3: Production Reality and the Gotchas →](03-production-reality-and-gotchas.md)

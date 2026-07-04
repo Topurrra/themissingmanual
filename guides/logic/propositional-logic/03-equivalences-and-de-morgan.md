@@ -325,4 +325,6 @@ A quick check before you go:
 ]
 ```
 
+Watch it animated: [De Morgan's laws](/explainers/DeMorgansLaws.dc.html)
+
 [← Phase 2: Truth Tables](02-truth-tables.md) · [Guide overview](_guide.md)

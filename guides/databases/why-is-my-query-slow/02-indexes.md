@@ -80,6 +80,8 @@ This is also where it connects to the rest of your schema. The columns you join 
 
 You now know the disease (the scan) and the cure (the right index). The last skill is the one that ties them together: *seeing* which one your database is using, so you stop guessing. That's `EXPLAIN`, and it's next.
 
+Watch it animated: [database indexes](/explainers/Indexes.dc.html)
+
 ---
 
 [← Phase 1: The Full-Table Scan](01-the-full-table-scan.md) · [Guide overview](_guide.md) · [Phase 3: Reading EXPLAIN →](03-reading-explain.md)

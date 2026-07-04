@@ -288,6 +288,8 @@ phases learning to survive mostly never have to happen.
    leaking as breaking changes.
 8. **Auth is its own topic** — design durable shapes now; treat security as a first-class subject later.
 
+Watch it animated: [idempotency keys](/explainers/IdempotencyKeys.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Versioning Strategies →](02-versioning-strategies.md)

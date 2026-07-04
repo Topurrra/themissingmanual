@@ -136,6 +136,8 @@ bash: kill: (9105) - No such process
 
 Now that you can name and grab a single process, let's use that to answer the first big "the machine is on fire" question: what does **100% CPU** actually mean, and how do you find the one process causing it?
 
+Watch it animated: [processes](/explainers/ProcessesThreads.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: What "100% CPU" Really Means →](02-what-100-cpu-really-means.md)

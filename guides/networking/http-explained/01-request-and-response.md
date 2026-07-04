@@ -144,6 +144,8 @@ in headers or the request body instead, both of which we meet in [Phase 3](03-he
 You now have the skeleton. Next, let's name the verbs a request can use, and learn to read the
 three-digit replies a server sends back - including the famous `404`.
 
+Watch it animated: [an HTTP request/response](/explainers/HTTPRequest.dc.html)
+
 ---
 
 [← Guide overview](_guide.md) · [Phase 2: Methods & Status Codes →](02-methods-and-status-codes.md)
