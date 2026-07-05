@@ -22,7 +22,22 @@
     },
     {
       '@context': 'https://schema.org', '@type': 'Organization',
-      name: 'The Missing Manual', url: origin, logo: `${origin}/icon-256.png`
+      name: 'The Missing Manual', url: origin, logo: `${origin}/icon-256.png`,
+      makesOffer: {
+        '@type': 'Offer',
+        priceSpecification: { '@type': 'PriceSpecification', price: '0', priceCurrency: 'USD' },
+        availability: 'https://schema.org/InStock',
+        itemOffered: { '@type': 'Service', name: 'The Missing Manual guides', serviceType: 'Educational content' }
+      }
+    },
+    {
+      '@context': 'https://schema.org', '@type': 'SoftwareApplication',
+      name: 'The Missing Manual AI Tutor',
+      applicationCategory: 'EducationalApplication',
+      operatingSystem: 'Any (runs in browser)',
+      description: 'An AI tutor grounded in this site\'s own guides - answers questions about the exact phase you\'re reading instead of generic chat.',
+      isAccessibleForFree: true,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
     }
   ];
   $: ({ categories, recent, guides } = data);
@@ -102,7 +117,7 @@
 
 <section class="hero">
   <h1>Understand how software <span class="accent">actually</span> works.</h1>
-  <p class="tagline">Clear, in-depth guides to everything from how a computer boots up to how the internet, databases, and AI really work. Start from zero or go deep - at your own pace. Free, forever, no account needed.</p>
+  <p class="tagline">Clear, in-depth guides to everything from how a computer boots up to how the internet, databases, and AI really work. Start from zero or go deep at your own pace. Free, forever, no account needed.</p>
   <div class="hero-cta">
     {#if hasPath}
       <a class="cta-primary" href="/paths">Continue learning →</a>
@@ -144,7 +159,6 @@
       <span class="ht-icon"><i class="ti ti-cards" aria-hidden="true"></i></span>
       <span class="ht-text">
         <span class="ht-title">Review · {dueCount} due</span>
-        <span class="ht-blurb">Quick spaced-repetition cards to lock in what you've learned.</span>
       </span>
       <span class="ht-go" aria-hidden="true">→</span>
     </a>
@@ -153,7 +167,13 @@
     <span class="ht-icon"><i class="ti ti-brain" aria-hidden="true"></i></span>
     <span class="ht-text">
       <span class="ht-title">Train your brain</span>
-      <span class="ht-blurb">Quick games - speed, memory, focus, and quiz knowledge from the guides.</span>
+    </span>
+    <span class="ht-go" aria-hidden="true">→</span>
+  </a>
+  <a class="home-train" href="/guides/git-from-zero/1?tutor=1">
+    <span class="ht-icon"><i class="ti ti-message-chatbot" aria-hidden="true"></i></span>
+    <span class="ht-text">
+      <span class="ht-title">Ask the AI tutor</span>
     </span>
     <span class="ht-go" aria-hidden="true">→</span>
   </a>

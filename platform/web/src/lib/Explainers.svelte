@@ -34,6 +34,7 @@
         const host = code.closest('pre') || code;
         const config = (code.textContent || '').replace(/\n$/, '');
         const container = document.createElement('div');
+        container.translate = false; // instrument labels/captions aren't prose - leave them alone
         host.replaceWith(container);
         instances.push(mount(Comp, { target: container, props: { config } }));
       });

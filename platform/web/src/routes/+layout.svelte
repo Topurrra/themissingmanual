@@ -8,6 +8,7 @@
   import CommandPalette from '$lib/CommandPalette.svelte';
   import HeaderSearch from '$lib/HeaderSearch.svelte';
   import Appearance from '$lib/Appearance.svelte';
+  import TranslateWidget from '$lib/TranslateWidget.svelte';
   import TutorChat from '$lib/TutorChat.svelte';
   import TutorToggleButton from '$lib/TutorToggleButton.svelte';
   import { tutorOpen } from '$lib/tutor-store.js';
@@ -266,7 +267,7 @@
           <i class="ti ti-menu-2" aria-hidden="true"></i>
         </button>
       {/if}
-      <a href="/" class="brand">{siteName}</a>
+      <a href="/" class="brand" translate="no">{siteName}</a>
 
       <HeaderSearch>
         <span class="kbd" role="button" tabindex="-1" title="Command palette"
@@ -276,6 +277,7 @@
       {#if lofiOn}
         <LofiPlayer />
       {/if}
+      <TranslateWidget />
       <Appearance />
       <TutorToggleButton />
     </div>

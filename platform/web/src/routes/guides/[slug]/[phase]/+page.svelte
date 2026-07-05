@@ -1,6 +1,8 @@
 <script>
+  import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { siteOrigin } from '$lib/site.js';
+  import { tutorOpen } from '$lib/tutor-store.js';
   import Seo from '$lib/Seo.svelte';
   import { quizFor, parseQuizBlock } from '$lib/quizzes.js';
   import { parseExerciseBlock } from '$lib/exercises.js';
@@ -37,6 +39,20 @@
   $: hasFooterNav = !!(prevPhase || prevIsOverview || nextPhase || showOverview);
   $: isLastPhase = phase.phase_no > 0 && !nextPhase;
 
+  // Homepage "Ask the AI tutor" card links here with ?tutor=1 since the tutor
+  // needs a real phase to ground its answers in - auto-open once we land.
+  onMount(() => {
+    if ($page.url.searchParams.get('tutor') === '1') tutorOpen.set(true);
+  });
+
+  // Code blocks are commands/syntax, not prose - Google Translate should leave
+  // them as-is. Re-runs on every phase nav since `html` is the action param.
+  function noTranslateCode(node, html) {
+    function apply() { node.querySelectorAll('pre, code').forEach((el) => { el.translate = false; }); }
+    apply();
+    return { update: apply };
+  }
+
   // SEO/AEO structured data: the phase as an Article, a breadcrumb, and - when the
   // phase has quiz questions - a FAQPage (answer-engine friendly).
   $: origin = siteOrigin($page.url.origin);
@@ -45,6 +61,7 @@
   $: quiz = mdQuiz && mdQuiz.length ? mdQuiz : quizFor(slug, phase.phase_no);
   $: exerciseItems = parseExerciseBlock(phase.markdown);
   $: faq = quiz;
+  $: hasPlayground = /```playground-\w+/.test(phase.markdown || '');
   $: jsonld = [
     {
       '@context': 'https://schema.org', '@type': 'Article',
@@ -52,7 +69,8 @@
       author: { '@type': 'Organization', name: 'The Missing Manual' },
       publisher: { '@type': 'Organization', name: 'The Missing Manual' },
       mainEntityOfPage: `${origin}/guides/${slug}/${phase.phase_no}`,
-      isPartOf: { '@type': 'Article', name: guideTitle, url: `${origin}/guides/${slug}` }
+      isPartOf: { '@type': 'Article', name: guideTitle, url: `${origin}/guides/${slug}` },
+      isAccessibleForFree: true
     },
     {
       '@context': 'https://schema.org', '@type': 'BreadcrumbList',
@@ -63,18 +81,41 @@
       ]
     },
     ...(faq.length
+      ? [
+          {
+            '@context': 'https://schema.org', '@type': 'FAQPage',
+            mainEntity: faq.map((qq) => ({
+              '@type': 'Question', name: qq.q,
+              acceptedAnswer: { '@type': 'Answer', text: qq.choices[qq.answer] }
+            }))
+          },
+          {
+            '@context': 'https://schema.org', '@type': 'Quiz',
+            about: { '@type': 'Thing', name: phase.title },
+            educationalLevel: phase.difficulty || undefined,
+            isAccessibleForFree: true,
+            hasPart: faq.map((qq) => ({
+              '@type': 'Question', name: qq.q,
+              acceptedAnswer: { '@type': 'Answer', text: qq.choices[qq.answer] }
+            }))
+          }
+        ]
+      : []),
+    ...(hasPlayground
       ? [{
-          '@context': 'https://schema.org', '@type': 'FAQPage',
-          mainEntity: faq.map((qq) => ({
-            '@type': 'Question', name: qq.q,
-            acceptedAnswer: { '@type': 'Answer', text: qq.choices[qq.answer] }
-          }))
+          '@context': 'https://schema.org', '@type': 'WebApplication',
+          name: `${phase.title} - interactive playground`,
+          applicationCategory: 'EducationalApplication',
+          operatingSystem: 'Any (runs in browser)',
+          isAccessibleForFree: true,
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+          url: `${origin}/guides/${slug}/${phase.phase_no}`
         }]
       : [])
   ];
 </script>
 
-<Seo title={`${phase.title} - The Missing Manual`} description={phase.summary} type="article" image={`/guides/${slug}/og.png`} {jsonld} />
+<Seo title={`${phase.title} - The Missing Manual`} description={phase.summary} type="article" image={`/guides/${slug}/og.png`} keywords={phase.synonyms} {jsonld} />
 
 <div class="crumb">
   <a href={`/guides/${phase.guide_slug}${q}`}>← Back to guide</a>
@@ -87,7 +128,7 @@
   <ReaderTTS />
 {/key}
 
-<article class="reader" class:has-phasenav={hasFooterNav}>
+<article class="reader" class:has-phasenav={hasFooterNav} use:noTranslateCode={phase.html}>
   {@html phase.html}
 
   {#key `${phase.guide_slug}/${phase.phase_no}`}

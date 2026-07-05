@@ -121,7 +121,7 @@
 
 <div class="ins-bezel">
   <div class="ins-screen">
-    <canvas bind:this={canvas} style="display:block;width:100%;height:200px"></canvas>
+    <canvas bind:this={canvas} style="display:block;width:100%;height:200px" role="img" aria-label={`Animated diagram of a git rebase, step ${step + 1} of 4: ${CAPTIONS[step]}`}></canvas>
     <span class="ins-live" class:paused={!playing} aria-hidden="true"></span>
     <span class="ins-label">git rebase</span>
   </div>

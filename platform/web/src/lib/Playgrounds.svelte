@@ -63,6 +63,7 @@
         const host = code.closest('pre') || code;
         const config = (code.textContent || '').replace(/\n$/, '');
         const container = document.createElement('div');
+        container.translate = false; // it's a tool, not prose - Google Translate should leave it alone
         host.replaceWith(container);
         instances.push(mount(Comp, { target: container, props: { config } }));
       });

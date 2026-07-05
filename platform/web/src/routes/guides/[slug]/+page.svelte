@@ -17,7 +17,8 @@
       headline: guide.title, description: guide.summary,
       author: { '@type': 'Organization', name: 'The Missing Manual' },
       publisher: { '@type': 'Organization', name: 'The Missing Manual' },
-      mainEntityOfPage: `${origin}/guides/${guide.slug}`
+      mainEntityOfPage: `${origin}/guides/${guide.slug}`,
+      isAccessibleForFree: true
     },
     {
       '@context': 'https://schema.org', '@type': 'BreadcrumbList',
@@ -29,7 +30,7 @@
   ];
 </script>
 
-<Seo title={`${guide.title} - The Missing Manual`} description={guide.summary} type="article" image={`/guides/${guide.slug}/og.png`} {jsonld} />
+<Seo title={`${guide.title} - The Missing Manual`} description={guide.summary} type="article" image={`/guides/${guide.slug}/og.png`} keywords={guide.synonyms} {jsonld} />
 
 <div class="crumb"><a href="/">All topics</a> <span>/</span> <span>{guide.title}</span></div>
 <h1 class="page-title">{guide.title}</h1>

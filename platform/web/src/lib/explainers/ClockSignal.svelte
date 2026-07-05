@@ -79,7 +79,7 @@
 
 <div class="ins-bezel">
   <div class="ins-screen">
-    <canvas bind:this={canvas} style="display:block;width:100%;height:200px"></canvas>
+    <canvas bind:this={canvas} style="display:block;width:100%;height:200px" role="img" aria-label={`Animated square clock signal wave scrolling left to right at ${freq} GHz (period ${period} ns), ${playing ? 'currently playing' : 'paused'}${jitterOn ? ' with jitter enabled' : ''}.`}></canvas>
     <span class="ins-live" class:paused={!playing} aria-hidden="true"></span>
     <span class="ins-label">Clock signal</span>
   </div>

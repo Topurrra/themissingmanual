@@ -7,6 +7,9 @@
   export let type = 'website';   // 'article' for guides
   export let image = '';          // absolute or root-relative og image
   export let jsonld = null;       // object or array → injected as ld+json
+  export let keywords = '';       // string, or array (e.g. a guide/phase's synonyms)
+
+  $: keywordsStr = Array.isArray(keywords) ? keywords.filter(Boolean).join(', ') : keywords;
 
   $: origin = siteOrigin($page.url.origin);
   $: canonical = origin + $page.url.pathname;
@@ -22,6 +25,7 @@
 <svelte:head>
   {#if title}<title>{title}</title>{/if}
   {#if description}<meta name="description" content={description} />{/if}
+  {#if keywordsStr}<meta name="keywords" content={keywordsStr} />{/if}
   <link rel="canonical" href={canonical} />
   <meta property="og:type" content={type} />
   <meta property="og:url" content={canonical} />
