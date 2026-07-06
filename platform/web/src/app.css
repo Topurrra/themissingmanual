@@ -1078,7 +1078,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 @supports not ((background-clip: text) or (-webkit-background-clip: text)) {
   .spon-name .spon-x { color: #ff5722; -webkit-text-fill-color: #ff5722; background: none; }
 }
-.co-social { display: inline-flex; gap: 0.5rem; }
+.co-social { display: inline-flex;}
 .co-social a { display: inline-grid; place-items: center; width: 34px; height: 34px; color: var(--muted); }
 .co-social a:hover { color: var(--accent); border-color: var(--accent); }
 .co-social i { font-size: 18px; }
