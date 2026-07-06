@@ -2,7 +2,11 @@
   import { onMount } from 'svelte';
   import { allCards, loadState, saveState, dueQueue, schedule } from '$lib/srs.js';
   import { confetti } from '$lib/confetti.js';
+  import { recordActivity, getStreak } from '$lib/streaks.js';
+  import ComebackOptIn from '$lib/ComebackOptIn.svelte';
   import Seo from '$lib/Seo.svelte';
+
+  let streak = { current: 0, longest: 0 };
 
   let stage = 'loading'; // loading | empty | review | done
   let cards = [], state = {}, queue = [], idx = 0, initialLen = 0, reviewed = 0;
@@ -28,6 +32,7 @@
     state[card.id] = schedule(state[card.id], g);
     saveState(state);
     reviewed += 1;
+    streak = recordActivity();
     if (g === 'again') queue.push(card);
     advance();
   }
@@ -42,6 +47,7 @@
   }
 
   onMount(() => {
+    streak = getStreak();
     cards = allCards();
     // Optional ?guides=a,b,c scopes the session to one topic's chapters.
     try {
@@ -71,15 +77,19 @@
     <span class="eyebrow">Review</span>
     <h1>You're all caught up</h1>
     <p class="tagline">Nothing is due right now. As you read guides and take quizzes, cards appear here for spaced review - the proven way to make what you learn actually stick. Check back tomorrow.</p>
+    {#if streak.current > 1}<p class="rv-streak">🔥 {streak.current}-day streak</p>{/if}
   </header>
   <div class="rv-actions"><a class="rv-btn" href="/train">Train your brain →</a><a class="rv-link" href="/paths">Your learning path</a></div>
+  <ComebackOptIn />
 {:else if stage === 'done'}
   <header class="rv-intro">
     <span class="eyebrow">Review</span>
     <h1>Done - {reviewed} card{reviewed === 1 ? '' : 's'} reviewed</h1>
     <p class="tagline">Nice. Spacing your reviews out over days is what moves this into long-term memory. Come back tomorrow for the next batch.</p>
+    {#if streak.current > 1}<p class="rv-streak">🔥 {streak.current}-day streak</p>{/if}
   </header>
   <div class="rv-actions"><a class="rv-btn" href="/">Back home →</a><a class="rv-link" href="/train">Train</a></div>
+  <ComebackOptIn />
 {:else}
   <header class="rv-head">
     <span class="rv-eyebrow">Review</span>
@@ -133,7 +143,8 @@
 <style>
   .rv-intro { margin-bottom: 1.6rem; }
   .rv-intro h1 { margin: 0.5rem 0 0.6rem; }
-  .rv-actions { display: flex; align-items: center; gap: 1.2rem; }
+  .rv-streak { font-weight: 600; color: var(--ink); margin: 0.4rem 0 0; }
+  .rv-actions { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.6rem; }
   .rv-btn { display: inline-flex; font-weight: 600; background: var(--accent); color: #fff; border-radius: 10px; padding: 0.7rem 1.3rem; }
   .rv-btn:hover { background: var(--accent-strong); color: #fff; text-decoration: none; }
   .rv-link { color: var(--muted); }

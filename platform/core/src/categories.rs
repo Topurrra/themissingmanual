@@ -47,6 +47,7 @@ const DEFS: &[Def] = &[
     Def { slug: "no-code", name: "No-Code & Automation", icon: "ti-puzzle", blurb: "Build apps and automate work without (much) code - Zapier, Make, n8n, Airtable, Retool, and the enterprise low-code platforms. For founders, ops, analysts, and anyone who'd rather ship than wait for engineering." },
     Def { slug: "tooling", name: "Tools & Workflow", icon: "ti-tools", blurb: "The tools a job expects you to already know - migrations, build systems, message queues, CI/CD, containers, cloud, auth, and observability - each explained for the day you have to use it." },
     Def { slug: "projects", name: "Projects", icon: "ti-rocket", blurb: "Build real things end to end - small projects you follow step by step, with working code you can run in the browser or on your machine. The fastest way to make everything else stick." },
+    Def { slug: "working-as-a-developer", name: "Working as a Developer", icon: "ti-briefcase", blurb: "The human side of the job nobody puts in a syllabus - code review, reading someone else's mess, asking good questions, surviving your first on-call, and interviews that don't feel like hazing." },
 ];
 
 /// Upsert the canonical category taxonomy. `DEFS` is the source of truth, so this runs on every
@@ -100,13 +101,14 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         let cats = categories_with_counts(&store).unwrap();
-        assert_eq!(cats.len(), 26);
+        assert_eq!(cats.len(), 27);
         assert_eq!(cats[0].slug, "logic"); // DEFS array order = display order; foundations lead
         assert_eq!(cats[1].slug, "mathematics");
         assert_eq!(cats[2].slug, "physics");
         assert!(cats.iter().any(|c| c.slug == "working-with-ai")); // practical-AI track (distinct from ai-ml)
         assert!(cats.iter().any(|c| c.slug == "no-code")); // no-code & automation
         assert!(cats.iter().any(|c| c.slug == "projects")); // build-along projects
+        assert!(cats.iter().any(|c| c.slug == "working-as-a-developer")); // the human/job-skills shelf, sits last
         assert!(cats.iter().any(|c| c.slug == "version-control"));
         assert!(cats.iter().any(|c| c.slug == "infrastructure")); // the DevOps split
         assert!(cats.iter().any(|c| c.slug == "programming-concepts")); // split out of programming-languages
@@ -139,7 +141,7 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         seed_categories(&store).unwrap();
-        assert_eq!(categories_with_counts(&store).unwrap().len(), 26);
+        assert_eq!(categories_with_counts(&store).unwrap().len(), 27);
     }
 
     #[test]

@@ -12,17 +12,17 @@ updated: 2026-06-22
 
 Back in [Phase 7](07-errors-and-io.md) you met the two enums that carry failure in Rust - `Result<T, E>` and `Option<T>` - learned to crack them open with `match`, and reached for `?` to bubble errors up without ceremony. That was enough to read a file and survive. But the moment your program grows past a single function, a real question shows up: *one function calls `parse`, which fails with a `ParseIntError`; another reads a file, which fails with an `io::Error`. They're different error types. How does a single `?` deal with both?*
 
-The answer is more elegant than you'd guess, and it's the spine of this whole phase. We're going to look under `?` and find out it has a hidden job - converting errors - then use that to design error types of your own, and finally meet the two crates (`thiserror` and `anyhow`) that nearly every Rust project in the wild reaches for. By the end, errors will stop being a thing you patch around and become something you *design*.
+The answer is the spine of this phase. We'll look under `?` and find its hidden job - converting errors - then use that to design error types of your own, and finally meet the two crates (`thiserror` and `anyhow`) that nearly every Rust project reaches for. By the end, errors stop being a thing you patch around and become something you *design*.
 
 ## What `?` really does
 
-You know the surface behavior: `?` on an `Ok` hands you the value and keeps going; `?` on an `Err` returns early. But there's a third move hiding in there.
+You know the surface behavior: `?` on an `Ok` hands you the value and keeps going; `?` on an `Err` returns early. But a third move hides in there.
 
 📝 **The `?` operator, precisely.** When you write `expr?`:
 - If `expr` is `Ok(v)` (or `Some(v)`), the whole expression evaluates to `v` and execution continues.
 - If `expr` is `Err(e)` (or `None`), `?` **returns from the current function** - but first, for `Result`, it runs the error through `From::from(e)`, converting it into your function's declared error type.
 
-That last clause is the part Phase 7 didn't tell you. `?` is not "return the error." It's "convert the error to my return type's error, *then* return it."
+That last clause is the part Phase 7 skipped. `?` is not "return the error" - it's "convert the error to my return type's error, *then* return it."
 
 ```rust
 use std::num::ParseIntError;
@@ -42,15 +42,15 @@ $ cargo run
 Ok(42)
 Err(ParseIntError { kind: InvalidDigit })
 ```
-*What just happened:* `s.parse::<i32>()` returns a `Result<i32, ParseIntError>`. On `"21"` the `?` unwrapped `Ok(21)` to `21`, and we doubled it. On `"oops"` the `?` saw `Err(...)` and returned that error straight out of `double_the_input`. Here the error type going *in* (`ParseIntError`) already matches the type coming *out*, so the conversion step did nothing visible. The interesting case is when they *don't* match - which is exactly where `From` earns its keep.
+*What just happened:* `s.parse::<i32>()` returns a `Result<i32, ParseIntError>`. On `"21"` the `?` unwrapped `Ok(21)` to `21`, and we doubled it. On `"oops"` the `?` saw `Err(...)` and returned that error straight out of `double_the_input`. Here the error type going *in* already matches the type coming *out*, so the conversion step did nothing visible. The interesting case is when they *don't* match - exactly where `From` earns its keep.
 
-💡 **Key point.** `?` works in any function whose return type is a `Result` (or, separately, an `Option`) - not only in `main`. It's purely a control-flow plus conversion shortcut; there's no magic tied to where you use it. If the function can't carry the error out, the compiler stops you, because `?`'s entire purpose is to *return* that error.
+💡 **Key point.** `?` works in any function whose return type is a `Result` (or, separately, an `Option`) - not only in `main`. It's purely a control-flow plus conversion shortcut. If the function can't carry the error out, the compiler stops you, because `?`'s entire purpose is to *return* that error.
 
 ## The `From` trait: how one `?` swallows many error types
 
-Here's the problem `From` solves. Imagine a function that both reads a file *and* parses a number from it. The read can fail with `std::io::Error`; the parse can fail with `ParseIntError`. Two different error types, one function. What error type does the function return?
+Here's the problem `From` solves. Imagine a function that both reads a file *and* parses a number from it. The read can fail with `std::io::Error`; the parse can fail with `ParseIntError`. Two error types, one function - what does it return?
 
-The Rust answer: define *your own* error type, then teach Rust how to convert each underlying error into it. "Teach Rust how to convert" means implementing the `From` trait - the same trait you met in passing as the engine behind `.into()` and type conversions. Once `From<io::Error>` and `From<ParseIntError>` both exist for your error type, `?` can convert *either* one automatically, and a single error type flows out.
+The Rust answer: define *your own* error type, then teach Rust how to convert each underlying error into it by implementing the `From` trait - the same trait behind `.into()` and type conversions. Once `From<io::Error>` and `From<ParseIntError>` both exist for your error type, `?` can convert *either* one automatically, and a single error type flows out.
 
 ```rust
 use std::num::ParseIntError;
@@ -92,13 +92,13 @@ fn main() {
 $ cargo run
 config error: Io(Os { code: 2, kind: NotFound, message: "The system cannot find the file specified." })
 ```
-*What just happened:* Two `?` operators, two *different* underlying error types, and yet `read_port` declares a single error type: `ConfigError`. The first `?` hit a missing file, so it called `ConfigError::from(io_error)` - which we implemented to wrap it in the `Io` variant - and returned that. Had the file existed but contained `"not-a-number"`, the second `?` would have called `ConfigError::from(parse_error)` and returned the `Parse` variant instead. The conversion is invisible at the call site; it's the `From` impls doing the quiet work.
+*What just happened:* Two `?` operators, two *different* underlying error types, yet `read_port` declares a single error type: `ConfigError`. The first `?` hit a missing file, so it called `ConfigError::from(io_error)` - which we implemented to wrap it in the `Io` variant - and returned that. Had the file existed but contained `"not-a-number"`, the second `?` would have called `ConfigError::from(parse_error)` and returned `Parse` instead. The conversion is invisible at the call site; the `From` impls do the quiet work.
 
-💡 **This is the glue.** Every time you use `?` against a foreign error type and it "just fits," there's a `From` impl making it fit - either one the standard library wrote, or one you wrote. `From` is the trait that lets `?` stay a single character while juggling a whole zoo of error types underneath. Internalize this and a huge amount of Rust error-handling code stops looking like magic.
+💡 **This is the glue.** Every time `?` against a foreign error type "just fits," there's a `From` impl making it fit - either the standard library's or your own. `From` is the trait that lets `?` stay a single character while juggling a whole zoo of error types underneath.
 
 ## Custom error enums done right
 
-The enum above worked, but printing it with `{:?}` gave us a developer-facing debug dump, not a sentence a human wants to read. A *proper* domain error does three things: it enumerates the failure modes as variants, it implements `Display` so it prints a clean message, and it implements the standard `Error` trait so it slots into the rest of the ecosystem (logging, `Box<dyn Error>`, other people's `?`).
+The enum above worked, but printing it with `{:?}` gave a developer-facing debug dump, not a sentence a human wants to read. A *proper* domain error does three things: enumerates the failure modes as variants, implements `Display` for a clean message, and implements the standard `Error` trait so it slots into the rest of the ecosystem (logging, `Box<dyn Error>`, other people's `?`).
 
 ```rust
 use std::fmt;
@@ -147,19 +147,19 @@ error: invalid input: id -1 is negative
 error: the requested item was not found
 loaded item #7
 ```
-*What just happened:* `AppError` is an enum with one variant per way the operation can go wrong - and notice `Invalid` and `Io` carry data (the offending input, the underlying I/O error), exactly the "make illegal states unrepresentable" idea from [Phase 9](09-idioms-and-gotchas.md). The `Display` impl turns each variant into a sentence, so printing with `{}` reads like English instead of a struct dump. Implementing `std::error::Error` is the formal handshake that says "this is an error type" - it's what lets `AppError` be returned as `Box<dyn Error>`, logged by libraries, or wrapped by other errors. Callers can still `match` on the variants when they need to react differently to `NotFound` versus `Invalid`.
+*What just happened:* `AppError` is an enum with one variant per way the operation can go wrong - notice `Invalid` and `Io` carry data (the offending input, the underlying I/O error), the "make illegal states unrepresentable" idea from [Phase 9](09-idioms-and-gotchas.md). The `Display` impl turns each variant into a sentence, so printing with `{}` reads like English instead of a struct dump. Implementing `std::error::Error` is the formal handshake that says "this is an error type" - it's what lets `AppError` be returned as `Box<dyn Error>`, logged by libraries, or wrapped by other errors. Callers can still `match` on the variants to react differently to `NotFound` versus `Invalid`.
 
-⚠️ **The boilerplate adds up fast.** That's a lot of hand-written code for one error type: a `Display` arm per variant, the `Error` impl, and - if you want `?` to convert into it - a `From` impl per source error too. Get a few error types in a project and you're writing the same shapes over and over, and every new variant means editing the `Display` match by hand. This pain is exactly why the next section exists.
+⚠️ **The boilerplate adds up fast.** That's a lot of hand-written code for one error type: a `Display` arm per variant, the `Error` impl, and - if you want `?` to convert into it - a `From` impl per source error too. A few error types in and you're writing the same shapes over and over, editing the `Display` match by hand for every new variant. This pain is exactly why the next section exists.
 
 ## `thiserror` and `anyhow`: the two crates everyone reaches for
 
-Almost no real Rust project hand-writes `Display` and `From` impls the way we just did. Two small crates eliminate the boilerplate, and they split along a clear line.
+Almost no real Rust project hand-writes `Display` and `From` impls the way we just did. Two small crates eliminate the boilerplate, split along a clear line.
 
-📝 **The rule of thumb.** Use **`thiserror`** when you're writing a **library** (or any code where callers need to *match on specific error variants*) - it derives the clean enum for you. Use **`anyhow`** when you're writing an **application** (a binary, a CLI, a service) that mostly wants to say "something failed, here's some context, propagate it" without defining a bespoke type for every failure.
+📝 **The rule of thumb.** Use **`thiserror`** when writing a **library** (or any code where callers need to *match on specific error variants*) - it derives the clean enum for you. Use **`anyhow`** when writing an **application** (a binary, a CLI, a service) that mostly wants to say "something failed, here's some context, propagate it" without defining a bespoke type for every failure.
 
 ### `thiserror` - derive the enum, skip the boilerplate
 
-`thiserror` is a derive macro. You write the enum and annotate it; the macro generates the `Display` impl (from your `#[error("...")]` strings) and the `From` impls (from `#[from]`) that we wrote by hand above.
+`thiserror` is a derive macro: you write the enum and annotate it, and the macro generates the `Display` impl (from your `#[error("...")]` strings) and the `From` impls (from `#[from]`) we wrote by hand above.
 
 ```rust
 use thiserror::Error;
@@ -195,11 +195,11 @@ fn main() {
 $ cargo run
 error: I/O failure: The system cannot find the file specified. (os error 2)
 ```
-*What just happened:* This is the *same* `AppError` as the previous section - same variants, same behavior - but every line of `Display` and `From` boilerplate is gone. The `#[error("...")]` attributes became the `Display` impl (`{0}` interpolates the variant's first field). The `#[from]` on the `Io` variant generated `impl From<std::io::Error> for AppError`, which is why the `?` in `load_file` silently converts the I/O error. You still get a precise, matchable enum that callers can react to variant by variant - `thiserror` just wrote the tedious parts. That's why it's the default for libraries.
+*What just happened:* This is the *same* `AppError` as the previous section - same variants, same behavior - but every line of `Display` and `From` boilerplate is gone. The `#[error("...")]` attributes became the `Display` impl (`{0}` interpolates the variant's first field). `#[from]` on the `Io` variant generated `impl From<std::io::Error> for AppError`, which is why `?` in `load_file` silently converts the I/O error. You still get a precise, matchable enum - `thiserror` just wrote the tedious parts, which is why it's the default for libraries.
 
 ### `anyhow` - one error type, easy context
 
-Application code often doesn't care *which* of fifteen error types occurred - it cares that something failed, wants a breadcrumb of context, and wants to print it and move on. `anyhow` gives you a single catch-all error type (`anyhow::Error`) that any standard error converts into automatically, plus a `.context()` method to attach a human note as the error travels up.
+Application code often doesn't care *which* of fifteen error types occurred - it cares that something failed, wants a breadcrumb of context, and wants to print it and move on. `anyhow` gives you a single catch-all error type (`anyhow::Error`) that any standard error converts into automatically, plus `.context()` to attach a human note as the error travels up.
 
 ```rust
 use anyhow::{Context, Result};   // anyhow::Result<T> == Result<T, anyhow::Error>
@@ -227,15 +227,15 @@ Error: reading settings from settings.txt
 Caused by:
     The system cannot find the file specified. (os error 2)
 ```
-*What just happened:* `load_settings` never defines an error type at all - `anyhow::Result<u16>` means "a `u16`, or *any* error." The `?` operators accept the `io::Error` and the `ParseIntError` directly, because `anyhow::Error` absorbs anything that implements the standard `Error` trait (no `From` impls to write). The `.with_context(...)` / `.context(...)` calls attach a readable note, and `anyhow` stitches them into that "Error / Caused by" chain you see in the output - so you get the high-level intent *and* the root cause. This is the ergonomic sweet spot for binaries: maximum signal, near-zero ceremony.
+*What just happened:* `load_settings` never defines an error type at all - `anyhow::Result<u16>` means "a `u16`, or *any* error." The `?` operators accept the `io::Error` and `ParseIntError` directly, because `anyhow::Error` absorbs anything implementing the standard `Error` trait (no `From` impls to write). The `.with_context(...)` / `.context(...)` calls attach a readable note, and `anyhow` stitches them into the "Error / Caused by" chain above - so you get the high-level intent *and* the root cause. This is the ergonomic sweet spot for binaries: maximum signal, near-zero ceremony.
 
-💡 **In practice they pair up.** A common real-world setup: your library crates expose `thiserror` enums (so consumers can match precisely), and your top-level application crate uses `anyhow` to collect all of them, add context, and report. `thiserror` for the people who *handle* your errors; `anyhow` for the program that just needs to *surface* them.
+💡 **In practice they pair up.** A common setup: library crates expose `thiserror` enums so consumers can match precisely, and the top-level application crate uses `anyhow` to collect them, add context, and report. `thiserror` for people who *handle* your errors; `anyhow` for the program that just needs to *surface* them.
 
 ## `Option` combinators, and when a panic is actually fine
 
 Two loose ends from Phase 7's basics, both about choosing the *lightest correct tool*.
 
-First, combinators. You met `Result`/`Option` combinators briefly in [Phase 9](09-idioms-and-gotchas.md); they shine just as much for avoiding "match towers" on `Option`. Instead of nesting `match` after `match` to transform a maybe-value, chain the transformation:
+First, combinators. You met `Result`/`Option` combinators briefly in [Phase 9](09-idioms-and-gotchas.md); they shine just as much at avoiding "match towers" on `Option`. Instead of nesting `match` after `match` to transform a maybe-value, chain the transformation:
 
 ```rust
 fn main() {
@@ -260,16 +260,16 @@ $ cargo run
 total = 40
 first = Ok("10")
 ```
-*What just happened:* No `match` in sight. `.ok()` converts each `Result` into an `Option` (dropping the error), `.unwrap_or(0)` substitutes a default for the `None`s, and `.sum()` adds what's left - so the un-parseable `"x"` quietly became `0` and the total is `40`. Separately, `.ok_or(...)` does the reverse direction: it turns an `Option` into a `Result`, letting you *upgrade* an absence into a real error with a message. The combinators worth knowing: `.map` (transform the value), `.and_then` (chain another fallible step), `.ok_or` (`Option` → `Result`), and `.unwrap_or` / `.unwrap_or_else` (supply a fallback). Reach for these for the simple cases; save `match` for when each branch genuinely does something different.
+*What just happened:* No `match` in sight. `.ok()` converts each `Result` into an `Option` (dropping the error), `.unwrap_or(0)` substitutes a default for the `None`s, and `.sum()` adds what's left - so the un-parseable `"x"` quietly became `0` and the total is `40`. Separately, `.ok_or(...)` does the reverse: it turns an `Option` into a `Result`, letting you *upgrade* an absence into a real error with a message. The combinators worth knowing: `.map` (transform the value), `.and_then` (chain another fallible step), `.ok_or` (`Option` → `Result`), and `.unwrap_or` / `.unwrap_or_else` (supply a fallback). Reach for these for simple cases; save `match` for when each branch genuinely does something different.
 
 Second, the panic question. Phase 7 said `.unwrap()` is a landmine in production - true. But "never panic" is the wrong lesson. Panicking is the *right* call in specific places:
 
 ⚠️ **When `panic!` / `.unwrap()` / `.expect()` are acceptable.**
-- ✅ **Tests.** A failed assumption *should* crash the test - that's the test failing. `.unwrap()` everywhere in test code is idiomatic, not sloppy.
-- ✅ **Prototypes and throwaway scripts**, where adding error plumbing would obscure the idea you're sketching.
+- ✅ **Tests.** A failed assumption *should* crash the test. `.unwrap()` everywhere in test code is idiomatic, not sloppy.
+- ✅ **Prototypes and throwaway scripts**, where error plumbing would obscure the idea you're sketching.
 - ✅ **Truly impossible cases you can prove** - e.g. `"42".parse::<i32>().unwrap()` on a literal you wrote yourself. Even then, prefer `.expect("hard-coded constant, cannot fail")` so the message documents *why* it's safe.
 - ✅ **Broken invariants** - a state that means your own logic is wrong (an empty list you guaranteed wouldn't be). A panic here is a loud bug report, which is what you want.
-- ❌ **Everything else** - anything that can fail because of the *outside world* (files, network, user input, parsed data) is an *expected* failure. Return a `Result` and let the caller decide. That's not pessimism; it's matching the tool to the kind of failure.
+- ❌ **Everything else** - anything that can fail because of the *outside world* (files, network, user input, parsed data) is an *expected* failure. Return a `Result` and let the caller decide.
 
 The dividing line is simple: **`Result` for failures you expect, `panic!` for bugs you don't.** A missing config file is expected - return a `Result`. A counter going negative when you proved it can't - that's a bug, panic and find out.
 
@@ -284,7 +284,7 @@ The dividing line is simple: **`Result` for failures you expect, `panic!` for bu
 
 ## Quick check
 
-Test yourself on the idea that ties this phase together - the hidden conversion inside `?` - and the crate split:
+Test yourself on the idea that ties this phase together - the hidden conversion inside `?`, and the crate split.
 
 ```quiz
 [

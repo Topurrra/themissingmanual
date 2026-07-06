@@ -11,15 +11,15 @@ updated: 2026-06-23
 
 # EF Core in the Real World & Where to Go Next
 
-Pause and look at the distance you've covered. You can model a table as a C# class and let a migration build it. You can `Add` a record and `SaveChanges`, then read it back with `Find`, `First`, or `Single`. You can chain `Where`, `OrderBy`, `Select`, and `Include` into the exact query you mean. You understand change tracking — that the `DbContext` quietly watches the objects it hands you and batches every edit into one round-trip. You can model one-to-many and many-to-many relationships, you can spot an N+1 explosion before it ships and reach for `Include`, and you can wrap a sequence of writes in a transaction and reason about migrations in production.
+Look at the distance you've covered. You can model a table as a C# class and let a migration build it. You can `Add` a record and `SaveChanges`, then read it back with `Find`, `First`, or `Single`. You can chain `Where`, `OrderBy`, `Select`, and `Include` into the exact query you mean. You understand change tracking — that the `DbContext` quietly watches the objects it hands you and batches every edit into one round-trip. You can model one-to-many and many-to-many relationships, spot an N+1 explosion before it ships and reach for `Include`, wrap a sequence of writes in a transaction, and reason about migrations in production.
 
-And most of all — the whole point of learning EF Core the way we did — you can read the SQL underneath. With logging on, EF Core stopped being a magic box and became a SQL generator whose output you can predict and debug. That skill outlives any single library.
+And most of all — the whole point of learning EF Core this way — you can read the SQL underneath. With logging on, EF Core stopped being a magic box and became a SQL generator whose output you can predict and debug. That skill outlives any single library.
 
 This last phase isn't new mechanics. It's about where EF Core actually lives in real .NET codebases, where it isn't the right tool, and what to build to make all of this stick.
 
 ## When to drop to raw SQL
 
-Here's something worth saying out loud, because it surprises people who expect an ORM to be a cage: **EF Core never traps you.** Any time the generated SQL gets awkward, you can go SQL-first for that one query and keep using EF Core for everything else.
+Worth saying out loud, since it surprises people who expect an ORM to be a cage: **EF Core never traps you.** Any time the generated SQL gets awkward, go SQL-first for that one query and keep using EF Core for everything else.
 
 When does that moment arrive?
 
@@ -35,7 +35,7 @@ var posts = ctx.Posts
     .ToList();
 ```
 
-📝 That `{title}` is **not** string concatenation. The interpolated `FromSql` parameterizes the value for you — the same protection against SQL injection you get from LINQ. If you need to build parameters yourself, `FromSqlRaw` lets you pass them manually (and puts the safety on you). For writes that don't return rows, reach for `ExecuteSql`:
+📝 That `{title}` is **not** string concatenation. The interpolated `FromSql` parameterizes the value for you — the same protection against SQL injection as LINQ. If you need to build parameters yourself, `FromSqlRaw` lets you pass them manually (and puts the safety on you). For writes that don't return rows, reach for `ExecuteSql`:
 
 ```csharp
 ctx.Database.ExecuteSql($"UPDATE Posts SET Published = {true} WHERE BlogId = {blogId}");
@@ -45,7 +45,7 @@ Drop to raw SQL, yes; drop your guard, no.
 
 ## EF Core vs Dapper vs ADO.NET
 
-EF Core is the default in .NET, but it isn't the only way to talk to a database — and knowing the landscape helps you pick well and read other people's code.
+EF Core is the default in .NET, but not the only way to talk to a database — knowing the landscape helps you pick well and read other people's code.
 
 - **EF Core** — a full ORM. You describe data as classes, query with LINQ, and it writes the SQL, tracks changes, and manages migrations. It optimizes for productivity.
 - **Dapper** — a *micro-ORM*. You write the SQL yourself; Dapper maps the result rows onto your objects. No change tracking, no LINQ-to-SQL — fast, predictable, and you own every query.
@@ -60,11 +60,11 @@ flowchart TD
   D -- No, full control --> F[ADO.NET]
 ```
 
-💡 The honest rule: reach for **EF Core when you want productivity** — fast CRUD, relationships handled, migrations baked in, which covers most apps. Reach for **Dapper on hot read paths** or when you want SQL-first control without an ORM in the way. And here's the part people miss: **they coexist beautifully.** A very common production setup is EF Core for writes and the everyday model, with Dapper dropped in for a handful of heavy read queries. You don't have to choose one for the whole app.
+💡 The honest rule: reach for **EF Core when you want productivity** — fast CRUD, relationships handled, migrations baked in, covering most apps. Reach for **Dapper on hot read paths** or when you want SQL-first control without an ORM in the way. The part people miss: **they coexist beautifully.** A very common production setup is EF Core for writes and the everyday model, with Dapper dropped in for a handful of heavy read queries. You don't have to choose one for the whole app.
 
 ## The caveats, honestly — and ASP.NET Core
 
-A battle-hardened friend tells you where the dragons are. Here's the short list of EF Core's, all of which you've already met:
+A battle-hardened friend tells you where the dragons are. The short list of EF Core's, all of which you've already met:
 
 - **The detached-entity trap (Phase 5).** An object that didn't come from *this* context isn't tracked, so editing it and calling `SaveChanges` does nothing until you `Attach` or `Update` it. Know which context an entity belongs to.
 - **Forgetting `Include` → N+1 (Phase 7).** Load a list, then touch each item's navigation property, and you fire one query per row. Eager-load with `Include` and watch the count collapse.
@@ -76,7 +76,7 @@ Now, the place EF Core most often lives: as the data layer of an [ASP.NET Core](
 builder.Services.AddDbContext<BlogContext>(o => o.UseSqlite(conn));
 ```
 
-📝 `AddDbContext` registers the context as **Scoped** — one instance per HTTP request. You inject it into your endpoints or services and use it for that request, and the framework disposes it when the request ends. The rule that follows: **don't share a `DbContext` across threads or requests.** A context is a unit of work for one request, not a long-lived singleton — sharing one is how you get tangled change-tracking and concurrency bugs.
+📝 `AddDbContext` registers the context as **Scoped** — one instance per HTTP request. Inject it into your endpoints or services and use it for that request; the framework disposes it when the request ends. The rule that follows: **don't share a `DbContext` across threads or requests.** A context is a unit of work for one request, not a long-lived singleton — sharing one is how you get tangled change-tracking and concurrency bugs.
 
 ## What to build
 
@@ -89,7 +89,7 @@ Concretely:
 - **Tune reads.** Add `AsNoTracking` to read-only queries so EF Core skips change-tracking overhead, and reach for compiled queries on the hottest paths.
 - **Use a real provider.** SQLite is a fine sandbox; for production, move to SQL Server or PostgreSQL (via Npgsql). The model and your LINQ stay the same — only the provider and connection string change.
 
-Then deploy it somewhere, even a tiny instance. Keep logging on and watch your endpoints turn into SQL as requests come in. Whatever you build, **finish one.** A small API you actually debugged and deployed teaches more than three half-built ones.
+Then deploy it somewhere, even a tiny instance. Keep logging on and watch your endpoints turn into SQL as requests come in. Whatever you build, **finish one** — a small API you actually debugged and deployed teaches more than three half-built ones.
 
 You came in seeing an ORM as a trick that turned objects into rows somehow. You're leaving able to model, migrate, query with LINQ, track changes, relate, beat N+1, transact — and, when the ORM gets in your way, drop to the SQL it was writing all along. A **`DbContext` is a change-tracking session**, **`DbSet`s are your tables**, **LINQ becomes SQL** — and you can always see that SQL and reach past it. Go build the small thing.
 

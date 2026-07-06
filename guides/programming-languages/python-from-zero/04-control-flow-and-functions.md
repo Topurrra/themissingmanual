@@ -11,20 +11,19 @@ updated: 2026-06-19
 
 # Control Flow & Functions
 
-So far your programs run straight down, every line once. Real programs *make choices* ("if the user is
-logged in, show the dashboard") and *repeat work* ("for each order, send an email"). And once you've
-written a useful chunk of logic, you want to *name it and reuse it* instead of copy-pasting. Those three
-abilities - deciding, repeating, and packaging - are control flow and functions. This is where code
-starts to feel powerful.
+So far your programs run straight down, every line once. Real programs *make choices* ("if logged in,
+show the dashboard") and *repeat work* ("for each order, send an email"), and once you've written useful
+logic, you want to *name it and reuse it* instead of copy-pasting. Deciding, repeating, and packaging -
+control flow and functions - are where code starts to feel powerful.
 
-Remember the indentation rule from [Phase 2](02-syntax-values-and-types.md): the `:` opens a block and
-the indented lines beneath belong to it. Every structure here uses it.
+Remember the indentation rule from [Phase 2](02-syntax-values-and-types.md): `:` opens a block and the
+indented lines beneath belong to it. Every structure here uses it.
 
 ## `if` / `elif` / `else` - making a decision
 
-**What it actually is.** An `if` runs a block *only when* a condition is true. Add `elif` ("else if")
-for more conditions to check in turn, and `else` for "none of the above." Python checks them top to
-bottom and runs the **first** matching block, then skips the rest.
+**What it actually is.** An `if` runs a block *only when* a condition is true. Add `elif` ("else if") for
+more conditions, and `else` for "none of the above." Python checks top to bottom, runs the **first**
+matching block, then skips the rest.
 ```python runnable
 score = 72
 if score >= 90:
@@ -36,12 +35,12 @@ elif score >= 70:
 else:
     print("F")
 ```
-*What just happened:* Python checked `score >= 90` (false), then `>= 80` (false), then `>= 70` (true) -
-ran that block and stopped, never reaching `else`:
+*What just happened:* Python checked `score >= 90` (false), then `>= 80` (false), then `>= 70` (true),
+ran that block, and stopped without reaching `else`:
 ```console
 C
 ```
-Here's the decision as a picture - Python falls through the checks until one matches:
+As a picture - Python falls through the checks until one matches:
 
 ```mermaid
 flowchart TD
@@ -54,27 +53,26 @@ flowchart TD
   c -- no --> E[print F]
 ```
 
-📝 **Terminology.** A **condition** is any expression that evaluates to `True` or `False` - usually a
-comparison like `>=`, `==`, `!=` (not equal), `<`, `>`. The block under `if` runs when the condition is
-`True`.
+📝 **Terminology.** A **condition** is any expression evaluating to `True` or `False` - usually a
+comparison like `>=`, `==`, `!=` (not equal), `<`, `>`. The block under `if` runs when it's `True`.
 
 ## Truthiness - what counts as "true"
 
-**What it actually is.** Python lets you use *any* value as a condition, not only `True`/`False`. When
-it does, it asks "is this value *truthy* or *falsy*?" The falsy values are the "empty or nothing" ones;
-almost everything else is truthy.
+**What it actually is.** Python lets you use *any* value as a condition, not only `True`/`False` - it
+asks "is this *truthy* or *falsy*?" The falsy values are "empty or nothing"; almost everything else is
+truthy.
 ```python runnable
 print(bool(0), bool(""), bool([]), bool(None))
 print(bool(42), bool("hi"), bool([1, 2]))
 ```
-*What just happened:* `bool()` shows how Python would judge each value in a condition. Zero, the empty
-string, the empty list, and `None` are all **falsy**; a nonzero number, a non-empty string, and a
-non-empty list are **truthy**:
+*What just happened:* `bool()` shows how Python judges each value as a condition: zero, the empty
+string, the empty list, and `None` are all **falsy**; a nonzero number, non-empty string, and non-empty
+list are **truthy**:
 ```console
 False False False False
 True True True
 ```
-This lets you write natural checks. Instead of `if len(items) > 0:`, you can write:
+This enables natural checks - instead of `if len(items) > 0:`, write:
 ```python runnable
 items = []
 if items:
@@ -82,36 +80,36 @@ if items:
 else:
     print("The list is empty")
 ```
-*What just happened:* The empty list is falsy, so the condition was false and the `else` ran:
+*What just happened:* The empty list is falsy, so the `else` ran:
 ```console
 The list is empty
 ```
 
-💡 **Key point.** "Empty or zero or nothing" is falsy; everything else is truthy. `if my_list:` reads as
+💡 **Key point.** "Empty or zero or nothing" is falsy; everything else truthy. `if my_list:` reads as
 "if the list has anything in it" - clean and Pythonic.
 
 ## `for` - do something for each item
 
-**What it actually is.** A `for` loop walks through a collection and runs its block *once per item*,
-with each item handed to a name you choose.
+**What it actually is.** A `for` loop walks a collection, running its block *once per item*, each handed
+to a name you choose.
 ```python runnable
 for fruit in ["apple", "banana", "cherry"]:
     print(fruit)
 ```
-*What just happened:* The loop took each item from the list in turn, pointed `fruit` at it, and ran the
-block - three items, three runs:
+*What just happened:* The loop took each item in turn, pointed `fruit` at it, and ran the block - three
+items, three runs:
 ```console
 apple
 banana
 cherry
 ```
-To repeat a fixed number of times, loop over `range(n)`, which produces the numbers `0` up to (but not
-including) `n`:
+To repeat a fixed number of times, loop over `range(n)`, which produces `0` up to (but not including)
+`n`:
 ```python runnable
 for i in range(3):
     print(i)
 ```
-*What just happened:* `range(3)` yielded `0`, `1`, `2` - note it stops *before* 3, the same "stop is
+*What just happened:* `range(3)` yielded `0`, `1`, `2` - stopping *before* 3, the same "stop is
 exclusive" rule as slicing:
 ```console
 0
@@ -121,15 +119,15 @@ exclusive" rule as slicing:
 
 ## `while` - repeat until a condition turns false
 
-**What it actually is.** A `while` loop repeats its block *as long as* a condition stays true. You reach
-for it when you don't know in advance how many times you'll loop - you loop until something changes.
+**What it actually is.** A `while` loop repeats its block *as long as* a condition stays true. Reach for
+it when you don't know in advance how many times you'll loop - you loop until something changes.
 ```python runnable
 n = 3
 while n > 0:
     print(n)
     n = n - 1
 ```
-*What just happened:* The loop ran while `n > 0`: printed `n`, then shrank it by 1 each pass, until `n`
+*What just happened:* The loop ran while `n > 0`, printing `n` then shrinking it by 1 each pass, until it
 hit 0 and the condition went false:
 ```console
 3
@@ -137,16 +135,14 @@ hit 0 and the condition went false:
 1
 ```
 
-⚠️ **The infinite loop.** A `while` only stops when its condition becomes false - so *something inside
-the loop must move it toward false*. Forget the `n = n - 1` line above and `n` stays 3 forever, printing
-without end. If a program ever "hangs" and won't return to the prompt, an infinite loop is the usual
-suspect; press **Ctrl-C** to stop it.
+⚠️ **The infinite loop.** A `while` only stops when its condition becomes false, so *something inside the
+loop must move it toward false*. Drop the `n = n - 1` line above and `n` stays 3 forever, printing without
+end. If a program ever "hangs," suspect an infinite loop; press **Ctrl-C** to stop it.
 
 ## Functions - name a piece of logic and reuse it
 
-**What it actually is.** A **function** is a named, reusable block of instructions. You *define* it once
-with `def`, then *call* it whenever you need it - possibly with different inputs each time. It's how you
-avoid copy-pasting the same logic and how you give a chunk of code a meaningful name.
+**What it actually is.** A **function** is a named, reusable block of instructions: *define* it once with
+`def`, then *call* it whenever needed, with different inputs each time - how you avoid copy-pasting logic.
 ```python runnable
 def greet(name):
     return f"Hello, {name}!"
@@ -154,16 +150,15 @@ def greet(name):
 print(greet("Ada"))
 print(greet("Linus"))
 ```
-*What just happened:* `def greet(name):` defined a function taking one **parameter**, `name`. `return`
-hands a value back to whoever called it. Each call supplied a different name, so we got two different
-results:
+*What just happened:* `def greet(name):` defined a function taking one **parameter**, `name`; `return`
+hands a value back. Each call supplied a different name, giving two different results:
 ```console
 Hello, Ada!
 Hello, Linus!
 ```
 
 📝 **Terminology.** A **parameter** is the name in the definition (`name`); an **argument** is the actual
-value you pass in when calling (`"Ada"`). `return` sends a value back out of the function.
+value passed when calling (`"Ada"`). `return` sends a value back out of the function.
 
 **Defaults** let a parameter be optional by giving it a fallback value:
 ```python runnable
@@ -173,16 +168,16 @@ def greet(name, greeting="Hello"):
 print(greet("Ada"))
 print(greet("Ada", "Hi"))
 ```
-*What just happened:* When you don't pass `greeting`, it falls back to `"Hello"`. When you do pass it,
-yours wins:
+*What just happened:* Without a `greeting` argument, it falls back to `"Hello"`; supply one and yours
+wins:
 ```console
 Hello, Ada!
 Hi, Ada!
 ```
 
-**`return` vs printing - a crucial difference.** A function that *prints* shows text on screen but hands
-back nothing usable; a function that *returns* gives you a value you can store and work with. A function
-with no `return` hands back `None`:
+**`return` vs printing - a crucial difference.** A function that *prints* shows text but hands back
+nothing usable; one that *returns* gives a value you can store and work with. No `return` means it hands
+back `None`:
 ```python runnable
 def show(x):
     print(x)
@@ -190,22 +185,22 @@ def show(x):
 result = show(5)
 print(result)
 ```
-*What just happened:* `show(5)` printed `5`. But it has no `return`, so the call evaluated to `None` -
-which is what got stored in `result` and printed on the second line:
+*What just happened:* `show(5)` printed `5`, but with no `return`, the call evaluated to `None` - stored
+in `result` and printed on the second line:
 ```console
 5
 None
 ```
-If you want to *use* a function's output later, it must `return` it, not just `print` it. Printing is for
-showing a human; returning is for feeding the rest of your program.
+To *use* a function's output later, it must `return` it, not just `print` it - printing is for humans,
+returning is for feeding the rest of your program.
 
 ## The classic trap: mutable default arguments
 
-This one bites *experienced* developers, not only beginners - so it's worth meeting head-on.
+This one bites *experienced* developers too, so it's worth meeting head-on.
 
-**What goes wrong.** When you give a parameter a default that is a **mutable** value (like a list), that
-default is created **once**, when the function is defined - and then *shared across every call* that uses
-it. It does **not** get a fresh list each time, which is almost never what you want.
+**What goes wrong.** Give a parameter a **mutable** default (like a list), and it's created **once**,
+when the function is defined - then *shared across every call*, never fresh, which is almost never what
+you want.
 ```python runnable
 def add_item(item, basket=[]):
     basket.append(item)
@@ -214,17 +209,17 @@ def add_item(item, basket=[]):
 print(add_item("apple"))
 print(add_item("banana"))
 ```
-*What just happened:* You'd expect each call to start with an empty basket. Instead, both calls share the
+*What just happened:* You'd expect each call to start with an empty basket. Instead both share the
 *same* default list, so the second call sees the first call's leftovers:
 ```console
 ['apple']
 ['apple', 'banana']
 ```
 That `['apple', 'banana']` on the second line is the bug - `"apple"` shouldn't be there. The shared
-default accumulates across calls, silently.
+default silently accumulates across calls.
 
-**The fix** is a fixed pattern to adopt every time: default to `None`, then create a fresh value
-*inside* the function.
+**The fix** - a pattern to adopt every time: default to `None`, then create a fresh value *inside* the
+function.
 ```python runnable
 def add_item(item, basket=None):
     if basket is None:
@@ -235,34 +230,31 @@ def add_item(item, basket=None):
 print(add_item("apple"))
 print(add_item("banana"))
 ```
-*What just happened:* Now each call with no basket gets a brand-new list, so they don't bleed into each
-other:
+*What just happened:* Now each call with no basket gets a brand-new list, so they don't bleed together:
 ```console
 ['apple']
 ['banana']
 ```
 
 ⚠️ **Never use a mutable default (`[]`, `{}`, `set()`) directly.** Default to `None` and build the real
-value inside the function. Memorize this pattern - it's one of Python's genuine sharp edges, and it comes
-straight from the aliasing idea in [Phase 3](03-collections.md): the default list is one object, shared.
+value inside the function. Memorize this - it's a genuine sharp edge, coming straight from the aliasing
+idea in [Phase 3](03-collections.md): the default list is one shared object.
 
 ## Recap
 
-1. **`if` / `elif` / `else`** runs the *first* matching block. Conditions are expressions that evaluate
-   to `True`/`False`.
+1. **`if` / `elif` / `else`** runs the *first* matching block. Conditions are expressions evaluating to
+   `True`/`False`.
 2. **Truthiness:** empty/zero/`None` are falsy, everything else truthy - so `if my_list:` means "if it
    has items."
 3. **`for`** loops once per item (use `range(n)` for a count); **`while`** loops until its condition goes
    false - make sure something moves it there.
 4. **`def`** defines a function; **parameters** name its inputs, **`return`** hands a value back.
    **Defaults** make parameters optional.
-5. `return` gives a usable value; a function with no `return` yields `None`. Return what you want to
-   reuse.
+5. `return` gives a usable value; a function with no `return` yields `None`.
 6. **Never use a mutable default argument.** Default to `None` and build the list/dict inside the
    function.
 
-Next, we move beyond one file: importing code, the standard library, writing your own modules, and
-laying out a real project.
+Next: importing code, the standard library, writing your own modules, and laying out a real project.
 
 ---
 

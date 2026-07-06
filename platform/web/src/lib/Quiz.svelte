@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { seedChapter } from '$lib/srs.js';
+  import { recordActivity } from '$lib/streaks.js';
   import { tutorOpen, tutorPrefill } from '$lib/tutor-store.js';
 
   export let guideSlug;
@@ -33,8 +34,9 @@
   $: if (allDone && questions.length && correct === questions.length && !marked) { marked = true; markGuideDone(); }
   // Celebrate a perfect score with a confetti burst (skips reduced-motion users).
   $: if (allDone && questions.length && correct === questions.length && !celebrated) { celebrated = true; celebrate(); }
-  // Finishing the quiz enrols this chapter into spaced review (resurfaces later).
-  $: if (allDone && questions.length && !seeded) { seeded = true; seedChapter(guideSlug, phaseNo); }
+  // Finishing the quiz enrols this chapter into spaced review (resurfaces later),
+  // and counts today toward the reader's practice streak.
+  $: if (allDone && questions.length && !seeded) { seeded = true; seedChapter(guideSlug, phaseNo); recordActivity(); }
 
   function markGuideDone() {
     try {

@@ -11,16 +11,15 @@ updated: 2026-06-22
 
 # Testing & Project Structure
 
-Here's the thing nobody warns you about: the moment your Book API touches a real database and real auth,
-the temptation is to test it by spinning up the server, opening `/docs`, and clicking around. That works
-exactly once, on your machine, on a good day. It doesn't catch the bug you introduce next Tuesday, and it
-can't run in CI.
+The moment your Book API touches a real database and real auth, the temptation is to test it by spinning
+up the server, opening `/docs`, and clicking around. That works exactly once, on your machine, on a good
+day. It doesn't catch the bug you introduce next Tuesday, and it can't run in CI.
 
-So this phase is about two habits that travel together. First, how to test FastAPI *properly* — fast,
+This phase is about two habits that travel together. First, how to test FastAPI *properly* — fast,
 repeatable, in-process, no clicking. Second, how to lay out the project so it stays testable as it grows.
-Those two are not separate topics. The reason FastAPI is so pleasant to test is the exact design we've
-been building toward — everything is a dependency — and that same design is what keeps the codebase from
-collapsing into one unreadable file. Let's get the mental model first.
+These aren't separate topics: the reason FastAPI is so pleasant to test is the exact design we've been
+building toward — everything is a dependency — and that same design keeps the codebase from collapsing
+into one unreadable file.
 
 ## The mental model: your app is a callable, not a server
 
@@ -29,18 +28,18 @@ directly.** You don't need a running server, a port, or a real HTTP socket to te
 `TestClient` takes your `app`, sends a request *into it in-process*, and hands you back the response — all
 inside the same Python process as your test.
 
-That's why it's fast (no network, no process startup) and why it's reliable (no "is the server up yet?"
-flakiness). A test is just: build a client, call a route, check what came back. Same Arrange-Act-Assert
-shape you'd use for any function — see [Your First Unit Test](/guides/your-first-unit-test) for that
-shape from scratch.
+That's why it's fast (no network, no process startup) and reliable (no "is the server up yet?"
+flakiness). A test is just: build a client, call a route, check what came back — the same
+Arrange-Act-Assert shape you'd use for any function; see [Your First Unit
+Test](/guides/your-first-unit-test) for that shape from scratch.
 
 ## `TestClient`: calling your app like a function
 
 `TestClient` comes from Starlette (the toolkit under FastAPI) and its API is modeled on the popular
 `requests` library, so `.get()`, `.post()`, `.json()`, and `.status_code` all read the way you'd expect.
 
-Here's a complete, real test of the Book API. It needs the app object, so it's plain code (you can't run
-a server inside the browser sandbox):
+A complete, real test of the Book API. It needs the app object, so it's plain code (you can't run a
+server inside the browser sandbox):
 
 ```python
 # tests/test_books.py
@@ -70,11 +69,11 @@ def test_create_book_returns_201_with_the_title():
 *What just happened:* `TestClient(app)` wrapped your application so you can call it like an HTTP client
 without any server running. `client.get("/books")` and `client.post("/books", json=...)` exercise the
 *real* routing, the *real* Pydantic validation, the *real* response models — the whole stack from Phases
-2–4 — and return a response object. You then assert on `status_code` and on `response.json()`. Notice we
-check more than the status: a `201` with the wrong body is still a bug, so we assert the title round-trips
-and an `id` was assigned. That's a genuine integration test, and it ran in milliseconds.
+2–4 — and return a response object. You then assert on `status_code` and `response.json()`. We check more
+than the status: a `201` with the wrong body is still a bug, so we assert the title round-trips and an
+`id` was assigned. A genuine integration test, and it ran in milliseconds.
 
-💡 Run these with `pytest` from your project root. pytest discovers any file named `test_*.py` and any
+💡 Run these with `pytest` from your project root. It discovers any file named `test_*.py` and any
 function named `test_*` inside it — no registration, no boilerplate:
 
 ```bash
@@ -90,10 +89,9 @@ A passing run looks like this:
 
 ## Dependency overrides: the testing superpower
 
-Now the part that makes FastAPI testing genuinely special. Back in
-[Phase 5](05-dependency-injection.md) the promise was: because the database session, the current user,
-and everything else come in through `Depends()`, your tests can *swap them out*. This is where you cash
-that promise.
+Now the part that makes FastAPI testing genuinely special. [Phase 5](05-dependency-injection.md) promised
+that because the database session, the current user, and everything else come in through `Depends()`,
+your tests can *swap them out*. This is where you cash that promise.
 
 📝 `app.dependency_overrides` is a dict that maps a dependency function to a replacement. When FastAPI is
 about to call a dependency during a request, it checks this dict first — if there's an override, it calls
@@ -105,8 +103,7 @@ Two cases cover almost everything you'll ever need.
 ### Overriding the database with in-memory SQLite
 
 You don't want tests hitting your real Postgres — slow, stateful, and one failing test can poison the
-next. Instead, point the session dependency at a fresh in-memory SQLite database that exists only for the
-test run:
+next. Point the session dependency at a fresh in-memory SQLite database that exists only for the test run:
 
 ```python
 # tests/conftest.py
@@ -141,24 +138,24 @@ def client():
     app.dependency_overrides.clear()
 ```
 
-*What just happened:* The fixture stands up a brand-new SQLite database in memory, creates the Book tables
-on it, and defines `get_session_override` — a `yield` dependency with the same shape as the real one, but
-backed by the throwaway engine. The line `app.dependency_overrides[get_session] = get_session_override`
-is the whole trick: every endpoint that does `Depends(get_session)` now gets the test database, with zero
-changes to the endpoints. Each test that asks for the `client` fixture gets its own pristine database, so
-tests can't contaminate each other.
+*What just happened:* The fixture stands up a brand-new SQLite database in memory, creates the Book
+tables on it, and defines `get_session_override` — a `yield` dependency with the same shape as the real
+one, but backed by the throwaway engine. The line `app.dependency_overrides[get_session] =
+get_session_override` is the whole trick: every endpoint that does `Depends(get_session)` now gets the
+test database, with zero changes to the endpoints. Each test that asks for the `client` fixture gets its
+own pristine database, so tests can't contaminate each other.
 
 ⚠️ Look at that last line — `app.dependency_overrides.clear()`. **Overrides are global state on the app
 object.** If you set one and don't reset it, it leaks into every test that runs afterward, and you get
 the worst kind of bug: tests that pass or fail depending on what ran *before* them. Always undo overrides
-in teardown. Putting the override inside a fixture (which auto-runs its teardown after each test) is the
+in teardown; putting the override inside a fixture (which auto-runs its teardown after each test) is the
 clean way to guarantee that.
 
 ### Overriding `get_current_user` to test protected routes
 
 Protected endpoints from [Phase 8](08-authentication-and-security.md) are the other classic case. You
-don't want to mint real JWTs in a test just to check that `POST /books` works — you want to *pretend*
-you're logged in:
+don't want to mint real JWTs in a test just to check `POST /books` works — you want to *pretend* you're
+logged in:
 
 ```python
 # tests/test_protected.py
@@ -180,8 +177,8 @@ def test_create_book_when_authenticated(client):
 
 *What just happened:* Instead of producing a valid token, you replaced the entire authentication
 dependency with `fake_current_user`, which just returns a logged-in admin. The endpoint runs as if a real
-user passed auth — no tokens, no password hashing, no headers to fake. The `try/finally` does the same
-job as the fixture teardown above: it removes the override no matter what, so this test can't sabotage the
+user passed auth — no tokens, no password hashing, no headers to fake. The `try/finally` does the same job
+as the fixture teardown above: it removes the override no matter what, so this test can't sabotage the
 next one. This is how you test "what happens when an admin creates a book?" without dragging the whole
 auth system into every test.
 
@@ -192,17 +189,17 @@ auth system into every test.
 
 - **Unit tests (the wide base).** Test pure functions and service logic *directly*, with no client and no
   app. If you have a `services.py` with `calculate_late_fee(book)` or `slugify_title(title)`, call it as a
-  plain function and assert the result. These are the fastest and most numerous.
+  plain function and assert the result. Fastest and most numerous.
 - **Integration tests (the middle).** Use `TestClient` to hit real endpoints against the in-memory test
-  DB. This is what the examples above are — they prove routing, validation, the DB layer, and your
-  response models all fit together. Most of your FastAPI tests live here.
+  DB — what the examples above are. They prove routing, validation, the DB layer, and your response
+  models all fit together. Most of your FastAPI tests live here.
 - **End-to-end tests (the thin top).** A few tests against a *real* running server and a real (or
   containerized) database, exercising full flows like register → log in → create book → fetch it. Slow
-  and more fragile, so keep them few and reserve them for the critical paths.
+  and more fragile, so keep them few and reserve them for critical paths.
 
 💡 The honest rule of thumb: push logic down into plain functions you can unit-test, and use `TestClient`
-for the seams where pieces meet. If you find yourself needing an HTTP request just to test a calculation,
-that calculation probably wants to be its own testable function.
+for the seams where pieces meet. If you need an HTTP request just to test a calculation, that calculation
+probably wants to be its own testable function.
 
 ## Project structure: escaping one giant `main.py`
 
@@ -211,9 +208,9 @@ books, authors, reviews, and auth, a 600-line `main.py` is where bugs hide and m
 can't find anything, and you can't test a slice of it in isolation.
 
 📝 The fix is `APIRouter`. A router is a mini-FastAPI you can declare endpoints on, living in its own
-module. You then *include* it into the main app. Same routes, same behavior — just organized by feature.
+module. You then *include* it into the main app — same routes, same behavior, just organized by feature.
 
-Here's a layout that scales without being over-engineered:
+A layout that scales without being over-engineered:
 
 ```text
 app/

@@ -11,15 +11,15 @@ updated: 2026-06-22
 
 # Where to Go Next
 
-Stop and look at what you can actually do now. You can stand up a Flask app, route URLs to view functions, read the request and shape the response, render HTML with Jinja2, handle forms with CSRF protection, persist data through Flask-SQLAlchemy, structure a growing project with blueprints and an app factory, log people in with sessions and Flask-Login, serve a JSON API with `jsonify`, and prove the whole thing works with the test client and pytest before deploying it behind a real WSGI server. That's not a toy. That's a real application.
+Stop and look at what you can actually do now. You can stand up a Flask app, route URLs to view functions, read the request and shape the response, render HTML with Jinja2, handle forms with CSRF protection, persist data through Flask-SQLAlchemy, structure a growing project with blueprints and an app factory, log people in with sessions and Flask-Login, serve a JSON API with `jsonify`, and prove it all works with the test client and pytest before deploying behind a real WSGI server. That's not a toy — that's a real application.
 
-And here's the part that's quietly the bigger win: because Flask's core is so small, you didn't just learn a framework — you saw what a framework *is*. A router mapping URLs to functions, a request coming in, a response going out, templates for HTML, and everything else bolted on as an extension you chose. Nothing was hidden behind a wall of conventions. You can read the machine now.
+Here's the quietly bigger win: because Flask's core is so small, you didn't just learn a framework — you saw what a framework *is*. A router mapping URLs to functions, a request coming in, a response going out, templates for HTML, everything else bolted on as an extension you chose. Nothing was hidden behind a wall of conventions.
 
 So this last phase isn't more decorators. It's the map: the extensions you'll reach for next, an honest word about async, where Flask sits among the other Python frameworks, and one concrete thing to go build.
 
 ## The extension landscape
 
-Remember the throughline of this whole guide: Flask gives you a small core, and *you* compose the stack you need from extensions. That's the Flask way, and it's why the ecosystem matters as much as the framework. Here are the branches you'll meet first.
+Flask gives you a small core, and *you* compose the stack you need from extensions — why the ecosystem matters as much as the framework. Here are the branches you'll meet first.
 
 ```mermaid
 flowchart TD
@@ -33,36 +33,34 @@ flowchart TD
 
 A line on each:
 
-- **Celery / RQ** — background and scheduled work. When a job is slow, needs retrying, or must survive a restart (sending a batch of emails, processing an upload), you hand it to an external worker fronted by a **message broker** (usually Redis). Your view drops the job on the broker and returns immediately; the worker picks it up.
-- **Flask-RESTful / marshmallow** — richer APIs. Once your JSON endpoints grow past `jsonify`, these give you structured resources, request parsing, and serialization/validation schemas so your API stops being hand-rolled.
-- **Flask-Mail** — sending email from your app, with sensible defaults for SMTP and attachments.
-- **Flask-CORS** — cross-origin requests, the extension you add the day a separate frontend (or someone else's site) needs to call your API from the browser.
-- **Flask-Caching** — caching expensive results, usually backed by **Redis**, to take load off your database and speed up hot endpoints.
-- **Flask-Admin** — a quick admin interface over your models, handy when you want a back-office screen without building one from scratch.
+- **Celery / RQ** — background and scheduled work. When a job is slow, needs retrying, or must survive a restart (sending a batch of emails, processing an upload), hand it to an external worker fronted by a **message broker** (usually Redis). Your view drops the job and returns immediately.
+- **Flask-RESTful / marshmallow** — richer APIs. Once your JSON endpoints grow past `jsonify`, these give you structured resources, request parsing, and serialization/validation schemas.
+- **Flask-Mail** — sending email, with sensible defaults for SMTP and attachments.
+- **Flask-CORS** — cross-origin requests, added the day a separate frontend needs to call your API from the browser.
+- **Flask-Caching** — caching expensive results, usually backed by **Redis**, to take load off your database.
+- **Flask-Admin** — a quick admin interface over your models, without building one from scratch.
 
-💡 You don't need any of these on day one. The skill is recognizing the *shape* of the problem ("this work is slow," "this API needs validation," "this needs to be cached") and knowing there's a well-worn extension for it. That recognition is what this guide has been training all along.
+💡 You don't need any of these on day one. The skill is recognizing the *shape* of the problem and knowing there's a well-worn extension for it.
 
 ## A word on async
 
-You'll eventually hear that Flask "supports async," and that's true — you can write `async def` view functions in modern Flask. But be honest with yourself about what's underneath: Flask is a **WSGI** framework, synchronous at heart. It runs your async view by spinning up an event loop for that one request, which helps for the occasional `await` but doesn't turn Flask into a high-concurrency async server.
+You'll eventually hear that Flask "supports async," and that's true — you can write `async def` view functions in modern Flask. But be honest about what's underneath: Flask is a **WSGI** framework, synchronous at heart. It runs your async view by spinning up an event loop for that one request, which helps for the occasional `await` but doesn't turn Flask into a high-concurrency async server.
 
-📝 If your workload is genuinely async-heavy — lots of concurrent connections, streaming, talking to many slow services at once — you'll be happier on an **ASGI** framework built for it from the ground up, like [FastAPI](/guides/fastapi-from-zero). Flask's async support is a convenience, not a foundation. Reach for the right tool instead of fighting the wrong one.
+📝 If your workload is genuinely async-heavy — lots of concurrent connections, streaming, talking to many slow services at once — you'll be happier on an **ASGI** framework built for it from the ground up, like [FastAPI](/guides/fastapi-from-zero). Flask's async support is a convenience, not a foundation.
 
 ## The honest framework map
 
-You now know enough to choose a framework *on purpose* rather than by habit. None of these is "better" — they're aimed at different jobs.
+You now know enough to choose a framework *on purpose* rather than by habit. None of these is "better" — they're aimed at different jobs. 💡 The honest version:
 
-💡 The honest version:
+- **Flask** — small apps, prototypes, microservices, and learning. Pick it for a small core and full control over the stack. (You're here.)
+- **Django** — when you want **batteries included**: a built-in admin, a mature ORM, auth, and a thousand conventions for a big application. If you'd otherwise rebuild half of Django out of Flask extensions, just use [Django](/guides/django-from-zero).
+- **FastAPI** — async, validation-heavy **APIs**, where type hints drive request parsing, response shaping, and auto-generated docs. See [FastAPI From Zero](/guides/fastapi-from-zero).
 
-- **Flask** — small apps, prototypes, microservices, and learning. Pick it when you want a small core and full control over the stack, and you don't mind assembling the pieces yourself. (You're here.)
-- **Django** — when you want **batteries included**: a built-in admin, a mature ORM, auth, and a thousand conventions handed to you for a big application. If you'd otherwise rebuild half of Django out of Flask extensions, just use [Django](/guides/django-from-zero).
-- **FastAPI** — async, validation-heavy **APIs**, where type hints drive request parsing, response shaping, and auto-generated docs. The natural choice when the product is an API and concurrency matters. See [FastAPI From Zero](/guides/fastapi-from-zero).
-
-Knowing all three means you stop arguing about which is "best" and start asking "best for *this*?" That question — and being able to answer it honestly — is a senior instinct, and you've got the pieces for it now.
+Knowing all three means you stop arguing about which is "best" and start asking "best for *this*?" That's a senior instinct, and you've got the pieces for it now.
 
 ## What to build next
 
-Reading more won't make this stick. Building one real thing will. So here's the assignment, and it's deliberately concrete.
+Reading more won't make this stick. Building one real thing will. Here's the assignment, and it's deliberately concrete.
 
 Take the **notes app** you grew across this guide and carry it all the way home:
 
@@ -72,9 +70,9 @@ Take the **notes app** you grew across this guide and carry it all the way home:
 - **Structure** it properly with **blueprints** and an **app factory**, the way a real Flask project is laid out.
 - **Deploy** it with **gunicorn**, `DEBUG=False`, behind a reverse proxy — somewhere you can hit it from your phone.
 
-That single project exercises nearly everything you learned, and finishing it teaches you more than three more tutorials would. When you want the canonical reference, the **official Flask documentation** is excellent and genuinely readable, and **the Flask Mega-Tutorial** (Miguel Grinberg's) is the long-form, build-along classic the community sends everyone to. Bookmark both.
+That single project exercises nearly everything you learned, and finishing it teaches you more than three more tutorials would. When you want the canonical reference, the **official Flask documentation** is excellent and genuinely readable, and **the Flask Mega-Tutorial** (Miguel Grinberg's) is the long-form, build-along classic the community sends everyone to.
 
-And remember the through-line: Flask's smallness wasn't a limitation, it was the lesson. Because nothing was hidden, you now see the whole machine — the router, the request, the response, the template, and the extensions you chose to bolt on. You can build a real service on top of it, and you can reason about it when it breaks. Go finish the notes app, deploy it, and show someone. You're ready.
+Flask's smallness wasn't a limitation, it was the lesson. Because nothing was hidden, you now see the whole machine — the router, the request, the response, the template, and the extensions you chose to bolt on. Go finish the notes app, deploy it, and show someone. You're ready.
 
 ## Recap
 

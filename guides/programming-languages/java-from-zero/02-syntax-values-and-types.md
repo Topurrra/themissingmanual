@@ -12,32 +12,27 @@ updated: 2026-06-22
 # Syntax, Values & Types - Primitives, Objects & Static Typing
 
 A program that only prints a fixed greeting is a dead end. Real programs hold values - a name, a count, a
-price - and do things with them. In Java, every value has a **type**, and the language is strict about it
-in a way that feels like extra paperwork at first and turns into a safety net fast. Let's build the mental
-model before the syntax, because the syntax makes a lot more sense once you see what Java is protecting
-you from - and where it hides a couple of sharp edges.
+price. In Java, every value has a **type**, enforced strictly enough to feel like paperwork at first - but
+it becomes a safety net fast.
 
-The one idea that organizes this whole phase: Java draws a hard line between two kinds of values. A small
-set of **primitives** that hold a raw number or true/false directly, and **objects** (everything else)
-that live elsewhere and are reached through a reference. Almost every surprise in this phase traces back
-to which side of that line you're standing on.
+The idea that organizes this phase: Java draws a hard line between **primitives** (a small set of types
+holding a raw number or true/false directly) and **objects** (everything else, reached through a
+reference). Almost every surprise here traces back to which side of that line you're standing on.
 
 ## What "statically typed" actually means
 
 **What it is.** Java is **statically typed**: every variable has a fixed type that's written down and
 checked when your code is *compiled*, before it ever runs. A variable declared to hold a whole number can
-never later hold a piece of text. The compiler verifies all of this up front and refuses to build a
-program where the types don't line up.
+never later hold a piece of text. The compiler refuses to build a program where the types don't line up.
 
 **Why people get this wrong.** Coming from Python or JavaScript, you might expect a variable to be a box
 you can drop anything into. In Java it's a box with a *declared shape* - number-shaped, text-shaped - and
-the compiler checks that everything you put in fits. A whole category of bugs ("I thought this held a
-number but it held the text `"42"`") cannot survive to runtime; they get caught while you build.
+the compiler checks everything fits. A whole category of bugs ("I thought this held a number but it held
+`"42"`") can't survive to runtime; they're caught while you build.
 
-📝 **Static typing** - the type of every variable is known and checked at *compile time* (when `javac`
-turns your code into bytecode), not while the program runs. "Static" is the opposite of "dynamic," where
-types are only checked as the code executes. Java does the checking early, so a running Java program never
-has to wonder what type something is.
+📝 **Static typing** - the type of every variable is known and checked at *compile time*, not while the
+program runs. "Static" is the opposite of "dynamic," where types are checked as code executes. Java checks
+early, so a running program never wonders what type something is.
 
 You declare a variable by writing its type, then its name, then optionally an initial value:
 
@@ -47,90 +42,84 @@ count = count + 5;   // fine: an int going into an int box
 count = "hello";     // compile error: incompatible types
 ```
 
-*What just happened:* `int count = 0;` reads as "declare a variable named `count` of type `int` (a whole
-number), starting at `0`." The second line is fine - a number going into a number box. The third line
-never compiles: the compiler sees you trying to put text into a box declared for whole numbers and stops
-you cold with `incompatible types: String cannot be converted to int`. That error is the safety net doing
-its job at build time instead of letting a confused value blow up later.
+*What just happened:* `int count = 0;` declares `count` as type `int`, starting at `0`. The second line is
+fine - a number into a number box. The third never compiles: the compiler sees text going into a
+whole-number box and stops you cold with `incompatible types: String cannot be converted to int`. The
+safety net doing its job at build time instead of letting a confused value blow up later.
 
 ## Primitives vs objects - the split that explains everything
 
-This is the most important distinction in the phase, so let's slow down for it.
+This is the most important distinction in the phase.
 
 📝 **Primitive** - a value that holds its data *directly*: the actual number or true/false sits right in
 the variable. **Object** (also called a *reference type*) - a value that lives elsewhere in memory; the
 variable holds a *reference* (a pointer-like handle) to it, not the thing itself.
 
-Java has exactly **eight** primitive types, and they're the only types that work this way. The ones you'll
-actually reach for:
+Java has exactly **eight** primitive types, the only types that work this way. The ones you'll actually
+reach for:
 
-- **`int`** - a whole number (`-3`, `0`, `42`). Your default for counting.
-- **`double`** - a number with a decimal point (`3.14`, `-0.5`). Your default for fractional numbers.
+- **`int`** - a whole number (`-3`, `0`, `42`). Default for counting.
+- **`double`** - a number with a decimal point (`3.14`, `-0.5`). Default for fractional numbers.
 - **`boolean`** - a truth value, `true` or `false`. Named after George Boole.
 - **`char`** - a single character, written in *single* quotes (`'A'`, `'7'`).
-- **`long`** - a whole number with extra room, for values too big for `int` (write the literal with an `L`:
+- **`long`** - a whole number with extra room, for values too big for `int` (literal suffix `L`:
   `9_000_000_000L`).
 
-(The other three - `byte`, `short`, `float` - exist for specific low-level needs; you can ignore them
-while learning.)
+(The other three - `byte`, `short`, `float` - exist for specific low-level needs; ignore them while
+learning.)
 
-**Everything that isn't one of those eight is an object.** `String`, arrays, `Scanner`, and every class
-you'll ever write are reference types. Their variables hold a reference to data that lives somewhere else.
+**Everything that isn't one of those eight is an object.** `String`, arrays, `Scanner`, and every class you
+write are reference types, holding a reference to data that lives elsewhere.
 
-**Why this distinction earns its keep.** Two concrete reasons:
+**Why this distinction earns its keep.** Two reasons:
 
 1. **Performance.** A primitive is tiny and lives right where it's declared - no indirection, no extra
-   allocation. Operating on an `int` is about as cheap as computing gets. Objects carry more overhead.
+   allocation. Objects carry more overhead.
 2. **`null`.** A reference can point at *nothing* - the special value `null`. A primitive *cannot*; an
-   `int` is always some number, never "missing." That single difference is the root of Java's most famous
-   crash, the `NullPointerException`, which we'll properly meet in [Phase 9](09-idioms-and-gotchas.md).
-   For now, just file away: primitives can't be `null`; objects can.
+   `int` is always some number, never "missing." That's the root of Java's most famous crash, the
+   `NullPointerException`, properly met in [Phase 9](09-idioms-and-gotchas.md). For now: primitives can't
+   be `null`; objects can.
 
-💡 **Mental model.** A primitive variable *is* the value. An object variable is a *label on a box that's
-stored elsewhere* - and that label can be left pointing at nothing (`null`). When something in Java
-surprises you, the first question to ask is "primitive or object?"
+💡 **Mental model.** A primitive variable *is* the value. An object variable is a *label on a box stored
+elsewhere*, and that label can point at nothing. When Java surprises you, ask "primitive or object?" first.
 
 ## Wrapper types & autoboxing - the object versions of primitives
 
-Sometimes you need a primitive to behave like an object - most commonly because a collection (a list, a
-map) can only hold objects, never raw primitives. For that, every primitive has an **object twin** called
-a **wrapper type**: `int` ↔ `Integer`, `double` ↔ `Double`, `boolean` ↔ `Boolean`, `char` ↔ `Character`,
-and so on.
+Sometimes a primitive needs to behave like an object - most commonly because a collection (a list, a map)
+can only hold objects, never raw primitives. For that, every primitive has an **object twin** called a
+**wrapper type**: `int` ↔ `Integer`, `double` ↔ `Double`, `boolean` ↔ `Boolean`, `char` ↔ `Character`.
 
-📝 **Wrapper type** - an object that holds a single primitive value. `Integer` is an object wrapping an
-`int`; `Double` wraps a `double`. Because it's an object, a wrapper can be stored where only objects are
-allowed - and, unlike its primitive, it can be `null`.
+📝 **Wrapper type** - an object holding a single primitive value. `Integer` wraps an `int`; `Double` wraps
+a `double`. Being an object, a wrapper can be stored where only objects are allowed - and, unlike its
+primitive, it can be `null`.
 
 The convenient part is **autoboxing**: Java converts between a primitive and its wrapper automatically, so
-you rarely write the conversion by hand.
+you rarely write the conversion yourself.
 
 ```java
 Integer boxed = 42;     // autoboxing: int 42 wrapped into an Integer
 int unboxed = boxed;    // auto-unboxing: Integer back to int
 ```
 
-*What just happened:* `Integer boxed = 42;` looks like you assigned an `int` to an `Integer`, and you did -
-Java silently *boxed* the primitive `42` into an `Integer` object for you. The reverse line *unboxed* it
-back to a raw `int`. You get to write the natural-looking code, and the compiler inserts the conversion.
+*What just happened:* `Integer boxed = 42;` assigns an `int` to an `Integer` - Java silently *boxed* the
+primitive `42` into an object. The reverse line *unboxed* it back to a raw `int`; the compiler inserts the
+conversion for you. That convenience hides two traps.
 
-That convenience hides two traps worth knowing now.
-
-⚠️ **A wrapper can be `null`, so unboxing can crash.** Because `Integer` is an object, it can be `null`.
-And auto-unboxing a `null` wrapper doesn't give you `0` - it throws a `NullPointerException`.
+⚠️ **A wrapper can be `null`, so unboxing can crash.** Because `Integer` is an object, it can be `null` -
+and auto-unboxing a `null` wrapper doesn't give you `0`, it throws a `NullPointerException`.
 
 ```java
 Integer maybe = null;   // perfectly legal - it's an object
 int n = maybe;          // NullPointerException at runtime when unboxing null
 ```
 
-*What just happened:* `maybe` is an `Integer`, so `null` is a valid value for it. But the next line tries
-to unbox it into a plain `int`, and there's no number inside to hand over - so Java throws a
-`NullPointerException`. A plain `int` could never have gotten you here; this is the `null` risk from the
-previous section, made concrete.
+*What just happened:* `maybe` is an `Integer`, so `null` is valid for it. The next line unboxes it into a
+plain `int` with no number to hand over - Java throws a `NullPointerException`. A plain `int` could never
+have gotten you here; it's the `null` risk from the previous section, made concrete.
 
-⚠️ **`==` on wrappers compares references, not values.** This one bites everyone exactly once. On
-primitives, `==` compares the actual numbers. On *objects* (and wrappers are objects), `==` asks "are these
-the same object in memory?" - which is a different question, and often gives a surprising answer.
+⚠️ **`==` on wrappers compares references, not values.** This bites everyone exactly once. On primitives,
+`==` compares the actual numbers; on *objects* (wrappers included), it asks "are these the same object in
+memory?" - a different question, often with a surprising answer.
 
 ```java
 Integer a = 1000;
@@ -139,18 +128,17 @@ boolean sameValue = (a == b);            // false! comparing two distinct object
 boolean reallySame = a.equals(b);        // true - equals() compares the values
 ```
 
-*What just happened:* `a` and `b` both wrap the number `1000`, but they're two *separate* `Integer`
-objects, so `a == b` asks "same object?" and the answer is `false`. To compare the values you call
-`.equals()`, which checks the numbers inside. (Java caches small `Integer`s from -128 to 127, so the same
-test with `127` would confusingly print `true` - which is exactly why you should never rely on `==` for
-wrappers.) We'll return to this `==`-vs-`.equals()` divide in [Phase 9](09-idioms-and-gotchas.md); the
-rule for now: **use `.equals()` to compare objects, save `==` for primitives.**
+*What just happened:* `a` and `b` both wrap `1000` but are two *separate* `Integer` objects, so `a == b`
+asks "same object?" and gets `false`. `.equals()` checks the numbers inside instead. (Java caches small
+`Integer`s from -128 to 127, so the same test with `127` would confusingly print `true` - why you should
+never rely on `==` for wrappers.) More in [Phase 9](09-idioms-and-gotchas.md); rule for now: **use
+`.equals()` to compare objects, save `==` for primitives.**
 
 ## `var` - let the compiler infer the type
 
-Writing the type twice - `ArrayList<String> names = new ArrayList<String>();` - gets tedious when the type
-is already obvious from the right-hand side. Modern Java (10+) lets you write **`var`** instead, and the
-compiler *infers* the type from the value you assign.
+Writing the type twice - `ArrayList<String> names = new ArrayList<String>();` - gets tedious when it's
+already obvious from the right side. Modern Java (10+) lets you write **`var`** instead; the compiler
+*infers* the type from the assigned value.
 
 ```java
 var name = "Ada";        // compiler infers: String
@@ -158,27 +146,26 @@ var count = 0;           // compiler infers: int
 var price = 9.99;        // compiler infers: double
 ```
 
-*What just happened:* `var name = "Ada";` declares `name` and lets the compiler look at `"Ada"`, see it's
-text, and decide `name` is a `String`. The variable is *exactly* as statically typed as if you'd written
-`String name` - `var` is shorthand, not a change in how typing works. Try `name = 5;` afterward and you
-still get a compile error, because `name`'s type was fixed to `String` the moment it was inferred.
+*What just happened:* `var name = "Ada";` declares `name` and lets the compiler see `"Ada"` is text and
+decide `name` is a `String`. The variable is *exactly* as statically typed as if you'd written `String
+name` - `var` is shorthand, not a change in how typing works. Try `name = 5;` afterward and you still get a
+compile error, because `name`'s type locked to `String` the moment it was inferred.
 
-💡 **When to reach for `var`.** Use it when the type is plainly visible on the right side - especially to
-avoid repeating a long type. Two limits to remember: `var` only works for **local variables** inside
-methods (not fields or method parameters), and it needs an initial value to infer *from*, so `var x;` on
-its own won't compile. When the right side is vague (`var result = compute();`), spelling the type out
-keeps the code readable.
+💡 **When to reach for `var`.** Use it when the type is plainly visible on the right side, especially to
+avoid repeating a long type. Two limits: it only works for **local variables** inside methods (not fields or
+parameters), and it needs an initial value to infer *from* - `var x;` alone won't compile. When the right
+side is vague (`var result = compute();`), spell the type out for readability.
 
 ## Strings - objects, immutable, and never compared with `==`
 
 You've used `String` since Phase 1, but a few facts about it will save you real grief.
 
-**A `String` is an object, not a primitive.** Despite getting friendly syntax (double quotes, the `+`
-operator), `String` is a reference type - which is why everything from the objects section applies to it.
+**A `String` is an object, not a primitive.** Despite friendly syntax (double quotes, `+`), `String` is a
+reference type - everything from the objects section applies to it.
 
-**A `String` is immutable.** Once created, its characters never change. Operations that look like they
-modify a string actually build and hand back a *new* one, leaving the original untouched. You concatenate
-with `+`:
+**A `String` is immutable.** Once created, its characters never change - operations that look like they
+modify a string actually build and return a *new* one, leaving the original untouched. Concatenate with
+`+`:
 
 ```java
 String first = "Ada";
@@ -192,13 +179,13 @@ Ada Lovelace
 Ada
 ```
 
-*What just happened:* `first + " " + "Lovelace"` didn't alter `first`; it assembled a *new* `String`,
-`"Ada Lovelace"`, and stored it in `full`. The original `first` is still just `"Ada"`, because strings
-can't be mutated in place. Every "string change" in Java is really "make a new string."
+*What just happened:* `first + " " + "Lovelace"` didn't alter `first`; it assembled a *new* `String` and
+stored it in `full`. `first` is still just `"Ada"` - strings can't be mutated in place. Every "string
+change" in Java is really "make a new string."
 
-⚠️ **Never compare strings with `==`.** Since `String` is an object, `==` compares *references* (same
-object?), not the text. Two strings with identical characters can live at different memory addresses, so
-`==` may say `false` even when they read the same. Always use `.equals()` to compare the *contents*:
+⚠️ **Never compare strings with `==`.** Since `String` is an object, `==` compares *references*, not text.
+Two strings with identical characters can live at different memory addresses, so `==` may say `false` even
+when they read the same. Always use `.equals()` for *contents*:
 
 ```java
 String a = "hello";
@@ -212,14 +199,13 @@ false
 true
 ```
 
-*What just happened:* `a` and `b` hold the same text but are two separate `String` objects (the
-`new String(...)` guarantees a fresh one). So `a == b` compares object identity and reports `false`, while
-`a.equals(b)` compares the actual characters and reports `true`. This is the single most common beginner
-trap in Java: **`.equals()` for "do these say the same thing?", never `==`.** It's the same rule you just
-met for wrappers, because the cause is the same - both are objects.
+*What just happened:* `a` and `b` hold the same text but are two separate objects (`new String(...)`
+guarantees a fresh one). `a == b` compares identity, `false`; `a.equals(b)` compares characters, `true`.
+The single most common beginner trap in Java: **`.equals()` for "same thing?", never `==`.** Same rule as
+wrappers, same cause - both are objects.
 
-**Text blocks for multi-line strings.** When you need a string that spans several lines, the triple-quote
-**text block** (Java 15+) saves you from a mess of `\n` escapes:
+**Text blocks for multi-line strings.** For a string spanning several lines, the triple-quote **text
+block** (Java 15+) saves you from a mess of `\n` escapes:
 
 ```java
 String message = """
@@ -234,10 +220,10 @@ Dear Ada,
 Welcome to Java.
 ```
 
-*What just happened:* The `"""..."""` text block let you write the message exactly as it should appear,
-newlines and all, with no `\n` escapes. Java strips the common leading indentation (measured from the
-closing `"""`), so the text lines up cleanly in your source *and* in the output. It's the same immutable
-`String` type as always - just a far more readable way to write a long or multi-line one.
+*What just happened:* The `"""..."""` block let you write the message exactly as it should appear, no `\n`
+escapes needed. Java strips the common leading indentation (measured from the closing `"""`), so text lines
+up cleanly in source *and* output. Same immutable `String` type - just a more readable way to write a long
+one.
 
 ## Recap
 
@@ -256,12 +242,12 @@ closing `"""`), so the text lines up cleanly in your source *and* in the output.
 6. ⚠️ **Never compare strings (or any objects) with `==`** - that checks identity. Use `.equals()` to
    compare contents.
 
-Next, we move from single values to *collections* of them: arrays, the `List` and `Map` you'll actually
-reach for every day, and how Java's generics keep them type-safe.
+Next: *collections* of values - arrays, the `List` and `Map` you'll reach for daily, and how generics keep
+them type-safe.
 
 ## Quick check
 
-Test yourself on the idea that drives this whole phase - which side of the primitive/object line you're on:
+Test yourself on the idea driving this phase - which side of the primitive/object line you're on:
 
 ```quiz
 [

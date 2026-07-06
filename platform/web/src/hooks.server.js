@@ -1,5 +1,14 @@
 import { getGuide, getPhase } from '$lib/api.js';
 import { apiCatalog, skillsIndex, OPENAPI, SKILL_MD } from '$lib/agent-endpoints.js';
+import { checkAndSend } from '$lib/server/push.js';
+
+// The comeback-loop send job: periodically check for subscriptions whose
+// "check back" time has arrived and send a review reminder. Guarded against
+// double-starting (SvelteKit's dev server re-imports this module on file
+// changes, which would otherwise stack up multiple intervals).
+if (!globalThis.__tmmPushInterval) {
+  globalThis.__tmmPushInterval = setInterval(() => { checkAndSend().catch(() => {}); }, 15 * 60 * 1000);
+}
 
 // /guides/<slug> or /guides/<slug>/<phase>
 const GUIDE_RE = /^\/guides\/([^/]+?)(?:\/(\d+))?\/?$/;

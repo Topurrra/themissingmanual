@@ -11,17 +11,16 @@ updated: 2026-06-22
 
 # Templates with Jinja2
 
-In Phase 2 your views returned HTML by hand — strings like `f"<h1>{notes[note_id]}</h1>"`. That works for
-one line. It falls apart the moment a note page needs a real `<head>`, a nav bar, a loop over a list, and a
-footer. Stuffing all of that into a Python f-string is how you end up with unreadable views and HTML you
-can't see the shape of. This phase hands that job to **Jinja2**, the template engine that ships inside Flask.
+In Phase 2 your views returned HTML by hand — strings like `f"<h1>{notes[note_id]}</h1>"`. That works for one
+line, but falls apart the moment a note page needs a real `<head>`, a nav bar, a loop, and a footer. Stuffing
+that into a Python f-string is how you end up with unreadable views and HTML you can't see the shape of. This
+phase hands that job to **Jinja2**, the template engine that ships inside Flask.
 
-Hold this mental model before any code: **a view's job is to gather data; a template's job is to turn that
-data into HTML.** The view talks to your data (the `Note` objects), bundles up what it found, and passes it
-to a template that knows how to lay it out. Two roles, one clean handoff. The view never builds HTML by hand;
-the template never reaches into the database. Keeping those jobs apart is the whole point — it's why the same
-list of notes can render as a web page today and (in [Building a JSON API](08-building-a-json-api.md)) as JSON
-tomorrow without rewriting your data logic.
+Hold this mental model: **a view's job is to gather data; a template's job is to turn that data into HTML.**
+The view talks to your data (the `Note` objects), bundles up what it found, and passes it to a template that
+knows how to lay it out. The view never builds HTML by hand; the template never reaches into the database.
+Keeping those jobs apart is why the same list of notes can render as a web page today and (in
+[Building a JSON API](08-building-a-json-api.md)) as JSON tomorrow without rewriting your data logic.
 
 ## Why templates — getting HTML out of your views
 
@@ -46,9 +45,8 @@ def notes_list():
 
 *What just happened:* the view fetched its data (here a throwaway list — a real database arrives in
 [Working with a Database](05-database-with-sqlalchemy.md)) and handed it to `render_template("notes.html",
-notes=notes)`. Flask looks for `notes.html`, runs it with `notes` available inside, and returns the rendered
-HTML as the response. Notice the view contains **zero HTML** — it only decides *what* to show, not *how* it
-looks.
+notes=notes)`. Flask finds `notes.html`, runs it with `notes` available inside, and returns the rendered HTML.
+The view contains **zero HTML** — it only decides *what* to show, not *how* it looks.
 
 📝 Where does `notes.html` live? In a folder named `templates/` next to your app file. Flask looks there
 automatically — you don't configure the path:
@@ -64,8 +62,7 @@ your-app/
 
 ## The Jinja language
 
-A Jinja template is mostly plain HTML with three special markers sprinkled in. That's the entire language, and
-there are only three shapes to learn:
+A Jinja template is mostly plain HTML with three special markers sprinkled in — the entire language:
 
 - `{{ value }}` — **output** a value. `{{ note.title }}` prints the title.
 - `{% tag %}` — **logic**: loops and conditionals like `{% for %}`, `{% if %}`, plus helpers like `{% url ... %}`.
@@ -91,21 +88,19 @@ Here's `notes.html` looping over the notes the view passed in:
 ```
 
 *What just happened:* `{% for note in notes %}` walks the list, and for each one `{{ note.title }}` prints the
-title while `{{ note.content }}` prints the body. The `{% if notes %}` / `{% else %}` branch shows a friendly
-message when the list is empty. And `{{ url_for('note_detail', note_id=note.id) }}` builds the link by the
-view function's *name* — the same `url_for` you met in Phase 2 — instead of hardcoding `/notes/1`, so if you
-ever change that route's path, every link follows along automatically.
+title while `{{ note.content }}` prints the body. `{% if notes %}` / `{% else %}` shows a friendly message
+when the list is empty, and `{{ url_for('note_detail', note_id=note.id) }}` builds the link by the view
+function's *name* — the same `url_for` from Phase 2 — instead of hardcoding `/notes/1`, so a route change
+propagates automatically.
 
 ⚠️ Jinja is **deliberately limited** — you can't call arbitrary Python, run a database query, or do heavy
-computation from inside a template. That's a feature, not a gap. It enforces the rule from the top of this
-phase: real logic belongs in the **view**, where it's visible and testable. If you find yourself fighting the
-template to compute something, that's the template telling you the work should have happened in the view
-before the data was handed over.
+computation from inside a template. That's a feature: real logic belongs in the **view**, where it's visible
+and testable. Fighting the template to compute something is a sign the work belongs in the view instead.
 
 ## Context — what the template can see
 
 📝 The keyword arguments you pass to `render_template` have a name: the **context**. It is the *entire* world
-the template can see. If a name isn't in the context, the template does not have it at all — there's no
+the template can see — if a name isn't in the context, the template doesn't have it at all, and there's no
 reaching back into the view or the database for more.
 
 ```python
@@ -120,16 +115,16 @@ def notes_list():
 
 *What just happened:* the view passed two things into the context — `notes` and `page_title`. Inside
 `notes.html`, both `{{ notes }}` and `{{ page_title }}` are now available, *and nothing else from the view is*.
-Rename the keyword (say `notes=` becomes `items=`) and the template's `{{ notes }}` silently goes blank,
-because the name the template uses must match the key you passed. That tight boundary is what makes templates
-predictable: to know what a template can use, you only have to read the context, not the whole view.
+Rename the keyword (`notes=` becomes `items=`) and `{{ notes }}` silently goes blank, because the template's
+name must match the key you passed. That tight boundary is what makes templates predictable: to know what a
+template can use, you only have to read the context.
 
 ## Template inheritance — write the layout once
 
-Every page on your site shares chrome — the same `<head>`, the nav bar, the footer. Copy-pasting that into
+Every page on your site shares chrome — the same `<head>`, nav bar, footer. Copy-pasting that into
 `notes.html`, `note_detail.html`, and every other template is how you end up updating the nav in five files
 and forgetting one. Jinja's answer is **template inheritance**: a `base.html` defines the skeleton with
-`{% block %}` holes, and child templates fill the holes.
+`{% block %}` holes, and child templates fill them.
 
 ```html
 <!-- templates/base.html -->
@@ -168,19 +163,18 @@ and forgetting one. Jinja's answer is **template inheritance**: a `base.html` de
 
 *What just happened:* `base.html` lays out the page once and marks two spots — `{% block title %}` and
 `{% block content %}` — as overridable holes. The child's `{% extends "base.html" %}` says "start from that
-skeleton," then its own `{% block %}` tags pour content into the matching holes. The child never repeats the
-`<nav>`, the `<footer>`, or the `<head>` — it inherits them.
+skeleton," then its own `{% block %}` tags pour content into the matching holes, never repeating the `<nav>`,
+`<footer>`, or `<head>`.
 
-💡 This is the **DRY** win for server-rendered HTML: Don't Repeat Yourself, applied to layout. One base
-template, many children, zero duplicated chrome. Change the footer in `base.html` and every page that extends
-it updates at once. When you add a third page later, you write only its `{% block content %}` and get the
-whole shell for free.
+💡 This is the **DRY** win for server-rendered HTML: one base template, many children, zero duplicated chrome.
+Change the footer in `base.html` and every page that extends it updates at once. Add a third page later and
+you write only its `{% block content %}`, getting the whole shell for free.
 
 ## Auto-escaping — the XSS shield you get for free
 
-Now the part that quietly protects you. By default, **Jinja auto-escapes every variable it outputs.** If a
-note's `content` contains `<script>alert('xss')</script>`, Jinja doesn't render a live script tag — it converts
-the angle brackets to `&lt;script&gt;` so the browser prints the text harmlessly instead of executing it.
+By default, **Jinja auto-escapes every variable it outputs.** If a note's `content` contains
+`<script>alert('xss')</script>`, Jinja doesn't render a live script tag — it converts the angle brackets to
+`&lt;script&gt;` so the browser prints the text harmlessly instead of executing it.
 
 ```console
 Stored note content:  Nice list! <script>steal()</script>
@@ -190,20 +184,16 @@ Rendered to page:      Nice list! &lt;script&gt;steal()&lt;/script&gt;
 *What just happened:* a malicious note body went *into* the template via `{{ note.content }}`, but
 auto-escaping defanged it on the way *out*. The visitor sees the literal text; the browser never runs the
 script. This is your default defense against **cross-site scripting (XSS)** — the attack where someone smuggles
-markup through user input to run code in another visitor's browser. It's the same trust-the-input family as
-SQL injection; for the full picture of why this attack works and how it bites, read
-[SQL Injection & XSS](/guides/sql-injection-and-xss). The good news: in Jinja, the safe behavior is the one
-you get for free.
+markup through user input to run code in another visitor's browser. Same trust-the-input family as SQL
+injection; for the full picture read [SQL Injection & XSS](/guides/sql-injection-and-xss).
 
-⚠️ The escape hatch is the `|safe` filter, which tells Jinja "trust this, render it raw." That turns the shield
-**off** for that value. Only ever reach for it on content *you* generated or have already sanitized — never on
+⚠️ The escape hatch is the `|safe` filter, which tells Jinja "trust this, render it raw," turning the shield
+**off** for that value. Only reach for it on content *you* generated or have already sanitized — never on
 anything a user typed. `{{ note.content|safe }}` on a user-submitted note is exactly how an XSS hole gets
 created. When in doubt, leave it escaped.
 
-💡 Templates are the surface the user actually sees — the **V** in the request → view → template loop. So far
-the data has flowed one direction: storage → view → template → browser. Next we reverse it: **forms** are how
-data flows back *in*, from the user to your app, and that's where reading and validating `request` data earns
-its full treatment.
+💡 Templates are the surface the user actually sees. So far data has flowed one direction: storage → view →
+template → browser. Next we reverse it: **forms** are how data flows back *in*, from the user to your app.
 
 ## Recap
 

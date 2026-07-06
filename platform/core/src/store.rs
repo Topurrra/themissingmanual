@@ -99,6 +99,10 @@ impl Store {
                  visitor TEXT NOT NULL DEFAULT ''
              );
              CREATE INDEX IF NOT EXISTS idx_feedback_ts ON feedback(ts);
+             CREATE TABLE IF NOT EXISTS backlog_votes (
+                 item_key TEXT PRIMARY KEY,
+                 votes INTEGER NOT NULL DEFAULT 0
+             );
              CREATE TABLE IF NOT EXISTS phase_revisions (
                  id INTEGER PRIMARY KEY AUTOINCREMENT,
                  guide_slug TEXT NOT NULL,
@@ -512,6 +516,43 @@ impl Store {
             })
         })?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    /// Reader-submitted "guide requests" (feedback rows sent from /request, tagged with the
+    /// guide_slug sentinel) - the public backlog page's second signal, alongside failed searches.
+    pub fn list_guide_requests(&self, limit: i64) -> Result<Vec<crate::models::GuideRequest>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT rowid, ts, note FROM feedback WHERE guide_slug = 'guide-request' ORDER BY ts DESC LIMIT ?1",
+        )?;
+        let rows = stmt.query_map(params![limit], |r| {
+            Ok(crate::models::GuideRequest { id: r.get(0)?, ts: r.get(1)?, note: r.get(2)? })
+        })?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    // ---- public backlog voting (no accounts - one counter per item key) ----
+
+    /// +1 a backlog item's vote count (upsert), returns the new total. `key` is either
+    /// `q:<search query>` or `r:<guide-request rowid>` - see admin::public_backlog.
+    pub fn bump_backlog_vote(&self, key: &str) -> Result<i64, StoreError> {
+        self.conn.execute(
+            "INSERT INTO backlog_votes (item_key, votes) VALUES (?1, 1)
+             ON CONFLICT(item_key) DO UPDATE SET votes = votes + 1",
+            params![key],
+        )?;
+        let votes: i64 = self.conn.query_row(
+            "SELECT votes FROM backlog_votes WHERE item_key = ?1",
+            params![key],
+            |r| r.get(0),
+        )?;
+        Ok(votes)
+    }
+
+    /// Current vote counts for every item key that has at least one vote.
+    pub fn all_backlog_votes(&self) -> Result<std::collections::HashMap<String, i64>, StoreError> {
+        let mut stmt = self.conn.prepare("SELECT item_key, votes FROM backlog_votes")?;
+        let rows = stmt.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?)))?;
+        Ok(rows.collect::<Result<std::collections::HashMap<_, _>, _>>()?)
     }
 
     // ---- phase edit history (versioning + revert) ----

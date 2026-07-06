@@ -12,19 +12,18 @@ updated: 2026-06-19
 # Collections
 
 So far you've held one value at a time. Real programs deal in *many* - a list of users, a table of
-prices, the words in a sentence. Go gives you a few ways to hold collections, and there's one decision
-that trips up newcomers: arrays versus slices. We'll clear that up first, because once you know which to
-reach for, everything else falls into place.
+prices, the words in a sentence. One decision trips up newcomers: arrays versus slices. Clear that up
+first, and everything else falls into place.
 
 ## Arrays vs slices - the distinction that matters
 
-**What an array actually is.** An **array** in Go is a fixed-size sequence of values, all the same type.
-The size is part of the type: `[3]int` is "exactly three integers" - not two, not four. You can't grow
-it. This rigidity makes arrays rare in everyday Go.
+An **array** in Go is a fixed-size sequence of values, all the same type. The size is part of the type:
+`[3]int` is "exactly three integers" - not two, not four. You can't grow it, which makes arrays rare in
+everyday Go.
 
-**What a slice actually is.** A **slice** is a *flexible-length* view onto a sequence of values. It can
-grow and shrink, and it's what Go programmers use almost all the time. Think of a slice as "a list that
-can change size." Its type has no number: `[]int` is "a list of integers, however many."
+A **slice** is a *flexible-length* view onto a sequence of values. It can grow and shrink, and it's what
+Go programmers use almost all the time - "a list that can change size." Its type has no number: `[]int`
+is "a list of integers, however many."
 
 📝 **Terminology.** The empty brackets are the tell. **`[3]int`** (number inside) = array, fixed.
 **`[]int`** (nothing inside) = slice, flexible. When in doubt, you want the slice.
@@ -46,10 +45,9 @@ $ go run main.go
 [2 3 5 7]
 7 2
 ```
-*What just happened:* `[]int{2, 3, 5, 7}` created a slice holding four integers. Printing the whole slice
-shows it in brackets. `primes[0]` reads the **first** element (Go counts from zero, like most languages),
-and `primes[3]` reads the fourth - so we printed `7` then `2`. Indexing past the end (say `primes[4]`)
-would crash with an out-of-range error, because there's no fifth element to read.
+`[]int{2, 3, 5, 7}` created a slice of four integers, printed in brackets. `primes[0]` reads the **first**
+element (Go counts from zero), `primes[3]` the fourth - so we printed `7` then `2`. Indexing past the end
+(say `primes[4]`) crashes with an out-of-range error, since there's no fifth element.
 
 ## Growing a slice with `append`
 
@@ -69,17 +67,17 @@ func main() {
 $ go run main.go
 [Ada Alan Grace]
 ```
-*What just happened:* `append(names, "Grace")` produced a slice with `"Grace"` added on the end. The part
-that surprises people: **you assign the result back to `names`.** `append` doesn't always change the
-original in place - it may build a bigger slice and hand it back - so the idiom is *always*
-`names = append(names, ...)`. Forget the `names =` and your addition vanishes.
+`append(names, "Grace")` produced a slice with `"Grace"` added on the end. The surprise: **you assign the
+result back to `names`.** `append` doesn't always change the original in place - it may build a bigger
+slice and hand it back - so the idiom is *always* `names = append(names, ...)`. Skip the `names =` and
+your addition vanishes.
 
 You can append several at once, or even append one slice onto another:
 ```go
 names = append(names, "Linus", "Margaret")
 ```
-*What just happened:* `append` takes the slice first, then any number of new values, and returns the
-grown slice. Same rule: capture the result.
+`append` takes the slice first, then any number of new values, returning the grown slice. Same rule:
+capture the result.
 
 ## `len` and `cap` - length vs capacity
 
@@ -98,21 +96,17 @@ func main() {
 $ go run main.go
 3 3
 ```
-*What just happened:* `len(s)` is the **length** - how many elements the slice actually holds right now
-(3). `cap(s)` is the **capacity** - how many it could hold before Go has to allocate a bigger underlying
-block of memory. Early on, **`len` is the one you'll use constantly** (it's how you ask "how many?");
-`cap` is an under-the-hood detail you'll mostly ignore until you're optimizing. They start equal here, but
-after appends they can differ as Go grows the backing storage in chunks.
+`len(s)` is the **length** - how many elements the slice holds right now (3). `cap(s)` is the
+**capacity** - how many it could hold before Go must allocate a bigger block of memory. **`len` is the one
+you'll use constantly**; `cap` is under-the-hood detail you'll mostly ignore until optimizing. They start
+equal here, but after appends they can differ as Go grows backing storage in chunks.
 
 ## Maps - looking things up by key
 
-A slice is great when you want an ordered list and access things by *position*. A **map** is what you
-want when you access things by *name*: it stores **key → value** pairs and lets you look up a value
-instantly by its key.
-
-**What it actually is.** A map is a lookup table. `map[string]int` reads as "a map from string keys to
-integer values" - for example, names to ages. (Other languages call this a dictionary, hash, or
-associative array; same idea.)
+A slice is great for an ordered list, accessed by *position*. A **map** is for accessing things by *name*:
+a lookup table storing **key → value** pairs. `map[string]int` reads as "a map from string keys to
+integer values" - names to ages, say. (Other languages call this a dictionary, hash, or associative
+array; same idea.)
 ```go
 package main
 
@@ -133,10 +127,9 @@ $ go run main.go
 36
 map[Ada:36 Alan:41 Grace:28]
 ```
-*What just happened:* We created a map with two entries, looked up `"Ada"` to get `36`, then added a new
-entry by assigning to a fresh key (`ages["Grace"] = 28`). Printing the whole map shows all the pairs.
-Note Go printed them in a tidy order here, but **maps have no guaranteed order** - don't rely on it (more
-on that in the gotcha below).
+We created a map with two entries, looked up `"Ada"` to get `36`, then added an entry by assigning to a
+fresh key (`ages["Grace"] = 28`). Go printed them in tidy order here, but **maps have no guaranteed
+order** - don't rely on it.
 
 When you look up a key that might not exist, use the **two-value form** to ask "did it exist?":
 ```go
@@ -146,10 +139,9 @@ fmt.Println(age, ok)
 ```console
 0 false
 ```
-*What just happened:* Reading a missing key doesn't crash - it returns the value type's **zero value**
-(`0` for an `int`, from [phase 2](02-syntax-values-and-types.md)) and a second boolean, `ok`, that's
-`false` when the key was absent. This `value, ok := m[key]` pattern is how you safely tell "the value is
-genuinely 0" apart from "the key wasn't there at all."
+Reading a missing key doesn't crash - it returns the value type's **zero value** (`0` for an `int`, from
+[phase 2](02-syntax-values-and-types.md)) plus a boolean, `ok`, `false` when the key was absent. The
+`value, ok := m[key]` pattern distinguishes "the value is genuinely 0" from "the key wasn't there at all."
 
 ⚠️ **Gotcha - writing to a nil map panics.** A map variable declared but never *made* is `nil`, and
 **writing to a nil map crashes your program at runtime:**
@@ -160,15 +152,14 @@ m["x"] = 1             // panic!
 ```console
 panic: assignment to entry in nil map
 ```
-*What just happened:* `var m map[string]int` gives you a `nil` map - the zero value for maps. You can
-*read* from it (you'll get zero values), but *writing* to it panics, because there's no actual table
-allocated to store into. The fix is to create it first with `make`: `m := make(map[string]int)` (or use a
-map literal like above). This is one of the most common first-week Go panics - now you'll recognize it
-instantly.
+`var m map[string]int` gives you a `nil` map - the zero value for maps. You can *read* from it (zero
+values come back), but *writing* panics, since no table is allocated to store into. Fix: create it first
+with `make`: `m := make(map[string]int)` (or a map literal like above). One of the most common first-week
+Go panics - now you'll recognize it instantly.
 
 📝 **Terminology.** A **panic** is Go's term for a runtime crash - the program stops with an error message
-and a trace. It's the runtime equivalent of an exception. We'll cover handling failure *gracefully* (the
-"errors are values" approach) in [phase 7](07-errors-and-io.md).
+and a trace, the runtime equivalent of an exception. Handling failure *gracefully* (the "errors are
+values" approach) comes in [phase 7](07-errors-and-io.md).
 
 ## Looping over collections with `range`
 
@@ -191,10 +182,10 @@ $ go run main.go
 1 Alan
 2 Grace
 ```
-*What just happened:* `for i, name := range names` walks the slice, and on each pass hands you two things:
-`i`, the **index** (position, starting at 0), and `name`, the **value** at that position. We printed both.
-This is the standard way to loop a slice. (Don't worry about the `for` keyword yet - Go's single loop is
-[phase 4](04-control-flow-and-functions.md); here it's just "do this for each element.")
+`for i, name := range names` walks the slice, handing you `i`, the **index** (starting at 0), and `name`,
+the **value** at that position - the standard way to loop a slice. (Don't worry about the `for` keyword
+yet - Go's single loop is [phase 4](04-control-flow-and-functions.md); here it's just "do this for each
+element.")
 
 Often you only want the value, not the index. Use the blank identifier `_` to throw the index away:
 ```go
@@ -202,10 +193,9 @@ for _, name := range names {
 	fmt.Println(name)
 }
 ```
-*What just happened:* `_` is Go's "I deliberately don't want this" placeholder. Because Go errors on
-*unused variables* ([phase 2](02-syntax-values-and-types.md)), you can't just declare an `i` you ignore -
-you write `_` to say "discard the index on purpose." Ranging a map works the same way, giving you `key,
-value` instead of `index, value`.
+`_` is Go's "I deliberately don't want this" placeholder. Since Go errors on *unused variables*
+([phase 2](02-syntax-values-and-types.md)), `_` says "discard the index on purpose." Ranging a map works
+the same way, giving `key, value` instead of `index, value`.
 
 ## The slice-aliasing surprise
 
@@ -227,10 +217,9 @@ func main() {
 $ go run main.go
 [99 2 3 4]
 ```
-*What just happened:* `original[0:2]` made a slice `part` that's a *window* onto the first two elements of
-`original` - not a copy. So changing `part[0]` also changed `original[0]`; they share the same backing
-storage. This is efficient (no copying) but surprising the first time you see one slice change "by
-itself."
+`original[0:2]` made `part` a *window* onto `original`'s first two elements - not a copy. Changing
+`part[0]` also changed `original[0]`; they share the same backing storage. Efficient (no copying) but
+surprising the first time a slice changes "by itself."
 
 ⚠️ **Gotcha.** When you need an *independent* copy rather than a shared view, make one explicitly with the
 built-in `copy`:
@@ -238,9 +227,9 @@ built-in `copy`:
 clone := make([]int, len(original))
 copy(clone, original)
 ```
-*What just happened:* `make([]int, len(original))` created a brand-new slice of the same length, and
-`copy` filled it with `original`'s values. Now `clone` has its own storage - changing it leaves
-`original` untouched. Reach for this whenever "I changed one and the other changed too" would be a bug.
+`make([]int, len(original))` created a new slice of the same length, and `copy` filled it with
+`original`'s values. Now `clone` has its own storage - changing it leaves `original` untouched. Reach for
+this whenever "I changed one and the other changed too" would be a bug.
 
 ## Recap
 
@@ -254,7 +243,7 @@ copy(clone, original)
    discard a part you don't need.
 7. Slices can **share underlying data** (aliasing) - use `copy` when you need an independent copy.
 
-Next, we get programs to *make decisions* and *organize logic*: Go's one loop, `if` and `switch`, and the
+Next: making decisions and organizing logic - Go's one loop, `if` and `switch`, and the
 multiple-return-value functions that give Go its distinctive shape.
 
 ---

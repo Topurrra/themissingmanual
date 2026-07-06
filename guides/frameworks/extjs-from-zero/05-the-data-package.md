@@ -11,17 +11,16 @@ updated: 2026-06-23
 
 # The Data Package
 
-In [the last phase](04-layouts.md) you got components to *show up* in the right places. But an
-empty grid with three columns and no rows isn't an app — it's a picture of one. Every Ext JS
-screen you'll ever inherit is, underneath the chrome, a pipe that pulls rows off a server and
-pushes edits back. That pipe is the **data package**, and it is the single biggest source of "why
-is my grid empty?" and "why didn't my save go through?" tickets in legacy code.
+[The last phase](04-layouts.md) got components to *show up* in the right places. But an empty
+grid with three columns and no rows isn't an app — it's a picture of one. Every Ext JS screen
+you'll ever inherit is, underneath the chrome, a pipe that pulls rows off a server and pushes
+edits back. That pipe is the **data package**, and it's the single biggest source of "why is my
+grid empty?" and "why didn't my save go through?" tickets in legacy code.
 
 💡 **The mental model — four pieces, one sentence: a *Model* is the shape of one record, a *Store*
 is the collection of records, a *proxy* is where they come from and go back to, and a *reader*
 is how the server's response gets parsed into records.** That quartet is the heart of every Ext JS
-app. Internalize it and the rest of this phase is just syntax. Miss it and stores will feel like
-black boxes forever.
+app. Internalize it and the rest of this phase is just syntax.
 
 Here's the pipe, drawn out — server data flows left to right until it lands in a grid you can see:
 
@@ -33,10 +32,9 @@ flowchart LR
     ST --> G[Grid: renders the rows]
 ```
 
-*What just happened:* The proxy talks to the server. The reader takes whatever comes back (usually
+*What just happened:* the proxy talks to the server. The reader takes whatever comes back (usually
 JSON) and turns it into **Model instances**. The Store collects those instances. The grid binds to
-the Store and paints a row per record. When a grid is empty, the bug is somewhere on this line —
-and knowing the line is how you find it fast.
+the Store and paints a row per record. When a grid is empty, the bug is somewhere on this line.
 
 📝 The proxy is the only piece here that knows about HTTP. If you're shaky on URLs, GET vs POST, or
 what a JSON response body looks like, skim
@@ -60,23 +58,23 @@ Ext.define('MyApp.model.User', {
 });
 ```
 
-*What just happened:* We declared a class with `Ext.define` (the same class system from
+*What just happened:* we declared a class with `Ext.define` (the same class system from
 [Phase 2](02-the-class-system.md)) that `extend`s `Ext.data.Model`. The `fields` array names each
 property a `User` record carries and, optionally, its `type` — `int`, `boolean`, `string`, `date`,
-`float`. The type matters: a field declared `type: 'int'` will coerce the server's `"42"` string
-into a real number `42` on the way in, so your renderers and comparisons behave. A `User` instance
+`float`. The type matters: a field declared `type: 'int'` coerces the server's `"42"` string into
+a real number `42` on the way in, so your renderers and comparisons behave. A `User` instance
 isn't a plain object — it's a record with methods (`get`, `set`, dirty tracking) we'll use shortly.
 
 💡 Models can do more than fields: they can declare **validators**, and **associations**
 (`hasMany` / `belongsTo`) so a `User` can reach its `Orders`, and a model can even carry its own
-`proxy` so it knows how to load and save itself. You'll see all of these in older codebases. For
+`proxy` so it knows how to load and save itself. You'll see all of these in older codebases; for
 now, fields are enough to get rows on screen.
 
 ## The Store: the collection of records
 
-A **`Ext.data.Store`** is an in-memory collection of Model instances. It is *the* data source you
-bind to a grid, a combo box, a tree, or a list. Create one, point it at a model, give it a proxy
-that knows where the data lives, and tell it to load:
+A **`Ext.data.Store`** is an in-memory collection of Model instances — *the* data source you bind
+to a grid, a combo box, a tree, or a list. Create one, point it at a model, give it a proxy that
+knows where the data lives, and tell it to load:
 
 ```javascript
 var usersStore = Ext.create('Ext.data.Store', {
@@ -94,7 +92,7 @@ var usersStore = Ext.create('Ext.data.Store', {
 });
 ```
 
-*What just happened:* We built a store of `User` records. The **`proxy`** with `type: 'ajax'`
+*What just happened:* we built a store of `User` records. The **`proxy`** with `type: 'ajax'`
 says "go GET `/api/users`." The **`reader`** with `type: 'json'` says "the body is JSON." The line
 that bites everyone is **`rootProperty: 'data'`** — it tells the reader *where in the response the
 array of rows is*. With `autoLoad: true`, the store fires its load the moment it's created; leave
@@ -112,16 +110,16 @@ For that reader config to work, the server has to return JSON shaped like this:
 }
 ```
 
-*What just happened:* The reader looks at `rootProperty: 'data'`, finds that array, and builds one
+*What just happened:* the reader looks at `rootProperty: 'data'`, finds that array, and builds one
 `User` record per element — coercing `id` to int and `active` to boolean per the model. `total`
 feeds paging. ⚠️ This is the #1 empty-grid bug: if the server actually returns `{ "users": [...] }`
 or a bare top-level array, your `rootProperty: 'data'` finds nothing and the grid stays empty with
-no error. When a grid is blank, open the network tab, look at the real response body, and check
-that `rootProperty` matches the key the array actually sits under.
+no error. When a grid is blank, open the network tab, check the real response body, and confirm
+`rootProperty` matches the key the array actually sits under.
 
 ### Picking a proxy
 
-The proxy is *where* the store reads and writes. The common ones:
+The proxy is *where* the store reads and writes. Common ones:
 
 - **`ajax`** — one `url`, fires HTTP requests; the everyday read-from-a-server proxy.
 - **`rest`** — like `ajax`, but maps CRUD onto HTTP verbs on a REST url: GET to read, POST to
@@ -134,7 +132,7 @@ Every proxy has a **`reader`** (parse responses coming in) and, for the writing 
 
 ## Loading is asynchronous — the bug everyone hits once
 
-Here's the trap that has cost more Ext JS developers an afternoon than anything else on this page.
+The trap that has cost more Ext JS developers an afternoon than anything else on this page:
 `store.load()` kicks off a network request and **returns immediately** — the records are *not*
 there on the next line. The data shows up later, when the response arrives.
 
@@ -144,9 +142,8 @@ console.log(usersStore.getCount()); // ⚠️ logs 0 — the request hasn't come
 ```
 
 *What just happened:* `load()` started the request and moved on. `getCount()` ran microseconds
-later, long before the server replied, so it sees an empty store. This is not a bug in Ext JS —
-it's asynchrony. Any code that needs the loaded records must wait for the load to finish. Use the
-**`callback`**:
+later, long before the server replied, so it sees an empty store — not a bug, just asynchrony. Any
+code that needs the loaded records must wait for the load to finish. Use the **`callback`**:
 
 ```javascript
 usersStore.load({
@@ -160,7 +157,7 @@ usersStore.load({
 });
 ```
 
-*What just happened:* The `callback` runs *after* the response is parsed into records. `records` is
+*What just happened:* the `callback` runs *after* the response is parsed into records. `records` is
 the array that just arrived, `operation` carries status and errors, and `success` is the boolean
 you should always check before trusting the data. Any logic that depends on loaded rows belongs
 inside this callback (or in a `load` event listener) — never on the line right after `load()`.
@@ -173,8 +170,8 @@ everywhere.
 
 ## Working with records once they're loaded
 
-A loaded store isn't read-only. You read and write records through it, and those edits get tracked
-so you can push them back to the server later. The everyday store methods:
+A loaded store isn't read-only — you read and write records through it, and those edits get
+tracked so you can push them back to the server later. The everyday store methods:
 
 ```javascript
 usersStore.getCount();                       // how many records
@@ -183,9 +180,9 @@ usersStore.each(function (rec) { /* ... */ });   // iterate all records
 var ada = usersStore.findRecord('email', 'ada@example.com'); // find by field value
 ```
 
-*What just happened:* These are the read operations you'll reach for constantly when navigating an
+*What just happened:* these are the read operations you'll reach for constantly when navigating an
 inherited screen — count the rows, grab one by position, loop them, or look one up by a field. None
-of them touch the server; they work on the records already in memory.
+touch the server; they work on records already in memory.
 
 Now the writing side. A record exposes `get` and `set`, and **`set` marks the record dirty** —
 Ext JS remembers it was changed but hasn't persisted yet:
@@ -199,8 +196,8 @@ console.log(rec.dirty);          // true — pending, not yet saved to the serve
 
 *What just happened:* `get('name')` reads a field; `set('name', ...)` changes it and flips the
 record's **dirty** flag to `true`. Dirty means "edited in memory, not yet on the server." This
-dirty tracking is the whole point — it lets Ext JS know exactly which records need saving, so it
-can send only the changes instead of re-uploading everything.
+tracking is the whole point — it lets Ext JS know exactly which records need saving, so it can
+send only the changes instead of re-uploading everything.
 
 Adding and removing records works at the store level, and those also count as pending changes:
 
@@ -211,8 +208,8 @@ usersStore.remove(rec);                                                         
 
 *What just happened:* `add` appends a new record (a pending *create*) and `remove` pulls one out (a
 pending *destroy*). Like `set`, these stage changes in memory — nothing has hit the server yet. The
-grid bound to this store updates instantly because it reacts to `add`/`remove` events, but the
-backend doesn't know a thing until you sync.
+grid bound to this store updates instantly, reacting to `add`/`remove` events, but the backend
+doesn't know a thing until you sync.
 
 ## Pushing changes back: `record.save()` and `store.sync()`
 
@@ -224,11 +221,11 @@ rec.save();          // save THIS one record through its proxy
 usersStore.sync();   // push ALL pending creates/updates/destroys in one batch
 ```
 
-*What just happened:* `record.save()` persists a single record. `store.sync()` is the workhorse:
-it walks every dirty/added/removed record in the store and sends them through the proxy and writer —
+*What just happened:* `record.save()` persists a single record. `store.sync()` is the workhorse: it
+walks every dirty/added/removed record in the store and sends them through the proxy and writer —
 creates as POSTs, updates as PUTs, deletes as DELETEs (with a `rest` proxy). After a successful
-sync, the records are no longer dirty. This is the second half of the pipe from the diagram: the
-same proxy that *read* the data is what *writes* it back.
+sync, the records are no longer dirty — the same proxy that *read* the data is what *writes* it
+back.
 
 For sync to actually save, the store needs a writing proxy. Swap the `ajax` proxy for a `rest` one
 so CRUD maps cleanly onto HTTP verbs:
@@ -251,17 +248,17 @@ usersStore.sync({
 });
 ```
 
-*What just happened:* With a `rest` proxy, `sync()` translates each pending change into the right
+*What just happened:* with a `rest` proxy, `sync()` translates each pending change into the right
 verb against `/api/users`: a new record POSTs, an edited record PUTs to `/api/users/{id}`, a removed
-record DELETEs. The `success`/`failure` handlers let you confirm the round trip — and crucially, on
-failure the records *stay dirty*, so nothing is silently lost and a retry will resend them. If REST
+record DELETEs. The `success`/`failure` handlers let you confirm the round trip — and on failure
+the records *stay dirty*, so nothing is silently lost and a retry will resend them. If REST
 conventions (verbs, status codes, resource URLs) are fuzzy, [REST APIs explained](/guides/rest-apis-explained)
 is the companion read; the `rest` proxy is essentially a REST client wired straight into your grid.
 
 ⚠️ One more legacy gotcha: dirty changes live only in the browser. If the user edits five rows and
 the page reloads before a `sync()` (or the sync fails and nobody retries), those edits are gone.
-When you inherit a screen where "my changes didn't save," check that *something* actually calls
-`sync()` or `save()` — a surprising amount of legacy code stages edits and never sends them.
+When you inherit a "my changes didn't save" screen, check that *something* actually calls `sync()`
+or `save()` — a surprising amount of legacy code stages edits and never sends them.
 
 ## Recap
 
@@ -280,7 +277,7 @@ When you inherit a screen where "my changes didn't save," check that *something*
 
 ## Quick check
 
-Lock in the pieces that cause the most real-world bugs — where rows come from, and why edits do or don't save:
+Lock in where rows come from, and why edits do or don't save:
 
 ```quiz
 [

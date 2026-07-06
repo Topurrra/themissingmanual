@@ -48,7 +48,7 @@
     <i class="ti ti-circle-check" aria-hidden="true"></i>
     <div>
       <strong>Got it - thank you!</strong>
-      <p>Your request is in the queue. New guides ship on <a href="/changelog">What's new</a>.</p>
+      <p>Your request is in the queue - see it (and vote on others) on the <a href="/backlog">public backlog</a>. New guides ship on <a href="/changelog">What's new</a>.</p>
     </div>
   </div>
 {:else}

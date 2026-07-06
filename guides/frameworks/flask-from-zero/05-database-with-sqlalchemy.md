@@ -11,15 +11,15 @@ updated: 2026-06-22
 
 # Working with a Database
 
-Until now our notes have lived in a Python list, which means they evaporate the instant you restart the server. That was fine for learning request handling, but no real app remembers its data by holding it in a variable. We need to *persist* — to write notes somewhere that survives a restart, a crash, a deploy. That somewhere is a database, and this phase is about teaching Flask to talk to one.
+Until now our notes have lived in a Python list, so they evaporate the instant you restart the server. That was fine for learning request handling, but no real app remembers its data by holding it in a variable. We need to *persist* — write notes somewhere that survives a restart, a crash, a deploy. That somewhere is a database, and this phase teaches Flask to talk to one.
 
-Here's the mental model to carry in before any code. 📝 **Flask has no built-in database layer.** None. Unlike Django, which ships its own ORM as part of the framework, Flask's core knows nothing about SQL, tables, or rows — and that's deliberate. Flask is a small core plus whatever you choose to bolt on. Want a database? You *add* an extension. This phase is the clearest, most concrete look you'll get at that philosophy: we'll watch "Flask = small core + chosen extensions" play out line by line, using the most popular choice, Flask-SQLAlchemy.
+📝 **Flask has no built-in database layer.** Unlike Django, which ships its own ORM as part of the framework, Flask's core knows nothing about SQL, tables, or rows — deliberately. Flask is a small core plus whatever you choose to bolt on. Want a database? You *add* an extension. This phase is the clearest, most concrete look you'll get at that philosophy: "Flask = small core + chosen extensions," played out with the most popular choice, Flask-SQLAlchemy.
 
 ## The extension philosophy, made concrete
 
-📝 An **ORM** (Object-Relational Mapper) maps your objects to database rows and back. You work with a `Note` object in Python; the ORM figures out the `INSERT`, `SELECT`, and `UPDATE` statements that move it in and out of a table. If that idea is new, the [Hibernate & JPA guide](/guides/hibernate-and-jpa-from-zero) walks through the object-vs-table "impedance mismatch" in depth (it's Java, but the concept is identical), and [what a database actually is](/guides/what-a-database-is) covers the tables-rows-columns foundation underneath it all.
+📝 An **ORM** (Object-Relational Mapper) maps your objects to database rows and back. You work with a `Note` object in Python; the ORM figures out the `INSERT`, `SELECT`, and `UPDATE` statements that move it in and out of a table. If that idea is new, the [Hibernate & JPA guide](/guides/hibernate-and-jpa-from-zero) walks through the object-vs-table "impedance mismatch" in depth (Java, but the concept is identical), and [what a database actually is](/guides/what-a-database-is) covers the tables-rows-columns foundation underneath it.
 
-Python's premier ORM is **SQLAlchemy** — a standalone library that works with or without Flask. **Flask-SQLAlchemy** is a thin *integration layer*: it doesn't reinvent the ORM, it wires SQLAlchemy into Flask's app and request lifecycle so the two cooperate cleanly. That distinction matters. SQLAlchemy does the heavy lifting; Flask-SQLAlchemy just makes it feel native to Flask.
+Python's premier ORM is **SQLAlchemy** — a standalone library that works with or without Flask. **Flask-SQLAlchemy** is a thin *integration layer*: it doesn't reinvent the ORM, it wires SQLAlchemy into Flask's app and request lifecycle so the two cooperate cleanly. SQLAlchemy does the heavy lifting; Flask-SQLAlchemy just makes it feel native to Flask.
 
 ```mermaid
 flowchart LR
@@ -28,7 +28,7 @@ flowchart LR
   SA --> DB[(Database<br/>SQLite file)]
 ```
 
-*What just happened:* the diagram is the whole stack. Your view talks to Flask-SQLAlchemy, which is glue; the glue hands off to SQLAlchemy, the real ORM; SQLAlchemy generates SQL and runs it against the database. Flask itself isn't in this chain at all — it gained database powers purely by *adding an extension*, exactly the pattern the whole framework is built on.
+*What just happened:* the diagram is the whole stack. Your view talks to Flask-SQLAlchemy, the glue; the glue hands off to SQLAlchemy, the real ORM; SQLAlchemy generates SQL and runs it against the database. Flask itself isn't in this chain — it gained database powers purely by *adding an extension*.
 
 First, install it (this pulls SQLAlchemy in as a dependency):
 
@@ -36,7 +36,7 @@ First, install it (this pulls SQLAlchemy in as a dependency):
 $ pip install Flask-SQLAlchemy
 ```
 
-*What just happened:* one package, and your Flask app can now speak to a database. Nothing about Flask's core changed — you extended it from the outside, which is the entire point.
+*What just happened:* one package, and your Flask app can now speak to a database. Nothing about Flask's core changed — you extended it from the outside.
 
 ## Setup: wiring the extension into the app
 
@@ -55,7 +55,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///notes.db"
 db = SQLAlchemy(app)
 ```
 
-*What just happened:* the config line is a **connection URI** — `sqlite:///notes.db` means "use SQLite, stored in a file called `notes.db` next to the app." (Swap that string for a `postgresql://...` URI later and almost nothing else changes — that's the ORM earning its keep.) Then `db = SQLAlchemy(app)` creates the extension and hands it the app, so it can hook into Flask's lifecycle. Concretely, it sets up a database **session per request** — a fresh workspace that opens when a request arrives and closes when the response goes out. You don't manage that plumbing; the extension does, because it knows Flask's request cycle.
+*What just happened:* the config line is a **connection URI** — `sqlite:///notes.db` means "use SQLite, stored in a file called `notes.db` next to the app." (Swap that string for a `postgresql://...` URI later and almost nothing else changes.) `db = SQLAlchemy(app)` creates the extension and hands it the app so it can hook into Flask's lifecycle: a database **session per request** — a fresh workspace that opens when a request arrives and closes when the response goes out. You don't manage that plumbing; the extension does.
 
 💡 That `db` object is your gateway to everything — defining models, querying, saving. By convention it lives at module level so the rest of your app can import it.
 
@@ -73,7 +73,7 @@ class Note(db.Model):
         return f"<Note {self.id}: {self.title}>"
 ```
 
-*What just happened:* by inheriting from `db.Model`, the `Note` class becomes a mapped entity — SQLAlchemy now knows this class corresponds to a table. Each `db.Column` is one column: `id` is an auto-incrementing integer **primary key** (the unique handle for each row), `title` is a short string capped at 120 characters, and `content` is `Text` for longer, unbounded writing. `nullable=False` means the database refuses to store a note missing that field. The `__repr__` is just for readable debugging — it has no effect on the table.
+*What just happened:* by inheriting from `db.Model`, `Note` becomes a mapped entity — SQLAlchemy now knows this class corresponds to a table. Each `db.Column` is one column: `id` is an auto-incrementing integer **primary key**, `title` is a short string capped at 120 characters, and `content` is `Text` for longer, unbounded writing. `nullable=False` means the database refuses to store a note missing that field. `__repr__` is just for readable debugging.
 
 That class *implies* a table. The `CREATE TABLE` SQLAlchemy generates for it looks like this:
 
@@ -85,14 +85,14 @@ CREATE TABLE note (
 );
 ```
 
-*What just happened:* this is the table your `Note` class describes, written in the database's own language. Notice the mapping is one-to-one: class → table (`note`), attribute → column, `db.String(120)` → `VARCHAR(120)`, `nullable=False` → `NOT NULL`. You never write this SQL by hand; SQLAlchemy generates it from the model. To actually create the table:
+*What just happened:* this is the table your `Note` class describes, written in the database's own language. The mapping is one-to-one: class → table (`note`), attribute → column, `db.String(120)` → `VARCHAR(120)`, `nullable=False` → `NOT NULL`. You never write this SQL by hand. To actually create the table:
 
 ```python
 with app.app_context():
     db.create_all()
 ```
 
-*What just happened:* `db.create_all()` looks at every model you've defined and creates any tables that don't yet exist. It runs inside an **app context** because the extension needs to know *which* app's database to build against — a detail that becomes important once you have more than one app, which the next phase covers. Run this once and `notes.db` appears on disk with an empty `note` table waiting.
+*What just happened:* `db.create_all()` looks at every model you've defined and creates any tables that don't yet exist. It runs inside an **app context** because the extension needs to know *which* app's database to build against — a detail that matters once you have more than one app, covered next phase.
 
 ## CRUD: the four things you do to data
 
@@ -109,7 +109,7 @@ def create_note():
     return redirect(url_for("list_notes"))
 ```
 
-*What just happened:* you build a plain `Note` object from the submitted form data, then `db.session.add(note)` *stages* it — it's pending, not yet saved. `db.session.commit()` is the moment it actually hits the database (SQLAlchemy generates the `INSERT` and runs it). After commit, `note.id` is populated automatically with the new primary key. The redirect-after-POST pattern from Phase 4 still applies — commit, then send the browser to the list.
+*What just happened:* you build a plain `Note` object from the submitted form data, then `db.session.add(note)` *stages* it — pending, not yet saved. `db.session.commit()` is the moment it actually hits the database (SQLAlchemy generates the `INSERT`). After commit, `note.id` is populated automatically. The redirect-after-POST pattern from Phase 4 still applies.
 
 **Read** — fetch all notes, or one:
 
@@ -125,7 +125,7 @@ def show_note(note_id):
     return render_template("note.html", note=note)
 ```
 
-*What just happened:* `Note.query` is your query entry point. `.all()` runs a `SELECT` and returns every row as a list of `Note` objects — you get objects back, not raw rows, which is the ORM's whole promise. `.get_or_404(note_id)` looks up a single note by primary key and, if none exists, raises a 404 for you instead of returning `None` and letting a later line crash. That helper is Flask-SQLAlchemy being thoughtful about the web: a missing record *should* be a clean 404, and it makes that the easy path. Need to filter on a non-key column? `Note.query.filter_by(title="Groceries").all()` runs a `SELECT ... WHERE title = ?`.
+*What just happened:* `Note.query` is your query entry point. `.all()` runs a `SELECT` and returns every row as a list of `Note` objects — the ORM's whole promise. `.get_or_404(note_id)` looks up a single note by primary key and, if none exists, raises a 404 instead of returning `None` and letting a later line crash. Need to filter on a non-key column? `Note.query.filter_by(title="Groceries").all()` runs a `SELECT ... WHERE title = ?`.
 
 **Update and Delete** — both go through the session and finish with a commit:
 
@@ -144,15 +144,15 @@ db.session.commit()           # runs DELETE
 
 ## The session, migrations, and the gotchas worth knowing now
 
-📝 **`db.session` is the unit of work.** Think of it as a notepad of pending changes — adds, deletes, and modifications you've made to loaded objects. Nothing in that notepad touches the real database until you `commit()`. This is the single most important habit:
+📝 **`db.session` is the unit of work.** Think of it as a notepad of pending changes — adds, deletes, and modifications to loaded objects. Nothing touches the real database until you `commit()`. This is the single most important habit:
 
 ⚠️ **No commit, no persistence.** Forget `db.session.commit()` and your `add` quietly does nothing durable — the request ends, the session is discarded, and your note is gone. The mirror-image habit is `db.session.rollback()`: if something goes wrong mid-request, roll back to throw away the half-finished pending changes so the next request starts clean. Commit on success; roll back on error.
 
-⚠️ **`create_all()` only creates *missing* tables — it never alters existing ones.** The day you add a `created_at` column to `Note`, `create_all()` will look at the already-existing `note` table, see it's there, and do nothing. Your new column won't appear and you'll be baffled. Schema changes to a live table are a real job, handled by **Flask-Migrate** (a Flask wrapper around Alembic, SQLAlchemy's migration tool). Migrations generate and version the `ALTER TABLE` steps so your schema can evolve safely. `create_all()` is a fine starting line; it is not how you change a schema later.
+⚠️ **`create_all()` only creates *missing* tables — it never alters existing ones.** Add a `created_at` column to `Note` and `create_all()` will see the already-existing `note` table and do nothing. Schema changes to a live table are handled by **Flask-Migrate** (a Flask wrapper around Alembic, SQLAlchemy's migration tool), which generates and versions the `ALTER TABLE` steps. `create_all()` is a fine starting line; it's not how you change a schema later.
 
-⚠️ **The N+1 trap is still here.** The moment your `Note` grows a relationship — say each note belongs to a notebook — looping over notes and touching `note.notebook` can fire one extra query *per note*. One query becomes N+1, and your list page slows to a crawl as data grows. It's the most common ORM performance bug across every language; the [why is my query slow](/guides/why-is-my-query-slow) guide unpacks how to spot and fix it. Knowing it exists is half the battle.
+⚠️ **The N+1 trap is still here.** The moment your `Note` grows a relationship — say each note belongs to a notebook — looping over notes and touching `note.notebook` can fire one extra query *per note*. One query becomes N+1, and your list page slows to a crawl as data grows. It's the most common ORM performance bug across every language; the [why is my query slow](/guides/why-is-my-query-slow) guide unpacks how to spot and fix it.
 
-💡 Step back and notice what you just did. Your notes app *persists* now — restart the server and they're still there. And you got there not by reaching into Flask's core, but by **adding an extension** and letting it integrate cleanly. You've now seen Flask's defining philosophy work end to end, with your own hands. That same pattern — small core, chosen extensions — is exactly what the next phase scales up.
+💡 Your notes app *persists* now — restart the server and they're still there. You got there by **adding an extension** and letting it integrate cleanly: Flask's defining philosophy, worked end to end. That same pattern — small core, chosen extensions — is what the next phase scales up.
 
 ## Recap
 

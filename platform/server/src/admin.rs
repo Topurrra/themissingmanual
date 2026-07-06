@@ -9,7 +9,7 @@ use axum::{
 use serde::Deserialize;
 use serde_json::json;
 use content_core::links;
-use content_core::models::{CategoryRow, Phase};
+use content_core::models::{CategoryRow, GuideRequest, Phase};
 use content_core::render::render_markdown;
 use crate::state::AppState;
 
@@ -624,6 +624,71 @@ pub async fn backlog(State(state): State<Arc<AppState>>, Query(q): Query<HashMap
             .then(b["demand"].as_i64().unwrap_or(0).cmp(&a["demand"].as_i64().unwrap_or(0)))
     });
     Json(json!({ "days": days, "items": items })).into_response()
+}
+
+/// Public: "what should we write next?" - the same failed-search signal as the admin
+/// backlog, plus reader-submitted guide requests, merged into one voted list. No auth,
+/// no PII (feedback rows never expose their `visitor` column here or anywhere public).
+pub async fn public_backlog(State(state): State<Arc<AppState>>, Query(q): Query<HashMap<String, String>>) -> Response {
+    let days: i64 = q.get("days").and_then(|s| s.parse().ok()).unwrap_or(30).clamp(1, 365);
+    let (searches, requests, votes) = {
+        let store = state.store.lock().unwrap();
+        let searches = match store.top_searches(days, 30) {
+            Ok(s) => s,
+            Err(e) => return err(e),
+        };
+        let requests = match store.list_guide_requests(30) {
+            Ok(r) => r,
+            Err(e) => return err(e),
+        };
+        let votes = match store.all_backlog_votes() {
+            Ok(v) => v,
+            Err(e) => return err(e),
+        };
+        (searches, requests, votes)
+    };
+
+    let mut items: Vec<serde_json::Value> = searches
+        .into_iter()
+        .map(|(query, demand)| {
+            let hits = state.index.search(&query, 5).map(|r| r.hits.len()).unwrap_or(0);
+            let key = format!("q:{query}");
+            let v = votes.get(&key).copied().unwrap_or(0);
+            json!({ "key": key, "kind": "search", "label": query, "demand": demand, "hits": hits, "votes": v })
+        })
+        .collect();
+    items.extend(requests.into_iter().map(|GuideRequest { id, ts, note }| {
+        let key = format!("r:{id}");
+        let v = votes.get(&key).copied().unwrap_or(0);
+        json!({ "key": key, "kind": "request", "label": note, "ts": ts, "votes": v })
+    }));
+    // Votes decide the order first (that's the whole point of a public vote) - a
+    // secondary "demand" sort (searches carry it, requests default to 0) keeps ties stable.
+    items.sort_by(|a, b| {
+        b["votes"].as_i64().unwrap_or(0).cmp(&a["votes"].as_i64().unwrap_or(0))
+            .then(b["demand"].as_i64().unwrap_or(0).cmp(&a["demand"].as_i64().unwrap_or(0)))
+    });
+    Json(json!({ "days": days, "items": items })).into_response()
+}
+
+#[derive(Deserialize)]
+pub struct VoteBacklog {
+    key: String,
+}
+
+/// Public: +1 a backlog item. `key` must match a shape `public_backlog` actually emits
+/// (`q:...` or `r:<id>`) - rejects anything else so this can't become an arbitrary counter.
+pub async fn vote_backlog(State(state): State<Arc<AppState>>, Json(b): Json<VoteBacklog>) -> Response {
+    let key = b.key.trim();
+    let valid = (key.starts_with("q:") || key.starts_with("r:")) && key.len() > 2 && key.len() <= 300;
+    if !valid {
+        return (StatusCode::BAD_REQUEST, Json(json!({ "error": "bad key" }))).into_response();
+    }
+    let r = { state.store.lock().unwrap().bump_backlog_vote(key) };
+    match r {
+        Ok(votes) => Json(json!({ "ok": true, "votes": votes })).into_response(),
+        Err(e) => err(e),
+    }
 }
 
 // ===== drag-reorder guides within a category =====

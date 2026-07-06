@@ -14,16 +14,15 @@ updated: 2026-06-23
 You already know [Go](/guides/go-from-zero), and you've maybe met [Gin](/guides/gin-from-zero) — the
 most popular Go web framework. Echo is its closest peer: another fast, focused layer over the standard
 library's `net/http`. If you've read the [net/http roots guide](/guides/web-services-with-only-net-http),
-you know Go can serve HTTP with nothing but the stdlib. Echo, like Gin, does the repetitive parts —
+you know Go can serve HTTP with nothing but the stdlib. Echo, like Gin, handles the repetitive parts —
 routing, JSON, middleware — without hiding what's underneath.
 
-So why pick Echo over Gin, when they overlap so much? One design choice, mostly: in Echo, **a handler
-returns an error**. Not `func(c *gin.Context)` with no return value, where you write the error response
-by hand — but `func(c echo.Context) error`, where you hand the error back and a central handler turns it
-into an HTTP response. That sounds small. In a real codebase with dozens of endpoints, it's the
-difference between every handler re-implementing "how do I report a failure" and every handler
-saying `return err`. Less boilerplate, and errors that come out consistent because one place renders
-them all.
+So why pick Echo over Gin? One design choice, mostly: in Echo, **a handler returns an error**. Not
+`func(c *gin.Context)` with no return value, where you write the error response by hand — but
+`func(c echo.Context) error`, where you hand the error back and a central handler turns it into an HTTP
+response. In a real codebase with dozens of endpoints, that's the difference between every handler
+re-implementing "how do I report a failure" and every handler saying `return err` — less boilerplate, and
+errors that come out consistent because one place renders them all.
 
 💡 **Echo is net/http with helpers *and* opinions about errors.** The helpers make it fast to write; the
 error-return style makes it stay clean as it grows. That's the whole pitch.

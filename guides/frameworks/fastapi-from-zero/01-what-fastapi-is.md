@@ -11,39 +11,35 @@ updated: 2026-06-22
 
 # What FastAPI Is & Your First App
 
-You know Python. You've written functions, maybe touched [REST APIs](/guides/rest-apis-explained),
-and now you want to *serve* something over HTTP — a little book API, say, that other programs can call.
-There are a dozen Python web frameworks that'll do it. This guide is about the one that has, in a few
-short years, become the default answer for new Python API projects: **FastAPI**.
+You know Python and have maybe touched [REST APIs](/guides/rest-apis-explained). Now you want to
+*serve* something over HTTP — a little book API that other programs can call. Plenty of Python
+frameworks do this. This guide covers the one that's become the default for new Python API projects:
+**FastAPI**.
 
-The thing to hold in your head before any code: FastAPI's whole personality comes from one decision —
-**your Python type hints are the source of truth.** You annotate a function with the types it expects,
-and FastAPI uses those same annotations to parse incoming requests, validate them, generate
-documentation, and serialize what you send back. One thing you write; four jobs it does. Once that
-clicks, the rest of FastAPI is detail.
+Hold this in your head before any code: FastAPI's whole personality comes from one decision —
+**your Python type hints are the source of truth.** Annotate a function with the types it expects, and
+FastAPI reuses those same annotations to parse incoming requests, validate them, generate documentation,
+and serialize what you send back. One thing you write; four jobs it does.
 
 ## What FastAPI actually is
 
-📝 **FastAPI** — a modern, asynchronous Python web framework for building APIs. It doesn't reinvent
-the world; it stands on two well-tested libraries: **Starlette** handles the web machinery (routing,
-requests, responses), and **Pydantic** handles data validation. FastAPI is the friendly layer that
-wires them together around your type hints.
+📝 **FastAPI** — a modern, asynchronous Python web framework for building APIs. It stands on two
+well-tested libraries: **Starlette** handles the web machinery (routing, requests, responses), and
+**Pydantic** handles data validation. FastAPI wires them together around your type hints.
 
-It speaks a protocol called **ASGI**, and that word is worth thirty seconds because it explains the
-"async" in the name and the "fast" in the brand.
+It speaks a protocol called **ASGI**, which explains the "async" in the name and the "fast" in the
+brand.
 
 📝 **WSGI vs ASGI** — WSGI (Web Server Gateway Interface) is the older Python standard: one request,
 one worker, blocked until the work is done. ASGI (the *A* is for **Asynchronous**) is the modern
 successor — it can handle a request, hit a slow database or external API, and *while waiting* go serve
-other requests instead of sitting idle. Same idea as Python's `async`/`await`, applied to a whole web
-server.
+other requests instead of sitting idle. Same idea as `async`/`await`, applied to a whole web server.
 
 💡 If you've read [Python's async chapter](/guides/python-from-zero), this is where it pays off:
-FastAPI is built to let your handlers be `async def`, so an app waiting on I/O can stay busy. (Plain
-`def` handlers work too — FastAPI runs them safely in a threadpool. You don't have to go async on day
-one.)
+FastAPI lets your handlers be `async def`, so an app waiting on I/O can stay busy. Plain `def` handlers
+work too — FastAPI runs them safely in a threadpool. You don't have to go async on day one.
 
-So the one-liner: **FastAPI = Starlette (web) + Pydantic (validation), speaking ASGI, all driven by
+The one-liner: **FastAPI = Starlette (web) + Pydantic (validation), speaking ASGI, all driven by
 type hints.** Let's make one.
 
 ## Install it and write your first app
@@ -55,8 +51,8 @@ pip install "fastapi[standard]"
 ```
 
 *What just happened:* you installed FastAPI plus its recommended companions — most importantly
-**Uvicorn**, the ASGI server that actually listens on a port and runs your app. (Quote the string;
-some shells treat `[` and `]` as special characters otherwise.)
+**Uvicorn**, the ASGI server that listens on a port and runs your app. Quote the string; some shells
+treat `[` and `]` as special characters otherwise.
 
 Now the smallest app that does something. Create a file called `main.py`:
 
@@ -73,11 +69,11 @@ def read_root():
 
 *What just happened:* `app = FastAPI()` is your application object — the thing the server runs. The
 `@app.get("/")` decorator says "when someone sends a `GET` request to the path `/`, run the function
-below." Your function returns a plain Python `dict`, and FastAPI turns it into a JSON response for you.
-No JSON library calls, no manual `Content-Type` header — returning a dict is enough.
+below." Your function returns a plain Python `dict`, and FastAPI turns it into a JSON response — no
+JSON library calls, no manual `Content-Type` header.
 
-⚠️ This is app code, not a runnable script in the usual sense — running `python main.py` won't start a
-server. FastAPI apps need an ASGI server to run them. That's the next step.
+⚠️ Running `python main.py` won't start a server — this is app code, not a runnable script. FastAPI
+apps need an ASGI server to run them. That's the next step.
 
 Start the server with Uvicorn, pointing it at `main:app` (the `app` object inside `main.py`):
 
@@ -96,7 +92,7 @@ INFO:     Started reloader process using WatchFiles
 INFO:     Application startup complete.
 ```
 
-*What just happened:* Uvicorn bound to `127.0.0.1:8000` and is now waiting for requests. Open
+*What just happened:* Uvicorn bound to `127.0.0.1:8000` and is waiting for requests. Open
 `http://127.0.0.1:8000/` in a browser, or hit it from the terminal:
 
 ```http
@@ -109,36 +105,33 @@ GET http://127.0.0.1:8000/
 }
 ```
 
-*What just happened:* the request matched the `GET /` route, FastAPI called `read_root()`, took the
-dict it returned, and serialized it to JSON on the way out. You have a working API in five lines of
-real code.
+*What just happened:* the request matched the `GET /` route, FastAPI called `read_root()`, and
+serialized the returned dict to JSON. A working API in five lines of real code.
 
 ## The wow moment: docs you didn't write
 
-Here's the feature that makes people switch frameworks. Leave the server running and visit:
+Here's the feature that makes people switch frameworks. With the server still running, visit:
 
 ```http
 GET http://127.0.0.1:8000/docs
 ```
 
 You'll see **Swagger UI** — a full, interactive documentation page listing every endpoint, with a
-"Try it out" button that sends real requests to your running app. There's a second flavour at
-`/redoc` (ReDoc) if you prefer a cleaner reading layout. You wrote zero lines of documentation to get
-either.
+"Try it out" button that sends real requests to your running app. A second flavour lives at `/redoc`
+(ReDoc) if you prefer a cleaner reading layout. Zero lines of documentation written to get either.
 
 💡 **Both pages are generated from a single machine-readable document FastAPI builds automatically: the
 OpenAPI schema** (served at `/openapi.json`). OpenAPI is the industry-standard way to describe an API
-— what paths exist, what they accept, what they return. Tools across the ecosystem can read it to
+— what paths exist, what they accept, what they return. Tools across the ecosystem read it to
 generate client libraries, run tests, or import the API into other software.
 
-And *why* can FastAPI produce all this from nothing? Because your type hints already told it
-everything it needed: the paths come from your decorators, and (as you'll see in the next phase) the
-parameters and response shapes come from the types you annotate. **Your code already is the spec** —
-FastAPI just reads it.
+FastAPI produces all this from nothing because your type hints already told it everything it needed:
+the paths come from your decorators, and (as you'll see next phase) the parameters and response shapes
+come from the types you annotate. **Your code already is the spec** — FastAPI just reads it.
 
 ## Type hints as the source of truth
 
-This is the mental model that makes FastAPI *FastAPI*, so let it land properly.
+This is the mental model that makes FastAPI *FastAPI*.
 
 📝 **The core idea:** you annotate your function with Python types, and FastAPI uses those annotations
 for four jobs at once — **parsing** incoming data into the right types, **validating** it (rejecting
@@ -152,13 +145,13 @@ flowchart LR
   T --> S[Serialization]
 ```
 
-The payoff is that these things can't drift apart. In a framework where you write validation by hand
-*and* write docs by hand, the two slowly disagree — the docs say one thing, the code does another.
-With FastAPI there's a single source, so the validation rules, the docs, and your editor's autocomplete
-all describe the same truth.
+The payoff: these things can't drift apart. In a framework where you write validation by hand *and*
+write docs by hand, the two slowly disagree — the docs say one thing, the code does another. With
+FastAPI there's a single source, so validation rules, docs, and your editor's autocomplete all describe
+the same truth.
 
-You can feel the spirit of this with pure Python, no framework involved — a function whose type hints
-describe exactly what it takes and gives back:
+You can feel this in pure Python, no framework involved — a function whose type hints describe exactly
+what it takes and gives back:
 
 ```python runnable
 def describe_book(title: str, year: int, price: float) -> str:
@@ -177,29 +170,29 @@ Dune (1965) — $9.99
 *What just happened:* the type hints (`title: str`, `year: int`, `price: float`) aren't decoration —
 they're stored on the function in `__annotations__`, readable by any program. That's the lever FastAPI
 pulls: it inspects those same annotations on your handlers and turns them into validation rules and
-documentation automatically. In the next phase you'll annotate a real `GET /books/{id}` handler and
-watch FastAPI parse and check the `id` for you, purely from the hint.
+documentation automatically. Next phase you'll annotate a real `GET /books/{id}` handler and watch
+FastAPI parse and check the `id` for you, purely from the hint.
 
 ## Where FastAPI fits
 
-FastAPI isn't the only Python framework, and it isn't always the right one. The honest comparison:
+FastAPI isn't the only Python framework, and it isn't always the right one:
 
 - **Flask** — minimal and sync-first. It hands you routing and not much else; you bring your own
-  validation, your own serialization, your own docs. Wonderful for tiny apps and total control, more
-  manual work as the API grows.
+  validation, serialization, and docs. Great for tiny apps and total control, more manual work as the
+  API grows.
 - **Django** — batteries included. A full stack with an ORM, admin panel, templating, auth — built for
   large database-backed websites. Powerful, but a lot of machine for a focused JSON API.
 - **FastAPI** — purpose-built for **modern APIs**: async-capable, with validation and interactive docs
   baked in *because* of the type hints. The sweet spot when you're building an API (rather than a
   server-rendered website) and want correctness and documentation without hand-rolling them.
 
-💡 If you're not yet sure what "REST API" even means — what `GET`, `POST`, paths, and status codes are
-— read [REST APIs explained](/guides/rest-apis-explained) alongside this guide. FastAPI will make a lot
-more sense once those terms are second nature, and this guide will lean on them from the next phase on.
+💡 If you're not sure what "REST API" means — what `GET`, `POST`, paths, and status codes are — read
+[REST APIs explained](/guides/rest-apis-explained) alongside this guide; this guide leans on those terms
+from the next phase on.
 
-That next phase is where the type-hint magic becomes concrete: **path operations and parameters** —
-how `GET /books/{id}?year=1965` maps to a function with typed arguments that FastAPI parses and
-validates for you.
+Next phase is where the type-hint magic becomes concrete: **path operations and parameters** — how
+`GET /books/{id}?year=1965` maps to a function with typed arguments that FastAPI parses and validates
+for you.
 
 ## Recap
 

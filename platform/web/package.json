@@ -28,6 +28,7 @@
     "@codemirror/view": "^6.43.1",
     "@resvg/resvg-js": "^2.6.2",
     "codemirror": "^6.0.2",
-    "mermaid": "^11.15.0"
+    "mermaid": "^11.15.0",
+    "web-push": "^3.6.7"
   }
 }

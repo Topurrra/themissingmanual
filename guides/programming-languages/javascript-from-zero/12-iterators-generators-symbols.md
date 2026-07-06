@@ -11,13 +11,13 @@ updated: 2026-06-19
 
 # Iterators, Generators & Symbols - Producing Values on Demand
 
-You've written `for (const x of arr)` since early in this guide, and it always worked. But have you ever wondered what that loop is actually *doing*? Why it works on arrays, strings, `Map`s, and `Set`s - but throws a fit on a plain object? This phase pulls back the curtain.
+You've written `for (const x of arr)` since early in this guide. But what does that loop actually *do*, and why does it work on arrays, strings, `Map`s, and `Set`s - yet throw a fit on a plain object? This phase pulls back the curtain.
 
-There's one idea running underneath all of it: **producing values one at a time, on demand**, instead of building the whole collection up front. Once you see how `for...of` asks for the next value, two powerful tools fall into your lap: you can make *your own* objects loopable, and you can write functions that pause mid-execution, hand back a value, and resume later. That last trick - generators - lets you describe an *infinite* sequence without your machine catching fire.
+One idea runs underneath it: **producing values one at a time, on demand**, instead of building the whole collection up front. See how `for...of` asks for the next value, and two tools fall into your lap: making *your own* objects loopable, and writing functions that pause mid-execution, hand back a value, and resume later. That last trick - generators - lets you describe an *infinite* sequence without your machine catching fire.
 
 ## The iterable protocol - what `for...of` really does
 
-**What it actually is.** An **iterable** is anything you can loop over with `for...of`. An **iterator** is the thing that actually walks through it, handing you one item at a time and remembering where it left off. Two roles: the iterable is the book; the iterator is the bookmark.
+**What it actually is.** An **iterable** is anything you can loop over with `for...of`. An **iterator** is the thing that walks through it. The iterable is the book; the iterator is the bookmark.
 
 📝 **Iterable** - an object with a `[Symbol.iterator]()` method that returns an iterator. **Iterator** - an object with a `.next()` method that returns `{ value, done }` each time you call it. `for...of` asks the iterable for a fresh iterator, then pulls items until `done` is `true`.
 
@@ -36,9 +36,7 @@ flowchart LR
   C -->|"{done:true}"| E[loop ends]
 ```
 
-*One idea:* the `for...of` loop is a polite, automatic `.next()`-calling machine. It keeps asking for the next value and quietly stops the instant the iterator reports it's empty.
-
-**A real example.** You can drive that machinery by hand to watch it move:
+Drive that machinery by hand to watch it move:
 
 ```javascript runnable
 const things = ["a", "b"];
@@ -53,15 +51,15 @@ console.log(it.next());                 // nothing left
 { value: 'b', done: false }
 { value: undefined, done: true }
 ```
-*What just happened:* `things[Symbol.iterator]()` made an iterator that remembers its position. Each `.next()` advanced it by one and returned a `{ value, done }` record. After the last real item, `.next()` came back with `done: true` - the exact signal `for...of` watches for to know it's time to stop. A `for...of` loop is this, with the `.next()` calls and the `done` check handled for you.
+*What just happened:* `things[Symbol.iterator]()` made an iterator that remembers its position. Each `.next()` advanced it by one and returned a `{ value, done }` record. After the last real item, `.next()` returned `done: true` - the signal `for...of` watches for to stop. A `for...of` loop is this, with the `.next()` calls and `done` check handled for you.
 
-💡 **Why this saves you later.** Once you know `for...of` is "call `.next()` until `done`," a pile of JavaScript stops being mysterious: why a plain object `{a: 1}` can't be looped with `for...of` (it has no `[Symbol.iterator]`), why arrays, strings, `Map`, and `Set` all *can*, and - coming up - how generators plug straight into every `for...of` you'll ever write.
+💡 **Why this saves you later.** Once `for...of` means "call `.next()` until `done`," a pile of JavaScript stops being mysterious: why `{a: 1}` can't be looped with `for...of` (no `[Symbol.iterator]`), why arrays, strings, `Map`, and `Set` all *can*, and - coming up - how generators plug straight into every `for...of` you'll write.
 
 ## Symbols, briefly - collision-proof keys
 
-You just saw `Symbol.iterator` show up as an object key. Before we go further, let's ground what that is.
+You just saw `Symbol.iterator` show up as an object key.
 
-**What it actually is.** A `Symbol` is a primitive value whose entire purpose is to be **unique**. Every call to `Symbol()` produces a brand-new value that is equal to nothing but itself - even two symbols made from the same description are different.
+**What it actually is.** A `Symbol` is a primitive value whose entire purpose is to be **unique**. Every call to `Symbol()` produces a brand-new value equal to nothing but itself - even two made from the same description are different.
 
 📝 **Symbol** - a unique, unforgeable primitive, often used as an object key when you need a name that can't clash with any string key. `Symbol("x") !== Symbol("x")`.
 
@@ -81,13 +79,13 @@ Ada
 42
 [ 'name' ]
 ```
-*What just happened:* `a` and `b` describe the same thing (`"id"`) but are distinct values, so `a === b` is `false`. Used as a key, `a` stored `42` on `user` without touching any string property - and `Object.keys` didn't even list it. That's the point: a Symbol key lives in its own namespace and can never accidentally overwrite a normal `name`/`role`/`length` property.
+*What just happened:* `a` and `b` describe the same thing (`"id"`) but are distinct values, so `a === b` is `false`. As a key, `a` stored `42` on `user` without touching any string property - `Object.keys` didn't even list it. A Symbol key lives in its own namespace and can never overwrite a normal `name`/`role`/`length` property.
 
-This is exactly why the iterable protocol uses `Symbol.iterator` instead of a string like `"iterator"`. If the hook were a plain string, any object that happened to have a property called `iterator` would risk colliding with the language's machinery. `Symbol.iterator` is a single well-known Symbol shared across the whole runtime - guaranteed never to clash with your own keys.
+This is why the iterable protocol uses `Symbol.iterator` instead of a string like `"iterator"`: a plain-string hook would risk colliding with any object that happened to have a property named `iterator`. `Symbol.iterator` is a single well-known Symbol shared across the runtime, immune to that collision.
 
 ## Make your own object iterable
 
-Now the payoff. Because `for...of` only needs `[Symbol.iterator]`, you can teach *any* object to be loopable by giving it that one method. Here's a `range` object that yields numbers from `start` up to (not including) `end`:
+Because `for...of` only needs `[Symbol.iterator]`, you can teach *any* object to be loopable with that one method. Here's a `range` object yielding numbers from `start` up to (not including) `end`:
 
 ```javascript runnable
 function range(start, end) {
@@ -117,19 +115,19 @@ console.log([...range(1, 4)]);       // spread works too - it uses the protocol
 3
 [ 1, 2, 3 ]
 ```
-*What just happened:* `range(1, 4)` returned a plain object with a `[Symbol.iterator]` method. When `for...of` called that method, it got back an iterator holding its own `current` counter. Each `.next()` returned the next number and bumped `current`; once `current` hit `end`, it returned `done: true` and the loop stopped. Notice the spread `[...range(1, 4)]` worked for free - spread, destructuring, and `for...of` all speak the *same* protocol, so implementing it once unlocks all of them.
+*What just happened:* `range(1, 4)` returned a plain object with a `[Symbol.iterator]` method. Calling that method got back an iterator holding its own `current` counter. Each `.next()` returned the next number and bumped `current`; once `current` hit `end`, it returned `done: true` and the loop stopped. The spread `[...range(1, 4)]` worked for free - spread, destructuring, and `for...of` all speak the *same* protocol, so implementing it once unlocks all of them.
 
-⚠️ **Gotcha - keep the counter inside the method, not on the object.** Notice `current` lives inside `[Symbol.iterator]()`, so each loop gets a fresh `current` starting at `start`. If you'd stored the counter as a property on the returned object instead, the *second* loop over the same `range` would start where the first left off - empty. Putting state in the iterator (not the iterable) is what lets you loop the same iterable twice.
+⚠️ **Gotcha - keep the counter inside the method, not on the object.** `current` lives inside `[Symbol.iterator]()`, so each loop gets a fresh `current` starting at `start`. Store it as a property on the returned object instead, and the *second* loop over the same `range` would start where the first left off - empty. State belongs in the iterator, not the iterable, so the same iterable can be looped twice.
 
 ## Generators - a function that pauses and resumes
 
-Writing `[Symbol.iterator]` with a hand-rolled `next()` and a manual `{ value, done }` is a lot of ceremony. JavaScript has a far easier way to make an iterator: the **generator**.
+Writing `[Symbol.iterator]` with a hand-rolled `next()` and a manual `{ value, done }` is a lot of ceremony. JavaScript has a far easier way: the **generator**.
 
-**What it actually is.** A **generator function** is written `function*` and uses `yield` instead of `return`. Calling it doesn't run the body - it hands you back an iterator. Each time something pulls a value, the function runs until the next `yield`, hands that value out, then **freezes right there**, remembering all its local variables. The next pull thaws it and continues from that exact spot.
+**What it actually is.** A **generator function** is written `function*` and uses `yield` instead of `return`. Calling it doesn't run the body - it hands back an iterator. Each pull runs the function until the next `yield`, hands that value out, then **freezes right there**, remembering all its local variables until thawed by the next pull.
 
 📝 **`yield`** - like `return`, but instead of ending the function it pauses it and produces one value. The function picks up where it left off on the next pull. A `function*` containing `yield` is a generator.
 
-**Why this exists.** `return` ends a function and discards everything it knew. `yield` is the opposite: it produces a value *without* ending, so a single function can emit a whole stream over time, keeping its place between values. That's precisely the "one item at a time, remember where you were" behavior the iterator protocol wants - and a generator's returned object already has `.next()` *and* a `[Symbol.iterator]`, so it drops straight into `for...of`.
+**Why this exists.** `return` ends a function and discards everything it knew; `yield` produces a value *without* ending, so a single function can emit a whole stream over time. That's the "one item at a time, remember where you were" behavior the iterator protocol wants - and a generator's returned object already has `.next()` *and* `[Symbol.iterator]`, so it drops straight into `for...of`.
 
 ```javascript runnable
 function* countToThree() {
@@ -153,9 +151,9 @@ got 2
   -> resumed after 2
 got 3
 ```
-*What just happened:* Calling `countToThree()` ran *none* of the body - it returned a generator object. The `for...of` loop pulled the first value, which ran the function up to `yield 1` and then froze. Pulling again thawed it right after that `yield`, ran to `yield 2`, and froze again. The interleaved logs prove the function is genuinely pausing and resuming, not running all at once. And look how much shorter this is than the hand-rolled `range` - `yield` *is* the protocol, written for you.
+*What just happened:* Calling `countToThree()` ran *none* of the body - it returned a generator object. `for...of` pulled the first value, which ran the function up to `yield 1` and froze. Pulling again thawed it right after that `yield`, ran to `yield 2`, and froze again. The interleaved logs prove the function is genuinely pausing and resuming, not running all at once - and it's far shorter than the hand-rolled `range`, because `yield` *is* the protocol, written for you.
 
-We can rewrite `range` as a generator in a fraction of the code:
+`range` as a generator, in a fraction of the code:
 
 ```javascript runnable
 function* range(start, end) {
@@ -173,9 +171,9 @@ for (const n of range(10, 13)) console.log(n);
 11
 12
 ```
-*What just happened:* The `function*` does everything the verbose version did - `for...of` and spread both work - but there's no `{ value, done }` bookkeeping and no nested object. The `yield` inside the loop hands out each number and pauses; the engine builds the `{ value, done }` records and the `[Symbol.iterator]` automatically.
+*What just happened:* The `function*` does everything the verbose version did - `for...of` and spread both work - with no `{ value, done }` bookkeeping and no nested object. `yield` inside the loop hands out each number and pauses; the engine builds the `{ value, done }` records and `[Symbol.iterator]` automatically.
 
-⚠️ **Gotcha - a generator is single-use.** This bites everyone exactly once. A generator object is an iterator, and an iterator gets *consumed*: once you've walked it to the end, it's empty forever. Loop the *same* generator object a second time and you get nothing.
+⚠️ **Gotcha - a generator is single-use.** A generator object is an iterator, and an iterator gets *consumed*: once walked to the end, it's empty forever. Loop the *same* generator object a second time and you get nothing.
 
 ```javascript runnable
 function* squares() {
@@ -190,13 +188,11 @@ console.log("second pass:", [...gen]);   // already empty
 first pass:  [ 0, 1, 4 ]
 second pass: []
 ```
-*What just happened:* The first spread pulled every value until `done: true`, leaving the generator object exhausted. The second spread started where the first left off - at the end - so it got an empty array. If you need to iterate twice, call the generator *function* again to get a fresh generator (`squares()`), or, if the data is small, materialize it once into an array and reuse that. (Note: calling `range(1, 5)` fresh each time works precisely because each call is a brand-new generator.)
+*What just happened:* The first spread pulled every value until `done: true`, exhausting the generator. The second spread started where the first left off - at the end - so it got an empty array. To iterate twice, call the generator *function* again for a fresh one (`squares()`), or, if the data is small, materialize it once into an array and reuse that. (`range(1, 5)` works fresh each time precisely because each call is a brand-new generator.)
 
 ## Lazy sequences - produce the infinite without storing it
 
-Here's where generators stop being a tidy shortcut and start doing something an array fundamentally *can't*: describe a sequence that never ends.
-
-An array can't be infinite - you can't store endless items. But a generator can *describe* an endless sequence and produce it on demand. You only ever pay for the values you actually pull.
+Generators can do something an array fundamentally *can't*: describe a sequence that never ends. An array can't store endless items, but a generator can *describe* one and produce it on demand - you only pay for the values you actually pull.
 
 ```javascript runnable
 function* naturals() {
@@ -216,9 +212,9 @@ console.log(firstFive);
 ```console
 [ 0, 1, 2, 3, 4 ]
 ```
-*What just happened:* `naturals()` would yield numbers forever if you let it - the `while (true)` never finishes. But nothing is computed until you ask, so we pulled exactly five values and walked away. The generator is now paused mid-`while`, holding `n`, ready to continue if we ever come back. ⚠️ Never write a bare `for (const x of naturals())` with no break - it runs until you kill the tab. Always cap how many values you pull.
+*What just happened:* `naturals()` would yield numbers forever - the `while (true)` never finishes. Nothing is computed until you ask, so we pulled exactly five values and walked away; the generator is now paused mid-`while`, holding `n`, ready to continue if we come back. ⚠️ Never write a bare `for (const x of naturals())` with no break - it runs until you kill the tab. Always cap how many values you pull.
 
-A practical version of the same idea: a unique-ID generator. No global counter variable, no risk of two parts of your code resetting it - the state lives safely inside the generator:
+A practical version: a unique-ID generator. No global counter variable, no risk of two parts of your code resetting it - the state lives safely inside the generator:
 
 ```javascript runnable
 function* idGenerator(prefix = "id") {
@@ -238,9 +234,9 @@ user-1
 user-2
 user-3
 ```
-*What just happened:* `idGenerator` holds `n` privately and bumps it on every `.next()`. Each call hands back the next id and freezes - an endless, self-incrementing supply with zero shared mutable state floating around your module. This is a common real-world reason to reach for a generator even when "infinite" sounds exotic.
+*What just happened:* `idGenerator` holds `n` privately and bumps it on every `.next()` - an endless, self-incrementing supply with zero shared mutable state floating around your module. A common real-world reason to reach for a generator even when "infinite" sounds exotic.
 
-💡 **Generator vs array - when to reach for which.** Use an **array** when you need the whole collection in hand: to index it, loop it more than once, get its `.length`, or pass it around. Reach for a **generator** when the values are produced one pass at a time - especially when the sequence is huge, expensive to compute, infinite, or you'll bail out early. The rule of thumb: if it feeds straight into a single `for...of` or you only want the first few items, a generator keeps your memory flat no matter how big the source is.
+💡 **Generator vs array - when to reach for which.** Use an **array** when you need the whole collection in hand: to index it, loop it more than once, get its `.length`, or pass it around. Reach for a **generator** when values are produced one pass at a time - especially if the sequence is huge, expensive to compute, infinite, or you'll bail out early. Rule of thumb: if it feeds a single `for...of` or you only want the first few items, a generator keeps memory flat no matter how big the source is.
 
 ## Recap
 

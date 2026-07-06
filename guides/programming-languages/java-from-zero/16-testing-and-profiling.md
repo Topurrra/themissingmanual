@@ -11,19 +11,17 @@ updated: 2026-06-22
 
 # Testing, Build & Profiling - Proving It Works, Finding the Slow Part
 
-Back in [Phase 8](08-packages-and-tooling.md) you met the build tool that compiles, packages, and resolves dependencies for you - and a one-line promise that "we cover testing in Phase 16." This is that phase. By now you can write Java that compiles and runs. What you can't yet do is *prove* it works, *measure* how fast it is, or *find* the slow part when it isn't.
+Back in [Phase 8](08-packages-and-tooling.md) you met the build tool that compiles, packages, and resolves dependencies - and a promise that "we cover testing in Phase 16." This is that phase. You can write Java that compiles and runs; what you can't yet do is *prove* it works, *measure* how fast it is, or *find* the slow part when it isn't.
 
-The mental model to carry through all of it: a real Java codebase doesn't run on hope. It runs on a test suite that fails loudly when behavior breaks, on measurements instead of guesses about speed, and on a profiler that points at the actual hot spot rather than the one you suspected. The good news is that the JVM ships with a remarkably mature toolchain for every piece of this - JUnit for correctness, JMH for honest benchmarks, Java Flight Recorder for profiling. Once you can run these, "is it correct?" and "is it fast?" stop being arguments in code review and start being commands you run.
+The mental model for this phase: a real Java codebase doesn't run on hope. It runs on a test suite that fails loudly when behavior breaks, on measurements instead of guesses about speed, and on a profiler that points at the actual hot spot rather than the one you suspected. The JVM ships a mature toolchain for all of it - JUnit for correctness, JMH for honest benchmarks, Java Flight Recorder for profiling. "Is it correct?" and "is it fast?" stop being arguments in code review and become commands you run.
 
 ## JUnit 5 - the basics and the AAA shape
 
-**What it actually is.** A **unit test** is a small, automated check that one piece of your code - usually a single method - does what you claim, for a specific input. It's "unit" because it tests one unit in isolation, not the whole app wired together. **JUnit 5** is the de facto framework that runs these tests and reports pass/fail.
+📝 **Unit test** - a small automated test that exercises one method (or class) with a known input and asserts the expected result. It's "unit" because it tests one thing in isolation, not the whole app wired together. It runs in milliseconds, needs no database or network, and fails loudly the moment the behavior it pins down changes. **JUnit 5** is the de facto framework that runs these and reports pass/fail.
 
-📝 **Unit test** - a small automated test that exercises one method (or class) with a known input and asserts the expected result. It runs in milliseconds, needs no database or network, and fails loudly the moment the behavior it pins down changes.
+Without tests, "it works" means "it worked the one time I ran it by hand." A unit test turns that into a permanent, repeatable claim: run the suite, and every method that ever had a test still behaves. The payoff isn't catching today's bug - it's catching the one you'll introduce six months from now when you refactor and forget an edge case.
 
-**Why this exists.** Without tests, "it works" means "it worked the one time I ran it by hand." A unit test turns that into a permanent, repeatable claim: run the suite, and every method that ever had a test still behaves. The payoff isn't catching today's bug - it's catching the one you'll introduce six months from now when you refactor and forget an edge case.
-
-A JUnit test is a method annotated `@Test` that calls **assertions** - `assertEquals`, `assertTrue`, `assertThrows` - which fail the test if reality disagrees. The shape that keeps tests readable is **AAA: Arrange, Act, Assert.** Set up the inputs, call the thing once, then check the result. Say we're testing the `Clamp` method that pins a number into a `[min, max]` range:
+A JUnit test is a method annotated `@Test` that calls **assertions** - `assertEquals`, `assertTrue`, `assertThrows` - which fail the test if reality disagrees. The shape that keeps tests readable is **AAA: Arrange, Act, Assert** - set up the inputs, call the thing once, check the result. Say we're testing `Clamp`, which pins a number into a `[min, max]` range:
 
 ```java
 // Clamp.java
@@ -78,15 +76,15 @@ $ mvn test
 [INFO] BUILD SUCCESS
 ```
 
-*What just happened:* Each `@Test` method is one independent test JUnit discovers and runs. The first follows AAA exactly - arrange the inputs, act by calling `clamp` once, assert the result equals `0`. `assertEquals(expected, actual)` fails the test (and prints both values) if they differ. `assertThrows` is the assertion for the *unhappy* path: it runs the lambda and passes only if the expected exception is thrown. We ran the whole thing with `mvn test` (Gradle's `./gradlew test` is the same idea) - the build tool found the test classes, ran them, and reported a tally. ⚠️ Note `assertEquals(expected, actual)` order: swap them and your failure messages read backwards, which is maddening at 2am.
+*What just happened:* Each `@Test` method is one independent test JUnit discovers and runs. The first follows AAA exactly - arrange the inputs, act by calling `clamp` once, assert the result equals `0`. `assertEquals(expected, actual)` fails the test (printing both values) if they differ; `assertThrows` is the assertion for the *unhappy* path, running the lambda and passing only if the expected exception is thrown. We ran it with `mvn test` (Gradle's `./gradlew test` is the same idea). ⚠️ Note the `assertEquals(expected, actual)` order: swap them and failure messages read backwards, maddening at 2am.
 
 💡 **Key point.** The AAA shape isn't ceremony - it's what makes a test readable as a *specification*. Anyone can scan "given `-3, 0, 10`, expect `0`" and understand the contract without reading `clamp`'s body. A test that mixes setup, calls, and checks into a tangle is a test nobody trusts.
 
 ## Parameterized & nested tests - one method, many cases
 
-You just wrote one test for "below min." But `clamp` has at least four interesting cases: inside the range, below min, above max, exactly on a boundary. Copy-pasting `clampsValueBelowMinimum` four times - changing only the numbers - is exactly the kind of duplication that rots. JUnit's answer is the **parameterized test**: one test method, fed many sets of inputs.
+You just wrote one test for "below min," but `clamp` has at least four interesting cases: inside the range, below min, above max, exactly on a boundary. Copy-pasting `clampsValueBelowMinimum` four times - changing only the numbers - is exactly the duplication that rots. JUnit's answer is the **parameterized test**: one test method, fed many sets of inputs.
 
-📝 **Parameterized test** - a single `@ParameterizedTest` method that JUnit runs once per data row you supply. The inputs come from a source annotation; the method body is the shared assertion logic. This is Java's version of table-driven testing.
+📝 **Parameterized test** - a single `@ParameterizedTest` method JUnit runs once per data row you supply. Inputs come from a source annotation; the method body is the shared assertion logic - Java's version of table-driven testing.
 
 ```java
 import org.junit.jupiter.params.ParameterizedTest;
@@ -126,11 +124,11 @@ clamp(7)  -> 7  ✔
 [INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
 ```
 
-*What just happened:* `@ValueSource` fed three single `int` values into one method, so JUnit ran it three times. `@CsvSource` fed three comma-separated rows, each unpacked into `input` and `expected` - the same shared assertion checked all three. Six logical tests, two methods, zero copy-paste. The `name = "clamp({0}) -> {1}"` gives each run a readable label using the parameter values, so a failure tells you *which row* broke, not just "the test failed."
+*What just happened:* `@ValueSource` fed three single `int` values into one method, so JUnit ran it three times. `@CsvSource` fed three comma-separated rows, each unpacked into `input` and `expected` - the same shared assertion checked all three. Six logical tests, two methods, zero copy-paste. `name = "clamp({0}) -> {1}"` labels each run with the parameter values, so a failure tells you *which row* broke.
 
-💡 The key idea: the behavior under test is now a *visible list* of cases. A reviewer can scan the rows and immediately ask "where's the case for `min > max`?" - a question that's nearly impossible to ask when each scenario hides in its own method.
+💡 The behavior under test is now a *visible list* of cases. A reviewer can scan the rows and ask "where's the case for `min > max`?" - nearly impossible when each scenario hides in its own method.
 
-Two more annotations round this out. **`@DisplayName`** attaches a human sentence to a test or class, so reports read like English instead of method names. **`@Nested`** lets you group related tests in an inner class - useful for organizing by scenario:
+Two more annotations round this out. **`@DisplayName`** attaches a human sentence to a test or class, so reports read like English instead of method names. **`@Nested`** groups related tests in an inner class - useful for organizing by scenario:
 
 ```java
 import org.junit.jupiter.api.*;
@@ -157,13 +155,13 @@ class ClampNestedTest {
 }
 ```
 
-*What just happened:* `@Nested` turns `OutOfRange` into a sub-group, and the `@DisplayName`s make the test report read as a nested outline - "Clamp › when value is out of range › pins values below min up to min." That structure is documentation that can't go stale, because it fails if the behavior it describes breaks.
+*What just happened:* `@Nested` turns `OutOfRange` into a sub-group, and the `@DisplayName`s make the test report read as a nested outline - "Clamp › when value is out of range › pins values below min up to min." That structure is documentation that can't go stale, since it fails if the behavior it describes breaks.
 
 ## Mocking - testing a unit in true isolation
 
-Real methods rarely live alone. An `OrderService` calls a `PaymentGateway`; a `UserService` hits a database. To test the *service* without firing real payments or needing a live database, you replace the dependency with a **mock** - a fake stand-in you control. **Mockito** is the standard library for this.
+Real methods rarely live alone. An `OrderService` calls a `PaymentGateway`; a `UserService` hits a database. To test the *service* without firing real payments or needing a live database, replace the dependency with a **mock** - a fake stand-in you control. **Mockito** is the standard library for this.
 
-📝 **Mock** - a controllable stand-in for a real dependency. You tell it what to return (`when(...).thenReturn(...)`), exercise the code under test, then verify it called the dependency correctly (`verify(...)`). It lets you test one unit while pretending its collaborators behave however the scenario needs.
+📝 **Mock** - a controllable stand-in for a real dependency. Tell it what to return (`when(...).thenReturn(...)`), exercise the code under test, then verify it called the dependency correctly (`verify(...)`) - testing one unit while its collaborators behave however the scenario needs.
 
 ```java
 import org.junit.jupiter.api.Test;
@@ -190,19 +188,19 @@ class OrderServiceTest {
 }
 ```
 
-*What just happened:* `mock(PaymentGateway.class)` created a fake gateway whose methods do nothing by default. `when(gateway.charge(100)).thenReturn(true)` programmed it: "if asked to charge 100, say success." We injected that fake into `OrderService`, ran `placeOrder`, and checked two things - the returned result, and (via `verify`) that the service actually called `charge(100)` exactly once. No real payment, no network, fully deterministic.
+*What just happened:* `mock(PaymentGateway.class)` created a fake gateway whose methods do nothing by default. `when(gateway.charge(100)).thenReturn(true)` programmed it: "if asked to charge 100, say success." We injected that fake into `OrderService`, ran `placeOrder`, and checked the returned result plus (via `verify`) that `charge(100)` was called exactly once. No real payment, no network, fully deterministic.
 
-⚠️ **Don't over-mock.** Mocks are for *boundaries you can't or shouldn't hit in a test* - payment gateways, email senders, the network. When you start mocking your own plain value objects and internal helpers, your tests stop verifying behavior and start verifying that your code calls itself in a particular order. Those tests break on every refactor and prove almost nothing. Mock the edges; use the real thing everywhere you can.
+⚠️ **Don't over-mock.** Mocks are for *boundaries you can't or shouldn't hit in a test* - payment gateways, email senders, the network. Mock your own plain value objects and internal helpers, and your tests stop verifying behavior and start verifying that your code calls itself in a particular order - they break on every refactor and prove almost nothing. Mock the edges; use the real thing everywhere else.
 
 ## Benchmarking with JMH - why naive timing lies
 
-Correctness is one question. *Speed* is a different one - and here Java sets a trap that catches nearly everyone. The instinct is to wrap your code in `System.nanoTime()` calls and a loop. On the JVM, that number is **a lie**, and understanding why ties straight back to the JIT compiler from [Phase 15](15-the-jvm-memory-and-gc.md).
+Correctness is one question; *speed* is another - and here Java sets a trap that catches nearly everyone. The instinct is to wrap your code in `System.nanoTime()` calls and a loop. On the JVM, that number is **a lie**, tying straight back to the JIT compiler from [Phase 15](15-the-jvm-memory-and-gc.md).
 
-⚠️ **You cannot time Java reliably with `System.nanoTime` in a loop.** Two forces sabotage you. First, **JIT warmup**: the first thousands of iterations run interpreted or half-optimized; the JIT only compiles your hot loop to fast native code *after* it's run enough to be deemed hot. Time the whole loop and you average cold and hot together. Second, **dead-code elimination**: if you compute a result and never use it, the JIT is smart enough to delete the computation entirely - so you end up benchmarking an empty loop and reporting an impossibly fast "result."
+⚠️ **You cannot time Java reliably with `System.nanoTime` in a loop.** Two forces sabotage you. **JIT warmup**: the first thousands of iterations run interpreted or half-optimized, and the JIT only compiles your hot loop to native code *after* it's deemed hot - time the whole loop and you average cold and hot together. **Dead-code elimination**: if you compute a result and never use it, the JIT can delete the computation entirely, so you end up benchmarking an empty loop and reporting an impossibly fast "result."
 
 📝 **Why naive microbenchmarks lie.** A hand-rolled `nanoTime` loop measures a moving target (the JIT optimizing mid-run) and an unstable one (the optimizer may delete code whose result you discard). The fix isn't more careful manual timing - it's a framework built to defeat exactly these effects.
 
-That framework is **JMH** (Java Microbenchmark Harness), the official OpenJDK tool. You annotate a method with `@Benchmark`; JMH runs dedicated *warmup* iterations to let the JIT settle, runs your code in a fresh JVM *fork* (so one benchmark can't pollute another's optimization state), and consumes your return values through a `Blackhole` so the optimizer can't delete them. You get an honest number with error bars.
+That framework is **JMH** (Java Microbenchmark Harness), the official OpenJDK tool. Annotate a method with `@Benchmark`; JMH runs dedicated *warmup* iterations to let the JIT settle, runs your code in a fresh JVM *fork* (so one benchmark can't pollute another's optimization state), and consumes your return values through a `Blackhole` so the optimizer can't delete them. You get an honest number with error bars.
 
 ```java
 import org.openjdk.jmh.annotations.*;
@@ -248,21 +246,21 @@ StringBuildBenchmark.concatWithPlus    avgt    5  118.402 ±  4.211  ns/op
 StringBuildBenchmark.concatWithBuilder avgt    5   42.097 ±  1.640  ns/op
 ```
 
-*What just happened:* JMH ran each `@Benchmark` through 5 warmup iterations (discarded, so the JIT had time to compile the hot path) and 5 measured iterations, in a forked JVM. The output reads in **ns/op** - nanoseconds per operation - with a `± Error` margin so you know the measurement is stable, not noise. The story the numbers force on you: `+=` in a loop (~118 ns) is nearly three times slower than `StringBuilder` (~42 ns), because each `+=` allocates a brand-new `String` (strings are immutable), while the builder mutates one buffer. Returning the result is what keeps the JIT from deleting the loop. This is the same `+=`-versus-builder lesson you might have *guessed* at - but now you have a defensible number instead of a hunch.
+*What just happened:* JMH ran each `@Benchmark` through 5 discarded warmup iterations (letting the JIT compile the hot path) and 5 measured iterations, in a forked JVM. Output reads in **ns/op** with a `± Error` margin, so you know it's stable, not noise. The numbers: `+=` in a loop (~118 ns) is nearly three times slower than `StringBuilder` (~42 ns), because each `+=` allocates a brand-new `String` (strings are immutable) while the builder mutates one buffer. Returning the result keeps the JIT from deleting the loop - the `+=`-versus-builder lesson you might have *guessed*, now with a defensible number.
 
-💡 **Key point.** Reach for JMH only when you're genuinely comparing two implementations or chasing a measured hot spot - not to micro-time everything. But when you *do* benchmark, use JMH. A hand-rolled timing loop on the JVM doesn't just give an imprecise answer; it gives a confidently *wrong* one.
+💡 **Key point.** Reach for JMH only when genuinely comparing two implementations or chasing a measured hot spot - not to micro-time everything. But when you *do* benchmark, use JMH: a hand-rolled timing loop on the JVM doesn't just give an imprecise answer, it gives a confidently *wrong* one.
 
 ## Profiling & coverage - find the real hot spot, map the untested
 
-A benchmark tells you *that* one method is slow when you already suspected it. It won't tell you *where* a whole running application spends its time. For that you need a **profiler**.
+A benchmark tells you *that* one method is slow when you already suspected it - it won't tell you *where* a whole running application spends its time. For that you need a **profiler**.
 
-📝 **Profiler** - a tool that samples your running program to record where it actually spends CPU time and where it allocates memory, then shows you the answer ranked from worst to best. It replaces "I think this function is the bottleneck" with "here is the measured bottleneck."
+📝 **Profiler** - a tool that samples your running program to record where it actually spends CPU time and allocates memory, then shows the answer ranked worst to best. It replaces "I think this function is the bottleneck" with "here is the measured bottleneck."
 
-The JVM has an unusually strong profiling story, all of it production-grade:
+The JVM has an unusually strong profiling story, all production-grade:
 
-- **Java Flight Recorder (JFR)** - a profiler built *into the JVM itself*, designed to run with such low overhead you can leave it on in production. You start a recording (`java -XX:StartFlightRecording=...`), it captures CPU, allocation, lock, and GC events into a `.jfr` file, and you open that file in **JDK Mission Control (JMC)** for a visual breakdown of hot methods and allocation sources.
-- **VisualVM** - a free, friendly graphical profiler great for development: attach it to a running JVM and watch CPU, heap, and threads live.
-- **async-profiler** - a low-overhead sampling profiler popular for producing *flame graphs*, where the width of each bar shows how much total time a call path consumed. Brilliant for spotting a hot path at a glance.
+- **Java Flight Recorder (JFR)** - built *into the JVM itself*, low enough overhead to leave on in production. Start a recording (`java -XX:StartFlightRecording=...`) to capture CPU, allocation, lock, and GC events into a `.jfr` file, then open it in **JDK Mission Control (JMC)** for a visual breakdown of hot methods and allocation sources.
+- **VisualVM** - a free, friendly graphical profiler for development: attach to a running JVM and watch CPU, heap, and threads live.
+- **async-profiler** - a low-overhead sampling profiler popular for *flame graphs*, where each bar's width shows how much total time a call path consumed - great for spotting a hot path at a glance.
 
 ```console
 $ java -XX:StartFlightRecording=duration=60s,filename=app.jfr -jar myapp.jar
@@ -272,11 +270,11 @@ $ jfr print --events jdk.ExecutionSample app.jfr | head
 # (or open app.jfr in JDK Mission Control for the visual view)
 ```
 
-*What just happened:* The `-XX:StartFlightRecording` flag told the JVM to record 60 seconds of execution into `app.jfr` while the app ran normally - no code changes, negligible overhead. Opening that file in Mission Control ranks methods by how often the profiler caught them running, so the real CPU hog rises to the top. The `jfr print` command is the command-line peek at the same data.
+*What just happened:* `-XX:StartFlightRecording` told the JVM to record 60 seconds of execution into `app.jfr` while the app ran normally - no code changes, negligible overhead. Opening that file in Mission Control ranks methods by how often the profiler caught them running, so the real CPU hog rises to the top. `jfr print` is the command-line peek at the same data.
 
-💡 **Measure, don't guess.** Every engineer has a confident hunch about the bottleneck, and that hunch is wrong often enough to waste real days. You optimize the method you *suspected*, ship it, and the app is exactly as slow - because the true cost lived somewhere you never looked. The discipline is non-negotiable: profile first, then optimize the thing the profile points at. This is exactly the evidence-gathering step that [Phase 17](17-performance-and-ecosystem.md) builds on when we talk about what to *do* once you've found the hot spot.
+💡 **Measure, don't guess.** Every engineer has a confident hunch about the bottleneck, and it's wrong often enough to waste real days: you optimize the method you *suspected*, ship it, and the app is exactly as slow, because the true cost lived somewhere you never looked. Profile first, then optimize what the profile points at - the evidence-gathering step [Phase 17](17-performance-and-ecosystem.md) builds on.
 
-The other side of "did I test enough?" is **code coverage** - how much of your code the test suite actually executed. **JaCoCo** is the standard tool; build tools wire it in and it produces a color-coded report:
+The other side of "did I test enough?" is **code coverage** - how much of your code the test suite actually executed. **JaCoCo** is the standard tool; build tools wire it in and produce a color-coded report:
 
 ```console
 $ mvn test    # with the jacoco-maven-plugin configured
@@ -288,7 +286,7 @@ $ mvn test    # with the jacoco-maven-plugin configured
 
 *What just happened:* JaCoCo instrumented the code during the test run and tracked which lines and branches executed. The HTML report colors your source: green lines ran during tests, red lines never did. The red is the valuable part - it shows the branches your tests forgot, like the `min > max` case nobody wrote.
 
-⚠️ **Coverage is not correctness.** This is the trap everyone walks into. Coverage tells you a line *executed* - it says nothing about whether you *checked the result*, or whether the input that breaks it was ever tried. A test that calls `clamp` once and asserts nothing can light up the whole method green. Treat coverage as a *map of the untested* - chase the red - never as a score to maximize. High coverage with weak assertions is more dangerous than honest medium coverage, because it *feels* safe.
+⚠️ **Coverage is not correctness.** The trap everyone walks into. Coverage tells you a line *executed* - nothing about whether you *checked the result*, or whether the input that breaks it was ever tried. A test that calls `clamp` once and asserts nothing can light up the whole method green. Treat coverage as a *map of the untested* - chase the red - never as a score to maximize. High coverage with weak assertions is more dangerous than honest medium coverage, because it *feels* safe.
 
 ## Recap
 
@@ -299,7 +297,7 @@ $ mvn test    # with the jacoco-maven-plugin configured
 5. **Profilers** - **JFR** + JDK Mission Control, VisualVM, async-profiler - find the real CPU/allocation hot spot. 💡 Measure, don't guess: profile first, then optimize what the profile points at.
 6. **JaCoCo** maps which lines and branches your tests ran - chase the red - but ⚠️ coverage is not correctness: an executed line is not a checked one.
 
-You can now prove your Java is correct, measure how fast it is honestly, and find the slow part with evidence instead of instinct. Next we widen the lens to performance patterns and the broader ecosystem that turns those measurements into action.
+You can now prove your Java is correct, measure how fast it is honestly, and find the slow part with evidence instead of instinct. Next: widening the lens to performance patterns and the broader ecosystem that turns those measurements into action.
 
 ## Quick check
 

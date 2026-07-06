@@ -11,17 +11,17 @@ updated: 2026-06-22
 
 # The Runtime: Scheduler, Memory & GC - What Go Does for You
 
-Back in the concurrency phases you spun up goroutines with a single keyword and never thought about what it cost. You typed `go doWork()` a thousand times and your program didn't fall over. That's not luck - it's the Go **runtime**, a chunk of machinery the compiler bakes into every binary that schedules your goroutines, decides where your values live, and quietly cleans up the memory you stop using.
+Back in the concurrency phases you spun up goroutines with a single keyword and never thought about the cost. You typed `go doWork()` a thousand times and your program didn't fall over. That's not luck - it's the Go **runtime**, machinery baked into every binary that schedules your goroutines, decides where values live, and quietly cleans up memory you stop using.
 
-You can write Go for years without opening this hood. But the moment you ask "why are goroutines so cheap?", "why did my memory usage climb and never come back down?", or "why is the compiler putting *this* on the heap?", you're asking runtime questions. This phase gives you the mental model so those questions have answers instead of shrugs. The big idea: **Go trades a little magic you don't control for a lot of work you don't have to do** - and it pays off as long as you understand the few places where it can still bite.
+You can write Go for years without opening this hood. But "why are goroutines so cheap?", "why did memory usage climb and never come back down?", and "why is the compiler putting *this* on the heap?" are all runtime questions. The big idea: **Go trades a little magic you don't control for a lot of work you don't have to do** - and it pays off as long as you know the few places it can still bite.
 
 ## Why goroutines are cheap
 
-The first thing to unlearn: a goroutine is **not** an operating-system thread. People say "lightweight thread," which is close enough to be dangerous, because it makes you picture the same heavy object with a smaller label. It isn't.
+The first thing to unlearn: a goroutine is **not** an operating-system thread. "Lightweight thread" is close enough to be dangerous - the same heavy object with a smaller label, which is wrong.
 
-📝 **Goroutine** - a function managed by the Go runtime, not the OS. It starts with a tiny (~2 KB) stack that *grows on demand*, and the runtime - not the kernel - decides when it runs. **OS thread** - a unit of execution the kernel schedules, with a large fixed stack (often ~1–8 MB) and a comparatively expensive context switch handled in kernel space.
+📝 **Goroutine** - a function managed by the Go runtime, not the OS. It starts with a tiny (~2 KB) stack that *grows on demand*, and the runtime - not the kernel - decides when it runs. **OS thread** - a unit the kernel schedules, with a large fixed stack (often ~1–8 MB) and an expensive kernel-space context switch.
 
-Run the numbers and the difference is stark. A thousand OS threads at, say, 1 MB of stack each is a gigabyte of memory reserved before a single line of your code runs. A thousand goroutines at 2 KB each is about 2 MB - and most of that grows only if a goroutine actually needs a deeper stack. That's why "spawn a goroutine per request" is normal Go and "spawn a thread per request" is how you bring a server to its knees.
+Run the numbers: a thousand OS threads at 1 MB of stack each is a gigabyte reserved before a line of your code runs. A thousand goroutines at 2 KB each is about 2 MB, growing only if a goroutine needs a deeper stack. That's why "spawn a goroutine per request" is normal Go, and "spawn a thread per request" brings a server to its knees.
 
 ```go
 package main
@@ -48,17 +48,17 @@ func main() {
 $ go run main.go
 all 100,000 goroutines finished
 ```
-*What just happened:* We launched a hundred thousand goroutines and the program shrugged. Try that with a hundred thousand OS threads and you'd run out of memory long before they started. Each goroutine began life with a stack measured in kilobytes, and the runtime grew the few that needed more. The kernel never saw 100,000 schedulable things - it saw a handful of threads, which is the whole trick we're about to unpack.
+*What just happened:* We launched a hundred thousand goroutines and the program shrugged - a hundred thousand OS threads would exhaust memory before they even started. Each goroutine began life with a stack measured in kilobytes; the kernel never saw 100,000 schedulable things, just a handful of threads - the trick we're about to unpack.
 
-💡 **The insight.** Cheap goroutines aren't free - they're cheap because the runtime keeps the *expensive* resources (OS threads) small in number and reuses them, while the *cheap* things (goroutines) multiply freely. The scheduler is what makes that reuse possible.
+💡 **The insight.** Cheap goroutines aren't free - the runtime keeps the *expensive* resources (OS threads) small in number and reuses them, while the *cheap* things (goroutines) multiply freely. The scheduler makes that reuse possible.
 
 ## The GMP scheduler
 
-So you have 100,000 goroutines and maybe 8 CPU cores. Something has to decide which goroutine runs on which core, and when. That something is the **GMP scheduler**, and once you know its three letters the whole design clicks.
+With 100,000 goroutines and maybe 8 CPU cores, something has to decide which goroutine runs on which core, and when. That's the **GMP scheduler**, and once you know its three letters the whole design clicks.
 
-📝 **G (goroutine)** - one of your goroutines: its stack, instruction pointer, and state. There can be hundreds of thousands. **M (machine)** - an OS thread, the thing the kernel actually schedules onto a CPU. There are few. **P (processor)** - a *logical* processor: a scheduling context that holds a queue of runnable Gs and the resources an M needs to run them. The number of Ps is set by `GOMAXPROCS` (by default, the number of CPU cores).
+📝 **G (goroutine)** - its stack, instruction pointer, and state; there can be hundreds of thousands. **M (machine)** - an OS thread, what the kernel actually schedules onto a CPU; there are few. **P (processor)** - a *logical* processor: a scheduling context holding a queue of runnable Gs and the resources an M needs to run them, set by `GOMAXPROCS` (default: CPU core count).
 
-The shape to hold in your head: an **M must hold a P to run a G**. Ps are the permission slips. You have exactly `GOMAXPROCS` of them, so at most that many goroutines run *truly in parallel* at once - but the runtime cycles thousands of Gs through those few Ps so fast that everything makes progress.
+The shape to hold in your head: an **M must hold a P to run a G**. Ps are the permission slips - exactly `GOMAXPROCS` of them, so at most that many goroutines run *truly in parallel*, but the runtime cycles thousands of Gs through those few Ps fast enough that everything makes progress.
 
 ```mermaid
 flowchart LR
@@ -71,10 +71,10 @@ flowchart LR
   M2 --> C
 ```
 
-Two mechanisms keep the cores busy, and they're the part worth remembering:
+Two mechanisms keep the cores busy:
 
-- **Blocking syscalls don't block the core.** When a goroutine makes a blocking system call (reading a file, waiting on the network), the M it's running on gets stuck in the kernel. Rather than let a precious P sit idle, the runtime **hands that P to another M**, which immediately starts running other goroutines. The blocked M parks until its syscall returns. Your CPU never twiddles its thumbs because one goroutine is waiting on disk.
-- **Work-stealing balances the load.** Each P has its own local run queue. When a P empties its queue, instead of going idle it **steals** half the runnable goroutines from another P's queue. This keeps work spread across cores without a single global lock that every scheduler decision has to fight over.
+- **Blocking syscalls don't block the core.** When a goroutine makes a blocking syscall (reading a file, waiting on the network), its M gets stuck in the kernel. Rather than let a precious P sit idle, the runtime **hands that P to another M**, which immediately runs other goroutines - your CPU never twiddles its thumbs because one goroutine is waiting on disk.
+- **Work-stealing balances the load.** When a P empties its local run queue, instead of going idle it **steals** half the runnable goroutines from another P's queue - spreading work across cores without a single global lock to fight over.
 
 ```go
 package main
@@ -97,23 +97,23 @@ GOMAXPROCS (Ps): 8
 CPU cores:       8
 goroutines now:  2
 ```
-*What just happened:* `GOMAXPROCS(0)` reports how many Ps exist - 8 here, matching the 8 cores, so up to 8 goroutines run in parallel. `NumGoroutine()` shows 2: `main`'s goroutine plus the one we launched (it may or may not have finished). The takeaway is the ratio: a small, fixed number of Ps governing parallelism, with the goroutine count free to balloon independently.
+*What just happened:* `GOMAXPROCS(0)` reports how many Ps exist - 8 here, matching the cores, so up to 8 goroutines run in parallel. `NumGoroutine()` shows 2: `main`'s goroutine plus the one launched. The takeaway: a small, fixed number of Ps governs parallelism, while the goroutine count balloons independently.
 
-⚠️ **Gotcha - `GOMAXPROCS` is parallelism, not concurrency.** Setting `GOMAXPROCS=1` does *not* break a concurrent program; goroutines still interleave on that single P. It only limits how many run at the literal same instant. Concurrency (structure) and parallelism (simultaneous execution) are different knobs - see [Phase 11: Concurrency Patterns](12-concurrency-patterns.md) for the structure side.
+⚠️ **Gotcha - `GOMAXPROCS` is parallelism, not concurrency.** Setting `GOMAXPROCS=1` does *not* break a concurrent program; goroutines still interleave on that single P, it just limits how many run at the literal same instant. Concurrency (structure) and parallelism (simultaneous execution) are different knobs - see [Phase 11: Concurrency Patterns](12-concurrency-patterns.md) for the structure side.
 
 ## Stack vs heap - where your values live
 
-The scheduler decides *when* code runs. The other half of the runtime decides *where data lives*, and there are only two answers: the stack or the heap.
+The scheduler decides *when* code runs. The other half decides *where data lives* - the stack or the heap.
 
-📝 **Stack** - a per-goroutine region of memory that grows and shrinks with function calls. When a function returns, its slice of the stack vanishes instantly and for free. Allocation is a pointer bump; deallocation is automatic. **Heap** - a shared pool for values that must outlive the function that created them. The heap is *not* auto-freed when a function returns; reclaiming it is the garbage collector's job.
+📝 **Stack** - a per-goroutine region that grows and shrinks with function calls. When a function returns, its slice of the stack vanishes instantly and for free - allocation is a pointer bump, deallocation automatic. **Heap** - a shared pool for values that must outlive their creating function; it's *not* auto-freed on return, reclaiming it is the garbage collector's job.
 
-In many languages you choose: `int x` on the stack, `new Thing()` on the heap. In Go, **you don't choose - the compiler does.** You write `x := Thing{}` and Go figures out whether `x` can live and die on the stack (cheap) or must be promoted to the heap (more expensive, because the GC now has to track it). Stack is always preferable when it's safe: no GC involvement, instant cleanup. The rule the compiler follows is simple to state - *if a value can outlive its function, it must go on the heap* - and the analysis that applies it has a name.
+In many languages you choose: `int x` on the stack, `new Thing()` on the heap. In Go, **you don't choose - the compiler does.** Write `x := Thing{}` and Go figures out whether `x` can live and die on the stack (cheap) or must be promoted to the heap (more expensive, since the GC must track it). The compiler's rule: *if a value can outlive its function, it must go on the heap* - and the analysis that applies it has a name.
 
 ## Escape analysis
 
-📝 **Escape analysis** - the compile-time pass that decides, for each value, whether it can stay on the stack or must "escape" to the heap. A value escapes when the compiler can't prove it's done being used by the time its function returns - most commonly because a pointer to it leaks out.
+📝 **Escape analysis** - the compile-time pass deciding, for each value, whether it stays on the stack or must "escape" to the heap. A value escapes when the compiler can't prove it's done being used by the time its function returns - most commonly because a pointer to it leaks out.
 
-The classic escape is returning a pointer to a local variable. The local would normally die when the function returns, but you're handing its address to the caller, so it *can't* die - it has to live on the heap instead.
+The classic escape: returning a pointer to a local variable. It would normally die when the function returns, but handing its address to the caller means it *can't* - it lives on the heap instead.
 
 ```go
 package main
@@ -145,21 +145,21 @@ $ go build -gcflags=-m main.go
 ./main.go:11:2: moved to heap: p
 ./main.go:12:9: &p escapes to heap
 ```
-*What just happened:* The compiler reported that `p` inside `makePointer` was **moved to heap** because its address escapes via the `return &p`. It said *nothing* about `makeValue`'s `p` - that one stayed on the stack and vanished for free on return. Same-looking code, two different fates, decided entirely by whether a pointer leaked. (Counter-intuitively, returning a *pointer* can be more expensive than returning a *value* here, precisely because the pointer forces a heap allocation.)
+*What just happened:* The compiler reported `p` inside `makePointer` **moved to heap** because its address escapes via `return &p`. It said *nothing* about `makeValue`'s `p`, which stayed on the stack and vanished for free. Same-looking code, two fates, decided entirely by whether a pointer leaked. (Returning a *pointer* can be more expensive than a *value* here, precisely because it forces a heap allocation.)
 
-💡 **The insight.** Fewer escapes means fewer heap allocations means less work for the garbage collector. This is *the* lever behind most Go performance tuning: when a hot path is slow, you run `-gcflags=-m`, find the values escaping to the heap inside your tight loop, and restructure to keep them on the stack. You rarely fight the GC directly - you reduce the garbage it has to collect in the first place. (You'll measure exactly this with the profiler in [Phase 15](15-testing-benchmarks-profiling.md).)
+💡 **The insight.** Fewer escapes means fewer heap allocations means less GC work - *the* lever behind most Go performance tuning. When a hot path is slow, run `-gcflags=-m`, find values escaping inside your tight loop, and restructure to keep them on the stack. You rarely fight the GC directly - you reduce the garbage it has to collect. (You'll measure exactly this with the profiler in [Phase 15](15-testing-benchmarks-profiling.md).)
 
 ## The garbage collector
 
-Everything that escapes to the heap eventually stops being used. Something has to reclaim it, and in Go that something is automatic.
+Everything that escapes to the heap eventually stops being used. Something has to reclaim it, and in Go that's automatic.
 
 📝 **Garbage collector (GC)** - the runtime component that finds heap memory your program can no longer reach and frees it, so you never call `free()` yourself. Go's GC is a **concurrent, tri-color mark-and-sweep tracing** collector tuned for *low pause times*.
 
-Here's the model, in plain terms. The GC works by **reachability**: starting from the roots (global variables, and everything on every goroutine's stack), it traces every pointer it can follow. Anything it reaches is *live* and kept. Anything it can't reach is unreachable - garbage - and its memory is swept back into the pool. You don't track lifetimes; reachability *is* the lifetime.
+The model: the GC works by **reachability**. Starting from the roots (global variables, everything on every goroutine's stack), it traces every pointer it can follow. Anything reached is *live* and kept; anything unreachable is garbage, swept back into the pool. You don't track lifetimes; reachability *is* the lifetime.
 
-The "concurrent, low-pause" part is what makes it pleasant. Older GCs would freeze your entire program ("stop the world") while they did all the marking, causing visible hiccups. Go's GC does the heavy marking work **concurrently, while your program keeps running**, and reserves stop-the-world for two very brief phases at the start and end. In practice those pauses are typically sub-millisecond, even on large heaps - the whole design optimizes for "no big stalls" over "absolute minimum CPU."
+The "concurrent, low-pause" part makes it pleasant. Older GCs would freeze the entire program ("stop the world") while marking, causing visible hiccups. Go's GC marks **concurrently, while your program keeps running**, reserving stop-the-world for two brief phases at the start and end - typically sub-millisecond even on large heaps, optimizing for "no big stalls" over "absolute minimum CPU."
 
-You have one main dial: the `GOGC` environment variable (default `100`). It controls the trade-off between memory and CPU: `GOGC=100` lets the heap grow to roughly double the live set before the next collection. Raise it (`GOGC=200`) and the GC runs less often, using more memory but less CPU; lower it (`GOGC=50`) and it runs more often, trimming memory at the cost of more CPU. Most programs never touch it.
+One main dial: the `GOGC` environment variable (default `100`), controlling the memory-vs-CPU trade-off. `GOGC=100` lets the heap grow to roughly double the live set before the next collection. Raise it (`GOGC=200`) and the GC runs less often, using more memory but less CPU; lower it (`GOGC=50`) for the opposite. Most programs never touch it.
 
 Watch the heap grow and the GC reclaim it:
 
@@ -197,14 +197,14 @@ before: 96 KB
 after allocating: 9863 KB
 after GC: 102 KB
 ```
-*What just happened:* Allocating a thousand 10 KB slices pushed the live heap to ~9.8 MB. The instant we set `junk = nil`, nothing in the program could reach those slices anymore - they became unreachable. The next collection traced from the roots, found none of them, and swept the memory back, dropping the heap to near its starting size. We never freed anything by hand. (`runtime.GC()` here is just to make the timing visible; in real code the GC decides when to run, driven by `GOGC`.)
+*What just happened:* Allocating a thousand 10 KB slices pushed the live heap to ~9.8 MB. The instant we set `junk = nil`, nothing could reach those slices anymore. The next collection traced from the roots, found none of them, and swept the memory back near its starting size - we never freed anything by hand. (`runtime.GC()` here just makes the timing visible; real code lets the GC decide when to run, driven by `GOGC`.)
 
 Step through the mark-and-sweep cycle - roots, reachable, and swept - at your own pace:
 
 ```playground-gc
 ```
 
-⚠️ **Gotcha - you can still "leak."** Automatic GC does not mean leak-proof. The GC only frees what's *unreachable*, so if you accidentally keep a reference alive, the memory stays forever - and it looks exactly like a leak. The two classic culprits:
+⚠️ **Gotcha - you can still "leak."** Automatic GC doesn't mean leak-proof - it only frees what's *unreachable*, so accidentally keeping a reference alive keeps the memory forever, looking exactly like a leak. Two classic culprits:
 
 ```go
 // 1. A goroutine that never exits, holding memory the whole time.
@@ -222,17 +222,17 @@ func remember(key string, val []byte) {
 	cache[key] = val // never deleted → cache (and its memory) grows without bound
 }
 ```
-*What just happened:* In the first case, the goroutine blocks on a channel that never receives, so it never returns - and because it closes over `data`, that slice stays reachable and un-collectable forever. A pile of such stuck goroutines is the most common real Go memory leak. In the second, the global `cache` keeps every value reachable for the life of the program; without an eviction policy it grows until you run out of memory. The GC is doing its job perfectly in both cases - the memory genuinely *is* still reachable. The fix isn't a GC setting; it's making sure goroutines can exit (a `context` or a done channel, from [Phase 11](12-concurrency-patterns.md)) and that long-lived maps have a bound.
+*What just happened:* The goroutine blocks on a channel that never receives, so it never returns - and because it closes over `data`, that slice stays reachable forever. A pile of such stuck goroutines is the most common real Go memory leak. The global `cache` similarly keeps every value reachable for the program's life; without an eviction policy it grows until memory runs out. The GC does its job perfectly in both cases - the memory genuinely *is* still reachable. The fix isn't a GC setting; it's making sure goroutines can exit (a `context` or done channel, from [Phase 11](12-concurrency-patterns.md)) and long-lived maps have a bound.
 
 ## Recap
 
-1. A **goroutine is not an OS thread** - it starts at ~2 KB with a growable stack and is scheduled by the runtime, which is why a single program can run hundreds of thousands of them where it could afford only a handful of threads.
-2. The **GMP scheduler** multiplexes many **G**s onto few **M**s (OS threads) via **P**s (logical processors, capped by `GOMAXPROCS`). Handing off Ps on blocking syscalls and work-stealing between Ps keep every core busy.
-3. Every value lives on the **stack** (cheap, auto-freed on return) or the **heap** (needs the GC). **Escape analysis** - visible via `go build -gcflags=-m` - decides which, and a value escapes when it can outlive its function (e.g. you return a pointer to a local).
+1. A **goroutine is not an OS thread** - it starts at ~2 KB with a growable stack, scheduled by the runtime, which is why a program can run hundreds of thousands where it could afford only a handful of threads.
+2. The **GMP scheduler** multiplexes many **G**s onto few **M**s (OS threads) via **P**s (logical processors, capped by `GOMAXPROCS`). Handing off Ps on blocking syscalls and work-stealing keep every core busy.
+3. Every value lives on the **stack** (cheap, auto-freed on return) or the **heap** (needs the GC). **Escape analysis** - visible via `go build -gcflags=-m` - decides which; a value escapes when it can outlive its function (e.g. returning a pointer to a local).
 4. Go's **garbage collector** is concurrent, low-pause, mark-and-sweep, and reachability-based: it frees what your program can no longer reach, so you never call `free()`. `GOGC` tunes the memory-vs-CPU trade-off.
 5. ⚠️ Automatic GC is **not leak-proof** - anything still *reachable* is kept, so stuck goroutines and ever-growing global maps cause real memory growth. Fewer heap escapes and bounded lifetimes, not GC settings, are your main levers.
 
-You now know what happens beneath `go`, `make`, and `&` - the scheduler that runs your goroutines and the collector that cleans up after them. Next we make all of this measurable: testing, benchmarking, and profiling, where you'll watch allocations and CPU time with real tools instead of reasoning about them in the abstract.
+You now know what happens beneath `go`, `make`, and `&`. Next: making it measurable - testing, benchmarking, and profiling, where you'll watch allocations and CPU time with real tools instead of reasoning in the abstract.
 
 ## Quick check
 

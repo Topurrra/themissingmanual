@@ -10,6 +10,14 @@ pub struct FeedbackRow {
     pub note: String,
 }
 
+/// A reader-submitted "write this guide" request (from /request), for the public backlog page.
+#[derive(Debug, Clone, Serialize)]
+pub struct GuideRequest {
+    pub id: i64,
+    pub ts: String,
+    pub note: String,
+}
+
 /// Lightweight entry for the phase edit-history list.
 #[derive(Debug, Clone, Serialize)]
 pub struct RevisionMeta {

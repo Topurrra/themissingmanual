@@ -11,17 +11,15 @@ updated: 2026-06-22
 
 # LINQ - Querying Anything, Declaratively
 
-In [Phase 11](11-delegates-and-lambdas.md) you learned that a lambda like `n => n > 2` is just a value you can pass around - a little packet of behavior wearing a `Func` delegate. That was the warm-up. This phase is the payoff, and it's one of the things C# programmers genuinely brag about. It's called **LINQ** (Language-Integrated Query), and once it clicks, you'll stop writing half the loops you used to write.
+In [Phase 11](11-delegates-and-lambdas.md) you learned that a lambda like `n => n > 2` is just a value you can pass around - a packet of behavior wearing a `Func` delegate. That was the warm-up. This phase is the payoff, one of the things C# programmers genuinely brag about: **LINQ** (Language-Integrated Query). Once it clicks, you'll stop writing half the loops you used to write.
 
-Here's the shift in thinking. For your whole career so far, when you wanted "the even numbers, doubled," you wrote a loop: make a result list, walk the source, test each item, transform the survivors, append. You described *how* to get the answer, step by step. LINQ flips that. You describe *what* you want - "where it's even, select it doubled" - and let the machinery handle the stepping. That's the difference between **imperative** (a recipe of steps) and **declarative** (a statement of intent), and it's the mental model that carries this whole phase.
+The shift in thinking: wanting "the even numbers, doubled" used to mean a loop - make a result list, walk the source, test each item, transform the survivors, append. You described *how* to get the answer, step by step. LINQ flips that: you describe *what* you want - "where it's even, select it doubled" - and let the machinery handle the stepping. That's **imperative** (a recipe of steps) versus **declarative** (a statement of intent).
 
 ## The mental model - describe the result, not the steps
 
-📝 **LINQ** - a set of query operators, built into C#, that let you filter, transform, sort, and group *any* sequence using one consistent vocabulary. The same `Where`/`Select`/`OrderBy` words work on an in-memory `List<T>`, a database table, an XML document, or a CSV stream. Learn the vocabulary once; query everything.
+📝 **LINQ** - a set of query operators, built into C#, that let you filter, transform, sort, and group *any* sequence using one consistent vocabulary. The same `Where`/`Select`/`OrderBy` words work on an in-memory `List<T>`, a database table, an XML document, or a CSV stream.
 
-Let's put the two styles side by side on the same task: take a list of numbers, keep the ones greater than 2, and double each.
-
-The way you've done it until now - the hand-written loop:
+Put the two styles side by side on the same task: take a list of numbers, keep the ones greater than 2, and double each. The hand-written loop:
 
 ```csharp
 var numbers = new List<int> { 1, 2, 3, 4 };
@@ -37,9 +35,9 @@ foreach (var n in numbers)
 // result is now { 30, 40 }
 ```
 
-*What just happened:* You spelled out every mechanical step - allocate a list, loop, test, transform, append. It works, but the *intent* ("the ones over 2, times ten") is buried under bookkeeping. A reader has to mentally run the loop to figure out what you meant.
+*What just happened:* You spelled out every mechanical step - allocate a list, loop, test, transform, append. It works, but the *intent* ("the ones over 2, times ten") is buried under bookkeeping. A reader has to mentally run the loop to see what you meant.
 
-Now the LINQ version of the exact same thing:
+The LINQ version of the exact same thing:
 
 ```csharp
 var numbers = new List<int> { 1, 2, 3, 4 };
@@ -51,15 +49,15 @@ var result = numbers
 // result is now { 30, 40 }
 ```
 
-*What just happened:* No loop, no temporary list, no manual `Add`. You named the *what* - filter with `Where`, transform with `Select` - and LINQ did the stepping for you. The two lambdas are exactly the `Func` values from Phase 11: `Where` takes a `Func<int, bool>` (give it an item, get back keep-or-not), and `Select` takes a `Func<int, int>` (give it an item, get back the new one). LINQ is delegates all the way down.
+*What just happened:* No loop, no temporary list, no manual `Add`. You named the *what* - filter with `Where`, transform with `Select` - and LINQ did the stepping. The two lambdas are exactly the `Func` values from Phase 11: `Where` takes a `Func<int, bool>` (keep-or-not), `Select` a `Func<int, int>` (the new value). LINQ is delegates all the way down.
 
-💡 **The reading test.** The loop says "do this, then this, then this." The LINQ chain says "what I want is this." When the *what* matters more than the *how* - which is most of the time - declarative wins, because it's the intent written down directly.
+💡 **The reading test.** The loop says "do this, then this, then this." The LINQ chain says "what I want is this." When the *what* matters more than the *how*, declarative wins.
 
 ## Method syntax - the workhorse
 
-The form you just saw is **method syntax**: a chain of method calls, each taking a lambda. This is the one you'll write 90% of the time, so it's worth getting comfortable.
+The form you just saw is **method syntax**: a chain of method calls, each taking a lambda. This is the one you'll write 90% of the time.
 
-📝 **Method syntax** - calling LINQ operators as extension methods on a sequence, passing lambdas to say what each step does: `source.Where(...).Select(...).OrderBy(...)`. Each method returns a new sequence, so they chain end to end like a pipeline.
+📝 **Method syntax** - calling LINQ operators as extension methods on a sequence, passing lambdas to say what each step does: `source.Where(...).Select(...).OrderBy(...)`. Each returns a new sequence, so they chain like a pipeline.
 
 ```csharp
 using System.Linq;
@@ -81,15 +79,15 @@ FIG
 KIWI
 ```
 
-*What just happened:* Read the chain top to bottom as a pipeline. `Where(w => w.Length <= 5)` let through `apple`, `fig`, and `kiwi` (the others are too long); `Select(w => w.ToUpper())` transformed each survivor to uppercase; `ToList()` collected the results. Each operator takes the sequence from the one above it and hands a new sequence to the one below. ⚠️ Note the `using System.Linq;` at the top - LINQ's operators are extension methods that live in that namespace, and they're invisible without it. Forget it and the compiler insists `List<T>` has no method called `Where`.
+*What just happened:* Read the chain top to bottom as a pipeline. `Where(w => w.Length <= 5)` let through `apple`, `fig`, and `kiwi` (the others are too long); `Select(w => w.ToUpper())` transformed each survivor to uppercase; `ToList()` collected the results. ⚠️ Note the `using System.Linq;` at the top - LINQ's operators are extension methods living in that namespace, invisible without it. Forget it and the compiler insists `List<T>` has no method called `Where`.
 
 ## Query syntax - the SQL-flavored sugar
 
-C# offers a second way to write the same queries, and if you've ever touched SQL it'll look eerily familiar. It's called **query syntax**, and it reads like a sentence:
+C# offers a second way to write the same queries, and if you've touched SQL it'll look eerily familiar. It's called **query syntax**, and reads like a sentence:
 
-📝 **Query syntax** - keyword-based query expressions (`from`, `where`, `select`, `orderby`, `group`) that the compiler translates into the exact same method-syntax calls under the hood. It's pure syntactic sugar: nothing query syntax does is impossible in method syntax.
+📝 **Query syntax** - keyword-based query expressions (`from`, `where`, `select`, `orderby`, `group`) that the compiler translates into the exact same method-syntax calls under the hood. Pure syntactic sugar: nothing it does is impossible in method syntax.
 
-Here's our first example - keep numbers over 2, double them - written both ways so you can see they're the same query:
+The first example - keep numbers over 2, double them - written both ways so you can see they're the same query:
 
 ```csharp
 var numbers = new List<int> { 1, 2, 3, 4 };
@@ -111,15 +109,15 @@ Console.WriteLine(string.Join(", ", viaMethod));
 30, 40
 ```
 
-*What just happened:* Both produce `30, 40` because they *are* the same query - the compiler rewrites `from n in numbers where n > 2 select n * 10` into precisely the `Where(...).Select(...)` chain below it. They're interchangeable; pick by readability. Query syntax shines when you have joins, grouping, or multiple `from` clauses (it reads cleaner there). Method syntax wins for simple one- or two-step chains and for the many operators - like `Count()`, `First()`, `ToList()` - that query syntax has no keyword for. Most C# code leans on method syntax and reaches for query syntax on the gnarlier queries.
+*What just happened:* Both produce `30, 40` because they *are* the same query - the compiler rewrites `from n in numbers where n > 2 select n * 10` into precisely the `Where(...).Select(...)` chain below it. They're interchangeable; pick by readability. Query syntax shines with joins, grouping, or multiple `from` clauses; method syntax wins for simple chains and for operators - like `Count()`, `First()`, `ToList()` - that query syntax has no keyword for. Most C# code leans on method syntax.
 
 ## Deferred execution - the gotcha that bites everyone once
 
-Now the single most important idea in this phase, and the one that catches every C# developer exactly once. A LINQ query is **lazy**: writing it doesn't *run* it. It builds a description of work - a recipe - and does absolutely nothing until something asks it to produce values.
+The single most important idea in this phase, and the one that catches every C# developer exactly once: a LINQ query is **lazy**. Writing it doesn't *run* it - it builds a description of work, a recipe, and does nothing until something asks it to produce values.
 
-📝 **Deferred execution** - a LINQ query (the `IEnumerable<T>` you get from `Where`, `Select`, etc.) is not a result; it's a *plan* for computing a result. The plan only executes when you **enumerate** it: a `foreach`, or a "consumer" like `ToList()`, `Count()`, `First()`, or `Sum()`. Until then, nothing has happened.
+📝 **Deferred execution** - a LINQ query (the `IEnumerable<T>` you get from `Where`, `Select`, etc.) is not a result; it's a *plan* for computing one. The plan only executes when you **enumerate** it: a `foreach`, or a "consumer" like `ToList()`, `Count()`, `First()`, or `Sum()`. Until then, nothing has happened.
 
-This is the exact same laziness you'd meet in Python's generators or Rust's iterators - adapters describe, consumers fire. And in C# it produces a genuinely surprising result. Watch:
+This is the same laziness you'd meet in Python's generators or Rust's iterators - adapters describe, consumers fire. In C# it produces a genuinely surprising result:
 
 ```csharp
 var source = new List<int> { 1, 2, 3 };
@@ -140,7 +138,7 @@ foreach (var n in query)
 4
 ```
 
-*What just happened:* The `4` showed up even though you added it *after* writing the query - because the query didn't run when you wrote it. It ran when the `foreach` enumerated it, and by then the source list already had `4` in it. The query is a live recipe pointed at `source`, not a snapshot taken at definition time. This is the heart of deferred execution: the work, and the reading of captured variables and sources, happens *late* - at enumeration, not at definition.
+*What just happened:* The `4` showed up even though you added it *after* writing the query, because the query didn't run when you wrote it - it ran when the `foreach` enumerated it, and by then the source list already had `4`. The query is a live recipe pointed at `source`, not a snapshot taken at definition time.
 
 ⚠️ **And it re-runs every single time you enumerate it.** A deferred query is not a cached result. Loop over it twice and the whole pipeline executes twice - every `Where` test, every `Select` transform, fresh. If those lambdas hit a database or do real work, you've silently paid for it twice (or N times).
 
@@ -164,7 +162,7 @@ Console.WriteLine($"filter ran {calls} times for {firstCount} results");
 filter ran 6 times for 2 results
 ```
 
-*What just happened:* Three items, two enumerations - so the filter lambda ran *six* times, not three. Each `Count()` walked the entire pipeline again from scratch. That's wasteful here and dangerous when the lambda is expensive. The fix is to **materialize** the query once into a real collection with `ToList()` (or `ToArray()`): that forces a single enumeration, stores the results, and from then on you're looping over a plain `List<T>` with no surprise re-runs.
+*What just happened:* Three items, two enumerations - so the filter lambda ran *six* times, not three. Each `Count()` walked the entire pipeline again from scratch: wasteful here, dangerous when the lambda is expensive. Fix it by **materializing** the query once into a real collection with `ToList()` (or `ToArray()`), which forces a single enumeration and stores the results.
 
 ```csharp
 int calls = 0;
@@ -183,11 +181,11 @@ Console.WriteLine($"filter ran {calls} times for {firstCount} results");
 filter ran 2 times for 2 results
 ```
 
-*What just happened:* `ToList()` executed the pipeline exactly once and captured the survivors into a real list. Now `results` is concrete data, not a recipe - `results.Count` just reads the stored length, and the filter never runs again no matter how many times you touch it. The rule of thumb: if you'll enumerate a query more than once, or you need the results to reflect the source *as it was now* rather than whenever-it's-read-later, end the chain with `.ToList()` to nail it down.
+*What just happened:* `ToList()` executed the pipeline exactly once and captured the survivors into a real list. Now `results` is concrete data, not a recipe - `results.Count` just reads the stored length, and the filter never runs again. Rule of thumb: enumerating more than once, or needing results to reflect the source *as it is now*, means ending the chain with `.ToList()`.
 
 ## The powerful operators - a realistic query
 
-You've met `Where` and `Select`. Here's the rest of the toolkit you'll actually reach for, and then a realistic example that chains several together.
+You've met `Where` and `Select`. Here's the rest of the toolkit you'll reach for, then a realistic example chaining several together.
 
 - **`OrderBy` / `OrderByDescending`** - sort by a key (`ThenBy` for tie-breakers).
 - **`GroupBy`** - bucket items by a key; you get groups you can loop over, each with its own `Key`.
@@ -196,7 +194,7 @@ You've met `Where` and `Select`. Here's the rest of the toolkit you'll actually 
 - **`Sum` / `Count` / `Average` / `Max`** - the aggregates, computed in one pass.
 - **`SelectMany`** - flatten a sequence-of-sequences into one flat sequence.
 
-Let's group a list of orders by customer and total each customer's spend - the kind of thing you'd otherwise write fifteen lines of loop for:
+Group a list of orders by customer and total each customer's spend - the kind of thing you'd otherwise write fifteen lines of loop for:
 
 ```csharp
 var orders = new[]
@@ -223,9 +221,9 @@ Ada: 65
 Lin: 60
 ```
 
-*What just happened:* `GroupBy(o => o.Customer)` split the five orders into two buckets keyed by name - Ada's three and Lin's two. `Select` turned each bucket `g` into a tidy summary object, using `g.Key` (the customer name) and `g.Sum(o => o.Amount)` to total that bucket. `OrderByDescending` sorted the summaries so the biggest spender leads, and `ToList()` ran the whole pipeline and froze the answer. That's grouping, aggregation, and sorting in four readable lines - the declarative payoff in full.
+*What just happened:* `GroupBy(o => o.Customer)` split the five orders into two buckets keyed by name - Ada's three and Lin's two. `Select` turned each bucket `g` into a summary object using `g.Key` (the customer name) and `g.Sum(o => o.Amount)` (that bucket's total). `OrderByDescending` sorted so the biggest spender leads, and `ToList()` froze the answer. Grouping, aggregation, and sorting in four readable lines.
 
-⚠️ **`First` throws; `FirstOrDefault` doesn't.** A constant source of crashes: `First()` on a sequence with no match throws an `InvalidOperationException` ("Sequence contains no matching element"). When a miss is *possible* - which is most real queries - use `FirstOrDefault()`, which returns the type's default (`null` for reference types, `0` for `int`) instead of throwing. Then check for that default.
+⚠️ **`First` throws; `FirstOrDefault` doesn't.** A constant source of crashes: `First()` on a sequence with no match throws an `InvalidOperationException` ("Sequence contains no matching element"). When a miss is possible - most real queries - use `FirstOrDefault()`, which returns the type's default (`null` for reference types, `0` for `int`) instead, then check for it.
 
 ```csharp
 var names = new List<string> { "Ada", "Lin" };
@@ -242,20 +240,20 @@ Lin
 (none)
 ```
 
-*What just happened:* The first call found "Lin." The second matched nothing - and because it's `FirstOrDefault`, it calmly returned `null` instead of throwing. The `?? "(none)"` then handled the null gracefully. Had you used plain `First(n => n.StartsWith("Z"))`, the program would have crashed on that line. Reach for `FirstOrDefault` whenever "no match" is a real possibility, and handle the default it hands back.
+*What just happened:* The first call found "Lin." The second matched nothing, and because it's `FirstOrDefault`, it calmly returned `null` instead of throwing; `?? "(none)"` handled the null gracefully. Plain `First(n => n.StartsWith("Z"))` would have crashed on that line.
 
-💡 **The same LINQ can run against a database.** Here's the quietly amazing part. When your source is a `List<T>` in memory, you're using **LINQ to Objects** - it's `IEnumerable<T>`, and the lambdas run as C# code. But when your source is a database table via an ORM like Entity Framework, the source is an `IQueryable<T>` - and the *identical* `Where`/`Select`/`GroupBy` syntax gets **translated into SQL** and run by the database engine, not by your C#. Same words, different engine: `users.Where(u => u.Age > 18)` filters a `List` in RAM or generates `WHERE Age > 18` against Postgres depending only on what `users` is. ⚠️ The catch is that not every C# expression can be translated to SQL (a call to your own helper method, for instance, has no SQL equivalent), so `IQueryable` queries have rules `IEnumerable` ones don't - but that's a story for the Entity Framework guide. For now, just hold the mental model: LINQ is one query language pointed at many engines.
+💡 **The same LINQ can run against a database.** A `List<T>` in memory means **LINQ to Objects** - `IEnumerable<T>`, lambdas running as C# code. A database table via an ORM like Entity Framework means an `IQueryable<T>` - the *identical* `Where`/`Select`/`GroupBy` syntax gets **translated into SQL** and run by the database engine. Same words, different engine: `users.Where(u => u.Age > 18)` filters a `List` in RAM or generates `WHERE Age > 18` against Postgres depending only on what `users` is. ⚠️ Not every C# expression translates to SQL (a call to your own helper method has no SQL equivalent), so `IQueryable` queries have rules `IEnumerable` ones don't - a story for the Entity Framework guide.
 
 ## Recap
 
-1. **LINQ is declarative**: you describe the result you want (`Where`/`Select`/`OrderBy`) instead of hand-writing the loop that builds it. One vocabulary queries lists, databases, XML, and more.
-2. **Method syntax** (`.Where(...).Select(...)`) is the everyday workhorse, built on the `Func` lambdas from Phase 11. **Query syntax** (`from ... where ... select ...`) is SQL-flavored sugar the compiler rewrites into method syntax - pick whichever reads better.
-3. ⚠️ **Deferred execution** is the big trap: a query is a recipe, not a result. It does nothing until enumerated (`foreach`, `ToList`, `Count`, `First`), it reads its source *late*, and it **re-runs every enumeration**. Call `.ToList()` to materialize it once and stop the surprises.
-4. The toolkit you'll lean on: `OrderBy`, `GroupBy`, `First`/`FirstOrDefault`, `Any`/`All`, `Sum`/`Count`/`Average`. Chained together, they replace whole loops - grouping and totaling in a few readable lines.
-5. ⚠️ `First` throws on no match; prefer **`FirstOrDefault`** (which returns `null`/`0`) whenever a miss is possible, then check the default.
+1. **LINQ is declarative**: describe the result you want (`Where`/`Select`/`OrderBy`) instead of hand-writing the loop. One vocabulary queries lists, databases, XML, and more.
+2. **Method syntax** (`.Where(...).Select(...)`) is the everyday workhorse, built on `Func` lambdas from Phase 11. **Query syntax** (`from ... where ... select ...`) is SQL-flavored sugar the compiler rewrites into method syntax - pick whichever reads better.
+3. ⚠️ **Deferred execution** is the big trap: a query is a recipe, not a result. It does nothing until enumerated (`foreach`, `ToList`, `Count`, `First`), reads its source *late*, and **re-runs every enumeration**. Call `.ToList()` to materialize it once and stop the surprises.
+4. The toolkit: `OrderBy`, `GroupBy`, `First`/`FirstOrDefault`, `Any`/`All`, `Sum`/`Count`/`Average` - chained together they replace whole loops, grouping and totaling in a few readable lines.
+5. ⚠️ `First` throws on no match; prefer **`FirstOrDefault`** (returns `null`/`0`) whenever a miss is possible, then check the default.
 6. 💡 The same LINQ runs on `IEnumerable` (in memory, as C#) or `IQueryable` (a database, translated to SQL) - same syntax, different engine.
 
-You can now query collections the way you'd describe them to a colleague. Next, we look at **records and modern pattern matching** - newer C# features that make the *data* you query just as concise and expressive as the queries themselves.
+You can now query collections the way you'd describe them to a colleague. Next: **records and modern pattern matching** - features that make the *data* you query just as concise as the queries themselves.
 
 ## Quick check
 

@@ -13,9 +13,9 @@ updated: 2026-06-23
 
 Up to now you've been building *views* — panels, grids, forms, all described as config trees. But a real screen has to *do* things: handle a button click, know which row is selected, keep a form in sync with that row. The question every Ext JS app eventually has to answer is **where does that logic and that state live?** In Ext JS 5 and up, the answer has a name — **MVVM** — and it comes down to one clean split.
 
-> 💡 **The whole mental model in one line: a ViewController is the view's *behavior*, a ViewModel is the view's *data*, and `bind` is the *wire* that connects the data to the widgets.** Three boxes. Behavior, data, wire. Hold those three and every config you see in this phase has an obvious home.
+> 💡 **The whole mental model in one line: a ViewController is the view's *behavior*, a ViewModel is the view's *data*, and `bind` is the *wire* that connects the data to the widgets.** Three boxes. Behavior, data, wire. Hold those three and every config in this phase has an obvious home.
 
-Why does this matter to you, maintaining a legacy app? Because the *old* way (Ext JS 4) put all logic in big global controllers that lived nowhere in particular, and all the syncing was hand-written glue. MVVM was Sencha's answer to the spaghetti that resulted. You'll meet both. We'll do the modern way first — it's how you *should* think — then decode the legacy version so you can read the old screens.
+Why does this matter for maintaining a legacy app? The *old* way (Ext JS 4) put all logic in big global controllers that lived nowhere in particular, with hand-written glue for all the syncing. MVVM was Sencha's answer to the spaghetti that resulted. You'll meet both — the modern way first, since it's how you *should* think, then the legacy version so you can read old screens.
 
 ```mermaid
 flowchart LR
@@ -26,7 +26,7 @@ flowchart LR
 
 ## ViewController — the view's behavior
 
-A **`ViewController`** is a class that holds the *logic* for one view: its event handlers and helper methods. You define it with `Ext.define`, extend `Ext.app.ViewController`, and give it an `alias` of the form `controller.<name>`. Then the view points at it with `controller: '<name>'`.
+A **`ViewController`** is a class that holds the *logic* for one view: its event handlers and helper methods. Define it with `Ext.define`, extend `Ext.app.ViewController`, and give it an `alias` of the form `controller.<name>`. The view then points at it with `controller: '<name>'`.
 
 ```javascript
 Ext.define('MyApp.view.users.UsersController', {
@@ -44,9 +44,9 @@ Ext.define('MyApp.view.users.UsersController', {
 });
 ```
 
-*What just happened:* We defined a controller class scoped to the users view. `this.lookup('userGrid')` reaches a child component that was tagged with `reference: 'userGrid'` in the view — this is the *sanctioned* way to find components, the clean replacement for the `Ext.getCmp` trap from phase 3. `this` inside any handler is the ViewController instance, so `this.getView()` gives you the view it belongs to, and `this.lookup(...)` (or its longer alias `this.lookupReference(...)`) gives you any referenced child. Notice there's no global state and no `Ext.getCmp('someId')` — everything is resolved relative to *this* view instance.
+*What just happened:* we defined a controller class scoped to the users view. `this.lookup('userGrid')` reaches a child component tagged with `reference: 'userGrid'` in the view — the *sanctioned* way to find components, the clean replacement for the `Ext.getCmp` trap from phase 3. `this` inside any handler is the ViewController instance, so `this.getView()` gives you the view it belongs to, and `this.lookup(...)` (or its longer alias `this.lookupReference(...)`) gives you any referenced child. No global state, no `Ext.getCmp('someId')` — everything resolves relative to *this* view instance.
 
-Now wire that handler up. There are two ways, and you'll see both.
+Now wire that handler up. Two ways, and you'll see both.
 
 **Option A — `listeners` declared in the view**, naming the controller method as a string:
 
@@ -68,7 +68,7 @@ Ext.define('MyApp.view.users.UsersPanel', {
 });
 ```
 
-*What just happened:* `controller: 'users'` attaches our ViewController to this panel. The button's `listeners: { click: 'onDeleteUser' }` uses a **string**, not a function — Ext JS resolves that string against the view's ViewController and calls `onDeleteUser` there. That string-instead-of-function detail is the giveaway you're looking at MVVM wiring rather than an inline callback.
+*What just happened:* `controller: 'users'` attaches our ViewController to this panel. The button's `listeners: { click: 'onDeleteUser' }` uses a **string**, not a function — Ext JS resolves that string against the view's ViewController and calls `onDeleteUser` there. That string-instead-of-function detail is the giveaway you're looking at MVVM wiring, not an inline callback.
 
 **Option B — a `control` block inside the ViewController**, which wires events by *selector* instead of touching the view:
 
@@ -91,11 +91,11 @@ Ext.define('MyApp.view.users.UsersController', {
 });
 ```
 
-*What just happened:* The `control` block maps **component query selectors** (the same selector syntax `ComponentQuery` uses — `'button[action=delete]'` matches a button whose `action` config is `'delete'`) to event-to-handler pairs. It's the inverse of putting `listeners` in the view: the controller declares "any matching component, when it fires this event, call this method." A `control` block is scoped to the controller's own view, so the selectors only match components *inside this view* — you won't accidentally grab a button from some other screen. Use `listeners` for one-off wiring on a specific component, `control` when you'd rather keep all event wiring in one place in the controller.
+*What just happened:* the `control` block maps **component query selectors** (the same selector syntax `ComponentQuery` uses — `'button[action=delete]'` matches a button whose `action` config is `'delete'`) to event-to-handler pairs. It's the inverse of putting `listeners` in the view: the controller declares "any matching component, when it fires this event, call this method." A `control` block is scoped to the controller's own view, so selectors only match components *inside this view* — you won't accidentally grab a button from some other screen. Use `listeners` for one-off wiring on a specific component, `control` to keep all event wiring in one place in the controller.
 
 ## ViewModel — the view's data
 
-If the ViewController is behavior, the **`ViewModel`** is *state*. It holds three things: a **`data`** object (the view's local variables), inline **`stores`**, and **`formulas`** (derived values that recompute themselves). You attach it with `viewModel: { type: 'users' }` (referencing a defined class) or inline with `viewModel: { data: {...} }`.
+If the ViewController is behavior, the **`ViewModel`** is *state*. It holds three things: a **`data`** object (the view's local variables), inline **`stores`**, and **`formulas`** (derived values that recompute themselves). Attach it with `viewModel: { type: 'users' }` (referencing a defined class) or inline with `viewModel: { data: {...} }`.
 
 ```javascript
 Ext.define('MyApp.view.users.UsersModel', {
@@ -123,11 +123,11 @@ Ext.define('MyApp.view.users.UsersModel', {
 });
 ```
 
-*What just happened:* The ViewModel declares the view's data in one place. `data` holds plain values (`isAdmin`, `currentUser`). `stores` declares a `users` store *inline* — the ViewModel owns it, so it's automatically available for binding (you no longer hand-create the store and wire it to the grid yourself). `formulas` defines derived data: `fullName` is a function that receives a `get` helper, reads `currentUser.first` and `currentUser.last`, and returns the combined name. The payoff is that **a formula recomputes automatically** whenever any value it reads changes — set a new `currentUser` and `fullName` updates itself, no manual recalculation. Think of `formulas` as spreadsheet cells: they're a formula over other cells, and they refresh on their own.
+*What just happened:* the ViewModel declares the view's data in one place. `data` holds plain values (`isAdmin`, `currentUser`). `stores` declares a `users` store *inline* — the ViewModel owns it, so it's automatically available for binding (no more hand-creating the store and wiring it to the grid yourself). `formulas` defines derived data: `fullName` is a function that receives a `get` helper, reads `currentUser.first` and `currentUser.last`, and returns the combined name. The payoff is that **a formula recomputes automatically** whenever any value it reads changes — set a new `currentUser` and `fullName` updates itself, no manual recalculation. Think of `formulas` as spreadsheet cells: a formula over other cells that refreshes on its own.
 
 ## Two-way `bind` — the wire, and the killer demo
 
-Here's where it all pays off. The **`bind`** config connects a component to ViewModel data using `{path}` template syntax. Bind a single property as a shorthand string, or bind several properties with an object:
+The **`bind`** config connects a component to ViewModel data using `{path}` template syntax. Bind a single property as a shorthand string, or bind several properties with an object:
 
 ```javascript
 // shorthand: bind the field's primary value
@@ -143,9 +143,9 @@ Here's where it all pays off. The **`bind`** config connects a component to View
 }
 ```
 
-*What just happened:* The ViewModel *publishes* its data; bound components subscribe. `bind: '{currentUser.name}'` ties the field's value to that path — and because a textfield is an input, the binding is **two-way**: type in the field and it publishes the new value *back* to `currentUser.name` in the ViewModel. The object form binds multiple configs; `hidden: '{!isAdmin}'` shows the negation operator working right inside the binding template, so the field hides itself whenever `isAdmin` is falsy. No event handlers, no manual `setValue` — the wire keeps both ends in sync.
+*What just happened:* the ViewModel *publishes* its data; bound components subscribe. `bind: '{currentUser.name}'` ties the field's value to that path — and because a textfield is an input, the binding is **two-way**: type in the field and it publishes the new value *back* to `currentUser.name` in the ViewModel. The object form binds multiple configs; `hidden: '{!isAdmin}'` shows the negation operator working right inside the binding template, so the field hides itself whenever `isAdmin` is falsy. No event handlers, no manual `setValue` — the wire keeps both ends in sync.
 
-Now the demo that makes people fall in love with MVVM. In phase 6 you'd select a grid row and then *manually* call `form.loadRecord(record)` in a `selectionchange` handler to push the record into the form. That's glue code — the exact kind binding deletes. Watch:
+Now the demo that makes people fall in love with MVVM. In phase 6 you'd select a grid row and then *manually* call `form.loadRecord(record)` in a `selectionchange` handler to push the record into the form — glue code, the exact kind binding deletes. Watch:
 
 ```javascript
 Ext.define('MyApp.view.users.UsersPanel', {
@@ -180,11 +180,11 @@ Ext.define('MyApp.view.users.UsersPanel', {
 });
 ```
 
-*What just happened:* Two bindings do all the work. `bind: { selection: '{currentUser}' }` on the grid says "whatever row is selected, publish it into the ViewModel as `currentUser`." The form's fields each bind to `{currentUser.first}`, `{currentUser.last}`, `{currentUser.email}`. So when you click a row, the grid publishes that record to `currentUser`, the ViewModel notifies everyone bound to it, and the three fields fill in automatically. **There is no `selectionchange` handler and no `loadRecord` call** — the data flowed through the ViewModel and the wires did the rest. And because the field bindings are two-way, edits in the form publish back into the record. This is the modern replacement for the manual wiring you wrote in phase 6.
+*What just happened:* two bindings do all the work. `bind: { selection: '{currentUser}' }` on the grid says "whatever row is selected, publish it into the ViewModel as `currentUser`." The form's fields each bind to `{currentUser.first}`, `{currentUser.last}`, `{currentUser.email}`. So when you click a row, the grid publishes that record to `currentUser`, the ViewModel notifies everyone bound to it, and the three fields fill in automatically. **There is no `selectionchange` handler and no `loadRecord` call** — the data flowed through the ViewModel and the wires did the rest. And because the field bindings are two-way, edits in the form publish back into the record — the modern replacement for the manual wiring in phase 6.
 
 > 💡 Read a bound screen by tracing the `{paths}`. Find which component publishes a path (the grid's `selection: '{currentUser}'`) and which components read it (the fields' `'{currentUser.*}'`). The ViewModel is the switchboard in the middle — you never have to find the wires by hand because the path *is* the wire.
 
-> ⚠️ Bindings are **deferred**, not instant. The ViewModel batches changes and flushes them on a short timer (a scheduler tick), so the bound widget updates a beat after you set the data — not synchronously on the same line. If you set a value and immediately read the widget expecting the new state, you'll get the *old* one. This trips people debugging in the console: the data is right, the DOM just hasn't caught up yet. Let the tick happen.
+> ⚠️ Bindings are **deferred**, not instant. The ViewModel batches changes and flushes them on a short timer (a scheduler tick), so the bound widget updates a beat after you set the data — not synchronously on the same line. If you set a value and immediately read the widget expecting the new state, you'll get the *old* one. This trips people debugging in the console: the data is right, the DOM just hasn't caught up.
 
 ## Legacy MVC controllers (Ext JS 4) — what you'll meet in old code
 
@@ -221,13 +221,13 @@ Ext.define('MyApp.controller.Users', {
 });
 ```
 
-*What just happened:* The controller declares `refs` — each entry generates a getter like `this.getUserGrid()` that runs the `selector` as a component query and returns the match. `init` calls `this.control({...})` to wire events by selector, just like the modern `control` block. The handlers do the work *by hand*: `onSelectionChange` calls `loadRecord` manually — exactly the glue MVVM binding eliminates. Functionally it works, and you'll see thousands of lines shaped like this.
+*What just happened:* the controller declares `refs` — each entry generates a getter like `this.getUserGrid()` that runs the `selector` as a component query and returns the match. `init` calls `this.control({...})` to wire events by selector, just like the modern `control` block. The handlers do the work *by hand*: `onSelectionChange` calls `loadRecord` manually — exactly the glue MVVM binding eliminates. Functionally it works, and you'll see thousands of lines shaped like this.
 
-> ⚠️ **The classic legacy gotcha: a global Ext JS 4 controller does not scope to a view instance.** Its `refs` and `control` selectors match across the *entire application*. If the same view appears twice on screen (two user panels, two tabs of the same type), the controller's `getUserGrid()` returns whichever component the query finds *first* — and an event from *either* instance fires the *same* handler with no clean way to tell which one. So a button in panel B can end up mutating panel A's grid. This is a frequent, maddening source of "why did the wrong panel update?" bugs. The modern ViewController fixes it precisely because it's bound to *one* view instance: `this.lookup('userGrid')` and `control` selectors only ever match *that* instance's children. If you're untangling a duplicated-view bug in an old app, this scoping difference is very often the root cause.
+> ⚠️ **The classic legacy gotcha: a global Ext JS 4 controller does not scope to a view instance.** Its `refs` and `control` selectors match across the *entire application*. If the same view appears twice on screen (two user panels, two tabs of the same type), the controller's `getUserGrid()` returns whichever component the query finds *first* — and an event from *either* instance fires the *same* handler with no clean way to tell which one. So a button in panel B can end up mutating panel A's grid — a frequent, maddening source of "why did the wrong panel update?" bugs. The modern ViewController fixes it precisely because it's bound to *one* view instance: `this.lookup('userGrid')` and `control` selectors only ever match *that* instance's children. If you're untangling a duplicated-view bug in an old app, this scoping difference is very often the root cause.
 
 ## Putting the three boxes together
 
-When you open an MVVM view, mentally sort every config into one of the three boxes and the file stops being a wall of code:
+When you open an MVVM view, sort every config into one of the three boxes and the file stops being a wall of code:
 
 - **`controller: '...'`, `listeners: 'methodName'`, `reference: '...'`** → behavior. The logic lives in the ViewController; `this.lookup` reaches children; `control` or `listeners` wires events.
 - **`viewModel: { ... }`, `data`, `stores`, `formulas`** → data. State lives in the ViewModel and recomputes itself.
@@ -245,7 +245,7 @@ That's the architecture modern Ext JS apps are built on, and the lens that turns
 
 ## Quick check
 
-Make sure the three boxes and the scoping gotcha actually stuck:
+Confirm the three boxes and the scoping gotcha stuck:
 
 ```quiz
 [

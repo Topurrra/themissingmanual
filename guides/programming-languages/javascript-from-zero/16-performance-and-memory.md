@@ -11,17 +11,17 @@ updated: 2026-06-19
 
 # Performance & Memory - How V8 Runs Your Code
 
-For sixteen phases you've written JavaScript and trusted the engine to make it fast. This phase pulls back that curtain. Not so you can micro-optimize every line - that's mostly a trap, and we'll show you why - but so you have an accurate **mental model** of what's actually happening when your code runs. With that model, the difference between "fast" and "slow" code stops being folklore and starts being something you can reason about.
+You've trusted the engine to make your JavaScript fast. This phase pulls back that curtain - not to make you micro-optimize every line (mostly a trap), but to give you an accurate **mental model**, turning "fast vs. slow" from folklore into something you can reason about.
 
-Two big ideas drive everything here. First: V8 (the engine inside Chrome and Node) doesn't plod through your code line by line the naive way - it *watches* your code and rewrites the hot parts into machine code. Second: memory you stop using gets cleaned up for you automatically - until, through a few classic mistakes, it doesn't. Understand both and you'll write code that's fast *by default* and won't slowly eat all the RAM on the server at 3 a.m.
+Two ideas drive this phase. First: V8 (the engine inside Chrome and Node) *watches* your code and rewrites hot parts into machine code rather than plodding through line by line. Second: memory you stop using gets cleaned up automatically - until, through a few classic mistakes, it doesn't.
 
 ## How V8 actually runs your code
 
-The naive story is "JavaScript is interpreted, so the engine reads each line and does what it says, every single time." That's half true at startup and completely wrong for code that runs a lot.
+The naive story - "JavaScript is interpreted, so the engine reads each line and does what it says, every time" - is half true at startup and wrong for code that runs a lot.
 
-📝 **JIT (Just-In-Time) compiler** - a compiler that runs *while your program runs*. It starts by interpreting your code quickly, watches which functions get called over and over ("hot" code), and then compiles those into optimized machine code on the fly - so the parts that matter run at near-native speed.
+📝 **JIT (Just-In-Time) compiler** - a compiler that runs *while your program runs*: it interprets quickly at first, watches which functions get called over and over ("hot" code), then compiles those into optimized machine code on the fly - so the parts that matter run at near-native speed.
 
-Here's the real flow inside V8. Your source is parsed and handed to a fast interpreter (called Ignition) so the program starts immediately - no waiting for a full compile. Meanwhile, V8 keeps counters: how often is this function called? What types does it actually see? When a function gets hot, the optimizing compiler (TurboFan) compiles a specialized, fast version *based on the types it has observed so far*.
+The real flow: source is parsed and handed to a fast interpreter (Ignition) so the program starts immediately, no waiting for a full compile. V8 counts how often each function is called and what types it sees; once hot, the optimizing compiler (TurboFan) compiles a specialized, fast version *based on the types observed so far*.
 
 ```mermaid
 flowchart LR
@@ -32,7 +32,7 @@ flowchart LR
   E --> C
 ```
 
-That last arrow is the catch. TurboFan's fast code is built on an *assumption*: "this function always gets numbers" (or always gets objects shaped a certain way). The moment reality breaks that assumption - you pass a string where it expected a number - V8 has to throw away the optimized code and fall back to the interpreter. That's a **deoptimization**, and it's the opposite of free.
+That last arrow is the catch. TurboFan's fast code is built on an *assumption* - "this function always gets numbers" (or objects shaped a certain way). Break that assumption and V8 throws away the optimized code and falls back to the interpreter: a **deoptimization**, and the opposite of free.
 
 ```javascript runnable
 function add(a, b) {
@@ -58,19 +58,19 @@ console.log("mixed types   (ms):", chaotic.toFixed(1));
 steady numbers (ms): 9.4
 mixed types   (ms): 18.7
 ```
-*What just happened:* Both loops call the exact same `add`, doing the exact same arithmetic. The first run warmed `add` with only numbers, so V8 compiled a tight number-only version. The second run first fed `add` strings, objects, and booleans - teaching V8 that `add` is unpredictable - so it compiled a more defensive, slower version (or kept deoptimizing). Same code, measurably different speed. (Timings vary a lot by machine and engine version, and a clever engine may even optimize this toy away - the *direction* is the lesson, not the exact numbers.)
+*What just happened:* Both loops call the same `add` with the same arithmetic. The first warmed `add` with only numbers, so V8 compiled a tight number-only version; the second fed it strings, objects, and booleans first, so it compiled a more defensive, slower version (or kept deoptimizing). Same code, measurably different speed. (Timings vary by machine and engine version, and a clever engine may even optimize this toy away - the *direction* is the lesson, not the exact numbers.)
 
-💡 **The practical takeaway:** you don't need to think about TurboFan day to day. You just need to keep your hot functions *predictable* - feed them consistent types and consistent object shapes. "Monomorphic" (one shape) code is what the optimizer loves. Chaotic, shape-shifting code is what forces it to give up.
+💡 **Practical takeaway:** you don't need to think about TurboFan day to day - just keep hot functions *predictable*, with consistent types and object shapes. "Monomorphic" (one shape) code is what the optimizer loves; chaotic, shape-shifting code forces it to give up.
 
 ## Hidden classes - why object shape matters
 
-V8 has the same craving for predictability with *objects*. JavaScript objects feel like loose bags of key-value pairs you can reshape at will, but under the hood V8 quietly assigns every object a **hidden class** (also called a "shape" or "map") that describes its layout: which properties it has, in which order, at which memory offsets.
+V8 craves the same predictability with *objects*. They feel like loose bags of key-value pairs you can reshape at will, but V8 quietly assigns every object a **hidden class** (a "shape" or "map") describing its layout: which properties, in which order, at which memory offsets.
 
-📝 **Hidden class / shape** - V8's internal record of an object's structure: its set of properties and their order. Two objects built the *same way* share one hidden class, which lets V8 generate fast, direct property access instead of a slow dictionary lookup.
+📝 **Hidden class / shape** - V8's internal record of an object's properties and their order. Two objects built the *same way* share one hidden class, letting V8 generate fast, direct property access instead of a slow dictionary lookup.
 
-When many objects share a hidden class, V8 can compile a property read like `point.x` down to "grab the value at offset 0" - one machine instruction. When objects have *different* shapes flowing through the same code, V8 can't make that bet and falls back to a dictionary-style lookup, which is much slower.
+Objects sharing a hidden class let V8 compile a property read like `point.x` down to "grab the value at offset 0" - one instruction. *Different* shapes flowing through the same code force a much slower dictionary-style lookup instead.
 
-The trap is that you can change an object's shape without realizing it - and **the order you add properties is part of the shape**.
+The trap: you can change an object's shape without realizing it, and **the order you add properties is part of the shape**.
 
 ```javascript runnable
 // Same fields, different insertion order → two different hidden classes.
@@ -91,17 +91,17 @@ same keys & values: true
 but V8 sees A and B as different shapes internally
 makeFast gives every object the same shape: { x: 1, y: 2 }
 ```
-*What just happened:* `a` and `b` hold identical data, but because `makeA` added `x` then `y` while `makeB` added `y` then `x`, V8 built two separate hidden classes. Any function that processes both now sees *two* shapes and can't fully specialize. `makeFast` sidesteps the whole problem by creating the object with all its fields in one literal - every object it returns is the same shape.
+*What just happened:* `a` and `b` hold identical data, but `makeA` added `x` then `y` while `makeB` added `y` then `x`, so V8 built two separate hidden classes - any function processing both sees *two* shapes and can't fully specialize. `makeFast` sidesteps this by creating every field in one literal, so every object it returns is the same shape.
 
-⚠️ **Gotcha - reshaping objects after creation forces slow paths.** Adding properties in different orders, adding fields conditionally (`if (x) obj.z = ...`), or `delete obj.key` all create new hidden classes or knock an object into slow "dictionary mode." The `delete` one is especially nasty: it can permanently demote an object to the slow path even after it's only used for reads.
+⚠️ **Gotcha - reshaping objects after creation forces slow paths.** Adding properties in different orders, adding fields conditionally (`if (x) obj.z = ...`), or `delete obj.key` all create new hidden classes or knock an object into slow "dictionary mode." `delete` is especially nasty: it can permanently demote an object even after it's only used for reads.
 
-💡 **The fix is a habit, not a tool:** initialize objects with *all* their fields up front, in a consistent order, even if some start as `null` or `0`. Instead of adding `obj.error` only when something fails, declare `error: null` from the start and assign to it later. Consistent shapes keep V8's fast path open.
+💡 **The fix is a habit, not a tool:** initialize objects with *all* fields up front, in a consistent order, even if some start as `null` or `0`. Instead of adding `obj.error` only when something fails, declare `error: null` from the start.
 
 ## Algorithmic cost dominates micro-optimizations
 
-Here's the most important performance lesson in this entire phase, and it has nothing to do with V8 internals: **the algorithm you choose almost always matters more than how cleverly you write the lines.**
+The most important performance lesson here has nothing to do with V8 internals: **the algorithm you choose almost always matters more than how cleverly you write the lines.**
 
-Beginners obsess over shaving operations - "is `for` faster than `forEach`? Should I cache `arr.length`?" These differences are usually noise. Meanwhile a single `O(n²)` loop hiding in your code will dwarf every micro-optimization the moment your data grows. The classic culprit: searching inside a loop.
+Beginners obsess over shaving operations - "is `for` faster than `forEach`? Should I cache `arr.length`?" - but these differences are usually noise. A single `O(n²)` loop hiding in your code dwarfs every micro-optimization once data grows. The classic culprit: searching inside a loop.
 
 ```javascript runnable
 // Find which of `needles` exist in `haystack`.
@@ -134,22 +134,22 @@ includes() in a loop (ms): 412.0 found 10000
 Set lookup          (ms): 2.3 found 10000
 speedup: 179x
 ```
-*What just happened:* Both versions get the identical answer, but the first calls `haystack.includes(n)` inside a loop - and `includes` itself scans the array, so you're doing roughly 20,000 × 20,000 = 400 million comparisons. The second builds a `Set` in one pass, then each `set.has(n)` is near-instant. The result isn't 10% faster - it's *orders of magnitude* faster, and the gap widens as the data grows. No amount of loop-tuning could rescue the first approach. (Exact timings vary by machine; the ratio is what matters.)
+*What just happened:* Both versions get the identical answer, but the first calls `haystack.includes(n)` inside a loop, and `includes` itself scans the array - roughly 20,000 × 20,000 = 400 million comparisons. The second builds a `Set` once, so each `set.has(n)` is near-instant. Not 10% faster - *orders of magnitude* faster, and the gap widens as data grows; no loop-tuning could rescue the first approach. (Exact timings vary by machine; the ratio is what matters.)
 
-Play with how operation counts explode as input grows - this is the intuition that makes you reach for a `Map` or `Set` reflexively:
+Play with how operation counts explode as input grows - the intuition that makes you reach for a `Map` or `Set` reflexively:
 
 ```playground-bigo
 ```
 
-💡 **The order of operations for performance work:** first pick the right data structure and algorithm (turn `O(n²)` into `O(n)`), *then* - only if you've measured and it's still too slow - worry about constant-factor tweaks. Reaching for micro-optimizations before fixing a bad algorithm is polishing a part you're about to throw away.
+💡 **The order of operations for performance work:** pick the right data structure and algorithm first (turn `O(n²)` into `O(n)`); only *then*, if you've measured and it's still too slow, worry about constant-factor tweaks. Micro-optimizing before fixing a bad algorithm is polishing a part you're about to throw away.
 
 ## Garbage collection - memory you stop using comes back
 
-In languages like C, you ask the system for memory and you must hand it back yourself; forget to, and you leak. JavaScript doesn't work that way. It has a **garbage collector** that finds memory you're no longer using and reclaims it automatically. You allocate by creating objects; you "free" by *letting go* of them.
+In languages like C, you ask the system for memory and must hand it back yourself; forget to, and you leak. JavaScript has a **garbage collector** that finds unused memory and reclaims it automatically. You allocate by creating objects; you "free" by *letting go* of them.
 
 📝 **Garbage collection (GC)** - the engine automatically reclaiming memory that your program can no longer reach. You never call `free()`. When nothing references an object anymore, it becomes eligible to be collected.
 
-The mental model that matters is **reachability**. Start from the "roots" - global variables, the current call stack, things actively in scope - and follow every reference. Any object you can reach by following references from a root is *alive*. Anything you *can't* reach is garbage, and the collector is free to reclaim its memory. It doesn't matter whether you "meant" to keep it; what matters is whether a chain of references still leads to it.
+The mental model that matters is **reachability**. Start from the "roots" - global variables, the current call stack, things actively in scope - and follow every reference. Anything reachable from a root is *alive*; anything you *can't* reach is garbage, free for the collector to reclaim. It doesn't matter whether you "meant" to keep it - only whether a chain of references still leads to it.
 
 ```javascript runnable
 function makeBigThing() {
@@ -168,24 +168,24 @@ console.log("ref is now:", ref, "→ the big object is eligible for GC");
 alive, id: 0.7321
 ref is now: null → the big object is eligible for GC
 ```
-*What just happened:* `makeBigThing()` allocated a sizable object and `ref` pointed at it, making it reachable from a root - so it stayed in memory. Setting `ref = null` cut the only reference. Now no chain of references reaches that object, so it's garbage: the collector will reclaim its memory whenever it next runs. Notice you never freed anything - you just stopped referencing it, and that's the whole job.
+*What just happened:* `makeBigThing()` allocated a sizable object, and `ref` pointed at it, making it reachable and keeping it alive. Setting `ref = null` cut the only reference: now unreachable, it's garbage, and the collector reclaims it whenever it next runs. You never freed anything - you just stopped referencing it, and that's the whole job.
 
 Watch reachability and collection play out visually - see objects go from rooted, to orphaned, to swept away:
 
 ```playground-gc
 ```
 
-💡 V8's collector is *generational*: it assumes most objects die young (the temporary object inside a function call, gone the moment the call returns) and collects that "young generation" very cheaply and often. Objects that survive a while get promoted to an "old generation" that's scanned less frequently. The upshot for you: short-lived temporary objects are cheap - you don't need to fear creating them.
+💡 V8's collector is *generational*: it assumes most objects die young (a temporary object inside a function call, gone the moment the call returns) and collects that "young generation" cheaply and often. Survivors get promoted to an "old generation" scanned less frequently. Upshot: short-lived temporary objects are cheap - don't fear creating them.
 
 ## Memory leaks in a garbage-collected language
 
-If memory is reclaimed automatically, how can you possibly leak it? Easy: the collector only reclaims what's **unreachable**. A leak in JavaScript isn't forgetting to free - it's *accidentally keeping a reference alive* so the collector thinks the object is still needed. The memory grows, nothing gets reclaimed, and eventually the tab freezes or the Node process gets killed.
+If memory is reclaimed automatically, how can you leak it? The collector only reclaims what's **unreachable**. A JavaScript leak isn't forgetting to free - it's *accidentally keeping a reference alive* so the collector thinks the object is still needed. Memory grows, nothing gets reclaimed, and eventually the tab freezes or the Node process gets killed.
 
 Three classic ways it happens:
 
-- **Forgotten timers and listeners.** `setInterval`, or an event listener you `addEventListener` but never remove, keeps a reference to its callback - and the callback keeps everything it closes over.
-- **Growing global caches.** A module-level `Map` or array you keep pushing into but never trim. It's reachable forever (it's a root), so everything inside it lives forever.
-- **Closures capturing big objects.** A closure holds onto every variable it references. If a long-lived function captures a huge object it doesn't really need, that object can't be collected.
+- **Forgotten timers and listeners.** A `setInterval`, or an `addEventListener` never removed, keeps a reference to its callback - and the callback keeps everything it closes over.
+- **Growing global caches.** A module-level `Map` or array you keep pushing into but never trim is reachable forever (it's a root), so everything inside lives forever too.
+- **Closures capturing big objects.** A closure holds every variable it references; a long-lived function capturing a huge object it doesn't need prevents that object's collection.
 
 Here's the most common one - a cache that only grows - plus the fix:
 
@@ -219,20 +219,20 @@ console.log("bounded cache size:", boundedCache.size); // capped at MAX
 leaky cache size: 5000
 bounded cache size: 100
 ```
-*What just happened:* `leakyCache` is a module-level `Map` - a root - so every entry you add is reachable forever and can never be collected, even if you'll never use that key again. Over a long-running server, that's a steady upward memory creep until something dies. `boundedCache` fixes it by capping the size: once it's full, adding a new entry deletes the oldest, dropping the only reference to that old object so the collector *can* reclaim it. Same idea applies to timers (`clearInterval` when done) and listeners (`removeEventListener` when the element goes away).
+*What just happened:* `leakyCache` is a module-level `Map` - a root - so every entry is reachable forever, even once you'll never use that key again: a steady upward memory creep until something dies. `boundedCache` fixes it by capping the size - once full, adding a new entry deletes the oldest, dropping the only reference so the collector *can* reclaim it. Same idea for timers (`clearInterval` when done) and listeners (`removeEventListener` when the element goes away).
 
-⚠️ **Measure before you optimize - guessing wastes time.** Don't *assume* where a leak or slowdown is. Use the browser DevTools **Memory** tab (take heap snapshots over time and look for objects that keep growing) and the **Performance** tab to profile what's actually slow. The number of hours engineers have burned "optimizing" code that was never the bottleneck is staggering. Profile first, fix the real thing, then verify the number actually moved.
+⚠️ **Measure before you optimize - guessing wastes time.** Don't *assume* where a leak or slowdown is: use the browser DevTools **Memory** tab (heap snapshots over time, watch for objects that keep growing) and the **Performance** tab to profile what's actually slow. Engineers burn staggering hours "optimizing" code that was never the bottleneck - profile first, fix the real thing, then verify the number moved.
 
 For a deeper, math-free tour of why `O(n²)` and `O(n)` diverge the way they do, see [Big-O without the math panic](/guides/big-o-without-the-math-panic).
 
 ## Recap
 
-1. **V8 uses a JIT compiler:** it starts by interpreting, watches for *hot* code, and compiles it to fast machine code based on the types it has seen. Feed your hot functions **consistent types** and they stay fast; mix types and they **deoptimize**.
-2. **Object shape matters.** V8 assigns each object a **hidden class** based on its properties *and their order*. Build objects with all their fields up front, in a consistent order; avoid `delete` and conditional property-adding on hot objects.
+1. **V8 uses a JIT compiler:** it starts by interpreting, watches for *hot* code, and compiles it to fast machine code based on types seen so far. **Consistent types** keep hot functions fast; mixed types force a **deoptimization**.
+2. **Object shape matters.** V8 assigns each object a **hidden class** based on its properties *and their order*. Build objects with all fields up front, in a consistent order; avoid `delete` and conditional property-adding on hot objects.
 3. **Algorithm beats micro-optimization.** Turning an `O(n²)` nested scan into an `O(n)` `Set`/`Map` lookup can be 100×+ faster - far more than any line-level tweak. Fix the algorithm first.
-4. **Garbage collection is automatic** and based on **reachability**: an object lives as long as a chain of references reaches it from a root. You "free" memory by *letting go* of references, never by calling `free()`.
-5. **Leaks still happen** when you accidentally keep references alive - forgotten timers/listeners, unbounded global caches, closures holding big objects. The fix is to *drop* the reference (clear the timer, bound the cache, remove the listener).
-6. **Measure, don't guess.** Use DevTools' Memory and Performance tabs to find the real bottleneck before optimizing, and verify the change actually helped.
+4. **Garbage collection is automatic**, based on **reachability**: an object lives as long as a chain of references reaches it from a root. You "free" memory by *letting go* of references, never by calling `free()`.
+5. **Leaks still happen** when you accidentally keep references alive - forgotten timers/listeners, unbounded global caches, closures holding big objects. Fix: *drop* the reference (clear the timer, bound the cache, remove the listener).
+6. **Measure, don't guess.** Use DevTools' Memory and Performance tabs to find the real bottleneck before optimizing, and verify the fix actually helped.
 
 ## Quick check
 

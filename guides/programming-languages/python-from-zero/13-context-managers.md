@@ -11,20 +11,19 @@ updated: 2026-06-19
 
 # Context Managers
 
-Some things you open, you must close. A file. A network connection. A lock that
-another thread is waiting on. A database transaction someone needs committed or
-rolled back. The pattern is always the same: do some setup, do your work, then -
-*no matter what happens in the middle* - clean up.
+Some things you open, you must close. A file. A network connection. A lock another
+thread is waiting on. A database transaction someone needs committed or rolled
+back. The pattern is always the same: setup, do your work, then - *no matter what
+happens in the middle* - clean up.
 
 That last part is where people get burned. The work in the middle can raise an
 exception, and if it does, the cleanup line after it never runs. The file stays
-open. The lock stays held. The connection leaks. You won't notice on a good day;
+open, the lock stays held, the connection leaks. You won't notice on a good day;
 you'll notice at 2am when the server has run out of file handles and nobody can
 log in.
 
-Python has one tool that makes "always clean up" automatic, and it's the `with`
-statement. This phase is about what `with` actually guarantees, and how to build
-your own.
+Python has one tool that makes "always clean up" automatic: the `with` statement.
+This phase covers what `with` actually guarantees, and how to build your own.
 
 ## The problem `with` solves
 
@@ -36,9 +35,9 @@ data = f.read()
 f.close()
 ```
 
-This looks fine. It is fine - until `f.read()` raises (the disk hiccups, the file
-is malformed, your parsing blows up). Then `f.close()` never runs, because the
-exception jumps straight out of the function. The file handle leaks.
+This is fine - until `f.read()` raises (the disk hiccups, the file is malformed,
+your parsing blows up). Then `f.close()` never runs, because the exception jumps
+straight out of the function. The file handle leaks.
 
 **The careful version.** The honest fix is `try`/`finally` - the `finally` block
 runs whether or not an exception happened:
@@ -52,9 +51,8 @@ finally:
 ```
 
 This is *correct*. It's also four lines of ceremony around one line of real work,
-and you have to write it every single time you touch a resource. Forget the
-`try`/`finally` once and you're back to leaking handles. Writing it everywhere is
-noisy, and noisy code is code people skip.
+and you have to write it every time you touch a resource. Forget the `try`/`finally`
+once and you're back to leaking handles - and noisy code is code people skip.
 
 **What it actually is.** A **context manager** is an object that knows how to set
 itself up and, crucially, how to tear itself down - and the `with` statement wires
@@ -78,13 +76,13 @@ with open("data.txt") as f:
 
 *What just happened:* `with open(...) as f` opened the file and handed it to `f`.
 When the block ends - for *any* reason, including an exception thrown by
-`f.read()` - Python calls the file's cleanup, which closes the handle. That
-closing is the `finally` you no longer have to write. The `as f` part is just the
-name you give whatever the context manager hands back.
+`f.read()` - Python calls the file's cleanup, which closes the handle. That's the
+`finally` you no longer have to write. `as f` is just the name you give whatever
+the context manager hands back.
 
-So every `with open(...)` you've ever written was a `try`/`finally` in disguise.
-The same machinery works for anything else that needs guaranteed cleanup - you
-just have to teach an object how to enter and exit.
+Every `with open(...)` you've written was a `try`/`finally` in disguise. The same
+machinery works for anything else that needs guaranteed cleanup - you just have to
+teach an object how to enter and exit.
 
 ## The protocol: `__enter__` and `__exit__`
 
@@ -98,11 +96,10 @@ just have to teach an object how to enter and exit.
 
 📝 **The context manager protocol** - an object is a context manager if it has
 `__enter__` and `__exit__`. (Recall from [Phase 6](06-objects-and-classes.md):
-dunder methods are hooks Python calls for you at the right moment. You don't call
-`__enter__` yourself - `with` calls it.)
+dunder methods are hooks Python calls for you. You don't call `__enter__`
+yourself - `with` calls it.)
 
-Here's a tiny one you can run. It prints when it enters and exits, so you can
-watch the protocol fire:
+Here's a tiny one that prints on enter and exit, so you can watch the protocol fire:
 
 ```python runnable
 class Tag:
@@ -126,13 +123,13 @@ $ python tags.py
 </body>
 ```
 *What just happened:* Entering the `with` block called `__enter__`, which printed
-the opening tag. Your code printed `hello`. Then - at the end of the block -
-Python called `__exit__`, which printed the closing tag. You wrote the opening and
+the opening tag. Your code printed `hello`. Then, at the end of the block, Python
+called `__exit__`, which printed the closing tag. You wrote the opening and
 closing exactly once, and Python guaranteed they bracket whatever happens between.
 
 Those three parameters on `__exit__` - `exc_type`, `exc_value`, `traceback` - are
-how Python tells your cleanup *whether the block ended normally or blew up*. We'll
-use them in the gotcha section. For now, notice they're there.
+how Python tells your cleanup *whether the block ended normally or blew up*. More
+on them in the gotcha section below.
 
 Here's the shape of it as a picture:
 
@@ -148,10 +145,10 @@ whether the body finished cleanly or threw (the dotted path).
 
 ## The easier way: `@contextmanager`
 
-Writing a whole class with two dunder methods is a lot of structure for something
-that's really just "do this, then yield control, then do that." Python's
-`contextlib` module gives you a shortcut: write a generator, mark it with
-`@contextmanager`, and let a single `yield` split setup from teardown.
+A whole class with two dunder methods is a lot of structure for something that's
+really just "do this, then yield control, then do that." Python's `contextlib`
+module gives you a shortcut: write a generator, mark it with `@contextmanager`,
+and let a single `yield` split setup from teardown.
 
 📝 **Generator** - a function that uses `yield` to pause and hand a value back to
 its caller, then resume where it left off. For a context manager, everything
@@ -177,14 +174,13 @@ $ python tag_cm.py
 </body>
 ```
 *What just happened:* The generator ran up to `yield`, printing the open tag and
-pausing. The yielded value `name` became `t` via `as`. Your block ran. When the
-block ended, the generator *resumed* from the `yield` and ran the rest, printing
-the close tag. One function, one `yield`, the same guarantee - much less ceremony
-than the class.
+pausing. The yielded value `name` became `t` via `as`. Your block ran. When it
+ended, the generator *resumed* from the `yield` and printed the close tag. One
+function, one `yield`, the same guarantee - much less ceremony than the class.
 
 For the cleanup to truly always run, the teardown belongs in a `finally`, so an
-exception in the block can't skip it. Here's the robust form - a small `Timer`
-that reports how long a block took, even if it crashes partway:
+exception can't skip it. Here's the robust form - a small `Timer` that reports how
+long a block took, even if it crashes partway:
 
 ```python runnable
 import time
@@ -210,10 +206,10 @@ work: start
 work: done
 499999500000
 ```
-*What just happened:* Setup recorded the start time. The `yield` ran your block.
-The `finally` ran the teardown - so even if `sum(...)` had raised, you'd still see
-the `done` line. Wrapping the post-`yield` work in `try`/`finally` is the habit
-that makes a `@contextmanager` bulletproof.
+*What just happened:* Setup recorded the start time, `yield` ran your block, and
+`finally` ran the teardown - so even if `sum(...)` had raised, you'd still see the
+`done` line. Wrapping the post-`yield` work in `try`/`finally` is the habit that
+makes a `@contextmanager` bulletproof.
 
 > 💡 **Key point.** Two ways to build a context manager, same protocol underneath:
 > a **class** with `__enter__`/`__exit__` when you need to hold state or reuse the
@@ -228,8 +224,8 @@ need guaranteed cleanup:
 - **Files** - `with open(...) as f:` closes the handle. The original example, and
   the most common.
 - **Locks** - a `threading.Lock` is a context manager. `with lock:` acquires it on
-  entry and releases it on exit, so the lock can't stay stuck even if the protected
-  code raises:
+  entry and releases it on exit, so it can't stay stuck even if the protected code
+  raises:
 
   ```python
   import threading
@@ -240,7 +236,7 @@ need guaranteed cleanup:
   # released here, even if the line above had thrown
   ```
 
-  Without `with`, you'd `lock.acquire()` and `lock.release()` by hand - and a
+  Without `with`, you'd `lock.acquire()` and `lock.release()` by hand - a
   forgotten or skipped `release()` is a classic deadlock, where another thread
   waits forever for a lock that's never coming back.
 
@@ -248,21 +244,21 @@ need guaranteed cleanup:
   a cursor) a context manager that **commits** the transaction if the block
   succeeds and **rolls it back** if an exception escapes. So `with conn:` means
   "all of this, or none of it" - exactly the all-or-nothing behavior a transaction
-  is supposed to give you. (The exact object you wrap varies by library - check
-  its docs - but the pattern is the point.)
+  should give you. (The exact object you wrap varies by library, but the pattern
+  is the point.)
 
-The thread that ties them together: setup that must be matched by teardown, and a
-teardown you can't afford to skip. That's the precise shape `with` was built for.
+The thread tying them together: setup that must be matched by teardown you can't
+afford to skip. That's the precise shape `with` was built for.
 
 ## ⚠️ The gotcha: `__exit__` runs on exception - and can swallow it
 
-The whole point of `with` is that cleanup runs **even when the block raises**. That
-is a feature - it's *why* the file still closes when `f.read()` blows up. But it
-has a sharp edge worth understanding.
+The whole point of `with` is that cleanup runs **even when the block raises** -
+that's a feature, it's *why* the file still closes when `f.read()` blows up. But
+it has a sharp edge worth understanding.
 
 When an exception propagates out of a `with` block, Python passes its details into
-`__exit__` through those three parameters, and then **`__exit__`'s return value
-decides what happens to the exception**:
+`__exit__` through those three parameters, and **`__exit__`'s return value decides
+what happens to the exception**:
 
 - Return a **falsy** value (or nothing - the default `None`) → the exception
   continues propagating after cleanup. *This is what you almost always want.*
@@ -295,28 +291,28 @@ we got here - the exception was swallowed
 ```
 *What just happened:* The `raise` sent a `ValueError` out of the block. Python
 called `__exit__` with `exc_type=ValueError` and the exception details, ran the
-cleanup (the print), and then saw `return True` - so it *suppressed* the error.
-The line after the `with` ran normally. If you'd returned `None` (or just not
-returned anything), that `ValueError` would have kept propagating and crashed the
-program, which is the right behavior the vast majority of the time.
+cleanup (the print), and saw `return True` - so it *suppressed* the error. The
+line after the `with` ran normally. Returning `None` (or nothing) would have let
+that `ValueError` keep propagating and crash the program - the right behavior the
+vast majority of the time.
 
 The rule of thumb: **let exceptions through.** Your `__exit__` should clean up and
 return nothing, so problems still surface. Returning `True` to swallow an exception
-is a rare, deliberate choice - `contextlib.suppress` exists for exactly the cases
-where you *mean* it (e.g. "delete this file if it exists, shrug if it doesn't").
-Silently eating errors you didn't mean to is how bugs hide for weeks.
+is a rare, deliberate choice - `contextlib.suppress` exists for cases where you
+*mean* it (e.g. "delete this file if it exists, shrug if it doesn't"). Silently
+eating errors you didn't mean to is how bugs hide for weeks.
 
-> 🪖 **War story.** A teammate once wrote a context manager for a flaky API client
-> and, copying a snippet, left a `return True` in `__exit__`. For months, every
-> failed API call inside that `with` block vanished without a trace - no error, no
-> log, just silently wrong data downstream. The fix was deleting two characters.
-> When in doubt, return nothing from `__exit__`.
+> 🪖 **War story.** A teammate wrote a context manager for a flaky API client and,
+> copying a snippet, left a `return True` in `__exit__`. For months, every failed
+> API call inside that `with` block vanished without a trace - no error, no log,
+> just silently wrong data downstream. The fix was deleting two characters. When in
+> doubt, return nothing from `__exit__`.
 
 ## Recap
 
 1. Anything you **open you must close** - files, locks, connections, transactions.
-   The `with` statement guarantees the close happens, even on exception, so you
-   don't write `try`/`finally` by hand every time.
+   `with` guarantees the close happens, even on exception, so you don't write
+   `try`/`finally` by hand every time.
 2. **`with open(...) as f:`** is a `try`/`finally` in disguise: the file closes
    when the block ends, no matter how it ends.
 3. The **protocol** is two dunder methods: `__enter__` (setup; its return value is
@@ -330,9 +326,9 @@ Silently eating errors you didn't mean to is how bugs hide for weeks.
    swallow it.
 
 You can now reach for `with` anytime something needs reliable cleanup, and build
-your own when the standard ones don't fit. Next, we make your code say what it
-means about *types* - adding annotations and letting `mypy` catch whole classes of
-bugs before you ever run the program.
+your own when the standard ones don't fit. Next, making your code say what it means
+about *types* - annotations and letting `mypy` catch whole classes of bugs before
+you ever run the program.
 
 ## Quick check
 

@@ -11,14 +11,14 @@ updated: 2026-06-19
 
 # Where to Go Next
 
-You've gone the whole distance - from "what is Python" through classes and errors, and on into the deep
-half: the data model, generators, decorators, typing, concurrency, performance, and packaging. That's the
-*language* genuinely in your hands. What's left isn't *more Python* so much as *Python pointed at a
-problem* - and which direction you go depends entirely on what you want to make.
+You've gone the whole distance - from "what is Python" through classes and errors, into the deep half:
+the data model, generators, decorators, typing, concurrency, performance, packaging. That's the *language*
+genuinely in your hands. What's left isn't *more Python* so much as *Python pointed at a problem*, and
+which direction you go depends entirely on what you want to make.
 
-So this last phase is a map, not a curriculum. No "you must learn all of these." Pick the one branch that
-matches what you're trying to build, ignore the rest until you need them, and - most importantly - go
-build the thing.
+So this last phase is a map, not a curriculum - no "you must learn all of these." Pick the branch that
+matches what you're building, ignore the rest until you need them, and, most importantly, go build the
+thing.
 
 ## The four big branches
 
@@ -36,23 +36,23 @@ flowchart TD
 ```
 
 *One idea:* the same Python you learned branches toward different goals - a website, a data analysis, a
-script that does your chores, or a tool you share. Same language, different destination.
+script that does your chores, a tool you share. Same language, different destination.
 
 ### Web - make something people open in a browser
 
-If you want to build a website or an API that other programs call, this is your branch. The two names
-you'll hear most:
+If you want to build a website or an API other programs call, this is your branch. The two names you'll
+hear most:
 
 - **Django** - a "batteries-included" framework. It hands you an admin panel, user accounts, database
-  models, and forms out of the box. Great when you're building a full application and want the common
-  parts already solved. The trade-off: it's opinionated and large, so there's more to learn up front.
-- **FastAPI** - a modern, lightweight framework focused on building APIs (the JSON-over-HTTP kind). It's
-  smaller, fast to start with, and leans on the type hints you met in [Phase 14](14-type-hints.md). Great
-  when you want an API and not a whole website.
+  models, and forms out of the box - great for a full application where you want the common parts already
+  solved. The trade-off: opinionated and large, so there's more to learn up front.
+- **FastAPI** - a modern, lightweight framework focused on building APIs (the JSON-over-HTTP kind). Smaller,
+  fast to start with, and leans on the type hints from [Phase 14](14-type-hints.md). Great when you want an
+  API and not a whole website.
 
-Neither is "better" - Django is more *included*, FastAPI is more *minimal*. To understand what an API
-even is before you pick, [What an API Is](/guides/what-an-api-is) is the grounding. (Deep dives on both
-are their own guides.)
+Neither is "better" - Django is more *included*, FastAPI is more *minimal*. To understand what an API even
+is before you pick, [What an API Is](/guides/what-an-api-is) is the grounding. (Deep dives on both are
+their own guides.)
 
 ### Data - turn numbers into answers
 
@@ -61,8 +61,8 @@ dominates.
 
 - **NumPy** - fast numerical arrays. The foundation almost everything data-related is built on (and the
   practical escape hatch from the performance limits of [Phase 17](17-performance-and-memory.md)).
-- **pandas** - tables (it calls them DataFrames) with filtering, grouping, and joining, built on NumPy.
-  If you've ever wished a spreadsheet were programmable, this is that.
+- **pandas** - tables (it calls them DataFrames) with filtering, grouping, and joining, built on NumPy. If
+  you've ever wished a spreadsheet were programmable, this is that.
 
 This branch is deep (it leads toward machine learning), but pandas alone will already change how you
 handle any pile of data.
@@ -71,14 +71,14 @@ handle any pile of data.
 
 The least glamorous branch and often the most immediately useful: small scripts that rename files, scrape
 a page, send a report, or poke an API on a schedule. You can start *today* with only what this guide
-taught you plus the `requests` library from [Phase 8](08-ecosystem-and-tooling.md). This is where most
-people feel Python "click" - because the payoff is a real chore that never bothers you again.
+taught you plus the `requests` library from [Phase 8](08-ecosystem-and-tooling.md) - this is where most
+people feel Python "click," because the payoff is a real chore that never bothers you again.
 
 ### Packaging - share what you built
 
 You've already seen the mechanics in [Phase 18](18-packaging-and-environments.md) - `pyproject.toml`,
-building, publishing. The "next step" here isn't learning *how*; it's having something worth sharing.
-Don't rush it - package a tool once it's genuinely useful to someone other than you.
+building, publishing. The "next step" isn't learning *how*, it's having something worth sharing. Don't
+rush it - package a tool once it's genuinely useful to someone other than you.
 
 ## The honest advice: build, then look things up
 
@@ -93,31 +93,31 @@ A few starter projects sized to where you are right now:
 - **Data:** load a CSV with pandas, filter it, and print the answer to one question you actually care
   about.
 
-Pick the smallest version of the thing you want to exist. Build *that*. Everything in this guide - types,
-collections, functions, classes, the data model, generators, decorators, typing, concurrency - was the
-vocabulary. A project is where it becomes fluency.
+Pick the smallest version of the thing you want to exist and build *that*. Everything in this guide -
+types, collections, functions, classes, the data model, generators, decorators, typing, concurrency - was
+the vocabulary. A project is where it becomes fluency.
 
 ## One last reframe
 
-Python was a deliberate choice as a first language: readable, forgiving, and useful in nearly every
-corner of software. But the *ideas* you picked up here - variables and types, collections, control flow,
-objects, the data model, iteration, error handling, concurrency - aren't Python's. They're how nearly
-every modern language works, dressed in different syntax. If you ever pick up a second language, you'll
-find you already know most of it; you're just learning new spellings.
+Python was a deliberate choice as a first language: readable, forgiving, useful in nearly every corner of
+software. But the *ideas* you picked up here - variables and types, collections, control flow, objects,
+the data model, iteration, error handling, concurrency - aren't Python's. They're how nearly every modern
+language works, dressed in different syntax. Pick up a second language and you'll find you already know
+most of it; you're just learning new spellings.
 [Languages, Explained Like a Human](/guides/languages-explained-like-a-human) is the map of that bigger
 landscape, for whenever you're curious what else is out there.
 
 You came in not knowing what `print("hello")` did. You're leaving able to reason about an entire program
-*and* the runtime underneath it. That's not a small thing. Go make something.
+*and* the runtime underneath it. Go make something.
 
 ## Recap
 
 1. Python branches toward **web** (Django for full apps, FastAPI for APIs), **data** (NumPy + pandas),
    **automation** (small useful scripts), and **packaging** (sharing what you built).
-2. Pick the *one* branch that matches what you want to make; ignore the rest until you need them.
-3. You learn the next layer by **building something and looking up what you get stuck on** - not by
+2. Pick the *one* branch matching what you want to make; ignore the rest until you need them.
+3. You learn the next layer by **building something and looking up what you get stuck on**, not by
    reading ahead.
-4. The concepts you learned here are nearly universal across languages; a second language is mostly new
+4. The concepts you learned are nearly universal across languages; a second language is mostly new
    spelling.
 
 One last check - the through-lines of the whole guide:

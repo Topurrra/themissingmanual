@@ -11,22 +11,22 @@ updated: 2026-06-19
 
 # Dataclasses & Modern Modeling
 
-A huge fraction of the classes you'll ever write are just *bags of fields*. A `Point` with an `x` and
-a `y`. A `User` with a name, an email, and an age. There's no clever behavior - the class exists only to
+A huge fraction of the classes you'll ever write are just *bags of fields*. A `Point` with an `x` and a
+`y`. A `User` with a name, an email, and an age. There's no clever behavior - the class exists only to
 hold a few values together and let you compare and print them.
 
 Back in [Phase 6](06-objects-and-classes.md) you wrote these by hand, and in
-[Phase 10](10-the-data-model.md) you learned that the comparing and printing live in dunder methods like
+[Phase 10](10-the-data-model.md) you learned the comparing and printing live in dunder methods like
 `__repr__` and `__eq__`. Put those two facts together and a problem appears: for every bag-of-fields
-class, you end up writing the *same* `__init__`, the *same* `__repr__`, the *same* `__eq__` - by hand,
-every time. It's tedious, it's easy to get subtly wrong, and it's pure ceremony.
+class, you write the *same* `__init__`, `__repr__`, and `__eq__` by hand, every time - tedious, easy to
+get subtly wrong, pure ceremony.
 
-Modern Python kills that ceremony. This phase is about the tools that write the boilerplate for you so
-you can describe *what your data is* and stop typing the parts a machine could.
+Modern Python kills that ceremony. This phase covers the tools that write the boilerplate for you so you
+can describe *what your data is* and stop typing the parts a machine could.
 
 ## The boilerplate problem - see it first
 
-Here's an honest, hand-written bag-of-fields class. Nothing here is clever; every line is obligatory.
+Here's an honest, hand-written bag-of-fields class. Nothing here is clever - every line is obligatory.
 
 ```python
 class Point:
@@ -43,24 +43,22 @@ class Point:
         return (self.x, self.y) == (other.x, other.y)
 ```
 
-Three methods, and not one of them says anything about what a `Point` *means*. The only real
-information in the whole class is "a point has an `x` and a `y`." Everything else is the machinery you're
-forced to hand-crank: store the args, make it print nicely, make two points with equal coordinates
-compare equal.
+Three methods, and none says anything about what a `Point` *means*. The only real information in the
+whole class is "a point has an `x` and a `y`." Everything else is machinery you're forced to hand-crank:
+store the args, print nicely, make equal coordinates compare equal.
 
-⚠️ And it's not just tedious - it's a place bugs hide. Add a `z` coordinate later and you must remember
-to touch `__init__`, `__repr__`, *and* `__eq__`. Miss one and you get a class that constructs fine but
+⚠️ It's not just tedious - it's a place bugs hide. Add a `z` coordinate later and you must remember to
+touch `__init__`, `__repr__`, *and* `__eq__`. Miss one and you get a class that constructs fine but
 prints the old shape or compares wrong, quietly.
 
 ## `@dataclass` - describe the fields, get the methods for free
 
 **What it actually is.** `@dataclass` is a **decorator** from the standard library that reads the typed
-fields you declare at the top of a class and *generates* `__init__`, `__repr__`, and `__eq__` for you
-from them. You write the data; it writes the ceremony.
+fields you declare at the top of a class and *generates* `__init__`, `__repr__`, and `__eq__` from them.
+You write the data; it writes the ceremony.
 
-📝 **Decorator** - a thing you put above a class or function with `@name` that transforms it. You met the
-idea in passing; here, `@dataclass` takes your field declarations and adds the dunder methods to the
-class before you ever use it.
+📝 **Decorator** - a thing you put above a class or function with `@name` that transforms it. Here,
+`@dataclass` takes your field declarations and adds the dunder methods before you ever use the class.
 
 It leans directly on the [type hints](14-type-hints.md) from the last phase: the `x: int` annotations
 aren't decoration here, they're how the dataclass knows what the fields *are*. Watch the same `Point`
@@ -83,16 +81,14 @@ $ python points.py
 Point(x=3, y=4)
 True
 ```
-*What just happened:* The two lines `x: int` and `y: int` are the entire class now. `@dataclass` saw
-them and wrote an `__init__(self, x, y)` that stores both, a `__repr__` that prints
-`Point(x=3, y=4)`, and an `__eq__` that compares by field values - which is why two separately-built
-points with the same coordinates came back `True`. That last point matters: by default a plain class
-compares by *identity* (are these the literal same object?), so `Point(3, 4) == Point(3, 4)` would be
-`False` without the generated `__eq__`. The dataclass gives you the equality you actually wanted.
+*What just happened:* The two lines `x: int` and `y: int` are the entire class now. `@dataclass` saw them
+and wrote an `__init__(self, x, y)` that stores both, a `__repr__` that prints `Point(x=3, y=4)`, and an
+`__eq__` that compares by field values - why two separately-built points with the same coordinates came
+back `True`. That matters because a plain class compares by *identity* (are these the literal same
+object?) by default, so `Point(3, 4) == Point(3, 4)` would be `False` without the generated `__eq__`.
 
 > 💡 **Key point.** A dataclass isn't a new kind of object - it's a *normal class* with the boring dunders
-> filled in for you. You can still add methods, properties, and anything else a regular class has. You've
-> just been handed back the time you'd have spent typing `self.x = x`.
+> filled in for you. You can still add methods, properties, and anything else a regular class has.
 
 ## Defaults - and the mutable-default trap, again
 
@@ -115,12 +111,12 @@ User(name='Ana', active=True)
 User(name='Bo', active=False)
 ```
 *What just happened:* `active: bool = True` gave the field a fallback, so `User("Ana")` filled it in
-automatically while `User("Bo", active=False)` overrode it. This reads exactly like default arguments in
-a normal `__init__`, because that's what the dataclass generates.
+automatically while `User("Bo", active=False)` overrode it - it reads exactly like default arguments in a
+normal `__init__`, because that's what the dataclass generates.
 
 But the moment a default is a **mutable** value - a list, a dict, a set - you're standing on the same
 landmine from [Phase 4](04-control-flow-and-functions.md): mutable defaults are created *once* and shared.
-Python knows this is a trap and refuses to let you do it the naive way:
+Python refuses to let you do it the naive way:
 
 ```console
 $ python tags.py
@@ -128,8 +124,7 @@ ValueError: mutable default <class 'list'> for field tags is not allowed: use de
 ```
 *What just happened:* You wrote `tags: list = []` and the dataclass machinery stopped you cold. A single
 `[]` written at class-definition time would be shared by *every* `User` instance - append a tag to one
-user and it'd appear on all of them. Rather than hand you that footgun, dataclasses raise a `ValueError`
-and point you at the fix.
+user and it'd appear on all of them. Rather than hand you that footgun, dataclasses raise a `ValueError`.
 
 **The fix - `field(default_factory=...)`.** Instead of giving a default *value*, you give a default
 *recipe*: a zero-argument callable that the dataclass calls fresh for each new instance.
@@ -155,9 +150,8 @@ User(name='Bo', tags=[])
 ```
 *What just happened:* `default_factory=list` told the dataclass "when a `User` is built without `tags`,
 call `list()` to make a brand-new empty list for it." So `a` and `b` got *separate* lists - appending to
-`a.tags` left `b.tags` empty. This is the same trap and the same cure you learned for function arguments,
-just spelled with `field()`. Any zero-arg callable works: `default_factory=dict`, `default_factory=set`,
-or your own `lambda: [0, 0, 0]`.
+`a.tags` left `b.tags` empty. Same trap, same cure as function arguments, just spelled with `field()`. Any
+zero-arg callable works: `default_factory=dict`, `default_factory=set`, or your own `lambda: [0, 0, 0]`.
 
 ⚠️ **The rule to remember:** immutable default (number, string, `True`, `None`) → write it plainly
 (`active: bool = True`). Mutable default (list, dict, set) → always `field(default_factory=...)`. The
@@ -167,7 +161,7 @@ dataclass enforces this for you, which is one of the nicer things it does.
 
 By default a dataclass is mutable: you can reassign `p.x = 99` after the fact. Sometimes that's exactly
 wrong. A `Point`, a `Color`, a `Coordinate` - these are *values*, and a value that can be quietly mutated
-under you is a source of bugs. You want it to behave like a number: fixed once created.
+under you is a source of bugs. You want it to behave like a number, fixed once created.
 
 **What it does.** Passing `frozen=True` to the decorator makes assignment to fields raise an error after
 construction, and - because the object can no longer change - Python can also generate a `__hash__`,
@@ -196,7 +190,7 @@ dataclasses.FrozenInstanceError: cannot assign to field 'x'
 *What just happened:* `frozen=True` locked the instance. Two of the three points in the set were equal
 (`Point(1, 2)` twice), so the set collapsed them and `len` is `2` - that only works because frozen
 dataclasses are **hashable**. Then `p.x = 99` raised `FrozenInstanceError`: the object refuses to be
-mutated after birth. You've turned a bag of fields into a proper immutable value.
+mutated after birth. A bag of fields is now a proper immutable value.
 
 📝 **Hashable** - an object Python can reduce to a fixed number so it can live in a `set` or be a `dict`
 key. Mutable objects (like lists, or default dataclasses) generally aren't, because if they changed, the
@@ -213,9 +207,9 @@ flowchart TD
 
 ## `typing.NamedTuple` - the lightweight immutable alternative
 
-There's an even lighter option for the immutable case, and it predates the modern dataclass: a typed
-named tuple. It's a tuple under the hood - so it's immutable and hashable for free - but with *named*
-fields instead of `[0]`/`[1]` positions.
+There's an even lighter option for the immutable case, predating the modern dataclass: a typed named
+tuple. It's a tuple under the hood - immutable and hashable for free - but with *named* fields instead of
+`[0]`/`[1]` positions.
 
 **What it actually is.** `typing.NamedTuple` lets you declare a tuple subclass with typed, named fields.
 You get the `__repr__` and `__eq__` for free like a dataclass, plus everything tuples already do:
@@ -240,9 +234,9 @@ Point(x=3, y=4)
 3 3
 3 4
 ```
-*What just happened:* `Point(3, 4)` built a tuple whose two slots also answer to `.x` and `.y`. So
-`p.x` and `p[0]` are the same value, and `a, b = p` unpacks it exactly like `(3, 4)` - because it *is*
-a tuple. It's immutable and hashable automatically, with none of the `frozen=True` ceremony.
+*What just happened:* `Point(3, 4)` built a tuple whose two slots also answer to `.x` and `.y`. So `p.x`
+and `p[0]` are the same value, and `a, b = p` unpacks it exactly like `(3, 4)` because it *is* a tuple -
+immutable and hashable automatically, with none of the `frozen=True` ceremony.
 
 **When to reach for which.** Both model immutable bags of fields. The honest trade-off:
 
@@ -253,21 +247,20 @@ a tuple. It's immutable and hashable automatically, with none of the `frozen=Tru
 | Mutable option | no | yes, drop `frozen=True` |
 | Defaults, `field()`, rich config | limited | full |
 
-Reach for `NamedTuple` when you want a small, immutable record that's pleasant to unpack and pass around.
-Reach for `@dataclass` when you want more control - mutability when you need it, `default_factory`, and
-room to grow methods onto the class. (Judgment, not law: most teams default to `@dataclass` and use
-`NamedTuple` for the genuinely tuple-shaped cases.)
+Reach for `NamedTuple` for a small, immutable record that's pleasant to unpack and pass around. Reach for
+`@dataclass` when you want more control - mutability when needed, `default_factory`, room to grow methods
+onto the class. (Judgment, not law: most teams default to `@dataclass` and use `NamedTuple` for genuinely
+tuple-shaped cases.)
 
 ## A one-paragraph nod to pydantic
 
 Everything above *trusts its inputs*. A dataclass `User(age="not a number")` happily stores the string -
 the `: int` hint is a note for humans and type-checkers ([Phase 14](14-type-hints.md)), not a runtime
-guard. That's fine inside your own code, but at a *boundary* - JSON arriving from an API, a config file,
-a form submission - you want the data **validated and coerced** before it gets in. That's
-[**pydantic**](https://docs.pydantic.dev/), a third-party library (so `pip install pydantic`; it's not in
-the standard library, which is why the snippet below isn't runnable here). It looks almost identical to a
-dataclass, but it *enforces* the types at construction time and raises a clear error when the data is
-wrong:
+guard. That's fine inside your own code, but at a *boundary* - JSON from an API, a config file, a form
+submission - you want the data **validated and coerced** before it gets in. That's
+[**pydantic**](https://docs.pydantic.dev/), a third-party library (`pip install pydantic`; not in the
+standard library, which is why the snippet below isn't runnable here). It looks almost identical to a
+dataclass, but *enforces* types at construction time and raises a clear error when the data is wrong:
 
 ```python
 from pydantic import BaseModel
@@ -299,8 +292,8 @@ build APIs.
 6. **pydantic** (third-party) validates and coerces at the boundary - reach for it where untrusted data
    enters, and keep dataclasses for data you already trust.
 
-You can now describe your data cleanly and let the language write the ceremony. Next we leave the world
-of single-threaded code and ask the question that confuses everyone: why don't Python threads make CPU
+You can now describe your data cleanly and let the language write the ceremony. Next, leaving the world
+of single-threaded code to ask the question that confuses everyone: why don't Python threads make CPU
 work faster?
 
 ## Quick check

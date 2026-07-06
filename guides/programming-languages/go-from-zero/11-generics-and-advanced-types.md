@@ -11,17 +11,17 @@ updated: 2026-06-22
 
 # Generics & Advanced Types - One Function, Many Types
 
-For most of Go's life, there was a recurring papercut: you'd write a perfectly good `Max` function for `int`, then need the *same* logic for `float64`, then for `string`, and Go would make you write it three times. The logic was identical - only the type changed. That's the gap generics close.
+For most of Go's life: write a perfectly good `Max` for `int`, then need the *same* logic for `float64`, then `string` - identical logic, three rewrites. That's the gap generics close.
 
-The mental model: a **generic** function or type is one where you leave a type *blank* and fill it in later. You write the logic once, parameterized over "some type `T`," and the compiler stamps out a correct, type-checked version for each concrete type you actually use. You get the reuse of `interface{}` with none of the safety loss. This phase walks from the pain, to type parameters, to constraints, to generic types - and finishes with the method-set rule, the one piece of "advanced types" that quietly breaks code if you don't know it.
+The mental model: a **generic** function or type leaves a type *blank* and fills it in later. Write the logic once, parameterized over "some type `T`," and the compiler stamps out a correct, type-checked version for each concrete type you use - the reuse of `interface{}` with none of the safety loss. This phase walks from the pain to type parameters, constraints, generic types, and finishes with the method-set rule, the one "advanced types" piece that quietly breaks code if you don't know it.
 
 ## The problem generics solve
 
-Before generics, you had exactly two ways to write "the same logic for many types," and both hurt.
+Before generics, there were exactly two ways to write "the same logic for many types," and both hurt.
 
-**Option one: copy-paste per type.** Write `MaxInt`, `MaxFloat`, `MaxString`. Identical bodies, three names, three places for a bug to hide.
+**Option one: copy-paste per type.** Write `MaxInt`, `MaxFloat`, `MaxString` - identical bodies, three places for a bug to hide.
 
-**Option two: `interface{}` (now spelled `any`) and type assertions.** One function - but you throw away the type information at the door and have to claw it back at runtime:
+**Option two: `interface{}` (now spelled `any`) and type assertions** - one function, but you throw away the type information at the door and claw it back at runtime:
 
 ```go
 package main
@@ -48,13 +48,11 @@ $ go run main.go
 7
 panic: interface conversion: interface {} is string, not int
 ```
-*What just happened:* `MaxAny` compiled happily even though it can only handle `int` - the `any` parameters accept *anything*, so the compiler can't warn you. The mistake surfaced at runtime as a panic, in production, far from where you wrote it. The return type is `any` too, so callers also have to assert the result back. This is the trade generics undo: keep one function, but let the compiler check the types *before* the program runs.
+*What just happened:* `MaxAny` compiled happily even though it can only handle `int` - `any` accepts *anything*, so the compiler can't warn you. The mistake surfaced at runtime as a panic, far from where you wrote it, and the `any` return type means callers must assert the result back too. Generics undo this trade: one function, but the compiler checks types *before* the program runs.
 
 ## Type parameters - leaving a type blank
 
-A **type parameter** is a placeholder for a type, declared in square brackets right after the function name. Inside the function, you use it like any other type; at the call site, the compiler figures out (or you specify) what it should be.
-
-📝 **Type parameter** - a named stand-in for a type (`T`, `K`, `V` by convention), written in `[...]` after the function or type name. It's filled in with a real type when the code is used, and the compiler type-checks each filled-in version.
+📝 **Type parameter** - a named stand-in for a type (`T`, `K`, `V` by convention), written in `[...]` after the function or type name. It's filled in with a real type when the code is used, and the compiler type-checks each filled-in version - usually *inferring* it from the call.
 
 Here's `Max`, written once, working for any ordered type. The `[T cmp.Ordered]` says "`T` is some type you can compare with `<` and `>`":
 
@@ -85,9 +83,9 @@ $ go run main.go
 2.5
 z
 ```
-*What just happened:* One function, three types, zero runtime assertions. The compiler **inferred** `T` from each call - `Max(3, 7)` is an `int` call, `Max("apple", "z")` is a `string` call - and type-checked each one separately. Try `Max(3, "z")` and it won't compile, because `int` and `string` aren't the same `T`. That compile-time rejection is the whole point: the safety the `any` version threw away, handed back.
+*What just happened:* One function, three types, zero runtime assertions. The compiler **inferred** `T` from each call and type-checked each separately - `Max(3, "z")` won't compile, because `int` and `string` aren't the same `T`. That compile-time rejection is the safety the `any` version threw away, handed back.
 
-Generics shine for *container-shaped* helpers too. Here's `Map`, which transforms a slice of one type into a slice of another - note the *two* type parameters:
+Generics shine for *container-shaped* helpers too - here's `Map`, transforming a slice of one type into another, with *two* type parameters:
 
 ```go
 package main
@@ -115,18 +113,16 @@ func main() {
 $ go run main.go
 [#1 #2 #3]
 ```
-*What just happened:* `Map[T, U any]` has an *input* element type `T` and a *different output* type `U`. The compiler inferred `T = int` from the slice and `U = string` from what the function returns. The result is a properly typed `[]string` - not `[]any` - so the caller can use it without a single cast. `any` here means "no constraint at all," which is fine because `Map` never does anything to the elements except hand them to `f`.
+*What just happened:* `Map[T, U any]` has an *input* element type `T` and a *different output* type `U`. The compiler inferred `T = int` from the slice and `U = string` from the function's return, giving a properly typed `[]string` - not `[]any` - with no cast needed. `any` here means "no constraint at all," fine since `Map` never touches the elements except to hand them to `f`.
 
 ## Constraints & type sets - what operations are allowed
 
-You can't do *anything* you want to a value of type `T`. The compiler only lets you use operations it can *prove* every possible `T` supports. A **constraint** is how you make that promise. It answers the question: "what is this type allowed to do?"
-
-There are two you'll use constantly:
+The compiler only lets you use operations it can *prove* every possible `T` supports. A **constraint** is how you make that promise - it answers "what is this type allowed to do?" Two you'll use constantly:
 
 - **`any`** - no constraint. The value can be passed around, stored, compared to `nil`, but not much else (you can't `+` it or `<` it). This is what `Map` used.
 - **`comparable`** - the type supports `==` and `!=`. You need this for map keys and for "is this in the set?" checks.
 
-For arithmetic or ordering, you need a constraint that actually permits those operators. That's where **type sets** come in: a constraint interface can list the concrete types it allows, and the `~` means "this type *or* any type whose underlying type is this."
+For arithmetic or ordering, you need a constraint that permits those operators - that's where **type sets** come in: a constraint interface lists the concrete types it allows, and `~` means "this type *or* any type whose underlying type is this."
 
 📝 **Type set** - the set of types a constraint permits, written as a list of types joined by `|` inside an interface. `~int` means "int or any named type defined as int" (like `type Celsius int`). The allowed operations are whatever *all* listed types share.
 
@@ -162,13 +158,11 @@ $ go run main.go
 4
 70
 ```
-*What just happened:* The `Number` constraint defines a type set - `int`, `int64`, or `float64` - and `Sum` is allowed to use `+` *only because every type in that set supports it*. The `~int` (rather than plain `int`) is what lets `Age`, a named type whose underlying type is `int`, slip through; without the `~`, only the literal type `int` would qualify. A constraint is not "which types fit" for its own sake - it's "which operations the compiler will let your generic code perform."
+*What just happened:* `Number` defines a type set - `int`, `int64`, or `float64` - and `Sum` may use `+` *only because every type in that set supports it*. `~int` (rather than plain `int`) is what lets `Age`, a named type whose underlying type is `int`, slip through; without it, only the literal type `int` would qualify. A constraint is "which operations the compiler will let your generic code perform," not "which types fit."
 
 ## Generic types - a typed container, written once
 
-Type parameters aren't only for functions. A **struct** can be generic too, which is how you build a `Stack`, `Set`, or `Cache` that holds one specific type without resorting to `[]any`.
-
-Here's a `Stack[T]` - a last-in-first-out container that's type-safe for whatever you put in it:
+Type parameters aren't only for functions - a **struct** can be generic too, letting you build a `Stack`, `Set`, or `Cache` that holds one specific type without resorting to `[]any`:
 
 ```go
 package main
@@ -211,11 +205,11 @@ $ go run main.go
 b true
 empty pop ok? false
 ```
-*What just happened:* `Stack[T any]` is a generic struct; its methods carry the `[T]` so they know which type they're operating on. Declaring `Stack[string]` locked `T` to `string` for that value - `s.Push(42)` would be a compile error. Notice the `var zero T` trick in `Pop`: you can't write a literal default for an unknown type, so `var zero T` gives you the zero value (`""` for strings, `0` for ints, `nil` for pointers) to return alongside the `false`. That paired `(value, ok)` return is the idiomatic way to signal "nothing there" without panicking.
+*What just happened:* `Stack[T any]` is a generic struct; its methods carry `[T]` so they know which type they're operating on. Declaring `Stack[string]` locked `T` to `string` - `s.Push(42)` would be a compile error. The `var zero T` trick in `Pop` gives you a zero value (`""`, `0`, `nil`) for an unknown type, returned alongside `false` - the idiomatic way to signal "nothing there" without panicking.
 
 ## Method sets & receivers - the rule that bites
 
-Now the "advanced types" piece that surprises people, and it's *not* about generics - it's about which methods count toward satisfying an interface. The answer depends on whether a method has a **value receiver** or a **pointer receiver**.
+Now the "advanced types" piece that surprises people, and it's *not* about generics - it's about which methods count toward satisfying an interface, depending on whether a method has a **value receiver** or a **pointer receiver**.
 
 📝 **Method set** - the set of methods a type "has" for the purpose of satisfying interfaces. For a value type `T`, the method set is only its *value-receiver* methods. For a pointer `*T`, the method set is *both* its value-receiver and pointer-receiver methods.
 
@@ -249,11 +243,11 @@ func main() {
 $ go run main.go
 Rex says woof
 ```
-*What just happened:* `Speak` has a pointer receiver `(d *Dog)`, so only `*Dog` is in the method set that satisfies `Speaker`. Assigning a plain `Dog` value would fail to compile with `Dog does not implement Speaker (method Speak has pointer receiver)`. Why the asymmetry? Go can always take the address of an addressable value to call a pointer method, but it *can't* guarantee an arbitrary interface-held value is addressable - so it refuses at the safe boundary.
+*What just happened:* `Speak` has a pointer receiver `(d *Dog)`, so only `*Dog` is in the method set satisfying `Speaker`. A plain `Dog` value fails to compile with `Dog does not implement Speaker (method Speak has pointer receiver)`. Why the asymmetry? Go can take the address of an addressable value to call a pointer method, but can't guarantee an arbitrary interface-held value is addressable - so it refuses at the safe boundary.
 
-⚠️ **Gotcha - pointer receiver, value passed.** This is the canonical Go interface bug: you define methods with pointer receivers (correct, if they mutate state or the struct is large), then pass the *value* into something expecting the interface - a `[]Speaker`, a function parameter, a `json.Marshaler` slot - and get a confusing "does not implement" error. The fix is almost always to pass `&thing` instead of `thing`. The reverse direction is fine: a type with only value-receiver methods satisfies the interface as both `T` and `*T`.
+⚠️ **Gotcha - pointer receiver, value passed.** The canonical Go interface bug: you define methods with pointer receivers (correct if they mutate state or the struct is large), then pass the *value* into something expecting the interface - a `[]Speaker`, a function parameter, a `json.Marshaler` slot - and get a confusing "does not implement" error. The fix is almost always `&thing` instead of `thing`. Reverse direction is fine: value-receiver-only methods satisfy the interface as both `T` and `*T`.
 
-💡 **Key point - generics or an interface?** They solve different shapes of problem, and reaching for the wrong one makes code awkward. Use **generics** when you have *the same logic for many types* - `Max`, `Map`, `Stack`: the body never changes, only the type does. Use an **interface** when you have *different logic behind shared behavior* - a `Writer` that's a file vs. a buffer vs. a socket, each `Write` doing something genuinely different. Rule of thumb: same code, varying type → generic; varying code, same call → interface. When both could work, the interface is usually the simpler, more idiomatic Go.
+💡 **Key point - generics or an interface?** Use **generics** for *the same logic over many types* - `Max`, `Map`, `Stack`: the body never changes, only the type does. Use an **interface** for *different logic behind shared behavior* - a `Writer` that's a file vs. buffer vs. socket, each `Write` doing something genuinely different. Same code, varying type → generic; varying code, same call → interface.
 
 ```mermaid
 flowchart TD
@@ -270,7 +264,7 @@ flowchart TD
 5. ⚠️ **Method sets:** a pointer-receiver method means *only* `*T` satisfies the interface, not `T`. Pass `&thing`, not `thing`, into interface slots when methods have pointer receivers.
 6. 💡 **Generics vs. interfaces:** same logic over many types → generics; different logic behind a shared method → interface.
 
-You can now write code that's reused across types without giving up the compiler's help - and you know the method-set rule that otherwise turns a one-character fix into an hour of confusion. Next, we pull together everything about goroutines and channels into real concurrency patterns.
+You can now write code reused across types without giving up the compiler's help, and you know the method-set rule that otherwise turns a one-character fix into an hour of confusion. Next: goroutines and channels, pulled together into real concurrency patterns.
 
 ## Quick check
 

@@ -11,16 +11,15 @@ updated: 2026-06-22
 
 # Authentication & Security
 
-Your Book API can now validate requests, shape responses, and talk to a real database. There's one
-thing missing that every real service needs: a lock on the door. Right now anyone who can reach
-`/books` can create, edit, or delete a book. This phase puts a guard at the entrance — and the good
-news is you already know the guard's job description. In FastAPI, security is built almost entirely on
-the dependency system from [Phase 5](05-dependency-injection.md). "This endpoint requires a logged-in
-user" is just "this endpoint *depends on* there being a current user."
+Your Book API can now validate requests, shape responses, and talk to a real database. One thing's
+missing that every real service needs: a lock on the door. Right now anyone who can reach `/books` can
+create, edit, or delete a book. This phase puts a guard at the entrance — and you already know the
+guard's job description. In FastAPI, security is built almost entirely on the dependency system from
+[Phase 5](05-dependency-injection.md). "This endpoint requires a logged-in user" is just "this endpoint
+*depends on* there being a current user."
 
-Auth has a reputation for being scary. A lot of that fear comes from treating it as one giant blob. We're
-going to take it apart into four small, separate jobs, and each one will turn out to be approachable on
-its own. Mental model first, always.
+Auth has a reputation for being scary, mostly from treating it as one giant blob. We're going to take it
+apart into four small, separate jobs, each approachable on its own.
 
 ## Two different jobs: authentication vs authorization
 
@@ -32,7 +31,7 @@ its own. Mental model first, always.
   Ada, can Ada *delete* this book? Maybe only admins can.
 
 A passport proves who you are (authn). A concert ticket says what you're allowed into (authz). You need
-both, and they're different checks. We dig into the full mental model — sessions, tokens, OAuth — in a
+both, and they're different checks. The full mental model — sessions, tokens, OAuth — lives in a
 dedicated guide: [Auth vs Authz](/guides/auth-vs-authz). Here we focus on wiring it into FastAPI.
 
 💡 The throughline for this whole phase: **both jobs flow through `Depends()`.** Authentication is a
@@ -42,7 +41,7 @@ second one) that decides *whether they may proceed*. Same machinery, two questio
 ## Step 1: never store passwords in plaintext
 
 Before anyone can log in, you need somewhere to keep their credentials — and the single most important
-rule in this entire guide is this:
+rule in this guide is this:
 
 ⚠️ **Never store a password as plaintext.** Not in your database, not in a log file, not anywhere. If
 your database leaks (and databases leak), every plaintext password is instantly stolen — and because
@@ -50,12 +49,12 @@ people reuse passwords, you've also handed attackers their email and bank logins
 
 📝 Instead you store a **hash**: a one-way scramble of the password. You run the password through a
 slow, deliberate hashing algorithm (bcrypt or argon2 are the standard choices) and store the result.
-When someone logs in, you hash *what they typed* and compare it to the stored hash. You never need the
-original password back — that's the whole point of "one-way." The deeper story of salting, slow hashing,
-and why these algorithms exist is in [How Passwords Are Stored](/guides/how-passwords-are-stored).
+When someone logs in, you hash *what they typed* and compare it to the stored hash — you never need the
+original password back, the whole point of "one-way." The deeper story of salting, slow hashing, and why
+these algorithms exist is in [How Passwords Are Stored](/guides/how-passwords-are-stored).
 
-In Python, the `passlib` library wraps all of this. Here's the shape (shown as plain code — `passlib`
-isn't guaranteed in the browser sandbox, so read it, don't run it):
+In Python, the `passlib` library wraps all of this (shown as plain code — `passlib` isn't guaranteed in
+the browser sandbox, so read it, don't run it):
 
 ```python
 from passlib.context import CryptContext
@@ -81,17 +80,17 @@ verify_password("wrong guess", stored)                   # False
 *What just happened:* `hash_password` turns a plaintext password into an opaque string you can safely
 store on a `User` row. `verify_password` re-hashes the login attempt and checks it against that stored
 hash, returning `True`/`False` — without ever un-scrambling anything. You store the output of
-`hash_password`, and you only ever compare with `verify_password`. The plaintext password lives for a
+`hash_password`, and only ever compare with `verify_password`. The plaintext password lives for a
 fraction of a second in memory and is never written down.
 
-💡 Notice you didn't write the bcrypt algorithm yourself. That's deliberate — see the last section.
+💡 You didn't write the bcrypt algorithm yourself — deliberate; see the last section.
 
 ## Step 2: the OAuth2 password flow + JWT
 
-So a user can sign up and we store their hash. Now: how do they *log in*, and how does the server
-remember them on the *next* request? HTTP is stateless — each request arrives with no memory of the last
-one. We can't make the user re-send their password on every call (that would mean storing it in the
-client, the exact thing we're avoiding).
+A user can sign up and we store their hash. Now: how do they *log in*, and how does the server remember
+them on the *next* request? HTTP is stateless — each request arrives with no memory of the last one. We
+can't make the user re-send their password on every call (that would mean storing it client-side, the
+exact thing we're avoiding).
 
 📝 The standard answer for APIs is the **OAuth2 password flow**:
 
@@ -107,9 +106,9 @@ self-contained string carrying a few **claims** (small facts, like "subject: ada
 with — change one character and the signature breaks.
 
 ⚠️ The trap everyone falls into: **a JWT is signed, not *encrypted*.** Anyone holding it can decode and
-read the payload (it's just base64 — paste one into jwt.io and you'll see). The signature stops people
-from *forging* tokens; it does **not** hide what's inside. So never put secrets (passwords, credit card
-numbers, anything sensitive) in a JWT payload.
+read the payload (it's just base64 — paste one into jwt.io and you'll see). The signature stops forgery;
+it does **not** hide what's inside. Never put secrets (passwords, credit card numbers, anything
+sensitive) in a JWT payload.
 
 Here's the `/token` endpoint. It uses `OAuth2PasswordRequestForm`, FastAPI's helper that reads the
 standard `username`/`password` form fields the OAuth2 spec expects:
@@ -149,7 +148,7 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
 `username` and `password` out of the form body for you. You verify the password against the stored hash
 with the function from Step 1. On success you build a JWT carrying the username (`sub`, "subject"), the
 role, and an expiry (`exp`), sign it with your secret, and return it in the shape OAuth2 clients expect:
-`{"access_token": ..., "token_type": "bearer"}`. On failure you return a clean `401` — note we don't say
+`{"access_token": ..., "token_type": "bearer"}`. On failure you return a clean `401` — we don't say
 *which* field was wrong, so we don't help attackers guess usernames.
 
 A login request and its response look like this:
@@ -169,16 +168,16 @@ username=ada&password=correct+horse+battery+staple
 ```
 
 *What just happened:* the client sent form-encoded credentials (not JSON — the OAuth2 password flow uses
-a form body) and got back a token. The client stashes that `access_token` and attaches it to every
-future request. It never sends the password again until the token expires.
+a form body) and got back a token. The client stashes that `access_token` and attaches it to every future
+request, never sending the password again until the token expires.
 
 ## Step 3: securing endpoints with a dependency
 
-Now the payoff. We turn "is this caller logged in?" into a dependency, and any endpoint that wants
+Now the payoff: turn "is this caller logged in?" into a dependency, and any endpoint that wants
 protection `Depends` on it.
 
-First we declare the scheme. `OAuth2PasswordBearer` tells FastAPI *where* tokens come from (the
-`Authorization: Bearer` header) and which URL issues them (so the `/docs` page can offer a login button):
+First, declare the scheme. `OAuth2PasswordBearer` tells FastAPI *where* tokens come from (the
+`Authorization: Bearer` header) and which URL issues them (so `/docs` can offer a login button):
 
 ```python
 from fastapi import Depends, HTTPException, status
@@ -207,10 +206,10 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
 *What just happened:* `Depends(oauth2_scheme)` extracts the raw token string from the `Authorization`
 header (and auto-rejects requests that have none). `jwt.decode` verifies the signature **and** the
 expiry against your secret — if the token was forged, tampered with, or expired, it raises `JWTError`
-and we turn that into a `401`. If it's valid, we read the `sub` claim and return the user. This is an
-ordinary dependency, exactly like the ones in Phase 5 — it just happens to do auth.
+and we turn that into a `401`. If it's valid, we read the `sub` claim and return the user. An ordinary
+dependency, exactly like the ones in Phase 5 — it just happens to do auth.
 
-Now protect the write endpoint. Any route that requires a login adds one parameter:
+Protect the write endpoint. Any route that requires a login adds one parameter:
 
 ```python
 @app.post("/books", status_code=status.HTTP_201_CREATED)
@@ -220,8 +219,8 @@ def create_book(title: str, current_user: dict = Depends(get_current_user)):
 
 *What just happened:* `current_user: dict = Depends(get_current_user)` is the entire lock. FastAPI runs
 `get_current_user` *before* your function body. No valid token? It raises `401` and `create_book` never
-executes. Valid token? Your endpoint receives the authenticated user and can record who created the
-book. You wrote zero auth logic inside the handler — it just declares the need.
+executes. Valid token? Your endpoint receives the authenticated user and can record who created the book.
+Zero auth logic inside the handler — it just declares the need.
 
 A request with no token gets stopped cold:
 
@@ -236,13 +235,12 @@ POST /books?title=Dune HTTP/1.1
 *What just happened:* the request arrived with no `Authorization` header, so `oauth2_scheme` rejected it
 with `401` before `get_current_user` even ran. Send the header — `Authorization: Bearer eyJhbGci...` —
 and it sails through. 💡 As a bonus, because you declared `OAuth2PasswordBearer`, FastAPI adds an
-**Authorize** button to `/docs`: testers paste a token once and the interactive docs send it on every
-call.
+**Authorize** button to `/docs`: testers paste a token once and the interactive docs send it on every call.
 
 ### Authorization: checking what they're allowed to do
 
-That covered authn (who you are). For authz (what you may do), do the check inside a dependency too.
-Here's one that requires the admin role:
+That covered authn (who you are). For authz (what you may do), do the check inside a dependency too —
+one that requires the admin role:
 
 ```python
 def require_admin(current_user: dict = Depends(get_current_user)) -> dict:
@@ -260,8 +258,8 @@ def delete_book(book_id: int, admin: dict = Depends(require_admin)):
 
 *What just happened:* `require_admin` is a **sub-dependency** — it depends on `get_current_user` to
 establish *who* the caller is, then checks their `role`. A logged-in non-admin gets `403 Forbidden`
-(note: `401` means "I don't know who you are," `403` means "I know who you are and you can't do this").
-Same dependency machinery, now answering the authorization question.
+(`401` means "I don't know who you are," `403` means "I know who you are and you can't do this"). Same
+dependency machinery, now answering the authorization question.
 
 ## Step 4: the security must-knows
 
@@ -282,11 +280,10 @@ Auth code is the worst place to improvise. A handful of rules carry most of the 
   (`passlib`, `python-jose`). Hand-written hashing or token signing is how subtle, catastrophic bugs get
   in. Security is the one area where "clever" is a red flag — boring and standard wins.
 
-Step back and notice how little new machinery this phase actually introduced. Hashing is two function
-calls. The token endpoint is a normal POST handler. And protecting routes is the *same* `Depends()` you
-already knew — `get_current_user` is just a dependency that reads a header and validates a token. Auth
-felt big because it bundles four jobs together; taken one at a time, each is something you can already
-do.
+Notice how little new machinery this phase actually introduced. Hashing is two function calls. The token
+endpoint is a normal POST handler. Protecting routes is the *same* `Depends()` you already knew —
+`get_current_user` is just a dependency that reads a header and validates a token. Auth felt big because
+it bundles four jobs together; taken one at a time, each is something you can already do.
 
 ## Recap
 

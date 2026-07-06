@@ -12,21 +12,19 @@ updated: 2026-06-23
 # What Ext JS Even Is
 
 You started Monday with a ticket and a repository. The app is some big internal thing — a CRM, an
-admin console, a trading desk, pick your flavor — and the people who wrote it left years ago. You
-open a file expecting JavaScript and instead you get a wall of nested objects: `xtype` this,
-`items` that, `panel` inside `tabpanel` inside `viewport`. There's no HTML you can grep for. No
-`document.querySelector`. No JSX. The docs, if they exist, sit behind a Sencha login. And somehow
-this soup renders a polished, desktop-grade interface that real money depends on.
+admin console, a trading desk — and the people who wrote it left years ago. You open a file
+expecting JavaScript and instead find a wall of nested objects: `xtype` this, `items` that, `panel`
+inside `tabpanel` inside `viewport`. No HTML to grep for, no `document.querySelector`, no JSX. The
+docs, if they exist, sit behind a Sencha login. And somehow this soup renders a polished,
+desktop-grade interface that real money depends on.
 
-If that's where you are, take a breath. Nothing here is magic. It's a single, very consistent idea
-wearing unfamiliar clothes — and once you see the idea, the whole codebase stops being a haunted
-house and becomes a building with rooms you can walk through.
+Nothing here is magic. It's one consistent idea wearing unfamiliar clothes — once you see it, the
+codebase stops being a haunted house and becomes a building with rooms you can walk through.
 
-Here's the idea, stated once, plainly: **in Ext JS you don't build the UI, you describe it.** You
-write a tree of plain JavaScript config objects — "a panel containing a grid and a form" — and the
-framework reads that description and does the rest: creates the objects, lays them out, renders the
-HTML, wires up events, and manages them for their whole life. You write the *what*; the framework
-owns the *how*.
+Stated once, plainly: **in Ext JS you don't build the UI, you describe it.** You write a tree of
+plain JavaScript config objects — "a panel containing a grid and a form" — and the framework reads
+that description and does the rest: creates the objects, lays them out, renders the HTML, wires up
+events, and manages them for their whole life. You write the *what*; the framework owns the *how*.
 
 > 📝 **Ext JS** — Sencha's comprehensive JavaScript framework for **data-intensive enterprise web
 > apps**: internal admin consoles, CRMs, trading desks, dashboards. It started around 2006 as an
@@ -36,8 +34,7 @@ owns the *how*.
 
 ## The one big idea: config in, UI out
 
-Let's make "describe, don't build" concrete. Here is a minimal Ext JS application that puts a panel
-on the screen.
+Here is a minimal Ext JS application that puts a panel on the screen.
 
 ```javascript
 Ext.application({
@@ -56,15 +53,15 @@ Ext.application({
 ```
 
 *What just happened:* `Ext.application({...})` declares the app and hands Ext a `launch` function to
-run once the framework has finished booting (loading classes, setting up the page). Inside `launch`,
+run once the framework finishes booting (loading classes, setting up the page). Inside `launch`,
 `Ext.create('Ext.panel.Panel', {...})` asks the framework to build one component — a Panel — from
 the config object you passed. That object is pure data: `title`, `width`, `height`, `html`, and
 `renderTo: Ext.getBody()` telling Ext where to drop it in the page. You never wrote a `<div>`, never
-touched the DOM, never set a single style. You described a panel and Ext turned your description into
-real, rendered HTML. That is the entire framework in one move.
+touched the DOM, never set a style. You described a panel and Ext turned that description into real,
+rendered HTML. That's the entire framework in one move.
 
-Now the part that makes Ext *feel* like Ext: components nest. Watch what happens when a panel
-contains other components.
+The part that makes Ext *feel* like Ext: components nest. Watch what happens when a panel contains
+other components.
 
 ```javascript
 Ext.create('Ext.panel.Panel', {
@@ -83,10 +80,10 @@ Ext.create('Ext.panel.Panel', {
 *What just happened:* the outer Panel now has an `items` array — its children. Each child is *also*
 a config object, but instead of a full class name we used `xtype`: `'textfield'` and `'button'` are
 short string nicknames for component classes. Ext reads `items`, sees the `xtype` on each entry,
-creates the matching component, and stacks them inside the panel (the `layout: 'vbox'` says "lay the
-children out vertically"). One config object described a parent and two children, and Ext built the
-whole little tree. Scale that up — panels inside tab panels inside a viewport, each with their own
-`items` — and you have the entire UI of that legacy app you inherited.
+creates the matching component, and stacks them inside the panel (`layout: 'vbox'` lays the children
+out vertically). One config object described a parent and two children, and Ext built the whole
+little tree. Scale that up — panels inside tab panels inside a viewport, each with their own `items`
+— and you have the entire UI of that legacy app you inherited.
 
 > 💡 The mental shortcut for reading *any* Ext JS file: find the outermost config object, then follow
 > `items` downward like branches of a tree. The shape of the nested objects **is** the shape of the
@@ -94,8 +91,8 @@ whole little tree. Scale that up — panels inside tab panels inside a viewport,
 
 ## Components, containers, and `xtype`
 
-You just met the three words the rest of this guide leans on, so let's name them clearly (phases 2
-and 3 go deep — this is the teaser).
+You just met the three words the rest of this guide leans on (phases 2 and 3 go deep — this is the
+teaser).
 
 📝 **Component** — every visible thing in Ext JS is a component: a button, a text field, a data grid,
 a panel, a popup window. They're all objects descended from a common base class, which is why they
@@ -107,8 +104,8 @@ names which component to make. That's the containment tree, and it's most of wha
 
 ## Classic vs Modern: which toolkit is this codebase?
 
-Ext JS ships in two flavors, called **toolkits**, and knowing which one you're looking at saves real
-confusion.
+Ext JS ships in two flavors, called **toolkits**, and knowing which one you're looking at saves
+real confusion.
 
 📝 **Classic toolkit** — the older, mature, desktop-focused widget set. This is where the famous,
 deeply-featured data **Grid** lives, along with the dense forms and windows that enterprise apps are
@@ -129,11 +126,11 @@ later). How to tell which you're in:
 }
 ```
 
-*What just happened:* the `app.json` at the root of an Ext JS project declares the `toolkit` outright
-— here, `"classic"`. That one line is your fastest answer. No `app.json` handy? Other tells:
+*What just happened:* the `app.json` at the root of an Ext JS project declares the `toolkit`
+outright — here, `"classic"`. That's your fastest answer. No `app.json` handy? Other tells:
 `require`/`import` paths or class names mentioning `Ext.grid.Panel` and themes like `triton` or
 `neptune` point to **Classic**; paths under `modern` or touch-flavored components point to
-**Modern**. When in doubt, check `app.json` first — it doesn't lie.
+**Modern**.
 
 > ⚠️ Don't mix advice across toolkits. A snippet you found online for the Modern Grid may use config
 > options that do not exist in the Classic Grid, and vice versa. When you search for help,
@@ -142,20 +139,20 @@ later). How to tell which you're in:
 
 ## Why it feels so different from React
 
-If your instincts come from React, Vue, or Angular, Ext JS will feel alien — and being honest about
-*why* is the fastest way to stop fighting it.
+If your instincts come from React, Vue, or Angular, Ext JS will feel alien — knowing *why* is the
+fastest way to stop fighting it.
 
-The first difference is **config vs. markup**. In React you write JSX, a template that looks like
-HTML. In Ext JS there are no templates and no JSX — you write **plain JavaScript objects** that
-*describe* components. `{ xtype: 'panel', title: 'Users', items: [...] }` is not a special syntax;
-it's an ordinary object literal. The structure of your data is the structure of your UI.
+The first difference is **config vs. markup**. React uses JSX, a template that looks like HTML. Ext
+JS has no templates and no JSX — you write **plain JavaScript objects** that *describe* components.
+`{ xtype: 'panel', title: 'Users', items: [...] }` is an ordinary object literal, not special syntax.
+The structure of your data is the structure of your UI.
 
 The second difference is **how much the framework owns**. Modern front-end work is "pick your
 libraries": React for views, plus a router, a state library, a data-fetching library, a component
-kit, a bundler — all from npm, all your choice. Ext JS is the opposite: it's **batteries-included to
-the extreme**. The widgets, the layout engine, the class system, the data layer, the charts, the
-theming, even the build tool — all of it is Sencha's, all of it ships together. That's exactly why it
-feels like its own universe rather than a library you dropped into a project: it *is* the project.
+kit, a bundler — all from npm, all your choice. Ext JS is the opposite: **batteries-included to the
+extreme**. Widgets, layout engine, class system, data layer, charts, theming, even the build tool —
+all Sencha's, all shipped together. That's why it feels like its own universe rather than a library
+you dropped into a project: it *is* the project.
 
 > 💡 New to the whole idea of a framework calling *your* code instead of you calling *its*? The
 > "describe the pieces, let the framework run them" relationship is the same inversion-of-control
@@ -166,8 +163,8 @@ feels like its own universe rather than a library you dropped into a project: it
 So when newcomers call Ext JS "weird," what they really mean is: no JSX, config instead of markup, a
 custom class system instead of plain ES classes, its own data layer instead of `fetch` plus a state
 library, slow Java-based builds, and docs that were historically thin and often paywalled. Every one
-of those is a real friction — but none of them is chaos. It's a consistent system with consistent
-rules, and a consistent system is exactly the kind of thing you *can* learn.
+is a real friction — but none is chaos. It's a consistent system with consistent rules, and that's
+exactly the kind of thing you *can* learn.
 
 📝 One honest note on **where you'll meet it**: greenfield Ext JS is rare today — new projects almost
 always reach for the React/Vue/Angular family. What's *not* rare is maintaining the enormous body of
@@ -197,11 +194,10 @@ In Ext JS terms, that screen is a containment tree you can already half-read:
 *What just happened:* a top-level Panel lays its children out side by side (`layout: 'hbox'`) and
 holds two components in `items` — a Grid (the users list) and a Form (the editor) — each taking an
 equal share of the width (`flex: 1`). Right now both are empty placeholders: no columns, no fields,
-no data. Over the coming phases we'll fill the Grid with columns, feed it real users through a
-**Store**, wire the Form to edit the selected row, and hold it all together with Ext's MVVM tools.
-But notice — you can *read the shape of the whole feature already*, because the config tree is the
-feature. That's the payoff of "describe, don't build," and it's the thread we'll pull on the rest of
-the way.
+no data. Coming phases fill the Grid with columns, feed it real users through a **Store**, wire the
+Form to edit the selected row, and hold it together with Ext's MVVM tools. But notice — you can
+*read the shape of the whole feature already*, because the config tree is the feature. That's the
+payoff of "describe, don't build."
 
 ## Recap
 
@@ -221,8 +217,7 @@ the way.
 
 ## Quick check
 
-Three questions on the ideas that have to stick — the config-driven model, the toolkits, and how Ext
-differs from React:
+Three questions on the config-driven model, the toolkits, and how Ext differs from React:
 
 ```quiz
 [

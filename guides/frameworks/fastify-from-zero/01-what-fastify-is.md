@@ -13,17 +13,16 @@ updated: 2026-06-23
 
 You know [JavaScript](/guides/javascript-from-zero) — functions, `async`/`await`, modules — and you've
 probably met [Express](/guides/express-from-zero), the minimalist Node web framework everyone starts
-with. Fastify is the one you reach for when Express's "everything's bolted on, figure it out yourself"
+with. Fastify is what you reach for when Express's "everything's bolted on, figure it out yourself"
 approach starts to bite. It's an [Express](/guides/express-from-zero) alternative built around two
 promises: it's genuinely **fast** (one of the quickest Node frameworks), and it's **schema-first** —
 input validation and JSON serialization are baked in, not something you wire up later.
 
-Like Express, Fastify doesn't replace Node — it sits on top of the same built-in HTTP server you'd
-otherwise drive raw ([the node:http guide](/guides/build-a-server-with-node-http) shows exactly what's
-under there, and it's worth seeing once). If you've read
-[What a Framework Even Is](/guides/what-a-framework-even-is), Fastify is the textbook case of an
-*opinionated* one: it has firm ideas about how you should structure things, and those opinions are
-what give you speed and safety for free.
+Like Express, Fastify sits on top of the same built-in HTTP server you'd otherwise drive raw
+([the node:http guide](/guides/build-a-server-with-node-http) shows what's under there, worth seeing
+once). If you've read [What a Framework Even Is](/guides/what-a-framework-even-is), Fastify is the
+textbook *opinionated* framework: firm ideas about how you should structure things, in exchange for
+speed and safety for free.
 
 ## The mental model: two pillars
 

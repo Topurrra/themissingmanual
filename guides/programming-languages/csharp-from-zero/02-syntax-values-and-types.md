@@ -11,24 +11,20 @@ updated: 2026-06-22
 
 # Syntax, Values & Types
 
-In Phase 1 you got a program to print and run. That's the warm-up. Real programs hold things - a name, a
-count, a price - and the rules C# uses to *store* those things shape almost everything you'll write next.
-Two ideas do the heavy lifting: the compiler knows the type of every value before your code runs, and C#
-splits all values into two camps - ones that *copy* when you pass them around, and ones that *share*. Get
-that split into your head now and a whole category of "why did this change?" bugs never happens to you.
-
-Let's build the mental model first, because the syntax makes far more sense once you see what it's protecting.
+Phase 1 got a program to print and run - the warm-up. Real programs hold things: a name, a count, a price -
+and the rules C# uses to *store* those things shape almost everything you'll write next. Two ideas do the
+heavy lifting: the compiler knows the type of every value before your code runs, and C# splits all values
+into two camps - ones that *copy* when passed around, and ones that *share*. Get that split into your head
+now and a whole category of "why did this change?" bugs never happens to you.
 
 ## Static typing - the compiler checks before you run
 
-**What it actually is.** C# is **statically typed**: every variable has a fixed type that's locked in when
-you declare it, and the compiler verifies every use of it *before the program runs*. A variable that holds
-a whole number can never later hold text. Try it, and the build fails - no crash at runtime, just a red
-squiggle and a refusal to compile.
+**What it actually is.** C# is **statically typed**: every variable has a fixed type locked in when
+declared, and the compiler verifies every use of it *before the program runs*. A variable holding a whole
+number can never later hold text - try it, and the build fails with a red squiggle, no runtime crash.
 
-📝 **Static** means "checked at compile time," as opposed to *dynamic* ("checked while running"). C# does
-the checking up front, so by the time your program runs, the question "what type is this?" is already
-answered and can never go wrong.
+📝 **Static** means "checked at compile time," as opposed to *dynamic* ("checked while running"). C# checks
+up front, so by the time your program runs, "what type is this?" is already answered and can't go wrong.
 
 ```csharp
 int count = 0;
@@ -36,14 +32,13 @@ count = count + 1;     // fine: an int plus an int is an int
 count = "hello";       // compile error: cannot convert string to int
 ```
 *What just happened:* `int count = 0;` told the compiler "`count` is an integer, forever." Adding to it is
-fine. Assigning the text `"hello"` to it is a contradiction the compiler catches instantly - you'd see
-`error CS0029: Cannot implicitly convert type 'string' to 'int'`. That bug can't survive to runtime; it's
-dead before the program even starts. That's the safety net static typing gives you: a whole class of "I
-thought this was a number but it was text" mistakes cannot ship.
+fine; assigning the text `"hello"` is a contradiction the compiler catches instantly with
+`error CS0029: Cannot implicitly convert type 'string' to 'int'`. A whole class of "I thought this was a
+number but it was text" mistakes simply cannot ship.
 
 ## Value types vs reference types - copy or share?
 
-This is *the* idea in this phase. Internalize it and C# stops surprising you.
+This is *the* idea in this phase.
 
 📝 C# splits every type into two families:
 
@@ -53,12 +48,11 @@ This is *the* idea in this phase. Internalize it and C# stops surprising you.
   or pass one, you copy the *reference*, not the data - so both names now point at the **same** object.
   These include every `class`, plus `string` and arrays.
 
-Why does this split exist? Small, simple values (a number, a flag) are cheapest to just copy. Big or shared
-things (an object with many fields, a list everyone needs to see the same version of) are cheapest to pass
-by reference. The catch is that copy-vs-share changes *behavior*, not just performance - and that's what
-trips people up.
+Why the split? Small, simple values (a number, a flag) are cheapest to copy. Big or shared things (an
+object with many fields, a list everyone needs the same version of) are cheapest to pass by reference. The
+catch: copy-vs-share changes *behavior*, not just performance - what trips people up.
 
-Here's the difference in one breath. A `struct` is a value type; a `class` is a reference type:
+A `struct` is a value type; a `class` is a reference type:
 
 ```csharp
 struct PointVal { public int X; }   // value type
@@ -78,14 +72,14 @@ d.X = 99;
 PointVal: a.X = 1,  b.X = 99
 PointRef: c.X = 99, d.X = 99
 ```
-*What just happened:* `b = a` copied the *whole struct*, so `b` is a separate value - changing `b.X` left
-`a` untouched. But `d = c` only copied the *reference*; `c` and `d` are two names for one object, so writing
-through `d` changed what `c` sees too. Same line of code (`x = y`), opposite result - and the only
-difference is whether the type is a `struct` (value) or a `class` (reference).
+*What just happened:* `b = a` copied the *whole struct*, so `b` is independent - changing `b.X` left `a`
+untouched. But `d = c` only copied the *reference*; `c` and `d` name one object, so writing through `d`
+changed what `c` sees too. Same line of code (`x = y`), opposite result - the only difference is whether
+the type is a `struct` (value) or a `class` (reference).
 
-⚠️ **The classic surprise: passing to a method.** The same copy-vs-share rule applies when you hand a value
-to a method. Pass a struct and the method works on a *copy* - your original is safe. Pass a class and the
-method works on *your actual object* - changes leak back out.
+⚠️ **The classic surprise: passing to a method.** The same rule applies when you hand a value to a method.
+Pass a struct and the method works on a *copy* - your original is safe. Pass a class and it works on *your
+actual object* - changes leak back out.
 
 ```csharp
 struct Counter { public int N; }
@@ -106,22 +100,20 @@ BumpClass(box);
 counter.N = 0
 box.N = 1
 ```
-*What just happened:* `BumpStruct` received a *copy* of `counter`, incremented that copy, and threw it away
-when it returned - so `counter` never changed. `BumpClass` received a copy of the *reference*, which still
-pointed at the caller's `box`, so the increment hit the real object and stuck. When a method "didn't change
-my data," it's almost always a value type; when it "changed my data behind my back," it's a reference type.
-This one detail explains more day-one C# confusion than anything else.
+*What just happened:* `BumpStruct` received a *copy* of `counter`, incremented it, and threw it away -
+`counter` never changed. `BumpClass` received a copy of the *reference*, still pointing at the caller's
+`box`, so the increment stuck. A method that "didn't change my data" is almost always a value type; one
+that "changed my data behind my back" is a reference type.
 
-💡 **Key point.** Ask yourself two questions about any type: *Does assigning it copy or share? Does passing
-it to a method protect my original or expose it?* Value types copy and protect; reference types share and
-expose. `null` only enters the picture for reference types and nullable value types (next), because only a
-reference can point at "nothing."
+💡 **Key point.** Ask two questions about any type: *Does assigning it copy or share? Does passing it to a
+method protect my original or expose it?* Value types copy and protect; reference types share and expose.
+`null` only enters the picture for reference types and nullable value types (next) - only a reference can
+point at "nothing."
 
 ## `var` - let the compiler infer the type
 
 Spelling out the type twice gets old fast: `Dictionary<string, List<int>> map = new Dictionary<string,
-List<int>>();` is a mouthful. The `var` keyword lets the compiler **infer** the type from the value on the
-right:
+List<int>>();` is a mouthful. `var` lets the compiler **infer** the type from the right side:
 
 ```csharp
 var name = "Ada";          // compiler sees "Ada" is text → name is a string
@@ -129,26 +121,23 @@ var age = 36;              // compiler sees 36 is a whole number → age is an i
 var price = 9.99;         // → double
 var ready = true;         // → bool
 ```
-*What just happened:* Each `var` told the compiler "figure out the type from the right-hand side." `name` is
-*still* a `string` - fully static, fully checked - you just didn't write the word `string`. `var` is not
-"any type" and it's not dynamic; it's shorthand for a type the compiler can already see. Try `name = 42;`
-afterward and it's the same compile error as before, because `name`'s type was fixed the moment it was
-inferred.
+*What just happened:* Each `var` told the compiler to figure out the type from the right-hand side. `name`
+is *still* a `string` - fully static, fully checked - you just didn't write the word. `var` isn't "any type"
+or dynamic; it's shorthand for a type the compiler can already see. `name = 42;` afterward is still the
+same compile error, because `name`'s type was fixed the moment it was inferred.
 
 💡 **When to use it.** Reach for `var` when the type is obvious from the right side (`var user = new
-User();` - clearly a `User`) or genuinely long to spell out. Prefer the explicit type when the value alone
-doesn't make it clear (`var result = Process();` - what *is* `result`? hard to say at a glance). The goal is
-readability, not saving keystrokes.
+User();`) or genuinely long to spell out. Prefer the explicit type when the value alone doesn't make it
+clear (`var result = Process();` - what *is* `result`?). The goal is readability, not saving keystrokes.
 
 ## Nullability - the war on NullReferenceException
 
 📝 `null` means "this reference points at nothing." Read a value off a `null` reference and you get a
-`NullReferenceException` - historically the single most common crash in C#. Modern C# fights back on two
-fronts.
+`NullReferenceException` - historically C#'s single most common crash. Modern C# fights back on two fronts.
 
 **Nullable value types.** Value types like `int` can't normally be `null` - they always hold a real number.
-But sometimes you genuinely need "a number, or nothing yet" (an unanswered survey field, say). Add a `?` to
-make a **nullable value type**:
+But sometimes you need "a number, or nothing yet" (an unanswered survey field, say). Add a `?` to make a
+**nullable value type**:
 
 ```csharp
 int score = 0;            // always a number; cannot be null
@@ -163,14 +152,12 @@ else
 no score yet
 ```
 *What just happened:* `int` refuses `null` outright. `int?` (shorthand for `Nullable<int>`) adds one extra
-state - "nothing" - on top of every number, so it can model "not answered yet" honestly instead of faking
-it with `-1` or `0`.
+state - "nothing" - modeling "not answered yet" honestly instead of faking it with `-1` or `0`.
 
-**Nullable reference types.** Reference types have *always* been able to be `null`, which is exactly why
-crashes were so common. Modern C# (with `<Nullable>enable</Nullable>` in your project file, the default for
-new projects) flips this: now you must *opt in* to nullability. A plain `string` means "never null"; a
-`string?` means "might be null" - and the compiler *warns* you whenever you risk dereferencing a possible
-`null`.
+**Nullable reference types.** Reference types have *always* been able to be `null`, exactly why crashes
+were so common. Modern C# (`<Nullable>enable</Nullable>` in your project file, default for new projects)
+flips this: you must *opt in* to nullability. A plain `string` means "never null"; `string?` means "might
+be null" - and the compiler *warns* you whenever you risk dereferencing a possible `null`.
 
 ```csharp
 #nullable enable
@@ -180,23 +167,23 @@ string? note = null;       // allowed to be null
 Console.WriteLine(name.Length);   // fine - name can't be null
 Console.WriteLine(note.Length);   // warning CS8602: possible null dereference
 ```
-*What just happened:* With nullability enabled, `name` is a *non-nullable* `string` - the compiler trusts
-it's never `null` and lets you use it freely. `note` is a `string?`, so reading `note.Length` earns a
-warning: "this might be `null`, you didn't check." The compiler is moving the `NullReferenceException` from
-a 3-a.m. production crash to a squiggle in your editor. ⚠️ These are *warnings*, not errors - they don't
-stop the build, so it's tempting to ignore them. Don't. Each one is a real crash the compiler spotted for
-you. (We go deep on nullability and the `?.` / `??` operators in [Phase 13](13-records-and-modern-csharp.md).)
+*What just happened:* With nullability enabled, `name` is *non-nullable* - the compiler trusts it's never
+`null` and lets you use it freely. `note` is a `string?`, so reading `note.Length` earns a warning: "this
+might be `null`, you didn't check." The compiler moves the `NullReferenceException` from a 3-a.m.
+production crash to a squiggle in your editor. ⚠️ These are *warnings*, not errors, so it's tempting to
+ignore them. Don't: each is a real crash the compiler spotted for you. (Deep dive on nullability and the
+`?.` / `??` operators in [Phase 13](13-records-and-modern-csharp.md).)
 
 ## Strings - text done the C# way
 
-Strings earn their own section because they have a couple of quietly important behaviors.
+Strings get their own section for a couple of quietly important behaviors.
 
 📝 A `string` is a **reference type**, but an **immutable** one: once created, its characters never change.
-Every operation that looks like it modifies a string (uppercasing, replacing, concatenating) actually
-builds a *brand-new* string and leaves the original alone.
+Every operation that looks like it modifies a string (uppercasing, replacing, concatenating) builds a
+*brand-new* string and leaves the original alone.
 
-The most useful everyday feature is **string interpolation** - prefix a string with `$` and drop
-expressions right inside `{ }`:
+The most useful everyday feature is **string interpolation** - prefix with `$` and drop expressions right
+inside `{ }`:
 
 ```csharp
 var name = "Ada";
@@ -210,12 +197,12 @@ Hello Ada, you are 36 years old.
 Next year: 37
 ```
 *What just happened:* The `$` turns the string into a template; each `{ ... }` is evaluated and its result
-dropped in. `{age + 1}` shows you can put real expressions inside, not just variable names. This is far
-cleaner than gluing strings together with `+`, and it's what you'll use almost every time.
+dropped in. `{age + 1}` shows real expressions work inside, not just variable names - far cleaner than
+gluing strings with `+`, and what you'll use almost every time.
 
-⚠️ **The equality gotcha - `==` on strings compares *value*.** Coming from Java, this surprises people. In
-Java, `==` on strings compares *references* (are they the same object?), so you need `.equals()`. In C#,
-`==` on strings is overloaded to compare the actual *text*:
+⚠️ **The equality gotcha - `==` on strings compares *value*.** Coming from Java, this surprises people: in
+Java, `==` compares *references* (same object?), so you need `.equals()`. In C#, `==` on strings is
+overloaded to compare the actual *text*:
 
 ```csharp
 var a = "hello";
@@ -226,14 +213,13 @@ Console.WriteLine(a == b);  // True - compares the characters
 True
 ```
 *What just happened:* `a` and `b` are (potentially) different objects, but `==` on `string` compares their
-*contents*, so you get `True`. This is special to `string` - for your *own* classes, `==` compares
-references by default (same-object?), not contents, which is a different story we'll tell in
-[Phase 9](09-idioms-and-gotchas.md). For now: strings compare by value with `==`, and that's the one
-you want.
+*contents*, so you get `True`. This is special to `string` - your *own* classes compare references by
+default, a different story told in [Phase 9](09-idioms-and-gotchas.md). For now: strings compare by value
+with `==`, and that's the one you want.
 
-Two more string forms worth knowing. **Verbatim strings** (`@"..."`) turn off escape sequences, so
-backslashes and line breaks are literal - perfect for Windows paths and regex. **Raw string literals**
-(`"""..."""`) let you paste multi-line text (JSON, SQL, HTML) without escaping anything:
+Two more string forms: **verbatim strings** (`@"..."`) turn off escape sequences, so backslashes and line
+breaks are literal - perfect for Windows paths and regex. **Raw string literals** (`"""..."""`) let you
+paste multi-line text (JSON, SQL, HTML) without escaping anything:
 
 ```csharp
 var path = @"C:\Users\Ada\file.txt";          // no doubled backslashes needed
@@ -247,11 +233,10 @@ Console.WriteLine(json);
 C:\Users\Ada\file.txt
 { "name": "Ada", "age": 36 }
 ```
-*What just happened:* In a normal string, `"C:\Users"` would treat `\U` as an escape and break. The `@`
-prefix says "take this literally," so the backslashes stand as-is. The `"""` raw string holds a block of
-text with embedded `"` quotes and newlines, no escaping required - the compiler even strips the leading
-indentation up to the closing `"""`. Reach for `@"..."` for paths and `"""..."""` for chunks of structured
-text.
+*What just happened:* In a normal string, `"C:\Users"` would treat `\U` as an escape and break. `@` says
+"take this literally," so backslashes stand as-is. The `"""` raw string holds a block with embedded `"`
+quotes and newlines, no escaping required - the compiler even strips leading indentation up to the closing
+`"""`. Reach for `@"..."` for paths and `"""..."""` for chunks of structured text.
 
 ## Recap
 
@@ -269,12 +254,12 @@ text.
 6. **Strings** are immutable reference types. Use `$"..."` interpolation; remember `==` compares **value**
    (unlike Java); use `@"..."` for paths and `"""..."""` for multi-line text.
 
-Next, we move from single values to *collections* of them - arrays, the `List<T>` you'll actually use, and
+Next, we move from single values to *collections* - arrays, the `List<T>` you'll actually use, and
 dictionaries for looking things up by key.
 
 ## Quick check
 
-Test yourself on the idea that matters most here - copy versus share:
+Test yourself on the idea that matters most - copy versus share:
 
 ```quiz
 [

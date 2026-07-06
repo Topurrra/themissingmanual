@@ -11,11 +11,11 @@ updated: 2026-06-23
 
 # Testing & Production
 
-You've grown the articles API the whole way — `App`, `HttpServer`, extractors, responders, shared state, middleware, and a full CRUD layer with `ResponseError`. Now comes the part that decides whether anyone trusts it: proving it works, and running it somewhere real without it falling over at 3am. The good news is that actix-web makes both smaller than you'd expect — once you see the one fact that shrinks testing, and once you realize how much of production it already handles for you.
+You've grown the articles API the whole way — `App`, `HttpServer`, extractors, responders, shared state, middleware, and a full CRUD layer with `ResponseError`. Now comes the part that decides whether anyone trusts it: proving it works, and running it somewhere real without it falling over at 3am. actix-web makes both smaller than you'd expect — once you see the one fact that shrinks testing, and how much of production it already handles for you.
 
 ## The mental model: testing is calling your app in memory — no ports
 
-Here's the fact that makes actix-web pleasant to test: you never start a real server. The `actix_web::test` module builds your `App` into an in-memory service and lets you push requests straight through it. No socket opens, no port binds, no background task running a server you have to remember to shut down. You hand the app a request, it produces a response, you read it back — all inside the test process, in microseconds.
+The fact that makes actix-web pleasant to test: you never start a real server. The `actix_web::test` module builds your `App` into an in-memory service and lets you push requests straight through it. No socket opens, no port binds, no background task running a server you have to remember to shut down. You hand the app a request, it produces a response, you read it back — all inside the test process, in microseconds.
 
 > 💡 A test is just: build the same `App` your real server runs, turn it into a service with `test::init_service`, craft a request with `test::TestRequest`, and call `test::call_service`. The entire chain — middleware, routing, extractors, your handler — runs exactly as it would for a live request, except nothing leaves the process.
 
@@ -33,7 +33,7 @@ async fn list_articles_ok() {
 }
 ```
 
-*What just happened:* the `#[actix_web::test]` attribute does what `#[actix_web::main]` does for `main` — it spins up the actix runtime so your `async` test can `.await`. `test::init_service` takes the *same* `App` builder your server uses (same state, same routes) and compiles it into an in-memory service. `test::TestRequest::get().uri("/articles").to_request()` builds a real `Request` with no connection behind it. `test::call_service(&app, req)` runs the whole pipeline and hands back the `ServiceResponse`, whose `.status()` we assert is a 2xx. This finishes in well under a millisecond and never touches the network.
+*What just happened:* `#[actix_web::test]` does what `#[actix_web::main]` does for `main` — it spins up the actix runtime so your `async` test can `.await`. `test::init_service` takes the *same* `App` builder your server uses (same state, same routes) and compiles it into an in-memory service. `test::TestRequest::get().uri("/articles").to_request()` builds a real `Request` with no connection behind it. `test::call_service(&app, req)` runs the whole pipeline and hands back the `ServiceResponse`, whose `.status()` we assert is a 2xx — under a millisecond, never touching the network.
 
 Testing a **POST with a JSON body** is the same shape with two helpers — `set_json` to attach the body (it sets `Content-Type: application/json` for you) and `read_body_json` to deserialize the response so you can assert on its contents:
 
@@ -59,15 +59,15 @@ async fn create_article_returns_it() {
 }
 ```
 
-*What just happened:* `set_json(&body)` serializes the value and sets the JSON content type, so your `web::Json<T>` extractor sees a properly-formed request — exactly the path a real client hits. We assert `201` (the status your create handler returns), then `test::read_body_json(resp).await` reads the response body and deserializes it into an `Article` so we can check the field. There are tighter helpers too: `test::call_and_read_body_json` does the call-and-deserialize in one step, and `test::try_call_service` returns a `Result` instead of panicking, which is handy when you want to assert on an error path yourself.
+*What just happened:* `set_json(&body)` serializes the value and sets the JSON content type, so your `web::Json<T>` extractor sees a properly-formed request — exactly the path a real client hits. We assert `201` (the status your create handler returns), then `test::read_body_json(resp).await` reads the response body and deserializes it into an `Article` so we can check the field. Tighter helpers exist too: `test::call_and_read_body_json` does the call-and-deserialize in one step, and `test::try_call_service` returns a `Result` instead of panicking, handy for asserting on an error path.
 
-> 📝 For testing inputs you *expect* to fail — a missing title, malformed JSON — send the bad payload and assert the status and error body your `ResponseError` impl produces. That's where the error-handling work from [Phase 6](06-rest-api-and-errors.md) pays off: your tests confirm clients get the right `400`, not a stack trace.
+> 📝 For inputs you *expect* to fail — a missing title, malformed JSON — send the bad payload and assert the status and error body your `ResponseError` impl produces. That's where the error-handling work from [Phase 6](06-rest-api-and-errors.md) pays off: your tests confirm clients get a `400`, not a stack trace.
 
 This is the heart of testing a web app. The rest — table-driven cases, fixtures, running it all on every push — is general Rust testing, covered in [testing in CI](/guides/testing-in-ci).
 
 ## Share routes between `main` and tests with `.configure()`
 
-Look at the two tests above and you'll notice a smell: each one re-declares its routes. The moment your real `App` and your test `App` describe routes *differently*, your tests are validating wiring that production doesn't use. The fix is to declare routes exactly once, in a function, and call it from both places.
+The two tests above share a smell: each re-declares its routes. The moment your real `App` and your test `App` describe routes *differently*, your tests are validating wiring that production doesn't use. The fix is to declare routes exactly once, in a function, and call it from both places.
 
 actix-web has a dedicated hook for this: **`.configure(config_fn)`**, where `config_fn` takes a `&mut web::ServiceConfig` and registers everything on it.
 
@@ -107,7 +107,7 @@ async fn list_articles_ok() {
 }
 ```
 
-*What just happened:* all route registration now lives in one `config` function. `main` builds the `App` and calls `.configure(config)`; the test builds an `App` and calls the *same* `.configure(config)`. There's no second, slightly-different set of routes that "should match production" but quietly drifts — there is one source of truth. If your handlers need state or a database pool, pass it in (`config(pool)` returning a closure, or set `app_data` alongside `configure`) so tests can hand in a fixture. The rule of thumb: the first time you copy-paste route setup into a test, stop and pull out a `.configure()` function.
+*What just happened:* all route registration now lives in one `config` function. `main` builds the `App` and calls `.configure(config)`; the test builds an `App` and calls the *same* `.configure(config)`. There's no second, slightly-different set of routes that "should match production" but quietly drifts — one source of truth. If your handlers need state or a database pool, pass it in (`config(pool)` returning a closure, or set `app_data` alongside `configure`) so tests can hand in a fixture. Rule of thumb: the first time you copy-paste route setup into a test, stop and pull out a `.configure()` function.
 
 ## Production: workers, graceful shutdown, env config
 
@@ -123,9 +123,9 @@ HttpServer::new(|| App::new().app_data(state()).configure(config))
     .await
 ```
 
-*What just happened:* `.workers(4)` tells `HttpServer` to run four worker threads, each with its own copy of the `App` built by your closure. (That's why the `App` is built in a closure — it's constructed once per worker.) Remove the `.workers(4)` line and you get the default: one per CPU. Note `0.0.0.0` rather than `127.0.0.1` — in a container you bind all interfaces so traffic from outside the container reaches you.
+*What just happened:* `.workers(4)` tells `HttpServer` to run four worker threads, each with its own copy of the `App` built by your closure. (That's why the `App` is built in a closure — constructed once per worker.) Remove `.workers(4)` and you get the default: one per CPU. Note `0.0.0.0` rather than `127.0.0.1` — in a container you bind all interfaces so traffic from outside the container reaches you.
 
-**Graceful shutdown — already handled.** This is the big one. actix-web installs signal handlers for you: on `SIGINT` (Ctrl+C) or `SIGTERM` (what your platform sends on a deploy or scale-down), it **stops accepting new connections, lets in-flight requests finish, then exits**. You don't write the goroutine-and-channel dance some stacks require — it's built into `.run()`. The one knob you may tune is how long it waits for stragglers:
+**Graceful shutdown — already handled.** The big one: actix-web installs signal handlers for you. On `SIGINT` (Ctrl+C) or `SIGTERM` (what your platform sends on a deploy or scale-down), it **stops accepting new connections, lets in-flight requests finish, then exits** — no goroutine-and-channel dance to write, it's built into `.run()`. The one knob you may tune is how long it waits for stragglers:
 
 ```rust
 HttpServer::new(|| App::new().configure(config))
@@ -135,9 +135,9 @@ HttpServer::new(|| App::new().configure(config))
     .await
 ```
 
-*What just happened:* `.shutdown_timeout(30)` gives in-flight requests up to 30 seconds to complete after a shutdown signal arrives; past that, remaining connections are force-closed so a stuck request can't block your deploy forever. The default is 30 seconds, so you'd set this only to lengthen it (long-running uploads) or shorten it (you want fast restarts). Everything else about the drain is automatic.
+*What just happened:* `.shutdown_timeout(30)` gives in-flight requests up to 30 seconds to complete after a shutdown signal arrives; past that, remaining connections are force-closed so a stuck request can't block your deploy forever. The default is already 30 seconds, so set this only to lengthen it (long-running uploads) or shorten it (fast restarts). Everything else about the drain is automatic.
 
-**Env config and logging.** Read anything that changes between environments — `PORT`, `DATABASE_URL`, secrets — from the environment, not hard-coded constants, so the same binary runs unchanged on your laptop and in production. And remember from [Phase 5](05-middleware.md) that the `Logger` middleware writes through the `log` facade, which does nothing until a logger is initialized — so call `env_logger::init()` (or your logger of choice) at the top of `main`, or your access logs go silent in production.
+**Env config and logging.** Read anything that changes between environments — `PORT`, `DATABASE_URL`, secrets — from the environment, not hard-coded constants, so the same binary runs unchanged on your laptop and in production. Remember from [Phase 5](05-middleware.md) that the `Logger` middleware writes through the `log` facade, which does nothing until a logger is initialized — call `env_logger::init()` (or your logger of choice) at the top of `main`, or your access logs go silent in production.
 
 ```rust
 #[actix_web::main]
@@ -162,14 +162,14 @@ async fn main() -> std::io::Result<()> {
 
 Three steps take this from "runs on my machine" to "runs in production."
 
-First, build in **release mode**. Debug builds are unoptimized and slow; production wants the optimized binary:
+First, build in **release mode** — debug builds are unoptimized and slow; production wants the optimized binary:
 
 ```bash
 cargo build --release
 # produces target/release/articles-api
 ```
 
-*What just happened:* `--release` turns on optimizations (and strips debug assertions), producing a much faster binary at `target/release/`. Compilation takes longer, but you do it once at build time, not per request.
+*What just happened:* `--release` turns on optimizations (and strips debug assertions), producing a much faster binary at `target/release/`. Compilation takes longer, but only once at build time, not per request.
 
 Second, package it in a **multi-stage container** — compile in a stage with the full Rust toolchain, then copy *only* the binary into a tiny runtime image:
 
@@ -188,11 +188,11 @@ EXPOSE 8080
 CMD ["articles-api"]
 ```
 
-*What just happened:* the first stage has the whole Rust toolchain and compiles the binary; the second stage is a slim Debian image carrying just the executable (plus the few shared libraries a default Rust binary links against — that's why we use `debian:stable-slim` rather than `scratch`). The result is a small image with a tiny attack surface. We bake in `RUST_LOG=info` so logging is on by default in the container.
+*What just happened:* the first stage has the whole Rust toolchain and compiles the binary; the second is a slim Debian image carrying just the executable (plus the few shared libraries a default Rust binary links against — why we use `debian:stable-slim` rather than `scratch`). The result is a small image with a tiny attack surface. We bake in `RUST_LOG=info` so logging is on by default in the container.
 
-Third, put a **reverse proxy** in front — nginx, Caddy, or whatever your platform provides (a load balancer, an ingress controller). The proxy terminates TLS (HTTPS), can serve static assets, and load-balances across instances. Your actix-web app speaks plain HTTP on its port; the proxy faces the public internet. You generally don't terminate TLS in actix-web itself — let the proxy do it.
+Third, put a **reverse proxy** in front — nginx, Caddy, or whatever your platform provides (a load balancer, an ingress controller). The proxy terminates TLS (HTTPS), can serve static assets, and load-balances across instances. Your actix-web app speaks plain HTTP on its port; the proxy faces the public internet. Generally don't terminate TLS in actix-web itself — let the proxy do it.
 
-That's the whole deploy shape: a release binary, in a small container, configured by env vars, behind a proxy. Taking it the rest of the way to a live URL — picking a host, wiring CI, the domain and TLS specifics — is covered in [ship your side project](/guides/ship-your-side-project).
+That's the whole deploy shape: a release binary, in a small container, configured by env vars, behind a proxy. Taking it the rest of the way to a live URL — picking a host, wiring CI, domain and TLS specifics — is covered in [ship your side project](/guides/ship-your-side-project).
 
 ## Recap
 

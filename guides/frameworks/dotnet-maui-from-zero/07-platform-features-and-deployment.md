@@ -11,17 +11,17 @@ updated: 2026-06-23
 
 # Platform Features & Deployment
 
-Here's the mental model that carries this whole phase. MAUI gives you **one C# API that
-reaches each platform's native features** — the GPS chip, the network state, the battery,
-the clipboard. You call one method; MAUI talks to Android's location services on Android and
-Apple's on iOS. For the rare case the shared API doesn't cover, you drop into the
-`Platforms/` folders with native code guarded by `#if`. And once the app does what you want,
-you **package it per store** — a different bundle and signing process for each target.
+Here's the mental model for this whole phase. MAUI gives you **one C# API that reaches each
+platform's native features** — the GPS chip, the network state, the battery, the clipboard.
+Call one method, and MAUI talks to Android's location services on Android and Apple's on iOS.
+For the rare case the shared API doesn't cover, you drop into the `Platforms/` folders with
+native code guarded by `#if`. Once the app does what you want, you **package it per store** —
+a different bundle and signing process for each target.
 
-So three moves, in order: reach native features with shared code, escape to platform code
-only when forced, then ship. Our notes app has lived on a single codebase since Phase 1, and
-that's about to pay off — the same app, with the same logic, becomes an Android `.aab`, an iOS
-build, and a Windows `.msix`.
+Three moves, in order: reach native features with shared code, escape to platform code only
+when forced, then ship. Our notes app has lived on a single codebase since Phase 1, and that's
+about to pay off — the same app, with the same logic, becomes an Android `.aab`, an iOS build,
+and a Windows `.msix`.
 
 > 📝 These device APIs used to be a separate package called **Xamarin.Essentials**. In modern
 > MAUI they're built in, under namespaces like `Microsoft.Maui.Devices` and
@@ -35,7 +35,7 @@ Each platform exposes these through its own native SDK with its own types and ce
 wraps the common ones so you write the call **once**.
 
 Take connectivity. Before our notes app syncs to a server, it should know whether there's a
-network at all — firing an `HttpClient` request into airplane mode just gives you a slow,
+network at all — firing an `HttpClient` request into airplane mode just gives a slow,
 confusing failure. One property tells you:
 
 ```csharp
@@ -73,8 +73,8 @@ Connectivity.Current.ConnectivityChanged += (s, e) =>
 ```
 
 *What just happened:* `ConnectivityChanged` fires whenever the device gains or loses a
-connection. We flip a banner's visibility so the user always knows the app's sync state — no
-polling, no guesswork.
+connection. We flip a banner's visibility so the user always knows the app's sync state —
+no polling, no guesswork.
 
 That single-call shape repeats across the whole family. A quick map of the ones you'll reach
 for most:
@@ -102,13 +102,13 @@ if (DeviceInfo.Current.Platform == DevicePlatform.iOS)
 
 *What just happened:* `DeviceInfo.Current.Platform` tells you which OS you're running on at
 runtime, so you can make small adjustments in shared code without dropping into a `Platforms/`
-folder. Use it for tweaks; use real platform code (below) for genuinely native behavior.
+folder. Use it for tweaks; use real platform code below for genuinely native behavior.
 
 ## Permissions — ask, and declare
 
 Some features touch private user data — location, camera, contacts. Both Android and iOS guard
-these behind **runtime permission prompts**: the OS asks the user, at the moment of use,
-whether your app may have access. MAUI gives you a shared API to check and request:
+these behind **runtime permission prompts**: the OS asks the user, at the moment of use, whether
+your app may have access. MAUI gives you a shared API to check and request:
 
 ```csharp
 using Microsoft.Maui.ApplicationModel;
@@ -131,7 +131,7 @@ async Task<Location?> GetCurrentLocationAsync()
 *What just happened:* we **check** the current permission status first (no need to nag a user
 who already said yes), and only **request** if we don't have it. If the user declines, we
 return `null` and the caller handles the no-location case — we never assume permission was
-granted. For our notes app, this might tag a note with "where it was written," and skip the
+granted. For our notes app, this might tag a note with "where it was written," skipping the
 tag gracefully if location is off.
 
 > ⚠️ The C# call is only half the job. Each platform also requires you to **declare** the
@@ -154,9 +154,9 @@ Two halves, every time: **request in C#, declare in the manifest.** When a permi
 
 ## Platform-specific code — only when you must
 
-The shared APIs cover a lot, but not everything. Sometimes you need behavior that exists only
-on one platform — a native widget, a vendor SDK, an OS-specific tweak. MAUI gives you three
-escape hatches.
+The shared APIs cover a lot, but not everything. Sometimes you need behavior that exists only on
+one platform — a native widget, a vendor SDK, an OS-specific tweak. MAUI gives you three escape
+hatches.
 
 **1. Conditional compilation with `#if`.** The compiler defines a symbol per target
 (`ANDROID`, `IOS`, `MACCATALYST`, `WINDOWS`), so you can fence off platform code inline:
@@ -180,9 +180,9 @@ the `#elif IOS` block only into the iOS build. Each branch can call that platfor
 directly. Great for a one-off; messy if it sprawls.
 
 **2. The `Platforms/` folders + partial classes.** For anything bigger, MAUI's project layout
-already separates native code into `Platforms/Android/`, `Platforms/iOS/`, and so on. You
-declare a `partial` method in shared code and implement it once per platform folder — same
-shape as `#if`, but each platform's code lives in its own clean file.
+already separates native code into `Platforms/Android/`, `Platforms/iOS/`, and so on. Declare a
+`partial` method in shared code and implement it once per platform folder — same shape as `#if`,
+but each platform's code lives in its own clean file.
 
 **3. An interface with per-platform implementations.** The cleanest pattern for real native
 features: define an interface in shared code, write one implementation per platform, and inject
@@ -203,8 +203,8 @@ public class NoteEditorViewModel(IDeviceTorch torch)
 ```
 
 *What just happened:* the ViewModel knows only `IDeviceTorch` — pure shared C#, fully testable.
-The Android and iOS torch implementations live in their `Platforms/` folders and get
-registered with the DI container at startup. Your app logic never sees a platform type.
+The Android and iOS torch implementations live in their `Platforms/` folders and get registered
+with the DI container at startup. Your app logic never sees a platform type.
 
 > 💡 Reach for these only when the cross-platform API doesn't cover you. Most of what an app
 > needs already has a shared API — check the device-API table first. Platform code is a tool
@@ -214,7 +214,7 @@ registered with the DI container at startup. Your app logic never sees a platfor
 
 Your notes app runs. Now you turn one codebase into store-ready bundles. Each target produces a
 different artifact with its own signing, icons, and review process — the build command picks the
-framework with `-f`:
+target with `-f`:
 
 **Android** → a signed `.aab` (Android App Bundle, what Google Play wants) or `.apk`:
 
@@ -224,8 +224,8 @@ dotnet publish -f net8.0-android -c Release
 
 *What just happened:* `dotnet publish` compiles a Release build for the Android target and
 produces the app bundle. You'll sign it with a keystore (Google Play also offers managed
-signing) and upload it to the Play Console. The `.aab` lets Google generate
-device-optimized APKs for each user.
+signing) and upload it to the Play Console. The `.aab` lets Google generate device-optimized
+APKs for each user.
 
 **iOS / Mac Catalyst** → an App Store build:
 
@@ -237,7 +237,7 @@ dotnet publish -f net8.0-ios -c Release
 > step) only runs on macOS. You'll also need an **Apple Developer account** (paid) and
 > **provisioning profiles** that tie your app ID and signing certificate together. There's no way
 > around the Mac; even from a Windows dev box, the final iOS build runs on a connected or remote
-> Mac. Plan for it early.
+> Mac.
 
 **Windows** → an `.msix` package for the Microsoft Store or sideloading:
 
@@ -250,8 +250,8 @@ submit it to the Microsoft Store or distribute it directly (sideloading) with a 
 certificate.
 
 Each store then has its **own** gauntlet: signing keys to guard, icon and splash assets at the
-right sizes, metadata and screenshots, and a review queue. Apple's review is the strictest;
-budget days, not minutes. The packaging is the easy part — the store paperwork is where first-time
+right sizes, metadata and screenshots, and a review queue. Apple's review is the strictest —
+budget days, not minutes. Packaging is the easy part; store paperwork is where first-time
 shippers lose time.
 
 > 📝 The mechanics of *actually getting through a store review* — assets, metadata, privacy

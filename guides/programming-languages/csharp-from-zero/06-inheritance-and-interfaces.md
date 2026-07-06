@@ -11,15 +11,15 @@ updated: 2026-06-22
 
 # Inheritance & Interfaces - Sharing Behavior
 
-In Phase 5 you learned to build a single class - fields, constructors, properties, the whole spine of a type. But programs are rarely one type. You get families of related types: a `Dog` and a `Cat` that are both animals, a `Circle` and a `Rectangle` that are both shapes, a `FileLogger` and a `ConsoleLogger` that both, well, log. The question this phase answers is: *how do related types share code and promise common behavior without copy-pasting?*
+Phase 5 built a single class - fields, constructors, properties, the whole spine of a type. But programs are rarely one type. You get families of related types: a `Dog` and a `Cat` both animals, a `Circle` and a `Rectangle` both shapes, a `FileLogger` and a `ConsoleLogger` that both, well, log. This phase answers: *how do related types share code and promise common behavior without copy-pasting?*
 
-C# gives you two tools for that, and the whole phase is really about telling them apart. **Inheritance** is "this type *is a* more specific version of that type" - a `Dog` is an `Animal`, so it gets everything an `Animal` has and then adds its own twist. **Interfaces** are "this type *can do* a certain thing" - anything that can be drawn promises a `Draw()` method, no matter what it actually is. One idea to hold onto from the start: inheritance shares *implementation*, interfaces share *a contract*. The rest is detail.
+C# gives you two tools, and the phase is really about telling them apart. **Inheritance** is "this type *is a* more specific version of that type" - a `Dog` is an `Animal`, so it gets everything an `Animal` has, plus its own twist. **Interfaces** are "this type *can do* a certain thing" - anything drawable promises a `Draw()` method, no matter what it actually is. Inheritance shares *implementation*; interfaces share *a contract*.
 
 ## Inheritance - the "is-a" relationship
 
-📝 **Inheritance** - defining a new class (the **derived** or **child** class) that automatically gets all the public and protected members of an existing class (the **base** or **parent** class), then adds or changes things. You write it with a colon: `class Dog : Animal`. The derived class *is a* kind of the base class.
+📝 **Inheritance** - defining a new class (the **derived**/**child** class) that automatically gets all the public and protected members of an existing class (the **base**/**parent** class), then adds or changes things. Written with a colon: `class Dog : Animal`. The derived class *is a* kind of the base class.
 
-The litmus test before you reach for inheritance is the **"is-a" test**: read it out loud as "a Dog is an Animal." If that sentence is true and stays true, inheritance fits. If you find yourself saying "a Car *has an* Engine," that's *has-a* - that's a field, not inheritance. Getting this wrong is the single most common OOP mistake, so say the sentence every time.
+The litmus test is the **"is-a" test**: read it aloud as "a Dog is an Animal." If true and stays true, inheritance fits. "A Car *has an* Engine" is *has-a* - a field, not inheritance. Getting this wrong is the single most common OOP mistake.
 
 When the base class has a constructor that needs arguments, the derived class passes them up with the `base(...)` keyword:
 
@@ -66,17 +66,17 @@ class Program
 Rex is eating.
 Rex fetches the ball.
 ```
-*What just happened:* `Dog : Animal` means `Dog` inherited `Animal`'s `Name` property and `Eat()` method for free - `rex.Eat()` works even though `Dog` never defines `Eat`. The `: base(name)` in `Dog`'s constructor handed `"Rex"` up to `Animal`'s constructor so the inherited `Name` got set; without it, the compiler wouldn't know how to initialize the `Animal` part of the `Dog`. Then `Dog` added `Fetch()`, which `Animal` knows nothing about. That's inheritance in one breath: get everything the parent has, then extend it.
+*What just happened:* `Dog : Animal` means `Dog` inherited `Animal`'s `Name` property and `Eat()` method for free - `rex.Eat()` works even though `Dog` never defines `Eat`. `: base(name)` handed `"Rex"` up to `Animal`'s constructor so the inherited `Name` got set; without it, the compiler wouldn't know how to initialize the `Animal` part of the `Dog`. Then `Dog` added `Fetch()`, which `Animal` knows nothing about - get everything the parent has, then extend it.
 
-💡 **Every class already inherits something.** Even when you write a plain `class Account` with no colon, C# silently makes it inherit from a universal base type called `object`. That's *why* every object has a `ToString()` you can override (Phase 5) - it came from `object`. Inheritance isn't an exotic feature you opt into; it's already underneath everything.
+💡 **Every class already inherits something.** Even a plain `class Account` with no colon silently inherits from a universal base type called `object` - why every object has a `ToString()` you can override (Phase 5). Inheritance is already underneath everything.
 
 ## `virtual` and `override` - and the trap that bites Java refugees
 
-Here's where C# has a rule that surprises people coming from other languages, so we'll slow right down. Inheriting a method is one thing. *Replacing* it with a more specific version in the derived class is another - and C# makes you ask for that explicitly on **both** sides.
+Here's a rule that surprises people from other languages. Inheriting a method is one thing; *replacing* it with a more specific version is another - and C# makes you ask for that explicitly on **both** sides.
 
-📝 **`virtual`** - a keyword on a base-class method that says "derived classes are allowed to replace this." **`override`** - a keyword on the derived-class method that says "I am deliberately replacing the virtual base version." You need *both*: `virtual` in the parent to open the door, `override` in the child to walk through it.
+📝 **`virtual`** - a base-class method keyword saying "derived classes may replace this." **`override`** - a derived-class keyword saying "I am deliberately replacing the virtual base version." You need *both*: `virtual` opens the door, `override` walks through it.
 
-⚠️ **This is the C#-specific rule that trips everyone.** In Java, *every* method is overridable by default - you override just by matching the signature. In C#, methods are **sealed shut by default**. If the base method isn't marked `virtual`, the derived class cannot truly override it. This is a deliberate design choice: C# wants overriding to be intentional, not accidental.
+⚠️ **This is the C#-specific rule that trips everyone.** In Java, *every* method is overridable by default - matching the signature is enough. In C#, methods are **sealed shut by default**: if the base method isn't `virtual`, the derived class cannot truly override it. A deliberate design choice - C# wants overriding intentional, not accidental.
 
 ```csharp
 class Animal
@@ -126,9 +126,9 @@ class Program
 Rex barks: Woof!
 Whiskers meows: Meow!
 ```
-*What just happened:* This is **dynamic dispatch** in action, and it's the payoff for all the `virtual`/`override` ceremony. The variable `a` is *declared* as `Animal`, but at run time it actually holds a `Dog`. When you call `a.Speak()`, C# looks at the *real* object (a `Dog`), not the declared type, and runs `Dog`'s overridden `Speak`. Same for `b` and its `Cat`. The decision about which method runs is made at run time based on the actual object - that's why it's called *dynamic*.
+*What just happened:* This is **dynamic dispatch** - the payoff for the `virtual`/`override` ceremony. `a` is *declared* as `Animal`, but at run time it holds a `Dog`. Calling `a.Speak()`, C# looks at the *real* object, not the declared type, and runs `Dog`'s overridden `Speak`. Same for `b` and its `Cat`. The decision is made at run time based on the actual object - hence "dynamic."
 
-⚠️ **The `new` keyword is a trap, not a fix.** If you forget `virtual` on the base method and write `override` in the derived class, the compiler errors - that's the good case, it tells you. But if you write `new` instead of `override`, the code compiles and looks like it works, while doing something subtly wrong: `new` *hides* the base method rather than overriding it. The difference only shows up through a base-typed variable:
+⚠️ **The `new` keyword is a trap, not a fix.** Forget `virtual` on the base method and write `override` in the derived class, and the compiler errors - the good case. But write `new` instead of `override`, and the code compiles and looks like it works while doing something subtly wrong: `new` *hides* the base method rather than overriding it. The difference only shows up through a base-typed variable:
 
 ```csharp
 class Animal
@@ -163,15 +163,15 @@ class Program
 Woof!
 Animal sound
 ```
-*What just happened:* `d` and `a` point at the *exact same object*, yet `d.Speak()` and `a.Speak()` print different things. With `new`, C# picks the method based on the **declared type of the variable**, not the real object - the opposite of dynamic dispatch. So a `Dog` stuffed into an `Animal` variable "forgets" it's a dog. This is almost never what you want. The lesson: when you mean to override, use `virtual` + `override` and verify your output through a base-typed variable. If you ever see `new` on a method, treat it as a red flag.
+*What just happened:* `d` and `a` point at the *exact same object*, yet print different things. With `new`, C# picks the method based on the **declared type of the variable**, not the real object - the opposite of dynamic dispatch, almost never what you want. When you mean to override, use `virtual` + `override` and verify through a base-typed variable. Seeing `new` on a method is a red flag.
 
 ## Polymorphism - one type, many behaviors
 
-You just saw the mechanism. Now the name and the reason it matters.
+You just saw the mechanism - now the name.
 
-📝 **Polymorphism** ("many forms") - the ability to treat different derived objects uniformly through a base-class (or interface) reference, and have each one run *its own* overridden behavior at run time. A variable of type `Animal` can hold a `Dog`, a `Cat`, or any other animal, and calling `.Speak()` on it does the right thing for whatever it actually is - *without your code knowing or caring which*.
+📝 **Polymorphism** ("many forms") - treating different derived objects uniformly through a base-class (or interface) reference, each running *its own* overridden behavior at run time. A variable of type `Animal` can hold a `Dog`, `Cat`, or any other animal, and calling `.Speak()` does the right thing - *without your code knowing or caring which*.
 
-The payoff shows up the moment you have a *collection* of mixed subtypes. You write one loop against the base type, and each object brings its own behavior:
+The payoff shows up with a *collection* of mixed subtypes: one loop against the base type, each object bringing its own behavior:
 
 ```csharp
 class Program
@@ -198,15 +198,15 @@ Rex barks: Woof!
 Whiskers meows: Meow!
 Buddy barks: Woof!
 ```
-*What just happened:* The loop variable `a` is just an `Animal` as far as the code can tell - the `foreach` has no idea it's juggling dogs and cats. But every `a.Speak()` dispatched to the real object's overridden method, so dogs barked and the cat meowed, all from one identical line of code. This is the whole reason polymorphism is worth the `virtual`/`override` ceremony: you can add a `Hamster : Animal` next week, drop it in the list, and **this loop never changes**. Code written against the base type automatically handles types that didn't exist when you wrote it.
+*What just happened:* The loop variable `a` is just an `Animal` as far as the code can tell - `foreach` has no idea it's juggling dogs and cats. But every `a.Speak()` dispatched to the real object's overridden method, so dogs barked and the cat meowed, all from one line of code. Add a `Hamster : Animal` next week, drop it in the list, and **this loop never changes** - code against the base type automatically handles types that didn't exist when you wrote it.
 
 ## Interfaces - a contract any class can sign
 
-Inheritance is powerful but it has a hard limit in C#: a class can inherit from **exactly one** base class. You can't be both a `Bird` and a `Swimmer` by inheritance. And often "is-a" is the wrong relationship anyway - a `FileLogger` and a `Button` have nothing in common as *types*, yet both might need to be "savable" or "disposable." For sharing *capability* across unrelated types, you want an **interface**.
+Inheritance has a hard limit in C#: a class can inherit **exactly one** base class. You can't be both a `Bird` and a `Swimmer` by inheritance. And often "is-a" is the wrong relationship - a `FileLogger` and a `Button` share nothing as *types*, yet both might need to be "savable" or "disposable." For sharing *capability* across unrelated types, you want an **interface**.
 
-📝 **Interface** - a contract: a named list of members (methods, properties) that a type promises to provide, with *no implementation* of its own. A class signs the contract with the same colon syntax (`class Circle : IShape`) and must then supply a body for every member the interface declares. By convention, interface names start with a capital `I`: `IShape`, `IComparable`, `IDisposable`.
+📝 **Interface** - a contract: a named list of members (methods, properties) a type promises to provide, with *no implementation*. A class signs it with the same colon syntax (`class Circle : IShape`) and must supply a body for every declared member. By convention interface names start with `I`: `IShape`, `IComparable`, `IDisposable`.
 
-The crucial difference from inheritance: a class inherits **one** base class but can implement **many** interfaces. The interface says nothing about *what* a type is - only what it can *do*.
+The crucial difference from inheritance: a class inherits **one** base class but implements **many** interfaces. An interface says nothing about *what* a type is - only what it can *do*.
 
 ```csharp
 interface IShape
@@ -254,15 +254,15 @@ class Program
 Circle with area 12.57
 Rectangle with area 12.00
 ```
-*What just happened:* `IShape` declared *what* a shape must offer - `Area()` and `Describe()` - but not *how*. `Circle` and `Rectangle` each supplied their own implementations, and they share no base class; their only connection is the contract they both signed. The `List<IShape>` then treated them uniformly, exactly like polymorphism with inheritance - because that's what it is. Interfaces give you the same "one loop, many behaviors" payoff *without* forcing the types into a family tree. This is why C# code leans on interfaces constantly: they're how unrelated things agree to be interchangeable.
+*What just happened:* `IShape` declared *what* a shape must offer - `Area()` and `Describe()` - but not *how*. `Circle` and `Rectangle` supplied their own implementations, sharing no base class; their only connection is the contract. `List<IShape>` treated them uniformly, exactly like polymorphism with inheritance. Interfaces give the same "one loop, many behaviors" payoff *without* forcing types into a family tree - how unrelated things agree to be interchangeable.
 
-💡 **Default interface methods (a modern wrinkle).** Since C# 8, an interface *can* include a default body for a member, so types that don't override it inherit that default. It's handy for adding a method to an existing interface without breaking every class that already implements it. But treat it as a special-purpose escape hatch, not the norm - the everyday job of an interface is still to declare a contract, not carry code. When you reach for a default method, pause and ask whether an abstract class would express the intent more honestly.
+💡 **Default interface methods (a modern wrinkle).** Since C# 8, an interface can include a default body for a member, so types that don't override it inherit that default - handy for extending an interface without breaking existing implementers. Treat it as a special-purpose escape hatch, not the norm; an interface's everyday job is still to declare a contract, not carry code.
 
 ## Abstract and sealed - the two ends of the dial
 
-Two more keywords round out the picture, and they sit at opposite extremes: one forces inheritance, the other forbids it.
+Two more keywords sit at opposite extremes: one forces inheritance, the other forbids it.
 
-📝 **`abstract` class** - a base class you *cannot instantiate directly* (`new Animal(...)` becomes a compile error). It exists only to be inherited. It can mix concrete members (shared code) with **`abstract` members** - declared but unimplemented, like an interface member - which every concrete subclass is *forced* to override. Use it when there's no such thing as a generic instance ("there's no such thing as just an `Animal`; only dogs, cats, …") but the subtypes share real code and state.
+📝 **`abstract` class** - a base class you *cannot instantiate directly* (`new Animal(...)` is a compile error); it exists only to be inherited. It can mix concrete members (shared code) with **`abstract` members** - declared but unimplemented - which every concrete subclass is *forced* to override. Use it when there's no such thing as a generic instance ("only dogs, cats, ... never just an `Animal`") but subtypes share real code and state.
 
 ```csharp
 abstract class Animal
@@ -299,16 +299,16 @@ class Program
 Rex: Woof!
 Rex sleeps.
 ```
-*What just happened:* `abstract class Animal` can't be `new`-ed - there's no such thing as a generic animal, and the commented-out line proves the compiler enforces that. `Speak()` is `abstract`, so `Animal` declares it but refuses to implement it, *forcing* `Dog` to override it (skip that override and the code won't compile). Meanwhile `Sleep()` is fully written once on `Animal` and shared by every subclass. That blend - *force* some methods, *share* others, hold common state like `Name` - is exactly what an abstract class is for, and it's the line that separates it from an interface.
+*What just happened:* `abstract class Animal` can't be `new`-ed - there's no such thing as a generic animal, and the commented-out line proves the compiler enforces that. `Speak()` is `abstract`, so `Animal` declares it but refuses to implement it, *forcing* `Dog` to override it. Meanwhile `Sleep()` is fully written once and shared by every subclass. That blend - force some methods, share others, hold common state - is what separates an abstract class from an interface.
 
-📝 **`sealed` class** - the opposite: a class marked `sealed` *cannot be inherited from* at all. `sealed class Receipt` slams the door so no one can subtype it. You reach for it when a type's behavior must not be altered by subclassing - for safety, for guarantees, or just to signal "this is final." You can also seal an individual `override` to stop *further* overriding down the chain.
+📝 **`sealed` class** - the opposite: `sealed` *cannot be inherited from* at all. `sealed class Receipt` slams the door so no one can subtype it. Reach for it when behavior must not be altered by subclassing - safety, guarantees, or signaling "this is final." You can also seal an individual `override` to stop *further* overriding down the chain.
 
-💡 **So which do you actually pick?** Here's the honest guidance, learned the hard way:
+💡 **So which do you actually pick?** The honest guidance:
 
-- **Default to interfaces.** They model *capability* ("can be drawn," "can be compared"), a type can implement many of them, and they keep your types from being trapped in a rigid family tree. When you just need types to agree on a contract, an interface is almost always the right call.
-- **Use an abstract class when subtypes genuinely share state and code.** If every subclass would copy-paste the same fields and helper methods, an abstract base earns its keep - it owns that shared implementation in one place. The cost is the one-base-class limit, so spend it deliberately.
+- **Default to interfaces.** They model *capability*, a type can implement many, and they avoid a rigid family tree. When types just need to agree on a contract, an interface is almost always right.
+- **Use an abstract class when subtypes genuinely share state and code.** If every subclass would copy-paste the same fields and helpers, an abstract base earns its keep by owning that shared implementation once. The cost is the one-base-class limit.
 
-⚠️ **Favor composition and interfaces over deep inheritance hierarchies.** The classic beginner trap is building tall towers - `Animal → Mammal → Carnivore → Dog → Puppy` - and discovering that a change near the top ripples unpredictably to the bottom, or that a new type doesn't fit the tree at all. Deep inheritance is brittle. In real C# codebases, most reuse comes from *small interfaces* plus *composition* (an object holding other objects, like the `Car` that *has an* `Engine` from the "is-a vs has-a" test). Inheritance is a sharp tool; use it shallowly and only when "is-a" is unmistakably true.
+⚠️ **Favor composition and interfaces over deep inheritance hierarchies.** The classic beginner trap is building tall towers - `Animal → Mammal → Carnivore → Dog → Puppy` - then finding a change near the top ripples unpredictably to the bottom, or a new type doesn't fit the tree. Most reuse in real C# codebases comes from *small interfaces* plus *composition* (an object holding other objects, the "has-a" case). Use inheritance shallowly, only when "is-a" is unmistakably true.
 
 ## Recap
 
@@ -323,7 +323,7 @@ You can now connect your types together - let them build on each other, promise 
 
 ## Quick check
 
-Test yourself on the ideas that separate inheritance from interfaces - and the override trap especially:
+Test yourself on the ideas that separate inheritance from interfaces - especially the override trap:
 
 ```quiz
 [

@@ -12,13 +12,13 @@ updated: 2026-06-22
 
 Concurrency is where most languages quietly betray you. You write code that works on your laptop, ship it, and three weeks later a customer hits a race condition that only appears under load - two threads touched the same data at the same time, and the result was garbage. Those bugs are notoriously hard to reproduce and harder to fix, because they depend on timing.
 
-Rust's pitch - and it's not marketing fluff - is **fearless concurrency**: you can write multithreaded code and trust that an entire category of those bugs *cannot reach production*, because the compiler refuses to build them. The trick is that there's no new safety system to learn here. It's the same ownership and borrowing rules from [Phase 6](06-ownership-and-borrowing.md), applied across threads. "Many readers or one writer, never both" is exactly what prevents a data race - and the borrow checker already enforces it. This phase is mostly about meeting the few tools that let you share data across threads *while keeping those rules intact*.
+Rust's pitch - and it's not marketing fluff - is **fearless concurrency**: you can write multithreaded code and trust that an entire category of those bugs *cannot reach production*, because the compiler refuses to build them. There's no new safety system to learn here - it's the same ownership and borrowing rules from [Phase 6](06-ownership-and-borrowing.md), applied across threads. "Many readers or one writer, never both" is exactly what prevents a data race, and the borrow checker already enforces it. This phase is mostly about meeting the few tools that let you share data across threads *while keeping those rules intact*.
 
 📝 **Data race** - two or more threads access the same memory at the same time, at least one of them writing, with no synchronization. The result is undefined: torn values, lost updates, corruption. This is the specific bug class Rust eliminates at compile time.
 
 ## Spawning threads
 
-**What it actually is.** `std::thread::spawn` starts a new OS thread running a closure. It hands you back a `JoinHandle` - a receipt you can use to wait for that thread to finish and collect its result. Threads run *concurrently*, so the order their output appears in is not guaranteed.
+**What it actually is.** `std::thread::spawn` starts a new OS thread running a closure. It hands back a `JoinHandle` - a receipt you can use to wait for that thread to finish and collect its result. Threads run *concurrently*, so the order their output appears in is not guaranteed.
 
 ```rust
 use std::thread;
@@ -46,11 +46,11 @@ main: 3
   spawned: 2
   spawned: 3
 ```
-*What just happened:* `spawn` launched a second thread that ran alongside `main`. Both loops printed at the same time, so their lines interleaved - and the exact interleaving changes from run to run, so your output order will differ from the above. `handle.join()` blocked `main` until the spawned thread finished; without it, `main` could return and tear the whole program down before the spawned thread ever printed.
+*What just happened:* `spawn` launched a second thread that ran alongside `main`. Both loops printed at the same time, so their lines interleaved - the exact interleaving changes from run to run, so your output order will differ. `handle.join()` blocked `main` until the spawned thread finished; without it, `main` could return and tear down the whole program before the spawned thread ever printed.
 
-⚠️ **`.join()` matters.** When `main` returns, the process ends - any still-running threads are killed mid-stride. If you spawn work and want it to actually complete, hold the `JoinHandle` and `.join()` it.
+⚠️ **`.join()` matters.** When `main` returns, the process ends - any still-running threads are killed mid-stride. If you spawn work you want to complete, hold the `JoinHandle` and `.join()` it.
 
-Now the more useful case: giving a thread some data to work with. A closure that uses a value from the surrounding scope needs to *own* it, because the thread may outlive the function that spawned it. You force that with the `move` keyword.
+Now the more useful case: giving a thread some data to work with. A closure using a value from the surrounding scope needs to *own* it, because the thread may outlive the function that spawned it. Force that with `move`.
 
 ```rust
 use std::thread;
@@ -70,11 +70,11 @@ fn main() {
 $ cargo run
 hello from the main scope
 ```
-*What just happened:* `move` transferred ownership of `greeting` *into* the closure, so the spawned thread owns it outright. This is move semantics from Phase 6 doing exactly its job: the thread can't borrow `greeting` from `main`, because `main` might end first and drop it, leaving the thread holding a dangling reference. By *moving* it, ownership goes to the thread, and the problem disappears. The compiler insists on `move` here precisely so that dangling-reference bug can't happen.
+*What just happened:* `move` transferred ownership of `greeting` *into* the closure, so the spawned thread owns it outright - move semantics from Phase 6 doing exactly its job. The thread can't borrow `greeting` from `main`, because `main` might end first and drop it, leaving the thread holding a dangling reference. By *moving* it, ownership goes to the thread and the problem disappears - the compiler insists on `move` here precisely so that bug can't happen.
 
 ## Why data races can't compile
 
-Here's the headline, demonstrated. Suppose two threads try to mutate the same vector at the same time, the naive way - no synchronization, just shared mutable access. In C, C++, or Python this compiles and runs, and it's a data race waiting to corrupt your data. In Rust, it doesn't get past the compiler.
+Here's the headline, demonstrated. Suppose two threads try to mutate the same vector at once, the naive way - no synchronization, just shared mutable access. In C, C++, or Python this compiles and runs, a data race waiting to corrupt your data. In Rust, it doesn't get past the compiler.
 
 ```rust
 use std::thread;
@@ -105,20 +105,20 @@ error[E0382]: borrow of moved value: `data`
 9 |     data.push(5);
   |     ^^^^ value used here after move
 ```
-*What just happened:* The `move` closure took ownership of `data` for the thread, so `main` no longer owns it - and `data.push(5)` in `main` is a use-after-move, exactly the error you met in Phase 6. The compiler won't let two owners mutate the same value. There's no way to express "both threads freely write to this" without going through a synchronization tool, and that's the whole point: the *only* way forward is to make the sharing safe.
+*What just happened:* The `move` closure took ownership of `data` for the thread, so `main` no longer owns it - `data.push(5)` in `main` is a use-after-move, the same error from Phase 6. The compiler won't let two owners mutate the same value. There's no way to express "both threads freely write to this" without a synchronization tool - that's the whole point: the *only* way forward is to make the sharing safe.
 
-💡 **This is the deal.** The race conditions other languages ship to production and chase with logging and prayer, Rust catches at build time - using nothing more than the ownership rules you already know. The compiler error feels like an obstacle, but it's the language refusing to let you write the bug.
+💡 **This is the deal.** The race conditions other languages ship to production and chase with logging and prayer, Rust catches at build time - using nothing more than the ownership rules you already know.
 
 ## Sharing mutable state: `Arc<Mutex<T>>`
 
 Sometimes you genuinely need multiple threads to share *and* mutate the same data. Rust makes you do it safely, with two pieces that stack together:
 
-- **`Arc<T>`** - an *atomically reference-counted* pointer (the thread-safe sibling of `Rc` from [Phase 12](12-smart-pointers.md)). It lets several threads *co-own* the same value; the data is dropped only when the last owner goes away.
-- **`Mutex<T>`** - a *mutual-exclusion lock*. To touch the data inside, a thread must call `.lock()`, which blocks until it's the *only* thread holding the lock. While it holds the lock, no one else can get in.
+- **`Arc<T>`** - an *atomically reference-counted* pointer (the thread-safe sibling of `Rc` from [Phase 12](12-smart-pointers.md)). It lets several threads *co-own* the same value; the data drops only when the last owner goes away.
+- **`Mutex<T>`** - a *mutual-exclusion lock*. To touch the data inside, a thread must call `.lock()`, which blocks until it's the *only* thread holding the lock.
 
-📝 **Mutex** - a lock that guarantees only one thread accesses the protected data at a time. `.lock()` returns a guard; when the guard goes out of scope, the lock releases automatically (no manual unlock to forget).
+📝 **Mutex** - a lock that guarantees only one thread accesses the protected data at a time. `.lock()` returns a guard; when the guard goes out of scope, the lock releases automatically - no manual unlock to forget.
 
-`Arc` answers "who owns this?" (everyone, jointly). `Mutex` answers "who may write to it *right now*?" (whoever holds the lock - one at a time). Together, `Arc<Mutex<T>>` is the standard way to share mutable state across threads.
+`Arc` answers "who owns this?" (everyone, jointly). `Mutex` answers "who may write to it *right now*?" (whoever holds the lock). Together, `Arc<Mutex<T>>` is the standard way to share mutable state across threads.
 
 ```mermaid
 flowchart LR
@@ -128,7 +128,7 @@ flowchart LR
   M --> D[one writer<br/>at a time]
 ```
 
-Here ten threads each bump a shared counter. Without the `Mutex`, that's the classic data race; with it, every increment is safe:
+Ten threads each bump a shared counter below. Without the `Mutex`, that's the classic data race; with it, every increment is safe:
 
 ```rust
 use std::sync::{Arc, Mutex};
@@ -158,9 +158,9 @@ fn main() {
 $ cargo run
 final count: 10
 ```
-*What just happened:* `Arc::clone` made ten owning handles to the *same* `Mutex` - cheap, it just bumps the reference count, it doesn't copy the data. Each thread called `.lock()`, which handed it exclusive access and blocked any other thread from getting in until the guard (`num`) dropped at the end of the closure. Because only one thread ever mutates the counter at a time, the final value is reliably `10`. Run it a thousand times and it's `10` every time - there's no race to lose.
+*What just happened:* `Arc::clone` made ten owning handles to the *same* `Mutex` - cheap, just a reference-count bump, no data copied. Each thread called `.lock()`, which handed it exclusive access and blocked any other thread until the guard (`num`) dropped at the end of the closure. Because only one thread ever mutates the counter at a time, the final value is reliably `10` - run it a thousand times and it's `10` every time.
 
-⚠️ **Rust prevents data races, not deadlocks.** A `Mutex` can still deadlock: if thread A holds lock 1 and waits for lock 2, while thread B holds lock 2 and waits for lock 1, both wait forever. That's a *logic* bug, not a data race, and the compiler can't catch it. The guardrails: always acquire multiple locks in the same order everywhere, and keep locked sections short. Fearless concurrency means no data races - it does not mean no thinking.
+⚠️ **Rust prevents data races, not deadlocks.** A `Mutex` can still deadlock: if thread A holds lock 1 and waits for lock 2, while thread B holds lock 2 and waits for lock 1, both wait forever. That's a *logic* bug, not a data race, and the compiler can't catch it. The guardrails: always acquire multiple locks in the same order everywhere, and keep locked sections short.
 
 ## `Send` and `Sync`: the traits behind the magic
 
@@ -168,9 +168,9 @@ How does the compiler *know* whether a type is safe to move to a thread or share
 
 📝 **`Send`** - a type is `Send` if it's safe to *move* to another thread. `String`, `Vec<T>`, `Arc<T>` are all `Send`. This is what made the `move` closure earlier legal.
 
-📝 **`Sync`** - a type is `Sync` if it's safe to *share by reference* across threads (i.e. `&T` can be handed to multiple threads at once). `Mutex<T>` is `Sync` because its lock guarantees safe access.
+📝 **`Sync`** - a type is `Sync` if it's safe to *share by reference* across threads (`&T` can be handed to multiple threads at once). `Mutex<T>` is `Sync` because its lock guarantees safe access.
 
-These are *marker* traits - they carry no methods. They're labels the compiler reads to decide what's allowed. Almost every type is automatically `Send` and `Sync` because it's built from parts that are. You rarely write `Send` or `Sync` yourself; you just feel them when something *isn't*.
+These are *marker* traits - they carry no methods, just labels the compiler reads to decide what's allowed. Almost every type is automatically `Send` and `Sync` because it's built from parts that are. You rarely write either yourself; you just feel them when something *isn't*.
 
 The sharpest example is exactly why `Arc` exists. `Rc<T>` from Phase 12 is **not** `Send` - its reference count is a plain integer, so two threads bumping it at once would race and corrupt the count. Try to send an `Rc` to a thread and the compiler stops you:
 
@@ -197,13 +197,13 @@ error[E0277]: `Rc<i32>` cannot be sent between threads safely
   = help: the trait `Send` is not implemented for `Rc<i32>`
 note: required because it's used within this closure
 ```
-*What just happened:* `Rc` isn't `Send`, so the closure that captures it isn't `Send` either, and `thread::spawn` requires its closure to be `Send`. The compiler traced the whole chain and refused. The fix is `Arc`, whose reference count uses atomic operations that *are* safe across threads - which is the entire reason `Arc` exists alongside `Rc`. This is `Send`/`Sync` quietly doing their job: you didn't mention either trait, but they decided what was allowed.
+*What just happened:* `Rc` isn't `Send`, so the closure that captures it isn't `Send` either, and `thread::spawn` requires its closure to be `Send`. The compiler traced the whole chain and refused. The fix is `Arc`, whose reference count uses atomic operations that *are* safe across threads - the entire reason `Arc` exists alongside `Rc`. You never mentioned either trait, but they decided what was allowed.
 
 ## Channels: share by communicating
 
 `Arc<Mutex<T>>` shares state. There's an often-cleaner alternative: don't share at all - *pass messages*. One thread sends values, another receives them, and ownership of each value moves across the boundary. No locks, no shared mutable state to reason about.
 
-The standard library gives you this through `std::sync::mpsc` - **m**ultiple **p**roducer, **s**ingle **c**onsumer. `channel()` returns a `(Sender, Receiver)` pair: the sender's `.send()` pushes a value in, the receiver pulls values out (it's even iterable, ending when all senders are dropped).
+The standard library gives you this through `std::sync::mpsc` - **m**ultiple **p**roducer, **s**ingle **c**onsumer. `channel()` returns a `(Sender, Receiver)` pair: the sender's `.send()` pushes a value in, the receiver pulls values out (iterable, ending when all senders are dropped).
 
 ```rust
 use std::sync::mpsc;
@@ -230,11 +230,11 @@ got: the
 got: missing
 got: manual
 ```
-*What just happened:* The spawned thread `send`s three strings down the channel; ownership of each `String` *moves* into the channel and back out to the receiver, so there's never a moment where two threads hold the same value - the data race is structurally impossible. The `for received in rx` loop pulls values as they arrive and ends cleanly when `tx` is dropped (closing the channel). No `Mutex`, no `.lock()`, no shared state to coordinate.
+*What just happened:* The spawned thread `send`s three strings down the channel; ownership of each `String` *moves* into the channel and back out to the receiver, so there's never a moment where two threads hold the same value - the data race is structurally impossible. The `for received in rx` loop pulls values as they arrive and ends cleanly when `tx` drops (closing the channel). No `Mutex`, no `.lock()`, no shared state to coordinate.
 
-💡 **A rule of thumb worth keeping.** *Share by communicating where you can; reach for `Arc<Mutex>` when you must share state.* Message passing keeps each piece of data owned by exactly one thread at a time, which sidesteps a whole class of locking headaches. Use shared state when threads genuinely need to read and write the same thing concurrently.
+💡 **A rule of thumb worth keeping.** *Share by communicating where you can; reach for `Arc<Mutex>` when you must share state.* Message passing keeps each piece of data owned by exactly one thread at a time, sidestepping a whole class of locking headaches.
 
-**One last horizon: `async`/`await`.** Everything above is about *threads* - great for CPU-bound work, where you want multiple cores chewing on a problem at once. But for *I/O-bound* work - a server juggling thousands of network connections that spend most of their time waiting - spawning a thread per connection is wasteful. Rust's answer is `async`/`await`: you write functions that can *pause* while waiting for I/O and let the same thread do other work in the meantime, handling thousands of tasks on a handful of threads. It needs a runtime to drive it (the ecosystem standard is **Tokio**), and it's a substantial topic of its own - the natural next domain to explore once threads feel comfortable. The same fearless-concurrency guarantees carry over: the compiler keeps async code data-race-free too.
+**One last horizon: `async`/`await`.** Everything above is about *threads* - great for CPU-bound work, where multiple cores chew on a problem at once. But for *I/O-bound* work - a server juggling thousands of network connections that spend most of their time waiting - spawning a thread per connection is wasteful. Rust's answer is `async`/`await`: functions that can *pause* while waiting for I/O and let the same thread do other work meanwhile, handling thousands of tasks on a handful of threads. It needs a runtime to drive it (the ecosystem standard is **Tokio**), and it's a substantial topic of its own. The same fearless-concurrency guarantees carry over: the compiler keeps async code data-race-free too.
 
 ## Recap
 

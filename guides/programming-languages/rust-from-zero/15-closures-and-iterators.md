@@ -10,13 +10,13 @@ updated: 2026-06-22
 ---
 # Closures, Iterators & Zero-Cost Abstractions - Expressive and Fast
 
-Back in [Phase 9](09-idioms-and-gotchas.md) you got a taste of `.iter().filter().map().collect()` - the chain that reads like a sentence. It looked clean, maybe a little magical. This phase is where the magic turns into a mental model. We're going to crack open *why* those chains work, what the funny `|x| ...` syntax inside them actually is, and the claim that makes the whole thing remarkable: that this high-level, readable code runs *exactly* as fast as the low-level loop you'd dread writing by hand.
+Back in [Phase 9](09-idioms-and-gotchas.md) you got a taste of `.iter().filter().map().collect()` - the chain that reads like a sentence. It looked clean, maybe a little magical. This phase turns the magic into a mental model: why those chains work, what the funny `|x| ...` syntax actually is, and the claim that makes the whole thing remarkable - that this high-level, readable code runs *exactly* as fast as the low-level loop you'd dread writing by hand.
 
 That claim has a name - **zero-cost abstraction** - and it's close to the heart of Rust's pitch. Most languages make you choose: write expressive code that's slow, or fast code that's ugly. Rust says you shouldn't have to. By the end of this phase you'll understand the three pieces that make it true: closures, the function traits, and the iterator protocol.
 
 ## Closures - functions that remember where they came from
 
-**What it actually is.** A closure is an anonymous function you can write inline - but with a superpower a plain function doesn't have: it can *capture* variables from the surrounding scope and carry them along. The syntax is a pair of pipes for the parameters, then the body: `|x| x + 1`.
+**What it actually is.** A closure is an anonymous function you can write inline - but with a superpower a plain function doesn't have: it can *capture* variables from the surrounding scope and carry them along. The syntax: pipes for the parameters, then the body - `|x| x + 1`.
 
 📝 **Closure** - an anonymous function value that can capture (remember) variables from the environment where it was defined. "Closure" because it *closes over* the surrounding variables, keeping them alive inside the function.
 
@@ -35,9 +35,9 @@ $ cargo run
 6
 105
 ```
-*What just happened:* `add_one` is a function with no name, written where it's used. `add_offset` is the interesting one - it mentions `offset`, a variable from outside the closure, and Rust quietly *captures* it so the value travels with the closure. A plain `fn` can't do that; it has no access to local variables around it. That capturing is the entire reason closures exist.
+*What just happened:* `add_one` is a function with no name, written where it's used. `add_offset` is the interesting one - it mentions `offset`, a variable from outside the closure, and Rust quietly *captures* it so the value travels with the closure. A plain `fn` can't do that; it has no access to local variables around it.
 
-By default a closure borrows what it captures. But sometimes you need it to *own* its captures instead - for example, to hand the closure to another thread (you saw this in [Phase 14](14-fearless-concurrency.md)) or return it from a function. The `move` keyword forces capture *by value*:
+By default a closure borrows what it captures. But sometimes you need it to *own* its captures - to hand the closure to another thread (Phase 14) or return it from a function. The `move` keyword forces capture *by value*:
 
 ```rust
 fn main() {
@@ -54,11 +54,11 @@ fn main() {
 $ cargo run
 Hello, Ada
 ```
-*What just happened:* Without `move`, the closure would borrow `name`. With `move`, it took ownership - `name` now lives *inside* `greet`, and trying to use it afterward would be a compile error (it's been moved, exactly like the moves you learned in [Phase 6](06-ownership-and-borrowing.md)). Use `move` when the closure needs to outlive the scope it was born in.
+*What just happened:* Without `move`, the closure would borrow `name`. With `move`, it took ownership - `name` now lives *inside* `greet`, and using it afterward would be a compile error, exactly like the moves from [Phase 6](06-ownership-and-borrowing.md). Use `move` when the closure needs to outlive the scope it was born in.
 
 ## `Fn`, `FnMut`, `FnOnce` - how a closure treats its captures
 
-Here's the question Rust has to answer for every closure: when it uses a captured variable, does it just *read* it, *mutate* it, or *consume* it entirely? The answer determines how many times you can call the closure and where you're allowed to use it. Rust encodes that answer as three traits, and a closure automatically implements whichever ones fit.
+Here's the question Rust must answer for every closure: when it uses a captured variable, does it just *read* it, *mutate* it, or *consume* it entirely? The answer determines how many times you can call the closure and where you're allowed to use it. Rust encodes it as three traits, and a closure automatically implements whichever fit.
 
 📝 **`FnOnce`** - a closure that *consumes* its captures (e.g. moves a value out). It can be called **once**, because after that the captured values are gone. Every closure is at least `FnOnce`.
 
@@ -66,9 +66,9 @@ Here's the question Rust has to answer for every closure: when it uses a capture
 
 📝 **`Fn`** - a closure that only *immutably borrows* its captures (reads them). Callable many times, freely, even from multiple places at once.
 
-These nest from most-restrictive to most-permissive: every `Fn` is also an `FnMut`, and every `FnMut` is also an `FnOnce`. **You almost never write these by hand** - the compiler looks at what your closure body does and picks the most permissive trait that fits. Your job is mostly to know what they mean when they show up in function signatures.
+These nest from most-restrictive to most-permissive: every `Fn` is also an `FnMut`, and every `FnMut` is also an `FnOnce`. **You almost never write these by hand** - the compiler picks the most permissive trait that fits your closure's body. Your job is mostly to know what they mean when they show up in signatures.
 
-And they show up constantly, because a function that *accepts* a closure is generic over one of these traits. Saying `impl Fn(i32) -> i32` means "give me anything callable like this, that only reads its captures":
+And they show up constantly, because a function that *accepts* a closure is generic over one of these traits. `impl Fn(i32) -> i32` means "give me anything callable like this, that only reads its captures":
 
 ```rust
 // Accepts any closure that takes an i32 and returns an i32, reading its captures.
@@ -86,17 +86,17 @@ fn main() {
 $ cargo run
 25
 ```
-*What just happened:* `apply_twice` calls `f` twice, so it demands `impl Fn` - a closure it can call repeatedly. We passed `|x| x + bump`, which only *reads* `bump`, so the compiler happily certifies it as `Fn` and the call typechecks. If `apply_twice` had asked for `impl FnOnce` instead, calling `f` a second time would fail to compile, because `FnOnce` only promises one call. This is how the borrow rules from [Phase 6](06-ownership-and-borrowing.md) extend cleanly to functions-as-values: the trait *is* the contract for how the closure touches its captures.
+*What just happened:* `apply_twice` calls `f` twice, so it demands `impl Fn` - a closure it can call repeatedly. We passed `|x| x + bump`, which only *reads* `bump`, so the compiler certifies it as `Fn` and the call typechecks. Had `apply_twice` asked for `impl FnOnce` instead, calling `f` a second time would fail to compile, since `FnOnce` only promises one call. This is how the borrow rules from [Phase 6](06-ownership-and-borrowing.md) extend to functions-as-values: the trait *is* the contract for how the closure touches its captures.
 
-💡 **Key point.** When you read `impl Fn(...)` in a signature, translate it as "a callable that reads its captures, usable many times." `FnMut` is "callable many times, but mutates." `FnOnce` is "callable exactly once." You rarely choose which one your closure is - the compiler does - but reading them tells you instantly how a function intends to use the closure you hand it.
+💡 **Key point.** Read `impl Fn(...)` as "a callable that reads its captures, usable many times." `FnMut` is "callable many times, but mutates." `FnOnce` is "callable exactly once." You rarely choose which one your closure is - the compiler does - but reading them tells you instantly how a function intends to use the closure you hand it.
 
 ## The `Iterator` trait - one method to rule them all
 
 Now the centerpiece. Every loop, every `.map()`, every `for` you've written in Rust runs on a single, almost comically small trait.
 
-📝 **`Iterator`** - a trait with one required method, `fn next(&mut self) -> Option<Self::Item>`. Call `next()` and it hands you `Some(value)` for the next item, or `None` when there's nothing left. *Everything else* - `map`, `filter`, `sum`, the works - is a default method built on top of `next`.
+📝 **`Iterator`** - a trait with one required method, `fn next(&mut self) -> Option<Self::Item>`. Call `next()` and it hands you `Some(value)` for the next item, or `None` when there's nothing left. *Everything else* - `map`, `filter`, `sum`, the works - is a default method built on `next`.
 
-That tiny contract has a profound consequence: **iterators are lazy**. Calling `next` is the *only* thing that produces a value. Until something calls it, an iterator is an inert recipe - it describes work but does none of it.
+That tiny contract has a profound consequence: **iterators are lazy**. Calling `next` is the *only* thing that produces a value. Until something calls it, an iterator is an inert recipe.
 
 You'll usually get iterators from collections (`.iter()`, `.into_iter()`), but implementing the trait yourself is the best way to see there's no magic. Here's a counter that yields the numbers below a limit:
 
@@ -132,11 +132,11 @@ $ cargo run
 2
 3
 ```
-*What just happened:* We implemented exactly one method, `next`. Each call bumps `count`, returns `Some(count)`, and when we hit `max` it returns `None`. The `for` loop is doing nothing fancier than calling `next()` over and over and stopping the instant it sees `None` - the same protocol the Python guide describes for [`StopIteration`](/guides/python-from-zero), only here the "we're done" signal is the `None` variant of `Option`. Define `next`, and your type drops straight into every `for` loop and every adapter in the standard library.
+*What just happened:* We implemented exactly one method, `next`. Each call bumps `count`, returns `Some(count)`, and returns `None` once we hit `max`. The `for` loop does nothing fancier than calling `next()` over and over and stopping the instant it sees `None` - the same protocol the Python guide describes for [`StopIteration`](/guides/python-from-zero), only here the "we're done" signal is `Option`'s `None`. Define `next`, and your type drops straight into every `for` loop and adapter in the standard library.
 
 ## Iterator adapters - building pipelines, lazily
 
-Because everything is built on `next`, the standard library can offer a huge toolbox of methods that take an iterator and return a *new* iterator. These are **adapters**, and they're lazy - they wrap your iterator in another layer of "recipe" without running anything. The methods that actually drive the iterator and produce a final value are **consumers**, and they're eager.
+Because everything is built on `next`, the standard library offers a huge toolbox of methods that take an iterator and return a *new* iterator. These are **adapters**, and they're lazy - they wrap your iterator in another layer of "recipe" without running anything. The methods that actually drive the iterator and produce a final value are **consumers**, and they're eager.
 
 A useful way to hold the two apart:
 
@@ -171,17 +171,17 @@ $ cargo run
 2: carol
 sum 1..=5 = 15
 ```
-*What just happened:* Read the chain top to bottom as a pipeline: number each name with `enumerate`, keep the even-indexed ones with `filter`, format each survivor with `map`, cap the count with `take` - and then `collect` pulls every value through and builds the `Vec`. Crucially, none of `enumerate`/`filter`/`map`/`take` did any work when they were written; they only described layers. The `collect()` at the end is what called `next` enough times to run the whole thing. The `(1..=5).sum()` line shows a range is also an iterator, consumed in one shot.
+*What just happened:* Read the chain top to bottom as a pipeline: number each name with `enumerate`, keep the even-indexed ones with `filter`, format each survivor with `map`, cap the count with `take`, then `collect` pulls every value through and builds the `Vec`. None of `enumerate`/`filter`/`map`/`take` did any work when written; they only described layers. `collect()` is what called `next` enough times to run the whole thing. The `(1..=5).sum()` line shows a range is also an iterator, consumed in one shot.
 
-⚠️ **Adapters do nothing until a consumer runs.** This is the single most common iterator mistake. Write `names.iter().map(|n| println!("{}", n));` with no consumer, and *nothing prints* - you built a recipe and threw it away. The compiler even warns you: `warning: unused 'Map' that must be used / iterators are lazy and do nothing unless consumed`. If your iterator chain seems to do nothing, you forgot the consumer at the end.
+⚠️ **Adapters do nothing until a consumer runs.** This is the single most common iterator mistake. Write `names.iter().map(|n| println!("{}", n));` with no consumer, and *nothing prints* - you built a recipe and threw it away. The compiler even warns you: `iterators are lazy and do nothing unless consumed`.
 
 ## Zero-cost abstractions - readable *and* fast, not one or the other
 
-So we have closures and a deeply layered iterator system. In most languages, layering like that costs you: each adapter would be an object with virtual method calls, heap allocations, the works - and the pretty pipeline would run measurably slower than a blunt `for` loop. Here's the part that makes Rust special: **it doesn't.**
+So we have closures and a deeply layered iterator system. In most languages, layering like that costs you: each adapter would be an object with virtual method calls, heap allocations, the works - and the pretty pipeline would run measurably slower than a blunt `for` loop. Rust's twist: **it doesn't.**
 
 📝 **Zero-cost abstraction** - a high-level construct that compiles down to the same machine code you'd have written by hand at the low level, with no runtime penalty for the abstraction. You don't pay for the niceness.
 
-Three things from earlier phases combine to make this real. **Monomorphization** ([Phase 11's generics](11-traits-and-generics.md)): because `apply_twice` and every adapter are generic, the compiler stamps out a concrete, specialized version for your exact closure and type - no dynamic dispatch. **Inlining:** those small closures and `next` calls get inlined directly into the loop, so the layers of "recipe" collapse into flat code. And the **ownership model** ([Phase 6](06-ownership-and-borrowing.md)) often lets the compiler prove indices are in bounds, eliding the array bounds-checks a naive loop might keep.
+Three things from earlier phases combine to make this real. **Monomorphization** ([Phase 11's generics](11-traits-and-generics.md)): because `apply_twice` and every adapter are generic, the compiler stamps out a specialized version for your exact closure and type - no dynamic dispatch. **Inlining:** small closures and `next` calls get inlined directly into the loop, collapsing the layers of "recipe" into flat code. And the **ownership model** ([Phase 6](06-ownership-and-borrowing.md)) often lets the compiler prove indices are in bounds, eliding the array bounds-checks a naive loop might keep.
 
 The upshot: this pipeline...
 
@@ -221,9 +221,9 @@ fn main() {
 $ cargo run
 166666500
 ```
-*What just happened:* Both versions produce `166666500`, and after the optimizer runs, both produce nearly identical machine code - the iterator version has no extra allocations, no closure objects on the heap, no virtual calls. The `filter` and `map` closures were inlined into one tight loop. So the choice between them is purely about *which one you'd rather read and maintain* - the performance is the same.
+*What just happened:* Both versions produce `166666500`, and after the optimizer runs, both produce nearly identical machine code - no extra allocations, no closure objects on the heap, no virtual calls. The `filter` and `map` closures were inlined into one tight loop. The choice between them is purely about *which you'd rather read and maintain* - the performance is the same.
 
-💡 **You don't trade readability for speed.** That's the whole pitch of this phase, and arguably of Rust. In many languages the iterator chain is the "elegant but slower" option you avoid in hot loops. In Rust it's the idiomatic default precisely *because* it costs nothing - you get the sentence-like clarity *and* the bare-metal performance. Reach for the chain first; drop to a manual loop only when profiling gives you a concrete reason, which is rare.
+💡 **You don't trade readability for speed.** That's the whole pitch of this phase, and arguably of Rust. In many languages the iterator chain is the "elegant but slower" option you avoid in hot loops. In Rust it's the idiomatic default precisely *because* it costs nothing. Reach for the chain first; drop to a manual loop only when profiling gives you a concrete reason, which is rare.
 
 ## Recap
 

@@ -11,13 +11,13 @@ updated: 2026-06-22
 
 # Control Flow & Methods - Decisions, Loops & Reusable Logic
 
-So far your programs run top to bottom, one line after the next. Real programs do three things that straight-line code can't: they **decide** (do this, but only if that's true), they **repeat** (do this for every item), and they **organize** logic into named, reusable pieces you call by name instead of copy-pasting. This phase is all three.
+So far your programs run top to bottom. Real programs do three things straight-line code can't: **decide** (do this, but only if that's true), **repeat** (do this for every item), and **organize** logic into named, reusable pieces you call instead of copy-pasting. This phase is all three.
 
-Here's the mental model to carry through: control flow is about *choosing which lines run*, and methods are about *giving a chunk of lines a name so you can run it from anywhere*. C# gives you a slightly larger toolbox here than some languages - two flavors of `switch`, four loop keywords - but each tool exists because it fits a specific shape of problem better than the others. We'll spend our time on *when* to reach for each, not just *how* to type it.
+The mental model: control flow is about *choosing which lines run*, methods about *giving a chunk of lines a name so you can run it from anywhere*. C# has a slightly larger toolbox here than some languages - two flavors of `switch`, four loop keywords - each fitting a specific shape of problem. We'll focus on *when* to reach for each, not just *how*.
 
 ## `if` / `else` - the basic decision
 
-The `if` statement runs a block only when a condition is true. The condition is any expression that evaluates to a `bool` (a `true`/`false` value - you met these in [Phase 2](02-syntax-values-and-types.md)).
+The `if` statement runs a block only when a condition is true - any expression evaluating to a `bool` (a `true`/`false` value from [Phase 2](02-syntax-values-and-types.md)).
 
 ```csharp
 int age = 20;
@@ -34,7 +34,7 @@ else
 ```console
 adult
 ```
-*What just happened:* `age >= 18` evaluated to `true` (since `20 >= 18`), so the first block ran and printed `adult`. If it had been `false`, the `else` block would have run instead. Unlike some languages, C# *requires* the parentheses around the condition, and the braces `{ }`, while optional for a single statement, are worth always keeping - they prevent a whole class of "I added a second line and it silently ran every time" bugs.
+*What just happened:* `age >= 18` evaluated to `true`, so the first block ran and printed `adult`; a `false` would have run `else` instead. C# *requires* parentheses around the condition. The braces `{ }`, optional for a single statement, are worth always keeping - they prevent "I added a second line and it silently ran every time" bugs.
 
 For chains of conditions, stack `else if`:
 
@@ -61,13 +61,13 @@ else
 ```console
 C
 ```
-*What just happened:* C# checked each condition top to bottom and ran the **first** one that was true (`score >= 70`), then skipped the rest entirely. `90` and `80` failed, `70` matched, so we got `C`. The `else` at the bottom is the catch-all when nothing above matched. Boolean expressions combine with `&&` (and), `||` (or), and `!` (not) - `if (age >= 18 && hasTicket)` runs only when *both* are true.
+*What just happened:* C# checked each condition top to bottom and ran the **first** true one (`score >= 70`), then skipped the rest. `90` and `80` failed, `70` matched, giving `C`. `else` is the catch-all when nothing matched. Boolean expressions combine with `&&` (and), `||` (or), `!` (not) - `if (age >= 18 && hasTicket)` runs only when *both* are true.
 
-💡 **Key point.** A long `else if` ladder that compares *one variable* against several values is exactly the situation `switch` was built for - it reads cleaner. That's next.
+💡 **Key point.** A long `else if` ladder comparing *one variable* against several values is exactly what `switch` was built for.
 
 ## `switch` - comparing one value against many
 
-When you're testing a single value against a list of possibilities, a tower of `else if` gets noisy. `switch` flattens it.
+Testing a single value against a list of possibilities makes a tower of `else if` noisy. `switch` flattens it.
 
 ### The classic `switch` statement
 
@@ -91,13 +91,13 @@ switch (day)
 ```console
 weekend
 ```
-*What just happened:* `switch (day)` compared `day` against each `case` label. It matched `"Sat"`, ran that block, and printed `weekend`. The `default` case is the catch-all, like the final `else`. Stacking `case "Sat":` and `case "Sun":` with no code between them means "either of these matches the same block" - that's how you group values.
+*What just happened:* `switch (day)` compared `day` against each `case` label, matched `"Sat"`, and printed `weekend`. `default` is the catch-all, like the final `else`. Stacking `case "Sat":` and `case "Sun":` with no code between them means "either matches the same block" - that's how you group values.
 
-⚠️ **Gotcha (the good kind) - C# forbids implicit fall-through.** Notice every case ends in `break`. In C and older Java/JavaScript, forgetting that `break` lets execution silently "fall through" into the *next* case, running code you never meant to run - a notorious bug source. **C# won't compile a non-empty case that doesn't explicitly end (`break`, `return`, etc.).** The compiler forces you to be clear, so the "I forgot the break and three cases ran" bug cannot happen at all. (Grouping empty cases like `case "Sat": case "Sun":` is still allowed - that's not fall-through, it's just shared labels.)
+⚠️ **Gotcha (the good kind) - C# forbids implicit fall-through.** Notice every case ends in `break`. In C and older Java/JavaScript, forgetting that `break` lets execution silently "fall through" into the *next* case - a notorious bug source. **C# won't compile a non-empty case that doesn't explicitly end** (`break`, `return`, etc.), so that bug cannot happen. (Grouping empty cases like `case "Sat": case "Sun":` is still allowed - shared labels, not fall-through.)
 
 ### The modern `switch` *expression*
 
-The statement above *does* something (prints). Often what you really want is to *produce a value* based on the input. The **switch expression** (C# 8+) does exactly that, far more compactly:
+The statement above *does* something (prints). Often you want to *produce a value* from the input instead - the **switch expression** (C# 8+) does that, more compactly:
 
 ```csharp
 string day = "Sat";
@@ -114,19 +114,19 @@ Console.WriteLine(kind);
 ```console
 weekend
 ```
-*What just happened:* This is a `switch` written as an **expression** - it evaluates to a value, which we stored in `kind`. The shape is `value switch { pattern => result, ... }`. Each arm uses `=>` ("goes to") to map a pattern to a result. `"Sat" or "Sun"` matches either; the `_` (discard) is the catch-all default. No `break`, no `case`/`:` ceremony - the whole construct *is* one value. Note the difference in intent: the statement form runs side-effecting code; the expression form computes a result you assign or return.
+*What just happened:* This is a `switch` written as an **expression** - it evaluates to a value, stored here in `kind`. The shape is `value switch { pattern => result, ... }`; each arm uses `=>` ("goes to") to map a pattern to a result. `"Sat" or "Sun"` matches either; `_` (discard) is the catch-all. No `break`, no `case`/`:` ceremony - the whole construct *is* one value.
 
-📝 **Statement vs. expression.** A *statement* performs an action (it doesn't have a value). An *expression* evaluates to a value you can assign, return, or pass along. The classic `switch` is a statement; `x switch { ... }` is an expression. Reach for the expression when every branch's job is "produce this value."
+📝 **Statement vs. expression.** A *statement* performs an action (no value); an *expression* evaluates to a value you can assign, return, or pass along. The classic `switch` is a statement; `x switch { ... }` is an expression - reach for it when every branch's job is "produce this value."
 
-That `"Sat" or "Sun"` syntax is a small taste of **pattern matching** - switch expressions can also match on types, ranges, and property values. We'll go deep on patterns in [Phase 13](13-records-and-modern-csharp.md); for now, matching constant values like this covers most everyday use.
+That `"Sat" or "Sun"` syntax is a taste of **pattern matching** - switch expressions can also match on types, ranges, and property values. Deep dive in [Phase 13](13-records-and-modern-csharp.md); for now, matching constant values covers most everyday use.
 
 ## Loops - doing something repeatedly
 
-C# has four looping keywords. They overlap, but each has a sweet spot. The mental split: do you know *how many times* up front, are you looping *until a condition changes*, or are you walking *every item in a collection*?
+C# has four looping keywords. They overlap, but each has a sweet spot: know *how many times* up front, loop *until a condition changes*, or walk *every item in a collection*?
 
 ### `for` - when you're counting
 
-Use `for` when you know the count or need the index. It bundles three parts into one line.
+Use `for` when you know the count or need the index - it bundles three parts into one line.
 
 ```csharp
 for (int i = 0; i < 3; i++)
@@ -139,11 +139,11 @@ for (int i = 0; i < 3; i++)
 1
 2
 ```
-*What just happened:* The `for` header has three semicolon-separated parts: **init** (`int i = 0`, runs once at the start), **condition** (`i < 3`, checked before each pass - keep going while true), and **post** (`i++`, runs after each pass; `i++` means "add one to `i`"). So it printed `0`, `1`, `2` and stopped the moment `i` reached `3`. The variable `i` exists only inside the loop.
+*What just happened:* The `for` header has three semicolon-separated parts: **init** (`int i = 0`, runs once), **condition** (`i < 3`, checked before each pass), and **post** (`i++`, "add one to `i`", runs after each pass). It printed `0`, `1`, `2` and stopped once `i` reached `3`. `i` exists only inside the loop.
 
 ### `while` - when you loop until something changes
 
-Use `while` when the number of repetitions depends on a condition, not a count. The condition is checked *before* each pass, so the body might run zero times.
+Use `while` when repetitions depend on a condition, not a count. The condition is checked *before* each pass, so the body might run zero times.
 
 ```csharp
 int n = 3;
@@ -159,11 +159,11 @@ while (n > 0)
 2
 1
 ```
-*What just happened:* `while (n > 0)` checked the condition first, ran the body while it held, and stopped when `n` hit `0`. (`n--` means "subtract one from `n`.") If `n` had started at `0`, the body would never have run - the check happens up front. ⚠️ Make sure something inside the loop changes the condition (here, `n--`), or you've written an infinite loop.
+*What just happened:* `while (n > 0)` checked the condition first, ran the body while it held, and stopped when `n` hit `0`. (`n--` subtracts one from `n`.) Had `n` started at `0`, the body would never run - the check happens up front. ⚠️ Make sure something inside the loop changes the condition, or you've written an infinite loop.
 
 ### `do-while` - when you must run at least once
 
-`do-while` is `while`'s twin, but it checks the condition *after* the body - so the body always runs at least one time. This is the right tool for "prompt the user, then check if the input was valid, and re-prompt if not."
+`do-while` is `while`'s twin, but checks the condition *after* the body, so it always runs at least once - the right tool for "prompt the user, then re-prompt if invalid."
 
 ```csharp
 int countdown = 0;
@@ -178,11 +178,11 @@ while (countdown > 0);
 ```console
 value is 0
 ```
-*What just happened:* Even though `countdown > 0` was already false (`0` is not `> 0`), the body ran **once** before the check happened - that's the whole point of `do-while`. After printing, the condition was tested, found false, and the loop ended. Compare to `while`, which would have printed nothing.
+*What just happened:* Even though `countdown > 0` was already false, the body ran **once** before the check happened - the whole point of `do-while`. After printing, the condition tested false and the loop ended. A `while` loop here would have printed nothing.
 
 ### `foreach` - the workhorse for collections
 
-Most real loops walk every item in a collection. `foreach` does that directly, no index bookkeeping, no off-by-one risk. You met collections in [Phase 3](03-collections.md); this is how you iterate them.
+Most real loops walk every item in a collection. `foreach` does that directly - no index bookkeeping, no off-by-one risk. This is how you iterate the collections from [Phase 3](03-collections.md).
 
 ```csharp
 string[] names = { "Ada", "Linus", "Grace" };
@@ -197,13 +197,13 @@ Hello, Ada!
 Hello, Linus!
 Hello, Grace!
 ```
-*What just happened:* `foreach (string name in names)` handed us each element of `names` in turn, binding it to `name` for that pass. No counter, no `names[i]`, no chance of running past the end - `foreach` knows when the collection is exhausted and stops. This is the loop you'll write most often.
+*What just happened:* `foreach (string name in names)` handed us each element in turn, binding it to `name`. No counter, no `names[i]`, no running past the end - `foreach` knows when the collection is exhausted and stops. This is the loop you'll write most often.
 
-💡 **Key point - which loop when?** `for` when you need the index or a known count. `while` when you loop until a condition flips. `do-while` when the body must run at least once. `foreach` for "do this to every item" - which is most of the time. When in doubt over a collection, reach for `foreach` first.
+💡 **Key point - which loop when?** `for` for index or known count, `while` until a condition flips, `do-while` when the body must run at least once, `foreach` for "do this to every item" - most of the time. When in doubt over a collection, reach for `foreach` first.
 
 ## Methods - naming reusable logic
 
-📝 **Method** - a named, reusable block of code that takes inputs (**parameters**) and optionally hands back an output (**return value**). It's how you give a chunk of logic a name so you can call it from anywhere instead of copying it. (In C#, all code lives inside methods, which live inside classes - you'll see why in [Phase 5](05-classes-and-objects.md).)
+📝 **Method** - a named, reusable block of code that takes inputs (**parameters**) and optionally hands back an output (**return value**), so you can call it from anywhere instead of copying it. (In C#, all code lives inside methods, which live inside classes - see [Phase 5](05-classes-and-objects.md).)
 
 Here's a method that adds two numbers:
 
@@ -218,9 +218,9 @@ Console.WriteLine(Add(3, 4));
 ```console
 7
 ```
-*What just happened:* The signature `static int Add(int a, int b)` reads piece by piece: `static` (more on that in a second), `int` is the **return type** (this method hands back an `int`), `Add` is the name, and `(int a, int b)` are two `int` **parameters**. `return a + b` computes the sum and hands it back to whoever called `Add`. The call `Add(3, 4)` passed `3` and `4` as the **arguments**, got `7` back, and printed it. A method that returns nothing uses the return type `void`.
+*What just happened:* The signature `static int Add(int a, int b)` reads piece by piece: `static` (more in a second), `int` is the **return type**, `Add` is the name, `(int a, int b)` are two `int` **parameters**. `return a + b` computes the sum and hands it back. The call `Add(3, 4)` passed `3` and `4` as **arguments**, got `7` back, and printed it. A method returning nothing uses `void`.
 
-**Expression-bodied members.** When a method is just a single expression, the `=> ` shorthand (same arrow as the switch expression) trims the braces and `return`:
+**Expression-bodied members.** When a method is just a single expression, `=> ` (same arrow as the switch expression) trims the braces and `return`:
 
 ```csharp
 static int Add(int a, int b) => a + b;
@@ -231,13 +231,13 @@ Console.WriteLine(Square(5));
 ```console
 25
 ```
-*What just happened:* `=> a + b` means "this method returns `a + b`" - it's exactly equivalent to `{ return a + b; }`, just shorter. Use it for one-liners; keep the braces for anything multi-step. The `=>` here, the one in switch expressions, and lambdas (coming later) all share the "goes to / produces" meaning.
+*What just happened:* `=> a + b` means "this method returns `a + b`" - exactly equivalent to `{ return a + b; }`, just shorter. Use it for one-liners; keep braces for anything multi-step. This `=>`, the one in switch expressions, and lambdas (later) all share the "goes to / produces" meaning.
 
-**`static` vs. instance - just enough for now.** A `static` method belongs to the class itself and you call it without creating an object (`Add(3, 4)`). An **instance** method belongs to a specific object and you call it through that object (`myList.Add(x)` - the list instance has its own `Add`). The reason your program's entry point is `static void Main(...)` is that the runtime needs to call it *before any object exists*, so it can't require an instance. The full story - objects, instances, `this` - is [Phase 5](05-classes-and-objects.md). For now: `static` = "call it on the type, no object needed."
+**`static` vs. instance - just enough for now.** A `static` method belongs to the class itself, called without creating an object (`Add(3, 4)`). An **instance** method belongs to a specific object, called through it (`myList.Add(x)`). Your entry point is `static void Main(...)` because the runtime calls it *before any object exists*. Full story in [Phase 5](05-classes-and-objects.md); for now: `static` = "call it on the type, no object needed."
 
 ## Parameters: optional, named, and `ref`/`out`
 
-Plain parameters are just the start. C# gives you several ways to make method calls clearer and more flexible.
+Plain parameters are just the start. C# offers several ways to make calls clearer and more flexible.
 
 **Optional parameters** have a default value, so callers can skip them:
 
@@ -256,9 +256,9 @@ Hello, Ada!
 Welcome, Linus!
 Hi, Grace!
 ```
-*What just happened:* `greeting = "Hello"` makes that parameter **optional** - call `Greet("Ada")` and it fills in `"Hello"`. The third call uses a **named argument** (`greeting: "Hi"`), where you label the argument by its parameter name. Named arguments make calls self-documenting and let you skip past optional parameters you don't care about. Optional parameters must come *after* all required ones in the signature.
+*What just happened:* `greeting = "Hello"` makes that parameter **optional** - call `Greet("Ada")` and it fills in `"Hello"`. The third call uses a **named argument** (`greeting: "Hi"`), labeling the argument by its parameter name - self-documenting, and lets you skip optional parameters you don't care about. Optional parameters must come *after* all required ones.
 
-**`out` parameters - the "try" pattern you'll meet immediately.** Sometimes a method needs to hand back *more than one thing*: a result *and* whether it succeeded. The `out` keyword lets a parameter carry a value *out* of the method, in addition to its return value. You meet this on day one with `int.TryParse`, which safely converts text to a number:
+**`out` parameters - the "try" pattern you'll meet immediately.** Sometimes a method needs to hand back *more than one thing*: a result *and* whether it succeeded. `out` lets a parameter carry a value *out*, in addition to the return value - as in `int.TryParse`, which safely converts text to a number:
 
 ```csharp
 string input = "42";
@@ -275,11 +275,11 @@ else
 ```console
 Parsed: 43
 ```
-*What just happened:* `int.TryParse` returns a `bool` (did it work?) *and* writes the parsed value into the `out` parameter. `out int number` declares `number` right inside the call; if parsing succeeds, `TryParse` fills it in and returns `true`, so the `if` runs and `number` holds `42`. If `input` were `"banana"`, `TryParse` would return `false` (no crash) and we'd hit the `else`. This `bool` + `out` shape - also used by `Dictionary.TryGetValue` - is *the* idiomatic way in C# to do "give me the value if it exists, but don't blow up if it doesn't." Worth recognizing on sight.
+*What just happened:* `int.TryParse` returns a `bool` (did it work?) *and* writes the parsed value into the `out` parameter. `out int number` declares `number` right inside the call; if parsing succeeds, `TryParse` fills it in and returns `true`. If `input` were `"banana"`, it would return `false` (no crash) and we'd hit `else`. This `bool` + `out` shape - also used by `Dictionary.TryGetValue` - is *the* idiomatic C# way to do "give me the value if it exists, but don't blow up if it doesn't."
 
-📝 **`out` vs. `ref`.** `out` means "the method *will* assign this - its incoming value is ignored." `ref` means "the method can *read and modify* this existing variable in place." Both pass the variable itself (not a copy), so changes are visible to the caller. You'll reach for `out` constantly (the `Try` pattern); `ref` is rarer, for when a method needs to both see and update a caller's variable.
+📝 **`out` vs. `ref`.** `out` means "the method *will* assign this - its incoming value is ignored." `ref` means "the method can *read and modify* this existing variable in place." Both pass the variable itself, so changes are visible to the caller. `out` (the `Try` pattern) is common; `ref` is rarer, for methods that need to both see and update a caller's variable.
 
-**Overloading - same name, different parameters.** You can give several methods the *same name* as long as their parameter lists differ. C# picks the right one at compile time based on the arguments you pass:
+**Overloading - same name, different parameters.** Several methods can share a name as long as their parameter lists differ. C# picks the right one at compile time based on the arguments:
 
 ```csharp
 static int Multiply(int a, int b) => a * b;
@@ -295,7 +295,7 @@ Console.WriteLine(Multiply(2, 3, 4));      // matches (int, int, int)
 5
 24
 ```
-*What just happened:* Three methods all named `Multiply`, distinguished by their parameters - this is **overloading**. The compiler matched each call to the overload whose parameter types fit: `(3, 4)` went to the `(int, int)` version, `(2.5, 2.0)` to the `double` version, and the three-argument call to its own overload. This is **compile-time resolution** - the decision is baked in when your code is built, based on the argument types, not at runtime. Overloading is why `Console.WriteLine` accepts a string, an int, a bool, and more: it's one name with many overloads.
+*What just happened:* Three methods named `Multiply`, distinguished by parameters - **overloading**. The compiler matched each call to the overload whose parameter types fit: `(3, 4)` to `(int, int)`, `(2.5, 2.0)` to `double`, the three-argument call to its own overload. This is **compile-time resolution**, based on argument types - why `Console.WriteLine` accepts a string, an int, a bool, and more: one name, many overloads.
 
 ## Recap
 
@@ -310,7 +310,7 @@ You can now make decisions, repeat work, and bundle logic into named, callable p
 
 ## Quick check
 
-Test yourself on the ideas most likely to trip you up early - fall-through, the switch expression, and the `out` pattern:
+Test yourself on the ideas most likely to trip you up - fall-through, the switch expression, and the `out` pattern:
 
 ```quiz
 [

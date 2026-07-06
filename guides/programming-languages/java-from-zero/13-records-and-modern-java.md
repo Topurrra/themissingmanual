@@ -11,26 +11,23 @@ updated: 2026-06-22
 
 # Records, Sealed Types & Modern Java - Less Boilerplate, More Safety
 
-Java has a reputation, and you've probably felt it already: a language where saying a simple thing takes
-fifteen lines. Back in [Phase 5](05-classes-and-objects.md) you wrote an `Account` class with private
-fields, a constructor, getters, and a hand-written `toString`/`equals`/`hashCode` trio - and that was for
-*one* data type. Multiply that across a real codebase and "ceremony" starts to feel like an insult.
+Java has a reputation: a language where a simple thing takes fifteen lines. Back in
+[Phase 5](05-classes-and-objects.md) you wrote an `Account` class with private fields, a constructor,
+getters, and a hand-written `toString`/`equals`/`hashCode` trio - for *one* data type. Multiply that across
+a real codebase and "ceremony" starts to feel like an insult.
 
-The Java of the last few years is a quieter, sharper language than its reputation. A whole wave of features
-exists for one reason: to let you say the common thing concisely, and to let the *compiler* catch mistakes
-it used to wave through. The mental model for this whole phase is a single move repeated five times -
-**take a tired, verbose pattern and replace it with a tight, safer one.** Old way on the left, new way on
-the right, every time.
+Modern Java is quieter and sharper than its reputation. A whole wave of features exists for one reason: let
+you say the common thing concisely, and let the *compiler* catch mistakes it used to wave through. The
+mental model for this phase: **take a tired, verbose pattern and replace it with a tight, safer one** -
+repeated five times.
 
 ## Records - the data class in one line
 
-**What it actually is.** 📝 A **record** is an immutable data carrier: a class whose entire job is to hold
-a few values. You declare the fields it carries, and the compiler generates everything else - the
-constructor, an accessor for each field, and correct `equals`, `hashCode`, and `toString` implementations.
+📝 A **record** is an immutable data carrier: a class whose entire job is to hold a few values. You declare
+the fields it carries, and the compiler generates everything else - the constructor, an accessor per field,
+and correct `equals`, `hashCode`, and `toString`.
 
-Remember the `Account` class from Phase 5 - fields, a constructor, getters, and a hand-written
-`toString`/`equals`/`hashCode`? Here is roughly that amount of code for a simple two-value point, written
-the old way:
+Here's roughly the `Account`-class amount of code for a simple two-value point, the old way:
 
 ```java
 public final class Point {
@@ -65,21 +62,19 @@ public final class Point {
 }
 ```
 
-*What just happened:* Forty-ish lines, and not one of them says anything interesting - it's all the
-mechanical bookkeeping the [Phase 5 trio](05-classes-and-objects.md) warned you to get right. Worse, every
-line is a place to introduce a bug: forget a field in `equals`, mismatch `hashCode`, and your objects
-misbehave in a `HashSet`.
+*What just happened:* Forty-ish lines, none interesting - just the mechanical bookkeeping the
+[Phase 5 trio](05-classes-and-objects.md) warned you to get right. Worse, every line risks a bug: forget a
+field in `equals`, mismatch `hashCode`, and your objects misbehave in a `HashSet`.
 
-Here is the exact same type as a record:
+The same type as a record:
 
 ```java
 public record Point(int x, int y) {}
 ```
 
 *What just happened:* That one line generates *all* of the above - a constructor taking `x` and `y`,
-accessor methods `x()` and `y()`, and the correct `equals`/`hashCode`/`toString` that include both fields.
-The fields are `private final`, so a `Point` is immutable: once built, it never changes. (Note the accessors
-are `x()` and `y()`, not `getX()`/`getY()` - records use the field name directly.)
+accessors `x()`/`y()`, and correct `equals`/`hashCode`/`toString` covering both fields. The fields are
+`private final`, so a `Point` is immutable. (Accessors use the field name directly, not `getX()`/`getY()`.)
 
 ```java
 public class Main {
@@ -101,17 +96,15 @@ true
 ```
 
 *What just happened:* Printing `a` gave a readable `Point[x=1, y=2]` for free, `a.x()` read the first field,
-and `a.equals(b)` returned `true` because the generated `equals` compares values - the very thing you had
-to hand-write before. Two separate objects with the same data are equal, exactly as a value type should be.
+and `a.equals(b)` returned `true` because the generated `equals` compares values - the thing you had to
+hand-write before. Two separate objects with the same data are equal, as a value type should be.
 
-💡 **When to reach for a record.** Use one whenever the type's purpose is *to carry data* and not much else:
-DTOs (the shape of a JSON request, a row from a query), value objects (a `Money`, a `Coordinate`), the
-return of a method that needs to hand back two things at once. If you find yourself writing a class that's
-all fields and getters, it almost certainly wants to be a record.
+💡 **When to reach for a record.** Use one whenever the type's purpose is *to carry data*: DTOs (a JSON
+request shape, a query row), value objects (`Money`, `Coordinate`), or a method returning two things at
+once. A class that's all fields and getters almost certainly wants to be a record.
 
-⚠️ **Need validation? Use a compact constructor.** A record isn't a dumb tuple - you can still guard its
-inputs. Write a *compact constructor* (the record name, no parameter list) to validate before the fields
-are assigned:
+⚠️ **Need validation? Use a compact constructor.** A record isn't a dumb tuple. Write a *compact constructor*
+(the record name, no parameter list) to validate before the fields are assigned:
 
 ```java
 public record Point(int x, int y) {
@@ -124,20 +117,19 @@ public record Point(int x, int y) {
 }
 ```
 
-*What just happened:* The compact constructor runs your check, then Java assigns `x` and `y` to the fields
-automatically - you don't write `this.x = x`. Now `new Point(-1, 0)` throws instead of quietly creating a
-nonsense point, so a record stays immutable *and* always valid.
+*What just happened:* The compact constructor runs your check, then Java assigns `x` and `y` automatically -
+you don't write `this.x = x`. Now `new Point(-1, 0)` throws instead of quietly creating a nonsense point, so
+a record stays immutable *and* always valid.
 
 ## `Optional` - a box that might be empty, instead of `null`
 
-You met `null` and its favorite crime, the `NullPointerException`, back in
-[Phase 7](07-errors-and-io.md). The modern reply to "this might not have a value" is
-`Optional` - and the point isn't magic, it's *honesty*.
+You met `null` and its favorite crime, `NullPointerException`, back in [Phase 7](07-errors-and-io.md). The
+modern reply to "this might not have a value" is `Optional` - and the point isn't magic, it's *honesty*.
 
-**What it actually is.** `Optional<User>` is a small wrapper that holds either one `User` or nothing. A
-method that returns `Optional<User>` is telling its callers, right in the type signature, "this might come
-back empty - you must deal with that." Compare that to returning a bare `User` that's *sometimes* `null`:
-nothing in the signature warns you, so you forget the check, and the NPE finds you in production.
+`Optional<User>` is a small wrapper holding either one `User` or nothing. A method returning
+`Optional<User>` tells callers, right in the signature, "this might come back empty - deal with it."
+Compare a bare `User` that's *sometimes* `null`: nothing warns you, you forget the check, and the NPE
+finds you in production.
 
 ```java
 import java.util.Optional;
@@ -168,27 +160,24 @@ ADA
 present: Ada
 ```
 
-*What just happened:* `findName` returns an `Optional<String>` instead of a possibly-`null` string.
-`map` transforms the value *if it's there* (and quietly does nothing if it's empty), `orElse` supplies a
-fallback for the empty case, and `ifPresent` runs code only when a value exists. The id-99 lookup flowed
-through the same code without a single explicit `if (x == null)` and without any risk of an NPE.
+*What just happened:* `findName` returns an `Optional<String>` instead of a possibly-`null` string. `map`
+transforms the value *if present*, `orElse` supplies a fallback, `ifPresent` runs code only when a value
+exists. The id-99 lookup flowed through with no explicit `if (x == null)` and no risk of an NPE.
 
-⚠️ **Don't over-`Optional`.** `Optional` is for *return values* that may legitimately be absent. It is not
-meant for fields (it bloats your objects and breaks serialization) and not for method parameters (just
-overload the method or accept the plain type). And never call `.get()` without checking - that's just
-`null` with extra steps and its own exception. Reach for `Optional` to make a *missing result* impossible to
-ignore; don't sprinkle it everywhere.
+⚠️ **Don't over-`Optional`.** It's for *return values* that may legitimately be absent - not for fields (it
+bloats objects and breaks serialization) and not for method parameters (overload the method or accept the
+plain type instead). Never call `.get()` without checking - that's `null` with extra steps. Use `Optional`
+to make a *missing result* impossible to ignore; don't sprinkle it everywhere.
 
 ## Switch expressions - `switch` that returns a value
 
-The old C-style `switch` was a minefield: a colon for each `case`, a `break` you had to remember or fall
-through by accident, and no way to produce a value - you had to assign to a variable from inside each branch.
-Modern Java turns `switch` into an **expression** that hands back a value, with no fall-through.
+The old C-style `switch` was a minefield: a colon per `case`, a `break` you had to remember or fall through
+by accident, and no way to produce a value directly. Modern Java turns `switch` into an **expression** that
+hands back a value, with no fall-through.
 
-**What it actually is.** A switch expression uses the arrow form `case X -> result;`, evaluates to a value
-you can assign directly, and is *exhaustive* - for an enum, the compiler checks you've covered every case.
-There's no `break`; each arrow handles exactly one case. When a branch needs more than one line, you wrap it
-in braces and use `yield` to produce its value.
+A switch expression uses the arrow form `case X -> result;`, evaluates to a value you assign directly, and
+is *exhaustive* - for an enum, the compiler checks you've covered every case. No `break`; each arrow handles
+one case. A branch needing more than one line wraps in braces and uses `yield`.
 
 ```java
 public class Main {
@@ -216,20 +205,19 @@ weekend
 weekday (five of these)
 ```
 
-*What just happened:* The whole `switch` *evaluated to* a string that we returned directly - no temporary
-variable, no `break`, no fall-through. We grouped `SAT, SUN` on one arrow, and the multi-line branch used
-`yield` to say "this is the value of this case." Because we covered every `Day`, the compiler accepts it
-with no `default`; leave a case out and it refuses to compile - a missing case becomes an error, not a
-silent bug at runtime.
+*What just happened:* The whole `switch` *evaluated to* a string returned directly - no temp variable, no
+`break`, no fall-through. `SAT, SUN` were grouped on one arrow; the multi-line branch used `yield` to
+produce its value. Covering every `Day` lets the compiler accept it with no `default`; leave a case out and
+it refuses to compile - a missing case is an error, not a silent runtime bug.
 
 ## Pattern matching - test the type and bind in one move
 
-Here's a tired old ritual: check a type with `instanceof`, then cast to that exact type on the next line so
-you can use it. Two lines saying the same thing, and a chance to typo the cast. Pattern matching fuses them.
+A tired old ritual: check a type with `instanceof`, then cast to that exact type on the next line to use it.
+Two lines saying the same thing, and a chance to typo the cast. Pattern matching fuses them.
 
-**What it actually is.** `if (obj instanceof String s)` tests *and*, when the test passes, binds the value
-to a new variable `s` of that type - already cast, ready to use. The same pattern works inside `switch`,
-and it can even *deconstruct* a record into its components.
+`if (obj instanceof String s)` tests *and*, when the test passes, binds the value to a new variable `s` of
+that type - already cast, ready to use. The same pattern works inside `switch`, and can even *deconstruct*
+a record into its components.
 
 ```java
 public class Main {
@@ -263,24 +251,21 @@ point at 3,4
 something else
 ```
 
-*What just happened:* `obj instanceof String s` checked the type and bound `s` in one step, so we used
-`s.length()` immediately - no separate cast. Inside the `switch`, `case Integer i ->` did the same per
-branch, and `case Point(int x, int y) ->` went further: it matched a `Point` *and* pulled its two
-components straight into `x` and `y`. That last move - **record deconstruction** - is where records and
-pattern matching start working as a team, and the next section closes the loop.
+*What just happened:* `obj instanceof String s` checked the type and bound `s` in one step, so `s.length()`
+worked immediately - no separate cast. Inside the `switch`, `case Integer i ->` did the same per branch, and
+`case Point(int x, int y) ->` went further: it matched a `Point` *and* pulled its two components straight
+into `x` and `y`. That last move - **record deconstruction** - is where records and pattern matching team up.
 
 ## Sealed types - a fixed, compiler-checked set of cases
 
-Sometimes you want a type to have a *known, fixed* set of implementations - a `Shape` is a `Circle` or a
-`Square`, and nothing else, ever. Plain interfaces can't express that: anyone, anywhere, can write a new
-implementor, so the compiler can never be sure your `switch` has handled them all. Sealed types fix exactly
-this.
+Sometimes a type needs a *known, fixed* set of implementations - a `Shape` is a `Circle` or a `Square`,
+nothing else, ever. Plain interfaces can't express that: anyone can write a new implementor, so the compiler
+can never be sure a `switch` handled them all. Sealed types fix this.
 
-**What it actually is.** 📝 A **sealed** type uses `sealed ... permits` to name the *only* types allowed to
-extend or implement it: `sealed interface Shape permits Circle, Square`. Nobody outside that list can join
-the family. The payoff lands when you `switch` over it with patterns - because the compiler knows the
-complete set, it can verify your switch is **exhaustive**, with *no `default` needed*. Miss a case and you
-get a compile error, not a surprise at runtime.
+📝 A **sealed** type uses `sealed ... permits` to name the *only* types allowed to extend or implement it:
+`sealed interface Shape permits Circle, Square`. Nobody outside that list can join the family. The payoff:
+`switch` over it with patterns - since the compiler knows the complete set, it can verify the switch is
+**exhaustive**, with *no `default` needed*. Miss a case and you get a compile error, not a runtime surprise.
 
 ```java
 public class Main {
@@ -309,15 +294,14 @@ $ java Main.java
 ```
 
 *What just happened:* `Shape` permits exactly `Circle` and `Square`, so the `switch` covering both is
-provably complete - the compiler is satisfied without a `default`. Now imagine you add a `Triangle` to the
-`permits` list six months from now: every `switch` over `Shape` that forgot to handle it *stops compiling*,
-pointing you at each place that needs updating. The compiler becomes your checklist instead of a bug report.
+provably complete - satisfied without a `default`. Add a `Triangle` to `permits` six months from now, and
+every `switch` over `Shape` that missed it *stops compiling*, pointing at each place needing an update. The
+compiler becomes your checklist instead of a bug report.
 
-💡 **Sealed + records + switch = a "one of a fixed set" type.** Together these three give Java what other
-languages call *discriminated unions* or *sum types*: a value that is exactly one of a closed list of
-shapes, each carrying its own data, handled by a switch the compiler guarantees is total. It's the cleanest
-way to model "a result is either a `Success(value)` or a `Failure(reason)`," or any "it's one of these N
-things" domain - and you get exhaustiveness checking thrown in.
+💡 **Sealed + records + switch = a "one of a fixed set" type.** Together these give Java what other
+languages call *discriminated unions* or *sum types*: a value that's exactly one of a closed list of
+shapes, each carrying its own data, handled by a switch the compiler guarantees is total - the cleanest way
+to model "a result is either a `Success(value)` or a `Failure(reason)`," with exhaustiveness checking free.
 
 ## Recap
 
@@ -327,17 +311,17 @@ things" domain - and you get exhaustiveness checking thrown in.
 2. **`Optional<T>`** makes "might be absent" part of a method's return type, so callers can't forget the
    case. Use `map`/`orElse`/`ifPresent`; ⚠️ don't put it on fields or parameters.
 3. **Switch expressions** return a value with the `case X -> ...` arrow form - no `break`, no fall-through,
-   `yield` for multi-line branches, and **exhaustiveness** checked for enums and sealed types.
+   `yield` for multi-line branches, **exhaustiveness** checked for enums and sealed types.
 4. **Pattern matching** fuses the type test and the cast: `if (obj instanceof String s)` binds `s` ready to
    use, works in `switch` (`case Integer i ->`), and can **deconstruct records** (`case Point(int x, int y)`).
-5. **Sealed types** (`sealed interface Shape permits Circle, Square`) fix the set of implementations, which
-   lets the compiler prove a pattern `switch` is exhaustive - a missing case is a compile error.
-6. The three together - **sealed + records + switch** - are Java's answer to discriminated unions: model
-   "one of a fixed set," handled totally, checked by the compiler.
+5. **Sealed types** (`sealed interface Shape permits Circle, Square`) fix the set of implementations, letting
+   the compiler prove a pattern `switch` is exhaustive - a missing case is a compile error.
+6. Together - **sealed + records + switch** - these are Java's answer to discriminated unions: "one of a
+   fixed set," handled totally, checked by the compiler.
 
 You now write Java the way modern Java wants to be written: less ceremony, more meaning, and a compiler
-that catches the mistakes the old style let slip. Next we leave single-threaded code behind and tackle the
-hard, fascinating world of doing several things at once.
+that catches mistakes the old style let slip. Next: leaving single-threaded code behind for the hard,
+fascinating world of doing several things at once.
 
 ## Quick check
 

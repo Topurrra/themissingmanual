@@ -11,13 +11,11 @@ updated: 2026-06-23
 
 # The Middleware Pipeline
 
-Back in the overview I told you ASP.NET Core stands on two pillars. Phase 4 covered one of them — dependency injection. This phase is the other one, and once it clicks, an enormous amount of the framework stops looking like magic.
+Back in the overview I told you ASP.NET Core stands on two pillars. Phase 4 covered dependency injection. This phase is the other pillar, and once it clicks, an enormous amount of the framework stops looking like magic.
 
-Here's the mental model, and it's worth slowing down for because everything else hangs off it.
+**Every incoming request travels through an ordered chain of small pieces of code called middleware.** Each piece gets a chance to look at the request on the way *in*, then hands control to the next piece down the chain, and finally gets a chance to look at the response on the way *back out*. It's an onion: the request goes inward layer by layer to reach your endpoint, and the response unwinds outward through those same layers in reverse.
 
-**Every incoming request travels through an ordered chain of small pieces of code called middleware.** Each piece gets a chance to look at the request on the way *in*, then it hands control to the next piece down the chain, and finally it gets a chance to look at the response on the way *back out*. It's an onion: the request goes inward layer by layer to reach your endpoint, and the response unwinds outward through those same layers in reverse.
-
-That "in, then back out" shape is the single most important thing to hold onto. A middleware isn't a one-shot handler — it wraps everything after it.
+That "in, then back out" shape is the single most important thing to hold onto: a middleware isn't a one-shot handler, it wraps everything after it.
 
 ```mermaid
 flowchart LR
@@ -25,13 +23,13 @@ flowchart LR
   E --> C2[Auth] --> B2[HTTPS redirect] --> A2[Logging] --> O[Response]
 ```
 
-> 💡 The chain isn't a metaphor the framework invented for teaching — under the hood it really is a stack of nested functions, each holding a reference to the next one as a `RequestDelegate`. We stay at the using-it level here. The machinery beneath (the `RequestDelegate` type, and Kestrel handing requests in) is the roots guide [The ASP.NET Pipeline & Kestrel](/guides/the-aspnet-pipeline-and-kestrel).
+> 💡 The chain isn't a metaphor invented for teaching — under the hood it's really a stack of nested functions, each holding a reference to the next as a `RequestDelegate`. We stay at the using-it level here; the machinery beneath (the `RequestDelegate` type, and Kestrel handing requests in) is the roots guide [The ASP.NET Pipeline & Kestrel](/guides/the-aspnet-pipeline-and-kestrel).
 
 ## `Use`, `Run`, and `Map`
 
-You build the pipeline in `Program.cs` by adding middleware to your `WebApplication` (the `app` variable). There are three verbs you'll reach for.
+You build the pipeline in `Program.cs` by adding middleware to your `WebApplication` (the `app` variable). Three verbs you'll reach for.
 
-**`app.Use`** adds a middleware that *may* call the next one. It receives the request `context` and a `next` delegate. You do your work, you `await next(context)` to run the rest of the pipeline, and then you do more work after it returns. This is the onion in code. Here's a timing-and-logging middleware on our products API — it stamps how long every request took:
+**`app.Use`** adds a middleware that *may* call the next one. It receives the request `context` and a `next` delegate: you do your work, `await next(context)` to run the rest of the pipeline, then do more work after it returns. This is the onion in code. Here's a timing-and-logging middleware on the products API — it stamps how long every request took:
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -51,7 +49,7 @@ app.MapGet("/products", () => new[] { new { Id = 1, Name = "Keyboard" } });
 app.Run();
 ```
 
-*What just happened:* the lambda runs once per request. Everything before `await next(context)` happens on the way in (we grab a start time). `await next(context)` runs *all* the middleware and the endpoint below us — `/products` actually returns its data during that await. Then control comes back to us and everything after the await runs on the way out, when we know the status code and elapsed time. One middleware, both edges of the onion.
+*What just happened:* the lambda runs once per request. Everything before `await next(context)` happens on the way in (we grab a start time). `await next(context)` runs *all* the middleware and the endpoint below us — `/products` actually returns its data during that await. Control then comes back and everything after the await runs on the way out, when we know the status code and elapsed time. One middleware, both edges of the onion.
 
 **`app.Run`** adds a *terminal* middleware. It takes only the `context` — no `next` — because it's the end of the line. Whatever it writes is the response, and nothing after it runs:
 
@@ -62,7 +60,7 @@ app.Run(async context =>
 });
 ```
 
-*What just happened:* `Run` has no way to pass control onward, so it always produces the response itself. You'll use it far less than `Use` — mostly as a catch-all at the very bottom of the pipeline. The name is the giveaway: `Use` participates in the chain, `Run` ends it.
+*What just happened:* `Run` has no way to pass control onward, so it always produces the response itself. You'll use it far less than `Use` — mostly as a catch-all at the bottom of the pipeline. The name is the giveaway: `Use` participates in the chain, `Run` ends it.
 
 **`app.Map`** branches the pipeline based on the request path. Anything matching the prefix gets its own little sub-pipeline:
 
@@ -74,13 +72,13 @@ app.Map("/admin", admin =>
 });
 ```
 
-*What just happened:* requests starting with `/admin` peel off into the branch and run only what's configured inside it; everything else flows past untouched. There's also `app.MapWhen(predicate, branch)` when you need to branch on something other than a path — say, the presence of a header or a query string value. `Map` is for "this whole slice of the app behaves differently."
+*What just happened:* requests starting with `/admin` peel off into the branch and run only what's configured inside it; everything else flows past untouched. There's also `app.MapWhen(predicate, branch)` to branch on something other than a path — say, the presence of a header or a query string value. `Map` is for "this whole slice of the app behaves differently."
 
 ## ⚠️ Order matters — a lot
 
-This is where people get burned, so read it twice. **Middleware runs in the exact order you add it.** The first one you register is the outermost layer of the onion; the last is closest to your endpoint. Move two lines and you can silently break security or error handling.
+This is where people get burned, so read it twice. **Middleware runs in the exact order you add it.** The first one registered is the outermost layer of the onion; the last is closest to your endpoint. Move two lines and you can silently break security or error handling.
 
-Why does it bite so hard? Because the built-in middleware *depends* on running in a particular order. Authorization can't decide whether to allow a request until authentication has figured out *who* the request is from. Routing has to match an endpoint before authorization can read that endpoint's `[Authorize]` rules. So there's a canonical order, and it's not negotiable:
+Why does it bite so hard? Because built-in middleware *depends* on running in a particular order. Authorization can't decide whether to allow a request until authentication has figured out *who* the request is from. Routing has to match an endpoint before authorization can read that endpoint's `[Authorize]` rules. So there's a canonical order, and it's not negotiable:
 
 ```csharp
 app.UseExceptionHandler("/error");   // outermost — must wrap everything to catch errors
@@ -94,15 +92,15 @@ app.UseAuthorization();              // is this WHO allowed to hit that endpoint
 app.MapGet("/products", () => Results.Ok("listing products"));   // endpoints last
 ```
 
-*What just happened:* the exception handler goes first so it wraps every later layer — only an outer layer can catch what an inner layer throws. `UseRouting` runs before the auth pair because authorization needs to know which endpoint was selected to read its permissions. `UseAuthentication` always precedes `UseAuthorization` — you must establish identity before you can check permissions. And the endpoints come last, after auth has had its say. The rule of thumb that covers most mistakes: **put auth before the endpoints it protects.** If `UseAuthorization` lands after your `MapGet`, the endpoint runs before anyone checks permissions, and your `[Authorize]` rules do nothing.
+*What just happened:* the exception handler goes first so it wraps every later layer — only an outer layer can catch what an inner layer throws. `UseRouting` runs before the auth pair because authorization needs to know which endpoint was selected to read its permissions. `UseAuthentication` always precedes `UseAuthorization` — you must establish identity before checking permissions. Endpoints come last, after auth has had its say. The rule of thumb that covers most mistakes: **put auth before the endpoints it protects.** If `UseAuthorization` lands after your `MapGet`, the endpoint runs before anyone checks permissions, and your `[Authorize]` rules do nothing.
 
-> 📝 Minimal API apps wire a lot of this up implicitly — call `app.UseAuthentication()`/`app.UseAuthorization()` and the framework slots `UseRouting` in for you. But the *ordering law* is the same whether it's implicit or you spell it out. When something auth-related behaves strangely, the order of these lines is the first place to look.
+> 📝 Minimal API apps wire a lot of this up implicitly — call `app.UseAuthentication()`/`app.UseAuthorization()` and the framework slots `UseRouting` in for you. But the *ordering law* is the same whether it's implicit or spelled out. When something auth-related behaves strangely, the order of these lines is the first place to look.
 
 ## Short-circuiting: when *not* calling `next` is the point
 
-A middleware that calls `next` is a pass-through. A middleware that **doesn't** call `next` ends the request right there and sends a response — this is called **short-circuiting**, and it's not a bug, it's a primary tool.
+A middleware that calls `next` is a pass-through. One that **doesn't** call `next` ends the request right there and sends a response — this is called **short-circuiting**, and it's not a bug, it's a primary tool.
 
-This is exactly how auth, caching, and rate-limiting reject requests early without wasting work on the endpoint. Here's a hand-rolled API-key gate in front of our products API:
+This is exactly how auth, caching, and rate-limiting reject requests early without wasting work on the endpoint. Here's a hand-rolled API-key gate in front of the products API:
 
 ```csharp
 app.Use(async (context, next) =>
@@ -124,7 +122,7 @@ app.MapGet("/products", () => Results.Ok(new[] { "Keyboard", "Mouse" }));
 
 ## Writing a reusable middleware
 
-The inline lambdas are perfect for small things. When a middleware grows, or you want to reuse it, pull it into a class. The convention is a constructor that takes the `RequestDelegate next`, plus an `InvokeAsync(HttpContext)` method:
+Inline lambdas are perfect for small things. When a middleware grows, or you want to reuse it, pull it into a class: a constructor that takes the `RequestDelegate next`, plus an `InvokeAsync(HttpContext)` method:
 
 ```csharp
 public class RequestTimingMiddleware
@@ -151,11 +149,11 @@ public class RequestTimingMiddleware
 app.UseMiddleware<RequestTimingMiddleware>();
 ```
 
-*What just happened:* this is the exact same onion as our first lambda, just in class form. The `RequestDelegate next` the constructor receives *is* "the rest of the pipeline" — calling `_next(context)` is the same as `await next(context)` was earlier. Notice `ILogger` arriving through the constructor: middleware classes get their dependencies via the DI you learned in Phase 4. `app.UseMiddleware<T>()` registers it at whatever point in the order you place that line — so all the ordering rules above still apply.
+*What just happened:* this is the exact same onion as our first lambda, just in class form. The `RequestDelegate next` the constructor receives *is* "the rest of the pipeline" — calling `_next(context)` is the same as `await next(context)` earlier. Notice `ILogger` arriving through the constructor: middleware classes get their dependencies via the DI from Phase 4. `app.UseMiddleware<T>()` registers it at whatever point in the order you place that line — all the ordering rules above still apply.
 
 ## Recap
 
-- A request flows through an **ordered chain of middleware** — each runs on the way *in*, calls `next` to go deeper, and runs again on the way *out*. Think onion. This is one of ASP.NET Core's two pillars; DI is the other.
+- A request flows through an **ordered chain of middleware**, each running on the way *in*, calling `next` to go deeper, then running again on the way *out*. Think onion. This is one of ASP.NET Core's two pillars; DI is the other.
 - **`app.Use`** adds middleware that may call `next`; **`app.Run`** is terminal (never calls `next`); **`app.Map`/`MapWhen`** branch the pipeline on a path or condition.
 - **Order is the law.** Middleware runs in registration order. The canonical built-in order is `UseExceptionHandler` (and `UseHttpsRedirection`) early, then `UseRouting` → `UseAuthentication` → `UseAuthorization` → endpoints. Put auth before the endpoints it protects.
 - **Not calling `next` short-circuits** the pipeline — the request gets a response immediately and never reaches the endpoint. That's how auth, caching, and rate-limiting reject early.

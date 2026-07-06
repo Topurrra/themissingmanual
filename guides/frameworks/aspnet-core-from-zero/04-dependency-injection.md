@@ -11,15 +11,15 @@ updated: 2026-06-23
 
 # Dependency Injection
 
-Here's the mental model, and it's the one thing that makes the rest of this phase click: **you register services in one place, and the framework constructs them and hands them to whatever asks.** You stop writing `new ProductRepository()` scattered through your code. Instead you say, once, "when something needs an `IProductRepository`, give it a `ProductRepository`," and the framework does the wiring.
+Here's the mental model: **you register services in one place, and the framework constructs them and hands them to whatever asks.** You stop writing `new ProductRepository()` scattered through your code. Instead you say, once, "when something needs an `IProductRepository`, give it a `ProductRepository`," and the framework does the wiring.
 
-That sentence — "you code against interfaces, not `new`" — is the whole idea. Everything below is the mechanics of making it happen.
+"You code against interfaces, not `new`" is the whole idea. Everything below is the mechanics of making it happen.
 
-> 📝 The container that does this wiring is built into ASP.NET Core. There's nothing to install, no third-party library to bolt on. The moment you call `WebApplication.CreateBuilder(args)`, you already have a dependency-injection container sitting on `builder.Services`, waiting for you to register things.
+> 📝 The container that does this wiring is built into ASP.NET Core — nothing to install, no third-party library to bolt on. The moment you call `WebApplication.CreateBuilder(args)`, you already have a dependency-injection container sitting on `builder.Services`, waiting for you to register things.
 
 ## Why bother — the problem DI solves
 
-Imagine your products endpoint reaches straight for the data layer:
+Imagine the products endpoint reaches straight for the data layer:
 
 ```csharp
 app.MapGet("/products", () =>
@@ -29,13 +29,13 @@ app.MapGet("/products", () =>
 });
 ```
 
-*What just happened:* The endpoint creates its own repository with `new`. It works — but the endpoint is now welded to that exact class. To test it, you'd hit the real data store. To swap implementations (an in-memory one for tests, a cached one in production), you'd edit every place that calls `new`. The endpoint knows *too much* about how a repository gets built.
+*What just happened:* The endpoint creates its own repository with `new`. It works, but is now welded to that exact class. To test it, you'd hit the real data store. To swap implementations (an in-memory one for tests, a cached one in production), you'd edit every place that calls `new`. The endpoint knows *too much* about how a repository gets built.
 
-Dependency injection flips this. The endpoint declares *what it needs* (an `IProductRepository`) and lets the framework decide *what to hand over* and *how to build it*. The endpoint stops caring about construction entirely.
+Dependency injection flips this: the endpoint declares *what it needs* (an `IProductRepository`) and lets the framework decide *what to hand over* and *how to build it*, so it stops caring about construction entirely.
 
 ## Step 1: program to an interface
 
-DI works best when you depend on an interface, not a concrete class. So define the contract first, then an implementation:
+DI works best when you depend on an interface, not a concrete class. Define the contract first, then an implementation:
 
 ```csharp
 public interface IProductRepository
@@ -59,11 +59,11 @@ public class ProductRepository : IProductRepository
 public record Product(int Id, string Name, decimal Price);
 ```
 
-*What just happened:* `IProductRepository` is the contract — the *what*. `ProductRepository` is one *how*. Your endpoints will depend only on the interface, so the concrete class becomes a swappable detail. (This is the in-memory list from earlier phases, now hidden behind an interface.)
+*What just happened:* `IProductRepository` is the contract — the *what*. `ProductRepository` is one *how*. Endpoints depend only on the interface, so the concrete class becomes a swappable detail. (This is the in-memory list from earlier phases, now hidden behind an interface.)
 
 ## Step 2: register the service
 
-Now tell the container about the mapping. You do this on `builder.Services`, before `builder.Build()`:
+Now tell the container about the mapping, on `builder.Services`, before `builder.Build()`:
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -73,11 +73,11 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 var app = builder.Build();
 ```
 
-*What just happened:* You registered a rule: "whenever someone asks for `IProductRepository`, construct a `ProductRepository` and supply it." The two type arguments are the contract and the implementation, in that order. `AddScoped` is *one* of three lifetimes — and the lifetime is the next thing you have to understand, because it controls *how often* the framework builds a fresh instance.
+*What just happened:* You registered a rule: "whenever someone asks for `IProductRepository`, construct a `ProductRepository` and supply it." The two type arguments are the contract and the implementation, in that order. `AddScoped` is *one* of three lifetimes, which control *how often* the framework builds a fresh instance — the next thing to understand.
 
 ## Step 3: the three lifetimes
 
-When you register a service, you're answering one question: **how long should a single instance live before the framework throws it away and builds a new one?** There are exactly three answers.
+Registering a service answers one question: **how long should a single instance live before the framework throws it away and builds a new one?** Three answers:
 
 | Method | One instance per… | Reach for it when… |
 |--------|-------------------|--------------------|
@@ -93,11 +93,11 @@ builder.Services.AddTransient<IPriceFormatter, PriceFormatter>();    // one each
 
 *What just happened:* Three registrations, three lifecycles. The `IClock` is built once and shared by every request for the life of the app. The repository is built once *per incoming HTTP request* — two simultaneous requests get two separate repositories, but within a single request everyone shares the same one. The formatter is built fresh every time anything asks for it.
 
-> 💡 When in doubt, **`AddScoped` is the sensible default** for application services and anything touching data. It gives each request its own clean instance and lets the framework dispose it when the request ends. Reach for `Singleton` only when you genuinely want shared state, and `Transient` for cheap, stateless helpers.
+> 💡 When in doubt, **`AddScoped` is the sensible default** for application services and anything touching data — it gives each request its own clean instance and lets the framework dispose it when the request ends. Reach for `Singleton` only for genuinely shared state, and `Transient` for cheap, stateless helpers.
 
 ## Step 4: consume the service
 
-You registered it — now use it. In a minimal API, you don't fetch the service; you **declare it as a handler parameter** and the framework supplies it:
+You registered it — now use it. In a minimal API, you don't fetch the service, you **declare it as a handler parameter** and the framework supplies it:
 
 ```csharp
 app.MapGet("/products", (IProductRepository repo) => repo.All());
@@ -108,7 +108,7 @@ app.MapGet("/products/{id:int}", (int id, IProductRepository repo) =>
         : Results.NotFound());
 ```
 
-*What just happened:* The handler asks for an `IProductRepository` in its parameter list. The framework looks at the route values (`id` comes from the URL), recognizes that `IProductRepository` is a registered service, builds one according to its lifetime, and passes it in. You never wrote `new`. The endpoint depends only on the interface — swap the registration and every handler quietly gets the new implementation.
+*What just happened:* The handler asks for an `IProductRepository` in its parameter list. The framework looks at the route values (`id` comes from the URL), recognizes that `IProductRepository` is a registered service, builds one according to its lifetime, and passes it in. You never wrote `new`, and the endpoint depends only on the interface — swap the registration and every handler quietly gets the new implementation.
 
 In classes — controllers, your own services, background workers — injection happens through the **constructor** instead:
 
@@ -126,13 +126,13 @@ public class ProductService
 }
 ```
 
-*What just happened:* `ProductService` declares its dependency as a constructor parameter and stashes it in a `readonly` field. When something asks the container for a `ProductService`, the framework sees the constructor needs an `IProductRepository`, builds that too, and passes it in — a chain of construction you never have to manage by hand. Constructor injection is the idiomatic way to wire dependencies into classes.
+*What just happened:* `ProductService` declares its dependency as a constructor parameter and stashes it in a `readonly` field. When something asks the container for a `ProductService`, the framework sees the constructor needs an `IProductRepository`, builds that too, and passes it in — a chain of construction you never manage by hand. Constructor injection is the idiomatic way to wire dependencies into classes.
 
-> 💡 Most minimal-API handlers can tell your services from your bound data by their types. But if the framework can't tell whether a parameter is a service or something to bind from the request, mark it with `[FromServices]` to be explicit: `app.MapGet("/total", ([FromServices] ProductService svc) => svc.TotalCatalogValue());`.
+> 💡 Most minimal-API handlers can tell your services from your bound data by their types. If the framework can't tell whether a parameter is a service or request data, mark it with `[FromServices]`: `app.MapGet("/total", ([FromServices] ProductService svc) => svc.TotalCatalogValue());`.
 
 ## The trap: captive dependencies
 
-Now the pitfall that bites everyone eventually. Lifetimes have a rule: **a service can safely depend on others of the same lifetime or longer-lived ones — but not shorter-lived ones.**
+The pitfall that bites everyone eventually. Lifetimes have a rule: **a service can safely depend on others of the same lifetime or longer-lived ones — but not shorter-lived ones.**
 
 The classic violation is injecting a **Scoped** service into a **Singleton**:
 
@@ -150,15 +150,15 @@ public class ProductCache
 builder.Services.AddSingleton<ProductCache>();   // lives for the whole app
 ```
 
-*What just happened:* `ProductCache` is a singleton — built once, kept forever. But it grabs a `ProductRepository`, which is *scoped* — meant to live for one request and then be disposed. Because the singleton holds onto it, that one repository never gets released. It's been **captured**: it outlives its intended scope, and every request unknowingly shares the same stale, request-one instance. This is a *captive dependency*, and EF Core's `DbContext` — which is scoped — is the textbook casualty. A singleton clutching a `DbContext` is a bug that surfaces as bizarre, hard-to-reproduce data corruption under load.
+*What just happened:* `ProductCache` is a singleton — built once, kept forever. But it grabs a `ProductRepository`, which is *scoped* — meant to live for one request and then be disposed. Because the singleton holds onto it, that repository never gets released. It's been **captured**: it outlives its intended scope, and every request unknowingly shares the same stale instance. This is a *captive dependency*, and EF Core's `DbContext` — which is scoped — is the textbook casualty. A singleton clutching a `DbContext` is a bug that surfaces as bizarre, hard-to-reproduce data corruption under load.
 
-> ⚠️ The rule of thumb: **never inject something shorter-lived into something longer-lived.** Scoped-into-singleton and transient-into-singleton are the dangerous pairs. The fix is usually to make the outer service scoped too, or — when a singleton genuinely needs per-request work — inject an `IServiceScopeFactory` and create a scope on demand. The built-in container even has a "scope validation" check that throws on these mistakes in development, so it often catches you before production does.
+> ⚠️ Rule of thumb: **never inject something shorter-lived into something longer-lived.** Scoped-into-singleton and transient-into-singleton are the dangerous pairs. The fix is usually to make the outer service scoped too, or — when a singleton genuinely needs per-request work — inject an `IServiceScopeFactory` and create a scope on demand. The built-in container even has a "scope validation" check that throws on these mistakes in development, so it often catches you before production does.
 
 ## Why this is the backbone of testable code
 
-Step back and notice what DI bought you. Your endpoints and services depend on `IProductRepository`, never on `ProductRepository`. In a test, you register a fake — an in-memory or stubbed implementation of the same interface — and *every* consumer transparently uses it, no production code changed. The framework also owns the lifecycle: it builds your services, hands them around, and disposes them at the right moment so you don't leak connections or handles.
+Notice what DI bought you. Your endpoints and services depend on `IProductRepository`, never on `ProductRepository`. In a test, you register a fake — an in-memory or stubbed implementation of the same interface — and *every* consumer transparently uses it, no production code changed. The framework also owns the lifecycle: it builds your services, hands them around, and disposes them at the right moment so you don't leak connections or handles.
 
-That's the real payoff: **decoupling** (program to the contract, swap the implementation) plus **managed lifetimes** (the framework handles construction and disposal). Together they're what make ASP.NET Core code straightforward to test — which is exactly the muscle you'll flex in [Phase 8: Testing & Production](08-testing-and-production.md).
+That's the real payoff: **decoupling** (program to the contract, swap the implementation) plus **managed lifetimes** (the framework handles construction and disposal) — what makes ASP.NET Core code straightforward to test, the muscle you'll flex in [Phase 8: Testing & Production](08-testing-and-production.md).
 
 ## Recap
 

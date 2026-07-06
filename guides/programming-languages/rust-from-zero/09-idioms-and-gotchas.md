@@ -10,13 +10,13 @@ updated: 2026-06-19
 ---
 # Idioms & Common Gotchas - Writing Rust Like a Rustacean
 
-There's a moment, a few weeks into Rust, when your code stops being "C with extra punctuation" and starts being *Rust*. You stop fighting the language and start leaning on it. This phase is a shortcut to that moment: the small set of patterns that make code feel native, and a cheat-card of the gotchas that trip up everyone so they don't have to trip up you.
+There's a moment, a few weeks into Rust, when your code stops being "C with extra punctuation" and starts being *Rust* - you stop fighting the language and start leaning on it. This phase is a shortcut to that moment: the small set of patterns that make code feel native, plus a cheat-card of the gotchas that trip up everyone so they don't have to trip up you.
 
-None of this is mandatory to write working programs. But these are the idioms you'll see in every real codebase (including [this project's Rust backend](08-ecosystem-and-tooling.md)), and they're idiomatic precisely because they make the compiler do more of the work for you.
+None of this is mandatory to write working programs, but these are the idioms you'll see in every real codebase (including [this project's Rust backend](08-ecosystem-and-tooling.md)) - idiomatic precisely because they make the compiler do more of the work for you.
 
 ## Enums + exhaustive `match`: model your data honestly
 
-**What it actually is.** An enum is a type that is *exactly one of several variants* - and in Rust, each variant can carry its own data. This is far more powerful than the integer-constants "enum" in many languages. It lets you say "a shape is a circle *with a radius*, or a rectangle *with a width and height*," and the type makes any other possibility impossible.
+**What it actually is.** An enum is a type that is *exactly one of several variants*, and in Rust, each variant can carry its own data - far more powerful than the integer-constants "enum" in many languages. It lets you say "a shape is a circle *with a radius*, or a rectangle *with a width and height*," making any other possibility impossible.
 
 ```rust
 #[derive(Debug)]
@@ -44,9 +44,9 @@ $ cargo run
 Circle(1.0) area 3.14
 Rectangle(2.0, 3.0) area 6.00
 ```
-*What just happened:* `match` looks at which variant `s` is and pulls its data out in one move - `Shape::Circle(r)` binds the radius to `r`. (`Option` and `Result` from [Phase 7](07-errors-and-io.md) are themselves just enums, which is why `match` works on them too.)
+*What just happened:* `match` looks at which variant `s` is and pulls its data out in one move - `Shape::Circle(r)` binds the radius to `r`. (`Option` and `Result` from [Phase 7](07-errors-and-io.md) are themselves just enums, why `match` works on them too.)
 
-Now the superpower. Add a variant - say `Triangle` - and forget to handle it, and the compiler stops you cold:
+Now the superpower: add a variant - say `Triangle` - and forget to handle it, and the compiler stops you cold.
 
 ```console
 $ cargo build
@@ -56,13 +56,13 @@ error[E0004]: non-exhaustive patterns: `&Shape::Triangle(_, _)` not covered
 8 |     match s {
   |           ^ pattern `&Shape::Triangle(_, _)` not covered
 ```
-*What just happened:* `match` must be **exhaustive** - cover every variant. The compiler noticed `Triangle` had no arm and refused to build. This is one of Rust's quietest, most valuable features: when you add a case to your data model, the compiler hands you a to-do list of every place that now needs updating. No silent "fell through the cracks" bug.
+*What just happened:* `match` must be **exhaustive** - cover every variant. The compiler noticed `Triangle` had no arm and refused to build. One of Rust's quietest, most valuable features: add a case to your data model and the compiler hands you a to-do list of every place that needs updating. No silent "fell through the cracks" bug.
 
-💡 **Key point.** Enums + exhaustive `match` mean "make illegal states unrepresentable, and impossible-to-forget to handle." Reach for an enum whenever a value is "one of a fixed set of things," especially when each thing carries different data.
+💡 **Key point.** Enums + exhaustive `match` mean "make illegal states unrepresentable, and impossible to forget to handle." Reach for an enum whenever a value is "one of a fixed set of things," especially when each thing carries different data.
 
 ## Traits: shared behavior without inheritance
 
-**What it actually is.** A trait is a set of methods a type promises to provide - "anything that implements `Display` knows how to print itself nicely." It's how Rust does shared behavior, in place of class inheritance. You define a trait, then implement it for any types you like, and now functions can accept "anything that implements this trait."
+**What it actually is.** A trait is a set of methods a type promises to provide - "anything that implements `Display` knows how to print itself nicely." It's how Rust does shared behavior in place of class inheritance: define a trait, implement it for any types you like, and functions can accept "anything that implements this trait."
 
 ```rust
 trait Greet {
@@ -97,11 +97,11 @@ $ cargo run
 Woof
 BEEP BOOP
 ```
-*What just happened:* `Dog` and `Robot` share no common parent, but both implement `Greet`, so both can be passed to `announce(thing: &impl Greet)` - "give me a reference to anything that can `greeting`." This is how Rust gets polymorphism without inheritance hierarchies. You've already been using traits without knowing it: `#[derive(Debug)]` implements the `Debug` trait, which is what lets `{:?}` print your type.
+*What just happened:* `Dog` and `Robot` share no common parent, but both implement `Greet`, so both can be passed to `announce(thing: &impl Greet)` - "give me a reference to anything that can `greeting`." How Rust gets polymorphism without inheritance hierarchies. You've already used traits without knowing it: `#[derive(Debug)]` implements `Debug`, which is what lets `{:?}` print your type.
 
 ## Iterator combinators: describe the transformation, skip the loop
 
-**What they actually are.** Instead of writing an explicit `for` loop with a mutable accumulator, you chain *combinators* - `.map()`, `.filter()`, `.collect()`, and friends - that describe *what* you want done to each element. The result reads top-to-bottom like a sentence, and it's just as fast as the hand-written loop (the compiler optimizes the chain away).
+**What they actually are.** Instead of writing an explicit `for` loop with a mutable accumulator, chain *combinators* - `.map()`, `.filter()`, `.collect()`, and friends - that describe *what* you want done to each element. The result reads top-to-bottom like a sentence, and it's just as fast as a hand-written loop (the compiler optimizes the chain away).
 
 ```rust
 fn main() {
@@ -120,13 +120,13 @@ fn main() {
 $ cargo run
 [4, 16, 36]
 ```
-*What just happened:* Read it as a pipeline: start with the numbers, *filter* down to evens, *map* each to its square, then *collect* the results into a `Vec`. `.iter()` starts the chain (borrowing each element), and `.collect()` ends it by building the final collection. The `&&n` looks odd at first - it's pattern-matching through two layers of reference - but you'll stop noticing it quickly. No index variable, no off-by-one, no mutable accumulator to get wrong.
+*What just happened:* Read it as a pipeline: start with the numbers, *filter* down to evens, *map* each to its square, then *collect* into a `Vec`. `.iter()` starts the chain (borrowing each element); `.collect()` ends it by building the final collection. The `&&n` looks odd at first - pattern-matching through two layers of reference - but you'll stop noticing it. No index variable, no off-by-one, no mutable accumulator to get wrong.
 
-⚠️ **Iterators are lazy.** `.filter()` and `.map()` don't do anything by themselves - they just describe work. Nothing happens until a *consumer* like `.collect()`, `.sum()`, or a `for` loop actually pulls the values through. Forget the consuming step and your "transformation" silently does nothing.
+⚠️ **Iterators are lazy.** `.filter()` and `.map()` don't do anything by themselves - they just describe work. Nothing happens until a *consumer* like `.collect()`, `.sum()`, or a `for` loop pulls the values through. Forget the consuming step and your "transformation" silently does nothing.
 
 ## Option/Result combinators: handle the maybe without a `match`
 
-The same combinator style works on `Option` and `Result`, which lets you transform a maybe-value without writing a full `match` for the simple cases:
+The same combinator style works on `Option` and `Result`, letting you transform a maybe-value without a full `match` for the simple cases:
 
 ```rust
 fn main() {
@@ -143,11 +143,11 @@ fn main() {
 $ cargo run
 84
 ```
-*What just happened:* `parse()` returned `Ok(42)`; `.ok()` converted that to `Some(42)`; `.map(|n| n * 2)` turned it into `Some(84)`; `.unwrap_or(0)` pulled out the `84` (and would have given `0` if anything had been `None`). That whole "parse, double if it worked, else default to zero" story is one readable line. For the simple "transform or fall back" cases, combinators like `.map()`, `.unwrap_or()`, `.and_then()`, and `.unwrap_or_else()` are cleaner than a `match` - save `match` for when you genuinely need to do different things in different cases.
+*What just happened:* `parse()` returned `Ok(42)`; `.ok()` converted that to `Some(42)`; `.map(|n| n * 2)` turned it into `Some(84)`; `.unwrap_or(0)` pulled out `84` (and would give `0` if anything had been `None`). That "parse, double if it worked, else default to zero" story is one readable line. For simple "transform or fall back" cases, combinators like `.map()`, `.unwrap_or()`, `.and_then()`, and `.unwrap_or_else()` beat a `match` - save `match` for genuinely different cases.
 
 ## Prefer borrowing over cloning
 
-This is less a single trick and more a habit - the one that most separates comfortable Rust from "I `.clone()` everything to make the borrow checker stop." Remember from [Phase 6](06-ownership-and-borrowing.md): `.clone()` makes a full, independent copy of the data. Sometimes you need that. Often you reached for it just to dodge a move error, and you've quietly added a needless copy.
+This is less a single trick and more a habit, the one that most separates comfortable Rust from "I `.clone()` everything to make the borrow checker stop." Remember from [Phase 6](06-ownership-and-borrowing.md): `.clone()` makes a full, independent copy. Sometimes you need that; often you reached for it just to dodge a move error, quietly adding a needless copy.
 
 The idiomatic default: **functions should borrow (`&T`) what they only need to read, and take `&str` instead of `String`, `&[T]` instead of `Vec<T>`.** That way callers can pass what they already have without giving it up or copying it.
 
@@ -170,11 +170,11 @@ HELLO
 WORLD
 still have: hello
 ```
-*What just happened:* `shout` takes `&str`, so it can accept a borrow of a `String` *and* a plain string literal, without either caller losing ownership or copying. `owned` is still usable afterward. The rule of thumb: take a borrow unless you have a real reason to own the value.
+*What just happened:* `shout` takes `&str`, so it accepts a borrow of a `String` *and* a plain string literal, without either caller losing ownership or copying. `owned` is still usable afterward. Rule of thumb: borrow unless you have a real reason to own the value.
 
 ## The gotcha cheat-card
 
-The things that bite every newcomer, with the calm fix for each. Skim it now; come back when one bites you.
+The things that bite every newcomer, with the calm fix for each. Skim it now, come back when one bites you.
 
 | The gotcha | What's going on | The fix |
 |---|---|---|
@@ -185,7 +185,7 @@ The things that bite every newcomer, with the calm fix for each. Skim it now; co
 | **`.unwrap()` panics** | `.unwrap()` crashes the program on `Err`/`None`. Fine in tests, a landmine in real code. | Use `?` to bubble the error, or `match`/combinators to handle it. Reserve `.unwrap()`/`.expect()` for proven-impossible cases. See [Phase 7](07-errors-and-io.md). |
 | **Integer overflow in debug** | In **debug** builds, `a + b` that overflows *panics*; in **release** builds it silently wraps around. So a bug can vanish in release. | Be intentional: use `.checked_add()` (returns `Option`), `.saturating_add()` (clamps), or `.wrapping_add()` (explicitly wraps) when overflow is possible. |
 
-That last one surprises people, so let's see it. With a runtime value (so the check isn't caught at compile time), a debug build catches the overflow at the moment it happens:
+That last one surprises people, so let's see it. With a runtime value (so the check isn't caught at compile time), a debug build catches the overflow the moment it happens:
 
 ```rust
 fn main() {
@@ -201,7 +201,7 @@ thread 'main' panicked at src/main.rs:4:13:
 attempt to add with overflow
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
-*What just happened:* `255 + 1` doesn't fit in a `u8` (which tops out at 255), and the debug build's overflow check caught it and panicked with a precise message. This is a *feature*: in many languages this would silently wrap to `0` and corrupt your logic with no warning. ⚠️ The catch is that a `--release` build turns this check off for speed and *does* silently wrap - so when overflow is genuinely possible, don't rely on the debug panic; reach for `.checked_add()` and handle the `None`.
+*What just happened:* `255 + 1` doesn't fit in a `u8` (tops out at 255), and the debug build's overflow check caught it and panicked with a precise message. This is a *feature*: in many languages this would silently wrap to `0` and corrupt your logic with no warning. ⚠️ The catch: a `--release` build turns this check off for speed and *does* silently wrap - so when overflow is genuinely possible, don't rely on the debug panic; reach for `.checked_add()` and handle the `None`.
 
 ## Recap
 

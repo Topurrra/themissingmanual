@@ -11,17 +11,17 @@ updated: 2026-06-22
 
 # Testing & Production
 
-You've built a real notes app — routes, a database, auth, an API. Two questions are now sitting quietly in the back of your mind, and they're the two that separate a side project from something you'd let other people touch. First: *how do I know I didn't break anything?* Second: *how do I actually run this so it's not just alive on my laptop?* This phase answers both.
+You've built a real notes app — routes, a database, auth, an API. Two questions separate a side project from something you'd let other people touch: *how do I know I didn't break anything?* and *how do I run this so it's not just alive on my laptop?* This phase answers both.
 
-Here's the mental model to carry in. 📝 **Testing and deployment are the same idea pointed in two directions: you want your app to run somewhere other than the place you built it.** A test runs your app in a throwaway, controlled environment to check its behavior. Production runs it in a hardened, public environment to serve real users. The thing that makes *both* clean — and this is the payoff of all that structure from Phase 6 — is the app factory. `create_app()` lets you build a fresh app for a test, and a different fresh app for production, from the exact same code. Hold that thread; it ties the whole phase together.
+📝 **Testing and deployment are the same idea pointed in two directions: you want your app to run somewhere other than the place you built it.** A test runs your app in a throwaway, controlled environment to check its behavior. Production runs it in a hardened, public environment to serve real users. The thing that makes *both* clean — the payoff of all that structure from Phase 6 — is the app factory. `create_app()` lets you build a fresh app for a test, and a different fresh app for production, from the exact same code.
 
 ## The test client: call your app without a server
 
 The fear most people have about testing a web app is that they'll need to start the server, fire HTTP requests at `localhost`, and tear it all down — slow, flaky, painful. Flask sidesteps that entirely.
 
-📝 **`app.test_client()` gives you a fake browser that calls your app in-process — no running server, no network, no port.** You call `client.get("/notes")` or `client.post("/notes", data={...})` and Flask routes the request through your real view functions and hands you back a response object. It's a function call wearing an HTTP costume. That makes tests *fast* (milliseconds, not seconds) and reliable (no "connection refused" because something didn't boot in time).
+📝 **`app.test_client()` gives you a fake browser that calls your app in-process — no running server, no network, no port.** You call `client.get("/notes")` or `client.post("/notes", data={...})` and Flask routes the request through your real view functions and hands you back a response object — a function call wearing an HTTP costume. Tests run *fast* and reliable.
 
-If you've never written a test before, read [Your First Unit Test](/guides/your-first-unit-test) first — it teaches the Arrange-Act-Assert shape we're about to use. Here's that shape applied to a Flask view:
+If you've never written a test before, read [Your First Unit Test](/guides/your-first-unit-test) — it teaches the Arrange-Act-Assert shape we're about to use:
 
 ```python
 def test_notes_page_loads(client):
@@ -33,7 +33,7 @@ def test_notes_page_loads(client):
     assert b"Notes" in response.data
 ```
 
-*What just happened:* `client.get("/notes/")` runs the request through your app's routing and view function and returns a `response`. We check two things every view test checks: `response.status_code` (did it succeed — 200? redirect — 302? not found — 404?) and `response.data` (the raw bytes of the body). Note the `b"Notes"` — `response.data` is **bytes**, not a string, so you compare against a byte string (`b"..."`) or decode it first. That `client` argument isn't magic; it's a pytest fixture we're about to build.
+*What just happened:* `client.get("/notes/")` runs the request through your app's routing and view function and returns a `response`. We check two things every view test checks: `response.status_code` (200? redirect 302? not found 404?) and `response.data` (the raw bytes of the body). `response.data` is **bytes**, not a string, so compare against a byte string or decode it first. That `client` argument isn't magic; it's a pytest fixture we're about to build.
 
 ## The app factory makes testing clean
 
@@ -66,11 +66,11 @@ def client(app):
     return app.test_client()
 ```
 
-*What just happened:* the `app` fixture calls `create_app(...)` with a **test config dict** — an in-memory SQLite database (`sqlite:///:memory:`) that exists only for the duration of the test and vanishes after, plus `WTF_CSRF_ENABLED: False` so your form-posting tests don't have to wrangle CSRF tokens. Inside an app context it creates the tables, `yield`s the app to the test, then drops everything. The `client` fixture depends on `app` (it takes `app` as an argument) and returns `app.test_client()`. Now any test that names `client` gets a fresh, isolated app every single time.
+*What just happened:* the `app` fixture calls `create_app(...)` with a **test config dict** — an in-memory SQLite database (`sqlite:///:memory:`) that exists only for the test and vanishes after, plus `WTF_CSRF_ENABLED: False` so form-posting tests skip CSRF tokens. Inside an app context it creates the tables, `yield`s the app, then drops everything. The `client` fixture depends on `app` and returns `app.test_client()`. Now any test that names `client` gets a fresh, isolated app every time.
 
-⚠️ **Never run your tests against your real database.** A test that calls `client.post(...)` to create a note, or one that exercises a delete route, will happily write to — or wipe — whatever database the app is pointed at. The whole point of the in-memory test config is that tests get their own disposable world. If your tests can reach `notes.db`, one bad run can delete your actual notes.
+⚠️ **Never run your tests against your real database.** A test that calls `client.post(...)` to create a note, or exercises a delete route, will happily write to — or wipe — whatever database the app is pointed at. The in-memory test config gives tests their own disposable world.
 
-(For this fixture to work, `create_app` needs to accept a config dict — a small tweak to the Phase 6 factory: `if isinstance(config, dict): app.config.update(config)` alongside the `from_object` path. The factory pattern is what makes this one-line override possible.)
+(For this fixture to work, `create_app` needs to accept a config dict — a small tweak to the Phase 6 factory: `if isinstance(config, dict): app.config.update(config)` alongside the `from_object` path.)
 
 ## What to test
 
@@ -94,15 +94,15 @@ def test_note_str(client):
     assert "Hello" in str(note)                   # plain model logic, no HTTP
 ```
 
-*What just happened:* three kinds of test. The first checks a **view response** — posting a note should redirect (status 302), the classic Post/Redirect/Get pattern. The second checks **auth** — an unauthenticated request to a `login_required` route should redirect to `/login`, which we verify by inspecting the `Location` header. The third is a **pure logic** test on the model — no client, no HTTP, just constructing a `Note` and checking its behavior.
+*What just happened:* three kinds of test. The first checks a **view response** — posting a note should redirect (302), the classic Post/Redirect/Get pattern. The second checks **auth** — an unauthenticated request to a `login_required` route should redirect to `/login`, verified via the `Location` header. The third is **pure logic** on the model — no client, no HTTP.
 
-💡 That ordering mirrors the **test pyramid**: lots of fast, cheap logic/model tests at the bottom, a solid middle layer of view tests through the client, and only a few slow end-to-end tests up top. Most of your tests should be the cheap kind — they run in milliseconds and tell you exactly what broke.
+💡 That ordering mirrors the **test pyramid**: lots of fast, cheap logic/model tests at the bottom, a solid middle layer of view tests, and only a few slow end-to-end tests up top. Most of your tests should be the cheap kind.
 
 ## Production: the dev server is NOT for production
 
-This is the one rule from this phase that, if you remember nothing else, save you from a real incident.
+This is the one rule from this phase that, if you remember nothing else, saves you from a real incident.
 
-⚠️ **`flask run` and the underlying Werkzeug development server are for development only. Never put them in front of real users.** This isn't a style preference. The dev server is single-threaded by default (one slow request blocks everyone), it's not built to survive hostile traffic, and Flask's own startup banner literally warns you: *"WARNING: This is a development server. Do not use it in a production deployment."* It will fall over under load, and it has no business being on the public internet.
+⚠️ **`flask run` and the underlying Werkzeug development server are for development only. Never put them in front of real users.** The dev server is single-threaded by default (one slow request blocks everyone), it's not built to survive hostile traffic, and Flask's own startup banner literally warns you: *"WARNING: This is a development server. Do not use it in a production deployment."* It will fall over under load, and has no business being on the public internet.
 
 What you run instead is a real **WSGI server**. WSGI is the standard contract between a Python web app and the server that runs it — Flask speaks WSGI, and production-grade servers speak WSGI back. The most common one is **gunicorn**: battle-tested, multi-worker, boring in the best way.
 
@@ -110,20 +110,20 @@ What you run instead is a real **WSGI server**. WSGI is the standard contract be
 gunicorn --workers 4 --bind 0.0.0.0:8000 "app:create_app()"
 ```
 
-*What just happened:* gunicorn imports your `app` package, **calls your factory** (`create_app()`) to build the application, and serves it. `--workers 4` spins up four worker processes so four requests can be handled truly in parallel (a rough starting point is `2 × CPU cores + 1`). `--bind 0.0.0.0:8000` listens on port 8000 on all interfaces. Notice it's calling the *same factory* your tests call — that's the pattern earning its keep a third time. In a typical deploy, **nginx** sits in front of gunicorn to terminate TLS, serve static files, and shield the app, but gunicorn is the piece actually running your Python.
+*What just happened:* gunicorn imports your `app` package, **calls your factory** (`create_app()`) to build the application, and serves it. `--workers 4` spins up four worker processes so four requests can be handled truly in parallel (a rough starting point is `2 × CPU cores + 1`). `--bind 0.0.0.0:8000` listens on port 8000 on all interfaces. In a typical deploy, **nginx** sits in front of gunicorn to terminate TLS, serve static files, and shield the app, but gunicorn runs your Python.
 
-For the full story on getting this onto a server with a domain and HTTPS, see [Ship Your Side Project](/guides/ship-your-side-project). The key takeaway here is just: dev server for `localhost`, gunicorn for the world.
+For the full story on getting this onto a server with a domain and HTTPS, see [Ship Your Side Project](/guides/ship-your-side-project). Dev server for `localhost`, gunicorn for the world.
 
 ## Config & Docker
 
 Running the right server is half of "production." The other half is the right *config*. A production app is configured differently from your laptop in a few non-negotiable ways:
 
-- ⚠️ **`DEBUG = False`.** With `DEBUG = True`, an unhandled error shows the visitor a full traceback *and* an interactive Werkzeug debugger console — which can execute arbitrary Python on your server. That's a remote-code-execution hole pointed at the public. Debug mode in production is one of the most dangerous misconfigurations there is.
-- ⚠️ **`SECRET_KEY` from the environment, never hard-coded.** It signs your session cookies; if it's committed to the repo, anyone who reads your code can forge logins. Read it from `os.environ`.
+- ⚠️ **`DEBUG = False`.** With `DEBUG = True`, an unhandled error shows the visitor a full traceback *and* an interactive Werkzeug debugger console — which can execute arbitrary Python on your server. Debug mode in production is one of the most dangerous misconfigurations there is.
+- ⚠️ **`SECRET_KEY` from the environment, never hard-coded.** It signs your session cookies; if committed to the repo, anyone who reads your code can forge logins.
 - **A real database** (Postgres), not the SQLite file you developed against.
 - **Static files served by nginx or a CDN**, not by Flask.
 
-That's exactly what the `ProdConfig` class from Phase 6 encodes — `DEBUG = False`, `SECRET_KEY` and `DATABASE_URL` pulled from env vars. The factory selects it, and you're configured safely with no code change.
+That's exactly what the `ProdConfig` class from Phase 6 encodes. The factory selects it, and you're configured safely with no code change.
 
 To package the whole thing so it runs the same everywhere, wrap it in a container. Here's a minimal `Dockerfile`:
 
@@ -140,9 +140,9 @@ COPY . .
 CMD ["gunicorn", "--workers", "4", "--bind", "0.0.0.0:8000", "app:create_app()"]
 ```
 
-*What just happened:* this builds on a slim Python base image, installs dependencies first (so Docker caches that layer and rebuilds stay fast), copies your code, and — crucially — its `CMD` launches **gunicorn**, not `flask run`. The container is a self-contained unit you can run identically on your laptop, a teammate's machine, or a cloud host. If `FROM`, layers, and `CMD` are unfamiliar, [Docker Without the Magic](/guides/docker-without-the-magic) walks through each line.
+*What just happened:* this builds on a slim Python base image, installs dependencies first (so Docker caches that layer and rebuilds stay fast), copies your code, and — crucially — its `CMD` launches **gunicorn**, not `flask run`. The container runs identically on your laptop, a teammate's machine, or a cloud host. If `FROM`, layers, and `CMD` are unfamiliar, [Docker Without the Magic](/guides/docker-without-the-magic) walks through each line.
 
-💡 Step back and notice the through-line: clean testing and clean production config are *the same capability*. Both come from `create_app()` building a fresh, independently-configured app on demand — test config for pytest, prod config for gunicorn, dev config for your laptop. The factory you wrote in Phase 6 to dodge circular imports turns out to be the foundation that lets you both trust your app and ship it. That's not a coincidence; it's why the pattern exists.
+💡 Clean testing and clean production config are *the same capability*. Both come from `create_app()` building a fresh, independently-configured app on demand — test config for pytest, prod config for gunicorn, dev config for your laptop. The factory you wrote in Phase 6 to dodge circular imports is the foundation that lets you both trust your app and ship it.
 
 ## Recap
 

@@ -11,21 +11,21 @@ updated: 2026-06-22
 
 # Classes & Objects - The Spine of C#
 
-You've been writing methods inside a class since Phase 1, even if nobody made a fuss about it. Every C# program lives inside a class - there's no "outside." So you've already been swimming in the thing this phase is about. Now we slow down and look at it properly, because classes and objects aren't a corner of C#. They *are* C#. Almost everything you'll ever touch - a list, a file, an HTTP client, a button - is an object built from a class.
+You've been writing methods inside a class since Phase 1, even if nobody made a fuss about it. Every C# program lives inside a class - there's no "outside." Classes and objects aren't a corner of C#; they *are* C#. Almost everything you'll touch - a list, a file, an HTTP client, a button - is an object built from a class.
 
-The word "OOP" tends to arrive wrapped in scary vocabulary: encapsulation, polymorphism, abstraction. Set all of that aside. There is one idea underneath, and once it lands the keywords stop being spells. Here it is: **a class bundles data together with the behavior that acts on that data, and `new` stamps out individual copies you can use.** Keep that sentence nearby - when something feels confusing, it's usually because you've drifted away from it.
+The word "OOP" arrives wrapped in scary vocabulary: encapsulation, polymorphism, abstraction. Set that aside - there's one idea underneath, and once it lands the keywords stop being spells: **a class bundles data together with the behavior that acts on that data, and `new` stamps out individual copies you can use.**
 
 ## The mental model: blueprint vs. instance
 
-📝 **Class** - a blueprint. It describes what *kind* of thing exists: what data it holds and what it can do. **Object** (also called an **instance**) - one concrete thing built from that blueprint with the `new` keyword. The class is the cookie cutter; the objects are the cookies. You write the class once and stamp out as many objects as you like, each carrying its own data.
+📝 **Class** - a blueprint describing what *kind* of thing exists: what data it holds and what it can do. **Object** (also called an **instance**) - one concrete thing built from that blueprint with `new`. The class is the cookie cutter; the objects are the cookies.
 
-A `class Account` doesn't *hold* any money. It's the *idea* of an account. The moment you write `new Account(...)`, you get a real account - one with its own balance, separate from every other account you make.
+A `class Account` doesn't *hold* any money - it's the *idea* of an account. Write `new Account(...)` and you get a real account, with its own balance, separate from every other account you make.
 
 > 💡 **Key point.** The class is written once, at design time. Objects are created over and over, at run time. One blueprint, many independent instances - each remembering its own state.
 
 ## Fields, constructors, and `this`
 
-Let's build that `Account` for real. A class needs somewhere to keep its data (**fields**), a way to set up that data when an object is born (a **constructor**), and a word for "the specific object I'm working on right now" (`this`).
+A class needs somewhere to keep its data (**fields**), a way to set that data up when an object is born (a **constructor**), and a word for "the specific object I'm working on" (`this`). Let's build `Account` for real.
 
 📝 **Field** - a variable that lives on the object, holding its data. **Constructor** - a special method that runs automatically when you write `new`, whose job is to set up the new object's starting data. It has no return type and shares the class's name. **`this`** - a reference to the current object, the one a method was called on.
 
@@ -66,11 +66,11 @@ class Program
 ```console
 Ada: 150
 ```
-*What just happened:* `new Account("Ada", 100m)` ran the constructor, which copied the two arguments into the new object's fields. `ada` is now one instance carrying its own `Owner` and `balance`. `ada.Deposit(50m)` changed *Ada's* balance specifically - `this.balance` means "the balance of the account `Deposit` was called on." If you made a second account, its balance would be untouched. That separateness is the whole point of instances.
+*What just happened:* `new Account("Ada", 100m)` ran the constructor, copying the two arguments into the new object's fields. `ada` is now one instance carrying its own `Owner` and `balance`. `ada.Deposit(50m)` changed *Ada's* balance specifically - `this.balance` means "the balance of the account `Deposit` was called on." A second account's balance would be untouched - that separateness is the whole point of instances.
 
-Notice `this.Owner = owner`. The field is `Owner` and the parameter is `owner` - same word, different case. `this.` makes it unambiguous: left side is the object's field, right side is the parameter. You'll see `this` used this way constantly in constructors.
+Notice `this.Owner = owner`: the field is `Owner`, the parameter is `owner` - same word, different case. `this.` makes it unambiguous: left side is the object's field, right the parameter. You'll see this constantly in constructors.
 
-💡 **Object initializer syntax.** C# gives you a shortcut for setting public members right after construction. Instead of (or in addition to) constructor arguments, you can write the assignments in braces:
+💡 **Object initializer syntax.** C# gives a shortcut for setting public members right after construction - instead of (or alongside) constructor arguments, write the assignments in braces:
 
 ```csharp
 Account ada = new Account("Ada", 0m)
@@ -78,17 +78,17 @@ Account ada = new Account("Ada", 0m)
     Owner = "Ada Lovelace"   // set a public member inline, after the constructor runs
 };
 ```
-*What just happened:* The constructor ran first (with `"Ada"` and `0m`), then the braces assigned `Owner` again, overwriting it to `"Ada Lovelace"`. Object initializers are pure convenience - they run *after* the constructor and can only touch members the caller is allowed to set. They read nicely when you're building an object with several settable fields, and you'll meet them again the moment you start using collections and frameworks.
+*What just happened:* The constructor ran first (with `"Ada"` and `0m`), then the braces reassigned `Owner` to `"Ada Lovelace"`. Object initializers are pure convenience - they run *after* the constructor and can only touch members the caller is allowed to set. They read nicely for an object with several settable fields.
 
 ## Properties - C#'s signature feature
 
-Here's where C# parts ways with most languages you may have seen. In Phase 3 you might have made a field `public` and let callers read and write it directly. That works, but it's a trap: the day you need to *validate* a value, or compute it, or log when it changes, a raw public field gives you no hook to do it. You'd have to change every caller.
+Here's where C# parts ways with most languages you've seen. You might make a field `public` and let callers read and write it directly. That works, but it's a trap: the day you need to *validate* a value, compute it, or log when it changes, a raw public field gives you no hook - you'd have to change every caller.
 
-Java solved this with `getName()` / `setName(...)` methods everywhere - verbose, and the *caller* has to know whether it's reading a field or calling a getter. C# solved it differently, and the solution is one of the language's defining features: the **property**.
+Java solved this with `getName()` / `setName(...)` methods everywhere - verbose, and the *caller* has to know whether it's reading a field or calling a getter. C# solved it differently with one of its defining features: the **property**.
 
-📝 **Property** - a member that *looks* like a field from the outside (`account.Owner`) but *runs code* underneath. It has a `get` accessor (runs when someone reads it) and/or a `set` accessor (runs when someone assigns to it, where the assigned value arrives as the keyword `value`). Callers can't tell a property from a field - and that's exactly the point.
+📝 **Property** - a member that *looks* like a field from the outside (`account.Owner`) but *runs code* underneath. It has a `get` accessor (runs on read) and/or a `set` accessor (runs on assignment, with the value arriving as the keyword `value`). Callers can't tell a property from a field - that's the point.
 
-The simplest form is an **auto-property**, where the compiler generates the hidden backing field for you:
+The simplest form is an **auto-property**, where the compiler generates the hidden backing field:
 
 ```csharp
 class Account
@@ -104,9 +104,9 @@ class Account
     }
 }
 ```
-*What just happened:* `Owner { get; set; }` is a full read/write property in one line - the compiler made an invisible backing field and wired both accessors to it. `Bank { get; init; }` is **init-only**: it can be set in the constructor or an object initializer, then it's frozen - perfect for values that shouldn't change after the object exists. `Balance { get; private set; }` lets *anyone* read the balance but only code *inside this class* change it, so callers can't reach in and set the balance to a million.
+*What just happened:* `Owner { get; set; }` is a full read/write property in one line - the compiler wired both accessors to an invisible backing field. `Bank { get; init; }` is **init-only**: settable in the constructor or an object initializer, then frozen. `Balance { get; private set; }` lets *anyone* read the balance but only code *inside this class* change it - callers can't set it to a million.
 
-When you need logic, you spell the accessors out. Here's a guarded setter that refuses bad data:
+When you need logic, spell the accessors out - here's a guarded setter that refuses bad data:
 
 ```csharp
 class Account
@@ -140,22 +140,22 @@ class Program
 200
 Unhandled exception. System.ArgumentException: Balance cannot be negative.
 ```
-*What just happened:* `acc.Balance = 200m` looked like a plain assignment but actually ran the `set` block, with `value` holding `200`. Because `200` passed the check, it landed in the hidden `balance` field. Reading `acc.Balance` ran the `get` block. The illegal `acc.Balance = -5m` ran `set` again, failed the `value < 0` check, and threw - the property *guarded its own data*. The caller's code didn't change one character; the validation lives entirely inside the class.
+*What just happened:* `acc.Balance = 200m` looked like a plain assignment but ran the `set` block, `value` holding `200`. Since `200` passed the check, it landed in the hidden `balance` field. Reading `acc.Balance` ran the `get` block. The illegal `acc.Balance = -5m` failed the `value < 0` check and threw - the property *guarded its own data*, with no change to the caller's code.
 
-You can also make a **computed, read-only property** - one with only a `get` that calculates its value from other state:
+You can also make a **computed, read-only property** - only a `get` calculating its value from other state:
 
 ```csharp
 public string Summary => $"{Owner} has {Balance:C}";   // expression-bodied, get-only
 ```
-*What just happened:* `Summary` has no backing field at all. Every time someone reads it, the `=>` expression runs and builds a fresh string from `Owner` and `Balance`. It's read-only because there's nothing to assign to. This is how you expose *derived* information without storing it.
+*What just happened:* `Summary` has no backing field. Every read runs the `=>` expression and builds a fresh string from `Owner` and `Balance`. It's read-only because there's nothing to assign to - this is how you expose *derived* information without storing it.
 
-💡 **Why this matters.** Properties are the idiomatic C# way to expose an object's state - not raw public fields, not Java-style `getX`/`setX` methods. They give you a field's clean syntax *and* a method's power to validate, compute, and control access, all without callers ever knowing the difference. When you start a class, your reflex should be `public string Name { get; set; }`, not `public string Name;`. Reach for the full accessor form only when you actually need logic.
+💡 **Why this matters.** Properties are the idiomatic C# way to expose an object's state - not raw public fields, not Java-style `getX`/`setX`. They give a field's clean syntax *and* a method's power to validate, compute, and control access. Your reflex should be `public string Name { get; set; }`, not `public string Name;`. Reach for the full accessor form only when you need logic.
 
 ## Encapsulation & access modifiers
 
-The guarded setter above hinted at the bigger idea: **encapsulation** - keeping an object's internal data private and exposing only a controlled surface. The reason isn't tidiness. It's that *uncontrolled* state is where bugs breed. If any code anywhere can set `balance` to anything, then any code anywhere can corrupt it, and when a balance goes wrong you have the whole program as suspects. Make `balance` private with a guarded property, and there's exactly *one* place a bad balance can come from.
+The guarded setter above hinted at the bigger idea: **encapsulation** - keeping an object's internal data private and exposing only a controlled surface. The reason isn't tidiness; *uncontrolled* state is where bugs breed. If any code anywhere can set `balance` to anything, any code anywhere can corrupt it. Make `balance` private with a guarded property, and there's exactly *one* place a bad balance can come from.
 
-C# controls visibility with **access modifiers**. The four you'll use constantly:
+C# controls visibility with **access modifiers** - the four you'll use constantly:
 
 📝 **`public`** - visible everywhere. **`private`** - visible only inside the same class (the default for class members if you write nothing). **`protected`** - visible inside this class and its subclasses (matters once you hit inheritance, Phase 6). **`internal`** - visible anywhere in the same project/assembly, but not to outside code that references your library.
 
@@ -194,17 +194,17 @@ class Program
 ```console
 20C = 68F
 ```
-*What just happened:* `celsius` is private, so no outside code can poke an impossible temperature straight into it. The only way in is `Celsius`'s setter, which rejects anything below absolute zero. `Fahrenheit` is a read-only computed view of that same private value. The class decides exactly what the world can do to it - set a valid Celsius, read either scale - and nothing else. That controlled surface is encapsulation, and it's what keeps an object trustworthy as your program grows.
+*What just happened:* `celsius` is private, so no outside code can poke an impossible temperature into it. The only way in is `Celsius`'s setter, which rejects anything below absolute zero. `Fahrenheit` is a read-only computed view of that private value. The class decides exactly what the world can do to it - set a valid Celsius, read either scale, nothing else. That controlled surface is encapsulation, keeping an object trustworthy as your program grows.
 
-⚠️ **Don't reflexively make everything `public`.** A class with all-public fields is just a bag of variables with no defenses - it can't stop bad data and can't change its internals later without breaking callers. Start private, open up only what callers genuinely need.
+⚠️ **Don't reflexively make everything `public`.** A class with all-public fields is a bag of variables with no defenses - it can't stop bad data or change its internals later without breaking callers. Start private, open up only what callers genuinely need.
 
 ## `static` members, and overriding `ToString`
 
-So far every field and method has belonged to an *instance* - each `Account` has its own `balance`. But sometimes a member belongs to the *class itself*, not to any one object. That's what `static` means.
+So far every field and method has belonged to an *instance* - each `Account` has its own `balance`. But sometimes a member belongs to the *class itself*. That's what `static` means.
 
-📝 **Instance member** - belongs to each object; you need an object to use it (`ada.Deposit(...)`). **`static` member** - belongs to the class as a whole; you use it through the class name (`Account.Count`), and it exists even if you've made zero objects.
+📝 **Instance member** - belongs to each object; you need one to use it (`ada.Deposit(...)`). **`static` member** - belongs to the class as a whole, used through the class name (`Account.Count`), existing even with zero objects made.
 
-This is why your program's entry point is `static void Main()`: when the program starts, *no objects exist yet*, so `Main` can't belong to an instance - there isn't one. It has to belong to the class itself.
+This is why your entry point is `static void Main()`: when the program starts, *no objects exist yet*, so `Main` can't belong to an instance - it has to belong to the class itself.
 
 ```csharp
 class Account
@@ -232,9 +232,9 @@ class Program
 ```console
 2
 ```
-*What just happened:* `Count` is `static`, so there's exactly *one* of it shared by every `Account`. Each constructor incremented that single shared counter, so after making two accounts `Account.Count` is `2`. Note you read it through the class name `Account.Count`, never through an object - static members don't belong to any instance.
+*What just happened:* `Count` is `static`, so there's exactly *one* shared by every `Account`. Each constructor incremented that shared counter, so after two accounts `Account.Count` is `2`. You read it through the class name, never through an object - static members don't belong to any instance.
 
-The other thing nearly every class should do is teach itself how to print. By default, printing an object gives you its type name - useless. **Overriding `ToString`** fixes that. Every C# object inherits a `ToString()` method (from the universal base type `object`, Phase 6), and you can replace it with one that returns something meaningful:
+The other thing nearly every class should do is teach itself how to print. By default, printing an object gives its type name - useless. **Overriding `ToString`** fixes that. Every C# object inherits a `ToString()` method (from the universal base type `object`, Phase 6), which you can replace with something meaningful:
 
 ```csharp
 class Account
@@ -266,9 +266,9 @@ class Program
 ```console
 Account(Ada: $150.00)
 ```
-*What just happened:* `Console.WriteLine(ada)` automatically called `ada.ToString()`. Because we **overrode** it (the `override` keyword tells the compiler we're deliberately replacing the inherited version), it returned our friendly string instead of the default `"Account"`. Overriding `ToString` makes your objects readable in logs, debuggers, and quick `Console.WriteLine`s - a small habit that pays off every single time you debug.
+*What just happened:* `Console.WriteLine(ada)` automatically called `ada.ToString()`. Because we **overrode** it (`override` tells the compiler we're deliberately replacing the inherited version), it returned our friendly string instead of the default `"Account"`. Overriding `ToString` makes objects readable in logs, debuggers, and quick `Console.WriteLine`s.
 
-⚠️ **One gotcha to bank for later: `==` doesn't mean what you'd expect for classes.** For a class (a *reference type*), `==` and `.Equals()` compare *whether two variables point at the same object in memory* - not whether they hold the same data. Two separate `Account` objects with identical owner and balance are `==` to each other only if they're literally the same object. This surprises everyone:
+⚠️ **One gotcha to bank for later: `==` doesn't mean what you'd expect for classes.** For a class (a *reference type*), `==` and `.Equals()` compare *whether two variables point at the same object in memory* - not whether they hold the same data. Two separate `Account` objects with identical owner and balance are `==` only if literally the same object:
 
 ```csharp
 var a = new Account("Ada", 150m);
@@ -280,7 +280,7 @@ Console.WriteLine(a == a);   // True  - same object
 False
 True
 ```
-*What just happened:* `a` and `b` describe the same account on paper, but they're two distinct objects sitting at two different spots in memory, so `==` says `False`. This is *reference equality*, the default for all classes. It's the right default more often than it feels, but it trips people constantly. C# has a feature called **records** that flips this to compare by *value* automatically (Phase 13), and the full gotcha - including how to override equality yourself - gets its own treatment in Phase 9. For now, just remember: comparing two class objects with `==` asks "same object?", not "same contents?"
+*What just happened:* `a` and `b` describe the same account on paper, but they're two distinct objects at different spots in memory, so `==` says `False`. This is *reference equality*, the default for all classes - it trips people constantly. **Records** flip this to compare by *value* automatically (Phase 13); the full gotcha, including how to override equality yourself, is in Phase 9. For now: `==` on class objects asks "same object?", not "same contents?"
 
 ## Recap
 
@@ -295,7 +295,7 @@ You can now design your own types - the building blocks of every C# program. Nex
 
 ## Quick check
 
-Test yourself on the ideas that define C# classes - properties and reference equality especially:
+Test yourself on the ideas that define C# classes - properties and reference equality:
 
 ```quiz
 [

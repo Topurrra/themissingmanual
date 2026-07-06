@@ -11,34 +11,30 @@ updated: 2026-06-22
 
 # Classes & Objects - Java's Whole Worldview
 
-Up to now you've written methods, loops, and `if` statements, and they lived inside something called
-`class Main` that you mostly ignored. This phase is where that `class` keyword stops being scenery and
-becomes the point. Because in Java, the class isn't *a* feature - it's *the* feature. Almost everything
-you'll ever build is a class, and almost every value you'll ever touch is an object made from one.
+Up to now you've written methods, loops, and `if` statements inside something called `class Main` that you
+mostly ignored. This phase is where `class` stops being scenery and becomes the point. In Java, the class
+isn't *a* feature - it's *the* feature. Almost everything you build is a class, and almost every value you
+touch is an object made from one.
 
-That's the worldview to absorb here, and it runs deeper than in most languages. Python lets you write a
-loose function in a file. Go has standalone functions everywhere. Java does not: there is no such thing as
-code that lives outside a class. So instead of fighting that, this phase shows you how to think *in*
-classes - how to bundle data with the behavior that belongs to it, hand out copies of that bundle, and
-protect it from the rest of your program.
+That worldview runs deeper than in most languages. Python lets you write a loose function in a file; Go
+has standalone functions everywhere. Java does not - no code lives outside a class. This phase shows you
+how to think *in* classes: bundle data with its behavior, hand out copies of that bundle, protect it from
+the rest of your program.
 
 ## The mental model: blueprint and instance
 
 **What it actually is.** A **class** is a blueprint - a description that says "things of this kind hold
 *this* data and can do *these* things." An **object** (also called an **instance**) is one concrete thing
-built from that blueprint with the `new` keyword. The class is the architect's drawing; the objects are
-the actual houses built from it. One drawing, as many houses as you like, each with its own address and
-its own furniture.
+built from it with the `new` keyword. The class is the architect's drawing; objects are the actual houses
+built from it - one drawing, as many houses as you like, each with its own address and furniture.
 
-📝 **Class** - the template/blueprint, written once. **Object / instance** - one real thing made from the
-template, created with `new`. The class `Account` is the idea of a bank account; `new Account(...)` is
-*your* account, with *your* balance, separate from everyone else's.
+📝 **Class** - the template/blueprint, written once. **Object / instance** - one real thing made from it,
+created with `new`. The class `Account` is the idea of a bank account; `new Account(...)` is *your*
+account, separate from everyone else's.
 
-**Why this is the whole worldview.** In many languages, classes are one tool among several. In Java they
-are the organizing principle of the entire language: every program is a set of classes, every value with
-behavior is an object, and even `main` - the very first thing that runs - sits inside a class. Once you
-stop asking "where do I put this loose code?" and start asking "what *kind of thing* is this, and what can
-it do?", Java's design stops feeling bureaucratic and starts feeling consistent.
+**Why this is the whole worldview.** In many languages, classes are one tool among several. In Java, every
+program is a set of classes, every value with behavior is an object, and even `main` sits inside one. Stop
+asking "where do I put this loose code?" and start asking "what *kind of thing* is this?"
 
 > 💡 **Key point.** Everything below is one sentence repeated in different clothes: *the data and the
 > behavior that belongs with it live together inside an object.* When a detail feels arbitrary, return to
@@ -46,14 +42,14 @@ it do?", Java's design stops feeling bureaucratic and starts feeling consistent.
 
 ## Fields, constructors, and `this`
 
-Let's build a real blueprint. An `Account` holds some data (an owner's name, a balance) and offers some
-behavior (deposit, check the balance). The data lives in **fields**; the setup happens in a
-**constructor**; and `this` is how a method points at *its own* object.
+Let's build a real blueprint. An `Account` holds data (an owner's name, a balance) and offers behavior
+(deposit, check balance). Data lives in **fields**; setup happens in a **constructor**; `this` is how a
+method points at *its own* object.
 
-**What it actually is.** A **field** is a variable that belongs to each object - its own slice of data. A
-**constructor** is a special method, named exactly like the class, that runs once when you write `new` -
-its job is to fill in the new object's starting fields. **`this`** refers to "the particular object this
-method is running on," and you reach for it when a parameter name collides with a field name.
+**What it actually is.** A **field** is a variable belonging to each object - its own slice of data. A
+**constructor** is a special method, named exactly like the class, that runs once when you write `new`, to
+fill in the object's starting fields. **`this`** refers to "the object this method is running on" - reach
+for it when a parameter name collides with a field name.
 
 ```java
 public class Account {
@@ -92,26 +88,24 @@ $ java Main.java
 125.0
 50.0
 ```
-*What just happened:* `new Account("Ada", 100.0)` allocated a fresh object and ran the constructor, which
-copied the two parameters into that object's own `owner` and `balance` fields. `ada` and `bob` are two
-independent objects: depositing into `ada` changed `ada`'s balance and left `bob`'s untouched, because each
-one carries its own copy of the data. That separateness is the entire reason objects exist.
+*What just happened:* `new Account("Ada", 100.0)` allocated a fresh object and ran the constructor, copying
+the parameters into that object's own `owner` and `balance` fields. `ada` and `bob` are independent
+objects: depositing into `ada` changed `ada`'s balance and left `bob`'s untouched, since each carries its
+own copy of the data - that separateness is the entire reason objects exist.
 
-📝 **`this`** - a reference to the current object. Inside the constructor, `owner` (the parameter) and
-`this.owner` (the field) are two different things that happen to share a name; `this.owner = owner` means
-"store the parameter into my field." Without `this.`, you'd be assigning the parameter to itself and the
-field would stay empty. ⚠️ This is a classic silent bug - write `owner = owner` and your account starts up
-with a blank name and no error to tell you why.
+📝 **`this`** - a reference to the current object. Inside the constructor, `owner` (parameter) and
+`this.owner` (field) share a name; `this.owner = owner` means "store the parameter into my field." Without
+`this.`, you'd assign the parameter to itself and the field stays empty. ⚠️ A classic silent bug - write
+`owner = owner` and your account starts up with a blank name and no error to explain why.
 
 ## Instance vs static: the object vs the class itself
 
-Some things belong to *each object*. Some things belong to *the class as a whole*. Java draws that line
-with the keyword `static`, and understanding it explains a mystery you've been staring at since Phase 1:
-why `main` is `static`.
+Some things belong to *each object*; some belong to *the class as a whole*. Java draws that line with the
+keyword `static`, explaining a mystery from Phase 1: why `main` is `static`.
 
 **What it actually is.** An **instance member** (no `static`) belongs to each object - every `Account` has
-its own `balance`. A **static member** (`static`) belongs to the *class itself* - there is exactly one
-copy, shared by everyone, and it exists even if you never create a single object.
+its own `balance`. A **static member** (`static`) belongs to the *class itself* - exactly one copy, shared
+by everyone, existing even if you never create a single object.
 
 ```java
 public class Account {
@@ -146,30 +140,27 @@ $ java Main.java
 ```
 *What just happened:* `accountCount` is `static`, so it isn't stored inside any one `Account` - it lives on
 the class, and all three constructors incremented the *same* counter. We read it with
-`Account.getAccountCount()` (on the class) rather than `ada.getAccountCount()` (on an object), because it
-was never about any single account. Instance data answers "what's true of *this* object?"; static data
-answers "what's true of *all of them at once*?"
+`Account.getAccountCount()` (on the class), not `ada.getAccountCount()` (on an object), since it was never
+about any single account. Instance data answers "what's true of *this* object?"; static data answers
+"what's true of *all of them at once*?"
 
-💡 **Why `main` is `static`.** When you run a program, no objects exist yet - the JVM hasn't created
-anything. So the entry point can't be an instance method (there's no instance to call it on). Marking
-`main` as `static` means "this belongs to the class and can run with zero objects in existence," which is
-exactly what a starting point needs. That `public static void main` you've been copying isn't a magic
-spell; every word now means something.
+💡 **Why `main` is `static`.** When a program runs, no objects exist yet - the JVM hasn't created anything,
+so the entry point can't be an instance method. `static` means "this belongs to the class and can run with
+zero objects in existence" - exactly what a starting point needs.
 
 ## Encapsulation: expose behavior, not raw data
 
-You may have noticed every field above was marked `private`. That's not decoration - it's the single most
-important habit in object-oriented Java, and it has a name.
+Every field above was marked `private`. That's not decoration - it's the single most important habit in
+object-oriented Java.
 
-📝 **Encapsulation** - keeping an object's data (`private` fields) hidden from the outside world, and
-letting other code interact with it *only* through the object's methods. The object guards its own state;
-nobody reaches in and changes a field directly.
+📝 **Encapsulation** - keeping an object's data (`private` fields) hidden from the outside world, letting
+other code interact with it *only* through the object's methods. Nobody reaches in and changes a field
+directly.
 
-**Why hiding state prevents whole classes of bugs.** If `balance` were `public`, *any* code anywhere could
-write `ada.balance = -9999` and your account would silently go invalid - and when you later found a
-negative balance, you'd have no idea which of a hundred lines did it. Make the field `private` and force
-all changes through a method, and that method becomes the *one* checkpoint every change must pass. You get
-to enforce the rules in exactly one place.
+**Why hiding state prevents whole classes of bugs.** If `balance` were `public`, *any* code could write
+`ada.balance = -9999` and your account would silently go invalid - and finding that negative balance later,
+you'd have no idea which of a hundred lines did it. Make the field `private` and force all changes through
+one method, and that method becomes the *one* checkpoint every change must pass.
 
 Here's a setter that refuses to let the balance go negative:
 
@@ -213,24 +204,22 @@ Denied: insufficient funds
 ```
 *What just happened:* `balance` is `private`, so the only way to change it from outside is `withdraw`,
 which checks the amount before touching the field. The bad withdrawal was rejected and the balance held at
-`70.0`. Because there's no other door into `balance`, you have a guarantee: *no account can ever go
-negative*, enforced in a single method instead of trusted to every caller everywhere.
+`70.0`. With no other door into `balance`, you get a guarantee: *no account can ever go negative*.
 
 💡 **Expose behavior, not raw data.** Don't reflexively generate a getter and setter for every field - that
-just makes the field public with extra steps. Ask what the object should let callers *do*. An account
-should let you `deposit` and `withdraw`; whether it stores that as one `balance` field or a list of
-transactions is the object's private business. Methods describe *capabilities*; fields are *implementation*.
+just makes the field public with extra steps. Ask what the object should let callers *do*: an account
+should let you `deposit` and `withdraw`; whether it stores that as one `balance` field or a transaction
+list is the object's private business.
 
 ## The trio: `toString`, `equals`, and `hashCode`
 
-Two final pieces complete your mental model of a Java object - and one of them is the single most common
-trap that catches beginners. Both come down to: Java objects don't behave the way you'd hope until you
-*tell them how*.
+Two final pieces complete your mental model of a Java object - one is the single most common trap that
+catches beginners. Both come down to: Java objects don't behave the way you'd hope until you *tell them
+how*.
 
 **Objects print as gibberish until you override `toString`.** Print an object you made and you'll get
-something like `Account@1b6d3586` - the class name and a memory hash, useless to a human. Java calls a
-method named `toString()` whenever it needs a text version of your object, and the default is that
-gibberish. Override it and printing suddenly makes sense:
+something like `Account@1b6d3586` - class name and memory hash, useless to a human. Java calls `toString()`
+whenever it needs a text version, and the default is that gibberish. Override it and printing makes sense:
 
 ```java
 public class Account {
@@ -261,14 +250,14 @@ $ java Main.java
 Ada ($100.0)
 ```
 *What just happened:* `System.out.println(ada)` needed text, so it called `ada.toString()`. We overrode
-that method to return a readable description, so instead of `Account@1b6d3586` we got `Ada ($100.0)`. The
-`@Override` annotation tells the compiler "I mean to replace an inherited method" - if you misspell the
-name, it'll catch the mistake instead of silently creating a brand-new method that never gets called.
+that method to return a readable description, so instead of `Account@1b6d3586` we got `Ada ($100.0)`.
+`@Override` tells the compiler "I mean to replace an inherited method" - misspell the name and it catches
+the mistake instead of silently creating a new, uncalled method.
 
-⚠️ **The #1 Java beginner trap: `==` vs `.equals()`.** This one bites *everyone*. For objects, `==` does
-**not** compare contents - it asks "are these the same object in memory?" To compare whether two objects
-are *equal in value*, you use `.equals()`. And the default `.equals()` (the one you inherit) *also* just
-checks memory identity - so until you override it, two accounts with identical data count as unequal.
+⚠️ **The #1 Java beginner trap: `==` vs `.equals()`.** This bites *everyone*. For objects, `==` does **not**
+compare contents - it asks "are these the same object in memory?" To compare *value*, use `.equals()`. The
+default `.equals()` you inherit *also* just checks identity - so until overridden, two accounts with
+identical data count as unequal.
 
 ```java
 public class Account {
@@ -310,19 +299,16 @@ $ java Main.java
 false
 true
 ```
-*What just happened:* `a` and `b` hold identical data but are two separate objects, so `a == b` is `false`
-- `==` compares *identity*, not contents. Our overridden `.equals()` compares the actual fields, so
-`a.equals(b)` is `true`. The rule to burn in now: **for objects, use `.equals()` for value comparison and
-reserve `==` for "is it literally the same object."** (Strings are the most common place this bites - Phase
-9 dissects the full gotcha.)
+*What just happened:* `a` and `b` hold identical data but are two separate objects, so `a == b` is `false` -
+`==` compares *identity*, not contents. Our overridden `.equals()` compares the actual fields, so
+`a.equals(b)` is `true`. Rule to burn in: **use `.equals()` for value comparison, reserve `==` for "is it
+literally the same object."** (Strings are the most common place this bites - Phase 9 has the full gotcha.)
 
-⚠️ **Override `equals` and `hashCode` *together*, always.** Notice we overrode both. That's not optional
-politeness - it's a contract Java relies on. Hash-based collections like `HashMap` and `HashSet` use
-`hashCode()` to find objects fast, and the rule is: *equal objects must have equal hash codes.* Override
-`equals` but not `hashCode`, and two "equal" accounts can land in different buckets - so a `HashSet` will
-happily store both as if they were different, and a `HashMap` lookup will fail to find a key you know is
-there. The fix is the habit: change one, change the other. We'll go deeper in Phase 9; for now, just never
-split the pair.
+⚠️ **Override `equals` and `hashCode` *together*, always.** Not optional politeness - it's a contract Java
+relies on. Hash-based collections like `HashMap`/`HashSet` use `hashCode()` to find objects fast: *equal
+objects must have equal hash codes.* Override `equals` but not `hashCode`, and two "equal" accounts can
+land in different buckets - a `HashSet` stores both as distinct, a `HashMap` lookup fails to find a key
+that's really there.
 
 ## Recap
 
@@ -339,9 +325,9 @@ split the pair.
 6. ⚠️ `==` compares object *identity*; **`.equals()`** compares *value* - and you must override **`equals`
    and `hashCode` together** or hash-based collections break.
 
-You can now design a Java object: bundle the data, guard it, give it behavior, and make it print and
-compare sensibly. Next we connect objects to each other - how one class can build on another, and how
-interfaces let unrelated classes promise the same behavior.
+You can now design a Java object: bundle the data, guard it, give it behavior, make it print and compare
+sensibly. Next: connecting objects to each other - how one class builds on another, and how interfaces let
+unrelated classes promise the same behavior.
 
 ## Quick check
 

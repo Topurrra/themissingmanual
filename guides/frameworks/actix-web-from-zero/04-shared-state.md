@@ -13,8 +13,8 @@ updated: 2026-06-23
 
 So far our articles API has been stateless — each handler builds its response from the request and nothing
 else. Real services need *shared* things: a database connection pool, a cache, a config struct, a counter.
-The question that trips everyone up isn't "how do I store it" — it's "how do I make sure every request, on
-every worker thread, sees the *same* thing." That's the whole story of this phase.
+The question that trips everyone up isn't "how do I store it" but "how do I make sure every request, on
+every worker thread, sees the *same* thing." That's this phase.
 
 ## The mental model
 
@@ -24,17 +24,16 @@ type**. The framework looks up the registered value whose type matches and hands
 
 > 💡 `web::Data<T>` is an **`Arc<T>`** under the hood. An `Arc` is a thread-safe, reference-counted pointer:
 > cloning it doesn't copy the `T`, it just bumps a counter and hands back another pointer to the *same* `T`.
-> That's the property we're about to lean on hard.
+> We lean on that property hard below.
 
-Here's the subtlety to hold in your head from the very start: **`HttpServer` doesn't run one copy of your
-`App` — it runs one per worker thread.** Which means the closure you pass to `HttpServer::new` runs *once per
-worker*. Where you create your state relative to that closure decides whether your workers share one brain or
-each get a private one.
+The subtlety to hold from the start: **`HttpServer` doesn't run one copy of your `App` — it runs one per
+worker thread.** The closure you pass to `HttpServer::new` runs *once per worker*. Where you create your
+state relative to that closure decides whether your workers share one brain or each get a private one.
 
 ## ⚠️ The per-worker closure trap
 
-This is the single most common actix-web state bug, so let's name it precisely. You saw the warning back in
-[Phase 1](01-what-actix-web-is.md): the closure passed to `HttpServer::new(...)` is the **app factory**, and
+This is the single most common actix-web state bug, so let's name it precisely. As flagged in
+[Phase 1](01-what-actix-web-is.md), the closure passed to `HttpServer::new(...)` is the **app factory**, and
 actix-web calls it once on *each* worker thread to build that worker's own `App`. So this looks fine and is
 quietly broken:
 
@@ -50,11 +49,11 @@ HttpServer::new(|| {
 })
 ```
 
-*What just happened:* because the `web::Data::new(...)` line sits *inside* the factory closure, every worker
-runs it and gets a **separate, fresh** `HashMap`. Write an article on the thread serving worker A, then read
-on worker B, and it's gone. With four workers you effectively have four independent databases, and which one
-you hit depends on which thread the OS scheduled your request onto. It'll even look like it works in testing
-when there's one worker.
+*What just happened:* because `web::Data::new(...)` sits *inside* the factory closure, every worker runs it
+and gets a **separate, fresh** `HashMap`. Write an article on the thread serving worker A, then read on
+worker B, and it's gone. With four workers you effectively have four independent databases, and which one
+you hit depends on which thread the OS scheduled your request onto. It'll even look like it works in tests
+with a single worker.
 
 The fix is to build the `web::Data` **once, outside** the closure, then `move` it in and `.clone()` it into
 each `App`. Cloning a `web::Data` clones the inner `Arc` — so all workers point at the *same* state:
@@ -87,15 +86,14 @@ async fn main() -> std::io::Result<()> {
 }
 ```
 
-*What just happened:* `state` is created before `HttpServer::new`, so there is exactly one `Arc<AppState>`.
-The closure is now `move`, which captures `state` by value; on each worker it calls `state.clone()`, and an
-`Arc` clone is just another handle to that one `AppState`. Four workers, one `HashMap`. The `move` keyword is
-load-bearing here — without it the closure can't capture an owned value to clone from.
+*What just happened:* `state` is created before `HttpServer::new`, so there's exactly one `Arc<AppState>`.
+The closure is now `move`, capturing `state` by value; on each worker it calls `state.clone()`, and an `Arc`
+clone is just another handle to that one `AppState`. Four workers, one `HashMap`. The `move` keyword is
+load-bearing — without it the closure can't capture an owned value to clone from.
 
 ## Reading and writing the state
 
-Now the handlers. To get at the state, list `web::Data<AppState>` as a handler argument and actix-web extracts
-it by type:
+To get at the state, list `web::Data<AppState>` as a handler argument and actix-web extracts it by type:
 
 ```rust
 async fn list(state: web::Data<AppState>) -> impl Responder {
@@ -116,20 +114,20 @@ async fn create(
 ```
 
 *What just happened:* `list` locks the `Mutex`, borrows the map read-only, and serializes the values to JSON.
-`create` locks it `mut` and inserts. Note the `web::Json<Article>` extractor pulling the request body — that's
+`create` locks it `mut` and inserts. The `web::Json<Article>` extractor pulling the request body is
 extraction-by-type again, sitting right next to the state extractor. Both handlers reach through the *same*
-`Arc` to the *same* map, which is exactly what the previous section bought us.
+`Arc` to the *same* map — exactly what the previous section bought us.
 
 > ⚠️ Why the `Mutex`? `web::Data<T>` is an `Arc<T>`, and an `Arc` only ever gives you a **shared** (`&T`)
-> reference — never `&mut T`. So `T` itself has to allow mutation through a shared reference, which is what
+> reference — never `&mut T`. `T` itself has to allow mutation through a shared reference, which is what
 > **interior mutability** types like `Mutex<...>` (or `RwLock<...>` when reads vastly outnumber writes)
-> provide. Forget the `Mutex` and the compiler will not let you write to the map.
+> provide. Forget the `Mutex` and the compiler won't let you write to the map.
 
 ### For a real database, you don't need the Mutex
 
 The in-memory `HashMap` is a teaching prop. In a real service your shared state is usually a connection pool
-— and a pool like `sqlx::Pool` is **already** internally synchronized and cheaply cloneable (it's `Arc`-backed
-itself). So you wrap it in `web::Data` and use it directly, no `Mutex` in sight:
+— and a pool like `sqlx::Pool` is **already** internally synchronized and cheaply cloneable (`Arc`-backed
+itself). Wrap it in `web::Data` and use it directly, no `Mutex` in sight:
 
 ```rust
 struct AppState {
@@ -153,8 +151,8 @@ clone the `web::Data` in, exactly as before; the per-worker trap is identical wh
 
 ## ⚠️ "App data is not configured"
 
-One more sharp edge. If a handler extracts `web::Data<T>` for a type you never registered with `.app_data(...)`,
-there's nothing to look up — and actix-web **panics at runtime** with a message like:
+One more sharp edge: if a handler extracts `web::Data<T>` for a type you never registered with
+`.app_data(...)`, there's nothing to look up, and actix-web **panics at runtime** with a message like:
 
 ```
 App data is not configured, to configure use App::app_data()
@@ -163,8 +161,8 @@ App data is not configured, to configure use App::app_data()
 *What just happened:* extraction-by-type means the framework matches your handler's `web::Data<AppState>`
 against the registered data by *type*. Register a `web::Data<AppState>` but ask for `web::Data<PgPool>` (or
 forget `.app_data` entirely) and the lookup fails. This isn't a compile error — the types are individually
-valid — so it surfaces as a 500 and a panic in the logs on the first request that hits that handler. When you
-see this message, the fix is almost always "register the exact type the handler asks for."
+valid — so it surfaces as a 500 and a panic in the logs on the first request that hits that handler. The fix
+is almost always "register the exact type the handler asks for."
 
 ## Recap
 

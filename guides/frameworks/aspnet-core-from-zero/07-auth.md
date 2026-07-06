@@ -11,21 +11,21 @@ updated: 2026-06-23
 
 # Authentication & Authorization
 
-Our products API works — full CRUD from Phase 6 — but right now anyone who finds the URL can delete every product. That's fine for a demo and a disaster for anything real. This phase locks the writes while leaving the reads open.
+The products API works — full CRUD from Phase 6 — but right now anyone who finds the URL can delete every product. Fine for a demo, a disaster for anything real. This phase locks the writes while leaving the reads open.
 
-Before any code, let's get the one mental model that untangles this whole topic. People mix up two words constantly, and the framework keeps them strictly separate, so you should too.
+Before any code, the one mental model that untangles this whole topic. People mix up two words constantly, and the framework keeps them strictly separate, so you should too.
 
-**Authentication** answers *who are you?* It looks at the request — a token, a cookie — and figures out the identity behind it. **Authorization** answers *what are you allowed to do?* It takes that established identity and checks it against the rules on the endpoint.
+**Authentication** answers *who are you?* — it looks at the request (a token, a cookie) and figures out the identity behind it. **Authorization** answers *what are you allowed to do?* — it takes that established identity and checks it against the rules on the endpoint.
 
-> 📝 The shorthand that sticks: **authentication = who, authorization = what.** Authentication runs first and produces an identity; authorization runs second and judges that identity. You cannot check what someone may do until you know who they are — which is exactly why the middleware order in Phase 5 is non-negotiable.
+> 📝 The shorthand that sticks: **authentication = who, authorization = what.** Authentication runs first and produces an identity; authorization runs second and judges it. You cannot check what someone may do until you know who they are — exactly why the middleware order in Phase 5 is non-negotiable.
 
-Both are middleware. Both slot into the pipeline you already know, right after routing and before your endpoints. Hold "who, then what," and everything below is detail hanging off it.
+Both are middleware, slotting into the pipeline you already know, right after routing and before your endpoints. Hold "who, then what," and everything below is detail hanging off it.
 
 ## Setting up JWT bearer authentication
 
-For APIs, the standard approach is **JWT bearer authentication**. A JWT (JSON Web Token) is a signed blob of claims — "I am user 42, my role is Admin" — that the client sends on every request in the `Authorization: Bearer <token>` header. Your server doesn't store sessions; it just verifies the signature and trusts the claims inside.
+For APIs, the standard approach is **JWT bearer authentication**. A JWT (JSON Web Token) is a signed blob of claims — "I am user 42, my role is Admin" — that the client sends on every request in the `Authorization: Bearer <token>` header. Your server doesn't store sessions; it verifies the signature and trusts the claims inside.
 
-You register it in `Program.cs` before `builder.Build()`:
+Register it in `Program.cs` before `builder.Build()`:
 
 ```csharp
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -47,13 +47,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 ```
 
-*What just happened:* `AddAuthentication` registers the auth services and names the *default scheme* — the strategy used when an endpoint demands authentication. `AddJwtBearer` plugs in the JWT validator. The `TokenValidationParameters` are the rules every incoming token must pass: it must be signed by *our* key (`ValidateIssuerSigningKey` + `IssuerSigningKey`), it must come from the issuer we expect, be meant for our audience, and not be expired (`ValidateLifetime`). If any check fails, the request arrives unauthenticated. `AddAuthorization()` then registers the services that enforce the *what*.
+*What just happened:* `AddAuthentication` registers the auth services and names the *default scheme* — the strategy used when an endpoint demands authentication. `AddJwtBearer` plugs in the JWT validator. `TokenValidationParameters` are the rules every incoming token must pass: signed by *our* key (`ValidateIssuerSigningKey` + `IssuerSigningKey`), from the issuer we expect, meant for our audience, and not expired (`ValidateLifetime`). If any check fails, the request arrives unauthenticated. `AddAuthorization()` then registers the services that enforce the *what*.
 
-> ⚠️ That signing key is the master password of your entire auth system — anyone holding it can mint tokens that impersonate any user. It's read from `config["Jwt:Key"]` here, never hardcoded. In development use [user secrets](/guides/aspnet-core-from-zero/08-testing-and-production.md) or environment variables; in production use a secrets manager or vault. A signing key committed to source control is one of the most common — and most damaging — mistakes in real codebases.
+> ⚠️ That signing key is the master password of your entire auth system — anyone holding it can mint tokens that impersonate any user. It's read from `config["Jwt:Key"]` here, never hardcoded. In development use [user secrets](/guides/aspnet-core-from-zero/08-testing-and-production.md) or environment variables; in production use a secrets manager or vault. A signing key committed to source control is one of the most common, and most damaging, mistakes in real codebases.
 
 ## ⚠️ Wiring the middleware in the right order
 
-Registering the *services* (above) isn't enough. You also have to add the *middleware* to the pipeline — and here Phase 5's ordering law comes back to collect its debt:
+Registering the *services* above isn't enough — you also have to add the *middleware* to the pipeline, and here Phase 5's ordering law comes back to collect its debt:
 
 ```csharp
 var app = builder.Build();
@@ -70,11 +70,11 @@ app.Run();
 
 ## Protecting endpoints
 
-With the plumbing in place, locking down an endpoint is a one-liner. There are two flavors depending on which style you're writing.
+With the plumbing in place, locking down an endpoint is a one-liner, in one of two flavors depending on style.
 
 On a minimal-API endpoint or group, chain **`.RequireAuthorization()`**. On a controller or action, use the **`[Authorize]`** attribute. Both mean the same thing: "you must be authenticated to get past here."
 
-Here's our products API with reads open and writes locked:
+Here's the products API with reads open and writes locked:
 
 ```csharp
 var products = app.MapGroup("/products");
@@ -89,11 +89,11 @@ products.MapDelete("/{id}", (int id) => Results.NoContent())
     .RequireAuthorization();                                  // login required
 ```
 
-*What just happened:* the two `GET`s stay public — anyone can browse the catalog. `POST` and `DELETE` carry `.RequireAuthorization()`, so a request without a valid token gets a `401 Unauthorized` before the handler runs. The authorization middleware enforces this; the handler never even executes for an unauthenticated caller. If you'd protected the whole group instead, you could re-open a single endpoint with `.AllowAnonymous()` (or `[AllowAnonymous]` on a controller action), which punches an exception through a blanket rule.
+*What just happened:* the two `GET`s stay public — anyone can browse the catalog. `POST` and `DELETE` carry `.RequireAuthorization()`, so a request without a valid token gets a `401 Unauthorized` before the handler runs. The authorization middleware enforces this; the handler never executes for an unauthenticated caller. If you'd protected the whole group instead, you could re-open a single endpoint with `.AllowAnonymous()` (or `[AllowAnonymous]` on a controller action), which punches an exception through a blanket rule.
 
 ### Policies and roles
 
-"Logged in" is often too coarse. Deleting a product should require an *admin*, not just any authenticated user. That's a **policy** — a named rule you define once and apply by name.
+"Logged in" is often too coarse. Deleting a product should require an *admin*, not just any authenticated user — that's a **policy**, a named rule you define once and apply by name.
 
 Define it on `AddAuthorization`, then reference it where you protect the endpoint:
 
@@ -108,11 +108,11 @@ products.MapDelete("/{id}", (int id) => Results.NoContent())
     .RequireAuthorization("AdminOnly");
 ```
 
-*What just happened:* `AddPolicy` names a rule — `"AdminOnly"` requires the user to carry the `Admin` role (a role is just a claim in the token). Passing that name to `.RequireAuthorization("AdminOnly")` upgrades the gate: now an authenticated *non*-admin gets a `403 Forbidden` (they're known, but not permitted), while an admin sails through. Note the two different rejections — `401` means "I don't know who you are," `403` means "I know exactly who you are, and the answer is no."
+*What just happened:* `AddPolicy` names a rule — `"AdminOnly"` requires the user to carry the `Admin` role (a role is just a claim in the token). Passing that name to `.RequireAuthorization("AdminOnly")` upgrades the gate: now an authenticated *non*-admin gets a `403 Forbidden` (known, but not permitted), while an admin sails through. Note the two different rejections — `401` means "I don't know who you are," `403` means "I know exactly who you are, and the answer is no."
 
 ### Reading the user's claims
 
-Inside a handler you often need *who* is calling — to stamp an audit field, or filter to their own data. The identity established by authentication lives on `HttpContext.User`, a `ClaimsPrincipal`. In a minimal API you get it by declaring a `ClaimsPrincipal` parameter; the framework injects it:
+Inside a handler you often need *who* is calling — to stamp an audit field, or filter to their own data. The identity established by authentication lives on `HttpContext.User`, a `ClaimsPrincipal`. In a minimal API you get it by declaring a `ClaimsPrincipal` parameter, and the framework injects it:
 
 ```csharp
 products.MapPost("/", (Product p, ClaimsPrincipal user) =>
@@ -127,7 +127,7 @@ products.MapPost("/", (Product p, ClaimsPrincipal user) =>
 
 ## Where tokens come from
 
-So far we've *consumed* tokens. Someone has to *issue* them. The shape of it: a **login endpoint** verifies a username and password, then builds and signs a JWT with the user's claims and hands it back. The client stores that token and sends it on every subsequent request.
+So far we've *consumed* tokens. Someone has to *issue* them: a **login endpoint** verifies a username and password, then builds and signs a JWT with the user's claims and hands it back. The client stores that token and sends it on every subsequent request.
 
 ```csharp
 app.MapPost("/login", (LoginRequest req) =>
@@ -148,14 +148,14 @@ app.MapPost("/login", (LoginRequest req) =>
 }).AllowAnonymous();
 ```
 
-*What just happened:* the endpoint builds a `JwtSecurityToken` carrying the user's claims, signs it with the *same key* the validator checks against, and serializes it to a string with `JwtSecurityTokenHandler`. It's `.AllowAnonymous()` because, of course, you can't require a token from the endpoint whose job is to *hand out* tokens. Notice the symmetry: this endpoint signs with `Jwt:Key` and our `AddJwtBearer` setup validates with `Jwt:Key` — the shared secret is what ties issuing and verifying together. (Newer code may reach for `JsonWebTokenHandler`; the idea is identical.)
+*What just happened:* the endpoint builds a `JwtSecurityToken` carrying the user's claims, signs it with the *same key* the validator checks against, and serializes it to a string with `JwtSecurityTokenHandler`. It's `.AllowAnonymous()` because you can't require a token from the endpoint whose job is to *hand out* tokens. Notice the symmetry: this endpoint signs with `Jwt:Key` and the `AddJwtBearer` setup validates with `Jwt:Key` — the shared secret ties issuing and verifying together. (Newer code may reach for `JsonWebTokenHandler`; the idea is identical.)
 
-> 💡 Verifying passwords, hashing them safely, storing users, handling registration and password resets — that's a lot of security-sensitive code you do not want to write by hand. **ASP.NET Core Identity** is the batteries-included system for exactly this: user stores, password hashing, lockout, the works. The hand-rolled login above shows the *mechanics* so the model is clear, but for a real app, lean on Identity for the user-management half and use JWT bearer (what we built) for the API-protection half.
+> 💡 Verifying passwords, hashing them safely, storing users, handling registration and password resets — that's a lot of security-sensitive code you do not want to write by hand. **ASP.NET Core Identity** is the batteries-included system for exactly this: user stores, password hashing, lockout, the works. The hand-rolled login above shows the *mechanics* so the model is clear, but for a real app, lean on Identity for user management and JWT bearer (what we built) for API protection.
 
 ## Recap
 
 - **Authentication = who, authorization = what.** Authentication runs first and establishes an identity; authorization runs second and checks that identity against endpoint rules. Both are middleware.
-- **JWT bearer** is the standard for APIs: `AddAuthentication(...).AddJwtBearer(...)` plus `AddAuthorization()`, with `TokenValidationParameters` defining which tokens are trusted (issuer, audience, lifetime, signing key). ⚠️ Keep the signing key in config/secrets, never in source.
+- **JWT bearer** is the standard for APIs: `AddAuthentication(...).AddJwtBearer(...)` plus `AddAuthorization()`, with `TokenValidationParameters` defining which tokens are trusted (issuer, audience, lifetime, signing key). Keep the signing key in config/secrets, never in source.
 - **Order is the law:** `app.UseAuthentication()` before `app.UseAuthorization()`, and both before the endpoints they protect. Get it wrong and `[Authorize]` silently does nothing.
 - **Protect endpoints** with `.RequireAuthorization()` (minimal API) or `[Authorize]` (controllers); re-open exceptions with `.AllowAnonymous()` / `[AllowAnonymous]`. Use named **policies** (`AddPolicy` + `RequireRole`) for finer rules. `401` = unauthenticated, `403` = authenticated but forbidden.
 - **Read the caller** via `ClaimsPrincipal` (inject it into a handler, or use `HttpContext.User`). A login endpoint issues signed JWTs; **ASP.NET Core Identity** is the full user-management option.

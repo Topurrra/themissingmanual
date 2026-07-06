@@ -12,38 +12,37 @@ updated: 2026-06-22
 # Databases with SQLModel
 
 Every Book your service has handled so far has lived in a Python list that vanishes the moment the
-process restarts. That was the right call while we learned routing, validation, response models, and
-dependency injection — but a real service has to *remember* things. In [Phase 5](05-dependency-injection.md)
-you built a `get_db` dependency that opened a fake session, handed it to the endpoint, and closed it
-afterward. This phase makes that real: a genuine database, a genuine session, and the four operations
-every app eventually needs — create, read, update, delete.
+process restarts. That was fine while we learned routing, validation, response models, and dependency
+injection — but a real service has to *remember* things. [Phase 5](05-dependency-injection.md) built a
+`get_db` dependency that opened a fake session, handed it to the endpoint, and closed it afterward. This
+phase makes that real: a genuine database, a genuine session, and the four operations every app
+eventually needs — create, read, update, delete.
 
-Before any code, let's get the mental model, because the pieces snap together cleanly once you see the
-shape.
+The pieces snap together cleanly once you see the shape.
 
 ## The mental model: one class, two jobs
 
 📝 A database is a separate program that stores your data as **rows in tables** and guards it — types,
 uniqueness, many callers at once. If that's fuzzy, [What a Database Actually Is](/guides/what-a-database-is)
 is the gentle version. Your Python code doesn't speak to it in objects; the database speaks **SQL** and
-stores **rows**. Something has to translate between "a `Book` object in memory" and "a row in the
-`book` table." That translator is an **ORM** (Object-Relational Mapper): it maps objects ↔ rows so you
-write Python and it writes the SQL.
+stores **rows**. Something has to translate between "a `Book` object in memory" and "a row in the `book`
+table." That translator is an **ORM** (Object-Relational Mapper): it maps objects ↔ rows so you write
+Python and it writes the SQL.
 
-If you've met an ORM before — say Java's JPA — the *concepts* transfer almost one-for-one:
-entities, a session/persistence context, lazy loading, the N+1 trap. [Hibernate & JPA From
-Zero](/guides/hibernate-and-jpa-from-zero) covers those ideas in depth, and they're worth reading
-because they're language-agnostic. SQLModel is the same playbook, Python-flavored.
+If you've met an ORM before — say Java's JPA — the *concepts* transfer almost one-for-one: entities, a
+session/persistence context, lazy loading, the N+1 trap. [Hibernate & JPA From
+Zero](/guides/hibernate-and-jpa-from-zero) covers those ideas in depth and is worth reading because
+they're language-agnostic. SQLModel is the same playbook, Python-flavored.
 
-Here's the lovely twist. 📝 **SQLModel** — written by Sebastián Ramírez, the same person who wrote
-FastAPI — sits on top of two libraries you'd otherwise wire together by hand:
+📝 **SQLModel** — written by Sebastián Ramírez, the same person who wrote FastAPI — sits on top of two
+libraries you'd otherwise wire together by hand:
 
 - **Pydantic** gives you validation and serialization (the model layer from [Phase 3](03-pydantic-models-and-validation.md) and [Phase 4](04-response-models-and-status-codes.md)).
 - **SQLAlchemy** gives you the ORM and the actual database talking.
 
 SQLModel fuses them so that **one class can be both your API model *and* your database table.** No
 duplicating fields across a Pydantic schema and a separate ORM model. The class you validate requests
-with can be the same class that maps to a table. That's the whole pitch — let's make it concrete.
+with can be the same class that maps to a table. That's the whole pitch.
 
 ## Defining a table model
 
@@ -68,17 +67,17 @@ SQLModel.metadata.create_all(engine)
 ```
 
 *What just happened:* `class Book(SQLModel, table=True)` declares a model that is *also* a table. Each
-annotated attribute becomes a column with a real SQL type (`title` → `TEXT`, `year` → `INTEGER`,
-`price` → `REAL`). `id: int | None = Field(default=None, primary_key=True)` marks `id` as the **primary
-key** — the unique handle for each row — and `None` by default because the database fills it in on
-insert. `create_engine(...)` builds the object that knows how to reach your database (here a local
-SQLite file; swap the URL for Postgres in production and nothing else changes). `metadata.create_all`
-issues the `CREATE TABLE` statements, and `echo=True` prints the SQL it runs so you can watch.
+annotated attribute becomes a column with a real SQL type (`title` → `TEXT`, `year` → `INTEGER`, `price`
+→ `REAL`). `id: int | None = Field(default=None, primary_key=True)` marks `id` as the **primary key** —
+the unique handle for each row — and `None` by default because the database fills it in on insert.
+`create_engine(...)` builds the object that knows how to reach your database (here a local SQLite file;
+swap the URL for Postgres in production and nothing else changes). `metadata.create_all` issues the
+`CREATE TABLE` statements; `echo=True` prints the SQL it runs.
 
 ⚠️ The `table=True` is load-bearing. **With** it, the class maps to a real table. **Without** it,
 SQLModel treats the class as a plain Pydantic model — a request/response schema, no table behind it.
-You'll use both flavors in this very guide, so keep the distinction sharp: `table=True` means "this is
-a table"; no `table=True` means "this is just a shape."
+You'll use both flavors in this guide: `table=True` means "this is a table"; no `table=True` means "this
+is just a shape."
 
 ## The session as a dependency
 
@@ -87,8 +86,7 @@ workspace bound to one unit of work. You add objects to it, query through it, an
 your changes to the database. Then you close it. That open → use → close lifecycle is *exactly* the
 setup/teardown shape the `yield` dependency from Phase 5 was built for.
 
-So let's make `get_db` real. It was a placeholder printing "session opened" — now it opens an actual
-`Session`:
+Make `get_db` real. It was a placeholder printing "session opened" — now it opens an actual `Session`:
 
 ```python
 from sqlmodel import Session
@@ -101,11 +99,11 @@ def get_session():
 ```
 
 *What just happened:* this is the same yield-dependency you already understand, with the fake dict
-swapped for a real `Session`. `with Session(engine) as session` opens a session; `yield session`
-injects it into whatever endpoint asked for it; and when the request finishes, the `with` block runs
-the session's teardown — closing it, releasing the connection — **even if the endpoint raised.** That
-last part is the whole reason sessions are done this way: an errored request still cleans up and you
-never leak connections.
+swapped for a real `Session`. `with Session(engine) as session` opens a session; `yield session` injects
+it into whatever endpoint asked for it; and when the request finishes, the `with` block runs the
+session's teardown — closing it, releasing the connection — **even if the endpoint raised.** That's the
+whole reason sessions are done this way: an errored request still cleans up and you never leak
+connections.
 
 💡 This is *the* clean per-request DB-session pattern, and it's why we spent a phase on `yield`
 dependencies before touching a database. One session is born when a request arrives and dies when the
@@ -114,8 +112,7 @@ ready-to-use session — they never open or close one themselves.
 
 ## CRUD: the four operations
 
-Now the payoff. Here are the Book endpoints, each receiving an injected session and doing real database
-work:
+Now the payoff. The Book endpoints, each receiving an injected session and doing real database work:
 
 ```python
 from fastapi import FastAPI, Depends, HTTPException
@@ -145,13 +142,12 @@ def get_book(book_id: int, session: Session = Depends(get_session)):
 
 *What just happened:* three operations, all through the injected session.
 - **Create** — `session.add(book)` stages the object, `session.commit()` writes it, and
-  `session.refresh(book)` reloads it from the database so the auto-generated `id` is filled in before
-  you return it. (Skip the refresh and `book.id` is still `None` in your response.)
+  `session.refresh(book)` reloads it from the database so the auto-generated `id` is filled in before you
+  return it. (Skip the refresh and `book.id` is still `None` in your response.)
 - **Read all** — `select(Book)` builds a query, `session.exec(...).all()` runs it and returns a list of
   `Book` objects.
-- **Read one or 404** — `session.get(Book, book_id)` looks a row up by primary key; if it's missing you
-  raise the honest `404` from [Phase 4](04-response-models-and-status-codes.md) instead of returning
-  `null`.
+- **Read one or 404** — `session.get(Book, book_id)` looks a row up by primary key; if it's missing, raise
+  the honest `404` from [Phase 4](04-response-models-and-status-codes.md) instead of returning `null`.
 
 Update and delete round out the set:
 
@@ -177,11 +173,10 @@ def delete_book(book_id: int, session: Session = Depends(get_session)):
     return {"deleted": book_id}
 ```
 
-*What just happened:* update *fetches* the existing row first (so you only change real records),
-mutates the attribute, and commits — the session tracks the object, so changing `book.price` and
-committing is enough to issue the `UPDATE`. Delete fetches, calls `session.delete(book)`, and commits.
-Both 404 cleanly when the id doesn't exist. Notice the rhythm across all four: fetch or build → change
-→ `commit`. That's CRUD.
+*What just happened:* update *fetches* the existing row first (so you only change real records), mutates
+the attribute, and commits — the session tracks the object, so changing `book.price` and committing is
+enough to issue the `UPDATE`. Delete fetches, calls `session.delete(book)`, and commits. Both 404
+cleanly when the id doesn't exist. The rhythm across all four: fetch or build → change → `commit`. CRUD.
 
 When `list_books` runs, `select(Book)` becomes a real query. With `echo=True` you'd see SQLModel emit
 something like:
@@ -205,8 +200,8 @@ INFO     sqlalchemy.engine.Engine SELECT book.id, book.title, book.author, book.
 INFO     sqlalchemy.engine.Engine [generated in 0.00018s] ()
 ```
 
-*What just happened:* you wrote Python (`select(Book)`), the ORM wrote SQL. That's the whole job of an
-ORM, made visible. If you want to read those queries fluently — joins especially — [SQL Joins
+*What just happened:* you wrote Python (`select(Book)`), the ORM wrote SQL — the whole job of an ORM,
+made visible. To read those queries fluently — joins especially — [SQL Joins
 Explained](/guides/sql-joins-explained) is the companion.
 
 ## Input/output models — and the gotchas
@@ -238,33 +233,33 @@ def create_book(data: BookCreate, session: Session = Depends(get_session)):
     return book                        # filtered through BookPublic on the way out
 ```
 
-*What just happened:* `BookCreate` has no `id`, so a client physically *cannot* set the primary key —
-the database owns that. `Book.model_validate(data)` turns the validated input into a real table object.
+*What just happened:* `BookCreate` has no `id`, so a client physically *cannot* set the primary key — the
+database owns that. `Book.model_validate(data)` turns the validated input into a real table object.
 `response_model=BookPublic` filters the response so you control exactly what goes out the door, even
-though you returned the full table object. Three layers, one source of truth, no field duplication
-pain because they're all SQLModel.
+though you returned the full table object. Three layers, one source of truth, no field duplication pain
+because they're all SQLModel.
 
 A few traps worth naming before you ship:
 
 ⚠️ **Don't return the raw table object if it has fields you don't want exposed.** The moment your table
-grows a column like `internal_notes` or, later, a `hashed_password`, returning the bare `Book` leaks
-it. The `response_model=BookPublic` above is your guarantee that only the public shape escapes — that
-discipline matters a lot more in [Phase 8: Authentication & Security](08-authentication-and-security.md).
+grows a column like `internal_notes` or, later, a `hashed_password`, returning the bare `Book` leaks it.
+`response_model=BookPublic` above is your guarantee that only the public shape escapes — that discipline
+matters a lot more in [Phase 8: Authentication & Security](08-authentication-and-security.md).
 
 ⚠️ **One session per request — never share one across requests.** A `Session` is a short-lived unit of
 work, not a global you create once at startup. Sharing a session between concurrent requests corrupts
-state and produces baffling bugs. The `get_session` dependency exists precisely so each request gets
-its own fresh session and gives it back. Resist the urge to make `session` a module-level singleton.
+state and produces baffling bugs. The `get_session` dependency exists precisely so each request gets its
+own fresh session and gives it back. Resist the urge to make `session` a module-level singleton.
 
-⚠️ **The N+1 query trap is still here.** Loop over 100 books and touch a related object (say each
-book's reviews) lazily, and the ORM can quietly fire 1 query for the list plus 100 more — one per book.
-This is the *same* trap every ORM has, and the fix is the same: load what you need up front (eager
-loading / a join) instead of one row at a time. The deep treatment is in [Hibernate & JPA From
+⚠️ **The N+1 query trap is still here.** Loop over 100 books and touch a related object (say each book's
+reviews) lazily, and the ORM can quietly fire 1 query for the list plus 100 more — one per book. This is
+the *same* trap every ORM has, and the fix is the same: load what you need up front (eager loading / a
+join) instead of one row at a time. The deep treatment is in [Hibernate & JPA From
 Zero](/guides/hibernate-and-jpa-from-zero) — the lesson is portable, only the syntax differs.
 
-💡 The throughline: a database in FastAPI is the same DB discipline as any serious ORM — sessions as
-units of work, separate input/output shapes, watch your queries — wearing Python's clothes. You
-already knew the dependency mechanism from Phase 5; this phase just plugged a real session into it.
+💡 A database in FastAPI is the same DB discipline as any serious ORM — sessions as units of work,
+separate input/output shapes, watch your queries — wearing Python's clothes. You already knew the
+dependency mechanism from Phase 5; this phase just plugged a real session into it.
 
 ## Recap
 

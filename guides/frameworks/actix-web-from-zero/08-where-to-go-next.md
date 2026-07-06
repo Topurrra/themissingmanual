@@ -11,9 +11,9 @@ updated: 2026-06-23
 
 # Where to Go Next
 
-Take a breath and look back at the ground you covered. You can stand up an `App` and run it across worker threads with `HttpServer`, route a request to a handler, pull pieces out of it with extractors like `Path`, `Query`, `Json`, and `web::Data`, return anything that implements `Responder`, share a store across every worker without a single global, wrap the whole thing in middleware, build full CRUD, and turn errors into clean responses with the `ResponseError` trait — then test it with `actix_web::test` and tune it for production. That is a real REST API, not a toy.
+Look back at the ground you covered. You can stand up an `App` and run it across worker threads with `HttpServer`, route a request to a handler, pull pieces out of it with extractors like `Path`, `Query`, `Json`, and `web::Data`, return anything that implements `Responder`, share a store across every worker without a single global, wrap the whole thing in middleware, build full CRUD, and turn errors into clean responses with the `ResponseError` trait — then test it with `actix_web::test` and tune it for production. That is a real REST API, not a toy.
 
-And here is the quieter win. The shape underneath actix-web is the same shape you'll find in every serious Rust web framework: an **`App`** of routes, run by an **`HttpServer`**, with handlers that **extract from the request and return a `Responder`**. Learn it once and you can read the others on sight. Which is exactly what this last phase is about — not more handlers, but the map. Where actix-web sits among its neighbors, the layer you'll almost certainly add next, the root worth knowing, and one concrete thing to go build.
+The quieter win: the shape underneath actix-web is the same shape you'll find in every serious Rust web framework — an **`App`** of routes, run by an **`HttpServer`**, with handlers that **extract from the request and return a `Responder`**. Learn it once and you can read the others on sight. This last phase is the map: where actix-web sits among its neighbors, the layer you'll almost certainly add next, the root worth knowing, and one concrete thing to go build.
 
 ## actix-web vs the field
 
@@ -30,27 +30,27 @@ flowchart TD
 
 A line on each:
 
-- **actix-web** — the mature, batteries-included heavyweight, and consistently at or near the **top of the performance benchmarks**. It carries a long track record, a deep feature set (websockets, sessions, and more, all in the box), and the `web::Data` state and `ResponseError` patterns you just learned. If raw throughput, maturity, and "it's all already here" matter most, this is your pick. (You are here.)
-- **axum** — the newer option from the Tokio team. It is tower-native and driven by the **type system**: plain `async fn` handlers, extractors as arguments, `IntoResponse` returns. Its quiet superpower is the **tower** middleware ecosystem — what you write is reusable, and gRPC via tonic shares the same abstraction. See [axum From Zero](/guides/axum-from-zero).
+- **actix-web** — the mature, batteries-included heavyweight, consistently at or near the **top of the performance benchmarks**. It carries a long track record, a deep feature set (websockets, sessions, and more, all in the box), and the `web::Data` state and `ResponseError` patterns you just learned. If raw throughput, maturity, and "it's all already here" matter most, this is your pick. (You are here.)
+- **axum** — the newer option from the Tokio team, tower-native and driven by the **type system**: plain `async fn` handlers, extractors as arguments, `IntoResponse` returns. Its quiet superpower is the **tower** middleware ecosystem — what you write is reusable, and gRPC via tonic shares the same abstraction. See [axum From Zero](/guides/axum-from-zero).
 - **Rocket** — the most **ergonomic** of the three, leaning hard on macros (`#[get("/")]` attributes and friends) to make handler code wonderfully concise. If you want the least ceremony and the most readable routes, you'll like its style. See [Rocket From Zero](/guides/rocket-from-zero).
 
 > 💡 How to pick: reach for **actix-web** when you want maximum performance, maturity, and a big feature set out of the box (websockets included). Reach for **axum** when you want the tower ecosystem and type-safe extractors. Reach for **Rocket** when you want concise, approachable, macro-driven code.
 
-📝 Notice how much these three have *converged*. Whichever you opened, you'd be writing the same thing: extract from the request, return a responder. The mental model transfers almost entirely — so picking one is far less of a fork-in-the-road than it looks. None of them is "the best." The senior instinct isn't memorizing a winner; it's asking "best for *this* job?" and answering honestly. You have the pieces for that now.
+📝 Notice how much these three have *converged*. Whichever you opened, you'd be writing the same thing: extract from the request, return a responder. The mental model transfers almost entirely, so picking one is far less of a fork-in-the-road than it looks. None of them is "the best" — the senior instinct is asking "best for *this* job?" and answering honestly. You have the pieces for that now.
 
 ## The layer you'll add next: a real database
 
-Every API in this guide kept its books in memory. That's perfect for learning and useless in production — restart the server and the data is gone. The very next thing almost every real actix-web service grows is a **database**.
+Every API in this guide kept its books in memory — perfect for learning, useless in production, since a restart wipes the data. The very next thing almost every real actix-web service grows is a **database**.
 
-Here's the part worth knowing up front: Rust has **no single default ORM** the way some ecosystems do. You get to choose, and the three common answers each have a clear personality.
+Worth knowing up front: Rust has **no single default ORM** the way some ecosystems do. You get to choose, and the three common answers each have a clear personality.
 
 - **`sqlx`** — not an ORM at all, but the most popular companion. You write **raw SQL**, and a macro checks your queries **against a real database at compile time** — so a typo'd column name is a build error, not a 500 at 3am. It's fully async, which fits actix-web cleanly.
 - **SeaORM** — a proper **async ORM** built on top of sqlx, for when you want entities, relations, and a query builder rather than hand-written SQL.
 - **Diesel** — the **mature, established** ORM, with a rich type-safe query DSL. Its roots are more sync-flavored, which is worth knowing if everything else in your stack is async.
 
-The reassuring bit: your handlers barely change. Remember Phase 4, where you dropped a store into `web::Data` and pulled it out with the `web::Data<T>` extractor? That investment pays off here. A **`sqlx::PgPool`** (a Postgres connection pool) drops straight into that same `web::Data` slot. Your handlers still extract the pool, run a query, and return something that implements `Responder`. You're swapping the bottom layer — the store — not rewriting the top.
+The reassuring bit: your handlers barely change. Remember Phase 4, where you dropped a store into `web::Data` and pulled it out with the `web::Data<T>` extractor? That investment pays off here — a **`sqlx::PgPool`** (a Postgres connection pool) drops straight into that same `web::Data` slot. Your handlers still extract the pool, run a query, and return something that implements `Responder`. You're swapping the bottom layer — the store — not rewriting the top.
 
-> 💡 And don't forget what's already in the box: **websockets** are one of actix-web's long-standing strengths. The day you want live updates — a chat feed, a dashboard that pushes — you won't reach for a separate crate; it's right there in the framework you already know.
+> 💡 Don't forget what's already in the box: **websockets** are one of actix-web's long-standing strengths. The day you want live updates — a chat feed, a dashboard that pushes — you won't reach for a separate crate; it's right there in the framework you already know.
 
 ## The root: Tokio
 
@@ -60,7 +60,7 @@ You don't need to study Tokio to ship. But the day you want to understand *why* 
 
 ## What to build
 
-Reading more won't make this stick. Building one real thing will. So here's the assignment, and it's deliberately concrete.
+Reading more won't make this stick — building one real thing will. Here's the assignment, deliberately concrete.
 
 Take the **articles API** you grew across this guide and carry it all the way home:
 
@@ -70,7 +70,7 @@ Take the **articles API** you grew across this guide and carry it all the way ho
 - **Tidy up config** so secrets, the database URL, and the port come from the environment, not hardcoded values.
 - **Deploy it** somewhere you can hit from your phone.
 
-If the articles API feels too familiar, build something small and new end to end instead — a **URL shortener**, a **notes API**, or a tiny **live chat** that finally puts actix's websockets to use. Same muscles either way: routes, extractors, state, middleware, errors, tests, deploy. The point is finishing one project completely, which teaches more than three more tutorials would.
+If the articles API feels too familiar, build something small and new end to end instead — a **URL shortener**, a **notes API**, or a tiny **live chat** that finally puts actix's websockets to use. Same muscles either way: routes, extractors, state, middleware, errors, tests, deploy. Finishing one project completely teaches more than three more tutorials would.
 
 ## The honest close
 

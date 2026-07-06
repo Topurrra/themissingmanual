@@ -12,10 +12,10 @@ updated: 2026-06-22
 # Async & Concurrency
 
 This is the phase where FastAPI either clicks or burns you. People hear "FastAPI is async, async is fast"
-and sprinkle `async def` on everything like seasoning — and then one slow database call quietly freezes
-their entire server under load. The good news: there's a tiny mental model underneath all of it, and once
-you have it, the rules write themselves. No incantations, no cargo-culting. Let's build the model first,
-then the rules, then the one trap that catches almost everyone.
+and sprinkle `async def` on everything like seasoning — then one slow database call quietly freezes their
+entire server under load. The good news: there's a tiny mental model underneath all of it, and once you
+have it, the rules write themselves. Build the model first, then the rules, then the one trap that
+catches almost everyone.
 
 ## The mental model: one thread that refuses to wait
 
@@ -27,14 +27,14 @@ When the awaited thing is ready, it comes back and picks up where it left off.
 
 If you've met this idea in JavaScript, it's the *same* idea — one loop, cooperative switching at `await`
 points. The full machinery is in [Async/Await & the Event Loop](/guides/async-await-and-the-event-loop).
-And under the hood it's Python's `asyncio`, the same model (and the same GIL caveat) covered in
+Under the hood it's Python's `asyncio`, the same model (and the same GIL caveat) covered in
 [Python From Zero](/guides/python-from-zero).
 
-💡 The key insight: concurrency here doesn't come from *more threads*. It comes from **not blocking** while
-waiting. One thread can keep hundreds of requests in flight as long as each one steps aside (via `await`)
-during its waits instead of hogging the loop.
+💡 The key insight: concurrency here doesn't come from *more threads*. It comes from **not blocking**
+while waiting. One thread can keep hundreds of requests in flight as long as each one steps aside (via
+`await`) during its waits instead of hogging the loop.
 
-Here's the gesture, in pure Python — no server needed, run it and watch the order:
+The gesture, in pure Python — no server needed, run it and watch the order:
 
 ```python runnable
 import asyncio
@@ -56,15 +56,15 @@ async def main():
 asyncio.run(main())
 ```
 
-*What just happened:* both `fetch` calls started immediately. At each `await asyncio.sleep(...)`, the task
-said "I'm about to wait — go run something else," and the single loop switched to the other one. So `B`
-(1s) finished before `A` (2s), and the whole thing took about **2 seconds, not 3**. That's the event loop:
-one thread, overlapping the waits. `await` is the word that means "I might pause here; let the loop do other
-work." That is *exactly* how your `async def` endpoints share one thread across many requests.
+*What just happened:* both `fetch` calls started immediately. At each `await asyncio.sleep(...)`, the
+task said "I'm about to wait — go run something else," and the single loop switched to the other one. So
+`B` (1s) finished before `A` (2s), and the whole thing took about **2 seconds, not 3**. That's the event
+loop: one thread, overlapping the waits. `await` means "I might pause here; let the loop do other work" —
+exactly how your `async def` endpoints share one thread across many requests.
 
 ## `async def` vs `def` path operations — FastAPI accepts both
 
-Here's something that surprises people: FastAPI happily takes endpoints written **either way**, and it does
+Something that surprises people: FastAPI happily takes endpoints written **either way**, and it does
 something different with each.
 
 📝 **The two paths:**
@@ -94,10 +94,10 @@ def list_books_sync():
     return {"books": ["Dune", "Neuromancer"]}
 ```
 
-*What just happened:* both endpoints return the same thing and both work perfectly. The only difference is
-*where they run*. `list_books_async` executes on the loop's thread; `list_books_sync` gets handed to a
-threadpool worker. For trivial bodies like these it doesn't matter — the difference becomes everything the
-moment real work (a DB call, an HTTP request) shows up inside.
+*What just happened:* both endpoints return the same thing and both work perfectly. The only difference
+is *where they run*. `list_books_async` executes on the loop's thread; `list_books_sync` gets handed to a
+threadpool worker. For trivial bodies like these it doesn't matter — the difference becomes everything
+the moment real work (a DB call, an HTTP request) shows up inside.
 
 ## The rule: match the keyword to the work
 
@@ -135,23 +135,22 @@ def generate_report():
 ```
 
 *What just happened:* `get_cover` does real network I/O with an **async** client, so it's `async def` and
-`await`s the call — while it waits for the cover service, the loop serves other requests. `generate_report`
-calls something **blocking** (`time.sleep`, standing in for a sync DB query or a blocking library), so it's
-plain `def` — FastAPI runs it in a threadpool worker, and the event loop stays free the whole time. Each
-keyword matches what's actually inside the body. That's the entire rule.
+`await`s the call — while it waits for the cover service, the loop serves other requests.
+`generate_report` calls something **blocking** (`time.sleep`, standing in for a sync DB query or a
+blocking library), so it's plain `def` — FastAPI runs it in a threadpool worker, and the event loop stays
+free the whole time. Each keyword matches what's actually inside the body — the entire rule.
 
 ## ⚠️ The cardinal sin: blocking the event loop
 
-This is the one. The single most common FastAPI performance bug, and it looks completely innocent.
+The single most common FastAPI performance bug, and it looks completely innocent.
 
 ⚠️ **Never call a blocking function inside an `async def`.** If you put a synchronous DB call, a
 `requests.get()`, or a `time.sleep()` directly inside an `async def` endpoint, you don't just slow down
-*that* request — you freeze the **entire event loop**. Remember: one thread serves everyone. While that
-thread sits inside a blocking call, it cannot switch to any other request. Every concurrent user stalls
-until your one slow call returns.
+*that* request — you freeze the **entire event loop**. One thread serves everyone. While that thread
+sits inside a blocking call, it cannot switch to any other request. Every concurrent user stalls until
+your one slow call returns.
 
-Here's the bug. It runs, it returns the right answer, and it will quietly destroy your throughput under
-load:
+The bug runs, returns the right answer, and quietly destroys your throughput under load:
 
 ```python
 import time
@@ -165,10 +164,10 @@ async def slow_books():
     return {"books": ["Dune"]}
 ```
 
-*What just happened:* `time.sleep(2)` is *synchronous*. It blocks the thread it runs on — and that thread
-is the event loop. For those 2 seconds, **no other request can be served**, no matter how fast those other
-requests are. One user hitting this endpoint makes everyone else wait. It works fine when you test it alone,
-which is exactly why this bug ships to production and only shows up when traffic arrives.
+*What just happened:* `time.sleep(2)` is *synchronous*. It blocks the thread it runs on — and that
+thread is the event loop. For those 2 seconds, **no other request can be served**, no matter how fast
+those other requests are. One user hitting this endpoint makes everyone else wait. It works fine when
+tested alone, which is exactly why this bug ships to production and only shows up when traffic arrives.
 
 There are three honest fixes. Pick by what the blocking thing actually is:
 
@@ -186,12 +185,12 @@ async def slow_books():
     return {"books": ["Dune"]}
 ```
 
-*What just happened:* `await asyncio.sleep(2)` waits *cooperatively*. Instead of holding the thread hostage,
-it hands the loop back so other requests run during the wait. Same 2-second delay for *this* caller, zero
-impact on everyone else. (In real code: swap the sync DB driver for an async one, swap `requests` for
-`httpx.AsyncClient`.)
+*What just happened:* `await asyncio.sleep(2)` waits *cooperatively*. Instead of holding the thread
+hostage, it hands the loop back so other requests run during the wait. Same 2-second delay for *this*
+caller, zero impact on everyone else. (In real code: swap the sync DB driver for an async one, swap
+`requests` for `httpx.AsyncClient`.)
 
-**Fix 2 — just use plain `def`.** If there's no async version of the library, drop `async` and let FastAPI's
+**Fix 2 — use plain `def`.** If there's no async version of the library, drop `async` and let FastAPI's
 threadpool handle the blocking:
 
 ```python
@@ -206,8 +205,8 @@ def slow_books():               # ✅ plain def → runs in the threadpool, off 
     return {"books": ["Dune"]}
 ```
 
-*What just happened:* by removing `async`, the endpoint runs in a threadpool worker. Now `time.sleep` blocks
-*that worker thread*, not the event loop — so the loop keeps serving everyone else. This is often the
+*What just happened:* by removing `async`, the endpoint runs in a threadpool worker. Now `time.sleep`
+blocks *that worker thread*, not the event loop — so the loop keeps serving everyone else. Often the
 simplest fix when you're stuck with a synchronous library.
 
 **Fix 3 — offload from inside an `async def`.** Sometimes you're already in an `async def` (maybe you
@@ -228,32 +227,31 @@ async def slow_books():
 
 *What just happened:* `run_in_threadpool` shoves the blocking `time.sleep` onto a worker thread and gives
 you back an awaitable. You `await` it, so the loop is free during the wait, and the blocking call happens
-safely off-loop. This is the escape hatch for "I'm in async-land but this one library is stubbornly sync."
+safely off-loop. The escape hatch for "I'm in async-land but this one library is stubbornly sync."
 
 🪖 **War story.** A team ships an `async def` endpoint that calls their old synchronous Postgres driver
-directly. Tests pass, demo is snappy. In production, the moment more than a handful of users hit it at once,
-*every* endpoint on the service crawls — health checks time out, the load balancer starts killing pods. The
-fix was one keyword: delete `async`. The blocking driver moved to the threadpool and the loop was free
-again. Knowing this rule turns a 3am incident into a non-event.
+directly. Tests pass, demo is snappy. In production, the moment more than a handful of users hit it at
+once, *every* endpoint on the service crawls — health checks time out, the load balancer starts killing
+pods. The fix was one keyword: delete `async`. The blocking driver moved to the threadpool and the loop
+was free again. Knowing this rule turns a 3am incident into a non-event.
 
 ## CPU-bound work, and an honest limit
 
-⚠️ Here's the part the hype skips: **async helps with I/O-bound concurrency, not CPU-bound work.** Async is
-about overlapping *waiting*. If your endpoint is doing heavy computation — resizing images, crunching a
-giant dataset, hashing in a loop — there's no waiting to overlap. And because of Python's **GIL** (the
-honest, full story is in [Python From Zero](/guides/python-from-zero)), threads don't give you true
-parallelism for pure-Python CPU work either. So even a plain `def` in the threadpool won't make CPU work
-*parallel* — it just keeps it off the event loop.
+⚠️ The part the hype skips: **async helps with I/O-bound concurrency, not CPU-bound work.** Async is
+about overlapping *waiting*. If your endpoint does heavy computation — resizing images, crunching a giant
+dataset, hashing in a loop — there's no waiting to overlap. Because of Python's **GIL** (the full story is
+in [Python From Zero](/guides/python-from-zero)), threads don't give true parallelism for pure-Python CPU
+work either. So even a plain `def` in the threadpool won't make CPU work *parallel* — it just keeps it
+off the event loop.
 
 For genuinely heavy CPU work, neither `async def` nor the threadpool is the answer. Reach for a **process
 pool** (separate processes, separate GILs, real parallelism) or push the job to a **background worker
-queue** (Celery, RQ, Dramatiq) and have the endpoint return quickly with a job id. Don't try to make the
-GIL do something it can't.
+queue** (Celery, RQ, Dramatiq) and have the endpoint return quickly with a job id.
 
-💡 **The whole takeaway, in one breath:** match the keyword to the work. `async def` + `await` for async
-I/O. Plain `def` for blocking or synchronous I/O. Never block the loop. And for heavy CPU, get off the web
-process entirely. Get this right and FastAPI's speed is yours; get it wrong and one sleepy call takes the
-whole server down.
+💡 **The whole takeaway:** match the keyword to the work. `async def` + `await` for async I/O. Plain
+`def` for blocking or synchronous I/O. Never block the loop. For heavy CPU, get off the web process
+entirely. Get this right and FastAPI's speed is yours; get it wrong and one sleepy call takes the whole
+server down.
 
 ## Recap
 

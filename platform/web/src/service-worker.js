@@ -36,6 +36,35 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Comeback loop: opt-in "cards are due" review reminders. The payload is our
+// own JSON (see push.js's checkAndSend), not push-service-defined.
+self.addEventListener('push', (event) => {
+  let data = { title: 'Time to review', body: 'Cards are ready for review.', url: '/review' };
+  try { if (event.data) data = { ...data, ...event.data.json() }; } catch (e) {}
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: '/icon-192.png',
+      badge: '/icon-64.png',
+      data: { url: data.url }
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || '/review';
+  event.waitUntil(
+    (async () => {
+      const clientsList = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      for (const c of clientsList) {
+        if (new URL(c.url).pathname === url && 'focus' in c) return c.focus();
+      }
+      return self.clients.openWindow(url);
+    })()
+  );
+});
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;

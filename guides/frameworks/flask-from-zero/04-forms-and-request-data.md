@@ -12,16 +12,15 @@ updated: 2026-06-22
 # Forms & Request Data
 
 Up to now your notes app has *shown* data. This phase is where it starts *taking it in* — a real form where
-a person types a note title and hits **Save**. That single act touches more of Flask than anything you've
-done yet: an HTML form, a `POST` handler, validation, a redirect, a confirmation message, and — the part
-everyone forgets until it bites them — protecting the form from being submitted by a site that isn't yours.
+a person types a note title and hits **Save**. That single act touches more of Flask than anything so far: an
+HTML form, a `POST` handler, validation, a redirect, a confirmation message, and — the part everyone forgets
+until it bites them — protecting the form from being submitted by a site that isn't yours.
 
-The mental model to carry through all of it: **a form submission is just a `POST` request whose body is a
-bag of named fields.** Nothing magic. The browser packs up the form's inputs and ships them in the request
-body; your view reads them out of `request.form`. Flask's tiny core gives you exactly that and stops — no
-form library, no validation, no CSRF, nothing assumed. Everything richer is something you *add*. We'll start
-with the bare-hands version so you see the raw machinery, then layer on the extension that does the tedious
-parts for you. Both are legitimate; knowing which to reach for is the real skill.
+The mental model: **a form submission is just a `POST` request whose body is a bag of named fields.** The
+browser packs up the form's inputs and ships them in the request body; your view reads them out of
+`request.form`. Flask's tiny core gives you exactly that and stops — no form library, no validation, no CSRF.
+Everything richer is something you *add*. We'll start bare-hands to see the raw machinery, then layer on the
+extension that does the tedious parts for you.
 
 ## Reading a raw form — the bare-hands version
 
@@ -37,8 +36,8 @@ values. Here's the create-note form:
 
 *What just happened:* `method="post"` tells the browser to send a `POST` (the verb for submitting data, from
 [Routing & Views](02-routing-and-views.md)), and `action="/notes/new"` is the URL it submits to. The `name`
-attribute is the load-bearing part — `name="title"` is the key your view will read by. No `name`, no value in
-the request body; it's the single most common "my field is missing" cause.
+attribute is load-bearing — `name="title"` is the key your view reads by. No `name`, no value in the request
+body — the single most common "my field is missing" cause.
 
 On the server, the view reads those fields off `request.form`:
 
@@ -54,16 +53,14 @@ def create_note():
 
 *What just happened:* the browser's `POST` lands here, and `request.form["title"]` pulls the value of the
 input named `title` out of the request body. `request.form` behaves like a dict — `request.form["title"]`
-raises a `400 Bad Request` if the key is missing, while `request.form.get("title")` returns `None` instead.
-That's the *whole* of Flask's form handling: a dict of submitted fields. No validation, no escaping of what
-you store, no protection — just the raw data. Everything else in this phase is something you build or bolt on
-top of this one line.
+raises a `400 Bad Request` if the key is missing, while `.get("title")` returns `None` instead. That's the
+*whole* of Flask's form handling: a dict of submitted fields, no validation, no escaping, no protection.
 
 ## POST, then redirect, then GET
 
-⚠️ There's a bug hiding in that `return f"Saved: {title}", 201`. The user submits the form, sees "Saved," and
-then — out of habit — hits **refresh**. The browser's refresh re-sends the *last request*, which was the
-`POST`. So it submits the note *again*. And again, every refresh. Duplicate notes, and a confused user.
+⚠️ There's a bug hiding in that `return f"Saved: {title}", 201`. The user submits, sees "Saved," and then —
+out of habit — hits **refresh**. The browser re-sends the *last request*, the `POST`, so it submits the note
+*again*. And again, every refresh. Duplicate notes, and a confused user.
 
 The fix is a discipline with a name: **POST/redirect/GET**. After a successful `POST`, don't render a page —
 **redirect** the browser to a normal page with `redirect(url_for(...))`.
@@ -79,16 +76,16 @@ def create_note():
 ```
 
 *What just happened:* instead of returning HTML from the `POST`, the view returns a `302` redirect to the
-notes list. The browser then makes a *fresh `GET`* to that page. Now the last request sitting in the browser
-is a harmless `GET`, so refreshing re-fetches the list instead of re-submitting the form. `url_for` builds
-the target from the view function's name (never hardcode the path — see Phase 2). Make this your reflex:
-**any successful `POST` ends in a redirect, not a rendered page.**
+notes list, and the browser makes a *fresh `GET`* to that page — the last request sitting in the browser is
+now harmless, so refreshing re-fetches the list instead of re-submitting the form. `url_for` builds the
+target from the view function's name (never hardcode the path — see Phase 2). Make this your reflex: **any
+successful `POST` ends in a redirect, not a rendered page.**
 
 ## Validate, then flash a message
 
-Right now `create_note` trusts whatever arrives. But an empty title is garbage, and the user deserves to know
-their note saved. Both are handled with two small additions: a validation check and a **flash message** — a
-one-time note that survives the redirect and shows up on the *next* page.
+Right now `create_note` trusts whatever arrives, but an empty title is garbage and the user deserves to know
+their note saved. Both need a small addition: a validation check and a **flash message** — a one-time note
+that survives the redirect and shows up on the *next* page.
 
 ```python
 from flask import request, redirect, url_for, flash
@@ -108,10 +105,9 @@ def create_note():
 
 *What just happened:* `request.form.get("title", "").strip()` reads the field forgivingly and trims
 whitespace, so a box of spaces counts as empty. If it's blank, we `flash` an error and redirect *back*
-without saving; otherwise we save and `flash` a success message. `flash` stashes the message in the session
-so it lives across the redirect and appears exactly once on the next request. ⚠️ Flashing needs
-`app.secret_key` set — flashed messages ride in the signed session cookie, and without a key Flask raises an
-error. Use a real random secret in production, not `"dev-only-change-me"`.
+without saving; otherwise we save and `flash` a success message, which stays in the session and appears
+exactly once on the next request. ⚠️ Flashing needs `app.secret_key` set — flashed messages ride in the
+signed session cookie, and without a key Flask raises an error. Use a real random secret in production.
 
 The messages don't show themselves — your template pulls them out with `get_flashed_messages()`:
 
@@ -122,18 +118,17 @@ The messages don't show themselves — your template pulls them out with `get_fl
 ```
 
 *What just happened:* `get_flashed_messages()` returns the queued messages and *clears* them in the same
-move, so a refresh after that won't show them again — that's what "one-time" means. You'd put this loop in
-your base template (from [Templates with Jinja2](03-templates-with-jinja.md)) so every page can surface a
-flash. The `{{ message }}` is auto-escaped by Jinja, so even a flash built from user input is safe to render.
+move, so a refresh afterward won't show them again — that's what "one-time" means. Put this loop in your base
+template (from [Templates with Jinja2](03-templates-with-jinja.md)) so every page can surface a flash;
+`{{ message }}` is auto-escaped by Jinja, so a flash built from user input is safe to render.
 
 ## Flask-WTF — the extension way
 
-That hand-rolled validation works for one field. Now imagine a form with a title, a body, a category, and a
-"required / max length / must be one of these" rule on each. The `if not this and not that` pile grows fast,
-and you're re-implementing the same checks every project. 📝 This is exactly the moment Flask's philosophy
-says: reach for an **extension**. **Flask-WTF** (a thin Flask wrapper over the WTForms library) gives you
-form *classes* — you declare your fields and their validators once, and it handles parsing, validation, and
-re-rendering with errors.
+That hand-rolled validation works for one field. Imagine instead a form with a title, a body, a category, and
+a "required / max length / must be one of these" rule on each — the `if not this and not that` pile grows
+fast, and you're re-implementing the same checks every project. 📝 This is the moment Flask's philosophy says
+reach for an **extension**. **Flask-WTF** (a thin wrapper over the WTForms library) gives you form
+*classes* — declare your fields and validators once, and it handles parsing, validation, and re-rendering.
 
 ```python
 from flask_wtf import FlaskForm
@@ -157,10 +152,9 @@ def create_note():
 *What just happened:* `NoteForm` declares the form as a class — each field names its type (`StringField`) and
 its rules (`DataRequired`, `Length(max=120)`). The view's one decision is `form.validate_on_submit()`, which
 returns `True` only when the request is a `POST` **and** every validator passes. On success you read clean
-data off `form.title.data` and follow the same POST/redirect/GET you already know. On a `GET` (first visit)
-or a *failed* `POST`, it returns `False`, so you fall through and re-render the template — and WTForms hands
-the form back with per-field error messages already attached. No manual `if not title` checks; the validators
-*are* the rules.
+data off `form.title.data` and follow the same POST/redirect/GET you already know. On a `GET` or a *failed*
+`POST` it's `False`, so you re-render the template and WTForms hands the form back with per-field errors
+already attached — no manual `if not title` checks; the validators *are* the rules.
 
 In the template you let the form render itself, errors and all:
 
@@ -174,38 +168,35 @@ In the template you let the form render itself, errors and all:
 ```
 
 *What just happened:* `{{ form.title() }}` renders the `<input>`, `{{ form.title.label }}` its label, and the
-loop prints any validation errors WTForms attached to that field. That `{{ form.csrf_token }}` line is the
-piece we explain next — and it's the reason Flask-WTF is worth adopting even for small forms.
+loop prints any validation errors WTForms attached to that field. `{{ form.csrf_token }}` is the piece we
+explain next, and it's the reason Flask-WTF is worth adopting even for small forms.
 
 💡 The honest rule of thumb: raw `request.form` is fine for a trivial, one-off field where you fully control
-the input. For anything you'd call a *real* form — multiple fields, validation rules, anything users submit
+the input. For anything you'd call a *real* form — multiple fields, validation rules, anything submitted
 repeatedly — reach for Flask-WTF. You'll write less code *and* get CSRF for free.
 
 ## CSRF — and why it's not optional for writes
 
 📝 ⚠️ **CSRF (Cross-Site Request Forgery)** is an attack where a malicious site silently makes a logged-in
-user's browser submit a request to *your* app — because the browser helpfully attaches your user's session
-cookie to any request to your domain, even one triggered from `evil.com`. A hidden form on the attacker's
-page that `POST`s to `/notes/new` (or worse, `/account/delete`) fires with your user's identity attached. The
-fix is a secret the attacker can't know: Flask-WTF embeds a **per-session CSRF token** in your form
-(`{{ form.csrf_token }}`) and rejects any `POST` whose token is missing or wrong. The attacker's forged form
-can't include a token it never saw, so it bounces.
+user's browser submit a request to *your* app — the browser attaches your session cookie to any request to
+your domain, even one triggered from `evil.com`. A hidden form on the attacker's page that `POST`s to
+`/notes/new` (or worse, `/account/delete`) fires with your identity attached. The fix is a secret the
+attacker can't know: Flask-WTF embeds a **per-session CSRF token** (`{{ form.csrf_token }}`) and rejects any
+`POST` whose token is missing or wrong — a forged form can't include a token it never saw.
 
 This is the same family of bug as the injection holes in
 [SQL Injection & XSS, Explained](/guides/sql-injection-and-xss): an action gets *trusted* that shouldn't be —
 there, untrusted input treated as code; here, an untrusted request treated as the user's intent. The cure
-rhymes too: don't trust input you can't verify.
+rhymes: don't trust input you can't verify.
 
 ⚠️ Raw `request.form` has **no CSRF protection at all** — the hand-rolled `create_note` from earlier in this
-phase will happily accept a forged cross-site `POST`. That's the strongest argument for Flask-WTF: when you
-use a `FlaskForm` and render `{{ form.csrf_token }}`, `validate_on_submit()` checks the token automatically,
-so you can't forget. (Set `app.secret_key` — the same one flashing needs — because that's what signs the
-token.)
+phase will happily accept a forged cross-site `POST`. That's the strongest argument for Flask-WTF: use a
+`FlaskForm` and render `{{ form.csrf_token }}`, and `validate_on_submit()` checks the token automatically.
+(Set `app.secret_key` — the same one flashing needs — because that's what signs the token.)
 
-💡 The takeaway to internalize: **anything that writes — creates, edits, deletes — must be validated *and*
-CSRF-protected.** Read-only `GET`s are exempt (they shouldn't change state anyway), but the moment a request
-mutates data, both guards apply. Flask-WTF gives you both in one move, which is why it's the default choice
-for forms that matter.
+💡 The takeaway: **anything that writes — creates, edits, deletes — must be validated *and* CSRF-protected.**
+Read-only `GET`s are exempt, but the moment a request mutates data, both guards apply. Flask-WTF gives you
+both in one move, which is why it's the default choice for forms that matter.
 
 ## Recap
 
@@ -222,8 +213,7 @@ for forms that matter.
 6. 💡 Raw `request.form` for trivial input; Flask-WTF for anything real. **Validate *and* CSRF-protect
    anything that writes.**
 
-You can now take data in safely. Next we stop appending to a throwaway list and give those notes a real home:
-a database.
+Next we stop appending to a throwaway list and give those notes a real home: a database.
 
 ## Quick check
 

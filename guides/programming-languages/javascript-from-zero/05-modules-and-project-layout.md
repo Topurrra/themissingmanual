@@ -11,26 +11,24 @@ updated: 2026-06-19
 
 # Modules & Project Layout
 
-Everything so far lived in one file. That's fine for ten lines; it falls apart fast for anything real.
+Everything so far lived in one file - fine for ten lines, but it falls apart fast for anything real.
 Programs grow, and you want related code grouped into files you can find, reuse, and reason about
-separately. The tool for that is **modules** - and once you can split a program across files, you're ready
-for the project structure that real JavaScript lives in. This phase sets the stage for the async and
-browser work in [Phase 6](06-async-and-the-dom.md).
+separately. The tool for that is **modules**. This phase sets the stage for the async and browser work in
+[Phase 6](06-async-and-the-dom.md).
 
 ## The mental model: each file is a module
 
-**What a module actually is.** A module is just a `.js` file that keeps its contents *private* by default
-and explicitly *shares* (exports) the specific pieces other files are allowed to use. Other files then
-*import* exactly what they need. Nothing leaks between files unless you say so - which means you can open
-any file and know that the only things it shares are the ones it deliberately exported.
+A module is a `.js` file that keeps its contents *private* by default and explicitly *shares* (exports)
+the pieces other files may use; other files then *import* exactly what they need. Nothing leaks between
+files unless you say so.
 
-This is the system called **ES modules** (or "ESM" - the official, modern standard built into the
-language). Two keywords run it: `export` to share, `import` to borrow.
+This system is called **ES modules** (or "ESM" - the official, modern standard built into the language).
+Two keywords run it: `export` to share, `import` to borrow.
 
 📝 **Terminology.** You may also hear about **CommonJS** (`require(...)` / `module.exports`), the *older*
-module system Node used for years and that you'll still meet in existing code. We teach **ES modules**
-because they're the standard going forward and work in both the browser and Node. Recognize `require`;
-write `import`.
+system Node used for years and that you'll still meet in existing code. We teach **ES modules** since
+they're the standard going forward and work in both browser and Node. Recognize `require`; write
+`import`.
 
 ## `export` and `import`
 
@@ -43,9 +41,9 @@ export function add(a, b) {
 
 export const PI = 3.14159;
 ```
-*What just happened:* The `export` keyword in front of `add` and `PI` marks them as the parts of this file
-other files may use. Anything *without* `export` (a helper variable, say) stays private to `math.js` - it
-can't be seen from outside at all. The file is now a reusable module with a clear public surface.
+*What just happened:* The `export` keyword marks `add` and `PI` as the parts of this file other files may
+use. Anything *without* `export` (a helper variable, say) stays private to `math.js`, invisible from
+outside. The file is now a reusable module with a clear public surface.
 
 Now a file that *uses* them:
 ```javascript
@@ -59,11 +57,10 @@ console.log(PI);
 5
 3.14159
 ```
-*What just happened:* `import { add, PI } from "./math.js"` reached into `math.js` and pulled out exactly
-the two exported names. The `./` at the front of the path means "a file right next to me" (a *relative*
-path) - and crucially, this resolves the same way no matter which folder you run the program from. With ES
-modules in Node you include the `.js` extension in the path. Run it with `node main.js` and Node loads
-`math.js` automatically because `main.js` asked for it.
+*What just happened:* `import { add, PI } from "./math.js"` reached into `math.js` and pulled out the two
+exported names. The `./` at the front means "a file right next to me" (a *relative* path), resolving the
+same way regardless of which folder you run the program from. ES modules in Node need the `.js`
+extension. Run with `node main.js` and Node loads `math.js` automatically because `main.js` asked for it.
 
 Here's the relationship as a picture - a small **module graph**:
 
@@ -75,14 +72,13 @@ flowchart LR
 ```
 
 *Reading it:* arrows point from a file to the files it depends on. `main.js` is the entry point; it pulls
-in `math.js` and `dates.js`, and `math.js` in turn pulls in `utils.js`. Node starts at your entry file and
-follows these arrows, loading each module once. This graph *is* your program's structure - keeping it a
-clean tree (rather than a tangle where everything imports everything) is most of what "good architecture"
-means at this scale.
+in `math.js` and `dates.js`, and `math.js` pulls in `utils.js`. Node starts at your entry file and follows
+these arrows, loading each module once. This graph *is* your program's structure - a clean tree, not a
+tangle where everything imports everything, is most of what "good architecture" means here.
 
 ### Default exports
 
-There's a second flavor of export, **default**, for when a file's main purpose is to provide one thing:
+A second flavor of export, **default**, is for when a file's main purpose is to provide one thing:
 ```javascript
 // greet.js
 export default function greet(name) {
@@ -97,22 +93,22 @@ console.log(greet("Ada"));
 ```console
 Hello, Ada!
 ```
-*What just happened:* A file can have one `export default`. You import it *without* curly braces and you
-get to pick any name for it on the importing side. Use a default when a module is really "about" one thing
-(a single function or class); use the named `{ ... }` exports when a file offers several helpers. Plenty of
-code mixes both.
+*What just happened:* A file can have one `export default`. Import it *without* curly braces and pick any
+name for it on the importing side. Use a default when a module is really "about" one thing (a single
+function or class); use named `{ ... }` exports when a file offers several helpers. Plenty of code mixes
+both.
 
 ## What `package.json` is
 
 The moment a project is more than a couple of loose files, it gets a **`package.json`** - a small file at
-the project root that describes the project. Create one by running:
+the project root describing the project. Create one by running:
 ```console
 $ npm init -y
 Wrote to /home/ada/my-project/package.json
 ```
-*What just happened:* `npm init -y` created a starter `package.json` with sensible defaults (the `-y` says
-"yes to all the prompts"). `npm` is Node's package manager, which ships with Node - more on it in
-[Phase 8](08-ecosystem-and-tooling.md). The file it wrote looks roughly like this:
+*What just happened:* `npm init -y` created a starter `package.json` with sensible defaults (`-y` says
+"yes to all the prompts"). `npm` is Node's package manager, shipped with Node - more in
+[Phase 8](08-ecosystem-and-tooling.md). It writes roughly this:
 ```javascript
 {
   "name": "my-project",
@@ -124,26 +120,26 @@ Wrote to /home/ada/my-project/package.json
   "dependencies": {}
 }
 ```
-*What just happened:* This file is your project's ID card and control panel. The fields that matter early:
+*What just happened:* This file is your project's ID card and control panel. The fields that matter
+early:
 
 - **`"type": "module"`** - tells Node to treat your `.js` files as ES modules so `import`/`export` work.
-  ⚠️ Without this line, Node assumes the *old* CommonJS system and your `import` statements will throw
-  `SyntaxError: Cannot use import statement outside a module`. If you hit that error, this missing line is
-  almost always why. (`npm init -y` doesn't always add it - set it yourself.)
-- **`"scripts"`** - named shortcuts you run with `npm run <name>` (e.g. `npm run start`). They save you
-  retyping long commands and document how the project is meant to be run.
-- **`"dependencies"`** - the list of outside packages your project uses, which fills in as you install
-  them.
+  ⚠️ Without this line, Node assumes the *old* CommonJS system and your `import` statements throw
+  `SyntaxError: Cannot use import statement outside a module`. If you hit that error, this missing line
+  is almost always why (`npm init -y` doesn't always add it - set it yourself).
+- **`"scripts"`** - named shortcuts run with `npm run <name>` (e.g. `npm run start`), saving you retyping
+  long commands and documenting how the project is meant to run.
+- **`"dependencies"`** - the outside packages your project uses, filled in as you install them.
 
 ## What `node_modules` is
 
-When you install an outside package (`npm install some-package`), npm downloads it - and everything *it*
-depends on - into a folder called **`node_modules`** at your project root, and records the package in
+Installing an outside package (`npm install some-package`) makes npm download it - and everything *it*
+depends on - into a folder called **`node_modules`** at your project root, recording the package in
 `package.json`.
 
 ⚠️ **`node_modules` is huge and disposable - never commit it.** It can hold thousands of files, and it's
-fully rebuildable: anyone with your `package.json` can recreate it by running `npm install`. So you list it
-in `.gitignore` and leave it out of version control. The *recipe* (`package.json` and its lockfile) is what
+fully rebuildable: anyone with your `package.json` can recreate it via `npm install`. List it in
+`.gitignore` and leave it out of version control. The *recipe* (`package.json` and its lockfile) is what
 you track; the *downloaded result* (`node_modules`) is not. New developers clone the repo, run
 `npm install`, and `node_modules` reappears.
 
@@ -152,8 +148,8 @@ the meal you can always re-cook.** Track the recipe, ignore the meal.
 
 ## A sane small project layout
 
-You don't need an elaborate structure to start. Here's a layout that scales gracefully from tiny to
-medium without any ceremony:
+You don't need an elaborate structure to start. Here's a layout that scales from tiny to medium without
+ceremony:
 ```text
 my-project/
   package.json        the recipe: name, scripts, dependencies
@@ -167,28 +163,27 @@ my-project/
   README.md           what this project is and how to run it
 ```
 
-*Reading it:* the principle is "code in `src/`, config at the root, downloaded stuff ignored." `main.js` is
-your entry point - the file you run, the root of the module graph. As the project grows you add more files
-under `src/` (and eventually subfolders that group related modules), but the shape stays the same. Resist
-inventing structure you don't need yet; let the folders appear when the code actually calls for them.
+*Reading it:* the principle is "code in `src/`, config at the root, downloaded stuff ignored." `main.js`
+is your entry point - the file you run, the root of the module graph. As the project grows, add more
+files under `src/` (and eventually subfolders that group related modules), but the shape stays the same.
+Resist inventing structure you don't need yet - let folders appear when the code calls for them.
 
 ## Recap
 
 1. **A module is a file** that keeps its contents private and shares only what it `export`s; other files
    pull pieces in with `import`.
 2. **Named exports** (`export const x` → `import { x }`) for several helpers; **default export** (one per
-   file, imported with no braces) when a file is about one thing. Use relative paths with the `.js`
+   file, no braces on import) when a file is about one thing. Use relative paths with the `.js`
    extension, e.g. `from "./math.js"`.
 3. **`package.json`** is your project's recipe - set **`"type": "module"`** so `import`/`export` work,
    define **`scripts`**, and let **`dependencies`** track outside packages.
-4. **`node_modules`** holds downloaded packages; it's huge, rebuildable with `npm install`, and **never
+4. **`node_modules`** holds downloaded packages; huge, rebuildable with `npm install`, **never
    committed** - gitignore it.
-5. **A sane layout** keeps code in `src/`, config at the root, and `node_modules` ignored - grow it only as
+5. **A sane layout** keeps code in `src/`, config at the root, `node_modules` ignored - grow it only as
    the code demands.
 
-You can now write programs that span many files and pull in outside code. Next we tackle the part that
-makes JavaScript truly distinctive - doing things that take time (network calls, timers, clicks) without
-freezing - and reaching into a live web page from your code.
+Next: what makes JavaScript truly distinctive - doing things that take time (network calls, timers,
+clicks) without freezing, and reaching into a live web page from your code.
 
 ---
 

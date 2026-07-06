@@ -12,13 +12,13 @@ updated: 2026-06-22
 # Dependency Injection with Depends()
 
 By now your Book service can take a validated request body, shape a clean response, and return honest
-status codes. But look closely at your endpoints and you'll start to notice the same chores repeating:
-every list endpoint re-reads `skip` and `limit`, every protected endpoint re-checks the same token,
-every database-touching endpoint will (in two phases) open and close a session the same way. Copy-paste
-that logic into ten endpoints and you've signed up to fix the same bug ten times.
+status codes. But look closely and the same chores keep repeating: every list endpoint re-reads `skip`
+and `limit`, every protected endpoint re-checks the same token, every database-touching endpoint will (in
+two phases) open and close a session the same way. Copy-paste that into ten endpoints and you've signed
+up to fix the same bug ten times.
 
-FastAPI has a built-in answer, and it's one of the framework's best ideas. Before any code, let's get the
-mental model — because the syntax is trivial once the *shape* clicks.
+FastAPI has a built-in answer, and it's one of the framework's best ideas. The syntax is trivial once the
+*shape* clicks.
 
 ## The idea: declare what you need, the framework provides it
 
@@ -27,8 +27,8 @@ and FastAPI *provides* it by calling a function you wrote — a **dependency**. 
 yourself. You announce "I need a current user / a database session / pagination settings," and the
 framework runs the right function and hands you the result, already prepared.
 
-If that "the framework calls your function for you" gesture feels familiar, it should — it's
-**inversion of control**, the exact idea behind the word "framework"
+If "the framework calls your function for you" feels familiar, it should — it's **inversion of control**,
+the exact idea behind the word "framework"
 ([What a Framework Even Is](/guides/what-a-framework-even-is)). You're not calling the dependency; you
 register what you want, and FastAPI calls it on your behalf at request time. *Don't call us, we'll call
 you.*
@@ -39,12 +39,11 @@ dependency. That's the whole system.
 
 ## A simple dependency
 
-Let's start concrete. Pagination — `skip` and `limit` — is the textbook case, because every list
-endpoint in the Book service wants the same two query parameters with the same defaults and the same
-sanity checks.
+Pagination — `skip` and `limit` — is the textbook case, because every list endpoint in the Book service
+wants the same two query parameters with the same defaults and the same sanity checks.
 
-Here's the dependency itself. It's pure Python — no FastAPI imports, no running server needed — so you can
-run it right here:
+The dependency itself is pure Python — no FastAPI imports, no running server needed — so it runs right
+here:
 
 ```python runnable
 def pagination_params(skip: int = 0, limit: int = 10) -> dict:
@@ -58,11 +57,11 @@ print(pagination_params(skip=20, limit=5)) # a normal request
 print(pagination_params(skip=-3, limit=999))  # a hostile request, clamped
 ```
 
-*What just happened:* `pagination_params` is an ordinary function with two parameters that have defaults.
-It clamps nonsense — negative `skip`, a `limit` of 999 — into something safe and returns a tidy dict.
-Nothing here is FastAPI-specific yet; it's testable and runnable in isolation, which is exactly the point.
+*What just happened:* `pagination_params` is an ordinary function with two parameters that have
+defaults. It clamps nonsense — negative `skip`, a `limit` of 999 — into something safe and returns a
+tidy dict. Nothing here is FastAPI-specific yet; it's testable and runnable in isolation.
 
-Now wire it into an endpoint. This part needs the running app, so it's shown as plain code:
+Wire it into an endpoint. This part needs the running app, so it's shown as plain code:
 
 ```python
 from fastapi import FastAPI, Depends
@@ -87,15 +86,15 @@ call `pagination_params()` yourself — you handed the function to `Depends()`. 
 `/books`, FastAPI calls it for you and injects the returned dict as `params`. Your endpoint body never
 touches `skip` or `limit` directly; it just receives a ready-made, already-clamped dict.
 
-💡 Here's the part people miss the first time: the dependency's *own* parameters become part of the
-endpoint's public interface. Because `pagination_params` declares `skip` and `limit`, a request to
+💡 The part people miss the first time: the dependency's *own* parameters become part of the endpoint's
+public interface. Because `pagination_params` declares `skip` and `limit`, a request to
 `/books?skip=20&limit=5` works — FastAPI reads those query params, validates them as `int` (the same
 type-hint-driven validation from earlier phases), passes them in, and they even show up in the automatic
 `/docs`. The dependency contributed query parameters to an endpoint that never mentions them.
 
 ## Why DI here is genuinely powerful
 
-That pagination example is small, but the payoff scales hard. Three wins, all from the same mechanism:
+That pagination example is small, but the payoff scales. Three wins, all from the same mechanism:
 
 - **Write shared logic once.** Add `params: dict = Depends(pagination_params)` to `/books`,
   `/authors`, `/reviews` — every list endpoint gets identical, sane pagination. Change the max limit in
@@ -128,22 +127,20 @@ def get_book(book_id: int, repo: dict = Depends(book_repository)):
 *What just happened:* `get_book` asks only for `book_repository`. But `book_repository` itself asks for
 `db_connection`. FastAPI walks the chain: it calls `db_connection` first, feeds the result into
 `book_repository`, then hands *that* result to your endpoint. You declared one need at the top and the
-framework assembled the whole stack underneath. That's how a real app layers DB → repository → endpoint
-without any glue code.
+framework assembled the whole stack underneath — DB → repository → endpoint, no glue code.
 
 ## `yield` dependencies: setup before, teardown after
 
 Some things you depend on need to be *opened* and then reliably *closed* — a database session, a file, a
-network client. You want code to run **before** the request handler and more code to run **after** it,
-even if the handler blew up. FastAPI's answer is a dependency that uses `yield` instead of `return`.
+network client. You want code to run **before** the request handler and more **after** it, even if the
+handler blew up. FastAPI's answer is a dependency that uses `yield` instead of `return`.
 
 📝 A **`yield` dependency** runs everything up to the `yield` as **setup**, hands the yielded value to
 your endpoint, and runs everything after the `yield` as **teardown** once the response is sent. If you've
 met context managers in Python ([Python From Zero](/guides/python-from-zero) covers the `with`
 statement), this is the same setup/teardown shape — the code after `yield` is your `finally`.
 
-The canonical use is a database session. The real version lands in Phase 7; here's the *shape* so the
-pattern is in your hands now:
+The canonical use is a database session. The real version lands in Phase 7; here's the *shape* now:
 
 ```python
 from fastapi import Depends
@@ -163,21 +160,21 @@ def list_books_from_db(db: dict = Depends(get_db)):
     return {"books": [], "ran": db["queries"]}
 ```
 
-*What just happened:* When a request arrives, FastAPI runs `get_db` up to `yield`, opening the
-"session" and injecting it as `db`. Your endpoint uses it. After the response is sent, FastAPI resumes the
-function past `yield` and runs the teardown — closing the session. One function owns the entire lifecycle
-of the resource, so an endpoint can *never* forget to clean up.
+*What just happened:* When a request arrives, FastAPI runs `get_db` up to `yield`, opening the "session"
+and injecting it as `db`. Your endpoint uses it. After the response is sent, FastAPI resumes the function
+past `yield` and runs the teardown — closing the session. One function owns the entire lifecycle of the
+resource, so an endpoint can *never* forget to clean up.
 
-⚠️ The teardown runs **even if your endpoint raises an exception.** That's the entire reason for the
+⚠️ The teardown runs **even if your endpoint raises an exception** — that's the entire reason for the
 `try`/`finally`: a request that errors out still closes its database session, so you don't leak
 connections every time something goes wrong. This is the single most important reason DB sessions are
 done as `yield` dependencies and not opened ad hoc inside handlers.
 
 ## Auth as a dependency (preview) + where you can attach it
 
-The same mechanism is how authentication works in FastAPI — and it's a perfect fit. "This endpoint
-requires a logged-in user" is exactly "this endpoint *depends on* there being a current user." Full
-auth — real tokens, OAuth2, JWT — is Phase 8; here's the shape so you see the seam:
+The same mechanism is how authentication works in FastAPI — a perfect fit. "This endpoint requires a
+logged-in user" is exactly "this endpoint *depends on* there being a current user." Full auth — real
+tokens, OAuth2, JWT — is Phase 8; here's the shape so you see the seam:
 
 ```python
 from fastapi import Depends, Header, HTTPException
@@ -195,11 +192,11 @@ def create_book(title: str, user: dict = Depends(get_current_user)):
 
 *What just happened:* `create_book` depends on `get_current_user`. FastAPI runs that dependency *first*;
 if the token is missing or wrong it raises `401` and your endpoint body never executes. If it passes, the
-endpoint receives the authenticated `user`. Notice the same pattern as pagination — declare the need, the
-framework satisfies (or rejects) it before you run. (Notice too that `get_current_user` could itself
-`Depends` on `get_db` to look the user up — sub-dependencies again.)
+endpoint receives the authenticated `user`. Same pattern as pagination — declare the need, the framework
+satisfies (or rejects) it before you run. (`get_current_user` could itself `Depends` on `get_db` to look
+the user up — sub-dependencies again.)
 
-And you don't have to attach a dependency endpoint-by-endpoint. There are three reuse levels:
+You don't have to attach a dependency endpoint-by-endpoint. There are three reuse levels:
 
 - **Path level** — in the endpoint's parameters, as above. Affects that one route.
 - **Router level** — `APIRouter(dependencies=[Depends(get_current_user)])` applies it to every route on
@@ -210,9 +207,9 @@ And you don't have to attach a dependency endpoint-by-endpoint. There are three 
 (You'll meet routers properly in Phase 9; the takeaway now is that the *same* `Depends()` scales from one
 route to the whole app.)
 
-💡 Step back and see the throughline: `Depends()` is the backbone you'll lean on for the rest of this
-guide. Database sessions in Phase 7 and authentication in Phase 8 are both *just dependencies*. Learn this
-one mechanism well and those phases become "apply the thing you already know" rather than new machinery.
+💡 `Depends()` is the backbone you'll lean on for the rest of this guide. Database sessions in Phase 7
+and authentication in Phase 8 are both *just dependencies*. Learn this one mechanism well and those
+phases become "apply the thing you already know" rather than new machinery.
 
 ## Recap
 

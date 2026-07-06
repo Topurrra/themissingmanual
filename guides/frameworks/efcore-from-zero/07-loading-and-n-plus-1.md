@@ -13,9 +13,9 @@ updated: 2026-06-23
 
 In [Phase 6](06-relationships.md) you wired up navigation properties — `blog.Posts`, `post.Blog`,
 `post.Tags`. They look like ordinary C# collections, so it's tempting to assume that once you've loaded
-a blog, its posts are right there waiting. They are not. And the gap between "looks loaded" and "is
-loaded" is where the single most common ORM performance disaster lives: the **N+1 query trap**. This
-phase is about closing that gap on purpose.
+a blog, its posts are right there waiting. They are not. The gap between "looks loaded" and "is loaded"
+is where the single most common ORM performance disaster lives: the **N+1 query trap**. This phase closes
+that gap on purpose.
 
 ## The mental model: EF loads related data only when you ask
 
@@ -27,18 +27,17 @@ Here is the one sentence that prevents 80% of the confusion in this phase:
 
 When you write `ctx.Blogs.ToList()`, EF Core runs *one* `SELECT` against the `Blogs` table and hands you
 `Blog` objects. Each `blog.Posts` collection comes back **empty** — not null, empty — because EF never
-went to the `Posts` table. The navigation property is just an in-memory container; it has no idea a
-database exists. EF fills it only when you instruct it to.
+went to the `Posts` table. The navigation property is just an in-memory container with no idea a database
+exists. EF fills it only when instructed.
 
 ```csharp
 var blogs = ctx.Blogs.ToList();
 Console.WriteLine(blogs[0].Posts.Count);   // 0 — even if the blog has 50 posts in the DB
 ```
 
-*What just happened:* one query went out for blogs, and nothing went out for posts. `Posts.Count` is 0
-because the collection was never populated. This is not a bug — it's EF refusing to silently drag the
-whole database into memory behind your back. Your job is to tell it what graph you actually need. There
-are three ways to do that.
+*What just happened:* one query went out for blogs, nothing for posts. `Posts.Count` is 0 because the
+collection was never populated. Not a bug — EF refuses to silently drag the whole database into memory
+behind your back. Your job is to tell it what graph you actually need. Three ways to do that.
 
 ## Way 1: Eager loading with `Include` (the default tool)
 
@@ -54,8 +53,8 @@ Console.WriteLine(blogs[0].Posts.Count);   // 50 — populated
 ```
 
 *What just happened:* `Include(b => b.Posts)` told EF to pull each blog *and* its posts. EF emits a
-single `LEFT JOIN`, reads the flattened rows, and stitches the `Posts` collections back together for
-you. One round trip to the database, and now every `blog.Posts` is filled.
+single `LEFT JOIN`, reads the flattened rows, and stitches the `Posts` collections back together for you.
+One round trip, and now every `blog.Posts` is filled.
 
 The SQL looks roughly like this:
 
@@ -66,8 +65,8 @@ LEFT JOIN Posts AS p ON p.BlogId = b.Id
 ORDER BY b.Id;
 ```
 
-*What just happened:* one `SELECT` with a join. The `ORDER BY b.Id` is EF's doing — it groups the rows
-by blog so it can assign each batch of posts to the right parent as it reads down the result set.
+*What just happened:* one `SELECT` with a join. The `ORDER BY b.Id` is EF's doing — grouping rows by blog
+so it can assign each batch of posts to the right parent while reading down the result set.
 
 ### Going deeper with `ThenInclude`
 
@@ -83,12 +82,12 @@ var blogs = ctx.Blogs
 
 *What just happened:* you loaded blogs, their posts, and each post's tags — the whole three-level graph
 (`Blog` → `Post` → `Tag`) in one query. `Include` jumps from blog to posts; `ThenInclude` continues from
-each post to its tags. You can chain as deep as your model goes, and add multiple `Include` lines for
-sibling navigations.
+each post to its tags. Chain as deep as your model goes, and add multiple `Include` lines for sibling
+navigations.
 
-> 📝 `Include` is the tool you should reach for **by default**. It's explicit (you can see in the code
-> exactly what gets loaded), it's one round trip, and it doesn't depend on any opt-in magic. The other
-> two strategies exist for specific situations — and one of them is a trap.
+> 📝 `Include` is the tool to reach for **by default**. It's explicit (you can see exactly what gets
+> loaded), one round trip, and doesn't depend on opt-in magic. The other two strategies exist for specific
+> situations — and one of them is a trap.
 
 ## Way 2: Lazy loading (off by default — and how it bites)
 
@@ -118,7 +117,7 @@ optionsBuilder
 *What just happened:* EF replaces your `Blog` with a generated subclass (a "proxy") that overrides the
 `Posts` getter. When you read `blog.Posts`, the proxy notices the collection isn't loaded yet and fires a
 `SELECT * FROM Posts WHERE BlogId = @id` right then. Convenient — `blog.Posts` "just works" with no
-`Include`. But that convenience is exactly what makes it dangerous, as you'll see in the next section.
+`Include`. That convenience is exactly what makes it dangerous, as the next section shows.
 
 ## Way 3: Explicit loading (load it yourself, later)
 
@@ -138,13 +137,12 @@ ctx.Entry(post).Reference(p => p.Blog).Load();
 
 *What just happened:* `ctx.Entry(blog)` gives you EF's tracking handle for that object.
 `.Collection(...).Load()` runs one query to fill `blog.Posts`; `.Reference(...).Load()` does the same for
-a single related entity like `post.Blog`. It's explicit and predictable, and useful when you only
-*sometimes* need the related data — but if you call it inside a loop, you've reinvented the N+1 problem
-by hand.
+a single related entity like `post.Blog`. Explicit and predictable, useful when you only *sometimes* need
+the related data — but call it inside a loop and you've reinvented the N+1 problem by hand.
 
 ## ⚠️ The N+1 trap — the heart of this phase
 
-Here is the disaster. You load a list of blogs, then loop over them and touch a navigation:
+The disaster: you load a list of blogs, then loop over them and touch a navigation.
 
 ```csharp
 var blogs = ctx.Blogs.ToList();                 // Query #1
@@ -153,13 +151,13 @@ foreach (var blog in blogs)
 ```
 
 *What just happened:* line 1 runs **1** query to get the blogs. Then, with lazy loading enabled, *every
-single* `blog.Posts` access fires its own `SELECT ... WHERE BlogId = @id`. If you have 100 blogs, that's
+single* `blog.Posts` access fires its own `SELECT ... WHERE BlogId = @id`. With 100 blogs, that's
 **1 + 100 = 101** queries to render one page. That's the N+1 trap: **1** query for the parents, plus
 **N** more — one per parent — for the children. The loop looks innocent; the database is on fire.
 
 It's insidious precisely *because* it looks like normal C#. Nothing in `blog.Posts.Count` screams
-"network round trip." With lazy loading on, the queries hide behind property access, so the code reads
-fine and only the SQL log (or a slow page under load) reveals 101 trips where there should be 1 or 2.
+"network round trip." With lazy loading on, queries hide behind property access, so the code reads fine
+and only the SQL log (or a slow page under load) reveals 101 trips where there should be 1 or 2.
 
 The SQL log under N+1 looks like this — and keeps going:
 
@@ -186,16 +184,15 @@ foreach (var blog in blogs)
 posts in the original round trip via a join, so by the time the loop runs, every `blog.Posts` is already
 in memory and `.Count` touches nothing but RAM. One trip, not 101.
 
-> 💡 This is why `Include` is the default and lazy loading is the footgun: lazy loading turns a missing
-> `Include` into N silent queries instead of one loud error. The cure is the habit you've been building
-> all guide — **watch the SQL EF generates**. If you see the same query shape repeating in a loop in your
-> logs, that's N+1. See [Why Is My Query Slow?](/guides/why-is-my-query-slow) for reading and diagnosing
-> query plans.
+> 💡 This is why `Include` is the default and lazy loading is the footgun: it turns a missing `Include`
+> into N silent queries instead of one loud error. The cure is the habit you've been building all
+> guide — **watch the SQL EF generates**. The same query shape repeating in a loop in your logs is N+1.
+> See [Why Is My Query Slow?](/guides/why-is-my-query-slow) for reading and diagnosing query plans.
 
 ## Avoiding over-fetch: projection with `Select`
 
 Sometimes the issue isn't *too many* queries — it's *one query that drags too much*. If a page only needs
-each blog's URL and how many posts it has, loading every full `Post` entity is waste. Project instead:
+each blog's URL and post count, loading every full `Post` entity is waste. Project instead.
 
 ```csharp
 var summaries = ctx.Blogs
@@ -208,18 +205,17 @@ var summaries = ctx.Blogs
 ```
 
 *What just happened:* `Select` projects straight into a lightweight anonymous shape. EF turns
-`b.Posts.Count` into a SQL aggregate — a correlated subquery or a grouped count — so you get one
-efficient query that returns two columns per blog and loads **no entities at all** (nothing gets tracked,
-nothing's hydrated into `Post` objects). When you only need a few fields, projection beats `Include`
-hands down.
+`b.Posts.Count` into a SQL aggregate — a correlated subquery or grouped count — so you get one efficient
+query returning two columns per blog and loading **no entities at all** (nothing tracked, nothing
+hydrated into `Post` objects). When you only need a few fields, projection beats `Include` hands down.
 
 ```sql
 SELECT b.Url, (SELECT COUNT(*) FROM Posts AS p WHERE p.BlogId = b.Id) AS PostCount
 FROM Blogs AS b;
 ```
 
-*What just happened:* the count happens in the database, not in C#. No posts cross the wire — just the URL
-and a number per blog.
+*What just happened:* the count happens in the database, not in C#. No posts cross the wire — just the
+URL and a number per blog.
 
 ## ⚠️ Cartesian explosion and `AsSplitQuery`
 
@@ -233,9 +229,9 @@ var blogs = ctx.Blogs
 ```
 
 *What just happened:* joining `Blogs` to both `Posts` *and* `Authors` produces a row for every
-*combination* — a blog with 50 posts and 10 authors yields 50 × 10 = 500 rows, most of them repeating the
-same data. That's a **cartesian explosion**: the result set balloons, the wire fills with duplicates, and
-EF burns time de-duplicating. One query, but a brutally fat one.
+*combination* — a blog with 50 posts and 10 authors yields 50 × 10 = 500 rows, most repeating the same
+data. That's a **cartesian explosion**: the result set balloons, the wire fills with duplicates, and EF
+burns time de-duplicating. One query, but a brutally fat one.
 
 The fix is to let EF split it into separate queries:
 
@@ -249,15 +245,15 @@ var blogs = ctx.Blogs
 
 *What just happened:* `AsSplitQuery()` tells EF to run one `SELECT` for blogs, one for their posts, one
 for their authors — then stitch the graph together in memory. You trade a few extra round trips for
-avoiding the multiplicative row blowup. It's the right call when multiple collection `Include`s would
-otherwise explode. (The tradeoff: separate queries aren't a single consistent snapshot — fine for most
-reads, something to weigh under heavy concurrent writes.)
+avoiding the multiplicative row blowup. The right call when multiple collection `Include`s would otherwise
+explode. (Tradeoff: separate queries aren't a single consistent snapshot — fine for most reads, something
+to weigh under heavy concurrent writes.)
 
 > 📝 The N+1 problem is not an EF Core quirk — it's universal to every ORM. You'll meet the exact same
 > trap (and the exact same `Include`-style fix) in Java's
 > [Hibernate & JPA](/guides/hibernate-and-jpa-from-zero) and Go's [GORM](/guides/gorm-from-zero). The
-> defense is always the same across all three: watch the SQL, and load the graph you need in as few trips
-> as possible — see [Why Is My Query Slow?](/guides/why-is-my-query-slow).
+> defense is always the same: watch the SQL, load the graph you need in as few trips as possible — see
+> [Why Is My Query Slow?](/guides/why-is-my-query-slow).
 
 ## Recap
 

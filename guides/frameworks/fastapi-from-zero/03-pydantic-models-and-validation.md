@@ -11,31 +11,31 @@ updated: 2026-06-22
 
 # Pydantic Models & Validation
 
-In [Phase 2](02-path-operations-and-parameters.md) you saw how a type hint on a path or query parameter
-quietly does real work: FastAPI reads the hint and parses, validates, and converts the value for you. That
-trick has a name, and it's a whole library — **Pydantic**. Path and query parameters are the small version;
-the full power shows up when a client sends you a JSON *body* and you need to know, with confidence, that it
-has the right shape before you touch it.
+[Phase 2](02-path-operations-and-parameters.md) showed a type hint on a path or query parameter quietly
+doing real work: FastAPI reads the hint and parses, validates, and converts the value for you. That
+trick has a name, and it's a whole library — **Pydantic**. Path and query parameters are the small
+version; the full power shows up when a client sends a JSON *body* and you need to know, with
+confidence, that it has the right shape before you touch it.
 
-Here's the mental model to carry through this phase: a Pydantic model is a **typed gate**. You describe the
-shape of the data once — a class with typed fields — and Pydantic stands at the door, checking every piece
-of data that tries to come in. Good data passes through as a clean, typed Python object. Bad data gets
-turned away with a precise error. You stop writing `if not isinstance(...)` checks by hand; the shape *is*
-the check.
+The mental model for this phase: a Pydantic model is a **typed gate**. You describe the shape of the
+data once — a class with typed fields — and Pydantic stands at the door, checking every piece of data
+that tries to come in. Good data passes through as a clean, typed Python object. Bad data gets turned
+away with a precise error. You stop writing `if not isinstance(...)` checks by hand; the shape *is* the
+check.
 
 ## What Pydantic actually is
 
 📝 **Pydantic** is a data-validation library. You define a class that extends `BaseModel`, give it typed
-fields, and Pydantic validates and coerces any data you build it from against those types — **at runtime**.
-This is the crucial difference from the [type hints](/guides/python-from-zero) you met in Python: a plain
-hint like `age: int` is a note for humans and tools that the interpreter ignores while running. Pydantic
-*enforces* the same hint when the object is constructed.
+fields, and Pydantic validates and coerces any data you build it from against those types — **at
+runtime**. This is the crucial difference from the [type hints](/guides/python-from-zero) you met in
+Python: a plain hint like `age: int` is a note for humans and tools that the interpreter ignores while
+running. Pydantic *enforces* the same hint when the object is constructed.
 
-The other thing to know up front: **Pydantic is separate from FastAPI.** It's its own library, usable in any
-Python program — config loading, parsing files, cleaning data. FastAPI just leans on it hard: every request
-body you'll define is a Pydantic model. That separation is good news for *you* right now, because it means
-the examples in this phase are **pure Python and run on this page**. No server, no `uvicorn` — you can watch
-validation happen and succeed and fail, live.
+The other thing to know up front: **Pydantic is separate from FastAPI.** It's its own library, usable in
+any Python program — config loading, parsing files, cleaning data. FastAPI just leans on it hard: every
+request body you'll define is a Pydantic model. That's good news right now, because the examples in this
+phase are **pure Python and run on this page** — no server, no `uvicorn` — so you can watch validation
+succeed and fail, live.
 
 > 💡 **Key point.** A Pydantic model is the same *describe-the-fields* idea as a dataclass
 > ([Python From Zero, Phase 15](/guides/python-from-zero)), with one decisive addition: it **checks and
@@ -44,8 +44,8 @@ validation happen and succeed and fail, live.
 
 ## Your first model — and watch it reject bad data
 
-Let's model a `Book` for our book service: a title, an author, a year, and a price. Extending `BaseModel`
-and listing typed fields is the whole definition. This block runs — build a book from a dict, print it, then
+Model a `Book` for our book service: a title, an author, a year, and a price. Extending `BaseModel` and
+listing typed fields is the whole definition. This block runs — build a book from a dict, print it, then
 feed it garbage and see what Pydantic does.
 
 ```python runnable
@@ -69,10 +69,10 @@ try:
 except ValidationError as e:
     print(e)
 ```
-*What just happened:* the first `Book(**data)` sailed through — Pydantic checked each field against its type
-and handed you a real `Book` object with `.title`, `.author`, `.year`, and `.price` attributes. The second
-attempt raised a `ValidationError`, and look at how *specific* it is: it tells you `year` couldn't be parsed
-as an integer **and** that `price` is required but missing — both problems, in one report, pointing at the
+*What just happened:* the first `Book(**data)` sailed through — Pydantic checked each field against its
+type and handed you a real `Book` object with `.title`, `.author`, `.year`, and `.price` attributes. The
+second attempt raised a `ValidationError`, and it's specific: it tells you `year` couldn't be parsed as
+an integer **and** that `price` is required but missing — both problems, in one report, pointing at the
 exact fields. You didn't write a single validation check. The class *is* the validation.
 
 Contrast that with a plain dataclass, which trusts whatever you give it:
@@ -92,17 +92,17 @@ book = Book(title="Junk", author="?", year="not-a-year", price="free")
 print(book)
 print(type(book.year))   # it's a str, not an int — the bug is now inside your object
 ```
-*What just happened:* the dataclass accepted `year="not-a-year"` and `price="free"` without complaint and
-stored them as strings. The `: int` and `: float` hints were ignored at runtime — exactly as Python type
-hints always are. The bad data is now sitting *inside* your object, waiting to blow up somewhere later when
-you try arithmetic on a string. That's the gap Pydantic closes: it moves the failure to the *boundary*,
-where it's cheap to diagnose, instead of letting it leak deep into your code.
+*What just happened:* the dataclass accepted `year="not-a-year"` and `price="free"` without complaint
+and stored them as strings. The `: int` and `: float` hints were ignored at runtime, as Python type hints
+always are. The bad data now sits *inside* your object, waiting to blow up later when you try arithmetic
+on a string. That's the gap Pydantic closes: it moves the failure to the *boundary*, where it's cheap to
+diagnose, instead of letting it leak deep into your code.
 
 ## Field constraints — rules that live with the type
 
-Type-correct isn't the same as *valid*. A price of `-5.0` is a perfectly good `float` and a perfectly absurd
-price. A year of `99` parses as an `int` but no book was printed then. Pydantic lets you attach **constraints**
-to a field with `Field(...)`, so the rule lives right next to the type it guards.
+Type-correct isn't the same as *valid*. A price of `-5.0` is a perfectly good `float` and a perfectly
+absurd price. A year of `99` parses as an `int` but no book was printed then. Pydantic lets you attach
+**constraints** to a field with `Field(...)`, so the rule lives right next to the type it guards.
 
 ```python runnable
 from pydantic import BaseModel, Field, ValidationError
@@ -124,24 +124,24 @@ except ValidationError as e:
     print(e)
 ```
 *What just happened:* the valid book passed because it cleared every rule. The invalid one tripped three
-constraints at once — `title` was empty (`min_length=1`), `year` of `1200` fell below `ge=1450`, and `price`
-of `0` failed `gt=0` (greater than, not greater-or-equal) — and Pydantic reported all three with the limits
-it expected. `gt` is "greater than," `ge` is "greater than or equal," `le` is "less than or equal" (and `lt`
-exists too); `min_length` works on strings and lists.
+constraints at once — `title` was empty (`min_length=1`), `year` of `1200` fell below `ge=1450`, and
+`price` of `0` failed `gt=0` (greater than, not greater-or-equal) — and Pydantic reported all three with
+the limits it expected. `gt` is "greater than," `ge` is "greater than or equal," `le` is "less than or
+equal" (and `lt` exists too); `min_length` works on strings and lists.
 
-💡 This is **declarative validation**: you *declare* what valid looks like as part of the field, and Pydantic
-figures out *how* to check it. The rule and the data it protects never drift apart — change the field, the
-constraint moves with it. Compare that to scattering hand-written `if price <= 0: raise ...` checks across
-every function that touches a book.
+💡 This is **declarative validation**: you *declare* what valid looks like as part of the field, and
+Pydantic figures out *how* to check it. The rule and the data it protects never drift apart — change the
+field, the constraint moves with it. Compare that to scattering hand-written `if price <= 0: raise ...`
+checks across every function that touches a book.
 
 ## Using a model as a request body
 
-Now the payoff for FastAPI. In [Phase 2](02-path-operations-and-parameters.md), a parameter typed as a simple
-type (`int`, `str`) became a path or query parameter. Here's the rule that completes the picture: **when you
-type a parameter as a Pydantic model, FastAPI reads it from the JSON request body.** It pulls the raw JSON,
-hands it to your model for validation, and — if it passes — gives your function a fully typed object. If it
-fails, FastAPI never even calls your function; it returns a `422 Unprocessable Entity` automatically, with
-the same precise error detail you saw above.
+Now the payoff for FastAPI. In [Phase 2](02-path-operations-and-parameters.md), a parameter typed as a
+simple type (`int`, `str`) became a path or query parameter. The rule that completes the picture: **when
+you type a parameter as a Pydantic model, FastAPI reads it from the JSON request body.** It pulls the raw
+JSON, hands it to your model for validation, and — if it passes — gives your function a fully typed
+object. If it fails, FastAPI never even calls your function; it returns a `422 Unprocessable Entity`
+automatically, with the same precise error detail you saw above.
 
 This endpoint code needs a running server, so it's shown as plain Python (run it yourself with the commands
 from Phase 1):
@@ -165,8 +165,8 @@ def create_book(book: Book):        # typed as the model → comes from the JSON
 ```
 *What just happened:* the single line `book: Book` did everything. FastAPI saw a parameter typed as a
 `BaseModel`, so it knew to read the request body, validate it against `Book`, and pass you a ready-to-use
-object. Inside `create_book` there are **zero** validation checks — by the time your code runs, the data is
-guaranteed valid. That guarantee is the whole point: the gate is at the door, not scattered through the house.
+object. Inside `create_book` there are **zero** validation checks — by the time your code runs, the data
+is guaranteed valid. The gate is at the door, not scattered through the house.
 
 A valid request — this JSON body sails through and your function runs:
 
@@ -200,19 +200,19 @@ FastAPI returns `422` with a body like this:
   ]
 }
 ```
-*What just happened:* FastAPI turned your model's `ValidationError` into a clean HTTP `422` response. Each
-entry in `detail` points at the offending field via `loc` (`["body", "year"]` means "the `year` field in the
-request body"), explains what was expected, and echoes the bad `input`. The client gets a genuinely useful
-error, and you wrote none of it — it fell straight out of the model definition.
+*What just happened:* FastAPI turned your model's `ValidationError` into a clean HTTP `422` response.
+Each entry in `detail` points at the offending field via `loc` (`["body", "year"]` means "the `year`
+field in the request body"), explains what was expected, and echoes the bad `input`. The client gets a
+genuinely useful error, and you wrote none of it — it fell straight out of the model definition.
 
 ## Coercion, optionals, and nesting
 
 A few behaviors round out the mental model.
 
 📝 **Coercion.** Pydantic doesn't just check types — it *converts* compatible ones. Hand it the string
-`"2020"` for an `int` field and it gives you the integer `2020`. This is exactly why JSON works smoothly:
-numbers arriving as strings get tidied up. But it only coerces what's *sensibly* convertible — `"not-a-year"`
-has no integer meaning, so it's rejected rather than guessed at.
+`"2020"` for an `int` field and it gives you the integer `2020`. This is why JSON works smoothly: numbers
+arriving as strings get tidied up. But it only coerces what's *sensibly* convertible — `"not-a-year"` has
+no integer meaning, so it's rejected rather than guessed at.
 
 ```python runnable
 from pydantic import BaseModel
@@ -229,14 +229,13 @@ print(type(book.year), type(book.price))   # int and float — converted, not st
 ```
 *What just happened:* you passed `year` and `price` as strings, and Pydantic coerced them to a real `int`
 and `float` because those strings have an unambiguous numeric meaning. The printed types confirm the
-conversion. Try changing `"1965"` to `"nineteen"` and you'll get a `ValidationError` instead — coercion has
-limits, and gibberish hits them.
+conversion. Try changing `"1965"` to `"nineteen"` and you'll get a `ValidationError` instead — coercion
+has limits, and gibberish hits them.
 
 ⚠️ **Coercion can surprise you.** Lax coercion is convenient but occasionally too generous — depending on
-configuration, things like `"1"` might slip into a `bool`, or a float might be quietly truncated. If you ever
+configuration, things like `"1"` might slip into a `bool`, or a float might be quietly truncated. If you
 need exact-type-only behavior (no string-to-int favors), Pydantic offers **strict mode** to turn coercion
-off per-field or per-model. For now, know that the default is *lax* and helpful, and that strict mode exists
-for when "helpful" isn't what you want.
+off per-field or per-model. The default is *lax* and helpful; strict mode exists for when it isn't.
 
 **Optional fields with defaults.** Give a field a default value and it becomes optional — callers can leave
 it out. Use `X | None = None` for "might genuinely be absent."
@@ -253,9 +252,9 @@ class Book(BaseModel):
 print(Book(title="Dune", author="Frank Herbert"))
 print(Book(title="Dune", author="Frank Herbert", in_stock=False, discount=2.50))
 ```
-*What just happened:* `in_stock` and `discount` both have defaults, so the first `Book(...)` — which supplies
-only `title` and `author` — is completely valid; Pydantic filled in `in_stock=True` and `discount=None`. The
-second call overrode both. Required fields are the ones *without* a default.
+*What just happened:* `in_stock` and `discount` both have defaults, so the first `Book(...)` — supplying
+only `title` and `author` — is completely valid; Pydantic filled in `in_stock=True` and `discount=None`.
+The second call overrode both. Required fields are the ones *without* a default.
 
 **Nesting.** A model field can be typed as *another model*. Pydantic validates the whole tree — outer object,
 inner object, all the way down.
@@ -281,15 +280,15 @@ book = Book(**data)
 print(book)
 print(book.author.name)     # nested object, fully typed
 ```
-*What just happened:* `author: Author` told Pydantic the `author` field is itself a model, so it validated the
-nested `{"name": ..., "country": ...}` dict against `Author` and gave you `book.author` as a real `Author`
-object — hence `book.author.name` works with full typing. Mistype anything inside the nested dict and you'd
-get a `ValidationError` pointing at the nested path, like `["author", "country"]`.
+*What just happened:* `author: Author` told Pydantic the `author` field is itself a model, so it
+validated the nested `{"name": ..., "country": ...}` dict against `Author` and gave you `book.author` as
+a real `Author` object — hence `book.author.name` works with full typing. Mistype anything inside the
+nested dict and you'd get a `ValidationError` pointing at the nested path, like `["author", "country"]`.
 
 💡 **The payoff, stated plainly.** Define the shape once as a model, and *everything* follows from it:
-validation (this phase), automatic `422` errors, the interactive docs that show the exact schema, and — next
-phase — serialization of your *responses*. One definition, many free features. That's the FastAPI promise from
-the overview made concrete: **types are the contract.**
+validation (this phase), automatic `422` errors, the interactive docs that show the exact schema, and —
+next phase — serialization of your *responses*. One definition, many free features: **types are the
+contract.**
 
 ## Recap
 
@@ -307,8 +306,8 @@ the overview made concrete: **types are the contract.**
 6. **Optional fields** get defaults (`in_stock: bool = True`, or `X | None = None`); **nested models** let
    one model contain another, validated all the way down.
 
-Next phase flips the direction: instead of validating data coming *in*, you'll use models to shape and
-control the data going *out* — response models, hidden fields, and honest status codes.
+Next phase flips the direction: instead of validating data coming *in*, use models to shape and control
+data going *out* — response models, hidden fields, and honest status codes.
 
 ## Quick check
 

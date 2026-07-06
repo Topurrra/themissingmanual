@@ -11,9 +11,9 @@ updated: 2026-06-23
 
 # Entity Models & Migrations
 
-Here's the mental model to carry through this whole phase: **a class is a table.** You write an ordinary C# class, EF Core looks at it, and it figures out what the table should look like — the columns, the types, the primary key — mostly without you saying a word. When you later change that class, you don't reach for a SQL editor. You generate a **migration**: a small, versioned record of "the schema went from *this* to *that*," which you commit alongside your code and apply to the database when you deploy.
+The mental model for this phase: **a class is a table.** You write an ordinary C# class, EF Core looks at it, and figures out the table's columns, types, and primary key — mostly without you saying a word. When you later change that class, you don't reach for a SQL editor. You generate a **migration**: a small, versioned record of "the schema went from *this* to *that*," committed alongside your code and applied when you deploy.
 
-So there are two halves to learn. First, how EF Core reads your classes (and how you nudge it when its guesses aren't quite right). Second, how migrations turn those classes into real, evolving database schema you can trust in production.
+Two halves to learn: how EF Core reads your classes (and how you nudge it when its guesses are wrong), and how migrations turn those classes into real, evolving database schema you can trust in production.
 
 > 📝 In [Phase 1](01-what-efcore-is.md) you built a `DbContext` with `DbSet<T>` properties. Each `DbSet<Blog> Blogs` is one table — but EF Core needs the actual `Blog` *class* to know what goes in it. That class is what we're writing now.
 
@@ -38,7 +38,7 @@ public class Post
 }
 ```
 
-*What just happened:* EF Core reads this class and concludes: a table with an `Id` column as the primary key (and, because it's an `int` named `Id`, an auto-incrementing one), a `Title` text column, and a `Content` text column. The `[Required, MaxLength(200)]` on `Title` is the one place we overrode a convention — more on that in a second. The `= ""` initializers aren't an EF thing; they just keep C#'s nullable-reference warnings quiet by giving the strings a non-null default.
+*What just happened:* EF Core reads this class and concludes: a table with `Id` as the primary key (auto-incrementing, since it's an `int` named `Id`), a `Title` text column, and a `Content` text column. `[Required, MaxLength(200)]` on `Title` is the one place we overrode a convention — more on that shortly. The `= ""` initializers aren't an EF thing; they just keep C#'s nullable-reference warnings quiet by giving the strings a non-null default.
 
 And the matching `Blog`:
 
@@ -50,9 +50,9 @@ public class Blog
 }
 ```
 
-*What just happened:* Same story — `Id` is the key, `Url` is a column. No annotations here, so EF Core uses pure conventions: `Url` becomes a nullable-or-not text column with no length cap. We'll tighten that up next, because "no length cap" is rarely what you actually want in a database.
+*What just happened:* Same story — `Id` is the key, `Url` is a column. No annotations here, so EF Core uses pure conventions: `Url` becomes a text column with no length cap. We'll tighten that next, since "no length cap" is rarely what you want in a database.
 
-> 💡 Conventions are doing real work for you. You didn't declare a single column type, key, or constraint by hand — you described your data as C# types and EF Core inferred a reasonable schema. You only step in when a guess is wrong.
+> 💡 Conventions do real work for you. You didn't declare a single column type, key, or constraint by hand — you described your data as C# types and EF Core inferred a reasonable schema. You only step in when a guess is wrong.
 
 ## Two ways to override: annotations vs the Fluent API
 
@@ -86,17 +86,17 @@ public class BloggingContext : DbContext
 }
 ```
 
-*What just happened:* We told EF Core that `Blog.Url` is required and capped at 200 characters — the same kind of rule `[Required, MaxLength(200)]` expresses, but written centrally instead of on the property. `ModelBuilder` is the configuration surface; `b.Entity<Blog>().Property(...)` drills down to one column and chains the rules onto it.
+*What just happened:* We told EF Core that `Blog.Url` is required and capped at 200 characters — the same rule `[Required, MaxLength(200)]` expresses, but written centrally instead of on the property. `ModelBuilder` is the configuration surface; `b.Entity<Blog>().Property(...)` drills down to one column and chains the rules onto it.
 
-Why two systems? Annotations are concise and live next to the data, which is great for simple rules. But the Fluent API is the more powerful of the two — it can express things annotations can't (composite keys, relationships, indexes, default values, and much more), and it keeps your entity classes free of EF-specific attributes if you want them to stay plain. **If you ever configure the same thing both ways, the Fluent API wins.** That precedence is worth memorizing: a confusing "but I set `[MaxLength]`!" bug is almost always a Fluent API line quietly overriding it.
+Why two systems? Annotations are concise and live next to the data — great for simple rules. The Fluent API is more powerful: it can express things annotations can't (composite keys, relationships, indexes, default values, and more), and keeps entity classes free of EF-specific attributes. **If you ever configure the same thing both ways, the Fluent API wins.** Worth memorizing: a confusing "but I set `[MaxLength]`!" bug is almost always a Fluent API line quietly overriding it.
 
-> ⚠️ Don't sprinkle both for the *same* property and hope for the best. Pick a default approach for your project (many teams lean Fluent API for anything non-trivial) and reserve mixing for deliberate overrides you actually understand.
+> ⚠️ Don't sprinkle both for the *same* property and hope for the best. Pick a default approach (many teams lean Fluent API for anything non-trivial) and reserve mixing for deliberate overrides you actually understand.
 
 ## Migrations: versioning your schema
 
-You've got classes. Now you need an actual database with actual tables — and, crucially, a way to *change* that schema later without losing data or guessing at hand-written `ALTER TABLE` statements. That's what migrations are.
+You've got classes. Now you need an actual database with actual tables — and a way to *change* that schema later without losing data or hand-writing `ALTER TABLE` statements. That's what migrations are.
 
-First, install the design-time pieces. The `Design` package powers the tooling; the `dotnet-ef` global tool gives you the commands:
+First, install the design-time pieces: the `Design` package powers the tooling, and the `dotnet-ef` global tool gives you the commands.
 
 ```bash
 dotnet add package Microsoft.EntityFrameworkCore.Design
@@ -109,7 +109,7 @@ Now create your first migration:
 dotnet ef migrations add InitialCreate
 ```
 
-*What just happened:* EF Core compared your current model (the `Blog` and `Post` classes plus any Fluent config) against the *last* migration — and since there isn't one yet, the "diff" is "create everything." It wrote a new C# migration class into a `Migrations/` folder. That class has two methods: `Up()` (apply the change) and `Down()` (undo it). Nothing has touched your database yet — a migration is just a *plan*.
+*What just happened:* EF Core compared your current model (the `Blog` and `Post` classes plus any Fluent config) against the *last* migration — since there isn't one yet, the "diff" is "create everything." It wrote a new C# migration class into a `Migrations/` folder, with two methods: `Up()` (apply the change) and `Down()` (undo it). Nothing has touched your database yet — a migration is just a *plan*.
 
 Here's a peek at what that generated class looks like:
 
@@ -138,7 +138,7 @@ public partial class InitialCreate : Migration
 }
 ```
 
-*What just happened:* The migration describes your schema as code, not raw SQL — `Up()` creates the tables (notice `Url` came out as `maxLength: 200, nullable: false`, exactly the Fluent rule we set), and `Down()` drops them so the change is reversible. EF Core translates this to dialect-specific SQL at apply time, which is why the same migration can target SQLite, SQL Server, or Postgres.
+*What just happened:* The migration describes your schema as code, not raw SQL — `Up()` creates the tables (notice `Url` came out as `maxLength: 200, nullable: false`, exactly the Fluent rule we set), and `Down()` drops them so the change is reversible. EF Core translates this to dialect-specific SQL at apply time, so the same migration can target SQLite, SQL Server, or Postgres.
 
 Now apply it:
 
@@ -146,26 +146,26 @@ Now apply it:
 dotnet ef database update
 ```
 
-*What just happened:* EF Core ran the `Up()` of every pending migration against your database — creating the `Blogs` and `Posts` tables for real. It also created a bookkeeping table (`__EFMigrationsHistory`) that records which migrations have been applied, so next time it only runs the new ones. Run `database update` again right now and nothing happens: there's nothing pending.
+*What just happened:* EF Core ran the `Up()` of every pending migration against your database — creating the `Blogs` and `Posts` tables for real. It also created a bookkeeping table (`__EFMigrationsHistory`) that records which migrations have applied, so next time it only runs the new ones. Run `database update` again right now and nothing happens — nothing's pending.
 
-If you want to *see* the SQL without touching the database, `dotnet ef migrations script` prints it. Get in the habit of reading it — it's the same instinct from Phase 1 of watching the SQL EF Core generates.
+If you want to *see* the SQL without touching the database, `dotnet ef migrations script` prints it. Get in the habit of reading it — same instinct as watching the SQL EF Core generates from Phase 1.
 
 ## Migrations vs `EnsureCreated()` — don't mix them
 
-There's a tempting shortcut you'll see in tutorials: `ctx.Database.EnsureCreated()`. It looks at your model and creates the schema in one shot, no migration files, no tooling.
+A tempting shortcut you'll see in tutorials: `ctx.Database.EnsureCreated()`. It looks at your model and creates the schema in one shot, no migration files, no tooling.
 
 ```csharp
 // Dev/prototyping only — NOT a migration.
 ctx.Database.EnsureCreated();
 ```
 
-*What just happened:* EF Core created the tables directly from your current model. Fast and convenient for a throwaway prototype or a test database. But notice what it *didn't* do: it created no migration, recorded nothing in the history table, and gave you no `Down()` to reverse anything.
+*What just happened:* EF Core created the tables directly from your current model — fast and convenient for a throwaway prototype or test database. But notice what it *didn't* do: no migration created, nothing recorded in the history table, no `Down()` to reverse anything.
 
-> ⚠️ `EnsureCreated()` and migrations are two different worlds, and they don't cooperate. `EnsureCreated()` creates the schema **once** and has no concept of evolving it — there's no "add a column later." Worse, a database made by `EnsureCreated()` has no migrations history, so `database update` won't know where to start. **Pick one per database.** For anything real, that's migrations.
+> ⚠️ `EnsureCreated()` and migrations are two different worlds that don't cooperate. `EnsureCreated()` creates the schema **once** with no concept of evolving it — there's no "add a column later." Worse, a database made by `EnsureCreated()` has no migrations history, so `database update` won't know where to start. **Pick one per database.** For anything real, that's migrations.
 
 ## A migration per change, committed and deployed
 
-The workflow once you're rolling is rhythmic, and it's worth internalizing:
+The workflow once you're rolling, worth internalizing:
 
 1. Change a model (add a property, a new entity, a constraint).
 2. `dotnet ef migrations add DescribeTheChange` — generates the diff.
@@ -173,9 +173,9 @@ The workflow once you're rolling is rhythmic, and it's worth internalizing:
 4. Commit the migration files **with the code change** — they're part of your source history.
 5. On deploy, run `dotnet ef database update` (or apply the migration as part of your release).
 
-Each model change earns its own migration. That gives you a readable, reviewable timeline of how your schema evolved — and the ability to roll forward or back deliberately.
+Each model change earns its own migration — a readable, reviewable timeline of how your schema evolved, with the ability to roll forward or back deliberately.
 
-> 💡 Treat migration files like code, because they are. They get reviewed in pull requests, they live in version control, and the order they're applied in matters. We'll cover the *production* side — applying migrations safely on a live database, and handling concurrency — in [Phase 8: Transactions & Migrations in Production](08-transactions-and-migrations.md). For now, the habit to build is: model change → migration → commit.
+> 💡 Treat migration files like code, because they are: reviewed in pull requests, tracked in version control, order matters. We'll cover the *production* side — applying migrations safely on a live database, handling concurrency — in [Phase 8: Transactions & Migrations in Production](08-transactions-and-migrations.md). For now, the habit to build is: model change → migration → commit.
 
 ## Recap
 

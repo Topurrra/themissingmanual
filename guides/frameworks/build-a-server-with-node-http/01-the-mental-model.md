@@ -11,12 +11,10 @@ updated: 2026-06-23
 
 # The node:http Mental Model
 
-Here's the thing nobody tells you before they hand you Express: Node already has a complete web server,
-built right in. No `npm install`, no dependencies — it's the **`node:http`** module, and it can listen on
-a port, accept connections, parse requests, and write responses all on its own. Express and Fastify don't
-replace it. They *wrap* it. This is the **roots** guide, and the payoff is real: once you've built a small
-API with only `node:http`, `app.get(...)` stops being magic, because you'll have written the thing it's
-hiding.
+Node already has a complete web server built in. No `npm install`, no dependencies — it's the
+**`node:http`** module, and it can listen on a port, accept connections, parse requests, and write
+responses all on its own. Express and Fastify don't replace it. They *wrap* it. Build a small API with
+only `node:http` and `app.get(...)` stops being magic — you'll have written the thing it's hiding.
 
 > 📝 This is a **roots** guide. It assumes you know **JavaScript**/Node — functions, callbacks,
 > `async`/`await` ([JavaScript From Zero](/guides/javascript-from-zero)) — and basic **HTTP**: methods,
@@ -26,12 +24,11 @@ hiding.
 
 ## The whole model is one function
 
-Before any code, hold the picture in your head — then the code is just names attached to ideas you already
-have. The entire `node:http` server is this: you create a server and hand it **one function**. Node calls
-that function — the **request listener** — once for every request that arrives. Its signature is
-`(req, res)`: `req` is the incoming request, `res` is the response you're going to write back.
+The entire `node:http` server is this: you create a server and hand it **one function**. Node calls that
+function — the **request listener** — once for every request that arrives. Its signature is `(req, res)`:
+`req` is the incoming request, `res` is the response you're going to write back.
 
-That's the whole architecture, and here's the sentence to carry through the rest of the guide:
+Carry this sentence through the rest of the guide:
 
 💡 **`createServer` calls your `(req, res)` listener for every request; routing and middleware are code
 *you* write.** There is no built-in router that maps `/messages` to a function. There is no built-in
@@ -48,14 +45,13 @@ flowchart LR
 
 *What just happened:* a client sends a request; the server Node built for you accepts it and calls your
 one listener with two arguments. Your function reads what it needs from `req`, sets a status and headers on
-`res`, writes a body, and ends the response. Node ships it back. Notice there's nothing between the server
-and your function — no routing layer deciding *which* function to call, because there's only ever one.
+`res`, writes a body, and ends the response. Node ships it back. There's nothing between the server and
+your function — no routing layer deciding *which* function to call, because there's only ever one.
 Branching to different behavior per URL is something you add.
 
 ## The smallest server that works
 
-Now the picture in code. This is a complete Node program — a server that answers every request with a line
-of plain text.
+A complete Node program — a server that answers every request with a line of plain text.
 
 ```javascript
 const http = require('node:http');

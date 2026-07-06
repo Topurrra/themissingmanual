@@ -11,19 +11,19 @@ updated: 2026-06-22
 
 # Install & Your First Program
 
-Before C# is fun, you need two things on your machine: a tool that turns your code into something runnable, and one tiny program that proves it works. With modern .NET both are quick, and the very first program teaches you something about how C# *thinks* - that your source isn't run directly, but compiled to a portable in-between form that a runtime turns into real machine code as your program runs. Let's get there, and build the mental model along the way.
+Before C# is fun, you need a tool that turns your code into something runnable, and one tiny program that proves it works. With modern .NET both are quick - and the first program already teaches you how C# *thinks*: source isn't run directly, but compiled to a portable in-between form a runtime turns into real machine code as it runs.
 
 ## The mental model: your code becomes IL, the CLR runs it
 
-Here's the thing to hold in your head before anything else. When you "run" C#, three layers are involved, and they're often confused:
+When you "run" C#, three often-confused layers are involved:
 
-- **The .NET SDK** - the developer toolkit. It contains the C# compiler, the `dotnet` command-line tool, project templates, and everything you need to *build* software. This is what you install to write code.
+- **The .NET SDK** - the developer toolkit: the C# compiler, the `dotnet` command-line tool, project templates, and everything needed to *build* software. This is what you install to write code.
 - **The .NET runtime** - what your finished program needs to *run*. The SDK includes a runtime, so installing the SDK gives you both. (End users who only run .NET apps install just the runtime, not the whole SDK.)
 - **The CLR (Common Language Runtime)** - the engine *inside* the runtime that actually executes your program: it loads code, manages memory (garbage collection), and turns the portable code into native instructions.
 
-📝 **Terminology.** SDK = build tools (compiler + CLI + a runtime). Runtime = the thing that runs a finished app. CLR = the execution engine at the heart of the runtime. Rule of thumb: install the **SDK** to develop, ship to people who have the **runtime**, and the **CLR** does the work at execution time.
+📝 **Terminology.** SDK = build tools. Runtime = what runs a finished app. CLR = the execution engine at its heart. Rule of thumb: install the **SDK** to develop, ship to people who have the **runtime**, and the **CLR** does the work at execution time.
 
-Now the part that surprises people coming from C or Go. The C# compiler does **not** produce a native `.exe` full of machine code for your CPU. It produces **IL** (Intermediate Language - also called CIL or MSIL): a compact, CPU-independent bytecode. At runtime, the CLR's **JIT** (Just-In-Time) compiler translates that IL into native machine code *for the specific machine it's running on*, method by method, the first time each method is called.
+Here's the part that surprises people coming from C or Go: the C# compiler does **not** produce a native `.exe` full of machine code for your CPU. It produces **IL** (Intermediate Language, also called CIL or MSIL): a compact, CPU-independent bytecode. At runtime, the CLR's **JIT** (Just-In-Time) compiler translates that IL into native machine code for the specific machine it's on, method by method, the first time each is called.
 
 ```mermaid
 flowchart LR
@@ -33,15 +33,15 @@ flowchart LR
   D --> E["native code"]
 ```
 
-*What just happened:* Your `.cs` source goes through the compiler once to become IL, which is what actually ships inside a .NET program. The CLR loads that IL and the JIT compiles it to native code on demand as the program runs. This is why the *same* compiled .NET program can run on Windows, macOS, and Linux: the IL is portable, and each platform's CLR JITs it to that platform's instructions.
+*What just happened:* Your `.cs` source goes through the compiler once to become IL, which is what ships inside a .NET program. The CLR loads that IL and JITs it to native code on demand as the program runs - why the *same* compiled .NET program runs on Windows, macOS, and Linux: the IL is portable, and each platform's CLR JITs it to that platform's instructions.
 
-💡 **Why this design.** Compiling to IL instead of straight to native buys you two big wins: portability (one build, many platforms) and a smart runtime that can optimize using information only known at execution time - like which CPU model you actually have. The cost is a runtime must be present, and a brief JIT warm-up the first time code runs. For the vast majority of software, that trade is invisible and worth it.
+💡 **Why this design.** Compiling to IL instead of straight to native buys portability (one build, many platforms) and a runtime that can optimize using information only known at execution time, like which CPU model you have. The cost: a runtime must be present, plus a brief JIT warm-up the first time code runs - invisible and worth it for most software.
 
-One naming knot worth untangling now, because it confuses everyone. **Modern .NET** (the current versions - .NET 5, 6, 7, 8, and onward) is cross-platform and open source; it used to be called ".NET Core." The **legacy .NET Framework** (versions 4.x and earlier) is Windows-only and in maintenance mode. ⚠️ When a tutorial says "create a new project," it almost always means modern .NET today - that's what you're installing here. If you ever see ".NET Framework," know it's the old Windows-only line and not what new code targets.
+One naming knot worth untangling: **Modern .NET** (.NET 5, 6, 7, 8, and onward) is cross-platform and open source; it used to be called ".NET Core." The **legacy .NET Framework** (4.x and earlier) is Windows-only and in maintenance mode. ⚠️ "Create a new project" almost always means modern .NET - that's what you're installing here. ".NET Framework" is the old Windows-only line, not what new code targets.
 
 ## Install the .NET SDK
 
-Go to the official downloads page - **[dotnet.microsoft.com/download](https://dotnet.microsoft.com/download)** - and grab the **SDK** (not the runtime-only option) for the latest .NET version on your operating system. Run the installer and accept the defaults. On macOS and Linux you can also install it through a package manager, which is often tidier:
+Go to **[dotnet.microsoft.com/download](https://dotnet.microsoft.com/download)** and grab the **SDK** (not the runtime-only option) for the latest .NET version on your OS. Run the installer and accept the defaults. On macOS and Linux a package manager is often tidier:
 
 ```bash
 # macOS (Homebrew)
@@ -54,9 +54,9 @@ sudo apt-get install -y dotnet-sdk-8.0
 winget install Microsoft.DotNet.SDK.8
 ```
 
-*What just happened:* Each of these fetches and installs the .NET SDK - the compiler, the `dotnet` CLI, and a runtime - and puts the `dotnet` command on your system `PATH`, so you can type `dotnet` in any terminal and have it found. Pick the one line that matches your machine; the rest are there so you recognize them later.
+*What just happened:* Each fetches and installs the .NET SDK - compiler, `dotnet` CLI, and a runtime - and puts `dotnet` on your `PATH`. Pick the line matching your machine.
 
-Now confirm it worked. Before writing any code, ask .NET to introduce itself:
+Now confirm it worked:
 
 ```bash
 dotnet --version
@@ -66,28 +66,28 @@ dotnet --version
 8.0.401
 ```
 
-*What just happened:* You ran the `dotnet` tool with the `--version` flag, and it reported the installed SDK version. The exact number will differ over time - anything 8.0 or newer is great for this guide. If you got a version line, the toolchain is on your machine and on your `PATH`.
+*What just happened:* `--version` reported the installed SDK version - anything 8.0 or newer is fine here. A version line means the toolchain is on your `PATH`.
 
-⚠️ **Gotcha.** If your terminal says `dotnet: command not found` (or `'dotnet' is not recognized` on Windows) right after installing, the usual cause is a terminal window that was open *before* the install - it doesn't know about the updated `PATH` yet. Close it and open a fresh one. The install is fine; the old window just hadn't heard about it.
+⚠️ **Gotcha.** `dotnet: command not found` (or `'dotnet' is not recognized` on Windows) right after installing usually means a terminal window open *before* the install doesn't know about the updated `PATH` yet. Close it and open a fresh one; the install is fine.
 
 ## Your first program
 
-Unlike single-file Java or Go, C# is **project-oriented** from the very first program - you create a small project rather than a lone source file. The CLI scaffolds one for you. In a folder of your choosing:
+Unlike single-file Java or Go, C# is **project-oriented** from the first program - you create a small project, not a lone source file. The CLI scaffolds one for you:
 
 ```bash
 dotnet new console -o hello
 cd hello
 ```
 
-*What just happened:* `dotnet new console` created a new **console** (text-based) application from a built-in template, and `-o hello` put it in a new folder called `hello`. Inside, you'll find two files that matter: `Program.cs` (your code) and `hello.csproj` (the project file - more on it in a moment). Open `Program.cs` and you'll see something refreshingly short:
+*What just happened:* `dotnet new console` created a **console** (text-based) app from a built-in template; `-o hello` put it in a new folder. Inside are two files that matter: `Program.cs` (your code) and `hello.csproj` (more in a moment). Open `Program.cs`:
 
 ```csharp
 Console.WriteLine("Hello, World!");
 ```
 
-*What just happened:* That single line is a complete, runnable C# program. `Console` is a type from .NET's standard library that represents the text terminal, and `WriteLine` is a method on it that prints its argument followed by a newline. There's no class, no `Main` method, no `using` directive cluttering the file - and yet this compiles and runs. That's thanks to a modern feature called **top-level statements**.
+*What just happened:* That single line is a complete, runnable C# program. `Console` is a type from .NET's standard library representing the text terminal; `WriteLine` prints its argument followed by a newline. No class, no `Main`, no `using` directive - yet it compiles and runs, thanks to **top-level statements**.
 
-📝 **Top-level statements** let you write executable code directly at the top of a file, without wrapping it in a class and a method. The compiler treats this file's statements as the body of the program's entry point. It's the same machinery as the classic form below - just with the boilerplate written for you.
+📝 **Top-level statements** let you write executable code directly at the top of a file, without wrapping it in a class and a method. The compiler treats the file's statements as the body of the entry point - the same machinery as the classic form below, with the boilerplate written for you.
 
 To run it:
 
@@ -99,11 +99,11 @@ dotnet run
 Hello, World!
 ```
 
-*What just happened:* `dotnet run` did everything in one step: it compiled `Program.cs` to IL, handed that IL to the CLR, and the CLR (via the JIT) ran it - printing the text. You didn't manage any intermediate files or invoke the compiler directly; `dotnet run` is the "just try it" command you'll lean on constantly while learning.
+*What just happened:* `dotnet run` compiled `Program.cs` to IL, handed it to the CLR, and the JIT ran it - printing the text, with no intermediate files or manual compiler invocation. It's the "just try it" command you'll lean on constantly.
 
 ### What top-level statements desugar to
 
-That one-liner is real, but it's worth seeing what it stands in for, because you'll meet the longer form in older code and in most non-trivial programs. Under the hood, the compiler wraps your top-level statements in a class with a special `Main` method - historically *the* entry point of every C# program:
+You'll meet the longer form in older code and most non-trivial programs. Under the hood, the compiler wraps your top-level statements in a class with a special `Main` method - historically *the* entry point of every C# program:
 
 ```csharp
 using System;
@@ -117,13 +117,13 @@ class Program
 }
 ```
 
-*What just happened:* This is the classic, fully-spelled-out version of the same program, and it's exactly what your one-liner desugars into. `using System;` brings the `System` namespace into scope so you can write `Console` instead of `System.Console`. `class Program` is a container for your code (C# organizes everything into classes). `static void Main(string[] args)` is the **entry point** - the single method the CLR calls when your program starts; `args` holds command-line arguments. The top-level form lets the compiler generate all of this so a beginner's first program isn't a wall of ceremony.
+*What just happened:* This is the classic, fully-spelled-out version your one-liner desugars into. `using System;` brings the `System` namespace into scope so you can write `Console` instead of `System.Console`. `class Program` is a container for your code (C# organizes everything into classes). `static void Main(string[] args)` is the **entry point** - the method the CLR calls when your program starts; `args` holds command-line arguments. The top-level form lets the compiler generate all this so a beginner's first program isn't a wall of ceremony.
 
-💡 **Key point.** Top-level statements and the explicit `class Program { static void Main }` form are *the same thing* - one is shorthand the compiler expands into the other. Use the short form for small programs and scripts; you'll see the long form in larger codebases and when you need fine control over the entry point. Knowing they're equivalent means neither one will ever look mysterious.
+💡 **Key point.** Top-level statements and the explicit `class Program { static void Main }` form are *the same thing* - one is compiler shorthand for the other. Use the short form for small programs and scripts; the long form appears in larger codebases and when you need fine control over the entry point.
 
 ## The project model: `.csproj` and why C# is project-first
 
-Remember that `hello.csproj` file the template created? That's the **project file**, and it's central to how C# work is organized. Peek inside and it's surprisingly small:
+That `hello.csproj` file the template created is the **project file**, central to how C# work is organized. Peek inside - it's surprisingly small:
 
 ```csharp
 <Project Sdk="Microsoft.NET.Sdk">
@@ -138,29 +138,29 @@ Remember that `hello.csproj` file the template created? That's the **project fil
 </Project>
 ```
 
-*What just happened:* The `.csproj` is an XML file that *describes* the project: that it builds an executable (`OutputType`), which .NET version it targets (`TargetFramework`), and a couple of language settings. `ImplicitUsings` is why your one-liner didn't need `using System;` - common namespaces are imported automatically. You rarely edit this file by hand early on, but it's worth knowing it exists: when `dotnet run` builds your program, it reads this file to know *how*.
+*What just happened:* The `.csproj` is an XML file that *describes* the project: that it builds an executable (`OutputType`), which .NET version it targets (`TargetFramework`), and a couple of language settings. `ImplicitUsings` is why your one-liner didn't need `using System;` - common namespaces import automatically. You rarely edit this by hand early on, but `dotnet run` reads it to know *how* to build your program.
 
-📝 **Mental model.** A C# program is a **project**, not a loose file. `dotnet build` compiles the project; `dotnet run` builds *and* runs it. This is different from languages where you point a tool at a single source file - in C#, the `.csproj` is the unit of work, and the CLI commands operate on it. It feels like extra structure at first, but it's what lets projects scale cleanly to many files and dependencies.
+📝 **Mental model.** A C# program is a **project**, not a loose file. `dotnet build` compiles the project; `dotnet run` builds *and* runs it. Unlike languages where you point a tool at a single source file, here the `.csproj` is the unit of work - extra structure that lets projects scale cleanly to many files and dependencies.
 
 ## Your everyday workflow
 
 You can write C# in any editor, but a few setups are worth knowing:
 
-- **Visual Studio** (Windows/Mac) - Microsoft's full IDE, deeply integrated with .NET. Heavy, but powerful.
-- **VS Code + the C# Dev Kit extension** - lightweight, cross-platform, and the most common modern choice for everyday work.
-- **JetBrains Rider** - a polished cross-platform IDE that many professionals prefer.
+- **Visual Studio** (Windows/Mac) - Microsoft's full, heavy IDE, deeply integrated with .NET.
+- **VS Code + the C# Dev Kit extension** - lightweight, cross-platform, the most common modern choice.
+- **JetBrains Rider** - a polished cross-platform IDE many professionals prefer.
 
-Any of these gives you autocomplete, inline error highlighting, and a debugger. While you're learning, though, the `dotnet` CLI plus any editor is plenty.
+All three give autocomplete, inline error highlighting, and a debugger. While learning, the `dotnet` CLI plus any editor is plenty.
 
-One CLI command will make your loop smoother right away:
+One CLI command makes your loop smoother right away:
 
 ```bash
 dotnet watch run
 ```
 
-*What just happened:* `dotnet watch run` runs your program and then *keeps watching* your source files. Edit and save `Program.cs`, and it automatically recompiles and re-runs - no need to stop and type `dotnet run` again. It's the tightest feedback loop for experimenting, and it'll save you a lot of keystrokes as you work through this guide.
+*What just happened:* `dotnet watch run` runs your program and *keeps watching* your source files - edit and save `Program.cs`, and it recompiles and re-runs automatically, no retyping `dotnet run`. It's the tightest feedback loop for experimenting.
 
-We'll keep things to single-project programs for now. Pulling in third-party libraries with **NuGet** (.NET's package manager) and grouping multiple projects into **solutions** come later, in Phase 8 - you don't need them to learn the language itself.
+We'll keep to single-project programs for now. Third-party libraries via **NuGet** and multi-project **solutions** come later, in Phase 8 - not needed to learn the language itself.
 
 ## Recap
 
@@ -175,7 +175,7 @@ Next, we give the program something to work with: named values, the types C# sto
 
 ## Quick check
 
-Test yourself on the one idea that underpins everything else - how C# actually runs:
+Test yourself on the idea that underpins everything else - how C# actually runs:
 
 ```quiz
 [

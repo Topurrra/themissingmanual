@@ -13,11 +13,11 @@ updated: 2026-06-23
 
 This is the phase everything else was building toward. You have an `App`, routing, extractors, responders,
 shared state, and middleware. Now we wire them into a real REST resource — full CRUD over the `articles`
-store — and along the way we finally fix a pain you've been quietly living with since Phase 3.
+store — and fix a pain you've been quietly living with since Phase 3.
 
 ## The mental model
 
-Hold two ideas in your head and the rest of this phase writes itself.
+Two ideas, and the rest of this phase writes itself.
 
 **One: a REST resource is just five handlers over the shared store.** "Articles" isn't some special
 construct — it's a list endpoint, a show endpoint, a create, an update, and a delete, all reaching through
@@ -25,10 +25,9 @@ the same `web::Data<AppState>` you built in [Phase 4](04-shared-state.md). The H
 decides which handler runs; the body of each handler is a small read or write against that `Mutex<HashMap>`.
 
 **Two: the clean way to vary status is to return a `Result` and let actix render the error.** Back in
-Phase 3 you may have hit this wall: one branch wants to return `HttpResponse::Ok().json(...)` and another
-wants `HttpResponse::NotFound().finish()`, and Rust complains because — depending how you wrote it — the
-branches produce types that don't line up, or you end up matching and rebuilding responses by hand in every
-handler. actix's answer is to push the error *out of* the happy path. Your handler returns
+Phase 3 you likely hit this wall: one branch returns `HttpResponse::Ok().json(...)`, another wants
+`HttpResponse::NotFound().finish()`, and the types don't line up unless you match and rebuild responses by
+hand in every handler. actix's answer is to push the error *out of* the happy path. Your handler returns
 `Result<HttpResponse, ApiError>`, the success arm builds the 200, and **a returned `Err` becomes the HTTP
 response automatically** — because your error type implements the `ResponseError` trait. One place defines
 what a "not found" looks like on the wire; every handler just says `?`.
@@ -39,9 +38,9 @@ what a "not found" looks like on the wire; every handler just says `?`.
 
 ## The five handlers
 
-Here's the resource. Five functions, mounted on a `web::scope("/api/v1")` so the version prefix lives in one
-place. Each reads or writes the shared store and returns `Result<HttpResponse, ApiError>` (we'll define
-`ApiError` in the next section — read these first to see *why* we want it):
+Five functions, mounted on a `web::scope("/api/v1")` so the version prefix lives in one place. Each reads
+or writes the shared store and returns `Result<HttpResponse, ApiError>` (we'll define `ApiError` next —
+read these first to see *why* we want it):
 
 ```rust
 use actix_web::{web, App, HttpServer, HttpResponse};
@@ -136,10 +135,10 @@ async fn delete(
 article or bail out with a 404," and the bail-out *is* the response. `create` mints an id from the `next_id`
 counter (a second `Mutex` so the counter and the map lock independently) and returns `201 Created` with the
 new record. `delete` returns `204 No Content` — `.finish()` because there's no body. Notice what's *not*
-here: no `match` rebuilding error responses, no juggling `HttpResponse` types across branches. The error
+here: no `match` rebuilding error responses, no juggling `HttpResponse` types across branches — the error
 arm left the building via `?`.
 
-Now mount them. The five handlers live on a scope, and the state is built once and cloned in per worker —
+Now mount them. The five handlers live on a scope, and the state is built once and cloned in per worker,
 exactly the pattern from Phase 4:
 
 ```rust
@@ -169,14 +168,14 @@ async fn main() -> std::io::Result<()> {
 ```
 
 *What just happened:* `web::scope("/api/v1")` prefixes every route inside it, so `/articles` becomes
-`/api/v1/articles` without you repeating the version on each line. The same path string carries multiple
+`/api/v1/articles` without repeating the version on each line. The same path string carries multiple
 methods — `web::get()` and `web::post()` on `/articles` are two distinct routes. `state.clone()` hands each
 worker a handle to the *one* `AppState`, the load-bearing detail from Phase 4.
 
 ## The error type: one shape, defined once
 
 Everything above leaned on `ApiError`. Here's the whole thing — an enum of the failures this API can
-produce, plus the two trait impls that teach actix how to turn it into an HTTP response:
+produce, plus the two trait impls teaching actix how to turn it into an HTTP response:
 
 ```rust
 use actix_web::{http::StatusCode, HttpResponse, ResponseError};
@@ -213,10 +212,9 @@ impl ResponseError for ApiError {
 actix calls `error_response()` on it and sends back whatever that produces — here, the right status code with
 a consistent `{"error": "..."}` JSON body. `status_code()` maps each variant to its HTTP status; the default
 `error_response()` would use that status with a plain-text body, but we override it so *every* error in the
-API speaks the same JSON dialect. `Display` is required by the trait (it's a supertrait of `ResponseError`),
-and we derive it cheaply off `Debug` here. Define this once and every handler that returns
-`Result<_, ApiError>` gets it for free — that's the payoff for the `?` calls scattered through the five
-handlers.
+API speaks the same JSON dialect. `Display` is required by the trait (a supertrait of `ResponseError`), and
+we derive it cheaply off `Debug` here. Define this once and every handler returning `Result<_, ApiError>`
+gets it for free — the payoff for the `?` calls scattered through the five handlers.
 
 > ⚠️ `ResponseError` requires your type to be `Display + Debug`. If the compiler complains that your error
 > "doesn't implement `ResponseError`," check that you actually impl'd `Display` — that's the usual missing
@@ -224,10 +222,9 @@ handlers.
 
 ## `?`, `From`, and foreign errors
 
-The `?` operator is doing quiet, important work. When a handler returns `Result<HttpResponse, ApiError>`,
-`?` on a `Result<T, ApiError>` is a clean early return. But `?` has a superpower: it will convert error types
-*on the way out* if there's a `From` impl connecting them. That's how you let `?` swallow errors from
-libraries that know nothing about your `ApiError`.
+The `?` operator does quiet, important work. On a `Result<T, ApiError>` it's a clean early return — but it
+has a superpower: it converts error types *on the way out* if there's a `From` impl connecting them. That's
+how `?` swallows errors from libraries that know nothing about your `ApiError`.
 
 Say a handler parses something and gets a `std::num::ParseIntError`. Teach `ApiError` how to absorb it:
 
@@ -250,23 +247,23 @@ async fn show_by_str(
 ```
 
 *What just happened:* `path.parse()` returns `Result<u32, ParseIntError>`. Because `From<ParseIntError>` for
-`ApiError` exists, the `?` converts the foreign error into an `ApiError::BadRequest` and returns it — which
-`ResponseError` then renders as a 400. You wrote one `From` impl and now *every* `?` on a `ParseIntError`
-maps to a sensible HTTP response. This is how real handlers stay short: database errors, parse errors, and
-your own errors all funnel through `?` into one error type.
+`ApiError` exists, `?` converts the foreign error into an `ApiError::BadRequest` and returns it — which
+`ResponseError` then renders as a 400. One `From` impl and now *every* `?` on a `ParseIntError` maps to a
+sensible HTTP response. This is how real handlers stay short: database errors, parse errors, and your own
+errors all funnel through `?` into one error type.
 
 > 💡 Writing `Display` and `From` impls by hand gets tedious as the enum grows. The **`thiserror`** crate
-> generates both from attributes — you annotate each variant with a `#[error("...")]` message and add
-> `#[from]` to a field to auto-derive the conversion. The mental model is identical; `thiserror` just deletes
-> the boilerplate. It's the standard choice once an API has more than a couple of error variants.
+> generates both from attributes — annotate each variant with a `#[error("...")]` message and add `#[from]`
+> to a field to auto-derive the conversion. Same mental model; `thiserror` just deletes the boilerplate. It's
+> the standard choice once an API has more than a couple of error variants.
 
 ## ⚠️ Extractor failures are already errors — don't panic
 
 One thing the framework handles before your code even runs: if a client POSTs malformed JSON, the
 `web::Json<ArticleInput>` extractor fails *during extraction* and actix returns a `400 Bad Request` on its
-own. You never see a bad body inside your handler. That's the principle to internalize: **a handler that
-can't proceed should return an error, never panic.** A `.unwrap()` on something a client controls is a 500
-and a crashed request waiting to happen.
+own — you never see a bad body inside your handler. The principle to internalize: **a handler that can't
+proceed should return an error, never panic.** A `.unwrap()` on something a client controls is a 500 and a
+crashed request waiting to happen.
 
 If you want the default extractor error to match your JSON error shape, configure it with `app_data`:
 
@@ -286,8 +283,8 @@ use actix_web::web::JsonConfig;
 
 *What just happened:* `JsonConfig`'s `error_handler` intercepts extractor-level JSON failures and lets you
 return a custom response — here, the same `{"error": "..."}` shape your `ResponseError` produces, so a
-malformed body and a missing article look consistent to the client. Without this, you still get a 400 on bad
-JSON; this just makes the body match your house style.
+malformed body and a missing article look consistent to the client. Without this you still get a 400 on
+bad JSON; this just matches the body to your house style.
 
 ## Take it for a spin
 
@@ -319,12 +316,11 @@ a single hand-built error branch in your handler bodies — the `Result` + `Resp
 the 404s for you. Hit a route with a bad JSON body and you'll see the 400 the extractor (or your
 `JsonConfig`) produces.
 
-> 💡 The `Mutex<HashMap>` is a teaching prop, not a database. To go to a real store you swap the handler
-> bodies for `sqlx` queries against the `PgPool` from Phase 4 — and add a `From<sqlx::Error>` impl so DB
-> failures `?` straight into your `ApiError` as 500s. The error *model* doesn't change at all; only what
-> happens between the lock and the response does. This is the same place the [axum guide](/guides/axum-from-zero)
-> lands with `IntoResponse`, which is no accident — both frameworks converged on "return a typed error, let
-> the framework render it."
+> 💡 The `Mutex<HashMap>` is a teaching prop, not a database. To go to a real store, swap the handler bodies
+> for `sqlx` queries against the `PgPool` from Phase 4 and add a `From<sqlx::Error>` impl so DB failures `?`
+> straight into your `ApiError` as 500s. The error *model* doesn't change at all — only what happens between
+> the lock and the response does. This is the same place the [axum guide](/guides/axum-from-zero) lands with
+> `IntoResponse`, no accident: both frameworks converged on "return a typed error, let the framework render it."
 
 ## Recap
 

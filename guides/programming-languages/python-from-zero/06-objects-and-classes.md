@@ -12,33 +12,32 @@ updated: 2026-06-19
 # Objects & Classes - Python's OOP
 
 You've been using objects since Phase 2 without anyone calling them that. A string has a `.upper()`
-method. A list has `.append()`. Each of those is an object: some *data* (the characters, the items)
-glued to the *behavior* that works on it (`upper`, `append`). Classes are how you make your own.
+method; a list has `.append()`. Each is an object: *data* (the characters, the items) glued to the
+*behavior* that works on it. Classes are how you make your own.
 
-The word "OOP" scares people because it arrives wrapped in vocabulary - encapsulation, polymorphism,
-abstraction. Ignore all of that for now. There is exactly one idea underneath it, and once it clicks,
-the keywords stop being spells and start being obvious.
+"OOP" scares people because it arrives wrapped in vocabulary - encapsulation, polymorphism, abstraction.
+Ignore that for now: exactly one idea sits underneath it, and once it clicks, the keywords stop being
+spells and start being obvious.
 
 ## The one idea: bundle data with the behavior that acts on it
 
-**What it actually is.** A **class** is a blueprint that says "things of this kind hold *this* data and
-can do *these* things." An **object** (also called an **instance**) is one actual thing built from that
-blueprint. The class is the cookie cutter; the objects are the cookies.
+**What it actually is.** A **class** is a blueprint saying "things of this kind hold *this* data and can
+do *these* things." An **object** (or **instance**) is one actual thing built from that blueprint - the
+class is the cookie cutter, the objects are the cookies.
 
-📝 **Class** - the template. **Instance / object** - one concrete thing made from the template. You
-write the class once and stamp out as many instances as you like, each carrying its own copy of the data.
+📝 **Class** - the template. **Instance / object** - one concrete thing made from it. Write the class
+once and stamp out as many instances as you like, each with its own copy of the data.
 
-**Why this exists.** Imagine modeling a dog without classes. You'd have a loose `name` string here, an
-`age` number there, and separate functions `bark(name)` and `birthday(age)` floating somewhere else.
-Nothing keeps a dog's name, age, and behaviors together - keeping them in sync is on you. OOP's answer:
-put the data and the functions that belong with it in the same box.
+**Why this exists.** Imagine modeling a dog without classes: a loose `name` string, an `age` number,
+separate functions `bark(name)` and `birthday(age)` floating elsewhere. Nothing keeps them together -
+keeping them in sync is on you. OOP's answer: one box for the data and its functions.
 
 > 💡 **Key point.** Everything in this phase is one sentence repeated: *the data and the behavior that
-> belongs with it live together in an object.* If you ever feel lost, return to that line.
+> belongs with it live together in an object.* Lost? Return to that line.
 
 ## Your first class
 
-**A real example.** Here is a `Dog`. Read the comments - they carry the whole lesson.
+**A real example.** A `Dog` - read the comments, they carry the whole lesson.
 
 ```python runnable
 class Dog:
@@ -58,54 +57,52 @@ $ python dogs.py
 Rex says woof!
 3
 ```
-*What just happened:* `Dog("Rex", 3)` ran `__init__` with `name="Rex"` and `age=3`, which stored those
-two values *on the new dog* as `self.name` and `self.age`. `rex` is now one instance carrying its own
-data. `rex.bark()` called the dog's own behavior, which read its own `self.name` back out.
+*What just happened:* `Dog("Rex", 3)` ran `__init__` with `name="Rex"` and `age=3`, storing those on the
+new dog as `self.name` and `self.age`. `rex.bark()` then read its own `self.name` back out.
 
 ### `__init__` - the setup ritual
 
-**What it actually is.** `__init__` (two underscores each side, said "dunder init") is the **constructor**:
-a special method Python runs automatically the moment you create an instance. Its job is to set up the
-new object's starting data.
+**What it actually is.** `__init__` (two underscores each side, said "dunder init") is the
+**constructor**: a special method Python runs automatically when you create an instance, to set up its
+starting data.
 
-📝 **Dunder** - short for "double underscore." Names like `__init__` are Python's hooks: you define them,
-and Python calls them at the right moment. You almost never call `__init__` yourself - writing `Dog(...)`
-calls it for you.
+📝 **Dunder** - short for "double underscore." Names like `__init__` are Python's hooks: you define them
+and Python calls them at the right moment. You almost never call `__init__` yourself - `Dog(...)` calls
+it for you.
 
 ### `self` - the "this particular object" handle
 
-**What it actually is.** `self` is the first parameter of every method, and it refers to *the specific
-instance the method was called on*. When you write `rex.bark()`, Python quietly passes `rex` in as `self`.
-So inside `bark`, `self.name` means "Rex's name" - not some other dog's.
+**What it actually is.** `self` is the first parameter of every method, referring to *the specific
+instance called*. Write `rex.bark()`, and Python quietly passes `rex` in as `self` - so inside `bark`,
+`self.name` means "Rex's name," not some other dog's.
 
 ⚠️ **Gotcha - forgetting `self`.** Every method's first parameter must be `self`, and every reference to
 the object's own data must go through it. Write `def bark():` (no `self`) or `return f"{name} says woof!"`
-(no `self.`) and Python will throw a `TypeError` or a `NameError`. This trips up *everyone* coming from
-languages where `this` is implicit. In Python, `self` is explicit and always spelled out.
+(no `self.`) and Python throws a `TypeError` or `NameError`. This trips up everyone coming from languages
+where `this` is implicit - in Python it's explicit and always spelled out.
 
 ```console
 $ python dogs.py
 TypeError: Dog.bark() takes 0 positional arguments but 1 was given
 ```
-*What just happened:* You wrote `def bark():` with no parameter, but calling `rex.bark()` still passes
-`rex` in as the first argument. Python received one argument the method wasn't expecting and complained.
-The fix is `def bark(self):`.
+*What just happened:* `def bark():` had no parameter, but `rex.bark()` still passes `rex` in as the first
+argument - an argument the method wasn't expecting. Fix: `def bark(self):`.
 
 ### Attributes vs. methods
 
-📝 **Attribute** - a piece of data stored on an object (`rex.name`, `rex.age`). **Method** - a function
-defined in the class that acts on the object (`rex.bark()`). You read an attribute with no parentheses;
-you *call* a method with them. `rex.name` is the value; `rex.bark()` runs the behavior.
+📝 **Attribute** - data stored on an object (`rex.name`, `rex.age`). **Method** - a function defined in
+the class that acts on the object (`rex.bark()`). Read an attribute with no parentheses; call a method
+with them.
 
 ## Inheritance - describe only what's different
 
-**The problem it solves.** Suppose you now want a `Cat` and a `Cow` too. They all have a name and an age;
-they all eat and sleep. Only their sound differs. Copy-pasting the shared parts into three classes means
-three places to fix when the shared logic changes - and they *will* drift apart.
+**The problem it solves.** Suppose you now want a `Cat` and a `Cow` too. All have a name and age; all eat
+and sleep. Only their sound differs. Copy-pasting the shared parts into three classes means three places
+to fix when the logic changes - and they *will* drift apart.
 
-**What it actually is.** **Inheritance** lets one class build on another. The child class gets everything
-the parent has, and you add or override only what's different. We pull the common parts up into an
-`Animal` parent, and let `Dog` inherit from it.
+**What it actually is.** **Inheritance** lets one class build on another: the child gets everything the
+parent has, and you add or override only what's different. Pull the common parts into an `Animal` parent
+and let `Dog` inherit from it.
 
 ```python runnable
 class Animal:
@@ -130,13 +127,13 @@ Thing makes a sound.
 Rex says woof!
 ```
 *What just happened:* `Dog(Animal)` means "a Dog is an Animal." `Dog` never defined `__init__`, so it
-inherited `Animal`'s - that's why `Dog("Rex")` still sets `self.name`. But `Dog` *did* define its own
-`speak`, so its version wins for dogs. This is **overriding**: same method name, more specific behavior.
+inherited `Animal`'s - why `Dog("Rex")` still sets `self.name`. But `Dog` did define its own `speak`, so
+that version wins. This is **overriding**: same method name, more specific behavior.
 
-📝 **Parent / child** (also **superclass / subclass**) - `Animal` is the parent, `Dog` is the child.
-**Override** - a child redefining a method it inherited, to specialize it.
+📝 **Parent / child** (also **superclass / subclass**) - `Animal` is the parent, `Dog` the child.
+**Override** - a child redefining an inherited method to specialize it.
 
-Here is that relationship as a picture:
+That relationship as a picture:
 
 ```mermaid
 classDiagram
@@ -144,13 +141,13 @@ classDiagram
   Animal <|-- Cat
 ```
 
-*One idea:* `Dog` and `Cat` both *are* `Animal`s (the arrows point up to the parent). They share `name`
-and the idea of `speak()`, but each gives `speak()` its own voice.
+*One idea:* `Dog` and `Cat` both *are* `Animal`s (arrows point up to the parent). They share `name` and
+the idea of `speak()`, but each gives it its own voice.
 
 ### `super()` - reuse the parent's work
 
-Sometimes the child needs *extra* setup but still wants the parent's. `super()` calls the parent's
-version so you don't repeat it.
+When a child needs *extra* setup but still wants the parent's, `super()` calls the parent's version so
+you don't repeat it.
 
 ```python
 class Dog(Animal):
@@ -165,35 +162,32 @@ print(rex.name, "-", rex.breed)
 $ python super_demo.py
 Rex - Beagle
 ```
-*What just happened:* `super().__init__(name)` ran `Animal.__init__`, which set `self.name`. Then `Dog`
+*What just happened:* `super().__init__(name)` ran `Animal.__init__`, setting `self.name`; then `Dog`
 added its own `self.breed`. The child reused the parent's setup instead of copy-pasting `self.name = name`.
 
-⚠️ **Gotcha - inheritance overuse.** Inheritance is the OOP feature people reach for too eagerly. Deep
-chains (class extends class extends class, four levels down) get impossible to follow, because to
-understand one object you must mentally merge four files. Use inheritance only for genuine, permanent
-"is-a" relationships, and keep the chains shallow. When two things merely *share some parts*, prefer
-giving one object the other as a field (`self.engine = Engine()`) over inheriting. The whole trade-off -
-inheritance vs. composition, and the other paradigm entirely - is laid out in
-[OOP vs. Functional](/guides/oop-vs-functional).
+⚠️ **Gotcha - inheritance overuse.** People reach for inheritance too eagerly. Deep chains (class extends
+class extends class, four levels down) get impossible to follow, since understanding one object means
+mentally merging four files. Use it only for genuine, permanent "is-a" relationships, kept shallow. When
+two things merely *share some parts*, prefer giving one object the other as a field
+(`self.engine = Engine()`). The full trade-off - inheritance vs. composition, and the other paradigm
+entirely - is laid out in [OOP vs. Functional](/guides/oop-vs-functional).
 
-**Why this saves you later.** When the shared logic changes, you fix it once in the parent and every
-child updates for free. And when you add a `Cat` tomorrow, you describe only the one thing that's
-different - its sound - not a whole animal from scratch.
+**Why this saves you later.** Shared logic changes once in the parent and every child updates for free.
+Add a `Cat` tomorrow and you describe only its sound, not a whole animal from scratch.
 
 ## Recap
 
-1. A **class** is a blueprint; an **object / instance** is one thing built from it. Data and behavior
-   live together inside it.
-2. **`__init__`** runs automatically when you create an instance, and sets up its starting data.
-3. **`self`** is "this particular object" - the first parameter of every method, and the way a method
-   reads its own data. Forget it and you'll get a `TypeError`.
+1. A **class** is a blueprint; an **object / instance** is one thing built from it, with data and
+   behavior living together inside.
+2. **`__init__`** runs automatically when you create an instance, setting up its starting data.
+3. **`self`** is "this particular object" - the first parameter of every method, and how a method reads
+   its own data. Forget it and you'll get a `TypeError`.
 4. **Attributes** are data (`rex.name`); **methods** are behavior (`rex.bark()`).
 5. **Inheritance** (`class Dog(Animal)`) lets a child reuse a parent and override only what differs;
-   **`super()`** calls the parent's version. Favor it for true "is-a" relationships, sparingly.
+   **`super()`** calls the parent's version. Use it sparingly, for true "is-a" relationships.
 
-OOP is one of two big ways to organize code. The other - functional - starts from functions and data
-kept apart on purpose. Next, though, we stay practical: what to do when things go wrong, and how to read
-and write files.
+OOP is one of two big ways to organize code; the other, functional, keeps functions and data apart on
+purpose. Next: what to do when things go wrong, and how to read and write files.
 
 ---
 

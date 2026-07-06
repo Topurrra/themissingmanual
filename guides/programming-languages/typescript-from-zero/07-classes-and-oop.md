@@ -11,17 +11,17 @@ updated: 2026-06-22
 
 # Classes & OOP in TypeScript - Types on Objects With Behavior
 
-You already know what a class *is*. Over in [JavaScript from Zero](/guides/javascript-from-zero) you saw the reveal: a `class` in JavaScript isn't a new kind of thing - it's nicer syntax over prototypes, a function whose `.prototype` is pre-loaded with your methods. Objects pointing at objects, all the way down. None of that changes in TypeScript. The runtime is still the same JavaScript runtime.
+You already know what a class *is*. Over in [JavaScript from Zero](/guides/javascript-from-zero) you saw the reveal: a `class` in JavaScript isn't a new kind of thing - it's nicer syntax over prototypes, a function whose `.prototype` is pre-loaded with your methods. None of that changes in TypeScript; the runtime is still the same JavaScript runtime.
 
-Here's the mental model for this phase: **TypeScript doesn't give classes new powers - it adds a type layer on top of the class you already know.** Field types, visibility rules, and contracts that say "this class must match that shape." All of it is checked before your code runs, and most of it is *erased* before it ships. The class that lands in the browser is plain JavaScript; the types were a conversation between you and the checker.
+**TypeScript doesn't give classes new powers - it adds a type layer on top of the class you already know:** field types, visibility rules, and contracts that say "this class must match that shape." All of it is checked before your code runs, and most is *erased* before it ships. The class that lands in the browser is plain JavaScript; the types were a conversation between you and the checker.
 
-One honest caveat up front: TypeScript leans functional. You won't reach for classes nearly as often as in Java or C#. But they earn their keep in two places - **stateful objects** (something with data and behavior bundled together, like an account or a connection) and **implementing an interface** (when something else expects a specific shape). That's where we'll focus.
+One honest caveat: TypeScript leans functional, so you won't reach for classes as often as in Java or C#. They earn their keep in two places - **stateful objects** (data and behavior bundled together, like an account) and **implementing an interface** (when something else expects a specific shape). That's where we'll focus.
 
 ## Typed fields and a typed constructor
 
-A class field in TypeScript gets a type, exactly like a variable. The constructor's parameters get types too. The payoff is the same as everywhere else in the language: the checker knows what each field holds, so it catches you the moment you misuse one.
+A class field gets a type, exactly like a variable, and constructor parameters get types too. The payoff is the same as everywhere else: the checker knows what each field holds, so it catches you the moment you misuse one.
 
-📝 **Field (class property)** - a piece of data that lives on each instance. In TypeScript you declare it with a name and a type at the top of the class body, and the checker enforces that type everywhere the field is read or written.
+📝 **Field (class property)** - a piece of data living on each instance. Declare it with a name and type at the top of the class body, and the checker enforces that type everywhere the field is read or written.
 
 ```typescript
 class Account {
@@ -47,17 +47,17 @@ acct.balance = "lots"; // Error
 ```console
 Type 'string' is not assignable to type 'number'.
 ```
-*What just happened:* We declared two fields with types - `owner: string` and `balance: number` - right in the class body, so the checker knows the shape of every `Account`. The constructor takes typed parameters and assigns them to `this.owner` and `this.balance`; the checker verifies the types line up. `deposit` is typed to take a `number` and return nothing (`void`). The instance works normally - until the last line, where assigning a string to a `number` field gets flagged at edit-time. The runtime never sees that bug because the code never compiles cleanly.
+*What just happened:* We declared two fields with types - `owner: string` and `balance: number` - in the class body, so the checker knows the shape of every `Account`. The constructor takes typed parameters and assigns them to `this.owner` and `this.balance`; the checker verifies the types line up. `deposit` takes a `number` and returns nothing (`void`). Everything works until the last line, where assigning a string to a `number` field gets flagged at edit-time.
 
 💡 **Key point.** Declaring fields with types is the whole reason to bother. Without it, `this.balance` would be an untyped free-for-all and a typo like `this.balnce = 50` would silently create a junk property. With it, the checker holds the line on every access.
 
 ## Access modifiers - who's allowed to touch a field
 
-By default every field and method is `public` - reachable from anywhere. TypeScript lets you narrow that with two more keywords, so internal state stays internal.
+By default every field and method is `public` - reachable from anywhere. Two more keywords narrow that so internal state stays internal.
 
-📝 **`public`** - reachable from anywhere (the default; you rarely write it). **`private`** - reachable only from *inside this class*. **`protected`** - reachable from inside this class *and* its subclasses, but not from the outside.
+📝 **`public`** - reachable from anywhere (the default; rarely written). **`private`** - reachable only from *inside this class*. **`protected`** - reachable from inside this class *and* its subclasses, but not from outside.
 
-The point of `private` is to protect invariants. If `balance` can only change through `deposit` and `withdraw`, nobody can reach in and set it to a nonsense value behind your back.
+`private` protects invariants: if `balance` can only change through `deposit` and `withdraw`, nobody can reach in and set it to a nonsense value behind your back.
 
 ```typescript
 class Account {
@@ -78,15 +78,15 @@ console.log(acct.balance); // Error
 ```console
 Property 'balance' is private and only accessible within class 'Account'.
 ```
-*What just happened:* `balance` is marked `private`, so the checker allows `this.balance` inside `deposit` (same class) but rejects `acct.balance` from outside. The invariant - "balance only changes through methods" - is now enforced by the type system instead of a comment and good intentions.
+*What just happened:* `balance` is marked `private`, so the checker allows `this.balance` inside `deposit` (same class) but rejects `acct.balance` from outside. The invariant - "balance only changes through methods" - is now enforced by the type system instead of good intentions.
 
-⚠️ **Gotcha - TypeScript's `private` is a compile-time fiction.** It's checked by the type checker and then *erased*. At runtime the field is an ordinary public property: `(acct as any).balance` reaches it just fine, and so does anyone reading the compiled JavaScript. JavaScript has its *own* truly private fields - the `#name` syntax you met in [JavaScript from Zero](/guides/javascript-from-zero) - which are enforced by the runtime and genuinely inaccessible from outside. Rule of thumb: use TypeScript's `private` for everyday encapsulation (it reads cleanly and is universally understood), and reach for JS `#private` when you need a *hard* guarantee that no outside code can touch a field even at runtime. Don't mistake `private` for security - it's a design tool, not a lock.
+⚠️ **Gotcha - TypeScript's `private` is a compile-time fiction.** It's checked by the type checker and then *erased*. At runtime the field is an ordinary public property: `(acct as any).balance` reaches it fine, and so does anyone reading the compiled JavaScript. JavaScript has its *own* truly private fields - the `#name` syntax from [JavaScript from Zero](/guides/javascript-from-zero) - enforced by the runtime and genuinely inaccessible from outside. Use TypeScript's `private` for everyday encapsulation, and reach for JS `#private` when you need a *hard* runtime guarantee. Don't mistake `private` for security - it's a design tool, not a lock.
 
 ## Parameter properties - the constructor shorthand
 
-Look back at the first `Account`. Notice the boilerplate: you name `owner` and `balance` once as fields, *again* as constructor parameters, and a *third* time in the `this.x = x` assignments. That repetition is so common TypeScript has a shorthand that collapses all three into one.
+Look back at the first `Account`: you name `owner` and `balance` once as fields, *again* as constructor parameters, and a *third* time in the `this.x = x` assignments. That repetition is common enough that TypeScript has a shorthand collapsing all three into one.
 
-📝 **Parameter property** - adding an access modifier (`public`, `private`, `protected`, or `readonly`) to a constructor parameter. TypeScript automatically declares a field of that name and assigns the argument to it. Declaration plus assignment, in one place.
+📝 **Parameter property** - adding an access modifier (`public`, `private`, `protected`, or `readonly`) to a constructor parameter. TypeScript automatically declares a field of that name and assigns the argument to it: declaration plus assignment, in one place.
 
 ```typescript
 class Account {
@@ -104,9 +104,9 @@ const acct = new Account("Ada", 100);
 console.log(acct.owner); // "Ada" - public, readable
 acct.deposit(50);
 ```
-*What just happened:* Putting `public` on `owner` and `private` on `balance` told TypeScript to create those fields *and* assign the constructor arguments to them - no separate field declarations, no `this.owner = owner` lines, no empty-looking constructor body. `acct.owner` is readable because it's `public`; `balance` is `private` and locked away. This class is behaviorally identical to the verbose one three sections up, with a third of the lines.
+*What just happened:* Putting `public` on `owner` and `private` on `balance` told TypeScript to create those fields *and* assign the constructor arguments to them - no separate declarations, no `this.owner = owner` lines. `acct.owner` is readable because it's `public`; `balance` is `private` and locked away. Behaviorally identical to the verbose version, with a third of the lines.
 
-💡 **Key point.** Parameter properties are unique to TypeScript and a genuine boilerplate killer - for a stateful class whose fields all come straight from constructor arguments, this is the idiomatic way to write it. The one catch: the modifier is *required*. A bare `constructor(owner: string)` is just a normal parameter that vanishes after the constructor runs; it only becomes a field once you prefix it with `public`/`private`/`protected`/`readonly`.
+💡 **Key point.** Parameter properties are unique to TypeScript and a genuine boilerplate killer - the idiomatic way to write a stateful class whose fields come straight from constructor arguments. The catch: the modifier is *required*. A bare `constructor(owner: string)` is just a normal parameter that vanishes after the constructor runs; it becomes a field only once prefixed with `public`/`private`/`protected`/`readonly`.
 
 ## `readonly`, getters and setters
 
@@ -139,13 +139,13 @@ acct.id = "A-2";            // Error
 ```console
 Cannot assign to 'id' because it is a read-only property.
 ```
-*What just happened:* `readonly id` can be assigned once, inside the constructor, and never again - the final line is flagged. The `get summary()` accessor exposes a *computed* string built from internal state without exposing the fields themselves; you read it as `acct.summary` (no parentheses - it looks like a field but runs code). The `set deposit(...)` accessor runs validation on assignment, so `acct.deposit = 50` looks like a plain write but actually invokes a guarded method. Getters and setters are typed like any other member: the getter's return type, the setter's parameter type.
+*What just happened:* `readonly id` can be assigned once, inside the constructor, and never again - the final line is flagged. The `get summary()` accessor exposes a *computed* string built from internal state without exposing the fields themselves; read it as `acct.summary` (no parentheses - looks like a field but runs code). The `set deposit(...)` accessor runs validation on assignment, so `acct.deposit = 50` looks like a plain write but invokes a guarded method. Getters and setters are typed like any other member.
 
 ## `implements` and `abstract` - contracts and forced shapes
 
-Here's where classes really pull their weight in TypeScript: stating that a class *fulfills a contract*.
+Here's where classes really pull their weight: stating that a class *fulfills a contract*.
 
-📝 **`implements`** - a promise that a class matches the shape of an interface. The checker verifies every required member is present with a compatible type. If you forget one or get a type wrong, it's an error - on the class, where you can fix it, not at some distant call site.
+📝 **`implements`** - a promise that a class matches an interface's shape. The checker verifies every required member is present with a compatible type. Forget one, or get a type wrong, and it's an error on the class, where you can fix it - not at some distant call site.
 
 ```typescript
 interface Persistable {
@@ -161,11 +161,11 @@ class Account implements Persistable {
   }
 }
 ```
-*What just happened:* `Account implements Persistable` tells the checker "verify this class has everything `Persistable` requires." It has `id: string` (via a parameter property) and a `save(): void` method, so it compiles. Drop the `save` method, or type `id` as a `number`, and the error lands right on the `class Account` line. The interface is the contract; `implements` is the checker holding the class to it.
+*What just happened:* `Account implements Persistable` tells the checker "verify this class has everything `Persistable` requires." It has `id: string` (via a parameter property) and a `save(): void` method, so it compiles. Drop `save`, or type `id` as a `number`, and the error lands right on the `class Account` line.
 
 Now the other tool: a base class that **can't be instantiated on its own** and forces subclasses to fill in specific methods.
 
-📝 **`abstract`** - a class marked `abstract` can't be created with `new`; it exists only to be extended. An `abstract` method has no body - it's a required slot that every concrete subclass must implement.
+📝 **`abstract`** - a class marked `abstract` can't be created with `new`; it exists only to be extended. An `abstract` method has no body - a required slot every concrete subclass must implement.
 
 ```typescript
 abstract class Shape {
@@ -192,9 +192,9 @@ const s = new Shape();      // Error
 ```console
 Cannot create an instance of an abstract class.
 ```
-*What just happened:* `Shape` declares an abstract `area()` with no implementation and a concrete `describe()` that *calls* it. `Circle extends Shape` and supplies a real `area()`, so it's a complete, instantiable class. Trying to `new Shape()` directly is rejected - the base is a template, not a usable object. If `Circle` had forgotten to implement `area()`, that omission would be flagged on `Circle` too. Abstract classes let you share real code in the base while *guaranteeing* every subclass fills in the missing pieces.
+*What just happened:* `Shape` declares an abstract `area()` with no implementation and a concrete `describe()` that *calls* it. `Circle extends Shape` supplies a real `area()`, so it's a complete, instantiable class. `new Shape()` directly is rejected - the base is a template, not a usable object. If `Circle` had forgotten `area()`, that omission would be flagged on `Circle` too. Abstract classes share real code in the base while *guaranteeing* every subclass fills in the missing pieces.
 
-💡 **Key point - `implements` vs `extends`.** They answer different questions. `implements` means "I promise to *match this shape*" - it copies no code, just enforces a contract, and a class can implement many interfaces. `extends` means "I *reuse this base*" - you inherit its fields and methods, and a class extends exactly one base. Use `implements` when callers care that you fit a shape; use `extends` (often with `abstract`) when you want to share behavior down a hierarchy.
+💡 **Key point - `implements` vs `extends`.** `implements` means "I promise to *match this shape*" - copies no code, just enforces a contract, and a class can implement many interfaces. `extends` means "I *reuse this base*" - you inherit its fields and methods, and a class extends exactly one base. Use `implements` when callers care that you fit a shape; use `extends` (often with `abstract`) to share behavior down a hierarchy.
 
 ## Recap
 
@@ -205,7 +205,7 @@ Cannot create an instance of an abstract class.
 5. **`implements`** verifies a class matches an interface's shape (a contract, no code reuse); **`abstract`** defines a base that can't be instantiated and forces subclasses to fill in methods.
 6. Reach for classes mainly for **stateful objects** and **implementing interfaces** - TypeScript leans functional, so don't force OOP where a plain function or object would do.
 
-You can now put types on objects with behavior. Next we leave the language itself and wire it into a real project - **modules, `tsconfig.json`, and the build** that turns your typed source into shippable JavaScript.
+You can now put types on objects with behavior. Next, we leave the language and wire it into a real project: **modules, `tsconfig.json`, and the build** that turns typed source into shippable JavaScript.
 
 ## Quick check
 

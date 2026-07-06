@@ -11,17 +11,17 @@ updated: 2026-06-23
 
 # Components & the Containment Tree
 
-In [the last phase](02-the-class-system.md) you learned how Ext JS classes are
-declared — `Ext.define`, `extend`, the `config` block, `xtype`. Now we use those
-classes to build something you can actually see. And here's the one idea that, once
-it lands, makes a sprawling legacy Ext JS app readable instead of terrifying.
+[The last phase](02-the-class-system.md) covered how Ext JS classes are declared —
+`Ext.define`, `extend`, the `config` block, `xtype`. Now we use those classes to build
+something you can actually see, via the one idea that makes a sprawling legacy Ext JS
+app readable instead of terrifying.
 
 💡 **The mental model: your UI is a tree, and you only ever write the tree — never the
-DOM.** You don't append `<div>`s. You don't call `appendChild`. You write a nested
-config object that says "a viewport containing a panel, and that panel contains a grid
-and a form," and the framework walks that tree, instantiates each node, lays it out, and
-renders the real HTML for you. The structure you write *is* the structure of the screen.
-When you inherit an Ext JS codebase, you are reading someone's tree.
+DOM.** No appending `<div>`s, no `appendChild`. You write a nested config object that
+says "a viewport containing a panel, and that panel contains a grid and a form," and
+the framework walks that tree, instantiates each node, lays it out, and renders the
+real HTML for you. The structure you write *is* the structure of the screen. When you
+inherit an Ext JS codebase, you are reading someone's tree.
 
 Here's that tree as a config, for our running **users admin** screen — a grid of users on
 the left, an edit form on the right:
@@ -43,11 +43,11 @@ Ext.create('Ext.container.Viewport', {
 });
 ```
 
-*What just happened:* We described a screen, we didn't build one. The `Viewport` is the
+*What just happened:* we described a screen, we didn't build one. The `Viewport` is the
 root node (it fills the browser window). Its `items` array holds one panel; that panel's
 `items` array holds a grid and a form. `xtype` names the class for each node so the
-framework knows what to instantiate. Nowhere did we touch HTML — `items` nesting *is* the
-nesting. That array is the only "where does this go" wiring you ever write.
+framework knows what to instantiate. `items` nesting *is* the layout wiring — no HTML
+touched anywhere.
 
 The same tree, drawn out:
 
@@ -58,13 +58,13 @@ flowchart TD
     P --> F[Form: edit user]
 ```
 
-📝 Keep that picture in your head for the whole framework. A grid is a node in this tree.
-A form field is a node. A button inside a toolbar inside a panel — all nodes. Phase 5's
-stores feed data *into* these nodes, but the skeleton is always this containment tree.
+📝 Keep that picture in your head for the whole framework. A grid is a node. A form field
+is a node. A button inside a toolbar inside a panel — all nodes. Phase 5's stores feed
+data *into* these nodes, but the skeleton is always this containment tree.
 
 ## Component vs Container vs Panel
 
-Three classes form a ladder, and almost every widget you'll meet sits on one of its rungs.
+Three classes form a ladder, and almost every widget you'll meet sits on a rung.
 
 - **`Ext.Component`** is the base of *every visible thing*. It owns a lifecycle, a position
   in the tree, an element it renders to, show/hide, and so on. A plain component is a leaf —
@@ -89,7 +89,7 @@ Three classes form a ladder, and almost every widget you'll meet sits on one of 
 { xtype: 'panel', title: 'Users', items: [ /* ...children... */ ] }
 ```
 
-*What just happened:* Same `items` mechanism each step up the ladder; the difference is
+*What just happened:* same `items` mechanism each step up the ladder; the difference is
 purely what each class adds. The bare `component` has no `items` because it can't hold any.
 The `container` holds children but draws no header — useful for invisible grouping. The
 `panel` is the same thing dressed up with the chrome users expect. When you see a class in
@@ -106,8 +106,8 @@ The Classic toolkit lifecycle, in order:
 `constructor` → **`initComponent`** → `render` → `afterRender` → ... (lives, reacts to
 events) ... → `destroy`
 
-The one you override constantly is **`initComponent`** — the classic, canonical place to set
-up config and build `items` *before* the component renders.
+The one you override constantly is **`initComponent`** — the canonical place to set up
+config and build `items` *before* the component renders.
 
 ```javascript
 Ext.define('App.view.UsersGrid', {
@@ -125,7 +125,7 @@ Ext.define('App.view.UsersGrid', {
 });
 ```
 
-*What just happened:* We subclassed a grid and used `initComponent` to assemble its config
+*What just happened:* we subclassed a grid and used `initComponent` to assemble its config
 just before render — handy when a value has to be computed (a default title, columns built
 from a variable) rather than written as a static literal. The critical line is
 `this.callParent(arguments)`: it runs the parent's `initComponent`, which is what actually
@@ -133,12 +133,11 @@ wires up the component. Forget it and your component half-initializes and fails 
 confusing ways. (The Modern toolkit leans on the `config` block and an `initialize` method
 instead, but the override-and-`callParent` discipline is the same idea.)
 
-⚠️ **Now the part that bites people: hiding a component does not destroy it.** `cmp.hide()`
-just sets it invisible — the instance, its DOM, its event listeners, and any store
-bindings all still exist, consuming memory. If your code creates components over and over
-(open a window, close it, open it again...) and only *hides* them, you have a **memory
-leak** and stale listeners firing on ghosts. To truly free a component you must
-**`destroy`** it.
+⚠️ **The part that bites people: hiding a component does not destroy it.** `cmp.hide()`
+just sets it invisible — the instance, its DOM, event listeners, and any store bindings
+all still exist, consuming memory. If your code creates components over and over (open a
+window, close it, open it again...) and only *hides* them, you have a **memory leak** and
+stale listeners firing on ghosts. To truly free a component you must **`destroy`** it.
 
 ```javascript
 win.hide();      // invisible, but fully alive — listeners still attached, DOM still there
@@ -147,13 +146,13 @@ win.destroy();   // tears down DOM + listeners + child components; the instance 
 
 *What just happened:* `hide()` is for "I'll show this again in a second." `destroy()` is for
 "I'm done with this forever." A container's `destroy()` cascades — destroying a panel
-destroys its grid and form too. The rule of thumb for inherited code: if you see things
-created repeatedly but never destroyed, suspect a leak.
+destroys its grid and form too. Rule of thumb for inherited code: things created repeatedly
+but never destroyed mean a leak.
 
 ## Adding and removing children at runtime
 
-The tree isn't frozen at startup. Containers can grow and shrink while the app runs — this
-is how a "+ Add User" button makes a new form appear, or how closing a tab removes a panel.
+The tree isn't frozen at startup — containers grow and shrink while the app runs. This is
+how a "+ Add User" button makes a new form appear, or how closing a tab removes a panel.
 
 ```javascript
 var panel = Ext.getCmp('mainPanel'); // (shown for illustration — see the warning below)
@@ -166,15 +165,14 @@ panel.removeAll();                                 // clear every child
 *What just happened:* `add` takes a config object (or a real component) and slots it into
 the container's `items`, then re-runs the layout so it appears. `remove` pulls one child out
 — and by default **destroys** it, which is usually what you want (no leak). `removeAll`
-empties the container. Each call re-lays-out the container, so children rearrange
-automatically. Notice we had to *find* `panel` first — which is the next, and most
-important, skill.
+empties the container, and each call re-lays-out the container so children rearrange
+automatically. Notice we had to *find* `panel` first — the next, and most important, skill.
 
 ## Finding components — done right
 
-This is the single most useful skill for navigating an inherited Ext JS codebase. You'll
-constantly need to grab a component to read its value, refresh its store, or react to a
-click. There's a wrong way that's all over old code, and a right way.
+The single most useful skill for navigating an inherited Ext JS codebase: grabbing a
+component to read its value, refresh its store, or react to a click. There's a wrong way
+that's all over old code, and a right way.
 
 ### ⚠️ The trap: `Ext.getCmp` and global ids
 
@@ -186,8 +184,8 @@ var grid = Ext.getCmp('usersGrid'); // requires a hand-assigned id: 'usersGrid'
 *What just happened:* `Ext.getCmp(id)` looks up a component by a manual `id:` you set in its
 config. It *works* — but `id` must be **globally unique across the entire app**, forever. The
 moment two instances of the same view exist (two tabs, a reused window), their ids collide
-and the lookup returns the wrong one or breaks outright. This is a well-known anti-pattern.
-You'll see it in legacy code; recognize it, and don't add more of it.
+and the lookup returns the wrong one or breaks outright. It's a well-known anti-pattern —
+recognize it in legacy code, and don't add more of it.
 
 ### The safe local id: `itemId`
 
@@ -200,7 +198,7 @@ container, so it can't collide globally — and reach it with `down('#...')`:
 var field = panel.down('#emailField'); // '#' targets an itemId, scoped to this panel
 ```
 
-*What just happened:* `itemId` is the leak-free cousin of `id`. Two copies of this panel can
+*What just happened:* `itemId` is the leak-free cousin of `id` — two copies of this panel can
 each have their own `emailField` without conflict, because the lookup is relative to the
 container, not the whole page.
 
@@ -222,14 +220,13 @@ onSaveClick: function () {
 
 *What just happened:* `reference` names a child *within its view*, and the ViewController
 resolves it locally. No global namespace, no collisions, and the wiring lives right next to
-the logic that uses it. This is the pattern modern Ext JS code is built around — when you
-see `reference` in a view and `lookup`/`lookupReference` in a controller, they're two ends
-of the same string.
+the logic that uses it. When you see `reference` in a view and `lookup`/`lookupReference` in
+a controller, they're two ends of the same string.
 
 ### Walking the tree: `up()` and `down()`
 
 Often you already have *one* component (the button that was clicked) and need its
-neighbor. Walk the tree relative to where you are:
+neighbor — walk the tree relative to where you are:
 
 - **`cmp.up('selector')`** — the nearest **ancestor** that matches.
 - **`cmp.down('selector')`** — the first **descendant** that matches.
@@ -245,14 +242,14 @@ onDeleteClick: function (button) {
 *What just happened:* `up('grid')` climbs from the button toward the root until it hits a
 grid — no id needed, just "the grid I live inside." `down('textfield[name=email]')`
 descends to the first text field whose `name` is `email`. This is how event handlers find
-their context: start from the thing you were handed, navigate by relationship.
+their context: start from what you were handed, navigate by relationship.
 
 ### Querying anywhere: `Ext.ComponentQuery`
 
-The selectors above (`'grid'`, `'#emailField'`, `'textfield[name=email]'`) are
-**component queries** — CSS-like selectors, but matching over **xtypes and component
-attributes** instead of HTML tags and classes. `up`/`down` run them relative to a
-component; `Ext.ComponentQuery.query` runs one globally:
+The selectors above (`'grid'`, `'#emailField'`, `'textfield[name=email]'`) are **component
+queries** — CSS-like selectors matching over **xtypes and component attributes** instead of
+HTML tags and classes. `up`/`down` run them relative to a component; `Ext.ComponentQuery.query`
+runs one globally:
 
 ```javascript
 Ext.ComponentQuery.query('grid');                  // every grid in the app
@@ -260,11 +257,11 @@ Ext.ComponentQuery.query('panel > grid');          // grids that are direct chil
 Ext.ComponentQuery.query('textfield[name=email]'); // all email fields anywhere
 ```
 
-*What just happened:* Same selector grammar as `up`/`down`, returning an **array** of every
+*What just happened:* same selector grammar as `up`/`down`, returning an **array** of every
 match across the whole component tree. `xtype` is the "tag", `[attr=value]` filters by config,
 `>` means direct child — read it like CSS for components. In a strange codebase this is your
-flashlight: query for the component you can see on screen, inspect what comes back, and you've
-found where it lives in the tree.
+flashlight: query for the component you can see on screen, inspect what comes back, and
+you've found where it lives in the tree.
 
 💡 The honest hierarchy of "how do I get a component," best first: **`reference` +
 `lookupReference`** (or a relative `up`/`down`) for everyday view logic; **`itemId` +
@@ -291,7 +288,7 @@ uses it — never as the way you write new code.
 
 ## Quick check
 
-Lock in the one idea that matters most — how the tree fits together and how to navigate it:
+Lock in how the tree fits together and how to navigate it:
 
 ```quiz
 [

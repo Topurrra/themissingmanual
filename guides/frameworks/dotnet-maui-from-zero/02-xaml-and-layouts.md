@@ -11,11 +11,11 @@ updated: 2026-06-23
 
 # XAML & Layouts
 
-Here's the mental model to carry through this whole phase: **a page is one root layout holding controls.** That's it. A screen in MAUI is a `ContentPage`, the `ContentPage` holds exactly one thing — a layout — and the layout's whole job is to arrange the controls you put inside it. Controls are the leaves: labels, buttons, text boxes. Layouts are the branches that decide where those leaves sit.
+Here's the mental model for this whole phase: **a page is one root layout holding controls.** A screen in MAUI is a `ContentPage`, it holds exactly one thing — a layout — and the layout's job is to arrange the controls inside it. Controls are the leaves: labels, buttons, text boxes. Layouts are the branches that decide where those leaves sit.
 
-The markup you write to describe this tree is **XAML** — an XML dialect. And the part that trips people up at first is worth saying out loud now: XAML isn't a separate magic language. Every XAML element is just a C# object. When you write `<Label Text="Hi" />`, MAUI creates a `Label` object and sets its `Text` property to `"Hi"`. The page's `<x:Class>` attribute literally names a C# partial class, and the XAML becomes part of that class at build time. So XAML *describes the UI*, and that description compiles down to the same C# objects you could have written by hand.
+The markup you write to describe this tree is **XAML** — an XML dialect, and not a separate magic language. Every XAML element is just a C# object: write `<Label Text="Hi" />` and MAUI creates a `Label` object with its `Text` property set to `"Hi"`. The page's `<x:Class>` attribute names a C# partial class, and the XAML becomes part of that class at build time — it compiles down to the same C# objects you could write by hand.
 
-> 📝 You *can* build the entire UI in C# instead of XAML — `new ContentPage { Content = new Label { Text = "Hi" } }`. Most MAUI code uses XAML because a declarative tree is easier to read and tweak than nested constructor calls. We'll use XAML throughout, but remember it's objects underneath.
+> 📝 You *can* build the entire UI in C# instead of XAML — `new ContentPage { Content = new Label { Text = "Hi" } }`. Most MAUI code uses XAML because a declarative tree is easier to read and tweak than nested constructor calls.
 
 ## The page and its one root layout
 
@@ -32,13 +32,13 @@ A bare page looks like this:
 </ContentPage>
 ```
 
-*What just happened:* The `xmlns` lines map XML namespaces to MAUI's control library and to XAML's own keywords (that's where `x:Class` comes from). `x:Class="NotesApp.MainPage"` ties this file to the C# partial class `MainPage` in your project. And the `ContentPage` holds a single child — here a lone `Label`. A `ContentPage` has exactly **one** `Content`. To show more than one control, that single child has to be a *layout* that holds the rest.
+*What just happened:* The `xmlns` lines map XML namespaces to MAUI's control library and to XAML's own keywords (that's where `x:Class` comes from). `x:Class="NotesApp.MainPage"` ties this file to the C# partial class `MainPage` in your project, and the `ContentPage` holds a single child — here a lone `Label`. A `ContentPage` has exactly **one** `Content`; to show more than one control, that single child has to be a *layout* that holds the rest.
 
 ## The layouts you'll actually use
 
 ### Stack layouts — children in a line
 
-`VerticalStackLayout` arranges its children top to bottom; `HorizontalStackLayout` does it left to right. They're the simplest containers and great for short, linear groups.
+`VerticalStackLayout` arranges its children top to bottom; `HorizontalStackLayout` does it left to right — the simplest containers, great for short, linear groups.
 
 ```xml
 <VerticalStackLayout Spacing="12" Padding="20">
@@ -48,13 +48,11 @@ A bare page looks like this:
 </VerticalStackLayout>
 ```
 
-*What just happened:* Three controls stacked vertically with a 12-unit gap between each (`Spacing`) and 20 units of breathing room around the whole group (`Padding`). `Padding` is space *inside* the container's edge; `Spacing` is the gap *between* children. Note the page now has one root child (the stack), and the stack holds the three controls — the mental model in action.
+*What just happened:* Three controls stacked vertically with a 12-unit gap between each (`Spacing`) and 20 units of breathing room around the whole group (`Padding`). `Padding` is space *inside* the container's edge; `Spacing` is the gap *between* children. The page has one root child (the stack), and the stack holds the three controls — the mental model in action.
 
 ### Grid — rows and columns, the real workhorse
 
-Stacks are fine for a line of controls, but real screens have structure: a header pinned at the top, a body that fills the rest, a footer that hugs the bottom. That's a `Grid`.
-
-A `Grid` defines `RowDefinitions` and `ColumnDefinitions`, then each child says which cell it lives in with `Grid.Row` and `Grid.Column` (both default to `0`).
+Stacks are fine for a line of controls, but real screens have structure: a header pinned at the top, a body that fills the rest, a footer that hugs the bottom. That's a `Grid` — it defines `RowDefinitions` and `ColumnDefinitions`, and each child says which cell it lives in with `Grid.Row` and `Grid.Column` (both default to `0`).
 
 ```xml
 <Grid RowDefinitions="Auto,*,Auto"
@@ -76,13 +74,13 @@ A `Grid` defines `RowDefinitions` and `ColumnDefinitions`, then each child says 
 </Grid>
 ```
 
-*What just happened:* `RowDefinitions="Auto,*,Auto"` makes three rows. **`Auto`** sizes a row to exactly fit its content — the title and the button take only the height they need. **`*`** means "take all the leftover space" — the middle row stretches to fill whatever's left, which is exactly what you want for a scrolling list of notes. The header sits in row 0, the body in row 1, the button in row 2. This is the notes-list skeleton: header on top, body fills the gap, action button parked at the bottom.
+*What just happened:* `RowDefinitions="Auto,*,Auto"` makes three rows. **`Auto`** sizes a row to exactly fit its content — the title and the button take only the height they need. **`*`** means "take all the leftover space" — the middle row stretches to fill whatever's left, exactly what you want for a scrolling list of notes. The header sits in row 0, the body in row 1, the button in row 2: header on top, body fills the gap, action button parked at the bottom.
 
 > 💡 The sizing tokens are the whole point of `Grid`. **`Auto`** = size to content. **`*`** = take the remaining space (and `2*` takes twice the share of a plain `*`, so `*,2*` splits leftover space one-third / two-thirds). Because `*` rows and columns flex with the screen, the *same* layout looks right on a narrow phone and a wide desktop — no per-device code.
 
 ### ScrollView — when content overflows
 
-A `ContentView` or stack won't scroll on its own; if its content is taller than the screen, the overflow is clipped. Wrap it in a `ScrollView` and it scrolls.
+A `ContentView` or stack won't scroll on its own — if its content is taller than the screen, the overflow is clipped. Wrap it in a `ScrollView` and it scrolls.
 
 ```xml
 <ScrollView>
@@ -93,7 +91,7 @@ A `ContentView` or stack won't scroll on its own; if its content is taller than 
 </ScrollView>
 ```
 
-*What just happened:* `ScrollView` takes one child (here the stack) and gives it a scrollable viewport. Anything taller than the screen now scrolls instead of getting cut off. (`FlexLayout` and `AbsoluteLayout` also exist for wrap-and-flow and pixel-precise positioning, but you'll reach for them far less often — start with stacks, `Grid`, and `ScrollView`.)
+*What just happened:* `ScrollView` takes one child (here the stack) and gives it a scrollable viewport — anything taller than the screen now scrolls instead of getting cut off. (`FlexLayout` and `AbsoluteLayout` also exist for wrap-and-flow and pixel-precise positioning, but you'll reach for them far less often — start with stacks, `Grid`, and `ScrollView`.)
 
 ## Common controls and their key properties
 
@@ -127,7 +125,7 @@ Properties are written as XAML attributes. The ones you'll set most often:
 </VerticalStackLayout>
 ```
 
-*What just happened:* `FontSize` and `TextColor` style the label. `HorizontalOptions` (and its sibling `VerticalOptions`) control how a child sits in the space its parent gives it — the values are `Start`, `Center`, `End`, and `Fill`; here the title is centered and the button is pushed to the right (`End`). `Margin="0,16,0,0"` adds space *outside* the button (left, top, right, bottom order), nudging it down from the editor. `Placeholder` is the grey hint text shown in an empty `Entry`/`Editor`.
+*What just happened:* `FontSize` and `TextColor` style the label. `HorizontalOptions` (and its sibling `VerticalOptions`) control how a child sits in the space its parent gives it — values are `Start`, `Center`, `End`, and `Fill`; here the title is centered and the button pushed to the right (`End`). `Margin="0,16,0,0"` adds space *outside* the button (left, top, right, bottom order), nudging it down from the editor. `Placeholder` is the grey hint text shown in an empty `Entry`/`Editor`.
 
 > ⚠️ Margin vs. Padding catches everyone once: **Padding** is space *inside* a container, before its children start. **Margin** is space *outside* a control, pushing its neighbors away. Same four-number order — `left,top,right,bottom` — but opposite sides of the control's edge.
 
@@ -135,11 +133,11 @@ Properties are written as XAML attributes. The ones you'll set most often:
 
 When stacks are the only tool you know, it's tempting to build a whole screen by burying stacks inside stacks inside stacks to push things around. Resist it.
 
-⚠️ **Deeply nested stack layouts hurt performance and are miserable to maintain.** Each stack measures and arranges its children, and nesting multiplies that work on every layout pass — on a list that scrolls, it shows up as jank. Worse, six levels deep, *nobody* can tell which container owns which spacing. A `Grid` with a few `RowDefinitions`/`ColumnDefinitions` does the same job flat: one container, every child placed by row and column, far less measuring. **For anything beyond a short line of controls, reach for `Grid` first.**
+⚠️ **Deeply nested stack layouts hurt performance and are miserable to maintain.** Each stack measures and arranges its children, and nesting multiplies that work on every layout pass — on a scrolling list, it shows up as jank. Worse, six levels deep, *nobody* can tell which container owns which spacing. A `Grid` with a few `RowDefinitions`/`ColumnDefinitions` does the same job flat: one container, every child placed by row and column, far less measuring. **For anything beyond a short line of controls, reach for `Grid` first.**
 
 ## Building the notes app's main page
 
-Let's put it together into the real screen for our running **notes** app: a title at the top, a list area in the middle (a placeholder for now — the real list comes in [Phase 3](03-controls-and-data-binding.md)), and an Add button at the bottom.
+Let's put it together into the real screen for our running **notes** app: a title at the top, a list area in the middle (a placeholder — the real list comes in [Phase 3](03-controls-and-data-binding.md)), and an Add button at the bottom.
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
@@ -177,7 +175,7 @@ Let's put it together into the real screen for our running **notes** app: a titl
 </ContentPage>
 ```
 
-*What just happened:* One `ContentPage`, one root `Grid`, three children — exactly the mental model. The `Auto,*,Auto` rows give us a fixed-height header, a flexible body that fills the screen (so when real notes arrive they have room to grow and scroll), and a fixed-height button at the bottom. The body label is just a placeholder; in Phase 3 we swap it for a `CollectionView` bound to actual data. `HorizontalOptions="Fill"` on the button makes it stretch the full width. Run this and you've got the skeleton of the whole app — and you built it with one flat `Grid` instead of a tangle of stacks.
+*What just happened:* One `ContentPage`, one root `Grid`, three children — exactly the mental model. The `Auto,*,Auto` rows give a fixed-height header, a flexible body that fills the screen (room to grow and scroll once real notes arrive), and a fixed-height button at the bottom. The body label is a placeholder; Phase 3 swaps it for a `CollectionView` bound to actual data. `HorizontalOptions="Fill"` on the button stretches it the full width. Run this and you've got the skeleton of the whole app — built with one flat `Grid` instead of a tangle of stacks.
 
 ## Recap
 

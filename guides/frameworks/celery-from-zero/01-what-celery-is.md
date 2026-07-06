@@ -11,25 +11,23 @@ updated: 2026-06-23
 
 # What Celery Is & Why
 
-Picture a user clicking "Sign up." Behind that one click, your code creates an account, then tries to
-send a welcome email. The email goes through some third-party mail service that takes four or five
-seconds to respond. So the user sits there, spinner spinning, staring at a frozen page — waiting on an
-email *they aren't even reading yet*. Worse: the web worker handling their request is stuck too,
-unable to serve anyone else until that mail call returns.
+Picture a user clicking "Sign up." Your code creates an account, then tries to send a welcome email
+through a third-party mail service that takes four or five seconds to respond. The user sits there
+watching a frozen page, waiting on an email *they aren't even reading yet*. Worse: the web worker
+handling their request is stuck too, unable to serve anyone else until that mail call returns.
 
-That's the problem this whole guide is about, and the fix is one idea: **do the slow part later, in
-the background, and answer the user right now.** Celery is the tool most Python apps reach for to make
-that happen. By the end of this phase you'll have the mental model — the four moving pieces and why
-they're separate — so the hands-on setup in the next phases actually makes sense instead of feeling
-like magic incantations.
+The fix is one idea: **do the slow part later, in the background, and answer the user right now.**
+Celery is the tool most Python apps reach for to make that happen. By the end of this phase you'll
+have the mental model — the four moving pieces and why they're separate — so the hands-on setup in
+later phases makes sense instead of feeling like magic incantations.
 
 ## The problem — some work is too slow for a request
 
 📝 **The core tension.** A web request should be *fast* — measured in milliseconds. But plenty of
-real work isn't fast: sending an email, generating a PDF report, processing an uploaded video, calling
-a sluggish third-party API. When you do that work *inline* (right there in the request handler), two
-bad things happen at once: the user waits for the whole thing to finish, and your web worker is tied
-up the entire time, unable to handle other requests.
+real work isn't: sending an email, generating a PDF report, processing an uploaded video, calling a
+sluggish third-party API. Do that work *inline* (right there in the request handler) and two bad
+things happen at once: the user waits for the whole thing to finish, and your web worker is tied up
+the entire time, unable to handle other requests.
 
 Here's the painful version — work done inline:
 

@@ -11,21 +11,17 @@ updated: 2026-06-19
 
 # Async & the DOM - JavaScript's Big Idea
 
-By now you can write functions, loop over arrays, and split code into modules. This phase is where JavaScript stops feeling like "a language" and starts feeling like *the thing browsers run* - because two ideas define almost everything you'll do with it.
-
-The first is **async**: JavaScript does one thing at a time, but it refuses to sit and wait for slow things. The second is the **DOM**: the live, in-memory model of the page that your JavaScript reads and rewrites while the user watches. Get these two, and "make the button fetch some data and update the page" goes from intimidating to obvious.
-
-We'll build the mental model first, then write the real thing.
+By now you can write functions, loop over arrays, and split code into modules. This phase is where JavaScript stops feeling like "a language" and starts feeling like *the thing browsers run* - two ideas define almost everything you'll do with it: **async** (JavaScript does one thing at a time, but refuses to sit and wait for slow things) and the **DOM** (the live, in-memory model of the page that your JavaScript reads and rewrites while the user watches). Get these two, and "make the button fetch some data and update the page" goes from intimidating to obvious.
 
 ## The one-thread rule
 
-**What it actually is.** JavaScript runs your code on a **single thread** - one worker, doing one thing at a time, in order. There is no second worker quietly running your other functions in the background. If your code is busy, it is busy; nothing else of yours runs until it finishes.
+JavaScript runs your code on a **single thread** - one worker, doing one thing at a time, in order. No second worker quietly runs your other functions in the background; if your code is busy, it's busy, and nothing else of yours runs until it finishes.
 
 That sounds like a recipe for a frozen, useless program. The thing that saves it is the **event loop**.
 
-📝 **Terminology.** A *thread* is a single sequence of execution - one worker, one task at a time. *Asynchronous* ("async") means "started now, finished later" - you kick off slow work and get on with other things instead of standing still until it's done.
+📝 **Terminology.** A *thread* is a single sequence of execution - one worker, one task at a time. *Asynchronous* ("async") means "started now, finished later" - kick off slow work and get on with other things instead of standing still until it's done.
 
-**What it does in real life.** When your code starts something slow - a network request, a timer, waiting for a click - JavaScript doesn't block the thread waiting for it. It hands that job off (to the browser or to Node) and returns immediately. Later, when the slow thing is done, the *follow-up* code is dropped into a queue, and the event loop runs it when the thread is free.
+When your code starts something slow - a network request, a timer, waiting for a click - JavaScript doesn't block the thread waiting for it. It hands the job off (to the browser or Node) and returns immediately. Later, when the slow thing is done, the *follow-up* code drops into a queue, and the event loop runs it once the thread is free.
 
 ```mermaid
 flowchart LR
@@ -35,19 +31,19 @@ flowchart LR
   Loop -->|thread free| Run[Run the follow-up]
 ```
 
-*What this shows:* The slow work happens *off* your one thread. The event loop's only job is to pick the next ready piece of follow-up and run it when the thread isn't busy. One worker, many things in flight - because waiting doesn't occupy the worker.
+*What this shows:* The slow work happens *off* your one thread. The event loop picks the next ready follow-up and runs it when the thread isn't busy - one worker, many things in flight, since waiting doesn't occupy the worker.
 
-⚠️ **Gotcha: don't block the event loop.** Because there's only one thread, a long *synchronous* task - a giant `for` loop, a heavy calculation - freezes everything. In the browser the page stops responding (no scrolling, no clicks). On a server, every request stalls. The fix is to not do heavy synchronous work on the main thread; let slow things be async, and break up big computations.
+⚠️ **Gotcha: don't block the event loop.** A long *synchronous* task - a giant `for` loop, a heavy calculation - freezes everything, since there's only one thread. In the browser the page stops responding (no scrolling, no clicks); on a server, every request stalls. Keep heavy synchronous work off the main thread - let slow things be async, and break up big computations.
 
-> 💡 This phase is the working mental model. For the full picture - the queue, microtasks vs. macrotasks, why one thread can feel concurrent - read [Async/Await and the Event Loop](/guides/async-await-and-the-event-loop). It's the deep version of everything here.
+> 💡 This phase is the working mental model. For the full picture - the queue, microtasks vs. macrotasks, why one thread can feel concurrent - see [Async/Await and the Event Loop](/guides/async-await-and-the-event-loop).
 
 ## Three generations of async syntax
 
-The *idea* (start now, finish later) has stayed the same. The *syntax* for expressing it got dramatically nicer over the years. You'll see all three in real code, so let's meet them in order.
+The *idea* (start now, finish later) has stayed the same; the *syntax* for expressing it got dramatically nicer over the years. You'll see all three in real code, so let's meet them in order.
 
 ### Callbacks - the original
 
-**What it actually is.** A **callback** is a function you hand to something slow, with the instruction "call this when you're done." The slow thing holds onto your function and runs it later.
+A **callback** is a function you hand to something slow, with the instruction "call this when you're done." The slow thing holds onto your function and runs it later.
 
 ```javascript
 setTimeout(() => {
@@ -59,9 +55,9 @@ console.log("This runs first");
 This runs first
 2 seconds have passed
 ```
-*What just happened:* `setTimeout` registered your callback and returned immediately, so the line *after* it ran first. Two seconds later the browser dropped your callback into the queue and the event loop ran it. The order on screen - second line first - is the single-thread rule in action.
+*What just happened:* `setTimeout` registered your callback and returned immediately, so the line *after* it ran first. Two seconds later the browser dropped your callback into the queue and the event loop ran it.
 
-**The gotcha.** Callbacks nest. One async step that depends on another, that depends on another, marches your code rightward into a pyramid everyone calls *callback hell*:
+**The gotcha.** Callbacks nest. One async step depending on another, depending on another, marches your code rightward into a pyramid everyone calls *callback hell*:
 
 ```javascript
 getUser(id, (user) => {
@@ -72,11 +68,11 @@ getUser(id, (user) => {
   });
 });
 ```
-*What just happened:* Each step can only start once the previous one's callback fires, so they nest. It works, but it's hard to read and harder to add error handling to. This pain is exactly what Promises were invented to fix.
+*What just happened:* Each step can only start once the previous one's callback fires, so they nest. It works, but it's hard to read and harder to add error handling to - exactly what Promises were invented to fix.
 
 ### Promises - a value that arrives later
 
-**What it actually is.** A **Promise** is an object that stands in for a result that isn't ready yet. It's a placeholder with three states: *pending* (still waiting), *fulfilled* (succeeded, here's the value), or *rejected* (failed, here's the error). You attach `.then()` for success and `.catch()` for failure.
+A **Promise** is an object that stands in for a result that isn't ready yet - a placeholder with three states: *pending* (still waiting), *fulfilled* (succeeded, here's the value), or *rejected* (failed, here's the error). You attach `.then()` for success and `.catch()` for failure.
 
 ```javascript
 fetch("https://api.example.com/user/1")
@@ -84,13 +80,13 @@ fetch("https://api.example.com/user/1")
   .then((user) => console.log(user.name))
   .catch((error) => console.log("Request failed:", error));
 ```
-*What just happened:* `fetch` returns a Promise immediately - it hasn't waited for the network. Each `.then` says "when the previous step resolves, run this next." Crucially, the chain is *flat*, not nested: each step returns a new Promise, so success flows down the `.then`s and any error skips straight to `.catch`. The pyramid is gone.
+*What just happened:* `fetch` returns a Promise immediately, without waiting for the network. Each `.then` says "when the previous step resolves, run this next." The chain is *flat*, not nested: each step returns a new Promise, so success flows down the `.then`s and any error skips straight to `.catch`. Pyramid gone.
 
-📝 **Terminology.** A Promise *resolves* when it settles successfully (giving you a value) and *rejects* when it fails (giving you an error). "Settled" means it's done one way or the other.
+📝 **Terminology.** A Promise *resolves* when it settles successfully (giving you a value) and *rejects* when it fails (giving you an error). "Settled" means done one way or the other.
 
 ### async/await - Promises that read like normal code
 
-**What it actually is.** `async`/`await` is *syntax over Promises*. You mark a function `async`, and inside it you can `await` a Promise - which pauses that function until the Promise settles, then hands you the value as if it were a normal return. The code reads top-to-bottom like ordinary synchronous code, but it's still async underneath.
+`async`/`await` is *syntax over Promises*. Mark a function `async`, and inside it you can `await` a Promise, which pauses the function until the Promise settles, then hands you the value as if it were a normal return. The code reads top-to-bottom like ordinary code, but it's still async underneath.
 
 ```javascript
 async function showUser(id) {
@@ -99,9 +95,9 @@ async function showUser(id) {
   console.log(user.name);
 }
 ```
-*What just happened:* `await fetch(...)` pauses `showUser` until the response arrives, then resumes with the response in hand - no `.then` nesting, no callback. The function *looks* synchronous, but `await` is quietly doing the "start now, continue later" dance with the event loop. This is the style you'll write almost all the time.
+*What just happened:* `await fetch(...)` pauses `showUser` until the response arrives, then resumes with it in hand - no `.then` nesting, no callback. The function *looks* synchronous, but `await` is quietly doing the "start now, continue later" dance with the event loop. This is the style you'll write almost all the time.
 
-⚠️ **Gotcha: forgetting `await`.** If you drop the `await`, you get the *Promise itself*, not the value inside it - and your code marches on before the work is done. This bites everyone:
+⚠️ **Gotcha: forgetting `await`.** Drop the `await` and you get the *Promise itself*, not the value inside it - your code marches on before the work is done. This bites everyone:
 
 ```javascript
 async function showUser(id) {
@@ -112,19 +108,19 @@ async function showUser(id) {
 ```console
 TypeError: response.json is not a function
 ```
-*What just happened:* Without `await`, `response` is a pending Promise, not the resolved `Response` object - and a Promise has no `.json()` method, so you get a `TypeError`. The cure is almost always "you forgot an `await`." When something is `undefined` or "not a function" right after an async call, check for the missing `await` first.
+*What just happened:* Without `await`, `response` is a pending Promise, not the resolved `Response` object, and a Promise has no `.json()` method - hence the `TypeError`. When something is `undefined` or "not a function" right after an async call, check for a missing `await` first.
 
-> 💡 Rule of thumb: `await` lives inside an `async` function. `await` something that returns a Promise (`fetch`, `response.json()`, anything you wrote with `async`).
+> 💡 Rule of thumb: `await` lives inside an `async` function, on something that returns a Promise (`fetch`, `response.json()`, anything you wrote with `async`).
 
 ## The DOM - the page as a live object
 
 Async gets data. The **DOM** is how you put it on screen.
 
-**What it actually is.** When the browser loads your HTML, it parses it into a tree of objects in memory - one object per tag - called the **DOM** (Document Object Model). Your JavaScript doesn't edit the HTML text; it edits *this tree*. Change an object in the tree and the browser instantly re-renders that part of the page. The DOM is the live, two-way bridge between your code and what the user sees.
+When the browser loads your HTML, it parses it into a tree of objects in memory - one per tag - called the **DOM** (Document Object Model). Your JavaScript doesn't edit the HTML text; it edits *this tree*. Change an object in the tree and the browser instantly re-renders that part of the page.
 
-📝 **Terminology.** *DOM* = Document Object Model. An *element* is one node in that tree (a `<button>`, a `<div>`). `document` is the global object that is the root of the tree and your entry point to it.
+📝 **Terminology.** *DOM* = Document Object Model. An *element* is one node in that tree (a `<button>`, a `<div>`). `document` is the global object that's the root of the tree and your entry point to it.
 
-**What it does in real life.** Three verbs cover most DOM work: **select** an element, **change** it, and **respond** to events on it.
+Three verbs cover most DOM work: **select** an element, **change** it, and **respond** to events on it.
 
 ```javascript
 // Select
@@ -137,13 +133,13 @@ button.addEventListener("click", () => {
   output.textContent = "Loading...";
 });
 ```
-*What just happened:* `querySelector` finds elements using CSS-selector syntax (`#load` = the element with `id="load"`). `addEventListener("click", fn)` tells the browser "run this function every time this button is clicked." Inside, setting `output.textContent` rewrites that element's text - and the user sees it change immediately.
+*What just happened:* `querySelector` finds elements using CSS-selector syntax (`#load` = the element with `id="load"`). `addEventListener("click", fn)` tells the browser to run that function on every click. Setting `output.textContent` rewrites that element's text, and the user sees it change immediately.
 
-⚠️ **Gotcha: use `textContent`, not `innerHTML`, for plain text.** `innerHTML` parses its input as HTML, so dropping user-supplied text into it can inject markup or scripts (an XSS hole). When you just want to show text, `textContent` is both safer and faster.
+⚠️ **Gotcha: use `textContent`, not `innerHTML`, for plain text.** `innerHTML` parses its input as HTML, so dropping user-supplied text into it can inject markup or scripts (an XSS hole). For plain text, `textContent` is both safer and faster.
 
 ## Putting it together: click → fetch → update
 
-Here's the canonical browser flow, and the reason both halves of this phase matter. The user clicks; you fetch data without freezing the page; the response updates the DOM. Watch the thread stay free the whole time:
+The canonical browser flow, and why both halves of this phase matter: the user clicks, you fetch data without freezing the page, the response updates the DOM. Watch the thread stay free the whole time:
 
 ```mermaid
 sequenceDiagram
@@ -174,9 +170,9 @@ button.addEventListener("click", async () => {
   }
 });
 ```
-*What just happened:* The click handler is an `async` function, so it can `await`. The moment it starts, it shows "Loading..." and then awaits the fetch - and because that wait is async, the page stays fully responsive the entire time (the user can still scroll). When the JSON arrives, we write it into the DOM; if anything fails, the `catch` shows a friendly message instead of a silent break. This four-line pattern - set pending state, await, update, catch - is most of what front-end JavaScript *is*.
+*What just happened:* The click handler is an `async` function, so it can `await`. It shows "Loading..." then awaits the fetch, and since that wait is async, the page stays fully responsive (the user can still scroll). When the JSON arrives, it's written into the DOM; if anything fails, `catch` shows a friendly message instead of a silent break. This four-line pattern - set pending state, await, update, catch - is most of what front-end JavaScript *is*.
 
-We slipped a `try/catch` in there because async code fails in its own particular ways. That's exactly where the next phase begins.
+Async code fails in its own particular ways, which is exactly where the next phase begins.
 
 ## Recap
 
@@ -184,7 +180,7 @@ We slipped a `try/catch` in there because async code fails in its own particular
 2. Async syntax evolved: **callbacks** (nest badly) → **Promises** (`.then`/`.catch`, flat) → **async/await** (reads like normal code, still Promises underneath).
 3. **`await`** pauses an `async` function until a Promise settles and hands you the value - forgetting it gives you the Promise itself, the #1 async bug.
 4. The **DOM** is the page as a live tree of objects: **select** (`querySelector`), **change** (`textContent`), **respond** (`addEventListener`).
-5. The everyday browser pattern is **click → `await fetch` → update the DOM**, wrapped in `try/catch`, with the page never freezing.
+5. Everyday browser pattern: **click → `await fetch` → update the DOM**, wrapped in `try/catch`, page never freezing.
 
 ---
 

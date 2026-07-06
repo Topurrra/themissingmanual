@@ -11,18 +11,16 @@ updated: 2026-06-22
 
 # What Django Is & Your First Project
 
-You know [Python](/guides/python-from-zero). You can write functions and classes, and now you want to
-build a *website* — not a bare JSON API, but a real site with pages, a database behind them, user
-logins, and an admin screen to manage your data. You could wire all of that together yourself from
-small libraries. Or you could reach for the framework that already ships every one of those pieces in
-a single box: **Django**.
+You know [Python](/guides/python-from-zero). Now you want to build a *website* — not a bare JSON API,
+but a real site with pages, a database behind them, user logins, and an admin screen to manage your
+data. You could wire all of that together from small libraries, or reach for the framework that already
+ships every one of those pieces in a single box: **Django**.
 
-Here's the one idea to hold in your head before any code. Django's whole personality comes from a
-single bet: **most web apps need the same things, so the framework should provide them and ask you to
-follow its conventions.** Database access, schema changes, an admin panel, login, forms, HTML
-rendering — Django hands you all of it and a sensible way to arrange it. You write less plumbing and
-more of *your* app. The price is that you learn Django's way of doing things. For a full website,
-that's usually a bargain.
+Django's whole personality comes from one bet: **most web apps need the same things, so the framework
+should provide them and ask you to follow its conventions.** Database access, schema changes, an admin
+panel, login, forms, HTML rendering — Django hands you all of it and a sensible way to arrange it. You
+write less plumbing and more of *your* app. The price is learning Django's way of doing things. For a
+full website, that's usually a bargain.
 
 ## Batteries included — what Django gives you for free
 

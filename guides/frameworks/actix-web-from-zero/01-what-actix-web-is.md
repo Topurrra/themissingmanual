@@ -11,19 +11,16 @@ updated: 2026-06-23
 
 # What actix-web Is & Your First Server
 
-You know [Rust](/guides/rust-from-zero), and you want to ship something on the web that's fast and won't
-surprise you in production. That's the corner actix-web has owned for years. It's one of the oldest web
-frameworks in Rust, and it sits at or near the top of the TechEmpower benchmarks year after year — when
-people argue about "the fastest web framework," actix-web is usually in the conversation. It's the mature,
-batteries-included sibling to [axum](/guides/axum-from-zero): routing, extractors, middleware, websockets,
-JSON, all in the box.
+You know [Rust](/guides/rust-from-zero), and you want to ship something fast on the web that won't
+surprise you in production. That's actix-web's corner: one of the oldest Rust web frameworks, and a
+perennial top finisher in the TechEmpower benchmarks. It's the mature, batteries-included sibling to
+[axum](/guides/axum-from-zero): routing, extractors, middleware, websockets, JSON, all in the box.
 
-The name carries some history. actix-web grew out of an **actor** framework — that's the "actix" part —
-and you'll occasionally see the word "actor" in old blog posts and panic about it. Here's the relief: day
-to day you write plain `async fn` handlers and never touch an actor. The actor heritage powers some
-internals, but it almost never surfaces in the code you write. If you've used a web framework in any
-language, the shape here will feel familiar. (If "web framework" itself is fuzzy — what it buys you over
-raw sockets — [What a Framework Even Is](/guides/what-a-framework-even-is) lays the groundwork.)
+The name carries history — actix-web grew out of an **actor** framework, hence "actix" — so you'll
+occasionally see "actor" in old blog posts. Day to day you write plain `async fn` handlers and never touch
+an actor; the heritage powers some internals but rarely surfaces in your code. If you've used a web
+framework in any language, the shape here will feel familiar. (If "web framework" itself is fuzzy —
+[What a Framework Even Is](/guides/what-a-framework-even-is) lays the groundwork.)
 
 > 📝 This guide teaches the **framework**, not the language. It assumes you're comfortable with Rust —
 > ownership, traits, `Result`, `async`/`await`. actix-web compiles and runs as a normal Rust program, so
@@ -31,11 +28,10 @@ raw sockets — [What a Framework Even Is](/guides/what-a-framework-even-is) lay
 
 ## The mental model: three pieces
 
-Before any code, hold one picture in your head. Almost everything in actix-web hangs off these three nouns.
+Almost everything in actix-web hangs off three nouns.
 
 📝 An **`App`** holds your **routes** (and later, shared state). You build it by chaining `.route(...)`
-calls. Think of it as the blueprint of your service: "a `GET /ping` goes here, a `POST /articles` goes
-there."
+calls — the blueprint of your service: "a `GET /ping` goes here, a `POST /articles` goes there."
 
 📝 An **`HttpServer`** **runs** copies of that `App`. It opens the socket, accepts connections, and spreads
 the work across **worker threads** — and here's the twist that trips people up later: it builds a *separate
@@ -69,8 +65,8 @@ cargo add actix-web
 ```
 
 *What just happened:* `cargo add actix-web` pulls in the framework and writes it into your `Cargo.toml`
-under `[dependencies]`. Notice there's no separate `cargo add tokio` line like axum needs — actix-web ships
-its own runtime (built on top of Tokio) and re-exports the macro you need. One crate, and you're ready.
+under `[dependencies]`. Unlike axum, there's no separate `cargo add tokio` — actix-web ships its own
+runtime (built on Tokio) and re-exports the macro you need. One crate, and you're ready.
 
 Now the smallest server that does something real. Put this in `src/main.rs`:
 
@@ -94,12 +90,12 @@ async fn main() -> std::io::Result<()> {
 
 *What just happened:* walk it from the top —
 - `async fn ping() -> impl Responder` is the **handler**. It takes no arguments and returns
-  `HttpResponse::Ok().body("pong")` — a `200 OK` with the text `pong` as the body. The return type is
-  `impl Responder`: "some type that knows how to become a response." `HttpResponse` is one such type, so
-  actix-web accepts it. (Phase 3 explores everything else that's a `Responder`.)
+  `HttpResponse::Ok().body("pong")` — a `200 OK` with the text `pong` as the body. `impl Responder` means
+  "some type that knows how to become a response"; `HttpResponse` is one such type. (Phase 3 explores
+  everything else that's a `Responder`.)
 - `#[actix_web::main]` is the one macro you'll use. Rust's `main` can't normally be `async`, so this rewrites
-  your `async fn main` to start actix-web's runtime and run it there. It's the actix-web counterpart to
-  axum's `#[tokio::main]`.
+  your `async fn main` to start actix-web's runtime and run it there — the actix-web counterpart to axum's
+  `#[tokio::main]`.
 - `HttpServer::new(|| { ... })` takes a **closure that builds an `App`**. Inside it,
   `App::new().route("/ping", web::get().to(ping))` creates a fresh app and registers one route: a `GET`
   request to `/ping` runs the `ping` handler. Read `web::get().to(ping)` as "for GET, call `ping`." There's
@@ -129,21 +125,20 @@ pong
 ```
 
 *What just happened:* `curl` sent a `GET /ping`. The server routed it into one of its worker `App`s, matched
-the route to your `ping` handler, called it, and the handler's returned `HttpResponse` came back as the
-response body — `pong`. You have a working, multi-threaded HTTP server in about a dozen lines.
+the route to your `ping` handler, called it, and the returned `HttpResponse` came back as the response body
+— `pong`. A working, multi-threaded HTTP server in about a dozen lines.
 
 ## The catch worth flagging now: the closure runs *per worker*
 
 Look again at `HttpServer::new(|| { App::new()... })`. That closure isn't called once. actix-web spawns
-multiple **worker threads** (by default, one per CPU core), and it calls your closure **once on each worker**
+multiple **worker threads** (by default, one per CPU core) and calls your closure **once on each worker**
 to build that worker's own `App`. You end up with several independent `App`s running side by side.
 
-⚠️ This is fine for the toy above — building a couple of routes a few times costs nothing. But the moment
-you want **shared state** (a database pool, a cache, a counter), the naive move of creating it *inside* the
-closure backfires: each worker would get its own separate copy, and they'd never see each other's data.
-That's why state in actix-web goes through a special wrapper instead. You don't need it yet — just file
-away the shape of the problem. [Phase 4: Shared State with web::Data](04-shared-state.md) solves it
-properly with `web::Data<T>`.
+⚠️ Fine for the toy above — building a couple of routes a few times costs nothing. But the moment you want
+**shared state** (a database pool, a cache, a counter), creating it *inside* the closure backfires: each
+worker gets its own separate copy, and they never see each other's data. That's why state in actix-web goes
+through a special wrapper instead — file away the shape of the problem for now.
+[Phase 4: Shared State with web::Data](04-shared-state.md) solves it properly with `web::Data<T>`.
 
 ## The running example: an articles API
 
@@ -158,12 +153,12 @@ struct Article {
 }
 ```
 
-*What just happened:* we declared the `Article` struct the rest of the guide builds on. Right now it's a
-plain struct with three fields. In Phase 3 we'll derive `Serialize` and `Deserialize` on it so actix-web
-can turn it into JSON on the way out and parse it from a request body on the way in — that's the moment a
-plain struct becomes a real API resource. For now you've met the whole cast: an **`App`** of routes, an
-**`HttpServer`** that runs it across workers, a **handler** returning a **`Responder`**, and the
-**`Article`** we'll spend the next phases turning into a proper REST API.
+*What just happened:* we declared the `Article` struct the rest of the guide builds on — right now a plain
+struct with three fields. In Phase 3 we'll derive `Serialize` and `Deserialize` on it so actix-web can turn
+it into JSON on the way out and parse it from a request body on the way in — the moment a plain struct
+becomes a real API resource. You've now met the whole cast: an **`App`** of routes, an **`HttpServer`** that
+runs it across workers, a **handler** returning a **`Responder`**, and the **`Article`** we'll spend the
+next phases turning into a proper REST API.
 
 Next up: routing in earnest — multiple methods, scopes for grouping routes, and your first extractors
 (`Path`, `Query`, `Json`) that pull pieces out of the incoming request.

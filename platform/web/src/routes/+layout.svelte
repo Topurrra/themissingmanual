@@ -1,6 +1,7 @@
 <script>
   import '../app.css';
   import { page } from '$app/stores';
+  import { dev } from '$app/environment';
   import { onMount } from 'svelte';
   import { levelLabel } from '$lib/difficulty.js';
   import { afterNavigate } from '$app/navigation';
@@ -177,6 +178,15 @@
     if (m && !mobile) collapsed = true; // entering mobile → drawer starts closed
     mobile = m;
   }
+
+  onMount(() => {
+    // The service worker file is built (src/service-worker.js) but SvelteKit
+    // never registers it automatically - without this, offline caching and
+    // push notifications both silently never activate.
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js', { type: dev ? 'module' : 'classic' }).catch(() => {});
+    }
+  });
 
   onMount(() => {
     mobile = window.innerWidth <= MOBILE_MAX;
@@ -389,6 +399,15 @@
         <div class="co-id">
           <div class="co-brand">{siteName}</div>
           <a class="co-rss" href="/rss.xml"><i class="ti ti-rss" aria-hidden="true"></i> RSS feed</a>
+          {#if socialLinks.length}
+            <div class="co-social">
+              {#each socialLinks as s}
+                <a href={s.url} target="_blank" rel="noopener" aria-label={s.label} title={s.label}>
+                  <i class="ti {s.icon}" aria-hidden="true"></i>
+                </a>
+              {/each}
+            </div>
+          {/if}
           <div class="sponsors">
             <span class="spon-label">Sponsored by</span>
             <span class="spon-names">
@@ -425,6 +444,7 @@
             <a href="/changelog">What's new</a>
             <a href="/contribute">Contribute</a>
             <a href="/request">Request a guide</a>
+            <a href="/backlog">What's next?</a>
             <a href="/review">Review</a>
           </div>
         </nav>

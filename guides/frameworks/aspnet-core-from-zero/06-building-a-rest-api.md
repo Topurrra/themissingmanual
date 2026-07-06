@@ -13,13 +13,13 @@ updated: 2026-06-23
 
 Here's the mental model that turns five separate phases into one coherent thing: **a REST resource is five endpoints over one collection.** List them all, fetch one, create one, replace one, delete one. That's it. Every framework you'll ever touch — Express, Rails, Django, Spring — expresses this same five-fingered shape. In ASP.NET Core you express it with minimal APIs: each endpoint wired through **dependency injection** to a repository, returning a **typed `Results`** that says exactly what HTTP status it means.
 
-So this phase isn't new material. It's the payoff. You already have the pieces: routing and route groups ([Phase 2](02-routing-and-minimal-apis.md)), binding the request body into a type and validating it ([Phase 3](03-model-binding-and-validation.md)), and the injected `IProductRepository` ([Phase 4](04-dependency-injection.md)). We're going to snap them together into a real, working `/api/v1/products` API.
+This phase isn't new material — it's the payoff. You already have the pieces: routing and route groups ([Phase 2](02-routing-and-minimal-apis.md)), binding the request body into a type and validating it ([Phase 3](03-model-binding-and-validation.md)), and the injected `IProductRepository` ([Phase 4](04-dependency-injection.md)). Time to snap them together into a real, working `/api/v1/products` API.
 
-> 📝 The thing to hold onto: each of the five endpoints is just *bind the input → call the repository → return a `Results` with the right status code*. Once you see that one pattern, all five are variations on it.
+> 📝 The thing to hold onto: each endpoint is just *bind the input → call the repository → return a `Results` with the right status code*. Once you see that one pattern, all five are variations on it.
 
 ## The repository, with a real store behind it
 
-In Phase 4 the `IProductRepository` only knew how to read — `All()` and `Find(id)`. A CRUD API needs to write too, so let's widen the contract and give it a store that can actually hold new products:
+In Phase 4 the `IProductRepository` only knew how to read — `All()` and `Find(id)`. A CRUD API needs to write too, so widen the contract and give it a store that can actually hold new products:
 
 ```csharp
 public interface IProductRepository
@@ -34,9 +34,9 @@ public interface IProductRepository
 public record Product(int Id, string Name, decimal Price);
 ```
 
-*What just happened:* The interface grew three write methods. `Add` returns the created `Product` (so the caller learns the new `Id`), `Update` returns `Product?` — `null` means "no such id" — and `Delete` returns a bool for found-or-not. The endpoints will lean on those return shapes to choose their status codes.
+*What just happened:* The interface grew three write methods. `Add` returns the created `Product` (so the caller learns the new `Id`), `Update` returns `Product?` — `null` means "no such id" — and `Delete` returns a bool for found-or-not. The endpoints lean on those return shapes to choose their status codes.
 
-Now the implementation. The earlier phases used a plain `List<Product>`, which was fine for reads. But a CRUD API mutates shared state, and **incoming requests run concurrently** — ASP.NET Core handles many at once on different threads. Two simultaneous `POST`s racing on a `List` and an `int` counter will corrupt it or hand out duplicate ids. So the store has to be thread-safe:
+Now the implementation. Earlier phases used a plain `List<Product>`, fine for reads. But a CRUD API mutates shared state, and **incoming requests run concurrently** — ASP.NET Core handles many at once on different threads. Two simultaneous `POST`s racing on a `List` and an `int` counter will corrupt it or hand out duplicate ids, so the store has to be thread-safe:
 
 ```csharp
 using System.Collections.Concurrent;
@@ -77,11 +77,11 @@ public class ProductRepository : IProductRepository
 }
 ```
 
-*What just happened:* `ConcurrentDictionary<int, Product>` gives us thread-safe reads, writes, and removes without us hand-rolling locks. `Interlocked.Increment` bumps the id counter atomically, so two racing `Add`s can never collide on the same id. The constructor seeds a couple of products so the API isn't empty on first run. This is the same idea as before — an in-memory store hidden behind the interface — hardened for the fact that real requests overlap.
+*What just happened:* `ConcurrentDictionary<int, Product>` gives thread-safe reads, writes, and removes without hand-rolling locks. `Interlocked.Increment` bumps the id counter atomically, so two racing `Add`s can never collide on the same id. The constructor seeds a couple of products so the API isn't empty on first run. Same idea as before — an in-memory store hidden behind the interface — hardened for the fact that real requests overlap.
 
 > ⚠️ The trap here is subtle because it doesn't show up until *load*. A plain `List` and `count++` work perfectly when you test by hand, one request at a time — then fall over in production when traffic overlaps. If a collection is shared across requests and gets written to, reach for a concurrent collection (or a lock). Don't wait for the heisenbug.
 
-Register it exactly as in Phase 4 — contract first, implementation second. We'll use `AddSingleton` here so the in-memory store survives across requests (a `Scoped` repository would build a fresh, empty dictionary every request and "forget" everything):
+Register it exactly as in Phase 4 — contract first, implementation second. Use `AddSingleton` here so the in-memory store survives across requests (a `Scoped` repository would build a fresh, empty dictionary every request and "forget" everything):
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -89,11 +89,11 @@ builder.Services.AddSingleton<IProductRepository, ProductRepository>();
 var app = builder.Build();
 ```
 
-*What just happened:* One registration, and every endpoint that declares an `IProductRepository` parameter now gets the same shared instance. The singleton lifetime is deliberate: it's an in-memory store, so it *needs* to outlive a single request to remember the products you've added. (When you move to a real database, that flips back to `Scoped` — more on that at the end.)
+*What just happened:* One registration, and every endpoint that declares an `IProductRepository` parameter now gets the same shared instance. The singleton lifetime is deliberate: it's an in-memory store, so it *needs* to outlive a single request to remember added products. (When you move to a real database, that flips back to `Scoped` — more on that at the end.)
 
 ## The five endpoints, grouped
 
-Rather than scatter `MapGet`/`MapPost` calls with the same `/api/v1/products` prefix repeated five times, group them. A `MapGroup` declares the shared path once and hangs the endpoints off it:
+Rather than scatter `MapGet`/`MapPost` calls with the same `/api/v1/products` prefix repeated five times, group them. A `MapGroup` declares the shared path once and hangs endpoints off it:
 
 ```csharp
 var products = app.MapGroup("/api/v1/products");
@@ -128,23 +128,23 @@ products.MapDelete("/{id:int}", (int id, IProductRepository repo) =>
 app.Run();
 ```
 
-*What just happened:* Five endpoints, one shared prefix. Look at how each handler follows the same rhythm — pull the inputs (route values, bound body, injected repo), call one repository method, return a `Results` matching the outcome:
+*What just happened:* Five endpoints, one shared prefix. Each handler follows the same rhythm — pull the inputs (route values, bound body, injected repo), call one repository method, return a `Results` matching the outcome:
 
 - **List** — always `Results.Ok` with the collection. `200 OK`.
-- **Get one** — the `is { } product` pattern means "if `Find` returned non-null, bind it to `product`." Found → `200 OK`; otherwise `Results.NotFound()` → `404`.
-- **Create** — `CreateProduct` is the input record from Phase 3; the framework binds it from the JSON body. `Results.Created(location, body)` returns `201 Created` *and* a `Location` header pointing at the new resource — the correct, polite REST answer to a successful POST.
+- **Get one** — the `is { } product` pattern means "if `Find` returned non-null, bind it to `product`." Found → `200 OK`; otherwise `404`.
+- **Create** — `CreateProduct` is the input record from Phase 3, bound from the JSON body. `Results.Created(location, body)` returns `201 Created` *and* a `Location` header pointing at the new resource — the correct, polite REST answer to a successful POST.
 - **Replace** — same null-check pattern: `200 OK` with the updated product, or `404` if that id never existed.
-- **Delete** — `204 No Content` (success, nothing to return in the body) or `404`.
+- **Delete** — `204 No Content` (success, nothing to return) or `404`.
 
-> 💡 `Results.X` and `TypedResults.X` are siblings: `Results.Ok(x)` and `TypedResults.Ok(x)` do the same thing at runtime. The difference is that `TypedResults` returns a *concrete, typed* result (`Ok<Product>` rather than the generic `IResult`), which makes endpoints easier to unit-test and lets the framework infer your response types for OpenAPI. When you start writing tests in [Phase 8](08-testing-and-production.md), prefer `TypedResults`.
+> 💡 `Results.X` and `TypedResults.X` are siblings: `Results.Ok(x)` and `TypedResults.Ok(x)` do the same thing at runtime. `TypedResults` returns a *concrete, typed* result (`Ok<Product>` rather than the generic `IResult`), which makes endpoints easier to unit-test and lets the framework infer your response types for OpenAPI. When you start writing tests in [Phase 8](08-testing-and-production.md), prefer `TypedResults`.
 
 ### What about validation?
 
-You don't repeat the validation logic here — it rides along from Phase 3. If `CreateProduct` carries data annotations (e.g. `[Required]` on `Name`, `[Range]` on `Price`) and you've wired up validation, a bad body is rejected with a `400` *before* your handler ever runs. The endpoint stays clean: by the time `repo.Add(input.Name, input.Price)` executes, you already know the input is valid. That's the whole point of doing binding and validation as their own phase — every endpoint inherits it for free.
+You don't repeat the validation logic here — it rides along from Phase 3. If `CreateProduct` carries data annotations (e.g. `[Required]` on `Name`, `[Range]` on `Price`) and you've wired up validation, a bad body is rejected with a `400` *before* your handler ever runs. The endpoint stays clean: by the time `repo.Add(input.Name, input.Price)` executes, the input is already known-valid. That's the whole point of binding and validation as their own phase — every endpoint inherits it for free.
 
 ## Driving it from the command line
 
-Let's exercise all five with `curl`. Start the app, then in another terminal:
+Exercise all five with `curl`. Start the app, then in another terminal:
 
 ```bash
 # List the seeded products
@@ -181,13 +181,13 @@ curl -i -X DELETE http://localhost:5000/api/v1/products/3
 # → HTTP/1.1 204 No Content
 ```
 
-*What just happened:* You walked the full lifecycle of a resource — create, read, update, delete — and each response carried a status code that *means something*. `200` for "here it is," `201 Created` plus a `Location` header for "made it, find it here," `204` for "done, nothing to say," `404` for "no such thing." A well-behaved REST client reads those codes; getting them right is most of what separates a real API from one that just happens to return JSON. (The `-i` flag tells `curl` to print the response headers so you can see the status line and `Location`.)
+*What just happened:* You walked the full lifecycle of a resource — create, read, update, delete — and each response carried a status code that *means something*: `200` for "here it is," `201 Created` plus a `Location` header for "made it, find it here," `204` for "done, nothing to say," `404` for "no such thing." A well-behaved REST client reads those codes; getting them right separates a real API from one that just happens to return JSON. (The `-i` flag tells `curl` to print response headers so you can see the status line and `Location`.)
 
 ## You just built the shape every framework shares
 
-Step back. The endpoints you wrote contain almost no logic — they bind input, call one repository method, and pick a status code. **All the actual work lives behind the `IProductRepository` interface**, and the endpoints don't know or care what's behind it. Right now it's a `ConcurrentDictionary`. Tomorrow it's a database.
+The endpoints you wrote contain almost no logic — they bind input, call one repository method, and pick a status code. **All the actual work lives behind the `IProductRepository` interface**, and the endpoints don't know or care what's behind it. Right now it's a `ConcurrentDictionary`. Tomorrow it's a database.
 
-> 💡 That's the seam that makes this worth the ceremony. When you swap the in-memory store for an [EF Core](/guides/efcore-from-zero)-backed `ProductRepository` that talks to a real SQL database, **not one line of these five endpoints changes.** You write a new class implementing the same interface, change the one registration line, and the API keeps behaving identically — now with persistence. The endpoints were always coding against the contract, never the implementation. That's dependency injection earning its keep.
+> 💡 That's the seam that makes this worth the ceremony. When you swap the in-memory store for an [EF Core](/guides/efcore-from-zero)-backed `ProductRepository` that talks to a real SQL database, **not one line of these five endpoints changes.** Write a new class implementing the same interface, change the one registration line, and the API keeps behaving identically — now with persistence. The endpoints were always coding against the contract, never the implementation — dependency injection earning its keep.
 
 ## Recap
 

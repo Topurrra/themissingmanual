@@ -6,6 +6,11 @@ export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
+      { tag: 'New', text: 'A public backlog: vote on what we should write next, fed by real reader searches and requests.', href: '/backlog' },
+      { tag: 'New', text: 'Optional review reminders - opt in and we\'ll nudge you when cards are due - plus a practice streak on the Review page.', href: '/review' },
+      { tag: 'New', text: 'Working as a Developer: a new category on the human side of the job - code review, legacy code, asking questions, your first on-call, and interviews.', href: '/categories/working-as-a-developer' },
+      { tag: 'New', text: 'Advanced capstone guides added to Logic, Physics, Security, No-Code, Web Fundamentals, Working with AI, and Programming Concepts.' },
+      { tag: 'New', text: 'Front-door guides for the Tools & Frameworks shelves: what tooling even is, and choosing your first framework.' },
       { tag: 'New', text: 'Web Fundamentals: ten new guides on HTML, CSS, layout, the DOM, forms, rendering, responsive design, accessibility, and browser storage.', href: '/categories/web-fundamentals' },
       { tag: 'New', text: 'Download any guide as an EPUB for your e-reader.' },
       { tag: 'New', text: 'The AI tutor now shows which guides it drew on, and can be asked "why?" straight from a wrong quiz answer.' },

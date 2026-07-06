@@ -11,24 +11,22 @@ updated: 2026-06-19
 
 # Errors & I/O - Exceptions and Files
 
-Two things happen in every real program: things go wrong, and data has to come from or go to the outside
-world - usually a file. Python ties these together more than you'd expect, because reading a file is one
-of the most common places things *do* go wrong (the file's missing, the disk is full, the data's
-garbage). So we'll cover both in one phase.
+Two things happen in every real program: things go wrong, and data comes from or goes to the outside
+world - usually a file. Python ties these together, since reading a file is one of the most common
+places things *do* go wrong (the file's missing, the disk is full, the data's garbage).
 
-The mental shift here is small but important. A beginner sees an error and thinks "my program crashed."
-A Python programmer sees an error and thinks "an *exception* was raised, and I get to decide what happens
-next." Errors aren't the end of the story - they're a signal you can catch.
+The mental shift is small but important: a beginner sees an error and thinks "my program crashed"; a
+Python programmer thinks "an *exception* was raised, and I get to decide what happens next." Errors
+aren't the end of the story - they're a signal you can catch.
 
 ## What an exception actually is
 
-**What it actually is.** An **exception** is Python's way of stopping a piece of code dead and shouting
-"I can't do what you asked." When you divide by zero, open a file that isn't there, or index past the end
-of a list, Python *raises* an exception. If nobody catches it, it travels up and crashes the program,
-printing a traceback.
+**What it actually is.** An **exception** is Python's way of stopping code dead and shouting "I can't do
+what you asked." Divide by zero, open a missing file, or index past a list's end, and Python *raises* an
+exception. Uncaught, it travels up and crashes the program, printing a traceback.
 
-📝 **Raise** - to trigger an exception. **Traceback** - the stack of "where it happened" lines Python
-prints when an uncaught exception crashes the program. (Reading those is a skill of its own - see
+📝 **Raise** - to trigger an exception. **Traceback** - the "where it happened" lines Python prints when
+an uncaught exception crashes the program. (Reading those is a skill of its own - see
 [What an Error Message Tells You](/guides/what-an-error-message-tells-you).)
 
 ```python runnable
@@ -43,13 +41,13 @@ Traceback (most recent call last):
 ZeroDivisionError: division by zero
 ```
 *What just happened:* Dividing by zero is undefined, so Python raised a `ZeroDivisionError`. Nobody
-caught it, so it bubbled all the way up and crashed the program, printing where it happened and why. The
-*last* line - `ZeroDivisionError: division by zero` - is the actual problem.
+caught it, so it bubbled up and crashed the program, printing where it happened and why. The *last*
+line - `ZeroDivisionError: division by zero` - is the actual problem.
 
 ## try / except - catch what you can handle
 
-**What it actually is.** `try` marks a block "this might fail." `except` says "if *this kind* of failure
-happens, do this instead of crashing." You catch only the specific failures you know how to deal with.
+**What it actually is.** `try` marks a block "this might fail"; `except` says "if *this kind* of failure
+happens, do this instead of crashing." Catch only the specific failures you know how to handle.
 
 ```python runnable
 def safe_divide(a, b):
@@ -68,13 +66,13 @@ can't divide by zero
 ```
 *What just happened:* The first call ran the `try` block cleanly and returned `5.0`. The second raised
 `ZeroDivisionError` inside the `try`, so Python jumped straight to the matching `except` and returned the
-friendly message instead of crashing. Control "fell into" the handler the moment the error fired.
+friendly message instead of crashing.
 
 ⚠️ **Gotcha - never write a bare `except:`.** It's tempting to write `except:` with no error type to
-"catch everything." Don't. A bare `except` swallows *every* exception - including `KeyboardInterrupt`
-(you pressing Ctrl-C) and genuine bugs like a typo'd variable name - and hides them behind whatever you
-do next. You'll spend an afternoon wondering why your program ignores Ctrl-C and silently does the wrong
-thing. **Always name the exceptions you actually expect:**
+"catch everything." Don't - it swallows *every* exception, including `KeyboardInterrupt` (Ctrl-C) and
+genuine bugs like a typo'd variable name, hiding them behind whatever you do next. You'll spend an
+afternoon wondering why your program ignores Ctrl-C and silently misbehaves. **Always name the
+exceptions you actually expect:**
 
 ```python
 # BAD - hides every error, including bugs and Ctrl-C
@@ -89,15 +87,14 @@ try:
 except (ValueError, KeyError) as err:
     print(f"handling: {err}")
 ```
-*What just happened:* The good version catches `ValueError` and `KeyError` - the two failures you
-anticipated - and binds the exception object to `err` so you can inspect it. Anything else still crashes
-loudly, which is exactly what you want for bugs you didn't foresee.
+*What just happened:* The good version catches `ValueError` and `KeyError` - the anticipated failures -
+and binds the exception object to `err` for inspection. Anything else still crashes loudly, exactly what
+you want for unforeseen bugs.
 
 ## finally - code that runs no matter what
 
 **What it actually is.** A `finally` block runs whether the `try` succeeded, failed, or raised something
-you didn't catch. It's for cleanup that *must* happen - closing a connection, releasing a lock - even on
-the way out the door.
+you didn't catch - for cleanup that *must* happen, like closing a connection or releasing a lock.
 
 ```python
 def read_first_line(path):
@@ -108,16 +105,15 @@ def read_first_line(path):
         f.close()        # runs even if readline() blows up
         print("file closed")
 ```
-*What just happened:* No matter what `readline()` does - return a line, or raise mid-read - `f.close()`
-runs before the function actually returns or the error propagates. `finally` is your guarantee that the
-file won't be left open. (In a moment, `with` will do this for you automatically - but it's worth seeing
-the manual version once so you know what `with` is buying you.)
+*What just happened:* No matter what `readline()` does - return a line or raise mid-read - `f.close()`
+runs before the function returns or the error propagates. `finally` guarantees the file won't be left
+open. (`with`, next, does this automatically - but it's worth seeing the manual version once.)
 
 ## raise - throw your own exception
 
-**What it actually is.** You don't only *catch* exceptions; you `raise` them when *your* code hits a
-situation it can't accept. Raising a clear error early beats returning a nonsense value that explodes
-three functions later.
+**What it actually is.** You don't only *catch* exceptions; you `raise` them when your code hits a
+situation it can't accept. A clear error raised early beats a nonsense value that explodes three
+functions later.
 
 ```python runnable
 def withdraw(balance, amount):
@@ -135,18 +131,18 @@ Traceback (most recent call last):
   ...
 ValueError: can't withdraw 500 from 100
 ```
-*What just happened:* The first call was fine. The second hit the guard and *raised* a `ValueError` with
-a message that says exactly what went wrong. Now the caller can `try/except` it - or, if they don't, the
-crash points straight at the real problem instead of a mysterious negative balance somewhere downstream.
+*What just happened:* The first call was fine. The second hit the guard and *raised* a `ValueError`
+saying exactly what went wrong. The caller can `try/except` it, or the crash points straight at the real
+problem instead of a mysterious negative balance downstream.
 
 ## Reading and writing files with `with open(...)`
 
 **What it actually is.** `open(path)` hands you a file object. `with` is a **context manager**: it
-guarantees the file is closed when the block ends - even if an exception fires inside it. This is the
+guarantees the file is closed when the block ends, even if an exception fires inside it - the
 `finally`-cleanup from earlier, done for you.
 
-📝 **Context manager** - anything you use with `with`. It sets something up on the way in and tears it
-down on the way out, automatically. Files are the classic example.
+📝 **Context manager** - anything used with `with`. It sets something up on the way in and tears it down
+on the way out, automatically. Files are the classic example.
 
 **Writing:**
 ```python
@@ -156,8 +152,8 @@ with open("notes.txt", "w") as f:    # "w" = write (creates/overwrites)
 # file is automatically closed here
 ```
 *What just happened:* `"w"` opened `notes.txt` for writing, truncating it if it already existed. We wrote
-two lines (the `\n` is the newline - `write` doesn't add one for you). When the `with` block ended,
-Python flushed and closed the file. No `f.close()` needed.
+two lines (`\n` is the newline - `write` doesn't add one for you). When the `with` block ended, Python
+flushed and closed the file - no `f.close()` needed.
 
 **Reading it back:**
 ```python
@@ -171,19 +167,19 @@ first line
 second line
 ```
 *What just happened:* Opening with no mode defaults to read. Looping over a file object yields one line
-at a time - memory-friendly even for huge files, because it doesn't load the whole thing at once. We
-`rstrip()` each line to drop the `\n` that `print` would otherwise double up.
+at a time - memory-friendly even for huge files, since it never loads the whole thing at once. `rstrip()`
+drops the `\n` that `print` would otherwise double up.
 
 ⚠️ **Gotcha - `"w"` erases the file.** Opening with `"w"` truncates the file to empty *before* you write
-a single byte. If you meant to *add* to a file, use `"a"` (append). Reach for `"w"` only when you truly
-want to start fresh. This one has eaten real data; check the mode before you run it.
+a single byte. To *add* to a file, use `"a"` (append); reach for `"w"` only to start fresh. This one has
+eaten real data - check the mode before you run it.
 
 ## EAFP - "ask forgiveness, not permission"
 
-**What it actually is.** There are two styles for handling things that might fail. *Look before you leap*
+**What it actually is.** Two styles exist for handling things that might fail. *Look before you leap*
 (LBYL) checks first: "does this file exist? then open it." *Easier to Ask Forgiveness than Permission*
-(EAFP) just tries it and catches the failure. Python culture strongly prefers **EAFP** - it reads
-cleaner and avoids a sneaky bug.
+(EAFP) just tries it and catches the failure. Python culture strongly prefers **EAFP**: cleaner, and it
+avoids a sneaky bug.
 
 ```python
 # LBYL - check first (Python tends to avoid this)
@@ -201,13 +197,12 @@ try:
 except FileNotFoundError:
     data = ""
 ```
-*What just happened:* Both end with `data` set. But the LBYL version has a hidden flaw: the file could be
-*deleted in the instant between* `exists()` returning `True` and `open()` running - and then it crashes
-anyway. The EAFP version has no such gap; it attempts the real operation and handles the one failure it
-cares about. Trying-and-catching is more honest about what your program actually does.
+*What just happened:* Both end with `data` set, but LBYL has a hidden flaw: the file could be *deleted in
+the instant between* `exists()` returning `True` and `open()` running, and then it crashes anyway. EAFP
+has no such gap - it attempts the real operation and handles the one failure it cares about.
 
 > 💡 **Key point.** When something might not work, the Pythonic instinct is *try it and catch the
-> specific failure* - not interrogate the world first and hope nothing changes underneath you.
+> specific failure* - not interrogate the world first and hope nothing changes.
 
 ## Recap
 
@@ -220,10 +215,10 @@ cares about. Trying-and-catching is more honest about what your program actually
 5. **`with open(...)`** reads and writes files and closes them automatically; mind that `"w"` overwrites
    and `"a"` appends.
 6. **EAFP** - try the operation and catch the specific error - is the Pythonic style, and it dodges the
-   race condition that "check first" quietly has.
+   race condition "check first" quietly has.
 
-You can now handle the messy edges. Next: the tooling that turns a script into a real project - package
-installs, virtual environments, formatters, and tests.
+Next: the tooling that turns a script into a real project - package installs, virtual environments,
+formatters, and tests.
 
 ---
 

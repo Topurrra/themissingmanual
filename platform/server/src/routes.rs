@@ -67,6 +67,8 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/api/site-config", get(admin::site_config))
         .route("/api/categories", get(list_categories))
         .route("/api/categories/:slug", get(category_detail))
+        .route("/api/backlog", get(admin::public_backlog))
+        .route("/api/backlog/vote", post(admin::vote_backlog))
         .route("/assets/:id", get(admin::serve_asset))
         .nest("/api/admin", protected.merge(auth_routes))
         .with_state(state)
