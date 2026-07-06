@@ -30,7 +30,9 @@
   </ul>
 
   <h2>What we need most</h2>
-  <p>The topics waiting for their first guide: <strong>Programming Languages</strong>, <strong>DevOps &amp; Infra</strong>, <strong>Databases</strong>, <strong>Architecture</strong>, <strong>Performance</strong>, and <strong>Security</strong>. If you know one cold, that's the one to write.</p>
+  <p><strong>Web Fundamentals</strong> is the newest category and still filling in - HTML, CSS, and how the browser actually works, ahead of any framework. If you can explain the DOM or the box model without hand-waving, that's the gap to fill.</p>
+  <p>Beyond that: most categories are built out end to end but could go deeper. Advanced, "go deep" material past the beginner path is always welcome - the harder half of a topic, not just the first day of it. So are sharper cheat sheets and small build-along projects.</p>
+  <p>Not sure what to write? Readers <a href="/request">request specific guides</a> that don't exist yet - ping us and we'll point you at one waiting in the queue.</p>
 
   <blockquote><p>You don't need to be famous. You need to have been confused by something, figured it out, and be willing to save the next person the trouble.</p></blockquote>
 </article>

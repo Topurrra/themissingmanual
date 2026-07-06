@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The verdict: what to actually upgrade
 
-You have the mental model and you can read the gauges. Now comes the part that saves you money: turning a reading into a decision. This is where most people go wrong - they feel slowness and reach for "new computer" when a sixty-dollar part would have made the old one feel new. Let's match each diagnosis to its fix, and explain why one upgrade wins so often that it should be your default suspect.
+Now the part that saves you money: turning a reading into a decision. This is where most people go wrong - they feel slowness and reach for "new computer" when a sixty-dollar part would have made the old one feel new. Let's match each diagnosis to its fix.
 
 ## The decision table
 
@@ -24,13 +24,13 @@ CPU pinned only during heavy tasks         CPU (often a new machine)
 One process pinning CPU all the time       Nothing - fix the software
 ```
 
-*What just happened:* Each row is a clean if-this-then-that. No guessing, no "more power is always better." You buy the part that widens your actual bottleneck, and nothing else.
+*What just happened:* clean if-this-then-that. You buy the part that widens your actual bottleneck, and nothing else.
 
 ## The SSD is usually the biggest, cheapest win
 
 If you take one thing from this whole guide, take this: **on an old machine with a spinning hard disk, swapping it for an SSD is the single most dramatic upgrade you can make, and one of the cheapest.**
 
-Here is why it hits so hard. Remember the speed cliff between RAM and a spinning disk - millions of times slower. Every time your machine boots, opens an app, or loads a file, it walks to that slow freezer. An SSD has no moving parts; it answers electronically. Replacing an HDD with an SSD does not make the freezer a little closer. It teleports it next to the counter.
+Why it hits so hard: the speed cliff between RAM and a spinning disk is millions of times, and every boot, app launch, and file load walks to that slow freezer. An SSD has no moving parts; it answers electronically. The swap does not make the freezer a little closer - it teleports it next to the counter.
 
 ```text
 The same old laptop, HDD → SSD:
@@ -40,11 +40,11 @@ The same old laptop, HDD → SSD:
   General feel     "is it frozen?" → "this feels like a new machine"
 ```
 
-*What just happened:* Those are the kinds of changes people describe after this one swap - not "a bit faster" but "a different computer." Numbers vary by machine, but the *category* of improvement is the point: the slowest link in the chain goes from millions-of-times-slow to genuinely fast.
+*What just happened:* that's what people describe after this one swap - not "a bit faster" but "a different computer." Numbers vary by machine; the *category* of improvement is the point.
 
 > If your machine still has an HDD, stop reading and plan the SSD. It is the highest payoff-per-dollar move in personal computing, and almost nothing else comes close on an aging machine.
 
-The catch, and it is small: swapping the disk means moving your operating system and files onto the new drive (cloning) or doing a fresh install. That is the one step that takes an afternoon instead of ten minutes. Plenty of free cloning tools and guides exist for your exact model. The reward is worth the afternoon.
+The catch, and it is small: swapping the disk means cloning your operating system and files onto the new drive, or doing a fresh install - the one step that takes an afternoon instead of ten minutes. Free cloning tools and guides exist for your exact model; the reward is worth the afternoon.
 
 ## When RAM is the answer
 
@@ -61,7 +61,7 @@ Two cautions before you buy a RAM stick:
 
 CPU is the upgrade people *want* it to be and the one it rarely is. If your reading showed the CPU pinned only during genuinely heavy work - long video exports, big compiles, serious number-crunching - then yes, a faster CPU helps *that* work.
 
-But here is the honest part: on most machines, especially laptops, the CPU is soldered and not replaceable. A "CPU upgrade" usually means a whole new computer. That is the expensive path, which is exactly why you want to be *certain* the CPU is the bottleneck before you walk it - and certain that the cheaper RAM or SSD fix would not have solved your actual problem.
+But here is the honest part: on most machines, especially laptops, the CPU is soldered and not replaceable, so a "CPU upgrade" usually means a whole new computer - the expensive path. That is exactly why you want to be *certain* the CPU is the bottleneck first, and that the cheaper RAM or SSD fix would not have solved your actual problem.
 
 ```text
 The expensive mistake:
@@ -91,7 +91,7 @@ These cost nothing and sometimes solve the whole thing. Try them, re-read your g
 
 Slowness is a bottleneck, not a mystery. Open Task Manager or Activity Monitor *while it's slow*, find the part that pegs, and buy only that. On an old machine the answer is usually an SSD (slow disk) or more RAM (red Memory Pressure), both cheap. The CPU is rarely the real cause and rarely cheap to fix, so be certain before you reach for a new machine. Measure first, spend last, and an aging computer can feel new again for the price of dinner.
 
-For builders: this is the same discipline that separates a good engineer from a flailing one. You do not optimize on vibes. You profile, you find the one real bottleneck, you fix that, and you re-measure to confirm. Whether it is a slow laptop or a slow service, the loop is identical: observe, locate the slowest link, widen it, verify.
+For builders: the same discipline separates a good engineer from a flailing one. You do not optimize on vibes - you profile, fix the one real bottleneck, and re-measure to confirm. Slow laptop or slow service, the loop is identical: observe, locate the slowest link, widen it, verify.
 
 ```quiz
 [

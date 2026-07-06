@@ -96,12 +96,14 @@
     window.googleTranslateElementInit = () => {
       // eslint-disable-next-line no-undef
       new google.translate.TranslateElement(
-      { pageLanguage: 'en', 
-        autoDisplay: false,
-        //RESTRICT VISIBLE LANGUAGES HERE (comma-separated ISO codes)
-        includedLanguages: 'ka,ru,es,fr,it,de,ja', 
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE 
-      },
+        {
+          pageLanguage: 'en',
+          autoDisplay: false,
+          // Curated to 8 total (English + these 7) instead of Google's full
+          // 100+ list - comma-separated ISO 639-1 codes, edit to add/remove.
+          includedLanguages: 'ka,ru,es,fr,it,de,ja',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        },
         'google_translate_element'
       );
     };

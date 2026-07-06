@@ -6,6 +6,15 @@ export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
+      { tag: 'New', text: 'Web Fundamentals: ten new guides on HTML, CSS, layout, the DOM, forms, rendering, responsive design, accessibility, and browser storage.', href: '/categories/web-fundamentals' },
+      { tag: 'New', text: 'Download any guide as an EPUB for your e-reader.' },
+      { tag: 'New', text: 'The AI tutor now shows which guides it drew on, and can be asked "why?" straight from a wrong quiz answer.' },
+      { tag: 'New', text: 'A live-radio mode for the lofi player, alongside the loop.' },
+      { tag: 'New', text: 'Read offline: pages you visit stay readable without a connection.' },
+      { tag: 'New', text: 'Translate any page into 8 languages from the header.' },
+      { tag: 'New', text: 'Request a guide: tell us what you wish existed.', href: '/request' },
+      { tag: 'New', text: 'Eleven more cheat sheets - sed, awk, ffmpeg, terraform, psql, and friends.', href: '/cheat-sheet' },
+      { tag: 'New', text: 'Three bigger build-along projects: a static blog generator, a Go CLI tool, and your own key-value database.', href: '/categories/projects' },
       { tag: 'New', text: 'High-contrast dark theme.' },
       { tag: 'New', text: 'Cheat sheets now appear in instant search and the command palette.', href: '/cheat-sheet' },
       { tag: 'New', text: 'Built for AI assistants: a sitemap, structured data, and a server that tools like Claude and Cursor can read directly.' },

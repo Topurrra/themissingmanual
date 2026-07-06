@@ -11,39 +11,35 @@ updated: 2026-06-19
 
 # Storage — the Filing Cabinet
 
-The CPU does the work. RAM is the desk it works on. But the desk gets wiped clean every time the power goes off — so where does everything actually *live*? Your photos, your documents, the apps themselves, the operating system: all of it has to survive shutdowns, restarts, and dead batteries. That permanent home is **storage**, and it's the last of our three parts.
-
-We'll explain what storage is and the two numbers that describe it, then — finally — assemble cache, RAM, and storage into the one idea that makes all three click: the **memory hierarchy**.
+The CPU does the work. RAM is the desk it works on. But the desk gets wiped every time the power goes off — so where do your photos, documents, apps, and the operating system actually *live*? That permanent home is **storage**, the last of our three parts. We'll cover its two numbers, then assemble cache, RAM, and storage into the **memory hierarchy**.
 
 ## What storage actually is
 
-**What it actually is.** **Storage** is where your data is kept when nothing's using it — including when the power is off. The operating system, every app, every file you've ever saved: they sit in storage, waiting. When you open something, the computer copies the needed parts *from* storage *into* RAM to work on, and writes changes back to storage when you save.
+**Storage** is where data is kept when nothing's using it — including when the power is off. The OS, every app, every file you've saved sit there waiting. Open something and the computer copies the needed parts *from* storage *into* RAM; save, and changes are written back.
 
-📝 **Terminology.** Storage is *non-volatile* — the opposite of RAM. *Non-volatile* means it keeps its contents without power. Pull the plug, come back tomorrow, and it's all still there. That permanence is storage's entire reason for existing. (You'll also hear storage called "the disk" or "the drive," and on a spec sheet it usually shows up as an "SSD" with a size like 512 GB.)
+📝 **Terminology.** Storage is *non-volatile* — the opposite of RAM. It keeps its contents without power: pull the plug, come back tomorrow, it's all still there. That permanence is storage's entire reason for existing. (You'll also hear "the disk" or "the drive," and on a spec sheet it's usually an "SSD" with a size like 512 GB.)
 
-**Why this matters.** This is the other half of the "save your work" story from the last phase. Saving a file is the act of writing it from temporary RAM into permanent storage. That's why a saved document survives a crash and an unsaved one doesn't — saving is the moment your work crosses from the desk that gets wiped into the cabinet that remembers.
+This is the other half of the "save your work" story: saving is the moment your work crosses from temporary RAM — the desk that gets wiped — into the cabinet that remembers. That's why a saved document survives a crash and an unsaved one doesn't.
 
 ## The two numbers: capacity vs speed
 
-Storage gets described by two qualities that are easy to mix up, so let's separate them cleanly.
+**Capacity — how much it holds.** The big advertised number: "512 GB," "1 TB," "2 TB." It tells you how many photos, videos, apps, and files fit — and *nothing* about how fast they come and go. A bigger cabinet holds more folders; it doesn't make you walk to it any faster.
 
-**Capacity — how much it holds.** This is the big advertised number: "512 GB," "1 TB," "2 TB." It tells you how many photos, videos, apps, and files fit. It says *nothing* about how fast they come and go. A bigger cabinet holds more folders; it doesn't make you walk to it any faster.
+📝 **Terminology.** Sizes climb in roughly thousand-fold steps: **GB** (gigabyte) → **TB** (terabyte, about a thousand GB). A "512 GB SSD" is a storage *capacity*.
 
-📝 **Terminology.** Sizes climb in roughly thousand-fold steps: **GB** (gigabyte) → **TB** (terabyte, about a thousand GB). A "512 GB SSD" is a storage *capacity* — total room for your stuff.
+**Speed — how fast it hands data over.** How quickly storage delivers data to RAM (and accepts it back). It's why one computer boots in seconds and another grinds for a minute, and why a big app opens instantly on one machine and crawls on another. Capacity and speed are independent: a drive can be huge and slow, or smaller and fast.
 
-**Speed — how fast it hands data over.** This is how quickly storage can deliver data to RAM (and accept it back). It's why one computer boots in seconds and another grinds for a minute; why a big app opens instantly on one machine and crawls on another. Capacity and speed are independent: a drive can be huge and slow, or smaller and fast.
+> ⚠️ **Gotcha — capacity is not speed.** People buy a 2 TB drive expecting a speed-up and are puzzled when nothing feels snappier — they bought *room*, not *pace*. What makes storage feel fast is the *type* of drive.
 
-> ⚠️ **Gotcha — capacity is not speed.** "More storage" does *not* mean "faster computer." A bigger drive holds more; it doesn't necessarily hand data over any quicker. People buy a 2 TB drive expecting a speed-up and are puzzled when nothing feels snappier — because they bought *room*, not *pace*. The thing that makes storage feel fast is the *type* of drive, which is a topic deep enough to deserve its own guide (next paragraph).
-
-**What kind of storage you have matters more than its size for speed.** Whether your drive is an old-style spinning hard disk, a modern SSD, or a faster-still NVMe drive makes a dramatic difference to how fast it hands data over — far more than its capacity does. Those differences (and what HDD, SSD, and NVMe actually *are* inside) are exactly what the follow-up guide covers, so we won't crack the drives open here.
+Whether your drive is an old-style spinning hard disk, a modern SSD, or a faster-still NVMe drive matters far more for speed than its capacity does.
 
 > ⏭️ Want the insides — spinning platters vs flash chips, and why NVMe is so much faster? That's [Storage: HDD vs SSD vs NVMe](/guides/storage-hdd-ssd-nvme). This phase keeps storage at the "what it does and where it fits" level.
 
 ## The big idea: the memory hierarchy
 
-Now we can finally connect all three parts. Across this guide a pattern kept surfacing: data the CPU needs *right now* lives somewhere small and fast (cache), data in active use lives somewhere bigger and a bit slower (RAM), and everything else lives somewhere huge and slower still (storage). That arrangement is deliberate, and it has a name: the **memory hierarchy**.
+A pattern kept surfacing across this guide: data the CPU needs *right now* lives somewhere small and fast (cache), data in active use somewhere bigger and a bit slower (RAM), everything else somewhere huge and slower still (storage). That arrangement is deliberate: the **memory hierarchy**.
 
-**Why it exists — the trade nobody can escape.** Memory that's fast is expensive and physically can't be made huge; memory that's huge is cheap but slow. You can't have one kind of memory that's instantly fast, enormous, *and* permanent — no such thing exists. So computers use *several* kinds, arranged in layers: a tiny sliver of blazing-fast memory closest to the CPU, then a larger pool of fast memory, then a vast amount of slower permanent storage. Each layer trades speed for size as you move away from the CPU.
+Why it exists — the trade nobody can escape: fast memory is expensive and physically can't be made huge; huge memory is cheap but slow. No single memory is instantly fast, enormous, *and* permanent. So computers layer several kinds, each trading speed for size as you move away from the CPU.
 
 ```mermaid
 flowchart TD
@@ -51,30 +47,30 @@ flowchart TD
     RAM --> Storage["STORAGE (your files, apps, the OS)<br/>huge · slowest · survives power off"]
 ```
 
-**How to read the pyramid.** Climb *up* toward the CPU and memory gets faster but there's far less of it. Slide *down* away from the CPU and you get vastly more room but slower access. The whole machine is built to keep what the CPU needs *now* as high up as possible — pulling data from storage into RAM, and from RAM into cache, so the worker rarely has to wait on the slow layers below.
+Climb *up* toward the CPU: faster, but far less room. Slide *down*: vastly more room, slower access. The whole machine works to keep what the CPU needs *now* as high up as possible — storage into RAM, RAM into cache — so the worker rarely waits on the slow layers.
 
-This single picture explains everything the three phases built:
+This picture explains everything the three phases built:
 
-- **Cache misses** (Phase 1) — the CPU wanted something that wasn't in the top, fastest rung, so it had to reach down to RAM and wait.
-- **Swapping** (Phase 2) — RAM filled up, so the OS was forced to push data *down* to the slow storage rung, and the whole computer dragged.
-- **Boot and load times** (this phase) — starting the computer or opening an app means hauling data *up* from storage into RAM, which is why the *speed* of that bottom rung shapes how fast your machine feels.
+- **Cache misses** (Phase 1) — the CPU wanted something not in the fastest rung, so it reached down to RAM and waited.
+- **Swapping** (Phase 2) — RAM filled, the OS pushed data *down* to the slow storage rung, and everything dragged.
+- **Boot and load times** (this phase) — starting up or opening an app hauls data *up* from storage into RAM, which is why the bottom rung's *speed* shapes how fast the machine feels.
 
-> 💡 **Key point.** Fast feeling = the data the CPU needs is high in the hierarchy (in cache or RAM). Slow feeling = the CPU keeps having to reach down to the slow bottom rung. "More GHz, more cores, more RAM, a faster SSD" are all, at heart, ways of keeping the worker fed from the fast layers instead of stalling on the slow ones.
+> 💡 **Key point.** Fast feeling = the data the CPU needs is high in the hierarchy (cache or RAM). Slow feeling = the CPU keeps reaching down to the slow bottom rung. "More GHz, more cores, more RAM, a faster SSD" are all, at heart, ways of keeping the worker fed from the fast layers.
 
 ## What the storage spec actually buys you
 
-- **Capacity (GB / TB)** — how *much* you can keep. Pick it for how many photos, videos, apps, and files you own. It is not a speed number.
-- **Drive type (HDD / SSD / NVMe)** — how *fast* storage hands data over, which shapes boot times and how quickly apps open. This matters more for speed than capacity does — see the [storage deep-dive](/guides/storage-hdd-ssd-nvme).
+- **Capacity (GB / TB)** — how *much* you can keep. Pick it for how many photos, videos, apps, and files you own. Not a speed number.
+- **Drive type (HDD / SSD / NVMe)** — how *fast* storage hands data over, shaping boot times and app opens. Matters more for speed than capacity — see the [storage deep-dive](/guides/storage-hdd-ssd-nvme).
 
 ## Recap
 
-1. **Storage is the filing cabinet** — big, permanent, *non-volatile*. It keeps the OS, your apps, and your files even with the power off.
-2. **Capacity and speed are different numbers.** Capacity (GB/TB) is how much it holds; speed is how fast it delivers data. More capacity does not mean a faster computer.
-3. **The type of drive drives the speed** — far more than its size — and that's a topic of its own: [HDD vs SSD vs NVMe](/guides/storage-hdd-ssd-nvme).
-4. **The memory hierarchy ties it together:** cache → RAM → storage, each bigger but slower as you step away from the CPU, because no single memory can be fast, huge, and permanent all at once.
-5. **"Fast" means the CPU's data sits high in that hierarchy; "slow" means it keeps reaching down to the bottom rung.** Every spec you compare is really about keeping the worker fed from the fast layers.
+1. **Storage is the filing cabinet** — big, permanent, *non-volatile*. It keeps the OS, apps, and files even with the power off.
+2. **Capacity and speed are different numbers.** Capacity (GB/TB) is how much fits; speed is how fast it delivers. More capacity does not mean a faster computer.
+3. **The type of drive drives the speed** — far more than its size: [HDD vs SSD vs NVMe](/guides/storage-hdd-ssd-nvme).
+4. **The memory hierarchy ties it together:** cache → RAM → storage, each bigger but slower, because no single memory can be fast, huge, and permanent at once.
+5. **"Fast" means the CPU's data sits high in that hierarchy** — every spec you compare is really about keeping the worker fed from the fast layers.
 
-That's the trio. The CPU does the work, RAM is the workspace, storage is the permanent home — and the memory hierarchy is the reason they're arranged exactly the way they are. Now when a computer feels fast or slow, you'll know which part to look at and why.
+That's the trio: CPU does the work, RAM is the workspace, storage is the permanent home — and the memory hierarchy is why they're arranged this way. When a computer feels fast or slow, you now know which part to look at.
 
 ---
 

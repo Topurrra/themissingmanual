@@ -11,13 +11,11 @@ updated: 2026-06-19
 
 # The Core Moves
 
-Open any debugger - VS Code, PyCharm, IntelliJ, Chrome devtools, GDB on the command line - and you'll find
-the same small set of controls wearing different paint. There are maybe six moves total, and once they
-click, every debugger you ever touch feels familiar. This phase teaches the moves as *ideas*, so you're not
-relearning buttons every time you switch tools.
+Open any debugger - VS Code, PyCharm, IntelliJ, Chrome devtools, GDB - and you'll find the same controls
+wearing different paint. Maybe six moves total; once they click, every debugger feels familiar. This phase
+teaches them as *ideas*, not buttons to relearn per tool.
 
-We'll use a small example throughout: a function that's supposed to total a shopping cart but keeps
-returning the wrong number.
+One example runs throughout: a function meant to total a shopping cart but returning the wrong number.
 
 ```python
 def cart_total(items):
@@ -32,18 +30,15 @@ def apply_discount(amount):
 
 ## The breakpoint - "pause here"
 
-**What it actually is.** A breakpoint is a marker you place on a line that tells the debugger: *stop the
-program right before running this line, and give me control.* In most IDEs you set one by clicking in the
-margin to the left of the line number - a red dot appears. The program then runs at full speed until it
-reaches that line, and freezes.
+**What it actually is.** A breakpoint tells the debugger: *stop right before this line and give me control.*
+Set one by clicking the margin left of the line number - a red dot appears. The program runs full speed
+until it reaches that line, then freezes.
 
-**What it does in real life.** Say you put a breakpoint on the `return apply_discount(total)` line and run in
-debug mode. The program executes normally - the whole loop runs - and then stops, paused, with `total`
-holding whatever the loop produced. You're now standing inside that exact moment.
+**What it does in real life.** Put a breakpoint on `return apply_discount(total)` and run in debug mode: the
+loop runs, then execution stops with `total` holding whatever the loop produced.
 
-**A real example.** Here's what a paused session looks like in a typical IDE's debug console (the exact layout
-differs, but every debugger shows you these same three things - where you're paused, the local values, and
-the call stack):
+**A real example.** A paused session in a typical debug console (layout varies, but every debugger shows
+where you're paused, local values, and the call stack):
 
 ```console
 Paused on breakpoint at cart.py:5
@@ -59,41 +54,35 @@ CALL STACK
     handle_checkout web.py:88
     <module>        web.py:140
 ```
-*What just happened:* The program ran the entire loop and stopped *before* calling `apply_discount`. The
-debugger is showing you that `total` is `25` at this instant - the real, current value, no `print()`
-required. You can already see the bug-hunting power: you didn't have to guess to add `print(total)`; it's
-just *there*, alongside every other local.
+*What just happened:* The loop ran and stopped *before* calling `apply_discount`. `total` is `25` right now
+- no `print()` required, sitting alongside every other local.
 
-⚠️ **Gotcha - you have to run in "debug" mode, not normal run.** A breakpoint only fires if you launched the
-program *with the debugger attached* (the "Debug" / bug-icon button, `python -m pdb`, `node --inspect`,
-etc.). Hit plain "Run" and your breakpoints sit there doing nothing, and you'll swear the debugger is
-broken. It isn't - it just wasn't invited.
+⚠️ **Gotcha - run in "debug" mode, not normal run.** A breakpoint only fires with the debugger *attached*
+(the "Debug" / bug-icon button, `python -m pdb`, `node --inspect`). Plain "Run" does nothing - not broken,
+just not invited.
 
 ## Inspecting variables - "what's true right now?"
 
-**What it actually is.** While paused, the debugger shows you every variable currently in scope and its value.
-Objects expand like folders - click to drill into nested fields. This is the payoff from Phase 1: instead of
-betting on what to print, you see *all* the local state at once.
+**What it actually is.** While paused, the debugger shows every variable in scope and its value. Objects
+expand like folders, click to drill in - the payoff from Phase 1: instead of betting on what to print, you
+see *all* the local state at once.
 
-**What it does in real life.** In the snapshot above, you can read `total = 25` and expand `items` to inspect
-each `Item`. If `total` looks wrong, you've found *where* it went wrong without re-running anything. Most
-debuggers also give you a little expression box (an "evaluate" or "console" panel) where you can type, say,
-`items[0].price * items[0].quantity` and get the answer *in the live paused context* - a calculator that
-runs inside your frozen program.
+**What it does in real life.** In the snapshot above, read `total = 25` and expand `items` to inspect each
+`Item` - if `total` looks wrong, you've found *where*, no re-running needed. Most debuggers also give an
+"evaluate" / "console" panel: type `items[0].price * items[0].quantity` for the answer *in the live paused
+context* - a calculator running inside your frozen program.
 
 ## Stepping - moving forward one piece at a time
 
-Once paused, you don't have to let the program finish. You control how it moves forward, one piece at a
-time. There are three step commands, and the difference between them is the single most useful thing in this
-guide.
+Once paused, you control how the program moves forward. Three step commands exist, and the difference
+between them is the single most useful thing in this guide.
 
-📝 **The current line.** When paused, there's always one "next line to run" - the line the debugger is about
-to execute. Stepping decides how much of that line (and what's inside it) runs before you get control back.
+📝 **The current line.** When paused, there's always one "next line to run." Stepping decides how much of
+it - and what's inside it - runs before control returns to you.
 
 **Step over - "run this line, don't show me the details."**
-The debugger runs the current line completely, *including any function it calls*, and pauses on the next line
-in your current function. You stay at the same level. Use this when you trust the function being called and
-only care about the result.
+Runs the current line completely, *including any function it calls*, and pauses on the next line, same
+level. Use when you trust the called function and just want the result.
 
 ```console
 # Paused at:  total += item.price * item.quantity   (line 4)
@@ -101,13 +90,12 @@ only care about the result.
 # Now paused at: total += item.price * item.quantity (line 4, next loop iteration)
 #   total = 25
 ```
-*What just happened:* You executed one iteration's worth of work and landed on the same line for the next
-loop pass. `total` went from `20` to `25`. Stepping over the multiplication didn't dive into anything -
-it ran the line and stopped.
+*What just happened:* One iteration ran, landing on the same line for the next pass - `total` went from
+`20` to `25`, without diving into the multiplication.
 
 **Step into - "take me inside the function being called."**
-If the current line calls a function *you* wrote and want to inspect, step into descends into it and pauses
-on its first line. This is how you follow the bug down into a helper.
+Descends into a function you want to inspect, pausing on its first line - how you follow the bug into a
+helper.
 
 ```console
 # Paused at:  return apply_discount(total)   (line 5)
@@ -115,13 +103,11 @@ on its first line. This is how you follow the bug down into a helper.
 # Now paused at: return amount * 0.9         (apply_discount, line 8)
 #   amount = 25
 ```
-*What just happened:* Instead of running `apply_discount` invisibly, you climbed *inside* it. Now you can see
-its argument (`amount = 25`) and watch it compute. This is the move that answers "is the bug in this
-function, or in the one it calls?"
+*What just happened:* Instead of running `apply_discount` invisibly, you climbed *inside* it and can see its
+argument (`amount = 25`) compute. Answers "is the bug here, or in the caller?"
 
 **Step out - "I've seen enough in here, finish this function and pop me back up."**
-Run the rest of the current function and pause at the line that called it (one level up). Use it when you
-stepped into something and realized the bug isn't here.
+Runs the rest of the function, pausing at the caller. Use once you've confirmed the bug isn't here.
 
 ```console
 # Paused inside apply_discount (line 8)
@@ -129,19 +115,18 @@ stepped into something and realized the bug isn't here.
 # Now paused back in cart_total, at the line after the call
 #   return value = 22.5
 ```
-*What just happened:* The debugger finished `apply_discount`, returned its result (`22.5`), and dropped you
-back where the call was made. You skipped the boring rest of the helper without losing your place.
+*What just happened:* `apply_discount` finished, returned `22.5`, and dropped you back at the call site,
+skipping the rest of the helper without losing your place.
 
-⚠️ **Gotcha - step into can drop you into library code.** If you step into a line that calls a *framework* or
-*standard-library* function, you can end up paused inside someone else's source you've never seen, several
-levels deep, wondering where you are. The fix: step *out* to climb back, or use "step over" on lines that
-only call library code. Many debuggers also have a "skip my non-project files" / "just-my-code" setting that
-prevents this - worth turning on.
+⚠️ **Gotcha - step into can drop you into library code.** Stepping into a line that calls *framework* or
+*standard-library* code can pause you inside unfamiliar source, several levels deep. Fix: step *out*, or
+"step over" library-only lines. Many debuggers offer a "just-my-code" setting that prevents this - worth
+turning on.
 
 ## The call stack - "how did I get here?"
 
-**What it actually is.** The call stack is the chain of function calls that led to where you're paused - each
-function that's currently "waiting" for the one below it to return. In the snapshot earlier, the stack was:
+**What it actually is.** The call stack is the chain of calls that led here - each function "waiting" for the
+one below it to return. In the earlier snapshot:
 
 ```mermaid
 flowchart TD
@@ -149,35 +134,31 @@ flowchart TD
   hc -->|called| ct["cart_total  ← you are here (top of the stack)"]
 ```
 
-**What it does in real life.** Click any frame in the stack and the debugger jumps you to that function's
-line *and shows you its variables at the moment it made the call below it.* So when `cart_total` got a weird
-`items` list, you can click `handle_checkout` one frame down and see exactly what *it* passed in - without
-re-running. This is the same structure you see in a crash; if reading these frames feels shaky, the
-companion guide [Reading a Stack Trace](/guides/reading-a-stack-trace) walks through it in depth.
+**What it does in real life.** Click any frame and the debugger jumps to that function's line, showing its
+variables *at the moment it made the call below it*. If `cart_total` got a weird `items` list, click
+`handle_checkout` to see what it passed in - without re-running. Same structure as a crash; if reading
+frames feels shaky, [Reading a Stack Trace](/guides/reading-a-stack-trace) covers it in depth.
 
-💡 **Key point.** Variables answer *what is true here*; the call stack answers *how did we get into this
-situation*. Most real bugs need both - the wrong value, and the path that produced it.
+💡 **Key point.** Variables answer *what is true here*; the call stack answers *how did we get here*. Most
+real bugs need both.
 
 ## Watch expressions - "keep an eye on this for me"
 
-**What it actually is.** A watch expression is a small piece of code you pin to the debugger so it
-re-evaluates *every time the program pauses*. Instead of expanding `items` and doing mental math at each
-stop, you add a watch like `total / len(items)` and the debugger keeps it updated automatically.
+**What it actually is.** A watch expression is code pinned to the debugger that re-evaluates *every pause* -
+add `total / len(items)` once and it stays updated automatically, instead of expanding `items` and doing
+mental math each stop.
 
-**What it does in real life.** Watching `item.price * item.quantity` while you step through the loop lets you
-see that product change at every iteration, side by side, so the moment it produces something wrong jumps
-out at you. A watch can be any valid expression in your language - a variable, a calculation, a method call,
-a comparison like `total > 100`.
+**What it does in real life.** Watching `item.price * item.quantity` while stepping through the loop shows
+that product change every iteration, so the moment it goes wrong jumps out. A watch can be any valid
+expression: a variable, a calculation, a method call, a comparison like `total > 100`.
 
-⚠️ **Gotcha - watch expressions can have side effects.** Because a watch *runs* its expression on every pause,
-watching something like `cache.pop(key)` or `next(iterator)` will actually mutate your program's state each
-time it evaluates - quietly changing the very thing you're debugging. Keep watches to *read-only* expressions
-(plain reads and pure calculations). If you need to run something with effects, do it once in the
-evaluate/console panel, not as a standing watch.
+⚠️ **Gotcha - watch expressions can have side effects.** A watch *runs* its expression every pause, so
+watching `cache.pop(key)` or `next(iterator)` mutates state each time - quietly changing the thing you're
+debugging. Keep watches *read-only*; for side effects, use the evaluate/console panel once instead.
 
 ## The whole picture
 
-Here's the mental model of a paused session, with every move you've learned in one frame:
+The mental model of a paused session, every move you've learned in one frame:
 
 ```text
   ┌─────────────────────────────── PAUSED ───────────────────────────────┐
@@ -202,21 +183,18 @@ Here's the mental model of a paused session, with every move you've learned in o
   └───────────────────────────────────────────────────────────────────── ┘
 ```
 
-Every debugger you'll meet is some arrangement of these five regions. Learn them once; recognize them
-everywhere.
+Every debugger is some arrangement of these five regions. Learn them once, recognize them everywhere.
 
 ## Recap
 
-1. A **breakpoint** pauses the program *before* a line runs - but only when launched in debug mode.
-2. **Inspecting variables** shows you all live state at once; an evaluate box runs expressions in the paused
-   context.
-3. **Step over** runs a line whole; **step into** descends into a call; **step out** finishes the current
-   function and pops you up one level.
+1. A **breakpoint** pauses the program *before* a line runs - only in debug mode.
+2. **Inspecting variables** shows all live state at once; an evaluate box runs expressions in context.
+3. **Step over** runs a line whole; **step into** descends into a call; **step out** finishes the function
+   and pops up a level.
 4. The **call stack** is the chain of callers - click a frame to see *its* variables and how you got here.
-5. A **watch expression** re-evaluates on every pause - keep it read-only to avoid side effects.
+5. A **watch expression** re-evaluates on every pause - keep it read-only.
 
-You can now drive any debugger through a normal bug. Next, the moves that crack the bugs `print()` can't
-touch.
+You can now drive any debugger through a normal bug. Next: the moves that crack bugs `print()` can't touch.
 
 Watch it animated: [using breakpoints](/explainers/Breakpoints.dc.html)
 

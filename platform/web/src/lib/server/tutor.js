@@ -15,7 +15,7 @@ import { search } from '$lib/api.js';
 
 const require = createRequire(import.meta.url);
 const PROVIDER_IDS = Object.keys(CLOUD);
-const DEFAULT_ORDER = ['cerebras', 'groq', 'mistral', 'openrouter', 'uncloseai'];
+const DEFAULT_ORDER = ['cerebras', 'groq', 'mistral', 'openrouter', 'uncloseai', 'ollamacloud'];
 const DEFAULT_COOLDOWN_SEC = 60;
 const LOG_MAX = 500;
 
@@ -252,12 +252,17 @@ const SEARCH_TOOL = {
     }
   }
 };
-function makeSearchExecutor(fetch) {
+// `cited`, when passed, collects {slug, phaseNo, title} for every guide the tool
+// actually surfaced to the model - the caller reads it back after the call
+// completes to show the reader which guides the answer drew on.
+function makeSearchExecutor(fetch, cited) {
   return async (name, args) => {
     if (name !== 'search_guides') return 'Unknown tool.';
     const hits = (await search(fetch, String(args?.query || '')).catch(() => [])) || [];
     if (!hits.length) return 'No matching guides found.';
-    return hits.slice(0, 5).map((h) => `- "${h.title}" (${h.summary}) -> /guides/${h.guide_slug}/${h.phase_no}`).join('\n');
+    const top = hits.slice(0, 5);
+    if (cited) for (const h of top) cited.push({ slug: h.guide_slug, phaseNo: h.phase_no, title: h.title });
+    return top.map((h) => `- "${h.title}" (${h.summary}) -> /guides/${h.guide_slug}/${h.phase_no}`).join('\n');
   };
 }
 
@@ -324,11 +329,12 @@ export async function tutorAsk({ fetch, guideSlug, phaseNo, phaseTitle, phaseMar
   if (!providerList.length) return { enabled: true, error: 'no_providers_configured' };
 
   const messages = buildMessages({ question, phaseTitle, phaseMarkdown, history, systemPrompt: c.systemPrompt });
+  const cited = [];
   let result;
   try {
     result = await routeChat(providerList, messages, {
       tools: [SEARCH_TOOL],
-      execTool: makeSearchExecutor(fetch),
+      execTool: makeSearchExecutor(fetch, cited),
       cooldownMs: c.cooldownSec * 1000,
       mode: c.routingMode
     });
@@ -339,7 +345,16 @@ export async function tutorAsk({ fetch, guideSlug, phaseNo, phaseTitle, phaseMar
   bumpUsage();
   const logId = logEvent({ guideSlug, phaseNo, question, answer: result.content, provider: result.providerUsed, ok: true });
 
-  const data = { enabled: true, answer: result.content, providerUsed: result.providerUsed, logId };
+  // Dedupe by slug+phase - the model can call search_guides more than once.
+  const seen = new Set();
+  const referenced = cited.filter((g) => {
+    const k = `${g.slug}/${g.phaseNo}`;
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+
+  const data = { enabled: true, answer: result.content, providerUsed: result.providerUsed, logId, referenced };
   if (useCache) cacheSet(key, data);
   return data;
 }

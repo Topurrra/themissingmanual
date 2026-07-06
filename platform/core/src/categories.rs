@@ -28,7 +28,8 @@ const DEFS: &[Def] = &[
     Def { slug: "hardware", name: "Hardware", icon: "ti-cpu", blurb: "How the machine is actually built and talks to itself - from the chip to the device on your desk." },
     Def { slug: "networking", name: "Networking", icon: "ti-network", blurb: "How the internet really works, and how to design networks that hold up - from your home router to the enterprise." },
     Def { slug: "programming-concepts", name: "Programming Concepts", icon: "ti-bulb", blurb: "The ideas under every language - how code runs, data structures, async, memory, big-O, and choosing the right tool." },
-    Def { slug: "programming-languages", name: "Programming Languages", icon: "ti-code", blurb: "Python, JavaScript, Go, and Rust - each language end to end, from zero to advanced." },
+    Def { slug: "programming-languages", name: "Programming Languages", icon: "ti-code", blurb: "Python, JavaScript, TypeScript, Java, C#, Go, and Rust - each language end to end, from zero to advanced." },
+    Def { slug: "web-fundamentals", name: "Web Fundamentals", icon: "ti-world-www", blurb: "HTML, CSS, and how the browser actually works - the web platform itself, learned properly before any framework touches it." },
     Def { slug: "frameworks", name: "Frameworks & Libraries", icon: "ti-stack-2", blurb: "Django, FastAPI, React, Next, Spring Boot, and friends - the big frameworks and libraries, each tied to its language." },
     Def { slug: "version-control", name: "Version Control", icon: "ti-git-branch", blurb: "Git and friends: what they actually do, and how to stay calm when they break." },
     Def { slug: "debugging", name: "Debugging & Troubleshooting", icon: "ti-bug", blurb: "Reading the error, finding the real cause, and fixing it calmly instead of guessing." },
@@ -99,7 +100,7 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         let cats = categories_with_counts(&store).unwrap();
-        assert_eq!(cats.len(), 25);
+        assert_eq!(cats.len(), 26);
         assert_eq!(cats[0].slug, "logic"); // DEFS array order = display order; foundations lead
         assert_eq!(cats[1].slug, "mathematics");
         assert_eq!(cats[2].slug, "physics");
@@ -110,10 +111,12 @@ mod tests {
         assert!(cats.iter().any(|c| c.slug == "infrastructure")); // the DevOps split
         assert!(cats.iter().any(|c| c.slug == "programming-concepts")); // split out of programming-languages
         assert!(cats.iter().any(|c| c.slug == "frameworks")); // frameworks sit beside the languages
-        // concepts display before the languages themselves; frameworks right after
+        // concepts display before the languages themselves; the web platform sits
+        // between the languages and the frameworks built on top of it
         let pos = |s: &str| cats.iter().position(|c| c.slug == s).unwrap();
         assert!(pos("programming-concepts") < pos("programming-languages"));
-        assert!(pos("programming-languages") < pos("frameworks"));
+        assert!(pos("programming-languages") < pos("web-fundamentals"));
+        assert!(pos("web-fundamentals") < pos("frameworks"));
         assert!(cats.iter().all(|c| c.count == 0));
     }
 
@@ -136,7 +139,7 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         seed_categories(&store).unwrap();
-        assert_eq!(categories_with_counts(&store).unwrap().len(), 25);
+        assert_eq!(categories_with_counts(&store).unwrap().len(), 26);
     }
 
     #[test]

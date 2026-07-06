@@ -10,7 +10,13 @@ export const CLOUD = {
   cerebras: { name: 'Cerebras', base: 'https://api.cerebras.ai/v1', defaultModel: 'llama-3.3-70b', note: 'Very fast inference, free tier (rate-limited).', keysUrl: 'https://cloud.cerebras.ai' },
   mistral: { name: 'Mistral', base: 'https://api.mistral.ai/v1', defaultModel: 'mistral-small-latest', note: 'Free tier (rate-limited).', keysUrl: 'https://console.mistral.ai/api-keys' },
   openrouter: { name: 'OpenRouter', base: 'https://openrouter.ai/api/v1', defaultModel: 'meta-llama/llama-3.3-70b-instruct:free', note: 'Free-model pool, shared rate limits across all :free models.', keysUrl: 'https://openrouter.ai/keys', headers: { 'X-Title': 'The Missing Manual Tutor' } },
-  uncloseai: { name: 'uncloseai', base: 'https://hermes.ai.unturf.com/v1', defaultModel: 'adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic', note: 'Community-run, no key needed - smaller open models, best-effort uptime (no company behind it).', keysUrl: null, noKeyRequired: true }
+  uncloseai: { name: 'uncloseai', base: 'https://hermes.ai.unturf.com/v1', defaultModel: 'adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic', note: 'Community-run, no key needed - smaller open models, best-effort uptime (no company behind it).', keysUrl: null, noKeyRequired: true },
+  // Ollama Cloud is NOT OpenAI-compatible (own /api/chat request/response shape,
+  // tool-call arguments already parsed instead of a JSON string) - `kind: 'ollama'`
+  // routes it through callOllama()/listOllamaModels() below instead of the
+  // generic OpenAI-shaped path. Everything else (config storage, provider order,
+  // routing/failover) is generic over CLOUD and needs no changes for a new id.
+  ollamacloud: { name: 'Ollama Cloud', kind: 'ollama', base: 'https://ollama.com', defaultModel: 'gpt-oss:120b', note: 'Ollama-hosted cloud models, free tier (usage-based, resets periodically).', keysUrl: 'https://ollama.com/settings/keys' }
 };
 
 // A provider is put on cooldown after a failure so routeChat() skips it for a
@@ -44,6 +50,7 @@ export function providerStatus() {
 export async function callProvider(providerId, apiKey, messages, opts = {}) {
   const cfg = CLOUD[providerId];
   if (!cfg) throw Object.assign(new Error(`Unknown provider "${providerId}"`), { status: 0 });
+  if (cfg.kind === 'ollama') return callOllama(cfg, apiKey, messages, opts);
   const model = opts.model || cfg.defaultModel;
   const tools = opts.tools || null;
   const execTool = opts.execTool || null;
@@ -93,6 +100,64 @@ export async function callProvider(providerId, apiKey, messages, opts = {}) {
   throw Object.assign(new Error(`${cfg.name}: too many tool-call round-trips`), { status: 0 });
 }
 
+// Ollama's own /api/chat shape: {model, messages, stream}, response is
+// {message: {role, content, tool_calls?}, done, ...}, and tool_calls arguments
+// arrive already parsed as an object (not a JSON string like OpenAI). Tool
+// result messages also skip tool_call_id - Ollama correlates by position.
+// Returns the same {content, usage, model} shape as callProvider() above so
+// routeChat() and every caller stay provider-agnostic.
+async function callOllama(cfg, apiKey, messages, opts) {
+  const model = opts.model || cfg.defaultModel;
+  const tools = opts.tools || null;
+  const execTool = opts.execTool || null;
+  const useTools = !!(tools && tools.length && typeof execTool === 'function');
+  const msgs = messages.slice();
+  const MAX_STEPS = useTools ? 4 : 1;
+
+  for (let step = 0; step < MAX_STEPS; step++) {
+    const body = { model, messages: msgs, stream: false };
+    if (useTools) body.tools = tools;
+
+    let res;
+    try {
+      res = await fetch(cfg.base + '/api/chat', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(opts.timeoutMs || 20_000),
+        body: JSON.stringify(body)
+      });
+    } catch (e) {
+      throw Object.assign(new Error(`${cfg.name}: ${e?.name === 'TimeoutError' ? 'timed out' : e?.message || 'network error'}`), { status: 0 });
+    }
+    if (!res.ok) {
+      let detail = res.statusText;
+      try { const j = await res.json(); detail = j?.error || detail; } catch {}
+      throw Object.assign(new Error(`${cfg.name}: ${res.status} ${detail}`), { status: res.status });
+    }
+
+    const j = await res.json().catch(() => null);
+    const msg = j?.message || {};
+    const toolCalls = msg.tool_calls || [];
+
+    if (useTools && toolCalls.length) {
+      msgs.push({ role: 'assistant', content: msg.content || null, tool_calls: toolCalls });
+      for (const tc of toolCalls) {
+        const args = tc.function?.arguments || {};
+        let result;
+        try { result = await execTool(tc.function?.name, args); } catch (e) { result = `Error: ${e?.message || e}`; }
+        msgs.push({ role: 'tool', content: String(result) });
+      }
+      continue;
+    }
+
+    const usage = (j?.prompt_eval_count != null || j?.eval_count != null)
+      ? { prompt_tokens: j.prompt_eval_count || 0, completion_tokens: j.eval_count || 0, total_tokens: (j.prompt_eval_count || 0) + (j.eval_count || 0) }
+      : null;
+    return { content: msg.content || '', usage, model };
+  }
+  throw Object.assign(new Error(`${cfg.name}: too many tool-call round-trips`), { status: 0 });
+}
+
 // List models available to this key, adapted from LocalAIs's listCloudModels().
 // "free" is only meaningful for OpenRouter, whose catalog genuinely mixes free
 // and paid models (the `:free` suffix / zero pricing) - Groq/Cerebras/Mistral
@@ -101,6 +166,7 @@ export async function callProvider(providerId, apiKey, messages, opts = {}) {
 export async function listModels(providerId, apiKey) {
   const cfg = CLOUD[providerId];
   if (!cfg || !apiKey) return [];
+  if (cfg.kind === 'ollama') return listOllamaModels(cfg, apiKey);
   let res;
   try {
     res = await fetch(cfg.base + '/models', {
@@ -125,6 +191,27 @@ export async function listModels(providerId, apiKey) {
     })
     .filter((m) => m.id)
     .sort((a, b) => (a.free === b.free ? a.id.localeCompare(b.id) : a.free ? -1 : 1));
+}
+
+// Ollama's native model listing (/api/tags), unrelated shape to the OpenAI
+// /models endpoint above - {models: [{model|name, ...}]}, no free/paid split.
+async function listOllamaModels(cfg, apiKey) {
+  let res;
+  try {
+    res = await fetch(cfg.base + '/api/tags', {
+      headers: { Authorization: `Bearer ${apiKey}` },
+      signal: AbortSignal.timeout(10_000)
+    });
+  } catch {
+    return [];
+  }
+  if (!res.ok) return [];
+  const j = await res.json().catch(() => null);
+  const rows = j?.models || [];
+  return rows
+    .map((m) => ({ id: m.model || m.name, free: null }))
+    .filter((m) => m.id)
+    .sort((a, b) => a.id.localeCompare(b.id));
 }
 
 // Round-robin start point - advances once per call so consecutive questions

@@ -11,54 +11,45 @@ updated: 2026-06-19
 
 # Built Not to Stop - Redundancy & Reliability
 
-A laptop dying is an annoyance. You lose your afternoon, maybe some unsaved work, and you grumble. A server
-dying is a different category of event: it can take down a website, a payment system, or a database that
-thousands of people depend on, all at once, possibly at 3am. So servers are engineered around a goal your
-laptop never had to care about - **staying up even while individual parts fail** - because over a long
-enough time, parts *will* fail. Not "might." Will.
+A laptop dying costs you an afternoon. A server dying can take down a website, a payment system, or a
+database thousands of people depend on - possibly at 3am. So servers are engineered around a goal your
+laptop never had: **staying up even while individual parts fail**. Because over a long enough time, parts
+*will* fail. Not "might." Will.
 
-The entire reliability mindset reduces to one sentence, and if you only remember one thing from this guide,
-make it this:
+The entire reliability mindset reduces to one sentence:
 
 > 💡 **Key point.** Find every part whose failure would stop the machine, and make sure there's no *single*
 > one of them. That part - the one with no backup - is called a **single point of failure**, and the whole
 > game is eliminating them.
 
 📝 **Terminology.** A **single point of failure** (SPOF) is any component whose failure, on its own, takes
-the whole system down. One power supply is a SPOF. One disk holding the only copy of your data is a SPOF.
-One network cable, one switch, one machine - each can be a SPOF until you add a second.
+the whole system down. One power supply, one disk holding the only copy of your data, one network cable,
+one switch, one machine - each is a SPOF until you add a second.
 
-We already met the first example in [Phase 1](01-a-server-vs-your-laptop.md): two power supplies, so the
-failure of one doesn't matter. Now let's apply the same idea to the part most likely to fail of all - the
-disks.
+[Phase 1](01-a-server-vs-your-laptop.md) gave the first example: two power supplies. Now the same idea for
+the part most likely to fail of all - the disks.
 
 ## RAID: many disks pretending to be one (better) disk
 
-Of all the parts in a server, **storage fails the most**. Spinning hard drives have moving parts that wear
-out; even solid-state drives wear over time. And a disk is where your *data* lives - the one thing you
-truly can't afford to lose. So servers almost never trust a single disk. They use **RAID**.
+Of all the parts in a server, **storage fails the most**: spinning drives have moving parts that wear
+out; even SSDs wear over time. And a disk holds your *data* - the one thing you truly can't afford to
+lose. So servers almost never trust a single disk: they use **RAID**.
 
-**What it actually is.** **RAID** - **Redundant Array of Independent Disks** - is a technique for combining
-several physical disks so the system treats them as **one logical drive**, arranged to give you some
-combination of two things: **redundancy** (survive a disk dying) and **speed** (use several disks at once).
-Different *RAID levels* strike different balances between those two.
+**RAID** - **Redundant Array of Independent Disks** - combines several physical disks so the system treats
+them as **one logical drive**, arranged for some combination of **redundancy** (survive a disk dying) and
+**speed** (use several disks at once). Different *RAID levels* strike different balances.
 
-📝 **Terminology.** **RAID** = Redundant Array of Independent Disks. An **array** is the group of physical
-disks combined together. A **RAID level** (a number like 0, 1, 5, 10) names *how* they're combined - what
-trade you're making between capacity, speed, and how many disks can die before you lose data.
+📝 **Terminology.** An **array** is the group of physical disks combined together. A **RAID level** (0, 1,
+5, 10) names *how* they're combined - the trade between capacity, speed, and how many disks can die before
+you lose data.
 
-**The core idea, before the numbers.** You have several disks. You can use the extra disks three ways:
-spread one stream of data across all of them so reads and writes go faster (no safety), keep a *second copy*
-of everything so a dead disk costs you nothing (safety, at the price of capacity), or store clever extra
-information that lets you *reconstruct* a dead disk's contents from the survivors (most of the capacity, plus
-safety). Those three ideas are the whole of RAID; the numbered levels are just recipes that mix them.
-
-Here are the levels you'll actually run into:
+The numbered levels are just recipes mixing three ideas: spread data across disks for speed, keep a full
+second copy for safety, or store reconstruction information that gives most of the capacity plus safety.
 
 ### RAID 0 - striping (speed, zero safety)
 
-Data is **striped** - split into chunks spread across all the disks - so reads and writes hit several disks
-at once and go faster. There's no redundancy at all.
+Data is **striped** - split into chunks spread across all the disks - so reads and writes hit several
+disks at once. No redundancy at all.
 
 ```text
    RAID 0 (striping)        write a file → split across both disks
@@ -69,14 +60,14 @@ at once and go faster. There's no redundancy at all.
    faster, BUT: lose either disk and the WHOLE array is gone
 ```
 
-⚠️ **Gotcha.** RAID 0 makes you *more* likely to lose everything, not less - with two disks you now have
-*two* things that can kill the array instead of one. It's named "RAID" but it has zero redundancy. Use it
-only for data you can afford to lose entirely (scratch space, caches you can rebuild).
+⚠️ **Gotcha.** RAID 0 makes you *more* likely to lose everything - two disks means *two* things that can
+kill the array instead of one. It's named "RAID" but has zero redundancy. Use it only for data you can
+afford to lose entirely (scratch space, caches you can rebuild).
 
 ### RAID 1 - mirroring (a live second copy)
 
-Every byte is written to **two disks at once**. They're identical mirrors. If one dies, the other has a
-complete copy and the machine keeps running off it without missing a beat.
+Every byte is written to **two disks at once** - identical mirrors. If one dies, the other has a complete
+copy and the machine keeps running without missing a beat.
 
 ```text
    RAID 1 (mirroring)       write a file → written to BOTH disks
@@ -88,18 +79,15 @@ complete copy and the machine keeps running off it without missing a beat.
    you get the capacity of 1.
 ```
 
-The trade is capacity: two disks give you the storage of one. Simple, robust, and common for the disks that
-hold the operating system itself.
+Simple, robust, and common for the disks holding the operating system itself.
 
 ### RAID 5 - striping with parity (most capacity, survives one failure)
 
-Data is striped across the disks like RAID 0, but one disk's worth of space is spent on **parity** - extra
-information computed from the data that lets the array **rebuild** whatever was on any single failed disk.
-Lose one disk, and the array reconstructs its contents from the parity plus the survivors.
+Data is striped like RAID 0, but one disk's worth of space goes to **parity** - extra information computed
+from the data that lets the array **rebuild** whatever was on any single failed disk from the survivors.
 
-📝 **Terminology.** **Parity** is redundant information derived from your data (think of a running checksum)
-such that if any one piece goes missing, the missing piece can be recomputed from the rest. It's how RAID 5
-survives a disk death without keeping a full second copy of everything.
+📝 **Terminology.** **Parity** is redundant information derived from your data (think of a running
+checksum) such that if any one piece goes missing, it can be recomputed from the rest.
 
 ```text
    RAID 5 (striping + parity), e.g. 4 disks
@@ -112,19 +100,18 @@ survives a disk death without keeping a full second copy of everything.
    Capacity: you lose one disk's worth to parity; the rest is usable.
 ```
 
-The appeal is efficiency: with four disks you keep three disks' worth of capacity *and* survive any single
-failure. The catch is that while a failed disk is being rebuilt onto a replacement, the array is running
-*without* its safety net - a second failure during that window loses everything. (This is why larger,
-critical arrays often use schemes that tolerate *two* simultaneous failures.)
+The appeal is efficiency: four disks keep three disks' worth of capacity *and* survive any single failure.
+The catch: while a failed disk rebuilds onto a replacement, the array runs *without* its safety net - a
+second failure in that window loses everything. (That's why larger, critical arrays often use schemes
+tolerating *two* simultaneous failures.)
 
 ### RAID 10 - mirror, then stripe (speed and safety, at a price)
 
-Combine the two good ideas: mirror disks in pairs (RAID 1), then stripe across the pairs (RAID 0). You get
-the speed of striping *and* the resilience of mirroring. The price is capacity - like mirroring, you pay for
-twice the disks. It's a common choice for databases, where both speed and safety matter and you're willing
-to pay for disks.
+Mirror disks in pairs (RAID 1), then stripe across the pairs (RAID 0): the speed of striping *and* the
+resilience of mirroring, at mirroring's price - twice the disks. A common choice for databases, where both
+speed and safety matter.
 
-Here's the whole picture in one honest comparison:
+The whole picture in one honest comparison:
 
 ```text
    LEVEL    GIVES YOU              SURVIVES        CAPACITY (of N disks)
@@ -135,11 +122,9 @@ Here's the whole picture in one honest comparison:
    RAID 10  speed + safety         1 per mirror    half (mirrored)
 ```
 
-**Why this saves you later.** When someone says "the array is degraded" or "we're rebuilding onto the
-replacement disk," you'll know a disk has died and the system is running on its redundancy - alive, but
-temporarily exposed, and in a hurry to get its safety net back. And "we run RAID 10 on the database box"
-will read as a deliberate trade - paying double for disks to buy both speed and resilience - rather than a
-magic incantation.
+Now "the array is degraded" or "we're rebuilding onto the replacement disk" reads correctly: a disk died,
+the system is running on its redundancy - alive, but temporarily exposed, in a hurry to get its safety net
+back. And "we run RAID 10 on the database box" is a deliberate trade, not a magic incantation.
 
 ## RAID is not a backup
 
@@ -149,45 +134,39 @@ jobs.
 > ⚠️ **Gotcha - RAID is not a backup.** RAID protects you from **hardware failure** - a disk physically
 > dying. It does **nothing** to protect you from the other ways data disappears.
 
-Think about what RAID actually does: it keeps your data available when a *disk* fails. But your data is far
-more likely to be destroyed by something RAID faithfully, instantly replicates to every disk in the array:
+Your data is far more likely to be destroyed by something RAID faithfully, instantly replicates to every
+disk in the array:
 
-- **You delete the wrong files.** `rm -rf` on the wrong directory is written to the mirror just as fast as
-  to the original. Both copies, gone, in the same instant.
+- **You delete the wrong files.** `rm -rf` on the wrong directory hits the mirror as fast as the original.
+  Both copies, gone, in the same instant.
 - **An application corrupts the data.** A bad migration, a buggy write - RAID dutifully stores the
   corruption on every disk.
-- **Ransomware encrypts everything.** RAID encrypts it redundantly. Now you have a beautifully resilient
-  array of encrypted garbage.
+- **Ransomware encrypts everything.** RAID encrypts it redundantly - a beautifully resilient array of
+  encrypted garbage.
 - **The whole machine is lost** - fire, flood, theft, a failed RAID controller scrambling the array. The
   redundancy was all inside one box, and the box is gone.
 
 A **backup** is a *separate copy, in a separate place, that isn't changed when the live data changes* -
-ideally with older versions you can roll back to. RAID and backups solve different problems and you need
-both. RAID keeps you running through a dead disk; backups bring you back from a deletion, a corruption, or a
-disaster.
+ideally with older versions to roll back to. You need both: RAID keeps you running through a dead disk;
+backups bring you back from a deletion, a corruption, or a disaster.
 
-🪖 **War story.** The classic, painful version goes: a team runs a healthy RAID array for years, sees disks
-fail and get replaced without data loss, and quietly concludes "RAID means our data is safe - we don't need
-backups." Then someone runs a destructive command, or a bug corrupts the database, and they discover that
-the thing protecting them this whole time only ever protected them from *one* of the dozen ways to lose
-data. The redundancy worked perfectly. It was just never the thing they actually needed that day.
+🪖 **War story.** The classic version: a team runs a healthy RAID array for years, watches disks fail and
+get replaced without data loss, and quietly concludes "RAID means our data is safe - no backups needed."
+Then someone runs a destructive command, or a bug corrupts the database, and they discover the redundancy
+only ever protected them from *one* of the dozen ways to lose data. It worked perfectly. It was just
+never the thing they needed that day.
 
 ## Hot-swap: replacing parts without turning the machine off
 
-Redundancy buys you survival when a part fails. But you still have to *replace* the failed part - and if
-replacing it meant powering the server down, you'd be trading one outage for another. So critical server
-parts are **hot-swappable**.
+Redundancy buys survival when a part fails - but you still have to *replace* it, and if that meant
+powering down, you'd trade one outage for another. So critical server parts are **hot-swappable**:
+removable and replaceable **while the machine is running and serving traffic** - usually the disks and
+the power supplies.
 
-**What it actually is.** **Hot-swap** means a component can be physically removed and replaced **while the
-machine is running and serving traffic** - no shutdown, no reboot. The disks and the power supplies we've
-discussed are the usual hot-swap parts.
-
-**What it does in real life.** Picture a server in RAID where one disk has died. The array is degraded but
-still serving requests off its redundancy. A technician walks up, pulls the dead drive out of the front of
-the running machine (server drives sit in **carriers** - little trays - that slide out by hand), slides a
-fresh one into the empty slot, and the array begins rebuilding onto it automatically. The server never
-stopped. Users never noticed. Same story with the redundant PSUs: pull the failed one, slide a new one in,
-the machine keeps humming on the surviving supply the whole time.
+Picture a RAID server with one dead disk, degraded but serving off its redundancy. A technician pulls the
+dead drive from the front of the running machine (drives sit in **carriers** - trays that slide out by
+hand), slides a fresh one in, and the array rebuilds automatically. The server never stopped; users never
+noticed. Same with PSUs: pull the failed one, slide in a new one, the machine hums on the survivor.
 
 ```text
    front of a running server
@@ -199,14 +178,10 @@ the machine keeps humming on the surviving supply the whole time.
                     RAID rebuilds onto the replacement automatically
 ```
 
-**Why this is the point.** Redundancy and hot-swap are two halves of one strategy. Redundancy means a single
-failure doesn't stop the machine *right now*; hot-swap means *fixing* that failure also doesn't stop the
-machine. Together they let a server fail a part, keep running, get repaired, and return to full health -
-all without a second of downtime. That's what "built not to stop" actually means in metal.
-
-**Why this saves you later.** When you read "drive replaced, array rebuilding, no downtime" in an incident
-note, you'll see the whole choreography: a part failed, redundancy carried the load, someone hot-swapped the
-replacement, and the array healed itself - exactly as designed, with the service never going dark.
+Redundancy and hot-swap are two halves of one strategy: a failure doesn't stop the machine, and *fixing*
+it doesn't either - fail a part, keep running, get repaired, return to full health, zero downtime. That's
+"built not to stop" in metal, and why "drive replaced, array rebuilding, no downtime" in an incident note
+is the design working exactly as intended.
 
 ## Recap
 
@@ -215,8 +190,8 @@ replacement, and the array healed itself - exactly as designed, with the service
 2. **RAID** combines several disks into one logical drive for **redundancy and/or speed**. Core levels:
    **0** = striping (fast, no safety), **1** = mirroring (a live second copy), **5** = striping + **parity**
    (most capacity, survives one disk), **10** = mirrored *and* striped (speed + safety, double the disks).
-3. **RAID is not a backup.** It protects against a *disk* dying - not against deletion, corruption,
-   ransomware, or losing the whole box. You need separate, off-box backups too.
+3. **RAID is not a backup.** It protects against a *disk* dying - not deletion, corruption, ransomware, or
+   losing the whole box. You need separate, off-box backups too.
 4. **Hot-swap** lets you replace a failed disk or power supply **while the machine keeps running**, so
    repairing a fault causes no downtime either.
 5. Redundancy (survive a failure) plus hot-swap (fix it live) is how a server is **built not to stop**.

@@ -197,6 +197,7 @@
     {/if}
   {/each}
 </div>
+<p class="req-hint">Missing a topic? <a href="/request">Request a guide →</a></p>
 
 {#if shownRecent.length}
   <h2 class="section-eyebrow">Newly added</h2>
@@ -240,4 +241,6 @@
   .bm-sub { font-size: 0.85rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .bm-x { flex: none; cursor: pointer; background: none; border: 0; color: var(--faint); font-size: 1.3rem; line-height: 1; padding: 0 0.8rem; align-self: stretch; border-radius: 0 12px 12px 0; }
   .bm-x:hover { color: #c0563c; background: var(--surface); }
+
+  .req-hint { margin: 0.9rem 0 0; font-size: 0.92rem; color: var(--muted); }
 </style>

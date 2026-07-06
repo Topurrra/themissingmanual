@@ -5,7 +5,16 @@
 import { build, files, version } from '$service-worker';
 
 const CACHE = `tmm-cache-${version}`;
-const PRECACHE = [...build, ...files];
+// Precache the hashed app shell + small static essentials only. static/ also
+// holds 100+ explainer pages, zips, and og images - far too heavy to force on
+// every first visit; those cache at runtime when actually opened.
+const SMALL_STATIC = files.filter(
+  (f) => /^\/(icon-|favicon|manifest|robots|syntax-highlight)/.test(f)
+);
+const PRECACHE = [...build, ...SMALL_STATIC];
+
+// Never intercept or cache anything stateful, private, or admin-only.
+const NEVER_CACHE = /^\/(admin|api|feedback|tutor|mcp)/;
 
 self.addEventListener('install', (event) => {
   // Precache hashed assets (atomic), plus the home shell best-effort so there is
@@ -32,6 +41,7 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== location.origin) return;
+  if (NEVER_CACHE.test(url.pathname)) return;
 
   // Built assets are content-hashed → cache-first (fast, offline).
   if (PRECACHE.includes(url.pathname)) {

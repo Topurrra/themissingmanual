@@ -6,7 +6,7 @@
   $: c = data.config;
   $: s = data.status;
   $: pct = s.cap ? Math.min(100, Math.round((s.used / s.cap) * 100)) : 0;
-  const providerIds = ['groq', 'cerebras', 'mistral', 'openrouter', 'uncloseai'];
+  const providerIds = ['groq', 'cerebras', 'mistral', 'openrouter', 'uncloseai', 'ollamacloud'];
 
   // Model values are local + reactive so the picker modal can set them.
   let modelValues = Object.fromEntries(providerIds.map((id) => [id, data.config.providers[id].model]));

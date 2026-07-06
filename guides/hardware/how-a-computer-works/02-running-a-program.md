@@ -11,19 +11,19 @@ updated: 2026-06-19
 
 # How They Work Together to Run a Program
 
-In [Phase 1](01-the-parts.md) you met the parts. Now let's see them do the one thing the whole machine is for: running a program. We'll follow a single app - say, a music player - from the moment you double-click its icon to the moment sound comes out of your speakers. The parts don't work in isolation; they hand work to each other in a steady relay, and that relay is what "running a program" actually is.
+You met the parts in [Phase 1](01-the-parts.md). Now we follow a music player from double-click to sound coming out of your speakers: the parts hand work to each other in a steady relay, and that relay *is* "running a program."
 
 ## First: what is a program, really?
 
-**What it actually is.** A **program** is a list of instructions saved as a file in storage. When it's just sitting there, not running, it's like a recipe in a closed cookbook - a set of steps written down, doing nothing. It only *does* something when those steps are read out and carried out.
+A **program** is a list of instructions saved as a file in storage. Sitting there, it's a recipe in a closed cookbook - doing nothing until the steps are read out and carried out.
 
-📝 **Terminology.** *Program* = the instructions sitting in storage, not running (the recipe). A *running* program - loaded into RAM with the CPU working through it - is often called a **process** (the meal being cooked). Same recipe, but now something's actually happening.
+📝 **Terminology.** *Program* = the instructions sitting in storage, not running (the recipe). A *running* program - loaded into RAM with the CPU working through it - is often called a **process** (the meal being cooked).
 
-This distinction is the key to the whole journey: a program has to be *moved* from where it's kept (storage) to where it can be *used* (RAM), before the worker (CPU) can do anything with it.
+The whole journey follows from that: a program must be *moved* from storage to RAM before the CPU can do anything with it.
 
 ## The journey: from filing cabinet to worker
 
-Here's the relay, start to finish, when you open that music player:
+The relay, start to finish, when you open that music player:
 
 ```mermaid
 flowchart LR
@@ -33,11 +33,11 @@ flowchart LR
   CPU -->|4. OUTPUT| Out["Speakers / screen"]
 ```
 
-Step 2 is the part most people have never been told. **The CPU can't run a program straight from storage** - storage is far too slow to feed the worker one instruction at a time. So the first thing that happens when you open *anything* is a copy: the program's instructions get pulled up from the filing cabinet onto the desk, where the CPU can reach them fast. The little spinning icon you see when a big app is "loading"? That's largely this copy happening.
+Step 2 is the part most people have never been told: **the CPU can't run a program straight from storage** - it's far too slow to feed the worker. So opening *anything* starts with a copy, pulling the instructions up from the filing cabinet onto the desk. The spinning "loading" icon is largely this copy happening.
 
 ## The heartbeat: fetch, then execute
 
-**What it actually is.** Once the program is in RAM, the CPU does the same simple loop, forever, for every program running:
+Once the program is in RAM, the CPU runs the same simple loop, forever, for every program:
 
 ```mermaid
 flowchart LR
@@ -46,15 +46,15 @@ flowchart LR
   Move -->|repeat| Fetch
 ```
 
-That's the entire job of a CPU: **fetch the next instruction, execute it, move on, repeat** - at a pace of billions of times per second. Each individual step is tiny ("add these two numbers," "compare these," "put this result over there"). There's no grand plan inside the CPU. The plan is the program; the CPU just walks through it relentlessly.
+That's the entire job of a CPU: **fetch the next instruction, execute it, move on, repeat** - billions of times per second. Each step is tiny ("add these two numbers," "compare these," "put this result over there"). There's no grand plan inside the CPU; the plan is the program.
 
-💡 **Key point.** Everything your computer does is this loop running underneath: fetch an instruction, do it, fetch the next. When a game feels alive or a video plays smoothly, that's the CPU racing through this loop so fast that the results blur into motion - like a flipbook flipped fast enough to look like film.
+💡 **Key point.** Everything your computer does is this loop running underneath. When a game feels alive or a video plays smoothly, that's the CPU racing through the loop so fast the results blur into motion - a flipbook flipped fast enough to look like film.
 
-**Why this saves you later.** "What is my computer even doing right now?" has a real answer: its CPU is running this fetch-execute loop through the instructions of whatever programs are open. When a program "hangs" or "freezes," it usually means its instructions told the CPU to wait for something (a file, the network) that hasn't arrived - the worker is stuck on one step, waiting.
+It also demystifies freezes: a program "hangs" when its instructions told the CPU to wait for something (a file, the network) that hasn't arrived - the worker is stuck on one step.
 
 ## Why there's a hierarchy: fast, slower, much slower
 
-Here's the idea that makes sense of *everything* about computer speed. The parts that hold data aren't equally fast. There's a ladder, and the rule is brutally simple: **the closer to the CPU, the faster - and the smaller and more expensive.**
+The parts that hold data aren't equally fast. There's a ladder, and the rule is brutally simple: **the closer to the CPU, the faster - and the smaller and more expensive.**
 
 ```mermaid
 flowchart TD
@@ -65,15 +65,15 @@ flowchart TD
   RAM -->|farther from the worker| Storage
 ```
 
-The gaps between these rungs are enormous - not a little slower, but dramatically slower at each step down. Reaching into the CPU's own scratchpad is near-instant; reaching into RAM is quick; reaching all the way down to storage is slow enough that the CPU would spend most of its time *waiting* if it had to work from there.
+The gaps between rungs are enormous - dramatically slower at each step down. The CPU's own scratchpad is near-instant; RAM is quick; storage is slow enough that the CPU would spend most of its time *waiting* if it worked from there.
 
-📝 **Terminology.** This ladder is called the **memory hierarchy**. The tiny ultra-fast storage inside the CPU is called **cache** - a small stash of the data the CPU expects to need next, kept right where it can grab it.
+📝 **Terminology.** This ladder is the **memory hierarchy**. The tiny ultra-fast storage inside the CPU is **cache** - a small stash of the data the CPU expects to need next, kept right where it can grab it.
 
-**Why the ladder exists - the trade-off.** Why not make all of memory as fast as the CPU's scratchpad? Because fast memory is expensive and can only be made in small amounts. Slow memory is cheap and can be made huge. So computers use a bit of each: a tiny amount of blink-fast memory for what's needed *this instant*, a few gigabytes of fast RAM for what's needed *soon*, and a big slab of cheap storage for *everything else*. You get speed where it counts and capacity where it doesn't, without paying for either everywhere.
+Why not make all memory blink-fast? Because fast memory is expensive and only comes in small amounts; slow memory is cheap and huge. So computers use a bit of each: a tiny amount of blink-fast memory for *this instant*, a few gigabytes of RAM for *soon*, and a big slab of cheap storage for *everything else*. Speed where it counts, capacity where it doesn't.
 
-**Why data has to keep moving toward the CPU.** Because the worker can only run fast when its data is close, the computer is constantly shuttling data *up* the ladder - from storage into RAM, from RAM into the CPU's cache - just ahead of when it's needed. When that works, everything is quick. When the data the CPU needs *isn't* nearby and it has to reach all the way down to storage, you feel it: that's the lag when an app you haven't touched in a while takes a beat to respond. It got shuffled down the ladder, and now it has to climb back up.
+Because the worker only runs fast when its data is close, the computer constantly shuttles data *up* the ladder - storage into RAM, RAM into cache - just ahead of need. When the CPU has to reach all the way down to storage instead, you feel it: the lag when an app you haven't touched in a while takes a beat to respond. It got shuffled down the ladder and has to climb back up.
 
-⚠️ **Gotcha.** This is exactly why a computer that's "out of RAM" gets *painfully* slow instead of stopping. When the desk (RAM) is full, the computer starts parking some of the overflow down in slow storage and fetching it back as needed. Nothing crashes - but now the CPU keeps waiting on the slow filing cabinet, so everything crawls. The fix isn't a faster CPU; it's more desk space (RAM) or fewer things open. More on that in [Phase 3](03-fast-vs-slow.md).
+⚠️ **Gotcha.** This is exactly why a computer that's "out of RAM" gets *painfully* slow instead of stopping. When the desk is full, the computer parks overflow down in slow storage and fetches it back as needed. Nothing crashes - but the CPU keeps waiting on the slow filing cabinet, so everything crawls. The fix isn't a faster CPU; it's more RAM or fewer things open. More in [Phase 3](03-fast-vs-slow.md).
 
 ## The whole picture, together
 
@@ -86,17 +86,17 @@ flowchart LR
   Results -.->|save| Storage
 ```
 
-A program lives in the cabinet, gets laid out on the desk, and the worker runs through it step by step - pulling data up the ladder to stay fast, pushing results back out to you, and saving anything that needs to last back down into the cabinet. That relay, repeated billions of times a second, is a computer running.
+A program lives in the cabinet, gets laid out on the desk, and the worker runs through it step by step - pulling data up the ladder to stay fast, pushing results out to you, saving what needs to last back into the cabinet. That relay, repeated billions of times a second, is a computer running.
 
 ## Recap
 
 1. A **program** is instructions sitting in storage (a recipe). Running it means a **process**: instructions in RAM with the CPU working through them.
-2. Opening anything first **copies it from storage into RAM**, because the CPU can't work fast from the slow filing cabinet.
+2. Opening anything first **copies it from storage into RAM** - the CPU can't work fast from the slow filing cabinet.
 3. The CPU's whole job is the **fetch-execute loop**: get the next instruction, do it, repeat - billions of times a second.
-4. There's a **memory hierarchy**: CPU cache (blink-fast, tiny) → RAM (fast, medium) → storage (slow, huge). Closer to the CPU means faster but smaller.
-5. The computer constantly **moves data up the ladder** toward the CPU to stay quick; having to reach down to slow storage is what lag feels like - and it's why being out of RAM makes everything crawl.
+4. The **memory hierarchy**: CPU cache (blink-fast, tiny) → RAM (fast, medium) → storage (slow, huge). Closer to the CPU means faster but smaller.
+5. The computer constantly **moves data up the ladder** to stay quick; reaching down to slow storage is what lag feels like - and why being out of RAM makes everything crawl.
 
-You now know what the parts are and how they cooperate. In the last phase, we cash all of this in: what the specs on a laptop mean, and why "my computer is slow" almost always points to one specific part.
+Last phase: what laptop specs mean, and why "my computer is slow" almost always points to one specific part.
 
 ---
 

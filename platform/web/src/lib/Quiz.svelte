@@ -1,11 +1,19 @@
 <script>
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import { seedChapter } from '$lib/srs.js';
+  import { tutorOpen, tutorPrefill } from '$lib/tutor-store.js';
 
   export let guideSlug;
   export let phaseNo;
   export let isLast = false;
   export let questions = [];
+
+  $: tutorAvailable = !!$page.data?.tutorEnabled;
+  function askTutorWhy(q, chosenText) {
+    tutorPrefill.set(`Why is "${chosenText}" wrong for: ${q.q}`);
+    tutorOpen.set(true);
+  }
 
   const PATH_DONE = 'tmm-path-done';
   $: storeKey = `tmm-quiz:${guideSlug}/${phaseNo}`;
@@ -131,6 +139,11 @@
             {ans === q.answer ? 'Correct. ' : 'Not quite. '}{q.explain}
           </p>
         {/if}
+        {#if done && ans !== q.answer && tutorAvailable}
+          <button type="button" class="quiz-ask-tutor" on:click={() => askTutorWhy(q, q.choices[ans])}>
+            <i class="ti ti-message-chatbot" aria-hidden="true"></i> Ask the tutor why
+          </button>
+        {/if}
       </div>
     {/each}
 
@@ -187,6 +200,13 @@
   .quiz-choice.wrong .quiz-mark { background: #c0563c; color: #fff; }
   .quiz-explain { margin: 0.6rem 0 0; font-size: 0.9rem; line-height: 1.55; color: var(--muted); }
   .quiz-explain.ok { color: var(--body); }
+  .quiz-ask-tutor {
+    display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.5rem;
+    cursor: pointer; font: inherit; font-size: 0.82rem; color: var(--accent);
+    background: none; border: 0; padding: 0;
+  }
+  .quiz-ask-tutor:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .quiz-ask-tutor .ti { font-size: 16px; }
   .quiz-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
   .quiz-score { font-weight: 600; color: var(--ink); }
   .quiz-flag { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); }

@@ -17,7 +17,7 @@ You open your laptop, click an app, and stare at a spinning icon for four second
 
 Imagine a kitchen. One chef chops (the CPU). Ingredients sit on the counter within arm's reach (RAM). The rest of the food lives in the walk-in freezer down the hall (the disk). A waiter runs plates out (everything else).
 
-Now picture a dinner rush. If the chef is fast and the counter is full, plates fly out. But the counter is small. The moment it fills up, the chef has to keep walking to the freezer for the next thing, and the freezer is slow and far. The chef is not the problem. The walking is the problem.
+Now picture a dinner rush. While the counter holds everything, plates fly out. But the counter is small: the moment it fills, the chef keeps walking to the freezer for the next thing, and the freezer is slow and far. The chef is not the problem. The walking is.
 
 That walk to the freezer is what a slow computer feels like. The fix is not a faster chef. The fix is a bigger counter, or a freezer that is closer and quicker.
 
@@ -37,9 +37,9 @@ The key numbers are about distance and speed. The CPU works in fractions of a bi
 
 ## Why the chain idea matters
 
-Here is the trap people fall into. They feel slowness, they assume "I need a faster CPU," and they buy a whole new machine. But if the bottleneck was the disk, the new fast CPU spends most of its time waiting on the same slow walk to the freezer. You paid for a faster chef and kept the far-away freezer.
+The trap: you feel slowness, assume "I need a faster CPU," and buy a whole new machine. But if the bottleneck was the disk, the new fast CPU spends most of its time waiting on the same slow walk - you paid for a faster chef and kept the far-away freezer.
 
-The bottleneck idea flips the question. Instead of "what is the most powerful part I can buy," you ask "which link is the slowest right now, and what is the cheapest way to widen it?" That question saves people the most money, because the slowest link on an old machine is usually the cheapest thing to fix.
+The bottleneck idea flips the question from "what is the most powerful part I can buy" to "which link is the slowest right now, and what is the cheapest way to widen it?" That question saves the most money, because the slowest link on an old machine is usually the cheapest thing to fix.
 
 ```text
 slowness you feel  =  the speed of the SLOWEST part in the chain
@@ -48,7 +48,7 @@ faster chef (CPU)  +  far freezer (slow disk)  =  still slow
 same chef (CPU)    +  near freezer (fast SSD)  =  feels new
 ```
 
-*What just happened:* Upgrading anything other than the bottleneck buys you almost nothing. The win comes only from widening the narrowest link.
+*What just happened:* Upgrading anything other than the bottleneck buys you almost nothing.
 
 ## Matching the feeling to the part
 
@@ -58,11 +58,11 @@ You can already make a rough guess from how the slowness *feels*, before you mea
 - **Booting takes forever, apps take ages to launch, opening a big file makes you wait, but once things are open they run fine** - your freezer is slow. That is a disk problem, fixed by an SSD.
 - **One specific heavy task pins the fans on full and everything else crawls during it** - video editing, compiling, a big spreadsheet recalculating - the chef genuinely cannot chop fast enough. That is a CPU problem, and it is the rarest of the three for everyday users.
 
-For builders: this is the same skill you use to profile a slow program. You do not guess which line is slow and optimize it - you measure, find the actual hot path, and fix *that*. Hardware is the same instinct at the scale of a whole machine. Guessing wastes money; measuring spends it well.
+For builders: this is profiling. You do not guess which line is slow - you measure, find the actual hot path, and fix *that*. Hardware is the same instinct at machine scale. Guessing wastes money; measuring spends it well.
 
 ## The honest caveat
 
-These feel-based guesses are a starting hypothesis, not a verdict. Two parts can be slow at once, and a symptom can mislead you - a machine low on RAM also hammers the disk, so heavy disk activity can be a RAM problem wearing a disk costume. That is exactly why the next phase puts a real gauge in front of you. You will stop guessing from feel and start reading the actual numbers your computer is already tracking.
+These feel-based guesses are a starting hypothesis, not a verdict. Two parts can be slow at once, and a symptom can mislead you - a machine low on RAM also hammers the disk, so heavy disk activity can be a RAM problem wearing a disk costume. That is why the next phase puts a real gauge in front of you: stop guessing from feel, read the numbers the computer is already tracking.
 
 ```quiz
 [

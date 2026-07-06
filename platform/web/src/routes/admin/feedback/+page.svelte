@@ -2,11 +2,19 @@
   export let data;
   $: items = data.items ?? [];
 
-  $: upCount = items.filter((f) => f.vote === 'up').length;
-  $: downCount = items.filter((f) => f.vote === 'down').length;
+  // Guide requests ride the same pipeline under a sentinel slug (see /request);
+  // split them out so vote totals stay honest and requests get their own tab.
+  const isRequest = (f) => f.guide_slug === 'guide-request';
+  $: requests = items.filter(isRequest);
+  $: votes = items.filter((f) => !isRequest(f));
+  $: upCount = votes.filter((f) => f.vote === 'up').length;
+  $: downCount = votes.filter((f) => f.vote === 'down').length;
 
-  let voteFilter = 'all'; // 'all' | 'up' | 'down'
-  $: shown = voteFilter === 'all' ? items : items.filter((f) => f.vote === voteFilter);
+  let voteFilter = 'all'; // 'all' | 'up' | 'down' | 'req'
+  $: shown =
+    voteFilter === 'all' ? items
+    : voteFilter === 'req' ? requests
+    : votes.filter((f) => f.vote === voteFilter);
 
   // Compact relative time ("2h ago"); the absolute time rides in the cell title.
   function relTime(ts) {
@@ -54,6 +62,7 @@
     <button class:on={voteFilter === 'all'} on:click={() => (voteFilter = 'all')}>All {items.length}</button>
     <button class:on={voteFilter === 'up'} on:click={() => (voteFilter = 'up')}>Up {upCount}</button>
     <button class:on={voteFilter === 'down'} on:click={() => (voteFilter = 'down')}>Down {downCount}</button>
+    <button class:on={voteFilter === 'req'} on:click={() => (voteFilter = 'req')}>Requests {requests.length}</button>
   </div>
 {/if}
 
@@ -67,17 +76,22 @@
     {#each shown as f (`${f.ts}-${f.guide_slug}-${f.phase_no}`)}
       <tr>
         <td class="fb-ts" title={fmtTs(f.ts)}>{relTime(f.ts)}</td>
-        <td>
-          <a href={`/guides/${f.guide_slug}/${f.phase_no}`}>{f.guide_slug}</a>
-          <span class="fb-phase">· phase {f.phase_no}</span>
-        </td>
-        <td>
-          {#if f.vote === 'up'}
-            <span class="fb-vote up"><i class="ti ti-thumb-up" aria-hidden="true"></i> Up</span>
-          {:else}
-            <span class="fb-vote down"><i class="ti ti-thumb-down" aria-hidden="true"></i> Down</span>
-          {/if}
-        </td>
+        {#if isRequest(f)}
+          <td><span class="fb-req-src">from /request</span></td>
+          <td><span class="fb-vote req"><i class="ti ti-bulb" aria-hidden="true"></i> Request</span></td>
+        {:else}
+          <td>
+            <a href={`/guides/${f.guide_slug}/${f.phase_no}`}>{f.guide_slug}</a>
+            <span class="fb-phase">· phase {f.phase_no}</span>
+          </td>
+          <td>
+            {#if f.vote === 'up'}
+              <span class="fb-vote up"><i class="ti ti-thumb-up" aria-hidden="true"></i> Up</span>
+            {:else}
+              <span class="fb-vote down"><i class="ti ti-thumb-down" aria-hidden="true"></i> Down</span>
+            {/if}
+          </td>
+        {/if}
         <td class="fb-note">{f.note || '-'}</td>
       </tr>
     {:else}
@@ -138,6 +152,14 @@
   .fb-vote.down {
     color: var(--danger);
     background: color-mix(in srgb, var(--danger) 12%, transparent);
+  }
+  .fb-vote.req {
+    color: var(--accent-strong);
+    background: var(--accent-tint);
+  }
+  .fb-req-src {
+    color: var(--faint);
+    font-size: 0.85rem;
   }
 
   .fb-note {

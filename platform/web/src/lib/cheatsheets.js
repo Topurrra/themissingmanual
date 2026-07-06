@@ -435,6 +435,7 @@ export const CHEATSHEETS = [
     commands: [
       { cmd: 'psql connect', desc: 'Connect to a database.', example: `psql -h localhost -U postgres -d mydb` },
       { cmd: 'psql (URL)', desc: 'Connect with a connection string.', example: `psql postgresql://ana:secret@localhost:5432/mydb` },
+      { cmd: 'psql -c', desc: 'Run one query and exit.', example: `psql -U postgres -d mydb -c "SELECT count(*) FROM users;"` },
       { cmd: '\\l', desc: 'List databases.', example: `\\l` },
       { cmd: '\\c', desc: 'Switch to another database.', example: `\\c mydb` },
       { cmd: '\\dt', desc: 'List tables.', example: `\\dt` },
@@ -445,12 +446,16 @@ export const CHEATSHEETS = [
       { cmd: '\\timing', desc: 'Show how long each query takes.', example: `\\timing` },
       { cmd: '\\i', desc: 'Run SQL from a file.', example: `\\i seed.sql` },
       { cmd: '\\copy', desc: 'Import/export a table as CSV.', example: `\\copy users TO 'users.csv' CSV HEADER` },
+      { cmd: 'pg_dump', desc: 'Back up a database to a plain SQL file.', example: `pg_dump -U postgres mydb > backup.sql` },
+      { cmd: 'pg_dump -Fc', desc: 'Compressed custom-format backup (for pg_restore).', example: `pg_dump -Fc -U postgres mydb > mydb.dump` },
+      { cmd: 'pg_restore', desc: 'Restore a custom-format backup.', example: `pg_restore -U postgres -d mydb mydb.dump` },
+      { cmd: 'restore (plain SQL)', desc: 'Replay a plain SQL backup with psql itself.', example: `psql -U postgres -d mydb < backup.sql` },
       { cmd: '\\e', desc: 'Edit the current query in your $EDITOR.', example: `\\e` },
       { cmd: '\\q', desc: 'Quit psql.', example: `\\q` }
     ]
   },
   {
-    id: 'redis', name: 'redis-cli', icon: 'ti-brand-redis',
+    id: 'redis', name: 'redis-cli', icon: 'ti-bolt',
     blurb: 'Talk to a Redis server - keys, strings, hashes, lists, and expiry.',
     commands: [
       { cmd: 'connect', desc: 'Connect to a Redis server.', example: `redis-cli -h localhost -p 6379` },
@@ -465,6 +470,9 @@ export const CHEATSHEETS = [
       { cmd: 'SADD / SMEMBERS', desc: 'Add to and read a set.', example: `SADD tags a b c` },
       { cmd: 'TYPE', desc: 'Show a key’s data type.', example: `TYPE user:1` },
       { cmd: 'PING', desc: 'Check the server is alive.', example: `PING` },
+      { cmd: 'INFO', desc: 'Server stats - memory, clients, hit rate.', example: `INFO memory` },
+      { cmd: 'DBSIZE', desc: 'Count the keys in the current database.', example: `DBSIZE` },
+      { cmd: 'MONITOR', desc: 'Stream every command hitting the server (debugging only).', example: `MONITOR` },
       { cmd: 'FLUSHDB', desc: 'Wipe the current database (careful!).', example: `FLUSHDB` }
     ]
   },
@@ -488,20 +496,47 @@ export const CHEATSHEETS = [
     ]
   },
   {
-    id: 'sed-awk', name: 'sed & awk', icon: 'ti-replace',
-    blurb: 'Stream-edit text (sed) and process columns (awk) on the command line.',
+    id: 'sed', name: 'sed', icon: 'ti-replace',
+    blurb: 'Stream-edit text - find and replace, delete lines, and rewrite files in place.',
     commands: [
-      { cmd: 'sed substitute', desc: 'Replace the first match per line.', example: `sed 's/foo/bar/' file.txt` },
-      { cmd: 'sed global', desc: 'Replace every match on each line.', example: `sed 's/foo/bar/g' file.txt` },
-      { cmd: 'sed -i', desc: 'Edit the file in place.', example: `sed -i 's/localhost/127.0.0.1/g' config.yml` },
-      { cmd: 'sed delete', desc: 'Delete matching lines.', example: `sed '/^#/d' config` },
-      { cmd: 'sed -n p', desc: 'Print a line range.', example: `sed -n '10,20p' file.txt` },
-      { cmd: 'awk print column', desc: 'Print a field (1-indexed).', example: `awk '{print $2}' data.txt` },
-      { cmd: 'awk -F', desc: 'Set the field separator.', example: `awk -F, '{print $1}' data.csv` },
-      { cmd: 'awk filter', desc: 'Print rows matching a condition.', example: `awk '$3 > 100' sales.txt` },
+      { cmd: 'sed substitute', desc: 'Replace the first match on each line.', example: `sed 's/foo/bar/' notes.txt` },
+      { cmd: 'sed global', desc: 'Replace every match on each line.', example: `sed 's/http:/https:/g' links.txt` },
+      { cmd: 'sed -i', desc: 'Edit the file in place instead of printing.', example: `sed -i 's/localhost/127.0.0.1/g' config.yml` },
+      { cmd: 'sed -i.bak', desc: 'Edit in place, keeping a backup of the original.', example: `sed -i.bak 's/debug: true/debug: false/' app.yml` },
+      { cmd: 'sed delete', desc: 'Delete matching lines (here: comments).', example: `sed '/^#/d' nginx.conf` },
+      { cmd: 'sed delete blanks', desc: 'Strip empty lines from a file.', example: `sed '/^$/d' notes.txt` },
+      { cmd: 'sed -n p', desc: 'Print only a line range.', example: `sed -n '10,20p' app.log` },
+      { cmd: 'sed (line target)', desc: 'Substitute only on one line number.', example: `sed '3s/false/true/' config.yml` },
+      { cmd: 'sed (match target)', desc: 'Substitute only on lines matching a pattern.', example: `sed '/^port/s/8080/3000/' server.conf` },
+      { cmd: 'sed -E', desc: 'Extended regex: +, ?, | without backslashes.', example: `sed -E 's/[0-9]+ ms/fast/g' bench.txt` },
+      { cmd: 'sed capture groups', desc: 'Rearrange text with \\1 backreferences.', example: `sed -E 's/(\\w+)@example.com/\\1@example.org/' emails.txt` },
+      { cmd: 'sed | delimiter', desc: 'Use another delimiter so paths need no escaping.', example: `sed 's|/var/www|/srv/www|g' deploy.sh` },
+      { cmd: 'sed insert line', desc: 'Insert a line before a target (here: line 1).', example: `sed '1i #!/bin/bash' run.sh` },
+      { cmd: 'sed append line', desc: 'Append a line after a matching line.', example: `sed '/^\\[api\\]/a timeout = 30' config.ini` },
+      { cmd: 'sed -e (chain)', desc: 'Run several edits in one pass.', example: `sed -e 's/http:/https:/g' -e '/^#/d' urls.txt` },
+      { cmd: 'sed $ (last line)', desc: '$ addresses the last line (here: delete it).', example: `sed '$d' trailing.txt` }
+    ]
+  },
+  {
+    id: 'awk', name: 'awk', icon: 'ti-table',
+    blurb: 'Process columns and compute over text - the one-liners people actually use.',
+    commands: [
+      { cmd: 'awk print column', desc: 'Print a field (fields are 1-indexed).', example: `awk '{print $2}' access.log` },
+      { cmd: 'awk -F', desc: 'Set the field separator, e.g. for CSV.', example: `awk -F, '{print $1}' users.csv` },
+      { cmd: 'awk $NF', desc: 'Print the last field on each line.', example: `awk '{print $NF}' access.log` },
+      { cmd: 'awk filter', desc: 'Print rows where a column passes a test.', example: `awk '$3 > 100' sales.txt` },
+      { cmd: 'awk /pattern/', desc: 'Print lines matching a regex.', example: `awk '/ERROR/' app.log` },
+      { cmd: 'awk match + field', desc: 'Combine a pattern with a column to print.', example: `awk '/ERROR/ {print $1, $4}' app.log` },
       { cmd: 'awk sum', desc: 'Sum a column.', example: `awk '{s += $1} END {print s}' nums.txt` },
-      { cmd: 'awk NR', desc: 'Use the line number (NR).', example: `awk 'NR == 1' file.txt` },
-      { cmd: 'awk with text', desc: 'Mix fields with literal text.', example: `awk '{print "id:", $1}' users.txt` }
+      { cmd: 'awk average', desc: 'Average a column (NR = row count).', example: `awk '{s += $1} END {print s/NR}' latencies.txt` },
+      { cmd: 'awk NR', desc: 'Use the line number - print one line.', example: `awk 'NR == 5' file.txt` },
+      { cmd: 'awk NR > 1', desc: 'Skip the header row.', example: `awk 'NR > 1' report.csv` },
+      { cmd: 'awk count values', desc: 'Count how often each value appears.', example: `awk '{c[$1]++} END {for (k in c) print k, c[k]}' ips.txt` },
+      { cmd: 'awk dedupe', desc: 'Drop duplicate lines without sorting first.', example: `awk '!seen[$0]++' emails.txt` },
+      { cmd: 'awk with text', desc: 'Mix fields with literal text.', example: `awk '{print "id:", $1}' users.txt` },
+      { cmd: 'awk NF', desc: 'NF = field count; find malformed rows.', example: `awk 'NF != 4' data.tsv` },
+      { cmd: 'awk length()', desc: 'Filter by line length.', example: `awk 'length($0) > 80' main.py` },
+      { cmd: 'awk OFS', desc: 'Change the output separator (CSV to TSV).', example: `awk -F, 'BEGIN {OFS="\\t"} {print $1, $3}' users.csv` }
     ]
   },
   {
@@ -541,6 +576,95 @@ export const CHEATSHEETS = [
       { cmd: 'git log --grep', desc: 'Find commits by message.', example: `git log --grep="login bug"` },
       { cmd: 'git blame', desc: 'See who last changed each line.', example: `git blame src/app.js` },
       { cmd: 'git diff --staged', desc: 'Review what you are about to commit.', example: `git diff --staged` }
+    ]
+  },
+  {
+    id: 'ffmpeg', name: 'ffmpeg', icon: 'ti-movie',
+    blurb: 'Convert, trim, resize, and compress audio and video from the terminal.',
+    commands: [
+      { cmd: 'convert format', desc: 'Convert between formats - the extension decides.', example: `ffmpeg -i input.mov output.mp4` },
+      { cmd: 'trim (no re-encode)', desc: 'Cut a clip by timestamps, instantly.', example: `ffmpeg -ss 00:01:30 -to 00:02:45 -i talk.mp4 -c copy clip.mp4` },
+      { cmd: 'compress video', desc: 'Shrink a file; higher CRF = smaller (18-28 is sane).', example: `ffmpeg -i input.mp4 -c:v libx264 -crf 28 smaller.mp4` },
+      { cmd: 'resize', desc: 'Scale video; -1 keeps the aspect ratio.', example: `ffmpeg -i input.mp4 -vf scale=1280:-1 720p.mp4` },
+      { cmd: 'extract audio', desc: 'Pull the audio track out of a video.', example: `ffmpeg -i talk.mp4 -vn audio.m4a` },
+      { cmd: 'make a gif', desc: 'Turn a clip into a GIF (cap fps and width).', example: `ffmpeg -i demo.mp4 -vf "fps=12,scale=480:-1" demo.gif` },
+      { cmd: 'thumbnail', desc: 'Grab one frame as an image.', example: `ffmpeg -ss 00:00:05 -i input.mp4 -frames:v 1 thumb.jpg` },
+      { cmd: 'remove audio', desc: 'Strip the audio track.', example: `ffmpeg -i input.mp4 -an muted.mp4` },
+      { cmd: 'change container', desc: 'Repackage without re-encoding (fast, lossless).', example: `ffmpeg -i input.mkv -c copy output.mp4` },
+      { cmd: 'convert audio', desc: 'Convert between audio formats.', example: `ffmpeg -i song.wav song.mp3` },
+      { cmd: 'concat clips', desc: 'Join files listed in a text file (file \'a.mp4\' per line).', example: `ffmpeg -f concat -i list.txt -c copy joined.mp4` },
+      { cmd: 'speed up', desc: 'Double the video speed (0.5*PTS = 2x).', example: `ffmpeg -i input.mp4 -filter:v "setpts=0.5*PTS" fast.mp4` },
+      { cmd: 'rotate', desc: 'Rotate 90 degrees clockwise.', example: `ffmpeg -i input.mp4 -vf "transpose=1" rotated.mp4` },
+      { cmd: 'ffprobe', desc: 'Inspect codecs, duration, and streams.', example: `ffprobe -i input.mp4` },
+      { cmd: 'images to video', desc: 'Stitch numbered frames into a timelapse.', example: `ffmpeg -framerate 24 -i frame_%03d.png timelapse.mp4` },
+      { cmd: 'web-friendly mp4', desc: 'Encode for browsers - plays everywhere, streams fast.', example: `ffmpeg -i input.mov -c:v libx264 -pix_fmt yuv420p -movflags +faststart web.mp4` }
+    ]
+  },
+  {
+    id: 'terraform', name: 'Terraform', icon: 'ti-brand-terraform',
+    blurb: 'Provision infrastructure as code - plan, apply, and manage state.',
+    commands: [
+      { cmd: 'terraform init', desc: 'Download providers and set up the working directory.', example: `terraform init` },
+      { cmd: 'terraform plan', desc: 'Preview what would change, without touching anything.', example: `terraform plan` },
+      { cmd: 'terraform apply', desc: 'Make the infrastructure match the config.', example: `terraform apply` },
+      { cmd: 'terraform apply -auto-approve', desc: 'Apply without the interactive prompt (CI).', example: `terraform apply -auto-approve` },
+      { cmd: 'terraform destroy', desc: 'Tear down everything the config manages.', example: `terraform destroy` },
+      { cmd: 'terraform fmt', desc: 'Auto-format .tf files.', example: `terraform fmt -recursive` },
+      { cmd: 'terraform validate', desc: 'Check syntax and internal consistency.', example: `terraform validate` },
+      { cmd: 'terraform plan -out', desc: 'Save a plan so apply runs exactly that.', example: `terraform plan -out=tfplan` },
+      { cmd: 'terraform output', desc: 'Print an output value (great in scripts).', example: `terraform output -raw db_endpoint` },
+      { cmd: 'terraform state list', desc: 'List every resource in the state.', example: `terraform state list` },
+      { cmd: 'terraform state show', desc: 'Show a resource\'s attributes from state.', example: `terraform state show aws_instance.web` },
+      { cmd: 'terraform apply -target', desc: 'Apply just one resource (sparingly).', example: `terraform apply -target=aws_s3_bucket.assets` },
+      { cmd: 'terraform apply -replace', desc: 'Force a resource to be recreated.', example: `terraform apply -replace=aws_instance.web` },
+      { cmd: 'terraform import', desc: 'Bring an existing resource under management.', example: `terraform import aws_instance.web i-0abc123` },
+      { cmd: 'terraform workspace new', desc: 'Create a separate state, e.g. per environment.', example: `terraform workspace new staging` },
+      { cmd: 'terraform workspace select', desc: 'Switch to another workspace.', example: `terraform workspace select prod` },
+      { cmd: 'terraform state rm', desc: 'Forget a resource without destroying it.', example: `terraform state rm aws_s3_bucket.legacy` }
+    ]
+  },
+  {
+    id: 'brew', name: 'Homebrew (brew)', icon: 'ti-beer',
+    blurb: 'The macOS (and Linux) package manager - install, upgrade, and tidy up.',
+    commands: [
+      { cmd: 'brew install', desc: 'Install a package.', example: `brew install jq` },
+      { cmd: 'brew install --cask', desc: 'Install a GUI app.', example: `brew install --cask visual-studio-code` },
+      { cmd: 'brew search', desc: 'Find a package by name.', example: `brew search postgres` },
+      { cmd: 'brew update', desc: 'Refresh Homebrew\'s package lists.', example: `brew update` },
+      { cmd: 'brew upgrade', desc: 'Upgrade everything that\'s outdated.', example: `brew upgrade` },
+      { cmd: 'brew upgrade <pkg>', desc: 'Upgrade one package.', example: `brew upgrade node` },
+      { cmd: 'brew outdated', desc: 'List packages with newer versions.', example: `brew outdated` },
+      { cmd: 'brew list', desc: 'Show what\'s installed.', example: `brew list` },
+      { cmd: 'brew info', desc: 'Details, caveats, and dependencies.', example: `brew info redis` },
+      { cmd: 'brew uninstall', desc: 'Remove a package.', example: `brew uninstall wget` },
+      { cmd: 'brew services start', desc: 'Run a package as a background service.', example: `brew services start postgresql@16` },
+      { cmd: 'brew services list', desc: 'See which services are running.', example: `brew services list` },
+      { cmd: 'brew cleanup', desc: 'Delete old versions and free disk space.', example: `brew cleanup` },
+      { cmd: 'brew doctor', desc: 'Diagnose a broken Homebrew setup.', example: `brew doctor` },
+      { cmd: 'brew tap', desc: 'Add a third-party package repository.', example: `brew tap hashicorp/tap` },
+      { cmd: 'brew deps --tree', desc: 'See what a package depends on.', example: `brew deps --tree ffmpeg` },
+      { cmd: 'brew pin', desc: 'Hold a package at its current version.', example: `brew pin node` }
+    ]
+  },
+  {
+    id: 'make', name: 'make (Makefiles)', icon: 'ti-tool',
+    blurb: 'Run project tasks with make - targets, variables, and the Makefile patterns that recur.',
+    commands: [
+      { cmd: 'make', desc: 'Run the first target in the Makefile.', example: `make` },
+      { cmd: 'make <target>', desc: 'Run a specific target.', example: `make build` },
+      { cmd: 'rule anatomy', desc: 'target: prerequisites, then TAB-indented commands.', example: `build: main.c\n\tgcc -o app main.c` },
+      { cmd: '.PHONY', desc: 'Mark targets that aren\'t files, so they always run.', example: `.PHONY: clean test deploy` },
+      { cmd: 'variables', desc: 'Define once at the top, reuse below.', example: `CC = gcc\nCFLAGS = -Wall -O2` },
+      { cmd: '$(VAR)', desc: 'Expand a variable inside a recipe.', example: `$(CC) $(CFLAGS) -o app main.c` },
+      { cmd: 'make VAR=value', desc: 'Override a variable from the command line.', example: `make deploy ENV=staging` },
+      { cmd: 'chained targets', desc: 'A target can simply depend on other targets.', example: `ci: lint test build` },
+      { cmd: 'make -j', desc: 'Run independent jobs in parallel.', example: `make -j8` },
+      { cmd: 'make -n', desc: 'Dry run - print commands without running them.', example: `make -n deploy` },
+      { cmd: 'make -C', desc: 'Run make in another directory.', example: `make -C platform build` },
+      { cmd: 'make -B', desc: 'Force a rebuild even if everything is up to date.', example: `make -B build` },
+      { cmd: '$@ and $<', desc: 'Automatic variables: target and first prerequisite.', example: `%.o: %.c\n\t$(CC) -c $< -o $@` },
+      { cmd: '@ prefix', desc: 'Silence a command (don\'t echo it).', example: `@echo "Deploying to $(ENV)"` },
+      { cmd: 'ifeq', desc: 'Branch on a variable\'s value (no tab before ifeq lines).', example: `ifeq ($(ENV),prod)\nFLAGS = --minify\nendif` }
     ]
   }
 ];

@@ -9,7 +9,8 @@
   onMount(() => { const pq = $page.url.searchParams.get('q'); if (pq) q = pq; });
   $: needle = q.trim().toLowerCase();
   // The active tool comes from the sidebar via ?tool=; default to the first.
-  $: active = $page.url.searchParams.get('tool') || CHEATSHEETS[0].id;
+  // 'sed-awk' was split into separate sheets - keep old shared links working.
+  $: active = ($page.url.searchParams.get('tool') || CHEATSHEETS[0].id).replace(/^sed-awk$/, 'sed');
 
   const matches = (c) =>
     c.cmd.toLowerCase().includes(needle) ||

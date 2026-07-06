@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Reading the gauges: Task Manager and Activity Monitor
 
-Guessing from feel got you a hypothesis. Now you confirm it. Your computer is already keeping a live scoreboard of how hard each part is working - you have walked past it a hundred times without opening it. The trick is knowing which row to look at and what "too high" actually means. Once you can read it, the machine stops being mysterious and starts telling you exactly where it hurts.
+Guessing from feel got you a hypothesis; now confirm it. Your computer already keeps a live scoreboard of how hard each part is working. The trick is knowing which row to look at and what "too high" actually means - once you can read it, the machine tells you exactly where it hurts.
 
 ## Open the scoreboard
 
@@ -19,7 +19,7 @@ On **Windows**, press `Ctrl` + `Shift` + `Esc`. That opens Task Manager. If it l
 
 On **macOS**, open **Activity Monitor** (press `Cmd` + Space, type "Activity Monitor," hit Enter). You will see tabs across the top: **CPU**, **Memory**, **Disk**.
 
-Both tools show you the same three things under different names. Here is the map:
+Both tools show the same three things under different names:
 
 ```text
 What you want    Windows (Task Manager)    macOS (Activity Monitor)
@@ -29,11 +29,11 @@ RAM pressure     Memory graph              Memory tab, "Memory Pressure"
 Disk activity    Disk 0 (%, active time)   Disk tab, reads/writes
 ```
 
-*What just happened:* You now know exactly which row maps to which kitchen part. CPU is the chef, Memory is the counter, Disk is the freezer. The rest of this phase is learning what a worried number looks like in each row.
+*What just happened:* CPU is the chef, Memory is the counter, Disk is the freezer. The rest of this phase is what a worried number looks like in each row.
 
 ## Do this while the machine is actually slow
 
-A scoreboard read when everything is calm tells you nothing. Open the tool, then go reproduce the slowness - load up your normal tabs, open the apps you always have running, do the thing that drags. Watch the numbers *during* the pain. The part that pegs while you suffer is your bottleneck.
+A scoreboard read when everything is calm tells you nothing. Open the tool, then go reproduce the slowness - load your normal tabs, open the apps you always run, do the thing that drags - and watch the numbers *during* the pain. The part that pegs while you suffer is your bottleneck.
 
 ## Reading the RAM row (the most common culprit)
 
@@ -52,7 +52,7 @@ macOS Memory Pressure:
 
 *What just happened:* Green means RAM is not your problem, full stop, even if the gigabyte number looks scary-high (macOS deliberately uses spare RAM as cache - high usage is healthy, not a warning). Red is the smoking gun for "buy more RAM."
 
-On Windows, the equivalent smoking gun is the combination: **Memory pinned high while Disk activity is also pinned high.** That pairing is the machine frantically using your slow disk as fake, overflow RAM. It is the exact moment the chef gives up on the full counter and starts sprinting to the freezer for every single item.
+On Windows, the equivalent smoking gun is the combination: **Memory pinned high while Disk activity is also pinned high.** That pairing is the machine frantically using your slow disk as fake, overflow RAM - the chef giving up on the full counter and sprinting to the freezer for every single item.
 
 > One Windows detail worth knowing: scroll the Memory view to find "Committed" (shown like `15.8/16.0 GB`). When the first number rides right up against the second, your RAM is maxed and the system is leaning on the disk to cope. That is swapping, and it is the most miserable kind of slow.
 
@@ -72,7 +72,7 @@ Task Manager → Performance tab, left column:
   Disk 0 (C:)   SSD          ← already fast: look elsewhere
 ```
 
-*What just happened:* That one label decides a lot. An HDD on a daily-driver machine is the easiest, cheapest upgrade with the biggest payoff, and the next phase explains exactly why.
+*What just happened:* that one label decides a lot - an HDD on a daily-driver machine is the easiest, cheapest, biggest-payoff upgrade, as the next phase explains.
 
 ## Reading the CPU row
 
@@ -91,7 +91,7 @@ Sort by CPU, top of the list:
 
 *What just happened:* High CPU from one process is a software problem with a free fix. High CPU spread across everything *only during heavy work* is the real hardware signal. And on Windows, "System Idle Process" eating 90% means your CPU is 90% *free* - it is the most misread row in the whole tool.
 
-For builders: this is your first profiler. Sorting processes by resource use to find the one hog is the same move as reading a flame graph to find the hot function. The habit transfers directly - measure, sort, find the one thing actually doing the damage, ignore the noise.
+For builders: this is your first profiler. Sorting processes by resource use to find the hog is the same move as reading a flame graph to find the hot function - measure, sort, find the one thing doing the damage, ignore the noise.
 
 ## Putting a reading together
 

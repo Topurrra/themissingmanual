@@ -11,36 +11,32 @@ updated: 2026-06-30
 
 # A Real Investigation
 
-You've met the panels. But a real bug doesn't announce which one to open - it sits there, broken,
-mocking you. The skill that separates flailing from debugging isn't knowing the tools; it's knowing the
-*order* to reach for them. This phase walks one realistic bug from "it's broken" to "here's exactly why,"
-and along the way introduces the last panel - **Elements** - for when the page *looks* wrong rather than
-*behaves* wrong.
+A real bug doesn't announce which panel to open. What separates flailing from debugging is knowing the
+*order* to reach for them. This phase walks one realistic bug end to end and introduces the last panel -
+**Elements** - for when the page *looks* wrong rather than *behaves* wrong.
 
 ## The bug
 
-A user reports: *"I click 'Add to cart' on the sale items and nothing happens. Works fine on regular
-items."* Let's find it. We'll follow one rule the whole way: **observe before you theorize.** Open DevTools,
-look, and let each panel point at the next.
+A user reports: *"I click 'Add to cart' on the sale items and nothing happens. Works fine on regular items."*
+One rule the whole way: **observe before you theorize** - open DevTools, look, let each panel point to the next.
 
 ## Step 1: Console first, always
 
-You click an "Add to cart" button on a sale item. Nothing visibly happens. Before guessing, you glance at
-the Console.
+You click "Add to cart" on a sale item. Nothing visibly happens. Before guessing, glance at the Console.
 
 ```console
 ❌ Uncaught TypeError: Cannot read properties of null (reading 'price')
        at addToCart (cart.js:54)
        at HTMLButtonElement.onclick (sale.js:31)
 ```
-*What just happened:* The click *did* fire - it ran `onclick` in sale.js, which called `addToCart`, which
-blew up on `cart.js:54` trying to read `.price` off `null`. "Nothing happens" was never true; the code threw
-and died silently. The Console turned a vague report into a precise location. Click `cart.js:54`.
+*What just happened:* The click *did* fire - `onclick` in sale.js called `addToCart`, which blew up on
+`cart.js:54` reading `.price` off `null`. "Nothing happens" was never true; it threw and died silently -
+the Console turned a vague report into a precise location.
 
 ## Step 2: Set a breakpoint where it broke
 
-The error points at line 54. You open it in Sources and drop a breakpoint there, then click the sale button
-again to pause right at the crime scene.
+The error points at line 54. Open it in Sources, drop a breakpoint there, then click the sale button again
+to pause at the crime scene.
 
 ```text
 cart.js - PAUSED on :54
@@ -54,11 +50,10 @@ cart.js - PAUSED on :54
     productId = "sale-1099"
     product   = null              ◄── the find() returned nothing
 ```
-*What just happened:* `product` is `null` - `catalog.find(...)` didn't match anything for
-`productId = "sale-1099"`. So the real question shifts: why isn't this sale item in `catalog`? Either the id
-is wrong, or the catalog never loaded the sale items. You're now one good question away from the root cause.
+*What just happened:* `product` is `null` - `catalog.find(...)` matched nothing for `"sale-1099"`. Either
+the id is wrong, or the catalog never loaded this item.
 
-You check the live prompt to test the cheaper theory first:
+Check the live prompt for the cheaper theory first:
 
 ```console
 > catalog.length
@@ -68,14 +63,12 @@ undefined
 > catalog.filter(p => p.id.startsWith("sale")).length
 0
 ```
-*What just happened:* The catalog has 40 items but *zero* sale items in it. The bug isn't in `addToCart` at
-all - that function is correctly failing on data that should be there and isn't. The sale items never made it
-into `catalog`. Time to find out where they were supposed to come from.
+*What just happened:* The catalog has 40 items but *zero* sale items - `addToCart` is correctly failing on
+data that isn't there.
 
 ## Step 3: Network - did the sale data even arrive?
 
-Sale items almost certainly come from an API call. You open the **Network** tab, filter to `Fetch/XHR`, and
-reload.
+Sale items likely come from an API call. Open **Network**, filter to `Fetch/XHR`, and reload.
 
 ```text
 Name                    Status   Type    Size    Time
@@ -83,28 +76,23 @@ Name                    Status   Type    Size    Time
 GET /api/catalog        200      fetch   8.0 kB   90 ms
 GET /api/sale-items     403      fetch   180 B   60 ms   ◄── red
 ```
-*What just happened:* `/api/sale-items` came back **403 Forbidden**. The regular catalog loaded fine (200),
-but the sale-items request was *rejected*. That's why `catalog` had 40 regular items and no sale items, which
-is why `find` returned `null`, which is why `addToCart` threw. The whole chain unwound from one forbidden
-request. Click it to learn *why* it was forbidden:
+*What just happened:* `/api/sale-items` came back **403 Forbidden** while the catalog loaded fine (200) -
+explaining the empty sale items, the `null` from `find`, the throw in `addToCart`. Click it to learn why:
 
 ```text
 GET /api/sale-items  →  Response tab:
   { "error": "missing or expired session token" }
 ```
-*What just happened:* The server says the request had no valid session token. The frontend isn't sending the
-auth the sale endpoint requires (the public catalog endpoint doesn't need it, which is why *it* worked).
-That's the root cause, in the server's own words - a complete, hand-offable diagnosis, reached without
-editing a single line of code.
+*What just happened:* No valid session token - the frontend isn't sending the auth the sale endpoint requires
+(the public catalog endpoint doesn't need it, hence *it* worked). Root cause, in the server's own words.
 
 ## The Elements panel: when the page LOOKS wrong
 
-That bug was *behavioral*. The other half of frontend bugs are *visual* - the layout's broken, text is the
-wrong color, something's misaligned. For those, you reach for **Elements**, which shows the **live DOM** (the
-HTML as it exists *right now*, after JavaScript has had its way with it) and the **CSS the browser actually
-applied**.
+That bug was *behavioral*. The other half of frontend bugs are *visual* - broken layout, wrong color,
+misalignment. Reach for **Elements**: it shows the **live DOM** (the HTML right now, post-JavaScript) and
+the **CSS the browser actually applied**.
 
-Say the sale price is supposed to be red but renders gray. Right-click it → Inspect:
+Say the sale price should be red but renders gray. Right-click it → Inspect:
 
 ```text
 Elements:
@@ -114,41 +102,37 @@ Styles (winning rules at top, losing rules struck through):
   .sale-price { color: red; }            ◄── what you wrote
   .price      { color: gray; }           ◄── what actually won
 ```
-*What just happened:* Both rules target the element, but `.price` won and painted it gray. The Styles pane
-shows you the *real* cascade - every rule that matched, which one won, and which got overridden (shown
-struck through). Here it's a specificity/order problem: `.price` is beating `.sale-price`. You can test the
-fix instantly - double-click the `color` value and type `red`, and the page updates *live*:
+*What just happened:* Both rules target the element, but `.price` won and painted it gray. Styles shows the
+*real* cascade - every matching rule, which won, which got overridden: a specificity/order problem, `.price`
+beats `.sale-price`. Test the fix instantly:
 
 ```text
 > double-click color value, type "red", Enter
   → the price turns red on screen immediately
 ```
-*What just happened:* You confirmed the fix without touching a file or refreshing. Elements edits are a live
-*experiment*, not a save - they vanish on reload - but they prove what change will work before you go write
-it in the real CSS.
+*What just happened:* Fix confirmed without touching a file or refreshing. Elements edits are a live
+*experiment*, not a save - they vanish on reload - but prove what change will work before you write it in
+the real CSS.
 
 ## The gotchas that send you chasing ghosts
 
-Three traps waste more debugging hours than any actual bug:
+Three traps waste more hours than any actual bug:
 
-⚠️ **Stale cache - you're debugging old code.** You fix something, reload, and the bug's still there - because
-the browser served a *cached* copy of your old JS. Open DevTools, go to Network, tick **Disable cache** (it
-only applies while DevTools is open), and reload. If you're ever unsure whether you're even looking at your
-latest code, this is the first thing to rule out.
+⚠️ **Stale cache - you're debugging old code.** You fix something, reload, bug's still there - the browser
+served a *cached* copy of your old JS. Open DevTools → Network, tick **Disable cache** (only while DevTools
+is open), reload. First thing to rule out if unsure you're looking at current code.
 
-⚠️ **"undefined" in the live prompt - wrong scope.** You type a variable name in the Console and get
-`Uncaught ReferenceError`. The variable is real, but it's *local* to a function and you're asking from the
-global scope. To read a local, you have to be **paused on a breakpoint inside that function** - then the
-Console evaluates in *that* paused scope and the variable is visible.
+⚠️ **"undefined" in the live prompt - wrong scope.** You type a variable name and get `Uncaught
+ReferenceError`. It's real but *local* to a function, and you're asking from global scope. To read a local,
+you must be **paused on a breakpoint inside that function** - then the Console evaluates in that scope.
 
-⚠️ **Minified line numbers that make no sense.** An error points at `app.js:1:48210` and the line is gibberish.
-You're seeing built/minified code. Make sure **source maps** are enabled and loading (covered in Phase 2) so
-DevTools shows your original source - otherwise every breakpoint and stack frame is in a language you didn't
-write.
+⚠️ **Minified line numbers that make no sense.** An error points at `app.js:1:48210`, gibberish - built/minified
+code. Make sure **source maps** are loading (Phase 2) so DevTools shows your original source, or every
+breakpoint and stack frame is in a language you didn't write.
 
 ## The method, distilled
 
-Notice the shape of the whole investigation - it's a method you can reuse on any frontend bug:
+A method you can reuse on any frontend bug:
 
 ```text
 1. Console      → is there an error? where (file:line)?      → cart.js:54
@@ -157,16 +141,14 @@ Notice the shape of the whole investigation - it's a method you can reuse on any
 4. Response     → why did it fail, in the server's words?    → "missing session token"
    (Elements    → for visual bugs: what CSS actually won?)
 ```
-*What just happened:* Each panel answered one question and pointed at the next. You never guessed; you
-*observed*, and the bug unwound itself from symptom to root cause. That ordered habit - Console, then the
-panel the error points to, then Network if data's involved - is the real takeaway of this guide.
+*What just happened:* Each panel answered one question and pointed at the next. You never guessed - you
+*observed*, and the bug unwound from symptom to root cause. That ordered habit is the real takeaway.
 
 ## For builders
 
-When you file or hand off a bug, do this whole loop first and attach what you found: the Console error, the
-failing request's status and Response body, the exact `file:line`. A report that says "Add to cart fails on
-sale items because `/api/sale-items` returns 403 - missing session token" gets fixed in minutes. "It doesn't
-work" gets fixed in days.
+When you file or hand off a bug, attach what this loop found: the Console error, the failing request's
+status and Response body, the exact `file:line`. "Add to cart fails because `/api/sale-items` returns 403 -
+missing session token" gets fixed in minutes. "It doesn't work" takes days.
 
 ## Recap
 
@@ -178,7 +160,7 @@ work" gets fixed in days.
 4. Rule out the ghosts early: **stale cache** (Disable cache + reload), **wrong scope** (pause inside the
    function to read locals), and **missing source maps** (so line numbers mean something).
 
-That's the toolkit. Four panels, one method, and most "why is this broken?" mysteries don't stand a chance.
+That's the toolkit. Four panels, one method - most "why is this broken?" mysteries don't stand a chance.
 
 ```quiz
 [

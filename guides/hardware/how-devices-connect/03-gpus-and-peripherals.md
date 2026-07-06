@@ -11,20 +11,17 @@ updated: 2026-06-19
 
 # GPUs & Peripherals
 
-By now you have the two roads: USB for the things you plug and unplug, PCIe for the heavy hardware inside.
-This phase looks at what's at the ends of those roads. First the biggest, most misunderstood tenant of the
-PCIe highway - the **GPU** - and *why* a computer bothers having a second, very different processor at all.
-Then a short tour of the humble peripherals from Phase 1, and the elegant trick that lets one driver
-handle a thousand different keyboards.
+You have the two roads - USB and PCIe. What's at the ends of them? First the biggest, most misunderstood
+tenant of the PCIe highway, the **GPU**, then the humble peripherals from Phase 1 and the trick that lets
+one driver handle a thousand different keyboards.
 
 ## Why a GPU exists at all
 
-**What it actually is.** A GPU (Graphics Processing Unit) is a processor built for a completely different
-shape of work than the CPU. The CPU is a few very clever cores that do complicated tasks one after
-another, *fast*. A GPU is thousands of much simpler cores that all do the *same* simple operation at the
-same time, on different pieces of data. The CPU is a brilliant chef; the GPU is a stadium full of line
-cooks who can each crack one egg - useless for a complex recipe, unbeatable for cracking ten thousand eggs
-at once.
+A GPU (Graphics Processing Unit) is built for a completely different shape of work: the CPU is a few
+very clever cores doing complicated tasks one after another, *fast*; a GPU is thousands of much simpler
+cores doing the *same* simple operation on different pieces of data at once. The CPU is a brilliant chef;
+the GPU is a stadium of line cooks who can each crack one egg - useless for a complex recipe, unbeatable
+for ten thousand eggs at once.
 
 ```text
    CPU                          GPU
@@ -37,28 +34,25 @@ at once.
                    sequence     └─┴─┴─┴─┴─┴─┴─┴─┴─┘  at once
 ```
 
-**Why this design exists.** Drawing a screen is the original case of "do the same thing to millions of
-items": every pixel needs roughly the same color math, independently. A CPU doing that one pixel at a time
-would crawl; a GPU does huge swaths of pixels simultaneously. That's **massively parallel** work - many
-identical operations with no dependence on each other - and it's the GPU's entire reason for being.
+Drawing a screen is the original case of "do the same thing to millions of items": every pixel needs
+roughly the same color math, independently. A CPU doing one pixel at a time would crawl; a GPU does huge
+swaths simultaneously. That's **massively parallel** work - many identical, independent operations - the
+GPU's entire reason for being.
 
-**Why GPUs now run machine learning too.** Here's the part that surprises people. Training and running a
-neural network is, underneath, mostly one operation repeated at enormous scale: multiplying big grids of
-numbers (matrices) together. That is *exactly* the "same simple math, millions of times, in parallel"
-shape graphics has. So the hardware built to shade pixels turned out to be the ideal hardware for ML - not
-a coincidence, but the same parallel pattern wearing a different hat. The "GPU" now spends much of its life
-doing math that has nothing to do with graphics.
+Why GPUs now run machine learning too: a neural network is, underneath, mostly multiplying big grids of
+numbers (matrices) at enormous scale - *exactly* the "same simple math, millions of times, in parallel"
+shape graphics has. The hardware built to shade pixels turned out to be ideal for ML: the same parallel
+pattern wearing a different hat.
 
 ## How a GPU connects - and how it gets fed
 
-**What it actually is.** The GPU is a PCIe device - usually a card in the x16 slot from Phase 2, or a chip
-soldered to the same kind of high-bandwidth connection. The wide slot isn't vanity: the GPU has to move
-gigantic amounts of data between itself and the rest of the system, constantly.
+The GPU is a PCIe device - usually a card in the x16 slot from Phase 2, or a chip soldered to the same
+kind of high-bandwidth connection. The wide slot isn't vanity - the GPU constantly moves gigantic amounts
+of data to and from the rest of the system.
 
-**The real bottleneck is feeding it.** A GPU with thousands of cores is only useful if you can keep them
-supplied with data. The work itself is fast; getting the data *to* the GPU over PCIe, and results back, is
-often the slow part. This is why GPUs carry their own large, very fast on-board memory (VRAM): once data
-is sitting in VRAM, the cores can chew through it without waiting on the PCIe trip back to system RAM.
+The real bottleneck is feeding it: the work itself is fast, but getting data *to* the GPU over PCIe, and
+results back, is often the slow part. That's why GPUs carry large, very fast on-board memory (VRAM) -
+once data sits there, the cores chew through it without waiting on the PCIe trip back to system RAM.
 
 ```mermaid
 flowchart LR
@@ -69,84 +63,72 @@ flowchart LR
     GPU --> Cores
 ```
 
-⚠️ **Gotcha - "my GPU is barely being used" is usually a feeding problem.** When a GPU sits at low
-utilization while work is clearly happening, the cores are typically *starved* - waiting on data that
-hasn't arrived (from disk, from the CPU preparing it, or across PCIe) rather than lacking power. This ties
-straight back to Phase 2: a GPU on a slower-than-expected PCIe link (fewer lanes or an older generation)
-can be throttled by the road, not the engine. The fix is rarely "a bigger GPU"; it's removing whatever
-stops data from arriving fast enough.
+⚠️ **Gotcha - "my GPU is barely being used" is usually a feeding problem.** Low utilization while work is
+clearly happening typically means *starved* cores - waiting on data (from disk, from the CPU preparing
+it, or across PCIe), not lacking power. This ties back to Phase 2: a GPU on a slower-than-expected PCIe
+link (fewer lanes or an older generation) is throttled by the road, not the engine. The fix is rarely "a
+bigger GPU"; it's removing whatever stops data from arriving fast enough.
 
-**Why this saves you later.** "Should I buy a faster GPU?" becomes a sharper question: is the GPU actually
-the limit, or is it idling while waiting to be fed? And it explains why VRAM capacity matters so much for
-large models - if the data doesn't fit in VRAM, you're back to paying the slow PCIe trip constantly.
+"Should I buy a faster GPU?" becomes: is the GPU actually the limit, or idling, waiting to be fed? It's
+also why VRAM capacity matters for large models - data that doesn't fit in VRAM pays the slow PCIe trip
+constantly.
 
 ## How everyday peripherals present themselves
 
-Now the other end of the USB road from Phase 1. A keyboard, a mouse, a webcam, a display - wildly different
-devices. The clever bit is how few drivers it actually takes to support all of them.
+A keyboard, a mouse, a webcam, a display - wildly different devices. The clever bit is how few drivers it
+takes to support them all.
 
-**The idea: device classes.** Remember from Phase 1 that during enumeration a device describes itself.
-Part of that description is its **class** - a standard category like "keyboard," "mouse," "mass storage,"
-or "video." The operating system ships with one generic driver per class. So *any* device that says "I'm a
-standard keyboard" is handled by the same built-in keyboard driver - no per-model download needed. This is
-why a keyboard or flash drive from a brand you've never heard of works the instant you plug it in.
+During enumeration (Phase 1) a device describes itself, including its **class** - a standard category
+like "keyboard," "mouse," "mass storage," or "video." The OS ships one generic driver per class, so *any*
+device claiming "standard keyboard" gets the same built-in driver - no per-model download, and a keyboard
+or flash drive from a brand you've never heard of works the instant you plug it in.
 
-📝 **Terminology.** *Device class* = a standard behavior category a device claims during enumeration.
-*HID* (Human Interface Device) is the class that covers keyboards, mice, game controllers, and similar
-input devices - the reason almost any keyboard or mouse "just works" without you installing anything.
+📝 **Terminology.** *HID* (Human Interface Device) = the device class covering keyboards, mice, game
+controllers, and similar input devices - the reason almost any keyboard or mouse "just works."
 
-**A quick tour:**
+A quick tour:
 
-- **Keyboard and mouse** - both are HID-class devices. They announce "I'm a standard input device,"
-  the OS loads the generic HID driver, and they work immediately. A fancy keyboard's extra macro keys or
-  RGB lighting are the part that needs the manufacturer's own software - but the *typing* always works,
-  because the standard class covers it.
-- **Display** - connects over a video link (HDMI, DisplayPort, or DisplayPort carried over a USB-C port,
-  as Phase 1 warned). The screen and the system negotiate a resolution and refresh rate during connection,
-  much like USB's interview - which is why a freshly plugged-in monitor usually lands on a sensible
-  resolution on its own.
-- **Webcam** - typically presents as the standard USB video class, so the OS can capture a basic image
-  with a generic driver. Vendor software adds the extras (autofocus tuning, effects), but the core "show a
-  video stream" is a standard class, which is why most webcams produce *a* picture instantly even before
-  any app from the maker is installed.
+- **Keyboard and mouse** - both HID-class: they announce "standard input device," the OS loads the
+  generic HID driver, and they work immediately. Macro keys or RGB lighting need the manufacturer's
+  software - but the *typing* always works: the standard class covers it.
+- **Display** - connects over a video link (HDMI, DisplayPort, or DisplayPort over USB-C, as Phase 1
+  warned). Screen and system negotiate a resolution and refresh rate during connection, much like USB's
+  interview - why a fresh monitor usually lands on a sensible resolution by itself.
+- **Webcam** - typically the standard USB video class, so the OS captures a basic image with a generic
+  driver. Vendor software adds extras (autofocus tuning, effects), but the core "show a video stream" is
+  standard - most webcams produce *a* picture before any maker's app is installed.
 
-**Why classes are the right design.** Without classes, every keyboard would need its own driver shipped to
-every OS - an impossible amount of busywork, and a fresh keyboard wouldn't work until you found and
-installed software. By agreeing on standard behaviors, the industry lets one driver serve thousands of
-models. The cost is that *non-standard* features (those macro keys, that lighting) fall outside the class
-and need extra software - exactly the split you see in practice.
+Without classes, every keyboard would need its own driver shipped to every OS, and a fresh keyboard
+wouldn't work until you installed software. Standard behaviors let one driver serve thousands of models;
+the cost is that *non-standard* features fall outside the class and need extra software - exactly the
+split you see in practice.
 
 ## It all comes back to drivers
 
-Every device in this guide - the USB stick, the GPU, the webcam, the keyboard - reaches your programs the
-same way: through a **driver**, the OS's translator for one kind of hardware. The host detects the device,
-learns what it is, and loads the matching driver; from then on your apps talk to the OS in generic terms
-("read this drive," "draw this," "give me the camera frame") and the driver handles the device-specific
-reality.
+Every device in this guide - USB stick, GPU, webcam, keyboard - reaches your programs the same way:
+through a **driver**, the OS's translator for one kind of hardware. Once the host detects, interviews,
+and driver-matches a device, apps talk to the OS in generic terms ("read this drive," "draw this," "give
+me the camera frame") and the driver handles the device-specific reality.
 
 That layer - what a driver is, and why "it broke after an update" so often means "the driver broke" - is
-told properly in [What an Operating System Is](/guides/what-an-operating-system-is). We won't re-teach it
-here; the point for *this* guide is that the physical connection (USB or PCIe) is only half the
-story. A device is plugged in *and* enumerated *and* matched to a working driver before an app can use it.
-When something "isn't working," it's worth asking which of those three is missing - and you now know how to
-tell.
+told properly in [What an Operating System Is](/guides/what-an-operating-system-is). The point for *this*
+guide: the physical connection is only half the story - a device must be plugged in *and* enumerated
+*and* matched to a working driver before an app can use it. When something "isn't working," ask which of
+the three is missing.
 
 ## Recap
 
 1. **A GPU exists for massively parallel work** - thousands of simple cores doing the same operation on
-   different data at once. Built for graphics; now equally suited to ML, because both are the same "same
-   math, millions of times" pattern.
-2. **It connects over PCIe** (the x16 slot), and feeding it data - over PCIe, into its VRAM - is often the
+   different data at once. Graphics and ML are the same "same math, millions of times" pattern.
+2. **It connects over PCIe** (the x16 slot); feeding it data - over PCIe, into its VRAM - is often the
    real bottleneck. Low GPU utilization usually means starved cores, not a weak GPU.
-3. **Peripherals present via device classes.** A device claims a standard category (keyboard, mouse, HID,
-   video) during enumeration, so one generic driver serves thousands of models; only non-standard extras
-   need vendor software.
-4. **Everything routes through a driver.** Physical connection is only half of it - a device must be
-   plugged in, enumerated, *and* matched to a working driver before an app can use it.
+3. **Peripherals present via device classes** (keyboard, mouse, HID, video) during enumeration, so one
+   generic driver serves thousands of models; only non-standard extras need vendor software.
+4. **Everything routes through a driver** - plugged in, enumerated, *and* driver-matched before an app
+   can use it.
 
 That's the whole picture: the universal door (USB), the internal highway (PCIe), the parallel powerhouse
-(GPU), and the standard-class trick that makes peripherals plug-and-play - each one a place you can now
-reason about instead of guess.
+(GPU), and the standard-class trick that makes peripherals plug-and-play.
 
 Watch it animated: [CPU vs. GPU](/explainers/CPUvsGPU.dc.html)
 

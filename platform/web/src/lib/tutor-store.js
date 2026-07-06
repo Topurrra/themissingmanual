@@ -5,3 +5,9 @@
 import { writable } from 'svelte/store';
 
 export const tutorOpen = writable(false);
+
+// One-shot prefill for the tutor's input, written by callers that want to open
+// the drawer with a question already typed (e.g. Quiz.svelte's "ask the tutor
+// why" on a wrong answer). TutorChat.svelte consumes it and resets it to ''
+// immediately so it never re-fires on remount.
+export const tutorPrefill = writable('');

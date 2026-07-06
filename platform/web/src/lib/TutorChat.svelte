@@ -2,7 +2,7 @@
   import { page } from '$app/stores';
   import { tick, onDestroy } from 'svelte';
   import { renderMarkdown } from '$lib/markdown.js';
-  import { tutorOpen } from '$lib/tutor-store.js';
+  import { tutorOpen, tutorPrefill } from '$lib/tutor-store.js';
 
   const STARTER_CHIPS = ['Why does this matter?', 'Show a real example', 'Explain it more simply'];
   const TYPE_MS = 22; // ms per word-ish chunk revealed while "typing" an answer
@@ -49,6 +49,14 @@
 
   $: if ($tutorOpen) scrollToBottom();
 
+  // One-shot prefill from an external "ask the tutor" trigger (e.g. a wrong
+  // quiz answer) - consume immediately so it can't re-fire on remount/nav.
+  $: if ($tutorPrefill) {
+    draft = $tutorPrefill;
+    tutorPrefill.set('');
+    tick().then(() => inputEl?.focus());
+  }
+
   // Lets floating page furniture (bookmark/feedback FABs) dodge the open
   // drawer instead of sitting underneath it - consumed via var(--tutor-shift)
   // the same way --fab-lift already lets those FABs react to the footer.
@@ -83,7 +91,7 @@
       });
       const j = await res.json();
       if (j.enabled && !j.error && !j.capReached) {
-        await typeOutAnswer(j.answer, j.logId);
+        await typeOutAnswer(j.answer, j.logId, j.referenced);
       } else if (j.capReached) {
         error = "This has hit its limit for now - try again later.";
       } else {
@@ -102,9 +110,9 @@
   // effect. Chunking on whitespace (not single characters) is both fast
   // enough to read and keeps short markdown tokens like **bold** or `code`
   // intact within one chunk instead of flickering half-open mid-reveal.
-  function typeOutAnswer(fullText, logId) {
+  function typeOutAnswer(fullText, logId, referenced) {
     return new Promise((resolve) => {
-      const msg = { role: 'assistant', content: '', logId, typing: true };
+      const msg = { role: 'assistant', content: '', logId, typing: true, referenced: referenced?.length ? referenced : null };
       history = [...history, msg];
       scrollToBottom();
       const tokens = fullText.split(/(\s+)/);
@@ -228,6 +236,12 @@
             <span class="who">{h.role === 'user' ? 'You' : 'Tutor'}</span>
             {#if h.role === 'assistant'}
               <div class="bubble md-content">{@html renderMarkdown(h.content)}{#if h.typing}<span class="caret"></span>{/if}</div>
+              {#if h.referenced?.length && !h.typing}
+                <p class="tutor-refs">
+                  Referenced:
+                  {#each h.referenced as r, i}{#if i > 0}, {/if}<a href={`/guides/${r.slug}/${r.phaseNo}`}>{r.title}</a>{/each}
+                </p>
+              {/if}
               {#if h.logId && !h.typing}
                 <div class="tutor-rate" role="group" aria-label="Rate this answer">
                   <button type="button" class="rate-btn" class:selected={h.rating === 'up'}
@@ -362,6 +376,9 @@
   .rate-btn .ti { font-size: 13px; }
   .rate-btn.selected { color: var(--accent); border-color: var(--accent); background: var(--accent-tint); }
   .tutor-err { color: #c0563c; font-size: 0.82rem; margin: 0 0 0.6rem; }
+  .tutor-refs { font-size: 0.78rem; color: var(--faint); margin: 0.3rem 0 0; }
+  .tutor-refs a { color: var(--muted); }
+  .tutor-refs a:hover { color: var(--accent); }
   /* Floating pill near a text selection made inside the guide's own reading
      column (see onSelMouseup) - anchored via left/top set inline in JS. */
   .sel-ask {

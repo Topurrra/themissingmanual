@@ -13,28 +13,25 @@ updated: 2026-06-19
 
 Picture the moment. A feature that shipped fine is now broken, and you've got a range of changes to blame
 - maybe a hundred commits since the last release, maybe a thousand. The instinct is to start at one end
-and walk: check this change, nope; check the next, nope; the next… It feels like progress because you're
-*doing something*. But if the culprit is in the middle of a thousand commits, that walk is five hundred
-checks of pure tedium.
+and walk: check this change, nope; check the next, nope; the next… It feels like progress, but if the
+culprit is in the middle of a thousand commits, that walk is five hundred checks of pure tedium.
 
-Here's the secret this whole guide rests on: **you don't have to walk the range - you can halve it.** And
-once you see why halving wins, you'll never go back to walking.
+Here's the secret this whole guide rests on: **you don't have to walk the range - you can halve it.**
 
 ## The idea: test the middle, throw away half
 
-**What it actually is.** Binary search is a way of finding one item in an ordered range by always testing
-the *midpoint* and using the answer to discard half of what's left. It's the same move you make flipping
-to the middle of a dictionary: the word's not on this page, but now you know it's in the *first* half or
-the *second* half, and you've eliminated the other half in a single look.
+**What it actually is.** Binary search finds one item in an ordered range by always testing the *midpoint*
+and using the answer to discard half of what's left. It's the same move as flipping to the middle of a
+dictionary: the word's not on this page, but now you know it's in the *first* half or the *second* half -
+eliminating the other half in a single look.
 
 **Why the slow way feels right but isn't.** Walking the range one step at a time (a *linear* search) treats
-every suspect as equally likely and checks them in order. It's simple, and that's its only virtue. The
-cost grows in lockstep with the haystack: twice as many commits means twice as many checks. Halving
-breaks that link entirely.
+every suspect as equally likely and checks them in order. Its cost grows in lockstep with the haystack:
+twice as many commits means twice as many checks. Halving breaks that link entirely.
 
-**What it does in real life.** Each test you run cleanly splits the remaining suspects into "before this
-point, where it still worked" and "after this point, where it's broken." You keep only the half the bug
-must be hiding in, find *its* midpoint, and test again. The range collapses fast:
+**What it does in real life.** Each test cleanly splits the remaining suspects into "before this point,
+where it still worked" and "after this point, where it's broken." Keep only the half the bug must be
+hiding in, find *its* midpoint, and test again. The range collapses fast:
 
 ```mermaid
 flowchart LR
@@ -46,7 +43,7 @@ flowchart LR
 
 *What just happened:* Every test cut the suspects roughly in half, so after about ten tests a thousand
 candidates collapsed to one. That "about ten" is no accident - halving a thousand ten times gets you to
-one (because 2 to the 10th power is 1024). The shape of the win is the important part: **when the haystack
+one (2 to the 10th power is 1024). The shape of the win matters more than the number: **when the haystack
 doubles, you pay just one more test.** Two thousand commits? About eleven. A million? About twenty. Linear
 search would charge you a million.
 
@@ -57,20 +54,18 @@ this feels like magic the first time a 900-commit regression falls in nine tries
 ## The three things you need
 
 Halving only works when the problem has a particular shape. Before you reach for any tool, make sure you
-have all three of these - if one is missing, fix that first.
+have all three - if one is missing, fix that first.
 
 **1. A known-good point.** Somewhere the thing demonstrably *worked* - a commit, a release tag, a config
-you trust, a date. You're not guessing this; you've seen it work or can check that it does. This is one
-end of your range.
+you trust, a date. You've seen it work or can check that it does. This is one end of your range.
 
 **2. A known-bad point.** Somewhere it's demonstrably *broken* - usually "right now." This is the other
 end. The bug was introduced *somewhere between good and bad*, and that span is your haystack.
 
 **3. A reliable yes/no test.** At any point in between, you must be able to answer one question with
-confidence: **"Is the bug present here - yes or no?"** That's the whole engine. Each answer is what lets
-you throw away a half. It can be running the app and clicking the broken button, running one failing
-test, or eyeballing an output - but it has to give the *same* answer every time you ask it at the same
-point.
+confidence: **"Is the bug present here - yes or no?"** That's the whole engine - each answer is what lets
+you throw away a half. It can be clicking a broken button, running one failing test, or eyeballing an
+output - but it must give the *same* answer every time you ask it at the same point.
 
 ```text
   good ●────────────────────────────────────────────● bad
@@ -82,15 +77,15 @@ point.
 
 ⚠️ **Gotcha - the test has to be trustworthy.** Every halving step *bets the whole rest of the search* on
 one yes/no answer. If that answer is wrong even once - because the bug only shows up sometimes, or your
-test is checking the wrong thing - you'll discard the half that actually contained the culprit and hunt
-forever in the wrong place. A shaky test doesn't just slow a bisect down; it sends it confidently to the
-wrong answer. We come back to this hard in [Phase 3](03-bisecting-beyond-git.md), because it's the single
-most common way bisecting goes bad.
+test checks the wrong thing - you'll discard the half that actually held the culprit and hunt forever in
+the wrong place. A shaky test doesn't just slow a bisect down; it sends it confidently to the wrong answer.
+[Phase 3](03-bisecting-beyond-git.md) comes back to this hard, since it's the single most common way
+bisecting goes bad.
 
 **Why this saves you later.** Once you can spot the "worked before / broken now" shape, you stop dreading
 regressions. A scary "something in the last 300 commits broke checkout" turns into a calm, finite
 procedure: nine or so tests and you have the exact change to read. The next phase hands that procedure to
-a tool that picks the midpoints, checks out the code, and does the bookkeeping for you.
+a tool that picks the midpoints and does the bookkeeping for you.
 
 ## Recap
 

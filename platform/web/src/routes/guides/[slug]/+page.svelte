@@ -35,6 +35,9 @@
 <div class="crumb"><a href="/">All topics</a> <span>/</span> <span>{guide.title}</span></div>
 <h1 class="page-title">{guide.title}</h1>
 <p class="tagline">{guide.summary}</p>
+<a class="epub-dl" href={`/guides/${guide.slug}/epub`} download>
+  <i class="ti ti-book-2" aria-hidden="true"></i> Download EPUB
+</a>
 
 <ol class="phases">
   {#each phases.filter((p) => p.phase_no > 0) as p}
@@ -44,3 +47,13 @@
     </li>
   {/each}
 </ol>
+
+<style>
+  .epub-dl {
+    display: inline-flex; align-items: center; gap: 0.4rem; margin: 0.9rem 0 1.2rem;
+    font-size: 0.88rem; color: var(--muted); border: 1px solid var(--line);
+    border-radius: 999px; padding: 0.35rem 0.8rem; transition: border-color 0.15s var(--ease), color 0.15s var(--ease);
+  }
+  .epub-dl:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+  .epub-dl .ti { font-size: 16px; }
+</style>

@@ -11,11 +11,9 @@ updated: 2026-06-19
 
 # What to Actually Do With One
 
-You can now read an error's anatomy and name its family. This phase is the part you'll use every single
-day: a calm, repeatable *method* for turning an error into a fix. It's not magic and it's not luck - it's a
-short checklist that the most experienced engineers run almost without thinking. The difference between
-"stuck for an hour" and "fixed in five minutes" is almost never raw skill. It's having a method instead of
-flailing.
+You can now read an error's anatomy and name its family. This phase is the part you'll use every day: a
+calm, repeatable *method* experienced engineers run almost without thinking. "Stuck for an hour" vs. "fixed
+in five minutes" is almost never raw skill - it's having a method instead of flailing.
 
 ## The cheat-card
 
@@ -32,31 +30,31 @@ flailing.
 | You've stared for 20 minutes and you're stuck | **Rubber-duck it** - explain it out loud, line by line (§5) |
 | The error is a long multi-line trace | That's a stack trace - see [Reading a Stack Trace](/guides/reading-a-stack-trace) |
 
-The rest of this phase is the method behind those moves, in the order you'd actually run them.
+The rest of this phase is the method behind those moves, in the order you'd run them.
 
 ## 1. Read it literally - the top line first
 
-The error means *exactly* what it says - not a vague approximation, the literal thing. Your first job is to
-read the headline (the type + message; the **bottom** line in a Python traceback, as covered in
-[Phase 1](01-information-not-insult.md)) and translate it into a plain sentence, word by word.
+The error means *exactly* what it says. Your first job is to read the headline (type + message; the
+**bottom** line in a Python traceback, per [Phase 1](01-information-not-insult.md)) and translate it into a
+plain sentence, word by word.
 
 ```console
 TypeError: Cannot read properties of undefined (reading 'price')
 ```
 
-*What just happened:* Don't skim it as "some type thing." Read it literally: *"I cannot read the property
-`price`, because the thing I tried to read it from was `undefined`."* That literal reading already tells you
-the whole story - something you expected to be an object was empty, and you reached for `.price` on the
-emptiness. The error wasn't being cryptic; you were reading it as a blur instead of as a sentence.
+*What just happened:* Read it literally: *"I cannot read the property `price`, because the thing I tried to
+read it from was `undefined`."* That tells the whole story - something you expected to be an object was
+empty, and you reached for `.price` on the emptiness. The error wasn't cryptic; you read it as a blur
+instead of a sentence.
 
-💡 **Key point.** Treat the message as English (or your language), not as noise. Read each word and ask
-"what does *this word* mean here?" Half of all "I have no idea what this means" moments dissolve the instant
-you read the message slowly instead of glancing at it.
+💡 **Key point.** Treat the message as English, not noise. Read each word and ask "what does *this word*
+mean here?" Half of all "I have no idea what this means" moments dissolve the instant you read slowly
+instead of glancing.
 
 ## 2. Find *your* line
 
-The error often lists several files - but many of them belong to libraries you didn't write. The line that
-matters most is usually the **first one that points at a file you actually created.**
+The error often lists several files - many belong to libraries you didn't write. The line that matters
+most is usually the **first one that points at a file you actually created.**
 
 ```console
 Traceback (most recent call last):
@@ -69,25 +67,22 @@ Traceback (most recent call last):
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
 ```
 
-*What just happened:* The top frames are *inside Python's own `json` library* - that code is fine, you
-didn't write it, don't go editing it. The frame that's **yours** is `checkout.py, line 12` - where *you*
-called `json.loads(response)`. That's where your investigation starts: `response` apparently wasn't valid
-JSON (the message says it expected a value at the very first character and found nothing). The library is
-just reporting the problem your data caused.
+*What just happened:* The top frames are *inside Python's own `json` library* - fine code, don't edit it.
+The frame that's **yours** is `checkout.py, line 12`, where *you* called `json.loads(response)`; that's
+where your investigation starts. `response` apparently wasn't valid JSON (it expected a value at the very
+first character and found nothing) - the library is just reporting the problem your data caused.
 
-⚠️ **Don't start debugging inside library code.** Beginners see the topmost file and try to fix code they've
-never seen. Almost always, the bug is at *your* line, feeding bad input into code that's working correctly.
-Scan down the list for the first file with *your* project's name on it. (When that list is long and tangled,
-reading it properly is the skill in [Reading a Stack Trace](/guides/reading-a-stack-trace).)
+⚠️ **Don't start debugging inside library code.** Beginners see the topmost file and try to fix code
+they've never seen. Almost always the bug is at *your* line, feeding bad input into otherwise-correct code.
+Scan down for the first file with *your* project's name. (For long, tangled lists, that's the skill in
+[Reading a Stack Trace](/guides/reading-a-stack-trace).)
 
 ## 3. Reproduce it small
 
-An error you can trigger *on demand* is an error you can fix. An error that happens "randomly" is one you
-don't understand *yet*. So before fixing, make it happen reliably - and as *small* as possible.
-
-**What this means in real life.** Strip away everything that isn't needed to cause the error. Comment out
-unrelated code. Replace live data with a hard-coded value that triggers it. Shrink a 200-line script to the
-5 lines that still break. Each thing you remove that *doesn't* stop the error is a thing you've ruled out.
+An error you can trigger *on demand* is one you can fix. One that happens "randomly" is one you don't
+understand *yet*. Before fixing, make it happen reliably and as *small* as possible: comment out unrelated
+code, replace live data with a hard-coded value that triggers it, shrink a 200-line script to the 5 lines
+that still break. Each thing you remove that *doesn't* stop the error is ruled out.
 
 ```console
 $ python -c "print('Age: ' + 30)"
@@ -96,21 +91,20 @@ TypeError: can only concatenate str (not "int") to str
 
 *What just happened:* Instead of re-running a giant program to study one error, you reproduced the exact
 failure in a single line at the terminal (`python -c` runs the code you pass it). Now you can poke at it
-freely - try `str(30)`, see it work - without the noise of everything else. Shrinking the problem until
-only the broken part remains is, quietly, the core move of all debugging.
+freely - try `str(30)`, see it work - without the noise of everything else. Shrinking a problem to its
+broken part is the core move of all debugging.
 
-💡 **Key point.** "Reproduce it small" does double duty: it confirms you actually understand what triggers
-the error, *and* it gives you a fast, isolated place to test your fix. If you can't reproduce it, you can't
-be sure you've fixed it - you can only hope.
+💡 **Key point.** "Reproduce it small" does double duty: it confirms you understand what triggers the
+error, and gives you a fast, isolated place to test your fix. If you can't reproduce it, you can't be sure
+you've fixed it - only hope.
 
 ## 4. Search the *exact* message - and read the results
 
 Most errors you'll hit, thousands of people have hit before you. Searching is a real skill, not cheating -
-but *how* you search decides whether you find gold or garbage.
+*how* you search decides gold or garbage.
 
-**Search the stable, generic part of the message - strip out your personal bits.** The error names *your*
-file, *your* variable, *your* path. Those are unique to you and will wreck the search. Cut them out and keep
-the part that's the same for everyone.
+**Search the stable, generic part of the message - strip your personal bits.** The error names *your* file,
+variable, path - unique to you, and it'll wreck the search. Cut them, keep what's the same for everyone.
 
 ```text
    What you got:
@@ -122,46 +116,42 @@ the part that's the same for everyone.
      ✗ don't include  'data/sales_2026.csv'   ← that's yours; nobody else has it
 ```
 
-*What just happened:* You kept the language (`python`) and the universal part of the error, and dropped your
-private file name. Now you're searching for the *category* of problem, which is what other people wrote
-about - not your one specific file, which no page on earth mentions.
+*What just happened:* You kept the language (`python`) and the universal part, dropping your private file
+name. Now you're searching for the *category* of problem - what other people wrote about, not your one
+file, which no page on earth mentions.
 
 **How to read a search result** - be a skeptic, in this order:
 
-- **Match the error first.** Does the result's error text actually match yours, including the type? A
-  similar-looking message from a different error type is a different problem.
-- **Check it's your language/tool and roughly your version.** A fix for an old version, or for a different
-  language with the same word, can send you down a rabbit hole.
-- **Read the *accepted* / most-upvoted answer, and read *why* it works** - don't just paste the top code
-  block. An answer you understand teaches you; an answer you blindly paste breaks again next week and you'll
-  be just as lost.
-- **Be wary of "just add this flag" with no explanation.** If a fix doesn't say *why*, you can't tell if it
-  addresses your cause or merely silences the symptom.
+- **Match the error first** - does the result's text match yours, including the type? A similar-looking
+  message from a different type is a different problem.
+- **Check it's your language/tool and roughly your version** - a fix for an old version, or a different
+  language using the same word, sends you down a rabbit hole.
+- **Read the *accepted*/most-upvoted answer and *why* it works**, not just the top code block - an answer
+  you understand teaches you; one you blindly paste breaks again next week.
+- **Be wary of "just add this flag" with no explanation** - if it doesn't say *why*, you can't tell if it
+  addresses your cause or just silences the symptom.
 
-⚠️ **Don't paste fixes you don't understand.** The fastest way to turn one bug into three is to copy a
-snippet that "made the error go away" without knowing what it did. If you can't explain why the fix works,
-you haven't fixed it - you've hidden it.
+⚠️ **Don't paste fixes you don't understand.** The fastest way to turn one bug into three is copying a
+snippet that "made the error go away" without knowing why. If you can't explain why it works, you haven't
+fixed it - you've hidden it.
 
 ## 5. When to rubber-duck
 
-If you've read it literally, found your line, reproduced it, and searched - and you're *still* stuck - the
-problem is often that you've stopped actually *thinking* and started staring. The cure is almost silly, and
-it genuinely works.
+If you've read it literally, found your line, reproduced it, and searched - and you're *still* stuck - you've
+likely stopped *thinking* and started staring. The cure is almost silly, and it genuinely works.
 
 📝 **Terminology.** *Rubber-duck debugging* is explaining your problem, out loud and in full detail, to an
-inanimate object (the classic is a rubber duck on your desk). The name is real and old in programming
-culture - the point is that forcing yourself to narrate every step makes the gap obvious.
+inanimate object (classically a rubber duck on your desk). Narrating every step makes the gap obvious.
 
-**Why it works.** When you explain your code *line by line, out loud,* you can't skip the step your brain
-was silently assuming was fine. The moment you say "...and then this returns the user, and then I read the
-name from the user..." you hear yourself and stop: *wait - does it actually return the user? What if the
-lookup found nobody?* You just located the bug by being forced to state the thing you'd been taking for
-granted. A real person works too, but the duck has no ego and is always free.
+**Why it works.** Explaining your code *line by line, out loud,* you can't skip the step your brain was
+silently assuming was fine. Saying "...and then this returns the user, and then I read the name from the
+user..." you hear yourself and stop: *wait - does it actually return the user? What if the lookup found
+nobody?* You located the bug by stating what you'd been taking for granted. A real person works too, but
+the duck has no ego and is always free.
 
-🪖 **War story.** Nearly every engineer has walked over to a teammate, said "hey, can I ask you something
-about this error," started explaining it from the top - and then stopped mid-sentence with "...oh. Never
-mind. I see it." That's rubber-ducking with a human, and the teammate didn't have to say a word. It happens
-constantly. It's not embarrassing; it's the method working.
+🪖 **War story.** Nearly every engineer has walked over to a teammate, started explaining an error from the
+top, and stopped mid-sentence with "...oh. Never mind. I see it." That's rubber-ducking with a human, and
+the teammate didn't say a word. Not embarrassing - the method working.
 
 ## The whole method, in order
 
@@ -173,26 +163,26 @@ constantly. It's not embarrassing; it's the method working.
    5. RUBBER-DUCK              → explain it out loud, line by line, until the gap shows
 ```
 
-Run them in that order and most errors fall in minutes. Notice that *fixing* isn't even a separate step -
-by the time you've truly read, located, reproduced, and understood the error, the fix is usually obvious.
-The work was never the fix. The work was the understanding.
+Run them in order and most errors fall in minutes. *Fixing* isn't even a separate step - by the time you've
+truly read, located, reproduced, and understood the error, the fix is usually obvious. The work was never
+the fix - it was the understanding.
 
 ## Recap
 
-1. **Read it literally** - the headline means exactly what it says; translate it word by word.
+1. **Read it literally** - the headline means exactly what it says; translate word by word.
 2. **Find your line** - the first file *you* wrote, not library code.
 3. **Reproduce it small** - make it happen on demand, with the least code possible.
-4. **Search the exact message** - strip your personal bits, keep the stable core, read results skeptically,
-   and never paste a fix you can't explain.
+4. **Search the exact message** - strip personal bits, keep the stable core, read results skeptically, never
+   paste a fix you can't explain.
 5. **Rubber-duck** - explain it out loud line by line; the gap reveals itself.
 
 You now have the full "A" of debugging: errors are information, they come in a few recognizable families,
-and there's a calm method for any of them. The natural next step is the long, multi-line version of an
-error - the **stack trace** - which is the same skill, scaled up.
+and there's a calm method for any of them. Next: the **stack trace** - the long, multi-line version of an
+error, same skill scaled up.
 
 **Where to go next.**
-- **[Reading a Stack Trace](/guides/reading-a-stack-trace)** - when one error comes with a whole trail of
-  files and line numbers, this is how you read the trail to the real cause.
+- **[Reading a Stack Trace](/guides/reading-a-stack-trace)** - when an error comes with a whole trail of
+  files and line numbers, how to read it to the real cause.
 - **[Reading Logs Without Drowning](/guides/reading-logs-without-drowning)** - when the error is buried in
   thousands of lines of output, how to find the signal in the noise.
 

@@ -424,6 +424,7 @@
             <a href="/about">About</a>
             <a href="/changelog">What's new</a>
             <a href="/contribute">Contribute</a>
+            <a href="/request">Request a guide</a>
             <a href="/review">Review</a>
           </div>
         </nav>
