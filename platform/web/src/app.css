@@ -1033,7 +1033,7 @@ ul.guides li { display: flex; gap: 0.85rem; align-items: flex-start; }
 .co-rss:hover { color: var(--accent); }
 .co-rss .ti { font-size: 15px; }
 
-.co-social { display: flex; align-items: center; gap: 0.9rem; margin-top: 0.8rem; }
+.co-social { display: flex; align-items: center; margin-top: 0.8rem; }
 .co-social a { color: var(--muted); }
 .co-social a:hover { color: var(--accent); }
 .co-social .ti { font-size: 19px; }

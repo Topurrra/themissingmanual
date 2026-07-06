@@ -398,7 +398,7 @@
       <div class="co-grid">
         <div class="co-id">
           <div class="co-brand">{siteName}</div>
-          <a class="co-rss" href="/rss.xml"><i class="ti ti-rss" aria-hidden="true"></i> RSS feed</a>
+          <a class="co-rss" href="/rss.xml" title="RSS Feed"><i class="ti ti-rss" aria-hidden="true"></i></a>
           {#if socialLinks.length}
             <div class="co-social">
               {#each socialLinks as s}
