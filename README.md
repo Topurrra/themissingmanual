@@ -14,18 +14,24 @@ If not, it doesn't belong.
 
 ## What's inside
 
-- **323 guides, 1,292 phases, 25 categories** — Git, operating systems, hardware, networking,
-  databases, architecture, security, DevOps, 7 full programming languages and 30+ frameworks
-  end-to-end, plus Logic, Mathematics, and Physics for the reasoning underneath it all.
+- **350 guides, 1,384 phases, 27 categories** — Git, operating systems, hardware, networking,
+  databases, architecture, security, DevOps, infrastructure, performance, 7 full programming
+  languages and 30+ frameworks end-to-end, plus Logic, Mathematics, and Physics for the reasoning
+  underneath it all.
 - **Everything is laddered A→Z.** Each category opens with "what this actually is" for someone who's
   never touched it, and ends at genuinely advanced material — no assumed knowledge, ever.
 - **It's not just reading.** Interactive playgrounds (regex testers, sorting visualizers, a real
   in-browser terminal), inline quizzes, hands-on exercises, runnable Python/JS/SQL code blocks, and
-  animated step-by-step explainers for the concepts that are easier to watch than read.
-- **An AI tutor** that answers questions about the exact phase you're reading, grounded in the
-  guide's own content — not a generic chatbot bolted on the side.
-- **Spaced repetition review** and a set of logic/pattern brain games to keep the fundamentals sharp
-  after you've read them once.
+  animated instrument-style explainers (a live CPU clock signal, a network latency trace, a git
+  rebase played out step by step) for the concepts that are easier to watch than read.
+- **An AI tutor** that answers questions about the exact phase you're reading, grounded in and
+  citing the guide's own content — not a generic chatbot bolted on the side.
+- **Your own private highlights and notes** on any phase, spaced-repetition review, a local
+  skill map / roadmap of everything you've covered, and a set of logic/pattern brain games to keep
+  the fundamentals sharp after you've read them once.
+- **Built to stick around, not just be read once.** Offline-capable (installable PWA), exportable
+  to EPUB, shareable "TIL" cards for what you just learned, and a public backlog where anyone can
+  vote on what gets written next.
 - **Free. No account, no paywall, no ads.** It stays that way.
 
 ## How it's built
@@ -53,19 +59,6 @@ platform/
   [MCP server](platform/web/src/routes/mcp/+server.js) so AI agents can search and read the library
   directly.
 
-## Running it locally
-
-```bash
-# API (Rust, axum) — serves :3000, ingests guides/ on boot
-cargo run --manifest-path platform/Cargo.toml -p server
-
-# Web (SvelteKit) — serves :5173, calls the API above
-cd platform/web && npm install && npm run dev
-
-# Rust test suite
-cargo test --manifest-path platform/Cargo.toml
-```
-
 ## Contributing
 
 Guides live in `guides/<category>/<slug>/` as plain Markdown — no code required to write one.
@@ -75,7 +68,6 @@ small, factual corrections are exactly the kind of contribution this project wan
 
 ## License
 
-Split by design:
-- **Code** (`platform/`, tooling, scripts) — [MIT](LICENSE).
-- **Guide content** (`guides/`) — [CC BY-NC-SA 4.0](LICENSE-CONTENT): share it, adapt it, teach with
-  it, even train models on it — just credit the source, don't sell it, and share alike.
+The whole repository — guide content and code alike — is licensed under
+[CC BY-NC-SA 4.0](LICENSE): share it, adapt it, teach with it, even train models on it — just
+credit the source, don't sell it, and share alike.

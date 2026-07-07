@@ -6,7 +6,6 @@
 !.dockerignore
 !docker-compose.yml
 !LICENSE
-!LICENSE-CONTENT
 !README.md
 
 # Root-level folders
