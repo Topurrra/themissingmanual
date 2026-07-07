@@ -2,6 +2,7 @@
 name = "content-core"
 version = "0.1.0"
 edition = "2021"
+authors = ["Nika Topuria"]
 
 [lib]
 name = "content_core"

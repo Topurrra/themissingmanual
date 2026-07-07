@@ -1,6 +1,4 @@
 // Builds src/lib/glossary.json from the Terminology blocks in /guides.
-// Run from anywhere: `node platform/web/scripts/build-glossary.mjs`.
-// Re-run whenever guides change to refresh the glossary + hover definitions.
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
 import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';

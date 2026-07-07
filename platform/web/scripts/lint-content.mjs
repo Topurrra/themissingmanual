@@ -1,9 +1,3 @@
-#!/usr/bin/env node
-// Content/voice linter for The Missing Manual.
-//  - ERRORS (exit 1): missing required frontmatter fields.
-//  - WARNINGS (exit 0): marketing fluff / AI-tell phrases that clash with the
-//    "battle-hardened friend, zero ego" house voice.
-// Run: node platform/web/scripts/lint-content.mjs   (from anywhere)
 import { readFileSync, readdirSync, statSync } from 'fs';
 import { join, dirname, resolve, relative } from 'path';
 import { fileURLToPath } from 'url';

@@ -1,11 +1,3 @@
-// Generates the PLACEHOLDER lofi clips referenced by src/lib/lofi-tracks.js.
-//
-// These are self-generated soft sine-triad pads (no copyrighted material) so the
-// lofi player is demonstrable out of the box. Run once:
-//   node scripts/make-placeholder-audio.mjs
-// Output: static/audio/placeholder-{1,2,3}.wav
-//
-// Replace these with your own licensed tracks (see static/audio/README.md).
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

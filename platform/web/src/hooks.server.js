@@ -41,7 +41,7 @@ export async function handle({ event, resolve }) {
   const accept = request.headers.get('accept') || '';
   const p = url.pathname;
 
-  // ── Agent-discovery endpoints (served here because SvelteKit's router skips
+  // - Agent-discovery endpoints (served here because SvelteKit's router skips
   // dot-directories like /.well-known).
   if (request.method === 'GET') {
     if (p === '/.well-known/api-catalog') return json(apiCatalog(url.origin), 'application/linkset+json');
@@ -69,7 +69,7 @@ export async function handle({ event, resolve }) {
 
   const m = p.match(GUIDE_RE);
 
-  // ── Markdown for Agents: content-negotiated markdown for guide pages.
+  // - Markdown for Agents
   if (m && request.method === 'GET' && prefersMarkdown(accept)) {
     try {
       let md = null;
@@ -96,7 +96,7 @@ export async function handle({ event, resolve }) {
 
   const response = await resolve(event);
 
-  // ── RFC 8288 Link headers for agent discovery (HTML responses only).
+  // - RFC 8288 Link headers for agent discovery (HTML responses only).
   const ct = response.headers.get('content-type') || '';
   if (ct.includes('text/html')) {
     const o = url.origin;
@@ -110,7 +110,7 @@ export async function handle({ event, resolve }) {
     response.headers.append('vary', 'Accept');
   }
 
-  // ── Security headers on every response (CSP itself is handled by SvelteKit's
+  // - Security headers on every response (CSP itself is handled by SvelteKit's
   // kit.csp config in svelte.config.js, which merges its nonce into whatever
   // Content-Security-Policy header ends up here).
   response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');

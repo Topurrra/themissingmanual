@@ -46,6 +46,10 @@ Thumbs.db
 .env
 /dist/
 /.cache/
+
+# Maintainer-only notes, not needed in the public repo
+platform/web/AGENT-DISCOVERY.md
+platform/web/static/audio/README.md
 !data/
 data/*
 !data/aisearch/
