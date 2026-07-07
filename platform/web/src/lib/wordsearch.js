@@ -48,11 +48,28 @@ export function makeWordSearch(words, size) {
 }
 
 // Curated single-word term packs (A–Z only; kept <= 11 so they fit a 12-grid).
+// 'general' is a cross-topic mix, listed first so it's the default pick.
 export const WS_PACKS = [
+  { id: 'general', name: 'General Mix', words: ['API', 'CACHE', 'KERNEL', 'LATENCY', 'ALGORITHM', 'CONTAINER', 'ENCRYPT', 'RECURSION', 'PIPELINE', 'GRAVITY'] },
   { id: 'git', name: 'Git', words: ['COMMIT', 'BRANCH', 'MERGE', 'REBASE', 'STASH', 'REMOTE', 'CLONE', 'REFLOG', 'CONFLICT', 'CHECKOUT'] },
   { id: 'web', name: 'Web & HTTP', words: ['COOKIE', 'HEADER', 'REQUEST', 'RESPONSE', 'SESSION', 'BROWSER', 'CACHE', 'REDIRECT', 'PAYLOAD', 'DOMAIN'] },
   { id: 'data', name: 'Databases', words: ['QUERY', 'INDEX', 'SCHEMA', 'PRIMARY', 'FOREIGN', 'COLUMN', 'ROLLBACK', 'TRIGGER', 'CURSOR', 'MIGRATE'] },
   { id: 'sec', name: 'Security', words: ['CIPHER', 'HASHING', 'TOKEN', 'EXPLOIT', 'FIREWALL', 'MALWARE', 'PHISHING', 'INJECTION', 'ENCRYPT', 'BREACH'] },
   { id: 'ai', name: 'AI & ML', words: ['NEURON', 'TENSOR', 'GRADIENT', 'TRAINING', 'EMBEDDING', 'INFERENCE', 'DATASET', 'OVERFIT', 'FEATURE', 'CLUSTER'] },
-  { id: 'prog', name: 'Programming', words: ['FUNCTION', 'VARIABLE', 'POINTER', 'COMPILER', 'RUNTIME', 'BOOLEAN', 'INTEGER', 'RECURSION', 'ITERATOR', 'CLOSURE'] }
+  { id: 'prog', name: 'Programming', words: ['FUNCTION', 'VARIABLE', 'POINTER', 'COMPILER', 'RUNTIME', 'BOOLEAN', 'INTEGER', 'RECURSION', 'ITERATOR', 'CLOSURE'] },
+  { id: 'net', name: 'Networking', words: ['PACKET', 'ROUTER', 'SUBNET', 'GATEWAY', 'LATENCY', 'PROTOCOL', 'BANDWIDTH', 'SWITCH', 'PROXY', 'SOCKET'] },
+  { id: 'os', name: 'Operating Systems', words: ['KERNEL', 'PROCESS', 'THREAD', 'SCHEDULER', 'INTERRUPT', 'DAEMON', 'SANDBOX', 'SYSCALL', 'SEMAPHORE', 'BOOTLOADER'] },
+  { id: 'hw', name: 'Hardware', words: ['PROCESSOR', 'MOTHERBOARD', 'FIRMWARE', 'REGISTER', 'TRANSISTOR', 'THROUGHPUT', 'PERIPHERAL', 'CHIPSET', 'VOLTAGE', 'CACHE'] },
+  { id: 'devops', name: 'DevOps', words: ['PIPELINE', 'DEPLOYMENT', 'CONTAINER', 'ARTIFACT', 'RUNBOOK', 'CANARY', 'ROLLOUT', 'MONITORING', 'PROVISION', 'AUTOMATION'] },
+  { id: 'infra', name: 'Infrastructure', words: ['FAILOVER', 'SCALING', 'TERRAFORM', 'KUBERNETES', 'STORAGE', 'REDUNDANCY', 'UPTIME', 'REPLICA', 'ELASTIC', 'VIRTUALIZE'] },
+  { id: 'test', name: 'Testing', words: ['ASSERTION', 'COVERAGE', 'REGRESSION', 'MOCKING', 'FIXTURE', 'INTEGRATION', 'STUBBING', 'FLAKY', 'SNAPSHOT', 'UNITTEST'] },
+  { id: 'perf', name: 'Performance', words: ['LATENCY', 'THROUGHPUT', 'BOTTLENECK', 'PROFILING', 'CACHING', 'OPTIMIZE', 'BENCHMARK', 'CONCURRENCY', 'MEMORY', 'INDEXING'] },
+  { id: 'math', name: 'Mathematics', words: ['DERIVATIVE', 'INTEGRAL', 'MATRIX', 'VECTOR', 'PROBABILITY', 'FACTORIAL', 'LOGARITHM', 'EXPONENT', 'THEOREM', 'SEQUENCE'] },
+  { id: 'logic', name: 'Logic', words: ['PREDICATE', 'SYLLOGISM', 'CONJUNCTION', 'NEGATION', 'INFERENCE', 'FALLACY', 'TAUTOLOGY', 'QUANTIFIER', 'IMPLICATION', 'PARADOX'] },
+  { id: 'physics', name: 'Physics', words: ['MOMENTUM', 'VELOCITY', 'GRAVITY', 'FRICTION', 'ENTROPY', 'QUANTUM', 'RELATIVITY', 'ELECTRON', 'PHOTON', 'MAGNETISM'] },
+  { id: 'framework', name: 'Frameworks', words: ['COMPONENT', 'MIDDLEWARE', 'LIFECYCLE', 'DEPENDENCY', 'ROUTING', 'RENDERING', 'SCAFFOLD', 'BOILERPLATE', 'MONOREPO', 'HOOK'] },
+  { id: 'arch', name: 'Architecture', words: ['MONOLITH', 'ENDPOINT', 'RESILIENCE', 'COUPLING', 'COHESION', 'LAYERED', 'PATTERN', 'TOPOLOGY', 'MODULAR', 'INTERFACE'] },
+  { id: 'analytics', name: 'Data & Analytics', words: ['DASHBOARD', 'METRIC', 'WAREHOUSE', 'AGGREGATE', 'VISUALIZE', 'ANALYTICS', 'CORRELATION', 'OUTLIER', 'SEGMENT', 'PIVOT'] },
+  { id: 'concepts', name: 'Programming Concepts', words: ['ABSTRACTION', 'INHERITANCE', 'ALGORITHM', 'MUTABLE', 'IMMUTABLE', 'SCOPE', 'LAMBDA', 'GENERIC', 'INSTANCE', 'MODULE'] },
+  { id: 'workingai', name: 'Working with AI', words: ['PROMPT', 'CONTEXT', 'RETRIEVAL', 'FINETUNE', 'AGENT', 'TOKENIZE', 'GROUNDING', 'JAILBREAK', 'COPILOT', 'HALLUCINATE'] }
 ];

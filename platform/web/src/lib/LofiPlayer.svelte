@@ -21,7 +21,7 @@
   const VOL_STEP = 0.1;
 
   let audio; // bound <audio> element
-  let open = false; // transport popover open
+  let open = false; // mobile "full player" sheet (the compact bar only shows play/prev/next below 640px)
   let playing = false;
   let volume = 0.6;
   let index = 0; // index into whichever list is active (loop tracks or radio stations)
@@ -184,6 +184,29 @@
     if (audio) audio.volume = volume;
     persistVol();
   }
+  function setVolume(pct) {
+    volume = Math.min(1, Math.max(0, pct / 100));
+    if (audio) audio.volume = volume;
+    persistVol();
+  }
+  // Jump straight to a track/station from the mobile sheet's list, instead of
+  // stepping through with next()/prev(). Tapping the already-playing one toggles it.
+  function selectTrack(i) {
+    if (i < 0 || i >= list.length) return;
+    if (i === index) { toggle(); return; }
+    index = i;
+    persistTrack();
+    requestAnimationFrame(play);
+  }
+
+  // The header has a backdrop-filter, which makes any position:fixed descendant
+  // positioned relative to the HEADER (a containing block) instead of the viewport,
+  // clipping the sheet. Portal it to <body> so fixed positioning works (same fix
+  // as Appearance.svelte's settings drawer).
+  function portal(node) {
+    document.body.appendChild(node);
+    return { destroy() { if (node.parentNode) node.parentNode.removeChild(node); } };
+  }
 
   // Quick-hide (✕ on the widget): a fast dismiss without opening Settings. Same
   // effect as the master toggle - stops audio and removes the widget. Persisted,
@@ -269,9 +292,78 @@
     <button class="lofi-ib lofi-ib-sm lofi-adv" on:click={volUp} aria-label={`Volume up (${volPct}%)`} title={`Volume up (${volPct}%)`}>
       <i class="ti ti-plus" aria-hidden="true"></i>
     </button>
+    <button class="lofi-ib lofi-ib-sm lofi-more" on:click={() => (open = true)} aria-label="More player controls" aria-expanded={open} title="More controls">
+      <i class="ti ti-dots" aria-hidden="true"></i>
+    </button>
     <button class="lofi-ib lofi-ib-sm" on:click={quickHide} aria-label="Hide player" title="Hide player">
       <i class="ti ti-x" aria-hidden="true"></i>
     </button>
+  </div>
+{/if}
+
+<!-- Mobile full player: the compact bar above only fits play/prev/next below 640px
+     (shuffle, repeat, radio toggle, volume, and the title all get hidden there) -
+     this sheet gives them a comfortable, full-size home instead of a cramped row. -->
+{#if enabled && hasTracks && open}
+  <div use:portal>
+    <button class="lofi-scrim" tabindex="-1" aria-hidden="true" on:click={() => (open = false)}></button>
+    <div class="lofi-sheet" role="dialog" aria-label="Lofi player">
+      <div class="lofi-sheet-handle" aria-hidden="true"></div>
+      <div class="lofi-sheet-head">
+        <div class="lofi-sheet-ttl-wrap">
+          <span class="lofi-sheet-ttl">{radioError ? 'Stations unavailable' : track.title}</span>
+          {#if !radioError && track?.artist}<span class="lofi-sheet-artist">{track.artist}</span>{/if}
+        </div>
+        <button class="lofi-x" on:click={() => (open = false)} aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button>
+      </div>
+
+      <div class="lofi-sheet-seg">
+        <button class:on={!isRadio} on:click={() => isRadio && toggleMode()}><i class="ti ti-disc" aria-hidden="true"></i> Lofi loop</button>
+        <button class:on={isRadio} on:click={() => !isRadio && toggleMode()}><i class="ti ti-antenna" aria-hidden="true"></i> Live radio</button>
+      </div>
+
+      <div class="lofi-sheet-transport">
+        {#if !isRadio}
+          <button class="lofi-ib" class:on={shuffle} on:click={toggleShuffle} aria-label="Shuffle" title="Shuffle">
+            <i class="ti ti-arrows-shuffle" aria-hidden="true"></i>
+          </button>
+        {:else}<span class="lofi-sheet-spacer" aria-hidden="true"></span>{/if}
+        <button class="lofi-ib" on:click={prev} aria-label="Previous track" title="Previous">
+          <i class="ti ti-player-skip-back" aria-hidden="true"></i>
+        </button>
+        <button class="lofi-ib lofi-ib-play-lg" on:click={toggle} aria-label={playing ? 'Pause' : 'Play'} aria-pressed={playing} title={playing ? 'Pause' : 'Play'}>
+          <i class={`ti ${playing ? 'ti-player-pause' : 'ti-player-play'}`} aria-hidden="true"></i>
+        </button>
+        <button class="lofi-ib" on:click={next} aria-label="Next track" title="Next">
+          <i class="ti ti-player-skip-forward" aria-hidden="true"></i>
+        </button>
+        {#if !isRadio}
+          <button class="lofi-ib" class:on={repeat !== 'none'} on:click={cycleRepeat}
+            aria-label={repeat === 'none' ? 'Repeat off' : repeat === 'all' ? 'Repeat all' : 'Repeat one'}
+            title={repeat === 'none' ? 'Repeat off' : repeat === 'all' ? 'Repeat all' : 'Repeat one'}>
+            <i class={`ti ${repeat === 'one' ? 'ti-repeat-once' : 'ti-repeat'}`} aria-hidden="true"></i>
+          </button>
+        {:else}<span class="lofi-sheet-spacer" aria-hidden="true"></span>{/if}
+      </div>
+
+      <div class="lofi-sheet-vol">
+        <i class="ti ti-volume-2" aria-hidden="true"></i>
+        <input type="range" min="0" max="100" value={volPct} on:input={(e) => setVolume(Number(e.currentTarget.value))} aria-label="Volume" />
+        <span class="lofi-sheet-volpct">{volPct}%</span>
+      </div>
+
+      <ul class="lofi-sheet-list">
+        {#each list as t, i (t.src)}
+          <li>
+            <button class:on={i === index} on:click={() => selectTrack(i)}>
+              {#if i === index}<i class="ti {playing ? 'ti-volume' : 'ti-player-play'}" aria-hidden="true"></i>{/if}
+              <span class="lofi-sheet-list-ttl">{t.title}</span>
+              {#if t.artist}<span class="lofi-sheet-list-artist">{t.artist}</span>{/if}
+            </button>
+          </li>
+        {/each}
+      </ul>
+    </div>
   </div>
 {/if}
 
@@ -314,5 +406,70 @@
   }
   @media (prefers-reduced-motion: reduce) { .lofi-bar-title.playing .lofi-ttl { animation: none; } }
   @media (max-width: 1000px) { .lofi-bar-title { display: none; } }
-  @media (max-width: 640px) { .lofi-adv { display: none; } }
+
+  /* Below 640px the compact bar only has room for prev/play/next - shuffle,
+     repeat, the radio toggle, volume, and the title all move into the sheet
+     below instead of disappearing outright. */
+  .lofi-more { display: none; }
+  @media (max-width: 640px) {
+    .lofi-adv { display: none; }
+    .lofi-more { display: inline-grid; }
+  }
+
+  /* Mobile full player - a bottom sheet (the natural "now playing" pattern),
+     not a cramped popover. Mirrors Appearance.svelte's settings-drawer sizing
+     language (scrim + raised panel + shadow-pop) but slides up, not in from
+     the side, since this is a player, not a settings list. */
+  .lofi-scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.32); border: 0; z-index: 70; opacity: 0; animation: lofi-scrim-in 0.2s var(--ease) forwards; cursor: default; }
+  @keyframes lofi-scrim-in { to { opacity: 1; } }
+  .lofi-sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 71;
+    max-width: 480px; margin: 0 auto;
+    background: var(--raise); border: 1px solid var(--line); border-bottom: 0;
+    border-radius: 18px 18px 0 0; box-shadow: var(--shadow-pop);
+    padding: 0.6rem 1.2rem calc(1.3rem + env(safe-area-inset-bottom, 0px));
+    max-height: 82vh; overflow-y: auto;
+    transform: translateY(100%); animation: lofi-sheet-in 0.26s var(--ease-out) forwards;
+  }
+  @keyframes lofi-sheet-in { to { transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { .lofi-scrim, .lofi-sheet { animation: none; opacity: 1; transform: none; } }
+  .lofi-sheet-handle { width: 36px; height: 4px; border-radius: 999px; background: var(--line); margin: 0 auto 0.9rem; }
+  .lofi-sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.8rem; }
+  .lofi-sheet-ttl-wrap { min-width: 0; }
+  .lofi-sheet-ttl { display: block; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lofi-sheet-artist { display: block; font-size: 0.82rem; color: var(--faint); margin-top: 0.15rem; }
+  .lofi-x { flex: none; background: none; border: 0; color: var(--faint); cursor: pointer; width: 32px; height: 32px; border-radius: 8px; display: inline-grid; place-items: center; }
+  .lofi-x:hover { background: var(--surface); color: var(--ink); }
+  .lofi-x .ti { font-size: 19px; }
+
+  .lofi-sheet-seg { display: flex; gap: 4px; background: var(--surface); padding: 4px; border-radius: 10px; margin: 1rem 0; }
+  .lofi-sheet-seg button { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; cursor: pointer; font: inherit; font-size: 0.85rem; color: var(--muted); border: 0; background: none; padding: 0.5rem 0.6rem; border-radius: 8px; }
+  .lofi-sheet-seg button.on { background: var(--raise); color: var(--accent); box-shadow: var(--shadow-sm); font-weight: 500; }
+  .lofi-sheet-seg .ti { font-size: 16px; }
+
+  .lofi-sheet-transport { display: flex; align-items: center; justify-content: center; gap: 1.4rem; margin: 0.4rem 0 1.1rem; }
+  .lofi-sheet-transport .lofi-ib { width: 44px; height: 44px; }
+  .lofi-sheet-transport .lofi-ib .ti { font-size: 21px; }
+  .lofi-sheet-spacer { width: 44px; height: 44px; }
+  .lofi-ib-play-lg { width: 60px; height: 60px; background: var(--accent); color: #fff; }
+  .lofi-ib-play-lg:hover { background: var(--accent-strong); color: #fff; }
+  .lofi-ib-play-lg .ti { font-size: 26px; }
+
+  .lofi-sheet-vol { display: flex; align-items: center; gap: 0.7rem; color: var(--faint); margin-bottom: 1.1rem; }
+  .lofi-sheet-vol .ti { font-size: 17px; flex: none; }
+  .lofi-sheet-vol input[type='range'] { flex: 1; accent-color: var(--accent); }
+  .lofi-sheet-volpct { font-family: var(--font-mono); font-size: 0.75rem; width: 3ch; text-align: right; flex: none; }
+
+  .lofi-sheet-list { list-style: none; margin: 0; padding: 0.2rem 0 0; border-top: 1px solid var(--line); }
+  .lofi-sheet-list li + li { margin-top: 2px; }
+  .lofi-sheet-list button {
+    width: 100%; display: flex; align-items: center; gap: 0.55rem; text-align: left;
+    cursor: pointer; font: inherit; font-size: 0.88rem; color: var(--body);
+    border: 0; background: none; border-radius: 9px; padding: 0.6rem 0.5rem;
+  }
+  .lofi-sheet-list button:hover { background: var(--surface); }
+  .lofi-sheet-list button.on { color: var(--accent); font-weight: 500; }
+  .lofi-sheet-list button.on .ti { color: var(--accent); font-size: 15px; }
+  .lofi-sheet-list-ttl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lofi-sheet-list-artist { flex: none; font-size: 0.76rem; color: var(--faint); }
 </style>

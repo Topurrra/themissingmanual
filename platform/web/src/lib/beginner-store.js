@@ -18,7 +18,11 @@ function read() {
   }
 }
 
-export const beginnerMode = writable(read());
+// Always starts false, matching what SSR renders (no localStorage there) - callers'
+// onMount hooks call syncBeginner() right after hydration to pick up the real
+// persisted value. Reading localStorage synchronously here would make the client's
+// pre-hydration value diverge from the server-rendered HTML and crash hydration.
+export const beginnerMode = writable(false);
 
 export function setBeginner(on) {
   beginnerMode.set(!!on);

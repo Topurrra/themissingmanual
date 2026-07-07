@@ -57,7 +57,7 @@
   let chQueue = [], chIdx = 0, chResults = [], chScore = 0, chBand = '', chDomain = '', chPerSkill = [];
 
   // Word Search state
-  let wsPack = 'git';
+  let wsPack = 'general';
   let ws = null, wsFound = new Set(), wsFoundCells = new Set(), wsSel = [], wsStart = null, wsElapsed = 0, wsBestTime = 0;
   $: wsPackName = (WS_PACKS.find((p) => p.id === wsPack) || {}).name || '';
   const fmtTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;

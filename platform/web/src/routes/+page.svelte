@@ -111,7 +111,7 @@
 
 <Seo
   title="The Missing Manual for Developers"
-  description="Clear, in-depth guides to how software really works - from how a computer boots up to the internet, databases, and AI. Start from zero or go deep. Free, forever."
+  description="Clear, in-depth guides to how software works - from how a computer boots up to the internet, databases, and AI. Start from zero or go deep. Free, forever."
   type="website"
   jsonld={homeLd} />
 

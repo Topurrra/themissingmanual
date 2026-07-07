@@ -1,4 +1,6 @@
 <script>
+  import { adminPatch } from '$lib/admin.js';
+
   export let data;
   $: items = data.items ?? [];
 
@@ -27,6 +29,18 @@
     const dd = Math.floor(h / 24); if (dd < 30) return `${dd}d ago`;
     const mo = Math.floor(dd / 30); if (mo < 12) return `${mo}mo ago`;
     return `${Math.floor(mo / 12)}y ago`;
+  }
+
+  async function toggleDone(f) {
+    const done = !f.done;
+    f.done = done; // optimistic
+    items = items;
+    try {
+      await adminPatch(`/feedback/${f.id}/done`, { done });
+    } catch (e) {
+      f.done = !done; // revert on failure
+      items = items;
+    }
   }
 
   // Format the API timestamp into a readable local date-time. Falls back to the
@@ -69,12 +83,12 @@
 <table class="admin-table">
   <thead>
     <tr>
-      <th>When</th><th>Guide / phase</th><th>Vote</th><th>Note</th>
+      <th>When</th><th>Guide / phase</th><th>Vote</th><th>Note</th><th>Status</th>
     </tr>
   </thead>
   <tbody>
-    {#each shown as f (`${f.ts}-${f.guide_slug}-${f.phase_no}`)}
-      <tr>
+    {#each shown as f (f.id)}
+      <tr class:fb-done={isRequest(f) && f.done}>
         <td class="fb-ts" title={fmtTs(f.ts)}>{relTime(f.ts)}</td>
         {#if isRequest(f)}
           <td><span class="fb-req-src">from /request</span></td>
@@ -93,9 +107,17 @@
           </td>
         {/if}
         <td class="fb-note">{f.note || '-'}</td>
+        <td>
+          {#if isRequest(f)}
+            <button type="button" class="fb-done-btn" class:on={f.done} on:click={() => toggleDone(f)}>
+              <i class={`ti ${f.done ? 'ti-check' : 'ti-circle'}`} aria-hidden="true"></i>
+              {f.done ? 'Done' : 'Mark done'}
+            </button>
+          {/if}
+        </td>
       </tr>
     {:else}
-      <tr><td colspan="4" class="admin-empty">{items.length ? `No ${voteFilter} votes.` : 'No feedback yet.'}</td></tr>
+      <tr><td colspan="5" class="admin-empty">{items.length ? `No ${voteFilter} votes.` : 'No feedback yet.'}</td></tr>
     {/each}
   </tbody>
 </table>
@@ -166,4 +188,22 @@
     color: var(--body);
     max-width: 32ch;
   }
+
+  .fb-done-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+    color: var(--muted);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.3rem 0.6rem;
+    white-space: nowrap;
+  }
+  .fb-done-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .fb-done-btn.on { color: var(--accent-strong); background: var(--accent-tint); border-color: var(--accent); }
+  tr.fb-done { opacity: 0.55; }
 </style>

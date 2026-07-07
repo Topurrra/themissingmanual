@@ -578,6 +578,20 @@ pub async fn list_feedback(State(state): State<Arc<AppState>>, Query(q): Query<H
     }
 }
 
+#[derive(Deserialize)]
+pub struct SetFeedbackDone {
+    done: bool,
+}
+
+/// Admin: mark a reader request (or any feedback row) done/not-done.
+pub async fn set_feedback_done(State(state): State<Arc<AppState>>, Path(id): Path<i64>, Json(b): Json<SetFeedbackDone>) -> Response {
+    let r = { state.store.lock().unwrap().set_feedback_done(id, b.done) };
+    match r {
+        Ok(_) => Json(json!({ "ok": true })).into_response(),
+        Err(e) => err(e),
+    }
+}
+
 // ===== system status =====
 
 /// Admin: API version, DB size, and content counts for the status panel.
@@ -657,15 +671,18 @@ pub async fn public_backlog(State(state): State<Arc<AppState>>, Query(q): Query<
             json!({ "key": key, "kind": "search", "label": query, "demand": demand, "hits": hits, "votes": v })
         })
         .collect();
-    items.extend(requests.into_iter().map(|GuideRequest { id, ts, note }| {
+    items.extend(requests.into_iter().map(|GuideRequest { id, ts, note, done }| {
         let key = format!("r:{id}");
         let v = votes.get(&key).copied().unwrap_or(0);
-        json!({ "key": key, "kind": "request", "label": note, "ts": ts, "votes": v })
+        json!({ "key": key, "kind": "request", "label": note, "ts": ts, "votes": v, "done": done })
     }));
-    // Votes decide the order first (that's the whole point of a public vote) - a
-    // secondary "demand" sort (searches carry it, requests default to 0) keeps ties stable.
+    // Done items sink to the bottom regardless of votes - the list is "what's still
+    // open", not a trophy case. Within each group: votes first, then demand as a tiebreak.
     items.sort_by(|a, b| {
-        b["votes"].as_i64().unwrap_or(0).cmp(&a["votes"].as_i64().unwrap_or(0))
+        let da = a["done"].as_bool().unwrap_or(false);
+        let db = b["done"].as_bool().unwrap_or(false);
+        da.cmp(&db)
+            .then(b["votes"].as_i64().unwrap_or(0).cmp(&a["votes"].as_i64().unwrap_or(0)))
             .then(b["demand"].as_i64().unwrap_or(0).cmp(&a["demand"].as_i64().unwrap_or(0)))
     });
     Json(json!({ "days": days, "items": items })).into_response()

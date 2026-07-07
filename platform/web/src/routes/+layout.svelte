@@ -166,7 +166,10 @@
 
   let collapsed = false;
   let palette;
-  let kbdLabel = '⌘K';
+  // Advertise "/" (works everywhere) rather than Ctrl+K/Cmd+K, which Chrome,
+  // Edge, and Firefox reserve for their own address-bar search - the browser
+  // swallows the keystroke before the page's keydown handler ever sees it.
+  let kbdLabel = '/';
   // On narrow screens the sidebar is an off-canvas drawer (not a persistent rail).
   const MOBILE_MAX = 920;
   let mobile = false;
@@ -201,7 +204,6 @@
       const g = localStorage.getItem('tmm-groups');
       if (g) openGroups = new Set(JSON.parse(g));
     } catch (e) {}
-    if (!/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) kbdLabel = 'Ctrl+K';
     window.addEventListener('resize', syncMobile);
     return () => window.removeEventListener('resize', syncMobile);
   });
@@ -398,7 +400,7 @@
       <div class="co-grid">
         <div class="co-id">
           <div class="co-brand">{siteName}</div>
-          <a class="co-rss" href="/rss.xml" title="RSS Feed"><i class="ti ti-rss" aria-hidden="true"></i></a>
+          <a class="co-rss" href="/rss.xml" title="RSS Feed" aria-label="RSS Feed"><i class="ti ti-rss" aria-hidden="true"></i></a>
           {#if socialLinks.length}
             <div class="co-social">
               {#each socialLinks as s}

@@ -53,6 +53,18 @@ export async function handle({ event, resolve }) {
       return new Response(SKILL_MD, {
         headers: { 'content-type': 'text/markdown; charset=utf-8', 'cache-control': 'max-age=3600' }
       });
+    if (p === '/.well-known/security.txt') {
+      const expires = new Date();
+      expires.setFullYear(expires.getFullYear() + 1);
+      const body =
+        `Contact: mailto:topurianika96@gmail.com\n` +
+        `Expires: ${expires.toISOString()}\n` +
+        `Preferred-Languages: en\n` +
+        `Canonical: ${url.origin}/.well-known/security.txt\n`;
+      return new Response(body, {
+        headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'max-age=3600' }
+      });
+    }
   }
 
   const m = p.match(GUIDE_RE);
@@ -97,5 +109,20 @@ export async function handle({ event, resolve }) {
     response.headers.append('link', links.join(', '));
     response.headers.append('vary', 'Accept');
   }
+
+  // ── Security headers on every response (CSP itself is handled by SvelteKit's
+  // kit.csp config in svelte.config.js, which merges its nonce into whatever
+  // Content-Security-Policy header ends up here).
+  response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()'
+  );
+  response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+  response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+
   return response;
 }

@@ -13,8 +13,6 @@
   let inputEl;
   let timer;
 
-  const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
-
   const PAGES = [
     { title: 'Home', type: 'Page', icon: 'ti-home', url: '/' },
     { title: 'About', type: 'Page', icon: 'ti-info-circle', url: '/about' },
@@ -214,7 +212,7 @@
     <div class="cmdk-foot">
       <span><span class="k">↑</span><span class="k">↓</span> navigate</span>
       <span><span class="k">↵</span> open</span>
-      <span><span class="k">{isMac ? '⌘' : 'Ctrl+'}K</span> toggle</span>
+      <span><span class="k">/</span> toggle</span>
     </div>
   </div>
 </div>

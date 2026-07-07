@@ -6,6 +6,9 @@ export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
+      { tag: 'New', text: 'Highlight any passage in a guide and add a private note to it - only you can see them.' },
+      { tag: 'Improved', text: 'The lofi player is much more usable on mobile: a full player sheet with volume, shuffle, repeat, and the track/station list, instead of a cramped row.' },
+      { tag: 'Improved', text: 'Word Search now has 22 topic packs (was 6), plus a general mix - pick from Networking, Databases, Math, Physics, and more.', href: '/train' },
       { tag: 'New', text: 'A public backlog: vote on what we should write next, fed by real reader searches and requests.', href: '/backlog' },
       { tag: 'New', text: 'Optional review reminders - opt in and we\'ll nudge you when cards are due - plus a practice streak on the Review page.', href: '/review' },
       { tag: 'New', text: 'Working as a Developer: a new category on the human side of the job - code review, legacy code, asking questions, your first on-call, and interviews.', href: '/categories/working-as-a-developer' },

@@ -1,17 +1,31 @@
-# OS
-.DS_Store
-Thumbs.db
-# Editors
-.vscode/
-.idea/
-*.swp
-# Build output (future static site)
-/dist/
-/.cache/
-# Rust
-/platform/target/
-# Ingest output (generated SQLite DB + Tantivy index) - every variant that has
-# shown up across dev/verify runs, not just one path
+# Ignore everything
+*
+
+# Root-level files
+!.gitignore
+!.dockerignore
+!docker-compose.yml
+!LICENSE
+!LICENSE-CONTENT
+!README.md
+
+# Root-level folders
+!guides/
+!guides/**/*
+
+!platform/
+!platform/**/*
+
+# --- Re-ignore generated/dependency/secret content living inside the folders
+# above (the recursive un-ignores otherwise expose all of it) ---
+
+# Rust build output
+platform/target/
+
+# Web (SvelteKit) build output + deps
+platform/web/node_modules/
+platform/web/.svelte-kit/
+platform/web/build/
 .data/
 platform/.data/
 platform/web/.data/
@@ -19,20 +33,23 @@ platform/web/data/
 *.db
 *.sqlite
 *.sqlite3
-# Web (SvelteKit)
-platform/web/node_modules/
-platform/web/.svelte-kit/
-platform/web/build/
-.gstack/
-# Internal-only: planning docs, dev notes, and AI-tooling config - not part of
-# the public-facing repo (README.md + LICENSE* at root cover that).
-/docs/
 .claude/
-# Project data dir: ignore its contents, but keep the AI Search folder. The
-# aisearch .db files stay ignored; the .gitkeep placeholder is tracked so the
-# docker-compose bind mount (./data/aisearch) always has a target.
+.gstack/
+.cursor/
+.windsurf/
+.continue/
+.aider*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+.env
+/dist/
+/.cache/
+!data/
 data/*
 !data/aisearch/
 data/aisearch/*
 !data/aisearch/.gitkeep
-.env
+!.gitkeep

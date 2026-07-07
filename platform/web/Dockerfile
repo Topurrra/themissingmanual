@@ -12,9 +12,14 @@ WORKDIR /app
 RUN apt-get update \
   && apt-get install -y --no-install-recommends fonts-dejavu-core fontconfig \
   && rm -rf /var/lib/apt/lists/*
-COPY --from=build /app/build ./build
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/package.json ./package.json
+COPY --from=build --chown=node:node /app/build ./build
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/package.json ./package.json
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 ENV PORT=3000
 EXPOSE 3000
+# Starts as root (needed to chown the mounted data volume - see the entrypoint),
+# then drops to the non-root `node` user via setpriv before exec'ing the app.
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["node", "build"]

@@ -117,6 +117,7 @@ impl Store {
         // Additive migrations for pre-existing events tables (no-op once present).
         let _ = conn.execute("ALTER TABLE events ADD COLUMN device TEXT NOT NULL DEFAULT ''", []);
         let _ = conn.execute("ALTER TABLE events ADD COLUMN source TEXT NOT NULL DEFAULT ''", []);
+        let _ = conn.execute("ALTER TABLE feedback ADD COLUMN done INTEGER NOT NULL DEFAULT 0", []);
         Ok(Self { conn })
     }
 
@@ -504,15 +505,17 @@ impl Store {
     /// Most recent feedback entries for the admin inbox (newest first).
     pub fn list_feedback(&self, limit: i64) -> Result<Vec<FeedbackRow>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT ts, guide_slug, phase_no, vote, note FROM feedback ORDER BY ts DESC LIMIT ?1",
+            "SELECT rowid, ts, guide_slug, phase_no, vote, note, done FROM feedback ORDER BY ts DESC LIMIT ?1",
         )?;
         let rows = stmt.query_map(params![limit], |r| {
             Ok(FeedbackRow {
-                ts: r.get(0)?,
-                guide_slug: r.get(1)?,
-                phase_no: r.get(2)?,
-                vote: r.get(3)?,
-                note: r.get(4)?,
+                id: r.get(0)?,
+                ts: r.get(1)?,
+                guide_slug: r.get(2)?,
+                phase_no: r.get(3)?,
+                vote: r.get(4)?,
+                note: r.get(5)?,
+                done: r.get::<_, i64>(6)? != 0,
             })
         })?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
@@ -522,12 +525,23 @@ impl Store {
     /// guide_slug sentinel) - the public backlog page's second signal, alongside failed searches.
     pub fn list_guide_requests(&self, limit: i64) -> Result<Vec<crate::models::GuideRequest>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT rowid, ts, note FROM feedback WHERE guide_slug = 'guide-request' ORDER BY ts DESC LIMIT ?1",
+            "SELECT rowid, ts, note, done FROM feedback WHERE guide_slug = 'guide-request' ORDER BY ts DESC LIMIT ?1",
         )?;
         let rows = stmt.query_map(params![limit], |r| {
-            Ok(crate::models::GuideRequest { id: r.get(0)?, ts: r.get(1)?, note: r.get(2)? })
+            Ok(crate::models::GuideRequest {
+                id: r.get(0)?,
+                ts: r.get(1)?,
+                note: r.get(2)?,
+                done: r.get::<_, i64>(3)? != 0,
+            })
         })?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    /// Admin: mark a guide request (or any feedback row) done/not-done.
+    pub fn set_feedback_done(&self, id: i64, done: bool) -> Result<(), StoreError> {
+        self.conn.execute("UPDATE feedback SET done=?2 WHERE rowid=?1", params![id, done as i64])?;
+        Ok(())
     }
 
     // ---- public backlog voting (no accounts - one counter per item key) ----

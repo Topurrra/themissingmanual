@@ -53,13 +53,13 @@
 {:else}
   <ul class="bl-list">
     {#each items as item (item.key)}
-      <li class="bl-row">
+      <li class="bl-row" class:done={item.done}>
         <button
           type="button"
           class="bl-vote"
           class:voted={voted.has(item.key)}
           on:click={() => vote(item)}
-          disabled={voted.has(item.key)}
+          disabled={voted.has(item.key) || item.done}
           aria-label={voted.has(item.key) ? 'Already voted' : 'Vote for this'}
         >
           <i class="ti ti-chevron-up" aria-hidden="true"></i>
@@ -68,7 +68,9 @@
         <div class="bl-body">
           <p class="bl-label">{item.label}</p>
           <p class="bl-meta">
-            {#if item.kind === 'search'}
+            {#if item.done}
+              <i class="ti ti-check" aria-hidden="true"></i> Done - already written
+            {:else if item.kind === 'search'}
               <i class="ti ti-search" aria-hidden="true"></i> Searched by readers · {item.hits} result{item.hits === 1 ? '' : 's'} today
             {:else}
               <i class="ti ti-message-2" aria-hidden="true"></i> Reader request
@@ -88,6 +90,8 @@
     border: 1px solid var(--line); border-radius: 12px; background: var(--raise);
     padding: 0.9rem 1.1rem;
   }
+  .bl-row.done { opacity: 0.6; }
+  .bl-row.done .bl-meta { color: var(--accent-strong); }
   .bl-vote {
     display: flex; flex-direction: column; align-items: center; gap: 0;
     flex: none; width: 52px; cursor: pointer; font: inherit;

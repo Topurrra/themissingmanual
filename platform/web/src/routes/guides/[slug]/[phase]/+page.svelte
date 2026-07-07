@@ -18,6 +18,7 @@
   import Mermaid from '$lib/Mermaid.svelte';
   import RunnableCode from '$lib/RunnableCode.svelte';
   import FeedbackWidget from '$lib/FeedbackWidget.svelte';
+  import Annotations from '$lib/Annotations.svelte';
   export let data;
   $: phase = data.phase;
 
@@ -176,6 +177,7 @@
 
 {#key `${phase.guide_slug}/${phase.phase_no}`}
   <FeedbackWidget guideSlug={phase.guide_slug} phaseNo={phase.phase_no} />
+  <Annotations guideSlug={phase.guide_slug} phaseNo={phase.phase_no} />
   <ReaderTools />
   <Glossary />
   <Playgrounds />

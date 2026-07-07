@@ -3,11 +3,13 @@ use serde::{Deserialize, Serialize};
 /// One reader-feedback entry (👍/👎 + optional note) for the admin inbox.
 #[derive(Debug, Clone, Serialize)]
 pub struct FeedbackRow {
+    pub id: i64,
     pub ts: String,
     pub guide_slug: String,
     pub phase_no: i64,
     pub vote: String,
     pub note: String,
+    pub done: bool,
 }
 
 /// A reader-submitted "write this guide" request (from /request), for the public backlog page.
@@ -16,6 +18,7 @@ pub struct GuideRequest {
     pub id: i64,
     pub ts: String,
     pub note: String,
+    pub done: bool,
 }
 
 /// Lightweight entry for the phase edit-history list.

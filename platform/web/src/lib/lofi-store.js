@@ -16,7 +16,11 @@ function read() {
   }
 }
 
-export const lofiEnabled = writable(read());
+// Always starts false, matching what SSR renders (no localStorage there) - LofiPlayer's
+// onMount calls syncLofiEnabled() right after hydration to pick up the real persisted
+// value. Reading localStorage synchronously here would make the client's pre-hydration
+// value diverge from the server-rendered HTML and crash Svelte's hydration.
+export const lofiEnabled = writable(false);
 
 export function setLofiEnabled(on) {
   lofiEnabled.set(!!on);
