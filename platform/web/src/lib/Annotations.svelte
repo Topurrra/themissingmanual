@@ -28,14 +28,6 @@
     const reader = readerEl();
     const range = sel.getRangeAt(0);
     if (!reader || !reader.contains(range.commonAncestorContainer)) { clearSelPopup(); return; }
-    // Keep this simple and reliable: only offer highlighting when the whole
-    // selection lives inside one text node (covers the overwhelming majority
-    // of real highlights - a phrase or sentence). A selection crossing into
-    // bold/code/links can't be cleanly wrapped without splitting elements.
-    if (range.startContainer !== range.endContainer || range.startContainer.nodeType !== Node.TEXT_NODE) {
-      clearSelPopup();
-      return;
-    }
     const text = sel.toString();
     if (!text.trim() || text.length > 300) { clearSelPopup(); return; }
     const rect = range.getBoundingClientRect();
@@ -50,19 +42,45 @@
     return mark;
   }
 
+  // range.surroundContents() throws the moment a range only partially contains
+  // an element (e.g. a selection that starts mid-sentence and ends inside a
+  // <strong>/<code>/<a>) - which is the common case for a "long text" selection,
+  // not the exception. Instead, wrap each text node the range touches in its
+  // own <mark> (splitting the boundary nodes so only the selected slice is
+  // wrapped) - every fragment shares one data-ann-id, so it still acts, edits,
+  // and deletes as a single highlight even though it's several DOM nodes.
+  function wrapTextNodesInRange(range, makeMarkFn) {
+    const root = range.commonAncestorContainer;
+    const container = root.nodeType === Node.TEXT_NODE ? root.parentNode : root;
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    let n;
+    while ((n = walker.nextNode())) {
+      if (range.intersectsNode(n)) nodes.push(n);
+    }
+    const marks = [];
+    for (let node of nodes) {
+      if (node === range.endContainer && range.endOffset < node.length) {
+        node.splitText(range.endOffset);
+      }
+      if (node === range.startContainer && range.startOffset > 0) {
+        node = node.splitText(range.startOffset);
+      }
+      if (!node.nodeValue) continue;
+      const mark = makeMarkFn();
+      node.parentNode.insertBefore(mark, node);
+      mark.appendChild(node);
+      marks.push(mark);
+    }
+    return marks;
+  }
+
   function createHighlight(color, openNote) {
     if (!selPopup) return;
     const { range } = selPopup;
     const text = range.toString();
     const entry = addAnnotation(guideSlug, phaseNo, { text, color, note: '' });
-    try {
-      const mark = makeMark(color, entry.id);
-      range.surroundContents(mark);
-    } catch (e) {
-      // Selection crossed an element boundary in a way surroundContents can't
-      // handle - the annotation is still saved, it just won't render inline
-      // until the text next matches a single node (e.g. after an edit).
-    }
+    wrapTextNodesInRange(range, () => makeMark(color, entry.id));
     window.getSelection()?.removeAllRanges();
     selPopup = null;
     if (openNote) openEdit(entry.id, entry.note, entry.color);
@@ -73,9 +91,16 @@
     return { x: Math.min(Math.max(r.left + r.width / 2, 130), window.innerWidth - 130), y: r.bottom + window.scrollY + 8 };
   }
 
+  // A highlight can be several <mark> fragments sharing one id (see
+  // wrapTextNodesInRange) - lookups return all of them; position/edit uses
+  // the first, actions like recolor/delete apply to every fragment.
+  function marksFor(id) {
+    return Array.from(readerEl()?.querySelectorAll(`mark[data-ann-id="${id}"]`) || []);
+  }
+
   function openEdit(id, note, color) {
-    const mark = readerEl()?.querySelector(`mark[data-ann-id="${id}"]`);
-    const pos = mark ? markRect(mark) : { x: window.innerWidth / 2, y: window.scrollY + 120 };
+    const marks = marksFor(id);
+    const pos = marks[0] ? markRect(marks[0]) : { x: window.innerWidth / 2, y: window.scrollY + 120 };
     editPopup = { ...pos, id, note, color, draft: note };
   }
 
@@ -92,24 +117,22 @@
   function setColor(color) {
     if (!editPopup) return;
     updateAnnotation(guideSlug, phaseNo, editPopup.id, { color });
-    const mark = readerEl()?.querySelector(`mark[data-ann-id="${editPopup.id}"]`);
-    if (mark) mark.className = `tmm-hl tmm-hl-${color}`;
+    for (const mark of marksFor(editPopup.id)) mark.className = `tmm-hl tmm-hl-${color}`;
     editPopup = { ...editPopup, color };
   }
 
   function saveNote() {
     if (!editPopup) return;
     updateAnnotation(guideSlug, phaseNo, editPopup.id, { note: editPopup.draft.trim() });
-    const mark = readerEl()?.querySelector(`mark[data-ann-id="${editPopup.id}"]`);
-    if (mark) mark.dataset.hasNote = editPopup.draft.trim() ? '1' : '';
+    const hasNote = editPopup.draft.trim() ? '1' : '';
+    for (const mark of marksFor(editPopup.id)) mark.dataset.hasNote = hasNote;
     editPopup = null;
   }
 
   function deleteHighlight() {
     if (!editPopup) return;
     removeAnnotation(guideSlug, phaseNo, editPopup.id);
-    const mark = readerEl()?.querySelector(`mark[data-ann-id="${editPopup.id}"]`);
-    if (mark) {
+    for (const mark of marksFor(editPopup.id)) {
       const parent = mark.parentNode;
       while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
       parent.removeChild(mark);
@@ -120,6 +143,10 @@
 
   // Re-apply saved highlights on mount by finding their text and wrapping it -
   // localStorage is the source of truth, the DOM is rebuilt from it every load.
+  // A highlight's saved text may originally have spanned several text nodes
+  // (crossing a <strong>/<code>/<a>), so search across all of them concatenated,
+  // then map the match back to a (node, offset) range and wrap it the same way
+  // a fresh selection would be.
   function applyStored() {
     const reader = readerEl();
     if (!reader) return;
@@ -131,23 +158,27 @@
           return n.parentElement?.closest('mark.tmm-hl') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
         }
       });
+      const nodes = [];
       let node;
-      let found = false;
-      while ((node = walker.nextNode())) {
-        const idx = node.nodeValue.indexOf(entry.text);
-        if (idx === -1) continue;
-        const range = document.createRange();
-        range.setStart(node, idx);
-        range.setEnd(node, idx + entry.text.length);
-        const mark = makeMark(entry.color, entry.id);
-        if (entry.note) mark.dataset.hasNote = '1';
-        try {
-          range.surroundContents(mark);
-          found = true;
-        } catch (e) {}
-        break;
+      while ((node = walker.nextNode())) nodes.push(node);
+      const full = nodes.map((n) => n.nodeValue).join('');
+      const idx = full.indexOf(entry.text);
+      if (idx === -1) continue;
+      const range = document.createRange();
+      let pos = 0, started = false, ended = false;
+      for (const n of nodes) {
+        const len = n.nodeValue.length;
+        if (!started && idx < pos + len) { range.setStart(n, idx - pos); started = true; }
+        if (started && !ended && idx + entry.text.length <= pos + len) {
+          range.setEnd(n, idx + entry.text.length - pos);
+          ended = true;
+          break;
+        }
+        pos += len;
       }
-      if (!found) continue;
+      if (!started || !ended) continue;
+      const marks = wrapTextNodesInRange(range, () => makeMark(entry.color, entry.id));
+      if (entry.note) marks.forEach((m) => (m.dataset.hasNote = '1'));
     }
   }
 

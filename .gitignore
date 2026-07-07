@@ -3,6 +3,7 @@
 
 # Root-level files
 !.gitignore
+!.gitattributes
 !.dockerignore
 !docker-compose.yml
 !LICENSE

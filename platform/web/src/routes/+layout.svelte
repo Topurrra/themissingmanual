@@ -199,11 +199,17 @@
   }
 
   onMount(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/service-worker.js", { type: dev ? "module" : "classic" })
-        .catch(() => {});
+    if (!("serviceWorker" in navigator)) return;
+    if (dev) {
+      // Vite's dev server rebuilds/rehashes constantly (HMR) - a live service
+      // worker's cached asset URLs go stale within seconds, causing "NetworkError"
+      // fetch failures and broken pages. PWA offline support is a production-only
+      // feature; clean up any stale registration left over from earlier testing.
+      navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister()));
+      caches?.keys().then((keys) => keys.forEach((k) => caches.delete(k)));
+      return;
     }
+    navigator.serviceWorker.register("/service-worker.js").catch(() => {});
   });
 
   onMount(() => {
