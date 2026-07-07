@@ -2,9 +2,6 @@
 
 **The free, text-first library of real-world developer and STEM knowledge.**
 
-Not "build a todo app." Not a 1,000-page reference. Just the stuff that makes you competent -
-explained like advice from a battle-hardened friend who remembers what it felt like to not know.
-
 **[themissingmanual.dev →](https://themissingmanual.dev)**
 
 ---
@@ -68,7 +65,3 @@ small, factual corrections are exactly the kind of contribution this project wan
 The whole repository - guide content and code alike - is licensed under
 [CC BY-NC-SA 4.0](LICENSE): share it, adapt it, teach with it, even train models on it - just
 credit the source, don't sell it, and share alike.
-
-## Author
-
-Nika Topuria
