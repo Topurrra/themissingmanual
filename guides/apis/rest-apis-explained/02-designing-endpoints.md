@@ -6,7 +6,7 @@ summary: "The practical conventions of good REST: name URLs with nouns not verbs
 tags: [rest, api-design, endpoints, status-codes, pagination, query-params, conventions]
 difficulty: intermediate
 synonyms: ["rest api naming conventions", "how to design rest endpoints", "rest api pagination", "what status code should i return", "rest filtering and sorting query params", "rest api best practices"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Designing Endpoints — Conventions That Read Well
@@ -36,9 +36,9 @@ needs — filtering, sorting, and paging — that every real API runs into.
 
 ## 1. Name with nouns, and be consistent
 
-**The rule, and why.** A REST URL names a *thing*, and the HTTP method supplies the action — so the URL
-should be a noun, not a verb. The verb is already in the method; repeating it in the path
-(`GET /getOrders`) is redundant and breaks the pattern that makes APIs predictable.
+A REST URL names a *thing*, and the HTTP method supplies the action — so the URL should be a noun, not a
+verb. The verb is already in the method; repeating it in the path (`GET /getOrders`) is redundant and
+breaks the pattern that makes APIs predictable.
 
 ```text
    ❌ verb-in-URL (don't)         ✅ noun + method (do)
@@ -64,15 +64,15 @@ exception is a thing they now have to look up.
 
 ## 2. Return status codes that actually mean something
 
-**What it actually is.** Every HTTP response carries a three-digit *status code* that tells the caller, at
-a glance, how it went. The number isn't decoration — clients branch on it. Returning the *right* one is
-part of your API's contract, not an afterthought.
+Every HTTP response carries a three-digit *status code* that tells the caller, at a glance, how it went.
+The number isn't decoration — clients branch on it. Returning the *right* one is part of your API's
+contract, not an afterthought.
 
 📝 **Terminology — the families.** The first digit tells the whole story: **2xx** = it worked, **3xx** =
 go somewhere else (redirects), **4xx** = the *caller* did something wrong, **5xx** = the *server* did.
 That single digit is enough to know whose problem it is.
 
-**What it does in real life.** Here are the ones you'll reach for constantly:
+Here are the ones you'll reach for constantly:
 
 ```text
    2xx  success
@@ -96,7 +96,7 @@ means *unauthenticated* — "I don't know who you are, log in." `403 Forbidden` 
 permitted* — "I know exactly who you are, and you still can't touch this." Sending `403` for a missing
 login tells the client to fix the wrong thing.
 
-**A real example.** A delete, done right:
+A delete, done right:
 
 ```http
 DELETE /orders/42 HTTP/1.1
@@ -106,9 +106,9 @@ Authorization: Bearer eyJhbGciOiInR5cCI6...
 ```http
 HTTP/1.1 204 No Content
 ```
-*What just happened:* The order was removed, and the server returned `204 No Content` — success, with an
-empty body because there's nothing meaningful to send back about a thing that no longer exists. The
-caller reads `204` and knows the delete worked without having to parse anything.
+The order was removed, and the server returned `204 No Content` — success, with an empty body because
+there's nothing meaningful to send back about a thing that no longer exists. The caller reads `204` and
+knows the delete worked without having to parse anything.
 
 And an error, done right — note that a good `4xx` *explains itself* in the body:
 
@@ -128,29 +128,28 @@ Content-Type: application/json
   "field": "items"
 }
 ```
-*What just happened:* The server rejected the empty order with `400` *and* a JSON body naming what was
-wrong and where. The status code tells the client's code how to branch; the message tells the human
-reading the logs what to fix. Returning `400` with a blank body is technically correct and practically
-useless.
+The server rejected the empty order with `400` *and* a JSON body naming what was wrong and where. The
+status code tells the client's code how to branch; the message tells the human reading the logs what to
+fix. Returning `400` with a blank body is technically correct and practically useless.
 
 ## 3. Query params for filtering, sorting, and pagination
 
-**What it actually is.** When you `GET` a collection, you rarely want *all* of it in *any* order. The
-convention is to shape the result with **query parameters** — the `?key=value` pairs after the URL. The
-path still names the collection; the query refines which slice you get and how it's arranged.
+When you `GET` a collection, you rarely want *all* of it in *any* order. The convention is to shape the
+result with **query parameters** — the `?key=value` pairs after the URL. The path still names the
+collection; the query refines which slice you get and how it's arranged.
 
 📝 **Terminology — query string.** Everything after the `?` in a URL is the *query string*:
 `?status=open&sort=-created&page=2` is three parameters (`status`, `sort`, `page`) joined by `&`. They're
 for *narrowing or shaping* a read, not for identifying the resource — that's the path's job.
 
-**What it does in real life.** Three jobs, three families of params:
+Three jobs, three families of params:
 
 - **Filtering** — narrow the set: `?status=open`, `?author=42`, `?created_after=2026-01-01`.
 - **Sorting** — order the set: `?sort=created` (ascending) or `?sort=-created` (a leading `-` for
   descending is a common convention).
 - **Pagination** — return one page at a time so you don't dump a million rows: `?page=2&per_page=25`.
 
-**A real example.** "Give me the second page of open orders, newest first, 25 per page":
+"Give me the second page of open orders, newest first, 25 per page":
 
 ```http
 GET /orders?status=open&sort=-created&page=2&per_page=25 HTTP/1.1
@@ -170,10 +169,10 @@ Content-Type: application/json
   "total": 312
 }
 ```
-*What just happened:* The path `/orders` named the collection; the query string did the rest — filtered to
-`open`, sorted newest-first, and returned page 2. The server wrapped the list in an envelope with paging
-info (`page`, `per_page`, `total`) so the client knows there are 312 matches and can build "page 13 of
-13." Returning a bare array instead leaves the client blind to how much more there is.
+The path `/orders` named the collection; the query string did the rest — filtered to `open`, sorted
+newest-first, and returned page 2. The server wrapped the list in an envelope with paging info (`page`,
+`per_page`, `total`) so the client knows there are 312 matches and can build "page 13 of 13." Returning a
+bare array instead leaves the client blind to how much more there is.
 
 ⚠️ **Gotcha — always paginate list endpoints from day one.** It's tempting to return the whole collection
 while it's small. Then the table grows, one `GET /orders` tries to serialize a hundred thousand rows, and

@@ -9,7 +9,7 @@ order: 24
 group: "Rust"
 difficulty: intermediate
 synonyms: ["learn rocket", "rocket rs tutorial", "rust rocket framework", "rocket request guards", "rocket managed state", "rocket fairings", "rocket responders", "rocket rest api", "rocket vs axum actix"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Rocket From Zero

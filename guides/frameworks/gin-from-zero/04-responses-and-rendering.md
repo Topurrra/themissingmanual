@@ -6,7 +6,7 @@ summary: "Pick one render helper and one status code to answer a request: c.JSON
 tags: [gin, go, responses, json, templates, static]
 difficulty: intermediate
 synonyms: ["gin c.json", "gin response status", "gin html templates", "gin static files", "gin render", "gin c.string c.file"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Responses & Rendering
@@ -125,7 +125,7 @@ Default to `c.JSON`. The variants are there when a real requirement shows up, no
 
 ## The other response helpers
 
-Not every response is JSON. The context has a writer for each common case, and they all follow the same
+Not every response is JSON — the context has a writer for each common case, all following the same
 "status + payload" shape:
 
 ```go

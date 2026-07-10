@@ -6,12 +6,12 @@ summary: "Run evals on every prompt change and model upgrade to catch regression
 tags: [evals, regression, monitoring, model-upgrade, quality, observability]
 difficulty: intermediate
 synonyms: ["regression testing prompts", "how to upgrade llm model safely", "tracking llm quality over time", "offline evals vs production monitoring", "did my prompt change break anything", "llm production monitoring"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Evals as a Habit
 
-A one-time eval is a snapshot — useful, but it ages the moment you change anything. The payoff comes when running the eval is a *reflex*: something that happens before every prompt edit ships, every time the provider releases a new model, every time you're tempted to nod at a demo and call it done. That's when the eval stops being homework and becomes the thing that lets you move fast without breaking the cases you already fixed.
+A one-time eval is a snapshot — useful, but it ages the moment you change anything. The payoff comes when running the eval is a *reflex*: something that happens before every prompt edit ships, every time the provider releases a new model, every time you're tempted to nod at a demo and call it done. That's when the eval stops being homework and becomes the thing that lets you move fast without breaking cases you already fixed.
 
 This phase is about the habit: catching regressions, surviving model upgrades, watching quality drift over time, and — crucially — knowing where the eval's reach ends and the real world begins.
 
@@ -45,7 +45,7 @@ Your eval is exactly the tool for this. Don't swap and pray:
 - **Expect to re-tune the prompt.** A prompt squeezed to work around the *old* model's quirks may be fighting the new one. The eval tells you whether a tweak helped.
 - **Watch cost and latency, not only quality.** A model that scores the same but is slower or pricier is a regression in a dimension the pass-count doesn't show. Track those alongside accuracy.
 
-🪖 **War story.** A team upgraded to a newer model the day it launched, on the strength of the announcement post. Quality on their extraction task quietly dropped — the new model wrapped its JSON in a markdown code fence the old one never used, and their parser choked. Their eval would have caught it in one run, because "valid parseable JSON" was a rule check. They didn't run it. They learned to never let a model swap skip the eval, no matter how shiny the launch.
+🪖 **War story.** A team upgraded to a newer model the day it launched, on the strength of the announcement post. Quality on their extraction task quietly dropped — the new model wrapped its JSON in a markdown code fence the old one never used, and their parser choked. Their eval would have caught it in one run, because "valid parseable JSON" was a rule check. They didn't run it. Lesson: never let a model swap skip the eval, no matter how shiny the launch.
 
 ## Tracking quality over time
 
@@ -60,7 +60,7 @@ date        prompt  model       pass   notes
 2026-06-03  v5      model-B     28/30  re-tuned prompt for model-B
 ```
 
-*What just happened:* The history makes the model-B regression and the recovery visible at a glance — and ties each score to the exact prompt and model that produced it. Without this record, the June 1st dip would have been invisible until a user complained, and you'd have no idea which change caused it.
+*What just happened:* The history makes the model-B regression and the recovery visible at a glance, tying each score to the exact prompt and model that produced it. Without this record, the June 1st dip would have been invisible until a user complained.
 
 This doesn't need a fancy dashboard to start. A committed results file, or appended rows in a spreadsheet, gives you the trend. The discipline is recording *what changed* next to *what the score did*, so a drop always has a suspect.
 
@@ -93,7 +93,7 @@ So evals are necessary but not sufficient. They're the *offline* half. The other
 
 ## For builders
 
-The minimum viable habit: a committed eval file, a script that runs it and prints the score, and a rule that *no prompt or model change merges without a before/after run pasted into the change*. That alone puts you ahead of most teams shipping AI features. Layer monitoring on once you're live — even a thumbs-up button and logged inputs — and pipe every real failure back into the eval set. You don't need a platform; you need the loop to actually close.
+The minimum viable habit: a committed eval file, a script that runs it and prints the score, and a rule that *no prompt or model change merges without a before/after run pasted into the change*. That alone puts you ahead of most teams shipping AI features. Layer monitoring on once you're live — even a thumbs-up button and logged inputs — and pipe every real failure back into the eval set. You don't need a platform; you need the loop to close.
 
 ## Recap
 

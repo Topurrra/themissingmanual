@@ -16,6 +16,9 @@
     typescript: "ti-brand-typescript",
     regex: "ti-regex",
     git: "ti-brand-git",
+    math: "ti-math-function",
+    physics: "ti-atom-2",
+    postgres: "ti-database",
   };
 
   let progress = {}; // guideSlug -> count of lessons marked done, from localStorage

@@ -6,7 +6,7 @@ summary: "A real pipeline is a scheduled, multi-step job: dependencies form a DA
 tags: [orchestration, dag, scheduling, retries, idempotency, backfill, airflow]
 difficulty: intermediate
 synonyms: ["what is pipeline orchestration", "what is a dag in data pipelines", "how does pipeline scheduling work", "what is idempotency in data pipelines", "what is a backfill", "why did my pipeline double count", "it ran but the data is wrong", "airflow dag explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Orchestration: Making It Run Reliably
@@ -32,7 +32,7 @@ The hardest lesson in this whole field fits in one sentence: **"it ran" is not t
 
 ## 1. Dependencies as a DAG — what runs after what
 
-**What it actually is.** A real pipeline isn't one script; it's many steps, and some steps can't start until others finish. You can't transform orders before you've extracted them. You can't build the daily-revenue table before the orders *and* the products tables are both loaded. Those "must happen after" relationships form a shape called a **DAG**.
+**What it actually is.** A real pipeline isn't one script; it's many steps, and some can't start until others finish — you can't transform orders before extracting them, or build daily-revenue before both orders and products are loaded. Those "must happen after" relationships form a shape called a **DAG**.
 
 > 📝 **Terminology.** *DAG* = **Directed Acyclic Graph**. *Directed*: each arrow points one way (A then B). *Acyclic*: no loops — you can never end up depending on yourself, directly or in a circle. It's just a dependency map: "this step runs after that step."
 
@@ -62,13 +62,13 @@ orders_pipeline | scheduled__2026-06-19T05:00:00  | success | 2026-06-19T05:00:0
 orders_pipeline | scheduled__2026-06-18T05:00:00  | success | 2026-06-18T05:00:00
 ```
 
-*What just happened:* The scheduler fired the pipeline at 05:00 each day on its own and recorded each run with the date it was *processing data for* (`execution_date`). That date matters: a run is tied to a specific time window of data, which is what makes re-running a single day's run meaningful later.
+*What just happened:* The scheduler fired the pipeline at 05:00 daily and logged each run against the date it was *processing data for* (`execution_date`). That date matters — it's what makes re-running a single day's run meaningful later.
 
 ⚠️ **Gotcha — a missed run is silent unless you watch for it.** If the scheduler is down or a trigger never fires, the pipeline doesn't fail loudly — it *doesn't run*, and your data quietly stops being fresh. "No news" is not "good news" here. You need an alert for *absence*, not only for errors.
 
 ## 3. Retries — surviving the flaky 3am failure
 
-**What it actually is.** Networks blip. A source API times out. A database has a momentary hiccup. Many failures are *transient* — they'd succeed if you tried again. A retry policy tells the orchestrator: if a step fails, wait a bit and try again, up to N times, before giving up and alerting a human.
+**What it actually is.** Networks blip, APIs time out, databases hiccup — many failures are *transient* and would succeed if you tried again. A retry policy tells the orchestrator: if a step fails, wait a bit and try again, up to N times, before giving up and alerting a human.
 
 **What it does in real life.** A step that fails on a network timeout retries automatically; if the second attempt succeeds, nobody gets paged and the pipeline carries on. Only a step that exhausts its retries raises an alarm.
 
@@ -76,11 +76,11 @@ orders_pipeline | scheduled__2026-06-18T05:00:00  | success | 2026-06-18T05:00:0
 
 ## 4. Idempotency — the one that bites everyone
 
-**What it actually is.** A step is **idempotent** when running it twice produces the same result as running it once. Re-running it doesn't double-count, doesn't duplicate rows, doesn't drift — it lands on the same final state every time.
+**What it actually is.** A step is **idempotent** when running it twice produces the same result as running it once — no double-counting, no duplicate rows, no drift. It lands on the same final state every time.
 
 > 📝 **Terminology.** *Idempotent* — from "same" + "power." A light switch set to "off" is idempotent: flip it off twice, it's still off. Appending "+1 order" is *not* idempotent: do it twice and you've counted the order twice.
 
-**Why this is the one that bites everyone.** Retries (§3), backfills (§5), and manual re-runs all do the same thing: **run a step again.** If a step isn't idempotent, every one of those safety mechanisms becomes a corruption mechanism. The classic disaster:
+**Why it matters.** Retries (§3), backfills (§5), and manual re-runs all do the same thing: **run a step again.** If a step isn't idempotent, every one of those safety mechanisms becomes a corruption mechanism. The classic disaster:
 
 ```text
   NOT idempotent (append):              IDEMPOTENT (overwrite/merge the window):
@@ -95,13 +95,13 @@ orders_pipeline | scheduled__2026-06-18T05:00:00  | success | 2026-06-18T05:00:0
 - **Overwrite the window, don't append to it.** Have each daily run *replace* its own day's partition rather than blindly adding rows. Re-running the day's load just rewrites that day — same result every time.
 - **Merge on a key (upsert).** Match on `order_id` and update-or-insert (as in Phase 1's load) so a row can't be inserted twice.
 
-*What just happened:* By writing the *whole window* fresh instead of appending to it, you made the step safe to run any number of times. Now retries, backfills, and a nervous engineer re-running the job by hand are all harmless. Idempotency is what makes a pipeline *trustworthy under repetition* — and pipelines repeat constantly.
+*What just happened:* Writing the *whole window* fresh instead of appending makes the step safe to run any number of times. Idempotency is what makes a pipeline *trustworthy under repetition* — and pipelines repeat constantly.
 
 💡 **Key point.** Design every step so that re-running it is boring. If "what happens if this runs twice?" has a scary answer, that step is a latent outage waiting for the next retry.
 
 ## 5. Backfills — reprocessing the past
 
-**What it actually is.** A **backfill** is running the pipeline over *historical* time windows — because you just built a new table and need the last year populated, or you fixed a transform bug and must reprocess three months with the corrected logic.
+**What it actually is.** A **backfill** is running the pipeline over *historical* time windows — you built a new table and need last year's data populated, or fixed a transform bug and must reprocess three months with the corrected logic.
 
 **What it does in real life.** Because each scheduled run is tied to a date window (§2), a backfill is "run the pipeline for 2026-03-01, then 2026-03-02, then …" across the range you need. Good orchestrators do this for you given a start and end date.
 
@@ -116,7 +116,7 @@ $ airflow dags backfill orders_pipeline \
 ...
 ```
 
-*What just happened:* The orchestrator queued one run per historical day and replayed the pipeline across the quarter with today's (fixed) code. Each day's run rewrote that day's data — *which is only safe because the load step is idempotent* (§4). Without idempotency, this backfill would have stacked a second copy of three months of data on top of the first.
+*What just happened:* The orchestrator queued one run per historical day and replayed the pipeline across the quarter with today's (fixed) code. Each day's run rewrote that day's data — safe only because the load step is idempotent (§4). Without that, this backfill would have stacked a second copy of three months on top of the first.
 
 ⚠️ **Gotcha — a backfill on a non-idempotent pipeline is a self-inflicted disaster.** It's the highest-volume way to trigger the double-count bug, because you're deliberately re-running hundreds of windows. Never backfill a pipeline whose steps aren't idempotent — fix the idempotency first.
 

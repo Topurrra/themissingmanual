@@ -6,14 +6,14 @@ summary: "Your source code is just text; the CPU only runs machine instructions.
 tags: [compilers, interpreters, machine-code, source-code, compiled-vs-interpreted]
 difficulty: beginner
 synonyms: ["what is source code", "what is machine code", "what is a compiler", "what is an interpreter", "compiled vs interpreted languages", "why is python slower than go", "how does code get translated"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # From Source Code to Something the Machine Runs
 
-Open one of your program files in a text editor and look at it. It's text - letters, numbers, brackets, indentation. You could print it on paper. Nothing about it physically *does* anything; it's a description, written for a human to read and for a machine to be told about.
+Open one of your program files in a text editor. It's text - letters, numbers, brackets, indentation. You could print it on paper. Nothing about it physically *does* anything; it's a description, written for a human to read and a machine to be told about.
 
-Now here's the gap nobody points out: **the CPU - the chip actually doing the work - cannot read that text.** It has no idea what `print`, `if`, or `def` mean. The CPU understands one thing: a stream of extremely simple, numeric instructions ("add these two numbers," "copy this value here," "jump to that spot"). That's its entire vocabulary. So *something* has to stand between the words you wrote and the instructions the chip can run. This phase is about what that something is.
+Here's the gap nobody points out: **the CPU - the chip actually doing the work - cannot read that text.** It has no idea what `print`, `if`, or `def` mean. The CPU understands one thing: a stream of extremely simple, numeric instructions ("add these two numbers," "copy this value here," "jump to that spot"). That's its entire vocabulary. So *something* has to stand between the words you wrote and the instructions the chip can run. This phase is about what that something is.
 
 ## What your code actually is, and what the machine actually runs
 
@@ -32,18 +32,16 @@ flowchart LR
   Trans --> M4["store reg A → total"]
 ```
 
-One readable line on the left can become several machine instructions on the right. The translation from one to the other is the job we're about to meet - and there are two ways to do it.
+One readable line on the left can become several machine instructions on the right. The translation from one to the other is the job we're about to meet, and there are two ways to do it.
 
 💡 **Key point.** Every program, in every language, has to cross this same gap: from human-readable source to machine-runnable instructions. The whole "compiled vs. interpreted" debate is just a debate about *when* and *how* that crossing happens.
 
 ## The two ways across the gap
 
-There are two strategies for turning your source code into something that runs. They're easiest to understand by analogy.
+There are two strategies for turning your source code into something that runs, easiest understood by analogy: imagine you wrote a book in English and need it read aloud to a French-speaking audience.
 
-Imagine you wrote a book in English and need it read aloud to a French-speaking audience.
-
-- **Strategy one: translate the whole book ahead of time.** A translator sits down, converts the entire book into French, and prints it. Later, anyone can read the French copy aloud, fast, as many times as they like - the translation work is already done. This is **compiling**.
-- **Strategy two: bring a live interpreter to the reading.** No French copy exists. As you read each English sentence, the interpreter speaks the French version on the spot. It works immediately, with no upfront print job - but the interpreter has to be present every single time, translating as you go. This is **interpreting**.
+- **Strategy one: translate the whole book ahead of time.** A translator converts the entire book into French and prints it. Later, anyone can read the French copy aloud, fast, as many times as they like - the translation work is already done. This is **compiling**.
+- **Strategy two: bring a live interpreter to the reading.** No French copy exists. As you read each English sentence, the interpreter speaks the French version on the spot. It works immediately, with no upfront print job - but the interpreter has to be present every time, translating as you go. This is **interpreting**.
 
 Both get the story to the French audience. They just pay the translation cost at different moments.
 
@@ -55,7 +53,7 @@ Both get the story to the French audience. They just pay the translation cost at
 
 Languages that work this way include **Go, Rust, and C**.
 
-**What it does in real life.** You run the compiler once. It chews through your code, reports any errors it finds, and - if all is well - hands you an executable. From then on, running your program means running *that file*; the compiler isn't involved anymore.
+**What it does in real life.** You run the compiler once. It chews through your code, reports any errors it finds, and - if all is well - hands you an executable. From then on, running your program means running *that file*; the compiler isn't involved.
 
 ```console
 $ go build hello.go
@@ -64,9 +62,9 @@ hello       hello.go
 $ ./hello
 Hello, world!
 ```
-*What just happened:* `go build` was the compiler. It read your source file `hello.go` and produced a new file, `hello` - that's the executable, a bundle of machine code for your kind of computer. Running `./hello` ran *that file* directly on the CPU. The `.go` source wasn't consulted at all; the translation already happened during `go build`.
+*What just happened:* `go build` was the compiler. It read your source file `hello.go` and produced a new file, `hello` - the executable, a bundle of machine code for your kind of computer. Running `./hello` ran *that file* directly on the CPU. The `.go` source wasn't consulted at all; the translation already happened during `go build`.
 
-**The trade-off.** Because the translation is done up front, the program starts and runs fast - there's no translating happening while it runs. The cost is paid earlier: you have to compile before you can run (a step that takes time on big projects), and the executable is built for one kind of machine, so a binary compiled for Windows won't run on a Mac.
+**The trade-off.** Because the translation is done up front, the program starts and runs fast - there's no translating while it runs. The cost is paid earlier: you have to compile before you can run (a step that takes time on big projects), and the executable is built for one kind of machine, so a binary compiled for Windows won't run on a Mac.
 
 ## The interpreter: translate-as-you-go
 
@@ -76,15 +74,15 @@ Hello, world!
 
 Languages commonly run this way include **Python and JavaScript**.
 
-**What it does in real life.** You hand your source file straight to the interpreter, and it starts running it immediately - no build step.
+**What it does in real life.** Hand your source file straight to the interpreter and it starts running immediately - no build step.
 
 ```console
 $ python hello.py
 Hello, world!
 ```
-*What just happened:* `python` is the interpreter. It read `hello.py` and ran it on the spot - figuring out what each line means and doing it, line by line, right then. Nothing was pre-translated into a separate machine-code file; the interpreter (`python` itself) stayed in charge the whole time the program ran. That's why `python` has to be installed for the program to run at all.
+*What just happened:* `python` is the interpreter. It read `hello.py` and ran it on the spot - figuring out what each line means and doing it, line by line, right then. Nothing was pre-translated into a separate machine-code file; the interpreter stayed in charge the whole time the program ran. That's why `python` has to be installed for the program to run at all.
 
-**The trade-off.** You get to run code instantly - edit, run, edit, run, with no waiting on a build. That fast feedback loop is a real pleasure. The cost is that the translating happens *while the program runs*, over and over, so the same work tends to run slower than the compiled version, where the translation was done once, in advance.
+**The trade-off.** You get to run code instantly - edit, run, edit, run, with no waiting on a build. That fast feedback loop is a real pleasure. The cost is that the translating happens *while the program runs*, over and over, so the same work tends to run slower than the compiled version, where translation was done once, in advance.
 
 ⚠️ **Gotcha - "compiled" and "interpreted" describe how a language is *usually run*, not a law of nature.** The same language can often be run either way, and many modern languages blur the line (some interpreters compile hot code to machine instructions while running, a technique called just-in-time compilation). So when someone says "Python is interpreted," hear it as "Python is normally run by an interpreter," not "Python can only ever be interpreted." Don't over-trust the label.
 
@@ -106,7 +104,7 @@ Neither approach is "better" - they're optimized for different moments. Here's b
 
 The single thing driving every row is *when the translation happens*. Pull that thread and the rest follows.
 
-🪖 **War story.** A teammate switched a small data script from Python to Go "for the speed" and was baffled when, for their tiny one-second job, it didn't feel faster to *use* - they'd added a compile step to their workflow and the script was too short for the runtime speed-up to matter. Compiled-vs-interpreted isn't "fast vs slow" in the abstract; it's a trade about *where the time goes*. For a quick script you run once, the interpreter's instant start often wins. For a program that runs hard for hours, the compiler's upfront work pays off.
+🪖 **War story.** A teammate switched a small data script from Python to Go "for the speed" and was baffled when, for their tiny one-second job, it didn't feel faster to *use* - they'd added a compile step to their workflow and the script was too short for the runtime speed-up to matter. Compiled-vs-interpreted isn't "fast vs slow" in the abstract; it's a trade about *where the time goes*. For a quick script you run once, the interpreter's instant start often wins; for a program that runs hard for hours, the compiler's upfront work pays off.
 
 ## Recap
 

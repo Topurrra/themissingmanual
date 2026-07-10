@@ -6,7 +6,7 @@ summary: "Plain HTTP is a pull: the client asks, the server answers, the line ha
 tags: [realtime, http, polling, sse, websockets, mental-model]
 difficulty: intermediate
 synonyms: ["why cant http push", "how does realtime work", "polling vs sse vs websocket", "what is server sent events", "what is a websocket", "do i need realtime", "client server push"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Why HTTP Can't Push
@@ -23,19 +23,17 @@ is about why that limitation exists, and the three honest ways around it.
 
 ## The shape of a normal request
 
-**What it actually is.** HTTP is request/response. One request, one response, then done. The client
-always speaks first; the server only ever *replies*. There is no slot in the protocol for the server to
-say something unprompted.
+HTTP is request/response. One request, one response, then done. The client always speaks first; the
+server only ever *replies*. There is no slot in the protocol for the server to say something unprompted.
 
-**What it looks like.**
 ```console
 $ curl https://api.example/v1/notifications
 [{"id":1,"text":"Welcome!"}]
 $
 ```
-*What just happened:* You asked once, got the current list, and the connection closed. If a new
-notification arrives one second later, this terminal has no idea. The server can't reach back through a
-hung-up line — you'd have to run `curl` again to find out.
+You asked once, got the current list, and the connection closed. If a new notification arrives one
+second later, this terminal has no idea — the server can't reach back through a hung-up line, you'd have
+to run `curl` again to find out.
 
 📝 **Terminology.** "Realtime" on the web rarely means microsecond-precise. It means *the user sees the
 change within a second or so of it happening, without doing anything.* That's the bar these patterns
@@ -97,9 +95,9 @@ receive only ............. SSE   (or polling if rare)
 two-way, constant ........ WebSockets
 rare + lazy .............. Polling
 ```
-*What just happened:* You turned a vague "make it realtime" into a concrete pick in three questions. The
-default answer for "show me live stuff" is SSE, not WebSockets — most teams reach for the heavy tool out
-of reflex and regret the scaling bill later.
+You turned a vague "make it realtime" into a concrete pick in three questions. The default answer for
+"show me live stuff" is SSE, not WebSockets — most teams reach for the heavy tool out of reflex and
+regret the scaling bill later.
 
 ⚠️ **WebSockets are not the default.** They feel like the "real" realtime tech, so people grab them for
 a one-way notification feed and inherit a pile of complexity (no automatic reconnect, harder to scale,
@@ -107,10 +105,10 @@ trickier through proxies) they didn't need. If data flows one way, SSE is almost
 choice.
 
 🪖 **War story.** A team built a stock-ticker dashboard — pure server-to-client price updates — on
-WebSockets because "realtime means WebSockets." Six months in, they were hand-rolling reconnect logic,
-heartbeats, and fighting a corporate proxy that kept killing the socket. They eventually rewrote it on
-SSE in an afternoon. The browser handled reconnect for free, and the proxy stopped complaining because
-it was plain HTTP the whole time.
+WebSockets because "realtime means WebSockets." Six months in, they were hand-rolling reconnect logic and
+heartbeats, and fighting a corporate proxy that kept killing the socket. They rewrote it on SSE in an
+afternoon: the browser handled reconnect for free, and the proxy stopped complaining because it was plain
+HTTP the whole time.
 
 ## For builders
 

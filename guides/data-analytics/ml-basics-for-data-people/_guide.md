@@ -8,14 +8,14 @@ category: data-analytics
 order: 6
 difficulty: intermediate
 synonyms: ["machine learning for data analysts", "what is machine learning for data people", "ml basics for analysts", "supervised vs unsupervised learning", "how does machine learning work", "ml workflow explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # ML Basics for Data People
 
-You already work with data. You write SQL, you build dashboards, you know what a clean table looks like and you can smell a bad join from across the room. And now machine learning keeps coming up — in standups, in job posts, in that one meeting where someone said "can't we just throw a model at it?" — and it feels like a different world with its own priesthood and its own vocabulary.
+You already work with data. You write SQL, build dashboards, and can smell a bad join from across the room. Now machine learning keeps coming up — in standups, in job posts, in "can't we just throw a model at it?" meetings — and it feels like a different world with its own priesthood and vocabulary.
 
-Here's the reassuring truth: ML is not a different world. It's a different *technique* applied to the same raw material you already handle every day — data. The hard part of ML is almost never the math or the model. It's the data work you already understand. This guide gives you enough of a mental model to follow the conversation, ask the right questions, and recognize where your existing skills are exactly what a project needs.
+Here's the reassuring truth: ML is not a different world. It's a different *technique* applied to the same raw material you already handle every day — data. The hard part of ML is almost never the math or the model; it's the data work you already understand. This guide gives you enough of a mental model to follow the conversation, ask the right questions, and recognize where your existing skills are exactly what a project needs.
 
 ## How to read this
 

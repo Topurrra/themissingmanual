@@ -6,7 +6,7 @@ summary: "A database gives you one shared source of truth, real declared types a
 tags: [sql, databases, data-analytics, tables, queries, beginner-friendly]
 difficulty: beginner
 synonyms: ["when should i use a database instead of excel", "what is sql for", "spreadsheet vs database", "how is a table different from a sheet", "why use a database"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Outgrowing the Sheet: SQL & Databases
@@ -15,7 +15,7 @@ You hit one of the walls from Phase 1 — the file got slow, the IDs got mangled
 versions disagreed. That's not a failure. It's the signal that your data has grown up and needs a home
 built for the job. That home is a **database**, and the language you use to talk to it is **SQL**.
 
-Here's the reassuring part: a database isn't a strange new world. It's a spreadsheet's ideas made
+Here's the reassuring part: a database isn't a strange new world, it's a spreadsheet's ideas made
 sturdy. If you understand a sheet, you're most of the way to understanding a table.
 
 ## The mental model: a table is a sheet that keeps its promises
@@ -40,7 +40,7 @@ The shapes map almost one-to-one:
 *What just happened:* The pieces are the same. The difference is everything around them. A table
 *declares* what each column holds and refuses anything that doesn't fit, the database is one shared store
 instead of a file you copy, and SQL lets you ask questions across millions of rows without dragging a
-formula anywhere. Let's take those one at a time — each maps to a Phase 1 pain.
+formula anywhere. Each of those maps to a Phase 1 pain.
 
 ## One shared source of truth
 
@@ -57,11 +57,9 @@ someone's Downloads folder, because there are no copies — only connections.
 ```
 
 *What just happened:* The "which version is current?" question disappears, because there's only ever one
-version. When you read the `orders` table, you're reading the live, current data — the same data your
-teammate sees at the same moment.
-
-**Why this saves you later.** The next time two reports disagree, you won't spend an afternoon hunting
-for the "right" file. There's one table; the answer is whatever it says right now.
+version. Read the `orders` table and you're reading the live, current data — the same data your teammate
+sees at the same moment. Next time two reports disagree, there's no afternoon spent hunting for the
+"right" file — there's one table, and the answer is whatever it says right now.
 
 ## Real types and constraints
 
@@ -84,21 +82,17 @@ guard rail the spreadsheet never had is now built into the column itself.
 
 📝 **Terminology.** A **constraint** is a rule the database enforces on a column — for example, "this
 value can't be empty," or "every `id` must be unique." It's the database catching bad data at the door,
-rather than you finding it three weeks later in a broken report.
-
-**Why this saves you later.** The class of bug where one stray text cell silently breaks a `SUM`, or a
-part number loses its leading zeros — that whole category is gone. The data can't be the wrong shape,
-because the wrong shape isn't allowed in.
+rather than you finding it three weeks later in a broken report. The whole class of bug where one stray
+text cell silently breaks a `SUM`, or a part number loses its leading zeros, is simply gone — the wrong
+shape isn't allowed in.
 
 ## Querying millions of rows
 
 In Phase 1, the sheet slowed to a crawl and then hit a hard row ceiling. Databases are built for the
-opposite: they're engineered to filter, sort, and summarize enormous tables quickly, because that's their
-entire job. You don't drag a formula down a million rows — you write one sentence describing what you
-want, and the database figures out how to get it fast.
-
-This is exactly what SQL is for. A `SELECT` query is you saying "give me these columns, from this table,
-where these conditions hold."
+opposite: engineered to filter, sort, and summarize enormous tables quickly, because that's their entire
+job. You don't drag a formula down a million rows — you write one sentence describing what you want, and
+the database figures out how to get it fast. A `SELECT` query is you saying "give me these columns, from
+this table, where these conditions hold."
 
 ```console
 SELECT customer, amount
@@ -116,20 +110,18 @@ WHERE amount > 100;
 *What just happened:* You asked one question — "show me the customer and amount for every order over
 100" — and the database scanned the whole `orders` table and handed back only the matching rows. It does
 the same whether the table has a hundred rows or a hundred million, and it doesn't melt your laptop doing
-it.
+it. "The file is too big to open" stops being a sentence you say — bigger data is just a longer scan, not
+a wall.
 
 > The grammar of `SELECT … FROM … WHERE …` is the single most useful thing to learn here, and it has its
 > own guide: [Querying Basics: SELECT & WHERE](/guides/querying-basics-select-where). If this is your
-> first SQL query, read that next — it's the everyday workhorse of working with data.
-
-**Why this saves you later.** "The file is too big to open" stops being a sentence you say. Bigger data
-is just a longer scan, not a wall.
+> first SQL query, read that next.
 
 ## Multiple users, safely
 
-A shared spreadsheet lets several people edit at once, but it resolves clashes crudely — often the last
-save wins, quietly erasing someone else's change. Databases were designed from the start for many people
-(and many programs) reading and writing at the same time without trampling each other.
+A shared spreadsheet lets several people edit at once, but resolves clashes crudely — often the last
+save wins, quietly erasing someone else's change. Databases are designed from the start for many people
+and programs reading and writing at once without trampling each other.
 
 📝 **Terminology.** A **transaction** is a group of changes the database treats as all-or-nothing: either
 every step succeeds, or none of them do. It's how a database moves money from one account to another
@@ -137,16 +129,14 @@ without ever leaving it half-moved — even if two people press "go" at the same
 
 *What just happened:* Where the spreadsheet's answer to "two people, same data" was "hope for the best,"
 the database's answer is a set of rules that keep the data correct no matter how many people are touching
-it. That's the difference between a tool for one person and a tool for a team.
-
-**Why this saves you later.** As soon as more than one person — or one automated script — depends on your
-data, you need it to stay correct under simultaneous use. The database gives you that for free; the
-spreadsheet never could.
+it — the difference between a tool for one person and a tool for a team. As soon as more than one person,
+or one automated script, depends on your data, you need it to stay correct under simultaneous use. The
+database gives you that for free; the spreadsheet never could.
 
 ## A worked move: the same task, leveled up
 
-Picture the Phase 1 ritual: every Monday you opened a sheet of this week's orders and, by hand, filtered
-to the big ones and eyeballed the total. In a database, that becomes a question you *ask*:
+Picture the Phase 1 ritual: every Monday, opening a sheet of this week's orders and, by hand, filtering
+to the big ones and eyeballing the total. In a database, that becomes a question you *ask*:
 
 ```console
 SELECT customer, SUM(amount) AS total
@@ -162,11 +152,11 @@ GROUP BY customer;
 ```
 
 *What just happened:* One query did the filtering and the per-customer totaling in a single step — no
-dragging, no manual cleanup, and it reads the same live table everyone else does. Same result you used to
-assemble by hand, now expressed as one repeatable sentence.
+dragging, no manual cleanup, reading the same live table everyone else does. Same result you used to
+assemble by hand, now one repeatable sentence.
 
-**Try it yourself.** Here's the same idea on a tiny library dataset — join two tables and count, the kind
-of question that would mean a fragile VLOOKUP in a sheet. Run it and tweak the `WHERE`:
+**Try it yourself.** Same idea on a tiny library dataset — join two tables and count, the kind of
+question that would mean a fragile VLOOKUP in a sheet. Run it and tweak the `WHERE`:
 
 ```sql runnable
 SELECT a.name AS author, a.country, COUNT(b.id) AS books
@@ -177,8 +167,8 @@ ORDER BY books DESC;
 ```
 
 And that word — *repeatable* — is the bridge to Phase 3. You've fixed size, types, and the source of
-truth. But you're still the one running this query every Monday. What happens when even *that* should run
-on its own?
+truth, but you're still the one running this query every Monday. What happens when even *that* should
+run on its own?
 
 ## Recap
 

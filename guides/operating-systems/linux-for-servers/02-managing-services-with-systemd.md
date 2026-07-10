@@ -6,7 +6,7 @@ summary: "systemd is the first process and the service manager on modern Linux. 
 tags: [linux, systemd, systemctl, journalctl, services, units, logs, nginx, sshd]
 difficulty: advanced
 synonyms: ["what is systemd", "systemctl start stop restart", "systemctl enable vs start", "systemctl status meaning", "read service logs journalctl", "journalctl follow logs", "what is a systemd unit", "why isnt my service starting"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Managing Services with systemd
@@ -35,15 +35,15 @@ flowchart TD
 *Each one is a "unit" systemd keeps watch over.*
 
 **Why people get this wrong.** Coming from running programs by hand, the temptation is to `cd` somewhere and
-launch the binary yourself - `./nginx &` or similar. That program dies when your SSH session ends (the Phase 1
-war story), nothing restarts it if it crashes, and nothing starts it after a reboot. systemd exists precisely
-to take that responsibility off you: you *describe* what should run, and systemd is the one that babysits it,
-forever, whether or not you're logged in.
+launch the binary yourself - `./nginx &` or similar. That program dies when your SSH session ends (the Phase
+1 war story), nothing restarts it if it crashes, and nothing starts it after a reboot. systemd exists to
+take that off you: you *describe* what should run, and it babysits it forever, whether or not you're logged
+in.
 
-📝 **Terminology.** A *unit* is anything systemd manages, described by a small text file. The kind you'll touch
-most is a **`.service`** unit (a daemon to run). The files live in `/lib/systemd/system/` (shipped by
-packages) and `/etc/systemd/system/` (your overrides - `/etc` again, as promised). The tool you drive it with
-is **`systemctl`**; the tool that reads its logs is **`journalctl`**.
+📝 **Terminology.** A *unit* is anything systemd manages, described by a small text file. The kind you'll
+touch most is a **`.service`** unit (a daemon to run). Files live in `/lib/systemd/system/` (shipped by
+packages) and `/etc/systemd/system/` (your overrides). You drive it with **`systemctl`**; you read its logs
+with **`journalctl`**.
 
 ## `systemctl status` - your first move, always
 
@@ -69,13 +69,12 @@ Jun 18 09:15:22 web-prod-1 systemd[1]: Starting nginx.service...
 Jun 18 09:15:22 web-prod-1 systemd[1]: Started nginx.service.
 ```
 
-*What just happened:* Read it top to bottom. The green `●` and **`Active: active (running)`** mean it's up
-right now, and `since … 2h 31min ago` is its uptime. **`Loaded: … enabled`** is the other half of the story:
-`enabled` means it's set to start automatically at boot (more on that below - `enabled` and `running` are
-different things, and confusing them bites everyone). `Main PID: 8123` is the actual process, and the
-`CGroup` tree shows every process systemd is tracking as part of this service. The last lines are the most
-recent log entries - `status` hands you a peek at the journal for free, which is often all you need to see
-what just went wrong.
+*What just happened:* the green `●` and **`Active: active (running)`** mean it's up right now, and
+`since … 2h 31min ago` is its uptime. **`Loaded: … enabled`** is the other half: `enabled` means it's set to
+start automatically at boot (`enabled` and `running` are different things, and confusing them bites
+everyone). `Main PID: 8123` is the actual process, and the `CGroup` tree shows every process systemd tracks
+as part of this service. The last lines are recent log entries - `status` hands you a peek at the journal
+for free, often all you need to see what went wrong.
 
 💡 **Key point.** Two independent questions live in that output. **Is it running *now*?** → the `Active:` line.
 **Will it come back after a reboot?** → the `Loaded:` line (`enabled` vs `disabled`). A service can be running
@@ -97,11 +96,10 @@ $ systemctl is-active nginx
 active
 ```
 
-*What just happened:* `stop` told systemd to shut the service down cleanly (it signals the process and waits
-for it to exit); `is-active` is a quick, scriptable check that prints one word instead of a whole status
-screen. Then `start` brought it back. Notice neither command printed anything on success - on Unix, silence
-is success. If a `start` *fails*, it won't be silent: it'll tell you to go check `systemctl status` and the
-journal.
+*What just happened:* `stop` told systemd to shut the service down cleanly (signals the process, waits for
+it to exit); `is-active` is a quick, scriptable check that prints one word instead of a whole status screen.
+Then `start` brought it back. Neither command printed anything on success - on Unix, silence is success. A
+failed `start` won't be silent: it'll point you at `systemctl status` and the journal.
 
 **`restart` is stop-then-start in one step**, and it's what you reach for after editing a service's config:
 
@@ -110,21 +108,20 @@ $ sudo systemctl restart nginx
 ```
 
 *What just happened:* systemd stopped nginx and started it again, so the running process re-reads its
-configuration. There's a gentler cousin worth knowing:
+config. There's a gentler cousin worth knowing:
 
 ```console
 $ sudo systemctl reload nginx
 ```
 
 *What just happened:* `reload` asks the service to re-read its config **without** dropping its running
-process - for nginx that means no dropped connections. Not every service supports it; when in doubt, `restart`
-always works but causes a brief blip. There's also `reload-or-restart` for "reload if you can, otherwise
-restart."
+process - for nginx that means no dropped connections. Not every service supports it; when in doubt,
+`restart` always works but causes a brief blip. There's also `reload-or-restart` for "reload if you can,
+otherwise restart."
 
 ⚠️ **Gotcha.** Editing a config file changes nothing by itself. The running process loaded its config once,
-at start, and won't notice your edit until you `reload` or `restart` it. The number of outages caused by
-"I changed the file and it didn't take effect" is enormous - the edit and the reload are two separate steps,
-and you owe yourself both.
+at start, and won't notice your edit until you `reload` or `restart` it. "I changed the file and it didn't
+take effect" is an enormous source of outages - the edit and the reload are two separate steps.
 
 ## enable / disable - surviving a reboot
 
@@ -136,18 +133,16 @@ $ sudo systemctl enable nginx
 Created symlink /etc/systemd/system/multi-user.target.wants/nginx.service → /lib/systemd/system/nginx.service.
 ```
 
-*What just happened:* `enable` created a symlink that wires nginx into the boot sequence - now it'll start
-automatically every time the machine boots. Look closely: it did *not* start nginx right now. If nginx was
-stopped, it's still stopped; you've only changed what happens at the *next* boot. When you want both at once,
-say so explicitly:
+*What just happened:* `enable` created a symlink that wires nginx into the boot sequence - it'll start
+automatically every future boot. It did *not* start nginx right now; if it was stopped, it's still stopped.
+When you want both at once, say so explicitly:
 
 ```console
 $ sudo systemctl enable --now nginx
 ```
 
-*What just happened:* `--now` means "and also do it immediately" - so this enables nginx for future boots
-*and* starts it right now, the combination you usually actually want on a fresh install. (`disable --now`
-is the mirror image: stop it and keep it from coming back.)
+*What just happened:* `--now` means "and also do it immediately" - enables nginx for future boots *and*
+starts it now, the combination you usually want on a fresh install. (`disable --now` is the mirror image.)
 
 💡 **Key point.** Memorize the pairing: **start/stop = right now**, **enable/disable = at boot**,
 **`--now` = both**. Almost every "the service is gone after I rebooted the box" mystery is a service that was
@@ -156,9 +151,9 @@ started but never enabled.
 ## journalctl - reading what a service actually said
 
 systemd captures the standard output and standard error of every service into one central, indexed log
-called the **journal**. `journalctl` is how you read it, and it's where you go the moment something misbehaves.
+called the **journal**. `journalctl` is how you read it, and where you go the moment something misbehaves.
 
-The most useful invocation by far is "show me this one service's logs, newest stuff visible":
+The most useful invocation: "show me this one service's logs, newest stuff visible":
 
 ```console
 $ journalctl -u nginx -n 20 --no-pager
@@ -168,10 +163,9 @@ Jun 18 11:42:07 web-prod-1 nginx[8124]: 2026/06/18 11:42:07 [error] 8124#8124: *
 ```
 
 *What just happened:* `-u nginx` filters the journal down to the `nginx` **unit** (without it you'd get logs
-from the *entire system* interleaved, which is occasionally what you want and usually overwhelming). `-n 20`
-limits it to the last 20 lines, and `--no-pager` dumps it straight to your terminal instead of opening it in
-a scrollable pager. You can immediately read that nginx is up and that someone requested a missing favicon -
-the kind of concrete, timestamped truth a desktop has no equivalent for.
+from the *entire system* interleaved - occasionally useful, usually overwhelming). `-n 20` limits it to the
+last 20 lines, and `--no-pager` dumps it straight to your terminal instead of a scrollable pager. You can
+immediately read that nginx is up and that someone requested a missing favicon.
 
 When you're actively debugging - restart the service in one window, watch the logs stream in another - the
 indispensable flag is `-f`, **follow**:
@@ -182,9 +176,9 @@ Jun 18 12:03:55 web-prod-1 nginx[8124]: 2026/06/18 12:03:55 [error] ...
 ^C
 ```
 
-*What just happened:* `-f` tails the journal live, printing new lines as they're written, exactly like
-`tail -f` on a plain log file. You sit and watch; Ctrl-C stops following. This is the single most useful
-debugging loop on a server: trigger the thing, watch what the service says about it in real time.
+*What just happened:* `-f` tails the journal live, printing new lines as they're written, like `tail -f` on
+a plain log file. Ctrl-C stops following. This is the single most useful debugging loop on a server: trigger
+the thing, watch what the service says about it in real time.
 
 A few more you'll lean on constantly:
 
@@ -193,20 +187,18 @@ $ journalctl -u sshd --since "1 hour ago" -p err
 ```
 
 *What just happened:* `--since` takes human-friendly time ("1 hour ago", "today", "2026-06-18 09:00"), and
-`-p err` filters by **priority** to errors and worse - so this reads "SSH daemon errors from the last hour,"
-which is a great first query when logins are failing. (`-p` understands the syslog levels: `emerg`, `alert`,
-`crit`, `err`, `warning`, `notice`, `info`, `debug`.)
+`-p err` filters by **priority** to errors and worse - "SSH daemon errors from the last hour," a great first
+query when logins are failing. (`-p` understands the syslog levels: `emerg`, `alert`, `crit`, `err`,
+`warning`, `notice`, `info`, `debug`.)
 
 ⚠️ **Gotcha.** By default the journal may be stored only in memory and lost on reboot, depending on the
-distro - you'll find that under `Storage=` in `/etc/systemd/journald.conf` (`auto` keeps it on disk only if
+distro - check `Storage=` in `/etc/systemd/journald.conf` (`auto` keeps it on disk only if
 `/var/log/journal/` exists; `persistent` always does). If `journalctl --list-boots` shows only the current
-boot, your logs aren't surviving reboots, and you'll want to make the journal persistent before you need it
-to investigate a crash that *caused* the reboot.
+boot, make the journal persistent before you need it to investigate a crash that *caused* the reboot.
 
 🪖 **War story.** A service "won't start" and the panic begins. Nine times out of ten the answer is sitting
-right there: `systemctl status the-service` shows `failed`, and the last few log lines (or
-`journalctl -u the-service -n 50`) name the exact reason - a syntax error in a config file, a port already in
-use, a missing permission. The discipline that separates calm from chaos is boring: *status first, journal
+right there: `systemctl status the-service` shows `failed`, and the last few log lines name the exact reason
+- a config syntax error, a port already in use, a missing permission. The discipline: *status first, journal
 second, fix third.* You almost never have to guess.
 
 ## Recap

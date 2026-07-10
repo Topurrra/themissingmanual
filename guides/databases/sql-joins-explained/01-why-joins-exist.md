@@ -6,14 +6,12 @@ summary: "You split data into separate, linked tables on purpose; a JOIN matches
 tags: [sql, joins, foreign-key, relational, mental-model]
 difficulty: beginner
 synonyms: ["why do i need a join", "what does a join do", "how does a join match rows", "join on a foreign key", "combine two tables in one query"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why Joins Exist
 
-If you've just come from learning about [relationships and keys](/guides/relationships-and-keys), you did something that felt slightly counterintuitive: you took information that "belongs together" — a customer and their orders — and deliberately split it into *separate tables*. That was correct. But it leaves you with a real problem the moment you want to answer an everyday question, and that problem is exactly what a join solves.
-
-This phase doesn't teach you a single piece of join syntax to memorize. It installs the one picture everything else rests on: **a join matches rows in one table to rows in another, using a value they share.** Get that picture and the rest of this guide is just variations on it.
+If you've just come from learning about [relationships and keys](/guides/relationships-and-keys), you did something that felt slightly counterintuitive: you took information that "belongs together" — a customer and their orders — and deliberately split it into *separate tables*. That was correct. But it leaves you with a real problem the moment you want to answer an everyday question, and that problem is exactly what a join solves: **a join matches rows in one table to rows in another, using a value they share.** Get that picture and the rest of this guide is just variations on it.
 
 ## The two tables we'll use everywhere
 
@@ -41,7 +39,7 @@ Notice the link: every order carries a `user_id`. That column is how an order po
 
 **The common wrong instinct.** When people first feel this pain, they think: "This is silly — I should have put the user's name directly *in* the orders table. Then I wouldn't need a join at all."
 
-**Why that falls apart.** Imagine you did that — every order row carries its own copy of `name = "Ada"`. Now Ada changes her name. You have to find and update every single order she ever placed, and if you miss one, your data now disagrees with itself. Worse, a user who hasn't ordered yet has nowhere to exist. Splitting users and orders into separate tables means each fact lives in exactly one place: Ada's name is stored once, in `users`. That's the whole point, and it's why joins exist — the cost of storing each fact once is that you need a way to *recombine* facts on demand.
+**Why that falls apart.** Imagine you did that — every order row carries its own copy of `name = "Ada"`. Now Ada changes her name. You have to find and update every order she ever placed, and if you miss one, your data disagrees with itself. Worse, a user who hasn't ordered yet has nowhere to exist. Splitting users and orders into separate tables means each fact lives in exactly one place: Ada's name is stored once, in `users`. That's why joins exist — the cost of storing each fact once is that you need a way to *recombine* facts on demand.
 
 💡 **Key point.** You didn't split your tables to make querying harder. You split them so each fact is stored once. A join is the tool that pays that back: it recombines the split tables for a single question, without duplicating anything on disk.
 
@@ -97,7 +95,7 @@ The `ON` clause is always answering one question: *how do I know which row over 
 
 ## Why this saves you later
 
-Once you see a join as "match rows from A to rows in B on a shared key," a huge amount of SQL stops being intimidating. Reports that pull from five tables are just this same move, repeated. And the day a query returns the wrong number of rows — too few, or suspiciously too many — you'll know exactly where to look: the matching rule in the `ON` clause, and whether you wanted the non-matching rows kept or dropped. That single decision is Phase 2.
+Once you see a join as "match rows from A to rows in B on a shared key," a huge amount of SQL stops being intimidating — reports pulling from five tables are just this same move, repeated. The day a query returns the wrong number of rows, you'll know exactly where to look: the matching rule in the `ON` clause, and whether you wanted non-matching rows kept or dropped. That single decision is Phase 2.
 
 ## Recap
 

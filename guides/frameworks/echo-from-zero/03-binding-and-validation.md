@@ -6,7 +6,7 @@ summary: "Decode request bodies into structs with c.Bind, then check them with a
 tags: [echo, go, binding, validation, json]
 difficulty: intermediate
 synonyms: ["echo bind", "echo c.bind json", "echo validation", "echo custom validator", "echo struct tags", "echo validate"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Binding & Validation
@@ -55,11 +55,10 @@ func create(c echo.Context) error {
 }
 ```
 
-*What just happened:* We declared a struct describing the shape we expect, then called `c.Bind(&in)` —
-note the `&`, because Bind needs a pointer to write into. If the body is malformed JSON (or the wrong
-content type), `Bind` returns an error and we bail out with a 400. On success, `in` is populated and we
-echo it back. Send `{"title":"Dune","author":"Herbert"}` with `Content-Type: application/json` and it
-round-trips cleanly.
+*What just happened:* we declared a struct describing the shape we expect, then called `c.Bind(&in)` —
+note the `&`, Bind needs a pointer to write into. If the body is malformed JSON (or the wrong content
+type), `Bind` returns an error and we bail out with a 400. On success, `in` is populated and we echo it
+back.
 
 ⚠️ One trap worth naming early: `Bind` succeeding does **not** mean the data is good. An empty body that
 parses to a zero-value struct, or a JSON object with `{"title":""}`, both bind without error. Bind checks
@@ -88,8 +87,8 @@ func (cv *CustomValidator) Validate(i any) error {
 
 *What just happened:* `CustomValidator` wraps a `*validator.Validate` instance. Its `Validate` method just
 forwards the struct to `cv.v.Struct(i)`, which inspects the struct's `validate:"..."` tags and returns an
-error if any rule fails. This is the entire bridge between Echo and the validator library — small on
-purpose. You write it once and forget it.
+error if any rule fails. That's the entire bridge between Echo and the validator library — write it once
+and forget it.
 
 Now register it on your Echo instance in `main`:
 
@@ -103,9 +102,9 @@ func main() {
 }
 ```
 
-*What just happened:* Setting `e.Validator` is what makes `c.Validate(...)` work inside handlers. Skip
-this line and every call to `c.Validate` will fail at runtime complaining that no validator is registered.
-The `validator.New()` call builds the underlying engine that reads your tags.
+*What just happened:* setting `e.Validator` is what makes `c.Validate(...)` work inside handlers. Skip
+this line and every call to `c.Validate` fails at runtime complaining no validator is registered.
+`validator.New()` builds the underlying engine that reads your tags.
 
 With the hook in place, the rules themselves live in `validate:"..."` struct tags. The validator v10 ones
 you'll reach for constantly:
@@ -144,19 +143,18 @@ func create(c echo.Context) error {
 }
 ```
 
-*What just happened:* The flow reads top to bottom like a checklist. `c.Bind(&in)` decodes the JSON — fail
+*What just happened:* the flow reads top to bottom like a checklist. `c.Bind(&in)` decodes the JSON — fail
 here means the body was unparseable, so 400. `c.Validate(&in)` runs the tag rules — fail here means the
 body parsed but `Title` was empty or some other rule broke, so also 400, and we hand back the validator's
 own message so the client knows *what* was wrong. Only once both pass do we build the real `Book`, assign
-it an ID, save it, and return `201 Created` with the new resource. Notice we never trusted the input until
-both gates were cleared.
+it an ID, save it, and return `201 Created`.
 
-💡 Look closely at how every failure path ends: `return echo.NewHTTPError(...)`. We're not writing the
-error response by hand — no `c.JSON(400, ...)` with a hand-rolled error body. We just *return* the error
-and let Echo's central error handler turn it into a response. This is Echo's whole personality, the thing
-that keeps handlers clean: handlers describe *what went wrong*, and one place decides *how it looks* to the
-client. We'll build that central `HTTPErrorHandler` properly in [Phase 6](06-rest-api-and-errors.md) —
-for now, just trust that returning an `HTTPError` produces a sensible JSON error with the right status.
+💡 Look at how every failure path ends: `return echo.NewHTTPError(...)`. We're not writing the error
+response by hand — no `c.JSON(400, ...)` with a hand-rolled body. We *return* the error and let Echo's
+central error handler turn it into a response. That's Echo's whole personality: handlers describe *what
+went wrong*, one place decides *how it looks*. We'll build that central `HTTPErrorHandler` properly in
+[Phase 6](06-rest-api-and-errors.md) — for now, trust that returning an `HTTPError` produces a sensible
+JSON error with the right status.
 
 ## Recap
 

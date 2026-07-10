@@ -6,7 +6,7 @@ summary: "Unity is a game engine plus editor: it handles rendering, physics, aud
 tags: [unity, csharp, gamedev, engine, getting-started]
 difficulty: beginner
 synonyms: ["what is unity", "unity game engine", "unity gameobject component", "unity scenes", "unity for beginners", "unity c#"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What Unity Is
@@ -15,8 +15,7 @@ You already know [C#](/guides/csharp-from-zero) - classes, methods, fields, inhe
 single fact is the reason Unity is your fastest route into making games. Unity powers an enormous
 slice of the games you've actually played: indie darlings, the mobile titles topping the charts,
 and plenty of AA productions. It's also a career path of its own, sitting well apart from web and
-backend work. If you've been wanting to make a game and you can write C#, you're most of the way
-to the starting line.
+backend work.
 
 Here's the one idea to hold before any of the windows and menus pile up. An **engine** is a
 framework for games - the same "don't call us, we'll call you" relationship you met in

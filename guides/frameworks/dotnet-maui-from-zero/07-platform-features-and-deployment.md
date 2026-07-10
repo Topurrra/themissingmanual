@@ -6,17 +6,16 @@ summary: "One C# call reaches each platform's native features — sensors, conne
 tags: [dotnet-maui, csharp, platform, deployment, permissions]
 difficulty: intermediate
 synonyms: ["maui essentials", "maui platform specific code", "maui permissions", "maui deploy android ios", "maui build store", "maui geolocation"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Platform Features & Deployment
 
-Here's the mental model for this whole phase. MAUI gives you **one C# API that reaches each
-platform's native features** — the GPS chip, the network state, the battery, the clipboard.
-Call one method, and MAUI talks to Android's location services on Android and Apple's on iOS.
-For the rare case the shared API doesn't cover, you drop into the `Platforms/` folders with
-native code guarded by `#if`. Once the app does what you want, you **package it per store** —
-a different bundle and signing process for each target.
+MAUI gives you **one C# API that reaches each platform's native features** — the GPS chip, the
+network state, the battery, the clipboard. Call one method, and MAUI talks to Android's location
+services on Android and Apple's on iOS. For the rare case the shared API doesn't cover, you drop
+into the `Platforms/` folders with native code guarded by `#if`. Once the app does what you want,
+you **package it per store** — a different bundle and signing process for each target.
 
 Three moves, in order: reach native features with shared code, escape to platform code only
 when forced, then ship. Our notes app has lived on a single codebase since Phase 1, and that's
@@ -59,8 +58,8 @@ async Task SyncNotesAsync()
 
 *What just happened:* `Connectivity.Current.NetworkAccess` returns an enum describing the
 device's network state. We check for `Internet` *before* touching the network, so an offline
-user gets a clear, friendly message instead of a timeout. The exact same code runs on Android,
-iOS, and Windows — MAUI asks each platform's connectivity API under the hood.
+user gets a clear message instead of a timeout. The exact same code runs on Android, iOS, and
+Windows — MAUI asks each platform's connectivity API under the hood.
 
 Want to react when the connection changes mid-session? Subscribe to an event:
 
@@ -73,8 +72,7 @@ Connectivity.Current.ConnectivityChanged += (s, e) =>
 ```
 
 *What just happened:* `ConnectivityChanged` fires whenever the device gains or loses a
-connection. We flip a banner's visibility so the user always knows the app's sync state —
-no polling, no guesswork.
+connection. We flip a banner's visibility so the user always knows the app's sync state.
 
 That single-call shape repeats across the whole family. A quick map of the ones you'll reach
 for most:
@@ -102,7 +100,7 @@ if (DeviceInfo.Current.Platform == DevicePlatform.iOS)
 
 *What just happened:* `DeviceInfo.Current.Platform` tells you which OS you're running on at
 runtime, so you can make small adjustments in shared code without dropping into a `Platforms/`
-folder. Use it for tweaks; use real platform code below for genuinely native behavior.
+folder. Use it for tweaks; use platform code below for genuinely native behavior.
 
 ## Permissions — ask, and declare
 
@@ -130,9 +128,8 @@ async Task<Location?> GetCurrentLocationAsync()
 
 *What just happened:* we **check** the current permission status first (no need to nag a user
 who already said yes), and only **request** if we don't have it. If the user declines, we
-return `null` and the caller handles the no-location case — we never assume permission was
-granted. For our notes app, this might tag a note with "where it was written," skipping the
-tag gracefully if location is off.
+return `null` and the caller handles the no-location case. For our notes app, this might tag a
+note with "where it was written," skipping the tag gracefully if location is off.
 
 > ⚠️ The C# call is only half the job. Each platform also requires you to **declare** the
 > permission in its manifest — and the request will **silently fail** (or the store will
@@ -176,8 +173,8 @@ public void Vibrate()
 ```
 
 *What just happened:* the code inside `#if ANDROID` only compiles into the Android build, and
-the `#elif IOS` block only into the iOS build. Each branch can call that platform's native API
-directly. Great for a one-off; messy if it sprawls.
+`#elif IOS` only into the iOS build. Each branch calls that platform's native API directly.
+Great for a one-off; messy if it sprawls.
 
 **2. The `Platforms/` folders + partial classes.** For anything bigger, MAUI's project layout
 already separates native code into `Platforms/Android/`, `Platforms/iOS/`, and so on. Declare a
@@ -203,8 +200,8 @@ public class NoteEditorViewModel(IDeviceTorch torch)
 ```
 
 *What just happened:* the ViewModel knows only `IDeviceTorch` — pure shared C#, fully testable.
-The Android and iOS torch implementations live in their `Platforms/` folders and get registered
-with the DI container at startup. Your app logic never sees a platform type.
+The Android and iOS implementations live in their `Platforms/` folders and get registered with
+the DI container at startup. Your app logic never sees a platform type.
 
 > 💡 Reach for these only when the cross-platform API doesn't cover you. Most of what an app
 > needs already has a shared API — check the device-API table first. Platform code is a tool
@@ -223,9 +220,8 @@ dotnet publish -f net8.0-android -c Release
 ```
 
 *What just happened:* `dotnet publish` compiles a Release build for the Android target and
-produces the app bundle. You'll sign it with a keystore (Google Play also offers managed
-signing) and upload it to the Play Console. The `.aab` lets Google generate device-optimized
-APKs for each user.
+produces the app bundle. Sign it with a keystore (Google Play also offers managed signing) and
+upload it to the Play Console. The `.aab` lets Google generate device-optimized APKs per user.
 
 **iOS / Mac Catalyst** → an App Store build:
 
@@ -245,9 +241,8 @@ dotnet publish -f net8.0-ios -c Release
 dotnet publish -f net8.0-windows10.0.19041.0 -c Release
 ```
 
-*What just happened:* this produces an `.msix`, Windows' modern app-package format. You can
-submit it to the Microsoft Store or distribute it directly (sideloading) with a trusted
-certificate.
+*What just happened:* this produces an `.msix`, Windows' modern app-package format. Submit it
+to the Microsoft Store or distribute it directly (sideloading) with a trusted certificate.
 
 Each store then has its **own** gauntlet: signing keys to guard, icon and splash assets at the
 right sizes, metadata and screenshots, and a review queue. Apple's review is the strictest —

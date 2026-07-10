@@ -6,14 +6,14 @@ summary: "Insert rows with Create and read them back with the four finders — F
 tags: [gorm, go, create, read, crud, query]
 difficulty: intermediate
 synonyms: ["gorm create", "gorm first find take", "gorm read record", "gorm errrecordnotfound", "gorm insert", "gorm get by id"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Create & Read
 
 You've got a struct that maps to a table, and `AutoMigrate` has built that table for you. Now comes the part that makes an ORM feel like magic the first time: you hand GORM a Go value, and a row appears in the database. Then you ask for it back, and it lands in a struct, fully populated. No `INSERT`, no `SELECT`, no scanning columns into fields by hand.
 
-The trick to staying in control is to keep one picture in your head, so let's start there.
+Staying in control is a matter of keeping one picture in your head.
 
 ## The mental model
 

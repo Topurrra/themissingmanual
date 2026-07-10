@@ -12,7 +12,7 @@ synonyms:
   - kong vs aws api gateway
   - api gateway explained
   - single entry point for microservices
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Tradeoffs and real examples
@@ -46,7 +46,7 @@ With gateway:    client -> gateway -> service          (2 hops each way)
 
 ## Cost 3: configuration complexity
 
-The gateway's routing rules, auth policies, and rate limits all live in one place — which is exactly the benefit from Phase 2, and also a new liability. That configuration is now a critical piece of infrastructure in its own right. Get a routing rule wrong and you can misroute traffic for every service at once, not just one. Someone has to own it, version it, and test changes to it with the same care you'd give to code.
+The gateway's routing rules, auth policies, and rate limits all live in one place — which is exactly the benefit from Phase 2, and also a new liability. Get a routing rule wrong and you can misroute traffic for every service at once, not just one, because that configuration is now critical infrastructure in its own right. Someone has to own it, version it, and test changes with the same care you'd give to code.
 
 ```text
 One misconfigured route in the gateway

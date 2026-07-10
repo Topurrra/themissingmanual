@@ -6,7 +6,7 @@ summary: "Wire controls to data with BindingContext and {Binding}, pick OneWay v
 tags: [dotnet-maui, csharp, data-binding, collectionview, bindingcontext]
 difficulty: intermediate
 synonyms: ["maui data binding", "maui binding context", "maui collectionview", "xaml binding", "maui itemssource", "maui two-way binding"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Controls & Data Binding
@@ -38,7 +38,7 @@ public class Note
 }
 ```
 
-*What just happened:* nothing magic — just a class with two properties, the kind of object a binding reads from. (We'll see its one limitation in a minute.)
+*What just happened:* a class with two properties — the kind of object a binding reads from. (It has one limitation, coming up.)
 
 Now the page. Set the `BindingContext` in the code-behind, then bind in XAML:
 
@@ -62,7 +62,7 @@ public partial class NoteDetailPage : ContentPage
 </ContentPage>
 ```
 
-*What just happened:* the page's `BindingContext` is one `Note`. The first `Label` looks up `Title` on that note and shows "Buy milk"; the second shows the body. We never wrote `titleLabel.Text = ...` — the binding did the lookup. The controls inherit the page's `BindingContext`: set it once on the page and every child can bind against it.
+*What just happened:* the page's `BindingContext` is one `Note`. The first `Label` looks up `Title` and shows "Buy milk"; the second shows the body — no `titleLabel.Text = ...` anywhere. Controls inherit the page's `BindingContext`, so set it once and every child can bind against it.
 
 ## Binding modes: which way does data flow?
 
@@ -78,15 +78,13 @@ Here's a TwoWay binding on an editable title:
 <Entry Text="{Binding Title, Mode=TwoWay}" Placeholder="Note title" />
 ```
 
-*What just happened:* the `Entry` shows the note's current `Title`, and when the user edits it, the new text is written straight back to `note.Title` — no `TextChanged` event handler, no manual assignment. That's the payoff of TwoWay: the data object stays current as the user types.
+*What just happened:* the `Entry` shows the note's current `Title`, and edits write straight back to `note.Title` — no `TextChanged` handler, no manual assignment. That's the payoff of TwoWay.
 
 > 💡 You often don't need to write `Mode=TwoWay` on an `Entry` — its `Text` is TwoWay by default. Spell it out when you want to be explicit, or when you're binding a property whose default mode isn't what you want.
 
 ## The catch: live updates need change notifications
 
-Now the part that trips up everyone the first time. Bind a `Label` to `note.Title`, then later run `note.Title = "Buy oat milk";` in code — and the label **doesn't change.** The binding read the value once and has no idea the property moved.
-
-Why? A plain class like our `Note` has no way to announce "hey, `Title` changed." The binding wired itself up, but nobody rang the bell.
+Now the part that trips up everyone the first time. Bind a `Label` to `note.Title`, then later run `note.Title = "Buy oat milk";` in code — and the label **doesn't change.** The binding read the value once and has no idea the property moved. A plain class like our `Note` has no way to announce "hey, `Title` changed" — the binding wired itself up, but nobody rang the bell.
 
 The fix is an interface called **`INotifyPropertyChanged`**: your data object raises an event every time a property changes, and the binding listens for it. With that in place, set `note.Title` in code and the label updates instantly.
 
@@ -111,11 +109,11 @@ A notes app needs to show *many* notes, not one. That's `CollectionView` — MAU
 </CollectionView>
 ```
 
-*What just happened:* `ItemsSource` points at the page's `Notes` collection, so the `CollectionView` knows it has, say, five notes, and stamps out a copy of the `DataTemplate` for each. Crucially, **inside the `DataTemplate`, `{Binding Title}` is relative to each item — a single `Note` — not the page.** The page's `BindingContext` is the screen as a whole; each row's `BindingContext` is automatically the note for that row. That context switch inside the template is the thing to internalize.
+*What just happened:* `ItemsSource` points at the page's `Notes` collection, so the `CollectionView` knows it has, say, five notes, and stamps out a copy of the `DataTemplate` for each. Crucially, **inside the `DataTemplate`, `{Binding Title}` is relative to each item — a single `Note` — not the page.** The page's `BindingContext` is the screen as a whole; each row's `BindingContext` is automatically the note for that row.
 
-So you have two layers of binding context at once: the page is about the *list*, each row is about *one note*. MAUI sets the row context for you; you just bind to the note's properties as if it were the only thing in the world.
+So you have two layers of binding context at once: the page is about the *list*, each row is about *one note*. MAUI sets the row context for you.
 
-> 💡 Back the list with an **`ObservableCollection<T>`**, not a plain `List<T>`. An `ObservableCollection` tells the `CollectionView` whenever you add or remove an item, so the list redraws automatically — a plain `List` has no such signal, and adding to it won't budge the screen. (Same family of problem as `INotifyPropertyChanged`, one level up: the *collection* needs to announce changes too.)
+> 💡 Back the list with an **`ObservableCollection<T>`**, not a plain `List<T>`. It tells the `CollectionView` whenever you add or remove an item, so the list redraws automatically — a plain `List` has no such signal. Same problem as `INotifyPropertyChanged`, one level up: the *collection* needs to announce changes too.
 
 ## Wiring the notes app
 
@@ -140,7 +138,7 @@ public partial class NotesListPage : ContentPage
 }
 ```
 
-*What just happened:* the page exposes a `Notes` collection and sets itself as the `BindingContext` (`BindingContext = this`), so `{Binding Notes}` in XAML resolves to that property. Using `ObservableCollection` means a later `Notes.Add(...)` shows up in the UI without a manual refresh.
+*What just happened:* the page exposes a `Notes` collection and sets itself as the `BindingContext` (`BindingContext = this`), so `{Binding Notes}` resolves to that property. `ObservableCollection` means a later `Notes.Add(...)` shows up without a manual refresh.
 
 The list XAML binds the `CollectionView` to it:
 
@@ -159,7 +157,7 @@ The list XAML binds the `CollectionView` to it:
 </ContentPage>
 ```
 
-*What just happened:* each note becomes a two-line row — title on top, body in gray underneath. The bindings inside the template (`Title`, `Body`) read from each individual `Note`, because that's the row's context. One template, every note rendered consistently.
+*What just happened:* each note becomes a two-line row — title on top, body in gray underneath. The bindings inside the template read from each individual `Note`, because that's the row's context. One template, every note rendered consistently.
 
 And the detail page edits one note's title with a TwoWay `Entry`:
 
@@ -170,9 +168,9 @@ And the detail page edits one note's title with a TwoWay `Entry`:
 </VerticalStackLayout>
 ```
 
-*What just happened:* point this page's `BindingContext` at one `Note` and the `Entry`/`Editor` both show and *write back* its title and body as the user types. The note object stays in sync with the screen automatically — the "set it once, walk away" promise from the top of the phase.
+*What just happened:* point this page's `BindingContext` at one `Note` and the `Entry`/`Editor` both show and *write back* its title and body as the user types — the "set it once, walk away" promise from the top of the phase.
 
-You now have a list of notes that renders itself and an edit screen that reads and writes a note — all declared in XAML, no manual UI-poking. The one gap left: making the UI live-update when data changes in code — the change-notification problem, and the heart of the next phase.
+You now have a list that renders itself and an edit screen that reads and writes a note — all declared in XAML, no manual UI-poking. One gap left: making the UI live-update when data changes in code, the heart of the next phase.
 
 ## Recap
 

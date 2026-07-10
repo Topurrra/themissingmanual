@@ -6,22 +6,20 @@ summary: "The container deeply: Inversion of Control made concrete, what a bean 
 tags: [spring, ioc-container, applicationcontext, beanfactory, beans, inversion-of-control, container]
 difficulty: intermediate
 synonyms: ["spring ioc container explained", "spring applicationcontext vs beanfactory", "what is a spring bean", "spring container bootstrap", "inversion of control spring", "spring bean definition"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # The IoC Container & ApplicationContext
 
 In [Phase 1](01-spring-without-boot.md) you stood up an `ApplicationContext` by hand and watched it
-hand you back a fully-assembled object. That object came out of *the container* — and the container is
-the single thing the entire rest of Spring is built on. Defining beans, dependency injection, scopes,
-AOP, `@Transactional` — every one of those is "the container doing one more job for you." So before we
-add features, we're going to look hard at the machine itself: what it is, what it holds, and what
-actually happens when it boots.
+hand you back a fully-assembled object. That object came out of *the container* — the single thing the
+entire rest of Spring is built on. Defining beans, dependency injection, scopes, AOP, `@Transactional` —
+every one of those is "the container doing one more job for you." Before we add features, let's look hard
+at the machine itself: what it is, what it holds, and what actually happens when it boots.
 
-Here's the mental model to carry through the whole phase: **the container is a factory that owns your
-objects.** You don't `new` them; you give the container recipes, and it builds them, wires them
-together, and manages them for as long as your app runs. Everything else is detail on top of that one
-sentence.
+**The container is a factory that owns your objects.** You don't `new` them; you give the container
+recipes, and it builds them, wires them together, and manages them for as long as your app runs.
+Everything else is detail on top of that one sentence.
 
 ## Inversion of Control, concretely
 
@@ -146,9 +144,8 @@ ApplicationContext ready — 2 beans
 ```
 *What just happened:* the container did the assembly you used to write in `main`, in dependency order,
 at startup. By the time the context is "ready," `NotificationService` already holds its `EmailSender`.
-And because `ApplicationContext` instantiates singletons *eagerly* (step 3), a typo like "no bean of
-type `MessageSender` found" blows up at startup — not three hours later when a request finally hits
-that code path.
+Because `ApplicationContext` instantiates singletons *eagerly* (step 3), a typo like "no bean of type
+`MessageSender` found" blows up at startup — not three hours later when a request finally hits that code path.
 
 ## Getting beans & the mental shift
 

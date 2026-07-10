@@ -6,15 +6,14 @@ summary: "Test-driven development is a design discipline: write a failing test f
 tags: [tdd, red-green-refactor, testing, test-first, design]
 difficulty: intermediate
 synonyms: ["what is red green refactor", "how does tdd work", "write the test first", "tdd cycle example", "tdd as a design tool"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # TDD: Red, Green, Refactor
 
 The first time someone tells you to "write the test before the code," it sounds backwards. How do you test
-something that doesn't exist yet? That confusion is the whole point you're about to dissolve - because once
-you see what the test is *for*, writing it first stops being strange and starts being the most useful thing
-you do all day.
+something that doesn't exist yet? Once you see what the test is *for*, writing it first stops being strange
+and starts being the most useful thing you do all day.
 
 The secret of TDD is this: **the test isn't really about catching bugs. It's about forcing you to decide
 what you want before you build it.** You can't write a test for a function until you've answered "what do I
@@ -44,10 +43,9 @@ without changing what it does (**refactor**). Then you do it again for the next 
 code." It doesn't. The loop is *small* - often a single test and a few lines of code at a time. The rhythm
 is fast and tight, not a big upfront test-writing phase.
 
-**Why "red" matters more than it looks.** Watching the test *fail first* is not a formality. It proves the
-test actually runs and actually checks something. A test that passes before you've written any code is a
-test that tests nothing - and those are terrifyingly common. Red first means: when it goes green, you *know*
-your code is why.
+**Why "red" matters more than it looks.** Watching the test *fail first* is not a formality - it proves the
+test actually runs and checks something. A test that passes before you've written any code tests nothing,
+and those are terrifyingly common. Red first means: when it goes green, you *know* your code is why.
 
 ## A worked cycle
 
@@ -147,11 +145,10 @@ TDD honest.
 
 ## Why this saves you later
 
-Six months from now, someone asks you to handle negative amounts (refunds). You don't have to remember how
-`format_price` works or hold your breath. You write a test for the refund case, watch it fail, fix the code,
-and watch every existing test confirm you didn't break the old behavior. TDD front-loads a little discipline
-today to buy you fearless change tomorrow - and it leaves behind a suite of tests that document exactly what
-the code is supposed to do.
+Six months from now, someone asks you to handle negative amounts (refunds). You write a test for the refund
+case, watch it fail, fix the code, and watch every existing test confirm you didn't break the old behavior.
+TDD front-loads a little discipline today to buy you fearless change tomorrow, and leaves behind a suite of
+tests that document exactly what the code is supposed to do.
 
 📝 **Terminology.** People say *"test-first"* as a synonym for TDD, and *"the red-green-refactor loop"* for
 the cycle itself. They're the same thing.

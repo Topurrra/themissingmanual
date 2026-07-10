@@ -8,12 +8,12 @@ category: programming-concepts
 difficulty: intermediate
 synonyms: ["what is a closure", "how do closures work", "what is lexical scope", "why do all my callbacks see the last value", "loop variable closure bug", "closure captures variable not value", "private state with closures", "function remembers variable", "scope vs closure"]
 order: 12
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Closures and Scope
 
-You've written a function that returns another function, or passed a callback into a loop, and watched it behave in a way that felt almost spiteful. Every button logs the same number. Every handler sees the last item, never the one it was supposed to. The code reads correctly top to bottom, and yet it lies. That moment - when a function clearly *remembers the wrong thing* - is the door into one of the deepest, most useful ideas in programming.
+You've written a function that returns another function, or passed a callback into a loop, and watched it behave in a way that felt almost spiteful: every button logs the same number, every handler sees the last item instead of its own. The code reads correctly top to bottom, and yet it lies. That moment - when a function clearly *remembers the wrong thing* - is the door into one of the deepest, most useful ideas in programming.
 
 The idea is small once you see it: a function carries a backpack of the variables it was born next to, and it keeps reaching into that backpack long after the surrounding code has finished. That backpack is a **closure**, and the rules for what goes into it are called **scope**. Get these two right and the spiteful bugs stop being mysteries. They become predictable, even obvious - and the same trick that caused the bug becomes the tool you reach for to build private state and clean callbacks.
 

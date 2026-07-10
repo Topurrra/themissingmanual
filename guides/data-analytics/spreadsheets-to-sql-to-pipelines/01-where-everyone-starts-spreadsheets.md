@@ -6,19 +6,18 @@ summary: "Spreadsheets win because they're visible, flexible, and instant — an
 tags: [spreadsheets, excel, google-sheets, data-analytics, beginner-friendly]
 difficulty: beginner
 synonyms: ["why are spreadsheets so popular", "what are spreadsheets bad at", "limits of excel", "when does a spreadsheet break", "spreadsheet problems"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Where Everyone Starts: Spreadsheets
 
 Open a spreadsheet and there's your data, right in front of you — a grid you can click, sort, color, and
-fix on the spot. No setup, no login, no waiting. This is why the spreadsheet is the most-used data tool
-on Earth, and why nobody should feel sheepish about starting there. It's not a beginner's mistake. For a
-huge amount of real work, a spreadsheet is exactly the right answer.
+fix on the spot. No setup, no login, no waiting. This is why it's the most-used data tool on Earth —
+starting there isn't a beginner's mistake. For a huge amount of real work, a spreadsheet is exactly the
+right answer.
 
 The skill that actually matters isn't avoiding spreadsheets. It's knowing the precise moments they stop
-serving you — so you can move up *before* a deadline or a broken report forces your hand. Let's look
-honestly at both sides.
+serving you — so you can move up *before* a deadline or a broken report forces your hand.
 
 ## Why spreadsheets are genuinely great
 
@@ -53,8 +52,8 @@ instant at small sizes — and why it crawls, then chokes, as rows pile up. Ther
 ```
 
 *What just happened:* Those aren't "slows down around here" numbers — they're walls. Hit them and the
-tool literally refuses more data. And you'll feel pain long before the wall: a sheet with a few hundred
-thousand rows and a column of lookups can take seconds to recalc on every edit.
+tool refuses more data. You'll feel pain long before the wall, too: a sheet with a few hundred thousand
+rows and a column of lookups can take seconds to recalc on every edit.
 
 ### No real types
 
@@ -72,7 +71,7 @@ no such promise. Every cell decides its own type, and the tool guesses.
 
 *What just happened:* Four cells that all look like the same date to you are four different things to the
 spreadsheet. Sort that column and the text rows scatter to the wrong place. Sum a "number" column where
-one cell is secretly text, and it silently leaves that row out. There's no guard rail because there's no
+one cell is secretly text, and it silently leaves that row out — no guard rail, because there's no
 declared type.
 
 ⚠️ **The gotcha that eats real data.** Spreadsheets auto-convert anything that *looks* like a number or
@@ -163,7 +162,7 @@ the pain usually arrives.
 4. You graduate when the work crosses one of those lines — and the *which line* tells you *where* to go
    next.
 
-Next, the tool built precisely for the first three pains: a database, and the language you ask it
+Next: the tool built precisely for the first three pains — a database, and the language you ask it
 questions in.
 
 ---

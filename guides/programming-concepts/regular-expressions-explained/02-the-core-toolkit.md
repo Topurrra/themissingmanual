@@ -6,18 +6,16 @@ summary: "The pieces you'll use 90% of the time: literals, character classes (\\
 tags: [regex, character-classes, quantifiers, anchors, groups, beginner-friendly]
 difficulty: beginner
 synonyms: ["regex character classes", "what does \\d mean in regex", "regex quantifiers explained", "regex anchors ^ $", "regex groups parentheses", "regex cheat sheet beginner"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Core Toolkit
 
 Now that you know a regex *describes a shape*, you need a vocabulary for describing shapes more
-richly than "these exact letters." This phase is that vocabulary - and the good news is it's small.
-There are dozens of regex features in the world, but a handful do almost all the work. Learn these,
-and you can read and write the vast majority of patterns you'll ever meet.
+richly than "these exact letters." This phase is that vocabulary, and the good news is it's small.
+There are dozens of regex features in the world, but a handful do almost all the work.
 
-We'll go piece by piece, each with a tiny example you can picture matching, then assemble them into
-something real at the end.
+We'll go piece by piece, each with a tiny example, then assemble them into something real at the end.
 
 ## Literals - characters that mean themselves
 
@@ -33,8 +31,8 @@ themselves. `a` matches an `a`, `7` matches a `7`, `-` matches a dash.
 ```
 
 *What just happened:* nothing fancy - each character stood for itself, in order. Literals are the
-floor everything else builds on. The special power comes from the few characters that *don't* mean
-themselves, which we'll cover now.
+floor everything else builds on; the special power comes from the few characters that *don't* mean
+themselves.
 
 ## Character classes - "any one of these"
 
@@ -70,23 +68,14 @@ vowels." A range with a dash, like `[a-f]`, means "any one character from a to f
 ```text
   pattern:  [aeiou]
 
-  "sky"        ►  no match (no vowels)
-  "fly by"     ►  MATCH   (... actually "fly by" has no a/e/i/o/u either -)
-```
-
-Let me give that one honest output instead:
-
-```text
-  pattern:  [aeiou]
-
   "rhythm"     ►  no match (no a/e/i/o/u)
   "cat"        ►  MATCH   (the a)
 ```
 
 *What just happened:* the brackets describe a custom set, and the engine matched the first character
 that fell inside it - the `a` in `cat`. ⚠️ **Gotcha - a dash inside brackets is a range.** `[a-z]`
-means "a through z," *not* "the letters a, dash, z." If you actually want to match a literal dash
-inside a class, put it first or last: `[-az]` or `[az-]`. This trips up everyone once.
+means "a through z," *not* "the letters a, dash, z." To match a literal dash, put it first or last:
+`[-az]` or `[az-]`. This trips up everyone once.
 
 ## Quantifiers - "how many"
 
@@ -124,8 +113,7 @@ A quick tour of the others:
 ```
 
 *What just happened:* `?` made the `u` optional, so one pattern matched both the US and British
-spellings. That's a tiny taste of why regex is worth it - one description, several real-world
-variations.
+spellings - a tiny taste of why regex is worth it: one description, several real-world variations.
 
 ## Anchors - "where in the text"
 
@@ -167,9 +155,9 @@ group, not one character. They also "capture" what matched, so a tool can pull i
   "ba"           ►  no match
 ```
 
-*What just happened:* without the parentheses, `ab+` would mean "an `a`, then one or more `b`s."
-The group made `+` apply to the *pair* `ab`. Grouping is how you describe repeated *structures*, not
-only repeated single characters - and capturing is how search-and-replace knows which piece to keep.
+*What just happened:* without the parentheses, `ab+` would mean "an `a`, then one or more `b`s." The
+group made `+` apply to the *pair* `ab`. Grouping describes repeated *structures*, not only repeated
+single characters - and capturing is how search-and-replace knows which piece to keep.
 
 ## Building something real: a simple date
 
@@ -198,8 +186,8 @@ well.
 
 A rite of passage is trying to write one regex that matches *every* valid email address and rejects
 every invalid one. Don't. The rules for what's technically a valid email are genuinely strange and
-sprawling, and the "complete" regex people pass around is hundreds of characters long, unreadable,
-and *still* not fully correct.
+sprawling, and the "complete" regex people pass around is hundreds of characters long, unreadable, and
+*still* not fully correct.
 
 What you actually want in real life is a *good-enough* shape check - "looks roughly like an email" -
 and then to confirm it's real by sending a message to it. A practical, readable pattern:
@@ -213,10 +201,10 @@ and then to confirm it's real by sending a message to it. A practical, readable 
 ```
 
 *What just happened:* `\S` means "any non-whitespace character" (the uppercase counterpart of `\s`).
-So this reads: start, some non-spaces, an `@`, some non-spaces, a literal dot (`\.` - escaped,
-because a bare `.` is special; more on that in Phase 3), some non-spaces, end. It's not airtight,
-and it's not meant to be. It catches obvious typos and stays readable - which is the right trade.
-Chasing perfection here is how regex earns its scary reputation.
+So this reads: start, some non-spaces, an `@`, some non-spaces, a literal dot (`\.` - escaped, because
+a bare `.` is special; more in Phase 3), some non-spaces, end. It's not airtight, and it's not meant to
+be - it catches obvious typos and stays readable, which is the right trade. Chasing perfection here is
+how regex earns its scary reputation.
 
 ## Recap
 

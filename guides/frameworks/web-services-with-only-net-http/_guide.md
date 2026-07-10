@@ -9,7 +9,7 @@ order: 20
 group: "Go"
 difficulty: intermediate
 synonyms: ["go net/http", "net http tutorial", "go web service no framework", "go http handler servemux", "go stdlib rest api", "go http middleware", "graceful shutdown go", "go 1.22 routing", "what gin echo are built on"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Web Services With Only net/http

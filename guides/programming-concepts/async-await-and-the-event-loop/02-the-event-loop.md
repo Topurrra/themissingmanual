@@ -6,18 +6,18 @@ summary: "The event loop is a single thread running your code plus a queue of 't
 tags: [event-loop, single-threaded, concurrency, callback-queue, non-blocking, javascript]
 difficulty: intermediate
 synonyms: ["what is the event loop", "how does the event loop work", "single threaded but concurrent", "dont block the event loop", "what is the callback queue", "why does javascript freeze", "concurrency vs parallelism"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Event Loop
 
 In Phase 1 we left a question hanging: how does *one* worker juggle many overlapping waits without dropping any of them? Who rings the bell when "table 4 is ready," and how does the waiter know to go pick it up?
 
-The answer is a beautifully simple machine called the **event loop**. It's the engine underneath every `await` you've ever written, and once you can picture it turning, async stops being mysterious. The whole thing is two parts: a single worker that runs your code, and a line of jobs waiting their turn. Let's build it.
+The answer is a beautifully simple machine called the **event loop** - the engine underneath every `await` you've ever written. Once you can picture it turning, async stops being mysterious. It's two parts: a single worker that runs your code, and a line of jobs waiting their turn.
 
 ## What the event loop actually is
 
-**What it actually is.** The event loop is a single thread - one worker - paired with a **queue** of tasks that are ready to run. The loop does one boring thing forever: take the next ready task off the queue, run it *all the way to completion*, then come back and take the next one. Run a task, finish it, grab the next. Run, finish, grab. Forever.
+**What it actually is.** The event loop is a single thread - one worker - paired with a **queue** of tasks that are ready to run. The loop does one thing forever: take the next ready task off the queue, run it *all the way to completion*, then grab the next one. Run, finish, grab - forever.
 
 📝 **Terminology.** A *thread* is a single sequence of execution - one worker doing one thing at a time, in order. A *queue* here is just a waiting line: jobs join at the back and get picked up from the front. The event loop has one thread and (at least) one queue.
 
@@ -32,7 +32,7 @@ flowchart TD
   Run -->|2. go back| Q
 ```
 
-*What's happening:* Your code runs on the single thread. When it starts a wait - a network request, say - it hands that request off (to the operating system, the browser, the runtime) and *returns immediately*, freeing the thread to do other things. Later, when the reply lands, the runtime drops the "continue here" work into the queue. The loop, going around and around, eventually picks it up and runs it. The waiter dropped the order and walked away; the bell put the finished dish back in his path.
+*What's happening:* Your code runs on the single thread. When it starts a wait - a network request, say - it hands that off (to the OS, the browser, the runtime) and *returns immediately*, freeing the thread for other things. When the reply lands, the runtime drops the "continue here" work into the queue, and the loop eventually picks it up. The waiter dropped the order and walked away; the bell put the finished dish back in his path.
 
 ## Single-threaded but concurrent - not a contradiction
 
@@ -44,13 +44,13 @@ The trick is distinguishing two words people use loosely:
 
 The waiter is **concurrent, not parallel.** There is one waiter. He never carries two dishes through the door in the same instant. But over the course of an evening he keeps *many* tables progressing, because each table spends most of its time *waiting* (for food, for the bill), and he fills those gaps by tending other tables. One worker, many tasks in flight, none of them frozen.
 
-That's exactly the event loop. The single thread is the one waiter. It only ever runs one piece of code at a time - truly one. But because each task hands off its waiting and steps aside, the thread is free to advance other tasks during those gaps. The result *looks* like many things happening together, and for waiting-heavy work, it's nearly as good - without the cost and complexity of multiple threads.
+That's exactly the event loop. The single thread is the one waiter - it runs one piece of code at a time, truly one. But because each task hands off its waiting and steps aside, the thread is free to advance other tasks during those gaps. The result *looks* like many things happening together, and for waiting-heavy work it's nearly as good, without the cost of multiple threads.
 
 💡 **Key point.** One thread can keep hundreds of waiting tasks moving, because waiting doesn't occupy the thread. The thread is only ever busy during the brief moments of actual *computing* between the waits.
 
 ## The catch: the thread can only do one thing at a time
 
-Here's the flip side, and it's the most important practical fact in this whole guide. The loop runs each task **to completion** before it touches the next one. It can't pause your code in the middle of a long calculation to go answer a network reply - it has no way to interrupt a running task. It has to wait for your task to *finish and return* before it can pick up anything else.
+Here's the flip side - and the most important practical fact in this guide. The loop runs each task **to completion** before touching the next one; it can't pause your code mid-calculation to answer a network reply, because it has no way to interrupt a running task. It waits for your task to *finish and return* before picking up anything else.
 
 So if one of your tasks doesn't return for a long time - a giant loop, a synchronous file parse, a heavy calculation - the loop is *stuck inside it*. The queue piles up. Timers don't fire. Clicks don't register. Network replies sit unhandled. The single waiter is trapped in the kitchen doing arithmetic, and the whole dining room waits.
 
@@ -69,7 +69,7 @@ $ node blockdemo.js
 [t=2013ms] calculation done
 [t=2013ms] timer callback finally ran
 ```
-*What just happened:* The timer was *due* at 100 ms - its "continue here" work was sitting in the queue, ready, on time. But the loop couldn't pick it up, because the single thread was trapped inside the 2-second synchronous calculation, running it to completion. Only when that calculation returned and freed the thread could the loop finally pull the timer's work off the queue. The timer didn't fire late because the timer was slow; it fired late because *we* blocked the one worker who answers the bell.
+*What just happened:* The timer was *due* at 100 ms - its "continue here" work sat in the queue, ready, on time. But the loop couldn't pick it up: the single thread was trapped inside the 2-second synchronous calculation, running it to completion. Only when that calculation returned and freed the thread could the loop pull the timer's work off the queue. The timer didn't fire late because the timer was slow; it fired late because *we* blocked the one worker who answers the bell.
 
 **Why this saves you later.** This single picture explains a startling number of real-world bugs. "My web server handles requests fine until one endpoint does heavy work, then *all* requests hang" - blocked loop. "My UI freezes for two seconds when I click Export" - blocked loop. "I added a `console.log` inside a tight million-iteration loop and the whole tab died" - blocked loop. Once you know the loop runs each task to completion on one thread, you stop being surprised by these, and you know the fix: get the heavy work off the one thread that's answering everyone.
 

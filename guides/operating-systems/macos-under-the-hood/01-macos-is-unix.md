@@ -6,19 +6,18 @@ summary: "macOS is built on Darwin, an open-source Unix foundation with the XNU 
 tags: [macos, unix, darwin, xnu, bsd, kernel, filesystem]
 difficulty: intermediate
 synonyms: ["is macos unix", "what is darwin", "what is the xnu kernel", "why does macos terminal feel like linux", "macos filesystem root", "what is in /usr on mac", "where are my files on a mac"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # macOS Is Unix
 
-Here's the single idea this whole guide rests on, and it surprises almost everyone: **macOS is a real
-Unix system.** Not "Unix-like as a marketing word" - it's a certified Unix that happens to ship with the
-nicest desktop in the business bolted on top. The Finder, the Dock, the gorgeous animations: those are
-the coat. Underneath is the same family of machine that runs most of the internet's servers.
+Here's the single idea this whole guide rests on, and it surprises almost everyone: **macOS is a real Unix
+system.** Not "Unix-like as a marketing word" - it's a certified Unix that ships with the nicest desktop in
+the business bolted on top. The Finder, the Dock, the gorgeous animations: those are the coat. Underneath is
+the same family of machine that runs most of the internet's servers.
 
 Once you believe that, a hundred small mysteries resolve at once - why Terminal feels like Linux, why
-developer tools "just work," why your files secretly live at paths like `/Users/you`. Let's build the
-picture from the bottom up.
+developer tools "just work," why your files secretly live at paths like `/Users/you`.
 
 ## The layers under the Mac
 
@@ -46,11 +45,10 @@ branch of the Unix family tree - which is why the commands on a Mac behave like 
 At the center of Darwin is its kernel, named **XNU**. Remember from the OS guide that the kernel is the
 core program that actually controls the hardware and enforces every rule. XNU is the Mac's.
 
-**Why people get this wrong.** People assume macOS and Linux must share a kernel because the terminals
-look identical. They don't. **Linux uses the Linux kernel; macOS uses XNU.** What they *share* is the
-Unix design and the BSD-style commands sitting on top - the userland, not the engine. That distinction
-matters later: a binary compiled for Linux won't run directly on macOS, even though `ls` and `grep` feel
-the same, because the kernel underneath is different.
+**Why people get this wrong.** People assume macOS and Linux must share a kernel because the terminals look
+identical. They don't. **Linux uses the Linux kernel; macOS uses XNU.** What they *share* is the Unix design
+and the BSD-style commands on top - the userland, not the engine. That distinction matters later: a binary
+compiled for Linux won't run directly on macOS, even though `ls` and `grep` feel the same.
 
 📝 **Terminology.** *XNU* is the macOS kernel. (The name is a self-deprecating recursive joke from its
 authors - "X is Not Unix.") It blends a Mach microkernel core with BSD components, which is why Darwin
@@ -63,9 +61,9 @@ interchangeable.
 
 ## The real filesystem hiding under Finder
 
-Open a Finder window and you see Documents, Desktop, Downloads, AirDrop, iCloud - a friendly,
-curated view. That view is a *lie of kindness*. Finder is deliberately hiding the actual Unix filesystem
-underneath, because most people never need it. But it's right there, and it's a textbook Unix layout.
+Open a Finder window and you see Documents, Desktop, Downloads, AirDrop, iCloud - a friendly, curated view.
+That view is a *lie of kindness*: Finder is deliberately hiding the actual Unix filesystem underneath,
+because most people never need it. But it's right there, and it's a textbook Unix layout.
 
 Open Terminal and ask where the top of the world is:
 
@@ -77,10 +75,9 @@ Library/        Users/          sbin/           var@
 bin/            opt/            tmp@
 cores/          dev/            etc@
 ```
-*What just happened:* You moved to `/` - the **root** of the filesystem, the single top folder
-everything else hangs beneath. (Unix has no `C:` drive; there's one tree, and `/` is its trunk.) The
-`/` after a name means "this is a folder"; the `@` means "this is a symbolic link" - a signpost pointing
-elsewhere. Several of these are pure classic Unix.
+*What just happened:* you moved to `/` - the **root** of the filesystem, the single top folder everything
+else hangs beneath. (Unix has no `C:` drive; there's one tree, and `/` is its trunk.) The `/` after a name
+means "this is a folder"; the `@` means "this is a symbolic link" - a signpost pointing elsewhere.
 
 Here's what the important ones are, in plain terms:
 
@@ -99,15 +96,14 @@ Here's what the important ones are, in plain terms:
 | `/dev` | "Devices as files" - your disks and terminals appear here as file-like entries. |
 
 ⚠️ **Gotcha: this is the same layout you'd see on Linux - with a Mac accent.** `/usr`, `/etc`, `/var`,
-`/bin` are straight out of the Unix tradition and mean the same thing on a Linux server. But macOS adds
-its own capitalized folders (`/Users`, `/Applications`, `/Library`, `/System`) where Linux would use
-lowercase (`/home`, and no direct equivalents). So it's *recognizably* Unix, not *identically* Linux.
-Don't assume a path you memorized on Linux (`/home/you`) exists here - on a Mac it's `/Users/you`.
+`/bin` are straight out of the Unix tradition and mean the same thing on a Linux server. But macOS adds its
+own capitalized folders (`/Users`, `/Applications`, `/Library`, `/System`) where Linux would use lowercase
+(`/home`, and no direct equivalents). It's *recognizably* Unix, not *identically* Linux - don't assume a
+path you memorized on Linux (`/home/you`) exists here; on a Mac it's `/Users/you`.
 
-🪖 **War story.** The first script I copied from a Linux tutorial onto my Mac failed instantly: it wrote
-to `/home/me/output.log`, and there is no `/home` on a stock Mac. Two minutes of confusion, then the
-realization - *oh, my home is `/Users/me`.* That one swap (`/home` → `/Users`) is the single most common
-papercut for a Linux person sitting down at a Mac, and now it'll never get you.
+🪖 **War story.** The first script copied from a Linux tutorial onto a Mac fails instantly if it writes to
+`/home/me/output.log` - there is no `/home` on a stock Mac. That one swap (`/home` → `/Users`) is the single
+most common papercut for a Linux person sitting down at a Mac.
 
 You can prove your home folder to yourself:
 
@@ -119,14 +115,14 @@ $ pwd
 /Users/ada
 ```
 *What just happened:* `$HOME` is the environment variable holding your home folder's path, and `~` is
-shorthand for it. On this machine the user is `ada`, so home is `/Users/ada` - exactly the friendly
-"Home" Finder shows you, just spelled in its true Unix path. Finder and the Terminal are looking at the
-*same* filesystem; they're only two windows onto one tree.
+shorthand for it. On this machine the user is `ada`, so home is `/Users/ada` - exactly the friendly "Home"
+Finder shows you, just spelled in its true Unix path. Finder and the Terminal are looking at the *same*
+filesystem; they're only two windows onto one tree.
 
 **Why this saves you later.** Every confusing macOS moment that follows - "where did Homebrew put that?",
-"why can't I edit this file?", "what's a `.plist`?" - is really a question about *this* filesystem. Once
-you can see the real tree instead of Finder's curated highlights, you can navigate the Mac the way a
-senior does: by knowing where things actually are.
+"why can't I edit this file?", "what's a `.plist`?" - is really a question about *this* filesystem. Once you
+can see the real tree instead of Finder's curated highlights, you can navigate the Mac like a senior does:
+by knowing where things actually are.
 
 ## Recap
 

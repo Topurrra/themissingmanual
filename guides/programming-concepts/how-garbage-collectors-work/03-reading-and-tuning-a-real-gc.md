@@ -6,7 +6,7 @@ summary: "What a real GC log actually shows, the handful of tuning knobs that ma
 tags: [garbage-collection, gc-tuning, gc-logs, heap-sizing, allocation-pressure, rust-ownership]
 difficulty: advanced
 synonyms: ["how to read a gc log", "how to tune the jvm garbage collector", "what gc settings actually matter", "how to reduce garbage collection pauses", "why doesn't rust have a garbage collector", "gc tuning best practices"]
-updated: 2026-07-06
+updated: 2026-07-10
 ---
 
 # Reading and Tuning a Real GC
@@ -48,7 +48,7 @@ Reducing allocation pressure fixes the actual cause: fewer objects born means fe
 
 Every collector in this guide - counting, tracing, generational, concurrent - exists to answer one question automatically at runtime: is this object still reachable? [Rust](/guides/rust-from-zero) answers a version of that question at **compile time** instead, through ownership and borrowing: every value has exactly one owner, the compiler tracks when that owner goes out of scope, and memory is freed deterministically at that point - no tracing, no pause, no runtime collector thread at all.
 
-This isn't a smaller or faster garbage collector. It's the reference-counting insight from Phase 1 (deallocation tied to a countable, trackable notion of "still needed") pushed to its extreme: instead of a runtime counter checked at each mutation, the compiler proves ownership statically and inserts the `drop` calls itself. The trade is real and openly acknowledged by the language: you spend more effort upfront satisfying the borrow checker, in exchange for zero GC pauses and no runtime tracing cost, ever. For latency-critical systems where even ZGC's sub-millisecond pauses are unacceptable, that trade is often exactly right. For a good part of everyday application code, a well-tuned generational collector is genuinely less work for a comparable result. Both are legitimate engineering answers to the same underlying problem - they move the cost to a different phase of the program's life.
+This isn't a smaller or faster garbage collector. It's the reference-counting insight from Phase 1 (deallocation tied to a countable, trackable notion of "still needed") pushed to its extreme: instead of a runtime counter checked at each mutation, the compiler proves ownership statically and inserts the `drop` calls itself. The trade is real and openly acknowledged by the language: you spend more effort upfront satisfying the borrow checker, in exchange for zero GC pauses and no runtime tracing cost, ever. For latency-critical systems where even ZGC's sub-millisecond pauses are unacceptable, that trade is often exactly right; for a good part of everyday application code, a well-tuned generational collector is genuinely less work for a comparable result. Both are legitimate engineering answers to the same underlying problem - they just move the cost to a different phase of the program's life.
 
 ```quiz
 [

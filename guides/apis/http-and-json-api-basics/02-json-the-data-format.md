@@ -6,7 +6,7 @@ summary: "JSON is structured data written as text: objects, arrays, strings, num
 tags: [json, data-format, objects, arrays, parsing, apis]
 difficulty: beginner
 synonyms: ["what is json", "json explained for beginners", "how to read json", "json objects and arrays", "why do apis use json", "json data types"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # JSON, the Data Format
@@ -21,10 +21,10 @@ structure, not soup.
 
 ## What JSON actually is
 
-**What it actually is.** JSON (it stands for **JavaScript Object Notation**) is a way to write structured
-data as plain text. "Structured" means it has shape — values nested inside other values — and "text" means
-it's just characters you can read, type, and email. A program can turn that text into data it can work
-with, and turn its data back into that text to send. Nothing about it is secret or binary.
+JSON (it stands for **JavaScript Object Notation**) is a way to write structured data as plain text.
+"Structured" means it has shape — values nested inside other values — and "text" means it's just
+characters you can read, type, and email. A program turns that text into data it can work with, and turns
+its data back into that text to send. Nothing about it is secret or binary.
 
 Here is a complete JSON document with every building block in it. Read it top to bottom — it's meant to be
 readable:
@@ -43,8 +43,8 @@ readable:
 }
 ```
 
-*What just happened:* You just read a full record about a user, and you probably understood it without
-being told how. That readability is the entire point of JSON. Now let's name the pieces.
+You just read a full record about a user, and probably understood it without being told how — that
+readability is the entire point of JSON. Now let's name the pieces.
 
 ## The building blocks
 
@@ -70,9 +70,9 @@ that happens to be an array. That's how JSON describes anything from a single nu
 
 ## The mental map: JSON ↔ objects in your code
 
-**What it actually is.** When your program receives JSON, it doesn't keep it as text — it **parses** it
-into the data structures your language already has. The mapping is direct and predictable, which is exactly
-why JSON is comfortable to work with:
+When your program receives JSON, it doesn't keep it as text — it **parses** it into the data structures
+your language already has. The mapping is direct and predictable, which is exactly why JSON is comfortable
+to work with:
 
 ```text
         JSON                       In your code (typical names)
@@ -86,11 +86,10 @@ why JSON is comfortable to work with:
    └──────────────┘
 ```
 
-*What just happened:* That table is the whole reason JSON feels natural in every language. A JSON object
-becomes a dictionary (Python), an object (JavaScript), a map (Go) — whatever your language calls
-"named fields." So once the data is parsed, you reach into it the normal way: ask the object for its
-`"name"` field, ask the array for its first item. JSON is the *text on the wire*; in your code it's just
-ordinary data again.
+That table is the whole reason JSON feels natural in every language. A JSON object becomes a dictionary
+(Python), an object (JavaScript), a map (Go) — whatever your language calls "named fields." Once the data
+is parsed, you reach into it the normal way: ask the object for its `"name"` field, ask the array for its
+first item. JSON is the *text on the wire*; in your code it's just ordinary data again.
 
 📝 **Terminology.** Turning JSON text into in-memory data is **parsing** (or *deserializing*). Going the
 other way — turning your data into JSON text to send — is **serializing**. Every language has a built-in
@@ -98,8 +97,8 @@ tool for both; you rarely do it by hand.
 
 ## Why JSON won
 
-**The design decision.** Before JSON, data on the web was often sent as **XML** — a tag-based format
-(`<name>Ada</name>`) that's powerful but heavy and noisy to read and write. JSON made a different trade:
+Before JSON, data on the web was often sent as **XML** — a tag-based format (`<name>Ada</name>`) that's
+powerful but heavy and noisy to read and write. JSON made a different trade:
 
 - **Human-readable.** You can open a JSON response and understand it with no tools — which makes debugging
   an API far less painful.

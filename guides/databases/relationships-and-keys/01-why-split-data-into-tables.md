@@ -6,18 +6,18 @@ summary: "One giant table repeats the same facts in row after row, which lets th
 tags: [databases, data-modeling, normalization, duplication, update-anomaly]
 difficulty: beginner
 synonyms: ["why use multiple tables instead of one", "what is data duplication in databases", "what is an update anomaly", "what is normalization simply", "why not put everything in one table"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why Split Data Into Tables
 
 Picture a brand-new project. You have customers, and customers place orders. The obvious move — the one
-almost everyone makes first — is to put everything in one big table. One row per order, and each row
-also carries the customer's details right there beside it. It works. It's readable. And it quietly sets a
+almost everyone makes first — is to put everything in one big table: one row per order, each row also
+carrying the customer's details right there beside it. It works. It's readable. And it quietly sets a
 trap that springs months later.
 
-Let's walk into the trap on purpose, so you can see exactly where it bites. Then we'll fix it, and the
-fix *is* the whole reason databases use relationships.
+Let's walk into the trap on purpose so you can see exactly where it bites. Then we'll fix it, and the fix
+*is* the whole reason databases use relationships.
 
 ## The one-big-table trap
 
@@ -119,12 +119,11 @@ copying the same fact into many rows, pull it out into its own table and point a
 
 Splitting isn't free, and an honest friend tells you the cost. The data is now in pieces, so when you
 want "Ada's name *and* her order total" in one result, you have to stitch the tables back together at
-query time. That stitching is the JOIN — the subject of
-[SQL JOINs Explained](/guides/sql-joins-explained).
+query time. That stitching is the JOIN — the subject of [SQL JOINs Explained](/guides/sql-joins-explained).
 
 So the real deal is: a little reassembly effort *every time you read*, in exchange for never fighting
 contradictory data *every time you write*. For data that lives a long time and changes often, that's a
-trade worth making almost always — which is why nearly every real application is built this way.
+trade worth making almost always — why nearly every real application is built this way.
 
 But notice what the whole scheme silently depends on. Order 1001 points at customer "1." For that pointer
 to mean anything, customer 1 has to be a **stable, unique name** for exactly one row in `customers` — a

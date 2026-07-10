@@ -6,7 +6,7 @@ summary: "Pydantic turns a class of typed fields into a runtime gate that valida
 tags: [fastapi, pydantic, basemodel, validation, request-body, data-models, type-coercion]
 difficulty: beginner
 synonyms: ["fastapi pydantic models", "pydantic basemodel validation", "fastapi request body", "pydantic field constraints", "fastapi automatic validation", "pydantic vs dataclass", "fastapi 422 error body"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Pydantic Models & Validation
@@ -14,8 +14,7 @@ updated: 2026-06-22
 [Phase 2](02-path-operations-and-parameters.md) showed a type hint on a path or query parameter quietly
 doing real work: FastAPI reads the hint and parses, validates, and converts the value for you. That
 trick has a name, and it's a whole library — **Pydantic**. Path and query parameters are the small
-version; the full power shows up when a client sends a JSON *body* and you need to know, with
-confidence, that it has the right shape before you touch it.
+version; the full power shows up when a client sends a JSON *body* you need to trust before you touch it.
 
 The mental model for this phase: a Pydantic model is a **typed gate**. You describe the shape of the
 data once — a class with typed fields — and Pydantic stands at the door, checking every piece of data
@@ -31,11 +30,10 @@ runtime**. This is the crucial difference from the [type hints](/guides/python-f
 Python: a plain hint like `age: int` is a note for humans and tools that the interpreter ignores while
 running. Pydantic *enforces* the same hint when the object is constructed.
 
-The other thing to know up front: **Pydantic is separate from FastAPI.** It's its own library, usable in
-any Python program — config loading, parsing files, cleaning data. FastAPI just leans on it hard: every
-request body you'll define is a Pydantic model. That's good news right now, because the examples in this
-phase are **pure Python and run on this page** — no server, no `uvicorn` — so you can watch validation
-succeed and fail, live.
+**Pydantic is separate from FastAPI.** It's its own library, usable in any Python program — config
+loading, parsing files, cleaning data. FastAPI just leans on it hard: every request body you'll define
+is a Pydantic model. That means the examples below are **pure Python and run on this page** — no
+server, no `uvicorn` — so you can watch validation succeed and fail, live.
 
 > 💡 **Key point.** A Pydantic model is the same *describe-the-fields* idea as a dataclass
 > ([Python From Zero, Phase 15](/guides/python-from-zero)), with one decisive addition: it **checks and

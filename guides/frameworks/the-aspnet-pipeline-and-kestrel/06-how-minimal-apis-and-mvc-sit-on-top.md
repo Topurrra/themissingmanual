@@ -6,12 +6,12 @@ summary: "The payoff: your minimal API delegates and MVC actions are endpoints, 
 tags: [aspnet-core, csharp, endpoint-routing, minimal-apis, mvc]
 difficulty: beginner
 synonyms: ["aspnet endpoint routing", "useRouting useEndpoints", "minimal apis vs mvc pipeline", "mapcontrollers", "how mapget works", "aspnet routing middleware"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # How Minimal APIs & MVC Sit on Top
 
-Here's the whole payoff of this guide in one sentence, and if it lands the magic disappears: **your handlers — minimal API delegates and MVC action methods alike — are *endpoints*, and the pipeline's entire job is to route a request to one endpoint and run it.** Everything you learned the framework "does for you" is plumbing you've now seen from the inside. `MapGet` doesn't do anything mystical; it adds an endpoint to a table. The pipeline you studied in the last phases is what finds that endpoint and executes it.
+The whole payoff of this guide in one sentence: **your handlers — minimal API delegates and MVC action methods alike — are *endpoints*, and the pipeline's entire job is to route a request to one endpoint and run it.** Everything you learned the framework "does for you" is plumbing you've now seen from the inside. `MapGet` doesn't do anything mystical; it adds an endpoint to a table. The pipeline you studied in the last phases is what finds that endpoint and executes it.
 
 For the last five phases we've been building from the metal up: Kestrel listens on the socket, a chain of `RequestDelegate`s processes each request, and the host wires up DI and configuration. This phase closes the loop by showing where *your* code — the `MapGet` lambdas and `[ApiController]` classes you write every day — plugs into that machine. They're not a separate world bolted on top. They're the last stop on the same pipeline.
 

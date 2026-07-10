@@ -6,12 +6,12 @@ summary: "How Blazor components talk: parameters down, events up with EventCallb
 tags: [blazor, csharp, parameters, eventcallback, cascading, state]
 difficulty: advanced
 synonyms: ["blazor parameter", "blazor eventcallback", "blazor cascading value", "blazor component communication", "blazor shared state service", "blazor bind-value component"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Component Communication & State
 
-By now you can build a single component and even a tree of them — a products page holding three `<ProductCard />` tags from Phase 2, each its own markup-plus-`@code` unit. But a tree where the pieces can't talk to each other isn't an app; it's a static page. The page needs to hand each card its own product. A card needs to tell the page "the user clicked me." And somewhere off to the side, a cart needs to know about purchases happening in components it has never heard of.
+By now you can build a single component and even a tree of them — a products page holding three `<ProductCard />` tags from Phase 2, each its own markup-plus-`@code` unit. But a tree where the pieces can't talk to each other isn't an app; it's a static page. The page needs to hand each card its own product. A card needs to tell the page "the user clicked me." And a cart, off to the side, needs to know about purchases happening in components it has never heard of.
 
 Here's the mental model to hold before any code. **Components talk over four channels, and you pick the channel by who needs to reach whom:**
 
@@ -20,9 +20,9 @@ Here's the mental model to hold before any code. **Components talk over four cha
 3. **Cascading values** — a value flows down to *any* descendant, however deep, without being threaded through every level in between (`CascadingValue` / `[CascadingParameter]`).
 4. **A shared service** — app-wide state that *unrelated* components read and write, living outside the tree entirely (a class registered in DI).
 
-The first two are the workhorses you'll use constantly; the last two solve the "this is getting awkward" problems the first two create at scale. Once you can name which channel a situation calls for, component communication stops being guesswork.
+The first two are the workhorses you'll use constantly; the last two solve the "this is getting awkward" problems the first two create at scale.
 
-> 💡 A useful rule of thumb: parameters and events are for components that already know about each other (parent and direct child). Cascading values and the shared service are for when threading data through every intermediate component would be miserable, or when the components have no parent-child relationship at all.
+> 💡 Rule of thumb: parameters and events are for components that already know about each other (parent and direct child). Cascading values and the shared service are for when threading data through every intermediate component would be miserable, or the components have no parent-child relationship at all.
 
 ## Channel 1: parameters down (`[Parameter]`)
 
@@ -65,13 +65,13 @@ And the products page passing one in:
 }
 ```
 
-*What just happened:* The child declared `[Parameter] public Product Product { get; set; }` — a normal C# property, plus the attribute that tells Blazor "the parent is allowed to set this." The parent's `<ProductCard Product="p" />` looks like an HTML attribute, but the value (`p`) is real C#: the current loop variable. Each iteration of the `@foreach` renders one card and hands it a different product. Three products in the list, three cards, each showing its own data. The `= default!;` is just a C# nicety: it promises the compiler the parameter will be set, silencing the nullable warning without giving it a real default.
+*What just happened:* the child declared `[Parameter] public Product Product { get; set; }` — a normal C# property plus the attribute telling Blazor "the parent is allowed to set this." The parent's `<ProductCard Product="p" />` looks like an HTML attribute, but the value (`p`) is real C#: the current loop variable. Each `@foreach` iteration renders one card with a different product — three products, three cards. `= default!;` is a C# nicety: it promises the compiler the parameter will be set, silencing the nullable warning.
 
-> 📝 Parameters flow **one way: parent to child.** A child should *read* its parameters, not reassign them — if a child writes to its own `[Parameter]` property, Blazor will overwrite that value the next time the parent re-renders, and your change vanishes. When a child needs to send something *back*, that's channel 2.
+> 📝 Parameters flow **one way: parent to child.** A child should *read* its parameters, not reassign them — if it writes to its own `[Parameter]` property, Blazor overwrites that value the next time the parent re-renders, and your change vanishes. When a child needs to send something *back*, that's channel 2.
 
 ### Passing markup, not just data: child content
 
-Sometimes a parent doesn't want to pass a value — it wants to pass *markup* to be rendered inside the child. A reusable `<Card>` wrapper that draws a border and padding, but lets the caller decide what goes inside, is the classic case. Blazor handles this with a special parameter type, `RenderFragment`, conventionally named `ChildContent`:
+Sometimes a parent doesn't want to pass a value — it wants to pass *markup* to be rendered inside the child. A reusable `<Card>` wrapper that draws a border and padding but lets the caller decide what goes inside is the classic case. Blazor handles this with a special parameter type, `RenderFragment`, conventionally named `ChildContent`:
 
 ```razor
 @* Card.razor *@
@@ -94,11 +94,11 @@ Now any component can nest content between the `<Card>` tags:
 </Card>
 ```
 
-*What just happened:* When you put markup *between* a component's opening and closing tags, Blazor captures it as a `RenderFragment` and assigns it to the parameter named `ChildContent`. The `Card` renders `@ChildContent` wherever it wants the caller's markup to land — here, inside the bordered `<div>`. This is how you build layout and wrapper components: the wrapper owns the chrome, the caller owns the contents.
+*What just happened:* when you put markup *between* a component's opening and closing tags, Blazor captures it as a `RenderFragment` and assigns it to the parameter named `ChildContent`. `Card` renders `@ChildContent` wherever it wants the caller's markup to land — here, inside the bordered `<div>`. This is how you build layout and wrapper components: the wrapper owns the chrome, the caller owns the contents.
 
 ## Channel 2: events up (`EventCallback<T>`)
 
-A child can't reach up and call a method on its parent — it doesn't even know what its parent is. Instead, the parent hands the child a **callback**, and the child invokes it when something happens. In Blazor that callback is an `EventCallback<T>`: a parameter the child exposes, the parent wires to one of its own methods.
+A child can't reach up and call a method on its parent — it doesn't even know what its parent is. Instead, the parent hands the child a **callback**, and the child invokes it when something happens. In Blazor that callback is an `EventCallback<T>`: a parameter the child exposes, wired by the parent to one of its own methods.
 
 Let's make `ProductCard` tell its parent when it's clicked:
 
@@ -149,23 +149,23 @@ The parent provides the handler:
 }
 ```
 
-*What just happened:* The child exposes `OnSelected` as an `EventCallback<Product>` parameter. When its `<div>` is clicked, `HandleClick` runs and calls `OnSelected.InvokeAsync(Product)`, passing the clicked product upward. The parent set `OnSelected="HandleSelected"`, so its `HandleSelected` method runs with that product, updating `selected`. Data went *up* the tree — child to parent — which parameters alone can't do. The parent's `<p>` then re-renders to show the new selection.
+*What just happened:* the child exposes `OnSelected` as an `EventCallback<Product>` parameter. When its `<div>` is clicked, `HandleClick` runs and calls `OnSelected.InvokeAsync(Product)`, passing the clicked product upward. The parent set `OnSelected="HandleSelected"`, so its `HandleSelected` method runs with that product, updating `selected`. Data went *up* the tree — child to parent — which parameters alone can't do. The parent's `<p>` re-renders to show the new selection.
 
-> 📝 Why `EventCallback<T>` and not a plain `Action<T>` or C# `event`? Because `EventCallback` is **Blazor-aware**: after the handler runs, Blazor automatically re-renders the parent component. With a raw `Action`, the parent's method would run, but Blazor wouldn't know its state changed, so the UI wouldn't update until something else triggered a render. `EventCallback` is the right tool for child-to-parent in Blazor precisely because it ties the notification to a re-render. (You'd then call `StateHasChanged` by hand to fix it — exactly the trap channel 4 warns about.)
+> 📝 Why `EventCallback<T>` and not a plain `Action<T>` or C# `event`? Because `EventCallback` is **Blazor-aware**: after the handler runs, Blazor automatically re-renders the parent. With a raw `Action`, the parent's method would run, but Blazor wouldn't know its state changed, so the UI wouldn't update until something else triggered a render — you'd have to call `StateHasChanged` by hand, exactly the trap channel 4 warns about.
 
 ### Two-way component binding (`@bind-Value`)
 
-There's a shorthand built on these two channels. If a component exposes a `Value` parameter *and* a matching `ValueChanged` event (`EventCallback<T>`), a parent can bind to it with `@bind-Value` — and changes flow both directions automatically:
+There's a shorthand built on these two channels. If a component exposes a `Value` parameter *and* a matching `ValueChanged` event (`EventCallback<T>`), a parent can bind to it with `@bind-Value`, and changes flow both directions automatically:
 
 ```razor
 <MyTextBox @bind-Value="searchTerm" />
 ```
 
-*What just happened:* `@bind-Value="searchTerm"` expands to setting `Value="searchTerm"` (parent → child, channel 1) *and* wiring `ValueChanged` to update `searchTerm` (child → parent, channel 2) in one line. This is exactly the pattern the built-in `InputText` uses, and why `@bind-Value` worked in the Phase 5 form. When you build your own input-like components, follow the `Value` + `ValueChanged` naming convention and callers get `@bind-Value` for free.
+*What just happened:* `@bind-Value="searchTerm"` expands to setting `Value="searchTerm"` (parent → child, channel 1) *and* wiring `ValueChanged` to update `searchTerm` (child → parent, channel 2) in one line. This is exactly the pattern the built-in `InputText` uses, and why `@bind-Value` worked in the Phase 5 form. Build your own input-like components following the `Value` + `ValueChanged` naming convention and callers get `@bind-Value` for free.
 
 ## Channel 3: cascading values for deep data
 
-Parameters work beautifully parent-to-child. But imagine a value the *whole tree* needs — the current theme, the logged-in user, an app config. With parameters alone, you'd have to declare it on every component between the top and the place it's used, passing it down level by level, even through components that don't care about it. That tedious threading is called "prop drilling," and **cascading values** exist to skip it.
+Parameters work beautifully parent-to-child. But imagine a value the *whole tree* needs — the current theme, the logged-in user, an app config. With parameters alone, you'd declare it on every component between the top and the place it's used, passing it down level by level, even through components that don't care about it. That tedious threading is called "prop drilling," and **cascading values** exist to skip it.
 
 A parent wraps part of the tree in `<CascadingValue>`, and *any* descendant — at any depth — can pull it out with `[CascadingParameter]`:
 
@@ -198,13 +198,13 @@ A deeply-nested `ProductCard` — without any intermediate component knowing abo
 }
 ```
 
-*What just happened:* `<CascadingValue Value="theme">` makes `theme` available to everything rendered inside it, however many components deep. The `ProductCard` grabbed it with `[CascadingParameter] public Theme Theme { get; set; }` — note there's no `Theme="..."` attribute on the card's tag, and no intermediate component had to forward it. Blazor matches cascading values to cascading parameters **by type** by default. This is the right channel for cross-cutting, tree-wide data; reaching for it for ordinary parent-to-child data would be overkill — use a plain `[Parameter]` there.
+*What just happened:* `<CascadingValue Value="theme">` makes `theme` available to everything rendered inside it, however many components deep. `ProductCard` grabbed it with `[CascadingParameter] public Theme Theme { get; set; }` — no `Theme="..."` attribute on the card's tag, and no intermediate component had to forward it. Blazor matches cascading values to cascading parameters **by type** by default. This is the right channel for cross-cutting, tree-wide data; for ordinary parent-to-child data, use a plain `[Parameter]`.
 
 > ⚠️ Cascading values are matched by type. If you ever need *two* cascading values of the same type in scope, give them a `Name` (`<CascadingValue Value="x" Name="Primary">`) and match it on the parameter (`[CascadingParameter(Name = "Primary")]`), or Blazor can't tell them apart.
 
 ## Channel 4: app-wide shared state via a service
 
-Cascading values still flow *down* a tree. But some state belongs to no single tree — a shopping cart, say. The products page adds to it; a cart badge in the navbar reads from it; a checkout page on a different route reads it too. These components are siblings or strangers, not ancestors and descendants. The answer is to move that state **out of the component tree entirely** into a plain C# class, register it as a **DI service**, and inject it wherever it's needed.
+Cascading values still flow *down* a tree. But some state belongs to no single tree — a shopping cart, say. The products page adds to it; a cart badge in the navbar reads from it; a checkout page on a different route reads it too. These components are siblings or strangers, not ancestors and descendants. The answer: move that state **out of the component tree entirely** into a plain C# class, register it as a **DI service**, and inject it wherever needed.
 
 Here's a minimal cart state class:
 
@@ -231,7 +231,7 @@ You register it once at startup (in `Program.cs`):
 builder.Services.AddScoped<CartState>();
 ```
 
-*What just happened:* `CartState` is an ordinary class holding the list of items, plus an `OnChange` event it raises whenever the list changes. Registering it with `AddScoped` means Blazor hands the *same* instance to every component that asks for it (within a user's session). 📝 The lifetime choice differs by hosting model from Phase 1: **`Scoped` in Blazor Server** (one instance per user connection) and typically **`Singleton` in Blazor WebAssembly** (the whole app is one user in one browser tab anyway). Pick the one matching your host.
+*What just happened:* `CartState` is an ordinary class holding the list of items, plus an `OnChange` event it raises on change. Registering it with `AddScoped` means Blazor hands the *same* instance to every component that asks for it, within a user's session. 📝 The lifetime choice differs by hosting model from Phase 1: **`Scoped` in Blazor Server** (one instance per user connection), typically **`Singleton` in Blazor WebAssembly** (the whole app is one user in one browser tab anyway). Pick the one matching your host.
 
 Any component injects it with `@inject` (the directive you met in Phase 2) and uses it:
 
@@ -262,9 +262,9 @@ Any component injects it with `@inject` (the directive you met in Phase 2) and u
 }
 ```
 
-*What just happened:* Both components inject the same `CartState`. The button in `ProductCard` calls `Cart.Add(Product)`, which mutates the shared list and fires `OnChange`. The `CartBadge` — which `ProductCard` has never heard of — subscribed to `OnChange` in `OnInitialized`, so when the event fires it calls `StateHasChanged` and re-renders its count. State changed in one component; a completely unrelated component updated in response. That's the whole point of the service channel.
+*What just happened:* both components inject the same `CartState`. The button in `ProductCard` calls `Cart.Add(Product)`, which mutates the shared list and fires `OnChange`. `CartBadge` — which `ProductCard` has never heard of — subscribed to `OnChange` in `OnInitialized`, so when the event fires it calls `StateHasChanged` and re-renders its count. State changed in one component; a completely unrelated component updated in response — the whole point of the service channel.
 
-> ⚠️ This is the gotcha that bites everyone once. A component does **not** automatically re-render when state *outside it* changes — Blazor only re-renders a component on its own parameters, its own events, or an explicit `StateHasChanged`. So a component reading shared state must (1) **subscribe** to the service's change event, (2) call **`StateHasChanged`** in the handler, and (3) **unsubscribe in `Dispose`** (via `@implements IDisposable`). Skip the subscribe and the badge silently shows a stale count; skip the unsubscribe and you leak the component (the service keeps a reference to a dead component, and it keeps trying to render). All three steps, every time.
+> ⚠️ The gotcha that bites everyone once. A component does **not** automatically re-render when state *outside it* changes — Blazor only re-renders on its own parameters, its own events, or an explicit `StateHasChanged`. A component reading shared state must (1) **subscribe** to the service's change event, (2) call **`StateHasChanged`** in the handler, and (3) **unsubscribe in `Dispose`** (via `@implements IDisposable`). Skip the subscribe and the badge silently shows a stale count; skip the unsubscribe and you leak the component. All three steps, every time.
 
 ## Recap
 

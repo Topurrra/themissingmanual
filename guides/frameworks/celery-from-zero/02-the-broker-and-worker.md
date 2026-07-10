@@ -6,7 +6,7 @@ summary: "Meet the two processes that make Celery work: the broker (a Redis or R
 tags: [celery, broker, worker, redis, rabbitmq, queue, concurrency]
 difficulty: beginner
 synonyms: ["celery broker redis rabbitmq", "celery worker", "celery start worker", "celery broker url", "celery queue", "redis vs rabbitmq celery", "celery worker concurrency"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The Broker & Worker
@@ -17,7 +17,7 @@ Phase 1 gave you the four-part shape: app → broker → worker → (result). Th
 
 📝 **The broker is the message queue that sits between your app and the workers.** When your app wants a job done later, it doesn't call the worker — it drops a small message ("run `send_welcome_email` for user 42") into the broker. The message waits there until a worker is free to pick it up. That's the whole job of the broker: hold pending task messages, hand them out one at a time.
 
-If you've read [Webhooks & Message Queues](/guides/webhooks-and-message-queues), this is exactly the producer/consumer queue from that guide. Your web app is the **producer** dropping messages; your workers are the **consumers** picking them up. Celery is a friendly Python layer on top of that same idea — it's not magic, it's a queue with good manners.
+If you've read [Webhooks & Message Queues](/guides/webhooks-and-message-queues), this is exactly the producer/consumer queue from that guide. Your web app is the **producer** dropping messages; your workers are the **consumers** picking them up. Celery is a friendly Python layer on top of that same idea — not magic, a queue with good manners.
 
 Two brokers cover almost everyone:
 
@@ -30,7 +30,7 @@ Two brokers cover almost everyone:
 docker run -d -p 6379:6379 redis
 ```
 
-*What just happened:* We started a Redis container in the background (`-d`) and exposed its default port `6379` to your machine. That URL — `localhost:6379` — is what Celery will connect to in a moment. (No Docker? A native `redis-server` install works the same way.)
+*What just happened:* we started a Redis container in the background (`-d`) and exposed its default port `6379` to your machine. That URL — `localhost:6379` — is what Celery will connect to in a moment. (No Docker? A native `redis-server` install works the same way.)
 
 ## Creating the Celery app
 
@@ -42,19 +42,19 @@ from celery import Celery
 app = Celery("tasks", broker="redis://localhost:6379/0")
 ```
 
-*What just happened:* We created one `Celery` instance. The first argument, `"tasks"`, is just a name (conventionally the module it lives in). The important part is `broker="redis://localhost:6379/0"` — the **broker URL**, which points Celery at the Redis we started. The `/0` on the end picks Redis database 0. This `app` object is what you'll attach tasks to in Phase 3; for now it's an empty Celery app that knows how to reach the queue.
+*What just happened:* we created one `Celery` instance. The first argument, `"tasks"`, is just a name (conventionally the module it lives in). The important part is `broker="redis://localhost:6379/0"` — the **broker URL**, pointing Celery at the Redis we started (`/0` picks Redis database 0). This `app` object is what you'll attach tasks to in Phase 3.
 
 💡 The broker URL is the single most important line of config you'll write. Get the host, port, or scheme wrong and everything downstream fails quietly — more on that at the end of this phase.
 
 ## The worker: the process that does the work
 
-📝 **A worker is a separate process that connects to the broker, pulls task messages off the queue, and runs them.** Your web app does not run tasks. It only enqueues them. Something has to be on the other end of the queue actually executing the code — that something is the worker, and you start it yourself from a terminal:
+📝 **A worker is a separate process that connects to the broker, pulls task messages off the queue, and runs them.** Your web app does not run tasks — it only enqueues them. Something has to be on the other end of the queue actually executing the code; that something is the worker, and you start it yourself from a terminal:
 
 ```bash
 celery -A tasks worker --loglevel=info
 ```
 
-*What just happened:* The `celery` command-line tool started a worker. `-A tasks` tells it which app to use (your `tasks.py` from above, where the `app` object lives). `worker` is the subcommand that says "be a worker." `--loglevel=info` makes it chatty so you can see what it's doing. This process stays running in the foreground, waiting for jobs.
+*What just happened:* the `celery` command-line tool started a worker. `-A tasks` tells it which app to use (your `tasks.py` from above, where the `app` object lives); `worker` is the subcommand that says "be a worker"; `--loglevel=info` makes it chatty so you can see what it's doing. This process stays running in the foreground, waiting for jobs.
 
 When it boots, a worker prints a banner that tells you everything about its setup:
 
@@ -78,9 +78,9 @@ When it boots, a worker prints a banner that tells you everything about its setu
 [2026-06-23 10:14:02,402: INFO/MainProcess] celery@laptop ready.
 ```
 
-*What just happened:* Read this banner top to bottom and it confirms the whole mental model. **transport** is the broker it connected to (your Redis). **results** is disabled — we haven't set up a result backend yet (that's Phase 4). **concurrency: 8 (prefork)** is how many tasks it can run at once (next section). The **[queues]** block shows it's listening on the default `celery` queue. The **[tasks]** list is every task it knows how to run — right now `send_welcome_email` and `generate_report`. The final `ready.` line means it's connected and waiting for work.
+*What just happened:* read this banner top to bottom and it confirms the whole mental model. **transport** is the broker it connected to (your Redis). **results** is disabled — no result backend yet (Phase 4). **concurrency: 8 (prefork)** is how many tasks it can run at once (next section). **[queues]** shows it's listening on the default `celery` queue. **[tasks]** lists every task it knows how to run. The final `ready.` line means it's connected and waiting for work.
 
-💡 Stop and notice: the worker and your web app are **two completely separate processes.** You start the web app one way, you start the worker another way, and the only thing they share is the broker URL. They could run on different machines and it would work identically. This separation is the entire point — slow work runs over *there*, in the worker, while your web request returns instantly over *here*.
+💡 Stop and notice: the worker and your web app are **two completely separate processes.** You start each one differently, and the only thing they share is the broker URL. They could run on different machines and it would work identically — slow work runs over *there*, in the worker, while your web request returns instantly over *here*.
 
 ## Concurrency: one worker, many tasks at once
 
@@ -90,7 +90,7 @@ When it boots, a worker prints a banner that tells you everything about its setu
 celery -A tasks worker --concurrency=4
 ```
 
-*What just happened:* We told the worker to run up to 4 tasks at the same time. By default the worker uses the **prefork** pool, which means it forks 4 separate child processes; each one grabs a task and runs it independently. If `--concurrency` is omitted, Celery defaults to one child per CPU core (that's the `8` you saw in the banner).
+*What just happened:* we told the worker to run up to 4 tasks at the same time. By default the worker uses the **prefork** pool, forking 4 separate child processes; each one grabs a task and runs it independently. If `--concurrency` is omitted, Celery defaults to one child per CPU core (the `8` you saw in the banner).
 
 📝 Which pool you want depends on what your tasks *do*:
 
@@ -109,7 +109,7 @@ A rough rule: if your task burns CPU, use prefork; if it sits around waiting on 
 
 To make this real you need exactly three things running: a **broker** (Redis), a **worker** (the `celery ... worker` command), and your **app** (which enqueues jobs). With all three up, your web app can finally offload work and return instantly.
 
-⚠️ **The number-one beginner trap: tasks that silently never run.** If you enqueue a job and *nothing happens* — no error, no result, just silence — the cause is almost always the broker. Either no broker is running, or your broker URL is wrong (typo in the host, wrong port, pointing at a Redis that isn't there). Celery happily accepts the task into a queue nobody is draining, and it sits there forever. So when a task seems to vanish, **check the broker first**: is Redis up? Does the URL in your `Celery(...)` call match where Redis actually is? Is a worker connected to that same URL? Nine times out of ten the answer is hiding in those three questions.
+⚠️ **The number-one beginner trap: tasks that silently never run.** If you enqueue a job and *nothing happens* — no error, no result, just silence — the cause is almost always the broker. Either no broker is running, or your broker URL is wrong (typo in the host, wrong port, pointing at a Redis that isn't there). Celery happily accepts the task into a queue nobody is draining, and it sits there forever. When a task seems to vanish, **check the broker first**: is Redis up? Does the URL in your `Celery(...)` call match where Redis actually is? Is a worker connected to that same URL?
 
 With the broker and worker understood and running, you're ready to actually write tasks and call them — which is Phase 3.
 

@@ -6,7 +6,7 @@ summary: "The handful of errors that ambush every Git beginner - command not fou
 tags: [git, errors, troubleshooting, authentication, beginner, fixes]
 difficulty: beginner
 synonyms: ["git command not found", "git author identity unknown", "git authentication failed", "updates were rejected fetch first", "how to exit vim git commit", "fatal not a git repository"]
-updated: 2026-06-18
+updated: 2026-07-10
 ---
 
 # When the First Day Goes Sideways - Beginner Errors, Calmly Fixed
@@ -38,14 +38,12 @@ won't rattle you next time.
 **What you'll see.** You type `git --version` and get `command not found` (macOS/Linux) or `'git' is not
 recognized as an internal or external command` (Windows).
 
-**What it means.** Your terminal can't find the Git program. Either Git isn't installed, or it was
-installed but the terminal you have open started *before* the install finished and doesn't know about it
-yet.
+**What it means.** Your terminal can't find the Git program - either it isn't installed, or it was
+installed after this terminal window opened and it doesn't know about it yet.
 
 **The calm fix.** First, **close the terminal completely and open a new one** - this alone fixes it
-surprisingly often, because a fresh terminal picks up the newly installed program. Still failing? Reinstall
-Git from [Phase 1](01-what-is-version-control.md), and on Windows use **Git Bash** (which comes with Git)
-rather than the default Command Prompt.
+surprisingly often. Still failing? Reinstall Git from [Phase 1](01-what-is-version-control.md), and on
+Windows use **Git Bash** (which comes with Git) rather than the default Command Prompt.
 
 ## 2. `Author identity unknown`
 
@@ -64,8 +62,8 @@ Run
 fatal: unable to auto-detect email address
 ```
 
-**What it means.** Every commit is signed with a name and email, and you haven't told Git yours yet. Git
-won't take the snapshot until you do. (This is the Phase 1 setup step.)
+**What it means.** Every commit is signed with a name and email, and you haven't told Git yours yet
+(this is the Phase 1 setup step) - Git won't take the snapshot until you do.
 
 **The calm fix.** Run the two lines Git is literally suggesting, with your details, then commit again:
 ```console
@@ -73,7 +71,7 @@ $ git config --global user.name "Ada Lovelace"
 $ git config --global user.email "ada@example.com"
 $ git commit -m "My first commit"
 ```
-*What just happened:* You set your identity once (for every project on this machine), and the commit that
+*What just happened:* You set your identity once, for every project on this machine, and the commit that
 failed now succeeds. Your staged work was never lost - it waited in the box the whole time.
 
 ## 3. `fatal: not a git repository`
@@ -81,8 +79,8 @@ failed now succeeds. Your staged work was never lost - it waited in the box the 
 **What you'll see.** Almost any Git command answers with `fatal: not a git repository (or any of the
 parent directories): .git`.
 
-**What it means.** You're standing in a folder that Git isn't tracking - there's no `.git` in it or any
-folder above it. Usually you either opened the terminal somewhere else, or never ran `git init` here.
+**What it means.** You're standing in a folder Git isn't tracking - no `.git` in it or any folder above
+it. Usually you opened the terminal somewhere else, or never ran `git init` here.
 
 **The calm fix.** If the repo exists, move into it. If this is a brand-new project, initialize it:
 ```console
@@ -90,8 +88,7 @@ $ cd path/to/your/project    # go into the repo, OR
 $ git init                   # if this folder should be a new repo
 ```
 *What just happened:* Git commands only work *inside* a repository. `cd` puts you in an existing one;
-`git init` makes the current folder into one. (Run `git status` afterward to confirm you're now inside a
-repo.)
+`git init` makes the current folder into one. Run `git status` afterward to confirm.
 
 ## 4. `Authentication failed` when pushing
 
@@ -101,17 +98,17 @@ remote: Support for password authentication was removed on August 13, 2021.
 fatal: Authentication failed for 'https://github.com/ada/hello-git.git/'
 ```
 
-**What it means.** You tried to push and either entered your GitHub website password (which no longer
-works on the command line) or haven't set up authentication at all. This is the single most common
-first-push wall, and it catches everyone - old tutorials still tell people to type their password.
+**What it means.** You tried to push and either entered your GitHub website password (no longer works on
+the command line) or haven't set up authentication at all. This is the single most common first-push
+wall - old tutorials still tell people to type their password.
 
 **The calm fix.** Authenticate the modern way. The smoothest is the GitHub CLI:
 ```console
 $ gh auth login
 ```
 Follow the browser sign-in (full walkthrough in [Phase 3, Step 3](03-putting-it-on-github.md)), then push
-again. On Windows, retrying the push may pop up a browser sign-in from the bundled credential
-manager - let it. A Personal Access Token or SSH key also work; you only need one of them.
+again. On Windows, retrying the push may pop up a browser sign-in from the bundled credential manager -
+let it. A Personal Access Token or SSH key also work; you only need one.
 
 ## 5. `Updates were rejected (fetch first)`
 
@@ -124,7 +121,7 @@ hint: Updates were rejected because the remote contains work that you do
 hint: not have locally.
 ```
 
-**What it means.** GitHub's copy has at least one commit that your computer doesn't - often because you
+**What it means.** GitHub's copy has at least one commit your computer doesn't - often because you
 checked "Add a README" when creating the repo, or pushed from another machine. Git refuses to overwrite
 history you haven't seen. **This is a safety feature, not a failure.**
 
@@ -134,9 +131,8 @@ $ git pull
 $ git push
 ```
 *What just happened:* `git pull` merged the missing commit(s) into your copy so both sides agree, and the
-push then succeeds. (If `pull` ever asks you to pick a merge strategy or drops you into an editor, the
-[next guide](/guides/git-explained-like-a-human) covers what's going on - for now, accepting the
-default is fine.)
+push then succeeds. (If `pull` asks you to pick a merge strategy or drops you into an editor, the
+[next guide](/guides/git-explained-like-a-human) covers it - for now, accepting the default is fine.)
 
 ## 6. Trapped in a full-screen editor after `git commit`
 
@@ -152,12 +148,10 @@ doesn't behave like a normal text box. It's not broken; it just has its own rule
    :q!        ← type these three characters
    Enter      ← and press Enter - you're out
 ```
-Then run the command again *with* a message to avoid the editor entirely:
+Then run the command again *with* a message to skip the editor entirely:
 ```console
 $ git commit -m "Your message here"
 ```
-*What just happened:* `:q!` means "quit without saving" in Vim. Using `-m` next time skips the editor, so
-you never have to fight it.
 
 ## 7. `warning: LF will be replaced by CRLF` (Windows)
 
@@ -167,8 +161,7 @@ you never have to fight it.
 *telling you* it's smoothing that over. It's a **warning, not an error** - your file is fine and your
 commit will work.
 
-**The calm fix.** Nothing required - you can safely ignore it. It won't hurt anything for the work in this
-guide.
+**The calm fix.** Nothing required - safe to ignore.
 
 ## 8. "I committed the wrong file" (and haven't pushed yet)
 
@@ -184,29 +177,27 @@ yet.
 $ git reset --soft HEAD~1
 ```
 *What just happened:* This rewound the last commit, putting all of its changes back into the staging box,
-untouched - as if you'd never hit commit. Now remove what shouldn't be there (`git restore --staged
-<file>` takes a file out of the box) and commit again. To stop a file from ever being committed, list its
-name in a file called `.gitignore`.
+untouched - as if you'd never hit commit. Remove what shouldn't be there (`git restore --staged <file>`
+takes a file out of the box) and commit again. To stop a file from ever being committed, list its name in
+a `.gitignore` file.
 
 ⚠️ **One caution.** That `--soft` form keeps your work safe. Its cousin `git reset --hard` *deletes*
 changes - don't reach for that one while you're still learning. And this trick is for commits that exist
-only on your computer; undoing something you've already *pushed* is a more careful operation covered in a
-later guide.
+only on your computer; undoing something already *pushed* is a more careful operation covered in a later
+guide.
 
 ---
 
 ## You made it through the first day
 
-Look back at what just happened: you installed Git, made a repository, took your first snapshots, put them
-on GitHub, and learned to read the errors instead of fearing them. That's genuinely the hardest part -
-the cold start - and it's behind you now. From here, the same `edit → add → commit → push` loop carries
-you a very long way.
+You installed Git, made a repository, took your first snapshots, put them on GitHub, and learned to read
+errors instead of fearing them. That's the hardest part - the cold start - and it's behind you now. From
+here, the same `edit → add → commit → push` loop carries you a very long way.
 
 **Where to go next.** You can now *do* the everyday moves. The natural next step is understanding what Git
 is doing underneath them - why branches aren't scary, what HEAD means, how to fix the bigger "oh no"
 moments calmly. That's the next guide:
-**[Git, Explained Like You're a Human](/guides/git-explained-like-a-human)**. You've earned the
-foundation that makes all of it click.
+**[Git, Explained Like You're a Human](/guides/git-explained-like-a-human)**.
 
 ---
 

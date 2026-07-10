@@ -6,7 +6,7 @@ summary: "Chips can't shrink and speed up forever because heat dissipation is a 
 tags: [physics, computation, thermodynamics, heat, reversible-computing, landauer, moores-law, chip-design]
 difficulty: advanced
 synonyms: ["why cant chips get faster forever", "power wall computing", "reversible computing explained", "thermodynamic limits of chips", "why do CPUs generate heat", "end of Moore's Law physics", "adiabatic computing"]
-updated: 2026-07-06
+updated: 2026-07-10
 ---
 
 # The Thermodynamic Limits of Computing
@@ -19,9 +19,9 @@ Every transistor switching state dissipates some energy as heat, for reasons tha
 
 That's a losing trade. A modern high-end CPU already dissipates on the order of 100-250 watts from a die smaller than a postage stamp - power density in the same neighborhood as a kitchen hotplate, concentrated on silicon that has to stay under roughly 100°C or the transistors themselves start behaving unreliably and eventually get damaged. Push clock speed further without a fundamentally different transistor or cooling technology, and the result isn't a faster chip. It's a chip that overheats and throttles itself back down, or fails outright.
 
-This is why "just make it smaller and faster" stopped working as a strategy on its own. Smaller transistors do help - they need less energy to switch, and shorter wires mean less resistive loss - which is exactly why chipmakers kept shrinking transistor features long after clock speeds plateaued. But shrinking has its own wall: at a few nanometers, transistors approach the size of tens of atoms, and quantum effects (electrons tunneling through gates that are supposed to block them) start leaking current even harder. The industry's answer was to go sideways - more cores running in parallel at moderate clock speeds - rather than fight the heat wall head-on. That's an engineering workaround for a physical fact, not a repeal of it.
+This is why "just make it smaller and faster" stopped working on its own. Smaller transistors do help - they need less energy to switch, and shorter wires mean less resistive loss - which is exactly why chipmakers kept shrinking transistor features long after clock speeds plateaued. But shrinking has its own wall: at a few nanometers, transistors approach the size of tens of atoms, and quantum effects (electrons tunneling through gates that are supposed to block them) start leaking current even harder. The industry's answer was to go sideways - more cores running in parallel at moderate clock speeds - rather than fight the heat wall head-on. That's an engineering workaround for a physical fact, not a repeal of it.
 
-None of this is Landauer's principle in action yet - today's chips dissipate energy per operation that's many orders of magnitude above the Landauer floor, purely from resistive and switching losses. But it establishes the shape of the real wall: heat has to go somewhere, and the amount of silicon available to shed it into is finite. Whether the inefficiency comes from today's engineering slack or, eventually, from bumping into Landauer's actual floor, the underlying constraint - dissipated heat must leave the chip - never goes away.
+None of this is Landauer's principle in action yet - today's chips dissipate energy per operation that's many orders of magnitude above the Landauer floor, purely from resistive and switching losses. But it establishes the real wall: heat has to go somewhere, and the amount of silicon available to shed it into is finite. That constraint - dissipated heat must leave the chip - never goes away, whether the inefficiency is today's engineering slack or, eventually, Landauer's actual floor.
 
 ## Reversible computing: the theoretical way out
 

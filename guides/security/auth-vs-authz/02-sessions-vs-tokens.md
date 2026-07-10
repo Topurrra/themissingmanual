@@ -6,18 +6,18 @@ summary: "After you log in, the server has to remember you on every following re
 tags: [sessions, cookies, jwt, tokens, stateless, revocation, http, security]
 difficulty: intermediate
 synonyms: ["session vs token", "what is a session cookie", "what is a jwt", "is a jwt encrypted", "how do i revoke a jwt", "stateless authentication", "session id in cookie", "jwt vs session which is better", "how does a website keep me logged in"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Keeping You Logged In: Sessions vs Tokens
 
-HTTP has no memory. Every request your browser sends arrives at the server like a stranger walking in for the first time - the server has no built-in idea that *this* request came from the same person who logged in two seconds ago. That's by design (it's what lets the web scale), but it means after you authenticate, the server faces a fresh problem on *every* subsequent request: "wait, who is this again?"
+HTTP has no memory. Every request arrives at the server like a stranger walking in for the first time - it has no built-in idea that *this* request came from the person who logged in two seconds ago. That's by design (it's what lets the web scale), but it means the server needs a way to answer "who is this again?" on every request after login.
 
-The whole point of staying logged in is solving that. There are two mainstream ways to do it, and the difference between them - *where the state lives* - is the single idea this phase rests on. Get that and the trade-offs fall out naturally.
+There are two mainstream ways to solve it, and the difference between them - *where the state lives* - is the single idea this phase rests on. Get that and the trade-offs fall out naturally.
 
 ## The one idea: where does the state live?
 
-When you log in, *something* has to be remembered so the next request can be tied back to you. The two approaches differ only in **who keeps the remembered information**:
+When you log in, *something* has to be remembered so the next request can be tied back to you. The two approaches differ only in **who keeps it**:
 
 ```text
   SERVER-SIDE SESSION                  STATELESS TOKEN (JWT)
@@ -33,13 +33,13 @@ When you log in, *something* has to be remembered so the next request can be tie
   "ah, this is Alice"                   "this says Alice, and it's untampered"
 ```
 
-A **session** hands the client a meaningless ticket stub (a random id) and keeps the actual facts ("this id belongs to Alice, role admin, logged in at 9am") in a store on the server. A **token** flips it: the facts are written *into* the token the client holds, and the server keeps only a secret key to check the token wasn't forged. One remembers on the server; the other makes the client carry the memory, sealed so it can't be faked.
+A **session** hands the client a meaningless ticket stub (a random id) and keeps the actual facts ("this id belongs to Alice, role admin, logged in at 9am") in a store on the server. A **token** flips it: the facts are written *into* the token the client holds, and the server keeps only a secret key to check it wasn't forged.
 
 ## Server-side sessions
 
-**What it actually is.** On login, the server generates a long random string - the **session id** - stores the real user data against that id in a session store (memory, a database, Redis), and sends the id to the browser inside a cookie. On each later request the browser sends the cookie back, the server looks the id up, and finds out who you are.
+**What it actually is.** On login, the server generates a long random string - the **session id** - stores the real user data against that id in a session store (memory, a database, Redis), and sends the id to the browser in a cookie. On each later request the browser sends the cookie back and the server looks up the id.
 
-**What it does in real life.** The cookie is a claim check. It carries nothing meaningful by itself - just an id. All the authority lives server-side, behind that id.
+**What it does in real life.** The cookie is a claim check, carrying nothing meaningful by itself - just an id. All the authority lives server-side.
 
 ```mermaid
 sequenceDiagram
@@ -65,18 +65,18 @@ Set-Cookie: session=8f3b9c2e1a7d4b60; HttpOnly; Secure; SameSite=Lax; Max-Age=86
    not sent on cross-site requests (blunts CSRF) ────────────┘            │
    expires in 86400 seconds (24h) ───────────────────────────────────────┘
 ```
-*What just happened:* The server gave the browser a random id and a set of rules for handling it safely. `HttpOnly` keeps JavaScript from reading the cookie (so a script-injection bug can't steal it), `Secure` means it only travels over HTTPS, and `SameSite` limits when it's sent cross-site. The id itself reveals nothing - its only power is that the server can look it up.
+*What just happened:* The server gave the browser a random id plus a set of rules for handling it safely (annotated above). The id itself reveals nothing - its only power is that the server can look it up.
 
 **The trade-offs, honestly.**
-- *Revocation is easy and instant.* To log someone out everywhere - or kill a stolen session - you delete the id from the server store. The next request with that cookie finds nothing and is rejected. This is a genuine, important advantage.
-- *Every request needs a lookup.* The server hits its session store on each request. That's usually cheap, but it's real work, and it means the server is holding state.
-- *Scaling needs shared state.* If you run ten server instances behind a load balancer, they all need to reach the *same* session store (commonly Redis), or a user who logs in on instance A is a stranger to instance B.
+- *Revocation is easy and instant.* To log someone out everywhere - or kill a stolen session - delete the id from the server store. The next request with that cookie finds nothing and is rejected.
+- *Every request needs a lookup.* The server hits its session store each time. Usually cheap, but it's real work, and it means the server holds state.
+- *Scaling needs shared state.* Run ten server instances behind a load balancer, and they all need to reach the *same* session store (commonly Redis), or a user who logs in on instance A is a stranger to instance B.
 
 ## Stateless tokens (JWT)
 
-📝 **Terminology - JWT.** A **JSON Web Token** (pronounced "jot") is a compact, signed string that carries a small bundle of facts ("claims") about the user. It has three dot-separated parts: a header, a payload of claims, and a signature. The server creates it with a secret key and can later verify, *using only that key*, that the token is genuine and unaltered - without looking anything up.
+📝 **Terminology - JWT.** A **JSON Web Token** (pronounced "jot") is a compact, signed string carrying a small bundle of facts ("claims") about the user, in three dot-separated parts: header, payload, signature.
 
-**What it actually is.** Instead of storing your identity server-side, the server writes it *into* the token: your id, maybe your role, an expiry time. Then it signs the whole thing with a secret key. The client holds the token (often in a cookie or sent in an `Authorization` header) and presents it on each request. The server re-computes the signature; if it matches, the token is trustworthy and the server reads your identity straight out of it - no store, no lookup.
+**What it actually is.** Instead of storing your identity server-side, the server writes it *into* the token - id, maybe role, an expiry time - and signs the whole thing with a secret key. The client holds the token (often in a cookie or an `Authorization` header) and presents it on each request. The server re-computes the signature; if it matches, the token is trustworthy and the server reads your identity straight out of it - no store, no lookup.
 
 **A real example.** A JWT looks like one opaque blob, but it's three Base64URL pieces joined by dots. Decoded, the middle piece is plain JSON:
 ```text
@@ -87,20 +87,20 @@ eyJhbGciOiJIUzI1NiJ9 . eyJzdWIiOiJhbGljZSIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzE4ODAwM
   payload (decoded): {"sub":"alice","role":"user","exp":1718800000}
   signature: HMAC-SHA256(header + "." + payload, server's secret key)
 ```
-*What just happened:* The header says how it's signed, the payload carries the claims (subject `alice`, role `user`, an expiry timestamp), and the signature is a fingerprint computed over the first two parts with the server's secret. Change a single character in the payload - say, flip `"role":"user"` to `"role":"admin"` - and the signature no longer matches, so the server rejects it. The signature doesn't *hide* anything; it *proves nobody tampered*.
+*What just happened:* The signature is a fingerprint computed over the header and payload with the server's secret key. Flip `"role":"user"` to `"role":"admin"` and the signature no longer matches, so the server rejects it. It doesn't *hide* anything; it *proves nobody tampered*.
 
-⚠️ **Gotcha - a JWT is signed, not encrypted. The payload is readable by anyone.** That Base64URL middle section is not a secret. Anyone holding the token (or watching it go by) can decode it and read every claim - there's no key required to *read* it, only to *verify* it. Paste a JWT into a decoder and the payload pops right out. So: **never put anything secret in a JWT** - no passwords, no private data, no API secrets. The signature stops forgery; it does not provide privacy. (Encrypted variants exist - JWE - but a plain JWT, the kind you'll meet everywhere, is readable.)
+⚠️ **Gotcha - a JWT is signed, not encrypted. The payload is readable by anyone.** That Base64URL middle section is not a secret - anyone holding the token can decode it and read every claim, no key required. So: **never put anything secret in a JWT** - no passwords, no private data, no API secrets. The signature stops forgery; it does not provide privacy. (Encrypted variants exist - JWE - but a plain JWT, the kind you'll meet everywhere, is readable.)
 
-⚠️ **Gotcha - JWTs are hard to revoke.** This is the flip side of "no server-side state," and it bites people. Because the server doesn't track the token, it can't delete it to log you out. The token stays valid until it *expires* on its own. If a token is stolen, or you fire an employee, that token keeps working until its `exp` time - there's no built-in off switch. The common fixes all *re-introduce* some server state: keep token lifetimes short and use refresh tokens (covered in [Phase 3](03-oauth-and-sign-in-with.md)), or maintain a server-side denylist of revoked tokens - at which point you've partly given back the statelessness that was the whole appeal.
+⚠️ **Gotcha - JWTs are hard to revoke.** This is the flip side of "no server-side state" - the server can't delete a token to log you out, so it stays valid until it *expires* on its own. Fire an employee or have a token stolen, and it keeps working until its `exp` time; there's no built-in off switch. The common fixes *re-introduce* server state: short token lifetimes plus refresh tokens (covered in [Phase 3](03-oauth-and-sign-in-with.md)), or a server-side denylist - at which point you've partly given back the statelessness that was the whole appeal.
 
 **The trade-offs, honestly.**
-- *No per-request lookup, easy to scale.* Any server instance with the secret key can verify a token on its own. No shared session store needed - this is the headline benefit, and it's real for distributed systems and APIs.
+- *No per-request lookup, easy to scale.* Any server instance with the secret key can verify a token on its own - no shared session store needed. Real for distributed systems and APIs.
 - *Revocation is genuinely hard.* As above - you trade instant logout for statelessness.
-- *Size and exposure.* A token carries its claims on *every* request, so it's bigger than a tiny session id, and those claims are out in the open (readable, as noted).
+- *Size and exposure.* A token carries its claims on *every* request, bigger than a tiny session id, and those claims are out in the open.
 
 ## So which one?
 
-There's no universal winner - the honest answer is "it depends on whether you value easy revocation or easy scaling more." A single web app with a login? Server-side sessions are simple, secure, and let you log people out instantly. A fleet of services or a public API where you don't want every node hammering one session store? Stateless tokens shine. Plenty of real systems use *both*: short-lived tokens for speed, plus server-side state (a refresh-token store or denylist) to claw back control over revocation.
+There's no universal winner - it depends on whether you value easy revocation or easy scaling more. A single web app? Server-side sessions are simple and let you log people out instantly. A fleet of services or a public API? Stateless tokens shine. Plenty of real systems use *both*: short-lived tokens for speed, plus server-side state to claw back revocation.
 
 | | Server-side session | Stateless token (JWT) |
 |---|---|---|
@@ -110,18 +110,18 @@ There's no universal winner - the honest answer is "it depends on whether you va
 | Scaling across servers | Needs a shared store (e.g. Redis) | Any node with the key can verify |
 | Payload privacy | Nothing meaningful in the cookie | Claims are readable by anyone |
 
-**Why this saves you later.** When someone says "just use JWTs, they're stateless and modern," you'll now ask the right question back: *how do we log a stolen token out?* And when a session-based app feels slow under load, you'll know the lookup and shared store are the cost you're paying for instant revocation. You're choosing a trade-off on purpose instead of cargo-culting a default.
+**Why this saves you later.** When someone says "just use JWTs, they're stateless and modern," ask the right question back: *how do we log a stolen token out?* You're choosing a trade-off on purpose instead of cargo-culting a default.
 
 ## Recap
 
-1. **HTTP is stateless**, so after login the server needs a way to recognize you on every following request.
-2. **The core difference is where the state lives:** a session keeps the data server-side behind a random id; a token writes the data into a signed string the client carries.
-3. **Sessions** make revocation instant (delete the id) but require a per-request lookup and a shared store to scale.
+1. **HTTP is stateless** - after login, the server needs a way to recognize you on every request.
+2. **The core difference is where the state lives:** a session keeps data server-side behind a random id; a token writes the data into a signed string the client carries.
+3. **Sessions** make revocation instant (delete the id) but need a per-request lookup and a shared store to scale.
 4. **JWTs** scale beautifully (any node can verify with the key) but are hard to revoke (valid until expiry).
 5. **A JWT is signed, not encrypted** - the payload is readable by anyone, so never put secrets in it.
-6. **Many real systems mix both**, pairing short-lived tokens with some server state to regain control over logout.
+6. **Many systems mix both**, pairing short-lived tokens with server state to regain control over logout.
 
-You now understand how *your own* server remembers you. The last piece is the part that confuses everyone in a different way: how does a *third* app - Google, GitHub - let you log in or grant access without ever handing over your password? That's OAuth.
+You now understand how *your own* server remembers you. Last piece: how does a *third* app - Google, GitHub - let you log in or grant access without ever handing over your password? That's OAuth.
 
 ---
 

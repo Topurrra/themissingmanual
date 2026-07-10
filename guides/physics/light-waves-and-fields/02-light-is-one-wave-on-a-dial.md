@@ -6,16 +6,16 @@ summary: "Why light, radio, sound, and ripples on a pond are the same idea: wave
 tags: [physics, light, waves, electromagnetism, fields, color, sound]
 difficulty: beginner
 synonyms: ["electromagnetic spectrum explained", "what is light", "why are radio and light the same", "what is color really", "what is a field physics", "how do magnets work field"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Light is one wave on a giant dial
 
-You learned in phase 1 that a wave is a pattern moving through a material. Now comes the part that broke physicists' brains for a century, and the part that finally makes light make sense: light is a wave that needs no material at all. It crosses the empty vacuum between the Sun and your face. To understand how, we need one more idea: the field.
+You learned in phase 1 that a wave is a pattern moving through a material. Now comes the part that finally makes light make sense: light is a wave that needs no material at all. It crosses the empty vacuum between the Sun and your face. To understand how, we need one more idea: the field.
 
 ## What a field is, without the hand-waving
 
-Hold two magnets near each other and you feel something push back before they touch. Nothing visible connects them, yet there is a force across the gap. Drop your keys and they fall, pulled by the Earth across empty air. These are not magic. They are *fields*.
+Hold two magnets near each other and you feel something push back before they touch. Nothing visible connects them, yet there is a force across the gap. Drop your keys and they fall, pulled by the Earth across empty air. These are not magic - they are *fields*.
 
 A field is a quantity that has a value at every point in space. That is the whole definition. Think of a weather map: at every point on the map there is a temperature. The temperature field is "the temperature, everywhere." You cannot see it, but it is real and you can measure it anywhere you stand.
 
@@ -39,9 +39,9 @@ magnetic field around a bar magnet (iron filings pattern):
 
 ## The trick that makes light
 
-Here is the discovery that ties it all together, and it is genuinely beautiful.
+Here is the discovery that ties it all together, and it's genuinely beautiful.
 
-A changing electric field creates a magnetic field. And a changing magnetic field creates an electric field. So if you wiggle an electric field, it makes a magnetic field, whose wiggling makes another electric field, whose wiggling makes another magnetic field, and the pattern leapfrogs forward through empty space, each field regenerating the other.
+A changing electric field creates a magnetic field, and a changing magnetic field creates an electric field. So if you wiggle an electric field, it makes a magnetic field, whose wiggling makes another electric field, whose wiggling makes another magnetic field - the pattern leapfrogs forward through empty space, each field regenerating the other.
 
 That self-sustaining leapfrog *is* light. Light is an electromagnetic wave: an electric field and a magnetic field, at right angles, taking turns creating each other as they travel.
 

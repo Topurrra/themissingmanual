@@ -9,7 +9,7 @@ order: 6
 group: "Java"
 difficulty: intermediate
 synonyms: ["learn spring framework", "core spring without spring boot", "spring ioc container applicationcontext", "spring @Configuration @Bean", "spring bean lifecycle scopes", "spring aop proxies", "how spring boot works under the hood", "spring mvc dispatcherservlet"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Spring Framework (Core) From Zero

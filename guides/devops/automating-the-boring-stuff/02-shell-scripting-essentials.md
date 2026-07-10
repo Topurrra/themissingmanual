@@ -6,14 +6,14 @@ summary: "Build a real bash script piece by piece — variables, arguments, cond
 tags: [bash, shell-scripting, variables, arguments, exit-codes, set-euo-pipefail, loops]
 difficulty: intermediate
 synonyms: ["how to write a bash script", "set -euo pipefail meaning", "bash variables and arguments", "bash exit codes", "bash if statement", "bash for loop", "shebang line"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Shell Scripting Essentials
 
-A bash script is nothing exotic: it's the exact same commands you'd type at the prompt, saved in a file so you can run them all at once, the same way, every time. If you can use the terminal, you can already read most of a script. This phase fills in the handful of pieces that turn a list of commands into something robust enough to trust — and shows you the one line that separates "a script" from "a safe script."
+A bash script is the exact same commands you'd type at the prompt, saved in a file so you can run them all at once, the same way, every time. This phase fills in the pieces that turn a list of commands into something robust enough to trust — including the one line that separates "a script" from "a safe script."
 
-We'll build one real example end to end: a script that backs up a directory and keeps only the most recent few backups (rotation), so it doesn't slowly fill the disk. Don't just read it — type it into a file and run it. The pieces make sense fastest when you watch them work.
+We'll build one real example end to end: a script that backs up a directory and rotates out old backups so they don't fill the disk. Type it in and run it as you go — the pieces click fastest when you watch them work.
 
 ## The shebang and your first run
 
@@ -24,35 +24,35 @@ Create a file called `backup.sh`:
 echo "Hello from a script"
 ```
 
-That first line is the **shebang** (`#!`). It tells the system which program should run this file. `/usr/bin/env bash` means "find bash on this machine and use it" — more portable than hardcoding a path. Now make it runnable and run it:
+That first line is the **shebang** (`#!`) — it tells the system which program runs the file. `/usr/bin/env bash` finds bash wherever it lives, more portable than hardcoding a path. Make it runnable and run it:
 
 ```console
 $ chmod +x backup.sh
 $ ./backup.sh
 Hello from a script
 ```
-*What just happened:* `chmod +x` ("change mode, add execute") flipped the file's permission so the system is allowed to run it as a program. Then `./backup.sh` ran it — the `./` means "the file right here in this folder." Bash read the file top to bottom and executed each line as if you'd typed it. That's the whole trick: **a script is just typed-ahead terminal commands.**
+*What just happened:* `chmod +x` flips the file's permission so the system can run it as a program; `./backup.sh` then runs it. Bash reads the file top to bottom and executes each line as if you'd typed it. **A script is just typed-ahead terminal commands.**
 
-📝 **Terminology.** A `#` starts a **comment** — bash ignores the rest of the line. (The shebang is special only because it's the very first line and starts with `#!`.) Use comments to explain *why*, not *what*; the commands already say what.
+📝 **Terminology.** A `#` starts a **comment** (bash ignores the rest of the line) except on the first line, where `#!` is the shebang. Use comments for *why*, not *what*.
 
 ## The safety line: `set -euo pipefail`
 
-Here is the most important line in this entire guide. Put it right after the shebang in almost every script you write:
+Put this line right after the shebang in almost every script you write — it's the most important one in this guide:
 
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
 ```
 
-By default, bash is alarmingly forgiving. If a command fails partway through your script, bash shrugs and runs the *next* line anyway. If you use a variable you never set, bash treats it as an empty string and carries on. For a backup script, "carry on after a failure" is exactly how you end up deleting good backups because the step that made the new one silently failed. `set -euo pipefail` makes bash strict instead. Three flags, plus one:
+By default, bash is alarmingly forgiving: a failed command doesn't stop the script, and an unset variable is silently treated as empty. For a backup script, that's exactly how you end up deleting good backups because the step that made the new one silently failed. `set -euo pipefail` makes bash strict instead — three flags, plus one:
 
-- **`-e`** — **exit on error.** If any command fails (returns a non-zero exit code), the script stops immediately instead of blundering onward.
-- **`-u`** — **error on unset variables.** Using a variable you forgot to set is now a loud error, not a silent empty string. This catches typos like `$BACKUP_DIRR` before they erase the wrong thing.
-- **`-o pipefail`** — in a pipeline like `a | b`, if `a` fails, the whole pipeline is considered failed. Without this, only the *last* command's success counts, so failures hide in the middle of a pipe.
+- **`-e`** — **exit on error.** A failed command (non-zero exit) stops the script immediately instead of blundering onward.
+- **`-u`** — **error on unset variables.** Using a variable you forgot to set is now a loud error, not a silent empty string — catches typos like `$BACKUP_DIRR` before they erase the wrong thing.
+- **`-o pipefail`** — in a pipeline like `a | b`, if `a` fails, the whole pipeline is considered failed. Without this, only the *last* command's success counts, so failures hide mid-pipe.
 
-⚠️ **Gotcha.** Without `set -e`, a script that fails on line 3 happily runs lines 4 through 40 against a broken state. That is how "the backup script" becomes "the script that quietly stopped backing up six weeks ago and nobody noticed." Adding this one line is the cheapest reliability you will ever buy. Add it first, before you write anything else.
+⚠️ **Gotcha.** Without `set -e`, a script that fails on line 3 happily runs lines 4 through 40 against a broken state — how "the backup script" becomes "the script that quietly stopped backing up six weeks ago and nobody noticed." Adding this one line is the cheapest reliability you will ever buy.
 
-(Strict mode has sharp edges — sometimes you *expect* a command to fail and want to handle it yourself. The pattern for that is `if ! some_command; then ...`, which we use below. It doesn't trip `-e` because the failure is part of an `if` test.)
+(Sometimes you *expect* a command to fail and want to handle it yourself — use `if ! some_command; then ...`, as below. It doesn't trip `-e` because the failure is part of an `if` test.)
 
 ## Variables — name the things that might change
 
@@ -63,9 +63,9 @@ SOURCE_DIR="$HOME/projects/myapp"
 BACKUP_ROOT="$HOME/backups"
 KEEP=5
 ```
-*What just happened:* `NAME="value"` defines a variable. **No spaces around the `=`** — `NAME = "value"` is an error in bash, which trips up everyone at least once. You read a variable back with a `$` in front: `$SOURCE_DIR`. `$HOME` is one bash gives you for free: your home directory.
+*What just happened:* `NAME="value"` defines a variable — **no spaces around the `=`** (`NAME = "value"` is an error, and trips up everyone at least once). Read it back with `$SOURCE_DIR`. `$HOME` is one bash gives you free: your home directory.
 
-⚠️ **Gotcha — always quote your variables.** Write `"$SOURCE_DIR"`, not `$SOURCE_DIR`. If a path contains a space (and one day it will — `My Documents`), an unquoted variable splits into two arguments and your command does something wild. Quoting keeps it as one value. This single habit prevents a whole category of "it worked on my machine" bugs.
+⚠️ **Gotcha — always quote your variables.** Write `"$SOURCE_DIR"`, not `$SOURCE_DIR`. If a path contains a space (and one day it will — `My Documents`), an unquoted variable splits into two arguments and your command does something wild. Quoting keeps it one value — this single habit prevents a whole category of "it worked on my machine" bugs.
 
 ## Arguments — let the caller pass values in
 
@@ -75,7 +75,7 @@ You don't want to edit the script every time you back up a different folder. Let
 $ ./backup.sh /home/ada/projects/myapp
 ```
 
-Inside the script, arguments arrive as `$1`, `$2`, and so on (`$1` is the first). It's good manners to check the caller actually provided one:
+Arguments arrive as `$1`, `$2`, and so on (`$1` is first). Check the caller actually provided one:
 
 ```bash
 if [ -z "${1:-}" ]; then
@@ -84,11 +84,11 @@ if [ -z "${1:-}" ]; then
 fi
 SOURCE_DIR="$1"
 ```
-*What just happened:* `[ -z "${1:-}" ]` tests whether the first argument is empty (`-z` = "zero length"). The `${1:-}` is a small dance for `set -u`: it means "`$1`, or empty if it's unset," so checking a missing argument doesn't itself trip the unset-variable error. If it's empty, we print a usage message to **standard error** (`>&2`, the proper channel for messages meant for humans, not data) and `exit 1`.
+*What just happened:* `[ -z "${1:-}" ]` tests whether the first argument is empty (`-z` = "zero length"). The `${1:-}` is a small dance for `set -u` — "`$1`, or empty if unset" — so checking a missing argument doesn't itself trip the unset-variable error. If it's empty, we print a usage message to **standard error** (`>&2`) and `exit 1`.
 
 ## Exit codes — how a script says "it worked" or "it didn't"
 
-`exit 1` above is doing something important. Every command — and every script — ends with an **exit code**: `0` means success, anything else means a specific kind of failure. This is how scripts talk to each other, to `set -e`, and to schedulers like cron. You can see the last command's exit code in the special variable `$?`:
+`exit 1` above matters: every command and script ends with an **exit code** — `0` for success, anything else for failure. It's how scripts talk to `set -e` and to schedulers like cron. See the last one in `$?`:
 
 ```console
 $ ls /tmp >/dev/null; echo $?
@@ -96,7 +96,7 @@ $ ls /tmp >/dev/null; echo $?
 $ ls /does-not-exist >/dev/null 2>&1; echo $?
 2
 ```
-*What just happened:* `ls` on a real directory succeeded, so `$?` is `0`. `ls` on a missing one failed, so `$?` is non-zero (`2`, ls's code for "serious trouble"). `>/dev/null` throws away the normal output and `2>&1` throws away the error text — we only wanted to see the *code* here. The rule to internalize: **end your script with `exit 0` on success, and `exit 1` (or another non-zero) on failure**, so whatever runs your script knows what happened. Cron, in particular, decides whether to alert you based on this number.
+*What just happened:* `ls` on a real directory succeeded, so `$?` is `0`. On a missing one it failed, so `$?` is non-zero (`2`, ls's code for "serious trouble"). `>/dev/null` and `2>&1` just discard the output — we only wanted to see the code. The rule to internalize: **end your script with `exit 0` on success, `exit 1` (or another non-zero) on failure**, so whatever runs it knows what happened. Cron, in particular, decides whether to alert you based on this number.
 
 ## Conditionals — check before you act
 
@@ -110,7 +110,7 @@ fi
 
 mkdir -p "$BACKUP_ROOT"
 ```
-*What just happened:* `[ ! -d "$SOURCE_DIR" ]` reads as "if NOT (`!`) a directory (`-d`) exists at this path." If the source is missing, we fail loudly and early rather than backing up nothing. `mkdir -p` creates the backup folder — and the `-p` ("parents") means it won't complain if the folder already exists, which makes the script safe to run repeatedly. (That property has a name — *idempotency* — and it's a big enough deal that Phase 3 is partly about it.)
+*What just happened:* `[ ! -d "$SOURCE_DIR" ]` reads as "if NOT (`!`) a directory (`-d`) exists here." A missing source fails loudly and early rather than backing up nothing. `mkdir -p` creates the backup folder — `-p` means it won't complain if the folder already exists, making the script safe to re-run. (That property is *idempotency* — Phase 3 covers it.)
 
 ## Putting it together: backup + rotate
 
@@ -157,9 +157,9 @@ exit 0
 
 A few lines deserve a closer look:
 
-- `TIMESTAMP="$(date +%Y%m%d-%H%M%S)"` — the `$(...)` is **command substitution**: it runs the command inside and drops its output into the variable. So `TIMESTAMP` becomes something like `20260619-142530`. Putting the timestamp in the filename means each run makes a *new* archive instead of clobbering the last one.
-- `tar -czf "$ARCHIVE" "$SOURCE_DIR"` — **c**reate a **z** (gzip-compressed) archive into the **f**ile we name. This is the actual backup.
-- The rotation line is a small pipeline: `ls -1t` lists the archives **newest first** (one per line), `tail -n +$((KEEP + 1))` skips the first `KEEP` of them and prints the rest (the *old* ones), and the `while read` **loop** deletes each one it's handed. `$((KEEP + 1))` is bash doing arithmetic — if `KEEP` is 5, we keep lines 1–5 and start deleting from line 6.
+- `TIMESTAMP="$(date +%Y%m%d-%H%M%S)"` — `$(...)` is **command substitution**: it runs the command and drops its output into the variable. Putting the timestamp in the filename means each run makes a *new* archive instead of clobbering the last one.
+- `tar -czf "$ARCHIVE" "$SOURCE_DIR"` — **c**reate a **z** (gzip) archive into the named **f**ile. This is the actual backup.
+- The rotation line is a pipeline: `ls -1t` lists archives **newest first**, `tail -n +$((KEEP + 1))` skips the first `KEEP` and prints the rest, and `while read` **loops** over deleting each one. If `KEEP` is 5, lines 1–5 stay and deletion starts at line 6.
 
 Here's a real run, the second time (so there's already an old backup to clean up):
 
@@ -172,9 +172,9 @@ Done.
 $ echo $?
 0
 ```
-*What just happened:* The script created a fresh timestamped archive, then found it now had six backups, kept the five newest, and removed the oldest one — and exited `0` to say it all worked. Run it again tomorrow and it does the same thing, correctly, without you remembering a single flag. That's the payoff from Phase 1, made real: the process is now a file, not a memory.
+*What just happened:* The script created a fresh timestamped archive, found it now had six backups, kept the five newest, and removed the oldest — exiting `0` to say it worked. Run it again tomorrow and it does the same thing correctly, without you remembering a single flag. That's the payoff from Phase 1: the process is now a file, not a memory.
 
-💡 **Key point.** A reliable script is mostly *guard rails*: `set -euo pipefail` at the top, quote every variable, check arguments and paths before acting, and end with a clear exit code. The actual work — `tar`, `rm` — is the easy part. The robustness is what makes it safe to run unattended, which is exactly what Phase 3 needs.
+💡 **Key point.** A reliable script is mostly *guard rails*: `set -euo pipefail`, quote every variable, check arguments and paths before acting, end with a clear exit code. `tar` and `rm` are the easy part — the guard rails are what make it safe to run unattended, which Phase 3 needs.
 
 ## Recap
 

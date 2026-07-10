@@ -6,14 +6,14 @@ summary: "A model is a big bundle of adjustable numbers called weights; training
 tags: [ai-ml, machine-learning, weights, model, predictions, beginner-friendly]
 difficulty: beginner
 synonyms: ["what is a model made of", "what are weights in machine learning", "what does a trained model contain", "how does a model make a prediction", "is a model only numbers"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Data → Weights → Predictions
 
-When someone says "we trained a model," the mind reaches for something almost alive — a little brain
-that read a library and woke up clever. That picture is the reason training feels mysterious. So let's
-replace it with one that's accurate and far less spooky.
+When someone says "we trained a model," the mind reaches for something almost alive — a little brain that
+read a library and woke up clever. That picture is why training feels mysterious. Let's replace it with one
+that's accurate and far less spooky.
 
 Here's the secret this phase delivers: **a model is a big pile of numbers, and those numbers are the
 only thing training ever changes.** Once you see that, everything else in this guide is detail.

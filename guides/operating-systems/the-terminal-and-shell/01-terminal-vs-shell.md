@@ -13,8 +13,8 @@ updated: 2026-06-19
 
 Before a single command, let's clear up the thing that quietly confuses almost everyone: people say
 "terminal," "shell," "command line," and "console" as if they're one thing. They're not, and once you can
-tell them apart, the whole black window stops feeling like a single intimidating blob and becomes a couple
-of simple, separate pieces you can actually reason about.
+tell them apart, the whole black window stops feeling like an intimidating blob and becomes a couple of
+simple, separate pieces you can reason about.
 
 ## Two things, not one: the window and the program inside it
 
@@ -29,8 +29,8 @@ flowchart TD
 
 **What the terminal actually is.** The **terminal** (or "terminal emulator") is the *window* - a fairly
 dumb but useful program whose entire job is to show text on the screen and capture the keys you press. It
-doesn't understand a single command you type. It's a pane of glass with a keyboard attached. Think of it
-as the screen-and-keyboard, nothing more.
+doesn't understand a single command you type. It's a pane of glass with a keyboard attached - the
+screen-and-keyboard, nothing more.
 
 **What the shell actually is.** Inside that window runs a second program: the **shell**. *This* is the
 part with the brains. The shell reads the line you type, figures out what you meant, asks the operating
@@ -51,10 +51,9 @@ The clean one-sentence version: **the terminal is the window; the shell is the p
 your commands.** Hold onto that - it explains everything else in this phase.
 
 **Why this distinction matters.** When someone says "which shell are you using?" they're not asking about
-your window; they're asking whether your commands get interpreted by bash, zsh, or PowerShell - because
-the syntax differs. And when your prompt looks different from a tutorial's, it's usually because you're in
-a different *shell*, not a different *terminal*. Knowing which layer you're talking about saves a lot of
-confused troubleshooting.
+your window; they're asking whether your commands get interpreted by bash, zsh, or PowerShell, because the
+syntax differs. When your prompt looks different from a tutorial's, it's usually because you're in a
+different *shell*, not a different *terminal*.
 
 ## The prompt: the shell telling you it's your turn
 
@@ -65,11 +64,11 @@ When the shell is ready for a command, it prints a **prompt** and waits. That's 
 ```console
 ada@laptop:~$
 ```
-*What just happened:* Nothing ran yet - this is the shell *waiting*. Reading it left to right: `ada` is
-your username, `laptop` is the machine's name, `~` is where you currently are (`~` means your home
-folder), and `$` marks the end of the prompt. Everything you type goes *after* that `$`. Different shells
-dress this up differently - zsh on a Mac often ends in `%`, and PowerShell shows something like
-`PS C:\Users\ada>` - but they all mean the same thing: "ready for your next command."
+*What just happened:* nothing ran yet - this is the shell *waiting*. Reading it left to right: `ada` is
+your username, `laptop` is the machine's name, `~` is where you currently are (`~` means your home folder),
+and `$` marks the end of the prompt. Everything you type goes *after* that `$`. Different shells dress this
+up differently - zsh on a Mac often ends in `%`, PowerShell shows something like `PS C:\Users\ada>` - but
+they all mean "ready for your next command."
 
 ⚠️ **Gotcha.** In guides and docs, commands are shown with a leading `$ ` (or `% `, or `> `) to signal
 "this is a shell command." **Don't type that leading prompt character.** If a guide shows `$ ls`, you
@@ -100,37 +99,33 @@ ada@laptop:~$ whoami
 ada
 ada@laptop:~$
 ```
-*What just happened:* You typed `whoami` and pressed Enter (**read**). The shell recognized it as a
-program and asked the OS to run it (**evaluate**). That program printed your username, `ada` (**print**).
-Then the shell drew a fresh prompt and went back to waiting (**loop**). One command, one answer, back to
-ready. That's every interaction you'll ever have with a shell, repeated.
+*What just happened:* you typed `whoami` and pressed Enter (**read**). The shell recognized it as a program
+and asked the OS to run it (**evaluate**). That program printed your username, `ada` (**print**). Then the
+shell drew a fresh prompt and went back to waiting (**loop**). One command, one answer, back to ready.
 
 💡 **Key point.** The shell isn't doing the work itself - it's a *middleman*. It reads your request and
-hands it to the operating system, which actually runs the program and touches the hardware. (If you want
-the full picture of how the OS runs programs on your behalf, that's the
-[/guides/what-an-operating-system-is](/guides/what-an-operating-system-is) guide.) The shell's job is to
+hands it to the operating system, which actually runs the program and touches the hardware. (Full picture:
+[/guides/what-an-operating-system-is](/guides/what-an-operating-system-is).) The shell's job is to
 translate "what you typed" into "what the OS should do."
 
 ## Why type at all, when you could click?
 
 It's a fair question. The desktop with its icons and buttons works fine for a lot of things. So why do
-developers live in this text window? Three real reasons, and they're worth understanding because they tell
-you *when* the terminal is the right tool:
+developers live in this text window? Three real reasons, worth understanding because they tell you *when*
+the terminal is the right tool:
 
 - **Precision.** A command says *exactly* what you want, with no ambiguity. "Delete every file ending in
-  `.tmp` in this folder" is one precise line. Doing that by hand in a file browser means hunting, eyeballing,
-  and hoping you didn't miss one. The terminal does precisely what you said - which is a double-edged sword
-  we'll respect carefully in Phase 2.
+  `.tmp` in this folder" is one precise line. Doing that by hand in a file browser means hunting,
+  eyeballing, and hoping you didn't miss one - a double-edged sword we'll respect carefully in Phase 2.
 - **Repeatability and automation.** A command is text. Text can be saved, shared, and rerun. You can hand a
-  colleague the exact line you ran, paste it into instructions, or eventually drop it into a script that
-  runs a hundred commands while you get coffee. You can't email someone a sequence of mouse clicks.
-- **Reach - including remote machines.** Servers in a data center usually have *no desktop at all*. The only
-  way to drive them is by typing commands over a network connection. The same skills you're learning here
-  are exactly how you'll operate a machine you'll never physically see. (Connecting to those remote machines
-  is its own topic - a follow-up guide - but the commands you'd run there are these.)
+  colleague the exact line you ran, paste it into instructions, or drop it into a script that runs a
+  hundred commands while you get coffee. You can't email someone a sequence of mouse clicks.
+- **Reach - including remote machines.** Servers in a data center usually have *no desktop at all*. The
+  only way to drive them is by typing commands over a network connection. The same skills you're learning
+  here are exactly how you'll operate a machine you'll never physically see.
 
-The terminal isn't more powerful because it's harder. It's more powerful because text is precise,
-saveable, and works everywhere - even where there's nothing to click.
+The terminal isn't more powerful because it's harder. It's more powerful because text is precise, saveable,
+and works everywhere - even where there's nothing to click.
 
 ## Recap
 

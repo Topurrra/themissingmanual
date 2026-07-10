@@ -6,16 +6,16 @@ summary: "The judgment call: a relational database is the boring-correct default
 tags: [databases, sql, nosql, decision, polyglot-persistence, caching, architecture]
 difficulty: intermediate
 synonyms: ["which database should i use", "when to use nosql vs sql", "default database choice", "is nosql schemaless", "can i use both sql and nosql", "what is polyglot persistence"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # How to Actually Choose
 
-You've got the mental models and the honest trade-offs. Now for the part that actually feels
-hard under deadline pressure: picking one. This phase is mostly **judgment**, and I'll flag it
-as judgment where it is — you should weigh it against your own situation, not take it as law.
-But there's a default that's right far more often than the internet's energy around this topic
-would suggest, and there are two traps that catch people who pick NoSQL for the wrong reason.
+You've got the mental models and the honest trade-offs. Now the part that actually feels hard
+under deadline pressure: picking one. This phase is mostly **judgment**, flagged as judgment
+where it is — weigh it against your own situation, don't take it as law. But there's a default
+that's right far more often than the internet's energy around this topic would suggest, and
+two traps that catch people who pick NoSQL for the wrong reason.
 
 ## The picker
 
@@ -34,8 +34,8 @@ would suggest, and there are two traps that catch people who pick NoSQL for the 
 ## 1. The boring-correct default: a relational database
 
 **The judgment, stated plainly:** *for most applications, a relational database is the right
-default, and you should need a specific reason to choose otherwise.* That's an opinion, but
-it's a well-worn one, and here's the reasoning so you can decide if it applies to you.
+default, and you should need a specific reason to choose otherwise.* That's an opinion, but a
+well-worn one, and here's the reasoning so you can decide if it applies to you.
 
 Most apps are, underneath, a set of *things* with *relationships* between them: users have
 orders, orders have line items, line items reference products. That's the relational model's
@@ -45,7 +45,7 @@ vast majority of apps will ever reach.
 
 The reason "boring" is a compliment here: a relational database is mature, deeply understood,
 documented everywhere, and unlikely to surprise you at 2am. Choosing it is rarely the decision
-you regret. Choosing something exotic *without a reason* is.
+you regret; choosing something exotic *without a reason* is.
 
 ⚠️ **"We might need web-scale someday" is not a reason today.** Picking a distributed NoSQL
 store to handle traffic you don't have yet means paying its costs — weaker consistency, harder
@@ -55,12 +55,13 @@ arrive, you'll have real numbers to design against. Optimize for the app you hav
 ## 2. Reach for a NoSQL store for a *specific* access pattern
 
 The right way to bring in NoSQL is **a specific store for a specific job**, not "let's be a
-NoSQL shop." Each family from Phase 1 earns its place when its access pattern is *your* problem:
+NoSQL shop." Each family from Phase 1 earns its place when its access pattern is *your*
+problem:
 
 - **Cache / sessions / counters → key-value (Redis).** When the same expensive read happens
   over and over, put a fast key-value store in front of it. This is the most common and most
-  clearly-justified NoSQL adoption — and notice it sits *alongside* your relational database,
-  not instead of it.
+  clearly-justified NoSQL adoption — and it sits *alongside* your relational database, not
+  instead of it.
 - **Huge write volume across machines → wide-column (Cassandra).** Time-series, event logs,
   sensor data, activity feeds at enormous scale — workloads where writes-per-second outgrow a
   single server and your queries are known in advance.
@@ -75,18 +76,17 @@ The test for all four: **can you name the access pattern out loud?** "I need sub
 lookups by session ID" is a reason. "It's more modern" is not.
 
 🪖 **A common arc.** Plenty of teams start on a relational database, run fine for years, then
-add Redis the day a hot query starts hurting. That's the healthy pattern: relational core, a
-specialized store bolted on for one measured problem. The unhealthy pattern is the reverse —
-choosing an exotic store first and discovering later you've made the *normal* parts of the app
-harder.
+add Redis the day a hot query starts hurting — relational core, a specialized store bolted on
+for one measured problem. The unhealthy pattern is the reverse: choosing an exotic store first
+and discovering later you've made the *normal* parts of the app harder.
 
 ## 3. ⚠️ Trap one: "NoSQL ≠ no schema"
 
 This is the most expensive misconception in the whole topic, so it gets its own section.
 
 A schema-flexible store doesn't mean your data has no schema. Your data **always** has a
-structure — your code reads `user.email` and `order.total` and expects them to exist and to be
-the right type. The only question is **who enforces that structure.**
+structure — your code reads `user.email` and `order.total` and expects them to exist and be the
+right type. The only question is **who enforces that structure.**
 
 - In a relational database, the *database* enforces it. A bad write is rejected at the door
   (you saw `ERROR: invalid input syntax` in Phase 2).
@@ -104,7 +104,7 @@ flowchart LR
 ```
 
 The honest version: "schemaless" really means "the schema moved out of the database and into
-your code and your discipline." That can be the right trade — but it's a *relocation* of the
+your code and your discipline." That can be the right trade, but it's a *relocation* of the
 work, never a *deletion* of it. Teams that picked NoSQL expecting to skip data modeling
 entirely tend to rediscover, painfully, that the modeling was load-bearing.
 
@@ -113,8 +113,8 @@ entirely tend to rediscover, painfully, that the modeling was load-bearing.
 
 ## 4. ⚠️ Trap two: it's not either/or — you can mix
 
-The framing "SQL *vs* NoSQL" quietly implies you must pick one for your whole app. You don't.
-Real systems routinely use several stores, each for what it's best at — there's even a name for
+The framing "SQL *vs* NoSQL" quietly implies you must pick one for your whole app. You don't —
+real systems routinely use several stores, each for what it's best at. There's even a name for
 it: **polyglot persistence.**
 
 > 📝 **Polyglot persistence.** Using more than one type of data store in a single system,
@@ -135,9 +135,8 @@ store does the one thing it's shaped for, and the relational database stays the 
 of truth the others derive from.
 
 The cost of mixing is real and worth naming: more moving parts to operate, more places data can
-drift out of sync, more for a new teammate to learn. So mix *deliberately* — add a store when a
-measured problem justifies it, not because variety feels sophisticated. But "do I have to
-choose one camp?" has a clear answer: no.
+drift out of sync, more for a new teammate to learn. Mix *deliberately* — add a store when a
+measured problem justifies it, not because variety feels sophisticated.
 
 ## Recap
 
@@ -152,8 +151,8 @@ choose one camp?" has a clear answer: no.
    normal and often right. Mix deliberately, because each store adds operational cost.
 
 That's the whole honest picture: not a winner, but a set of shapes and trades you can now reason
-about. Pick the shape that fits the problem in front of you, name your reason, and you'll be
-defending a real decision instead of taking a side in a holy war.
+about. Pick the shape that fits the problem in front of you, name your reason, and you'll defend
+a real decision instead of taking a side in a holy war.
 
 ## Where to go next
 

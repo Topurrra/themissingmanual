@@ -6,14 +6,14 @@ summary: "A data warehouse is a database optimized for analytical questions over
 tags: [data-warehouse, columnar-storage, schema-on-write, olap, bigquery, snowflake, redshift, analytics]
 difficulty: intermediate
 synonyms: ["what is a data warehouse", "olap vs oltp", "schema on write", "columnar storage explained", "why is a data warehouse fast for analytics", "bigquery snowflake redshift difference"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Warehouse — A Database Built for Analytics
 
 You already know what a database is — the thing behind your app that stores users, orders, and sessions.
-So when someone says "data warehouse," it's tempting to picture the same thing, just bigger. That picture
-will quietly lead you wrong, and it's worth fixing before anything else.
+So when someone says "data warehouse," it's tempting to picture the same thing, just bigger. That
+picture will quietly lead you wrong.
 
 A warehouse *is* a database. But it's tuned for a completely different job: answering big analytical
 questions across your whole history, fast. Once you see what that job demands, every design choice a
@@ -35,7 +35,7 @@ and aggregating huge ranges* quickly.
 **Why people get this wrong.** The instinct is "just run the analytics query on the app database." For a
 while you can, and then one day a `SELECT SUM(...) ... GROUP BY ...` over the whole orders table locks
 things up and the app slows for real users. The two jobs compete for the same machine. A warehouse exists
-so the heavy analytical questions live somewhere they can't hurt production — on hardware shaped for exactly
+so heavy analytical questions live somewhere they can't hurt production — on hardware shaped for exactly
 that work.
 
 ```text
@@ -130,11 +130,10 @@ A warehouse isn't free, and the costs are worth naming honestly so the bill neve
   messy, or unstructured data (images, logs, free text, half-known JSON) is an awkward fit — which is the
   exact gap the lake fills next.
 
-🪖 **War story.** A team I know pointed a popular BI tool at their warehouse and left the dashboards on
-auto-refresh for a launch. The dashboards were lovely. The end-of-month bill was not — every viewer
-refresh had been firing fresh scans over the largest table they had. The fix was caching and scheduled
-refreshes, but the lesson stuck: in a pay-per-query warehouse, *who runs what, how often* is a cost
-decision, not just a UX one.
+🪖 **War story.** A team pointed a popular BI tool at their warehouse and left the dashboards on
+auto-refresh for a launch. The dashboards were lovely; the end-of-month bill was not — every viewer
+refresh fired a fresh scan over their largest table. The fix was caching and scheduled refreshes, but the
+lesson stuck: in a pay-per-query warehouse, *who runs what, how often* is a cost decision, not just UX.
 
 ## Recap
 

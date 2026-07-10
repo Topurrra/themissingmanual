@@ -6,16 +6,16 @@ summary: "How Hibernate actually shows up in production: as Spring Data JPA, beh
 tags: [hibernate, jpa, spring-data-jpa, flyway, liquibase, migrations, learning-path, what-to-build]
 difficulty: beginner
 synonyms: ["spring data jpa vs hibernate", "hibernate flyway liquibase migrations", "hibernate in spring boot", "when to use raw sql vs orm", "hibernate next steps", "jpa real world best practices"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Hibernate in the Real World & Where to Go Next
 
 Stop for a second and look at how far you've come. You started this guide thinking of an ORM as a black box that turned objects into rows somehow. Now you can name the gears inside it. You understand the **persistence context** — the managed identity map that makes an entity feel like a live object instead of a dead snapshot. You know **dirty checking** is what updates a row when you never called `save`. You can map a `@ManyToOne`, reason about owning versus inverse sides, and — this is the big one — you can *see* the **N+1 problem** coming and reach for a `JOIN FETCH` before it ever hits production.
 
-Most of all, you can read the SQL. With `show_sql` on, Hibernate stopped being magic and started being a tool whose output you can predict and debug. That's the whole game. A data layer is no longer something that happens *to* you; it's something you reason about.
+Most of all, you can read the SQL. With `show_sql` on, Hibernate stopped being magic and started being a tool whose output you can predict and debug. That's the whole game — a data layer is no longer something that happens *to* you; it's something you reason about.
 
-This last phase isn't new mechanics. It's about where all of that lives in real teams — and there's one revelation waiting that ties the whole guide together.
+This last phase isn't new mechanics — it's about where all of that lives in real teams, and there's one revelation waiting that ties the whole guide together.
 
 ## The magic, revealed
 

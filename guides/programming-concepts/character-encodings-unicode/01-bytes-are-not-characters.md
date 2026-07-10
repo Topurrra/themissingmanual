@@ -14,12 +14,12 @@ synonyms:
   - why is string length wrong for emoji
   - what is a code point
   - byte order mark bom problem
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Bytes Are Not Characters
 
-Here is the thing nobody tells you up front, and it is the source of nearly every text bug you will ever hit: **a computer never stores characters. It stores numbers.** A file on disk, a packet on the wire, a string in memory - all of it is bytes, which are nothing more than numbers from 0 to 255. The letter `A` is not in that file. A *number* is in that file, and somewhere there is an agreement that says "when you see this number, draw an `A`."
+Here's the thing nobody tells you up front, and it's the source of nearly every text bug you'll ever hit: **a computer never stores characters. It stores numbers.** A file on disk, a packet on the wire, a string in memory - all of it is bytes, which are nothing more than numbers from 0 to 255. The letter `A` is not in that file. A *number* is in that file, and somewhere there is an agreement that says "when you see this number, draw an `A`."
 
 That agreement is called an **encoding**. The whole topic of character encoding is the story of who agreed on what, what happens when two parties disagree, and how the world slowly built one table big enough to hold every character humans use.
 

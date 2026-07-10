@@ -6,7 +6,7 @@ summary: "main keeps moving while you work; learn what tracking branches tell yo
 tags: [git, sync, pull, push, tracking-branch, merge, conflict, teamwork]
 difficulty: intermediate
 synonyms: ["keep my branch up to date with main", "git your branch is behind", "git merge main into feature branch", "git updates were rejected fetch first", "resolve merge conflict on a team", "what is a tracking branch"]
-updated: 2026-06-18
+updated: 2026-07-10
 ---
 
 # Staying in Sync - Keeping Up With a Moving main
@@ -47,9 +47,9 @@ On branch feature/cart-totals
 Your branch is ahead of 'origin/feature/cart-totals' by 2 commits.
   (use "git push" to publish your local commits)
 ```
-*What just happened:* Git is comparing your branch to its remote twin and reporting the gap - you have 2
-commits it hasn't seen yet. "Ahead" means you have local work to push; "behind" means the remote has work
-you should pull; "diverged" means both, and you'll need to reconcile them.
+*What just happened:* Git compared your branch to its remote twin and reported the gap - 2 commits it
+hasn't seen. "Ahead" means local work to push; "behind" means remote work to pull; "diverged" means both,
+and you'll need to reconcile.
 
 ## 2. See how far you've drifted from `main`
 
@@ -66,8 +66,7 @@ a7b8c9d Add promo-code field
 ```
 *What just happened:* `git fetch` quietly downloaded everyone's new commits and updated your bookmark of
 `origin/main` - it touched none of your files (that's what makes it safe to run anytime). The `log` command
-then asked "what's in `origin/main` that my `main` doesn't have?" - two commits. Now you know you've
-drifted, and by what.
+then asked "what's in `origin/main` that my `main` doesn't have?" - two commits.
 
 > ⏭️ Fuzzy on `fetch` vs `pull` or what `origin/main` is? They're covered in depth in
 > [Git, Explained Like You're a Human](/guides/git-explained-like-a-human) - this guide builds on that.
@@ -87,14 +86,14 @@ Merge made by the 'ort' strategy.
  promo.js | 22 ++++++++++++++++++
  1 file changed, 22 insertions(+)
 ```
-*What just happened:* You updated your local `main` from the remote, switched back to your feature branch,
-and merged `main` into it. Your branch now contains all the team's recent work *plus* your own - so when
-it's time to merge your branch back, there's little left to reconcile. (`'ort'` is just the name of Git's
-default merge strategy; nothing to configure.)
+*What just happened:* You updated local `main` from the remote, switched back to your feature branch, and
+merged `main` into it - your branch now has the team's recent work *plus* your own, so there's little left
+to reconcile when it's time to merge back. (`'ort'` is just Git's default merge strategy name; nothing to
+configure.)
 
 💡 **Key point.** Do this regularly - every morning, or whenever you notice `main` moved. Frequent small
-merges beat one giant end-of-week merge every single time. Divergence is what makes conflicts hurt, and
-syncing often keeps divergence tiny.
+merges beat one giant end-of-week merge every time; divergence is what makes conflicts hurt, and syncing
+often keeps divergence tiny.
 
 ## 4. When folding in `main` causes a conflict
 
@@ -156,10 +155,10 @@ then `push`. (There's a genuinely safer cousin, `--force-with-lease`, used when 
 ## A note on `rebase`
 
 You'll hear teammates say "just rebase onto `main`" as an alternative to the merge in §3. Rebase *rewrites*
-your commits, which makes for a tidier history but is a sharp tool - used wrong on a shared branch, it
-rewrites history other people have, and that's exactly the kind of mess that ruins days. We cover it
-properly, with its safety rules, in the advanced guide (#4: Git Disaster Recovery). Until then, the
-merge-based sync in this phase is completely correct and won't bite anyone.
+your commits - tidier history, but a sharp tool: used wrong on a shared branch it rewrites history other
+people have, exactly the kind of mess that ruins days. We cover it properly, with its safety rules, in the
+advanced guide (#4: Git Disaster Recovery); until then, the merge-based sync here is completely correct and
+won't bite anyone.
 
 ## Recap
 

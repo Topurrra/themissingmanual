@@ -6,7 +6,7 @@ summary: "A pull request is a reviewable request to merge your branch into main;
 tags: [git, pull-request, code-review, merge, squash, tags, releases, github]
 difficulty: intermediate
 synonyms: ["what is a pull request", "how to open a pull request", "squash and merge vs merge commit", "pull request merge conflict", "how to tag a release in git", "delete branch after merge"]
-updated: 2026-06-18
+updated: 2026-07-10
 ---
 
 # Pull Requests & Review - Getting Your Work Into main
@@ -69,10 +69,10 @@ $ git push
 automatically - the reviewer sees the update in place. A PR is a *living view* of your branch, not a
 one-time snapshot. Round-trip until the reviewer approves.
 
-🪖 **War story.** The first PR I ever opened was 1,800 lines across 30 files. The reviewer sat on it for
-three days, finally wrote "I trust you 🤷," and approved without really reading it - which is to say, the
-review did *nothing*. The next one I split into five small PRs; each got real comments that caught real
-bugs. Small PRs aren't politeness; they're the only size review actually works on.
+🪖 **War story.** My first PR was 1,800 lines across 30 files. The reviewer sat on it for three days,
+wrote "I trust you 🤷," and approved without really reading it - the review did *nothing*. The next one I
+split into five small PRs; each got real comments that caught real bugs. Small PRs aren't politeness;
+they're the only size review actually works on.
 
 ## Step 3: Merge
 
@@ -85,10 +85,9 @@ teams pick one as their norm:
 | **Squash and merge** | Combines your whole branch into **one** tidy commit on `main` | Clean, one-commit-per-feature `main` (very common) |
 | **Rebase and merge** | Replays your commits onto `main` individually, no merge commit | Linear history, no merge bubbles |
 
-*What just happened when you click it:* GitHub performs the merge on the server and moves `main` forward to
-include your work. Your feature is now part of the shared, always-working branch. If you're unsure which
-button, **ask what your team uses** - consistency is the whole point, and many teams default to *Squash and
-merge* for a clean `main`.
+*What just happened:* GitHub performs the merge on the server and moves `main` forward to include your
+work. Unsure which button? **Ask what your team uses** - many teams default to *Squash and merge* for a
+clean `main`.
 
 ## Step 4: Clean up and reset for the next thing
 
@@ -100,10 +99,9 @@ $ git pull                       # bring the just-merged work into local main
 $ git branch -d feature/cart-totals
 Deleted branch feature/cart-totals (was 9a1b2c3).
 ```
-*What just happened:* You switched to `main`, pulled so your local `main` now contains your merged feature,
-and deleted the local feature branch (`-d` only deletes branches already merged - a safety check, so it
-won't let you drop unmerged work). You're back on a clean, current `main`, ready to branch for the next
-task. That's one full lap of the loop.
+*What just happened:* You switched to `main`, pulled in your merged feature, and deleted the local branch
+(`-d` only deletes branches already merged - a safety check against dropping unmerged work). You're back
+on a clean, current `main`, ready for the next task.
 
 ⚠️ **Gotcha.** Don't keep working on a feature branch *after* it's been merged and deleted. Start each new
 piece of work from a fresh branch off the updated `main` (Phase 1, Step 1). Reusing an old merged branch is
@@ -120,9 +118,9 @@ $ git switch feature/cart-totals
 $ git merge main                       # resolve the conflict here, then commit
 $ git push                             # the PR updates; the conflict clears
 ```
-*What just happened:* You folded the latest `main` into your branch, resolved the clash on your own machine
-where you have real tools, and pushed - which updates the PR and re-enables its merge button. Same conflict
-skill you already have, just triggered by the PR.
+*What just happened:* You folded the latest `main` into your branch, resolved the clash locally, and
+pushed - which updates the PR and re-enables its merge button. Same conflict skill you already have, just
+triggered by the PR.
 
 ## Tagging a release
 
@@ -133,10 +131,9 @@ $ git switch main && git pull
 $ git tag -a v1.2.0 -m "Cart totals and promo codes"
 $ git push origin v1.2.0
 ```
-*What just happened:* `git tag -a` created an *annotated* tag `v1.2.0` (the `-a`/`-m` records who tagged it,
-when, and why) on the current `main` commit. Tags don't push with normal `git push`, so you send it
-explicitly. On GitHub, that tag can become a **Release** - a download page with notes - built right on top
-of it.
+*What just happened:* `git tag -a` created an *annotated* tag `v1.2.0` (recording who tagged it, when, and
+why) on the current `main` commit. Tags don't push with normal `git push`, so you send it explicitly. On
+GitHub, that tag can become a **Release** - a download page with notes.
 
 📝 **Terminology.** A **tag** names one commit forever (e.g. `v1.2.0`); a **release** is GitHub's page built
 on a tag, with notes and downloadable assets. The version numbers themselves (what `1.2.0` means) follow a
@@ -146,14 +143,13 @@ convention called *semantic versioning* - a topic of its own.
 
 Step back and see the whole lap you can now run: branch off a current `main`, commit in isolation, sync as
 `main` moves, open a PR, take review, merge cleanly, delete the branch, and tag a release when it ships.
-That's the daily rhythm of professional Git - and none of it was new commands, just the workflow nobody
-writes down.
+That's the daily rhythm of professional Git - none of it new commands, just the workflow nobody writes
+down.
 
 **Where to go next.** You've stayed deliberately on the safe, merge-based path. The advanced guide -
-**Git Disaster Recovery** - is where we pick up the sharp tools: `rebase` and how to use it without
-hurting anyone, recovering commits you thought were gone with the **reflog**, and undoing work you've
-*already pushed*. That's the last rung, for when something has truly gone sideways and you need to fix it
-with a steady hand.
+**Git Disaster Recovery** - picks up the sharp tools: `rebase` used safely, recovering commits with the
+**reflog**, and undoing work you've *already pushed*. That's the last rung, for when something has truly
+gone sideways.
 
 ## Recap
 

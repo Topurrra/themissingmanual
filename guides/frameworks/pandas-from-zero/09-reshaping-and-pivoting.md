@@ -6,12 +6,12 @@ summary: "The same data wears two shapes — long (one row per observation) and 
 tags: [pandas, pivot-table, melt, reshape, wide-long, stack-unstack, crosstab]
 difficulty: intermediate
 synonyms: ["pandas pivot_table", "pandas melt", "pandas wide vs long format", "pandas stack unstack", "pandas reshape data", "pandas crosstab", "pandas pivot vs pivot_table"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Reshaping & Pivoting
 
-You've spent eight phases working data row by row — selecting, cleaning, grouping. This phase is about a
+You've spent eight phases working data row by row — selecting, cleaning, grouping. This phase is a
 different superpower: changing the *shape* of the table itself without changing a single number in it.
 
 📝 Here's the mental model that runs the whole phase: **the same data can be stored in two shapes, and

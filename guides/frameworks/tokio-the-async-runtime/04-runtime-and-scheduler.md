@@ -6,12 +6,10 @@ summary: "How Tokio's multi-threaded work-stealing scheduler runs thousands of t
 tags: [tokio, rust, runtime, scheduler, blocking, spawn-blocking]
 difficulty: advanced
 synonyms: ["tokio scheduler", "tokio work stealing", "tokio multi-threaded runtime", "tokio blocking", "tokio spawn_blocking", "tokio current_thread runtime"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The Runtime & Scheduler
-
-Here's the mental model to carry through this whole phase, because everything else is a consequence of it:
 
 > 💡 **Tokio runs thousands of tasks on a tiny pool of threads - usually about one thread per CPU core.** Many tasks, few threads. The scheduler keeps those few threads busy by handing each one its own queue of ready tasks, and when a thread runs dry it *steals* work from a neighbor. That's the engine. Once you internalize "few threads, many tasks, balanced by stealing," the one rule that matters falls out on its own: **never let a single task hog a thread.**
 

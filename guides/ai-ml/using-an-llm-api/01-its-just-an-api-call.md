@@ -6,14 +6,14 @@ summary: "An LLM API is a normal HTTP request: you POST a list of messages with 
 tags: [llm, api, http, messages, chat-completions, beginner-friendly]
 difficulty: beginner
 synonyms: ["how to call an llm api", "what does an llm api request look like", "what are system and user messages", "llm api request and response format", "how to send a message to an ai model"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # It's Just an API Call
 
 If you've been picturing some special "AI connection" — a socket, a model loaded into your process, a thing you have to install — let that picture go. Calling a hosted model is an ordinary HTTP request to a URL, with a JSON body and an API key in the header. The same shape as nearly every web API you've ever touched.
 
-What's different is only *what you send* and *what comes back*. So let's look at exactly that.
+What's different is only *what you send* and *what comes back*. Let's look at exactly that.
 
 ## The mental model: you send a conversation, you get back the next line
 
@@ -59,7 +59,7 @@ $ curl https://api.example-llm.com/v1/chat/completions \
     }'
 ```
 
-*What just happened:* You made a `POST` to the model's endpoint. Three things are doing the work:
+*What just happened:* You made a `POST` to the model's endpoint. Three things do the work:
 
 - **The header `Authorization: Bearer ...`** carries your API key, so the provider knows it's you (and whom to bill). We read it from an environment variable, `$LLM_API_KEY` — never paste the key itself into the command or your code (more on that below).
 - **`"model"`** picks *which* model answers. Providers offer several, trading speed and cost against capability.
@@ -117,13 +117,13 @@ Because the server doesn't remember anything between calls, "memory" is somethin
 }
 ```
 
-*What just happened:* You replayed the whole conversation and added the new question at the end. The model reads the entire list as context and answers the follow-up knowing what it said before. This is the one idea that surprises people most: **the conversation is something you carry and resend, not something the server holds for you.** It's also exactly why long chats get expensive — you'll feel that in Phase 2.
+*What just happened:* You replayed the whole conversation and added the new question at the end. The model reads the entire list as context and answers the follow-up knowing what it said before. This is the idea that surprises people most: **the conversation is something you carry and resend, not something the server holds for you.** It's also exactly why long chats get expensive — you'll feel that in Phase 2.
 
 ## Keep your API key out of your code
 
 ⚠️ **Gotcha — the big one.** That API key is a password that spends your money. Do **not** write it into your source code, and *never* commit it to git. People do this constantly, push to a public repo, and wake up to a key that strangers are running up a bill on. Scanners crawl public repositories looking for exactly these strings.
 
-The fix is the same as for any secret: load it from an environment variable or a secrets manager at runtime, and keep the actual value out of the files you check in. There's a whole guide on doing this properly — read it before you ship anything: [Secrets Management](/guides/secrets-management).
+The fix is the same as for any secret: load it from an environment variable or a secrets manager at runtime, and keep the actual value out of the files you check in. There's a whole guide on doing this properly, read it before you ship anything: [Secrets Management](/guides/secrets-management).
 
 A second, related trap: don't call the model directly from your *frontend* (browser or mobile) code, because anything shipped to the user's device can be read by the user. The key belongs on a server you control, which calls the model on the user's behalf.
 

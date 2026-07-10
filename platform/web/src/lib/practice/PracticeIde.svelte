@@ -17,7 +17,7 @@
   export let modules = [];
   export let related = null;
 
-  const LANG_LABEL = { sql: 'SQL', js: 'JavaScript', python: 'Python', typescript: 'TypeScript', git: 'Git' };
+  const LANG_LABEL = { sql: 'SQL', js: 'JavaScript', python: 'Python', typescript: 'TypeScript', git: 'Git', postgres: 'PostgreSQL', wat: 'WAT', math: 'Math' };
   $: langLabel = LANG_LABEL[lesson.language] || lesson.language;
 
   $: storageKey = `tmm-practice:${phase.guide_slug}/${phase.phase_no}`;

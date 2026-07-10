@@ -6,7 +6,7 @@ summary: "Map foreign keys to navigable attributes with SQLAlchemy 2.0 relations
 tags: [sqlalchemy, relationships, foreign-key, one-to-many, many-to-many, back-populates, relationship]
 difficulty: advanced
 synonyms: ["sqlalchemy relationship", "sqlalchemy foreign key", "sqlalchemy one to many", "sqlalchemy many to many association table", "sqlalchemy back_populates", "sqlalchemy relationship navigation", "sqlalchemy cascade"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Relationships
@@ -16,8 +16,6 @@ bio; a `Book` had a title and a year; nothing pointed at anything else. But the 
 for a relational database is that things *relate* — an author writes books, a book wears tags. This phase
 is where you wire those connections so you can walk from one object to another in plain Python:
 `author.books`, `book.author`, `book.tags`.
-
-Hold this mental model the entire way through, because it explains every line below.
 
 ## The mental model: a foreign key with a Python face
 

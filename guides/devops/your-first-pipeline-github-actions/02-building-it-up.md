@@ -6,7 +6,7 @@ summary: "A real .github/workflows/ci.yml that checks out your code, sets up the
 tags: [github-actions, ci, ci-yml, checkout, setup-node, npm, tests, workflow]
 difficulty: intermediate
 synonyms: ["write a ci.yml file", "github actions run tests on push", "actions/checkout setup-node example", "how to read a github actions log", "what does actions/checkout do"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Building It Up
@@ -46,7 +46,7 @@ jobs:
         run: npm test
 ```
 
-*What just happened:* That's a real, working CI pipeline. On every push to `main` and every pull request, GitHub spins up a fresh Ubuntu runner and runs four steps in order: get the code, install Node, install the project's packages, run the tests. If the tests pass, the job goes green; if any step exits with an error, the job goes red and stops. Now let's understand each step well enough that you could have written it yourself.
+*What just happened:* That's a real, working CI pipeline. On every push to `main` and every pull request, GitHub spins up a fresh Ubuntu runner and runs four steps in order: get the code, install Node, install the project's packages, run the tests. Tests pass and the job goes green; any step exits with an error and the job goes red and stops. Now let's understand each step well enough that you could have written it yourself.
 
 ## The header — when and where (lines 1–10)
 
@@ -104,7 +104,7 @@ jobs:
 
 **What it actually is.** This is a `run:` step — a plain shell command, not an action. `npm ci` ("clean install") installs the project's dependencies *exactly* as locked in your `package-lock.json`, deleting any existing `node_modules` first.
 
-**Why `npm ci` and not `npm install`?** `npm install` can quietly *update* your lockfile to newer versions that satisfy your ranges. In CI you want the opposite: install precisely what the lockfile says, every time, so the build is reproducible and a surprise dependency bump can't break a run. `npm ci` fails loudly if the lockfile and `package.json` disagree, which is exactly the safety you want here. (For Python this step might be `pip install -r requirements.txt`; for Go, `go mod download`. The principle is the same: install pinned dependencies deterministically.)
+**Why `npm ci` and not `npm install`?** `npm install` can quietly *update* your lockfile to newer versions that satisfy your ranges. In CI you want the opposite: install precisely what the lockfile says, every time, so the build is reproducible and a surprise dependency bump can't break a run. `npm ci` fails loudly if the lockfile and `package.json` disagree — exactly the safety you want here. (For Python this step might be `pip install -r requirements.txt`; for Go, `go mod download` — same principle: install pinned dependencies deterministically.)
 
 *What just happened:* The runner downloaded and installed every package your project needs, matching the lockfile. After this step, `node_modules/` exists on the runner and your tests have everything they need to run.
 
@@ -119,7 +119,7 @@ jobs:
 
 💡 **Key point.** A step succeeds or fails based on its **exit code**: `0` means success, anything else means failure. Test runners follow this convention — they exit non-zero when a test fails. That's the entire mechanism behind the green check and red X: GitHub just watches whether each step exited `0`. If `npm test` exits non-zero, this step fails, the job stops, and the run goes red.
 
-*What just happened:* The runner ran your test suite. If every test passed, the command exited `0`, the step went green, and — since it's the last step — the whole job went green. If any test failed, the command exited non-zero, this step (and the job) went red, and any steps after it would have been skipped.
+*What just happened:* The runner ran your test suite. Every test passing means the command exited `0`, the step went green, and — since it's the last step — the whole job went green. Any test failing means the command exited non-zero, this step (and the job) went red, and any steps after it would have been skipped.
 
 ## Reading a passing run
 
@@ -172,7 +172,7 @@ Error: Process completed with exit code 1.
 Complete job
 ```
 
-*What just happened:* The first three steps passed, so your code checked out, Node installed, and dependencies installed fine — the problem is in the code itself. The `Run tests` step is the one with the red ✗. Read it top-down: the test `subtracts two numbers` failed, `expected 1 to be 2`. The crucial last line — `Error: Process completed with exit code 1` — is GitHub telling you the command exited non-zero, which is *why* the step is red.
+*What just happened:* The first three steps passed, so your code checked out, Node installed, and dependencies installed fine — the problem is in the code itself. `Run tests` is the one with the red ✗. Read it top-down: the test `subtracts two numbers` failed, `expected 1 to be 2`. The crucial last line — `Error: Process completed with exit code 1` — is GitHub telling you the command exited non-zero, which is *why* the step is red.
 
 The discipline that saves you: **find the first red step and read its output, ignore everything after.** A later step being skipped or red is usually just a consequence of the first failure. Ninety percent of "debugging CI" is scrolling to the first ✗ and reading the actual error underneath it — which, almost always, is your test runner telling you exactly what's wrong.
 

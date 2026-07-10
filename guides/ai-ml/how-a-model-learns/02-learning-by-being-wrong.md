@@ -6,14 +6,14 @@ summary: "Training is a loop: the model predicts, we measure how wrong it was (t
 tags: [ai-ml, machine-learning, training, loss, gradient-descent, epochs, beginner-friendly]
 difficulty: beginner
 synonyms: ["how does training actually work", "what is loss in machine learning", "what is gradient descent in plain english", "what is an epoch", "why do models need so much data", "how do weights get updated"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Learning by Being Wrong
 
-In Phase 1 we said training "nudges the weights until the predictions are good." That's true, but it
-skips the interesting part: *how does the model know which way to nudge?* It can't see the right answer
-and copy it. All it can do is guess, find out how badly it missed, and adjust.
+Phase 1 said training "nudges the weights until the predictions are good." True, but it skips the
+interesting part: *how does the model know which way to nudge?* It can't see the right answer and copy it.
+All it can do is guess, find out how badly it missed, and adjust.
 
 That's the whole thing, and it's worth saying plainly: **a model learns by being wrong, over and over,
 and being slightly less wrong each time.** This phase walks the loop in plain words.

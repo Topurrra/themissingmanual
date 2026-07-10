@@ -8,23 +8,22 @@ category: operating-systems
 order: 1
 difficulty: beginner
 synonyms: ["what is an operating system", "what does an os do", "what is a kernel", "how does a computer work", "windows macos linux difference", "what is a process"]
-updated: 2026-06-19
+updated: 2026-07-11
 ---
 
 # What an Operating System Actually Is
 
-You've used a computer almost every day of your life. You open apps, save files, complain when it's slow.
-And in all that time, nobody ever sat you down and explained the thing quietly running *underneath* all of
-it - the operating system. Windows, macOS, Linux: you know their names, but what do they actually *do*?
+You've used a computer almost every day of your life - opened apps, saved files, complained when it's
+slow. But nobody ever sat you down and explained the thing quietly running *underneath* it all - the
+operating system. Windows, macOS, Linux: you know their names, but what do they actually *do*?
 
 This guide answers that, from zero. No prior knowledge, no jargon you haven't been handed first. By the
 end you'll have a clear mental model of what an OS is and the handful of jobs it does - and your computer
-will stop being a mystery box and start being a machine you understand. (This works for non-developers
-too; it's the broadest on-ramp in the whole library.)
+will stop being a mystery box. (This works for non-developers too; it's the broadest on-ramp in the whole
+library.)
 
 ## How to read this
-- **Total beginner?** Read in order - each phase builds on the last, and none assumes the one before was
-  "obvious."
+- **Total beginner?** Read in order - each phase builds on the last.
 - **Just want the gist?** Phase 1 alone gives you the core mental model in one sitting.
 
 ## The phases

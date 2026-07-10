@@ -6,12 +6,12 @@ summary: "The OWASP Top 10 is a checklist, not a guarantee - thread it into desi
 tags: [security, owasp, code-review, defense-in-depth, dependencies, checklist]
 difficulty: intermediate
 synonyms: ["how to use owasp top 10", "owasp top 10 in code review", "is owasp top 10 enough", "defense in depth", "keep dependencies patched", "owasp cheat sheets"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # How to Actually Use It
 
-You've got the map. The last question is the one that actually keeps apps safe: *what do you do with it on a Tuesday?* The trap here is treating the Top 10 like a final exam - run through it once, tick the boxes, declare victory. That's exactly the mindset that gets teams breached. The list is a **living checklist**, not a certificate. Here's how to thread it into work that's already happening, so it protects you continuously instead of once.
+You've got the map. The last question is the one that actually keeps apps safe: *what do you do with it on a Tuesday?* The trap here is treating the Top 10 like a final exam - run through it once, tick the boxes, declare victory. That's exactly the mindset that gets teams breached. The list is a **living checklist**, not a certificate - here's how to thread it into work that's already happening, so it protects you continuously instead of once.
 
 ## Thread it into the three places work already happens
 

@@ -6,7 +6,7 @@ summary: "How hyper actually speaks HTTP on a socket: the http crate's Request a
 tags: [hyper, rust, http, server, request, response]
 difficulty: intermediate
 synonyms: ["hyper http library", "hyper server", "hyper request response", "hyper body", "hyper service_fn", "hyper-util TokioIo"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # hyper: The HTTP Library
@@ -18,9 +18,9 @@ function you wrote, waits for you to give back a `Response`, and writes that res
 back out as bytes — correctly, including all the fiddly HTTP/1 and HTTP/2 framing you
 never want to implement yourself.
 
-That's it. That's the job. hyper is the HTTP *engine*. It is not a web framework, and
-the difference matters more than you'd expect — we'll get to exactly what it leaves
-out, and why leaving it out is a feature, not a gap.
+That's the job. hyper is the HTTP *engine*. It is not a web framework, and the
+difference matters more than you'd expect — we'll get to exactly what it leaves out,
+and why leaving it out is a feature, not a gap.
 
 > 💡 If you remember one sentence: hyper takes a `Request` off the wire and calls
 > your code, expecting a `Response`. Everything else in this phase is detail about

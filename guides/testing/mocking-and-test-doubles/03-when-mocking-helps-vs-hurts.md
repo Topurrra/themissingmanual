@@ -6,17 +6,17 @@ summary: "Mock at the boundaries (external systems), not your own internals; avo
 tags: [testing, mocking, over-mocking, test-design, integration-tests, boundaries]
 difficulty: intermediate
 synonyms: ["when should I mock", "over-mocking problem", "tests pass but app broken", "should I mock my own code", "mock at the boundary", "mocking makes tests brittle", "stop mocking everything"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # When Mocking Helps vs Hurts
 
 Here's the uncomfortable truth nobody tells you when they hand you a mocking library: **a test full of mocks
-can pass while your product is on fire.** Doubles let you replace reality - and the more of reality you
+can pass while your product is on fire.** Doubles let you replace reality, and the more of reality you
 replace, the less your test is actually checking. Used at the right seam, doubles are essential. Used
 everywhere, they produce a suite that's green, fast, and worthless.
 
-This phase is the judgment. The good news is it comes down to one question and a couple of habits.
+This phase is the judgment - and it comes down to one question and a couple of habits.
 
 ## The one question: is this the boundary, or my own code?
 
@@ -67,9 +67,9 @@ const receipt = await buildReceipt(cart, calculatorMock);
 expect(receipt.total).toBe(108.0); // passes! ...but the real calculator returns 100.0
 ```
 *What just happened:* We told the mock to return `108.0` - the answer we *believe* is correct - so the test
-passes. But the real `calculateTotal` is broken and returns `100.0`. Our test never ran the real code, so it
-can't see the bug. We've encoded our *assumption* and then verified our assumption against itself. The test
-is green; the customer gets undercharged.
+passes. But the real `calculateTotal` is broken and returns `100.0`. Our test never ran the real code, so
+it can't see the bug: we've encoded our *assumption* and verified it against itself. The test is green; the
+customer gets undercharged.
 
 ⚠️ **Gotcha - a mock freezes your belief about a dependency in time.** The mock returns what you *thought*
 the dependency does on the day you wrote the test. If the real dependency changes (or was wrong all along),
@@ -93,13 +93,13 @@ the behavior is identical and correct.
 
 This is the quiet tax of over-mocking: tests that **break when you refactor working code** and **stay green
 when you break working code** - exactly backwards from what a test is for. A test should pin down *behavior*
-(what comes out) and stay silent about *implementation* (how it got there), so you can refactor freely.
+and stay silent about *implementation*, so you can refactor freely.
 
 🪖 **War story.** A team I know had a 4,000-test suite that ran in 90 seconds and was almost entirely mocks.
-It went green on every commit. Then a real outage: a downstream API had changed a field name months earlier,
-and not one test caught it - every test that touched that API used a mock returning the *old* shape. The
-suite wasn't testing the software; it was testing a museum replica of the software as it existed the day each
-mock was written.
+It went green on every commit. Then a real outage: a downstream API had changed a field name months earlier
+and not one test caught it - every test touching that API used a mock returning the *old* shape. The suite
+wasn't testing the software; it was testing a museum replica of it as it existed the day each mock was
+written.
 
 ## Prefer real objects and fakes when they're cheap
 
@@ -116,9 +116,8 @@ works:
 The order matters. A real object is the most honest test you can write, so prefer it. Drop to a fake when
 the real thing is too slow or external but still has behavior worth honoring (an in-memory database is the
 classic - see [Phase 2](02-the-doubles-defined-honestly.md)). Drop to a stub when you only need to set up a
-situation. Only reach for a strict mock when the *interaction* is genuinely the point - for example, "we
-must call the payment gateway exactly once, never twice." Double-charging is a real bug a mock catches well;
-that's the case where asserting on the interaction earns its keep.
+situation. Only reach for a strict mock when the *interaction* is genuinely the point - "we must call the
+payment gateway exactly once, never twice." Double-charging is a real bug a mock catches well.
 
 ## Where doubles thin out: the testing pyramid
 
@@ -128,13 +127,13 @@ This connects to a bigger picture. Different layers of tests use *different amou
   can be checked in isolation.
 - **Integration tests** sit above: they wire several real pieces together - often including a real (or
   fake) database - and use *far fewer* doubles, precisely so they catch the "the parts don't actually fit
-  together" bugs that an over-mocked unit test sails right past.
+  together" bugs an over-mocked unit test sails right past.
 - **End-to-end tests** sit at the top: ideally almost no doubles - the real system, exercised like a user
   would.
 
 The mocked-unit-test and the no-mocks-integration-test aren't competitors; they're checking different
 things. The bug in Trap 1 (real calculator returns the wrong number) is exactly what an integration test
-with a real calculator would catch - which is *why* you don't rely on heavily-mocked unit tests alone.
+with a real calculator would catch - why you don't rely on heavily-mocked unit tests alone.
 
 > ⏭️ For how these layers fit together - what each one is for, how many of each to write, and why the shape
 > matters - see [Unit, Integration & E2E Tests](/guides/unit-integration-e2e). The one-line version: the
@@ -167,8 +166,7 @@ Before you replace something with a double, ask:
    [Unit, Integration & E2E Tests](/guides/unit-integration-e2e).
 
 That's the whole craft: doubles are a scalpel for isolating *your* logic, not a way to make every test fast
-and green. Use them at the seams, keep your own code real, and let the higher layers test what the doubles
-hid.
+and green. Use them at the seams, keep your own code real, and let the higher layers test what the doubles hid.
 
 ---
 

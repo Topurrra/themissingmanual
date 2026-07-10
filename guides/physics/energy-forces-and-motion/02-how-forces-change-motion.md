@@ -6,7 +6,7 @@ summary: "Newton without the dread: what a force really is, why things keep movi
 tags: [physics, newton, forces, acceleration, mass, second-law, third-law]
 difficulty: beginner
 synonyms: ["f equals ma meaning", "newtons second law explained", "what is acceleration", "newtons third law equal and opposite", "why is a heavy door hard to start and stop", "how does mass affect motion", "action and reaction explained"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # How forces change motion
@@ -77,7 +77,7 @@ Now the one that sounds like a riddle:
 
 When you push on a wall, the wall pushes back on you with exactly the same strength. (If it didn't, your hand would sink into it.) The forces come in **pairs** - always two, always equal in size, always opposite in direction, always on *two different objects*.
 
-That last part is the key that unlocks the riddle people always ask: *if the forces are equal and opposite, why doesn't everything cancel and nothing ever move?* Because the two forces act on **different things**, so they never get to cancel each other:
+That last part unlocks the riddle people always ask: *if the forces are equal and opposite, why doesn't everything cancel and nothing ever move?* Because the two forces act on **different things**, so they never get to cancel each other:
 
 ```text
 You push the ground backward   →   the ground pushes you forward   →  you walk

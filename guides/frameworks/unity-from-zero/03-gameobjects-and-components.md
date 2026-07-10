@@ -6,14 +6,13 @@ summary: "The core Unity pattern: a GameObject is an empty bag of Components. Th
 tags: [unity, gameobject, component, transform, composition]
 difficulty: intermediate
 synonyms: ["unity gameobject", "unity component", "unity transform", "composition over inheritance unity", "unity getcomponent", "unity add component"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # GameObjects & Components
 
-Here's the one idea that makes Unity click. Once you hold it, ninety percent of the engine
-stops feeling like a pile of unrelated menus and starts feeling like a single pattern repeated
-everywhere.
+Here's the one idea that makes Unity click. Once you hold it, most of the engine stops feeling
+like a pile of unrelated menus and starts feeling like a single pattern repeated everywhere.
 
 > 📝 **A GameObject is a bag of Components.** The GameObject itself does nothing. It's an empty
 > container with a name. Everything it *does* - show up on screen, have a position, fall under

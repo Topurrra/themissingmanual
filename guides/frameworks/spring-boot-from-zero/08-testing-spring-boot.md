@@ -6,16 +6,16 @@ summary: "Cash in the layering from Phase 6: unit-test the service with a mocked
 tags: [spring-boot, testing, springboottest, webmvctest, mockmvc, datajpatest, slice-tests, testcontainers]
 difficulty: intermediate
 synonyms: ["spring boot testing tutorial", "spring @SpringBootTest", "spring @WebMvcTest mockmvc", "spring @DataJpaTest", "spring slice tests", "spring boot integration test", "testcontainers spring"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Testing Spring Boot Apps
 
-Back in [Phase 6](06-service-layer-and-validation.md) you split the app into three layers — controller, service, repository — and the closing line promised that the payoff would be testability. This is where you collect on that promise.
+Back in [Phase 6](06-service-layer-and-validation.md) you split the app into three layers — controller, service, repository — and the closing line promised the payoff would be testability. This is where you collect on that promise.
 
-The mental model to carry through this whole phase: **the way you tested plain Java (see [Testing, Build & Profiling](/guides/java-from-zero/16-testing-and-profiling)) still applies — JUnit, AAA, Mockito — but Spring adds a new dimension.** A Spring app isn't just classes; it's classes *wired together by a container*. So you now get a choice for every test: do you want a plain object test with no container at all (fastest), a *slice* that boots one thin layer (fast, focused), or the whole application context booted end to end (slowest, highest confidence)? The skill this phase teaches isn't any single annotation — it's knowing which of those to reach for, and why.
+**The way you tested plain Java (see [Testing, Build & Profiling](/guides/java-from-zero/16-testing-and-profiling)) still applies — JUnit, AAA, Mockito — but Spring adds a new dimension.** A Spring app isn't just classes; it's classes *wired together by a container*. So you now get a choice for every test: a plain object test with no container at all (fastest), a *slice* that boots one thin layer (fast, focused), or the whole application context booted end to end (slowest, highest confidence)? The skill here isn't any single annotation — it's knowing which to reach for, and why.
 
-And here's the thing the layering bought you: each of those tests is only *possible* because the layers are separable. A controller that talked straight to the database couldn't be slice-tested. The clean seams from Phase 6 are exactly what make everything below work.
+Each of those tests is only *possible* because the layers are separable — a controller that talked straight to the database couldn't be slice-tested. The clean seams from Phase 6 are what make everything below work.
 
 ## Plain unit test — the service with a mocked repository
 
@@ -96,7 +96,7 @@ class BookServiceTest {
 }
 ```
 
-*What just happened:* `@ExtendWith(MockitoExtension.class)` turns on Mockito's annotations; `@Mock` builds a fake `BookRepository`, and `@InjectMocks` constructs a real `BookService` with that fake passed into the constructor — the same constructor injection you wrote in Phase 6, just driven by the test instead of Spring. The first test programs the mock to claim the ISBN exists, then asserts the service throws *and* never calls `save` (a behavior check, not just a return-value check). The second programs a fresh-ISBN path and verifies the entity-to-DTO mapping. No `@SpringBootTest`, no application context — pure objects. This is the fastest, cheapest test you can write, and it should be the *bulk* of your suite.
+*What just happened:* `@ExtendWith(MockitoExtension.class)` turns on Mockito's annotations; `@Mock` builds a fake `BookRepository`, and `@InjectMocks` constructs a real `BookService` with that fake passed into the constructor — the same constructor injection from Phase 6, just driven by the test instead of Spring. The first test programs the mock to claim the ISBN exists, then asserts the service throws *and* never calls `save`. The second programs a fresh-ISBN path and verifies the entity-to-DTO mapping. No `@SpringBootTest`, no application context — pure objects, the fastest test you can write, and it should be the *bulk* of your suite.
 
 💡 If a piece of business logic is awkward to test this way — if you find yourself needing to boot Spring just to exercise a calculation — that's usually a signal the logic is in the wrong layer. Plain-unit-testable services are a side effect of good layering, not a separate goal.
 
@@ -104,7 +104,7 @@ class BookServiceTest {
 
 The service test above never touched HTTP. But the controller has its own job worth testing: does `@Valid` reject a blank title? Does a `DuplicateIsbnException` come back as the right status? You *could* boot the whole app to check that, but there's a sharper tool.
 
-📝 `@WebMvcTest` is a **slice test**: it starts *only* the web layer — your controller, the JSON serializer, the validation machinery, the exception handlers — and nothing else. No repository, no database, no service beans. Because the controller still needs a `BookService`, you supply a *mocked* one with `@MockitoBean`. Then `MockMvc` fires fake HTTP requests *in-process* (no real socket, no running server) and lets you assert on the status code and JSON body. It's focused entirely on the controller's contract, and it boots in a fraction of the time a full context does.
+📝 `@WebMvcTest` is a **slice test**: it starts *only* the web layer — your controller, the JSON serializer, the validation machinery, the exception handlers — and nothing else. No repository, no database, no service beans. Because the controller still needs a `BookService`, you supply a *mocked* one with `@MockitoBean`. Then `MockMvc` fires fake HTTP requests *in-process* and lets you assert on the status code and JSON body — focused entirely on the controller's contract, booting in a fraction of the time a full context does.
 
 ```java
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,7 +159,7 @@ $ mvn -Dtest=BookControllerTest test
 [INFO] BUILD SUCCESS
 ```
 
-*What just happened:* `@WebMvcTest(BookController.class)` told Spring to wire up exactly one controller plus the web infrastructure around it — and crucially, *not* your service or repository, so there's nothing to talk to a database. `@MockitoBean` puts a Mockito mock of `BookService` into that mini-context, so the controller has something to call. `MockMvc` then sends a fake `POST` straight into Spring's request-handling pipeline. The first test programs the mock and asserts the controller returns `201` with the right JSON (`jsonPath` digs into the response body). The second sends a blank title and asserts a `400` — and `verifyNoInteractions(service)` proves the `@Valid` check from Phase 6 rejected the request *before* the controller body ever called the service. That's the controller's contract, tested in isolation. (On older Spring Boot, `@MockitoBean` was spelled `@MockBean` — same idea.)
+*What just happened:* `@WebMvcTest(BookController.class)` told Spring to wire up exactly one controller plus the web infrastructure around it — crucially, *not* your service or repository, so there's nothing to talk to a database. `@MockitoBean` puts a Mockito mock of `BookService` into that mini-context. `MockMvc` sends a fake `POST` straight into Spring's request-handling pipeline. The first test asserts the controller returns `201` with the right JSON. The second sends a blank title and asserts a `400` — `verifyNoInteractions(service)` proves `@Valid` rejected the request *before* the controller called the service. (Older Spring Boot spells `@MockitoBean` as `@MockBean` — same idea.)
 
 💡 A `@WebMvcTest` is the right home for everything HTTP-shaped: status codes, JSON structure, validation, and how your `@RestControllerAdvice` from [Phase 7](07-error-handling.md) maps exceptions to responses. Keep the *business* assertions in the plain service test, where they're even cheaper.
 
@@ -195,7 +195,7 @@ class BookRepositoryTest {
 }
 ```
 
-*What just happened:* `@DataJpaTest` spun up an H2 database, created the schema from your `@Entity` mappings, and gave you a *real* `BookRepository` — not a mock. You saved a book and then exercised the actual `existsByIsbn` query against a live (if in-memory) database, confirming it returns `true` for a stored ISBN and `false` for an unknown one. When the test ends, the transaction rolls back and the row vanishes, so the next test sees an empty table. This is where you catch query bugs that a mocked repository — which only returns whatever you told it to — can never reveal.
+*What just happened:* `@DataJpaTest` spun up an H2 database, created the schema from your `@Entity` mappings, and gave you a *real* `BookRepository` — not a mock. You saved a book and exercised the actual `existsByIsbn` query against a live (if in-memory) database, confirming it returns `true`/`false` correctly. When the test ends, the transaction rolls back and the row vanishes. This is where you catch query bugs a mocked repository can never reveal.
 
 ## Full integration: `@SpringBootTest` — the whole app, wired
 
@@ -236,7 +236,7 @@ class BookApiIntegrationTest {
 }
 ```
 
-*What just happened:* `@SpringBootTest` built the real context — no mocks anywhere — and `@AutoConfigureMockMvc` gave us a `MockMvc` to drive it. The first `POST` flows through the genuine controller, the genuine `BookService` (with its real `@Transactional`), and a real repository writing to a real (test) database. The second `POST` sends the same ISBN, and this time the *actual* duplicate-ISBN logic from Phase 6 fires and the *actual* exception handler from Phase 7 turns it into a `409`. Nothing was stubbed, so a pass here means the layers genuinely fit together — wiring, transactions, validation, and error handling all included.
+*What just happened:* `@SpringBootTest` built the real context — no mocks anywhere — and `@AutoConfigureMockMvc` gave us a `MockMvc` to drive it. The first `POST` flows through the genuine controller, service, and repository, writing to a real (test) database. The second `POST` sends the same ISBN, and the *actual* duplicate-ISBN logic from Phase 6 and the *actual* exception handler from Phase 7 turn it into a `409`. Nothing stubbed — a pass here means the layers genuinely fit together.
 
 ### Which test, when — the pyramid
 
@@ -256,7 +256,7 @@ There's a crack in the slice and integration tests above, and it's worth naming 
 
 ⚠️ **H2 is not Postgres.** The in-memory database that `@DataJpaTest` and a default `@SpringBootTest` use is convenient, but it is *not* the database you run in production. It has subtly different SQL dialects, different handling of types and constraints, no real `JSONB`, no Postgres-specific functions. A query can pass against H2 and then fail against the real Postgres your app actually talks to — which means your "integration" test gave you false confidence about the one thing integration tests exist to verify.
 
-📝 **Testcontainers** closes that gap. It's a library that, during the test, starts a *real* database (the actual Postgres image) inside a throwaway Docker container, points your app at it, runs the test, and tears the container down afterward. Your integration test now runs against the genuine engine, dialect and all — no more "works on H2, breaks in prod." The cost is that it needs Docker available and is slower than H2, which is exactly why you use it for your few top-of-pyramid integration tests, not your hundreds of unit tests.
+📝 **Testcontainers** closes that gap. It's a library that, during the test, starts a *real* database (the actual Postgres image) inside a throwaway Docker container, points your app at it, runs the test, and tears the container down afterward. Your integration test now runs against the genuine engine, dialect and all — no more "works on H2, breaks in prod." The cost: it needs Docker and is slower than H2, which is why you use it for a few top-of-pyramid tests, not hundreds of unit tests.
 
 ```java
 import org.springframework.boot.test.context.SpringBootTest;
@@ -287,7 +287,7 @@ class BookApiWithPostgresTest {
 
 *What just happened:* the `@Container` field declares a real `postgres:16` instance that Testcontainers starts in Docker before the tests run. `@DynamicPropertySource` is the bridge: it reads the container's randomly-assigned URL, username, and password *after* it boots and feeds them into Spring's datasource properties, so the application context connects to that container instead of H2. From there your tests are ordinary `@SpringBootTest` tests — except every query now hits the same database engine production uses. When the suite finishes, the container is destroyed and leaves nothing behind.
 
-💡 Step back and notice the pattern across this whole phase: every test was possible because the layers from [Phase 6](06-service-layer-and-validation.md) could be isolated, faked, or swapped one at a time. Untestable code is almost always *badly layered* code — a controller doing database work, a service reaching into HTTP. When a test is hard to write, the test is usually telling you the truth about your design. Good layering isn't a tax you pay; it's the thing that makes everything from here — testing, and the security you'll add in [Phase 9](09-security-with-spring-security.md) — tractable.
+💡 Every test in this phase was possible because the layers from [Phase 6](06-service-layer-and-validation.md) could be isolated, faked, or swapped one at a time. Untestable code is almost always *badly layered* code. When a test is hard to write, it's usually telling you the truth about your design.
 
 ## Recap
 

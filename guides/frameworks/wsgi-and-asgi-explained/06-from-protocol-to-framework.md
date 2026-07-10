@@ -6,12 +6,12 @@ summary: "The payoff: see the WSGI or ASGI callable under every Python web frame
 tags: [wsgi, asgi, frameworks, flask, django, fastapi, demystified]
 difficulty: beginner
 synonyms: ["wsgi asgi to framework", "how flask django fastapi work", "wsgi asgi summary", "python web stack explained", "wsgi asgi next steps", "why learn wsgi asgi"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # From Protocol to Framework
 
-Go back to the start of this guide for a second. A Python web framework was a black box: you wrote `@app.route` or `@app.get`, requests showed up as a tidy `request` object, you returned something, and a response went out. A lot happened in the middle that you couldn't name. You used it, it worked, and that was the deal.
+Go back to the start of this guide for a second. A Python web framework was a black box: you wrote `@app.route` or `@app.get`, requests showed up as a tidy `request` object, you returned something, and a response went out. A lot happened in the middle that you couldn't name.
 
 Look at what you can see now. You know a request arrives at a **server** - gunicorn or uvicorn - which calls your app as a **callable**. For synchronous frameworks that callable takes `(environ, start_response)`; for async ones it takes `(scope, receive, send)`. You know **middleware** is an app that wraps another app. You know why `flask run` is fine for your laptop and wrong for production. That's not trivia - that's the whole shape of Python web, and you've now seen all of it bare.
 
@@ -68,7 +68,7 @@ Then do the magic trick: open the source of a framework you use. Find Flask's `w
 
 When you want the authoritative reference, go to **PEP 3333** (the WSGI spec) and the **ASGI specification**. They're precise, they're the source of truth, and now that you have the concepts, they'll read as confirmation rather than fog.
 
-And here's the line to carry out of this whole guide: **every Python web framework is conveniences over one small callable - and now you can see it.**
+The line to carry out of this whole guide: **every Python web framework is conveniences over one small callable - and now you can see it.**
 
 ## Recap
 

@@ -8,7 +8,7 @@ category: databases
 order: 7
 difficulty: intermediate
 synonyms: ["what is a database migration", "how to change a database schema safely", "zero downtime schema change", "how to rename a column without downtime", "expand contract migration", "alter table locks production", "add not null column without default", "how to roll back a migration"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Database Migrations Without Fear
@@ -20,9 +20,9 @@ laptop turns into a held breath in the deploy channel: *did that just lock the t
 still up? did I lose anything?*
 
 That dread comes from not knowing what the change is actually doing to the live system. This guide
-fixes that. We'll build the mental model of what a migration *is*, learn the one pattern that lets
-you change live data without downtime, and name the specific migrations that bite people — so you can
-see them coming instead of discovering them in an incident.
+fixes that: the mental model of what a migration *is*, the one pattern that lets you change live data
+without downtime, and the specific migrations that bite people — so you see them coming instead of
+discovering them in an incident.
 
 ## How to read this
 

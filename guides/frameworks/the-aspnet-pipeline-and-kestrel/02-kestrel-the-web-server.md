@@ -6,12 +6,12 @@ summary: "Kestrel is the cross-platform server that owns the socket, speaks HTTP
 tags: [aspnet-core, csharp, kestrel, web-server, reverse-proxy]
 difficulty: intermediate
 synonyms: ["kestrel web server", "kestrel cross platform", "kestrel reverse proxy", "kestrel vs iis", "kestrel listen ports", "aspnet core server"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Kestrel: The Web Server
 
-Here's the mental model to carry through this whole phase: **Kestrel is the program that owns the socket and speaks HTTP.** Nothing more mystical than that. When a browser opens a TCP connection to your app, Kestrel is the thing on the other end that accepts it, reads the raw bytes, figures out "this is an HTTP request for `GET /products`," and packages that up into an `HttpContext` object your code can work with. Then it hands that `HttpContext` to the pipeline (the chain you met in Phase 1) and waits for the response to come back so it can write the bytes out on the wire.
+**Kestrel is the program that owns the socket and speaks HTTP.** Nothing more mystical than that. When a browser opens a TCP connection to your app, Kestrel is the thing on the other end that accepts it, reads the raw bytes, figures out "this is an HTTP request for `GET /products`," and packages that up into an `HttpContext` object your code can work with. Then it hands that `HttpContext` to the pipeline (the chain you met in Phase 1) and waits for the response to come back so it can write the bytes out on the wire.
 
 The detail that trips people up coming from the old .NET Framework world: **Kestrel runs in-process.** Your app *is* the server. There's no separate server product you install and configure that then "hosts" your DLL. You write `var app = builder.Build(); app.Run();` and that `app.Run()` call starts Kestrel right there inside your own process. The web server and your application code live in the same running program.
 

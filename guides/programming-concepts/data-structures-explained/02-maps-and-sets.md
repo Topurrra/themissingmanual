@@ -6,17 +6,15 @@ summary: "A map stores key → value pairs so you can fetch a value instantly by
 tags: [data-structures, maps, dictionaries, hash-map, sets, hashing]
 difficulty: beginner
 synonyms: ["what is a hash map", "what is a dictionary in programming", "how does a map work", "what is a set", "why is map lookup fast", "how does hashing work"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Maps & Sets - Lookup by Key
 
 Last phase ended on a frustration: a list makes you *walk* through everything to answer "do I have this, and
-what's attached to it?" That's fine for ten items and miserable for ten million. This phase is about the
-container built precisely to kill that walk - the **map** - and its close cousin, the **set**. Once these
-click, a huge amount of everyday code suddenly looks obvious.
-
-Let's start with the picture, because the speed only makes sense once you see the trick.
+what's attached to it?" - fine for ten items, miserable for ten million. This phase is about the container
+built precisely to kill that walk - the **map** - and its close cousin, the **set**. Once these click, a
+huge amount of everyday code suddenly looks obvious.
 
 ## The mental model: a labeled value you can jump to
 
@@ -35,9 +33,6 @@ flowchart LR
 📝 **Terminology.** A map goes by many names. Python calls it a **dict** (dictionary); JavaScript has
 objects and a `Map`; Java calls it a `HashMap`; other languages say "hash," "associative array," or
 "hashtable." They're the same idea: **key → value, fast lookup by key.** We'll say "map" or "dictionary."
-
-A dictionary is a perfect mental anchor for the name: you don't read a paper dictionary cover to cover to
-find "umbrella" - you jump to U and you're nearly there. A map does the same for your data.
 
 ## Using a map - set a value, get it back
 
@@ -77,9 +72,8 @@ Here's the one piece of magic worth understanding, because it explains *everythi
 and lists aren't.
 
 **The idea.** When you give the map a key like `"ada"`, it runs the key through a little function called a
-**hash function**. That function turns the key into a number, and the number says *which shelf* the value
-lives on. So instead of searching, the map *computes the location* from the key itself and goes straight
-there.
+**hash function**, which turns the key into a number that says *which shelf* the value lives on. So instead
+of searching, the map *computes the location* from the key itself and goes straight there.
 
 ```mermaid
 flowchart LR

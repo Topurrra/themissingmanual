@@ -6,7 +6,7 @@ summary: "A database is a separate server program you talk to over a connection,
 tags: [databases, sql, server, connection, postgresql, mysql, client-server]
 difficulty: beginner
 synonyms: ["how does my app talk to a database", "what is sql", "is a database a server", "what is a database connection", "postgresql vs mysql", "types of databases"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Database vs Your App
@@ -15,7 +15,7 @@ There's one last picture to fix, and it trips up almost everyone building their 
 
 ## The database is a server you talk to
 
-**What it actually is.** A database like PostgreSQL or MySQL runs as its own long-lived program — a **server** — sitting and waiting for requests. Your application is a **client**: it opens a **connection** to that server, sends requests over it, and gets answers back. They are two separate programs having a conversation, even when they happen to run on the same computer.
+A database like PostgreSQL or MySQL runs as its own long-lived program — a **server** — sitting and waiting for requests. Your application is a **client**: it opens a **connection** to that server, sends requests over it, and gets answers back. They are two separate programs having a conversation, even when they happen to run on the same computer.
 
 ```mermaid
 flowchart LR
@@ -29,17 +29,17 @@ The two are often on different machines, talking over the network.
 
 📝 **Terminology.** *Client–server* = one program (the **server**) provides a service and waits for requests; other programs (**clients**) connect to it and make requests. Your web app is a client of the database server, exactly like your browser is a client of a web server.
 
-**Why people get this wrong.** Because the simplest database you can meet — **SQLite** — really *is* just a file your program opens, with no separate server. SQLite is great and widely used, but it's the exception. The databases that power most websites and apps are servers, and assuming they behave like a local file leads straight to confusion the first time the database lives "somewhere else."
+**Why people get this wrong.** The simplest database you can meet — **SQLite** — really *is* just a file your program opens, with no separate server. SQLite is great and widely used, but it's the exception. The databases that power most websites and apps are servers, and assuming they behave like a local file leads straight to confusion the first time the database lives "somewhere else."
 
-**What it does in real life.** Because it's a separate server, the database has its own address (a host and a port), its own login (a username and password), and its own life independent of your app. You can restart your app without touching the data. You can have ten copies of your app, all talking to one database. This separation is the reason all that exists.
+Because it's a separate server, the database has its own address (a host and a port), its own login (a username and password), and its own life independent of your app. You can restart your app without touching the data. You can have ten copies of your app, all talking to one database. This separation is the reason all that exists.
 
-⚠️ **Gotcha — "the database is on another server" is normal, not a misconfiguration.** New developers often expect the data to live inside their app. In real systems the database almost always runs as its own process, frequently on its own machine, precisely so it can be shared, secured, and scaled on its own terms. The connection details (host, port, user, password — usually bundled into a *connection string*) are how your app finds and logs into it.
+⚠️ **Gotcha — "the database is on another server" is normal, not a misconfiguration.** New developers often expect the data to live inside their app. In real systems the database almost always runs as its own process, frequently on its own machine, precisely so it can be shared, secured, and scaled on its own terms. The connection details (host, port, user, password — usually bundled into a *connection string*) are how your app finds and logs in.
 
 ## SQL — the language you talk in
 
 So your app sends requests to the server. In what language? For relational databases, the answer is **SQL**.
 
-**What it actually is.** **SQL** (Structured Query Language) is the standard language for talking to relational databases. You write a statement that describes *what* you want, send it to the server, and the server figures out *how* to do it and sends back the result. You describe the goal; the DBMS does the work.
+**SQL** (Structured Query Language) is the standard language for talking to relational databases. You write a statement that describes *what* you want, send it to the server, and the server figures out *how* to do it and sends back the result. You describe the goal; the DBMS does the work.
 
 📝 **Terminology.** *SQL* is usually pronounced "sequel" or spelled out "S-Q-L" — both are common and both are fine. It's the language; PostgreSQL, MySQL, and friends are the databases that speak it (each with small dialect differences).
 
@@ -56,7 +56,7 @@ WHERE city = 'London';
  Ada Lovelace | London
 (1 row)
 ```
-*What just happened:* You described what you wanted — the `name` and `city` columns, **from** the `customers` table, but only the rows **where** the city is London — and sent that to the server. The server found the matching rows and handed back the answer: one row, Ada. Notice you never told it *how* to search or *where* the rows physically live. You stated the question; the DBMS planned and ran it. That describe-the-goal style is the heart of SQL.
+*What just happened:* You described what you wanted — the `name` and `city` columns, **from** the `customers` table, but only the rows **where** the city is London — and sent that to the server. The server found the matching rows and handed back the answer: one row, Ada. You never told it *how* to search or *where* the rows physically live; the DBMS planned and ran it. That describe-the-goal style is the heart of SQL.
 
 Here's the same shape you can run right now, against a tiny built-in `authors` table:
 
@@ -65,9 +65,9 @@ SELECT name, country
 FROM authors
 WHERE country = 'UK';
 ```
-*What just happened:* You described what you wanted — `name` and `country` from `authors`, but only the rows **where** the country is the UK — and got back the two matching authors. You never said *how* to find them; that describe-the-goal style is the heart of SQL.
+*What just happened:* Same move — `name` and `country` from `authors`, only the rows where the country is the UK — and back come the two matching authors.
 
-You don't need to write SQL yet — that's a guide of its own. The point here is only that **SQL is the conversation**, and that the conversation goes over a connection to a server.
+You don't need to write SQL yet — that's a guide of its own. The point here is only that **SQL is the conversation**, and that conversation goes over a connection to a server.
 
 > Learning to actually read and write these statements — `SELECT`, `WHERE`, and the everyday queries you'll reach for — is the very next step: [/guides/querying-basics-select-where](/guides/querying-basics-select-where).
 

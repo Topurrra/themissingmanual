@@ -6,14 +6,14 @@ summary: "A model is a Python class: subclass nn.Module, define layers in __init
 tags: [pytorch, nn-module, layers, linear, forward, parameters, neural-network]
 difficulty: intermediate
 synonyms: ["pytorch nn.Module", "pytorch build neural network", "pytorch nn.Linear layer", "pytorch forward method", "pytorch model parameters", "pytorch nn.Sequential", "pytorch activation functions"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Building Models with nn.Module
 
 In [Phase 3](03-autograd.md) you saw autograd quietly record every operation on a tensor that has
-`requires_grad=True`, then hand you the gradients on demand. That's the engine of learning. This phase is
-about the thing autograd runs *inside*: the model.
+`requires_grad=True`, then hand you the gradients on demand. That's the engine of learning; this phase is
+about the thing autograd runs *inside* — the model.
 
 Here's the mental model to hold onto, and it's one you already know from Python: **a model is a class.**
 Specifically, a class that subclasses `nn.Module`. You met classes in

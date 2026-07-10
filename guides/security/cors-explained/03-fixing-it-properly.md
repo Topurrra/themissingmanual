@@ -6,16 +6,15 @@ summary: "Set the right Access-Control-Allow-* headers on the server (not the cl
 tags: [cors, fix, access-control-allow-origin, credentials, wildcard, proxy, beginner]
 difficulty: beginner
 synonyms: ["how to fix cors error", "access-control-allow-origin wildcard credentials", "cors allow credentials not working", "fix cors on the server", "cors dev proxy workaround", "how to enable cors"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Fixing It Properly
 
 Here's the good news you earned in Phases 1 and 2: the fix is almost always a few response headers on the
-*server*. Not the frontend. The browser is waiting for the server to send a permission slip - so we send
-it. This phase gives you a scannable cheat-card for when you're blocked *right now*, then the proper fixes
-underneath, the credentials trap that catches everyone, and a dev-only proxy for when you can't change the
-server.
+*server*, not the frontend. The browser is waiting for the server to send a permission slip - so we send
+it: a scannable cheat-card for when you're blocked *right now*, the proper fixes underneath, the
+credentials trap that catches everyone, and a dev-only proxy for when you can't change the server.
 
 ## The cheat-card
 
@@ -91,7 +90,7 @@ Here's the rule that catches everyone:
 ⚠️ **You cannot combine `Access-Control-Allow-Origin: *` with credentials.** If the request sends
 credentials, the server **must** name a single, specific origin - the wildcard is rejected by the browser.
 This is deliberate: `*` means "any site may read this," and "any site may read this *with the user's
-cookies attached*" would re-open the exact bank-account hole the same-origin policy exists to close.
+cookies attached*" would re-open the exact hole the same-origin policy exists to close.
 
 ```http
 HTTP/1.1 200 OK
@@ -110,9 +109,8 @@ not just tidy - it's the only thing that works.
 
 ⚠️ **`Access-Control-Allow-Origin: *` is not a fix - it's a decision to let every website on the internet
 read that response.** It's the first thing people paste in to make the red text go away, and for a truly
-public, non-credentialed, read-only endpoint (a public weather feed, say) it can be fine. But on anything
-that returns user data, sits behind auth, or lives on a private/internal network, `*` is a real security
-mistake:
+public, non-credentialed, read-only endpoint (a public weather feed, say) it's fine. But on anything that
+returns user data, sits behind auth, or lives on a private network, `*` is a real security mistake:
 
 - It can't be used with credentials anyway (§3), so it often doesn't even solve your actual problem.
 - It tells *every* origin - including malicious ones - that their JavaScript may read your responses. For
@@ -160,10 +158,10 @@ correct headers on the server you control. Don't ship a hack that papers over a 
 
 ---
 
-You came here blocked and a little annoyed, and now you can read the error, point at the exact missing
-header, and fix it without quietly opening a hole. That's the whole skill. The deeper material - caching
-preflights with `Access-Control-Max-Age`, per-route policies, and CORS in front of CDNs and API
-gateways - is a follow-up guide for when you need it. For now, you're unblocked, safely.
+You came here blocked; now you can read the error, point at the exact missing header, and fix it without
+quietly opening a hole. That's the whole skill. The deeper material - caching preflights with
+`Access-Control-Max-Age`, per-route policies, and CORS in front of CDNs and API gateways - is a follow-up
+guide for when you need it. For now, you're unblocked, safely.
 
 ---
 

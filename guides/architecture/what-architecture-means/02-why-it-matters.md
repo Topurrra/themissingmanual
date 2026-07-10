@@ -6,12 +6,12 @@ summary: "Architecture is the set of decisions that are expensive to change late
 tags: [architecture, cost-of-change, non-functional-requirements, scale, reliability]
 difficulty: beginner
 synonyms: ["why does software architecture matter", "what are the most important decisions in software", "non functional requirements", "cost of change in software", "what makes architecture expensive to change"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why It Matters
 
-So architecture is "just the shape" — the boxes and the arrows. If it's that simple, why do experienced engineers treat architecture decisions with such care, and why does getting them wrong cause so much pain years later? This phase answers that. The short version: architecture is the set of decisions that are **expensive to change later** — and that one property changes everything about how you treat them.
+So architecture is "just the shape" — the boxes and the arrows. If it's that simple, why do experienced engineers treat architecture decisions with such care, and why does getting them wrong cause so much pain years later? The short version: architecture is the set of decisions that are **expensive to change later** — and that one property changes everything about how you treat them.
 
 ## The thing that makes a decision "architecture"
 
@@ -57,9 +57,9 @@ Here's the pattern that explains *why* the timing of these decisions matters so 
        design        early build      shipped       years in production
 ```
 
-*What just happened:* Early on, an architecture decision is just a line on a diagram — changing it costs an eraser stroke. But every week the system runs, more code gets built assuming that decision, more real user data piles up in that shape, and more of your teammates' mental models depend on it. By the time the system has been live for years, reversing a foundational choice can mean a months-long migration touching nearly everything. The decision didn't get *harder* — the **cost of undoing it** grew, because more and more was built on top.
+*What just happened:* early on, an architecture decision is just a line on a diagram — changing it costs an eraser stroke. But every week the system runs, more code gets built assuming that decision, more real user data piles up in that shape, and more of your teammates' mental models depend on it. By the time the system has been live for years, reversing a foundational choice can mean a months-long migration touching nearly everything. The decision didn't get *harder* — the **cost of undoing it** grew, because more and more was built on top.
 
-🪖 **War story.** A common, painful version of this: a small team picks a database that's perfect for a quick launch, storing everything in a shape that works great for one feature. Two years and a million users later, a new feature needs the data arranged completely differently. Now changing it isn't a code edit — it's migrating live production data without losing any of it or taking the site down. The original decision took five minutes. Undoing it takes a quarter. That gap *is* the cost-of-change curve, and it's why architecture gets attention up front.
+🪖 **War story.** A small team picks a database that's perfect for a quick launch, storing everything in a shape that works great for one feature. Two years and a million users later, a new feature needs the data arranged completely differently — now changing it isn't a code edit, it's migrating live production data without losing any of it or taking the site down. The original decision took five minutes; undoing it takes a quarter. That gap *is* the cost-of-change curve.
 
 **Why this saves you later.** Knowing the curve tells you where to spend your worry. For cheap-to-change decisions, just pick something reasonable and move on — you can fix it later for almost nothing. For expensive-to-change decisions, it's worth pausing to think, sketch alternatives, and ask a more experienced engineer. You're not being slow; you're spending your caution where the curve is steep.
 
@@ -76,7 +76,7 @@ These four are the heavyweights that bend architecture more than features do:
 - **Security.** Storing passwords and credit cards forces decisions a public blog never has to make: where sensitive data lives, who's allowed to touch which box, how the arrows are locked down.
 - **Team size.** This one's a genuine surprise — a system built by 3 people and one built by 300 are shaped differently *even if they do the same thing*, because the boxes have to be divided so teams don't constantly collide. (There's a name for this effect; we'll meet it in [Phase 3](03-thinking-in-trade-offs.md).)
 
-**The gotcha.** Because non-functional needs are invisible in a demo, they're easy to ignore until they bite. The app *looks* done — it works on your laptop with one user. Then it ships, real traffic arrives, and it buckles, not because a feature was missing but because the *shape* was never designed for scale or reliability. Asking "how big, how reliable, how secure, how many people building it?" *before* you commit to a shape is the move that separates architecture that lasts from architecture that has to be torn out.
+**The gotcha.** Because non-functional needs are invisible in a demo, they're easy to ignore until they bite. The app *looks* done — it works on your laptop with one user. Then it ships, real traffic arrives, and it buckles, not because a feature was missing but because the *shape* was never designed for scale or reliability. Asking "how big, how reliable, how secure, how many people building it?" before you commit to a shape is what separates architecture that lasts from architecture that has to be torn out.
 
 ## Recap
 

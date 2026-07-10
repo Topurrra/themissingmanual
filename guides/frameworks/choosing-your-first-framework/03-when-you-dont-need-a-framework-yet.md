@@ -6,7 +6,7 @@ summary: "Sometimes the standard library is enough for what you're building - th
 tags: [frameworks, standard-library, node-http, net-http, beginner]
 difficulty: beginner
 synonyms: ["do i need a framework", "build a server without a framework", "net http vs framework", "node http vs express", "when to skip a framework"]
-updated: 2026-07-06
+updated: 2026-07-11
 ---
 
 # When You Don't Need a Framework Yet
@@ -53,16 +53,15 @@ adds is also a thing you now depend on and don't fully see. That's a fair trade 
 application. It's a bad trade for a script that needed ten lines.
 
 Knowing when to skip a framework is not a lesser skill than knowing which one to pick. It's the
-same judgment, pointed the other way - and it's what separates someone who reaches for a framework
-by reflex from someone who reaches for the right tool for what's actually in front of them.
+same judgment pointed the other way - it separates someone who reaches for a framework by reflex
+from someone who reaches for the right tool for the job.
 
 ## Where this leaves you
 
 Pick your language, pick the framework from Phase 2, build something real in it, and finish it.
 If what you're building is small enough that a framework feels like more setup than the problem
-deserves, reach for the standard library instead - and read the roots guide for your stack to see
-what's actually happening under the hood either way. Both paths teach you something a framework tour
-never will: what the code is actually doing when nobody's watching.
+deserves, reach for the standard library instead. Either way, the roots guide for your stack shows
+you what the code is actually doing when nobody's watching.
 
 ```quiz
 [

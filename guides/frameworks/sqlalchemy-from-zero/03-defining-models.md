@@ -6,7 +6,7 @@ summary: "Turn plain Python classes into database tables with SQLAlchemy 2.0 dec
 tags: [sqlalchemy, models, declarative, mapped-column, declarative-base, columns, orm]
 difficulty: intermediate
 synonyms: ["sqlalchemy declarative models", "sqlalchemy mapped_column Mapped", "sqlalchemy DeclarativeBase", "sqlalchemy model columns types", "sqlalchemy create_all", "sqlalchemy 2.0 model style", "sqlalchemy primary key"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Defining Models
@@ -16,11 +16,9 @@ to your database. But the engine alone doesn't know what your data *looks like*.
 that's it. This phase is where you teach SQLAlchemy the shape of your world: what an `Author` is, what a
 `Book` is, what columns they have, and how they become real tables.
 
-Hold this mental model the whole way through: **a model class is a two-way map between a Python object and
-a database row.** On one side, an `Author` instance living in memory. On the other, a row in an `authors`
-table. Everything in this phase is you drawing that map once, in one place — and SQLAlchemy following it
-in both directions forever after. Get the model right and queries (Phase 5), relationships (Phase 6), and
-the generated SQL all fall out of it.
+**A model class is a two-way map between a Python object and a database row.** On one side, an `Author`
+instance living in memory. On the other, a row in an `authors` table. Everything in this phase is you
+drawing that map once, in one place — and SQLAlchemy following it in both directions forever after.
 
 We're keeping the domain small and concrete: `Author`, `Book`, and `Tag`. Relationships between them
 (who wrote what, which tags a book carries) arrive in [Phase 6](06-relationships.md). For now each model
@@ -226,10 +224,9 @@ class Author(Base):
 the REPL, in logs, in debugger output. It changes nothing about how the model maps to the table; it's
 purely for your eyes. Add a short `__repr__` to every model and your debugging sessions get much friendlier.
 
-💡 Step back and see what you've built. That `Author` class is now the **single source of truth** for
-everything downstream. It defines the `authors` table's structure. It's the type your queries return in
-[Phase 5](05-querying-with-select.md). It's the anchor that relationships hang off of in
-[Phase 6](06-relationships.md). You write the mapping once, and the rest of SQLAlchemy reads from it.
+💡 That `Author` class is now the **single source of truth** for everything downstream. It defines the
+`authors` table's structure, it's the type your queries return in [Phase 5](05-querying-with-select.md),
+and it's the anchor relationships hang off of in [Phase 6](06-relationships.md).
 
 If you've come from Java's Hibernate/JPA, this will feel familiar: there, an `@Entity` class with
 `@Id` and `@Column` annotations plays the exact same role — one class that *is* the table, in both

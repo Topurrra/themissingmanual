@@ -8,7 +8,7 @@ category: apis
 difficulty: intermediate
 order: 6
 synonyms: ["what is grpc", "grpc vs rest", "what is a proto file", "how does grpc work", "protocol buffers explained", "when to use grpc", "grpc streaming"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # gRPC, Explained
@@ -20,9 +20,8 @@ browser. It feels like a different universe with its own rules nobody wrote down
 
 It isn't magic, and it isn't a replacement for everything you know. gRPC is a focused tool that solves one
 problem really well: letting *internal services call each other* quickly, with a strict typed contract both
-sides agree on in advance. This guide installs the mental model first — define the functions once, both
-sides agree — then shows how the pieces actually work, and ends with an honest look at when gRPC is the
-right call and when it absolutely isn't.
+sides agree on in advance. This guide installs that mental model first, shows how the pieces actually
+work, and ends with an honest look at when gRPC is the right call and when it absolutely isn't.
 
 ## How to read this
 - **Just need the "REST vs GraphQL vs gRPC, when do I use which" answer?** Jump to the table at the top of

@@ -6,7 +6,7 @@ summary: "The mental model for an AI agent: a language model given tools and a l
 tags: [ai, agent, llm, mental-model, reasoning-loop, tool-use]
 difficulty: intermediate
 synonyms: ["what is an ai agent", "how does an llm agent work", "agent vs single llm call", "the agent loop explained", "who writes the agent loop", "model plus tools plus loop"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # An Agent Is a Loop
@@ -29,7 +29,7 @@ Strip an agent down and exactly three pieces remain. Knowing which ones *you* co
 
 *What just happened:* We split the agent into the part that decides (the model) and the parts that act and orchestrate (your code). The model never actually *runs* anything — it can only ask. Your loop is the hands; the model is the head. Keep that division in your head and agents stop being mysterious.
 
-The most common beginner misread is thinking the model "does things." It doesn't. It emits a request — "please call `get_weather` with city = Oslo" — and then it waits. Your code is what reaches out to the weather service, gets the number, and hands it back. The model proposes; your loop disposes.
+The most common beginner misread is thinking the model "does things." It doesn't — it emits a request ("please call `get_weather` with city = Oslo") and waits. Your code reaches out to the weather service, gets the number, and hands it back. The model proposes; your loop disposes.
 
 ## One call versus a loop of calls
 

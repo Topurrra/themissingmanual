@@ -6,7 +6,7 @@ summary: "Logs are discrete events, metrics are numbers aggregated over time (co
 tags: [observability, logs, metrics, traces, spans, counters, gauges, histograms, distributed-tracing]
 difficulty: intermediate
 synonyms: ["what are the three pillars of observability", "difference between logs metrics and traces", "what is a counter gauge histogram", "what is a span in tracing", "what is a trace", "when to use metrics vs logs", "what is distributed tracing"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Three Pillars
@@ -44,10 +44,10 @@ $ tail -n 1 /var/log/checkout/app.log
 declined, with the order id and provider right there. Notice the `trace_id`: that single field is the
 thread that will let us tie this log line back to the exact request it belongs to in Phase 3.
 
-**Where logs fall down.** Logs are *expensive at scale* and *bad at "how many."* If you want to know "how
-many payments were declined this hour," counting log lines means scanning a mountain of text. And a busy
-system can emit so many logs that storing and searching them gets slow and costly. Logs answer *"what
-happened in this one case,"* not *"what's the overall trend."*
+**Where logs fall down.** Logs are *expensive at scale* and *bad at "how many."* Counting "how many
+payments were declined this hour" from log lines means scanning a mountain of text, and a busy system
+emits so much of it that storing and searching gets slow and costly. Logs answer *what happened in this
+one case*, not *what's the overall trend*.
 
 > ⏭️ Reading log lines well - levels, filtering, following one request through the flood - is its own
 > skill. We cover it properly in [Reading Logs Without Drowning](/guides/reading-logs-without-drowning).
@@ -55,18 +55,14 @@ happened in this one case,"* not *"what's the overall trend."*
 ## Metrics - numbers over time
 
 **What a metric actually is.** A metric is a number, sampled or accumulated over time, usually tagged with
-a few labels (which service, which endpoint, which region). Instead of recording *every* event in full, a
-metric records an *aggregate* - and that's the whole trick. "Requests handled: 1,204,883" is a single
-cheap number, not 1.2 million log lines.
+a few labels (service, endpoint, region). Instead of recording *every* event in full, it records an
+*aggregate* - "Requests handled: 1,204,883" is one cheap number, not 1.2 million log lines.
 
-**What metrics are best at.** *Trends, rates, and alerting.* Because a metric is just numbers, it's cheap
-to store for a long time and cheap to chart. "Is error rate climbing?" "Is p99 latency above target?"
-"Are we doing more requests than yesterday?" - these are metric questions, and metrics answer them
-instantly.
+**What metrics are best at.** *Trends, rates, and alerting.* A metric is just numbers, so it's cheap to
+store for a long time and cheap to chart. "Is error rate climbing?" "Is p99 latency above target?" - these
+are metric questions, and metrics answer them instantly.
 
-There are three flavors worth knowing by name, because they behave differently:
-
-📝 **The three metric types:**
+📝 **The three metric types** (worth knowing by name - they behave differently):
 
 - **Counter** - a number that only ever goes *up* (until it resets), like a turnstile click. Total
   requests, total errors, total bytes sent. You rarely read the raw counter; you read its *rate of
@@ -93,11 +89,10 @@ http_request_duration_seconds_bucket{le="1.0"} 1204870
 http_request_duration_seconds_bucket{le="+Inf"} 1205195
 ```
 
-*What just happened:* This is a metrics endpoint in the common Prometheus text format. The counter says
-checkout has handled ~1.2M successful requests and 312 with a 500 error since it started. The histogram
-buckets are cumulative (`le` means "less than or equal to"): about 1.18M requests finished under 100ms,
-nearly all under 300ms, and a small tail took longer - that tail is your p99 latency. One scrape, and you
-know the rate *and* the shape of latency, without touching a single individual request.
+*What just happened:* A Prometheus-format metrics endpoint. The counter shows checkout handled ~1.2M
+successful requests and 312 with a 500 error. The histogram buckets are cumulative (`le` means "less than
+or equal to"): ~1.18M requests finished under 100ms, nearly all under 300ms, and a small tail took longer
+- that's your p99. One scrape gives you the rate *and* the shape of latency, no individual request needed.
 
 **Where metrics fall down.** Metrics tell you *that* something is happening, not *which case* or *why*.
 The histogram above shows a slow tail exists; it can't tell you *which order* was slow or what went wrong
@@ -109,18 +104,16 @@ in it. For that, you follow the thread to a trace and then a log.
 ## Traces - one request's journey
 
 **What a trace actually is.** A trace is the complete story of *one request* as it travels through your
-system - which is the missing piece when you have more than one service. A trace is made of **spans**:
-each span is one unit of work (one service call, one DB query, one external API call), and spans nest
-inside each other to form a tree, parent calling child. Every span records when it started and how long it
-took.
+system - the missing piece once you have more than one service. It's made of **spans**: each span is one
+unit of work (a service call, a DB query, an API call), nested parent-to-child into a tree. Every span
+records when it started and how long it took.
 
 📝 **Span** - a single timed operation within a trace, with a name, a start time, a duration, and a parent
 span. The top span (the whole request) is the **root span**; everything it triggers hangs beneath it.
 
 **What traces are best at.** *Showing where the time went across services.* When a request touches five
-services and one of them is slow, a trace lays the whole thing out as a waterfall so the slow span is
-visually obvious. This is the question metrics and logs both struggle with: "the request was slow - but
-which *part* of it?"
+services and one is slow, a trace lays it out as a waterfall so the slow span is visually obvious - the
+question metrics and logs both struggle to answer: "which *part* was slow?"
 
 **A real example.** Here's one trace (`trace_id: 4bf92f3577b34da6`, 812 ms total) drawn as the request crossing services, each span's duration noted:
 
@@ -135,16 +128,15 @@ sequenceDiagram
   api-gateway->>api-gateway: render-response (24 ms)
 ```
 
-*What just happened:* One request took 812ms total. The waterfall shows almost all of that time - 690ms -
-was spent in a single `payment-db` query nested under `checkout-svc`. Auth was fine, the cache was fine,
-rendering was fine. Without the trace you'd know only "the request was slow." With it, you know *exactly*
-which span to investigate, and you have the `trace_id` to pull the matching logs. That `trace_id` is the
-same one from the log line at the top of this phase - that's how the three pillars connect.
+*What just happened:* The 812ms request spent 690ms of that in a single `payment-db` query nested under
+`checkout-svc` - auth, cache, and rendering were all fine. Without the trace you'd know only "the request
+was slow"; with it, you know exactly which span to investigate, plus the `trace_id` to pull matching logs.
+That's the same `trace_id` from the log line at the top of this phase - how the three pillars connect.
 
 **Where traces fall down.** A trace is one request. It won't tell you "is this slow for *everyone*?" (a
-metric question) or carry the full error detail of what went wrong inside the slow span (a log question).
-Traces also usually get *sampled* - you keep a fraction of them, because storing every trace from a busy
-system is costly - so the exact request you want may not have been kept.
+metric question) or carry the full error detail inside the slow span (a log question). Traces are also
+usually *sampled* - storing every trace from a busy system is costly - so the exact request you want may
+not have been kept.
 
 > ⏭️ Reading a real trace in a commercial tool, including the waterfall view and span attributes, is
 > covered in [Reading Dynatrace](/guides/reading-dynatrace).

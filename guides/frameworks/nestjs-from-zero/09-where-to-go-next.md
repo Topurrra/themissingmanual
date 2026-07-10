@@ -6,7 +6,7 @@ summary: "What you can build now, how NestJS compares to Express and Fastify, th
 tags: [nestjs, typescript, express, fastify, orm, what-to-build]
 difficulty: beginner
 synonyms: ["nestjs vs express fastify", "nestjs typeorm prisma", "nestjs microservices graphql", "nestjs swagger", "nestjs next steps", "nest what to build"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
@@ -15,7 +15,7 @@ Stop for a second and look at what you can actually do now. You can scaffold a N
 
 And here's the quieter win. Nest's decorators looked like magic in Phase 1, and now they don't. You can see the architecture underneath: **controllers handle HTTP, providers hold logic, dependency injection wires them, and modules group them.** Once that picture is in your head, a 200-file Nest codebase reads the same way a 5-file one does — same four roles, repeated. That's the whole point of an opinionated framework, and you now think in it.
 
-So this last phase isn't another resource. It's the map: where Nest sits among the other Node frameworks, the official ecosystem you'll add next, and one concrete thing to go build.
+This last phase isn't another resource — it's the map: where Nest sits among the other Node frameworks, the official ecosystem you'll add next, and one concrete thing to go build.
 
 ## NestJS vs the field
 

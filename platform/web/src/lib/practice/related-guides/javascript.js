@@ -8,5 +8,12 @@ export const RELATED = {
   6: 'closures-and-scope#2',
   // Phase 7: classes + one level of extends inheritance -> the phase that
   // covers encapsulation, inheritance, and polymorphism in plain language.
-  7: 'oop-vs-functional#1'
+  7: 'oop-vs-functional#1',
+  // Phase 9: curry/partial application -> closures-and-scope's own "Pattern 2:
+  // pre-loading an argument" section names partial application directly - the
+  // same target as phase 6 is genuinely correct for a different pattern in it.
+  9: 'closures-and-scope#2',
+  // Phase 10: diff/dedupe with filter+includes and a Set -> the phase whose
+  // own text says "sets shine for deduplicating" - exact match.
+  10: 'data-structures-explained#2'
 };

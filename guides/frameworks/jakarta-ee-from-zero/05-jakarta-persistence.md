@@ -6,7 +6,7 @@ summary: "JPA inside a Jakarta EE container: the persistence unit and persistenc
 tags: [jakarta-ee, jpa, jakarta-persistence, entitymanager, persistence-unit, hibernate, container-managed]
 difficulty: intermediate
 synonyms: ["jakarta persistence jpa", "jakarta ee entitymanager", "persistence.xml persistence unit", "container managed entitymanager", "jakarta ee jpa hibernate", "@PersistenceContext inject", "jpa in application server"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Jakarta Persistence (JPA)
@@ -14,7 +14,7 @@ updated: 2026-06-22
 In Phase 4 your `ProductResource` happily served JSON, but every product was hand-built or kept in a
 list. Now we make them real — rows in a database, fetched and saved through JPA. If you've done any
 Hibernate, almost all of this will feel familiar, and that's the point: **Jakarta Persistence *is* the
-JPA you already know.** What changes inside a Jakarta EE app server is *who holds the wiring*. This
+JPA you already know.** What changes inside a Jakarta EE app server is *who holds the wiring* — this
 phase is about that difference, and almost nothing else.
 
 ## The mental model: same JPA, the container holds the plumbing

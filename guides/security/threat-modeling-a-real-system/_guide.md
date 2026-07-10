@@ -8,16 +8,16 @@ category: security
 order: 12
 difficulty: advanced
 synonyms: ["what is threat modeling", "how to threat model an application", "stride threat modeling explained", "data flow diagram security", "how to find security vulnerabilities in system design", "trust boundaries explained"]
-updated: 2026-07-06
+updated: 2026-07-11
 ---
 
 # Threat Modeling a Real System
 
 You know what SQL injection is. You know the difference between authentication and authorization. You've read the OWASP Top 10 enough times to recite it. And none of that tells you where to actually look on the system sitting in front of you.
 
-That's the gap threat modeling fills. It's not a new vulnerability to learn - it's a method for taking everything you already know about individual attacks and pointing it at your own architecture, systematically, before an attacker does it for you. Instead of asking "is this endpoint vulnerable to XSS," you ask "where does untrusted data enter this system, and what happens to it at every step from there."
+That's the gap threat modeling fills. It's not a new vulnerability to learn - it's a method for pointing everything you already know about individual attacks at your own architecture, systematically, before an attacker does. Instead of asking "is this endpoint vulnerable to XSS," you ask "where does untrusted data enter this system, and what happens to it at every step from there."
 
-This guide uses one running example the whole way through: a small file-sharing service. Users sign up, upload files, share links, and pay for a premium tier through a third-party processor. Simple enough to hold in your head, real enough that every finding maps to something you've built before.
+This guide uses one running example throughout: a small file-sharing service. Users sign up, upload files, share links, and pay for a premium tier through a third-party processor. Simple enough to hold in your head, real enough that every finding maps to something you've built before.
 
 ## How to read this
 

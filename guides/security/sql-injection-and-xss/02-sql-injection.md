@@ -6,26 +6,26 @@ summary: "A query built by gluing strings together lets user input rewrite what 
 tags: [security, sql-injection, parameterized-queries, prepared-statements, orm, databases]
 difficulty: intermediate
 synonyms: ["how does sql injection work", "how to prevent sql injection", "what is a parameterized query", "what is a prepared statement", "why not concatenate sql strings", "does an orm prevent sql injection", "sql injection example"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # SQL Injection
 
 Here is the first interpreter from Phase 1: your database. It speaks SQL, and SQL is *code* - `SELECT`,
-`WHERE`, `DROP` are all instructions it executes. SQL injection is what happens when user input you meant as
-a *value* in a query gets read as more of that code.
+`WHERE`, `DROP` are all instructions it executes. SQL injection is what happens when user input meant as a
+*value* in a query gets read as more of that code.
 
-If you read Phase 1, you already know the cause (gluing user input into a string) and the cure (keep data as
-data). This phase makes both concrete: we'll watch a normal query quietly turn into a different query, see
-what that hands an attacker, then build the query the right way so it can never happen.
+You already know the cause (gluing input into a string) and the cure (keep data as data) from Phase 1. This
+phase makes both concrete: watch a normal query turn into a different one, see what that hands an attacker,
+then build the query the right way.
 
 > ⏭️ Shaky on what a `SELECT ... WHERE` query is or how `WHERE` filters rows? A quick read of
 > [Querying Basics: SELECT & WHERE](/guides/querying-basics-select-where) will make this phase land harder.
 
 ## How a query loses control of its own meaning
 
-Picture a login form. The app takes the username someone typed and looks them up. The tempting,
-everywhere-you-look way to write that is to build the SQL string by concatenation:
+Picture a login form. The app takes the username someone typed and looks them up. The tempting way to write
+that is to build the SQL string by concatenation:
 
 ```text
    query = "SELECT * FROM users WHERE username = '" + input + "'"
@@ -39,64 +39,59 @@ Type the username `alice` and you get exactly the query you intended:
 SELECT * FROM users WHERE username = 'alice'
 ```
 
-*What just happened:* The database sees `'alice'` as a single text value sitting inside the quotes, compares
-it against the `username` column, and returns Alice's row. Working as designed - because Alice's input
-behaved like the plain data you assumed it was.
+*What just happened:* The database sees `'alice'` as a text value inside the quotes, compares it against the
+`username` column, and returns Alice's row - working as designed, because the input behaved like plain data.
 
-Now watch what a probing attacker types instead of a username. They include a single quote - the exact
-character that *ends a text value in SQL*:
+Now an attacker types a single quote instead of a username - the exact character that *ends a text value in
+SQL*:
 
 ```sql
 SELECT * FROM users WHERE username = '' OR '1'='1'
 ```
 
-*What just happened:* The leading `'` closed your `username` string early. Everything the attacker typed
-after it - `OR '1'='1'` - landed *outside* the quotes, so the database read it as **more SQL**, not as part
-of the value. And `'1'='1'` is always true, so the `WHERE` now matches *every* row. The query you wrote to
-fetch one user just returned the whole table. The boundary between your code and their data was only in your
-head; the database never saw it.
+*What just happened:* The leading `'` closed your `username` string early. Everything after it -
+`OR '1'='1'` - landed *outside* the quotes, so the database read it as **more SQL**. And `'1'='1'` is always
+true, so `WHERE` now matches *every* row. The query you wrote to fetch one user just returned the whole
+table - the boundary between your code and their data only ever existed in your head.
 
-⚠️ **Gotcha - the danger isn't the quote character, it's that input reached the parser as code.** It's
-tempting to conclude "so I'll just strip out quotes." Don't. That's a blocklist, and blocklists lose: numeric
-contexts need no quote at all, different databases have different escape and comment syntax, and attackers
-have decades of tricks for smuggling the same meaning past a filter. The hole isn't one bad character - it's
-that the value got parsed as SQL at all. Close *that*, and you stop playing whack-a-mole forever.
+⚠️ **Gotcha - the danger isn't the quote character, it's that input reached the parser as code.** Don't
+conclude "so I'll just strip out quotes" - that's a blocklist, and blocklists lose: numeric contexts need no
+quote at all, databases have different escape/comment syntax, and attackers have decades of tricks for
+smuggling the same meaning past a filter. The hole is that the value got parsed as SQL at all. Close *that*,
+and you stop playing whack-a-mole forever.
 
 ## What this actually costs you
 
-That "always true" trick is the gentle illustration - enough to *see* the bug. In the wild, once input can
-extend a query, the same mechanism lets an attacker:
+That "always true" trick is the gentle version. In the wild, the same mechanism lets an attacker:
 
-- **Read data they should never see** - dump other users' rows, password hashes, private records.
+- **Read data they should never see** - other users' rows, password hashes, private records.
 - **Change data** - flip their own account to admin, alter balances, rewrite records.
-- **Destroy data** - and yes, depending on how the app connects, run a statement that deletes a table.
+- **Destroy data** - depending on how the app connects, delete a table outright.
 
-This is consistently rated among the most damaging web vulnerabilities precisely because the payoff is your
-*entire database*. SQL injection sits inside the **Injection** category of [The OWASP Top 10](/guides/owasp-top-10),
-the industry's standard list of the risks worth defending first.
+This is consistently rated among the most damaging web vulnerabilities because the payoff is your *entire
+database*. SQL injection sits inside the **Injection** category of [The OWASP Top 10](/guides/owasp-top-10).
 
-🪖 **War story - "Exploits of a Mom."** There's a famous xkcd comic (#327) where a mother names her son
-`Robert'); DROP TABLE Students;--`. A school's system glues that name straight into a SQL statement, the `'`
-and `)` close the intended command, the `DROP TABLE` runs, and the student records are gone. It's a joke, but
-it's a *real* bug - and the punchline is the lesson: the name was data, the system let it become code.
+🪖 **War story - "Exploits of a Mom."** The xkcd comic (#327) has a mother name her son
+`Robert'); DROP TABLE Students;--`. A school's system glues that name into a SQL statement, the `'` and `)`
+close the intended command, `DROP TABLE` runs, and the student records are gone. A joke, but a real bug - the
+name was data, and the system let it become code.
 
 ## The fix: parameterized queries (a separate channel for values)
 
-Here's the cure, and it's the Phase 1 sentence made literal. Instead of building one string that mixes your
-SQL with their value, you hand the database **two separate things**:
+The cure is the Phase 1 sentence made literal. Instead of one string mixing your SQL with their value, you
+hand the database **two separate things**:
 
 1. The SQL, with a **placeholder** where the value goes (often `?` or `$1` or `:name`).
 2. The actual value, passed alongside - separately.
 
-The database compiles the SQL *first*, with the placeholder standing in for "a value goes here." The query's
-structure is now locked. *Then* you give it the value, and it slots that value into the placeholder as
-**pure data** - it never re-parses it as SQL. There is no string for the attacker's quote to break out of,
-because your code and their value were never glued into the same string.
+The database compiles the SQL *first*, placeholder standing in for "a value goes here" - the structure is
+locked. *Then* it slots the value in as **pure data**, never re-parsing it as SQL. There's no string for the
+attacker's quote to break out of, because code and value were never glued together.
 
-📝 **Terminology - parameterized query / prepared statement.** Mostly used interchangeably. A *prepared
-statement* is SQL sent to the database with placeholders so it can plan the query once; a *parameterized
-query* is any query where you pass values through placeholders instead of concatenating them in. The thing
-that matters for security is the same: **SQL and values travel on separate channels.**
+📝 **Terminology - parameterized query / prepared statement.** Used interchangeably. A *prepared statement*
+is SQL sent with placeholders so the database can plan it once; a *parameterized query* is any query where
+values pass through placeholders instead of concatenation. Either way: **SQL and values travel on separate
+channels.**
 
 ```mermaid
 flowchart LR
@@ -109,8 +104,8 @@ flowchart LR
   end
 ```
 
-Here's the same login lookup, done right. (This example is Python with the standard `sqlite3` library; every
-mainstream language and database driver has the identical pattern - only the placeholder character changes.)
+Same login lookup, done right. (Python's `sqlite3` here; every mainstream language and driver has the
+identical pattern - only the placeholder character changes.)
 
 ```console
 >>> username = "' OR '1'='1"          # the exact attack from before
@@ -122,60 +117,46 @@ mainstream language and database driver has the identical pattern - only the pla
 []
 ```
 
-*What just happened:* The driver sent the SQL (`... WHERE username = ?`) and the value (`' OR '1'='1`) on
-separate channels. The database looked for a user whose username is *literally the string* `' OR '1'='1` -
-quotes, spaces, and all. No such user exists, so it returned nothing. The attack didn't get blocked or
-sanitized; it *never had a chance to be code*. That's the difference between fighting bad input and
-making it irrelevant.
+*What just happened:* SQL and value traveled on separate channels. The database looked for a user whose
+username is *literally the string* `' OR '1'='1` - quotes and all. No such user exists, so it returned
+nothing. Nothing was blocked or sanitized; the attack *never had a chance to be code*.
 
 ⚠️ **Gotcha - placeholders are for values, not for structure.** Parameters fill in *values* (a username, an
 id, a price). You cannot parameterize a table name, a column name, or the `ASC`/`DESC` in an `ORDER BY` -
-those are part of the query's structure, which the database compiles before the values arrive. If you must
-let users influence structure (say, which column to sort by), never concatenate their raw text in. Instead,
-map their choice against an **allowlist** of values you control: if the input isn't one of your known-good
-column names, reject it. That keeps you choosing from a fixed menu rather than trusting free text.
+those are structure, compiled before values arrive. If users must influence structure (say, which column to
+sort by), never concatenate raw text - map their choice against an **allowlist** of values you control and
+reject anything else.
 
 ## ORMs and query builders help - but know what they're doing
 
-You may not write raw SQL at all. An **ORM** (Object-Relational Mapper, like SQLAlchemy, Django's ORM,
-Prisma, ActiveRecord) or a query builder lets you express queries in your language, and *underneath* it
-parameterizes for you. That's genuinely good news: idiomatic ORM code is parameterized by default, so the
-common path is safe without you thinking about it.
+An **ORM** (SQLAlchemy, Django's ORM, Prisma, ActiveRecord) or query builder lets you express queries in
+your language and parameterizes underneath. Idiomatic ORM code is safe by default.
 
-The catch is the escape hatch. Every ORM has a "drop down to raw SQL" feature for the queries it can't
-express - and the moment you use it, you are back to writing SQL by hand, and back on the hook for
-parameterizing it. If you build that raw string by concatenation, the ORM's protection does nothing for you.
+The catch is the escape hatch: every ORM has a "drop to raw SQL" feature for queries it can't express, and
+the moment you use it, you're back to writing SQL by hand - and back on the hook for parameterizing it. Build
+that raw string by concatenation and the ORM's protection does nothing for you.
 
 ```text
    ORM normal query        →  parameterized for you   ✅ safe
    ORM raw-SQL escape hatch →  YOUR responsibility     ⚠️ parameterize it yourself
 ```
 
-💡 **Key point.** The rule has no exceptions worth remembering: **never assemble SQL by concatenating user
-input.** Use parameterized queries everywhere - directly, or via an ORM that does it for you - and treat the
-raw-SQL escape hatch as the one place you must consciously parameterize by hand.
-
-## Why this saves you later
-
-Once parameterized queries are *how you write queries*, SQL injection stops being a thing you defend
-against case by case and becomes a thing that can't occur on your normal path. You're not auditing every
-input for dangerous characters; you removed the channel through which input could ever be SQL. That's the
-whole point of "keep data as data" - the safe way is also the easy, default way, so doing it right takes no
-extra vigilance.
+💡 **Key point.** No exceptions worth remembering: **never assemble SQL by concatenating user input.** Use
+parameterized queries everywhere - directly, or via an ORM - and treat the raw-SQL escape hatch as the one
+place you must consciously parameterize by hand.
 
 ## Recap
 
-1. SQL injection happens when **user input glued into a query string** is read as SQL, letting it change what
-   the query *does*.
+1. SQL injection happens when **user input glued into a query string** is read as SQL, changing what the
+   query *does*.
 2. The classic tell is a value that **closes a quote** and adds clauses like `OR '1'='1'` - but the real
-   problem is that input reached the parser as code at all, so **don't rely on filtering characters.**
-3. The damage is your whole database: data **read, changed, or destroyed**. It's the core of the OWASP
+   problem is input reaching the parser as code at all, so **don't rely on filtering characters.**
+3. The damage is your whole database: data **read, changed, or destroyed** - the core of the OWASP
    **Injection** risk.
-4. **The fix is parameterized queries / prepared statements:** send the SQL (with placeholders) and the
-   values on **separate channels**, so values are always treated as data, never SQL.
-5. **ORMs parameterize for you** on the normal path - but the **raw-SQL escape hatch is your responsibility**.
-   Never build SQL by concatenation. Placeholders are for *values*; gate structural choices with an
-   **allowlist**.
+4. **The fix is parameterized queries / prepared statements:** SQL (with placeholders) and values travel on
+   **separate channels**, so values are always data, never SQL.
+5. **ORMs parameterize for you** on the normal path - the **raw-SQL escape hatch is your responsibility**.
+   Placeholders are for *values*; gate structural choices with an **allowlist**.
 
 Same model, second interpreter: now let's hand untrusted input to a *browser* and watch the identical bug
 wear its other costume.

@@ -6,7 +6,7 @@ summary: "Systems that talk by emitting events instead of calling each other dir
 tags: [architecture, event-driven, pub-sub, message-queue, distributed-systems, decoupling, eventual-consistency]
 difficulty: intermediate
 synonyms: ["what is event driven architecture", "pub sub vs message queue", "events vs direct calls", "choreography vs orchestration", "at least once delivery", "why idempotent consumers", "eventual consistency events", "event broker", "kafka vs rabbitmq concepts", "decoupling services with events"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Bill Comes Due
@@ -64,7 +64,7 @@ This is why "make your consumers idempotent" is the most-repeated advice in this
 
 ## So when should you NOT do this?
 
-The most senior move in this guide is knowing when to skip it. Event-driven architecture is the wrong default for a small or new system. If your whole app is one service and a database, adding a broker buys you eventual-consistency bugs, distributed-debugging pain, and a new piece of infrastructure to operate — in exchange for decoupling between parts that aren't even separate yet. Reach for events when you have **real, separate services** that need to react to each other, when **fire-and-forget** work is clogging your request path, when you need **buffering** against spikes, or when **multiple independent consumers** genuinely need the same facts. Until then, a direct call is simpler, easier to debug, and consistent *now*. (The "do we even have separate services" question is exactly what [Monolith vs Microservices](/guides/monolith-vs-microservices) is for — decide that *first*.)
+The most senior move in this guide is knowing when to skip it. Event-driven architecture is the wrong default for a small or new system: if your whole app is one service and a database, a broker buys you eventual-consistency bugs, distributed-debugging pain, and new infrastructure to operate — in exchange for decoupling between parts that aren't even separate yet. Reach for events when you have **real, separate services** that need to react to each other, when **fire-and-forget** work is clogging your request path, when you need **buffering** against spikes, or when **multiple independent consumers** genuinely need the same facts. Until then, a direct call is simpler, easier to debug, and consistent *now*. (Whether you even have separate services is exactly what [Monolith vs Microservices](/guides/monolith-vs-microservices) helps you decide *first*.)
 
 **For builders:** if you take one habit from this guide, take this: **assume every event will be delivered more than once, and make every consumer safe under that assumption.** Add the event-ID dedupe table on day one, not after the first double-charge. It's a few lines, and it's the difference between an event-driven system you trust and one that quietly corrupts data every time the network sneezes.
 

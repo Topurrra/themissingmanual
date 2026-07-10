@@ -6,15 +6,15 @@ summary: "Why the restore drill is the only proof that counts, and the offline, 
 tags: [backups, disaster-recovery, infrastructure, rpo, rto, ransomware, resilience]
 difficulty: intermediate
 synonyms: ["how to back up a server", "what is the 3-2-1 backup rule", "rpo vs rto", "difference between backup and disaster recovery", "how often should i back up", "ransomware backup strategy", "how to test a backup restore", "offsite backup"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Untested Backup, and Ransomware
 
 You've got the model, the rule, and the numbers. Now the two ways teams with all of that *still* lose
-everything — and both are avoidable. The first is quiet and self-inflicted: a backup that was never
-tested and turns out not to work. The second is loud and adversarial: ransomware that reaches for your
-backups on purpose. This is the phase that turns a backup *plan* into something that actually saves you.
+everything — both avoidable. The first is quiet and self-inflicted: a backup that was never tested and
+turns out not to work. The second is loud and adversarial: ransomware that reaches for your backups on
+purpose. This phase turns a backup *plan* into something that actually saves you.
 
 ## The untested backup is the classic trap
 

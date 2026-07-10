@@ -6,15 +6,15 @@ summary: "How Flask turns data into HTML with Jinja2: rendering templates, the J
 tags: [flask, jinja2, templates, render-template, template-inheritance, autoescape, context]
 difficulty: intermediate
 synonyms: ["flask jinja2 templates", "flask render_template", "jinja template syntax", "jinja template inheritance extends block", "flask template context", "jinja filters", "flask html templates"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Templates with Jinja2
 
 In Phase 2 your views returned HTML by hand — strings like `f"<h1>{notes[note_id]}</h1>"`. That works for one
 line, but falls apart the moment a note page needs a real `<head>`, a nav bar, a loop, and a footer. Stuffing
-that into a Python f-string is how you end up with unreadable views and HTML you can't see the shape of. This
-phase hands that job to **Jinja2**, the template engine that ships inside Flask.
+that into a Python f-string is how you end up with unreadable views and HTML you can't see the shape of.
+This phase hands that job to **Jinja2**, the template engine that ships inside Flask.
 
 Hold this mental model: **a view's job is to gather data; a template's job is to turn that data into HTML.**
 The view talks to your data (the `Note` objects), bundles up what it found, and passes it to a template that

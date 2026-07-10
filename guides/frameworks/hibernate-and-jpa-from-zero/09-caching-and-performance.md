@@ -6,7 +6,7 @@ summary: "How Hibernate's two caches work, how to batch writes instead of dribbl
 tags: [hibernate, jpa, caching, first-level-cache, second-level-cache, performance, batching, query-cache]
 difficulty: advanced
 synonyms: ["hibernate caching explained", "hibernate first vs second level cache", "hibernate second level cache setup", "hibernate query cache", "hibernate batch insert", "hibernate performance tuning", "jpa performance best practices"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Caching & Performance
@@ -14,8 +14,8 @@ updated: 2026-06-22
 Here's the thing nobody tells you when you pick up an ORM: it will happily make your app slow, and it
 will do it quietly. Not with errors — with extra round-trips. A page that should fire two queries fires
 two hundred, and everything still *works*, so nothing screams. Performance with Hibernate isn't about
-clever tricks. It's about one habit — looking at the SQL it actually emits — plus a couple of levers
-(caching, batching) and the wisdom to know when to put the ORM down.
+clever tricks — it's one habit (looking at the SQL it actually emits), a couple of levers (caching,
+batching), and the wisdom to know when to put the ORM down.
 
 The mental model for this whole phase: **Hibernate trades round-trips for memory, and it trades
 convenience for control.** Caching keeps data in memory so you skip round-trips. Batching bundles

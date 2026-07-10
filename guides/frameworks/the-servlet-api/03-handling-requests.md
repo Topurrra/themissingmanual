@@ -6,15 +6,15 @@ summary: "Override doGet/doPost on HttpServlet, read params, headers, and the ra
 tags: [servlet, httpservlet, doget, dopost, httpservletrequest, httpservletresponse, http-methods]
 difficulty: beginner
 synonyms: ["httpservlet doget dopost", "httpservletrequest parameters", "httpservletresponse write", "servlet read request body", "servlet set status header", "servlet handle post", "servlet json response"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Handling Requests with HttpServlet
 
 In Phase 2 you saw the container create one instance of your servlet and feed every request through a
 single `service` method. That `service` method is where the real work happens - but you almost never
-override it directly. Instead you extend `HttpServlet`, which has already done the tedious part for you:
-it looks at the HTTP method on the incoming request and routes it to a method named after that verb.
+override it directly. Instead you extend `HttpServlet`, which has already done the tedious part: it looks
+at the HTTP method on the incoming request and routes it to a method named after that verb.
 
 📝 **The mental model for this whole phase:** an HTTP request is two things glued together - a *method*
 (GET, POST, ...) and a *payload* (the URL, headers, and body). `HttpServlet` splits those apart for you.

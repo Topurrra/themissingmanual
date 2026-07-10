@@ -6,15 +6,15 @@ summary: "Narrow a query to the rows you actually want with WHERE (=, >, LIKE, I
 tags: [sql, where, order-by, limit, like, in, null, filtering, sorting, beginner-friendly]
 difficulty: beginner
 synonyms: ["how to filter rows in sql", "sql where clause explained", "sql like operator", "sql order by", "sql limit", "why does = NULL not work", "sql is null", "and or in sql query"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Filtering & Sorting: WHERE, ORDER BY, LIMIT
 
 Returning every row was fine when the table had five of them. Real tables don't. You almost never want
-*all* the users — you want the ones in London, or the ones over 40, or the single most recently created
-account. This phase is where SQL gets genuinely useful: you describe the rows you want, and the database
-finds them for you.
+*all* the users — you want the ones in London, or over 40, or the single most recently created account.
+This phase is where SQL gets genuinely useful: you describe the rows you want, and the database finds
+them for you.
 
 We'll keep working with the same `users` table from Phase 1:
 
@@ -30,11 +30,9 @@ We'll keep working with the same `users` table from Phase 1:
 
 ## `WHERE` — keep only the rows that match
 
-**What it actually is.** `WHERE` is a filter. You give it a condition — a true-or-false test — and the
-database checks every row against it, keeping only the rows where the test comes out true.
-
-**What it does in real life.** It's the difference between "all users" and "users I care about." You add
-it after `FROM`, and from then on the query only sees matching rows.
+**What it actually is.** `WHERE` is a filter — the difference between "all users" and "users I care
+about." You give it a condition, a true-or-false test, and the database checks every row against it,
+keeping only the rows where the test comes out true.
 
 **A real example.**
 ```sql
@@ -48,9 +46,9 @@ WHERE city = 'London';
  Ada Lovelace   │ London
  Alan Turing    │ London
 ```
-*What just happened:* The database tested each row's `city` against `'London'`. Rows 1 and 3 passed; the
+*What just happened:* The database tested each row's `city` against `'London'`. Rows 1 and 3 passed, the
 rest failed, so they're not in the result. Note the single quotes around `'London'` — text values go in
-**single quotes** in SQL. Numbers don't: you'd write `WHERE age = 36`, no quotes.
+**single quotes** in SQL, numbers don't: you'd write `WHERE age = 36`, no quotes.
 
 📝 **Terminology.** A **condition** (or *predicate*) is the true/false test in a `WHERE`. `city =
 'London'` is true for some rows, false for others; `WHERE` keeps the true ones.
@@ -113,8 +111,8 @@ WHERE email LIKE '%@example.com';
  Linus T.       │ linus@example.com
 ```
 *What just happened:* `%@example.com` means "anything, followed by `@example.com`." Every address ends
-that way, so every row matched. `'A%'` would mean "starts with capital A"; `'%lan%'` would mean
-"contains `lan` anywhere." The `%` is the workhorse here.
+that way, so every row matched. `'A%'` means "starts with capital A"; `'%lan%'` means "contains `lan`
+anywhere." The `%` is the workhorse here.
 
 ⚠️ **Gotcha.** `LIKE` matching is often case-sensitive — but whether it is depends on your database and
 its settings. In some setups `'a%'` won't match `Ada`. If a `LIKE` returns fewer rows than you expect,
@@ -138,9 +136,9 @@ WHERE city IN ('London', 'Portland');
  Alan Turing    │ London
  Linus T.       │ Portland
 ```
-*What just happened:* `IN ('London', 'Portland')` matched any row whose `city` is either of those two.
-It's the same result you'd get from `city = 'London' OR city = 'Portland'`, just shorter and easier to
-read as the list grows.
+*What just happened:* `IN ('London', 'Portland')` matched any row whose `city` is either of those two —
+the same result as `city = 'London' OR city = 'Portland'`, just shorter and easier to read as the list
+grows.
 
 ### Combining conditions with `AND` / `OR`
 
@@ -158,13 +156,12 @@ WHERE city = 'London' AND age < 35;
 ────────────────┼─────────┼─────
  Alan Turing    │ London  │  29
 ```
-*What just happened:* A row had to pass *both* tests — be in London *and* be under 35. Ada is in London
-but she's 36, so she failed the second test and dropped out. Only Alan satisfied both.
+*What just happened:* A row had to pass *both* tests — in London *and* under 35. Ada is in London but
+she's 36, so she failed the second test. Only Alan satisfied both.
 
 ⚠️ **Gotcha.** When you mix `AND` and `OR` in one `WHERE`, `AND` binds tighter than `OR` — so
-`A OR B AND C` is read as `A OR (B AND C)`, which is often *not* what you meant. When in doubt, add
-parentheses to say exactly what you mean: `(A OR B) AND C`. Parentheses cost nothing and remove all
-ambiguity.
+`A OR B AND C` reads as `A OR (B AND C)`, often *not* what you meant. When in doubt, add parentheses:
+`(A OR B) AND C`. They cost nothing and remove all ambiguity.
 
 ## The `NULL` trap — use `IS NULL`, never `= NULL`
 
@@ -174,9 +171,9 @@ This one confuses *everybody* the first time, so let's name it clearly.
 and **not** an empty string. It's the absence of a value.
 
 Here's the part that trips people: in SQL, `NULL` is not equal to anything — not even to another `NULL`.
-The reasoning is that `NULL` means "unknown," and "is one unknown thing equal to another unknown thing?"
-can't honestly be answered *yes*. So any comparison *with* `NULL` using `=` comes out as "unknown," which
-`WHERE` treats as not-a-match.
+The reasoning: `NULL` means "unknown," and "is one unknown thing equal to another unknown thing?" can't
+honestly be answered *yes*. So any comparison *with* `NULL` using `=` comes out "unknown," which `WHERE`
+treats as not-a-match.
 
 That means this **does not work** the way it looks:
 ```sql
@@ -191,8 +188,8 @@ WHERE email = NULL;
 (0 rows)
 ```
 *What just happened:* `email = NULL` is never true (it's "unknown" for every row), so `WHERE` kept
-nothing. You got zero rows even if missing emails exist. No error — just silently empty, which is exactly
-why this bites people.
+nothing — zero rows even if missing emails exist. No error, just silently empty, which is exactly why
+this bites people.
 
 To actually test for missing values, SQL gives you `IS NULL` (and `IS NOT NULL`):
 ```sql
@@ -231,11 +228,11 @@ ORDER BY age DESC;
  Alan Turing    │  29
 ```
 *What just happened:* `ORDER BY age DESC` sorted by `age`, highest first. `DESC` means descending
-(big → small); `ASC` means ascending (small → big), and ascending is the default if you write neither.
-So `ORDER BY age` alone would put Alan (29) at the top.
+(big → small); `ASC` means ascending (small → big) and is the default if you write neither — so
+`ORDER BY age` alone would put Alan (29) at the top.
 
-⚠️ **Gotcha.** If you want a dependable order, you *must* say so with `ORDER BY`. Rows coming back "in
-order" without it is luck, not a guarantee — and that luck can change when the data or the database does.
+⚠️ **Gotcha.** If you want a dependable order, say so with `ORDER BY`. Rows coming back "in order"
+without it is luck, not a guarantee, and that luck can change when the data or the database does.
 
 ## `LIMIT` — take only the first few rows
 
@@ -256,14 +253,14 @@ LIMIT 3;
  Katherine J.   │ 2026-03-01
  Alan Turing    │ 2026-02-15
 ```
-*What just happened:* You sorted by `created_at` newest-first, then `LIMIT 3` kept only the first three.
-That's the three most recently created users. Without the `ORDER BY`, "the first 3" would be
-meaningless — `LIMIT` takes the first rows *of whatever order you've established*, so it almost always
+*What just happened:* You sorted by `created_at` newest-first, then `LIMIT 3` kept only the first
+three — the three most recently created users. Without the `ORDER BY`, "the first 3" would be
+meaningless; `LIMIT` takes the first rows *of whatever order you've established*, so it almost always
 travels with `ORDER BY`.
 
 📝 **Terminology note.** `LIMIT` is what PostgreSQL, MySQL, and SQLite use. SQL Server uses `TOP`
-(`SELECT TOP 3 ...`) and Oracle has its own syntax (`FETCH FIRST 3 ROWS ONLY`). The idea is identical
-everywhere; the keyword differs by database. We'll use `LIMIT` throughout.
+(`SELECT TOP 3 ...`); Oracle has its own syntax (`FETCH FIRST 3 ROWS ONLY`). Same idea everywhere, the
+keyword differs — we'll use `LIMIT` throughout.
 
 ## The order of the clauses
 
@@ -278,8 +275,8 @@ flowchart LR
   O --> L["LIMIT n<br/>(how many to take)"]
 ```
 
-Not every query needs every clause — but when they appear together, this is the order. A useful way to
-read it: pick the table, filter to the rows you want, sort them, then take the top few.
+Not every query needs every clause, but when they appear together, this is the order: pick the table,
+filter to the rows you want, sort them, then take the top few.
 
 ## Recap
 

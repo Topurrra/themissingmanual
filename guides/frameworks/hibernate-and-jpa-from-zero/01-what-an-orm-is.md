@@ -6,7 +6,7 @@ summary: "Your Java code thinks in objects; your database thinks in tables. An O
 tags: [hibernate, jpa, orm, object-relational-mapping, impedance-mismatch, java, persistence]
 difficulty: beginner
 synonyms: ["what is an orm", "jpa vs hibernate", "object relational mapping explained", "why use hibernate", "object relational impedance mismatch", "hibernate setup", "jpa specification vs implementation"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # What an ORM Is & Why Hibernate Exists
@@ -18,10 +18,10 @@ and foreign keys — numbers in one table pointing at numbers in another. Two wo
 shapes for the same information.
 
 Hibernate exists because translating between those two shapes by hand — over and over, in every method that
-touches the database — is some of the most tedious, error-prone code you'll ever write. This phase is about
-*why* that translation is painful, what an ORM does to make it disappear, and the one habit that keeps an ORM
-from quietly betraying you. We'll write almost no real code yet; the goal here is the mental model. The actual
-domain (authors, books, reviews) starts in [Phase 2](02-entities-and-mapping.md).
+touches the database — is some of the most tedious, error-prone code you'll ever write. This phase covers
+*why* that translation is painful, what an ORM does to make it disappear, and the one habit that keeps an
+ORM from quietly betraying you. We'll write almost no real code yet — the goal here is the mental model.
+The actual domain (authors, books, reviews) starts in [Phase 2](02-entities-and-mapping.md).
 
 ## The problem: the object/relational impedance mismatch
 
@@ -100,8 +100,8 @@ you save, rows into objects when you load.
 The trade is real and worth naming up front. You write far less boilerplate, but you've added a layer of
 behavior between you and the database — a layer that makes decisions (when to run a query, what SQL to
 generate, when to cache) that you don't see unless you go looking. This whole guide is about understanding
-that layer so it stays a helper and never becomes a mystery. An ORM doesn't excuse you from knowing SQL or
-what a [database](/guides/what-a-database-is) is doing — it sits *on top* of that knowledge.
+that layer so it stays a helper and never becomes a mystery. An ORM doesn't excuse you from knowing SQL —
+it sits *on top* of that knowledge.
 
 ## JPA vs Hibernate: the distinction everyone trips on
 
@@ -144,8 +144,8 @@ JPA covers it, and reach for Hibernate-specific features knowingly, aware you're
 
 ## Where it sits in the stack
 
-ORMs rarely sit alone. In a typical Spring application there's a small tower of layers, each one a thinner
-convenience wrapper over the one below it:
+ORMs rarely sit alone. A typical Spring application has a small tower of layers, each a thinner convenience
+wrapper over the one below it:
 
 ```mermaid
 flowchart TD
@@ -170,8 +170,8 @@ developers grateful to never touch by hand again.)
 
 ## Minimal setup
 
-You don't need much to start, and we'll keep it light — the real domain begins next phase. Conceptually, four
-things have to be in place:
+You don't need much to start, and we'll keep it light — the real domain begins next phase. Four things have
+to be in place:
 
 1. **The dependency** — pull Hibernate (and the JPA API) into your project.
 2. **Configuration** — either a `persistence.xml` file (plain JPA) or, in Spring, a few properties.

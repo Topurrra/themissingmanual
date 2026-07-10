@@ -6,14 +6,14 @@ summary: "Walk the river stage by stage — sources, ingestion, storage, transfo
 tags: [data-pipeline, ingestion, data-warehouse, data-lake, etl, data-roles]
 difficulty: beginner
 synonyms: ["stages of a data pipeline", "what is data ingestion", "data warehouse vs data lake", "data engineer vs analyst vs scientist", "what is a data pipeline made of"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Pieces of the Pipeline
 
-In Phase 1 we saw the river from a distance: muddy upstream, clear at the tap. Now let's walk it stage by
+Phase 1 saw the river from a distance: muddy upstream, clear at the tap. Now let's walk it stage by
 stage. Each stage has a job, and once you can name them, you can place almost any data tool or buzzword
-you'll ever hear into the right spot in the flow.
+into the right spot in the flow.
 
 Here's the whole river, labeled:
 

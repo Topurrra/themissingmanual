@@ -6,12 +6,12 @@ summary: "Two ways to answer 'when is it safe to reclaim memory?': manual (C/C++
 tags: [manual-memory-management, garbage-collection, malloc, free, ownership, rust, c, cpp]
 difficulty: intermediate
 synonyms: ["manual vs automatic memory management", "what is malloc and free", "why is c memory management dangerous", "what does a garbage collector do", "control vs safety memory", "how does rust manage memory without a garbage collector"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Manual vs Automatic Memory
 
-We ended the last phase on one precise question: *when is it safe to reclaim a piece of heap memory?* This phase is about the two great answers programming languages have given to it. They lead to genuinely different lives as a programmer - different bugs, different performance, different things you have to keep in your head. Neither is "right." They're a trade-off, and knowing the trade-off tells you why your language behaves the way it does.
+We ended the last phase on one precise question: *when is it safe to reclaim a piece of heap memory?* This phase is about the two great answers programming languages have given to it - answers that lead to genuinely different lives as a programmer: different bugs, different performance, different things you have to keep in your head. Neither is "right" - they're a trade-off, and knowing it tells you why your language behaves the way it does.
 
 ## World one: manual memory (you are responsible)
 
@@ -30,7 +30,7 @@ buf = NULL;                // good habit: buf no longer points at live memory
 
 📝 **Terminology.** *`malloc`* = the C call that allocates a block of heap memory and returns a pointer to it. *`free`* = the C call that returns a previously-allocated block to the heap so it can be reused. (C++ wraps similar machinery in `new`/`delete`, and modern C++ hides much of it behind smart pointers - but the underlying model is the same.)
 
-**The power.** This is as direct as it gets. No hidden bookkeeping, no surprise pauses, no runtime deciding things behind your back. You know exactly when every byte is allocated and freed. For operating systems, game engines, embedded devices, and anything where predictable timing and tight control matter, that directness is the entire point.
+**The power.** This is as direct as it gets. No hidden bookkeeping, no surprise pauses, no runtime deciding things behind your back - you know exactly when every byte is allocated and freed. For operating systems, game engines, embedded devices, and anything where predictable timing and tight control matter, that directness is the entire point.
 
 **The footguns.** The flip side of "you are responsible" is "you can get it wrong," and the ways to get it wrong are exactly the two failures from Phase 1:
 
@@ -61,7 +61,7 @@ const r = buildReport();
 ```
 *What just happened:* `buildReport` allocated a big `rows` array, used it to compute `summary`, and returned only `summary`. The instant `buildReport` returns, nothing in the program can reach `rows` anymore. We wrote no cleanup code. Later, on its own schedule, the garbage collector observes that `rows` is unreachable and reclaims its memory. The "when is it safe to reclaim?" question got answered *for* us.
 
-**The safety.** The two great manual footguns mostly vanish. You can't use-after-free, because the collector won't reclaim an object while anything can still reach it. You can't double-free, because you don't free at all. For the vast majority of programs - web servers, scripts, apps, data pipelines - this removes an entire category of dangerous, time-eating bugs. That safety is why these languages dominate everyday development.
+**The safety.** The two great manual footguns mostly vanish. You can't use-after-free, because the collector won't reclaim an object while anything can still reach it, and you can't double-free, because you don't free at all. For the vast majority of programs - web servers, scripts, apps, data pipelines - this removes an entire category of dangerous, time-eating bugs. That safety is why these languages dominate everyday development.
 
 **The cost.** Nothing is free, and the GC's bill comes due in two ways:
 

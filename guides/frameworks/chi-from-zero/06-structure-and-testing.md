@@ -6,14 +6,14 @@ summary: "Grow the articles API into packages with a dependency-holding Handler 
 tags: [chi, go, structure, testing, context, httptest]
 difficulty: advanced
 synonyms: ["chi project structure", "chi testing httptest", "go context values", "chi handlers package", "chi http handler test", "go web project layout"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Structuring & Testing
 
 You've built the whole articles API in one file. That's the right way to start — one file you can read top to bottom beats a maze of folders you have to keep jumping between. But around the time you add a second resource, or your fourth handler reaches for the same store, the single-file version starts to creak. This phase is about the move that happens next, done in the way that won't bite you later.
 
-The mental model to hold onto: **handlers stay thin, and their dependencies are explicit.** A handler's job is to read the request, call something that does the real work, and write a response. The "something" — your store, a logger, a config — should be handed to the handler on purpose, not reached for through a package-level global. The idiom Go reaches for here is a **struct that holds the dependencies, with methods that *are* your handlers**. Wire it once in `main`, and every handler gets what it needs through the receiver. No globals, no magic.
+The mental model to hold onto: **handlers stay thin, and their dependencies are explicit.** A handler's job is to read the request, call something that does the real work, and write a response. The "something" — your store, a logger, a config — should be handed to the handler on purpose, not reached for through a package-level global. The idiom Go reaches for here is a **struct that holds the dependencies, with methods that *are* your handlers**. Wire it once in `main`, and every handler gets what it needs through the receiver — no globals, no magic.
 
 ## Handlers as methods on a struct
 
@@ -51,9 +51,9 @@ func (h *Handler) GetArticle(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-*What just happened:* `GetArticle` is a method on `*Handler`, but its signature is still exactly `func(http.ResponseWriter, *http.Request)` — a plain `http.HandlerFunc`. The receiver `h` is how the handler reaches the store. There's no package-level `var store` anywhere; the dependency arrived through `h.Store`, which we set when we built the `Handler`. That's dependency injection, minus the ceremony.
+*What just happened:* `GetArticle` is a method on `*Handler`, but its signature is still exactly `func(http.ResponseWriter, *http.Request)` — a plain `http.HandlerFunc`. The receiver `h` is how the handler reaches the store. There's no package-level `var store` anywhere; the dependency arrived through `h.Store`, set when we built the `Handler`. Dependency injection, minus the ceremony.
 
-💡 Why a method instead of a free function that takes the store as an argument? Because `http.HandlerFunc` is fixed at `(w, r)` — you can't add a `store` parameter and still satisfy the interface. Hanging the handler off a struct gives it access to dependencies *without* changing its signature. That's the whole trick.
+💡 Why a method instead of a free function that takes the store as an argument? Because `http.HandlerFunc` is fixed at `(w, r)` — you can't add a `store` parameter and still satisfy the interface. Hanging the handler off a struct gives it access to dependencies *without* changing its signature.
 
 Now wire it in `main`:
 
@@ -94,7 +94,7 @@ func main() {
 }
 ```
 
-*What just happened:* `main` does the wiring and nothing else — create the store, build the router, start the server. We pulled the router construction into its own `newRouter(s)` function that returns an `http.Handler`. That looks like a small thing, but it's the single most important move in this phase: because `newRouter` builds the *entire* application and hands you back an `http.Handler`, your tests can call it too and exercise the real thing. Hold that thought — we'll cash it in shortly.
+*What just happened:* `main` does the wiring and nothing else — create the store, build the router, start the server. We pulled the router construction into its own `newRouter(s)` function that returns an `http.Handler`. That looks small, but it's the single most important move in this phase: because `newRouter` builds the *entire* application and hands you back an `http.Handler`, your tests can call it too and exercise the real thing.
 
 📝 Notice `newRouter` returns `http.Handler`, not `*chi.Mux`. Callers (including `main` and your tests) only need the `http.Handler` behavior, so that's all you promise them. A chi router *is* an `http.Handler`, so this costs nothing.
 
@@ -116,7 +116,7 @@ articles-api/
 
 The dependency arrows all point one way: `main` imports `handlers` and `store`; `handlers` imports `store` and `models`; `store` imports `models`; `models` imports nothing. Keep it acyclic and Go stays happy (it refuses to compile import cycles anyway, which is a feature).
 
-⚠️ Don't over-split early. A `services/`, `repository/`, `dto/`, `interfaces/` tower of folders for a CRUD app with one resource is cosplay, not architecture. Start with the four above, and only add a layer when a real second use forces it. The article in the [testing in CI guide](/guides/testing-in-ci) makes the same point about test structure: the layout should follow the code, not lead it.
+⚠️ Don't over-split early. A `services/`, `repository/`, `dto/`, `interfaces/` tower of folders for a CRUD app with one resource is cosplay, not architecture. Start with the four above, and only add a layer when a real second use forces it — the layout should follow the code, not lead it.
 
 ## Request-scoped values through context, done right
 
@@ -156,7 +156,7 @@ func RequestIDFrom(ctx context.Context) (string, bool) {
 
 *What just happened:* `context.WithValue` returns a *new* context carrying the value, and `r.WithContext(ctx)` returns a *new* request wrapping it — contexts and requests are immutable, so you always build a new one and pass it forward via `next.ServeHTTP`. Downstream handlers call `r.Context().Value(requestIDKey)` (wrapped here in the tidy `RequestIDFrom` helper) to read it back.
 
-⚠️ The trap that bites everyone: **never use a bare string as the context key.** If you write `context.WithValue(ctx, "user", u)` and some library you import also writes `context.WithValue(ctx, "user", somethingElse)`, the keys collide and silently clobber each other — no compile error, just a baffling runtime bug. The fix is an **unexported custom key type**: `type ctxKey int` lives only in your package, so no other package can ever produce a value equal to your `requestIDKey`. Make the key type unexported, make the key constant unexported, and expose getters/setters instead. That makes collisions impossible by construction.
+⚠️ The trap that bites everyone: **never use a bare string as the context key.** If you write `context.WithValue(ctx, "user", u)` and some library you import also writes `context.WithValue(ctx, "user", somethingElse)`, the keys collide and silently clobber each other — no compile error, just a baffling runtime bug. The fix is an **unexported custom key type**: `type ctxKey int` lives only in your package, so no other package can ever produce a value equal to your `requestIDKey`. That makes collisions impossible by construction.
 
 Here's the handler side reading the value:
 
@@ -171,7 +171,7 @@ func (h *Handler) GetArticle(w http.ResponseWriter, r *http.Request) {
 
 *What just happened:* the handler never knew or cared *how* the request ID got there — it just asks the context. That's the payoff of the pattern: middleware and handler are decoupled, talking only through a typed, collision-proof key.
 
-💡 Context carries more than your values. `r.Context()` also propagates **cancellation and deadlines**. If the client hangs up, or you wrap a route in `middleware.Timeout(2 * time.Second)`, the context's `Done()` channel fires — and any database driver or `http.Client` call that respects `context` will abort instead of running forever. Passing `r.Context()` down into your store and outbound calls is what makes that work. Free request-scoped cancellation, as long as you thread the context through.
+💡 Context carries more than your values. `r.Context()` also propagates **cancellation and deadlines**. If the client hangs up, or you wrap a route in `middleware.Timeout(2 * time.Second)`, the context's `Done()` channel fires — and any database driver or `http.Client` call that respects `context` will abort instead of running forever. Passing `r.Context()` down into your store and outbound calls is what makes that work: free request-scoped cancellation, as long as you thread the context through.
 
 ## Testing the whole router with httptest
 
@@ -202,7 +202,7 @@ func TestGetArticle(t *testing.T) {
 
 *What just happened:* `httptest.NewRequest` builds a `*http.Request` in memory, `httptest.NewRecorder` is a fake `http.ResponseWriter` that captures what the handler writes, and `r.ServeHTTP(rec, req)` runs the request through the real router exactly as a live server would. Afterward, `rec.Code`, `rec.Body`, and `rec.Header()` hold everything the handler produced. No port, no network, no flakiness.
 
-⚠️ Here's the part people get wrong, and it's specific to routed frameworks like chi: **route through `r.ServeHTTP`, not by calling the handler directly.** It's tempting to write `h.GetArticle(rec, req)` and skip the router. Don't — because `chi.URLParam(r, "id")` reads the `id` from chi's *route context*, which only gets attached when the request passes through the router that matched the pattern `/{id}`. Call the handler directly and that context is missing: `chi.URLParam` returns an empty string and your test exercises a code path that never happens in production. Sending the request through `r.ServeHTTP` is what makes `{id}` resolve to `1`. Test the router, not the bare function.
+⚠️ Here's the part people get wrong, and it's specific to routed frameworks like chi: **route through `r.ServeHTTP`, not by calling the handler directly.** It's tempting to write `h.GetArticle(rec, req)` and skip the router. Don't — `chi.URLParam(r, "id")` reads the `id` from chi's *route context*, which only gets attached when the request passes through the router that matched the pattern `/{id}`. Call the handler directly and that context is missing: `chi.URLParam` returns an empty string and your test exercises a code path that never happens in production. Test the router, not the bare function.
 
 Testing a POST is the same shape, with a body and a header:
 
@@ -224,9 +224,9 @@ func TestCreateArticle(t *testing.T) {
 }
 ```
 
-*What just happened:* `strings.NewReader(body)` gives the request a JSON body to read, and `req.Header.Set("Content-Type", "application/json")` mirrors what a real client sends — if your handler checks the content type, the test now satisfies it. The router runs the full POST path: middleware, JSON decode, store write, `201 Created`. When the assertion includes `rec.Body.String()` in the failure message, a broken test tells you *why* instead of just *what*.
+*What just happened:* `strings.NewReader(body)` gives the request a JSON body to read, and `req.Header.Set("Content-Type", "application/json")` mirrors what a real client sends — if your handler checks the content type, the test now satisfies it. The router runs the full POST path: middleware, JSON decode, store write, `201 Created`. Including `rec.Body.String()` in the failure message means a broken test tells you *why* instead of just *what*.
 
-💡 Step back and notice what you *didn't* have to learn. There's no chi-specific test harness, no special `TestClient`, no framework mock. Because your handlers are plain `net/http` handlers and your router is a plain `http.Handler`, your tests are plain `net/http` too — `httptest` is the standard library testing the standard library. Everything you know about testing `net/http` services applies here unchanged. That's the dividend chi pays for staying compatible: the skills transfer in both directions. When you wire these tests into a pipeline, the [testing in CI guide](/guides/testing-in-ci) covers running them on every push.
+💡 Step back and notice what you *didn't* have to learn. There's no chi-specific test harness, no special `TestClient`, no framework mock. Because your handlers are plain `net/http` handlers and your router is a plain `http.Handler`, your tests are plain `net/http` too — `httptest` is the standard library testing the standard library. That's the dividend chi pays for staying compatible: the skills transfer in both directions.
 
 ## Recap
 

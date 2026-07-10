@@ -6,14 +6,14 @@ summary: "Read method, URL, headers, and the body-stream off req; write a status
 tags: [node, nodejs, http, request, response, json]
 difficulty: intermediate
 synonyms: ["node req res", "node read request body", "node write json response", "node IncomingMessage ServerResponse", "node http headers status", "node parse url"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Handling Requests & Responses
 
 In [Phase 1](01-the-mental-model.md) you stood up a server and watched it call your `(req, res)`
-function for every request. That function is the whole job. Everything a web server does — read what
-came in, decide what to send back — happens inside it. So let's get specific about the two objects
+function for every request. That function is the whole job — everything a web server does, reading what
+came in and deciding what to send back, happens inside it. Let's get specific about the two objects
 you've been handed.
 
 ## The mental model: read from `req`, write to `res`
@@ -53,11 +53,11 @@ server.listen(3000);
 ```
 
 *What just happened:* `req.method` and `req.url` tell you what the client asked for, and `req.headers`
-is a plain object of every header (keys are lowercased for you, so it's always `req.headers['host']`,
-never `'Host'`). No parsing required — these are populated the moment your function runs.
+is a plain object of every header (keys are lowercased for you — always `req.headers['host']`, never
+`'Host'`). No parsing required; these are populated the moment your function runs.
 
-One trap: `req.url` is **not** a tidy path. It's everything after the host — the path *and* the query
-string smooshed together, like `/messages?limit=5`. Picking it apart by hand with string splits is
+One trap: `req.url` is **not** a tidy path. It's everything after the host — path *and* query string
+smooshed together, like `/messages?limit=5`. Picking it apart by hand with string splits is
 error-prone, so don't. Node ships the `URL` class for exactly this:
 
 ```javascript
@@ -105,10 +105,9 @@ function readJson(req) {
 *What just happened:* we wrap the stream in a Promise so callers can `await readJson(req)` instead of
 juggling events. The `'data'` event fires once per chunk and we append each to a string. The `'end'`
 event fires when the body is fully received — that's where we parse, defaulting to `{}` if the body
-was empty (a body-less POST shouldn't crash). The `JSON.parse` sits inside a `try/catch` because a
-client can absolutely send garbage, and a parse error should `reject` cleanly rather than throw out of
-the event callback where nothing can catch it. The `'error'` event handles the stream itself dying
-mid-transfer.
+was empty (a body-less POST shouldn't crash). `JSON.parse` sits inside a `try/catch` because a client
+can send garbage, and a parse error should `reject` cleanly rather than throw out of the event callback
+where nothing can catch it. The `'error'` event handles the stream itself dying mid-transfer.
 
 > 💡 This helper *is* `express.json()`. When you write `app.use(express.json())` in Express, this exact
 > collect-chunks-then-parse logic runs before your route, and the result lands on `req.body`. The
@@ -134,9 +133,9 @@ const server = http.createServer(async (req, res) => {
 ```
 
 *What just happened:* the handler is now `async` so we can `await` the body. If `readJson` rejects —
-malformed JSON, a broken connection — we catch it and answer **400 Bad Request** instead of letting
-the whole server crash. Notice the `return` after sending the error: without it, execution falls
-through and tries to respond a second time, which throws (more on that ordering rule next).
+malformed JSON, a broken connection — we catch it and answer **400 Bad Request** instead of letting the
+whole server crash. Notice the `return` after sending the error: without it, execution falls through
+and tries to respond a second time, which throws (more on that ordering rule next).
 
 ⚠️ One more guard for the real world: this helper appends every chunk with no limit, so a malicious
 client could stream gigabytes and exhaust your memory. In production you'd cap `body.length` and
@@ -157,14 +156,13 @@ function sendJson(res, status, data) {
 
 *What just happened:* `res.writeHead(status, headers)` sets the status line and headers in one call.
 `JSON.stringify(data)` turns your object into the wire format, and `res.end(...)` writes that string
-and closes the response. We set `Content-Type: application/json` so the client (and the browser's
-network tab) knows it's getting JSON, not plain text. Now `sendJson(res, 200, { messages: [...] })`
-replaces four lines with one.
+and closes the response. We set `Content-Type: application/json` so the client knows it's getting
+JSON, not plain text. Now `sendJson(res, 200, { messages: [...] })` replaces four lines with one.
 
 ⚠️ **Order is not optional.** Headers and status must be set *before* you write any body. The first
-`res.write()` or `res.end()` "flushes the head" — it sends the status line and headers down the wire,
-and after that they're locked. Try to set a header afterward and Node throws the error every Node dev
-meets eventually:
+`res.write()` or `res.end()` "flushes the head" — sends the status line and headers down the wire, and
+after that they're locked. Try to set a header afterward and Node throws the error every Node dev meets
+eventually:
 
 ```javascript
 // WRONG — throws "Cannot set headers after they are sent to the client"
@@ -174,8 +172,8 @@ res.writeHead(200);                      // too late — head already left the b
 
 *What just happened:* `res.end(...)` already committed the status and headers, so the later
 `writeHead` has nothing to write into. The fix is always the same: `writeHead` (or `setHeader`) first,
-body last. If you find yourself hitting this, it's almost always a missing `return` after an early
-response — two code paths both trying to answer the same request.
+body last. Hitting this is almost always a missing `return` after an early response — two code paths
+both trying to answer the same request.
 
 > 💡 `res.setHeader('X', 'y')` sets one header at a time and can be called repeatedly *before* the
 > first write; `res.writeHead(status, {...})` sets the status plus a batch of headers in one shot.
@@ -206,9 +204,9 @@ function sendNoContent(res) {
 }
 ```
 
-*What just happened:* a 204 promises an empty body, so we call `res.end()` with no argument. Don't set
-`Content-Type` and don't stringify anything — there's nothing to describe. This is the right answer
-for a successful `DELETE /messages/3`: it worked, and there's nothing meaningful to return.
+*What just happened:* a 204 promises an empty body, so we call `res.end()` with no argument — no
+`Content-Type`, no stringify, nothing to describe. The right answer for a successful `DELETE
+/messages/3`: it worked, and there's nothing meaningful to return.
 
 ## Recap
 

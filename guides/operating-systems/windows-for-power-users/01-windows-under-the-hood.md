@@ -6,7 +6,7 @@ summary: "Windows runs on the NT kernel; drive letters like C:\\ map to volumes;
 tags: [windows, nt-kernel, drive-letters, appdata, program-files, uac, registry, unix-comparison]
 difficulty: intermediate
 synonyms: ["what is the nt kernel", "what does c drive mean", "what is appdata folder", "program files vs program files x86", "what does run as administrator do", "uac explained", "windows vs unix file paths", "why backslash in windows"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Windows Under the Hood
@@ -21,7 +21,7 @@ What trips people up isn't the model. It's the local dialect: drive letters, a f
 
 📝 **Terminology.** *NT kernel* = the core of Windows that manages the hardware and has full control of the machine. When people say "the Windows kernel," this is it.
 
-**Why this matters to you.** Everything you see - the desktop, File Explorer, the Settings app, your browser - is a program running *on top of* NT, in user space, at arm's length from the hardware. None of them touch the disk or the network directly; they all ask the kernel. So when a program crashes, NT usually shrugs it off and keeps running (that's why one frozen app rarely takes the whole machine down). And when the whole machine locks up hard, that's the rarer, scarier case where the kernel itself is in trouble.
+**Why this matters to you.** Everything you see - the desktop, File Explorer, the Settings app, your browser - runs *on top of* NT, in user space, asking it for anything that touches the disk or network. A crashed program rarely takes the whole machine down, because NT just cleans it up and moves on; a true hard lockup means the kernel itself is in trouble.
 
 💡 **Key point.** "Windows" is two things wearing one name: the **NT kernel** (the real operating system) and the **desktop shell** (the Start menu, taskbar, File Explorer - the face you click on). When the taskbar freezes but music keeps playing, that's the face hanging while the kernel underneath is fine.
 
@@ -85,9 +85,7 @@ C:\Users\you\AppData\Roaming
 ```
 *What just happened:* `%AppData%` is an **environment variable** - a named shortcut Windows expands into a real path. It points at your `Roaming` folder. (There's a matching `%LocalAppData%` for the `Local` one.) This is why guides say "go to `%AppData%\SomeApp`" instead of spelling out `C:\Users\yourname\AppData\Roaming\SomeApp` - the variable works no matter what your username is.
 
-⚠️ **Gotcha: AppData is hidden by default.** If you go looking in File Explorer and can't find `AppData`, it's not missing - it's a hidden folder. Turn on **View → Show → Hidden items**, or just paste `%AppData%` into the address bar and skip the hunt.
-
-🪖 **War story.** A teammate spent an afternoon convinced an app had "deleted all his work" after an update. The work was fine - it was sitting in `%LocalAppData%\TheApp\`, exactly where the app had always saved it. He'd just never seen `AppData` because it's hidden, so as far as he knew it didn't exist. Five minutes of knowing this folder existed would have saved his whole afternoon.
+⚠️ **Gotcha: AppData is hidden by default.** If you go looking in File Explorer and can't find `AppData`, it's not missing - it's a hidden folder. Turn on **View → Show → Hidden items**, or just paste `%AppData%` into the address bar and skip the hunt. This is the folder people mean when they swear an app "deleted all their settings" after an update - it didn't, they just never knew it existed.
 
 ## Processes and permissions: what "Run as administrator" really does
 
@@ -109,9 +107,9 @@ You met user space and kernel space in the OS guide: untrusted programs run in u
                     you click Yes → the program is elevated for that task
 ```
 
-**What it does in real life.** When you right-click a program and choose **Run as administrator**, you're telling Windows: launch this with elevated rights. Windows checks with you via the UAC prompt (the screen darkens to a "secure desktop" so a sneaky program can't fake your click), and if you approve, that program now runs on the powerful side of the line.
+**What it does in real life.** Right-click a program and choose **Run as administrator**, and Windows checks with you via the UAC prompt (the screen darkens to a "secure desktop" so a sneaky program can't fake your click). Approve it, and that program now runs on the powerful side of the line.
 
-**Why this saves you later.** Half of all "it won't let me save here" and "the installer failed" problems are this, and now you'll recognize them instantly. Trying to save a file into `C:\Program Files\...` and getting "Access denied"? That folder needs elevation, and your editor isn't elevated. A command in a normal terminal fails with a permissions error but works after you reopen the terminal as administrator? Same line, same lesson. You're not fighting a random glitch - you're on the wrong side of the privilege boundary.
+**Why this saves you later.** Half of "it won't let me save here" and "the installer failed" problems are this. Saving into `C:\Program Files\...` and getting "Access denied"? That folder needs elevation, and your editor isn't elevated. A terminal command fails with a permissions error but works after you reopen the terminal as administrator? Same lesson - you're on the wrong side of the privilege boundary, not fighting a random glitch.
 
 ⚠️ **Gotcha: don't run everything as administrator "to be safe."** It's the opposite of safe. UAC's whole value is that your everyday programs *can't* wreck the system even if they misbehave. Run a thing elevated and you hand it the keys. Elevate only when a task genuinely needs it.
 
@@ -128,11 +126,11 @@ You'll hear "Windows is different from Mac/Linux." Here's the honest, concrete v
 | Where settings live | the **registry** (a central database) + some files | plain-text config files (often in `/etc` and your home folder) |
 | Case sensitivity | `File.txt` and `file.txt` are the **same** file | usually **different** files |
 
-Two of these deserve a sentence more, because they're the ones that surprise people:
+Two of these are worth a sentence more, because they're the ones that surprise people:
 
-- **`.exe` and extensions.** On Windows, the file extension isn't just a label - it's how the OS decides what a file *is* and how to open it. Double-click `report.txt` and you get Notepad; rename it `report.exe` and Windows will try to *run* it. That's why hiding extensions is a security risk (a file named `invoice.pdf.exe` looks like a PDF when extensions are hidden) and why Windows asks "are you sure?" when you change one.
+- **`.exe` and extensions.** The file extension isn't just a label on Windows - it's how the OS decides what a file *is* and how to open it. Double-click `report.txt` and you get Notepad; rename it `report.exe` and Windows will try to *run* it. That's why hiding extensions is a security risk (`invoice.pdf.exe` looks like a PDF when extensions are hidden) and why Windows asks "are you sure?" when you change one.
 
-- **The registry instead of config files.** This is the deepest cultural difference, and it gets its own section in [Phase 2](02-services-task-manager-registry.md). The short version: where a Unix program drops a text file to remember its settings, a Windows program often writes them into one giant, central settings database called the **registry**. It's powerful and fast, and it's also why "just edit the config file" isn't always how you fix things on Windows.
+- **The registry instead of config files.** Deepest cultural difference of the bunch, and it gets its own section in [Phase 2](02-services-task-manager-registry.md). Short version: where a Unix program drops a text file to remember its settings, Windows often writes them into one giant, central database called the **registry** - powerful and fast, and why "just edit the config file" isn't always how you fix things here.
 
 💡 **Key point.** None of these differences make Windows "weird" - they're just different design choices for the same problems. Drive letters vs. one root. Extension vs. permission bit. Central database vs. scattered text files. Once you can name the choice, the difference stops being friction and starts being something you can reason about.
 

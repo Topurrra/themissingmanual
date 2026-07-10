@@ -6,7 +6,7 @@ summary: "You can build a structured, database-backed, authenticated, tested, de
 tags: [flask, extensions, flask-vs-django-fastapi, async, learning-path, what-to-build]
 difficulty: beginner
 synonyms: ["flask next steps", "flask extensions list", "flask vs django vs fastapi when", "flask async", "flask celery background tasks", "what to build with flask", "flask production checklist"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Where to Go Next
@@ -15,7 +15,7 @@ Stop and look at what you can actually do now. You can stand up a Flask app, rou
 
 Here's the quietly bigger win: because Flask's core is so small, you didn't just learn a framework — you saw what a framework *is*. A router mapping URLs to functions, a request coming in, a response going out, templates for HTML, everything else bolted on as an extension you chose. Nothing was hidden behind a wall of conventions.
 
-So this last phase isn't more decorators. It's the map: the extensions you'll reach for next, an honest word about async, where Flask sits among the other Python frameworks, and one concrete thing to go build.
+This last phase isn't more decorators — it's the map: the extensions you'll reach for next, an honest word about async, where Flask sits among the other Python frameworks, and one concrete thing to go build.
 
 ## The extension landscape
 

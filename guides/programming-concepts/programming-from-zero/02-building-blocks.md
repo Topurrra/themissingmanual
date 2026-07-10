@@ -6,19 +6,17 @@ summary: "Variables are named boxes that hold values; values come in types (numb
 tags: [programming, beginner, python, variables, types, operators, strings, booleans]
 difficulty: beginner
 synonyms: ["what is a variable", "what are data types", "difference between = and == in python", "what is a string", "what is a boolean", "python operators explained", "assign vs compare"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Building Blocks: Variables, Types & Operators
 
-In [Phase 1](01-what-a-program-is.md) you handed a fixed piece of text straight to `print`. But real
-programs work with values that change - a username, a price, a score, an answer the program calculated a
-moment ago. To do that, the program needs a way to *hold onto* a value and refer to it later. That's
-what this phase is about.
+In [Phase 1](01-what-a-program-is.md) you handed a fixed piece of text straight to `print`. Real
+programs work with values that change - a username, a price, a score, an answer calculated a moment
+ago - so the program needs a way to *hold onto* a value and refer to it later.
 
-There are three small ideas here, and you'll use all three in nearly every program you ever write:
-**variables** (where values live), **types** (what kind of value it is), and **operators** (how you
-combine values). Let's take them one at a time.
+Three small ideas cover it, and you'll use all three in nearly every program you write: **variables**
+(where values live), **types** (what kind of value it is), and **operators** (how you combine values).
 
 ## Variables: named boxes for values
 
@@ -46,8 +44,8 @@ locking in now:
 
 Quotes mean "this exact text." No quotes mean "the value stored under this name."
 
-**Variables can change.** That's why they're called *variable* - the value can vary. You can put a new
-value in the box, and it replaces the old one:
+**Variables can change** - that's why they're called *variable*. Put a new value in the box and it
+replaces the old one:
 
 ```python runnable
 score = 0
@@ -63,20 +61,19 @@ replacing the `0`, and printed again. The box's name stayed the same; its conten
 100
 ```
 
-📝 **Terminology.** Putting a value into a variable is called **assignment**, and the `=` sign is the
-**assignment operator**. Read `score = 100` as "set `score` to `100`" or "let `score` be `100`" - *not*
-as "score equals 100" in the math sense. This wording matters, and we'll see exactly why at the end of
-this phase.
+📝 **Terminology.** Putting a value into a variable is called **assignment**, and `=` is the
+**assignment operator**. Read `score = 100` as "set `score` to `100`," *not* as "score equals 100" in
+the math sense - the difference matters, and you'll see exactly why at the end of this phase.
 
-💡 **Key point.** A variable is just a name pointing at a value. Whenever you see a bare word in code
-that isn't in quotes and isn't a known instruction, it's almost always a variable - a label on a box,
-and the real question is "what's currently inside it?"
+💡 **Key point.** A variable is just a name pointing at a value. Any bare word in code that isn't in
+quotes and isn't a known instruction is almost always a variable - the real question is always "what's
+currently inside it?"
 
 ## Types: what kind of value it is
 
 Every value has a **type** - a category that tells the computer what the value *is* and what you're
-allowed to do with it. You don't have to declare types in Python; the value's appearance decides its
-type. Three types cover the vast majority of what a beginner does:
+allowed to do with it. You don't declare types in Python; the value's appearance decides its type.
+Three types cover most of what a beginner does:
 
 ```text
    TYPE        WHAT IT IS                  EXAMPLES
@@ -91,10 +88,9 @@ type. Three types cover the vast majority of what a beginner does:
                (bool for short)             (is it on? did it pass?)
 ```
 
-📝 **Terminology.** A **string** is the programming word for "a piece of text" - a *string* of
-characters. It's always written inside quotes. A **boolean** (named after logician George Boole) is a
-value that is either `True` or `False`, nothing else. In Python, `True` and `False` are capitalized and
-written without quotes - they're special values, not text.
+📝 **Terminology.** A **string** is the programming word for "a piece of text" - always written inside
+quotes. A **boolean** (named after logician George Boole) is a value that is either `True` or `False`,
+nothing else. In Python they're capitalized and written without quotes - special values, not text.
 
 Here's each type living in a variable:
 
@@ -115,8 +111,8 @@ Ada
 True
 ```
 
-**Why the type matters: `"30"` is not `30`.** This is the part that surprises people. A number in quotes
-is text, and the computer treats text and numbers differently:
+**Why the type matters: `"30"` is not `30`.** A number in quotes is text, and the computer treats text
+and numbers differently:
 
 ```python runnable
 print(2 + 2)
@@ -131,21 +127,21 @@ adding. You get the text `"22"`:
 22
 ```
 
-The `+` symbol did two completely different jobs depending on the *type* of the values around it. That's
-why type is not a fussy detail - it changes what your instructions actually do. (Gluing strings together
-with `+` is common and useful; it's called **concatenation**.)
+The `+` symbol did two completely different jobs depending on the *type* of the values around it - type
+is not a fussy detail, it changes what your instructions actually do. (Gluing strings together with `+`
+is common and useful; it's called **concatenation**.)
 
 ⚠️ **Gotcha: a number typed by a user usually arrives as a string.** When a program reads input from a
-person, it comes in as text, even if the person typed digits. Trying to do math on it without converting
-it to a number first is one of the most common beginner stumbles - `"5" + "3"` gives `"53"`, not `8`.
-You convert text to a number with `int("5")` (whole number) or `float("5.0")` (decimal). Just know the
-trap exists for now; you'll meet conversions properly when you start reading real input.
+person, it comes in as text, even if the person typed digits. Doing math on it without converting first
+is one of the most common beginner stumbles - `"5" + "3"` gives `"53"`, not `8`. Convert with `int("5")`
+(whole number) or `float("5.0")` (decimal). Just know the trap exists for now; you'll meet conversions
+properly when you start reading real input.
 
 ## Operators: doing things with values
 
-**What an operator actually is.** An operator is a symbol that takes one or two values and produces a new
-value. You already met two: `=` (assign a value to a variable) and `+` (add numbers, or glue strings).
-There are two families you'll use constantly.
+**What an operator actually is.** An operator is a symbol that takes one or two values and produces a
+new value. You've already met two: `=` (assign) and `+` (add numbers, or glue strings). Two families
+you'll use constantly:
 
 ### Math operators
 
@@ -167,11 +163,11 @@ Each produces a new number, which we print:
 3.3333333333333335
 ```
 
-That long decimal on the last line is real, not a typo - `/` always gives a decimal result, and 10
-divided by 3 genuinely doesn't end. The computer shows as many digits as it stores. (Don't worry about
-why it stops where it does; it's a normal quirk of how computers hold decimals.)
+That long decimal is real, not a typo - `/` always gives a decimal result, and 10 divided by 3 genuinely
+doesn't end. The computer shows as many digits as it stores. (Don't worry about why it stops where it
+does; it's a normal quirk of how computers hold decimals.)
 
-You can use operators with variables, not only with literal numbers. This is where they earn their keep:
+Operators work on variables too, not just literal numbers - this is where they earn their keep:
 
 ```python runnable
 price = 20
@@ -187,14 +183,13 @@ multiplied them to get `60`, and stored that result in a new box called `total`.
 ```
 
 Read `total = price * quantity` right to left: *first* the computer works out the value on the right
-(`price * quantity`), *then* it puts that result into the box on the left (`total`). The right side is
-calculated, the left side is the destination. That order - right side first, then assign - holds for
-every assignment you'll ever write.
+(`price * quantity`), *then* puts that result into the box on the left (`total`). Right side computed
+first, then assigned to the left - that order holds for every assignment you'll ever write.
 
 ### Comparison operators
 
-These compare two values and produce a **boolean** - `True` or `False`. They're how a program asks
-questions about its values (and in [Phase 3](03-control-flow-and-functions.md), how it makes decisions):
+These compare two values and produce a **boolean** - `True` or `False`. This is how a program asks
+questions about its values (and, in [Phase 3](03-control-flow-and-functions.md), makes decisions):
 
 ```text
    ==   equal to?                  5 == 5   →  True
@@ -220,8 +215,8 @@ True
 False
 ```
 
-A comparison doesn't change anything - it just answers a question with `True` or `False`. That answer is
-the raw material for every decision a program makes.
+A comparison changes nothing - it just answers a question with `True` or `False`, which is the raw
+material for every decision a program makes.
 
 ## The gotcha that confuses everybody: `=` vs `==`
 
@@ -232,14 +227,13 @@ single most common beginner mistake.** Hold these two side by side:
 x = 5        # ASSIGN: put the value 5 into the box named x
 x == 5       # COMPARE: ask "is what's in x equal to 5?" → produces True
 ```
-*What just happened:* The first line is an instruction that *does* something - it sets `x` to `5`,
-silently, printing nothing. The second line *asks* something - it checks whether `x` equals `5` and
-produces the boolean `True` (it doesn't print on its own; we'd wrap it in `print` to see it).
+*What just happened:* The first line *does* something - it sets `x` to `5`, silently, printing nothing.
+The second line *asks* something - it checks whether `x` equals `5` and produces the boolean `True` (it
+doesn't print on its own; you'd wrap it in `print` to see it).
 
-The reason this trips everyone up is that in math class, `=` means "is equal to." In programming, plain
-`=` does **not** mean that - it means "make this so." To *ask* whether two things are equal, you need the
-doubled `==`. Whenever you mean to check equality, reach for two equals signs. When you mean to store a
-value, use one.
+This trips everyone up because in math class, `=` means "is equal to." In programming, plain `=` does
+**not** mean that - it means "make this so." To *ask* whether two things are equal, you need the doubled
+`==`. Reach for two equals signs to check equality, one to store a value.
 
 🪖 **War story.** Nearly every programmer alive has written `if x = 5` (one equals) when they meant
 `if x == 5` (two), then stared at the resulting error or wrong behavior in total confusion. You will do
@@ -251,9 +245,9 @@ needed two? It's such a reliable culprit that it's worth making it your reflex.
 Variables, types, and operators are the nouns and verbs of programming. Every program - the simplest
 script and the largest app you'll ever see - is built from values held in variables, of some type, being
 combined and compared with operators. When you read unfamiliar code, you're mostly tracing values
-through boxes. And when a program gives a wrong answer, the cause is almost always one of these three:
-the wrong value in a box, a value of the wrong type (`"30"` where you needed `30`), or the wrong operator
-(`=` where you meant `==`). Knowing the building blocks means knowing where to look.
+through boxes. When a program gives a wrong answer, the cause is almost always one of these three: the
+wrong value in a box, a value of the wrong type (`"30"` where you needed `30`), or the wrong operator
+(`=` where you meant `==`).
 
 ## Recap
 

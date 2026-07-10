@@ -9,7 +9,7 @@ order: 30
 group: "C#"
 difficulty: advanced
 synonyms: ["kestrel web server", "aspnet core middleware pipeline", "request delegate", "aspnet core host builder", "endpoint routing", "how aspnet core works", "aspnet core internals", "use run map middleware"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The ASP.NET Pipeline & Kestrel

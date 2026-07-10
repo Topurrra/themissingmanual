@@ -6,14 +6,14 @@ summary: "Save a trained model's state_dict, recreate the architecture and load 
 tags: [pytorch, save-model, state-dict, inference, eval-mode, no-grad, deployment]
 difficulty: intermediate
 synonyms: ["pytorch save load model", "pytorch state_dict", "pytorch inference", "pytorch eval mode no_grad", "pytorch deploy model", "pytorch torch.save", "pytorch load_state_dict"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Saving, Loading & Inference
 
 In [Phase 8](08-training-a-classifier.md) you trained a real classifier — you watched the loss fall, the
-accuracy climb, and ended up with a model that actually works. Then your Python process exits, and all of
-that is gone. The weights lived in RAM; closing the program threw them away.
+accuracy climb, and ended up with a model that actually works. Then your Python process exits, and it's
+all gone. The weights lived in RAM; closing the program threw them away.
 
 So here's the mental model for this whole phase, and it's the one that makes everything else fall into
 place: **the value of training isn't the running program — it's the numbers it produced.** A trained model

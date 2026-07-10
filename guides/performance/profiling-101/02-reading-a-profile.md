@@ -6,14 +6,14 @@ summary: "A profile ranks functions by time. The key distinction is self time (s
 tags: [profiling, flame-graph, self-time, cumulative-time, call-count, hot-function]
 difficulty: intermediate
 synonyms: ["how to read a profiler output", "what is a flame graph", "self vs cumulative time", "what is a hot function", "what does width mean in a flame graph", "how to read a profile", "total vs self time profiler"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Reading a Profile
 
 You ran the profiler. Now you're staring at a table of function names and numbers, or a multicolored diagram that looks like a city skyline turned upside down, and it's not obvious what any of it is telling you. This is the moment a lot of people quietly close the tool and go back to guessing.
 
-Don't. A profile is built around a handful of ideas, and once you have them, reading one is fast. This phase gives you those ideas - hot functions, the all-important difference between *self* and *cumulative* time, call counts - and then teaches you the flame graph, which is the same information drawn as a picture. The numbers below are illustrative (a made-up program), but the shape and the column meanings are exactly what real tools show.
+Don't. A profile is built around a handful of ideas, and once you have them, reading one is fast: hot functions, the all-important self-vs-cumulative distinction, call counts, and the flame graph - the same information drawn as a picture. The numbers below are illustrative (a made-up program), but the column meanings are exactly what real tools show.
 
 ## The flat profile: a ranked list of functions
 
@@ -53,9 +53,9 @@ flowchart LR
   B -->|calls| C["resize_pixel<br/>self 4.2s · the worker"]
 ```
 
-**Why this trips everyone up.** Look at `process_all` in the table: its **cumulative** time is 5.98 seconds - nearly the whole program. If you sort by cumulative time, `process_all` looks like the villain. But its *self* time is only 0.9 seconds. It's not slow; it just *contains* the slow thing. Rewriting `process_all` would do almost nothing. The actual culprit is `resize_pixel`, with high *self* time - that's where the CPU is genuinely spending cycles.
+**Why this trips everyone up.** Look at `process_all` in the table: its **cumulative** time is 5.98 seconds - nearly the whole program. Sort by cumulative time and `process_all` looks like the villain. But its *self* time is only 0.9 seconds - it's not slow, it just *contains* the slow thing. Rewriting `process_all` would do almost nothing. The actual culprit is `resize_pixel`, with high *self* time - that's where the CPU is genuinely spending cycles.
 
-💡 **Key point.** **High cumulative, low self = a manager, not a worker.** It's slow only because something it calls is slow; chase *that*. **High self time = the actual worker** doing the expensive thing - that's what you optimize. When you open a profile, the question is always "what has high *self* time?" That's the bottleneck. Cumulative time tells you *who called it*, which is useful for understanding the path, but self time tells you *what to fix*.
+💡 **Key point.** **High cumulative, low self = a manager, not a worker.** It's slow only because something it calls is slow; chase *that*. **High self time = the actual worker** doing the expensive thing - that's what you optimize. When you open a profile, the question is always "what has high *self* time?" That's the bottleneck. Cumulative time tells you *who called it*; self time tells you *what to fix*.
 
 ⚠️ **Gotcha.** Top-level and framework functions (`main`, `process_all`, an event loop, a web framework's request handler) almost always have huge cumulative times - they sit at the top of the call chain, so by definition everything happens "inside" them. That is not a finding. Don't celebrate discovering that `main` accounts for 100% of the runtime. Sort by *self* time to cut past the managers and find the worker.
 
@@ -63,7 +63,7 @@ flowchart LR
 
 **What it actually is.** The `ncalls` column is how many times each function ran. On its own it's just a number, but paired with time it tells a story you can't get otherwise: **a cheap function called a staggering number of times is a bottleneck in disguise.**
 
-**What it does in real life.** Look back at `resize_pixel`: `percall` is `0.000` seconds - each individual call is so fast it rounds to zero. In isolation you'd swear it was free. But `ncalls` is 50,000, and 50,000 times "basically free" is 4.2 seconds. The expense isn't in any one call; it's in the multiplication. This is why call count matters: it reveals the loops and the per-row work that no single profile-time number flags as suspicious.
+**What it does in real life.** Look back at `resize_pixel`: `percall` is `0.000` seconds - each individual call is so fast it rounds to zero. In isolation you'd swear it was free. But `ncalls` is 50,000, and 50,000 times "basically free" is 4.2 seconds. The expense isn't in any one call; it's in the multiplication. It reveals the loops and per-row work that no single time number flags as suspicious.
 
 **Why this saves you later.** When you see a hot function with a huge call count, your fix often isn't "make the function faster" - it's "**call it fewer times.**" Move work out of the loop, batch it, cache the result, compute it once instead of per-row. A function called 50,000 times that you can get down to 1 call is a far bigger win than shaving 10% off each call. Call count points you at *that* kind of fix.
 
@@ -90,7 +90,7 @@ The table is precise but hard to feel. A **flame graph** is the same information
    Your eye should go straight to the widest box. That's where the time is.
 ```
 
-**How to actually read one.** Don't try to absorb the whole thing. Let your eye fall to the **widest box** - scan left to right for the longest horizontal run. That box is your bottleneck. Then read *upward* from it to see what it calls, and *downward* to see what called it (the path that led there). Narrow towers, however tall, are cheap; ignore them. A flame graph is designed so the answer is literally the widest thing on screen.
+**How to actually read one.** Don't try to absorb the whole thing. Let your eye fall to the **widest box** - scan left to right for the longest horizontal run. That's your bottleneck. Read *upward* from it to see what it calls, and *downward* to see what called it. Narrow towers, however tall, are cheap; ignore them.
 
 💡 **Key point.** A flame graph and a flat profile say the same thing. The widest box in the flame graph is the function with the highest *cumulative* time; to find the **self**-time hot spot, look for a wide box with no wide box *stacked on top of it* - meaning it's spending that width on its own code, not passing it down. That "wide box with nothing wide above it" is the worker you want to fix.
 

@@ -6,14 +6,14 @@ summary: "How two strangers agree on a shared secret over an open wire: slow asy
 tags: [security, tls, handshake, asymmetric, symmetric, public-key, encryption, keys]
 difficulty: intermediate
 synonyms: ["how does the tls handshake work", "what is asymmetric encryption", "public key vs private key", "how do https keys work", "why use both symmetric and asymmetric encryption", "how do two computers agree on a secret"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Handshake & Keys
 
-Here's a puzzle that sounds impossible. Two computers that have never met, talking over a wire that anyone can listen to, need to agree on a secret password so they can scramble their conversation. But anything one sends, the eavesdropper hears too. So how do they whisper a secret in a crowded room where every word is shouted aloud?
+Here's a puzzle that sounds impossible. Two computers that have never met, talking over a wire that anyone can listen to, need to agree on a secret password so they can scramble their conversation. But anything one sends, the eavesdropper hears too - so how do they whisper a secret in a crowded room where every word is shouted aloud?
 
-The answer is one of the genuinely clever ideas in computing, and once it clicks, the rest of TLS makes sense. This phase walks through it slowly. No math required - just the shapes of the ideas.
+The answer is one of the genuinely clever ideas in computing, and once it clicks, the rest of TLS makes sense. No math required - just the shapes of the ideas.
 
 ## Two kinds of locks
 

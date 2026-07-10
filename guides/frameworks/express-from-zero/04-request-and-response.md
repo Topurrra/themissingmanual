@@ -6,18 +6,18 @@ summary: "Read input from req (params, query, body, headers), write output with 
 tags: [express, javascript, request, response, validation]
 difficulty: intermediate
 synonyms: ["express req body", "express res json status", "express request object", "express response object", "express validation", "express body parsing"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Request & Response
 
-Here's the whole job of a route handler, stripped of ceremony: **it reads from `req` and writes
-through `res`.** Input comes in on the request object — the URL's params, the query string, the parsed
-body, the headers. You do something with that input. Then you reach for the response object and send
-exactly one answer back: a status code and usually some JSON.
+The whole job of a route handler, stripped of ceremony: **it reads from `req` and writes through
+`res`.** Input arrives on the request object — URL params, query string, parsed body, headers. You do
+something with it, then reach for the response object and send exactly one answer back: a status code
+and usually some JSON.
 
-That's the mental model for this entire phase. A handler is a small machine with one input port (`req`)
-and one output port (`res`). Everything Express gives you here is just more knobs on those two ports.
+A handler is a small machine with one input port (`req`) and one output port (`res`). Everything in
+this phase is just more knobs on those two ports.
 
 > 📝 One thing that trips up everyone once: `req.body` does **not** exist by default. It only gets
 > populated if a body-parsing middleware ran first — `express.json()` from [Phase 3: Middleware](03-middleware.md).
@@ -48,13 +48,12 @@ app.post('/tasks/:id', (req, res) => {
 app.listen(3000, () => console.log('http://localhost:3000'));
 ```
 
-*What just happened:* The same request handed us input through four doors. `req.params` holds the
-named pieces of the route pattern (`:id` became `'42'`). `req.query` holds everything after the `?` in
-the URL. `req.body` holds the parsed request body — **but only because `express.json()` ran first**.
-`req.headers` is the raw header object, and `req.get('Authorization')` is the case-insensitive,
-read-one-header convenience version. Notice `req.params.id` is the string `'42'`, not the number `42` —
-the URL is text, so everything from `params` and `query` arrives as strings. Convert when you need a
-number.
+*What just happened:* the same request handed us input through four doors. `req.params` holds the
+named pieces of the route pattern (`:id` became `'42'`). `req.query` holds everything after the `?`.
+`req.body` holds the parsed body — **but only because `express.json()` ran first**. `req.headers` is
+the raw header object; `req.get('Authorization')` is the case-insensitive, one-header shortcut. Note
+`req.params.id` is the string `'42'`, not the number `42` — everything from `params` and `query` is
+text. Convert when you need a number.
 
 > ⚠️ If you forget `app.use(express.json())` and then read `req.body`, you won't get an error — you'll
 > get `undefined`. That silent `undefined` is the single most common "why is my POST broken" moment in
@@ -83,12 +82,11 @@ app.delete('/tasks/:id', (req, res) => {
 });
 ```
 
-*What just happened:* `res.json(obj)` serializes an object to JSON and sets the `Content-Type` header
-for you — it's the workhorse. `res.status(code)` sets the status code and **returns `res`**, which is
-why you can chain it: `res.status(201).json(task)` reads almost like a sentence. `res.sendStatus(204)`
-is the shorthand for "send this status with an empty body" — perfect for a successful delete where there's
-nothing to return. A few more you'll meet: `res.set('X-Foo', 'bar')` sets a custom header, `res.send(...)`
-sends text/HTML/buffers, and `res.redirect(url)` sends a redirect.
+*What just happened:* `res.json(obj)` serializes an object to JSON and sets `Content-Type` for you —
+the workhorse. `res.status(code)` sets the status code and **returns `res`**, so you can chain it:
+`res.status(201).json(task)`. `res.sendStatus(204)` sends a status with an empty body — perfect for a
+successful delete. A few more you'll meet: `res.set('X-Foo', 'bar')` for a custom header, `res.send(...)`
+for text/HTML/buffers, `res.redirect(url)` for a redirect.
 
 > ⚠️ **Send exactly one response per request.** Each `req`/`res` pair gets one reply, and once you've
 > sent it the headers are flushed. Call `res.json()` (or any send) a second time and Express throws
@@ -144,18 +142,15 @@ app.post('/tasks', (req, res) => {
 });
 ```
 
-*What just happened:* Before we trusted `title` for anything, we checked it. We pulled it out of
-`req.body` (defaulting to `{}` so we don't crash if the body parser produced nothing), confirmed it's a
-non-empty string, and if not, we `return`ed a `400` with a message that tells the caller exactly what's
-wrong. Only past that guard do we build the task — by then `title` is known-good. The early `return` is
-doing double duty: it sends one response and it stops the handler, so we never fall through to the
-`201`.
+*What just happened:* before trusting `title` for anything, we checked it — pulled it from `req.body`
+(defaulting to `{}` so a missing body doesn't crash us), confirmed it's a non-empty string, and
+`return`ed a `400` with a specific message if not. Only past that guard do we build the task. The early
+`return` does double duty: it sends one response and stops the handler.
 
-For one or two fields, a hand-written guard like this is honest and readable. As the rules grow
-(optional fields, types, lengths, nested objects), they get noisy, and that's when you reach for a
-library: **[express-validator](https://express-validator.github.io/)** layers validation onto the
-request, or a schema library like **zod** or **joi** lets you declare the shape once and validate
-against it. Same principle, less repetition.
+For one or two fields, a hand-written guard is honest and readable. As rules grow (optional fields,
+types, lengths, nested objects), reach for a library: **[express-validator](https://express-validator.github.io/)**
+layers validation onto the request, or a schema library like **zod** or **joi** lets you declare the
+shape once and validate against it.
 
 > ⚠️ The rule never bends: **never trust client input.** Validate before you read it, save it, or pass
 > it anywhere. Anyone can send any bytes to your endpoint — assume someone will.

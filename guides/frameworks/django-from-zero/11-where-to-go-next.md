@@ -6,12 +6,12 @@ summary: "You can build a database-backed, admin-managed, authenticated Django a
 tags: [django, production, deployment, gunicorn, static-files, security-checklist, what-to-build]
 difficulty: beginner
 synonyms: ["django production deployment", "django gunicorn whitenoise", "django collectstatic static files", "django security checklist deploy", "django celery channels", "django next steps", "django vs fastapi when"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Production & Where to Go Next
 
-Stop for a second and look at the pile of things you can do now. You can lay out a Django project and its apps, route a URL to a view, model your data and migrate it into real tables, query that data through the ORM without writing SQL, manage it all through the famous auto-generated admin, render it with templates, accept and validate user input through forms with CSRF protection baked in, dodge the N+1 trap, log people in with the built-in auth system, and stand up a clean API on top of it with class-based views and Django REST Framework. And you can prove the whole thing works with Django's test framework.
+Stop and look at the pile of things you can do now. Lay out a Django project and its apps, route a URL to a view, model your data and migrate it into real tables, query that data through the ORM without writing SQL, manage it all through the famous auto-generated admin, render it with templates, accept and validate user input through forms with CSRF protection baked in, dodge the N+1 trap, log people in with the built-in auth system, and stand up a clean API on top with class-based views and Django REST Framework. And you can prove the whole thing works with Django's test framework.
 
 That's not a toy. That's a real, database-backed, authenticated web application — and the reason it's *yours* is that you understand the **MTV structure** holding it together. Every "magic" thing Django did — the admin appearing, auth "just working," migrations writing themselves — fell out of one idea: your **models drive everything**, and conventions fill in the rest.
 
@@ -30,7 +30,7 @@ gunicorn myproject.wsgi:application --workers 4 --bind 0.0.0.0:8000
 
 ⚠️ You don't expose gunicorn straight to the world. In front of it goes a **reverse proxy** like **nginx**, which handles TLS, buffers slow clients, serves files efficiently, and forwards the rest to your workers.
 
-That brings us to the thing that trips up *every* first Django deploy: **static files**. In development, `runserver` quietly serves your CSS, JS, and images for you. In production it does not — Django is not a file server. You have to gather every static file into one place and let something else serve it:
+That brings us to the thing that trips up *every* first Django deploy: **static files**. In development, `runserver` quietly serves your CSS, JS, and images for you. In production it does not — Django is not a file server. Gather every static file into one place and let something else serve it:
 
 ```bash
 # Collect CSS/JS/images from every app into STATIC_ROOT:
@@ -84,11 +84,11 @@ Django is a sharp tool for a particular shape of problem. Knowing when *not* to 
 - **[FastAPI](/guides/fastapi-from-zero)** when you want a **lean, async API** and you're happy to assemble the rest yourself.
 - **Flask** when the job is genuinely **tiny** — a small service or a quick prototype where Django's machinery is more than you need.
 
-As for what to build: take the **blog** you've grown across this whole guide and carry it all the way home. Add real authentication, lean on the admin to manage content, expose a **DRF API** over the posts, write a **test suite** that covers the important paths — then **deploy it** with `DEBUG = False`, `collectstatic` run, and `check --deploy` clean. That one project exercises nearly everything you learned here.
+As for what to build: take the **blog** you've grown across this whole guide and carry it all the way home. Add real authentication, lean on the admin to manage content, expose a **DRF API** over the posts, write a **test suite** that covers the important paths — then **deploy it** with `DEBUG = False`, `collectstatic` run, and `check --deploy` clean.
 
-When you want the canonical reference, the **official Django documentation and tutorial** are genuinely excellent — thorough, example-driven, and maintained by the people who build the framework. Bookmark them and reach for them often.
+When you want the canonical reference, the **official Django documentation and tutorial** are genuinely excellent — thorough, example-driven, and maintained by the people who build the framework.
 
-And remember the through-line: batteries-included was never magic. The admin, the auth, the migrations, the "it just appears" — every one of those came from the **model-driven conventions** you now understand from the inside. You can read what's underneath, build a real app on top, and reason about it when it breaks. Go finish the blog, ship it, and send someone the link. You're ready.
+And remember the through-line: batteries-included was never magic. The admin, the auth, the migrations, the "it just appears" — every one of those came from the **model-driven conventions** you now understand from the inside. Go finish the blog, ship it, and send someone the link. You're ready.
 
 ## Recap
 

@@ -6,7 +6,7 @@ summary: "How many instances the container makes and how long they live: singlet
 tags: [spring, bean-scope, singleton, prototype, lifecycle, postconstruct, beanpostprocessor, lazy]
 difficulty: advanced
 synonyms: ["spring bean scopes singleton prototype", "spring bean lifecycle", "spring @PostConstruct @PreDestroy", "spring beanpostprocessor", "spring @Lazy", "spring singleton thread safety", "spring prototype scope gotcha"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Bean Scopes & Lifecycle
@@ -17,10 +17,9 @@ does each one live?** Those are the two dials Spring gives you — *scope* (how 
 (birth to death) — and almost every confusing Spring behavior, from "why is my data leaking between
 requests" to "why does `@Transactional` even work," traces back to one of them.
 
-Here's the mental model to carry through: **a bean isn't an object you made once — it's an object the
-container keeps on a schedule it controls.** The container decides how many to build and when to build,
-initialize, hand out, and tear down each one. Scope is the "how many" rule; lifecycle is the "when"
-timeline. Get those two straight and the rest of this phase is detail.
+**A bean isn't an object you made once — it's an object the container keeps on a schedule it controls.**
+The container decides how many to build and when to build, initialize, hand out, and tear down each one.
+Scope is the "how many" rule; lifecycle is the "when" timeline.
 
 ## Scopes: how many instances exist
 
@@ -260,11 +259,9 @@ bean, the container stores the wrapper — and everyone who injects that bean ge
 wiser.
 
 💡 That return-a-wrapper trick is **exactly how Spring implements proxies.** When you put
-`@Transactional` on a method, a `BeanPostProcessor` spots it at step 6 and returns a **proxy** that
-opens a transaction, calls your real method, then commits — in place of your bean. Same mechanism powers
-`@Async`, caching, security, and the AOP you'll meet next phase. And the "ordinary" magic runs the same
-way: another post-processor is what resolves `@Value` and `@Autowired` by filling those fields at the
-right lifecycle moment.
+`@Transactional` on a method, a `BeanPostProcessor` spots it at step 6 and returns a **proxy** that opens
+a transaction, calls your real method, then commits — in place of your bean. Same mechanism powers
+`@Async`, caching, security, and the AOP you'll meet next phase.
 
 So the big realization: **the "magic" annotations aren't magic — they're `BeanPostProcessor`s doing
 work at a precise point in the lifecycle.** You now know *where* every annotation plugs in: the container

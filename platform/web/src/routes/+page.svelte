@@ -123,6 +123,19 @@
     bookmarks = bookmarks.filter((b) => b.key !== k);
   }
 
+  /* ASCII animation */
+  let asciiEl;
+  const asciiText = "Actually";
+  let asciiIdx = 0;
+
+  function animateAscii() {
+    if (asciiIdx < asciiText.length) {
+      asciiEl.textContent += asciiText[asciiIdx];
+      asciiIdx++;
+      setTimeout(animateAscii, 180);
+    }
+  }
+
   onMount(() => {
     try {
       const cfg = JSON.parse(localStorage.getItem("tmm-path-config") || "null");
@@ -144,6 +157,13 @@
       dueCount = countDue(allCards(), loadState());
     } catch (e) {}
     loadBookmarks();
+    /* start ASCII animation after DOM is ready */
+    asciiEl.classList.remove("done"); // show cursor
+    asciiEl.textContent = "";         // empty text
+    asciiIdx = 0;
+    setTimeout(() => {
+      animateAscii();
+    }, 1000);
   });
 </script>
 
@@ -155,7 +175,12 @@
 />
 
 <section class="hero">
-  <h1>Understand how software <span class="accent">actually</span> works.</h1>
+  <h1>
+    Understand how software <span
+      bind:this={asciiEl}
+      class="accent ascii-accent"
+    ></span>works.
+  </h1>
   <p class="tagline">
     Clear, in-depth guides to everything from how a computer boots up to how the
     internet, databases, and AI really work. Start from zero or go deep at your
@@ -217,9 +242,11 @@
     </a>
   {/if}
   <a class="home-train" href="/practice">
-    <span class="ht-icon"><i class="ti ti-keyboard" aria-hidden="true"></i></span>
+    <span class="ht-icon"
+      ><i class="ti ti-keyboard" aria-hidden="true"></i></span
+    >
     <span class="ht-text">
-      <span class="ht-title">Practice</span>
+      <span class="ht-title">Learn By Doing</span>
     </span>
     <span class="ht-go" aria-hidden="true">→</span>
   </a>
@@ -230,7 +257,7 @@
     </span>
     <span class="ht-go" aria-hidden="true">→</span>
   </a>
-  <a class="home-train" href="/guides/git-from-zero/1?tutor=1">
+  <!-- <a class="home-train" href="/guides/git-from-zero/1?tutor=1">
     <span class="ht-icon"
       ><i class="ti ti-message-chatbot" aria-hidden="true"></i></span
     >
@@ -238,7 +265,7 @@
       <span class="ht-title">Ask the AI tutor</span>
     </span>
     <span class="ht-go" aria-hidden="true">→</span>
-  </a>
+  </a> -->
 </div>
 
 <h2 class="section-eyebrow" id="topics">Browse by topic</h2>
@@ -289,6 +316,31 @@
 {/if}
 
 <style>
+  .ascii-accent {
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    white-space: pre-wrap;
+    letter-spacing: 0.03em;
+    font-variant-ligatures: none;
+    position: relative;
+    /* display: inline-block; */
+  }
+
+  .ascii-accent::after {
+    content: "|"; /* █, ▌, ▋, | */
+    font-weight: 700;
+    animation: ascii-blink 0.6s steps(1) infinite;
+  }
+
+  .ascii-accent.done::after {
+    content: "";
+  }
+
+  @keyframes ascii-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
   .home-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

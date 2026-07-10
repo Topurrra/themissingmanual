@@ -8,7 +8,7 @@ category: programming-concepts
 difficulty: intermediate
 synonyms: ["oop vs functional programming", "what is object oriented programming", "what is functional programming", "should i use oop or functional", "difference between oop and functional", "object oriented vs functional honestly"]
 order: 8
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Object-Oriented vs Functional, Honestly
@@ -17,7 +17,7 @@ You've seen the arguments. One person swears object-oriented programming is bloa
 
 Here's the calm version of the truth: **these are two ways of organizing code, not two warring religions.** Object-oriented programming (OOP) bundles data together with the behavior that acts on it. Functional programming (FP) treats functions as the main building block and avoids changing data in place. Each solves a real problem. Most languages you already use - Python, JavaScript, C#, Scala - let you do both, and most real codebases mix them.
 
-This guide gives you the working mental model for each, with small annotated examples, and then an honest comparison of where each one actually shines. No dogma, no winner declared. By the end you'll be able to read code in either style and make a deliberate choice instead of an inherited one.
+This guide gives you the working mental model for each, with small annotated examples, then an honest comparison of where each one actually shines. No dogma, no winner declared. By the end you'll read code in either style and make a deliberate choice instead of an inherited one.
 
 ## How to read this
 

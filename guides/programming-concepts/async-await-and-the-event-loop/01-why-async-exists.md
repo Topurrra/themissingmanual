@@ -6,7 +6,7 @@ summary: "A huge fraction of programming is waiting - on the network, the disk, 
 tags: [async, blocking, non-blocking, waiting, io, concurrency]
 difficulty: intermediate
 synonyms: ["why does async exist", "blocking vs non-blocking", "what is blocking code", "why is waiting slow", "what problem does async solve", "io bound vs cpu bound"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why Async Exists
@@ -33,7 +33,7 @@ Imagine a waiter - one person, one worker - taking care of several tables. A cus
 
 **The non-blocking waiter** drops the order at the kitchen and immediately walks to the next table to take *their* order. While the first dish cooks, he's seating new guests, refilling drinks, clearing plates. When the kitchen rings the bell - "table 4 is ready!" - he picks up the dish and delivers it. The cooking still takes ten minutes. But the waiter was never idle, so the whole room stays served.
 
-Notice what did *not* change: the food still takes ten minutes either way. Non-blocking doesn't make the *waiting* faster. It makes the *worker* productive during the wait. That's the entire win, and it's worth saying plainly because people expect async to speed up the slow thing. It doesn't. It stops the slow thing from freezing everything else.
+Notice what didn't change: the food still takes ten minutes either way. Non-blocking doesn't make the *waiting* faster - it makes the *worker* productive during the wait. People expect async to speed up the slow thing; it doesn't. It stops the slow thing from freezing everything else.
 
 💡 **Key point.** Async doesn't make waiting shorter. It makes waiting *non-exclusive* - one wait no longer holds up all the other work.
 
@@ -65,7 +65,7 @@ gantt
   fetch notif   :0, 100
 ```
 
-*What's happening:* In the blocking version, the three 100 ms waits happen back-to-back because the worker refuses to start the second wait until the first is fully done. In the non-blocking version, the worker kicks off all three waits up front, then collects the results as they come in - so the waits *overlap* instead of stacking. Same network, same per-request time, roughly a third of the wall-clock time. (These are illustrative round numbers to show the shape, not a measured benchmark.)
+*What's happening:* Blocking waits stack back-to-back because the worker won't start the second wait until the first finishes. Non-blocking kicks off all three waits up front and collects results as they arrive, so the waits *overlap* instead of stacking - same network, same per-request time, roughly a third of the wall-clock time. (Illustrative round numbers, not a measured benchmark.)
 
 ⚠️ **Gotcha.** This overlap only helps when the work is *waiting* (network, disk, timers - often called **I/O-bound** work). If your three tasks were each grinding the CPU at 100% - say, hashing a giant file - async wouldn't help at all, because there's no idle waiting to fill. A single worker can only *compute* one thing at a time. Async fills *waiting* time, not *computing* time. (Filling computing time means using multiple workers - threads or processes - which is a different tool; see [Processes, Memory & the CPU](/guides/processes-memory-and-cpu).)
 
@@ -80,7 +80,7 @@ $ node blocking.js
 [t=1041ms] got second response
 [t=1041ms] done
 ```
-*What just happened:* The program started, then sat frozen for ~512 ms waiting on the first request, and *only after that finished* even began the second, which took another ~529 ms. The total is the sum: the second wait could not start until the first wait was completely over. During both waits, the CPU had nothing to do - it was the blocking waiter at the kitchen window.
+*What just happened:* The program sat frozen ~512 ms waiting on the first request, then only began the second - another ~529 ms. The total is the sum: the second wait couldn't start until the first was completely over. During both waits the CPU had nothing to do - the blocking waiter at the kitchen window.
 
 Now the non-blocking version, which starts both requests before waiting on either:
 
@@ -91,7 +91,7 @@ $ node nonblocking.js
 [t=534ms] both responses arrived
 [t=534ms] done
 ```
-*What just happened:* Both requests went out at `t=0`, so their waits overlapped. The program finished in roughly the time of the *slower single request* instead of the *sum* of both. We didn't add workers or speed up the network - we stopped the first wait from blocking the second. (Times will vary with your network; the shape - overlap vs. sum - is the point.)
+*What just happened:* Both requests went out at `t=0`, so their waits overlapped. The program finished in roughly the time of the *slower single request*, not the sum of both - we didn't add workers or speed up the network, we just stopped the first wait from blocking the second. (Times vary with your network; the shape - overlap vs. sum - is the point.)
 
 **Why this saves you later.** Once you can see the difference between blocking and non-blocking on a timeline, a whole class of "why is my app so slow?" mysteries dissolves. A web server that handles one request at a time because each one blocks on the database; a UI that freezes solid while it loads data; a script that takes 30 seconds doing ten 3-second waits in a row - these are all the blocking waiter, and you'll recognize him on sight. The fix is almost always: stop standing at the kitchen window.
 

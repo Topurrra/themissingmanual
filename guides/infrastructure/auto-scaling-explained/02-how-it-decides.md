@@ -10,7 +10,7 @@ synonyms:
   - step scaling vs target tracking
   - horizontal vs vertical scaling
   - what is a cooldown period in auto scaling
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # How It Actually Decides to Scale
@@ -32,7 +32,7 @@ Auto-scaling needs a number to watch, and the number has to actually reflect str
 
 A metric alone isn't a decision — you need a line that, when crossed, actually triggers a change. This is the **threshold**: "if CPU utilization stays above 70% for a few minutes, add another server." The "stays above" part matters as much as the number itself. A single one-second CPU spike from a background task shouldn't trigger anything; sustained strain over a real window of time should.
 
-Even with a sensible threshold, there's a second problem: right after scaling up, the metric doesn't calm down instantly, because the new servers take a moment to actually start absorbing traffic (more on this in Phase 3). If the auto-scaler checks again 30 seconds later and CPU still looks high, it might decide to add *another* server on top of the one still spinning up — and then another — massively overshooting what was actually needed. The fix is a **cooldown period**: a deliberate pause after a scaling action, during which the auto-scaler doesn't make another scaling decision, giving the last change time to actually take effect before judging whether more is needed.
+Even with a sensible threshold, there's a second problem: right after scaling up, the metric doesn't calm down instantly, because new servers take a moment to start absorbing traffic (more on this in Phase 3). If the auto-scaler checks again 30 seconds later and CPU still looks high, it might add *another* server on top of the one still spinning up — and then another, overshooting what was actually needed. The fix is a **cooldown period**: a deliberate pause after a scaling action that gives the last change time to take effect before judging whether more is needed.
 
 ```mermaid
 sequenceDiagram

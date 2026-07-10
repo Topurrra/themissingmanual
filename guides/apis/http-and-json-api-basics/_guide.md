@@ -8,16 +8,16 @@ category: apis
 order: 2
 difficulty: beginner
 synonyms: ["what are http and json", "http and json explained", "what is a web api made of", "how do api calls work", "json basics for apis", "http methods and status codes for apis"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # HTTP & JSON: the API Building Blocks
 
-You keep hearing that an app "calls an API" — and somewhere a request goes out, some data comes back,
-and a screen fills with results. It can feel like magic happening behind a curtain. It isn't. Almost
-every web API you'll ever touch is built from exactly two things: **HTTP**, the way the message travels,
-and **JSON**, the way the data is written down. Learn those two, and the curtain disappears — you'll be
-able to read an API call and actually understand what's going on.
+You keep hearing that an app "calls an API" — a request goes out, some data comes back, a screen fills
+with results. It can feel like magic behind a curtain. It isn't. Almost every web API you'll ever touch
+is built from exactly two things: **HTTP**, the way the message travels, and **JSON**, the way the data
+is written down. Learn those two, and the curtain disappears — you'll be able to read an API call and
+actually understand what's going on.
 
 This guide is the calm walkthrough of those two building blocks. No framework, no SDK, no special tools —
 just `curl` in a terminal so you can see the raw request and the raw response with nothing in the way.

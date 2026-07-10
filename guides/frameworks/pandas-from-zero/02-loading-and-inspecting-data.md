@@ -6,12 +6,12 @@ summary: "How real analysis starts: read_csv (and read_excel/json/sql/parquet) t
 tags: [pandas, read-csv, dataframe, info, describe, dtypes, data-inspection]
 difficulty: beginner
 synonyms: ["pandas read_csv", "pandas load data", "pandas head info describe", "pandas dtypes shape", "pandas read excel sql", "pandas inspect dataframe", "pandas first look at data"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Loading & Inspecting Data
 
-In Phase 1 we hand-built a tiny DataFrame to learn what one *is*. Real work never starts that way. Real work starts with a file somebody emailed you, or a query result, or an export from a tool — and the very first question is always the same: *what is actually in here?*
+In Phase 1 we hand-built a tiny DataFrame to learn what one *is*. Real work starts differently — with a file somebody emailed you, or a query result, or an export from a tool — and the very first question is always the same: *what is actually in here?*
 
 Here's the mental model for this whole phase: **loading data and trusting data are two separate steps, and the gap between them is where bugs are born.** pandas will happily load almost anything and guess what it means. Sometimes it guesses wrong — a date read as text, a number read as a string, a blank cell read as the literal word "NA". So the rhythm we build here is: load the data, then *interrogate* it with a handful of inspection commands before you compute anything. Inspect first, analyze second. That habit will save you more grief than any clever one-liner.
 

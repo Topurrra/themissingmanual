@@ -6,12 +6,12 @@ summary: "How to register a function as a Celery task, send it to the worker wit
 tags: [celery, task, delay, apply-async, serialization, queue, decorator]
 difficulty: intermediate
 synonyms: ["celery @task decorator", "celery delay apply_async", "celery call task async", "celery task arguments serialization", "celery countdown eta", "celery task queue routing", "how to run a celery task"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Defining & Calling Tasks
 
-Here's the mental model to hold onto before we touch any code: **a task is a function you've agreed to run somewhere else.** You define it in your code, you call it from your web process, but the body actually executes inside a worker — a separate program, possibly on a different machine. Everything weird about Celery comes from that one fact. The function and the call live in two different worlds, and a message has to travel between them.
+Here's the mental model to hold onto before we touch any code: **a task is a function you've agreed to run somewhere else.** You define it in your code, you call it from your web process, but the body actually executes inside a worker — a separate program, possibly on a different machine. Everything weird about Celery comes from that one fact: the function and the call live in two different worlds, and a message has to travel between them.
 
 In Phase 2 you stood up a broker and a worker and watched them shake hands. Now we make them earn their keep: defining real work like `send_welcome_email(user_id)` and `generate_report(...)`, then handing it off so your web request can return without waiting.
 
@@ -33,7 +33,7 @@ def send_welcome_email(user_id):
     )
 ```
 
-*What just happened:* The `@app.task` decorator **registered** this function with your Celery app under a name (by default, the dotted path like `tasks.send_welcome_email`). Registration is the important word — Celery now knows this function exists and can look it up by name later. The body is plain Python; nothing about it is special. The catch is *where* it runs: when a task fires, this code executes **in the worker process**, not in your web process. The web side only ever sends a message saying "run the task named `send_welcome_email` with this argument."
+*What just happened:* the `@app.task` decorator **registered** this function with your Celery app under a name (by default, the dotted path like `tasks.send_welcome_email`). Registration is the important word — Celery now knows this function exists and can look it up by name later. The body is plain Python, nothing special. The catch is *where* it runs: when a task fires, this code executes **in the worker process**, not your web process. The web side only ever sends a message saying "run the task named `send_welcome_email` with this argument."
 
 💡 If you're in a project with many task modules (or a framework like Django), reach for `@shared_task` instead of `@app.task`. It registers the task without needing to import your concrete `app` object, which keeps your task files from depending on app-creation order. Same idea, fewer import headaches.
 
@@ -47,7 +47,7 @@ def generate_report(account_id, month):
     store_report(account_id, month, pdf)
 ```
 
-*What just happened:* `generate_report` is registered the same way, but it didn't have to import `app`. Whichever Celery app is active picks it up. For app-style projects this is the friendlier default, and it's why you'll see it everywhere in real codebases.
+*What just happened:* `generate_report` is registered the same way, but it didn't have to import `app` — whichever Celery app is active picks it up. For app-style projects this is the friendlier default, and it's why you'll see it everywhere in real codebases.
 
 ## Calling it: `.delay()`
 
@@ -73,7 +73,7 @@ def signup(request):
     return redirect("/welcome")  # returns instantly; email goes out later
 ```
 
-*What just happened:* The `.delay(user.id)` line returns in microseconds because all it did was push a tiny message onto the broker. The HTTP response goes back to the user immediately, and some worker sends the actual email a moment later — outside the request/response cycle entirely. The commented-out direct call would have blocked `signup` until the SMTP handshake finished, which is exactly the latency you adopted Celery to avoid. **The rule:** if you want it to run in the worker, you must use `.delay()` (or `.apply_async()`). A bare call always stays inline.
+*What just happened:* the `.delay(user.id)` line returns in microseconds because all it did was push a tiny message onto the broker. The HTTP response goes back to the user immediately, and some worker sends the actual email a moment later — outside the request/response cycle entirely. The commented-out direct call would have blocked `signup` until the SMTP handshake finished, exactly the latency you adopted Celery to avoid. **The rule:** if you want it to run in the worker, use `.delay()` (or `.apply_async()`). A bare call always stays inline.
 
 ## `.apply_async()` for options
 
@@ -98,7 +98,7 @@ generate_report.apply_async(
 )
 ```
 
-*What just happened:* The first call still enqueues immediately and returns an `AsyncResult` just like `.delay()` did — but the worker holds the message for 60 seconds (`countdown`) before executing, and the message is routed to the `reports` queue so a report-only worker can pick it up instead of competing with email tasks. The second uses `eta` to pin execution to a wall-clock time. Note the shape: positional task arguments go inside `args=[...]`, and Celery's own options sit alongside them. That separation is the whole reason `.apply_async()` exists. For the everyday case with no options, `generate_report.delay(account_id, "2026-06")` is the exact same thing, just terser.
+*What just happened:* the first call still enqueues immediately and returns an `AsyncResult` just like `.delay()` did — but the worker holds the message for 60 seconds (`countdown`) before executing, and it's routed to the `reports` queue so a report-only worker can pick it up instead of competing with email tasks. The second uses `eta` to pin execution to a wall-clock time. Note the shape: positional task arguments go inside `args=[...]`, and Celery's own options sit alongside them — the whole reason `.apply_async()` exists. For the everyday case with no options, `generate_report.delay(account_id, "2026-06")` is the exact same thing, just terser.
 
 ## Arguments must be serializable
 
@@ -117,7 +117,7 @@ This is the gotcha that bites hardest, so let's be blunt about it.
 send_welcome_email.delay(user.id)
 ```
 
-*What just happened:* Passing `user` asks Celery to cram a whole `User` object into a JSON message, which either errors outright or (with a permissive serializer) ships a frozen copy that's already drifting out of date. Passing `user.id` ships a single integer. Look back at the task body in the first example — its very first line is `User.objects.get(id=user_id)`, re-loading a **fresh** copy inside the worker, in the worker's own process, with the worker's own database connection. That's why tasks take ids: the object that exists in your web process does not exist in the worker, so you give the worker the key to go find its own.
+*What just happened:* passing `user` asks Celery to cram a whole `User` object into a JSON message, which either errors outright or (with a permissive serializer) ships a frozen copy already drifting out of date. Passing `user.id` ships a single integer. Look back at the task body in the first example — its very first line is `User.objects.get(id=user_id)`, re-loading a **fresh** copy inside the worker, with the worker's own database connection. That's why tasks take ids: the object that exists in your web process does not exist in the worker, so you give the worker the key to go find its own.
 
 ## How it travels
 
@@ -136,9 +136,9 @@ flowchart LR
   B -->|"deserialize"| C["worker<br/>runs the function"]
 ```
 
-📝 Notice what crosses the wire: a **name** and some **plain data** — never the function itself, never live objects. That's the whole reason arguments must be serializable, and the reason both sides have to agree on the task's name (which is why the worker must import the same task code your web process does).
+📝 Notice what crosses the wire: a **name** and some **plain data** — never the function itself, never live objects. That's the whole reason arguments must be serializable, and why both sides have to agree on the task's name (the worker must import the same task code your web process does).
 
-This also tells you how to *shape* a good task: keep it a **thin entry point** that does one unit of work. Take an id, load what you need, do the job. Resist stuffing five responsibilities into one task — small tasks are easier to retry, route, and reason about. And naturally the next question is "okay, the worker ran it — how do I get the result back?" That `AsyncResult` we kept brushing past is the answer, and it's exactly what Phase 4 is about.
+This also tells you how to *shape* a good task: keep it a **thin entry point** doing one unit of work. Take an id, load what you need, do the job. Resist stuffing five responsibilities into one task — small tasks are easier to retry, route, and reason about. The next question is "how do I get the result back?" That `AsyncResult` we kept brushing past is exactly what Phase 4 is about.
 
 ## Recap
 

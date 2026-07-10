@@ -6,12 +6,12 @@ summary: "Decode JSON, query strings, and URI params straight onto typed Go stru
 tags: [gin, go, binding, validation, json]
 difficulty: intermediate
 synonyms: ["gin bind json", "gin shouldbindjson", "gin validation", "gin struct tags binding", "gin validator", "gin bind query uri"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Binding & Validating Input
 
-In Phase 2 you pulled values out of the URL one at a time — `c.Param("id")`, `c.Query("done")` — and got back strings you had to massage by hand. That's fine for one parameter. The moment a client POSTs a JSON body with five fields, doing it by hand turns into a pile of `c.GetRawData`, `json.Unmarshal`, and "is this field actually present?" checks. Gin has a better way, and it's the part of the framework you'll reach for in almost every handler.
+In Phase 2 you pulled values out of the URL one at a time — `c.Param("id")`, `c.Query("done")` — and got back strings you had to massage by hand. That's fine for one parameter. The moment a client POSTs a JSON body with five fields, doing it by hand turns into a pile of `c.GetRawData`, `json.Unmarshal`, and "is this field actually present?" checks. Gin has a better way, and you'll reach for it in almost every handler.
 
 ## The mental model: decode + validate, in one move
 

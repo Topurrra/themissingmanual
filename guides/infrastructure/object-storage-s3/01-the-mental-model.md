@@ -6,7 +6,7 @@ summary: "Buckets, keys, and signed URLs - how cloud object storage really works
 tags: [object-storage, s3, cloud, buckets, infrastructure]
 difficulty: intermediate
 synonyms: [what is s3, how does object storage work, s3 bucket explained, signed url, presigned url, s3 public bucket leak, store files in the cloud]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # What it actually is: a giant key-to-blob map
@@ -65,7 +65,7 @@ Throwing away the filesystem buys three things that matter enormously at scale:
 
 - **It scales almost without limit.** There's no directory tree to lock, no inode table to grow, no single disk to fill. A key is a string in a distributed index, and the bytes get spread across many machines. You can store a handful of files or trillions; the model doesn't change.
 - **It's cheap.** Because it's dumb and flat, the bytes can sit on commodity disks in bulk, and providers charge a small amount per gigabyte per month. Storing a terabyte costs roughly the price of a sandwich per month at standard tiers - far less than the equivalent always-on server disk.
-- **It's extremely durable.** Each object is copied across multiple machines and often multiple buildings automatically. Providers quote durability like "eleven nines" (99.999999999%) for their standard class - a qualitative way of saying *they expect to essentially never lose your object*. You don't manage the copies; that's the deal.
+- **It's extremely durable.** Each object is copied across multiple machines and often multiple buildings automatically. Providers quote durability like "eleven nines" (99.999999999%) for their standard class - a way of saying *they expect to almost never lose your object*. You don't manage the copies; that's the deal.
 
 The price you pay for all that is the subject of phase 3: you give up in-place edits, instant directory operations, and the low latency of a local disk. For storing whole files you rarely change, that trade is a steal. For a database's hot files, it's a disaster.
 

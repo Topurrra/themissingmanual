@@ -6,7 +6,7 @@ summary: "How EF Core loads related data: Include and ThenInclude (eager), lazy 
 tags: [efcore, csharp, include, n-plus-1, eager-loading, performance]
 difficulty: advanced
 synonyms: ["ef core include", "ef core n+1", "ef core eager lazy loading", "ef core theninclude", "ef core split query", "ef core load related data"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Loading Strategies & the N+1 Trap
@@ -14,8 +14,7 @@ updated: 2026-06-23
 In [Phase 6](06-relationships.md) you wired up navigation properties — `blog.Posts`, `post.Blog`,
 `post.Tags`. They look like ordinary C# collections, so it's tempting to assume that once you've loaded
 a blog, its posts are right there waiting. They are not. The gap between "looks loaded" and "is loaded"
-is where the single most common ORM performance disaster lives: the **N+1 query trap**. This phase closes
-that gap on purpose.
+is where the single most common ORM performance disaster lives: the **N+1 query trap**.
 
 ## The mental model: EF loads related data only when you ask
 
@@ -37,7 +36,7 @@ Console.WriteLine(blogs[0].Posts.Count);   // 0 — even if the blog has 50 post
 
 *What just happened:* one query went out for blogs, nothing for posts. `Posts.Count` is 0 because the
 collection was never populated. Not a bug — EF refuses to silently drag the whole database into memory
-behind your back. Your job is to tell it what graph you actually need. Three ways to do that.
+behind your back. Your job is to tell it what graph you actually need, three ways.
 
 ## Way 1: Eager loading with `Include` (the default tool)
 
@@ -53,8 +52,8 @@ Console.WriteLine(blogs[0].Posts.Count);   // 50 — populated
 ```
 
 *What just happened:* `Include(b => b.Posts)` told EF to pull each blog *and* its posts. EF emits a
-single `LEFT JOIN`, reads the flattened rows, and stitches the `Posts` collections back together for you.
-One round trip, and now every `blog.Posts` is filled.
+single `LEFT JOIN`, reads the flattened rows, and stitches the `Posts` collections back together. One
+round trip, and now every `blog.Posts` is filled.
 
 The SQL looks roughly like this:
 
@@ -82,8 +81,7 @@ var blogs = ctx.Blogs
 
 *What just happened:* you loaded blogs, their posts, and each post's tags — the whole three-level graph
 (`Blog` → `Post` → `Tag`) in one query. `Include` jumps from blog to posts; `ThenInclude` continues from
-each post to its tags. Chain as deep as your model goes, and add multiple `Include` lines for sibling
-navigations.
+each post to its tags. Chain as deep as your model goes.
 
 > 📝 `Include` is the tool to reach for **by default**. It's explicit (you can see exactly what gets
 > loaded), one round trip, and doesn't depend on opt-in magic. The other two strategies exist for specific
@@ -117,7 +115,7 @@ optionsBuilder
 *What just happened:* EF replaces your `Blog` with a generated subclass (a "proxy") that overrides the
 `Posts` getter. When you read `blog.Posts`, the proxy notices the collection isn't loaded yet and fires a
 `SELECT * FROM Posts WHERE BlogId = @id` right then. Convenient — `blog.Posts` "just works" with no
-`Include`. That convenience is exactly what makes it dangerous, as the next section shows.
+`Include`. That convenience is exactly what makes it dangerous, next section.
 
 ## Way 3: Explicit loading (load it yourself, later)
 
@@ -137,8 +135,8 @@ ctx.Entry(post).Reference(p => p.Blog).Load();
 
 *What just happened:* `ctx.Entry(blog)` gives you EF's tracking handle for that object.
 `.Collection(...).Load()` runs one query to fill `blog.Posts`; `.Reference(...).Load()` does the same for
-a single related entity like `post.Blog`. Explicit and predictable, useful when you only *sometimes* need
-the related data — but call it inside a loop and you've reinvented the N+1 problem by hand.
+a single related entity like `post.Blog`. Useful when you only *sometimes* need the related data — but
+call it inside a loop and you've reinvented the N+1 problem by hand.
 
 ## ⚠️ The N+1 trap — the heart of this phase
 
@@ -156,8 +154,8 @@ single* `blog.Posts` access fires its own `SELECT ... WHERE BlogId = @id`. With 
 **N** more — one per parent — for the children. The loop looks innocent; the database is on fire.
 
 It's insidious precisely *because* it looks like normal C#. Nothing in `blog.Posts.Count` screams
-"network round trip." With lazy loading on, queries hide behind property access, so the code reads fine
-and only the SQL log (or a slow page under load) reveals 101 trips where there should be 1 or 2.
+"network round trip." With lazy loading on, queries hide behind property access, so only the SQL log
+(or a slow page under load) reveals 101 trips where there should be 1 or 2.
 
 The SQL log under N+1 looks like this — and keeps going:
 
@@ -181,8 +179,8 @@ foreach (var blog in blogs)
 ```
 
 *What just happened:* the same loop now costs **1** query instead of **N+1**. `Include` pulled all the
-posts in the original round trip via a join, so by the time the loop runs, every `blog.Posts` is already
-in memory and `.Count` touches nothing but RAM. One trip, not 101.
+posts in the original round trip via a join, so every `blog.Posts` is already in memory and `.Count`
+touches nothing but RAM. One trip, not 101.
 
 > 💡 This is why `Include` is the default and lazy loading is the footgun: it turns a missing `Include`
 > into N silent queries instead of one loud error. The cure is the habit you've been building all
@@ -206,15 +204,15 @@ var summaries = ctx.Blogs
 
 *What just happened:* `Select` projects straight into a lightweight anonymous shape. EF turns
 `b.Posts.Count` into a SQL aggregate — a correlated subquery or grouped count — so you get one efficient
-query returning two columns per blog and loading **no entities at all** (nothing tracked, nothing
-hydrated into `Post` objects). When you only need a few fields, projection beats `Include` hands down.
+query returning two columns per blog and loading **no entities at all**. When you only need a few
+fields, projection beats `Include` hands down.
 
 ```sql
 SELECT b.Url, (SELECT COUNT(*) FROM Posts AS p WHERE p.BlogId = b.Id) AS PostCount
 FROM Blogs AS b;
 ```
 
-*What just happened:* the count happens in the database, not in C#. No posts cross the wire — just the
+*What just happened:* the count happens in the database, not in C#. No posts cross the wire, just the
 URL and a number per blog.
 
 ## ⚠️ Cartesian explosion and `AsSplitQuery`
@@ -230,8 +228,8 @@ var blogs = ctx.Blogs
 
 *What just happened:* joining `Blogs` to both `Posts` *and* `Authors` produces a row for every
 *combination* — a blog with 50 posts and 10 authors yields 50 × 10 = 500 rows, most repeating the same
-data. That's a **cartesian explosion**: the result set balloons, the wire fills with duplicates, and EF
-burns time de-duplicating. One query, but a brutally fat one.
+data. That's a **cartesian explosion**: the result set balloons and EF burns time de-duplicating. One
+query, but a brutally fat one.
 
 The fix is to let EF split it into separate queries:
 
@@ -245,9 +243,8 @@ var blogs = ctx.Blogs
 
 *What just happened:* `AsSplitQuery()` tells EF to run one `SELECT` for blogs, one for their posts, one
 for their authors — then stitch the graph together in memory. You trade a few extra round trips for
-avoiding the multiplicative row blowup. The right call when multiple collection `Include`s would otherwise
-explode. (Tradeoff: separate queries aren't a single consistent snapshot — fine for most reads, something
-to weigh under heavy concurrent writes.)
+avoiding the multiplicative row blowup. (Tradeoff: separate queries aren't a single consistent snapshot —
+fine for most reads, something to weigh under heavy concurrent writes.)
 
 > 📝 The N+1 problem is not an EF Core quirk — it's universal to every ORM. You'll meet the exact same
 > trap (and the exact same `Include`-style fix) in Java's

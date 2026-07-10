@@ -8,15 +8,15 @@ category: ai-ml
 difficulty: beginner
 order: 2
 synonyms: ["what does training a model mean", "how does a model learn", "what is model training", "how do machine learning models learn", "what are weights in a model", "what is gradient descent in simple terms"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # How a Model Learns (Training, in Plain English)
 
-You keep hearing that a model was "trained on data," and somewhere in your head that word *training*
-does a lot of quiet, magical work. A machine reads some examples and then... knows things? That gap —
-between "fed it data" and "now it can answer" — is where the mystery lives, and it's where most
-explanations either hand-wave or drown you in calculus.
+You keep hearing that a model was "trained on data," and somewhere in your head that word *training* does a
+lot of quiet, magical work. A machine reads some examples and then... knows things? That gap — between "fed
+it data" and "now it can answer" — is where the mystery lives, and where most explanations either hand-wave
+or drown you in calculus.
 
 This guide closes that gap with zero math. By the end you'll have a working mental picture of what
 training really does: it's the slow, patient tuning of a giant pile of numbers until the model's

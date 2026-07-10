@@ -6,7 +6,7 @@ summary: "Wire tables together with GORM: belongs-to, has-many, has-one, and man
 tags: [gorm, go, associations, relationships, foreign-keys]
 difficulty: advanced
 synonyms: ["gorm associations", "gorm has many belongs to", "gorm has one", "gorm many2many", "gorm foreign key", "gorm association mode"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Associations
@@ -18,7 +18,7 @@ becomes a connected schema.
 
 If the words "foreign key," "one-to-many," and "join table" feel hazy, pause and read
 [Relationships & Keys](/guides/relationships-and-keys) first — this phase assumes you know what a
-foreign key *is*. Here we're learning how GORM lets you express those relationships in Go.
+foreign key *is* and focuses on how GORM lets you express those relationships in Go.
 
 ## The mental model: an association is a foreign key plus a Go field that mirrors it
 

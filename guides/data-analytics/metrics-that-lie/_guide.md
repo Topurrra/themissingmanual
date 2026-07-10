@@ -8,12 +8,12 @@ category: data-analytics
 order: 9
 difficulty: beginner
 synonyms: ["how averages lie", "survivorship bias explained", "Simpson's paradox example", "vanity metrics vs actionable metrics", "misleading charts truncated axis", "why is the average misleading", "how to read a dashboard critically"]
-updated: 2026-06-30
+updated: 2026-07-11
 ---
 
 # Metrics That Lie
 
-Someone drops a number in a slide — "average response time is 200ms," "90% of users love it," "revenue is up and to the right" — and the room nods. The number is real. Nobody made it up. And it's still steering you off a cliff. The lie isn't in the arithmetic; it's in what the number quietly leaves out.
+Someone drops a number in a slide — "average response time is 200ms," "90% of users love it," "revenue is up and to the right" — and the room nods. The number is real, nobody made it up, and it's still steering you off a cliff. The lie isn't in the arithmetic; it's in what the number quietly leaves out.
 
 This guide hands you the small set of tricks that fool almost everyone: an average that hides a long tail, data that only contains the survivors, a trend that flips when you split it by group, and pretty numbers that move without meaning. Once you've seen each one, you can't unsee it — and you stop getting played.
 

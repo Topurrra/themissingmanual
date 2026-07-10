@@ -6,7 +6,7 @@ summary: "Newton without the dread: what a force really is, why things keep movi
 tags: [physics, newton, forces, motion, inertia, first-law]
 difficulty: beginner
 synonyms: ["what is a force", "newtons first law explained", "what is inertia", "why do things keep moving in space", "why does a spaceship coast forever", "do moving things need a push to keep going"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # What a force really is (and why motion sticks)
@@ -41,7 +41,7 @@ Here's Newton's first law in the plainest words it has ever been given:
 
 That stubbornness has a name: **inertia**. It's not a force and it's not a substance. It's the tendency of stuff to *resist any change to its motion*. A thing at rest resists being started. A thing in motion resists being stopped or turned.
 
-Read the law again and notice the word it does **not** contain: *push*. The law never says motion needs a continuous push. Constant motion is the natural, lazy, default state of an object that nothing is acting on. Standing still is the special case where that constant motion happens to be zero.
+Read the law again and notice the word it does **not** contain: *push* - it never says motion needs a continuous one. Constant motion is the natural, lazy, default state of an object that nothing is acting on. Standing still is the special case where that constant motion happens to be zero.
 
 So why does the rolling car stop? Re-run the scene with the law in hand:
 

@@ -6,7 +6,7 @@ summary: "The two different problems hiding under one word, and the 3-2-1 rule t
 tags: [backups, disaster-recovery, infrastructure, rpo, rto, ransomware, resilience]
 difficulty: intermediate
 synonyms: ["how to back up a server", "what is the 3-2-1 backup rule", "rpo vs rto", "difference between backup and disaster recovery", "how often should i back up", "ransomware backup strategy", "how to test a backup restore", "offsite backup"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Backup vs Disaster Recovery
@@ -16,9 +16,8 @@ table of customer orders. The servers are fine, the app is up, but a chunk of *d
 second, the data center your VPS lives in catches fire. Nothing is corrupt — it's *unreachable*,
 and your whole service is dark.
 
-Those are two different problems, and the word "backup" only solves the first one cleanly. If you've ever
-felt vaguely uneasy that "we have backups" didn't actually answer the question "are we safe?" — this is
-why. They're not the same question.
+Those are two different problems, and the word "backup" only solves the first one cleanly — which is why
+"we have backups" never quite answers "are we safe?"
 
 ## The two problems, kept separate
 

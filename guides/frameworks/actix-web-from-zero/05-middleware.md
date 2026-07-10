@@ -6,14 +6,14 @@ summary: "Middleware wraps your service. Attach it with .wrap(), reach for built
 tags: [actix-web, rust, middleware, logger, cors]
 difficulty: advanced
 synonyms: ["actix middleware", "actix wrap", "actix logger middleware", "actix cors", "actix from_fn middleware", "actix transform trait"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Middleware
 
-The mental model that carries the whole phase: **middleware in actix-web wraps your service.** Your handler doesn't sit out in the open — you take your `App` (or a `web::scope`) and call `.wrap(...)`, which tucks your routes inside a new outer layer. A request travels inward through each wrapper before it reaches your handler, and the response travels back out through the same wrappers in reverse.
+The mental model that carries the whole phase: **middleware in actix-web wraps your service.** Take your `App` (or a `web::scope`) and call `.wrap(...)`, which tucks your routes inside a new outer layer. A request travels inward through each wrapper before it reaches your handler, and the response travels back out through the same wrappers in reverse.
 
-Picture an onion, or nesting dolls: each layer can look at the request on the way in, decide whether to keep going, and look at the response on the way out. That "on the way out" half is the payoff — one piece of middleware can wrap the *entire* round trip, seeing both the incoming request and the outgoing response. Logging, compression, auth, CORS — they all live in that wrapper.
+Picture an onion: each layer can look at the request on the way in, decide whether to keep going, and look at the response on the way out. That "on the way out" half is the payoff — one piece of middleware wraps the *entire* round trip. Logging, compression, auth, CORS all live in that wrapper.
 
 > 📝 This is the same idea you'll meet in almost every web framework. If you've read the [axum guide](/guides/axum-from-zero), its `.layer()` is actix-web's `.wrap()` — the shape differs, the picture is identical. More on that contrast at the end.
 
@@ -53,7 +53,7 @@ async fn main() -> std::io::Result<()> {
 }
 ```
 
-*What just happened:* `.wrap(Logger::default())` wrapped the whole `App` in a logging layer. Every request to `/articles` now gets logged when it arrives and when its response goes out — without touching `list_articles` at all. The catch: `Logger` *emits* log records, but something has to *print* them, which is what `env_logger::init_from_env(...)` does. Skip that step and your logs go nowhere — the middleware isn't broken, nobody's listening.
+*What just happened:* `.wrap(Logger::default())` wrapped the whole `App` in a logging layer. Every request to `/articles` now gets logged on arrival and on response, without touching `list_articles`. The catch: `Logger` *emits* log records, but something has to *print* them — that's `env_logger::init_from_env(...)`. Skip it and the logs go nowhere; the middleware isn't broken, nobody's listening.
 
 > ⚠️ `Logger` produces nothing visible on its own. A logging facade (`env_logger`, `tracing-subscriber`, etc.) must be initialized once at startup. Missing logs almost always means a missing subscriber, not missing middleware.
 
@@ -68,7 +68,7 @@ App::new()
     .route("/articles", web::get().to(list_articles))
 ```
 
-*What just happened:* `Compress` negotiates response compression from the `Accept-Encoding` header and compresses the body for you; `NormalizePath::trim()` quietly strips trailing slashes so a stray `/articles/` still hits your `/articles` route. There's also `DefaultHeaders` for stamping headers like `X-Version` onto every response. Each is "construct it, hand it to `.wrap()`" — same move every time.
+*What just happened:* `Compress` negotiates response compression from `Accept-Encoding` and compresses the body; `NormalizePath::trim()` strips trailing slashes so a stray `/articles/` still hits `/articles`. `DefaultHeaders` stamps headers like `X-Version` onto every response. Same move every time: construct it, hand it to `.wrap()`.
 
 > 💡 **CORS lives in a separate crate.** Cross-origin headers aren't in `actix-web` core — add the **`actix-cors`** crate and wrap a `Cors`:
 > ```rust
@@ -93,9 +93,9 @@ App::new()
     .route("/articles", web::get().to(list_articles))
 ```
 
-*What just happened:* even though `Logger` is written above `Compress`, `Compress` is the outermost wrapper because it was registered last. On the way in, the order is `Compress → Logger → handler`; on the way out, it reverses to `handler → Logger → Compress`. Read a stack of `.wrap()` calls **from the bottom up** to see the order a request actually travels.
+*What just happened:* even though `Logger` is written above `Compress`, `Compress` is the outermost wrapper because it was registered last. On the way in, the order is `Compress → Logger → handler`; on the way out it reverses. Read a stack of `.wrap()` calls **from the bottom up** to see the order a request actually travels.
 
-Order changes behavior. If you want your `Logger` to record the *final, compressed* response status, `Compress` needs to run before `Logger` finishes on the way out — which means `Compress` should be the outer layer (registered after `Logger`), exactly as above. Get it backwards and your logs describe a response that no longer matches what went over the wire. When middleware "isn't seeing" what you expect, suspect the order first.
+Order changes behavior: to have `Logger` record the *final, compressed* response, `Compress` must be the outer layer (registered after `Logger`), exactly as above. Get it backwards and your logs describe a response that no longer matches what went over the wire. When middleware "isn't seeing" what you expect, suspect the order first.
 
 ## Writing your own with from_fn
 
@@ -122,7 +122,7 @@ async fn timing(
 // App::new().wrap(from_fn(timing))
 ```
 
-*What just happened:* `from_fn(timing)` wraps the `timing` function into middleware you can `.wrap()`. The line `next.call(req).await?` hands control inward to the rest of the chain (eventually your handler) and gives you back the `ServiceResponse`. Everything before that call runs on the way *in*; everything after runs on the way *out* — which is why we grab `start` before the call and log `elapsed()` after. That single function straddles the whole round trip, exactly like the onion picture.
+*What just happened:* `from_fn(timing)` wraps `timing` into middleware you can `.wrap()`. `next.call(req).await?` hands control inward to the rest of the chain and gives back the `ServiceResponse`. Everything before that call runs on the way *in*; everything after runs on the way *out* — why we grab `start` before and log `elapsed()` after. One function straddles the whole round trip, like the onion picture.
 
 Now an auth gate that rejects any request missing an `Authorization` header *before* it reaches a handler:
 
@@ -146,7 +146,7 @@ async fn require_auth(
 // App::new().wrap(from_fn(require_auth))
 ```
 
-*What just happened:* before doing anything else we inspect `req.headers()`. If the `Authorization` header is absent, we return `Err(ErrorUnauthorized("..."))` — `next.call` is **never reached**, so the handler never runs and a `401 Unauthorized` goes straight back out. Otherwise we fall through to `next.call(req).await` and let the request continue. That early `return Err(...)` is the short-circuit — the whole point of middleware that can refuse a request.
+*What just happened:* we inspect `req.headers()` first. If `Authorization` is absent, we return `Err(ErrorUnauthorized("..."))` — `next.call` is **never reached**, the handler never runs, and a `401 Unauthorized` goes straight back out. Otherwise we fall through to `next.call(req).await`. That early `return Err(...)` is the short-circuit — the whole point of middleware that can refuse a request.
 
 > 💡 `from_fn` covers the vast majority of needs. For *stateful* middleware — something that holds its own data and must initialize per-worker — actix-web also exposes the lower-level **`Transform`** trait, implemented by hand with two structs plus `poll_ready` and `call`. Heavier and rarely necessary; reach for it only when `from_fn` genuinely can't carry the state you need.
 
@@ -161,15 +161,15 @@ If you've used [axum](/guides/axum-from-zero), none of this is new — only the 
 | Continue | `next.call(req).await` | `next.run(req).await` |
 | Ordering | last `.wrap()` = outermost | last `.layer()` = outermost |
 
-*What just happened:* the table makes the symmetry obvious. axum leans on tower's `Layer` abstraction, so its middleware also works with HTTP clients and gRPC; actix-web's middleware is its own thing, tuned to actix-web. Different ecosystems, identical mental model — wrap the service, run the chain as a stack, short-circuit when you must. Learn it once, it transfers.
+*What just happened:* axum leans on tower's `Layer` abstraction, so its middleware also works with HTTP clients and gRPC; actix-web's is its own thing, tuned to actix-web. Different ecosystems, identical mental model — wrap the service, run the chain as a stack, short-circuit when you must. Learn it once, it transfers.
 
 ## Recap
 
 - **Middleware wraps your service** — attach it with **`.wrap(...)`** on an `App` or a `web::scope`; the chain runs as a stack of onion layers around your handler.
-- **Built-ins** live in `actix_web::middleware`: **`Logger`** (request logging — pair it with `env_logger` or no logs print), **`Compress`**, **`NormalizePath`**, **`DefaultHeaders`**. **CORS** comes from the separate **`actix-cors`** crate via `Cors::default()...`.
-- ⚠️ **The order rule:** the **last** `.wrap()` registered is the **outermost** — it runs first on the way in, last on the way out. Read a `.wrap()` stack bottom-up.
-- **`middleware::from_fn`** turns an `async fn(ServiceRequest, Next)` into custom middleware: call `next.call(req).await` to continue, or return `Err(ErrorUnauthorized(...))` (or any error/response) to short-circuit before the handler runs.
-- The heavier **`Transform`** trait exists for stateful middleware, but `from_fn` handles most cases. The whole pattern mirrors axum/tower's `.layer()` — same idea, different shape.
+- **Built-ins** live in `actix_web::middleware`: **`Logger`** (pair it with `env_logger` or no logs print), **`Compress`**, **`NormalizePath`**, **`DefaultHeaders`**. **CORS** comes from the separate **`actix-cors`** crate via `Cors::default()...`.
+- ⚠️ **The order rule:** the **last** `.wrap()` registered is the **outermost** — runs first on the way in, last on the way out. Read a `.wrap()` stack bottom-up.
+- **`middleware::from_fn`** turns an `async fn(ServiceRequest, Next)` into custom middleware: call `next.call(req).await` to continue, or return `Err(ErrorUnauthorized(...))` to short-circuit before the handler runs.
+- The heavier **`Transform`** trait exists for stateful middleware, but `from_fn` handles most cases — the pattern mirrors axum/tower's `.layer()`.
 
 ## Quick check
 

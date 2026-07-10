@@ -6,12 +6,12 @@ summary: "The payoff: see the servlet under every Java web framework. Dispatcher
 tags: [servlet, frameworks, dispatcherservlet, jax-rs, middleware, learning-path, demystified]
 difficulty: beginner
 synonyms: ["servlets vs frameworks", "what is dispatcherservlet built on", "servlet api in spring jax-rs", "java web foundation summary", "servlet next steps", "why learn servlets"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # From Servlets to Frameworks
 
-Go back to the start of this guide for a second. A framework was a black box: you annotated a method, requests showed up, responses went out, and somewhere in the middle a lot of magic happened that you couldn't name. You used it, it worked, and that was the deal.
+Go back to the start of this guide for a second. A framework was a black box: you annotated a method, requests showed up, responses went out, and somewhere in the middle a lot of magic happened that you couldn't name.
 
 Look at what you can see now. You know a request arrives at a **container**, which hands it to a **servlet** as an `HttpServletRequest` and an `HttpServletResponse`. You know that servlet is *one instance serving many threads*, which is exactly why shared mutable state bites you. You know a single **front-controller** servlet can route every URL to the right handler. You know **filters** wrap your servlet to run code before and after. You know **sessions** stitch state across a stateless protocol. That's not trivia - that's the whole shape of Java web, and you've now seen all of it bare.
 
@@ -68,7 +68,7 @@ Then do the magic trick: imagine rebuilding the same thing in Spring or Jakarta,
 
 When you want the authoritative reference, go to the **Jakarta Servlet specification and its API docs**. They're precise, they're the source of truth, and now that you have the concepts, they'll read as confirmation rather than fog.
 
-And here's the line to carry out of this whole guide: **every Java web framework is conveniences over a servlet, a front controller, and a filter chain - and now you can see all three.** The magic was always just this. Go build the small thing, and watch it stay gone.
+The line to carry out of this whole guide: **every Java web framework is conveniences over a servlet, a front controller, and a filter chain - and now you can see all three.** The magic was always just this. Go build the small thing, and watch it stay gone.
 
 ## Recap
 

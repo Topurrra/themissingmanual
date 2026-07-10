@@ -6,12 +6,12 @@ summary: "Turn the pickups demo into a real game: a Canvas with TextMeshPro scor
 tags: [unity, ui, audio, build, gamemanager]
 difficulty: intermediate
 synonyms: ["unity ui canvas", "unity textmeshpro score", "unity audiosource", "unity game manager", "unity build settings", "unity export game"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # UI, Audio & Building
 
-You can move a player, collide with things, and spawn pickups (Phases 5–7). But right now collecting a pickup makes it vanish and... nothing else. No score on screen, no satisfying chime, no way to hand the game to a friend. This phase closes that gap - it's the difference between a tech demo and a thing people call a game.
+You can move a player, collide with things, and spawn pickups (Phases 5–7). But right now collecting a pickup makes it vanish and... nothing else. No score on screen, no satisfying chime, no way to hand the game to a friend. This phase closes that gap.
 
 Three pieces, one idea each:
 

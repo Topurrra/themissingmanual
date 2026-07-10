@@ -12,7 +12,7 @@ synonyms:
   - kong vs aws api gateway
   - api gateway explained
   - single entry point for microservices
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # What a gateway actually does
@@ -90,7 +90,7 @@ Gateway returns one combined JSON response to the client.
 
 ## Why all five live in one place
 
-None of these five jobs strictly requires a gateway — you could build auth checks into every service, rate limiting into every service, and so on. The reason they cluster into one component is that they're all *cross-cutting*: every service needs some version of routing awareness, auth, and rate limiting, and duplicating that logic N times means N chances to get it wrong and N places to update when the policy changes. Centralizing it in the gateway means one implementation, one place to patch a bug, one dashboard to watch.
+None of these five jobs strictly requires a gateway — you could build auth checks and rate limiting into every service yourself. The reason they cluster into one component is that they're all *cross-cutting*: every service needs some version of routing awareness, auth, and rate limiting, and duplicating that logic N times means N chances to get it wrong and N places to update when the policy changes. Centralizing it in the gateway means one implementation, one place to patch a bug, one dashboard to watch.
 
 ```quiz
 [

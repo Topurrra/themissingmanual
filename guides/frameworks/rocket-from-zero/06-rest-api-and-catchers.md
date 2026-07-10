@@ -6,16 +6,16 @@ summary: "Wire five attribute-routed handlers over managed state into a full CRU
 tags: [rocket, rust, rest, api, crud, catchers]
 difficulty: advanced
 synonyms: ["rocket rest api", "rocket crud", "rocket catchers", "rocket catch 404", "rocket error handling", "rust rocket books api"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # A REST API with Error Catchers
 
-This is the payoff phase. Everything you've built — attribute routes, dynamic paths, `Json` data, responders, managed state — comes together here into a real REST resource. And then we add the one piece that's been missing: a single place to define what an *error* looks like across the entire API.
+This is the payoff phase. Everything you've built — attribute routes, dynamic paths, `Json` data, responders, managed state — comes together into a real REST resource, plus the one piece that's been missing: a single place to define what an *error* looks like across the API.
 
-Hold this mental model: **a REST resource is five attribute-routed handlers over the managed store.** List, show one, create, update, delete — that's the whole vocabulary of CRUD over HTTP. Each handler pulls what it needs from the signature (`&State<AppState>` for the store, `id: u32` from the path, `Json<NewBook>` from the body), and each handler's **return type carries the per-request outcome** — an `Option` that 404s when a book is missing, a `(Status, Json<Book>)` that says "201 Created."
+**A REST resource is five attribute-routed handlers over the managed store.** List, show one, create, update, delete — the whole vocabulary of CRUD over HTTP. Each handler pulls what it needs from the signature (`&State<AppState>` for the store, `id: u32` from the path, `Json<NewBook>` from the body), and each handler's **return type carries the per-request outcome** — an `Option` that 404s when a book is missing, a `(Status, Json<Book>)` that says "201 Created."
 
-There's a second layer, and the distinction matters: **responders handle outcomes your handler produces; catchers handle failures the framework produces.** A typo'd URL that matches no route, a malformed JSON body that never reaches your function, a guard that rejects the request — your handler never runs for those, so it can't shape the response. That's a catcher's job. By the end you'll use both, on purpose, knowing which is which.
+There's a second layer: **responders handle outcomes your handler produces; catchers handle failures the framework produces.** A typo'd URL that matches no route, a malformed JSON body that never reaches your function, a guard that rejects the request — your handler never runs for those, so it can't shape the response. That's a catcher's job.
 
 > 📝 We're still growing the same **books API**. From Phase 5 we have the managed store, and the model from Phase 4 plus an input type for writes:
 >
@@ -106,15 +106,13 @@ fn delete(id: u32, state: &State<AppState>) -> Status {
 
 *What just happened:* five handlers, one per CRUD operation, all reading the shared store through `&State<AppState>` and all locking the `Mutex` before they touch the map.
 
-- **`list`** clones every value out of the map and wraps the `Vec` in `Json` — a 200 with a JSON array. We clone because the data lives behind the lock; the clone leaves the lock as soon as the function returns.
+- **`list`** clones every value out of the map and wraps the `Vec` in `Json` — a 200 with a JSON array. The clone leaves the lock as soon as the function returns.
 - **`show`** is the Phase-4 idiom over real state: `.get(&id).cloned().map(Json)` is `Some(Json(book))` when it exists, `None` otherwise — and `None` becomes a free 404.
-- **`create`** computes the next id, builds the `Book` from the `NewBook` body, inserts a clone, and returns `(Status::Created, Json(book))` — a 201 with the created record. The server assigns the id; the client doesn't get to.
+- **`create`** computes the next id, builds the `Book` from the `NewBook` body, inserts a clone, and returns `(Status::Created, Json(book))` — a 201 with the created record. The server assigns the id, not the client.
 - **`update`** checks existence first and returns `None` (→ 404) for a missing book, otherwise replaces the record and returns it with a 200.
 - **`delete`** returns the bare `Status` responder: `204 No Content` when something was removed, `404 Not Found` when there was nothing to remove.
 
-Each "not found" here is a **responder-level outcome** — your handler ran, looked, and decided. Keep that in mind; the catchers below handle a different category of miss.
-
-Now mount them. Same `routes!` you already know, just longer:
+Each "not found" here is a **responder-level outcome** — your handler ran, looked, and decided. The catchers below handle a different category of miss. Now mount them — same `routes!` you already know, just longer:
 
 ```rust
 #[launch]
@@ -129,9 +127,9 @@ fn rocket() -> _ {
 
 ## Error catchers: one place for what failure looks like
 
-Try requesting `GET /bookz` (a typo) against the API above. No route matches, so **none of your handlers run** — Rocket itself produces a 404. By default that's Rocket's generic HTML error page. For a JSON API, an HTML error in the middle of JSON responses is jarring and breaks clients that always parse the body as JSON.
+Try requesting `GET /bookz` (a typo). No route matches, so **none of your handlers run** — Rocket itself produces a 404, by default its generic HTML error page. For a JSON API, an HTML error in the middle of JSON responses is jarring and breaks clients that always parse the body as JSON.
 
-This is exactly what **catchers** are for. A catcher is a function annotated with `#[catch(<status>)]` that produces the response for a given error status when no responder did. You register catchers separately from routes, with `.register(...)`.
+This is what **catchers** are for. A catcher is a function annotated with `#[catch(<status>)]` that produces the response for a given error status when no responder did. Register catchers separately from routes, with `.register(...)`.
 
 ```rust
 use rocket::serde::json::{json, Value};
@@ -153,7 +151,7 @@ fn server_error(_req: &Request) -> Value {
 }
 ```
 
-*What just happened:* three catchers, one per status we care about. The `&Request` parameter gives a catcher access to the failed request — `not_found` reads `req.uri().path()` so the error body tells the client *which* path missed. The return type is `rocket::serde::json::Value` (serde's dynamic JSON value), and `json!({ ... })` builds it inline — that's how each catcher emits a JSON body instead of HTML. The status code is already decided by the `#[catch(N)]` attribute; the function only supplies the body.
+*What just happened:* three catchers, one per status we care about. The `&Request` parameter gives a catcher access to the failed request — `not_found` reads `req.uri().path()` so the error body tells the client *which* path missed. The return type is `rocket::serde::json::Value`, and `json!({ ... })` builds it inline — how each catcher emits JSON instead of HTML. The status code is already decided by `#[catch(N)]`; the function only supplies the body.
 
 > ⚠️ That **422** catcher is doing more than it looks. When a client `POST`s a body that isn't valid JSON, or is valid JSON but missing a field `NewBook` requires, the `Json<NewBook>` data guard *fails before your handler is ever called* — and Rocket signals that with **422 Unprocessable Entity**, not 400. Your `create` function never runs, so it can't shape that response. The 422 catcher is the only place you get to.
 
@@ -169,7 +167,7 @@ fn rocket() -> _ {
 }
 ```
 
-*What just happened:* `.register("/", catchers![...])` attaches the catchers at the `/` base, meaning they apply to the whole app. The `catchers!` macro is the catcher counterpart to `routes!`. Now every framework-level 404, 422, and 500 — whatever route or handler tripped it — comes back as your consistent JSON shape instead of Rocket's HTML. Like routes, catchers can be **scoped to a path** by registering them under a different base (e.g. `.register("/api", ...)`), so a sub-tree of the app can have its own error style.
+*What just happened:* `.register("/", catchers![...])` attaches the catchers at the `/` base, so they apply to the whole app — `catchers!` is the catcher counterpart to `routes!`. Now every framework-level 404, 422, and 500, whatever tripped it, comes back as your consistent JSON shape instead of HTML. Catchers can also be **scoped to a path** by registering them under a different base (e.g. `.register("/api", ...)`).
 
 ## Catchers vs. responder-level errors — use both
 
@@ -213,7 +211,7 @@ curl -i -X POST http://127.0.0.1:8000/books \
 
 *What just happened:* the first six calls walk a single book through its whole lifecycle — created (201), listed and shown (200), the missing-id show returning your catcher's JSON 404, updated (200), deleted (204), then a second delete proving the handler's own `Status::NotFound` path. The last two trip catchers: `/bookz` matches no route (framework 404), and the truncated body fails the `Json<NewBook>` guard before `create` runs (framework 422). Same JSON error shape for both, courtesy of `.register(...)`.
 
-> 💡 This API keeps its data in a `Mutex<HashMap>`, which means it lives in memory and vanishes on restart. Everything you wrote above — the five handlers, the responders, the catchers — stays the same when you swap that store for a real database. You'd reach for `rocket_db_pools` with a driver like `sqlx`, add a pool to managed state, and make your handlers `async`; the route shapes and error handling don't move. The store is the detail; the resource is the design.
+> 💡 This API keeps its data in a `Mutex<HashMap>`, which lives in memory and vanishes on restart. Everything above — the handlers, responders, catchers — stays the same when you swap that store for a real database via `rocket_db_pools` and a driver like `sqlx`; the route shapes and error handling don't move. The store is the detail; the resource is the design.
 
 ## Recap
 

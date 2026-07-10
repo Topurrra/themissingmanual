@@ -6,22 +6,17 @@ summary: "From 'if P then Q' you can form three variants. The contrapositive ('i
 tags: [logic, contrapositive, converse, inverse, fallacy]
 difficulty: beginner
 synonyms: ["converse inverse contrapositive", "is the converse always true", "affirming the consequent", "denying the antecedent", "is the contrapositive equivalent"]
-updated: 2026-06-25
+updated: 2026-07-10
 ---
 
 # Converse, Inverse, Contrapositive
 
-In Phase 1 you saw what `P → Q` claims: whenever `P` holds, `Q` holds too. That's your starting
-statement. Shuffle its pieces around and you get three close relatives. They look almost identical
-and use the same two ideas. Here's the trap that catches almost everyone: one relative says exactly
-the same thing as the original, two say something completely different - yet all three *feel* like
-they should follow.
-
-This phase is about telling them apart. Get it right and you've inoculated yourself against the most
-common reasoning mistake there is. Get it wrong and you'll confidently "prove" things that aren't
-true - in code reviews, in arguments, in your own debugging.
-
-Let's anchor everything to one example and never let go.
+In Phase 1 you saw what `P → Q` claims: whenever `P` holds, `Q` holds too. Shuffle its pieces
+around and you get three close relatives that look almost identical and use the same two ideas.
+Here's the trap: one relative says exactly the same thing as the original, two say something
+completely different - yet all three *feel* like they should follow. Get this right and you're
+inoculated against the most common reasoning mistake there is; get it wrong and you'll confidently
+"prove" things that aren't true, in code reviews, arguments, and your own debugging.
 
 ## The original conditional
 
@@ -29,11 +24,9 @@ Let's anchor everything to one example and never let go.
 
 In symbols: `P → Q`, where `P` is "it rained" and `Q` is "the street is wet."
 
-Read it carefully. It promises one direction only: rain forces wetness. That's the whole claim. It
-says nothing about what happens when it *didn't* rain, and nothing about what wetness implies on its
-own. (If that felt surprising, re-read Phase 1 - this phase builds directly on it.)
-
-Now form the three variants by flipping and negating the two parts.
+It promises one direction only: rain forces wetness. It says nothing about what happens when it
+*didn't* rain, and nothing about what wetness implies on its own. Now form the three variants by
+flipping and negating the two parts.
 
 ## The four forms
 
@@ -68,9 +61,8 @@ Here's what's true, and it's worth memorizing:
   contrapositive of the converse. (Apply the always-equivalent rule to `Q → P` and you get
   `¬P → ¬Q`.)
 
-You can confirm all of this with a truth table. `T` means true, `F` means false. We list every
-combination of `P` and `Q`, then evaluate each form. (If the `¬` and `→` columns feel mechanical, the
-rules for them are spelled out in [propositional logic](/guides/propositional-logic).)
+You can confirm all of this with a truth table (`T`/`F`, every combination of `P` and `Q`, each
+form evaluated):
 
 ```text
  P | Q | ¬P | ¬Q | P→Q  | Q→P  | ¬P→¬Q | ¬Q→¬P
@@ -85,13 +77,10 @@ rules for them are spelled out in [propositional logic](/guides/propositional-lo
 Look at the **orig** column and the **contra** column: `T F T T` and `T F T T`. Identical, every row.
 That is what "always equivalent" means.
 
-Now look at **orig** versus **conv**: `T F T T` versus `T T F T`. They disagree on rows 2 and 3. The
-original and its converse are genuinely different statements. And **conv** matches **inv**
-(`T T F T` both) - the converse and inverse are the equivalent pair.
-
-The contrapositive isn't a coincidence; it falls straight out of negation and implication rules. You
-can derive it through [propositional logic](/guides/propositional-logic) if you want the full
-mechanics. For now, trust the table: it's all there in those four rows.
+Now look at **orig** versus **conv**: `T F T T` versus `T T F T` - they disagree on rows 2 and 3,
+genuinely different statements. And **conv** matches **inv** (`T T F T` both) - the converse and
+inverse are the equivalent pair. The contrapositive isn't a coincidence; it falls straight out of
+negation and implication rules from [propositional logic](/guides/propositional-logic).
 
 ## The two classic fallacies - name them
 
@@ -105,21 +94,20 @@ invalid.
 
 > *If it rained, the street is wet.* The street is wet. Therefore it rained.
 
-But the sprinkler could have done it. Observing `Q` does not get you back to `P`. You've assumed the
-**converse** (`Q → P`) was available - and it wasn't. This is, by a wide margin, the most common
+But the sprinkler could have done it - observing `Q` does not get you back to `P`. You've assumed
+the **converse** (`Q → P`) was available, and it wasn't. This is, by a wide margin, the most common
 error people make. It feels like logic. It isn't.
 
 ### Denying the antecedent
 
-You have `P → Q`. You observe `¬P`. You conclude `¬Q`. That is **denying the antecedent**, and it is
-also invalid.
+You have `P → Q`. You observe `¬P`. You conclude `¬Q`. That is **denying the antecedent** - also
+invalid.
 
 > *If it rained, the street is wet.* It did not rain. Therefore the street is not wet.
 
 Again the sprinkler ruins it - no rain, still a wet street. Here you've leaned on the **inverse**
-(`¬P → ¬Q`), which the original never promised.
-
-Both fallacies share one root: treating a one-way claim as if it ran both ways.
+(`¬P → ¬Q`), which the original never promised. Both fallacies share one root: treating a one-way
+claim as if it ran both ways.
 
 ## The two valid forms - name them
 
@@ -131,7 +119,7 @@ You have `P → Q`. You observe `P`. You conclude `Q`.
 
 > *If it rained, the street is wet.* It rained. Therefore the street is wet.
 
-This is the original used forward, exactly as written. Nothing flipped, nothing negated. Solid.
+The original used forward, exactly as written. Nothing flipped, nothing negated. Solid.
 
 ### Modus tollens
 
@@ -139,10 +127,10 @@ You have `P → Q`. You observe `¬Q`. You conclude `¬P`.
 
 > *If it rained, the street is wet.* The street is not wet. Therefore it did not rain.
 
-This is the **contrapositive in action**. Because `¬Q → ¬P` is equivalent to the original, you can
+This is the **contrapositive in action**: because `¬Q → ¬P` is equivalent to the original, you can
 run it backward from a denied conclusion and stay airtight.
 
-So the pattern is clean: affirm the *first* part (modus ponens) or deny the *second* part (modus
+The pattern is clean: affirm the *first* part (modus ponens) or deny the *second* part (modus
 tollens) and you're safe. Affirm the second part or deny the first, and you've stepped into a fallacy.
 
 ## One table to keep
@@ -160,23 +148,19 @@ If you remember only one row, remember the last one.
 
 ## For builders
 
-This isn't an abstract puzzle - it shows up in real code and real debugging.
-
 Suppose your system follows the rule **"if there's an error, then it logs."** That's `P → Q`. It's
 tempting to read a log line and conclude an error happened - *"if it logged, then there's an error."*
-That's the converse, a different claim. Maybe you also log on retries, on info events, or on startup.
-A log line alone does not prove an error. Reading it as proof is affirming the consequent, and it
+That's the converse, a different claim: maybe you also log on retries, info events, or startup. A
+log line alone does not prove an error - reading it as proof is affirming the consequent, and it
 sends you chasing failures that aren't there.
 
-The contrapositive, on the other hand, is a debugging gift. Take a pipeline stage whose rule is **"if
-the bug is in this stage, then the output is wrong."** The contrapositive is **"if the output is
-correct, then the bug is not in this stage."** That's modus tollens. So when you verify a stage's
-output is correct, you've genuinely *eliminated* that stage. You're not guessing - you've used a form
-that's always valid to shrink the search space. This is the engine behind binary-search debugging:
-each correct checkpoint validly rules out everything behind it.
-
-The takeaway for code, arguments, and your own head: a one-way "if" never runs backward for free. Only
-the contrapositive comes along for the ride.
+The contrapositive is a debugging gift, though. Take a pipeline stage whose rule is **"if the bug is
+in this stage, then the output is wrong."** The contrapositive is **"if the output is correct, then
+the bug is not in this stage"** - that's modus tollens. Verify a stage's output is correct, and
+you've genuinely *eliminated* that stage, using a form that's always valid to shrink the search
+space. This is the engine behind binary-search debugging: each correct checkpoint validly rules out
+everything behind it. Takeaway: a one-way "if" never runs backward for free. Only the contrapositive
+comes along for the ride.
 
 ## Recap
 

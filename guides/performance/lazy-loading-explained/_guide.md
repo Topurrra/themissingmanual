@@ -14,12 +14,12 @@ synonyms:
   - code splitting explained
   - defer loading until needed
   - infinite scroll performance
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Lazy Loading Explained
 
-You open a long page. It has forty images, a chat widget, an analytics script, and a video player near the bottom. If the browser fetched and set up all of it the instant you arrived, you'd wait for things you might never scroll to. Lazy loading is the fix: don't do the work until something proves it's actually needed. This guide covers the idea, the three places you'll use it constantly, and the tradeoff that keeps it from being a free lunch.
+You open a long page with forty images, a chat widget, an analytics script, and a video player near the bottom — if the browser fetched all of it the instant you arrived, you'd wait for things you might never scroll to. Lazy loading is the fix: don't do the work until something proves it's needed. This guide covers the idea, the three places you'll use it constantly, and the tradeoff that keeps it from being a free lunch.
 
 ## How to read this
 

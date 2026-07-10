@@ -6,14 +6,14 @@ summary: "Fast is relative - to a requirement and to human perception. The slowe
 tags: [performance, tail-latency, percentiles, perception, cost-benefit, beginner-friendly]
 difficulty: beginner
 synonyms: ["what is fast enough", "what is tail latency", "what are latency percentiles", "p99 latency", "when to stop optimizing", "is my app fast enough"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What "Fast Enough" Means
 
 So far we've treated speed as a number to push down. But here's the question that actually decides your work: *down to what?* There's no universal "fast." A weather forecast that updates once an hour is plenty fast. The same one-hour delay on a chat message is unusable garbage. Speed only means something next to a requirement - and next to a human who's waiting.
 
-This last phase is about that relativity. It's what keeps you from polishing a number forever, and from declaring victory while users are still suffering.
+It's what keeps you from polishing a number forever, and from declaring victory while users are still suffering.
 
 ## Fast is relative to a requirement
 

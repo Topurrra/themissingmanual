@@ -6,7 +6,7 @@ summary: "Read data the SQLAlchemy 2.0 way: build a select() statement, execute 
 tags: [sqlalchemy, select, query, filtering, scalars, where, order-by]
 difficulty: intermediate
 synonyms: ["sqlalchemy select query", "sqlalchemy 2.0 query api", "sqlalchemy where filter", "sqlalchemy scalars all", "sqlalchemy order_by", "sqlalchemy session.execute", "sqlalchemy query vs select"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Querying with select()
@@ -15,11 +15,11 @@ In [Phase 4](04-the-session-and-unit-of-work.md) the Session learned to save you
 `Tag` objects and track their changes. Now you want them back. This is the half of the round-trip you'll
 spend most of your life in: reading. Adding a book happens once; *finding* books happens constantly.
 
-Hold this mental model the whole way: **a query is a sentence you build up, then hand to the Session to
-say out loud.** You construct a `select(...)` statement — a Python object that *describes* what you want,
-piece by piece — and the Session executes it against the database and brings back the rows. The statement
-itself runs nothing; it's just a recipe. Building and running are two separate steps, and keeping them
-separate is what makes SQLAlchemy queries composable.
+**A query is a sentence you build up, then hand to the Session to say out loud.** You construct a
+`select(...)` statement — a Python object that *describes* what you want, piece by piece — and the Session
+executes it against the database and brings back the rows. The statement itself runs nothing; it's just a
+recipe. Building and running are two separate steps, and keeping them separate is what makes SQLAlchemy
+queries composable.
 
 Everything you write here maps to SQL you already know. If `WHERE`, `ORDER BY`, and `JOIN` feel shaky,
 keep [/guides/sql-joins-explained](/guides/sql-joins-explained) open in a tab — this phase is mostly
@@ -218,9 +218,9 @@ on a column from the *joined* table. The second query introduces `func.count(Boo
 with `.group_by(Author.name)` to count books per author. Because it selects columns (`name` and a count),
 it's `session.execute` returning tuples, not `scalars`.
 
-💡 See the throughline: every query here is the **same `select(...)` object, built up by chaining
-methods** — `.where`, `.order_by`, `.join`, `.group_by` — and then handed to the Session to run. This is
-SQLAlchemy Core's expression language surfaced inside the ORM; the composability is the whole point.
+💡 Every query here is the **same `select(...)` object, built up by chaining methods** — `.where`,
+`.order_by`, `.join`, `.group_by` — and then handed to the Session to run. This is SQLAlchemy Core's
+expression language surfaced inside the ORM; the composability is the whole point.
 
 ⚠️ **Count your queries as you go.** Every example above is *one* `SELECT`. The danger arrives in Phase 6:
 once books have an `.author` relationship, it's tempting to loop over books and read `book.author.name`

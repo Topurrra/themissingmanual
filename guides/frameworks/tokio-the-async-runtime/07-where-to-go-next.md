@@ -6,12 +6,12 @@ summary: "The payoff: see how axum, actix, and Rocket are Tokio apps, tour the a
 tags: [tokio, rust, axum, hyper, ecosystem, what-to-build]
 difficulty: beginner
 synonyms: ["tokio ecosystem", "how axum uses tokio", "tokio net io fs", "tonic reqwest sqlx", "tokio next steps", "tokio what to build", "async rust ecosystem"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
-Stop for a second and look at how far you've come. Six phases ago, `#[tokio::main]` was a magic incantation you copied off a tutorial and hoped worked. Now you can name every piece under it.
+Look at how far you've come. Six phases ago, `#[tokio::main]` was a magic incantation you copied off a tutorial and hoped worked. Now you can name every piece under it.
 
 You know **futures** are inert plans and `.await` is a cooperative yield point - the future hands control back to the runtime instead of blocking. You know **tasks** are spawned with `tokio::spawn`, that they're cheap green threads multiplexed onto a small pool of real ones, and that a `JoinHandle` lets you wait on the result. You know the **scheduler** is multi-threaded and work-stealing, that blocking it starves every other task, and that `spawn_blocking` is the escape hatch. You know **channels** - `mpsc`, `oneshot`, `broadcast` - and why an async-aware `Mutex` is held across `.await` where a `std` one must not be. And you know `select!` races futures, drops the losers, and gives you timeouts and cancellation almost for free.
 
@@ -79,7 +79,7 @@ Pick one of these. Each leans on a different piece you just learned:
 
 When you've built one and want to see the HTTP layer that sits directly above Tokio - where connections become requests and responses - read [hyper & tower](/guides/hyper-and-tower). That's the natural next rung up the stack.
 
-Here's the line to carry out of this whole guide: **`async fn`s make inert futures; Tokio is the engine that polls, schedules, and wakes them - and now you know the engine.** Go build something that makes it run.
+The line to carry out of this whole guide: **`async fn`s make inert futures; Tokio is the engine that polls, schedules, and wakes them - and now you know the engine.** Go build something that makes it run.
 
 ## Recap
 

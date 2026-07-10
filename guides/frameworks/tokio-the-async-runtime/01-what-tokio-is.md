@@ -6,7 +6,7 @@ summary: "Rust ships async/await and the Future trait but no runtime - futures a
 tags: [tokio, rust, async, runtime, futures]
 difficulty: beginner
 synonyms: ["what is tokio", "rust async runtime", "why futures need a runtime", "tokio main macro", "rust futures inert", "tokio executor"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What Tokio Is & Why Futures Need a Runtime
@@ -14,8 +14,8 @@ updated: 2026-06-23
 Here's the thing nobody warns you about when you start writing async Rust: the language hands you `async`,
 `await`, and the `Future` trait - and then ships **nothing** to actually run any of it. You can write a
 perfect `async fn`, call it, and have *zero lines of its body execute*. The compiler will even shrug and
-warn you about an "unused future." Coming from almost any other language, that feels broken. It isn't. It's
-the whole design, and once it clicks, the `#[tokio::main]` sitting at the top of every Rust web server
+warn you about an "unused future." Coming from almost any other language, that feels broken. It isn't - once
+it clicks, the `#[tokio::main]` sitting at the top of every Rust web server
 ([axum](/guides/axum-from-zero), actix, Rocket) stops looking like a magic incantation and starts looking
 like the plug it actually is.
 

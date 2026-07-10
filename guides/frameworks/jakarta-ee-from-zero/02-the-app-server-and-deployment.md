@@ -6,12 +6,12 @@ summary: "How classic Jakarta EE runs: your app deploys INTO a running applicati
 tags: [jakarta-ee, application-server, wildfly, payara, open-liberty, war, deployment, container]
 difficulty: beginner
 synonyms: ["jakarta ee application server", "wildfly payara open liberty glassfish", "java war file deployment", "jakarta ee container", "deploy jakarta ee app", "servlet container vs application server", "jakarta ee runtime"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # The Application Server & Deployment
 
-In [Phase 1](01-what-jakarta-ee-is.md) we said Jakarta EE is a set of *specs* that some *server* implements. This phase is about that server — the thing that actually runs your code — and the single biggest mental shift between classic Jakarta EE and the framework world you might already know.
+[Phase 1](01-what-jakarta-ee-is.md) called Jakarta EE a set of *specs* that some *server* implements. This phase is about that server — the thing that actually runs your code — and the single biggest mental shift between classic Jakarta EE and the framework world you might already know.
 
 Here's the shift, stated plainly so it sticks. If you've touched Spring Boot, you're used to your application *being* the program: you build one jar, run `java -jar app.jar`, and an embedded web server boots up *inside* your process. Classic Jakarta EE flips that. Your application is **not** a standalone program. It's a *bundle of code* that you hand to a long-running server — and that server provides the engine: the web server, dependency injection, transactions, connection pooling, all of it. You write the parts that are specific to your app; the server brings everything else.
 

@@ -12,7 +12,7 @@ synonyms:
   - code splitting explained
   - defer loading until needed
   - infinite scroll performance
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Where you'll actually use it
@@ -36,7 +36,7 @@ A rule of thumb: put `loading="lazy"` on images that start off-screen, and leave
 
 ## Route-based code-splitting
 
-A web app with ten pages doesn't need all ten pages' JavaScript before it can show page one. **Code-splitting** breaks the app's code into chunks per route, and a dynamic `import()` fetches a chunk only when that route is actually visited.
+A web app with ten pages doesn't need all ten pages' JavaScript before it can show page one. **Code-splitting** breaks the app's code into chunks per route, and a dynamic `import()` fetches a chunk only when that route is visited.
 
 ```js
 // eager: the settings page's code is bundled into the initial load
@@ -48,7 +48,7 @@ function loadSettingsPage() {
 }
 ```
 
-*What just happened:* in the eager version, every visitor downloads `SettingsPage.js` whether they ever open settings or not. In the lazy version, `import("./SettingsPage.js")` is a function call that returns a promise — the browser only requests that file the first time a route or a click actually triggers it. A visitor who only ever looks at the home page never downloads the settings code at all. Most modern frontend frameworks build this pattern in at the router level, so you often just mark a route as lazy and the framework handles the `import()` for you.
+*What just happened:* in the eager version, every visitor downloads `SettingsPage.js` whether they open settings or not. In the lazy version, `import("./SettingsPage.js")` is a function call that returns a promise — the browser only requests that file the first time a route or click triggers it, so a visitor who only looks at the home page never downloads it at all. Most modern frontend frameworks build this pattern in at the router level, so you often just mark a route as lazy and the framework handles the `import()` for you.
 
 ## Infinite scroll and "load more"
 

@@ -6,7 +6,7 @@ summary: "Where GORM lands in real Go services: dropping to raw SQL when it help
 tags: [gorm, go, sqlc, sqlx, raw-sql, what-to-build]
 difficulty: beginner
 synonyms: ["gorm vs sqlc", "gorm vs sqlx", "gorm raw sql", "when to drop to sql", "gorm production tips", "gorm next steps", "go orm comparison"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # GORM in the Real World & Where to Go Next
@@ -15,7 +15,7 @@ Stop for a second and look at the ground you've covered. You can describe a tabl
 
 Most of all — and this is the whole point of learning GORM the way we did — you can read the SQL underneath. With the logger on, GORM stopped being a magic box and became a SQL generator whose output you can predict and debug. That's the skill that outlives any one library.
 
-This last phase isn't new mechanics. It's about where GORM actually lives in real codebases, where it isn't the right tool, and what to build to make all of this stick.
+This last phase isn't new mechanics — it's about where GORM actually lives in real codebases, where it isn't the right tool, and what to build to make all of this stick.
 
 ## When to drop to raw SQL
 

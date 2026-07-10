@@ -6,16 +6,15 @@ summary: "ASP.NET Core in three pieces — Kestrel the web server, the middlewar
 tags: [aspnet-core, csharp, kestrel, pipeline, host]
 difficulty: beginner
 synonyms: ["what is kestrel", "aspnet core pipeline", "aspnet core host", "how aspnet core works", "kestrel server pipeline host", "request flow aspnet"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What Kestrel & the Pipeline Are
 
 When you write `app.MapGet("/", () => "hi")` and a browser gets your text back, a surprising amount of
-machinery ran before your lambda did — and almost nobody who writes that line ever learns what. Someone
-opened a socket. Someone read raw bytes off the wire and turned them into a request you could work with.
-Something carried that request through a chain of steps and finally handed it to your handler. This guide
-opens that box.
+machinery ran before your lambda did. Someone opened a socket. Someone read raw bytes off the wire and
+turned them into a request you could work with. Something carried that request through a chain of steps
+and finally handed it to your handler. This guide opens that box.
 
 This is the **roots** guide for [ASP.NET Core From Zero](/guides/aspnet-core-from-zero). Up there you
 learn to *use* the framework; down here you learn what's underneath `MapGet`. It's the .NET parallel to

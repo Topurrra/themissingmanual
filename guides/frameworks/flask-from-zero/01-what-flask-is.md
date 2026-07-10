@@ -6,7 +6,7 @@ summary: "Flask is the micro-framework: a small core of routing, requests, and J
 tags: [flask, python, micro-framework, werkzeug, jinja2, wsgi, getting-started]
 difficulty: beginner
 synonyms: ["what is flask", "flask micro-framework", "flask first app", "flask vs django vs fastapi", "flask hello world", "flask app route", "flask werkzeug jinja"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # What Flask Is & Your First App
@@ -55,9 +55,6 @@ pages by filling in your data. (More on this when we render notes in a later pha
 📝 **WSGI** (Web Server Gateway Interface) — the standard "handshake" between a Python web app and
 the web server that runs it. Flask speaks WSGI through Werkzeug, so a production server can run your
 app without knowing it's Flask.
-
-The one-liner: **Flask = Werkzeug (web/HTTP) + Jinja2 (templates), speaking WSGI, with a small
-routing layer on top.** Let's build the smallest possible one.
 
 ## Your first app
 

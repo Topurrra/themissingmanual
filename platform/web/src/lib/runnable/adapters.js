@@ -38,6 +38,9 @@ const SQLJS_CDN = `https://cdn.jsdelivr.net/npm/sql.js@${SQLJS_VERSION}/dist`;
 // worker chunk never lands in the main entry either.
 import JsWorker from './js-worker.js?worker';
 import { TypeScriptAdapter } from './typescript-adapter.js';
+import { PGliteAdapter } from './pglite-adapter.js';
+import { WatAdapter } from './wat-adapter.js';
+import { MathAdapter } from './math-adapter.js';
 
 // Load an external script tag once; resolve when it's on `window`.
 const scriptCache = new Map();
@@ -94,23 +97,25 @@ class JsAdapter {
         done = true;
         worker.terminate();
         this.#worker = null;
-        resolve({ error: `Execution timed out after ${this.timeoutMs / 1000}s (terminated).` });
+        const text = `Execution timed out after ${this.timeoutMs / 1000}s (terminated).`;
+        resolve({ error: text, errorMessage: text });
       }, this.timeoutMs);
 
       worker.onmessage = (e) => {
         if (done || !e.data || e.data.__id !== id) return;
         done = true;
         clearTimeout(timer);
-        const { ok, logs, result, error } = e.data;
+        const { ok, logs, result, error, errorMessage } = e.data;
         const out = (logs || []).map((l) => l.text).join('\n');
         if (ok) resolve({ logs: out, result });
-        else resolve({ logs: out, error });
+        else resolve({ logs: out, error, errorMessage });
       };
       worker.onerror = (e) => {
         if (done) return;
         done = true;
         clearTimeout(timer);
-        resolve({ error: e.message || 'Worker error' });
+        const text = e.message || 'Worker error';
+        resolve({ error: text, errorMessage: text });
       };
 
       worker.postMessage({ code, __id: id });
@@ -316,7 +321,10 @@ const FACTORIES = {
   py: () => new PythonAdapter(),
   sql: () => new SqlAdapter(),
   typescript: () => new TypeScriptAdapter(),
-  ts: () => new TypeScriptAdapter()
+  ts: () => new TypeScriptAdapter(),
+  postgres: () => new PGliteAdapter(),
+  wat: () => new WatAdapter(),
+  math: () => new MathAdapter()
 };
 
 // One adapter instance per language, shared across all blocks on the page so

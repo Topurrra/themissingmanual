@@ -6,14 +6,16 @@ summary: "Scaling up means a bigger box — simple, but capped and a single poin
 tags: [scaling, scale-up, scale-out, vertical-scaling, horizontal-scaling, statelessness, session-state]
 difficulty: advanced
 synonyms: ["scale up vs scale out", "vertical vs horizontal scaling", "what is a stateless server", "why do servers need to be stateless", "what is session state", "can i just buy a bigger server"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Scale Up vs Scale Out, and Why Statelessness Matters
 
-Before any diagrams, let's get the two ways to grow clear in your head — because almost every scaling decision is really a choice between them, and one of them has a hidden requirement that trips up everyone the first time.
-
-You have one server. It's getting busy. There are exactly two directions you can go: make *that machine* more powerful, or run *more machines*. That's it. Everything in this guide is a consequence of which one you pick, and the second one — the one you'll need for real scale — only works if your servers have a specific property. We'll build to that property, because it's the single most important idea here.
+You have one server. It's getting busy. There are exactly two directions you can go: make *that machine*
+more powerful, or run *more machines*. That's it. Everything in this guide is a consequence of which one
+you pick, and the second one — the one you'll need for real scale — only works if your servers have a
+specific property, and one of the two has a hidden requirement that trips up everyone the first time.
+We'll build to that property, because it's the single most important idea here.
 
 ## Scale up: a bigger box
 
@@ -51,7 +53,7 @@ Here's the shape of the two approaches, side by side:
    resize and you're done          │     add a load balancer in front (Phase 2)
 ```
 
-**The catch nobody mentions up front.** Scaling out *sounds* like the obvious win — so why doesn't everyone start here? Because it has a requirement that scaling up doesn't. If you have five identical servers and a request can land on *any* of them, then every server has to be able to handle *any* request, with no special knowledge that only it possesses. The moment one server knows something the others don't, your pool of interchangeable machines stops being interchangeable — and the whole model breaks. That property has a name, and it's the heart of this guide.
+**The catch nobody mentions up front.** Scaling out *sounds* like the obvious win, so why doesn't everyone start here? Because it has a requirement scaling up doesn't. If five identical servers can each get any request, every server has to be able to handle *any* request, with no special knowledge only it possesses. The moment one server knows something the others don't, your pool of interchangeable machines stops being interchangeable — and the whole model breaks. That property has a name, and it's the heart of this guide.
 
 ## Statelessness: the property that makes scale-out work
 
@@ -61,7 +63,7 @@ Here's the shape of the two approaches, side by side:
 
 **Why this is the unlock.** Go back to the dial. To turn capacity up, you add a server — but a freshly booted server knows *nothing* about any user. If your application requires that the new server somehow already remembers your logged-in session, your shopping cart, or where you are in a multi-step form, then a new server is useless until it magically acquires that knowledge. Statelessness sidesteps the whole problem: there's nothing to remember locally, so a brand-new server is immediately as useful as an old one. Adding capacity becomes trivial precisely *because* no server holds anything special.
 
-**A real example — the same request, two different servers.** Watch what a stateless request looks like. The client sends a token with the request; any server can verify it and respond. Here the same authenticated call hits two different machines and behaves identically:
+**A real example.** The client sends a token with the request; any server can verify it and respond. Here the same authenticated call hits two different machines and behaves identically:
 
 ```console
 $ curl -s -H "Authorization: Bearer eyJhbGci..." https://api.example.com/me
@@ -71,13 +73,13 @@ $ curl -s -H "Authorization: Bearer eyJhbGci..." https://api.example.com/me
 {"served_by":"app-server-C","user":"ada","plan":"pro"}
 ```
 
-*What just happened:* The first request was routed to `app-server-A`, the second to `app-server-C` — and you got the same answer both times, with no error, no "who are you?", no re-login. Each server figured out who you were *from the request itself* (the `Authorization` token), not from anything it had stashed in its own memory from a previous request. Neither server needed to have met you before. That's statelessness in one transcript: the server identity changed and nothing else did.
+*What just happened:* the first request was routed to `app-server-A`, the second to `app-server-C` — same answer both times, no error, no re-login. Each server figured out who you were *from the request itself* (the `Authorization` token), not from anything stashed in its own memory. Neither server needed to have met you before. That's statelessness in one transcript: the server identity changed and nothing else did.
 
-⚠️ **Gotcha — in-memory session state quietly breaks all of this.** The classic mistake is to store per-user data in the server's own memory: the logged-in user object, the contents of a shopping cart, the step of a checkout wizard, an upload-in-progress. On *one* server this works perfectly and feels natural — so it sails through development and through your single-box production. Then you add a second server to scale out, requests start landing on whichever machine is free, and users get randomly logged out, see empty carts, or watch a multi-step form forget step two on step three. The data is sitting in server A's memory, but the request went to server B, which never heard of it. Nothing crashed; it just *forgets* intermittently, which is maddening to debug. The fix is the subject of [Phase 3](03-scaling-the-stateful-bits.md): take the state *out* of the server's local memory and put it somewhere all servers can reach.
+⚠️ **Gotcha — in-memory session state quietly breaks all of this.** The classic mistake is storing per-user data in the server's own memory: the logged-in user object, a shopping cart, the step of a checkout wizard. On *one* server this works perfectly and sails through development. Add a second server, requests start landing on whichever machine is free, and users get randomly logged out or watch a form forget step two on step three. The data is sitting in server A's memory, but the request went to server B, which never heard of it — nothing crashed, it just *forgets* intermittently, which is maddening to debug. The fix is [Phase 3](03-scaling-the-stateful-bits.md): take state *out* of local memory and put it somewhere all servers can reach.
 
-🪖 **War story.** A team scaled from one app server to three to handle a launch, deployed on a Friday, and spent the weekend chasing a "random logout" bug that they could never reproduce on their laptops. Of course they couldn't — locally they only ran one server, so every request came back to the same memory. In production, the load balancer was doing exactly its job, fanning requests across all three, and one in three landed on a server that didn't hold the user's session. The bug wasn't random at all. It was the architecture telling them, loudly, that their servers were secretly stateful.
+🪖 **War story.** A team scaled from one app server to three for a launch, deployed on a Friday, and spent the weekend chasing a "random logout" bug they could never reproduce locally — because locally they only ran one server, so every request hit the same memory. In production, the load balancer was doing exactly its job, fanning requests across all three, and one in three landed on a server that didn't hold the session. The bug wasn't random. It was the architecture telling them their servers were secretly stateful.
 
-**Why this saves you later.** If you design for statelessness from the start — every request self-describing, nothing important kept in local memory — then scaling out is almost boring. You add a machine, point the load balancer at it, and you're done; there's no migration, no special handling, no "but what about the sessions on the old box?" You've made your servers *cattle, not pets* — identical, disposable, replaceable. That's the foundation the next two phases stand on.
+**Why this saves you later.** Design for statelessness from the start — every request self-describing, nothing important kept in local memory — and scaling out becomes almost boring: add a machine, point the load balancer at it, done. No migration, no "what about the sessions on the old box?" Your servers become *cattle, not pets* — identical, disposable, replaceable. That's the foundation the next two phases stand on.
 
 ## Recap
 

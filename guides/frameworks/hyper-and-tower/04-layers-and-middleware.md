@@ -6,15 +6,15 @@ summary: "Middleware is a Service that wraps another Service; a tower::Layer is 
 tags: [tower, rust, layer, middleware, servicebuilder]
 difficulty: advanced
 synonyms: ["tower layer", "tower middleware", "tower servicebuilder", "tower compose middleware", "tower layer trait", "wrap a service"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Layers & Middleware
 
 In [the last phase](03-the-service-trait.md) you saw the one trait the whole tower world stands on: a
 **`Service`** is "an async function from a request to a response," with a readiness check bolted on the
-front. Once everything is a `Service`, a beautiful thing falls out of the shape — and it's the whole
-reason tower exists.
+front. Once everything is a `Service`, a beautiful thing falls out of the shape — the whole reason tower
+exists.
 
 Here is the mental model, and it's the only thing you need to carry through this phase:
 

@@ -6,12 +6,12 @@ summary: "Use MAUI Shell to describe your app's tabs and flyout in one file, mov
 tags: [dotnet-maui, csharp, navigation, shell, routing]
 difficulty: intermediate
 synonyms: ["maui shell", "maui navigation", "GoToAsync", "maui routes", "maui flyout tabs", "maui pass parameters navigation"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Navigation with Shell
 
-In [Phase 4](04-mvvm.md) your notes app got real structure: a `NotesViewModel` holding a list, a command to add a note, and a `CollectionView` showing the rows. But it's all stuck on one page — tap a note and nothing happens. A real notes app needs a second screen, a detail page where you read and edit that one note, and a way to *get there* and *get back*. That's navigation, and in modern MAUI the answer has a name: **Shell**.
+In [Phase 4](04-mvvm.md) your notes app got real structure: a `NotesViewModel` holding a list, a command to add a note, and a `CollectionView` showing the rows. But it's stuck on one page — tap a note and nothing happens. A real notes app needs a detail page, and a way to *get there* and *get back*. That's navigation, and in modern MAUI the answer is **Shell**.
 
 ## The mental model: a map and an address bar
 
@@ -54,7 +54,7 @@ The MAUI template already gives you an `AppShell.xaml`. Here's a focused version
 </Shell>
 ```
 
-*What just happened:* `<Shell>` is the root of your whole app's navigation. The `<TabBar>` says "give me a bottom tab bar," and each `<ShellContent>` is one tab. `Title` is the label the user sees; `ContentTemplate="{DataTemplate local:NotesPage}"` tells Shell which page to render for that tab (wrapped in `DataTemplate` so the page is built lazily, only when the tab is first shown); `Route="notes"` is that screen's address. Swap `<TabBar>` for `<FlyoutItem>` entries and you'd get a slide-out hamburger menu instead — same `ShellContent` children, different chrome. This one file *is* the structure of your app.
+*What just happened:* `<Shell>` is the root of your app's navigation. `<TabBar>` says "give me a bottom tab bar," and each `<ShellContent>` is one tab. `Title` is the label the user sees; `ContentTemplate="{DataTemplate local:NotesPage}"` tells Shell which page to render (wrapped in `DataTemplate` so it's built lazily, only when first shown); `Route="notes"` is that screen's address. Swap `<TabBar>` for `<FlyoutItem>` entries and you'd get a slide-out hamburger menu instead — same `ShellContent` children, different chrome.
 
 ## Moving between screens: GoToAsync
 
@@ -68,7 +68,7 @@ await Shell.Current.GoToAsync("notedetail");
 await Shell.Current.GoToAsync("..");
 ```
 
-*What just happened:* `Shell.Current` is the running Shell instance — the app's one navigation map. `GoToAsync("notedetail")` looks up the route `notedetail` and pushes that page. The string `".."` means "up one" — it pops back to where you came from, same as the hardware/title-bar back button. It's `async` because navigation can run page-creation and transition animations, so you `await` it.
+*What just happened:* `Shell.Current` is the running Shell instance — the app's one navigation map. `GoToAsync("notedetail")` looks up the route and pushes that page. `".."` means "up one" — it pops back, same as the back button. It's `async` because navigation can run page-creation and transition animations.
 
 But there's a catch everybody trips over. The `notes` and `about` routes work because they're declared in `AppShell.xaml`. `notedetail` is **not** in the Shell tree — it's a page you only visit on demand, and Shell doesn't know that name yet.
 
@@ -88,7 +88,7 @@ public partial class AppShell : Shell
 }
 ```
 
-*What just happened:* `Routing.RegisterRoute` tells Shell, "when someone navigates to `notedetail`, build a `NoteDetailPage`." Now `GoToAsync("notedetail")` resolves instead of throwing. The rule of thumb: if a page is a tab or flyout item, it's already registered; if it's anything else (detail, edit, settings reached from a button), register it once at startup and forget it.
+*What just happened:* `Routing.RegisterRoute` tells Shell, "when someone navigates to `notedetail`, build a `NoteDetailPage`." Now `GoToAsync("notedetail")` resolves instead of throwing. Rule of thumb: if a page is a tab or flyout item, it's already registered; anything else (detail, edit, settings reached from a button) needs registering once at startup.
 
 ## Passing parameters: which note?
 
@@ -105,7 +105,7 @@ private async Task GoToDetail(Note note)
 }
 ```
 
-*What just happened:* `$"notedetail?id={note.Id}"` builds an address like `notedetail?id=3` — the route name, then a `?id=` query parameter carrying that note's id. (A `CollectionView` can fire a command on tap via `SelectionChanged` or by wrapping each item's template in a tappable element; the point here is the navigation call, not the gesture.) The detail page now needs to *receive* that `id`.
+*What just happened:* `$"notedetail?id={note.Id}"` builds an address like `notedetail?id=3` — the route name, then a `?id=` query parameter carrying that note's id. (A `CollectionView` can fire a command on tap via `SelectionChanged` or a tappable item template; the point here is the navigation call, not the gesture.) The detail page now needs to *receive* that `id`.
 
 On the receiving side, you decorate the page (or its ViewModel) with `[QueryProperty]`, which maps a query key to a property:
 
@@ -126,7 +126,7 @@ public partial class NoteDetailViewModel : ObservableObject
 }
 ```
 
-*What just happened:* `[QueryProperty(nameof(NoteId), "id")]` wires the query key `"id"` from the URL to the `NoteId` property. When Shell navigates, it sets `NoteId = "3"` for you. Because `NoteId` is an `[ObservableProperty]` (from Phase 4's CommunityToolkit.Mvvm), the generator gives us an `OnNoteIdChanged` hook that fires the moment the value lands — a clean place to load that note. Query values arrive as **strings**, so you'll often `int.Parse` the id before looking it up.
+*What just happened:* `[QueryProperty(nameof(NoteId), "id")]` wires the query key `"id"` to the `NoteId` property. When Shell navigates, it sets `NoteId = "3"` for you. Because `NoteId` is an `[ObservableProperty]` (Phase 4's CommunityToolkit.Mvvm), the generator gives us an `OnNoteIdChanged` hook that fires the moment the value lands — a clean place to load that note. Query values arrive as **strings**, so you'll often `int.Parse` the id before looking it up.
 
 There's also a richer way when you need to pass a whole object instead of a flat id — a dictionary plus the `IQueryAttributable` interface:
 
@@ -152,13 +152,13 @@ public partial class NoteDetailViewModel : ObservableObject, IQueryAttributable
 }
 ```
 
-*What just happened:* the dictionary lets you hand over real objects (here, the whole `Note`) instead of cramming everything into a string. `ApplyQueryAttributes` is called by Shell with that dictionary right after navigation, and you fish out your value by key. Use the query-string `?id=` style for simple values like an id (it's also link-friendly and survives app restarts); reach for the dictionary + `IQueryAttributable` when you need to pass an object you already have in hand.
+*What just happened:* the dictionary lets you hand over real objects (here, the whole `Note`) instead of cramming everything into a string. `ApplyQueryAttributes` is called by Shell with that dictionary right after navigation, and you fish out your value by key. Use the query-string `?id=` style for simple values like an id (link-friendly, survives app restarts); reach for the dictionary + `IQueryAttributable` when you need to pass an object you already have in hand.
 
-💡 Both styles solve the same problem — "tell the next screen what to show." The query string is the default for ids; the dictionary is for objects. Pass the id when you have an id, pass the object when you have the object.
+💡 Both styles solve the same problem — "tell the next screen what to show." Pass the id when you have an id, pass the object when you have the object.
 
 ## The whole flow, end to end
 
-For our notes app, navigation now reads as one clean story: the list page shows `Notes`; tapping a row runs `GoToDetail(note)`, which navigates to `notedetail?id={note.Id}`; Shell builds `NoteDetailPage`, sets `NoteId` via `[QueryProperty]`, and the detail ViewModel loads and shows that note. Edit it, then `GoToAsync("..")` takes the user back to the list. One map, a handful of addresses, and a query string carrying the id — the entire navigation layer of a real app.
+Navigation now reads as one clean story: the list page shows `Notes`; tapping a row runs `GoToDetail(note)`, which navigates to `notedetail?id={note.Id}`; Shell builds `NoteDetailPage`, sets `NoteId` via `[QueryProperty]`, and the detail ViewModel loads and shows that note. Edit it, then `GoToAsync("..")` takes the user back to the list. One map, a handful of addresses, and a query string carrying the id — the entire navigation layer of a real app.
 
 ## Recap
 

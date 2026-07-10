@@ -1,7 +1,7 @@
 ---
 title: "Capstone: shopping cart total"
 guide: practice-javascript
-phase: 9
+phase: 15
 summary: "Combine functions, arrays, and objects to total a shopping cart and flag big orders."
 tags: [javascript, capstone, reduce, functions]
 difficulty: intermediate

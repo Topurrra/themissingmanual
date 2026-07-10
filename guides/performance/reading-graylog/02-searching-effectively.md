@@ -6,7 +6,7 @@ summary: "The query model: field:value searches, time-range scoping as your bigg
 tags: [graylog, log-search, query-syntax, field-value, time-range, boolean-operators, correlation-id, request-id, histogram]
 difficulty: intermediate
 synonyms: ["graylog search syntax", "how to search field value in graylog", "graylog time range search", "boolean operators graylog query", "follow request id across services", "what is a correlation id", "read the graylog histogram", "find the spike in logs", "kibana query language basics"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Searching Effectively
@@ -14,7 +14,7 @@ updated: 2026-06-19
 You're in the search box. The pager went off two minutes ago. The instinct is to type the error message
 and hit enter - and then you get ten thousand results spanning three days and you're drowning again,
 this time in a nicer UI. The fix isn't a cleverer search string. It's a small set of moves, applied in
-the right order, that shrink the haystack before you go looking for the needle. This phase is those moves.
+the right order, that shrink the haystack before you go looking for the needle.
 
 ## Cheat-card: drowning right now?
 
@@ -164,8 +164,7 @@ It's not decoration; it's the shape of the problem.
 *What just happened:* The flat baseline on the left is the normal background rate of `checkout` errors -
 a stray one here and there. At 14:01 the bars shoot up. That cliff *is* the start of the incident. Now
 you know exactly which minute to scope to, and you can line it up against a deploy, a config change, or a
-dependency going down. The histogram answers "when did this start?" faster than reading any individual
-line.
+dependency going down.
 
 💡 **Key point.** Read the *shape* before the *lines*. A sudden cliff says "something changed at this
 moment" (a deploy, an outage). A slow ramp says "something is degrading" (a leak, a filling queue, a

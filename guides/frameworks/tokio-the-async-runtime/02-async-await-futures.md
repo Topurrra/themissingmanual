@@ -6,12 +6,12 @@ summary: "How an async fn becomes a state machine implementing Future, what .awa
 tags: [tokio, rust, async, await, futures, poll]
 difficulty: intermediate
 synonyms: ["rust future trait", "rust poll", "what does await do", "rust async fn", "cooperative scheduling rust", "rust futures state machine"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Async, Await & Futures
 
-Here's the one sentence to carry through this whole phase: **an `async fn` is a state machine that implements the `Future` trait, and `.await` is the spot where that machine is allowed to pause and hand control back to the runtime.** Phase 1 told you futures are inert plans and Tokio is the engine. Now we open the plan up and look at how it's built - because once you see the state machine, `.await` stops being magic and starts being a place where your function can fall asleep and get woken up later.
+**An `async fn` is a state machine that implements the `Future` trait, and `.await` is the spot where that machine is allowed to pause and hand control back to the runtime.** Phase 1 told you futures are inert plans and Tokio is the engine. Now we open the plan up and look at how it's built - because once you see the state machine, `.await` stops being magic and starts being a place where your function can fall asleep and get woken up later.
 
 You'll rarely touch the machinery directly. The compiler writes it for you. But knowing it's there is the difference between "my async code mysteriously froze the whole server" and "ah, I blocked at a point that has no `.await`, so nothing else could run." That second person is the one you want to be.
 

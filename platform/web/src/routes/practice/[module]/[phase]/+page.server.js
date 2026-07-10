@@ -2,8 +2,13 @@ import { error } from '@sveltejs/kit';
 import { getGuide, getPhase } from '$lib/api.js';
 import { parseLessonBlock, stripLessonHtml } from '$lib/practice/lessons.js';
 import { relatedGuideFor } from '$lib/practice/related-guides/index.js';
+import { HIDDEN_MODULES } from '$lib/practice/hidden-modules.js';
 
 export async function load({ fetch, params }) {
+  // A hidden module (built, not yet linked from anywhere) 404s here too, not
+  // just off the hub/overview pages - this route fetches by slug directly and
+  // doesn't otherwise go through +layout.server.js's already-filtered list.
+  if (HIDDEN_MODULES.has(params.module)) throw error(404, 'Module not found');
   const slug = `practice-${params.module}`;
   const [detail, phase] = await Promise.all([getGuide(fetch, slug), getPhase(fetch, slug, params.phase)]);
 

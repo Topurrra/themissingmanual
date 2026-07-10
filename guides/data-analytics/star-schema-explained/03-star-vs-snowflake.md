@@ -12,12 +12,12 @@ synonyms:
   - dimensional modeling explained
   - how do data warehouses organize tables
   - why is it called a star schema
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Star vs. snowflake, and when to use it
 
-Now that you've seen why dimensions are deliberately flattened, it's worth knowing there's a variant that partially undoes that — and knowing when each one earns its place.
+Now that you've seen why dimensions are deliberately flattened, here's a variant that partially undoes that — and when each one earns its place.
 
 ## The snowflake schema
 

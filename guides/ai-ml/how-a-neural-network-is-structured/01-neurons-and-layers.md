@@ -10,12 +10,12 @@ synonyms:
   - what is a neuron in a neural network
   - input layer vs output layer
   - how many layers does a neural network have
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Neurons, Layers, and What "Network" Means
 
-Strip away the buzzwords and a neural network is a structure for turning numbers into other numbers, arranged in a very specific shape: numbers move through a sequence of stages, each stage doing a small transformation, until you're left with an answer. That's the whole shape. Everything else in this guide is detail on top of that one idea.
+Strip away the buzzwords and a neural network is a structure for turning numbers into other numbers, arranged in a specific shape: numbers move through a sequence of stages, each doing a small transformation, until you're left with an answer. That's the whole shape. Everything else in this guide is detail on top of that one idea.
 
 ## The three kinds of layers
 

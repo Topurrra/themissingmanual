@@ -6,26 +6,26 @@ summary: "Test an axum app in memory with tower's oneshot (no ports), structure 
 tags: [axum, rust, testing, production, graceful-shutdown]
 difficulty: intermediate
 synonyms: ["axum testing", "axum oneshot test", "tower ServiceExt oneshot", "axum graceful shutdown", "axum production", "rust web testing", "axum deploy"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Testing & Production
 
-You've grown the books API from a single route into a real REST service — extractors, shared state, tower middleware, CRUD, an error type that turns into responses. Now comes the part that decides whether anyone *trusts* it: proving it works, and running it somewhere real without it falling over at 3am during a deploy. Both turn out to be small, once you see the one fact that makes them small.
+You've grown the books API from a single route into a real REST service — extractors, shared state, tower middleware, CRUD, an error type that turns into responses. Now comes the part that decides whether anyone *trusts* it: proving it works, and running it somewhere real without falling over at 3am during a deploy. Both turn out to be small, once you see the one fact that makes them small.
 
 ## The mental model: your `Router` is a `tower::Service`, so testing is calling it in memory
 
-Here's the fact that makes axum a joy to test. A `Router` **is a `tower::Service`** — the same abstraction every tower layer speaks. A service is, at heart, a thing you hand a `Request` and get back a `Response`. Your whole app is one of those.
+Here's the fact that makes axum a joy to test. A `Router` **is a `tower::Service`** — the same abstraction every tower layer speaks. A service is, at heart, a thing you hand a `Request` and get back a `Response`, and your whole app is one of those.
 
-> 💡 If the router is a service, then a test is nothing more than handing it a request and awaiting the response — directly, in your own process. No network. No port. No `tokio::spawn` running a server in the background. You build a fake request, the router runs the *entire* chain (middleware, routing, extractors, your handler), and you read the response back — all in memory, in microseconds.
+> 💡 If the router is a service, a test is nothing more than handing it a request and awaiting the response — directly, in your own process. No network, no port, no `tokio::spawn` running a server in the background. You build a fake request, the router runs the *entire* chain (middleware, routing, extractors, your handler), and you read the response back — all in memory, in microseconds.
 
-The tool that lets you do this is `oneshot`, an extension method from `tower::ServiceExt`. It takes ownership of the service, drives one request through it, and gives you the response. You enable it with one dependency:
+The tool is `oneshot`, an extension method from `tower::ServiceExt`: it takes ownership of the service, drives one request through it, and gives you the response.
 
 ```bash
 cargo add tower --features util
 ```
 
-The `util` feature is what brings in `ServiceExt` (and therefore `.oneshot`). With that in place, a test for `GET /books` looks like this:
+The `util` feature brings in `ServiceExt` (and `.oneshot`). A test for `GET /books`:
 
 ```rust
 use tower::ServiceExt; // brings .oneshot into scope
@@ -44,9 +44,9 @@ async fn list_books_ok() {
 }
 ```
 
-*What just happened:* `#[tokio::test]` gives the test an async runtime (the same way `#[tokio::main]` does for `main`). We built the same router the real app uses by calling `app()`, then `oneshot` drove a single hand-built `GET /books` request through it. `Request::builder()...body(Body::empty())` is a request with no body — exactly what a GET needs. The first `.unwrap()` unwraps building the request; the second unwraps the `Result` `oneshot` returns. Afterward `res` is a real `Response`, and `res.status()` is whatever your handler set. This runs in well under a millisecond and never opens a socket. Note that `oneshot` *consumes* `app` — that's fine here because each test builds its own fresh router.
+*What just happened:* `#[tokio::test]` gives the test an async runtime, like `#[tokio::main]` does for `main`. We built the same router the real app uses, then `oneshot` drove a hand-built `GET /books` request through it — `body(Body::empty())` because a GET needs none. `res` comes back a real `Response`; `res.status()` is whatever your handler set. Runs in under a millisecond, no socket opened. `oneshot` *consumes* `app`, which is fine since each test builds its own.
 
-Testing a **POST** with a JSON body is the same shape with two additions: you attach the body and set the `Content-Type` header so axum's `Json` extractor knows to parse it.
+Testing a **POST** with a JSON body is the same shape with two additions: attach the body and set the `Content-Type` header so axum's `Json` extractor knows to parse it.
 
 ```rust
 #[tokio::test]
@@ -66,7 +66,7 @@ async fn create_book_returns_201() {
 }
 ```
 
-*What just happened:* we set the method to `POST`, the URI to `/books`, and — this part matters — the `content-type` header to `application/json`. Without that header, the `Json<T>` extractor rejects the request before your handler ever runs, and you'd be testing the wrong path (a `415 Unsupported Media Type` instead of your create logic). `Body::from(body)` turns the JSON string into a request body. We assert `201 Created`, the status your create handler returns. To test inputs you *expect* to fail — a missing field, malformed JSON — send the bad payload and assert the `400`/`422` and error shape your `IntoResponse` error type produces (Phase 7).
+*What just happened:* method `POST`, URI `/books`, and — this part matters — the `content-type` header set to `application/json`. Without it, `Json<T>` rejects the request before your handler runs, and you'd be testing the wrong path (`415`, not your create logic). `Body::from(body)` becomes the request body; we assert `201 Created`. For inputs you *expect* to fail, send the bad payload and assert the `400`/`422` your `AppError` produces (Phase 7).
 
 To check the *body* of a response, not the status, you pull the bytes out. axum's body is a stream, so you collect it with `to_bytes`:
 
@@ -78,13 +78,13 @@ let book: Book = serde_json::from_slice(&bytes).unwrap();
 assert_eq!(book.title, "Dune");
 ```
 
-*What just happened:* `res.into_body()` takes ownership of the response body, and `to_bytes` reads the whole stream into a byte buffer. The second argument is a size cap — `usize::MAX` means "no limit," which is fine in a test where you control the input; in request-handling code you'd pass a real ceiling so a giant body can't exhaust memory. Then `serde_json::from_slice` deserializes those bytes into your `Book` struct, and you assert on real fields. That's a full round trip: request in, typed value out, no network in sight.
+*What just happened:* `res.into_body()` takes ownership of the response body, and `to_bytes` reads the whole stream into a byte buffer. The second argument is a size cap — `usize::MAX` means "no limit," fine in a test where you control the input, but you'd pass a real ceiling in request-handling code so a giant body can't exhaust memory. `serde_json::from_slice` deserializes those bytes into your `Book` struct, and you assert on real fields — a full round trip: request in, typed value out, no network in sight.
 
-This is the heart of testing an axum app. The rest — table-driven cases, fixtures, running it all on every push — is general Rust testing, covered in [testing in CI](/guides/testing-in-ci).
+That's the heart of testing an axum app. The rest — table-driven cases, fixtures, running it on every push — is general Rust testing, covered in [testing in CI](/guides/testing-in-ci).
 
 ## Structure: one `fn app() -> Router` that `main` and tests both build
 
-You may have noticed every test above started with `let app = app();`. That `app()` function is the structural move that makes all of this clean: **factor your router construction into one function** that returns the fully-wired `Router`. Both `main` and your tests call it, so they exercise the *exact same* routing, middleware, and state.
+Every test above started with `let app = app();`. That's the structural move that makes this clean: **factor router construction into one function** returning the fully-wired `Router`. Both `main` and your tests call it, so they exercise the *exact same* routing, middleware, and state.
 
 ```rust
 use axum::{routing::{get, post}, Router};
@@ -103,15 +103,15 @@ async fn main() {
 }
 ```
 
-*What just happened:* all route registration and layering lives in one place. `main` binds a TCP listener and serves `app()`; a test builds the *same* `app()` and drives it with `oneshot`. There's no second, slightly-different set of routes that "should match production" but quietly drifts out of sync — there's one source of truth. The moment you find yourself copy-pasting route setup into a test, stop and pull out an `app()`.
+*What just happened:* all route registration and layering lives in one place. `main` binds a TCP listener and serves `app()`; a test builds the *same* `app()` and drives it with `oneshot`. There's no second, slightly-different set of routes that quietly drifts out of sync — one source of truth. The moment you find yourself copy-pasting route setup into a test, stop and pull out an `app()`.
 
-> 📝 If your handlers need shared state — a database pool, config (Phase 4) — make it `fn app(state: AppState) -> Router` that ends with `.with_state(state)`. Then `main` builds the real pool and tests pass a fake or an in-memory one. The signature change is small; the testability win is large.
+> 📝 Handlers needing shared state — a database pool, config (Phase 4) — make it `fn app(state: AppState) -> Router` ending in `.with_state(state)`. `main` builds the real pool; tests pass a fake or in-memory one.
 
 ## Graceful shutdown: drain in-flight requests instead of dropping them
 
-`axum::serve(listener, app()).await` runs forever — until the process is killed. For learning that's perfect. For a real deploy it has a gap: when your platform restarts the service (a deploy, a scale-down, a `SIGTERM`), the process is cut off mid-flight. Requests in progress are severed, and clients see broken connections.
+`axum::serve(listener, app()).await` runs forever — until the process is killed. For learning that's perfect. For a real deploy it has a gap: when your platform restarts the service (a deploy, a scale-down, a `SIGTERM`), the process is cut off mid-flight and clients see broken connections.
 
-What you want instead is a **graceful shutdown**: on a shutdown signal, *stop accepting new connections, finish the requests already in progress, then exit.* axum has this built in — you hand `serve` a future that resolves when it's time to stop:
+What you want instead is a **graceful shutdown**: on a shutdown signal, *stop accepting new connections, finish the requests already in progress, then exit.* axum has this built in — hand `serve` a future that resolves when it's time to stop:
 
 ```rust
 use tokio::signal;
@@ -149,19 +149,19 @@ async fn shutdown_signal() {
 }
 ```
 
-*What just happened:* `with_graceful_shutdown` takes a future — `shutdown_signal()` — and watches it while serving. The moment that future resolves, axum stops accepting new connections and waits for in-flight requests to drain before `serve` returns. Inside `shutdown_signal`, we build two futures: one that completes on Ctrl-C (`SIGINT`, what you press locally), and one that completes on `SIGTERM` (what orchestrators like Kubernetes send on a restart). The `#[cfg(unix)]` / `#[cfg(not(unix))]` pair handles the fact that `SIGTERM` doesn't exist on Windows — there, `terminate` is a future that never resolves (`pending`), so only Ctrl-C triggers shutdown. `tokio::select!` waits for *whichever* fires first and then returns, which resolves the future and starts the drain. You've traded zero lines for a clean exit, which is exactly the trade a production service needs.
+*What just happened:* `with_graceful_shutdown` takes a future — `shutdown_signal()` — and watches it while serving. The moment that future resolves, axum stops accepting new connections and waits for in-flight requests to drain before `serve` returns. Inside `shutdown_signal`, we build two futures: one completing on Ctrl-C (`SIGINT`, what you press locally), one on `SIGTERM` (what orchestrators like Kubernetes send on a restart). The `#[cfg(unix)]` pair handles `SIGTERM` not existing on Windows — there, `terminate` never resolves, so only Ctrl-C triggers shutdown. `tokio::select!` waits for *whichever* fires first and starts the drain.
 
 ## Deploy shape: release binary, tiny container, env config, real logs
 
-Rust's shipping superpower is the same as Go's: you compile to a **single native binary** with no interpreter, no `node_modules`, no virtualenv to install. Build the optimized version:
+Rust ships like Go: compile to a **single native binary**, no interpreter, no `node_modules`, no virtualenv. Build the optimized version:
 
 ```bash
 cargo build --release
 ```
 
-*What just happened:* `--release` turns on optimizations (and turns off debug assertions), producing a binary in `target/release/` that's dramatically faster than the default debug build. It compiles slower — that's the trade — so you keep using plain `cargo run` for development and only build `--release` for what you ship.
+*What just happened:* `--release` turns on optimizations (and off debug assertions), producing a binary in `target/release/` dramatically faster than the debug build. It compiles slower — that's the trade — so keep using plain `cargo run` for development and only build `--release` for what you ship.
 
-Read configuration — at minimum the **port**, and your **database URL** — from the environment, not hard-coded constants. This is the 12-factor convention, and it's what platforms expect:
+Read configuration — at minimum the **port** and your **database URL** — from the environment, not hard-coded constants. This is the 12-factor convention, and it's what platforms expect:
 
 ```rust
 let port = std::env::var("PORT").unwrap_or_else(|_| "3000".to_string());
@@ -169,7 +169,7 @@ let addr = format!("0.0.0.0:{port}");
 let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
 ```
 
-*What just happened:* we read `PORT` from the environment and fall back to `3000` for local dev, so the *same binary* runs unchanged whether it's on your laptop or a platform that injects `PORT=10000`. Bind to `0.0.0.0`, not `127.0.0.1` — inside a container, `127.0.0.1` is only reachable from within the container itself, which means nothing outside can connect. The same env-var principle applies to `DATABASE_URL` and any secrets: configuration comes from the environment so the artifact stays identical across environments.
+*What just happened:* we read `PORT` from the environment and fall back to `3000` for local dev, so the *same binary* runs unchanged whether it's on your laptop or a platform that injects `PORT=10000`. Bind to `0.0.0.0`, not `127.0.0.1` — inside a container, `127.0.0.1` is only reachable from within the container, so nothing outside can connect. The same principle applies to `DATABASE_URL` and any secrets: configuration comes from the environment so the artifact stays identical across environments.
 
 A minimal **multi-stage Dockerfile** compiles the binary in one stage and copies *only* it into a near-empty final image:
 
@@ -188,7 +188,7 @@ ENV PORT=3000
 ENTRYPOINT ["/usr/local/bin/books-api"]
 ```
 
-*What just happened:* the first stage has the whole Rust toolchain and compiles the binary; the second is a `distroless/cc` image — basically nothing but the C runtime your binary dynamically links against, with no shell and no package manager — and we copy just the one executable into it. (We use `cc-debian12` rather than `static` because a default `cargo build` links libc dynamically; `distroless/cc` provides exactly that and nothing more.) The result is a container measured in tens of megabytes with a tiny attack surface — no shell means no shell for an attacker to drop into.
+*What just happened:* the first stage has the whole Rust toolchain and compiles the binary; the second is a `distroless/cc` image — just the C runtime your binary dynamically links against, no shell, no package manager — and we copy in only the one executable. (`cc-debian12` rather than `static` because a default `cargo build` links libc dynamically.) The result is a container measured in tens of megabytes with a tiny attack surface — no shell means no shell for an attacker to drop into.
 
 One easy-to-miss detail: **your `TraceLayer` logs nothing until you install a subscriber.** The `tracing` ecosystem separates *emitting* events (what `TraceLayer` does) from *printing* them (what a subscriber does). Add `tracing-subscriber` and initialize it once at startup:
 
@@ -199,9 +199,9 @@ fn main() {
 }
 ```
 
-*What just happened:* `tracing_subscriber::fmt::init()` installs a subscriber that formats events and writes them to stdout, honoring the `RUST_LOG` env var (e.g. `RUST_LOG=info`) for level filtering. Without this one line, the `TraceLayer` you added back in Phase 5 dutifully emits per-request spans into the void and you see nothing. With it, requests show up in your logs — and in a container, stdout is exactly where your platform collects them.
+*What just happened:* `tracing_subscriber::fmt::init()` installs a subscriber that formats events and writes them to stdout, honoring the `RUST_LOG` env var (e.g. `RUST_LOG=info`) for level filtering. Without this one line, the `TraceLayer` from Phase 5 emits per-request spans into the void and you see nothing. With it, requests show up in your logs — and in a container, stdout is exactly where your platform collects them.
 
-Finally, put a **reverse proxy** in front — nginx, Caddy, or whatever your platform provides (a load balancer, an ingress). The proxy terminates TLS (HTTPS), can serve static assets, and load-balances across multiple instances of your binary. Your axum app speaks plain HTTP on its port; the proxy faces the public internet. You generally don't terminate TLS in axum itself — let the proxy do it.
+Finally, put a **reverse proxy** in front — nginx, Caddy, or whatever your platform provides. It terminates TLS, can serve static assets, and load-balances across instances of your binary. Your axum app speaks plain HTTP on its port; the proxy faces the public internet — you generally don't terminate TLS in axum itself.
 
 That's the whole deploy shape: one release binary, configured by env vars, in a small container, logging to stdout, behind a proxy. Taking it the rest of the way to a live URL — picking a host, wiring CI, the domain and TLS specifics — is covered in [ship your side project](/guides/ship-your-side-project).
 

@@ -8,16 +8,14 @@ category: apis
 order: 5
 difficulty: intermediate
 synonyms: ["what is graphql", "graphql vs rest", "why use graphql", "graphql over-fetching under-fetching", "is graphql worth it", "when not to use graphql"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # GraphQL, Explained
 
 You've built a screen against a REST API and felt the friction: one endpoint hands you a wall of fields you'll never use, while the three things you actually need live behind three separate requests. You stitch them together on the client, write yet another `/users/:id/with-everything` endpoint, and quietly wonder if there's a better way.
 
-There is a different shape, and GraphQL is one answer to it: instead of the server deciding what each endpoint returns, the *client* asks for exactly the fields it wants and gets exactly those back, in a single request. That's the whole pitch. The catch is that GraphQL moves the difficulty around rather than deleting it — and this guide is honest about where it lands.
-
-By the end you'll have a working mental model of what GraphQL is, how its pieces fit, and — just as important — when REST is still the better call.
+There is: instead of the server deciding what each endpoint returns, the *client* asks for exactly the fields it wants and gets exactly those back, in a single request. That's GraphQL's whole pitch. The catch is that it moves the difficulty around rather than deleting it — and this guide is honest about where it lands, plus when REST is still the better call.
 
 ## How to read this
 

@@ -6,18 +6,15 @@ summary: "An array (or list) is an ordered row of numbered slots: jumping to any
 tags: [data-structures, arrays, lists, index, ordered-collections]
 difficulty: beginner
 synonyms: ["what is an array", "what is a list in programming", "why is array access fast", "why is inserting in the middle of a list slow", "list index explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Arrays & Lists - Ordered Collections
 
-The very first container almost everyone meets is the list. You've probably already used one - a row of
-names, a sequence of scores, the lines of a file. It feels simple, and most of the time it is. But there's
-a quiet trap inside it: some things you do to a list are basically free, and some things look just as
-innocent but get slower and slower as the list grows. By the end of this phase you'll be able to look at a
-line of code and *feel* which kind you're doing.
-
-First, let's get the names straight, because they trip people up.
+The very first container almost everyone meets is the list - a row of names, a sequence of scores, the
+lines of a file. It feels simple, and most of the time it is. But there's a quiet trap: some things you do
+to a list are basically free, and others look just as innocent but get slower as the list grows. By the end
+of this phase you'll be able to look at a line of code and *feel* which kind you're doing.
 
 📝 **Terminology.** An **array** is a fixed row of numbered slots laid out one after another in memory. A
 **list** is the friendlier, everyday version most languages hand you (Python's `list`, JavaScript's
@@ -38,8 +35,7 @@ flowchart LR
 
 📝 **Terminology.** The **index** is the slot number. Almost every language starts counting at **0**, not
 1 - so the first item is at index `0`, and a list of five items has indexes `0` through `4`. This
-off-by-one feeling is completely normal and confuses everybody at first; you stop noticing it within a
-week.
+off-by-one feeling confuses everybody at first; you stop noticing it within a week.
 
 **Why the order matters.** A list *remembers the order you put things in*. Monday stays before Tuesday
 until you change it. That's the defining feature: a list is for when sequence means something - steps in a
@@ -83,13 +79,12 @@ print(days)
 ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 ```
 *What just happened:* `append` put `"Sa"` in the next slot after `"Fr"` and nothing else had to move. The
-existing items kept their slots and their indexes. Appending is the natural, cheap way to grow a list, and
-it's what you'll do most of the time.
+existing items kept their slots and their indexes. Appending is the natural, cheap way to grow a list.
 
 📝 **Terminology.** "Cheap" / "fast" here means *the cost doesn't grow as the list gets bigger* - appending
-to a 10-item list and a 10-million-item list feel the same. (Once in a while a growing list has to find a
-bigger stretch of memory and copy itself, but averaged out, appending stays cheap. We'll leave that detail
-to the future performance guide.)
+to a 10-item list and a 10-million-item list feel the same. (Occasionally a growing list needs a bigger
+stretch of memory and copies itself, but averaged out, appending stays cheap - see
+[Big-O Without the Math Panic](/guides/big-o-without-the-math-panic) for the full picture.)
 
 ## Inserting or removing in the *middle* - this is the costly one
 
@@ -115,15 +110,16 @@ print(letters)
 ['A', 'X', 'B', 'C', 'D']
 ```
 *What just happened:* `insert(1, "X")` placed `"X"` at index 1 and quietly moved `B`, `C`, and `D` each one
-slot to the right. For four items that's nothing. For a list of a million items where you keep inserting
-near the front, all that shuffling adds up to real, noticeable slowness. Removing from the middle has the
-same problem in reverse: everything after the gap has to shuffle *left* to close it.
+slot to the right. For four items that's nothing - but for a list of a million items where you keep
+inserting near the front, all that shuffling adds up to real, noticeable slowness. Removing from the middle
+works the same way in reverse: everything after the gap shuffles *left* to close it.
 
 ⚠️ **Gotcha.** A list inserting/removing at the *end* is cheap; doing it at the *front or middle* gets
 slower as the list grows. They look like the same operation in your code - `append` vs `insert(0, ...)` -
 but one is free and the other isn't. If you find yourself constantly inserting at the front of a big list,
-that's a signal you might want a different structure (a future guide covers the "queue," which is built
-exactly for cheap add/remove at *both* ends).
+that's a signal you might want a different structure - see
+[Phase 4: Stacks, Queues & Linked Lists](04-stacks-queues-and-linked-lists.md) for the "queue," which is
+built exactly for cheap add/remove at *both* ends.
 
 ## Searching for a value - you have to look through them
 
@@ -141,7 +137,7 @@ True
 2
 ```
 *What just happened:* `"We" in days` made the computer scan from the front, comparing each item, until it
-hit `"We"` at slot 2. On a short list that's instant. On a huge list, searching by *value* this way gets
+hit `"We"` at slot 2. On a short list that's instant, but on a huge list, searching by *value* this way gets
 slower the bigger it grows - every item is a potential stop along the walk.
 
 Hold onto that limitation, because it's the exact pain the next phase solves. When your real question is

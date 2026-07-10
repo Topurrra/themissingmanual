@@ -6,16 +6,15 @@ summary: "Expose your CDI beans over HTTP the standard way: an @ApplicationPath 
 tags: [jakarta-ee, jax-rs, rest, path, json-b, response, rest-resource]
 difficulty: intermediate
 synonyms: ["jax-rs tutorial", "jakarta rest @Path @GET", "jax-rs json-b", "jax-rs response entity", "jax-rs vs spring rest controller", "jakarta ee rest api", "jax-rs path param query param"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # JAX-RS: Building REST APIs
 
 In [Phase 3](03-cdi-dependency-injection.md) you got the container to build and wire your objects: a
-`ProductService` that holds the actual logic, handed to whatever needs it via `@Inject`. So far that
-service has been reachable only from other Java code. This phase opens a door to it from the outside
-world — an HTTP request from a browser, a mobile app, or another service can now reach in and ask for a
-product.
+`ProductService` that holds the actual logic, handed to whatever needs it via `@Inject` — but so far
+only reachable from other Java code. This phase opens a door to it from the outside world: an HTTP
+request from a browser, a mobile app, or another service can now reach in and ask for a product.
 
 The mental model to hold onto: **a JAX-RS resource is the translator between HTTP and your method calls.**
 A request arrives as raw bytes — a URL, a method like `GET`, maybe a JSON body. Something has to read

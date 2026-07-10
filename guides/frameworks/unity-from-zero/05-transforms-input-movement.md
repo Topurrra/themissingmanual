@@ -6,12 +6,12 @@ summary: "Move a GameObject by changing its Transform every frame, scaled by Tim
 tags: [unity, transform, input, movement, vector3]
 difficulty: intermediate
 synonyms: ["unity transform position", "unity move object", "unity input getaxis", "unity input system", "unity vector3", "unity player movement"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Transforms, Input & Movement
 
-Your collect-the-pickups game has a scene, a player sitting in it, and (from Phase 4) a script the engine calls every frame. But the player just sits there. Time to make it move when you press a key - the moment a project stops being a tutorial and starts feeling like a game.
+Your collect-the-pickups game has a scene, a player sitting in it, and (from Phase 4) a script the engine calls every frame. But the player just sits there. Time to make it move when you press a key.
 
 Here's the whole idea before any code:
 

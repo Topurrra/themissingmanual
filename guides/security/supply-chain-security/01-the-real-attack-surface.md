@@ -6,7 +6,7 @@ summary: "Your dependencies are your attack surface: the npm install that owned 
 tags: [security, supply-chain, dependencies, npm, sbom, ci]
 difficulty: intermediate
 synonyms: [supply chain attack, npm install hacked, malicious package, typosquatting, dependency confusion, sbom, lockfile security, software supply chain]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Your code is mostly other people's code
@@ -85,7 +85,9 @@ The dangerous assumption is that downloading a package is passive, like saving a
 
 ## For builders
 
-When you pick a dependency, you are not evaluating one library, you are adopting its entire tree and every maintainer in it. Before you add one, glance at the cost: How many transitive packages does it drag in? When was it last published, and by how many maintainers? A "tiny" utility that pulls 80 sub-dependencies is a bigger trust decision than a slightly larger library with zero. The cheapest supply-chain defense is the dependency you decided not to add. This connects directly to [/guides/secrets-management](/guides/secrets-management), because the thing a malicious package wants most is the credentials sitting in your environment, and to [/guides/owasp-top-10](/guides/owasp-top-10), where vulnerable-and-outdated components are a named category for exactly this reason.
+When you pick a dependency, you are not evaluating one library, you are adopting its entire tree and every maintainer in it. Before you add one, glance at the cost: How many transitive packages does it drag in? When was it last published, and by how many maintainers? A "tiny" utility that pulls 80 sub-dependencies is a bigger trust decision than a slightly larger library with zero. The cheapest supply-chain defense is the dependency you decided not to add.
+
+This connects directly to [/guides/secrets-management](/guides/secrets-management), because the thing a malicious package wants most is the credentials sitting in your environment, and to [/guides/owasp-top-10](/guides/owasp-top-10), where vulnerable-and-outdated components are a named category for exactly this reason.
 
 ```quiz
 [

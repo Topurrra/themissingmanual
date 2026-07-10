@@ -6,7 +6,7 @@ summary: "How to map a Java class hierarchy onto tables (SINGLE_TABLE, JOINED, T
 tags: [hibernate, jpa, inheritance, single-table, joined, embeddable, value-object, elementcollection]
 difficulty: intermediate
 synonyms: ["jpa inheritance strategies", "jpa single table vs joined", "hibernate @Inheritance", "jpa @Embeddable @Embedded", "jpa value object mapping", "jpa @ElementCollection", "hibernate table per class"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Inheritance & Embeddables
@@ -23,10 +23,10 @@ different ways to flatten a class tree into tables — and each one trades query
 normalization.** There's no single right answer. The strategy you pick changes the actual tables
 Hibernate creates and the SQL it runs, so the choice is about *how you'll query*, not about taste.
 
-And inheritance isn't the only "compound" shape you'll want. Sometimes you have a clump of fields —
-street, city, zip — that belong together but don't deserve their own table or their own identity. That's
-what **embeddables** are for, and they're the tool you'll actually reach for far more often than
-inheritance. We'll get there at the end, because it's the most important idea in this phase.
+Inheritance isn't the only "compound" shape you'll want. Sometimes you have a clump of fields — street,
+city, zip — that belong together but don't deserve their own table or their own identity. That's what
+**embeddables** are for, and they're the tool you'll actually reach for far more often than inheritance.
+We'll get there at the end, because it's the most important idea in this phase.
 
 ## The challenge: a hierarchy that has to land somewhere
 

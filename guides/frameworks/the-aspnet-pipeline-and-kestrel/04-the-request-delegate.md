@@ -6,15 +6,14 @@ summary: "Strip away the sugar and a whole ASP.NET Core app is one RequestDelega
 tags: [aspnet-core, csharp, request-delegate, middleware, internals]
 difficulty: advanced
 synonyms: ["request delegate", "what is middleware really", "RequestDelegate func", "middleware class invokeasync", "aspnet middleware internals", "func requestdelegate requestdelegate"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The RequestDelegate
 
-Here's the idea that the previous phase was dancing around, said plainly. There is exactly
-**one type** at the bottom of the whole pipeline, and once you see it, every `app.Use(...)`,
-every middleware class, every `MapGet` stops being a separate concept and becomes the same
-shape wearing different clothes.
+There is exactly **one type** at the bottom of the whole pipeline, and once you see it, every
+`app.Use(...)`, every middleware class, every `MapGet` stops being a separate concept and becomes
+the same shape wearing different clothes.
 
 The shape is this:
 

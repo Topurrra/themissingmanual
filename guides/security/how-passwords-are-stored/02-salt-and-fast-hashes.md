@@ -6,18 +6,16 @@ summary: "Identical passwords hash identically, which rainbow tables exploit. A 
 tags: [security, passwords, salt, rainbow-table, sha256, md5, brute-force]
 difficulty: beginner
 synonyms: ["what is a password salt", "why salt passwords", "what is a rainbow table", "is sha256 safe for passwords", "why is fast hashing bad for passwords", "identical passwords same hash"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Salt (and Why Plain SHA-256 Isn't Enough)
 
-So you're hashing now - excellent, you're already ahead of a frightening number of real systems. But the
-simple version from Phase 1 has two weaknesses, and attackers have built an entire economy around both.
-The good news is that each weakness has a clean, well-understood fix, and understanding *why* they exist
-is what lets you recognize a safe setup when you see one.
-
-We'll take them in order: first the problem that identical passwords hash identically, then the deeper
-problem that the hash we used is far too fast.
+So you're hashing now - already ahead of a frightening number of real systems. But the simple version from
+Phase 1 has two weaknesses, and attackers have built an entire economy around both. Each has a clean,
+well-understood fix, and understanding *why* they exist is what lets you recognize a safe setup when you
+see one. We'll take them in order: identical passwords hashing identically, then the deeper problem that
+the hash we used is far too fast.
 
 ## Problem 1: identical passwords produce identical hashes
 

@@ -6,15 +6,15 @@ summary: "hyper is Rust's low-level HTTP library; tower is the Service abstracti
 tags: [hyper, tower, rust, http, service, framework-internals]
 difficulty: beginner
 synonyms: ["what is hyper", "what is tower", "rust http library", "tower service abstraction", "what axum is built on", "hyper tower stack"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What hyper & tower Are
 
 When you write an [axum](/guides/axum-from-zero) app, you import a `Router`, hang some handlers off
-it, add a `.layer(...)` or two, and call `axum::serve`. It feels like one tidy thing. But underneath
-that one tidy thing sit two libraries almost nobody learns directly — **hyper** and **tower** — and
-nearly the whole Rust networking world is standing on them too.
+it, add a `.layer(...)` or two, and call `axum::serve`. It feels like one tidy thing. But underneath it
+sit two libraries almost nobody learns directly — **hyper** and **tower** — and nearly the whole Rust
+networking world is standing on them too.
 
 This is the deepest **roots** guide in the Rust set. Here's the honest framing up front: you will
 rarely write hyper or tower by hand, and this guide is most rewarding *after* you've already built

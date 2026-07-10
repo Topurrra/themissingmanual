@@ -12,14 +12,14 @@ synonyms:
   - connection pool sizing
   - database connection leak
   - serverless connection storm
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # How a pool works and how to size it
 
-You ended Phase 1 with a problem: opening a connection per request is expensive to do and expensive to keep, and the database has a hard ceiling. So what's the fix? Not "open connections faster." The fix is to stop opening them per request at all.
+Phase 1 left you with a problem: opening a connection per request is expensive to do and expensive to keep, and the database has a hard ceiling. The fix isn't "open connections faster" — it's to stop opening them per request at all.
 
-A connection pool is the answer, and the idea is almost embarrassingly simple once you see it. Keep a small set of connections open all the time. Lend one out when code needs it, take it back when the code is done, and lend the same one to the next request. The connections never close between requests — they get *reused*.
+A connection pool does that, and the idea is almost embarrassingly simple. Keep a small set of connections open all the time. Lend one out when code needs it, take it back when the code is done, and lend the same one to the next request. Connections never close between requests — they get *reused*.
 
 ## The pool is a box of pre-opened connections
 
@@ -44,7 +44,7 @@ Now a request comes in and needs the database. Instead of opening a connection, 
 
 ## "Acquire, use, release" — and release is sacred
 
-Almost every pool library, in every language, gives you the same three-beat rhythm: **acquire** a connection, **use** it, **release** it back. The names differ — get/borrow/checkout, return/release/close — but it's always those three beats.
+Almost every pool library, in every language, gives you the same three-beat rhythm: **acquire** a connection, **use** it, **release** it back. Names differ — get/borrow/checkout, return/release/close — but it's always those three beats.
 
 ```text
 conn = pool.acquire()      # borrow from the box (may wait if box is empty)
@@ -61,7 +61,7 @@ Most mature libraries wrap this for you so you can't forget. In Python it's a co
 
 ## Sizing: bigger is not better
 
-Here's where intuition lies to you. You had an outage from too few connections, so the instinct is to crank the pool size way up. Set it to 500 and never run out, right?
+Here's where intuition lies to you. You had an outage from too few connections, so the instinct is to crank the pool size way up — set it to 500 and never run out, right?
 
 No. A bigger pool makes things *worse* past a point, for two reasons.
 
@@ -75,7 +75,7 @@ No. A bigger pool makes things *worse* past a point, for two reasons.
 
 *What just happened:* the math that matters is instances times pool size against the server ceiling. A pool that looks safe on one box becomes an overdraft when you scale out horizontally. Always multiply.
 
-**Reason two: the database does less work when you stop over-feeding it.** This is the counterintuitive one. A database has a finite number of CPU cores and disk spindles. If you throw 200 concurrent queries at a machine with 8 cores, they don't all run at once — they fight over the same cores, the same locks, the same disk. You get context-switching overhead and contention. Throughput can actually *drop* as you add more concurrent connections past the sweet spot. The queries spend their time waiting on each other instead of finishing.
+**Reason two: the database does less work when you stop over-feeding it.** A database has a finite number of CPU cores and disk spindles. Throw 200 concurrent queries at a machine with 8 cores and they don't all run at once — they fight over the same cores, locks, and disk, generating context-switching overhead and contention. Throughput can actually *drop* past the sweet spot, because queries spend their time waiting on each other instead of finishing.
 
 A widely cited starting point from the PostgreSQL community, popularized by the HikariCP pool, is to begin near `connections = (cores × 2) + effective_spindle_count` and then measure. The exact formula matters less than the lesson: **the right number is small, often surprisingly small — typically dozens, not hundreds — and you find it by measuring, not by maximizing.** Start conservative, watch your latency and throughput under real load, and adjust.
 

@@ -8,14 +8,14 @@ category: ai-ml
 order: 10
 difficulty: intermediate
 synonyms: ["how does an ai agent work", "what is an llm agent", "build an ai agent from scratch", "function calling explained", "tool use with an llm", "react agent loop", "why does my agent loop forever", "agent step budget and guardrails"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Building an AI Agent
 
 You've seen the demos where an "AI agent" books a flight, fixes a bug, or files your taxes, and it feels like there's some new kind of intelligence behind the curtain. There isn't. An agent is the same language model you already know, handed two things: a set of tools it can call, and a loop that keeps running until the job is done. Once you see those three parts — model, tools, loop — the magic turns into machinery you can build, debug, and trust.
 
-This guide takes the curtain down. We start with the mental model (it's a loop, and you write most of it), then walk the reasoning-acting cycle step by step with real function-calls, and finish with the honest part: the ways agents spiral, hallucinate tools, and burn money — and the guardrails that keep them on a leash.
+This guide takes the curtain down: the mental model first (it's a loop, and you write most of it), then the reasoning-acting cycle step by step with real function-calls, and finally the honest part — the ways agents spiral, hallucinate tools, and burn money, and the guardrails that keep them on a leash.
 
 ## How to read this
 

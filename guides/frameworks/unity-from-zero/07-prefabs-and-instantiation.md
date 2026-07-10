@@ -6,7 +6,7 @@ summary: "Prefabs are reusable GameObject templates: edit once, every copy updat
 tags: [unity, prefabs, instantiate, destroy, spawning]
 difficulty: advanced
 synonyms: ["unity prefab", "unity instantiate", "unity destroy", "unity spawn objects", "unity object pooling", "unity prefab variants"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Prefabs & Instantiation
@@ -15,7 +15,7 @@ So far every object in your collect-the-pickups game has been a thing you placed
 editor - the player, the ground, a pickup or two you dropped into the scene. That works right up until
 you want *twenty* pickups, or pickups that keep appearing while the game runs. You don't want to copy-paste
 a GameObject twenty times and then, when you decide the pickup should be gold instead of blue, edit all
-twenty by hand. That way lies madness.
+twenty by hand.
 
 The fix is the single most important asset type in Unity: the **prefab**.
 

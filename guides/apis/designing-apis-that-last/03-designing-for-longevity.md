@@ -6,33 +6,31 @@ summary: "The durable-API checklist: consistent resource and error shapes, pagin
 tags: [apis, api-design, pagination, idempotency, rate-limiting, error-handling, documentation, consistency]
 difficulty: advanced
 synonyms: ["how to design a durable api", "api pagination from day one", "what are idempotency keys", "consistent api error format", "api rate limiting design", "dont leak database schema in api", "api design checklist", "sensible api defaults"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Designing for Longevity
 
 The cheapest breaking change is the one you never have to make. Phases 1 and 2 were about surviving
-change; this phase is about *needing less of it*. Almost every painful version bump traces back to a
-decision made on day one — a shape that felt fine for the first three endpoints and became a straitjacket
-by the thirtieth, a list endpoint that returned everything because the table was small, a retry that
+change; this phase is about needing less of it. Almost every painful version bump traces back to a
+day-one decision — a shape that felt fine for the first three endpoints and became a straitjacket by
+the thirtieth, a list endpoint that returned everything because the table was small, a retry that
 charged a customer twice.
 
-None of the choices below are exotic. They're the handful of decisions that, made early, let an API grow
-for years without forcing its clients to keep rewriting their integration. Think of this as the
-pre-flight checklist you run *before* you publish, while changing your mind is still free.
+None of the choices below are exotic. They're the handful of decisions that, made early, let an API
+grow for years without forcing clients to keep rewriting their integration — a pre-flight checklist to
+run *before* you publish, while changing your mind is still free.
 
 ## 1. Consistent shapes — pick a pattern and never deviate
 
-**What it actually is.** Every resource in your API should be shaped the same way, and so should every
-error. If an `order` has `id`, `created_at`, and nests its items under `items`, then a `customer` should
-have `id`, `created_at`, and nest its addresses the same way. Consistency means a client who learns one
-endpoint has effectively learned them all.
+Every resource in your API should be shaped the same way, and so should every error. If an `order`
+has `id`, `created_at`, and nests its items under `items`, a `customer` should follow the same
+pattern. Consistency means a client who learns one endpoint has learned them all.
 
-**Why this is a longevity issue, not just neatness.** Inconsistency is a permanent tax: every endpoint
-that does things its own way is a special case clients must learn, you must document, and neither of you
-can change later without breaking something. Pick the conventions once — field naming (`snake_case` vs.
-`camelCase`, pick one), how you represent timestamps (ISO 8601 strings in UTC is the safe default), how
-you nest related data — and hold the line.
+Inconsistency is a permanent tax: every endpoint that does things its own way is a special case
+clients must learn, you must document, and neither of you can change later without breaking
+something. Pick the conventions once — field naming (`snake_case` vs. `camelCase`), timestamps (ISO
+8601 UTC strings is the safe default), how you nest related data — and hold the line.
 
 ```console
 $ # Same envelope everywhere — learn it once, know it for every resource:
@@ -46,16 +44,15 @@ $ curl https://api.example.com/v1/orders/1138
   }
 }
 ```
-*What just happened:* The response wraps the resource in a predictable `data` envelope with a `type` and
-an ISO-8601 UTC `created_at`. A client that handles this for orders handles it for customers, invoices,
-and everything you add later — for free. The envelope also leaves you room to add top-level siblings
-(like `meta` for pagination, below) without disturbing `data`.
+A client that handles this `data` envelope for orders handles it for customers, invoices, and
+everything you add later — for free. It also leaves room to add top-level siblings (like `meta` for
+pagination, below) without disturbing `data`.
 
 ### Error shapes are part of the contract too
 
-The single most-overlooked consistency failure is errors. Clients write error handling *once*, against
-whatever your errors looked like the day they integrated. If every endpoint reports failure differently,
-you've forced every client into a tangle of special cases.
+The most-overlooked consistency failure is errors. Clients write error handling *once*, against
+whatever your errors looked like the day they integrated. If every endpoint fails differently, you've
+forced every client into a tangle of special cases.
 
 ```console
 $ curl -i https://api.example.com/v1/orders/99999
@@ -68,25 +65,21 @@ HTTP/1.1 404 Not Found
   }
 }
 ```
-*What just happened:* The HTTP status (`404`) gives the broad category a client can branch on
-programmatically; the stable `code` (`order_not_found`) is a machine-readable string that won't change
-even if you reword the message; the `message` is for humans reading logs; and the `request_id` lets a
-client quote one string in a support ticket that lets *you* find the exact request. Use this same shape
-for *every* error and a client's error handling never needs a special case. (RFC 9457 defines a standard
-"problem details" JSON shape if you'd rather adopt a convention than invent one.)
+The HTTP status (`404`) gives the broad category a client can branch on; the stable `code`
+(`order_not_found`) is machine-readable and won't change even if you reword the message; `message` is
+for humans reading logs; `request_id` lets a client quote one string in a support ticket. Use this
+same shape for *every* error. (RFC 9457 defines a standard "problem details" JSON shape if you'd
+rather adopt a convention than invent one.)
 
-💡 **Key point.** Treat your error format as a first-class part of the contract, frozen as firmly as your
-success responses. Changing your error shape later breaks every client's `catch` block.
+💡 **Key point.** Treat your error format as frozen as firmly as your success responses — changing it
+later breaks every client's `catch` block.
 
 ## 2. Pagination from day one
 
-**Why this one is non-negotiable up front.** A list endpoint that returns the whole collection works
-beautifully when the table has 12 rows and is a catastrophe when it has 12 million. The trap is that
-adding pagination *later* is a breaking change: clients coded against "this returns the full array," and
-the day you start returning only the first page, every client that didn't paginate silently processes a
-fraction of the data.
-
-So you paginate **before** you have the data to justify it — on the very first list endpoint.
+A list endpoint that returns the whole collection works beautifully at 12 rows and is a catastrophe
+at 12 million. The trap: adding pagination *later* is itself a breaking change, since clients coded
+against "this returns the full array" will silently process only a fraction of the data once you
+start paging. So you paginate **before** you have the data to justify it.
 
 ```console
 $ curl "https://api.example.com/v1/orders?limit=2"
@@ -101,30 +94,29 @@ $ curl "https://api.example.com/v1/orders?limit=2"
 $ # Follow the cursor for the next page:
 $ curl "https://api.example.com/v1/orders?limit=2&cursor=eyJpZCI6MTEzOX0"
 ```
-*What just happened:* The list never promises "everything" — it returns a page plus a `next_cursor` to
-fetch the following one, and `has_more` tells the client when to stop. Because this was the contract from
-day one, the response shape never has to change as the collection grows from twelve rows to twelve
-million. (This is **cursor-based** pagination — the cursor encodes "where you left off." It's sturdier
-than `?page=2&size=20` **offset** pagination, which can skip or duplicate rows when items are inserted or
-deleted between requests, and which gets slow on deep pages. Offset is simpler and fine for small, stable
-datasets; cursor is the safer default for anything that grows.)
+The list never promises "everything" — it returns a page plus a `next_cursor`, and `has_more` tells
+the client when to stop. Because this was the contract from day one, the shape never has to change as
+the collection grows. (This is **cursor-based** pagination — the cursor encodes "where you left off."
+It's sturdier than `?page=2&size=20` **offset** pagination, which can skip or duplicate rows when
+items are inserted or deleted between requests, and gets slow on deep pages. Offset is simpler and
+fine for small, stable datasets; cursor is the safer default for anything that grows.)
 
 ⚠️ **Gotcha.** Even if you launch with offset pagination for simplicity, *launch with pagination*. The
-breaking change is "unpaginated → paginated," and you only get to avoid it by paginating from the start.
+breaking change is "unpaginated → paginated," and you only avoid it by paginating from the start.
 
 ## 3. Idempotency keys — make retries safe
 
-**The problem this solves.** Networks fail in the cruelest possible way: the request arrives, your server
-processes it, and the *response* gets lost on the way back. The client never heard "success," so it does
-the sensible thing and retries — and now the charge, the order, the email has happened twice. For any
-operation that *creates* something or moves money, "just retry" is how you double-charge a customer.
+Networks fail in the cruelest way: the request arrives, your server processes it, and the *response*
+gets lost on the way back. The client never heard "success," so it retries — and now the charge, the
+order, the email happens twice. For anything that creates or moves money, "just retry" is how you
+double-charge a customer.
 
-**What it actually is.** An **idempotency key** is a unique value the *client* generates and sends with a
-request. Your server remembers, for a window of time, the result it produced for that key. If the same
-key comes in again, you return the *stored* result instead of doing the work a second time.
+An **idempotency key** is a unique value the *client* generates and sends with a request. Your server
+remembers the result it produced for that key; if the same key comes in again, it returns the
+*stored* result instead of redoing the work.
 
-📝 **Terminology.** An operation is **idempotent** if doing it twice has the same effect as doing it once.
-`GET` and `DELETE` are naturally idempotent; `POST` (create) is the dangerous one, which is exactly why
+📝 **Terminology.** An operation is **idempotent** if doing it twice has the same effect as doing it
+once. `GET` and `DELETE` are naturally idempotent; `POST` (create) is the dangerous one, which is why
 idempotency keys target it.
 
 ```console
@@ -142,18 +134,16 @@ $ curl -X POST https://api.example.com/v1/charges \
 HTTP/1.1 200 OK
 { "id": "ch_77", "amount_cents": 4200, "status": "succeeded" }
 ```
-*What just happened:* The retry carried the same `Idempotency-Key`, so the server recognized it had
-already created charge `ch_77` and returned that *same* charge instead of creating a second one. The
-customer is charged once, the client gets a clean success on its retry, and a lost-response network blip
-stops being a financial incident. Offering this on your write endpoints is one of the highest-trust
-things an API can do.
+The retry carries the same key, so the server recognizes it already created charge `ch_77` and
+returns that *same* charge instead of a second one. The customer is charged once, the client gets a
+clean success on retry, and a lost-response network blip stops being a financial incident. Offering
+this on your write endpoints is one of the highest-trust things an API can do.
 
 ## 4. Rate limits — protect the API and tell clients the rules
 
-**Why it's a design decision, not an afterthought.** Without limits, one buggy client in a retry loop —
-or one abusive one — can degrade the API for everyone. Rate limiting is how a shared API stays healthy.
-But limits clients can't *see* are just random failures from their side, so the design is half "enforce"
-and half "communicate."
+Without limits, one buggy client in a retry loop — or one abusive one — can degrade the API for
+everyone. But limits clients can't *see* are just random failures from their side, so the design is
+half "enforce" and half "communicate."
 
 ```console
 $ curl -i https://api.example.com/v1/orders
@@ -168,59 +158,48 @@ HTTP/1.1 429 Too Many Requests
 Retry-After: 30
 { "error": { "code": "rate_limited", "message": "Rate limit exceeded. Retry in 30 seconds." } }
 ```
-*What just happened:* On every successful response, the `RateLimit-*` headers tell the client how much
-budget it has left and when it resets — so a well-behaved client can slow itself down *before* hitting
-the wall. When it does exceed the limit, it gets a `429` with a `Retry-After` telling it exactly how long
-to wait, instead of guessing. The limit becomes a predictable rule clients can program against rather
-than a mysterious intermittent failure. (The `429` status is defined in RFC 6585; the `RateLimit-*`
-headers are an emerging IETF standard — check current support before relying on the exact names.)
+The `RateLimit-*` headers tell a well-behaved client how much budget is left and when it resets, so it
+can slow itself down *before* hitting the wall. When it does exceed the limit, the `429` carries a
+`Retry-After` telling it exactly how long to wait — a predictable rule to program against, not a
+mysterious intermittent failure. (`429` is RFC 6585; `RateLimit-*` headers are an emerging IETF
+standard — check current support before relying on the exact names.)
 
 ## 5. Sensible defaults — make the easy path the safe path
 
-A durable API makes the *common* call simple and the *full* call possible, and it never punishes a client
-for not knowing about an option added after they integrated.
+A durable API makes the *common* call simple and the *full* call possible, and never punishes a
+client for not knowing about an option added after they integrated.
 
 - **List endpoints default to a sane page size** (not "everything"), so a naive `GET /orders` can't
   accidentally pull a million rows.
-- **New optional parameters default to the old behavior.** This is the rule from Phase 2 that lets you
-  add behavior without breaking anyone — the default *is* the backward-compatibility guarantee.
+- **New optional parameters default to the old behavior** — the default *is* the backward-
+  compatibility guarantee from Phase 2.
 - **Be liberal in what you accept, strict and predictable in what you return.** Tolerate fields you
-  don't recognize in requests (so a client sending a newer payload to an older server doesn't explode),
-  and — crucially — design clients to tolerate fields and enum values they don't recognize in
-  *responses*. That tolerance is what makes your additive changes (Phase 1) safe in practice.
+  don't recognize in requests, and design clients to tolerate fields and enum values they don't
+  recognize in *responses* — that tolerance is what makes your additive changes (Phase 1) safe in
+  practice.
 
 💡 **Key point.** Every default is a promise about what happens when a client says nothing. Choose
-defaults so that the client who knows the least still gets safe, correct behavior — that's what lets you
-add power later without forcing anyone to keep up.
+defaults so the client who knows the least still gets safe, correct behavior.
 
 ## 6. Great docs — the part of the API people actually touch
 
-The honest truth: clients integrate against your *docs* far more than your source. Docs that are wrong,
-stale, or missing examples generate the same support load and the same broken integrations as a buggy
-API. Documentation is not separate from the API — for the person integrating, it largely *is* the API.
+Clients integrate against your *docs* far more than your source. Docs that are wrong, stale, or
+missing examples generate the same support load as a buggy API — documentation largely *is* the API
+to the person integrating.
 
-What durable docs include:
-
-- **A real example request and response for every endpoint** — copy-pasteable, with realistic values,
-  not `string` and `0`.
-- **The error catalog** — every `code` you return and what it means, so clients can handle failures
-  deliberately.
-- **A changelog** — the running record of what changed and when, which is also where your deprecation
+- **A real example request and response for every endpoint** — copy-pasteable, realistic values, not
+  `string` and `0`.
+- **The error catalog** — every `code` you return and what it means.
+- **A changelog** — the running record of what changed and when; also where deprecation
   announcements (Phase 2) live.
-- **A way to try it** — even better than reading. For getting hands-on with an API and learning to read
-  its docs effectively, see [Reading API Docs (and Using Postman)](/guides/reading-api-docs-postman).
+- **A way to try it** — see [Reading API Docs (and Using Postman)](/guides/reading-api-docs-postman)
+  for getting hands-on and learning to read docs effectively.
 
 ## ⚠️ The big trap: leaking your internal database into your public contract
 
-This is the design mistake that quietly causes the *most* future breaking changes, so it gets its own
-warning.
-
-**What it looks like.** The fastest way to ship an API is to serialize your database rows straight to
-JSON — your `orders` table becomes your `GET /orders` response, column-for-column. It feels efficient.
-It is a trap.
-
-**Why it bites you later.** The moment you do this, your *internal schema becomes your public contract.*
-Now you can't:
+The fastest way to ship an API is to serialize your database rows straight to JSON — your `orders`
+table becomes your `GET /orders` response, column-for-column. It feels efficient. It is a trap:
+your *internal schema becomes your public contract*. Now you can't:
 
 - **Rename a column** without breaking clients (Phase 1: renaming is breaking).
 - **Split or merge a table**, normalize, denormalize, or switch databases — every refactor your data
@@ -228,9 +207,9 @@ Now you can't:
 - **Hide a column you never meant to expose** — an internal flag, a soft-delete marker, a cost field —
   once it's out, removing it breaks someone.
 
-Your database schema changes for *database* reasons (performance, normalization, a new feature's needs).
-Your API contract should change only for *API* reasons. Wiring them together means every internal
-refactor leaks out as a breaking change to people who have no idea your database even exists.
+Your database schema changes for *database* reasons (performance, normalization, a new feature's
+needs). Your API contract should change only for *API* reasons. Wiring them together means every
+internal refactor leaks out as a breaking change to people who have no idea your database even exists.
 
 ```mermaid
 flowchart LR
@@ -244,20 +223,19 @@ flowchart LR
 
 **The fix.** Put a deliberate translation layer between your storage and your API — a serializer,
 mapper, view model, DTO, whatever your stack calls it. It does one job: turn internal data into the
-*public shape you chose on purpose*. With that layer in place, you can rename columns, switch databases,
-and restructure storage all day long, and the public contract never flinches. It's a little more code
-today and a wall of avoided breaking changes for years.
+*public shape you chose on purpose*. With that layer in place, you can rename columns, switch
+databases, and restructure storage all day, and the public contract never flinches. A little more code
+today, a wall of avoided breaking changes for years.
 
-📝 **Terminology.** A **DTO** (Data Transfer Object) or **serializer** is just that translation layer: a
-deliberate definition of "what this resource looks like to the outside world," kept separate from "how
-it's stored inside."
+📝 **Terminology.** A **DTO** (Data Transfer Object) or **serializer** is that translation layer: a
+deliberate definition of "what this resource looks like to the outside world," kept separate from
+"how it's stored inside."
 
 ## A note on auth
 
 We've stayed off authentication and authorization deliberately — API keys, OAuth flows, scopes, token
-rotation, and how *not* to leak credentials are a security discipline of their own, and rushing them here
-would do them a disservice. They live in the future **security** category; design your durable shapes
-now, and treat auth as its own first-class topic when you get there.
+rotation are a security discipline of their own and live in the future **security** category. Design
+your durable shapes now; treat auth as its own first-class topic when you get there.
 
 ## The durable-API checklist
 
@@ -271,14 +249,14 @@ Run this before you publish, while changing your mind is still free:
 6. **Great docs** — real examples, an error catalog, a changelog, a way to try it.
 7. **Don't leak your database** — a deliberate mapping layer between storage and contract.
 
-Every item on that list is really the same move from Phase 1, applied early: *decide what you can promise,
-make it something you can keep, and keep it.* Do that on day one, and the breaking changes you spent two
+Every item is the same move from Phase 1, applied early: decide what you can promise, make it
+something you can keep, and keep it. Do that on day one, and the breaking changes you spent two
 phases learning to survive mostly never have to happen.
 
 ## Recap
 
-1. **Consistency is a longevity feature** — uniform resource and error shapes mean a client learns your
-   API once and you can grow it without surprises.
+1. **Consistency is a longevity feature** — uniform resource and error shapes mean a client learns
+   your API once and you can grow it without surprises.
 2. **Paginate from day one** — adding pagination later is a silent breaking change.
 3. **Idempotency keys** turn dangerous retries into safe ones on create/charge endpoints.
 4. **Rate limits** keep a shared API healthy, but only if you *communicate* them with headers and `429`.

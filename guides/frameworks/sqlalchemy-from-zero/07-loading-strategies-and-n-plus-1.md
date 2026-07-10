@@ -6,7 +6,7 @@ summary: "Why a relationship() fires a query the moment you touch it, how that q
 tags: [sqlalchemy, lazy-loading, eager-loading, n-plus-one, selectinload, joinedload, performance]
 difficulty: advanced
 synonyms: ["sqlalchemy n+1 problem", "sqlalchemy lazy vs eager loading", "sqlalchemy selectinload joinedload", "sqlalchemy relationship loading", "sqlalchemy DetachedInstanceError", "sqlalchemy query performance", "sqlalchemy fix n+1"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Loading Strategies & the N+1 Trap
@@ -16,11 +16,10 @@ updated: 2026-06-23
 real — and it hides the single most important performance question in the whole guide: **when you touch
 `author.books`, what does SQLAlchemy actually do behind your back?**
 
-The answer is the difference between a page that loads in 10 milliseconds and one that loads in 10 seconds. I
-say this from scar tissue: almost every "SQLAlchemy is slow" complaint you'll ever read traces back to
-getting this wrong without noticing. So slow down here. We're going to make it visceral — you're going to
-*see* the flood of queries — because once you've watched one loop fire 101 queries, you will never write a
-blind loop over a relationship again.
+The answer is the difference between a page that loads in 10 milliseconds and one that loads in 10 seconds.
+Almost every "SQLAlchemy is slow" complaint you'll ever read traces back to getting this wrong without
+noticing. We're going to make it visceral — you're going to *see* the flood of queries — because once
+you've watched one loop fire 101 queries, you will never write a blind loop over a relationship again.
 
 ## The mental model: a relationship loads when you touch it
 
@@ -257,9 +256,9 @@ develop:
   a library like `nplusone`) that asserts "this endpoint runs at most 3 queries." That turns N+1 from a thing
   you discover in production into a test that fails in CI.
 
-📝 The honest summary of this whole phase: **"SQLAlchemy is slow" is almost always an unnoticed N+1.**
-SQLAlchemy isn't slow — a loop that secretly fires 500 queries is slow, and the ORM just made it effortless to
-write that loop without seeing it. Counting your queries is how you stay on the fast side of that line.
+📝 **"SQLAlchemy is slow" is almost always an unnoticed N+1.** SQLAlchemy isn't slow — a loop that secretly
+fires 500 queries is slow, and the ORM just made it effortless to write that loop without seeing it.
+Counting your queries is how you stay on the fast side of that line.
 
 ## Recap
 

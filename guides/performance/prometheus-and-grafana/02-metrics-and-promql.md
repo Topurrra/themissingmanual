@@ -6,14 +6,14 @@ summary: "The three metric types (counter, gauge, histogram), what labels are fo
 tags: [promql, metrics, counter, gauge, histogram, labels, rate]
 difficulty: intermediate
 synonyms: ["counter vs gauge prometheus", "what is a histogram metric", "how to read promql", "why use rate in promql", "what does rate do prometheus", "what are prometheus labels", "promql requests per second"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Metrics & a Taste of PromQL
 
 PromQL queries look intimidating the first time - `rate(http_requests_total{status="500"}[5m])` is a lot of punctuation to meet at once. But almost every query you'll read is built from a few small ideas stacked together. Learn the ideas and the punctuation stops being scary.
 
-The single most important one, the thing that confuses *everybody* at first: **why you almost never graph a counter directly, and reach for `rate()` instead.** We'll build up to that.
+The single most important one, the thing that confuses *everybody* at first: **why you almost never graph a counter directly, and reach for `rate()` instead.**
 
 ## The three metric types
 
@@ -27,7 +27,7 @@ Prometheus metrics come in a few types, and the type tells you how to *read* the
 
 **Histogram - counts bucketed by size.** A histogram answers "how were these values distributed?" - most often for request durations. Instead of one number, it records counts in buckets: "how many requests finished under 0.1s, under 0.5s, under 1s, …". This is what lets you ask for a **percentile** later - "95% of requests finished faster than X" - which is how you actually talk about latency. (A single average latency hides the slow tail; percentiles don't.)
 
-> 📝 There's a fourth type, **summary**, which is a close cousin of histogram that computes percentiles on the service side. Histograms are the more common and more flexible choice; you can mostly treat "summary" as "histogram's relative." Don't lose sleep over the distinction yet.
+> 📝 There's a fourth type, **summary**, a close cousin of histogram that computes percentiles service-side. Histograms are the more common, more flexible choice - treat summary as histogram's relative and don't lose sleep over it yet.
 
 ⚠️ **Gotcha - reading a counter like a gauge.** This is the classic beginner mistake. You put `http_requests_total` on a graph, see a line marching steadily up and to the right, and panic that traffic is exploding. It isn't - a counter *always* goes up and to the right, by definition. A straight diagonal line means *steady* traffic. To see the actual traffic, you need its rate of change.
 
@@ -92,7 +92,7 @@ RAW COUNTER: http_requests_total          rate(http_requests_total[5m])
 
 ## Why this saves you later
 
-When you're staring at a dashboard during an incident and someone asks "is the error rate climbing?", you'll be able to read the panel's query and know what it's truly telling you - a per-second rate over a window, not a raw total - and you'll trust the line for the right reasons. And when you build your own panel in the next phase, you'll reach for `rate()` on a counter without thinking, instead of plotting a useless diagonal.
+When you're staring at a dashboard during an incident and someone asks "is the error rate climbing?", you'll know the panel's query is a per-second rate over a window, not a raw total - and trust the line for the right reasons. In the next phase you'll reach for `rate()` on a counter without thinking, instead of plotting a useless diagonal.
 
 ## Recap
 

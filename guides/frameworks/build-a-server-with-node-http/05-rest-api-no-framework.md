@@ -6,12 +6,12 @@ summary: "Assemble the request/response helpers, hand-rolled routing, and middle
 tags: [node, nodejs, http, rest, api, crud]
 difficulty: advanced
 synonyms: ["node rest api no framework", "node http crud", "node messages api", "node json api no express", "node http full server", "node crud by hand"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # A JSON REST API With No Framework
 
-This is the payoff phase. Everything you built in the last three chapters — reading and writing JSON ([Phase 2](02-requests-and-responses.md)), dispatching by method and path ([Phase 3](03-routing-by-hand.md)), wrapping handlers in a logger ([Phase 4](04-middleware-is-a-function.md)) — has been one piece of the same machine. Now we bolt them together into a real, working REST API. No Express, no Fastify, no npm install. Just `node:http` and the helpers you already wrote.
+This is the payoff phase. Everything you built in the last three chapters — reading and writing JSON ([Phase 2](02-requests-and-responses.md)), dispatching by method and path ([Phase 3](03-routing-by-hand.md)), wrapping handlers in a logger ([Phase 4](04-middleware-is-a-function.md)) — has been one piece of the same machine. Now we bolt them together into a real, working REST API. No Express, no Fastify, no npm install — just `node:http` and the helpers you already wrote.
 
 Here's the mental model to carry through this whole phase: **a REST resource is five operations, dispatched by method plus path.** That's the entire shape of CRUD.
 
@@ -57,9 +57,9 @@ let messages = [];   // each item: { id, text }
 let nextId = 1;
 ```
 
-*What just happened:* We pulled in `readJson` and `sendJson` exactly as we wrote them in Phase 2 — no changes needed, that's the whole point of building them as standalone helpers. The store is two plain variables: an array of messages and a counter for the next id. There's no database, no ORM, nothing to install.
+*What just happened:* we pulled in `readJson` and `sendJson` exactly as we wrote them in Phase 2 — no changes needed, the whole point of building them as standalone helpers. The store is two plain variables: an array of messages and a counter for the next id. No database, no ORM, nothing to install.
 
-📝 Notice there are **no locks** anywhere, and that's correct, not lazy. Node runs your JavaScript on a single thread, so two requests never mutate `messages` at literally the same instant — one handler runs to its next `await` before another gets a turn. In a multi-threaded server (Java, Go) you'd need synchronization around shared state. Here you don't. (The flip side: this data vanishes when the process restarts. A real app swaps these two variables for a database — that's the only part that changes.)
+📝 Notice there are **no locks** anywhere, and that's correct, not lazy. Node runs your JavaScript on a single thread, so two requests never mutate `messages` at literally the same instant — one handler runs to its next `await` before another gets a turn. A multi-threaded server (Java, Go) needs synchronization around shared state; here you don't. (The flip side: this data vanishes when the process restarts. A real app swaps these two variables for a database — the only part that changes.)
 
 ## The five handlers
 
@@ -116,9 +116,9 @@ function deleteMessage(req, res, id) {
 }
 ```
 
-*What just happened:* Five operations, each mapping a status code to an outcome. `listMessages` always returns the array with 200. `getMessage` looks up by id and returns the message, or 404 if there's no match. `createMessage` and `updateMessage` both `await readJson(req)` and then **validate `text` by hand** — if it's missing, not a string, or blank, they bail out with a 400 and never touch the store. `createMessage` mints a fresh id and answers 201 Created; `deleteMessage` removes the item and answers 204 with `res.end()` and no body (a 204 promises emptiness). Every "not found" path `return`s early, so we never accidentally respond twice.
+*What just happened:* five operations, each mapping a status code to an outcome. `listMessages` always returns the array with 200. `getMessage` looks up by id and returns the message, or 404 if there's no match. `createMessage` and `updateMessage` both `await readJson(req)` then **validate `text` by hand** — if it's missing, not a string, or blank, they bail out with a 400 and never touch the store. `createMessage` mints a fresh id and answers 201 Created; `deleteMessage` removes the item and answers 204 with `res.end()` and no body. Every "not found" path `return`s early, so we never accidentally respond twice.
 
-⚠️ That validation is doing real work — **never trust input.** A framework would give you a `body-parser` plus a schema validator; here, *you* are the validator. The rule is: check the shape before you act on it, and reject bad input with a 400 that says what was wrong. Without these guards, a client sending `{}` would create a message with `text: undefined`, and your "list" endpoint would start serving garbage. Validation isn't optional boilerplate — it's the difference between an API and a liability.
+⚠️ That validation is doing real work — **never trust input.** A framework would give you a `body-parser` plus a schema validator; here, *you* are the validator. Check the shape before acting on it, and reject bad input with a 400 that says what was wrong. Without these guards, a client sending `{}` would create a message with `text: undefined`, and your "list" endpoint would start serving garbage.
 
 ## Wiring it together: dispatch
 
@@ -159,9 +159,9 @@ const server = http.createServer(async (req, res) => {
 server.listen(3000, () => console.log('messages API on http://localhost:3000'));
 ```
 
-*What just happened:* The listener is the conductor. It logs first (that's the entire "middleware" idea from Phase 4 — a function you call before the handler), parses the URL once, and runs the regex once to capture any `:id`. Then it dispatches: collection routes (`/messages`) by method, item routes (`/messages/:id`) by method, and a 404 fallthrough for anything else. Each match `return`s so dispatch stops at the first hit.
+*What just happened:* the listener is the conductor. It logs first (the entire "middleware" idea from Phase 4 — a function you call before the handler), parses the URL once, and runs the regex once to capture any `:id`. Then it dispatches: collection routes (`/messages`) by method, item routes (`/messages/:id`) by method, and a 404 fallthrough for anything else. Each match `return`s so dispatch stops at the first hit.
 
-⚠️ The whole dispatch sits inside a `try/catch` for a reason: if any handler throws — a bug, an unexpected input, `readJson` rejecting on malformed JSON — the `catch` turns it into a clean **500 Internal Server Error** instead of crashing the process or leaving the client hanging. This is your last line of defense. (We'll make this error handling sturdier and more structured in [Phase 6](06-async-streams-structure.md), but even this minimal version is non-negotiable.)
+⚠️ The whole dispatch sits inside a `try/catch` for a reason: if any handler throws — a bug, unexpected input, `readJson` rejecting on malformed JSON — the `catch` turns it into a clean **500 Internal Server Error** instead of crashing the process or leaving the client hanging. This is your last line of defense (sturdier and more structured in [Phase 6](06-async-streams-structure.md), but even this minimal version is non-negotiable).
 
 ## Driving it with curl
 
@@ -203,13 +203,13 @@ $ curl -s localhost:3000/messages/999
 {"error":"Message not found"}
 ```
 
-*What just happened:* Every row is one of the five operations answering with the right status and body. The two failure cases are the important ones to internalize: a `POST` with no `text` gets a **400** and never enters the store, and a `GET` for an id that doesn't exist gets a **404**. Those are the guards from your handlers firing exactly as designed. A 204 delete returns no body at all (note the `-i` to see the status line — there's nothing else to show).
+*What just happened:* every row is one of the five operations answering with the right status and body. The two failure cases are the important ones to internalize: a `POST` with no `text` gets a **400** and never enters the store, a `GET` for an id that doesn't exist gets a **404** — the guards from your handlers firing exactly as designed. A 204 delete returns no body at all (`-i` shows the status line — there's nothing else to show).
 
 ## You built a complete API — now count the cost
 
-Step back and look at what this is. It's a fully working REST API: five CRUD operations, JSON in and out, path parameters, input validation, correct status codes (200/201/204/400/404/500), request logging, and a crash-proof error boundary. **Zero dependencies.** Your `node_modules` folder doesn't exist. You could ship this.
+Step back and look at what this is. A fully working REST API: five CRUD operations, JSON in and out, path parameters, input validation, correct status codes (200/201/204/400/404/500), request logging, and a crash-proof error boundary. **Zero dependencies.** Your `node_modules` folder doesn't exist. You could ship this.
 
-💡 But now count the boilerplate. To get those five routes you hand-wrote: URL parsing, a regex for `:id`, capture-group extraction, a method-and-path `if`-ladder, two near-identical validation blocks, the 404 fallthrough, and the `try/catch`. In [Express (Phase 7)](07-what-express-adds.md) the same API is `app.get`, `app.post`, `app.put`, `app.delete`, `express.json()`, and `req.params.id` — the routing, body parsing, and param extraction all collapse into declarations. **That delta — everything you wrote here that Express writes for you — is precisely the value a framework adds.** You're not learning Express to skip understanding this. You're learning it *because* you now understand exactly what it's doing on your behalf, and you can tell when you don't need it.
+💡 But now count the boilerplate. To get those five routes you hand-wrote: URL parsing, a regex for `:id`, capture-group extraction, a method-and-path `if`-ladder, two near-identical validation blocks, the 404 fallthrough, and the `try/catch`. In [Express (Phase 7)](07-what-express-adds.md) the same API is `app.get`, `app.post`, `app.put`, `app.delete`, `express.json()`, and `req.params.id` — routing, body parsing, and param extraction all collapse into declarations. **That delta — everything you wrote here that Express writes for you — is precisely the value a framework adds.** You're not learning Express to skip understanding this; you're learning it *because* you now understand exactly what it's doing on your behalf, and can tell when you don't need it.
 
 ## Recap
 

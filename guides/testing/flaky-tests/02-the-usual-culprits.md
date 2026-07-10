@@ -6,14 +6,12 @@ summary: "A field guide to the five everyday sources of flakiness - timing and s
 tags: [testing, flaky-tests, async, race-condition, test-isolation, sleep]
 difficulty: intermediate
 synonyms: ["common causes of flaky tests", "why tests fail randomly", "async test race condition", "test order dependency flaky", "sleep in tests bad", "shared state between tests", "test depends on time"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Usual Culprits
 
-You've got the mental model from Phase 1: a flaky test depends on something it doesn't control. Good. Now you're staring at an actual flaky test and you need to know *which* something. The relief here is that the list is short. Flakiness comes from a handful of recurring sources, and each one leaves a recognizable fingerprint. Learn the five and you'll start diagnosing flaky tests on sight, before you've even read the stack trace.
-
-We'll walk each culprit, show the shape it takes in code, and name the tell that gives it away.
+You've got the mental model from Phase 1: a flaky test depends on something it doesn't control. Now you're staring at an actual flaky test and need to know *which* something. Flakiness comes from a short list of recurring sources, and each one leaves a recognizable fingerprint. Learn the five and you'll start diagnosing flaky tests on sight, before you've even read the stack trace.
 
 ## Culprit 1: Timing and sleeps
 
@@ -28,7 +26,7 @@ expect(screen.getText()).toBe('Loaded');
 await waitFor(() => expect(screen.getText()).toBe('Loaded'));
 ```
 
-*What just happened:* The first version is a bet that 100ms is enough - and a busy machine slows everything down, so the bet sometimes loses. The second waits for the *thing you actually care about* (the text appearing) instead of a fixed delay. A `sleep` in a test is almost always a guess wearing a number.
+*What just happened:* The first version bets that 100ms is enough, and a busy machine slows everything down, so the bet sometimes loses. The second waits for the *thing you actually care about* instead of a fixed delay. A `sleep` in a test is almost always a guess wearing a number.
 
 **Fingerprint:** the failure clusters on slow or busy machines, gets *more* frequent under load or parallelism, and you can "fix" it by bumping the sleep number (which is the tell - if a bigger sleep helps, it's a timing race).
 
@@ -50,7 +48,7 @@ test('saves the user', async () => {
 });
 ```
 
-*What just happened:* In the first version the Promise from `saveUser` is created and immediately abandoned - the test moves straight to the assertion while the save is still in flight. Sometimes the save happens to finish first (pass), sometimes not (fail). The `async`/`await` version forces the assertion to wait for the save, removing the race.
+*What just happened:* In the first version, the Promise from `saveUser` is created and immediately abandoned - the test moves to the assertion while the save is still in flight, so it passes or fails depending on which finishes first. `async`/`await` forces the assertion to wait for the save, removing the race.
 
 **Fingerprint:** failures are erratic and don't correlate cleanly with machine speed; you often see "expected 1, got 0" or a value that's *one step behind* what you expected. A missing `await` (or a forgotten `return` of a Promise) is frequently the cause.
 
@@ -68,7 +66,7 @@ A test passes when run alone and fails when run after some other test - because 
    CI shuffles or parallelizes → order changes → result flips → "flaky."
 ```
 
-*What just happened:* Neither test is wrong on its own, but A leaks state into B. The moment your runner shuffles order, parallelizes, or someone adds a test in between, the result flips. A test that secretly depends on what ran before it isn't really one test - it's a hidden dependency.
+*What just happened:* Neither test is wrong on its own, but A leaks state into B, so the result flips the moment your runner shuffles order, parallelizes, or someone adds a test in between. A test that secretly depends on what ran before it isn't really one test - it's a hidden dependency.
 
 **Fingerprint:** the test passes in isolation (`run it alone` → green) but fails in the full suite, or the failure moves around when you change the order or the parallelism. If "run it alone and it passes" is true, this is almost always your culprit.
 
@@ -88,7 +86,7 @@ expect(res.status).toBe(200);
 expect(pickRandom([1, 2, 3])).toBe(1);
 ```
 
-*What just happened:* Each line lets the outside world decide the result. The clock rolls over a day boundary; the API rate-limits you on a bad afternoon; the random pick lands on a different value. None of these failures mean your code is wrong - they mean the test asked an uncontrolled source a question and didn't like the answer it happened to get.
+*What just happened:* Each line lets the outside world decide the result - the clock rolls over a day boundary, the API rate-limits you, the random pick lands elsewhere. None of these failures mean your code is wrong; the test asked an uncontrolled source a question and didn't like the answer.
 
 **Fingerprint:** failures correlate with *external events* - time of day, a flaky third party, network blips - and often can't be reproduced on demand because the external condition has moved on.
 
@@ -103,7 +101,7 @@ The quiet one. Tests open things - file handles, database connections, ports, ti
    The leak is in tests 1–40. Test 41 is just the one that ran out of room.
 ```
 
-*What just happened:* The pool filled up gradually, and the test unlucky enough to need connection number 41 is the one that fails - even though it did nothing wrong. Leaks make flakiness that depends on how many tests ran before, which is maddening because the failing test is innocent.
+*What just happened:* The pool filled up gradually, and the test unlucky enough to need connection 41 fails - even though it did nothing wrong. Leaks make flakiness depend on how many tests ran before, which is maddening because the failing test is innocent.
 
 **Fingerprint:** failures appear deep into a run, not at the start; they move to a *different* test when you add or remove tests; and error messages mention exhausted pools, "too many open files," or "address already in use." Suspect a leak when the victim is well downstream and changes with suite size.
 
@@ -120,9 +118,9 @@ flowchart TD
   H -- No --> J[Order / shared state]
 ```
 
-*What just happened:* This is the same five culprits as a quick triage tree. "Passes alone?" splits the world: if yes, you're almost certainly in order/state or leak territory; if no, you're in timing, async, or external territory. It won't be right 100% of the time, but it points you at the likely suspect fast.
+*What just happened:* Same five culprits as a triage tree. "Passes alone?" splits the world: yes points to order/state or a leak, no points to timing, async, or an external. It won't be right every time, but it points you at the likely suspect fast.
 
-For builders: when you write a test, ask "what does this depend on besides the code?" If the answer includes a clock, a real service, randomness, the order of other tests, or a resource you open - that's a future flake you can prevent now. The cheapest flaky test to fix is the one you never wrote.
+For builders: when you write a test, ask "what does this depend on besides the code?" A clock, a real service, randomness, test order, or an opened resource - any of those is a future flake you can prevent now. The cheapest flaky test to fix is the one you never wrote.
 
 ## Recap
 

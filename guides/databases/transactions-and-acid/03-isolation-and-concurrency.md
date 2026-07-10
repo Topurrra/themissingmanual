@@ -6,14 +6,12 @@ summary: "When transactions overlap you get dirty reads, non-repeatable reads, a
 tags: [databases, isolation-levels, concurrency, dirty-read, deadlock, locking]
 difficulty: intermediate
 synonyms: ["database isolation levels explained", "dirty read non-repeatable read phantom", "what is a deadlock", "read committed vs serializable", "why did my transaction get rolled back", "how to handle deadlocks"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Isolation & Concurrency in Real Life
 
-Phase 2 said isolation makes each transaction "behave as if it had the database to itself." That's the dream. The reality is that giving every transaction a truly private universe is slow, so databases offer it as a *dial* — and most ship with the dial turned down for speed. This phase is about what slips through when it's turned down, and the one concurrency hazard that can bite at *any* setting: the deadlock.
-
-This is the part of the topic people get burned by in production, so we'll go gently and concretely.
+Phase 2 said isolation makes each transaction "behave as if it had the database to itself." That's the dream. The reality is that giving every transaction a truly private universe is slow, so databases offer it as a *dial* — and most ship with the dial turned down for speed. This phase is about what slips through when it's turned down, and the one concurrency hazard that can bite at *any* setting: the deadlock. This is the part of the topic people get burned by in production, so we'll go gently and concretely.
 
 ## The concurrency cheat-card
 
@@ -31,7 +29,7 @@ This is the part of the topic people get burned by in production, so we'll go ge
 
 ## 1. What goes wrong when transactions overlap
 
-When two transactions touch the same data at the same time, three classic anomalies can appear — in increasing order of subtlety. You don't need to memorize the names, but you do need to recognize the *shapes*, because they explain bugs that look like the database "lying" to you.
+When two transactions touch the same data at the same time, three classic anomalies can appear, in increasing order of subtlety. You don't need to memorize the names, but you do need to recognize the *shapes* — they explain bugs that look like the database "lying" to you.
 
 **Dirty read.** Your transaction reads a change another transaction made but *hasn't committed yet* — and then that other transaction rolls back. You acted on data that never really existed.
 
@@ -46,7 +44,7 @@ sequenceDiagram
   A->>A: ROLLBACK (balance was never really 0)
 ```
 
-*What just happened:* B read a value A was still working on, then A changed its mind. B made a decision on a number that the database, moments later, pretended never happened. This is the worst anomaly, and most databases forbid it by default.
+*What just happened:* B read a value A was still working on, then A changed its mind. B made a decision on a number the database, moments later, pretended never happened. This is the worst anomaly, and most databases forbid it by default.
 
 **Non-repeatable read.** You read the same row twice in one transaction and get two different answers, because someone else committed a change in between.
 
@@ -80,7 +78,7 @@ sequenceDiagram
 
 ## 2. Isolation levels: the safety-vs-speed dial
 
-Here's the design decision databases made. Preventing every anomaly means heavy locking or bookkeeping, which slows everything down and makes transactions wait on each other. Preventing *none* is fast but lets garbage through. So the SQL standard defines four **isolation levels** — settings on the dial — and each one promises to block more anomalies than the last, at more cost.
+Here's the design decision databases made. Preventing every anomaly means heavy locking and bookkeeping, which slows everything down and makes transactions wait on each other; preventing *none* is fast but lets garbage through. So the SQL standard defines four **isolation levels** — settings on the dial — each promising to block more anomalies than the last, at more cost.
 
 | Isolation level | Dirty read | Non-repeatable read | Phantom | Feel |
 |---|---|---|---|---|
@@ -91,7 +89,7 @@ Here's the design decision databases made. Preventing every anomaly means heavy 
 
 (Source: the SQL standard's isolation levels, as summarized in the [PostgreSQL docs on transaction isolation](https://www.postgresql.org/docs/current/transaction-iso.html).)
 
-⚠️ **Gotcha: "default" and the fine print vary by database.** The standard says what each level must *at least* prevent, but vendors differ in defaults and in how strict they actually are. PostgreSQL and Oracle default to Read Committed; MySQL's InnoDB defaults to Repeatable Read. And the asterisk above is real: PostgreSQL's Repeatable Read actually blocks phantoms too (it's implemented more strictly than the standard requires). The lesson isn't to memorize a grid — it's to **look up your specific database's default and behavior** before you rely on a guarantee. Assuming Serializable when you're running Read Committed is how subtle money bugs are born.
+⚠️ **Gotcha: "default" and the fine print vary by database.** The standard says what each level must *at least* prevent, but vendors differ in defaults and in how strict they actually are. PostgreSQL and Oracle default to Read Committed; MySQL's InnoDB defaults to Repeatable Read. And the asterisk above is real: PostgreSQL's Repeatable Read actually blocks phantoms too (implemented more strictly than the standard requires). The lesson isn't to memorize a grid — it's to **look up your specific database's default and behavior** before you rely on a guarantee. Assuming Serializable when you're running Read Committed is how subtle money bugs are born.
 
 You set the level per transaction when you need something stronger than the default:
 
@@ -109,7 +107,7 @@ COMMIT;
 
 There's one concurrency hazard that isn't about *reading* the wrong thing — it's about getting *stuck*. It can happen at any isolation level, and it surprises people because nothing they wrote looks wrong.
 
-**What a deadlock actually is.** To change a row, a transaction takes a **lock** on it so no one else can change it at the same time. A deadlock happens when two transactions each hold a lock the other one is waiting for — a perfect standoff. Neither can move, because each is waiting for the other to let go first.
+To change a row, a transaction takes a **lock** on it so no one else can change it at the same time. A deadlock happens when two transactions each hold a lock the other one is waiting for — a perfect standoff. Neither can move, because each is waiting for the other to let go first.
 
 The classic recipe: two transfers grab the same two rows in *opposite order*.
 
@@ -126,7 +124,7 @@ sequenceDiagram
 
 *What just happened:* A locked Alice and then asked for Bob; B locked Bob and then asked for Alice. Now A is waiting on B and B is waiting on A. Left alone they'd wait forever — so the database steps in.
 
-**How the database reacts.** Databases detect deadlocks automatically and break the tie by **killing one of the transactions** (the "victim") and rolling it back, so the other can proceed. The victim's connection gets an error:
+Databases detect deadlocks automatically and break the tie by **killing one of the transactions** (the "victim") and rolling it back, so the other can proceed. The victim's connection gets an error:
 
 ```sql
 -- The losing transaction sees something like:
@@ -137,7 +135,7 @@ HINT:  See server log for more details.
 
 *What just happened:* The database noticed the standoff, picked your transaction as the victim, and rolled it back entirely (atomicity again — nothing partial survives). The *other* transaction completed normally. Your code now has an error to deal with, and nothing it did committed.
 
-**How real apps handle it: retry.** A deadlock victim error isn't a logic bug — it's the database doing exactly its job, and the fix is almost always to **catch the error and try the transaction again.** The retry usually succeeds, because the conflicting transaction has by now finished and released its locks.
+A deadlock victim error isn't a logic bug — it's the database doing exactly its job, and the fix is almost always to **catch the error and try the transaction again.** The retry usually succeeds, because the conflicting transaction has by now finished and released its locks.
 
 ```text
    try:
@@ -156,7 +154,7 @@ Two practical notes that prevent most deadlocks in the first place:
 
 ## Tying it back to scaling
 
-Everything in this phase is the cost of letting transactions overlap on *one* database. When that one database can't keep up and you start splitting data across several machines, these problems get harder, not easier: a transaction that needs rows on two different servers can't be protected by a single database's locks and isolation. That's the wall where single-node ACID meets distributed systems — and where the trade-offs in [Scaling a Database](/guides/scaling-a-database) take over.
+Everything here is the cost of letting transactions overlap on *one* database. When that database can't keep up and you split data across several machines, these problems get harder, not easier: a transaction needing rows on two different servers can't be protected by a single database's locks and isolation. That's the wall where single-node ACID meets distributed systems — and where the trade-offs in [Scaling a Database](/guides/scaling-a-database) take over.
 
 ## Recap
 

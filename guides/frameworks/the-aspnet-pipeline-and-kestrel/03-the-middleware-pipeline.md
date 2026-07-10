@@ -6,12 +6,12 @@ summary: "How Kestrel feeds each request through an ordered onion of middleware 
 tags: [aspnet-core, csharp, middleware, pipeline, use-run-map]
 difficulty: intermediate
 synonyms: ["aspnet middleware pipeline", "use run map", "middleware order", "short circuit middleware", "aspnet pipeline branch", "mapwhen usewhen"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The Middleware Pipeline
 
-In Phase 2 we left Kestrel holding a fully-formed request, ready to hand it off. This is where it hands it off *to*. So before any code, let's get the picture clear, because everything else in this phase hangs off one shape.
+In Phase 2 we left Kestrel holding a fully-formed request, ready to hand it off. This is where it hands it off *to*.
 
 **The pipeline is an ordered chain of middleware, and a request flows through it like an onion.** Each middleware gets the request on the way *in*, does some work, then calls `next` to pass control deeper. Eventually something at the center produces a response, and that response unwinds back *out* through every layer in reverse — each middleware getting a second turn on the way up. Kestrel feeds requests into the top of this onion; what comes back out is what the client sees.
 

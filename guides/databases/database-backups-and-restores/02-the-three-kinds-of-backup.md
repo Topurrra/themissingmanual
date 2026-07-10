@@ -6,16 +6,15 @@ summary: "Logical dumps versus physical snapshots versus the write-ahead log, wh
 tags: [databases, backups, logical-backup, physical-backup, wal, point-in-time-recovery, pg_dump]
 difficulty: intermediate
 synonyms: ["logical vs physical backup", "pg_dump vs snapshot", "what is a write ahead log backup", "point in time recovery how it works", "how does pitr work", "sql dump vs file copy", "continuous archiving wal"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Three Kinds of Backup
 
-In Phase 1 we set two targets: how much data you can lose (RPO) and how long recovery can take (RTO).
-Now we pick the machinery that hits them. There are three fundamentally different ways to capture a
-database's state, and they trade off in exactly the dimensions those numbers care about — speed,
-portability, and how little data you lose. Understanding the three is the difference between cargo-culting
-a `pg_dump` cron job and actually choosing the right tool for your RPO.
+Phase 1 set two targets: RPO (how much data you can lose) and RTO (how long recovery can take). Now we
+pick the machinery that hits them. There are three fundamentally different ways to capture a database's
+state, trading off speed, portability, and how little data you lose. Know the three, and you stop
+cargo-culting a `pg_dump` cron job and start choosing the right tool for your RPO.
 
 We'll use Postgres-flavored commands because they're concrete and widely known, but the *categories* are
 universal — MySQL, SQL Server, and the rest all have a logical export, a physical copy, and a transaction
@@ -49,13 +48,13 @@ $ psql shopdb_restored -c "SELECT count(*) FROM orders;"
 (1 row)
 ```
 *What just happened:* `pg_restore` rebuilt the schema and re-inserted every row into a brand-new
-database, and the row count confirms the data arrived. Notice this is a genuine, observed restore — the
-kind Phase 1 said is the only thing that proves anything. Logical dumps are the most portable and the
-easiest to spot-check, which is exactly why they're the friendliest for *testing*.
+database, and the row count confirms the data arrived. This is a genuine, observed restore — the only
+thing Phase 1 said actually proves anything. Logical dumps are the most portable and easiest to
+spot-check, which is why they're the friendliest for *testing*.
 
 The cost: logical dumps are slow to take and slow to restore on large databases, because rebuilding from
-`INSERT`s is far more work than copying files. A terabyte database can take many hours to dump and longer
-to restore — which can blow your RTO.
+`INSERT`s is far more work than copying files. A terabyte database can take hours to dump and longer to
+restore — which can blow your RTO.
 
 ## Kind 2: the physical backup — a photograph of the files
 
@@ -67,9 +66,9 @@ snapshot of the disk). It's a photograph of the bytes on disk at a moment in tim
 $ pg_basebackup --pgdata=/backups/base-2026-06-30 --format=tar --gzip
 ```
 *What just happened:* Instead of reading rows and writing `INSERT`s, this copied the database's files
-wholesale into a backup directory. Restoring is correspondingly fast — you put the files back and start
-the engine, with no row-by-row rebuild. Big databases recover dramatically faster this way, which is how
-you hit a tight RTO at scale. Cloud "snapshot" backups (RDS snapshots, disk snapshots) are this category.
+wholesale into a backup directory. Restoring is correspondingly fast — put the files back and start the
+engine, no row-by-row rebuild. Big databases recover dramatically faster this way, which is how you hit a
+tight RTO at scale. Cloud "snapshot" backups (RDS snapshots, disk snapshots) are this category.
 
 The trade-off is the mirror image of logical dumps. Physical backups are *fast* but *rigid*: they're tied
 to the same database engine version and often the same platform, and you generally restore the *whole*
@@ -87,16 +86,16 @@ thing — you can't cherry-pick one table out of a raw file copy. Photograph, no
 
 Here's the limitation both of the above share: each is a *point in time*. Whether you dump nightly or
 snapshot nightly, a disaster at 5pm still loses everything since the last capture. That's your RPO ceiling
-from Phase 1, and neither full-backup type can break through it on its own.
+from Phase 1, and neither full-backup type can break through it alone.
 
 The fix is a mechanism most databases already have for durability: the **write-ahead log** (WAL). Before
 the database changes any data, it first appends a record of the change to a sequential log. (If you've read
 [Transactions and ACID](/guides/transactions-and-acid), this is the same log that makes "durable" mean
-durable — the change is safe on disk the instant the log entry is written.) It is, in effect, a continuous
-recording of *every change*, in order.
+durable — the change is safe on disk the instant the log entry is written.) It's a continuous recording of
+*every change*, in order.
 
-That recording is the missing piece. If you keep (archive) the WAL continuously, you have not only nightly
-snapshots but the complete ordered stream of everything that happened *between* them.
+Keep (archive) the WAL continuously and you have not just nightly snapshots but the complete ordered
+stream of everything that happened *between* them.
 
 ```text
   full backup        WAL stream (every change, continuously archived)
@@ -109,9 +108,9 @@ That's what shrinks RPO from "since last night" toward "the last few seconds."
 
 ## Point-in-time recovery: rewinding to the second before the mistake
 
-Combine a physical base backup with the archived WAL and you unlock the technique that feels like a
-time machine: **point-in-time recovery (PITR)**. You restore the base backup, then *replay the WAL up to
-a chosen instant* — and stop.
+Combine a physical base backup with the archived WAL and you unlock a technique that feels like a time
+machine: **point-in-time recovery (PITR)**. Restore the base backup, then *replay the WAL up to a chosen
+instant* — and stop.
 
 ```console
 # Restore the base backup, then tell the engine: replay WAL, but stop just before the disaster
@@ -119,9 +118,9 @@ $ recovery_target_time = '2026-06-30 16:59:30'   # the bad DELETE ran at 17:00:0
 ```
 *What just happened:* The engine restored the base files, then replayed every logged change in order up
 to 16:59:30 and stopped — half a minute before someone ran `DELETE FROM orders` with no `WHERE`. The
-table comes back exactly as it was the moment before the mistake. You didn't lose a day of orders; you
-lost thirty seconds, and you chose where to stop. This is the payoff of the WAL: recovery to a *moment*,
-not only to last night's snapshot.
+table comes back exactly as it was the moment before the mistake. You didn't lose a day of orders, just
+thirty seconds, and you chose where to stop. That's the payoff of the WAL: recovery to a *moment*, not
+just last night's snapshot.
 
 💡 **Key point.** The three kinds aren't competitors — the strong setups *combine* them. A common shape:
 periodic physical base backups for fast bulk recovery, continuous WAL archiving for a tiny RPO and PITR,
@@ -130,12 +129,11 @@ and RTO you wrote down in Phase 1.
 
 ## For builders
 
-If your RPO is "minutes," a nightly dump alone will never get you there — no amount of polishing the
-dump job changes that it's a once-a-day snapshot. The lever that breaks the once-a-day ceiling is
-continuous WAL archiving, because it's the only mechanism that captures the gaps *between* full backups.
-So when someone asks for near-zero data loss, the answer isn't "back up more often" — it's "archive the
-log continuously and set up PITR." Match the mechanism to the number; don't run the backup tool
-harder.
+If your RPO is "minutes," a nightly dump alone will never get you there — no amount of polishing the dump
+job changes that it's a once-a-day snapshot. The lever that breaks the once-a-day ceiling is continuous
+WAL archiving, the only mechanism that captures the gaps *between* full backups. When someone asks for
+near-zero data loss, the answer isn't "back up more often" — it's "archive the log continuously and set
+up PITR." Match the mechanism to the number; don't run the backup tool harder.
 
 ## Recap
 

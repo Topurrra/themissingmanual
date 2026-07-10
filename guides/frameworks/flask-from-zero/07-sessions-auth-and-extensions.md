@@ -6,12 +6,12 @@ summary: "Flask's session is a signed cookie; real login is an extension you add
 tags: [flask, sessions, authentication, flask-login, extensions, cookies, login-required]
 difficulty: intermediate
 synonyms: ["flask sessions", "flask-login authentication", "flask login required", "flask session cookie", "flask extensions ecosystem", "flask user auth", "flask secret key"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Sessions, Auth & Extensions
 
-Right now anyone who can reach your notes app can create notes. There's no "logged in," no "this is *my* note" — the whole concept of a user doesn't exist yet. This phase fixes that in the most Flask way possible: a tiny built-in piece (the session) plus an extension you bolt on (Flask-Login).
+Right now anyone who can reach your notes app can create notes. There's no "logged in," no "this is *my* note" — the whole concept of a user doesn't exist yet. This phase fixes that the Flask way: a tiny built-in piece (the session) plus an extension you bolt on (Flask-Login).
 
 The mental model: **logging a user in is just remembering, across requests, that this browser belongs to a known person.** HTTP forgets you between requests — that's the bare problem the [Servlet sessions guide](/guides/the-servlet-api) walks through from the ground up. Flask's answer is the trick every framework uses: an id rides along in a cookie, and the server reads it back on the next request. Flask wraps that in an object called `session`.
 

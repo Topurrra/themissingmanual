@@ -6,14 +6,14 @@ summary: "How the container decides which servlet handles which URL, why one-ser
 tags: [servlet, url-mapping, webservlet, web-xml, front-controller, dispatcherservlet, routing]
 difficulty: intermediate
 synonyms: ["servlet url mapping @WebServlet", "servlet web.xml mapping", "front controller pattern java", "how dispatcherservlet works", "servlet routing", "one servlet many routes", "servlet url patterns"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Mapping & the Front-Controller Pattern
 
 In [Phase 3](03-handling-requests.md) you wrote a servlet that reads a request and writes a response. But we waved a hand over one thing: *how does the container know that `GET /hello` should reach your `HelloServlet` and not some other class?* That's the missing link, and chasing it all the way down lands you on the single most important pattern in Java web development — the one every framework you've ever used is quietly built on.
 
-Here's the mental model to hold onto before any code: **the container keeps a routing table that maps URL patterns to servlets.** When a request arrives, it looks up the path, finds the matching servlet, and hands the request over. Everything in this phase is about who writes that table, and the moment you realize you can write a *clever* one yourself.
+**The container keeps a routing table that maps URL patterns to servlets.** When a request arrives, it looks up the path, finds the matching servlet, and hands the request over. Everything in this phase is about who writes that table, and the moment you realize you can write a *clever* one yourself.
 
 ## URL mapping: how the container finds your servlet
 

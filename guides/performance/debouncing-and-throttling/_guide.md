@@ -14,12 +14,12 @@ synonyms:
   - search as you type performance
   - scroll event firing too often
   - rate limiting events in javascript
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Debouncing and Throttling
 
-A single keystroke, scroll, or mouse movement doesn't sound like much. But a keyboard can fire a keystroke event every hundred milliseconds while someone types, and a scroll or mousemove can fire hundreds of times a second while someone drags. A handler that does real work — hitting an API, recalculating a layout — on every single one of those events is doing far more work than the situation calls for. Debouncing and throttling are the two standard ways to bring that firehose under control, and they solve different versions of the problem.
+A single keystroke, scroll, or mouse movement doesn't sound like much — but a keyboard can fire an event every hundred milliseconds while someone types, and a scroll or mousemove can fire hundreds of times a second while someone drags. A handler that does real work — hitting an API, recalculating a layout — on every one of those events does far more than the situation calls for. Debouncing and throttling are the two standard ways to bring that firehose under control, solving different versions of the problem.
 
 ## How to read this
 

@@ -6,7 +6,7 @@ summary: "A database is two things at once: an organized store of data, plus a r
 tags: [databases, dbms, integrity, concurrency, spreadsheet, mental-model]
 difficulty: beginner
 synonyms: ["what is a database", "database vs spreadsheet", "what is a dbms", "why use a database instead of excel", "when do i need a database"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # More Than a Spreadsheet
@@ -26,7 +26,7 @@ flowchart TD
   end
 ```
 
-**What it actually is.** A database is an **organized store of data** *plus* a **program that manages all access to it**. That program is the real hero, and it has a name: the **DBMS** — the Database Management System. When people say "the database is down" or "ask the database," they usually mean the DBMS, the running program, not the bytes on disk.
+A database is an **organized store of data** *plus* a **program that manages all access to it**. That program is the real hero, and it has a name: the **DBMS** — the Database Management System. When people say "the database is down" or "ask the database," they usually mean the DBMS, the running program, not the bytes on disk.
 
 📝 **Terminology.** *DBMS* = Database Management System: the software that stores your data, enforces the rules about it, and answers every request to read or change it. PostgreSQL, MySQL, and SQLite are all DBMSs. In casual speech "database" gets used for both the data and the DBMS — now you can tell which one someone means.
 

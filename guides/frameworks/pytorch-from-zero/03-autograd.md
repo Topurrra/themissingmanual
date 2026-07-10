@@ -6,7 +6,7 @@ summary: "The conceptual heart of PyTorch: how requires_grad records your math i
 tags: [pytorch, autograd, automatic-differentiation, gradients, backward, computation-graph, requires-grad]
 difficulty: advanced
 synonyms: ["pytorch autograd explained", "pytorch backward gradients", "pytorch requires_grad", "automatic differentiation", "pytorch computation graph", "pytorch grad", "how pytorch computes gradients"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Autograd: Automatic Differentiation
@@ -15,7 +15,7 @@ This is the phase where PyTorch stops looking like a fancy NumPy and starts look
 *learns*. Everything in [Phase 2](02-tensor-operations-and-gpu.md) — elementwise math, matmul,
 broadcasting — was you doing arithmetic. Autograd is PyTorch quietly watching that arithmetic and, on
 request, working out the calculus of it for you. If you've ever wondered what "training" actually *does*
-under the hood, this is the engine room. Let's demystify it.
+under the hood, this is the engine room.
 
 ## 1. Why gradients matter at all
 

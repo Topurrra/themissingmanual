@@ -6,14 +6,12 @@ summary: "A qubit holds a superposition with amplitudes and a phase, and qubits 
 tags: [physics, quantum, quantum-computing, qubit, superposition, amplitude, mental-model]
 difficulty: intermediate
 synonyms: ["what is a qubit", "qubit vs bit", "does a quantum computer try all answers at once", "what is an amplitude in quantum computing", "quantum superposition computing", "why measurement gives one answer"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The qubit, and the lie about parallel answers
 
 Before anything else, here is the honest center of this whole topic, the sentence to keep when you forget everything else: **a quantum computer does not try all answers at once and read them all back.** When you measure it, you get exactly one ordinary answer, the same as any normal computer would hand you. What's special is everything that happens *before* you measure - and that's where the real machine lives.
-
-Let's build the mental model from the ground up.
 
 ## A classical bit, and then a qubit
 

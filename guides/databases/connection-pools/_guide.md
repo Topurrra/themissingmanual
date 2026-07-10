@@ -14,7 +14,7 @@ synonyms:
   - connection pool sizing
   - database connection leak
   - serverless connection storm
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Database Connection Pools
@@ -23,7 +23,7 @@ Your app was fine all week. Then traffic doubled, and the database fell over wit
 
 ## How to read this
 
-Read the three phases in order — they build on each other. Phase 1 gives you the picture in your head: what a connection is and why it isn't free. Phase 2 is the everyday machinery: how a pool reuses connections and what the knobs mean. Phase 3 is where it bites in real life: exhaustion, leaks, and the serverless storm. If you've ever stared at a `connection pool timeout` log line at 3am, Phase 3 is your destination — but the first two phases are what make it make sense.
+Read the three phases in order — they build on each other. If you've ever stared at a `connection pool timeout` log line at 3am, Phase 3 is your destination, but Phase 1 and 2 are what make it make sense.
 
 ## The phases
 

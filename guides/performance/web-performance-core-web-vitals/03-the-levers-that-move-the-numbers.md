@@ -6,7 +6,7 @@ summary: "The fixes that pay: bundle size and code splitting, image optimization
 tags: [performance, web-performance, bundle-size, code-splitting, images, caching, cdn, render-blocking, layout-shift]
 difficulty: intermediate
 synonyms: ["how to improve core web vitals", "reduce javascript bundle size", "fix layout shift cls", "optimize images for web", "what is a cdn for performance", "render blocking resources fix", "code splitting explained", "make website load faster fixes"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Levers That Move the Numbers
@@ -47,7 +47,7 @@ The second move is **code splitting**: instead of one giant bundle the user down
    admin.js       ▕████████▏        (most users never load this at all)
 ```
 
-*What just happened:* The home page now ships 80 kB instead of 480 kB, because the checkout and admin code load lazily, only when a user actually goes there. Many users never touch those routes, so that code is work you never do for them - the "do less work" principle, applied to bytes. Less JavaScript up front means faster parsing, a faster first paint (LCP), and a main thread free to handle clicks (INP).
+*What just happened:* The home page now ships 80 kB instead of 480 kB, because the checkout and admin code load lazily, only when a user actually goes there. Many users never touch those routes, so that code is work you never do for them - the "do less work" principle, applied to bytes. Less JavaScript up front means faster parsing: a faster LCP and a main thread free for clicks.
 
 ## 2. Images - usually your LCP element
 

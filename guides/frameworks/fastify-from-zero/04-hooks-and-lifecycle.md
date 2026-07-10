@@ -6,15 +6,15 @@ summary: "Every request flows through a named request/reply lifecycle. Hooks let
 tags: [fastify, javascript, hooks, lifecycle, prehandler]
 difficulty: intermediate
 synonyms: ["fastify hooks", "fastify lifecycle", "fastify onRequest preHandler", "fastify onSend onResponse", "fastify auth hook", "fastify request lifecycle"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Hooks & the Lifecycle
 
 In [Phase 3](03-the-plugin-system.md) you learned that the app is a tree of encapsulated plugins. Now
-we put that tree to work. The question this phase answers is the one every real API hits sooner or
-later: *"I need to run some code before my handler — check a token, log the request, set a header — but
-not copy-paste it into every route. Where does that go?"*
+we put that tree to work. This phase answers the question every real API hits sooner or later: *"I need
+to run some code before my handler — check a token, log the request, set a header — but not copy-paste
+it into every route. Where does that go?"*
 
 ## The mental model: a request flows a named lifecycle
 

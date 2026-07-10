@@ -6,13 +6,12 @@ summary: "tower::Service is the universal async request-to-response shape: call 
 tags: [tower, rust, service, poll-ready, async]
 difficulty: advanced
 synonyms: ["tower service trait", "poll_ready call", "tower service_fn", "rust async request response abstraction", "tower backpressure", "what is a tower service"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The Service Trait
 
-Here's the one idea this whole guide turns on. Strip away the type machinery and a
-`tower::Service` is two things bolted together:
+Strip away the type machinery and a `tower::Service` is two things bolted together:
 
 - **`call`** — give it a request, it hands you back a *future* of a response.
 - **`poll_ready`** — ask it "are you ready to take work right now?" before you call.

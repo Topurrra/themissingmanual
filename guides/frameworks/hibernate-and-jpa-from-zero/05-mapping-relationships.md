@@ -6,7 +6,7 @@ summary: "How JPA maps foreign keys to object references: @ManyToOne, @OneToMany
 tags: [hibernate, jpa, relationships, manytoone, onetomany, manytomany, owning-side, join-column]
 difficulty: advanced
 synonyms: ["jpa relationships mapping", "jpa @ManyToOne @OneToMany", "jpa @ManyToMany join table", "hibernate owning side vs inverse", "jpa mappedby join column", "hibernate bidirectional relationship", "jpa foreign key mapping"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Mapping Relationships

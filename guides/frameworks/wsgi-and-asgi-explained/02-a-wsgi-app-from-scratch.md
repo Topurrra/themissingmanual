@@ -6,15 +6,15 @@ summary: "Write a real web app in a dozen lines with no framework - a plain WSGI
 tags: [wsgi, python, environ, start-response, web, no-framework, internals]
 difficulty: intermediate
 synonyms: ["wsgi app from scratch", "wsgi environ start_response", "bare wsgi application", "wsgi without framework", "wsgi hello world", "wsgi routing by hand", "what flask is underneath"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # A WSGI App From Scratch
 
 In Phase 1 you learned the contract: a WSGI app is just a Python *callable* the server invokes with two
-arguments, and it hands back a response. That's a description. This phase makes it real. We're going to
-write a complete, working web app - one a browser can hit - with no Flask, no Django, no framework of any
-kind. Just a function.
+arguments, and it hands back a response. This phase makes it real. We're going to write a complete,
+working web app - one a browser can hit - with no Flask, no Django, no framework of any kind. Just a
+function.
 
 The mental model to hold the whole way through: **a WSGI app is one function the server calls per request.**
 The server hands it everything it knows about the incoming request (in a dict called `environ`), gives it a

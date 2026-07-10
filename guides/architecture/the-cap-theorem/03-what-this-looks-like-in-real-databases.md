@@ -12,7 +12,7 @@ synonyms:
   - can you have consistency availability and partition tolerance
   - cp vs ap systems
   - cap theorem database examples
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # What this looks like in real databases
@@ -23,7 +23,7 @@ Phase 2 showed the forced choice in the abstract: during a partition, a node eit
 
 A **CP system** is built to refuse rather than risk answering wrong. If it can't confirm it has the current, agreed-upon value, it will return an error or block until it can.
 
-**A single-leader relational database during failover.** Most traditional RDBMS setups (a primary with one or more replicas) route all writes through one leader node. If the leader becomes unreachable — partitioned off from the rest of the cluster — the system doesn't let just any replica start accepting writes with unconfirmed data. It typically pauses writes (or serves only reads, clearly marked as such) until a new leader is safely elected, or until the partition heals and the original leader rejoins. The gap in write availability is the price paid to avoid two nodes disagreeing about the current value.
+**A single-leader relational database during failover.** Most traditional RDBMS setups (a primary with one or more replicas) route all writes through one leader node. If that leader becomes unreachable — partitioned off from the rest of the cluster — the system doesn't let just any replica start accepting writes with unconfirmed data; it typically pauses writes (or serves only reads, clearly marked as such) until a new leader is safely elected or the original one rejoins. The gap in write availability is the price paid to avoid two nodes disagreeing about the current value.
 
 **ZooKeeper and etcd.** These are coordination services, specifically built to be the single source of truth other systems rely on for things like leader election and distributed locks. If they answered with stale data during a partition, every system depending on them for correctness would inherit that corruption. So they're built explicitly CP: during a partition, a node that can't confirm it's part of the majority (the quorum) will refuse to serve requests rather than risk giving an answer that disagrees with the rest of the cluster.
 
@@ -51,7 +51,7 @@ AP system during a partition:
 
 ## The most common misreading of CAP
 
-Here's the correction that matters most: **CAP describes what a system does *during* a partition. It is not a permanent label for what a system is at all times.** A database described as "AP" is not somehow less consistent on an ordinary Tuesday with no network issues — outside of a partition, most systems are both consistent and available simultaneously, exactly as Phase 2 showed. The CP/AP label only tells you which guarantee gets dropped in the specific, temporary window when nodes can't talk to each other.
+Here's the correction that matters most: **CAP describes what a system does *during* a partition — it is not a permanent label for what a system is at all times.** A database described as "AP" isn't somehow less consistent on an ordinary Tuesday with no network issues; outside of a partition, most systems are both consistent and available simultaneously, exactly as Phase 2 showed. The CP/AP label only tells you which guarantee gets dropped in the specific, temporary window when nodes can't talk to each other.
 
 ```text
 Wrong reading:  "System X is AP, so it's generally less consistent."
@@ -64,7 +64,7 @@ Right reading:   "System X is AP, meaning: IF a partition happens,
 
 ## The deeper refinement: PACELC
 
-CAP's silence about the *non-partition* case is exactly what a later refinement, called **PACELC**, was designed to address. Without going deep into it, PACELC extends the idea: **if there's a Partition, choose between Availability and Consistency (that's the CAP part) — Else (when the network is fine), choose between Latency and Consistency.** The insight is that even without any partition at all, there's often still a tradeoff between responding fast and confirming full consistency across replicas first. It's worth knowing the name exists — it's the deeper, more complete version of the same question CAP raises.
+CAP's silence about the *non-partition* case is exactly what a later refinement, called **PACELC**, was designed to address: **if there's a Partition, choose between Availability and Consistency (the CAP part) — Else (when the network is fine), choose between Latency and Consistency.** The insight is that even without a partition, there's often still a tradeoff between responding fast and confirming full consistency across replicas first. It's worth knowing the name exists — it's the deeper, more complete version of the same question CAP raises.
 
 ## Recap
 

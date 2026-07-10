@@ -12,12 +12,12 @@ synonyms:
   - kong vs aws api gateway
   - api gateway explained
   - single entry point for microservices
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # The single front door
 
-Imagine a mobile app for an online store. It needs product data, it needs the user's order history, it needs to check inventory, and it needs to process a payment. If the backend is split into an orders service, a products service, an inventory service, and a payments service, the app now needs to know all four addresses, speak whatever protocol each one prefers, and handle four different ways of proving who the user is.
+Imagine a mobile app for an online store. It needs product data, order history, inventory status, and to process a payment. If the backend is split into an orders service, a products service, an inventory service, and a payments service, the app now needs to know all four addresses, speak whatever protocol each one prefers, and handle four different ways of proving who the user is.
 
 That's the situation an API gateway exists to erase.
 
@@ -42,7 +42,7 @@ Client's job without a gateway:
   - update itself whenever a service moves or changes shape
 ```
 
-*What just happened:* none of this is what the client actually wants to be doing. The client wants "give me this order" and "charge this card" — it doesn't want to be a directory of internal infrastructure. Every one of those bullet points is complexity that has nothing to do with the app's actual job, and it multiplies with every service you add.
+*What just happened:* the client just wants "give me this order" and "charge this card" — not a directory of internal infrastructure. None of those bullet points touch the app's actual job, and the list grows with every service you add.
 
 ## What the client deals with, with a gateway
 
@@ -61,7 +61,7 @@ POST https://api.example.com/charge
 
 ## Why this matters more as a system grows
 
-With one or two backend services, this problem is barely a problem — you can hardcode two addresses and move on. The pain scales with the number of services, and it scales worse than you'd guess, because it isn't just "one more address." Every new service is one more thing that can have its own auth quirks, its own failure modes, its own versioning scheme, and its own opinions about how errors should look. A system with fifteen services and no gateway means every client of that system re-solves the same integration problem fifteen times over.
+With one or two backend services, this is barely a problem — hardcode two addresses and move on. The pain scales worse than you'd guess, because it isn't just "one more address": every new service brings its own auth quirks, failure modes, versioning scheme, and error conventions. A system with fifteen services and no gateway means every client re-solves the same integration problem fifteen times over.
 
 ```text
 2 services, no gateway   -> mildly annoying

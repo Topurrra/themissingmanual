@@ -6,7 +6,7 @@ summary: "The five-line ritual that trains every PyTorch model: forward, loss, z
 tags: [pytorch, training-loop, epoch, batch, backward, optimizer-step, zero-grad]
 difficulty: advanced
 synonyms: ["pytorch training loop", "pytorch epoch batch", "pytorch forward backward step", "pytorch zero_grad", "pytorch train model", "pytorch loss backward optimizer step", "pytorch training boilerplate"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # The Training Loop
@@ -14,8 +14,8 @@ updated: 2026-06-22
 You've now met all the pieces. In [Phase 4](04-building-models-with-nn-module.md) you built a model
 that turns inputs into predictions. In [Phase 5](05-loss-and-optimizers.md) you got a **loss function**
 that measures how wrong those predictions are, and an **optimizer** that knows how to adjust the model's
-weights. This phase is where those pieces start moving. This is the ritual that actually trains a model —
-and it never really changes, from a three-line toy to a giant language model.
+weights. This phase is where those pieces start moving — the ritual that actually trains a model, and it
+never really changes, from a three-line toy to a giant language model.
 
 So let's get the mental model dead clear before a single line of code, because this is THE thing to
 internalize about PyTorch.

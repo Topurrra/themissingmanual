@@ -6,14 +6,14 @@ summary: "How Spring MVC actually works under the hood: the DispatcherServlet fr
 tags: [spring, spring-mvc, dispatcherservlet, controller, web-config, front-controller, java]
 difficulty: intermediate
 synonyms: ["spring mvc without spring boot", "spring dispatcherservlet explained", "spring mvc manual configuration", "spring @EnableWebMvc", "how spring boot configures the web", "spring front controller", "spring mvc request flow"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Spring MVC Without Boot
 
 In [Phase 6](06-spring-aop-and-proxies.md) you saw how Spring wraps your beans in proxies to add behavior without touching your code. That was the last piece of *core* Spring's machinery. Now we point that machinery at the web — and here's the thing worth holding onto from the start: **the controllers you wrote in Spring Boot were never the magic.** They were ordinary classes the whole time. What Boot quietly did was stand up the *plumbing* around them. This phase rebuilds that plumbing by hand so you can see exactly what was happening behind the curtain.
 
-The mental model first, before any code: **every Spring web app has one object at its front door that catches every single request and decides where it goes.** That object is the `DispatcherServlet`. Once you understand it, the rest of Spring MVC stops feeling like a pile of annotations and starts feeling like one clean idea.
+**Every Spring web app has one object at its front door that catches every single request and decides where it goes.** That object is the `DispatcherServlet`. Once you understand it, the rest of Spring MVC stops feeling like a pile of annotations and starts feeling like one clean idea.
 
 (One scoping note: Spring MVC is built *on top of* the Java Servlet API — the lower-level contract for how a Java web server hands HTTP requests to your code. That layer is its own roots topic; here we sit one floor up and treat "a request arrives" as the starting point.)
 
@@ -143,7 +143,7 @@ Step back and put it all together. In the Boot guide, the entire web setup was: 
 2. **`@EnableWebMvc`-equivalent auto-config** → registered all the MVC beans: handler mappings, Jackson converters, exception resolvers. *(You just did this with `WebConfig`.)*
 3. **Your controller** → the one part that was never magic, identical in both worlds.
 
-💡 So the honest summary is this: **Spring Boot's "web magic" is two things you've now built by hand — a server and a `DispatcherServlet` — plus a pile of default beans you've now seen by name.** Boot didn't invent a new web framework. It pre-wired *this* one. That's the pattern for everything Boot does, and it's exactly where the next and final phase picks up: turning this hand-wired understanding into the full picture of what Spring Boot is.
+💡 **Spring Boot's "web magic" is two things you've now built by hand — a server and a `DispatcherServlet` — plus a pile of default beans you've now seen by name.** Boot didn't invent a new web framework; it pre-wired *this* one. That's the pattern for everything Boot does, and it's exactly where the final phase picks up.
 
 ## Recap
 

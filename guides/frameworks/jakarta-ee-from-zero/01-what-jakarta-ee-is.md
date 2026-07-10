@@ -6,14 +6,14 @@ summary: "Jakarta EE is a set of standard enterprise Java APIs that vendors impl
 tags: [jakarta-ee, java-ee, specification, application-server, enterprise-java, vs-spring, standard]
 difficulty: beginner
 synonyms: ["what is jakarta ee", "java ee vs jakarta ee", "jakarta ee vs spring", "jakarta ee specification implementation", "enterprise java edition", "jakarta ee application server", "javax to jakarta namespace"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # What Jakarta EE Is
 
 If you've spent any time around enterprise Java, you've seen the name everywhere — on job postings, in old Stack Overflow answers, stamped across the docs for servers with names like WildFly, Payara, and Open Liberty. And if you're honest, "Jakarta EE" has always been a bit of a fog. Is it a framework? A library? A version of Java? A competitor to Spring? People throw the term around as if it's one thing, when it's really a category of things.
 
-Here's the good news: there's one clean idea underneath all of it, and once it clicks, the whole landscape snaps into focus. So before any code, let's build the mental model — because *this* is the part that confuses every beginner, and *this* is the part that makes everything else make sense.
+Here's the good news: there's one clean idea underneath all of it, and once it clicks, the whole landscape snaps into focus. Before any code, let's build the mental model — because *this* is the part that confuses every beginner, and *this* is the part that makes everything else make sense.
 
 ## The core idea: a specification, not an implementation
 

@@ -6,12 +6,12 @@ summary: "A plain-English walk through the major recurring OWASP categories - Br
 tags: [security, owasp, injection, access-control, cryptography, ssrf, misconfiguration]
 difficulty: intermediate
 synonyms: ["owasp top 10 categories explained", "broken access control", "what is injection vulnerability", "cryptographic failures owasp", "security misconfiguration", "ssrf explained", "insecure design owasp"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Big Categories, in Plain English
 
-Now the payoff. These are the families you'll keep meeting for the rest of your career, and once you can describe each in a sentence, the whole list stops being intimidating. The good news is that almost every category comes down to one of a few human mistakes: *trusting input you shouldn't, forgetting to check who's asking, or leaving a default switched on.*
+Now the payoff. These are the families you'll keep meeting for the rest of your career, and once you can describe each in a sentence, the whole list stops being intimidating. Almost every category comes down to one of a few human mistakes: *trusting input you shouldn't, forgetting to check who's asking, or leaving a default switched on.*
 
 Skim the table first to get the shape, then read the notes underneath for the ones worth a little more.
 

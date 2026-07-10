@@ -6,199 +6,150 @@ summary: "The habits that beat fallacies and bias: steelman instead of strawman,
 tags: [logic, critical-thinking, cognitive-bias, skepticism]
 difficulty: beginner
 synonyms: ["how to think critically", "steelman an argument", "confirmation bias", "what would change my mind", "how to evaluate claims", "critical thinking habits"]
-updated: 2026-06-25
+updated: 2026-07-10
 ---
 
 # Thinking Clearly: A Practical Toolkit
 
-You now know what an argument is, how implication works, and which fallacies show up
-most. That's the diagnostic layer: you can spot a bad move when it happens. This phase
-is the everyday layer - the small set of habits that, practiced quietly, make you
-harder to fool. Including by yourself.
+You now know what an argument is, how implication works, and which fallacies show up most.
+That's the diagnostic layer - you can spot a bad move when it happens. This phase is the
+everyday layer: habits practiced quietly that make you harder to fool. Including by yourself.
 
-Here's the honest framing. Fallacies are mistakes other people make in front of you.
-Bias is the mistake you make on your own, in the privacy of your own head, where nobody
-is around to call it out. A toolkit for clear thinking has to cover both. So this isn't
-a list of clever rebuttals. It's a list of moves you run *before* you've decided what
-you think.
+Fallacies are mistakes other people make in front of you. Bias is the mistake you make on your
+own, in the privacy of your own head, where nobody is around to call it out. A toolkit for clear
+thinking has to cover both - so this isn't a list of clever rebuttals, it's a list of moves you
+run *before* you've decided what you think.
 
-## The Toolkit
+## The toolkit
 
-Each of these is a question or a habit you can apply to any claim - yours, a friend's,
-a headline's, a chatbot's. None require being smart. They require being willing to slow
-down for ten seconds.
+Each of these is a question or habit you can apply to any claim - yours, a friend's, a
+headline's, a chatbot's. None require being smart, only being willing to slow down for ten
+seconds.
 
-### Steelman, don't strawman
+**Steelman, don't strawman.** You met the strawman fallacy in Phase 2: attacking a weak,
+distorted version of someone's position. The steelman is its opposite. Before you respond to an
+argument, restate it in the strongest, most charitable form you can - strong enough that the
+person who made it would say "yes, that's exactly what I mean." *Then* engage with that version.
+This feels backwards, but if you can only beat the weak version, you haven't won anything - you've
+dodged. Building the steelman often reveals the other side has a real point you'd missed.
 
-You met the strawman fallacy in Phase 2: attacking a weak, distorted version of someone's
-position. The steelman is its opposite, and it's a habit, not a trick.
-
-Before you respond to an argument, restate it in the strongest, most charitable form you
-can - strong enough that the person who made it would say "yes, that's exactly what I
-mean." *Then* engage with that version.
-
-This feels backwards. Why help the other side? Because if you can only beat the weak
-version, you haven't won anything - you've dodged. And often, building the steelman is
-where you discover the other side has a real point you'd missed. You're not being generous
-for their sake. You're protecting yourself from believing something for bad reasons.
-
-### Separate claim from evidence from conclusion
-
-Most confusing arguments are confusing because three different things are mashed together.
-Pull them apart and label each one:
+**Separate claim from evidence from conclusion.** Most confusing arguments are confusing because
+three things are mashed together:
 
 - **The claim** - what's being asserted. ("This framework is faster.")
 - **The evidence** - what's offered to support it. ("My app loaded quicker after I switched.")
 - **The conclusion** - what you're being asked to do or believe. ("So you should switch too.")
 
-Once they're separated, the gaps become visible. Is the evidence actually about the claim?
-(One app on one machine isn't really about the framework being faster.) Does the conclusion
-follow even if the claim is true? (Faster for them might not mean faster for you.) You
-can't evaluate a tangle. You can evaluate three labeled pieces.
+Pulled apart, the gaps become visible. Is the evidence actually about the claim? (One app on one
+machine isn't really about the framework being faster.) Does the conclusion follow even if the
+claim is true? (Faster for them might not mean faster for you.) You can't evaluate a tangle - you
+can evaluate three labeled pieces.
 
-### Ask "what would change my mind?"
+**Ask "what would change my mind?"** The single most useful question in the toolkit, asked about
+your *own* beliefs. Pick something you believe. Now ask: what specific thing, if I saw it, would
+make me give this up? If you can name it - "if a careful study showed the opposite" - your belief
+is connected to reality; evidence could move it. If the honest answer is *nothing would change my
+mind*, then whatever you're holding, you didn't arrive at it by reasoning, and reasoning won't get
+you out of it either. That's an attachment wearing a belief's clothes - there's nothing wrong with
+having those, but it's worth knowing which is which.
 
-This is the single most useful question in the toolkit, and you ask it about your *own*
-beliefs.
+> **Try it on a small thing.** Next time you're sure about something low-stakes - a tool, a
+> technique, a take - pause and finish the sentence "I'd change my mind if ___." If the blank
+> stays empty, that's information about the belief, not about the world.
 
-Pick something you believe. Now ask: what specific thing, if I saw it, would make me give
-this up? If you can name it - "if a careful study showed the opposite," "if I tried it and
-it didn't work" - then your belief is connected to reality. Evidence could move it.
+**Check the source and the incentive.** A claim doesn't arrive from nowhere - someone is saying
+it, and they usually have a reason. Two quick questions: *Where did this come from?* (A primary
+source, an expert, a random post, a generated summary?) And *who benefits if I believe it?* That
+second one isn't cynicism, it's context. A company's blog explaining why its own product is best
+isn't necessarily lying, but it isn't a neutral referee either. Incentive doesn't make a claim
+false - it tells you how hard to check before you trust it.
 
-If the honest answer is *nothing would change my mind*, then whatever you're holding, you
-didn't arrive at it by reasoning, and reasoning won't get you out of it either. That's not
-a belief held for reasons; it's an attachment wearing a belief's clothes. There's nothing
-wrong with having those - but it's worth knowing which is which, so you don't mistake one
-for the other in an argument.
+**Extraordinary claims need extraordinary evidence.** The bigger the claim, the more it should
+take to convince you. "It rained in Seattle" needs almost nothing - it fits everything you already
+know. "I have a sorting algorithm that beats the theoretical limit" needs a great deal, because it
+would overturn things that are well established. This isn't closed-mindedness, it's calibration:
+the strength of your belief should track the strength of the evidence. A surprising claim with
+thin support gets a "maybe, show me more," not a yes and not a flat no.
 
-> **Try it on a small thing.** Next time you're sure about something low-stakes - a tool,
-> a technique, a take - pause and finish the sentence "I'd change my mind if ___." If the
-> blank stays empty, that's useful information about the belief, not about the world.
+**Correlation is not causation (recap).** Two things moving together doesn't mean one causes the
+other. Ice cream sales and drowning both rise in summer - heat drives both; the ice cream is
+innocent. Before accepting "X causes Y" because they happen together, ask whether something else
+might cause both, or whether it's coincidence. (You'll meet this properly in the Mathematics
+track.)
 
-### Check the source and the incentive
+## We fool ourselves too: a few biases
 
-A claim doesn't arrive from nowhere. Someone is saying it, and they usually have a reason.
+Fallacies are about arguments; biases are about the wiring - predictable ways your own mind tilts
+before you've consciously decided anything. You can't delete them, but you can learn to notice
+their fingerprints.
 
-Two quick questions: *Where did this come from?* (A primary source, an expert in the field,
-a random post, a generated summary?) And *who benefits if I believe it?* The second one
-isn't cynicism - it's context. A company's blog explaining why its own product is the best
-choice isn't necessarily lying, but it's not a neutral referee either. Incentive doesn't
-make a claim false. It tells you how hard to check before you trust it.
+- **Confirmation bias.** You notice, remember, and seek out evidence that agrees with what you
+  already think, and quietly skip the rest - which is why "I did my research" can mean "I found
+  the articles that told me I was right." The counter is "what would change my mind?" - it forces
+  you to look for disagreeing evidence on purpose.
+- **Anchoring.** The first number you hear sticks, and everything after is judged relative to it.
+  A "was $200, now $80" tag makes $80 feel like a steal, because $200 anchored you - whether or
+  not anything ever sold for $200. When a number frames a decision, ask where it came from.
+- **Availability.** Whatever comes to mind easily feels more common or likely than it is. Vivid,
+  recent, scary events are easy to recall, so they get overweighted - one dramatic story can feel
+  heavier than a pile of dull statistics that describe reality better.
 
-### Extraordinary claims need extraordinary evidence
+Naming these isn't about feeling clever - it's so that when you catch yourself doing one, you have
+a word for it, and a word is a handle you can grab.
 
-The bigger the claim, the more it should take to convince you. "It rained in Seattle"
-needs almost nothing - it fits everything you already know. "I have a sorting algorithm
-that beats the theoretical limit" needs a great deal, because it would overturn things
-that are very well established.
+## The AI-era angle
 
-This isn't being closed-minded. It's calibration: the strength of your belief should track
-the strength of the evidence. A surprising claim with thin support gets a "maybe, show me
-more," not a yes and not a flat no.
+Modern AI chatbots produce text that is fluent, confident, well-organized, and grammatically
+clean - and it can be completely wrong. The technical term is *hallucination*: the system
+generates a plausible-sounding answer with no basis in fact. It will cite a paper that doesn't
+exist, describe an API method that was never built, or state a date with total confidence and
+total inaccuracy - in exactly the same calm tone it uses when it's right.
 
-### Correlation is not causation (recap)
+The trap is a built-in human shortcut: we treat fluency as a signal of truth. That heuristic is
+roughly okay for humans, who at least usually feel uncertain when they're guessing. It fails badly
+for a system with no such feeling, fluent by design whether or not it's correct.
 
-You'll meet this one properly in the Mathematics track, but it earns a spot here too. Two
-things moving together doesn't mean one causes the other. Ice cream sales and drowning
-both rise in summer - heat drives both; the ice cream is innocent. Before you accept "X
-causes Y" because they happen together, ask whether something else might cause both, or
-whether it's plain coincidence.
+So the move is nothing new - it's the toolkit you already have. Treat an AI's claim like any other
+unverified claim: check the source, ask what would change your mind, verify load-bearing facts
+against something independent. This is applied skepticism, not cynicism - you're not assuming the
+answer is wrong, and you're not refusing to use the tool. You're refusing to let *confident* stand
+in for *checked*. Fluent isn't true. It never was; now the gap is easier to fall into.
 
-## We Fool Ourselves Too: A Few Biases
+## For builders
 
-Fallacies are about arguments. Biases are about the wiring - predictable ways your own mind
-tilts before you've consciously decided anything. You can't delete them. You can learn to
-notice their fingerprints. A few worth knowing by name:
-
-- **Confirmation bias.** You notice, remember, and seek out evidence that agrees with what
-  you already think, and quietly skip the rest. This is why "I did my research" can mean
-  "I found the articles that told me I was right." The counter is the "what would change my
-  mind?" question - it forces you to look for the disagreeing evidence on purpose.
-
-- **Anchoring.** The first number you hear sticks, and everything after is judged relative
-  to it. A "was $200, now $80" tag makes $80 feel like a steal - because $200 anchored you,
-  whether or not anything ever sold for $200. When a number frames a decision, ask where it
-  came from before you let it set the scale.
-
-- **Availability.** Whatever comes to mind easily feels more common or more likely than it
-  is. Vivid, recent, scary events are easy to recall, so they get overweighted. One dramatic
-  story can feel heavier than a pile of dull statistics that describe reality better.
-
-Naming these isn't about feeling clever. It's so that when you catch yourself doing one,
-you have a word for it - and a word is a handle you can grab.
-
-## The AI-Era Angle
-
-Here's where the toolkit pays off in a way it couldn't a few years ago.
-
-Modern AI systems - the chatbots and assistants you probably use - produce text that is
-fluent, confident, well-organized, and grammatically clean. And it can be completely wrong.
-The technical term is *hallucination*: the system generates a plausible-sounding answer
-that has no basis in fact. It will cite a paper that doesn't exist, describe an API method
-that was never built, or state a date with total confidence and total inaccuracy - in
-exactly the same calm tone it uses when it's right.
-
-The trap is a built-in human shortcut: we treat fluency as a signal of truth. Someone who
-speaks smoothly and confidently sounds like they know things. That heuristic is roughly
-okay for humans, who at least usually feel uncertain when they're guessing. It fails badly
-for a system that has no such feeling and is fluent by design, whether or not it's correct.
-
-So the move is direct, and it's nothing new - it's the toolkit you already have. Treat an
-AI's claim like any other unverified claim. Check the source. Ask what would change your
-mind. Verify the load-bearing facts against something independent. This is applied
-skepticism, not cynicism: you're not assuming the answer is wrong, and you're not refusing
-to use the tool. You're refusing to let *confident* stand in for *checked*. Fluent isn't
-true. It never was; now the gap is easier to fall into.
-
-## For Builders
-
-If you write code, you already do critical thinking for a living - you might not have called
-it that. Look at the overlap:
+If you write code, you already do critical thinking for a living.
 
 - **Code review is steelmanning.** Before you reject a change, understand what it's actually
-  trying to do, in its strongest form. The best review comments engage with the real intent,
-  not a misread of it.
-
-- **Debugging is "what would change my mind?"** A bug means reality disagrees with your
-  belief about the code. The fastest fix comes from naming the belief - "this function gets
-  called with a valid ID" - and then hunting for the case that breaks it. You're not
-  defending your assumption; you're trying to falsify it. The counterexample *is* the bug.
-
+  trying to do, in its strongest form. The best review comments engage with the real intent.
+- **Debugging is "what would change my mind?"** A bug means reality disagrees with your belief
+  about the code. Name the belief - "this function gets called with a valid ID" - and hunt for the
+  case that breaks it. You're trying to falsify your assumption; the counterexample *is* the bug.
 - **Assume nothing, verify.** "It works on my machine" is a claim with one data point. "This
-  config is loaded in production" is a claim until you've checked the running system, not the
-  file you think it reads.
+  config is loaded in production" is a claim until you've checked the running system.
+- **An AI suggestion is a claim.** A confident, fluent code snippet is not the same as a correct
+  one. Read it, understand it, test it - treat shipping it unverified the way you'd treat merging
+  a stranger's PR you never read.
 
-- **An AI suggestion is a claim.** When an assistant hands you a code snippet, it's offering
-  a confident, fluent answer - which, as you now know, is not the same as a correct one. Read
-  it, understand it, test it. Treat shipping it unverified the way you'd treat merging a
-  stranger's PR you never read. The skepticism that keeps your reasoning honest is the same
-  skepticism that keeps your codebase from breaking at 2 a.m.
+## Closing the toolkit - and the foundations
 
-## Closing the Toolkit - and the Foundations
+Phase 1 gave you the anatomy of an argument. Phase 2 gave you the catalog of bad moves so you can
+name them on sight. This phase gave you the proactive habits: steelman the other side, separate
+claim from evidence from conclusion, ask what would change your mind, check the source and the
+incentive, demand evidence sized to the claim, and never mistake correlation for cause - while
+staying honest that your own biases are working the whole time.
 
-Step back and look at what you've built across this guide. Phase 1 gave you the anatomy of
-an argument and how to tell a good one from a persuasive one. Phase 2 gave you the catalog
-of common bad moves so you can name them on sight. This phase gave you the proactive habits:
-steelman the other side, separate claim from evidence from conclusion, ask what would change
-your mind, check the source and the incentive, demand evidence sized to the claim, and never
-mistake correlation for cause - while staying honest that your own biases are working the
-whole time.
-
-That same toolkit zooms all the way out. The Logic foundations - [what logic actually
+That toolkit zooms all the way out. The Logic foundations - [what logic actually
 is](/guides/what-logic-actually-is), [implication and conditionals](/guides/implication-and-conditionals),
-and [predicate logic and quantifiers](/guides/predicate-logic-and-quantifiers), now capped
-by critical thinking - were never really about syllogisms. They were about one skill:
-holding a thought up to the light and checking whether it holds. You can follow an argument,
-spot where it breaks, and decide what it would take to change your mind. That's the
-foundation. Everything else builds on it.
+and [predicate logic and quantifiers](/guides/predicate-logic-and-quantifiers), now capped by
+critical thinking - were never really about syllogisms. They were about one skill: holding a
+thought up to the light and checking whether it holds. That's the foundation; everything else
+builds on it.
 
-Where it goes next is the quantitative side of the same clarity. Much of clear thinking
-turns numerical the moment real stakes appear: how big is the effect, how likely is it, how
-much does the evidence actually move the needle? "Extraordinary claims need extraordinary
-evidence" and "correlation isn't causation" are doorways into probability and statistics -
-where intuition gets sharpened into something you can measure. That's the Mathematics track,
-the natural continuation of what you started here. You've learned to think clearly in words.
-Next you learn to think clearly in quantities.
+From here, clear thinking turns numerical the moment real stakes appear: how big is the effect,
+how likely is it, how much does the evidence actually move the needle? "Extraordinary claims need
+extraordinary evidence" and "correlation isn't causation" are doorways into probability and
+statistics - the Mathematics track, and the natural continuation of what you started here. You've
+learned to think clearly in words. Next you learn to think clearly in quantities.
 
 ## Open-ended exercise
 

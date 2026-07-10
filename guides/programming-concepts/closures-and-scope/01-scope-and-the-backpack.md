@@ -6,12 +6,12 @@ summary: "Lexical scope means a function can see the variables around where it w
 tags: [closures, scope, lexical-scope, capture, environment, first-class-functions]
 difficulty: intermediate
 synonyms: ["what is lexical scope", "what is a closure exactly", "why can a function see outer variables", "scope chain explained", "function plus environment", "where a function is defined vs called"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Scope and the Backpack
 
-Before closures make sense, one smaller idea has to be solid: **scope** - the set of variables a piece of code is allowed to see. You already use scope every day without naming it. Inside a function, you can read variables declared outside it. Outside that function, you can't reach the variables declared inside. That's scope drawing its lines.
+Before closures make sense, one smaller idea has to be solid: **scope** - the set of variables a piece of code is allowed to see. You already use scope every day without naming it: inside a function you can read variables declared outside it, but outside that function you can't reach variables declared inside. That's scope drawing its lines.
 
 The lines are not random. They follow a rule so reliable you can read them straight off the page, and that rule is the whole foundation.
 
@@ -98,7 +98,7 @@ One detail that matters for everything ahead: the backpack holds a *reference to
 
 ## Why this exists at all
 
-Closures aren't an accident of syntax; they're what makes functions genuinely *first-class*. If you can pass a function around like any other value, that function needs to keep working no matter where it lands - and "keep working" means still having access to the data it depended on. Without closures, a returned or stored function would be a half-broken thing, referring to variables that no longer exist. Closures are the mechanism that lets a function be a self-contained, portable unit of behavior *plus* the state it needs.
+Closures aren't an accident of syntax; they're what makes functions genuinely *first-class*. If you can pass a function around like any other value, that function needs to keep working no matter where it lands - and "keep working" means still having access to the data it depended on. Without closures, a returned or stored function would be a half-broken thing, referring to variables that no longer exist - closures are the mechanism that lets a function be a self-contained, portable unit of behavior *plus* the state it needs.
 
 > **In the wild.** Every event handler, every callback you pass to `map` or `setTimeout`, every decorator, every "remember this config and use it later" helper - all of them lean on closures. You've been using them since your first callback, whether or not anyone named it.
 

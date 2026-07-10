@@ -6,36 +6,20 @@ summary: "Expose a Product over HTTP with Quarkus REST (RESTEasy Reactive): the 
 tags: [quarkus, rest, resteasy-reactive, jax-rs, json, rest-endpoints, quarkus-rest]
 difficulty: beginner
 synonyms: ["quarkus rest api", "quarkus resteasy reactive", "quarkus jax-rs endpoint", "quarkus json rest", "quarkus rest jackson", "quarkus path getmapping", "quarkus build rest service"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Building REST APIs
 
-In [Phase 2](02-dev-mode-and-dx.md) you watched dev mode reload your code the instant you saved it. That
-loop is most fun when there's something to *hit* — an endpoint you can curl, tweak, and see change live.
-So this phase gives you one: an HTTP API for the `Product` you've been carrying along (an `id`, a `name`,
-and a `price`).
+Phase 2's live reload is most fun when there's something to *hit* - an endpoint you can curl, tweak, and see change live. This phase gives you one: an HTTP API for the `Product` you've been carrying along (an `id`, a `name`, a `price`).
 
-Here's the mental model to hold onto, and it's a comforting one: **Quarkus didn't invent a new way to
-write REST APIs.** It uses the exact same Jakarta REST (JAX-RS) annotations you'd write on any Java
-server — `@Path`, `@GET`, `@POST`, `@Produces`. If you've done the
-[Jakarta EE guide](/guides/jakarta-ee-from-zero), you already know how to write a Quarkus resource; you
-learned it there. What Quarkus changes is *underneath* — its REST engine (called **Quarkus REST**, and
-historically **RESTEasy Reactive**) does the request-matching and wiring work at **build time** instead of
-at startup, which is the whole "supersonic" story from Phase 1. Same spec you know, build-time optimized.
+**Quarkus didn't invent a new way to write REST APIs.** It uses the exact same Jakarta REST (JAX-RS) annotations you'd write on any Java server - `@Path`, `@GET`, `@POST`, `@Produces`. If you've done the [Jakarta EE guide](/guides/jakarta-ee-from-zero), you already know how to write a Quarkus resource. What Quarkus changes is *underneath* - its REST engine (**Quarkus REST**, historically **RESTEasy Reactive**) does request-matching and wiring at **build time** instead of startup - the "supersonic" story from Phase 1.
 
-📝 So this phase isn't really "learn REST." It's "see the REST you know running on Quarkus, and meet the
-two new wrinkles that are genuinely Quarkus-flavored: **extensions** (how you turn on features like JSON)
-and the **imperative-vs-reactive** return-type choice." If `@Path`, `@PathParam`, or status codes feel
-fuzzy, the [JAX-RS phase](/guides/jakarta-ee-from-zero) teaches them from scratch and
-[REST APIs Explained](/guides/rest-apis-explained) covers the protocol itself. We won't re-teach all of
-that here — we'll lean on it.
+📝 So this phase isn't "learn REST" - it's "see the REST you know running on Quarkus," plus two genuinely Quarkus-flavored wrinkles: **extensions** (turning on features like JSON) and the **imperative-vs-reactive** return-type choice. If `@Path`, `@PathParam`, or status codes feel fuzzy, the [JAX-RS phase](/guides/jakarta-ee-from-zero) and [REST APIs Explained](/guides/rest-apis-explained) teach them from scratch.
 
 ## It's JAX-RS (Quarkus REST / RESTEasy Reactive)
 
-A REST endpoint in Quarkus is a *resource class*: a plain class marked with `@Path` to give it a URL, whose
-methods are marked with the HTTP-verb annotations to become handlers. Here's a resource that returns a list
-of products as JSON:
+A REST endpoint in Quarkus is a *resource class*: a plain class marked with `@Path`, whose methods are marked with HTTP-verb annotations. Here's one that returns a list of products as JSON:
 
 ```java
 import jakarta.ws.rs.GET;
@@ -59,14 +43,7 @@ public class ProductResource {
 }
 ```
 
-*What just happened:* `@Path("/products")` mapped this class to the URL `/products`, and `@GET` said "this
-method handles `GET` requests to that path." `@Produces(APPLICATION_JSON)` declares the response is JSON, so
-when the method returns a `List<Product>`, Quarkus serializes each `Product` into a JSON object for you.
-Notice the imports are `jakarta.ws.rs.*` — the standard JAX-RS package, not anything Quarkus-specific.
-You're writing the spec; Quarkus is the engine. (The hardcoded list is a placeholder — the real data
-arrives in [Phase 5](05-persistence-with-panache.md) when a database backs it.)
-
-The request and the response it produces:
+*What just happened:* `@Path("/products")` mapped this class to `/products`, `@GET` handles `GET` requests, and `@Produces(APPLICATION_JSON)` declares the response format, so `List<Product>` serializes automatically. The imports are `jakarta.ws.rs.*` - standard JAX-RS, nothing Quarkus-specific. (The hardcoded list is a placeholder - real data arrives in [Phase 5](05-persistence-with-panache.md).)
 
 ```http
 GET /products HTTP/1.1
@@ -80,19 +57,11 @@ Host: localhost:8080
 ]
 ```
 
-*What just happened:* The `List<Product>` came back as a JSON array, one object per product, each field
-mapped by name. You wrote zero serialization code — the engine turned plain Java objects into the wire
-format. (Quarkus defaults its HTTP port to `8080`, the same as a classic server, so the URL feels familiar.)
+*What just happened:* the `List<Product>` came back as a JSON array. You wrote zero serialization code. (Quarkus defaults to port `8080`, same as a classic server.)
 
 ## Path and query params
 
-A real API needs to address *one specific product* and to *filter* a list — and JAX-RS has a different
-tool for each, exactly as in Jakarta EE.
-
-📝 A **path param** is part of the URL path (`/products/2` means "the product with id 2"): you write a
-placeholder with braces in `@Path` and bind it with `@PathParam`. A **query param** is a value after the
-`?` (`/products?maxPrice=50`) and you bind it with `@QueryParam`. The rule of thumb is unchanged: a path
-param *identifies* a resource; a query param *filters or modifies* the request.
+📝 A **path param** is part of the URL (`/products/2` = "product with id 2"): a placeholder in `@Path`, bound with `@PathParam`. A **query param** is a value after `?` (`/products?maxPrice=50`), bound with `@QueryParam`. Path param *identifies*; query param *filters*.
 
 ```java
 import jakarta.ws.rs.*;
@@ -118,13 +87,7 @@ public class ProductResource {
 }
 ```
 
-*What just happened:* In `getOne`, the `{id}` in `@Path("/{id}")` lines up with `@PathParam("id") Long id`
-— Quarkus pulls `2` out of `/products/2`, converts the text to a `Long`, and passes it in. In `list`,
-`@QueryParam("maxPrice")` reads `?maxPrice=...`; when the client omits it the param is `null`, so we return
-everything. (The `service` here is a stand-in for logic that moves into a CDI bean in
-[Phase 4](04-cdi-with-arc.md) — keep the resource thin.)
-
-Try both with curl against your running dev-mode app:
+*What just happened:* in `getOne`, `{id}` lines up with `@PathParam("id") Long id` - Quarkus pulls `2` from `/products/2` and converts it. In `list`, `@QueryParam("maxPrice")` is `null` when the client omits it, so we return everything. (`service` moves into a CDI bean in [Phase 4](04-cdi-with-arc.md).)
 
 ```bash
 curl http://localhost:8080/products/2
@@ -137,30 +100,19 @@ curl "http://localhost:8080/products?maxPrice=60"
 [{"id":2,"name":"USB-C Hub","price":49.50}]
 ```
 
-*What just happened:* The first call hit the path-param route and returned a single product. The second hit
-the same `/products` endpoint but, because `?maxPrice=` was present, returned a filtered array. The quotes
-around the second URL keep the shell from choking on the `?`.
-
 ## Request bodies and JSON
 
-Reading is half an API. To *create* a product the client sends JSON in the request body — and here's the
-first genuinely Quarkus-flavored step: **JSON binding isn't on by default. You add it with an extension.**
+To *create* a product the client sends JSON in the body - and here's the first genuinely Quarkus-flavored step: **JSON binding isn't on by default. You add it with an extension.**
 
-⚠️ If you write a `@POST` that takes a `Product` body before adding a JSON extension, it won't deserialize
-— Quarkus doesn't ship Jackson in the core. You add the capability by adding **`quarkus-rest-jackson`**,
-and then JSON in *and* out just works:
+⚠️ Write a `@POST` taking a `Product` body before adding a JSON extension and it won't deserialize - Quarkus doesn't ship Jackson in the core. Add **`quarkus-rest-jackson`**:
 
 ```bash
 quarkus extension add quarkus-rest-jackson
 ```
 
-*What just happened:* That command edited your build file (`pom.xml` or `build.gradle`) to include the
-extension, and dev mode picked it up on the next request. From this point, Quarkus REST can deserialize an
-incoming JSON body into a Java object and serialize your return values to JSON. (The earlier `@GET`s
-returning JSON also rely on this extension being present — it's the JSON engine for the whole resource.)
+*What just happened:* that edited your build file to include the extension; dev mode picked it up on the next request. From here, JSON binds both in and out - the earlier `@GET`s also rely on this extension being present.
 
-Now the create endpoint. To report the right status — **201 Created**, not the default 200 — return a
-`RestResponse<Product>` instead of a bare `Product`:
+Now the create endpoint. To report **201 Created** instead of the default 200, return a `RestResponse<Product>`:
 
 ```java
 import jakarta.ws.rs.*;
@@ -180,15 +132,7 @@ public class ProductResource {
 }
 ```
 
-*What just happened:* The `Product product` parameter has *no* annotation — JAX-RS treats the unannotated
-parameter as the request body, and `@Consumes(APPLICATION_JSON)` tells the engine to deserialize the
-incoming JSON into it. So by the time your code runs, you're holding a populated `Product`, not raw text. We
-return a `RestResponse<Product>` set to **201 Created** with the saved product as the body — `RestResponse`
-is Quarkus REST's type-safe wrapper over the classic JAX-RS `Response`, and you can use either (`Response`
-works identically). Returning a bare `Product` would always yield a plain 200; `RestResponse` is the switch
-you flip when the default status isn't the honest answer.
-
-The JSON the client sends:
+*What just happened:* the unannotated `Product product` parameter *is* the request body - `@Consumes(APPLICATION_JSON)` deserializes it before your code runs. `RestResponse<Product>` is Quarkus REST's type-safe wrapper over the classic JAX-RS `Response` (either works); returning a bare `Product` would always yield 200.
 
 ```json
 {
@@ -197,53 +141,27 @@ The JSON the client sends:
 }
 ```
 
-*What just happened:* The client posts a product with no `id` — the server assigns that on create. The
-`quarkus-rest-jackson` extension binds `name` and `price` onto a `Product` before `create` runs, then
-serializes the saved product (now with its `id`) back out as the 201 response body.
+*What just happened:* the client posts a product with no `id` - the server assigns it. The extension binds `name`/`price` onto a `Product` before `create` runs, then serializes the saved product back out.
 
-## Extensions — the Quarkus way to add features
+## Extensions - the Quarkus way to add features
 
-You just used an extension to add JSON. It's worth pausing on *what an extension actually is*, because it's
-how you'll add every capability from here on.
+You just used an extension to add JSON - worth pausing on what one actually is, since it's how you'll add every capability from here on.
 
-📝 An **extension** is a Quarkus-aware module — `quarkus-rest-jackson` for JSON,
-`quarkus-hibernate-orm-panache` for persistence ([Phase 5](05-persistence-with-panache.md)),
-`quarkus-jdbc-postgresql` for a database driver, and dozens more. You add one with `quarkus extension add`
-(or by hand in your build file):
+📝 An **extension** is a Quarkus-aware module - `quarkus-rest-jackson` for JSON, `quarkus-hibernate-orm-panache` for persistence, `quarkus-jdbc-postgresql` for a driver, dozens more:
 
 ```bash
 quarkus extension add quarkus-hibernate-orm-panache quarkus-jdbc-postgresql
 ```
 
-*What just happened:* That added two capabilities to your project in one go. Each one wires itself into the
-build and brings sensible defaults — for example, the persistence extensions hook into config so a database
-"just works" in dev mode.
+*What just happened:* both capabilities added in one go, each wiring itself into the build with sensible defaults.
 
-💡 So why an *extension* and not a plain Maven/Gradle dependency? Because an extension hooks into Quarkus's
-**build-time processing** (the Phase 1 idea). A normal library only runs at runtime; an extension also
-contributes a build step that does the scanning, reflection registration, and wiring *while compiling*, so
-startup stays nearly instant — and so the feature still works when you compile to a native image
-([Phase 9](09-native-compilation.md)), where runtime reflection isn't available. The extension catalog is
-exactly how Quarkus stays fast while being full-featured: each feature pays its setup cost at build time,
-once, instead of on every boot.
+💡 Why an *extension* and not a plain dependency? An extension hooks into Quarkus's **build-time processing** (Phase 1's idea) - it contributes a build step that does scanning, reflection registration, and wiring *while compiling*, so startup stays instant and the feature still works in a native image ([Phase 9](09-native-compilation.md)), where runtime reflection isn't available. Each feature pays its setup cost once, at build time, instead of on every boot.
 
 ## Imperative vs reactive (a preview)
 
-One last thing that makes Quarkus REST distinctive, mentioned now so it isn't a surprise later.
+Every handler above returned a value *directly* - the **imperative** style: the method blocks until it has the answer and returns it. Quarkus REST also lets a handler return a **reactive** type - a `Uni<Product>` (a promise) or `Multi<Product>` (a stream) - which hands the request's thread back while waiting on I/O, then resumes when data is ready. Both styles run on the same stack; you mix them per endpoint. [Phase 7](07-reactive-with-mutiny.md) covers `Uni`/`Multi` properly - for now, just know the door exists.
 
-📝 Every handler above returned a value *directly* — a `Product`, a `List<Product>`, a `RestResponse`.
-That's the **imperative** style: the method runs, blocks until it has the answer, and returns it. Quarkus
-REST also lets a handler return a **reactive** type — a `Uni<Product>` (a promise of a single value) or a
-`Multi<Product>` (a stream) — which lets the request hand its thread back while waiting on I/O, then resume
-when the data is ready. Both styles run on the same Quarkus REST stack; you mix them freely per endpoint.
-We dig into `Uni`/`Multi` properly in [Phase 7](07-reactive-with-mutiny.md) — for now, just know the door
-exists.
-
-💡 Whichever style you pick, the advice from this phase holds: **keep the resource thin.** A handler should
-read the request, hand the real work to a CDI bean ([Phase 4](04-cdi-with-arc.md)) backed by Panache
-([Phase 5](05-persistence-with-panache.md)), and shape the response. HTTP in, HTTP out; the logic lives
-behind it. That separation is what lets you swap imperative for reactive — or the in-memory placeholder for
-a real database — without touching the doorway.
+💡 Whichever style you pick: **keep the resource thin.** A handler reads the request, hands the real work to a CDI bean ([Phase 4](04-cdi-with-arc.md)) backed by Panache ([Phase 5](05-persistence-with-panache.md)), and shapes the response. That separation is what lets you swap imperative for reactive without touching the doorway.
 
 ## Recap
 

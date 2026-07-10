@@ -6,17 +6,16 @@ summary: "In a distributed system, networks drop, services slow, and dependencie
 tags: [distributed-systems, reliability, fallacies, cascading-failure, resilience, mindset]
 difficulty: advanced
 synonyms: ["fallacies of distributed computing", "why does one slow service take down everything", "what is cascading failure", "design assuming failure", "the network is not reliable", "why distributed systems fail"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Everything Fails
 
 There's a moment, the first time you operate a real distributed system, when you realize the rules you
-learned writing single-process programs don't hold anymore. On your laptop, when you call a function, it
-returns. Maybe it throws, but it *returns* — instantly, reliably, every time. So you carry that instinct
-into a world where "calling a function" now means sending bytes across a network to a different machine
-that might be overloaded, mid-deploy, garbage-collecting, or gone entirely — and the instinct quietly
-betrays you.
+learned writing single-process programs don't hold anymore. On your laptop, calling a function returns —
+maybe it throws, but it *returns*, instantly and reliably, every time. Carry that instinct into a world
+where "calling a function" now means sending bytes across a network to a different machine that might be
+overloaded, mid-deploy, or gone entirely, and the instinct quietly betrays you.
 
 The mindset this phase installs is uncomfortable at first and freeing once it lands: **assume every
 remote call can fail or hang, and design as if it will.** Not out of pessimism — out of accuracy.
@@ -35,10 +34,10 @@ an internal service, a third-party API. When people say "a dependency failed," t
 calls didn't come back the way you needed.
 
 **Why people get this wrong.** The wrong picture is that a network call is like a local call, only a bit
-slower. It isn't. A local call has two outcomes: it returns, or it throws. A network call has *three*:
-it returns, it fails, or — the one that gets everybody — **it hangs**, neither succeeding nor failing,
-just leaving you waiting. That third outcome is where most outages are born, and we'll come back to it
-hard in [Phase 2](02-the-core-patterns.md).
+slower. A local call has two outcomes: it returns, or it throws. A network call has *three* — it returns,
+it fails, or, the one that gets everybody, **it hangs**, neither succeeding nor failing, just leaving you
+waiting. That third outcome is where most outages are born, and we'll come back to it hard in
+[Phase 2](02-the-core-patterns.md).
 
 ## The fallacies of distributed computing
 
@@ -62,10 +61,9 @@ intuition tells you (source: the canonical list is widely documented, e.g.
 ```
 
 **Why this matters.** Every one of these is an assumption that's *fine* on your laptop and *false* in
-production. Each guide phase after this one is, in a sense, a direct answer to one of these fallacies.
-Timeouts answer "latency is zero." Retries answer "the network is reliable." Circuit breakers and
-bulkheads answer "topology doesn't change" and "one slow part shouldn't be everyone's problem." The
-fallacies are the disease; the patterns are the treatment.
+production. Each guide phase after this one directly answers one of these fallacies: timeouts answer
+"latency is zero," retries answer "the network is reliable," circuit breakers and bulkheads answer
+"topology doesn't change." The fallacies are the disease; the patterns are the treatment.
 
 💡 **Key point.** You will never make the network reliable. The whole game is building systems that stay
 *useful* on top of an unreliable network — not eliminating failure, but containing it.
@@ -75,10 +73,8 @@ fallacies are the disease; the patterns are the treatment.
 Now the heart of it — the failure mode that surprises people most, because nothing actually *crashed*.
 
 Picture a request to your web service. To answer it, your service calls a downstream dependency — say, a
-recommendations service. Normally that call returns in a few milliseconds. Each incoming request ties up
-one worker (a thread, a connection, a slot — pick your stack's word) while it waits for the response,
-then frees it.
-
+recommendations service. Normally that call returns in a few milliseconds, and each incoming request ties
+up one worker (a thread, a connection, a slot — pick your stack's word) while it waits, then frees it.
 Now the recommendations service gets *slow* — not down, just slow, taking several seconds to respond.
 Here's what happens, step by step:
 
@@ -89,12 +85,11 @@ flowchart LR
   Fill --> Down[no free workers → whole service down]
 ```
 
-*What just happened:* Each slow call holds a worker hostage for seconds instead of milliseconds. Because
-requests keep arriving, they keep grabbing workers, and those workers keep getting stuck. Your pool of
-workers is finite, so it fills up. Once every worker is parked waiting on the slow dependency, your
-service has no capacity left to serve *anything* — including requests that have nothing to do with
-recommendations. From the outside, your service is down. From the inside, nothing crashed; everyone is
-just *waiting*.
+*What just happened:* each slow call holds a worker hostage for seconds instead of milliseconds. Requests
+keep arriving, keep grabbing workers, and those workers keep getting stuck — your finite pool fills up.
+Once every worker is parked waiting on the slow dependency, your service has no capacity left to serve
+*anything*, including requests that have nothing to do with recommendations. From the outside, your
+service is down. From the inside, nothing crashed; everyone is just *waiting*.
 
 📝 **Terminology.** This is a **cascading failure** (also called *resource exhaustion* when it's a pool
 that fills up): a failure in one component spreads to others because they share a finite resource — here,

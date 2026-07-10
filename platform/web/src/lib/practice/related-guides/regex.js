@@ -13,6 +13,17 @@
 // ponytail: lesson 8 has no distinct guide phase to point at beyond what
 // lesson 7 already covers (same extraction idea, applied to a list) - omitted
 // rather than forced.
+//
+// Round 6 additions (lessons 9-13, checked against the same guide):
+// - Lessons 9 (lookahead) and 10 (backreferences) have no genuine match -
+//   neither phase 2 nor phase 3 covers (?=...) or \1 - omitted rather than
+//   forced.
+// - Lesson 11 (greedy vs lazy) is phase 3's "Trap 1: greedy vs lazy
+//   matching" almost verbatim (the exact <.*> vs <.*?> example).
+// - Lesson 12 (global-flag replace-all) and lesson 13 (capture-group
+//   reformatting via .replace()) both map to phase 3's "Find-and-replace
+//   with capture groups" section - lesson 13 in particular echoes that
+//   section's own (\w+)@(\w+) -> $2 owns $1 example almost exactly.
 export const RELATED = {
   1: 'regular-expressions-explained#1',
   2: 'regular-expressions-explained#2',
@@ -20,5 +31,8 @@ export const RELATED = {
   4: 'regular-expressions-explained#2',
   5: 'regular-expressions-explained#3',
   6: 'regular-expressions-explained#2',
-  7: 'regular-expressions-explained#3'
+  7: 'regular-expressions-explained#3',
+  11: 'regular-expressions-explained#3',
+  12: 'regular-expressions-explained#3',
+  13: 'regular-expressions-explained#3'
 };

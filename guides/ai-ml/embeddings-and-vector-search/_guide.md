@@ -8,7 +8,7 @@ category: ai-ml
 order: 5
 difficulty: intermediate
 synonyms: ["what is an embedding", "what is vector search", "how does semantic search work", "embeddings vs keyword search", "what is cosine similarity", "what is a vector database", "how do vectors capture meaning", "find similar text by meaning"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Embeddings & Vector Search, Explained

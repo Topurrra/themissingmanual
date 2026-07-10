@@ -6,12 +6,12 @@ summary: "The whole net/http architecture in three types - Handler, ServeMux, Se
 tags: [net-http, go, handler, servemux, server]
 difficulty: beginner
 synonyms: ["go net/http", "http.Handler", "http.ServeMux", "http.Server", "go http server basics", "go handler servehttp"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The net/http Mental Model
 
-Here's a thing that catches people off guard when they come to Go from almost anywhere else: you often
+A thing that catches people off guard when they come to Go from almost anywhere else: you often
 don't reach for a web framework at all. The standard library ships a production-grade HTTP server, a
 router, and everything you need to read a request and write a response - right there in `net/http`, no
 `go get` required. This is the **roots** guide. Learn what's in here and [Gin](/guides/gin-from-zero),

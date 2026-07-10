@@ -6,12 +6,12 @@ summary: "Store money as integer cents or a decimal type, compare floats with a 
 tags: [floating-point, money, decimal, cents, tolerance, epsilon, best-practices]
 difficulty: beginner
 synonyms: ["how to store money in code", "integer cents money", "decimal type for currency", "compare floats with tolerance", "epsilon float comparison", "when is float ok", "decimal vs float money", "how to avoid floating point errors"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Fixes (and When Floats Are Fine)
 
-Here's the good news: you don't need to understand IEEE 754 to a deeper level to be safe. You need a small kit of three habits, matched to the three bites from the last phase. Money gets an exact representation, comparisons get a tolerance, and - the part people forget - you let floats keep doing the jobs they're great at.
+Here's the good news: you don't need to understand IEEE 754 any deeper to be safe. You need a small kit of three habits, matched to the three bites from the last phase - money gets an exact representation, comparisons get a tolerance, and, the part people forget, you let floats keep doing the jobs they're great at.
 
 ## Fix #1: store money as integer minor units (cents)
 

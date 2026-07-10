@@ -6,7 +6,7 @@ summary: "Read data with LINQ over IQueryable: Where/OrderBy/Take, deferred exec
 tags: [efcore, csharp, linq, query, asnotracking]
 difficulty: intermediate
 synonyms: ["ef core linq", "ef core where orderby select", "ef core deferred execution", "ef core asnotracking", "ef core iqueryable", "ef core projection"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Querying with LINQ
@@ -39,7 +39,7 @@ ORDER BY "p"."Id" DESC
 LIMIT 10
 ```
 
-*What just happened:* You wrote four C# method calls, and EF folded all of them into a single round-trip to the database. `Where` became `WHERE`, `OrderByDescending` became `ORDER BY ... DESC`, `Take(10)` became `LIMIT 10`. The database filters, sorts, and limits — your app gets back only the 10 rows it asked for, not the whole table.
+*What just happened:* you wrote four C# method calls, and EF folded all of them into a single round-trip to the database. `Where` became `WHERE`, `OrderByDescending` became `ORDER BY ... DESC`, `Take(10)` became `LIMIT 10`. The database filters, sorts, and limits — your app gets back only the 10 rows it asked for, not the whole table.
 
 > 📝 There are two ways to write LINQ. The **method syntax** above (`.Where(...).OrderBy(...)`) is what you'll see most. There's also **query syntax**, reading more like SQL: `from p in ctx.Posts where p.BlogId == blogId select p`. They compile to the same thing — pick whichever you find clearer. This guide uses method syntax throughout.
 
@@ -65,7 +65,7 @@ var perBlog = ctx.Posts
     .ToList();
 ```
 
-*What just happened:* Each operator pushed work down into the database. `Contains` became a SQL `LIKE`; an `In`-style filter (`Where(p => ids.Contains(p.Id))`) becomes a SQL `IN (...)`. `Skip`/`Take` became `OFFSET`/`LIMIT` — that's your paging. `Count` and `Any` came back as `COUNT(*)` and an `EXISTS` check, returning one number or one boolean instead of shipping rows across the wire. `GroupBy` became `GROUP BY`. None of these loaded the table into memory — the database did the heavy lifting.
+*What just happened:* each operator pushed work down into the database. `Contains` became a SQL `LIKE`; an `In`-style filter (`Where(p => ids.Contains(p.Id))`) becomes a SQL `IN (...)`. `Skip`/`Take` became `OFFSET`/`LIMIT` — that's your paging. `Count` and `Any` came back as `COUNT(*)` and an `EXISTS` check, returning one number or one boolean instead of shipping rows across the wire. `GroupBy` became `GROUP BY`. None of these loaded the table into memory.
 
 ## ⚠️ Deferred execution: nothing runs until you enumerate
 
@@ -82,7 +82,7 @@ query = query.OrderByDescending(p => p.Id);
 var results = query.ToList();
 ```
 
-*What just happened:* The first two lines built and refined an expression tree without touching the database. You could pass `query` around, add more `.Where(...)` calls conditionally, and EF would fold them all into one statement. Only `ToList()` triggered the actual SQL. The triggers that force execution: `ToList()`/`ToListAsync()`, `First()`/`FirstOrDefault()`, `Single()`, `Count()`, `Any()`, `Sum()`, and a plain `foreach`. Until one of those, you're composing — not querying.
+*What just happened:* the first two lines built and refined an expression tree without touching the database. You could pass `query` around, add more `.Where(...)` calls conditionally, and EF would fold them all into one statement. Only `ToList()` triggered the actual SQL. The triggers that force execution: `ToList()`/`ToListAsync()`, `First()`/`FirstOrDefault()`, `Single()`, `Count()`, `Any()`, `Sum()`, and a plain `foreach`. Until one of those, you're composing — not querying.
 
 ⚠️ The flip side of laziness: if you enumerate the *same* query twice (two `foreach` loops, or `.Count()` then `.ToList()`), you hit the database **twice**. When you need the results more than once, call `ToList()` once and reuse the list.
 
@@ -109,7 +109,7 @@ FROM "Posts" AS "p"
 WHERE "p"."BlogId" = @blogId
 ```
 
-*What just happened:* Instead of `SELECT Id, BlogId, Title`, EF generated `SELECT Id, Title` — only the columns your `PostDto` actually uses. Less data crosses the wire, and EF skips building full entity objects. For a posts table with a big `Content` or `Body` column you don't need in a list, this is a real, measurable win.
+*What just happened:* instead of `SELECT Id, BlogId, Title`, EF generated `SELECT Id, Title` — only the columns your `PostDto` actually uses. Less data crosses the wire, and EF skips building full entity objects. For a posts table with a big `Content` or `Body` column you don't need in a list, this is a real, measurable win.
 
 > 💡 For read-only API endpoints (your typical `GET /posts`), project straight to a DTO. You get a leaner query *and* avoid leaking your internal entity shape into your API response — two birds, one `Select`.
 
@@ -124,7 +124,7 @@ var posts = await ctx.Posts
     .ToListAsync();
 ```
 
-*What just happened:* `AsNoTracking()` told EF "don't bother watching these for changes." The query runs faster and uses less memory because EF skips creating change-tracking snapshots. Trade-off: if you edit one of these objects and call `SaveChanges`, nothing happens — EF isn't watching them. That's exactly what you want for GET endpoints and any read you won't modify. (Projections with `Select` to a DTO are effectively untracked already, since DTOs aren't entities.)
+*What just happened:* `AsNoTracking()` told EF "don't bother watching these for changes." The query runs faster and uses less memory because EF skips creating change-tracking snapshots. Trade-off: if you edit one of these objects and call `SaveChanges`, nothing happens — EF isn't watching them. That's exactly what you want for GET endpoints and any read you won't modify. (Projections with `Select` to a DTO are effectively untracked already.)
 
 ⚠️ **Client vs server evaluation** is the sharp edge here. Almost everything in your LINQ runs as SQL on the database (the *server*). But if your predicate calls a C# method EF can't translate, it can't push that into SQL.
 
@@ -136,7 +136,7 @@ var ok = ctx.Posts.Where(p => p.Title.StartsWith("EF")).ToList();
 var bad = ctx.Posts.Where(p => MyCustomCheck(p.Title)).ToList();
 ```
 
-*What just happened:* The first query translated cleanly — `StartsWith` maps to a SQL `LIKE`. The second referenced `MyCustomCheck`, a method that exists only in C#, with no SQL equivalent. Modern EF Core won't silently pull the whole table into memory to run it (older ORMs did, causing brutal performance surprises) — instead it **throws**, telling you the expression couldn't be translated. The fix: keep `Where` predicates built from things EF understands (entity properties, comparisons, `StartsWith`/`Contains`/`==`), or pull the data first and do the C# logic afterward on the in-memory list — knowing you've now loaded more rows.
+*What just happened:* the first query translated cleanly — `StartsWith` maps to a SQL `LIKE`. The second referenced `MyCustomCheck`, a method that exists only in C#, with no SQL equivalent. Modern EF Core won't silently pull the whole table into memory to run it (older ORMs did, causing brutal performance surprises) — instead it **throws**, telling you the expression couldn't be translated. The fix: keep `Where` predicates built from things EF understands (entity properties, comparisons, `StartsWith`/`Contains`/`==`), or pull the data first and do the C# logic afterward on the in-memory list, knowing you've now loaded more rows.
 
 The habit that saves you: **watch the SQL EF generates.** If a query is slow or behaving oddly, the logged SQL tells you whether the work is happening in the database or accidentally in your app. For a deep dive on diagnosing slow queries, see [Why Is My Query Slow?](/guides/why-is-my-query-slow).
 

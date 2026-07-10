@@ -6,7 +6,7 @@ summary: "Physics is the craft of predicting the world with simple models: measu
 tags: [physics, foundations, mental-model, measurement, units, models]
 difficulty: beginner
 synonyms: ["what is physics", "what does physics actually do", "physics without formulas", "why learn physics", "physics for beginners", "is physics basically math", "how do physicists think"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # What a Model Actually Is
@@ -41,7 +41,7 @@ result: messy, near-true        result: simple, close enough
 
 ## "Wrong but useful" is the goal, not the failure
 
-This reframes everything, so sit with it. A model being *wrong* is not a scandal. Every model is wrong, because every model leaves things out - that's what makes it a model and not the universe itself. The only question that matters is: **wrong by how much, and does that matter for what I'm doing?**
+This reframes everything: a model being *wrong* is not a scandal. Every model is wrong, because every model leaves things out - that's what makes it a model and not the universe itself. The only question that matters is: **wrong by how much, and does that matter for what I'm doing?**
 
 Treating a thrown ball as a point with no air resistance predicts its landing spot to within a step or two. For playing catch, perfect. For a long-range artillery shell, that same model is dangerously off, because over a long flight the air you ignored adds up. Same model, same physics - *useful in one context, useless in another.* Knowing the difference is judgment, and judgment is the thing you're actually building when you learn physics.
 

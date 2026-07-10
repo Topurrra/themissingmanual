@@ -6,22 +6,21 @@ summary: "How aspect-oriented programming works in Spring — and the proxy mech
 tags: [spring, aop, proxies, aspect, transactional, cross-cutting, self-invocation, jdk-proxy, cglib]
 difficulty: advanced
 synonyms: ["spring aop explained", "spring proxies how transactional works", "spring aspect pointcut advice", "spring self-invocation gotcha", "jdk dynamic proxy vs cglib", "why @Transactional doesnt work same class", "spring cross-cutting concerns"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Spring AOP & Proxies
 
 This is the phase where the rest of Spring stops being magic. You've used `@Transactional` in
-[Spring Boot From Zero](/guides/spring-boot-from-zero) and trusted it to wrap your method in a transaction.
-You've maybe sprinkled `@Async` on something and watched it run on another thread. They felt like spells —
-annotate a method and behavior appears from nowhere. By the end of this phase you'll know exactly where that
-behavior comes from, why it sometimes *doesn't* appear, and why one specific way of calling your own method
-silently breaks it.
+[Spring Boot From Zero](/guides/spring-boot-from-zero) and trusted it to wrap your method in a transaction,
+and maybe sprinkled `@Async` on something and watched it run on another thread. They felt like spells —
+annotate a method and behavior appears from nowhere. By the end of this phase you'll know exactly where
+that behavior comes from, why it sometimes *doesn't* appear, and why one specific way of calling your own
+method silently breaks it.
 
-The mental model to carry through: **Spring never edits your class. When a bean needs extra behavior, Spring
-hands out a wrapper instead of the real object — and the wrapper does the extra work before delegating to
-you.** That wrapper is called a *proxy*. Once you can see the proxy in the call path, every "why didn't my
-annotation fire?" answers itself.
+**Spring never edits your class. When a bean needs extra behavior, Spring hands out a wrapper instead of
+the real object — and the wrapper does the extra work before delegating to you.** That wrapper is called a
+*proxy*. Once you can see the proxy in the call path, every "why didn't my annotation fire?" answers itself.
 
 We'll keep our cast from [Phase 4](04-dependency-injection-deep.md): a `NotificationService` that sends
 messages through a `MessageSender`. This time the interesting part isn't *what* it does — it's the
@@ -297,11 +296,10 @@ public class NotificationService {
 of injecting a bean into its own constructor). Calling `self.sendOne(to)` routes through the proxy, so the
 advice runs. It works, but it's a bit of a head-scratcher to read — most teams prefer Fix 1.
 
-💡 The deeper lesson outlasts this one bug. Every "why didn't my annotation fire?" in Spring has the same
-shape: *was there a proxy in the call path?* Private methods can't be advised (the proxy can't override them).
-Internal `this.` calls skip advice. A `new SomeService()` you constructed yourself has no proxy at all and so
-no annotations work on it. Once you picture the proxy standing between caller and bean, the whole category of
-mysteries collapses into one question — and you already know how to answer it.
+💡 Every "why didn't my annotation fire?" in Spring has the same shape: *was there a proxy in the call
+path?* Private methods can't be advised (the proxy can't override them). Internal `this.` calls skip
+advice. A `new SomeService()` you constructed yourself has no proxy at all. Once you picture the proxy
+standing between caller and bean, the whole category of mysteries collapses into one question.
 
 ## Recap
 

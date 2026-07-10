@@ -137,6 +137,7 @@ pub async fn create_phase(State(state): State<Arc<AppState>>, Path(slug): Path<S
             html,
             updated: String::new(),
             markdown: b.markdown,
+            source_file: String::new(), // admin-created phase: no on-disk file to link to
         };
         store.upsert_phase(&phase).map(|_| no)
     };
@@ -775,6 +776,7 @@ pub async fn revert_revision(State(state): State<Arc<AppState>>, Path(id): Path<
             html,
             updated: cur.updated,
             markdown: rev.markdown,
+            source_file: cur.source_file,
         };
         store.upsert_phase(&restored).map(|_| rev.guide_slug.clone())
     };

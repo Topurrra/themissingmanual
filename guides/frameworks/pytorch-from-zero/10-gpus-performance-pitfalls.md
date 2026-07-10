@@ -6,12 +6,12 @@ summary: "A field guide to the PyTorch bugs that waste days — device mismatche
 tags: [pytorch, gpu, performance, pitfalls, debugging, device, mixed-precision]
 difficulty: advanced
 synonyms: ["pytorch gpu performance", "pytorch common mistakes", "pytorch debugging", "pytorch device error", "pytorch out of memory", "pytorch mixed precision amp", "pytorch training bugs"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # GPUs, Performance & Common Pitfalls
 
-Here's the honest truth nobody tells you when you start: the hard part of PyTorch isn't the concepts. It's the bugs. You'll write a training loop that's structurally perfect, hit run, and watch the loss sit there like a stone — no error, no clue, just a model that refuses to learn. Or you'll get a wall of red text about devices and memory that means nothing the first time you see it.
+Here's the honest truth nobody tells you when you start: the hard part of PyTorch isn't the concepts, it's the bugs. You'll write a training loop that's structurally perfect, hit run, and watch the loss sit there like a stone — no error, no clue, just a model that refuses to learn. Or you'll get a wall of red text about devices and memory that means nothing the first time you see it.
 
 The good news, and the whole point of this phase: **almost all of those bugs come from a short, knowable list.** The difference between someone who loses a day to PyTorch and someone who shrugs and fixes it in two minutes isn't talent — it's having seen the bug before. So let's hand you that list. For each one: the symptom you'll actually see, the cause underneath, and the fix.
 

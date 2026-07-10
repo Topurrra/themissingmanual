@@ -6,12 +6,12 @@ summary: "Authentication (authn) answers 'who are you?' by proving identity; aut
 tags: [authentication, authorization, authn, authz, identity, permissions, access-control]
 difficulty: intermediate
 synonyms: ["difference between authentication and authorization", "authn vs authz meaning", "what does authentication mean", "what does authorization mean", "is login authentication or authorization", "who you are vs what you can do"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Authentication vs Authorization
 
-Two words, almost the same spelling, and the whole industry abbreviates them to *authn* and *authz* - which helps nobody. So people use them interchangeably, ship the wrong check in the wrong place, and end up with a bug where a logged-in user can read someone else's invoices. The names are confusing on purpose-feeling, but the *ideas* underneath are clean and separate. Once you see the split, you'll never blur them again.
+Two words, almost the same spelling, abbreviated to *authn* and *authz* - which helps nobody. People use them interchangeably, ship the wrong check in the wrong place, and end up with a bug where a logged-in user can read someone else's invoices. But the *ideas* underneath are clean and separate. Once you see the split, you'll never blur them again.
 
 Here's the whole thing in one sentence: **authentication proves who you are; authorization decides what you're allowed to do.** Different questions, different answers, and they happen in that order.
 
@@ -90,7 +90,7 @@ flowchart TD
 
 Authentication is the front door: it establishes identity once. Authorization is every interior door: it gets checked again and again, per action, because the answer changes depending on *what* you're trying to do and *which* resource you're touching.
 
-**Why this saves you later.** When you keep these two separate in your head, a lot of real bugs become obvious before you ship them. "Any logged-in user can delete any comment" is an *authorization* hole - authentication was working fine, you just forgot to check ownership. "Our public API leaks data to anyone with the URL" is an *authentication* hole - no identity was ever required. Naming which check is missing tells you exactly where to look.
+**Why this saves you later.** Keep these two separate in your head and real bugs become obvious before you ship them. "Any logged-in user can delete any comment" is an *authorization* hole - authentication was fine, you just forgot to check ownership. "Our public API leaks data to anyone with the URL" is an *authentication* hole - no identity was ever required. Naming which check is missing tells you where to look.
 
 ## Recap
 

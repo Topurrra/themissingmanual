@@ -6,7 +6,7 @@ summary: "The relational model in plain terms: data lives in tables made of rows
 tags: [databases, relational, tables, rows, columns, schema, primary-key]
 difficulty: beginner
 synonyms: ["what is a table in a database", "what is a row vs column", "what is a database schema", "what is a primary key", "what is a key in a database", "relational model explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Tables, Rows, Columns & Keys
@@ -17,7 +17,7 @@ Now that you know a database is *data plus a manager*, let's look at how that da
 
 ## A table — the familiar part
 
-**What it actually is.** A **table** holds all the data about one *kind* of thing — one table for customers, one for orders, one for products. Inside a table, every entry has the same shape, like a grid.
+A **table** holds all the data about one *kind* of thing — one table for customers, one for orders, one for products. Inside a table, every entry has the same shape, like a grid.
 
 Here's a `customers` table:
 
@@ -35,7 +35,7 @@ That's it — a table is rows and columns about one kind of thing. The four idea
 
 ## Rows — the records
 
-**What it actually is.** A **row** is one single record — one complete thing of the table's kind. In the table above, each row is one customer. Ada is a row. Alan is a row. If you have a thousand customers, you have a thousand rows.
+A **row** is one single record — one complete thing of the table's kind. In the table above, each row is one customer: Ada is a row, Alan is a row. A thousand customers means a thousand rows.
 
 📝 **Terminology.** You'll hear *row*, *record*, and sometimes *tuple* used for the same idea: one entry in a table. They're interchangeable; "row" is the most common.
 
@@ -43,7 +43,7 @@ That's it — a table is rows and columns about one kind of thing. The four idea
 
 ## Columns — the fields, with types
 
-**What it actually is.** A **column** is one field that every row has — `name`, `email`, `city`. Where a database departs from a spreadsheet is this: **each column has a fixed type**, and the DBMS enforces it. The `id` column holds whole numbers. A `price` column would hold decimals. A `created_at` column holds dates. You cannot put `banana` in a number column — the DBMS will refuse it.
+A **column** is one field that every row has — `name`, `email`, `city`. Where a database departs from a spreadsheet: **each column has a fixed type**, and the DBMS enforces it. The `id` column holds whole numbers, a `price` column would hold decimals, a `created_at` column holds dates. You cannot put `banana` in a number column — the DBMS will refuse it.
 
 📝 **Terminology.** A column's *type* (also called its *data type*) is the kind of value it's allowed to hold: integer, text, decimal, date/time, true-or-false, and so on. Choosing types is part of designing a table.
 
@@ -51,7 +51,7 @@ That's it — a table is rows and columns about one kind of thing. The four idea
 
 ## The schema — the agreed shape
 
-**What it actually is.** Put the table's name, its columns, and their types together and you have the table's **schema** — the agreed-upon shape that *every* row must follow. The schema for our table is roughly: "a `customers` table with an integer `id`, a text `name`, a text `email`, and a text `city`."
+Put the table's name, its columns, and their types together and you have the table's **schema** — the agreed-upon shape that *every* row must follow. The schema for our table is roughly: "a `customers` table with an integer `id`, a text `name`, a text `email`, and a text `city`."
 
 ```text
    SCHEMA of "customers"   (the blueprint — defined once, up front)
@@ -72,13 +72,13 @@ That's it — a table is rows and columns about one kind of thing. The four idea
 
 This is the new concept worth slowing down for, because everything relational is built on it.
 
-**What it actually is.** A **key** is a column whose value is **unique for every row** — a value that points to exactly one row and no other. In our table, that's `id`: customer `1` is Ada and only Ada, forever. The key is the row's permanent, unambiguous name.
+A **key** is a column whose value is **unique for every row** — a value that points to exactly one row and no other. In our table, that's `id`: customer `1` is Ada and only Ada, forever. The key is the row's permanent, unambiguous name.
 
 📝 **Terminology.** The column chosen as the row's unique identifier is the **primary key**. By convention it's often a column called `id` holding a number the database hands out automatically, one per new row.
 
 **Why people get this wrong.** "Why not just use the name as the identity?" Because names aren't unique and they change. Two customers can both be named "Alan Turing." A person gets married and changes their name. An email gets reassigned. If you point to a row *by something that can repeat or change*, your pointer eventually breaks. A primary key is deliberately a value that **never repeats and never changes**, so a reference to it is rock-solid.
 
-**What it does in real life.** The key is how you (and the DBMS) refer to one specific row with zero ambiguity. "Update customer **2**." "Delete order **5057**." "This order belongs to customer **2**." That last one is the seed of the whole relational idea: one table can point at a row in another table *by its key*. An `orders` table can carry a `customer_id` column whose value is the `id` of the customer who placed it.
+The key is how you (and the DBMS) refer to one specific row with zero ambiguity. "Update customer **2**." "Delete order **5057**." "This order belongs to customer **2**." That last one is the seed of the whole relational idea: one table can point at a row in another table *by its key*. An `orders` table can carry a `customer_id` column whose value is the `id` of the customer who placed it.
 
 ```mermaid
 erDiagram

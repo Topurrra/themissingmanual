@@ -6,7 +6,7 @@ summary: "When one app instance can't handle the traffic, the proxy spreads requ
 tags: [nginx, load-balancer, upstream, round-robin, least-conn, health-check, scaling]
 difficulty: intermediate
 synonyms: ["how does load balancing work", "nginx upstream pool", "round robin vs least connections", "nginx load balancer config", "nginx health check backend", "scale app with multiple instances", "why does my app need to be stateless"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Load Balancing
@@ -14,15 +14,15 @@ updated: 2026-06-19
 So far the receptionist has been walking requests to one office. But what happens when one person can't keep
 up? On a busy day, a single copy of your app maxes out its CPU, requests start queuing, and pages get slow.
 You can buy a bigger machine for a while - but eventually the answer is to run *several* copies of your app
-and have the proxy spread requests across them. That's load balancing, and the good news is it's the same
-receptionist doing a slightly smarter job.
+and have the proxy spread requests across them. That's load balancing: the same receptionist doing a
+slightly smarter job.
 
 ## The mental model: one front desk, several offices
 
 **What it actually is.** A load balancer is a reverse proxy that, instead of forwarding to one app, forwards
-to a *pool* of identical app instances - and decides, for each request, which instance to send it to. Same
-receptionist, but now there are five identical offices that can all answer the same question, and the
-receptionist picks one each time.
+to a *pool* of identical app instances - deciding, per request, which instance to send it to. Same
+receptionist, but now five identical offices can all answer the same question, and the receptionist picks
+one each time.
 
 ```mermaid
 flowchart TD
@@ -67,20 +67,20 @@ server {
 }
 ```
 
-*What just happened:* You named a pool `my_app` containing three instances, then told nginx to forward to
-`http://my_app`. nginx now distributes incoming requests across those three instances. By default it uses
+*What just happened:* you named a pool `my_app` with three instances, then told nginx to forward to
+`http://my_app`. nginx now distributes incoming requests across those three. By default it uses
 **round-robin** - request one goes to `:3001`, request two to `:3002`, request three to `:3003`, request four
-back to `:3001`, and so on, in a rotation.
+back to `:3001`, and so on.
 
 ## How nginx decides who gets the next request
 
 The rule nginx uses to pick an instance is the **load-balancing strategy**. The two you'll meet first:
 
-- **Round-robin (the default).** Hand requests out in rotation, one after another, evenly. Simple and works
-  well when every request costs about the same and every instance is about equally powerful.
-- **Least-connections (`least_conn`).** Send the next request to whichever instance currently has the *fewest*
-  active connections. Better when some requests take much longer than others, so a slow request doesn't leave
-  one instance buried while others sit idle.
+- **Round-robin (the default).** Hand requests out in rotation, evenly. Works well when every request costs
+  about the same and every instance is about equally powerful.
+- **Least-connections (`least_conn`).** Send the next request to whichever instance has the *fewest* active
+  connections. Better when request times vary a lot, so a slow one doesn't bury one instance while others sit
+  idle.
 
 You switch strategy by naming it at the top of the upstream block:
 
@@ -93,12 +93,11 @@ upstream my_app {
 }
 ```
 
-*What just happened:* Adding `least_conn` told nginx to stop rotating blindly and instead always pick the
-least-busy instance. Nothing else about the pool changed.
+*What just happened:* adding `least_conn` told nginx to stop rotating blindly and always pick the least-busy
+instance. Nothing else about the pool changed.
 
-💡 **Key point.** Start with round-robin. It's the default for a reason and it's right for most workloads.
-Reach for `least_conn` only when you can see one instance getting hammered while others are quiet - usually a
-sign your requests vary a lot in how long they take.
+💡 **Key point.** Start with round-robin - it's the default for a reason and right for most workloads. Reach
+for `least_conn` only when you see one instance getting hammered while others are quiet.
 
 ## Health checks: skipping the dead office
 
@@ -107,8 +106,8 @@ your instances crashes or hangs, you don't want a third of your traffic getting 
 
 **What it actually does.** With the open-source nginx that ships in package managers, health checking is
 *passive*: nginx watches the results of the real requests it forwards. If an instance fails or times out
-enough times in a row, nginx marks it temporarily unavailable and routes around it, then tries it again after
-a cooldown. You tune this per-server:
+enough times in a row, nginx marks it temporarily unavailable and routes around it, then retries after a
+cooldown. Tune this per-server:
 
 ```nginx
 upstream my_app {
@@ -118,37 +117,33 @@ upstream my_app {
 }
 ```
 
-*What just happened:* You told nginx: "If an instance fails 3 times within 30 seconds, treat it as down for
-the next 30 seconds and send no traffic there. After that, try it again." So a crashed instance quietly drops
-out of rotation and rejoins when it recovers - visitors keep getting served by the healthy ones.
+*What just happened:* you told nginx: "if an instance fails 3 times within 30 seconds, treat it as down for
+the next 30 seconds and send no traffic there. After that, try again." A crashed instance quietly drops out
+of rotation and rejoins when it recovers - visitors keep getting served by the healthy ones.
 
-⚠️ **Gotcha - passive isn't the same as active.** Passive health checks only notice a sick instance *because a
-real user's request just failed against it*. A handful of visitors eat the failure before nginx routes around
-it. *Active* health checks - where nginx probes each instance on a schedule, on its own, before sending real
-traffic - are a feature of the commercial nginx Plus, not the free open-source nginx.
+⚠️ **Gotcha - passive isn't the same as active.** Passive health checks only notice a sick instance *because
+a real user's request just failed against it* - a handful of visitors eat the failure before nginx routes
+around it. *Active* health checks - nginx probing each instance on a schedule, before sending real traffic -
+are a feature of the commercial nginx Plus, not the free open-source nginx
 (source: <https://docs.nginx.com/nginx/admin-guide/load-balancer/http-health-check/>). If you need active
-probing on open-source nginx, that's typically handled at a layer above (your orchestrator or platform), not
-in the config shown here.
+probing on open-source nginx, that's typically handled at a layer above (your orchestrator or platform).
 
 ## The prerequisite nobody mentions: your app must be stateless
 
 Here's the part that surprises people. Load balancing only works cleanly if **any instance can handle any
-request** - because the proxy might send a given user to a different instance on every click. If instance #1
-quietly stored your shopping cart in its own memory, and your next request lands on instance #2, your cart is
-gone.
+request** - the proxy might send a given user to a different instance on every click. If instance #1 quietly
+stored your shopping cart in its own memory, and your next request lands on instance #2, your cart is gone.
 
-The fix is to make your app **stateless**: keep no per-user data in a single instance's memory. Push that
-shared state out to a place all instances can reach - a database, a cache like Redis, a shared session store.
-Then every instance is genuinely interchangeable, and the receptionist can hand your request to anyone.
+The fix is to make your app **stateless**: keep no per-user data in a single instance's memory. Push shared
+state out to a place all instances can reach - a database, a cache like Redis, a shared session store. Then
+every instance is genuinely interchangeable, and the receptionist can hand your request to anyone.
 
-> This is exactly the discipline covered in [Designing for Scale](/guides/designing-for-scale) - statelessness
-> is the foundation that makes horizontal scaling (adding more instances) actually work. If "stateless"
-> doesn't fully click yet, that guide is where it gets the full treatment.
+> This is exactly the discipline covered in [Designing for Scale](/guides/designing-for-scale) -
+> statelessness is the foundation that makes horizontal scaling actually work.
 
-**Why this saves you later.** The day your traffic doubles, you want the fix to be "run two more instances and
-add two lines to the upstream block" - not "rearchitect the app under pressure." Building stateless from the
-start, and understanding that the load balancer assumes it, is what makes scaling a config change instead of a
-crisis.
+**Why this saves you later.** The day your traffic doubles, you want the fix to be "run two more instances
+and add two lines to the upstream block" - not "rearchitect the app under pressure." Building stateless from
+the start is what makes scaling a config change instead of a crisis.
 
 ## Recap
 

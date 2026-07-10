@@ -6,14 +6,14 @@ summary: "Test Django for real — the TestCase test runner with its throwaway d
 tags: [django, testing, testcase, client, settings, project-structure, apps]
 difficulty: intermediate
 synonyms: ["django testing testcase", "django test client", "django test database", "django settings organization", "django project structure apps", "django pytest", "django reusable apps"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Testing & Project Structure
 
 You've built a working blog: models, an admin, forms, class-based views, an API. It runs. But "it runs when I click around" and "it keeps working after I change something" are two very different guarantees — and the gap between them is where production bugs live. This phase is about closing that gap, and about arranging your code so it stays workable as it grows.
 
-Here's the mental model to hold first. A test is just code that runs *your* code and checks the answer — that's the whole idea, and [Your First Unit Test](/guides/your-first-unit-test) walks through the universal Arrange-Act-Assert shape if it's new to you. What makes testing a *Django* skill is everything Django does *around* your test so you don't have to: it spins up a throwaway database, loads your whole project, and gives you a fake browser that calls your views without a running server. You write the "check the answer" part; Django handles the messy setup. By the end of this phase you'll see why a well-tested, well-structured Django project is mostly three things working together — focused apps, an automatic test database, and settings driven by the environment.
+Here's the mental model to hold first. A test is just code that runs *your* code and checks the answer — that's the whole idea, and [Your First Unit Test](/guides/your-first-unit-test) walks through the universal Arrange-Act-Assert shape if it's new to you. What makes testing a *Django* skill is everything Django does *around* your test so you don't have to: it spins up a throwaway database, loads your whole project, and gives you a fake browser that calls your views without a running server. You write the "check the answer" part; Django handles the messy setup.
 
 ## Django's test framework
 
@@ -42,7 +42,7 @@ class PostModelTests(TestCase):
         self.assertEqual(str(post), "Readable")
 ```
 
-*What just happened:* two tests, each one Arrange-Act-Assert. The first creates a `Post` and checks its fields landed correctly (including that `created` got auto-stamped). The second pins down the `__str__` behavior you added in Phase 3 — a tiny test, but it locks in the contract that a post prints as its title, so a future refactor can't silently break the admin and the shell. Crucially, *both* tests called `Post.objects.create`, which hit a real database — the test database Django built and threw away for you. You run the whole suite with one command:
+*What just happened:* two tests, each one Arrange-Act-Assert. The first creates a `Post` and checks its fields landed correctly (including that `created` got auto-stamped). The second pins down the `__str__` behavior you added in Phase 3 — a tiny test, but it locks in the contract that a post prints as its title, so a future refactor can't silently break the admin. Both tests called `Post.objects.create`, which hit a real database — the test database Django built and threw away for you. Run the whole suite with one command:
 
 ```bash
 python manage.py test
@@ -60,7 +60,7 @@ OK
 Destroying test database for alias 'default'...
 ```
 
-*What just happened:* the output bookends tell the whole story — `Creating test database` at the top, `Destroying test database` at the bottom, and your two tests (the two dots) passing in between. You never created or cleaned a database yourself; Django did it around your tests. 💡 This is the payoff: because the test DB is automatic and disposable, testing database code in Django is genuinely *easy and safe*. There's no "but what about test data polluting my real DB" worry to talk yourself out of writing the test.
+*What just happened:* the output bookends tell the whole story — `Creating test database` at the top, `Destroying test database` at the bottom, your two tests (the two dots) passing in between. You never created or cleaned a database yourself; Django did it around your tests. 💡 Because the test DB is automatic and disposable, testing database code in Django is genuinely *easy and safe* — no "test data polluting my real DB" worry to talk yourself out of writing the test.
 
 ## The test `Client`
 
@@ -91,9 +91,9 @@ class PostViewTests(TestCase):
         self.assertIn("/login", response.url)
 ```
 
-*What just happened:* two view tests, no server in sight. The first creates a post, then `self.client.get(...)` calls the list view and returns the response; `assertContains` checks the status is 200 *and* the post's title actually appears in the rendered HTML — so you're testing routing, the view, and the template together. The second confirms a protected view (the `LoginRequiredMixin` create view from [Phase 9](09-class-based-views-and-drf.md)) redirects an anonymous visitor: status `302` and a `Location` pointing at the login page. Notice `reverse("post_list")` instead of a hard-coded `"/posts/"` — that looks the URL up by name, so the test survives a URL-path change.
+*What just happened:* two view tests, no server in sight. The first creates a post, then `self.client.get(...)` calls the list view and returns the response; `assertContains` checks the status is 200 *and* the post's title actually appears in the rendered HTML — testing routing, the view, and the template together. The second confirms a protected view (the `LoginRequiredMixin` create view from [Phase 9](09-class-based-views-and-drf.md)) redirects an anonymous visitor: status `302` and a `Location` pointing at the login page. `reverse("post_list")` instead of a hard-coded `"/posts/"` looks the URL up by name, so the test survives a URL-path change.
 
-💡 Where does this sit on the testing pyramid? A model test that hits one method is a unit test; a `Client` test that exercises URL → view → template → database in one shot is closer to an **integration test** — it checks several layers cooperating. Both are valuable for different reasons; [Unit, Integration, E2E](/guides/unit-integration-e2e) lays out the trade-offs (speed and isolation vs. realism) so you know which to reach for.
+💡 Where does this sit on the testing pyramid? A model test that hits one method is a unit test; a `Client` test that exercises URL → view → template → database in one shot is closer to an **integration test**. [Unit, Integration, E2E](/guides/unit-integration-e2e) lays out the trade-offs (speed and isolation vs. realism).
 
 ## Test data & fixtures
 
@@ -114,7 +114,7 @@ class CommentTests(TestCase):
         self.assertEqual(self.post.comments.count(), 0)
 ```
 
-*What just happened:* `setUp` created a `Post` before each test, and both tests reached it via `self.post`. Because the per-test transaction rolls back between them, the comment created in the first test is gone before the second runs — that's why `test_a_post_starts_with_no_comments` reliably sees zero. As your needs grow, you'll often wrap creation in small **factory-style** helpers (a `make_post(**overrides)` function, or the popular `factory_boy` library) so a test that needs "a post with a comment" reads as one line instead of five.
+*What just happened:* `setUp` created a `Post` before each test, and both tests reached it via `self.post`. Because the per-test transaction rolls back between them, the comment created in the first test is gone before the second runs — why `test_a_post_starts_with_no_comments` reliably sees zero. As your needs grow, wrap creation in small **factory-style** helpers (a `make_post(**overrides)` function, or the popular `factory_boy` library) so a test needing "a post with a comment" reads as one line instead of five.
 
 ⚠️ `setUp` runs again for *every single test*, which gets slow when the setup is heavy. The fix is **`setUpTestData`** — a classmethod that builds shared, read-only data **once for the whole test class**:
 
@@ -129,9 +129,9 @@ class PostListTests(TestCase):
         self.assertEqual(response.content.count(b"Post"), 3)
 ```
 
-*What just happened:* `setUpTestData` created three posts a single time, and Django makes them visible (via a savepoint) to each test in the class while still rolling back any changes a test makes. For data you only *read*, this is markedly faster than recreating it in `setUp` per test. (Django also supports loading data from JSON/YAML **fixture** files via a `fixtures = [...]` attribute, but inline creation or factories are usually clearer and easier to maintain.)
+*What just happened:* `setUpTestData` created three posts a single time, and Django makes them visible (via a savepoint) to each test in the class while still rolling back any changes a test makes. For data you only *read*, this is markedly faster than recreating it in `setUp` per test. (Django also supports loading data from JSON/YAML **fixture** files via `fixtures = [...]`, but inline creation or factories are usually clearer.)
 
-💡 Many Django teams run their tests with **`pytest-django`** instead of `manage.py test`. It's a popular alternative runner that keeps Django's test-database machinery but swaps in pytest's nicer style: plain `assert` statements, function-style tests, and powerful fixtures. The concepts in this phase carry over unchanged — only the spelling of the runner differs.
+💡 Many Django teams run their tests with **`pytest-django`** instead of `manage.py test`. It keeps Django's test-database machinery but swaps in pytest's nicer style: plain `assert` statements, function-style tests, and powerful fixtures. The concepts carry over unchanged — only the spelling of the runner differs.
 
 ## Project structure that scales
 
@@ -161,13 +161,13 @@ myblog/                  ← the project (repo root)
     └── tests.py
 ```
 
-*What just happened:* the project package (`myblog/`) holds only the cross-cutting wiring — settings and the root `urls.py` that `include()`s each app's URLs. Everything feature-specific lives in its own app folder: `blog` knows about posts and comments, `accounts` knows about users, `api` knows about serializers. Each app carries its *own* `tests.py`, so a feature's code and its tests sit together. 💡 Apps are deliberately designed to be self-contained — so much so that a well-isolated app (think Django's own `auth`, or third-party packages like `django-allauth`) can be **reused across entirely different projects** by listing it in `INSTALLED_APPS`. That reusability is the reward for keeping an app focused and not letting it reach into its neighbors' internals.
+*What just happened:* the project package (`myblog/`) holds only the cross-cutting wiring — settings and the root `urls.py` that `include()`s each app's URLs. Everything feature-specific lives in its own app folder: `blog` knows about posts and comments, `accounts` knows about users, `api` knows about serializers. Each app carries its *own* `tests.py`, so a feature's code and its tests sit together. 💡 Apps are deliberately designed to be self-contained — a well-isolated app (think Django's own `auth`, or `django-allauth`) can be **reused across entirely different projects** by listing it in `INSTALLED_APPS`.
 
 ## Settings management
 
 This is the one that ends careers if you get it wrong, so read it twice. Your `settings.py` holds all your configuration — and configuration includes **secrets**.
 
-⚠️ **Never commit secrets to version control.** `settings.py` ships with a `SECRET_KEY` (Django uses it to sign sessions and password-reset tokens), and you'll add database passwords, API keys, and email credentials. The instant any of those land in a git commit, treat them as compromised — git history is forever, and public repos are scraped for keys within *minutes*. The fix is to read secrets from the **environment** at runtime instead of hard-coding them:
+⚠️ **Never commit secrets to version control.** `settings.py` ships with a `SECRET_KEY` (Django uses it to sign sessions and password-reset tokens), and you'll add database passwords, API keys, and email credentials. The instant any land in a git commit, treat them as compromised — git history is forever, and public repos are scraped for keys within *minutes*. The fix is to read secrets from the **environment** at runtime instead of hard-coding them:
 
 ```python
 import os
@@ -185,16 +185,16 @@ DATABASES = {
 }
 ```
 
-*What just happened:* not one secret value appears in the file — `SECRET_KEY`, the DB password, and friends are all pulled from environment variables. The committed code is now safe to push anywhere; the actual secrets live outside the repo (in your shell, a `.env` file that's gitignored, or your host's secret store). The popular `django-environ` package smooths this over (typed parsing, `.env` loading, a one-line `DATABASE_URL`), and the broader patterns — where secrets should live, how to rotate them — are covered in [Secrets Management](/guides/secrets-management).
+*What just happened:* not one secret value appears in the file — `SECRET_KEY`, the DB password, and friends are all pulled from environment variables. The committed code is now safe to push anywhere; the actual secrets live outside the repo (in your shell, a gitignored `.env` file, or your host's secret store). The popular `django-environ` package smooths this over (typed parsing, `.env` loading, a one-line `DATABASE_URL`), and the broader patterns are covered in [Secrets Management](/guides/secrets-management).
 
 The other half of settings hygiene is that **dev and prod need different config**. Two common approaches:
 
 - **Split settings into a package** — `settings/base.py` with everything shared, then `settings/dev.py` and `settings/prod.py` that each `from .base import *` and override what differs (database, allowed hosts, debug). You select one with `DJANGO_SETTINGS_MODULE=myblog.settings.prod`.
 - **One settings file driven entirely by env vars** — a single `settings.py` whose every environment-specific value comes from the environment (as above). Same file everywhere; the *environment* differs.
 
-⚠️ Whichever you pick, **`DEBUG` must be `False` in production.** With `DEBUG=True`, Django returns a full traceback page — complete with your source code, local variables, and settings — to anyone who triggers an error. That's a gift to an attacker. It's a development-only convenience; turning it off is non-negotiable before you go live (and it's why the example above defaults `DEBUG` to `false`).
+⚠️ Whichever you pick, **`DEBUG` must be `False` in production.** With `DEBUG=True`, Django returns a full traceback page — complete with your source code, local variables, and settings — to anyone who triggers an error. That's a gift to an attacker, and turning it off is non-negotiable before you go live (why the example above defaults `DEBUG` to `false`).
 
-💡 Step back and the shape of a healthy Django project is clear: **focused apps** so code stays reasoned-about and testable, an **automatic test database** so you actually write the tests, and **env-driven settings** so the same code runs safely from your laptop to production. Those three habits are what separate a Django project that survives its second year from one that becomes a thing everyone's afraid to touch.
+💡 Step back and the shape of a healthy Django project is clear: **focused apps** so code stays reasoned-about and testable, an **automatic test database** so you actually write the tests, and **env-driven settings** so the same code runs safely from your laptop to production.
 
 ## Recap
 

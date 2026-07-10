@@ -6,12 +6,12 @@ summary: "Real data is messy. Find and handle missing values with isna/dropna/fi
 tags: [pandas, data-cleaning, missing-values, nan, dropna, fillna, dtypes, duplicates]
 difficulty: intermediate
 synonyms: ["pandas clean data", "pandas missing values nan", "pandas dropna fillna", "pandas astype convert types", "pandas drop duplicates", "pandas rename columns", "pandas string methods str"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Cleaning Data
 
-Here's the part nobody warns you about when you start: the analysis is the easy bit. The data is the hard
+Here's the part nobody warns you about when you start: the analysis is the easy bit; the data is the hard
 bit. Real sales exports come with blank cells where someone forgot to enter a price, a `units` column that
 loaded as text because one row had "N/A" in it, the same order pasted in twice, and a `region` field where
 the same place shows up as `"North"`, `"north"`, and `"North "` with a trailing space. None of that is

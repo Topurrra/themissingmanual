@@ -6,7 +6,7 @@ summary: "The cloud rents you computing on demand - compute, storage, network, a
 tags: [cloud, mental-model, pay-as-you-go, aws, gcp, azure, managed-services]
 difficulty: intermediate
 synonyms: ["what is the cloud really", "what does the cloud sell", "is the cloud just someone else's computer", "why use the cloud instead of own servers", "what is pay as you go cloud"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What "The Cloud" Actually Sells
@@ -22,15 +22,12 @@ computers and the things attached to them. Once you believe that, the rest is de
 
 ## The thing it replaces: owning the servers
 
-**What it actually is.** Before the cloud, running software for other people meant *buying physical
-machines*. You'd estimate how much traffic you might get, buy enough servers to handle the busiest day
-you could imagine, rack them in a room (or rent space in someone's data center), keep them powered and
-cooled, and replace the disks when they died. You paid for all of it up front, and you paid for it
-whether anyone used your software or not.
-
-**Why this matters for understanding the cloud.** Every painful part of that - the up-front cost, the
-guessing, the idle machines, the 3am drive to swap a dead drive - is a problem the cloud was built to
-delete. If you hold the old way in your head, the cloud's whole pitch becomes obvious.
+Before the cloud, running software for other people meant *buying physical machines*. You'd estimate how
+much traffic you might get, buy enough servers to handle the busiest day you could imagine, rack them in
+a room (or rent data-center space), keep them powered and cooled, and replace the disks when they died -
+paying for all of it up front, whether anyone used your software or not. Every painful part of that - the
+up-front cost, the guessing, the idle machines, the 3am drive to swap a dead drive - is a problem the
+cloud was built to delete. Hold the old way in your head and the cloud's whole pitch becomes obvious.
 
 **The old way, drawn out:**
 
@@ -77,16 +74,15 @@ yours. You pay more than running it raw, and in return you stop being its sysadm
 
 ## The pricing model: you pay for what you use
 
-**What it actually is.** The default cloud deal is *metered*, like electricity. You don't buy a server;
-you rent capacity and a meter runs while you use it. Leave a machine running 24/7 and you pay for 24/7.
-Run it for an hour and shut it down, and (for many services) you pay for roughly an hour. Storage is
-metered by how much data you're keeping and how often you read it; network often charges for data
-flowing *out* to the internet.
+The default cloud deal is *metered*, like electricity. You don't buy a server; you rent capacity and a
+meter runs while you use it. Leave a machine running 24/7 and you pay for 24/7; run it for an hour and
+shut it down, and (for many services) you pay for roughly an hour. Storage is metered by how much data
+you're keeping and how often you read it; network often charges for data flowing *out* to the internet.
 
-**Why this is the whole appeal - and the whole danger.** The upside is real: a two-person startup can
-rent the same caliber of infrastructure as a giant company and pay only for what it actually uses. The
-danger is the mirror image: a meter that runs while you're not looking doesn't stop on its own. A
-machine you forgot to turn off, or a job stuck in a loop, bills you the entire time.
+This is the whole appeal, and the whole danger. The upside is real: a two-person startup can rent the
+same caliber of infrastructure as a giant company and pay only for what it actually uses. The danger is
+the mirror image: a meter that runs while you're not looking doesn't stop on its own. A machine you
+forgot to turn off, or a job stuck in a loop, bills you the entire time.
 
 ⚠️ **The meter never sleeps.** "Pay for what you use" quietly includes "pay for what you *forgot you
 were using*." A test server left running over a long weekend, an oversized database nobody downsized
@@ -122,13 +118,13 @@ between jobs; memorized service names mostly don't.
 
 ## A note on honesty: which one is "best"?
 
-You'll see endless arguments about AWS vs GCP vs Azure. The honest answer for understanding the cloud is:
-for the building blocks in this guide, they are far more alike than different, and which one a company
-uses is usually decided by history, existing contracts, and which one the team already knows - not by a
-clean technical win. AWS is the oldest and broadest; GCP is often praised for data and Kubernetes
-heritage; Azure tends to show up where an organization already lives in the Microsoft world. Those are
-tendencies, not laws, and any concrete "X is faster/cheaper" claim depends entirely on the specific
-service and workload - so don't trust a blanket version of it (including from me).
+You'll see endless arguments about AWS vs GCP vs Azure. The honest answer: for the building blocks in
+this guide, they're far more alike than different, and which one a company uses is usually decided by
+history, existing contracts, and which one the team already knows - not a clean technical win. AWS is
+the oldest and broadest; GCP is often praised for data and Kubernetes heritage; Azure tends to show up
+where an organization already lives in the Microsoft world. Those are tendencies, not laws - any concrete
+"X is faster/cheaper" claim depends on the specific service and workload, so don't trust a blanket
+version of it (including from me).
 
 ## Recap
 

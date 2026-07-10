@@ -6,22 +6,22 @@ summary: "How axum hands shared dependencies — a store, a config, a database p
 tags: [axum, rust, state, shared-data, arc]
 difficulty: intermediate
 synonyms: ["axum state", "axum with_state", "axum State extractor", "axum shared data", "axum app state arc", "axum database pool"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Shared State
 
-So far every handler you've written has been a closed little world. It takes a
+So far every handler you've written has been a closed little world: it takes a
 request apart with extractors, builds a response, and forgets everything. That's
-fine for an echo endpoint, but a real books API needs to *remember things*: the
+fine for an echo endpoint, but a real books API needs to *remember things* — the
 books themselves, a database connection, maybe a config loaded at boot. Where
 does that live?
 
 The instinct from other languages is a global — a static variable, a singleton,
 a module-level dict the handlers all reach into. In Rust that fights you hard:
 globals have to be `'static`, thread-safe, and usually `unsafe` or wrapped in a
-macro to even compile. axum's answer is cleaner and it's the whole point of this
-phase.
+macro to even compile. axum's answer is cleaner, and it's the whole point of
+this phase.
 
 > 📝 **Mental model:** handlers stay **stateless**. Anything shared lives in a
 > **state value** that you hand to the router with **`.with_state(state)`**.

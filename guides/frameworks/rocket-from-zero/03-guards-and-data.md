@@ -6,14 +6,13 @@ summary: "How a handler reads the request body with Json and Form, and how reque
 tags: [rocket, rust, request-guards, data, json, forms]
 difficulty: intermediate
 synonyms: ["rocket request guard", "rocket fromrequest", "rocket json data", "rocket forms", "rocket auth guard", "rocket data attribute"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Request Guards & Data
 
-Here is the mental model that makes the rest of Rocket click into place. Look at any handler's
-parameter list and ask of each parameter one question: **is this the request body, or is this a
-guard?**
+The mental model that makes the rest of Rocket click: look at any handler's parameter list and
+ask of each parameter one question: **is this the request body, or is this a guard?**
 
 - **Data** is the request body — the JSON or form a client `POST`s. There is exactly **one** data
   parameter per route, and you mark it with the `data = "<name>"` attribute.
@@ -23,9 +22,9 @@ guard?**
   calls your function; it forwards to another route or returns an error like `401`.
 
 That second bullet is Rocket's signature trick. Authentication, authorization, "is this user logged
-in" — they all become a **type in your signature**. You do not write `if not authenticated: return
-401` at the top of every handler. You add a parameter of type `User`, and Rocket guarantees the body
-only runs once that `User` exists. We will build exactly that below.
+in" — they all become a **type in your signature**. No `if not authenticated: return 401` at the
+top of every handler. Add a parameter of type `User`, and Rocket guarantees the body only runs
+once that `User` exists. We build exactly that below.
 
 > 📝 You met one guard already without us naming it: in Phase 2, `id: usize` in
 > `#[get("/books/<id>")]` was a guard backed by `FromParam`. Same machinery — a type that must
@@ -109,13 +108,12 @@ title before your handler ever sees it.
 
 ## Request guards: auth as a type
 
-This is the idea worth slowing down for. A request guard is any type that implements **`FromRequest`**
-and appears as a non-data parameter. Rocket runs each guard's `from_request` against the incoming
-request; if it returns `Success`, the handler runs with that value; if it returns `Error` or
-`Forward`, the handler is skipped.
+A request guard is any type that implements **`FromRequest`** and appears as a non-data
+parameter. Rocket runs each guard's `from_request` against the incoming request; if it returns
+`Success`, the handler runs with that value; if it returns `Error` or `Forward`, the handler is
+skipped.
 
-Let us build a tiny API-key guard. We want `/admin` to run only when the request carries the header
-`x-api-key`:
+A tiny API-key guard: `/admin` should run only when the request carries the header `x-api-key`.
 
 ```rust
 use rocket::request::{self, FromRequest, Request};

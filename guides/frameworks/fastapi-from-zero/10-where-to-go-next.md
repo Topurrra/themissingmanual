@@ -6,14 +6,14 @@ summary: "You can build a validated, authenticated, tested, DB-backed FastAPI AP
 tags: [fastapi, production, deployment, uvicorn, gunicorn, docker, background-tasks, what-to-build]
 difficulty: beginner
 synonyms: ["fastapi production deployment", "fastapi uvicorn gunicorn workers", "fastapi docker", "fastapi background tasks", "fastapi celery", "fastapi next steps", "fastapi vs django flask"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Production & Where to Go Next
 
 Take a second and look at what you can actually do now. You can stand up a FastAPI app, parse and validate requests straight from type hints, shape responses with Pydantic models, hide internal fields with response models, return honest status codes, inject dependencies for auth and database sessions with `Depends()`, persist data through SQLModel, lock endpoints down with OAuth2 and JWT, and prove the whole thing works with `TestClient` and pytest. That's not a toy. That's the shape of a real backend service — and the part that makes it *yours* is that you understand **why** each piece works. It all falls out of one idea: your **types are the contract**, and validation, docs, serialization, and DI are that one idea wearing different hats.
 
-So this last phase isn't more decorators. It's getting the thing onto the internet, a couple of patterns you'll reach for soon, the one async mistake that bites people in production, and an honest map of where to go next.
+This last phase isn't more decorators — it's getting the thing onto the internet, a couple of patterns you'll reach for soon, the one async mistake that bites people in production, and an honest map of where to go next.
 
 ## Deploying it — uvicorn, workers, and a proxy
 

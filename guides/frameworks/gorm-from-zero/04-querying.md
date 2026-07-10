@@ -6,12 +6,12 @@ summary: "Build real queries with GORM: Where in all its forms, the struct-vs-ma
 tags: [gorm, go, query, where, order, scopes]
 difficulty: intermediate
 synonyms: ["gorm where", "gorm order limit offset", "gorm select", "gorm scopes", "gorm struct conditions", "gorm query builder"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Querying
 
-Here's the one idea that makes everything in this phase click: **a GORM chain doesn't run anything until you tell it to**. When you write `db.Where(...).Order(...).Limit(...)`, you're not hitting the database — you're *assembling* a query, clause by clause, in memory. Each method bolts one more piece onto a query that's still just sitting there. Nothing touches the database until you call a **finalizer** — `Find`, `First`, `Count`, and friends — which is the moment GORM turns your assembled chain into actual SQL and sends it over the wire.
+Here's the one idea that makes everything in this phase click: **a GORM chain doesn't run anything until you tell it to**. When you write `db.Where(...).Order(...).Limit(...)`, you're not hitting the database — you're *assembling* a query, clause by clause, in memory, and each method bolts one more piece onto a query that's still just sitting there. Nothing touches the database until you call a **finalizer** — `Find`, `First`, `Count`, and friends — which is the moment GORM turns your assembled chain into actual SQL and sends it over the wire.
 
 > 💡 This is exactly how a SQL query builder works in any language. `Where` ≈ the `WHERE` clause, `Order` ≈ `ORDER BY`, `Limit` ≈ `LIMIT`. You're describing a SQL statement in Go syntax, and the finalizer compiles and runs it. Hold that mapping and GORM stops feeling like magic.
 

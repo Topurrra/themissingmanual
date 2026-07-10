@@ -6,14 +6,14 @@ summary: "Look at what you can build now, see honestly where chi sits next to Gi
 tags: [chi, go, gin, echo, net-http, what-to-build]
 difficulty: beginner
 synonyms: ["chi vs gin echo", "go 1.22 servemux", "net/http routing improvements", "when to use chi", "chi next steps", "go chi gorm", "chi what to build"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
-Stop for a second and look at the pile of things you can do now. You can route requests and pull `{id}` params, compose sub-routers with `Route` and `Mount`, stack middleware as plain `func(http.Handler) http.Handler` wrappers, decode and encode JSON with nothing but the standard library, and build, structure, and test a full REST API for the articles resource. That's a real service, not a toy.
+Stop and look at the pile of things you can do now. Route requests and pull `{id}` params, compose sub-routers with `Route` and `Mount`, stack middleware as plain `func(http.Handler) http.Handler` wrappers, decode and encode JSON with nothing but the standard library, and build, structure, and test a full REST API for the articles resource. That's a real service, not a toy.
 
-And here's the quieter win, the one that outlasts this guide. Because chi is *barely a framework* — a router and a middleware helper, both built from standard pieces — you didn't only learn chi. You learned idiomatic `net/http`. Your handlers are `http.HandlerFunc`. Your middleware is the standard wrapper shape. Your router *is* an `http.Handler`. Strip chi out and most of what you wrote still makes sense, because it was standard-library code the whole time. That knowledge doesn't expire when the framework does.
+And here's the quieter win, the one that outlasts this guide. Because chi is *barely a framework* — a router and a middleware helper, both built from standard pieces — you didn't only learn chi. You learned idiomatic `net/http`. Your handlers are `http.HandlerFunc`. Your middleware is the standard wrapper shape. Your router *is* an `http.Handler`. Strip chi out and most of what you wrote still makes sense, because it was standard-library code the whole time.
 
 So this last phase isn't more handlers. It's the map: where chi sits among the other Go web frameworks, an honest word about a recent change to the standard library that affects the whole pitch, the layer you'll almost certainly add next, and one concrete thing to go build.
 
@@ -33,10 +33,10 @@ flowchart TD
 
 A line on each:
 
-- **chi** — minimal and proudly so, a router that stays *pure* `net/http`. Handlers are plain `http.HandlerFunc`, middleware is the standard `func(http.Handler) http.Handler`, and there's no special context to learn. Nothing to unlearn, nothing locked in. (You're here.)
+- **chi** — minimal and proudly so, a router that stays *pure* `net/http`. Handlers are plain `http.HandlerFunc`, middleware is the standard `func(http.Handler) http.Handler`, and there's no special context to learn. Nothing to unlearn, nothing locked in.
 - **Gin** — the most popular, the biggest ecosystem, the most Stack Overflow answers. Handlers take a `*gin.Context` and write to it. Reach for it when you want batteries and the largest community. See [Gin From Zero](/guides/gin-from-zero).
-- **Echo** — close to Gin in spirit, with one stylistic twist worth knowing: its handlers *return* an `error` (`func(c echo.Context) error`) instead of writing failures into a context, and it ships a bit more built-in middleware. If you like that style, you'll like Echo. See [Echo From Zero](/guides/echo-from-zero).
-- **The standard library alone** — for many services, plain `net/http` is genuinely enough now (more on that below). See [Web Services With Only net/http](/guides/web-services-with-only-net-http).
+- **Echo** — close to Gin in spirit, with one stylistic twist: its handlers *return* an `error` (`func(c echo.Context) error`) instead of writing failures into a context, and it ships a bit more built-in middleware. See [Echo From Zero](/guides/echo-from-zero).
+- **The standard library alone** — for many services, plain `net/http` is genuinely enough now (more below). See [Web Services With Only net/http](/guides/web-services-with-only-net-http).
 
 > 💡 How to pick: reach for **chi** when you want stdlib purity *plus* its router and middleware ergonomics — sub-router composition, richer path patterns, a clean middleware stack. Reach for **Gin** or **Echo** when you want batteries (binding, validation, more helpers) baked in. Reach for **plain net/http** when the service is simple and you'd rather not add a dependency at all.
 
@@ -60,7 +60,7 @@ That's the exact problem chi was invented to solve, now in the standard library.
 
 For a simple service — a handful of routes, basic params — the answer today is often **no**. Plain `net/http` will carry it, and the [net/http roots guide](/guides/web-services-with-only-net-http) shows how far that goes.
 
-⚠️ But "the gap narrowed" is not "the gap closed." chi still earns its keep where the stdlib stays thin:
+⚠️ But "the gap narrowed" isn't "the gap closed." chi still earns its keep where the stdlib stays thin:
 
 - **Middleware as a first-class stack.** `r.Use(...)`, per-route stacks, and a batteries-included set (request ID, real-IP, recoverer, structured logging) — the standard mux gives you none of that; you wire it by hand.
 - **Sub-router composition.** `Route` and `Mount` let you build and nest whole routers, mount one under a path prefix, and give a subtree its own middleware. Hand-rolling that on `ServeMux` gets old fast.
@@ -72,7 +72,7 @@ For a simple service — a handful of routes, basic params — the answer today 
 
 Every API in this guide stored articles in memory. Perfect for learning, useless in production — restart the server and the data's gone. The next thing almost every real service grows is a **database**.
 
-Here's the reassuring part: your handlers barely change. Remember how Phase 6 kept the HTTP logic separate from where data lived, behind a store? That pays off right here. The handler still decodes JSON, validates, calls the store, and writes a response. All that swaps underneath is the store — from a map to a database-backed one.
+Here's the reassuring part: your handlers barely change. Remember how Phase 6 kept the HTTP logic separate from where data lived, behind a store? That pays off right here. The handler still decodes JSON, validates, calls the store, and writes a response — all that swaps underneath is the store, from a map to a database-backed one.
 
 [GORM From Zero](/guides/gorm-from-zero) is the natural next read. GORM is Go's most popular ORM: define your `Article` struct, point it at SQLite (Postgres later), and your create/read/update/delete calls become real persistence. The Phase 5 handlers stay exactly the same — you're replacing the bottom layer, not rewriting the top.
 

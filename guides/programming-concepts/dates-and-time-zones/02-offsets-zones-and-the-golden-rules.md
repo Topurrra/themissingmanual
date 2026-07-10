@@ -6,7 +6,7 @@ summary: "Why +02:00 is not the same as Europe/Berlin, what the IANA database ac
 tags: [time, offset, timezone, iana, utc, golden-rules]
 difficulty: intermediate
 synonyms: ["offset vs timezone", "what is iana timezone database", "europe berlin vs +02:00", "store dates in utc rule", "convert at the edges", "never hand roll timezone math"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Offsets, Zones, and the Golden Rules
@@ -32,7 +32,7 @@ This is why "store the offset" is a trap. The offset is right *today* and wrong 
 
 ## The IANA database: where the rules actually live
 
-You might wonder: who decides that Berlin flips on the last Sunday of March? Governments do - and they change their minds, sometimes with only weeks of notice. Countries add daylight saving, drop it, shift their offset, redraw zone boundaries. This is messy, political, and constantly moving.
+You might wonder: who decides that Berlin flips on the last Sunday of March? Governments do - and they change their minds, sometimes with only weeks of notice. Countries add daylight saving, drop it, shift their offset, redraw zone boundaries - messy, political, and constantly moving.
 
 So nobody sane hand-codes these rules. There is one authoritative, community-maintained dataset that every serious system uses: the **IANA Time Zone Database** (also called *tz* or *zoneinfo*). It's the source of names like `America/New_York`, `Asia/Kolkata`, and `Europe/Berlin`, and for each one it records the full history *and* the current rules of that region's offset changes. When a government announces a change, the database is updated, and your operating system, language runtime, and libraries pull in the new version.
 

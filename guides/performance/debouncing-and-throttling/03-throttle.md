@@ -12,12 +12,12 @@ synonyms:
   - search as you type performance
   - scroll event firing too often
   - rate limiting events in javascript
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Throttle: cap the rate
 
-Debounce is the wrong tool for the scroll handler from Phase 1. If you debounced a scroll handler, it would only run once scrolling *stops* — but a parallax effect or a "sticky header that fades in" needs to update *while* the user is scrolling, not only at the very end. Waiting for a pause would mean the page visibly does nothing for the entire duration of the scroll, then suddenly catches up all at once. That's not what anyone wants.
+Debounce is the wrong tool for the scroll handler from Phase 1: it would only run once scrolling *stops*, but a parallax effect or a "sticky header that fades in" needs to update *while* the user is scrolling. Waiting for a pause would mean the page visibly does nothing for the entire scroll, then suddenly catches up all at once — not what anyone wants.
 
 **Throttling** solves a different problem: guarantee the handler runs at most once every fixed interval, no matter how many events fire in that interval. Events keep being allowed through at a steady, capped rate, instead of being collapsed down to a single one at the end.
 
@@ -50,7 +50,7 @@ event at 200ms  -> RUN, last ran = 200ms
 ... repeats every 100ms ...
 ```
 
-*What just happened:* out of roughly 200 events in that second, only about 10 actually ran the handler — one every 100ms, like clockwork. Compare that to debounce, which would have produced zero runs during the scroll and exactly one run after it stopped. Throttle keeps the page updating *throughout* the scroll, at a rate the eye can actually follow, instead of either running 200 times (wasteful) or 0 times until the end (unresponsive).
+*What just happened:* out of roughly 200 events in that second, only about 10 ran the handler — one every 100ms, like clockwork. Compare that to debounce, which would have produced zero runs during the scroll and exactly one run after it stopped. Throttle keeps the page updating *throughout* the scroll, at a rate the eye can actually follow, instead of either running 200 times (wasteful) or 0 times until the end (unresponsive).
 
 ## Implementing it
 
@@ -93,7 +93,7 @@ The two techniques answer different questions, and the question your situation i
 
 *What just happened:* the search box never benefits from an update mid-typing — a partial word isn't a valid search, so waiting for the pause is strictly correct, not a performance shortcut taken at the expense of correctness. A parallax effect is the opposite: it needs to look continuous *during* the scroll, so collapsing it down to one update after scrolling stops would make the effect disappear entirely while it matters most.
 
-A shorthand worth keeping: **debounce waits for silence; throttle keeps things flowing but capped.** If your instinct says "I want this to feel continuous while it's happening," reach for throttle. If your instinct says "I only care what things look like once they stop changing," reach for debounce. Both exist because "run the handler on literally every event" was never actually the requirement in either case — the real requirement was always more specific than that, and naming which kind of "less often" you need is what picks the tool.
+A shorthand worth keeping: **debounce waits for silence; throttle keeps things flowing but capped.** If your instinct says "I want this to feel continuous while it's happening," reach for throttle. If your instinct says "I only care what things look like once they stop changing," reach for debounce. "Run the handler on every event" was never really the requirement in either case — naming which kind of "less often" you need is what picks the tool.
 
 ```quiz
 [

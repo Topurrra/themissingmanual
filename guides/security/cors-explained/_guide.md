@@ -8,7 +8,7 @@ category: security
 difficulty: beginner
 synonyms: ["what is cors", "cors error explained", "how to fix cors", "no access-control-allow-origin header", "blocked by cors policy", "cors preflight options request"]
 order: 3
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # CORS, Explained (and Why It Keeps Blocking You)
@@ -19,8 +19,7 @@ sitting right there in the Network tab - the API answered fine - but your JavaSc
 feels like the browser is sabotaging you for no reason.
 
 It isn't. CORS is a safety rule the browser enforces *on behalf of the person using it*, and once you see
-what it's actually protecting against, the error stops being mysterious and the fix becomes obvious. This
-guide walks you from the mental model to the exact headers to a copy-from cheat-card.
+what it's actually protecting against, the error stops being mysterious and the fix becomes obvious.
 
 ## How to read this
 

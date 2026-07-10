@@ -12,14 +12,14 @@ synonyms:
   - code splitting explained
   - defer loading until needed
   - infinite scroll performance
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Don't do work nobody asked for yet
 
-Here's the default most software falls into without anyone deciding it on purpose: when the page loads, fetch everything the page could ever need. Every image, every script, every chunk of data — all of it, up front, before the user has scrolled a pixel or clicked a button. This is called **eager loading**, and it has one real virtue: it's simple to reason about. Everything is just... there.
+Here's the default most software falls into without anyone deciding it on purpose: when the page loads, fetch everything it could ever need — every image, script, and chunk of data, all up front, before the user scrolls a pixel or clicks a button. This is called **eager loading**, and it has one real virtue: it's simple to reason about. Everything is just... there.
 
-The problem is that "could ever need" and "will actually use" are very different sets. A product page might have twenty photos, but the visitor reads the first three and leaves. A dashboard might have six tabs, but a given session only opens one. Fetching all twenty photos and all six tabs' worth of code is work spent on a bet that mostly doesn't pay off.
+The problem is that "could ever need" and "will actually use" are very different sets. A product page might have twenty photos but the visitor reads three and leaves; a dashboard might have six tabs but a session only opens one. Fetching all twenty photos and all six tabs' worth of code is work spent on a bet that mostly doesn't pay off.
 
 **Lazy loading** flips the default: defer the work until something concrete proves it's needed — the element scrolls into view, the route gets visited, the button gets clicked. Nobody asked for the twentieth photo yet, so don't fetch it yet.
 
@@ -42,7 +42,7 @@ lazy:   fetch the hero image now; fetch each of the other 9
 
 ## It's not about doing less work — it's about doing it later, or never
 
-A common misreading is that lazy loading is a trick to skip work. Mostly it isn't skipping — it's rescheduling. The twentieth photo still loads if the user scrolls that far. The dashboard tab's code still runs the moment it's opened. What lazy loading buys you is that the work happens closer to the moment it's needed, instead of all being crammed into the first render.
+A common misreading is that lazy loading skips work — mostly it doesn't, it reschedules. The twentieth photo still loads if the user scrolls that far, and the dashboard tab's code still runs the moment it's opened. What lazy loading buys you is that the work happens closer to when it's needed, instead of all being crammed into the first render.
 
 But there's a real bonus hiding in that reschedule: for anyone who *doesn't* scroll that far, or *doesn't* open that tab, the work never happens at all. Nobody had to decide "let's skip the twentieth photo for users who leave early" — it falls out naturally from only doing work once it's asked for.
 
@@ -53,7 +53,7 @@ eager:  100 visitors x 20 photo-downloads = 2,000 downloads
 lazy:   100 visitors x  ~4 photo-downloads = ~400 downloads
 ```
 
-*What just happened:* nobody wrote code that says "only download 4 photos." The savings are a side effect of only fetching what scrolling into view actually asks for. That's the core appeal — the lazy version isn't a smarter algorithm, it's the same plain rule ("fetch it when it's needed") applied consistently.
+*What just happened:* nobody wrote code that says "only download 4 photos." The savings are a side effect of only fetching what scrolling into view asks for. That's the core appeal — the lazy version isn't a smarter algorithm, it's the same plain rule ("fetch it when it's needed") applied consistently.
 
 ## Where this idea shows up outside images
 
@@ -67,7 +67,7 @@ The database example is worth calling out by name: this project has a separate g
 
 ## The mental model to keep
 
-One sentence: **do the work when something proves it's needed, not on the chance that it might be.** Whenever you catch yourself writing code that loads, fetches, or computes something "just in case," ask whether there's a concrete trigger you could wait for instead — a scroll position, a click, a route change. If there is, that's a lazy-loading opportunity. Phase 2 walks through the three places you'll use this constantly.
+One sentence: **do the work when something proves it's needed, not on the chance that it might be.** Whenever you catch yourself loading, fetching, or computing something "just in case," ask whether there's a concrete trigger to wait for instead — a scroll position, a click, a route change. If there is, that's a lazy-loading opportunity; Phase 2 walks through the three places you'll use this constantly.
 
 ```quiz
 [

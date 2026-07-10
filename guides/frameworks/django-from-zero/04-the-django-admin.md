@@ -6,7 +6,7 @@ summary: "Django reads your models and generates a complete web back-office — 
 tags: [django, admin, admin-site, modeladmin, back-office, superuser, crud]
 difficulty: intermediate
 synonyms: ["django admin tutorial", "django register model admin", "django modeladmin customization", "django createsuperuser", "django admin list_display", "django auto admin", "django back office"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # The Django Admin
@@ -20,8 +20,8 @@ essentially none of it.
 
 > 📝 **The mental model:** the admin is a *reflection* of your models. It doesn't have its own idea of what
 > your data looks like — it asks your models. Each field becomes a form input. Each model becomes a list
-> page. Change the model, and the admin changes with it. That's why the rest of this phase is short: you're
-> not building the admin, you're *describing how you want Django to render the one it already built.*
+> page. Change the model, and the admin changes with it. You're not building the admin, you're *describing
+> how you want Django to render the one it already built.*
 
 This is the single feature that sells Django to teams. "We need an internal tool so the content team can
 publish posts" is normally a week of CRUD-screen drudgery. In Django it's about four lines of code.
@@ -33,9 +33,8 @@ one, create a new one, fix a typo, unpublish something, delete spam comments. Th
 **CRUD** loop — Create, Read, Update, Delete — wrapped in a usable interface.
 
 > 💡 Writing those screens by hand is the most repetitive work in web development. Django noticed that the
-> information needed to build them — the field names, their types, which fields are required — *already
-> lives in your models*. So it reads your models (the ones from Phase 3) and builds the whole interface
-> from them automatically.
+> information needed to build them — field names, their types, which fields are required — *already lives
+> in your models*, so it reads your models (from Phase 3) and builds the whole interface automatically.
 
 You get all of this with zero screen-building on your part:
 
@@ -69,9 +68,9 @@ Superuser created successfully.
 ```
 
 *What just happened:* Django walked you through creating a privileged account and saved it to the `User`
-table (one of the tables you got from the auth app's migrations). This is the account you'll log in with.
-Start the server (`python manage.py runserver`), visit `http://127.0.0.1:8000/admin/`, and you can log in —
-though the dashboard is nearly empty, because you haven't told the admin about your models yet.
+table (from the auth app's migrations). Start the server (`python manage.py runserver`), visit
+`http://127.0.0.1:8000/admin/`, and you can log in — though the dashboard is nearly empty, since you
+haven't told the admin about your models yet.
 
 Now open `blog/admin.py` (Django created this empty file for your app) and register your models:
 
@@ -89,10 +88,9 @@ you'll see a **Blog** section with **Posts** and **Comments**, each clickable. Y
 edit them, delete them, and manage comments — a full CRUD interface, for those two lines. Nobody wrote a
 single form or template.
 
-> 💡 Remember the `__str__` method you added to your models in Phase 3? *This* is where it pays off. The
-> admin's list page shows each row using `__str__`. Without it, every post shows up as the useless
-> `Post object (1)`. With a good `__str__` returning the post's title, the list is actually readable. That
-> wasn't busywork in Phase 3 — it was setting up for today.
+> 💡 Remember the `__str__` method you added to your models in Phase 3? *This* is where it pays off — the
+> admin's list page shows each row using `__str__`. Without it, every post shows up as the useless `Post
+> object (1)`. That wasn't busywork in Phase 3, it was setting up for today.
 
 ## Customizing with `ModelAdmin`
 
@@ -118,26 +116,24 @@ class PostAdmin(admin.ModelAdmin):
 
 *What just happened:* each attribute reshapes the admin for `Post`:
 
-- **`list_display`** — which columns show on the list page. Instead of one title column, you now see title,
-  author, published-state, and date side by side. (Each entry is a field name from your model.)
-- **`list_filter`** — adds a sidebar of filters. Now a content manager can click "show only published" or
+- **`list_display`** — which columns show on the list page. Instead of one title column, you now see
+  title, author, published-state, and date side by side.
+- **`list_filter`** — adds a sidebar of filters. A content manager can click "show only published" or
   filter by date with one click.
 - **`search_fields`** — adds a search box at the top that searches across the named fields.
-- **`ordering`** — the default sort. `"-created_at"` means newest first (the minus sign reverses it).
+- **`ordering`** — the default sort. `"-created_at"` means newest first.
 - **`prepopulated_fields`** — as you type a post's title, Django auto-fills the `slug` field with a
-  URL-friendly version. A small touch that saves real keystrokes. (This assumes your `Post` has a `slug`
-  field; drop the line if it doesn't.)
+  URL-friendly version. (Assumes your `Post` has a `slug` field; drop the line if it doesn't.)
 
 > 💡 Notice the pattern: you didn't write any UI. You wrote *configuration* — a handful of tuples naming
-> fields — and Django translated it into search boxes, filter sidebars, and sortable columns. That's the
-> admin's whole philosophy: describe what you want, don't build it.
+> fields — and Django translated it into search boxes, filter sidebars, and sortable columns.
 
 ## Inlines: editing related objects together
 
 There's one rough edge so far. Comments belong to posts (that's the foreign key from Phase 3), but in the
 admin they live on a totally separate page. To read a post and moderate its comments, you'd bounce between
-two screens. What you actually want is to see — and edit — a post's comments *right there on the post's edit
-page.*
+two screens. What you actually want is to see — and edit — a post's comments *right there on the post's
+edit page.*
 
 That's an **inline**. You define a small inline class for the related model, then attach it to the parent's
 `ModelAdmin`:
@@ -162,16 +158,15 @@ class PostAdmin(admin.ModelAdmin):
     inlines = [CommentInline]
 ```
 
-*What just happened:* `CommentInline` tells the admin "Comments are related to Post — render them inside the
-Post form." Now when you open a post to edit it, its comments appear as editable rows beneath the post's
-fields, and `extra = 1` leaves one blank row so you can add a new comment without leaving the page. Django
-knew *how* to connect them because of the `ForeignKey` from `Comment` to `Post` — you just told it where to
-display the relationship.
+*What just happened:* `CommentInline` tells the admin "Comments are related to Post — render them inside
+the Post form." Now when you open a post to edit it, its comments appear as editable rows beneath the
+post's fields, and `extra = 1` leaves one blank row so you can add a new comment without leaving the page.
+Django knew *how* to connect them because of the `ForeignKey` from `Comment` to `Post` — you just told it
+where to display the relationship.
 
 > 💡 `TabularInline` lays the related rows out as a compact table (great for short records like comments).
 > Its sibling **`StackedInline`** stacks each related object as a full form block — better when the related
-> model has many fields and a table would be too cramped. Same idea, two layouts; pick whichever reads
-> better.
+> model has many fields and a table would be too cramped.
 
 ## What the admin is for (and what it isn't)
 
@@ -186,8 +181,7 @@ because misusing it is a genuine security mistake.
 > your blog's readers at `/admin/` to write comments, and don't let untrusted users near it. It exposes raw
 > database editing with delete buttons everywhere — in the wrong hands that's a disaster. In production,
 > lock it down: serve it over HTTPS, give staff strong unique passwords, and consider moving it off the
-> obvious `/admin/` URL or restricting it by IP. Treat it like the keys to the database, because that's
-> roughly what it is.
+> obvious `/admin/` URL or restricting it by IP.
 
 What your *public* visitors see — the actual blog pages with their own design — is a separate thing you
 build deliberately. That's the next two phases: templates render the public pages (Phase 5), and forms let
@@ -195,9 +189,8 @@ visitors safely submit comments (Phase 6).
 
 > 💡 Step back and notice what just happened across Phases 3 and 4. You defined `Post` and `Comment` *once*,
 > as Python classes. From that single definition Django gave you the database schema (Phase 3), and now a
-> complete admin interface (Phase 4) — and next it'll generate forms for you too (Phase 6). Define the model
-> once, get the rest for free. That "don't repeat yourself" payoff is the heart of why Django feels the way
-> it does.
+> complete admin interface (Phase 4) — and next it'll generate forms too (Phase 6). Define the model once,
+> get the rest for free.
 
 ## Recap
 

@@ -8,14 +8,14 @@ category: databases
 order: 6
 difficulty: intermediate
 synonyms: ["what is a database transaction", "what does acid mean", "begin commit rollback explained", "atomicity consistency isolation durability", "why do i need transactions", "database isolation levels explained", "what is a deadlock"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Transactions & ACID, Explained
 
 You're moving money from one account to another. You subtract $100 from Alice, and then — right there, between two statements — the process crashes, the connection drops, the server reboots. Bob never got his $100. It vanished. Somewhere a customer is furious and you're staring at two rows that don't add up.
 
-This is the problem transactions exist to solve: making a *group* of changes happen completely or not at all, with nothing torn in half. This guide gives you the mental model first (a transaction is an all-or-nothing bundle), then the four guarantees behind the acronym ACID in plain words, and finally the messy reality of what happens when many transactions run at once — dirty reads, deadlocks, and the dial you turn to trade safety for speed.
+This is the problem transactions exist to solve: making a *group* of changes happen completely or not at all, with nothing torn in half. This guide gives you the mental model first (a transaction is an all-or-nothing bundle), then the four guarantees behind ACID in plain words, and finally the messy reality of what happens when many transactions run at once — dirty reads, deadlocks, and the dial you turn to trade safety for speed.
 
 ## How to read this
 

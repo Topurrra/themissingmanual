@@ -6,15 +6,14 @@ summary: "The habits that make a test trustworthy: test one behavior, name it fo
 tags: [testing, unit-tests, pytest, python, edge-cases, test-quality, beginner-friendly]
 difficulty: beginner
 synonyms: ["what makes a good unit test", "how to name a test", "test edge cases", "independent tests", "test that passes even when code is wrong", "good testing habits"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What Makes a Good Test
 
 You can write a test and run it now. The next thing - the thing that separates tests that genuinely protect
-you from tests that just sit there looking responsible - is a handful of habits. None of them are hard.
-They're the difference between a test suite you trust at 5pm on a Friday and one you secretly suspect is
-lying to you.
+you from tests that just sit there looking responsible - is a handful of habits, none of them hard. They're
+the difference between a test suite you trust at 5pm on a Friday and one you secretly suspect is lying to you.
 
 Let's go through them with the same `total_with_tax` function you've been using.
 
@@ -113,8 +112,8 @@ test_tax.py ....                                                 [100%]
 ```
 
 *What just happened:* four green dots, one per test - the happy path plus three edge cases, each pinning
-down one behavior. Now if a future change accidentally mishandles a refund, this suite catches it. Each
-edge case you write is a future bug you've already fenced off.
+down one behavior. If a future change accidentally mishandles a refund, this suite catches it. Each edge
+case you write is a future bug you've already fenced off.
 
 📝 **Terminology.** An **edge case** is an input at the boundary of what the code handles - zero, empty,
 negative, the largest allowed value, the unexpected-but-legal. Edge cases are where bugs live, because

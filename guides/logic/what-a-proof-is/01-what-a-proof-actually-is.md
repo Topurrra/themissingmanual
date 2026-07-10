@@ -6,22 +6,17 @@ summary: "A proof is a gap-free chain of valid steps from things you already acc
 tags: [logic, proof, axioms, certainty]
 difficulty: beginner
 synonyms: ["what is a proof", "what is an axiom", "proof vs evidence", "why prove things in math", "what makes a proof valid"]
-updated: 2026-06-25
+updated: 2026-07-10
 ---
 
 # What a Proof Actually Is
 
-The word "proof" can feel like a wall - something with a velvet rope in front of
-it, open only to people with chalk dust on their sleeves. You hear "prove it" and a
-small voice says: *that's not for me.*
-
-Here's the reality. A proof is an ordinary argument - the kind you make when you
-explain why the restaurant must be closed, or why the missing ten dollars has to be
-in your other coat. The only difference is that a proof has the gaps taken out. Every
-place a normal argument says "and so, clearly," a proof stops and fills the space with
-a reason no one can refuse.
-
-That's the whole trick. Not genius. Patience about gaps.
+The word "proof" can feel like a wall - something with a velvet rope in front of it, open only to
+people with chalk dust on their sleeves. Here's the reality: a proof is an ordinary argument, the
+kind you make when you explain why the restaurant must be closed, or why the missing ten dollars
+has to be in your other coat. The only difference is that a proof has the gaps taken out. Every
+place a normal argument says "and so, clearly," a proof stops and fills the space with a reason no
+one can refuse. That's the whole trick - not genius, patience about gaps.
 
 ## What a proof is
 
@@ -62,14 +57,14 @@ agreement. Not because it's been proven (it hasn't), and not because it's beyond
 question, but because *we have to start somewhere.* You can't prove everything
 from nothing; every chain needs a first link that hangs from open air.
 
-This can feel like cheating. It isn't. Think of axioms as the rules of a game you
-and your reader agree to play. "Two points determine a line" is an axiom of one kind
-of geometry. Nobody proves it. You agree to it, then see what follows. Change the
-axioms and you get a different game with different - but equally valid - conclusions.
+This can feel like cheating. It isn't. Think of axioms as the rules of a game you and your reader
+agree to play. "Two points determine a line" is an axiom of one kind of geometry - nobody proves
+it, you agree to it, then see what follows. Change the axioms and you get a different game with
+different - but equally valid - conclusions.
 
-Definitions are the other half of your bedrock. An axiom says *what is true to
-start with*; a definition says *what your words mean*. Both are accepted, not
-proven. Everything else in the chain has to earn its place.
+Definitions are the other half of your bedrock. An axiom says *what is true to start with*; a
+definition says *what your words mean*. Both are accepted, not proven. Everything else in the
+chain has to earn its place.
 
 💡 If an argument ever feels circular or bottomless - "but why is *that* true?"
 forever - you've usually hit the place where someone forgot to name their axioms.
@@ -121,16 +116,16 @@ examples cannot.
 
 ## For builders
 
-You already live with this distinction every day. You call it something else.
+You already live with this distinction every day, under a different name.
 
-A **passing test** is evidence. A test runs your code on *particular* inputs and
-checks the output for those inputs. That's induction: "it worked on the cases I
-tried." A green test suite raises your confidence - and it should - but it checks a
-finite handful of the (often infinite) inputs your code might see.
+A **passing test** is evidence. A test runs your code on *particular* inputs and checks the
+output for those inputs - that's induction: "it worked on the cases I tried." A green test suite
+raises your confidence, and it should, but it checks a finite handful of the (often infinite)
+inputs your code might see.
 
-A **proof** about your code - the kind you do informally when you reason "this loop
-can't go out of bounds because `i` is always less than `len`" - guarantees *all*
-inputs at once, by argument rather than by trial.
+A **proof** about your code - the kind you do informally when you reason "this loop can't go out
+of bounds because `i` is always less than `len`" - guarantees *all* inputs at once, by argument
+rather than by trial.
 
 ```text
 Test:   add(2, 3) == 5     ✓   (one case, checked)

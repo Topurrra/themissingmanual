@@ -6,14 +6,14 @@ summary: "node:http has no router — you dispatch by inspecting req.method and 
 tags: [node, nodejs, http, routing, url]
 difficulty: intermediate
 synonyms: ["node routing by hand", "node http router", "node switch method url", "node match path", "why express router", "node url pattern"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Routing by Hand
 
 Here's the thing nobody tells you when you first open `node:http`: there is no router. None. When a request arrives, Node hands your one `(req, res)` listener the whole thing and says "you figure out what they wanted." `app.get('/messages')` doesn't exist yet — *you* are the routing layer.
 
-So let's build the right mental model first. **Routing is you reading two facts off the request — the method (`GET`, `POST`, …) and the URL path — and deciding which function should run.** That's it. A route is the pair *(method, path)*; routing is the code that maps that pair to a handler. Express, Fastify, Koa — they all eventually do this exact thing under the hood. We're about to write the thing they wrap, and once you've felt the friction by hand, every router you ever use will make sense.
+So let's build the right mental model first. **Routing is you reading two facts off the request — the method (`GET`, `POST`, …) and the URL path — and deciding which function should run.** A route is the pair *(method, path)*; routing is the code that maps that pair to a handler. Express, Fastify, Koa — they all eventually do this exact thing under the hood. We're about to write the thing they wrap, and once you've felt the friction by hand, every router you ever use will make sense.
 
 We're continuing the **messages** service from the earlier phases — each message is just `{ id, text }`.
 
@@ -40,7 +40,7 @@ const server = http.createServer(async (req, res) => {
 server.listen(3000);
 ```
 
-*What just happened:* We built a `URL` object so we get a clean `pathname` (no query string, no surprises), then checked method + path together, in order, top to bottom. The first matching `if` calls its handler and `return`s — that `return` is load-bearing, because it stops us from falling through to the next check or the 404. Anything that matches nothing drops to the bottom and gets a `404 Not Found`. That last line is your safety net.
+*What just happened:* we built a `URL` object for a clean `pathname` (no query string, no surprises), then checked method + path together, in order, top to bottom. The first matching `if` calls its handler and `return`s — that `return` is load-bearing, stopping us from falling through to the next check or the 404. Anything that matches nothing drops to the bottom and gets a `404 Not Found`, your safety net.
 
 📝 Notice the pattern: every route is *method AND path*. `GET /messages` and `POST /messages` share a path but are different routes — the method is half the identity. Forget that and your "list" handler will try to run when someone POSTs.
 
@@ -64,9 +64,9 @@ if (match) {
 }
 ```
 
-*What just happened:* The regex says "from start to end, match the literal `/messages/` followed by one or more digits, and capture those digits." `match[1]` holds the captured group (`"42"`), which we convert to a number. The `^` and `$` anchors matter more than they look — without them, `/messages/42/extra` or `/oops/messages/42` would sneak through.
+*What just happened:* the regex says "from start to end, match the literal `/messages/` followed by one or more digits, and capture those digits." `match[1]` holds the captured group (`"42"`), which we convert to a number. The `^` and `$` anchors matter more than they look — without them, `/messages/42/extra` or `/oops/messages/42` would sneak through.
 
-⚠️ This is where hand-rolled routing starts to hurt. Want to allow `/messages/abc` to return a clean `400` instead of silently not matching? More regex. Want `/users/:userId/messages/:msgId`? Now you're juggling two capture groups and remembering which index is which. Want optional trailing slashes? Another branch. Every URL shape you support is another fiddly, error-prone pattern you maintain by hand. This exact pain — escaping slashes, counting capture groups, anchoring correctly — is *precisely* why routers exist. When you later write `app.get('/messages/:id', handler)` and just read `req.params.id`, remember: a router is doing this regex dance for you.
+⚠️ This is where hand-rolled routing starts to hurt. Want `/messages/abc` to return a clean `400` instead of silently not matching? More regex. Want `/users/:userId/messages/:msgId`? Now you're juggling two capture groups and remembering which index is which. Want optional trailing slashes? Another branch. Every URL shape you support is another fiddly, error-prone pattern to maintain by hand — exactly why routers exist. When you later write `app.get('/messages/:id', handler)` and just read `req.params.id`, remember: a router is doing this regex dance for you.
 
 ## When the ladder stops scaling
 
@@ -99,7 +99,7 @@ const server = http.createServer(async (req, res) => {
 
 Step back and notice what just happened across this phase. We wanted three routes and ended up hand-writing: method checks, URL parsing, regex path matching, capture-group extraction, a dispatch structure, and the 404/405 distinction. None of it is hard in isolation. All of it is repetitive, and all of it is easy to get subtly wrong.
 
-💡 That accumulated friction is *exactly* the gap a router fills. When you reach for [Express](/guides/express-from-zero) next, `app.get('/messages/:id', handler)` collapses everything in this phase into one line — the method, the path, the param extraction, the not-found fallthrough — because Express wrote the regex dance once so you never have to. You're not learning Express to avoid understanding routing; you're learning it *because* you now understand routing and know what it's doing for you.
+💡 That accumulated friction is *exactly* the gap a router fills. When you reach for [Express](/guides/express-from-zero) next, `app.get('/messages/:id', handler)` collapses everything in this phase into one line — method, path, param extraction, not-found fallthrough — because Express wrote the regex dance once so you never have to. You're not learning Express to avoid understanding routing; you're learning it *because* you now understand routing and know what it's doing for you.
 
 ## Recap
 

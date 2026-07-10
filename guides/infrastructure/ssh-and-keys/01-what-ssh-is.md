@@ -6,16 +6,16 @@ summary: "SSH is an encrypted terminal into another machine: ssh user@host opens
 tags: [ssh, remote, terminal, session, fingerprint, host-key]
 difficulty: beginner
 synonyms: ["what is ssh", "how does ssh work", "ssh user@host explained", "what is the ssh fingerprint prompt", "what is an ssh session"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What SSH Is
 
-You've used a terminal on your own computer. You type a command, your machine runs it, you see the output.
-SSH is that exact experience - except the machine running your commands is somewhere else. A server in a
-data center. A Raspberry Pi in your closet. A cloud box you rented ten minutes ago. You type on your
-keyboard, the commands travel across the internet, the *other* machine runs them, and its output travels
-back to your screen.
+You've used a terminal on your own computer: type a command, your machine runs it, you see the output. SSH
+is that exact experience - except the machine running your commands is somewhere else. A server in a data
+center. A Raspberry Pi in your closet. A cloud box you rented ten minutes ago. You type on your keyboard, the
+commands travel across the internet, the *other* machine runs them, and its output travels back to your
+screen.
 
 That's the whole idea. Let's make it solid before touching a single command.
 
@@ -24,22 +24,20 @@ That's the whole idea. Let's make it solid before touching a single command.
 **What it actually is.** SSH stands for **Secure Shell**. A *shell* is the program that reads your typed
 commands and runs them (the thing you're already using locally). SSH gives you a shell on a *remote*
 machine, with every keystroke and every byte of output **encrypted** as it crosses the network. Picture a
-sealed pipe running between your terminal and the far machine: anyone watching the wire in between sees
-only scrambled noise.
+sealed pipe between your terminal and the far machine: anyone watching the wire in between sees only
+scrambled noise.
 
-📝 **Terminology.** People say "SSH into the server," "SSH to the box," or just "ssh in." All three mean
-the same thing: open an encrypted shell session on a remote machine.
+📝 **Terminology.** People say "SSH into the server," "SSH to the box," or just "ssh in." All three mean the
+same thing: open an encrypted shell session on a remote machine.
 
-**Why people get this wrong.** Newcomers imagine SSH *transfers files* or *is a website thing*. It isn't.
-SSH gives you a **command line on another computer** - the same prompt you'd get if you walked over and
-sat at its keyboard. (Copying files happens *over* SSH with separate tools like `scp`; that's a follow-up
-topic.) If you can use a terminal, you already know how to use a machine over SSH. The only new part is
-getting *in*.
+**Why people get this wrong.** Newcomers imagine SSH *transfers files* or *is a website thing*. It isn't. SSH
+gives you a **command line on another computer** - the same prompt you'd get sitting at its keyboard.
+(Copying files happens *over* SSH with separate tools like `scp`; a follow-up topic.) If you can use a
+terminal, you already know how to use a machine over SSH. The only new part is getting *in*.
 
-**Why this matters.** Before SSH, people logged into remote machines with a tool called Telnet, which sent
-everything - including your password - as plain readable text across the network. Anyone in between could
-read it. SSH exists to fix exactly that: prove who you are and carry your session, all encrypted, so the
-network in the middle learns nothing.
+**Why this matters.** Before SSH, people logged into remote machines with Telnet, which sent everything -
+including your password - as plain readable text across the network, for anyone in between to read. SSH
+exists to fix exactly that: prove who you are and carry your session, all encrypted.
 
 ## The command: `ssh user@host`
 
@@ -54,12 +52,12 @@ network in the middle learns nothing.
    └──────────── the user: which account to log in AS on that machine
 ```
 
-So `ssh ada@server.example.com` means: *"Connect to the machine at `server.example.com` and log me in as
-the user `ada`."* The user is an account **on the remote machine**, not your local username - though if you
-leave the `user@` off, SSH assumes the remote username matches your local one.
+So `ssh ada@server.example.com` means: *"Connect to the machine at `server.example.com` and log me in as the
+user `ada`."* The user is an account **on the remote machine**, not your local username - though leaving off
+`user@` makes SSH assume the remote username matches your local one.
 
-**A real example.** Here's a first connection. Read the whole thing; we'll unpack the surprising middle
-part next.
+**A real example.** Here's a first connection. Read the whole thing; we'll unpack the surprising middle part
+next.
 
 ```console
 $ ssh ada@server.example.com
@@ -73,26 +71,24 @@ Welcome to Ubuntu 24.04 LTS
 ada@server:~$
 ```
 
-*What just happened:* A lot, in a calm order. SSH reached the remote machine, stopped to ask you a
-one-time trust question (the fingerprint block - explained next), accepted your `yes`, asked for `ada`'s
-password, and then dropped you at a **new prompt**: `ada@server:~$`. That last line is the tell - your
-prompt changed. You are no longer typing into your own computer. Every command from here runs *on the
-server*, as the user `ada`.
+*What just happened:* a lot, in a calm order. SSH reached the remote machine, asked a one-time trust question
+(the fingerprint block, explained next), accepted your `yes`, asked for `ada`'s password, and dropped you at
+a **new prompt**: `ada@server:~$`. That last line is the tell - your prompt changed. You are no longer typing
+into your own computer; every command from here runs *on the server*, as `ada`.
 
-⚠️ **Gotcha - passwords here are invisible.** When SSH asks for a password, your terminal shows
-**nothing** as you type - no dots, no stars, no moving cursor. This is on purpose (so nobody reads your
-password length over your shoulder), but it makes everyone think the keyboard is broken the first time.
-It isn't. Type the password and press Enter. (In Phase 2 we replace passwords with keys, which skip this
-prompt entirely.)
+⚠️ **Gotcha - passwords here are invisible.** When SSH asks for a password, your terminal shows **nothing**
+as you type - no dots, no stars, no moving cursor. This is on purpose (so nobody reads your password length
+over your shoulder), but it makes everyone think the keyboard is broken the first time. It isn't - type the
+password and press Enter. (Phase 2 replaces passwords with keys, which skip this prompt entirely.)
 
 ## That first-connection fingerprint prompt
 
-This is the part that makes people nervous, so let's defuse it completely.
+This is the part that makes people nervous, so let's defuse it.
 
 **What it actually is.** The very first time you connect to a machine, SSH has never seen it before, so it
-can't be sure the thing answering is the *real* server and not an impostor sitting in the middle. It shows
-you the server's **host-key fingerprint** - a short, unique label derived from the server's identity - and
-asks you to confirm it.
+can't be sure the thing answering is the *real* server and not an impostor in the middle. It shows you the
+server's **host-key fingerprint** - a short, unique label derived from its identity - and asks you to confirm
+it.
 
 ```text
    This is SSH saying:
@@ -100,21 +96,21 @@ asks you to confirm it.
     SHA256:Vlt8x2pQ...XoI. Do you trust this is who you meant to reach?"
 ```
 
-**What it does in real life.** When you answer `yes`, SSH writes that fingerprint to a file on *your*
-machine called `~/.ssh/known_hosts`. From then on, every time you connect, SSH silently checks that the
-server's fingerprint still matches what it recorded. If it matches, you're not asked again - that's why you
-only see this prompt once per machine. (The "Permanently added... to the list of known hosts" line in the
-output above is SSH telling you it just saved the record.)
+**What it does in real life.** When you answer `yes`, SSH writes that fingerprint to a file on *your* machine
+called `~/.ssh/known_hosts`. From then on, every time you connect, SSH silently checks that the server's
+fingerprint still matches what it recorded. If it matches, you're not asked again - that's why you only see
+this prompt once per machine. (The "Permanently added... to the list of known hosts" line is SSH telling you
+it just saved the record.)
 
-**The gotcha - and why this is a feature, not a nuisance.** If you ever connect later and the fingerprint
-has *changed*, SSH will loudly refuse and warn you, because a changed key can mean someone is impersonating
-the server. Most of the time it's innocent (the server was rebuilt and got a new identity), but SSH errs on
-the side of stopping you. We cover that exact warning, and the safe way to clear it, in the
+**The gotcha - and why this is a feature, not a nuisance.** If you connect later and the fingerprint has
+*changed*, SSH will loudly refuse and warn you, because a changed key can mean someone is impersonating the
+server. Most of the time it's innocent (the server was rebuilt and got a new identity), but SSH errs on the
+side of stopping you. We cover that warning, and the safe way to clear it, in the
 [Phase 3 cheat-card](03-living-with-ssh.md).
 
-💡 **Key point.** The fingerprint prompt isn't a hurdle - it's SSH protecting you. The honest answer is:
-if you genuinely set up or were given this server, `yes` is correct. The first `yes` is you teaching your
-machine what the real server looks like.
+💡 **Key point.** The fingerprint prompt isn't a hurdle - it's SSH protecting you. If you genuinely set up or
+were given this server, `yes` is correct: the first `yes` is you teaching your machine what the real server
+looks like.
 
 ## What a "session" is
 
@@ -135,8 +131,8 @@ ada@server:~$ pwd
 
 *What just happened:* `whoami` reported `ada` (the remote account you logged in as, not your local
 username), `hostname` reported the *server's* name, and `pwd` ("print working directory") showed you're
-sitting in `ada`'s home folder **on the server**. These confirm the truth that the changed prompt already
-hinted: you are operating on the remote machine.
+sitting in `ada`'s home folder **on the server** - confirming what the changed prompt already hinted: you're
+operating on the remote machine.
 
 **Ending the session.** When you're done, you leave:
 
@@ -147,15 +143,14 @@ Connection to server.example.com closed.
 $
 ```
 
-*What just happened:* `exit` (you can also press `Ctrl-D`) closed the remote shell. The session ended, the
-encrypted pipe was torn down, and your prompt snapped back to `$` - you're home, on your own machine again.
-Nothing you ran remotely keeps running in your local terminal; the two were only joined for the life of the
-session.
+*What just happened:* `exit` (or `Ctrl-D`) closed the remote shell. The session ended, the encrypted pipe was
+torn down, and your prompt snapped back to `$` - you're home, on your own machine again. Nothing you ran
+remotely keeps running locally; the two were only joined for the life of the session.
 
 ⚠️ **Gotcha - know which machine you're on.** The single most common beginner mistake is forgetting whether
 a prompt is local or remote, then running a command (especially a destructive one) on the wrong machine.
-Your anchor is the **prompt**: `ada@server:~$` means you're *on the server*; a bare `$` (or your usual local
-prompt) means you're home. When in doubt, run `hostname` - it never lies about where you are.
+Your anchor is the **prompt**: `ada@server:~$` means you're *on the server*; a bare `$` means you're home.
+When in doubt, run `hostname` - it never lies about where you are.
 
 ## Recap
 

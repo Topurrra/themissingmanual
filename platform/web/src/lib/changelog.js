@@ -6,6 +6,7 @@ export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
+      { tag: 'New', text: 'Spotted a typo or a gap? Every guide page now links straight to GitHub\'s editor for that exact file.' },
       { tag: 'New', text: 'Practice: hands-on coding lessons in a three-panel playground - write real SQL, JavaScript, or Python and get checked instantly, right in your browser.', href: '/practice' },
       { tag: 'Improved', text: 'Practice: each module (SQL, JavaScript, Python) now has its own overview page and a lesson sidebar, so it\'s easy to see what\'s left and jump straight to any lesson.', href: '/practice' },
       { tag: 'New', text: 'Highlight any passage in a guide and add a private note to it - only you can see them.' },

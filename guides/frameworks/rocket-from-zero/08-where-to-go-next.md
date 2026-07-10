@@ -6,16 +6,16 @@ summary: "You can build, test, and configure a real Rocket API. Now the honest m
 tags: [rocket, rust, axum, actix, sqlx, what-to-build]
 difficulty: beginner
 synonyms: ["rocket vs axum", "rocket vs actix", "rust web framework comparison", "rocket database sqlx", "rocket_db_pools", "rocket next steps", "rocket what to build"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
-Stop for a second and look at what you can actually do now. You can write `#[get("/books/<id>")]` above a function and have a server route to it, pull pieces out of a request through dynamic path segments and query params, gate a handler behind a **request guard** that must succeed before the function runs, accept and return `Json<T>`, build custom **responders**, share a store across handlers with **managed state** and `.manage(...)`, wrap the whole thing in a **fairing**, serve full CRUD with `#[catch(404)]` **error catchers**, and test it with the local client before shipping it with a `Rocket.toml` and config profiles. That is a real REST API, not a toy.
+Look at what you can actually do now. Write `#[get("/books/<id>")]` above a function and have a server route to it, pull pieces out of a request through dynamic path segments and query params, gate a handler behind a **request guard** that must succeed before the function runs, accept and return `Json<T>`, build custom **responders**, share a store across handlers with **managed state** and `.manage(...)`, wrap the whole thing in a **fairing**, serve full CRUD with `#[catch(404)]` **error catchers**, and test it with the local client before shipping it with a `Rocket.toml` and config profiles. That is a real REST API, not a toy.
 
-And here's the quieter win. Rocket's "magic" is no longer magic to you. You know the throughline cold: an **attribute is the route**, the **function signature is the request** (path, query, body, and guards), the **return type is the response**, and macros wire it together. The day something misbehaves, you won't be staring at an incantation — you'll know which of those three pieces to look at.
+Rocket's "magic" is no longer magic to you. You know the throughline cold: an **attribute is the route**, the **function signature is the request** (path, query, body, and guards), the **return type is the response**, and macros wire it together. The day something misbehaves, you'll know which of those three pieces to look at.
 
-So this last phase isn't more handlers. It's the map: where Rocket sits among the other Rust web frameworks, the layer you'll almost certainly add next, the roots worth learning, and one concrete thing to go build.
+This last phase isn't more handlers. It's the map: where Rocket sits among the other Rust web frameworks, the layer you'll almost certainly add next, the roots worth learning, and one concrete thing to go build.
 
 ## Rocket vs the field
 
@@ -54,7 +54,7 @@ A word on the data layer itself, because Rust has **no single default ORM**:
 - **SeaORM** — a proper **async ORM** built on top of sqlx, for when you want entities, relations, and a query builder instead of hand-written SQL.
 - **Diesel** — the **mature, established** ORM with a rich type-safe query DSL, more sync-flavored in its roots.
 
-The reassuring bit: your handlers barely change. That Phase 5 investment in managed state pays off here — you're swapping the bottom layer, not rewriting the top.
+The reassuring bit: your handlers barely change. That Phase 5 investment in managed state pays off — you're swapping the bottom layer, not rewriting the top.
 
 ## The roots: Tokio
 
@@ -62,9 +62,7 @@ Rocket is async all the way down, and the thing actually driving every `.await` 
 
 ## What to build
 
-Reading more won't make this stick. Building one real thing will. So here's the assignment, and it's deliberately concrete.
-
-Take the **books API** you grew across this guide and carry it all the way home:
+Reading more won't make this stick. Building one real thing will. Take the **books API** you grew across this guide and carry it all the way home:
 
 - **Swap the in-memory store for `rocket_db_pools` + sqlx** so the books survive a restart. Name the database in `Rocket.toml`, write a few compile-checked queries, and watch your handlers stay almost exactly as they were.
 - **Add real auth via a `FromRequest` guard** — a JWT or session check that runs before the handler, so each request proves who it is and books belong to a user. This is the request-guard pattern from Phase 3, aimed at a real job.
@@ -73,7 +71,7 @@ Take the **books API** you grew across this guide and carry it all the way home:
 - **Tidy up config** with profiles, so secrets, the database URL, and the port come from the environment, not hardcoded values.
 - **Deploy it** somewhere you can hit from your phone.
 
-If the books API feels too familiar, build something small and new end to end instead — a **URL shortener** or a **notes API**. Same muscles: routes, guards, state, fairings, catchers, tests, config, deploy. The point is finishing one project completely, which teaches more than three more tutorials would.
+If the books API feels too familiar, build something small and new end to end instead — a **URL shortener** or a **notes API**. Same muscles: routes, guards, state, fairings, catchers, tests, config, deploy. Finishing one project completely teaches more than three more tutorials would.
 
 ## The honest close
 

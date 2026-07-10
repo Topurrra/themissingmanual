@@ -10,7 +10,7 @@ synonyms:
   - what are backup codes for
   - what if i lose my 2fa device
   - 2fa account recovery
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # What This Means for You
@@ -41,7 +41,7 @@ The habit that actually works: download them the moment they're offered, and sto
 
 ## The tradeoff nobody warns you about: lockout
 
-Here's the part that flips the whole conversation on its head. 2FA exists to keep attackers out — but a security measure with no escape hatch doesn't just block attackers, it can block *you*, permanently, with no way back in. If you lose your phone, lose your hardware key, and can't find your backup codes, you've built a lock that now has no key at all. Some services can verify your identity another way and restore access; many can't, or won't, because a convenient recovery path would hand attackers the same shortcut.
+2FA exists to keep attackers out — but a security measure with no escape hatch doesn't just block attackers, it can block *you*, permanently, with no way back in. If you lose your phone, lose your hardware key, and can't find your backup codes, you've built a lock that now has no key at all. Some services can verify your identity another way and restore access; many can't, or won't, because a convenient recovery path would hand attackers the same shortcut.
 
 This is why "add 2FA" isn't automatically a pure win — it's a real design decision, and reasonable, well-run services put real thought into the recovery path so that a moment of bad luck doesn't become a permanent one. For a builder, that means recovery isn't an afterthought bolted on after shipping 2FA; it's part of the same feature. A few patterns that hold up:
 

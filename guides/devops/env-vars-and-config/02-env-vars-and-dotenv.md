@@ -6,7 +6,7 @@ summary: "An environment variable is a name=value pair the operating system hand
 tags: [environment-variables, dotenv, env, shell, secrets, beginner-friendly]
 difficulty: beginner
 synonyms: ["what is an environment variable", "how to read env var in code", "echo $VAR explained", "what is a .env file", "should i commit .env to git", "how to set an environment variable"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Environment Variables & .env Files
@@ -35,14 +35,14 @@ values handed to a process from the outside.
         "give me DATABASE_URL"  →  "postgres://localhost:5432/myapp"
 ```
 
-📝 **Terminology.** The convention is **ALL_CAPS_WITH_UNDERSCORES** for the name. That's just a
-convention, not a rule the OS enforces — but every project follows it, so you should too. The value is
-always text (a string); even a "number" like a port is stored as the characters `"5432"`.
+📝 **Terminology.** The convention is **ALL_CAPS_WITH_UNDERSCORES** for the name — not an OS rule, but
+every project follows it. The value is always text (a string); even a "number" like a port is stored as
+the characters `"5432"`.
 
-**Why people get this wrong.** A common assumption is that environment variables are something Python or
-Node or your framework invented. They're not — they're an operating-system feature that predates all of
-them. Your shell has them, every program has them, and that `PATH` variable that tells your terminal
-where to find commands? Same mechanism. Frameworks just give you a convenient way to *read* them.
+**Why people get this wrong.** People assume environment variables are something Python or Node invented.
+They're not — they're an operating-system feature that predates all of them. Your shell has them, every
+program has them, and that `PATH` variable that tells your terminal where to find commands is the same
+mechanism. Frameworks just give you a convenient way to *read* them.
 
 ## Reading a variable from the shell
 
@@ -67,9 +67,9 @@ $ echo $DATABASE_URL
 and `echo` printed a blank line. This is the root of those `is not set` errors: the program asked for a
 variable, the OS had nothing, and the program gave up.
 
-⚠️ **Gotcha — Windows is different.** The `echo $VAR` syntax is for the Unix shells (bash, zsh). On
-Windows **PowerShell** the same lookup is `echo $env:HOME`, and in the old **Command Prompt** it's
-`echo %HOME%`. The *concept* is identical everywhere — only the syntax for reading differs.
+⚠️ **Gotcha — Windows is different.** `echo $VAR` is Unix-shell syntax (bash, zsh). On **PowerShell** the
+same lookup is `echo $env:HOME`; in the old **Command Prompt** it's `echo %HOME%`. The concept is
+identical everywhere — only the reading syntax differs.
 
 You can set one for the current shell session like this (Unix):
 
@@ -78,10 +78,9 @@ $ export LOG_LEVEL=debug
 $ echo $LOG_LEVEL
 debug
 ```
-*What just happened:* `export` created the variable `LOG_LEVEL` and marked it so that programs you launch
-*from this shell* inherit it. Two things to know: it's spelled with no spaces around the `=`, and it's
-**temporary** — it lives only until you close this terminal window. That temporariness is exactly the
-problem `.env` files solve, coming up.
+*What just happened:* `export` created `LOG_LEVEL` and marked it so programs launched *from this shell*
+inherit it. No spaces around the `=`, and it's **temporary** — it lives only until you close this
+terminal. That temporariness is exactly the problem `.env` files solve, coming up.
 
 ## Reading a variable from your code
 
@@ -105,20 +104,20 @@ hello
 $ python3 -c "import os; print(os.environ.get('MISSING', 'default'))"
 default
 ```
-*What just happened:* The first call read `GREETING` from the environment we just exported and printed
-its value. The second asked for `MISSING`, which we never set — and because we used `.get()` with a
-fallback of `'default'`, the program printed that fallback instead of crashing. That fallback pattern is
-how you give a setting a sensible default while still letting the environment override it.
+*What just happened:* The first call read `GREETING` from the environment we just exported. The second
+asked for `MISSING`, which we never set — but because we used `.get()` with a fallback of `'default'`, it
+printed that instead of crashing. That fallback pattern is how you give a setting a sensible default while
+still letting the environment override it.
 
-⚠️ **Gotcha — everything is a string.** A variable read from the environment is always text. If you set
-`PORT=8080` and your code needs a number, you have to convert it (`int(os.environ["PORT"])` in Python).
-Forgetting this gives confusing errors like trying to do math on the string `"8080"`.
+⚠️ **Gotcha — everything is a string.** A variable read from the environment is always text. Set
+`PORT=8080` and need a number? Convert it (`int(os.environ["PORT"])` in Python) — forgetting this gives
+confusing errors like trying to do math on the string `"8080"`.
 
 ## `.env` files — sane local development
 
-**Why people get this wrong.** Setting variables by hand with `export` works, but it's miserable for
-daily work: the values vanish when you close the terminal, and a real app might need a dozen of them. You
-do not want to re-type twelve `export` lines every morning. There's a standard fix.
+**Why people get this wrong.** Setting variables by hand with `export` works, but it's miserable daily:
+the values vanish when you close the terminal, and a real app might need a dozen of them. Nobody wants to
+re-type twelve `export` lines every morning. There's a standard fix.
 
 **What it actually is.** A **`.env` file** (pronounced "dot-env") is a plain text file in your project,
 one `NAME=value` per line, that a small library loads into the environment when your app starts. It's a
@@ -140,25 +139,25 @@ $ pip install python-dotenv
 $ python3 -c "from dotenv import load_dotenv; import os; load_dotenv(); print(os.environ['LOG_LEVEL'])"
 debug
 ```
-*What just happened:* `load_dotenv()` found the `.env` file in the current folder, read each line, and
-placed those pairs into the process environment — exactly as if you'd `export`ed every one by hand. After
-that, `os.environ['LOG_LEVEL']` reads `debug` from the file. Your code doesn't change at all; it still
-just reads environment variables. The `.env` file only *populates* them.
+*What just happened:* `load_dotenv()` found the `.env` file, read each line, and placed those pairs into
+the process environment — exactly as if you'd `export`ed each by hand. `os.environ['LOG_LEVEL']` then
+reads `debug` from the file. Your code doesn't change; it still just reads environment variables. The
+`.env` file only *populates* them.
 
 💡 **Key point.** The `.env` file is a **development** convenience. In staging and production you usually
-*don't* ship a `.env` file — the hosting platform (or your container, or a secrets manager) sets the real
-environment variables directly. Your code reads `os.environ[...]` the same way in every environment; only
-the *source* of those values changes. That's the payoff from [Phase 1](01-why-config-lives-outside-code.md):
-one codebase, different surroundings.
+*don't* ship one — the hosting platform (or container, or secrets manager) sets the real environment
+variables directly. Your code reads `os.environ[...]` the same way everywhere; only the *source* of those
+values changes. That's the payoff from [Phase 1](01-why-config-lives-outside-code.md): one codebase,
+different surroundings.
 
 ## ⚠️ Never commit your `.env`
 
 This is the rule that gets its own heading because getting it wrong is genuinely costly.
 
 Your `.env` file holds the real values for *your* machine — and on real projects, that includes
-**secrets**: API keys, database passwords, tokens. If you commit `.env` to Git, those secrets go into the
-repository's history, where they're visible to everyone with access and effectively impossible to fully
-erase (deleting the file in a later commit doesn't remove it from history).
+**secrets**: API keys, database passwords, tokens. Commit it to Git and those secrets go into the
+repository's history, visible to everyone with access and effectively impossible to erase (deleting the
+file in a later commit doesn't remove it from history).
 
 So you tell Git to ignore it. Add this one line to a file named `.gitignore` in your project:
 
@@ -174,12 +173,12 @@ On branch main
 nothing to commit, working tree clean
 ```
 *What just happened:* Even though `.env` exists on disk, it doesn't appear in `git status` — `.gitignore`
-told Git to pretend it isn't there, so you can't accidentally stage or commit it. If `.env` *did* show up
-in that list, it isn't ignored yet, and you should fix that before your next commit.
+told Git to pretend it isn't there, so you can't accidentally stage or commit it. If `.env` *did* show up,
+it isn't ignored yet — fix that before your next commit.
 
 📝 **The `.env.example` convention.** Since `.env` itself is secret and uncommitted, projects commit a
-companion file called **`.env.example`** instead. It lists the *names* every variable needs, with fake or
-blank values, so a new teammate knows what to fill in:
+companion **`.env.example`** instead — it lists the *names* every variable needs, with fake or blank
+values, so a new teammate knows what to fill in:
 
 ```text
 DATABASE_URL=
@@ -191,9 +190,9 @@ PORT=8080
 When you clone a project, the ritual is: copy `.env.example` to `.env`, then fill in the real values.
 That's the `is not set` error from the start of this guide, solved.
 
-This is only the *first* layer of keeping secrets safe — keeping them out of Git. How to store and
-distribute production secrets properly (vaults, encrypted files, cloud secret managers) is a whole topic
-of its own: [Secrets Management](/guides/secrets-management).
+This is only the *first* layer of keeping secrets safe. Storing and distributing production secrets
+properly (vaults, encrypted files, cloud secret managers) is its own topic: [Secrets
+Management](/guides/secrets-management).
 
 **Why this saves you later.** Reading config from the environment means the *same code* works on your
 laptop with a `.env` file and in production with platform-injected variables — and keeping `.env` out of

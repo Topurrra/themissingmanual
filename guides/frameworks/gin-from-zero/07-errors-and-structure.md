@@ -6,7 +6,7 @@ summary: "Make handlers thin translators between HTTP and your domain, return on
 tags: [gin, go, errors, project-structure, layout]
 difficulty: advanced
 synonyms: ["gin error handling", "gin c.error", "gin abortwithstatusjson", "gin centralized errors", "gin project structure", "go web project layout", "gin handlers services"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Error Handling & Project Structure
@@ -15,7 +15,7 @@ By Phase 6 the tasks API works: create a task, list them, fetch one, update, del
 and you'll notice the handlers have quietly turned into a mess. Each one writes errors in its own little
 dialect — one returns `gin.H{"error": "..."}`, another `gin.H{"message": "..."}`, a third forgets the
 status code and leans on Gin's default. The business logic — "does this task exist?", "is the title
-empty?" — is tangled up with the HTTP plumbing. It runs, but you wouldn't want to add a tenth route to it.
+empty?" — is tangled up with the HTTP plumbing. It runs, but you wouldn't want to add a tenth route.
 
 This phase fixes both problems at once, because they're the same problem wearing two hats.
 

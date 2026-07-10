@@ -6,12 +6,12 @@ summary: "Make CI fast and trustworthy: cache dependencies so installs aren't re
 tags: [github-actions, caching, matrix, secrets, required-checks, branch-protection, ci]
 difficulty: intermediate
 synonyms: ["cache npm dependencies github actions", "github actions build matrix", "how to use secrets in github actions", "require ci to pass before merge", "branch protection required checks", "speed up github actions"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Beyond the Basics
 
-The pipeline from Phase 2 works. But left as-is it has two everyday frustrations and one real risk. The frustration: it re-downloads every dependency from scratch on every single run, which is slow, and it only tests one language version, which can let version-specific bugs slip through. The risk: a red pipeline doesn't actually *stop* anyone from merging unless you tell GitHub to enforce it.
+The pipeline from Phase 2 works, but left as-is it has two everyday frustrations and one real risk. The frustration: it re-downloads every dependency from scratch on every run, which is slow, and it only tests one language version, letting version-specific bugs slip through. The risk: a red pipeline doesn't actually *stop* anyone from merging unless you tell GitHub to enforce it.
 
 This phase fixes all three, and adds the one thing every real project eventually needs — a way to use a password or API token in CI without leaking it. Each piece is a small, self-contained addition to the same `ci.yml` you already understand.
 
@@ -29,7 +29,7 @@ This phase fixes all three, and adds the one thing every real project eventually
           cache: "npm"
 ```
 
-*What just happened:* Adding `cache: "npm"` tells the setup action to cache npm's download store, keyed on your `package-lock.json`. On the next run, if the lockfile hasn't changed, it restores the cache instead of re-downloading — so `npm ci` is much faster. When you *do* change a dependency, the lockfile changes, the key changes, and it correctly fetches fresh. (The same input exists as `cache: "pip"` on `setup-python`, and `setup-go` caches by default.)
+*What just happened:* Adding `cache: "npm"` tells the setup action to cache npm's download store, keyed on your `package-lock.json`. If the lockfile hasn't changed on the next run, it restores the cache instead of re-downloading, so `npm ci` is much faster. Change a dependency and the lockfile changes, the key changes, and it correctly fetches fresh. (The same input exists as `cache: "pip"` on `setup-python`, and `setup-go` caches by default.)
 
 💡 **Key point.** A cache is a *speed optimization, never a correctness dependency*. Your pipeline must produce the same result whether the cache hit or missed — caching only changes how *fast* a step runs, not *what* it does. If a run ever behaves differently because of a cache, something is wrong.
 
@@ -86,13 +86,13 @@ The matrix view in the Actions tab now shows three results. If only Node 18 fail
 
 *What just happened:* `${{ secrets.API_TOKEN }}` pulls the stored secret and hands it to the step as an environment variable named `API_TOKEN`. Your test code reads it from the environment (e.g. `process.env.API_TOKEN`), exactly as it would read any env var — but the value lives encrypted in GitHub, not in the repo.
 
-⚠️ **Gotcha — secrets are masked in logs, but don't tempt fate.** GitHub automatically redacts known secret values in the run log, replacing them with `***`. That's a safety net, not a license. **Never deliberately print a secret** — no `echo $API_TOKEN`, no dumping it for debugging. Masking only catches the *exact* stored value; if your code transforms it (base64-encodes it, embeds it in a URL, splits it across lines) the transformed form can slip through unredacted. Treat a secret like a live wire: use it, never look directly at it.
+⚠️ **Gotcha — secrets are masked in logs, but don't tempt fate.** GitHub automatically redacts known secret values in the run log, replacing them with `***`. That's a safety net, not a license — **never deliberately print a secret**: no `echo $API_TOKEN`, no dumping it for debugging. Masking only catches the *exact* stored value; if your code transforms it (base64-encodes it, embeds it in a URL, splits it across lines), the transformed form can slip through unredacted. Treat a secret like a live wire: use it, never look directly at it.
 
-⚠️ **Gotcha — secrets don't flow to fork pull requests.** For security, workflows triggered by a `pull_request` from a *forked* repo do **not** receive your secrets — otherwise any stranger could open a PR that exfiltrates your tokens. If your integration tests need a secret, they'll be skipped or empty on fork PRs by design. That's the system protecting you, not a bug. For a gentler, fuller walkthrough of storing and rotating credentials, see [Secrets Management](/guides/secrets-management).
+⚠️ **Gotcha — secrets don't flow to fork pull requests.** For security, workflows triggered by a `pull_request` from a *forked* repo do **not** receive your secrets — otherwise any stranger could open a PR that exfiltrates your tokens. If your integration tests need a secret, they'll be skipped or empty on fork PRs by design; that's the system protecting you, not a bug. For a fuller walkthrough of storing and rotating credentials, see [Secrets Management](/guides/secrets-management).
 
 ## Required checks — make red actually mean "stop"
 
-**What it actually is.** Here's the surprise that catches teams off guard: by default, a red pipeline is *advisory*. The X shows up on the PR, but GitHub will still happily let someone click Merge. To make CI a real gate, you turn on a **branch protection rule** (or **ruleset**) that marks your CI check as **required** — then merging is blocked until it's green.
+**What it actually is.** Here's the surprise that catches teams off guard: by default, a red pipeline is *advisory*. The X shows up on the PR, but GitHub will still happily let someone click Merge. To make CI a real gate, turn on a **branch protection rule** (or **ruleset**) that marks your CI check as **required** — then merging is blocked until it's green.
 
 **What it does in real life.** This is a repository setting, not YAML. In Settings → Branches (or Settings → Rules → Rulesets), add a rule for your `main` branch and enable *"Require status checks to pass before merging,"* then select your CI check (it appears in the list by name once it has run at least once).
 

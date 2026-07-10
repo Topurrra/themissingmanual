@@ -6,20 +6,20 @@ summary: "The mental model — download an open-weights model and run it locally
 tags: [ai-ml, llm, ollama, local-models, api]
 difficulty: intermediate
 synonyms: ["how to use ollama", "ollama pull command", "ollama run example", "run an llm in the terminal", "call local llm from code", "ollama api endpoint", "ollama localhost 11434", "how to install ollama"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Getting One Running (Ollama)
 
-This is the part that feels like a trick the first time it works: you type one command, wait a few minutes, type another, and a real language model is answering you — with the network unplugged, on hardware you can touch. There's no account, no key, no meter. Let's make it happen.
+This is the part that feels like a trick the first time it works: you type one command, wait a few minutes, type another, and a real language model is answering you — with the network unplugged, on hardware you can touch. There's no account, no key, no meter.
 
-We'll use **Ollama**, because it removes almost all of the friction. It's a small program that handles downloading models, storing them, and running them — and it gives you both a chat prompt and a local API, which is everything you need.
+We'll use **Ollama**, because it removes almost all the friction. It's a small program that handles downloading, storing, and running models — and gives you both a chat prompt and a local API, which is everything you need.
 
 ## The mental model: a model is a file you download and run
 
 **What it actually is.** An open-weights model is, at bottom, a big file (or a few files) full of numbers — the trained weights. "Running it locally" means two things working together: a **runtime** (Ollama) that knows how to load those numbers and do the math, and the **model file** itself that the runtime loads. Ollama is the record player; the model is the record.
 
-**Why people get this wrong.** It's easy to picture "installing an AI" as one monolithic thing. It's cleaner to keep them separate in your head: you install the *runtime* once, and then you download *models* into it — as many as you like, swapping between them. Pulling a second model doesn't reinstall anything; it just drops another record on the shelf.
+**Why people get this wrong.** It's easy to picture "installing an AI" as one monolithic thing. Cleaner to keep them separate: install the *runtime* once, then download *models* into it — as many as you like, swapping between them. Pulling a second model doesn't reinstall anything; it just drops another record on the shelf.
 
 ```mermaid
 flowchart TD
@@ -51,7 +51,7 @@ writing manifest
 success
 ```
 
-*What just happened:* Ollama downloaded the model's files to your disk and verified them. The biggest line — about **2.0 GB** here (an approximate size; it varies by model and version) — is the weights themselves; the small files are metadata describing how to run it. That download happens once. From now on the model lives on your machine, and pulling it again would be instant.
+*What just happened:* Ollama downloaded the model's files to your disk and verified them. The biggest line — about **2.0 GB** here (an approximate size; it varies by model and version) — is the weights themselves; the small files are metadata. That download happens once. From now on the model lives on your machine, and pulling it again would be instant.
 
 ⚠️ **Gotcha.** That number is roughly how much disk *and* memory the model needs. A 2 GB model wants a couple of gigabytes free in RAM to load; bigger models want a lot more. If a model is far larger than your machine's memory, this is where reality bites — covered properly in [Phase 3](03-hardware-and-quantization.md). For now, a model in the low single-digit gigabytes is a safe first choice on most laptops.
 
@@ -109,7 +109,7 @@ EOF
 Hello there, nice to meet!
 ```
 
-*What just happened:* Exactly the same request, expressed in Python with the `requests` library. You POST the model name and prompt to the local endpoint and read the `response` field out of the returned JSON. From your program's point of view, this is just an HTTP call to `localhost` — which means anything that can make an HTTP request can use your local model. That's the whole bridge from "a model in my terminal" to "a model in my app."
+*What just happened:* Exactly the same request, expressed in Python with the `requests` library. You POST the model name and prompt to the local endpoint and read the `response` field out of the returned JSON. From your program's point of view, this is just an HTTP call to `localhost` — anything that can make an HTTP request can use your local model. That's the whole bridge from "a model in my terminal" to "a model in my app."
 
 ⚠️ **Gotcha.** If the call fails with "connection refused," the Ollama service isn't running. On most installs it starts in the background automatically; if not, running `ollama serve` (or just opening the Ollama app) starts the listener on port 11434. The API can only answer while that service is up.
 

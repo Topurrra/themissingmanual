@@ -6,14 +6,14 @@ summary: "How Tokio tasks coordinate: message passing with mpsc, oneshot, broadc
 tags: [tokio, rust, channels, mpsc, oneshot, mutex]
 difficulty: advanced
 synonyms: ["tokio mpsc", "tokio oneshot", "tokio broadcast watch", "tokio async mutex vs std mutex", "tokio sync primitives", "rust share state by communicating"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Channels & Synchronization
 
 You've got tasks now - independent units of work the scheduler runs concurrently ([Tasks & Spawning](03-tasks-and-spawning.md)). But a pile of isolated tasks isn't a program. The moment two tasks need to agree on something - "here's the next job," "I'm done, here's the result," "the config just changed" - they have to **coordinate**. This phase is about how.
 
-Here's the mental model worth carrying through everything below. There are exactly **two ways** for tasks to coordinate:
+There are exactly **two ways** for tasks to coordinate:
 
 - **Pass messages** - one task hands data to another through a **channel**. The data *moves*; only one task owns it at a time.
 - **Share state** - multiple tasks touch the same value behind a **lock** (a `Mutex`, `RwLock`, etc.). The data *stays put*; tasks take turns reaching in.

@@ -6,7 +6,7 @@ summary: "A bit is never just an abstraction - it's a voltage, a charge, or a ma
 tags: [physics, computation, bits, landauer, entropy, thermodynamics, hardware]
 difficulty: advanced
 synonyms: ["what is a bit physically", "Landauer's principle explained", "energy cost of erasing a bit", "why does deleting data cost energy", "physical representation of information", "minimum energy to erase information"]
-updated: 2026-07-06
+updated: 2026-07-10
 ---
 
 # A Bit Is a Physical Thing
@@ -15,13 +15,13 @@ Ask a programmer what a bit is and you'll hear "a 0 or a 1." True, but incomplet
 
 In a modern chip, a bit is a packet of electric charge sitting on a tiny capacitor, or the presence/absence of voltage on a transistor gate. On a hard drive, it's the magnetic orientation of a nanoscale grain - pointing "up" for 1, "down" for 0. On a DVD, it's the presence or absence of a physical pit etched into a reflective layer. Different hardware, same underlying move: pick some physical property that can sit in one of two (or more) distinguishable states, and let that state stand for information.
 
-This isn't a implementation detail you can abstract away and forget. It's the whole reason computation has a physical cost at all. Software treats bits as free to copy, move, and discard. Physics disagrees.
+This isn't an implementation detail you can abstract away and forget. It's the whole reason computation has a physical cost at all. Software treats bits as free to copy, move, and discard. Physics disagrees.
 
 ## Why physical states cost energy to change
 
 Distinguishing "definitely a 1" from "definitely a 0" requires those two states to be separated by an energy barrier large enough that random thermal jostling doesn't flip one into the other by accident. Room-temperature matter is never still - atoms vibrate, electrons jitter, and a charge stored on too small or too shallow a well will randomly leak away. Engineers pick a barrier height well above the ambient thermal energy (roughly the product of Boltzmann's constant and temperature) specifically so a stored bit stays put.
 
-Getting a bit to cross that barrier on purpose - writing a new value, flipping a magnetic domain - takes energy, for the same reason pushing a ball up a hill takes energy: you're moving the system away from where it would otherwise settle. This much is ordinary engineering, no different in spirit from the energy cost of moving anything against a force. The physics gets more interesting, and less optional, when you ask about the opposite of writing: erasing.
+Getting a bit to cross that barrier on purpose - writing a new value, flipping a magnetic domain - takes energy, for the same reason pushing a ball up a hill takes energy: you're moving the system away from where it would otherwise settle. That's ordinary engineering. The physics gets more interesting, and less optional, when you ask about the opposite of writing: erasing.
 
 ## Erasure is special
 

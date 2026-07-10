@@ -6,15 +6,15 @@ summary: "Decode the classic 'blocked by CORS policy' console error, the request
 tags: [cors, http-headers, preflight, options, origin, access-control-allow-origin, beginner]
 difficulty: beginner
 synonyms: ["blocked by cors policy no access-control-allow-origin", "what is the origin header", "what is a cors preflight request", "why is there an options request", "access-control-allow-origin meaning"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Reading the Error & the Headers
 
 The CORS error in the console looks like a wall of jargon, but it's actually telling you exactly what's
-wrong - once you know which words to read. In this phase you'll learn to decode the message, then see the
-two headers that the whole dance comes down to, and finally meet the surprise extra request (the
-*preflight*) that confuses people the first time they spot it in the Network tab.
+wrong - once you know which words to read. This phase decodes the message, shows the two headers the whole
+dance comes down to, and meets the surprise extra request (the *preflight*) that confuses people the first
+time they spot it in the Network tab.
 
 > ⏭️ New here? Read [Phase 1](01-why-the-browser-blocks-you.md) first - "the browser enforces, the server
 > permits" makes everything below land.

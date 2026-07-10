@@ -12,16 +12,16 @@ synonyms:
   - how to prevent a deadlock
   - how to detect a deadlock
   - lock ordering deadlock
-updated: 2026-07-04
+updated: 2026-07-11
 ---
 
 # The four conditions that must all be true
 
-Computer scientists Edward Coffman and colleagues identified, back in 1971, that a deadlock can only occur when four specific conditions are true **at the same time**. This is genuinely useful, not academic trivia: it means you don't need to prevent deadlocks in general, an intimidating and vague goal. You only need to make sure at least one of these four conditions can never hold in your system. Break any single one, and the whole cycle becomes impossible.
+Computer scientists Edward Coffman and colleagues identified, back in 1971, that a deadlock can only occur when four specific conditions are true **at the same time**. This is useful, not academic trivia: it means you don't need to prevent deadlocks in general, an intimidating and vague goal. You only need to make sure at least one of these four conditions can never hold in your system. Break any single one, and the whole cycle becomes impossible.
 
 ## 1. Mutual exclusion
 
-A resource can be held by only one thread at a time — two threads can't both hold the same lock simultaneously. This is the entire *point* of a lock; it's what makes the lock useful in the first place. In the transfer example, only one thread can hold `account1`'s lock at once.
+A resource can be held by only one thread at a time — two threads can't both hold the same lock simultaneously. This is the entire *point* of a lock. In the transfer example, only one thread can hold `account1`'s lock at once.
 
 ```text
 lock(account1)   # if another thread already holds it, this one waits
@@ -60,7 +60,7 @@ A -> waiting for resource held by B
 B -> waiting for resource held by A
 ```
 
-*What just happened:* this is the condition that actually completes the trap. The first three conditions describe *how* locks generally behave — sensibly, even necessarily. It's only when those normal behaviors happen to form a closed loop of waiting that you get an actual deadlock.
+*What just happened:* this is the condition that completes the trap. The first three conditions describe *how* locks generally behave — sensibly, even necessarily. It's only when those normal behaviors form a closed loop of waiting that you get a deadlock.
 
 ## Why "all four" is the useful part
 
@@ -71,10 +71,10 @@ No preemption     -> can be worked around (use try-lock with a timeout instead)
 Circular wait     -> can be prevented (always acquire locks in the same global order)
 ```
 
-*What just happened:* mutual exclusion is almost never the one you attack — you generally need locks to actually exclude, or your program has a correctness bug instead of a deadlock. That leaves three practical angles of attack, and the most common one in real code is the last: preventing circular wait by imposing a **consistent lock ordering**. If every thread in your system always acquires `account1` before `account2` — never the reverse, no matter which direction the transfer runs — a cycle becomes structurally impossible. Thread B can't wait for `account1` while holding `account2`, because it would have had to acquire `account1` first under the ordering rule.
+*What just happened:* mutual exclusion is almost never the one you attack — you generally need locks to exclude, or your program has a correctness bug instead of a deadlock. That leaves three practical angles of attack, and the most common one in real code is the last: preventing circular wait by imposing a **consistent lock ordering**. If every thread in your system always acquires `account1` before `account2` — never the reverse, no matter which direction the transfer runs — a cycle becomes structurally impossible. Thread B can't wait for `account1` while holding `account2`, because it would have had to acquire `account1` first under the ordering rule.
 
 > You don't have to eliminate all four conditions. You have to eliminate exactly one. That reframes "prevent deadlocks" from an abstract goal into a specific, checkable engineering decision.
 
-Phase 3 turns this into actual code: what lock ordering looks like in practice, how timeouts and try-lock sidestep "no preemption," and what tools exist to catch a deadlock that already happened.
+Phase 3 turns this into code: what lock ordering looks like in practice, how timeouts and try-lock sidestep "no preemption," and what tools exist to catch a deadlock that already happened.
 
 [← Phase 1: What a deadlock actually is](01-what-a-deadlock-is.md) | [Phase 3: Preventing and detecting them in real code →](03-preventing-and-detecting.md)

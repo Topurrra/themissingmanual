@@ -6,7 +6,7 @@ summary: "A single machine runs many services at once, each behind a numbered po
 tags: [networking, ports, port-numbers, http, https, ssh]
 difficulty: beginner
 synonyms: ["what is a port", "what is port 80", "what is port 443", "ip and port together", "common port numbers", "why do urls have a colon and number", "what port does ssh use"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Ports - One Machine, Many Doors
@@ -15,7 +15,7 @@ You now know how to find a machine: a name turns into an IP address, and the IP 
 
 ## What a port actually is
 
-**What it actually is.** A port is a number that identifies one specific service on a machine. The IP gets you to the computer; the port gets you to the particular program listening there. Picture the IP address as a building's street address and ports as its numbered doors:
+A port is a number that identifies one specific service on a machine. The IP gets you to the computer; the port gets you to the particular program listening there. Picture the IP address as a building's street address and ports as its numbered doors:
 
 ```text
                   IP address: 203.0.113.42
@@ -31,9 +31,9 @@ You now know how to find a machine: a name turns into an IP address, and the IP 
               knock on door 22  → you reach the remote-login service
 ```
 
-**Why people get this wrong.** Beginners often picture a port as a physical thing - a socket on the back of the computer. It isn't hardware. A port is purely a number the operating system uses to sort incoming traffic and deliver it to the right program. Nothing is plugged into "port 443"; it's a label saying "traffic marked 443 goes to the web server."
+Beginners often picture a port as a physical thing - a socket on the back of the computer. It isn't hardware. A port is purely a number the operating system uses to sort incoming traffic and deliver it to the right program. Nothing is plugged into "port 443"; it's a label saying "traffic marked 443 goes to the web server."
 
-**What it does in real life.** A program that wants to receive traffic *listens* on a port - it tells the OS "send me anything that arrives for door 80." When your request shows up tagged for port 80, the OS routes it to that program and to no other. Two services can run side by side precisely because they sit behind different door numbers.
+A program that wants to receive traffic *listens* on a port - it tells the OS "send me anything that arrives for door 80." When your request shows up tagged for port 80, the OS routes it to that program and to no other. Two services can run side by side precisely because they sit behind different door numbers.
 
 📝 **Terminology.** A program waiting for connections is *listening* on a port. The combination of an IP address and a port - written `203.0.113.42:443` - is sometimes called a *socket*: the full address of one specific service on one specific machine.
 

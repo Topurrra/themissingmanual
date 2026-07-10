@@ -12,7 +12,7 @@ synonyms:
   - is this result statistically significant
   - why do we need a control group
   - how to tell if an experiment result is real
-updated: 2026-07-04
+updated: 2026-07-11
 ---
 
 # How teams fool themselves
@@ -42,14 +42,20 @@ Track 20 metrics -> expect a few to look "significant" by pure chance
 
 ## Novelty effects fading once the new thing stops being new
 
-Sometimes a redesigned feature genuinely performs better for the first week — and then, three weeks later, the gap has closed or reversed. Nothing about the code changed. What changed is that users were curious about something new and clicked around more, or paid closer attention because it looked different, not because it was better. Once the novelty wears off and the new version becomes the new normal, behavior settles back to whatever it would have been anyway.
+Sometimes a redesigned feature genuinely performs better for the first week, then three weeks later the gap has closed or reversed — nothing about the code changed. Users were curious about something new and clicked around more, or paid closer attention because it looked different, not because it was better. Once the novelty wears off and the new version becomes the new normal, behavior settles back to whatever it would have been anyway.
 
-This is a **novelty effect**, and it's a real risk for anything visually or structurally different, especially with users who visit repeatedly. A test that only runs for a few days can mistake temporary curiosity for a permanent improvement. The practical guard: for changes likely to trigger novelty (redesigns, new UI patterns, anything visually loud), run the test long enough to see whether the effect holds after the initial curiosity fades, and pay attention to whether the gap is shrinking over the course of the test rather than holding steady.
+This is a **novelty effect**, and it's a real risk for anything visually or structurally different, especially with users who visit repeatedly. A test that only runs for a few days can mistake temporary curiosity for a permanent improvement. The practical guard: for changes likely to trigger novelty (redesigns, new UI patterns, anything visually loud), run long enough to see whether the effect holds after curiosity fades, and watch whether the gap shrinks over the test rather than holding steady.
 
 > A win in week one that's gone by week three isn't a failed test — it's the test doing its job and revealing that the effect wasn't durable.
 
 ## The thread connecting all three
 
-Every mistake in this phase comes from the same root: treating a noisy process as if a single glance at it tells the whole truth. Peeking early trusts a glance mid-run. Metric fishing trusts whichever glance happened to look good. Novelty effects trust a glance taken before the effect had time to settle. The discipline that fixes all three is the same one from Phase 2 — decide the metric and the sample size before you start, and let the test run its planned course before you draw a conclusion from it.
+Every mistake in this phase comes from the same root: treating a noisy process as if a single glance at it tells the whole truth.
+
+- **Peeking** trusts a glance mid-run.
+- **Metric fishing** trusts whichever glance happened to look good.
+- **Novelty effects** trust a glance taken before the effect had time to settle.
+
+The discipline that fixes all three is the same one from Phase 2: decide the metric and the sample size before you start, and let the test run its planned course before drawing a conclusion.
 
 [← Phase 2: How a real test is structured](02-structuring-a-test.md) | [Overview](_guide.md)

@@ -6,12 +6,12 @@ summary: "How Nest's @Injectable services hold your logic and how the IoC contai
 tags: [nestjs, typescript, providers, dependency-injection, injectable]
 difficulty: intermediate
 synonyms: ["nestjs providers", "nestjs dependency injection", "nest @Injectable", "nest constructor injection", "nestjs service", "nest IoC container"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Providers & Dependency Injection
 
-In Phase 2 you built a `TasksController` that did everything itself — held the array of tasks *and* handled the HTTP. That works for a demo and falls apart the moment the app grows. Here's the mental model that fixes it, and it's the heart of how Nest is meant to be written.
+In Phase 2 you built a `TasksController` that did everything itself — held the array of tasks *and* handled the HTTP. That works for a demo and falls apart the moment the app grows. Here's the mental model that fixes it — the heart of how Nest is meant to be written.
 
 **Controllers handle HTTP and delegate. Providers hold the logic. Dependency injection wires them together.**
 

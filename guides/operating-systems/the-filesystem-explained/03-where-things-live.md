@@ -6,12 +6,15 @@ summary: "How the OS turns a path into real bytes, why hidden dotfiles and file 
 tags: [filesystem, hidden-files, dotfiles, file-extensions, find, search, troubleshooting]
 difficulty: beginner
 synonyms: ["how does the os find a file", "what are hidden files", "what is a dotfile", "do file extensions matter", "how to find a file in terminal", "find command linux", "file not found error", "permission denied fix"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Where Things Live & Finding Them
 
-You can now picture the tree and read the rules. This last phase ties it together: what *actually happens* when you open a file, the two naming conventions everyone misreads as magic, where to expect standard things, and how to find anything you've misplaced. We'll start with the cheat-card, because you might be here mid-panic.
+You can now picture the tree and read the rules. This last phase ties it together: what *actually happens*
+when you open a file, the two naming conventions everyone misreads as magic, where to expect standard
+things, and how to find anything you've misplaced. We'll start with the cheat-card, since you might be here
+mid-panic.
 
 ## Cheat: the three errors that bite everyone
 
@@ -25,7 +28,10 @@ Each row is explained in full below.
 
 ## How a path becomes real bytes
 
-**What it actually is.** When you open `/home/ada/notes.txt`, the OS doesn't magically know where the bytes are. It *walks the tree*: it looks up `home` in the root, finds `ada` inside `home`, finds `notes.txt` inside `ada`, and only then learns which numbered boxes on the disk hold the contents. Each step also checks permissions - that's why a folder you can't enter (`x` off) blocks everything beneath it.
+**What it actually is.** When you open `/home/ada/notes.txt`, the OS doesn't magically know where the bytes
+are. It *walks the tree*: looks up `home` in the root, finds `ada` inside `home`, finds `notes.txt` inside
+`ada`, and only then learns which numbered boxes on the disk hold the contents. Each step also checks
+permissions - that's why a folder you can't enter (`x` off) blocks everything beneath it.
 
 ```mermaid
 flowchart LR
@@ -37,7 +43,9 @@ flowchart LR
 
 💡 **Key point.** A path is resolved one folder at a time, top down, checking permission at each step. This is why "no such file" can mean a folder *partway up* the path is wrong, and why "permission denied" can come from a folder you didn't even name - you lacked `x` to pass *through* it.
 
-📝 **Terminology.** The disk entry that records a file's real location and its rwx rules is called an *inode* on Unix systems. You rarely touch it directly; the name is worth knowing because it's why a single file can sometimes appear under two names (two directory entries pointing at one inode). The deeper story is a follow-up-guide topic.
+📝 **Terminology.** The disk entry that records a file's real location and its rwx rules is called an
+*inode* on Unix systems. You rarely touch it directly; the name is worth knowing because it's why a single
+file can sometimes appear under two names (two directory entries pointing at one inode).
 
 ## Hidden files are a naming convention, not a security feature
 
@@ -50,11 +58,16 @@ notes.txt   projects
 $ ls -a
 .          ..          .bashrc     .config     notes.txt   projects
 ```
-*What just happened:* Plain `ls` skipped anything starting with a dot. Adding `-a` ("all") revealed them - your shell config (`.bashrc`), a settings folder (`.config`), and the special `.` and `..` entries. The files were always there; they were just filtered from the default view.
+*What just happened:* plain `ls` skipped anything starting with a dot. Adding `-a` ("all") revealed them -
+your shell config (`.bashrc`), a settings folder (`.config`), and the special `.` and `..` entries. The
+files were always there; they were just filtered from the default view.
 
-📝 **Terminology.** These are called *dotfiles*. They hold configuration and tool state - the stuff you don't want cluttering everyday listings but that programs read constantly. This is why setup instructions say "edit your `.bashrc`" and you couldn't see it: it's hidden by the dot.
+📝 **Terminology.** These are called *dotfiles*. They hold configuration and tool state - the stuff you
+don't want cluttering everyday listings but that programs read constantly.
 
-⚠️ **Gotcha.** Hidden does *not* mean protected. A dotfile is fully readable and editable if its permissions allow it (Phase 2 still applies). The dot only hides it from casual listing - it's tidiness, not security. On Windows, "hidden" is a separate file *attribute* you toggle, not a naming rule.
+⚠️ **Gotcha.** Hidden does *not* mean protected. A dotfile is fully readable and editable if its permissions
+allow it (Phase 2 still applies) - the dot only hides it from casual listing, it's tidiness, not security.
+On Windows, "hidden" is a separate file *attribute* you toggle, not a naming rule.
 
 ## File extensions are a hint, not magic
 
@@ -65,11 +78,17 @@ $ mv report.pdf report.txt
 $ file report.txt
 report.txt: PDF document, version 1.7
 ```
-*What just happened:* `mv` renamed the file (extension and all). But `file` inspects the *actual bytes* and correctly reports it's still a PDF - the extension lied, the content didn't. Extensions are a naming convention; the real type lives in the bytes.
+*What just happened:* `mv` renamed the file (extension and all). But `file` inspects the *actual bytes* and
+correctly reports it's still a PDF - the extension lied, the content didn't.
 
-💡 **Key point.** Renaming a file's extension never converts it. It changes which program tries to open it (and whether that program then chokes), but the contents are untouched. To truly convert a file you need a program that reads one format and writes another.
+💡 **Key point.** Renaming a file's extension never converts it. It changes which program tries to open it
+(and whether that program then chokes), but the contents are untouched. To truly convert a file you need a
+program that reads one format and writes another.
 
-⚠️ **Gotcha - Windows hides extensions by default.** Windows Explorer often hides known extensions, so `invoice.pdf` may display as just `invoice`, and a malicious `invoice.pdf.exe` shows as `invoice.pdf` - hiding that it's actually a program. Turning on "show file extensions" in Explorer's View settings is a small, real security habit.
+⚠️ **Gotcha - Windows hides extensions by default.** Windows Explorer often hides known extensions, so
+`invoice.pdf` may display as just `invoice`, and a malicious `invoice.pdf.exe` shows as `invoice.pdf` -
+hiding that it's actually a program. Turning on "show file extensions" in Explorer's View settings is a
+small, real security habit.
 
 ## Where standard things live
 
@@ -93,14 +112,18 @@ The one worth internalizing: **`/var/log` (Unix) is where you look when a progra
 
 ## Finding things
 
-**What it does in real life.** When you don't know where a file is, you ask the filesystem to walk the tree and match names for you. On Unix that's `find`:
+When you don't know where a file is, you ask the filesystem to walk the tree and match names for you. On
+Unix that's `find`:
 
 ```console
 $ find ~ -name "budget.xlsx"
 /home/ada/projects/budget.xlsx
 /home/ada/old/2024/budget.xlsx
 ```
-*What just happened:* `find ~` started at your home folder and searched every folder beneath it; `-name "budget.xlsx"` kept only entries with that exact name. It found two - including one you'd forgotten in an `old` folder. `find` walks the tree the same way the OS resolves a path, just visiting every branch instead of one.
+*What just happened:* `find ~` started at your home folder and searched every folder beneath it;
+`-name "budget.xlsx"` kept only entries with that exact name. It found two - including one you'd forgotten
+in an `old` folder. `find` walks the tree the same way the OS resolves a path, just visiting every branch
+instead of one.
 
 You can match patterns with `*` (meaning "any characters"):
 
@@ -109,17 +132,26 @@ $ find . -name "*.log"
 ./app.log
 ./logs/error.log
 ```
-*What just happened:* Starting from `.` (the current folder), this found every name ending in `.log` at any depth. The `*` is a wildcard - "anything here" - so `*.log` means "any name that ends in `.log`."
+*What just happened:* starting from `.` (the current folder), this found every name ending in `.log` at any
+depth. The `*` is a wildcard - "anything here" - so `*.log` means "any name that ends in `.log`."
 
-⚠️ **Gotcha.** Running `find /` (from the root) searches the *entire* machine and will throw "Permission denied" lines for folders you can't enter - that's Phase 2 in action, not a failure of the command. Search from `~` or a specific folder unless you genuinely need the whole disk. (On Windows, `dir /s /b C:\Users\you\*.xlsx` is the rough equivalent, and the desktop search box does the same job with a friendly face.)
+⚠️ **Gotcha.** Running `find /` (from the root) searches the *entire* machine and will throw "Permission
+denied" lines for folders you can't enter - that's Phase 2 in action, not a failure of the command. Search
+from `~` or a specific folder unless you genuinely need the whole disk. (On Windows,
+`dir /s /b C:\Users\you\*.xlsx` is the rough equivalent, and the desktop search box does the same job.)
 
 ## The three errors, explained
 
 Now the cheat-card rows make full sense:
 
-- **`No such file or directory`** - the tree-walk failed at some step. A folder name partway up was wrong, you're not standing where you assumed (run `pwd`), or it's a typo - and remember Unix paths are **case-sensitive**, so `Notes.txt` and `notes.txt` are different files. When in doubt, give the full absolute path from `/`.
-- **`Permission denied`** - a permission check failed during the walk (Phase 2). `ls -l` the file *and* the folders leading to it; you may lack `x` on a folder you have to pass through. Fix by acting as an allowed user or adjusting the rules - on purpose, not reflexively.
-- **`\` vs `/` mismatch** - a path copied from a Windows machine into a Unix shell (or the reverse) breaks because the separators and drive letters don't translate. Don't paste paths across operating systems expecting them to work; rebuild them in the target system's style.
+- **`No such file or directory`** - the tree-walk failed at some step. A folder name partway up was wrong,
+  you're not standing where you assumed (run `pwd`), or it's a typo - and Unix paths are **case-sensitive**,
+  so `Notes.txt` and `notes.txt` are different files. When in doubt, give the full absolute path from `/`.
+- **`Permission denied`** - a permission check failed during the walk (Phase 2). `ls -l` the file *and* the
+  folders leading to it; you may lack `x` on a folder you have to pass through. Fix by acting as an allowed
+  user or adjusting the rules - on purpose, not reflexively.
+- **`\` vs `/` mismatch** - a path copied from a Windows machine into a Unix shell (or the reverse) breaks
+  because the separators and drive letters don't translate. Rebuild paths in the target system's style.
 
 ## Recap
 

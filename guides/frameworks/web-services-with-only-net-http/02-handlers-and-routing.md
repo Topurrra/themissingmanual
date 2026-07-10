@@ -6,12 +6,12 @@ summary: "Map URL patterns to handlers with HandlerFunc and the Go 1.22 method+p
 tags: [net-http, go, handlers, routing, servemux]
 difficulty: intermediate
 synonyms: ["go servemux routing", "go 1.22 method path patterns", "r.PathValue", "go http handlefunc", "go route by method", "net/http router"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Handlers & Routing by Hand
 
-Here's the mental model to hold before any code: **a router is a lookup table from patterns to handlers.** A request comes in carrying a method and a path - `GET /messages/42` - and the router's whole job is to find the one handler that claims that combination and hand the request to it. Nothing more mystical than that.
+**A router is a lookup table from patterns to handlers.** A request comes in carrying a method and a path - `GET /messages/42` - and the router's whole job is to find the one handler that claims that combination and hand the request to it. Nothing more mystical than that.
 
 For years in Go this lookup table was deliberately dumb. The standard `http.ServeMux` matched on the *path* and nothing else - no methods, no path parameters. That's exactly why the ecosystem grew routers like chi, gorilla/mux, and the ones baked into Gin and Echo: people needed `GET` vs `POST` on the same path, and they needed `/messages/{id}` to pull `42` out for them.
 

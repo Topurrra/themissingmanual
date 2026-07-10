@@ -6,14 +6,14 @@ summary: "The honest trade-off between running an LLM on your own machine and ca
 tags: [ai-ml, llm, local-models, privacy, cost, offline]
 difficulty: intermediate
 synonyms: ["should i run an llm locally", "local llm vs hosted api", "is it cheaper to run an llm locally", "are local models worse", "when to use a local llm", "benefits of running ai locally", "downsides of local llm"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why (and Why Not) Run Locally
 
-Before you spend an evening downloading models, it's worth being honest about what you're actually getting. Running a model locally is not "the same thing, but free." It's a genuinely different deal — better in some ways that matter a lot, worse in ways that matter just as much. The people who are happiest running models locally are the ones who went in knowing exactly which trade they were making.
+Before you spend an evening downloading models, it's worth being honest about what you're actually getting. Running a model locally is not "the same thing, but free." It's a genuinely different deal — better in some ways that matter a lot, worse in ways that matter just as much. The people happiest running models locally went in knowing exactly which trade they were making.
 
-So let's lay both sides on the table, plainly, and then talk about when local is the right call.
+Let's lay both sides on the table, then talk about when local is the right call.
 
 ## The mental model: where does the model live, and who pays for the compute?
 
@@ -40,9 +40,9 @@ Everything below is a consequence of that picture.
 
 ## The case *for* running locally
 
-**Privacy — your data never leaves the machine.** This is the big one. When the model runs locally, the prompt, the documents you feed it, and the answers all stay on your hardware. Nothing is transmitted to a third party, logged on their servers, or potentially used to train a future model. For sensitive code, private documents, health or legal text, or anything under a confidentiality obligation, this is often the *whole* reason to run locally — and sometimes the only acceptable option.
+**Privacy — your data never leaves the machine.** This is the big one. When the model runs locally, the prompt, the documents you feed it, and the answers all stay on your hardware — nothing transmitted to a third party, logged on their servers, or potentially used to train a future model. For sensitive code, private documents, health or legal text, or anything under a confidentiality obligation, this is often the *whole* reason to run locally — sometimes the only acceptable option.
 
-**No per-token cost.** A hosted API bills you for every request — input tokens and output tokens, forever. A local model costs you the electricity to run it and nothing else. If you're doing heavy, repetitive work — classifying thousands of records, churning through a big batch overnight, experimenting in a tight loop — the meter that never runs is a real relief.
+**No per-token cost.** A hosted API bills you for every request, forever. A local model costs you the electricity to run it and nothing else. If you're doing heavy, repetitive work — classifying thousands of records, churning through a big batch overnight, experimenting in a tight loop — the meter that never runs is a real relief.
 
 **Offline.** The model works on a plane, in a basement, behind a corporate firewall, on a flaky connection — anywhere, because there's no network call to fail. Once the files are on disk, the internet is optional.
 
@@ -50,7 +50,7 @@ Everything below is a consequence of that picture.
 
 ## The case *against* (the honest part)
 
-**The models are usually weaker.** This is the trade you're really making. The largest, sharpest models are enormous — far too big to run on a personal machine — so they're only available as hosted services. The open-weights models you can actually run at home are smaller, and on hard reasoning, long documents, and tricky instructions, that gap shows. A good local model is genuinely useful; it is generally *not* going to match the best hosted model on the hardest tasks. Going in expecting parity is the fastest route to disappointment.
+**The models are usually weaker.** This is the trade you're really making. The largest, sharpest models are enormous — far too big to run on a personal machine — so they're only available as hosted services. The open-weights models you can run at home are smaller, and on hard reasoning, long documents, and tricky instructions, that gap shows. A good local model is genuinely useful; it generally won't match the best hosted model on the hardest tasks. Going in expecting parity is the fastest route to disappointment.
 
 > 📝 **Terminology.** **Open-weights** means the trained model's parameters (its "weights") are published for you to download and run yourself. It's what makes local running possible at all — you can't run a model whose weights nobody released. (It is *not* the same as "open source," and the license attached can still restrict how you use it — more on that in [Phase 3](03-hardware-and-quantization.md).)
 
@@ -83,7 +83,7 @@ Reach for a local model when one of these is true:
 - **You want to learn or tinker** — there's no better way to build a real feel for how these models work than running one yourself.
 - **A smaller model is genuinely good enough** for the task — summarizing, drafting, classifying, simple extraction. Plenty of real work doesn't need the very best model.
 
-And lean toward a **hosted API** when you need top-tier quality on hard problems, you don't want to manage any infrastructure, or your volume is low enough that the bill is trivial. ⚠️ A common mistake is treating this as all-or-nothing. Plenty of real systems do both — a local model for the bulk, private, or offline work, and a hosted call for the few requests that truly need the strongest model. You're choosing per task, not for life.
+Lean toward a **hosted API** when you need top-tier quality on hard problems, you don't want to manage infrastructure, or your volume is low enough that the bill is trivial. ⚠️ A common mistake is treating this as all-or-nothing. Plenty of real systems do both — a local model for the bulk, private, or offline work, and a hosted call for the few requests that truly need the strongest model. You're choosing per task, not for life.
 
 ## Recap
 

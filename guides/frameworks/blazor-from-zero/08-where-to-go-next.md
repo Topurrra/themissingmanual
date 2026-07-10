@@ -6,16 +6,16 @@ summary: "You can build interactive web UIs in C#. Now meet Blazor vs the JS fra
 tags: [blazor, csharp, react, render-modes, component-libraries, what-to-build]
 difficulty: beginner
 synonyms: ["blazor vs react", "blazor render modes", "mudblazor radzen", "blazor next steps", "blazor what to build", "blazor server vs wasm choice"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
-Stop for a second and look at what you can actually do now. You can build a **component** in a `.razor` file, mix markup with C# in an `@code` block, and have it re-render when its state changes. You can **bind** inputs with `@bind`, wire up **events** with `@onclick`, hook into the **lifecycle** with `OnInitialized` and `OnParametersSet`, and nudge a re-render with `StateHasChanged`. You can build **forms** with `EditForm` and validation, pass data between components with `[Parameter]` and `EventCallback`, share state through a DI service, and `@inject` an `HttpClient` to **load real data from an API**.
+Stop and look at what you can actually do now. Build a **component** in a `.razor` file, mix markup with C# in an `@code` block, and have it re-render when its state changes. **Bind** inputs with `@bind`, wire up **events** with `@onclick`, hook into the **lifecycle** with `OnInitialized` and `OnParametersSet`, and nudge a re-render with `StateHasChanged`. Build **forms** with `EditForm` and validation, pass data between components with `[Parameter]` and `EventCallback`, share state through a DI service, and `@inject` an `HttpClient` to **load real data from an API**.
 
 That's not a toy. That's interactive web UI — written in C#, with the same language, types, and tooling you already use on the server. You read the machine now.
 
-So this last phase isn't more attributes to memorize. It's the map: where Blazor sits next to the JavaScript frameworks, a recap of the render modes so you choose them on purpose, the libraries you'll reach for next, and one concrete thing to go build.
+So this last phase isn't more attributes to memorize. It's the map: where Blazor sits next to the JavaScript frameworks, a recap of the render modes so you choose them on purpose, the libraries you'll reach for next, and one concrete thing to build.
 
 ## Blazor vs the JavaScript frameworks
 
@@ -30,10 +30,10 @@ flowchart TD
 
 Here's the honest breakdown:
 
-- **Where Blazor wins.** You build the UI in **C#** — the same language, the same model classes, the same validation attributes shared with your backend. For a .NET team, that's enormous: no context-switching to a separate JS toolchain, no duplicating your types in TypeScript, one debugger across the whole stack. For internal tools and **line-of-business apps**, Blazor is a genuinely strong, productive choice.
-- **Where a JS framework wins.** React, Vue, and Angular have a **far larger ecosystem** — more components, more hiring pool, more Stack Overflow answers. And Blazor WebAssembly ships a .NET runtime to the browser, so its **initial download is larger** than a typical JS bundle. For a heavy **public-facing consumer SPA** where first-load size is critical, or a team that already lives and breathes JavaScript, a JS framework often fits better.
+- **Where Blazor wins.** You build the UI in **C#** — the same language, model classes, and validation attributes shared with your backend. For a .NET team, that's enormous: no context-switching to a separate JS toolchain, no duplicating types in TypeScript, one debugger across the whole stack. For internal tools and **line-of-business apps**, Blazor is a genuinely strong, productive choice.
+- **Where a JS framework wins.** React, Vue, and Angular have a **far larger ecosystem** — more components, more hiring pool, more Stack Overflow answers. Blazor WebAssembly ships a .NET runtime to the browser, so its **initial download is larger** than a typical JS bundle. For a heavy **public-facing consumer SPA** where first-load size is critical, or a team that already lives and breathes JavaScript, a JS framework often fits better.
 
-💡 Notice what's *not* on either list: "and the other one is bad." Both build UIs from the same core idea — a tree of components that re-render when their data changes. If you learned that idea here, you've already learned the hard part of any of them.
+💡 Notice what's *not* on either list: "and the other one is bad." Both build UIs from the same core idea — a tree of components that re-render when their data changes. Learn that idea here, and you've already learned the hard part of any of them.
 
 ## Render modes: choose per page (.NET 8)
 
@@ -55,11 +55,11 @@ You don't have to hand-build every button and dialog. The Blazor ecosystem has m
 - **Fluent UI Blazor** — Microsoft's own, matching the Fluent/Windows look.
 - **Telerik UI for Blazor** — a polished commercial suite for teams that want vendor support.
 
-For **state** in larger apps, the DI state-service pattern from Phase 6 carries you a long way. When an app grows complex enough that you want stricter, more traceable state changes, **Fluxor** brings a Redux-style store (actions, reducers, a single state tree) to Blazor. Reach for it when "where did this value change?" stops being obvious — not before.
+For **state** in larger apps, the DI state-service pattern from Phase 6 carries you a long way. When an app grows complex enough that you want stricter, more traceable state changes, **Fluxor** brings a Redux-style store (actions, reducers, a single state tree) to Blazor. Reach for it when "where did this value change?" stops being obvious.
 
 ## What to build next
 
-Reading more won't make this stick. Building one real thing will. So here's the assignment, and it's deliberately concrete.
+Reading more won't make this stick. Building one real thing will — here's the assignment, deliberately concrete.
 
 Build a small **CRUD app** — create, read, update, delete — end to end:
 

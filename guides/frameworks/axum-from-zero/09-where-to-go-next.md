@@ -6,16 +6,16 @@ summary: "You can build, layer, test, and ship a real axum API. Now the honest m
 tags: [axum, rust, actix, rocket, sqlx, what-to-build]
 difficulty: beginner
 synonyms: ["axum vs actix", "axum vs rocket", "rust web framework comparison", "axum sqlx database", "axum next steps", "axum tokio hyper tower", "axum what to build"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
-Stop for a second and look at what you can actually do now. You can stand up an axum server on Tokio, route a request to a handler, pull pieces out of it with extractors like `Path`, `Query`, `Json`, and `State`, return any type that implements `IntoResponse`, share a store across handlers without a single global, wrap the whole thing in tower middleware, build full CRUD, handle errors with a custom type and the `?` operator, and test it with `oneshot` before shipping it with graceful shutdown. That is a real REST API, not a toy.
+Stop and look at what you can actually do now. Stand up an axum server on Tokio, route a request to a handler, pull pieces out of it with extractors like `Path`, `Query`, `Json`, and `State`, return any type that implements `IntoResponse`, share a store across handlers without a global, wrap the whole thing in tower middleware, build full CRUD, handle errors with a custom type and `?`, and test it with `oneshot` before shipping with graceful shutdown. That's a real REST API, not a toy.
 
-And here is the quieter win. Because axum leans on Rust's type system instead of macros, you did not only learn a framework — you learned how one fits together. A **`Router`** maps paths to handlers. A handler is **an `async fn` whose arguments extract from the request and whose return value becomes the response.** Tower **layers** wrap it. There was no hidden magic to memorize, which means when something breaks at 2am, you can reason your way out of it from the compiler's complaints.
+Here's the quieter win: because axum leans on Rust's type system instead of macros, you didn't only learn a framework — you learned how one fits together. A **`Router`** maps paths to handlers. A handler is **an `async fn` whose arguments extract from the request and whose return value becomes the response.** Tower **layers** wrap it. No hidden magic to memorize — when something breaks at 2am, you can reason your way out from the compiler's complaints.
 
-So this last phase is not more handlers. It is the map: where axum sits among the other Rust web frameworks, the layer you will almost certainly add next, the roots worth learning, and one concrete thing to go build.
+So this last phase is the map: where axum sits among the other Rust web frameworks, the layer you'll almost certainly add next, the roots worth learning, and one concrete thing to build.
 
 ## axum vs the field
 
@@ -32,38 +32,36 @@ flowchart TD
 
 A line on each:
 
-- **axum** — the modern default, from the Tokio team. It is tower-native and driven by the type system: plain `async fn` handlers, extractors as arguments, `IntoResponse` returns. Its quiet superpower is the **tower** ecosystem — middleware you write for axum is reusable, and gRPC via **tonic** shares the same tower `Service` abstraction. This is the framework serving the page you are reading. (You are here.)
-- **actix-web** — the mature, batteries-included heavyweight, and consistently at or near the **top of the performance benchmarks**. It has its own actor-flavored history and a deep feature set. If raw throughput and a long track record matter most, this is your pick. See [actix-web From Zero](/guides/actix-web-from-zero).
-- **Rocket** — the most **ergonomic** of the three, leaning hard on macros (`#[get("/")]` attributes and friends) to make handler code wonderfully concise and approachable. If you want the least ceremony and the most readable routes, you will like its style. See [Rocket From Zero](/guides/rocket-from-zero).
+- **axum** — the modern default, from the Tokio team. Tower-native and type-system-driven: plain `async fn` handlers, extractors as arguments, `IntoResponse` returns. Its quiet superpower is the **tower** ecosystem — middleware you write for axum is reusable, and gRPC via **tonic** shares the same `Service` abstraction. This is the framework serving the page you're reading.
+- **actix-web** — the mature, batteries-included heavyweight, consistently at or near the **top of the performance benchmarks**, with its own actor-flavored history and a deep feature set. Pick it when raw throughput and a long track record matter most. See [actix-web From Zero](/guides/actix-web-from-zero).
+- **Rocket** — the most **ergonomic** of the three, leaning hard on macros (`#[get("/")]` and friends) for wonderfully concise handler code. Pick it for the least ceremony and the most readable routes. See [Rocket From Zero](/guides/rocket-from-zero).
 
-> 💡 How to pick: reach for **axum** when you want the tower ecosystem and type-safe extractors (and a clean path to gRPC via tonic, since it shares tower). Reach for **actix-web** when you want maximum performance and a mature, batteries-included framework. Reach for **Rocket** when you want concise, approachable, macro-driven code.
-
-📝 None of these is "the best." They are aimed at slightly different priorities, and all three will happily run a serious service. The senior instinct is not memorizing a winner — it is asking "best for *this* job?" and answering honestly. You have the pieces for that now.
+📝 None of these is "the best" — they're aimed at slightly different priorities, and all three will happily run a serious service. The senior instinct isn't memorizing a winner, it's asking "best for *this* job?" You have the pieces for that now.
 
 ## The layer you'll add next: a real database
 
-Every API in this guide kept its books in memory. That is perfect for learning and useless in production — restart the server and the data is gone. The very next thing almost every real axum service grows is a **database**.
+Every API in this guide kept its books in memory — perfect for learning, useless in production, since restarting the server loses the data. The next thing almost every real axum service grows is a **database**.
 
-Here is the part worth knowing up front: Rust has **no single default ORM** the way some ecosystems do. You get to choose, and the three common answers each have a clear personality.
+Rust has **no single default ORM** the way some ecosystems do. Three common answers, each with a clear personality:
 
-- **`sqlx`** — not an ORM at all, but the most popular companion to axum. You write **raw SQL**, and a macro checks your queries **against a real database at compile time** — so a typo'd column name is a build error, not a 500 in production. It is fully async, which fits axum's world cleanly.
-- **SeaORM** — a proper **async ORM** built on top of sqlx, for when you want entities, relations, and a query builder rather than hand-written SQL.
-- **Diesel** — the **mature, established** ORM, with a rich type-safe query DSL. It is more sync-flavored in its roots, which is worth knowing if everything else in your stack is async.
+- **`sqlx`** — not an ORM at all, but the most popular companion to axum. You write **raw SQL**, and a macro checks your queries **against a real database at compile time**, so a typo'd column name is a build error, not a 500 in production. Fully async.
+- **SeaORM** — a proper **async ORM** built on top of sqlx, for entities, relations, and a query builder instead of hand-written SQL.
+- **Diesel** — the **mature, established** ORM, with a rich type-safe query DSL. More sync-flavored in its roots, worth knowing if everything else in your stack is async.
 
-The reassuring bit: your handlers barely change. Remember Phase 4, where you put a store into `State` with `with_state` and pulled it out with the `State<T>` extractor? That investment pays off here. A **`sqlx::PgPool`** (a Postgres connection pool) drops straight into that same `State` slot. Your handlers still extract the pool, run a query, and return something that implements `IntoResponse`. You are swapping the bottom layer — the store — not rewriting the top.
+The reassuring bit: your handlers barely change. Recall Phase 4, where you put a store into `State` with `with_state` and pulled it out via `State<T>` — that investment pays off here. A **`sqlx::PgPool`** drops straight into the same `State` slot. Handlers still extract the pool, run a query, and return something that implements `IntoResponse`. You're swapping the bottom layer, not rewriting the top.
 
 ## The roots: tokio, hyper, and tower
 
-axum is small because it stands on three things you have been using all along, sometimes without naming them. Learning those roots is how you remove the *last* of the magic.
+axum is small because it stands on three things you've been using all along, sometimes without naming them. Learning those roots removes the *last* of the magic.
 
-- **Tokio** is the async runtime — the thing that actually drives your `async fn`s, schedules tasks, and handles the I/O. Every `.await` in your handlers ultimately answers to it. See [Tokio: The Async Runtime](/guides/tokio-the-async-runtime).
-- **hyper** is the HTTP implementation axum is built on, and **tower** is the universal middleware abstraction — the `Service` and `Layer` traits behind every layer you added in Phase 5. See [hyper & tower](/guides/hyper-and-tower).
+- **Tokio** is the async runtime — it drives your `async fn`s, schedules tasks, handles the I/O. Every `.await` in your handlers ultimately answers to it. See [Tokio: The Async Runtime](/guides/tokio-the-async-runtime).
+- **hyper** is the HTTP implementation axum is built on; **tower** is the universal middleware abstraction — the `Service` and `Layer` traits behind every layer you added in Phase 5. See [hyper & tower](/guides/hyper-and-tower).
 
-You do not need these to ship. But the day you want to understand *why* an extractor works, or write a tower layer that does something no crate offers, these two guides are where the floor drops away and you see all the way down.
+You don't need these to ship. But the day you want to understand *why* an extractor works, or write a tower layer no crate offers, these two guides are where the floor drops away.
 
 ## What to build
 
-Reading more will not make this stick. Building one real thing will. So here is the assignment, and it is deliberately concrete.
+Reading more won't make this stick. Building one real thing will — here's the assignment, deliberately concrete.
 
 Take the **books API** you grew across this guide and carry it all the way home:
 
@@ -74,13 +72,13 @@ Take the **books API** you grew across this guide and carry it all the way home:
 - **Tidy up config** so secrets, the database URL, and the port come from the environment, not hardcoded values.
 - **Deploy it** somewhere you can hit from your phone, with the graceful shutdown from Phase 8 wired up.
 
-If the books API feels too familiar, build something small and new end to end instead — a **URL shortener** or a **notes API**. Same muscles: routes, extractors, state, layers, errors, tests, deploy. The point is finishing one project completely, which teaches more than three more tutorials would.
+If the books API feels too familiar, build something small and new end to end instead — a **URL shortener** or a **notes API**. Same muscles: routes, extractors, state, layers, errors, tests, deploy. Finishing one project completely teaches more than three more tutorials would.
 
 ## The honest close
 
-axum was never magic. Strip it back and it is a handful of ideas you now understand completely: a **`Router`** that sends a request to an **`async fn` whose arguments extract from it and whose return value becomes the response**, all wrapped in **tower layers** — and that is plain Rust, checked by the compiler, sitting on tokio and hyper.
+axum was never magic. Strip it back and it's a handful of ideas you now understand completely: a **`Router`** that sends a request to an **`async fn` whose arguments extract from it and whose return value becomes the response**, wrapped in **tower layers** — plain Rust, checked by the compiler, sitting on tokio and hyper.
 
-That is why you can read the machine now. You can build a real service on axum and, more importantly, reason about it when it misbehaves. Go finish the books API, give it a real database, lock it behind auth, light it up with tracing, deploy it, and show someone. You are ready.
+That's why you can read the machine now, and reason about it when it misbehaves. Go finish the books API, give it a real database, lock it behind auth, light it up with tracing, deploy it, and show someone. You're ready.
 
 ## Recap
 

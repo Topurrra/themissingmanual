@@ -6,7 +6,7 @@ summary: "How Celery stores task return values and status in a result backend, h
 tags: [celery, result-backend, asyncresult, task-state, status, return-value, redis]
 difficulty: intermediate
 synonyms: ["celery result backend", "celery asyncresult", "celery task state status", "celery get task result", "celery task return value", "celery ignore_result", "celery pending success failure"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Results & State
@@ -17,7 +17,7 @@ Once that clicks, the rest of this phase is just: how do I set up that second ma
 
 ## The result backend
 
-📝 To capture what a task returned (or even just whether it succeeded), Celery needs a **result backend**: a place to store outcomes, keyed by task id. It's configured separately from the broker, and it can be Redis, a SQL database, or a few other stores.
+📝 To capture what a task returned (or even just whether it succeeded), Celery needs a **result backend**: a place to store outcomes, keyed by task id. Configured separately from the broker, it can be Redis, a SQL database, or a few other stores.
 
 ```python
 # celery_app.py
@@ -30,9 +30,9 @@ app = Celery(
 )
 ```
 
-*What just happened:* We pointed `broker` and `backend` at the same Redis server but **different databases** (`/0` vs `/1`) — they're separate concerns, so we keep them in separate stores even when it's the same box. The broker holds pending *work*; the backend holds finished *outcomes*. They happen to both be Redis here, which is common, but they don't have to be — plenty of setups use Redis as broker and Postgres as backend.
+*What just happened:* we pointed `broker` and `backend` at the same Redis server but **different databases** (`/0` vs `/1`) — separate concerns, kept in separate stores even on the same box. The broker holds pending *work*; the backend holds finished *outcomes*. They happen to both be Redis here, which is common, but don't have to be — plenty of setups use Redis as broker and Postgres as backend.
 
-⚠️ Without a backend configured, results are **discarded**. The task still runs perfectly fine — the email still sends — but `result.get()` will hang or error, and `result.status` can never move past `PENDING`, because there's nowhere for the worker to write the outcome. If you ever find yourself unable to read a result, the first thing to check is whether you set `backend=` at all.
+⚠️ Without a backend configured, results are **discarded**. The task still runs perfectly fine — the email still sends — but `result.get()` will hang or error, and `result.status` can never move past `PENDING`, because there's nowhere for the worker to write the outcome. If you can't read a result, first check whether you set `backend=` at all.
 
 ## AsyncResult: your handle on a running task
 
@@ -55,11 +55,11 @@ print(result.status)    # "PENDING"
 report_path = result.get(timeout=30)   # blocks up to 30s, then returns the value
 ```
 
-*What just happened:* `.delay()` returned instantly with a receipt. `ready()` and `status` are cheap, non-blocking peeks at the backend — they answer "is it done yet?" without waiting. `get()` is the opposite: it **sits and waits** for the worker to finish, then hands you whatever the task `return`ed (here, the path `generate_report` produced). The `timeout=30` is a safety valve so you're not blocked forever if the worker is wedged.
+*What just happened:* `.delay()` returned instantly with a receipt. `ready()` and `status` are cheap, non-blocking peeks at the backend — they answer "is it done yet?" without waiting. `get()` is the opposite: it **sits and waits** for the worker to finish, then hands you whatever the task `return`ed. `timeout=30` is a safety valve so you're not blocked forever if the worker is wedged.
 
-⚠️ `get()` **blocks the calling thread until the task completes.** That's fine in a one-off script or the shell. It is a trap inside a web request — you'd hand control to Celery only to immediately sit and wait for it, throwing away the entire point of going async. The request hangs exactly as long as if you'd never used Celery.
+⚠️ `get()` **blocks the calling thread until the task completes.** That's fine in a one-off script or the shell. It's a trap inside a web request — you'd hand control to Celery only to immediately sit and wait for it, throwing away the entire point of going async.
 
-⚠️ Worse: **never call `.get()` inside another task.** A worker blocking on another task's result can deadlock the whole pool — if all your workers are busy waiting on results that only a free worker could produce, nothing moves. Celery will even warn you about this. If you need to chain work, that's what chains and workflows are for (a later topic), not nested `get()` calls.
+⚠️ Worse: **never call `.get()` inside another task.** A worker blocking on another task's result can deadlock the whole pool — if all your workers are busy waiting on results that only a free worker could produce, nothing moves. If you need to chain work, that's what chains and workflows are for, not nested `get()` calls.
 
 ## Task states
 
@@ -82,13 +82,13 @@ result.successful()  # True
 result.failed()      # False
 ```
 
-*What just happened:* We watched one task walk from `PENDING` to `SUCCESS`. The convenience methods `successful()` / `failed()` are just readable wrappers over `status`. The flow is always: unknown/queued → (started) → a terminal state (`SUCCESS`, `FAILURE`, or `REVOKED`), possibly looping through `RETRY` on the way.
+*What just happened:* we watched one task walk from `PENDING` to `SUCCESS`. The convenience methods `successful()` / `failed()` are just readable wrappers over `status`. The flow is always: unknown/queued → (started) → a terminal state (`SUCCESS`, `FAILURE`, or `REVOKED`), possibly looping through `RETRY` on the way.
 
-⚠️ Here's the confusion that bites everyone: **PENDING also means "I have no record of this id."** Celery's backend stores a result *after* a task reaches a terminal state — it does **not** write a row the moment you enqueue. So Celery genuinely cannot tell "queued, waiting for a worker" apart from "this id never existed / was a typo." Both report `PENDING`. If you query a result and it's stuck `PENDING` forever, don't assume it's still running — it may have finished and expired, or you may be checking an id the backend never saw (often because no backend was configured at all).
+⚠️ Here's the confusion that bites everyone: **PENDING also means "I have no record of this id."** Celery's backend stores a result *after* a task reaches a terminal state — it does **not** write a row the moment you enqueue. So Celery genuinely cannot tell "queued, waiting for a worker" apart from "this id never existed / was a typo." Both report `PENDING`. If a result is stuck `PENDING` forever, don't assume it's still running — it may have finished and expired, or you may be checking an id the backend never saw.
 
 ## When you need results — and when you don't
 
-💡 The honest default for a lot of background work is: **you don't need the result.** `send_welcome_email` is fire-and-forget — nobody is waiting on its return value, and "did the email send?" is answered by your email provider's logs, not by polling Celery. Storing a result for it is pure overhead: every finished task writes a row to the backend that nobody will ever read, and those rows pile up.
+💡 The honest default for a lot of background work is: **you don't need the result.** `send_welcome_email` is fire-and-forget — nobody is waiting on its return value, and "did the email send?" is answered by your email provider's logs, not by polling Celery. Storing a result for it is pure overhead: every finished task writes a row to the backend nobody will ever read.
 
 📝 You can turn results off per-task or globally:
 
@@ -102,7 +102,7 @@ def send_welcome_email(user_id):
 # app.conf.task_ignore_result = True
 ```
 
-*What just happened:* `ignore_result=True` tells Celery not to bother writing this task's outcome to the backend. The task runs identically; we've only stopped recording an answer no one asked for. For a busy email queue that's a real saving in backend writes and storage.
+*What just happened:* `ignore_result=True` tells Celery not to bother writing this task's outcome to the backend. The task runs identically; we've only stopped recording an answer no one asked for — a real saving in backend writes and storage for a busy email queue.
 
 💡 You **do** need results when something downstream waits on the outcome: a user clicked "Download report" and the file path comes back from `generate_report`; or one step feeds the next in a chain. The rule of thumb: **keep a result only if a real reader exists.** Don't store results you'll never read — they're not free.
 
@@ -129,9 +129,9 @@ def report_status(request, task_id):
     return json({"state": result.status})          # still PENDING/STARTED
 ```
 
-*What just happened:* `start_report` returns instantly with just the id — the request is never blocked. `report_status` reconstructs an `AsyncResult` **from that id alone** (note: no new task is enqueued; we're just looking one up) and reports whether it's done. The client polls this second endpoint every couple of seconds. Nobody blocks; the worker churns away independently. For richer experiences you can skip polling entirely and **push** completion — a websocket message or a webhook the task fires on success — so the UI updates the instant the report lands.
+*What just happened:* `start_report` returns instantly with just the id — the request is never blocked. `report_status` reconstructs an `AsyncResult` **from that id alone** (no new task is enqueued; we're just looking one up) and reports whether it's done. The client polls this second endpoint every couple of seconds. Nobody blocks; the worker churns away independently. For richer experiences you can skip polling entirely and **push** completion — a websocket message or a webhook the task fires on success.
 
-⚠️ One last gotcha: **results expire.** Celery deletes them from the backend after `result_expires` (24 hours by default), so a result is a short-lived notification, not durable storage. If a user might come back next week for that report, persist the real outcome (the file, a DB row) yourself — don't expect to read it back out of the Celery backend. And of course, sometimes the status you poll won't be `SUCCESS` but `FAILURE` or `RETRY` — handling *that* gracefully is exactly where Phase 5 picks up.
+⚠️ One last gotcha: **results expire.** Celery deletes them from the backend after `result_expires` (24 hours by default), so a result is a short-lived notification, not durable storage. If a user might come back next week for that report, persist the real outcome (the file, a DB row) yourself. And sometimes the status you poll won't be `SUCCESS` but `FAILURE` or `RETRY` — handling *that* gracefully is exactly where Phase 5 picks up.
 
 ## Recap
 

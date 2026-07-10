@@ -8,7 +8,7 @@ category: databases
 order: 13
 difficulty: intermediate
 synonyms: ["how to back up a database", "logical vs physical backup", "point in time recovery postgres", "what is rpo and rto", "3-2-1 backup rule", "pg_dump vs snapshot", "how to test a database restore", "my backup job wrote empty files", "database disaster recovery"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Database Backups and Restores
@@ -18,11 +18,10 @@ dropped table, or a dead disk forces the question, and the honest answer is *we 
 That gap between "we have backups" and "we have proven we can get the data back" is where companies
 quietly die. A backup you have never restored is not a safety net; it is a hope you wrote to disk.
 
-This guide closes that gap. We'll build the mental model that the *restore* is the real product and the
-backup is only its raw material, learn the three ways data actually gets backed up and when each one
-fits, and walk through the failures that turn a backup strategy into a false sense of security — so the
-next time it matters, you're running a rehearsed procedure instead of improvising in front of an
-audience.
+This guide closes that gap: the mental model that the *restore* is the real product and the backup is
+only its raw material, the three ways data actually gets backed up and when each fits, and the failures
+that turn a backup strategy into a false sense of security — so next time it matters, you're running a
+rehearsed procedure instead of improvising in front of an audience.
 
 ## How to read this
 

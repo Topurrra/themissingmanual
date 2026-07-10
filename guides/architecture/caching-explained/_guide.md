@@ -8,12 +8,12 @@ category: architecture
 order: 3
 difficulty: intermediate
 synonyms: ["what is a cache", "what is caching", "cache hit vs miss", "what is a cdn", "what is redis used for", "what is cache invalidation", "why is my cache stale", "what is a ttl"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Caching, Explained
 
-You've heard "we should cache that" in a hundred meetings, and it always sounds like the easy win — the magic word that makes slow things fast. Then one day a user swears they updated their profile but the old name keeps showing, and suddenly caching is the reason something is *wrong*, not fast. Both of those moments come from the same small idea, and once you hold that idea clearly, caching stops being a black box.
+"We should cache that" always sounds like the easy win — the magic word that makes slow things fast. Then a user swears they updated their profile and the old name keeps showing, and suddenly caching is the reason something is *wrong*, not fast. Both moments come from the same small idea, and once you hold it clearly, caching stops being a black box.
 
 A cache is one thing: a copy of an expensive answer, kept somewhere fast, so you don't have to produce that answer again. Everything else — CDNs, Redis, browser caches, TTLs, the famous invalidation jokes — is a variation on that single move. This guide builds the idea up cleanly so you can reason about any cache you meet, instead of memorizing rules.
 

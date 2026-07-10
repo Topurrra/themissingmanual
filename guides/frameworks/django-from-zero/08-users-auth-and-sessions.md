@@ -6,7 +6,7 @@ summary: "Django's batteries-included auth: the built-in User model and request.
 tags: [django, authentication, authorization, users, sessions, permissions, login-required]
 difficulty: advanced
 synonyms: ["django authentication system", "django login logout", "django user model", "django login_required", "django permissions groups", "django sessions", "django auth views"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Users, Auth & Sessions
@@ -20,8 +20,7 @@ place. Login is really **two separate questions, asked at two separate moments.*
 that's **authentication** (authN): proving identity, usually with a username and password. Second, *are you
 allowed to do this?* — that's **authorization** (authZ): checking permissions once we already know who you
 are. They sound like one idea ("logging in") but they're not, and Django gives you distinct tools for each.
-If that split feels fuzzy, the dedicated guide [/guides/auth-vs-authz](/guides/auth-vs-authz) untangles it
-properly; this phase shows how Django implements both.
+If that split feels fuzzy, [/guides/auth-vs-authz](/guides/auth-vs-authz) untangles it properly.
 
 The good news: you write almost none of this yourself. Django ships a complete auth system, and a big
 reason teams reach for Django at all is that "users can sign up and log in" goes from a multi-week project
@@ -39,9 +38,9 @@ Take the password part seriously, because it's the piece beginners most often ge
 own. ⚠️ **Django never stores a password as plain text.** When a user signs up, Django runs the password
 through a one-way hash (PBKDF2 by default, with a per-user salt and many iterations) and stores only the
 hash. At login it hashes the entered password and compares hashes — the original is never recoverable, even
-by you. That is exactly how passwords *should* be stored, and getting it right by hand is a minefield; see
-[/guides/how-passwords-are-stored](/guides/how-passwords-are-stored) for why. The lesson: let Django's auth
-system own passwords. Don't touch the hash, don't write your own.
+by you. See [/guides/how-passwords-are-stored](/guides/how-passwords-are-stored) for why that's exactly how
+passwords *should* be stored. Let Django's auth system own passwords. Don't touch the hash, don't write your
+own.
 
 So the two halves map cleanly onto Django pieces: **authN** is the `User` model + login views + password
 hashing; **authZ** is the permissions and the `@login_required`/permission checks we'll get to. Same login,
@@ -72,12 +71,11 @@ def whoami(request):
     return HttpResponse("You are browsing anonymously.")
 ```
 
-*What just happened:* We read `request.user` without ever fetching it ourselves — the auth middleware put
-it there. `is_authenticated` is the clean way to branch: it's `True` for a logged-in `User` and `False` for
-the `AnonymousUser` that anonymous visitors get. Notice we never wrote `if request.user is None` — because
-it's never `None`, the `AnonymousUser` stand-in means `request.user.username` and `request.user.is_authenticated`
-are always safe to read. This `is_authenticated` check is the building block under everything else in this
-phase.
+*What just happened:* we read `request.user` without ever fetching it ourselves — the auth middleware put
+it there. `is_authenticated` is the clean way to branch: `True` for a logged-in `User`, `False` for the
+`AnonymousUser` anonymous visitors get. We never wrote `if request.user is None` — because it's never
+`None`, `request.user.username` and `request.user.is_authenticated` are always safe to read. This check is
+the building block under everything else in this phase.
 
 ## Login & logout
 
@@ -101,10 +99,10 @@ urlpatterns = [
 ]
 ```
 
-*What just happened:* That last line mounts Django's entire auth URLconf under `/accounts/`. You instantly
+*What just happened:* that last line mounts Django's entire auth URLconf under `/accounts/`. You instantly
 get `/accounts/login/`, `/accounts/logout/`, and the password-reset flow — routes and views you didn't
 write. `LoginView` expects a template at `registration/login.html`, so you supply the look and feel while
-Django handles the credential-checking and session-starting logic.
+Django handles credential-checking and session-starting.
 
 Here's that minimal login template — a plain form posting back to the same login URL:
 
@@ -126,10 +124,9 @@ wrote markup; Django did the auth.
 
 ⚠️ **One decision to make on day one, not later: whether you need a custom user model.** If you'll ever
 want to log in by email instead of username, or add fields to the account itself, set `AUTH_USER_MODEL` to
-your own model *before your first migration*. Swapping the user model on a project that already has data and
-tables pointing at the default `User` is genuinely painful — migrations, foreign keys, and third-party apps
-all assume the original. The default `User` is fine for many blogs; just make the call deliberately at the
-start rather than discovering the constraint after launch.
+your own model *before your first migration*. Swapping the user model on a project that already has data
+pointing at the default `User` is genuinely painful. The default `User` is fine for many blogs; just make
+the call deliberately at the start rather than discovering the constraint after launch.
 
 ## Authorization: protecting views
 
@@ -162,12 +159,12 @@ def post_create(request):
     return render(request, "blog/post_form.html", {"form": form})
 ```
 
-*What just happened:* The decorator runs *before* the view body. An anonymous visitor never reaches the
+*What just happened:* the decorator runs *before* the view body. An anonymous visitor never reaches the
 form — they're redirected to `/accounts/login/?next=/blog/posts/new/`, and after logging in they land back
 on the create page. Inside the view we trust `request.user` is a real logged-in `User`, so
 `post.author = request.user` safely stamps the post with its creator. This is authN (the decorator) and a
 small piece of authZ (only logged-in users create) working together. The same pattern protects a
-comment-submission view: decorate it, attach `comment.author = request.user`.
+comment-submission view.
 
 For class-based views (Phase 9) the equivalent is the `LoginRequiredMixin` — same effect, mixed into the
 class instead of decorating a function.
@@ -195,8 +192,7 @@ can use it:
 context processor that's on by default). `{% if user.is_authenticated %}` hides the create link from
 anonymous visitors, and `{% if perms.blog.add_post %}` checks a specific permission inline. ⚠️ Hiding a
 link is UX, **not** security — a determined visitor can still type the URL. The real protection is the
-`@login_required`/`@permission_required` on the *view*. Template checks make the UI honest; view decorators
-make it safe. Always do both, and never rely on the template alone.
+`@login_required`/`@permission_required` on the *view*. Always do both, never rely on the template alone.
 
 ## Sessions under it all
 
@@ -207,10 +203,9 @@ does Django know, on request #47, that you logged in back on request #3?
 it. On a successful `login()`, Django creates a **session** stored server-side (in your database by
 default), generates a hard-to-guess session id, and sends it to the browser as a `sessionid` cookie. On
 every later request the browser returns that cookie automatically; Django's middleware reads the id, looks
-up the session, finds the stored user id, and *reconstructs* `request.user` for you. That's where
-`request.user` actually comes from — it's not magic, it's a cookie-keyed lookup. If sessions as a concept
-are still hazy, the bare mechanism is laid out in [/guides/the-servlet-api](/guides/the-servlet-api);
-Django's `sessionid`/server-store model sits directly on that idea.
+up the session, finds the stored user id, and *reconstructs* `request.user` for you — it's not magic, it's
+a cookie-keyed lookup. If sessions as a concept are still hazy, the bare mechanism is laid out in
+[/guides/the-servlet-api](/guides/the-servlet-api).
 
 ```mermaid
 sequenceDiagram
@@ -236,10 +231,10 @@ A few things to keep honest about session security, because the cookie is the ke
 
 💡 Look at what you got for the price of a few lines of wiring: real user accounts, correctly hashed
 passwords, login/logout, per-view and per-permission access control, and a battle-tested session layer
-underneath. That's a complete, secure auth system in roughly an afternoon — and it's precisely the kind of
-"batteries included" that makes teams pick Django in the first place. Next phase we move from function
-views to class-based views and the Django REST Framework, where `LoginRequiredMixin` and these same auth
-ideas reappear with API-shaped ergonomics.
+underneath. That's a complete, secure auth system in roughly an afternoon — precisely the kind of
+"batteries included" that makes teams pick Django. Next phase we move from function views to class-based
+views and Django REST Framework, where `LoginRequiredMixin` and these same auth ideas reappear with
+API-shaped ergonomics.
 
 ## Recap
 

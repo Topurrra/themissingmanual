@@ -11,12 +11,12 @@ synonyms:
   - what is a bias term
   - why do neural networks need activation functions
   - what happens without a non-linear activation function
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Weights, Biases, and Activation Functions
 
-Phase 1 left one question hanging: given several numbers arriving at a neuron, how does it turn them into the one number it sends onward? The answer has exactly two steps, done in order, every single time, by every neuron in every hidden and output layer. Once you have those two steps, you have the entire computational engine of a neural network — the rest is just this pattern, repeated at scale.
+Phase 1 left one question hanging: given several numbers arriving at a neuron, how does it turn them into the one number it sends onward? The answer has exactly two steps, done in order, every time, by every neuron in every hidden and output layer. Once you have those two steps, you have the entire computational engine of a neural network — the rest is just this pattern, repeated at scale.
 
 ## Step one: a weighted sum
 

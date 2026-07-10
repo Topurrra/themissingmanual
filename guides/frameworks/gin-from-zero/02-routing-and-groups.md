@@ -6,12 +6,12 @@ summary: "How Gin matches a request to a handler: HTTP methods, path and query p
 tags: [gin, go, routing, route-groups, params]
 difficulty: beginner
 synonyms: ["gin routing", "gin path params", "gin query params", "gin route groups", "gin http methods", "gin wildcard route"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Routing & Route Groups
 
-In Phase 1 you got a server running with a single route. Now we make it answer many requests, each one different. The whole job of a router is one decision, made very fast, on every request: *which handler runs?* Get the mental model for that decision and routing stops feeling like a pile of syntax and starts feeling like a lookup table you control.
+In Phase 1 you got a server running with a single route. Now we make it answer many requests, each one different. The whole job of a router is one decision, made very fast, on every request: *which handler runs?* Get that mental model and routing stops feeling like a pile of syntax and starts feeling like a lookup table you control.
 
 ## The mental model: method + path → handler
 

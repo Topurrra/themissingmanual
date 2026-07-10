@@ -8,16 +8,16 @@ category: databases
 order: 9
 difficulty: advanced
 synonyms: ["how to scale a database", "replication vs sharding", "what is a read replica", "what is database sharding", "how to scale database reads", "how to scale database writes", "what is replication lag", "when should i shard my database", "scale up vs scale out database"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Scaling a Database (Replication & Sharding)
 
-There's a particular kind of pressure that builds slowly. The product is working. Traffic is climbing — which is the good news. And the database, the one box that everything depends on, is starting to breathe hard. Queries that used to return instantly now hang. The dashboard graphs are creeping toward the top. Someone in a meeting says the word "scale," and suddenly people are talking about replication and sharding as if they're the obvious next step.
+The product is working. Traffic is climbing — good news — and the database, the one box everything depends on, starts breathing hard. Queries that used to return instantly now hang. Someone in a meeting says "scale," and suddenly people are talking about replication and sharding like the obvious next step.
 
-Here's what nobody tells you in that meeting: **most databases that "need to scale" don't.** They need a better index, a fixed query, or a cache — fixes that cost an afternoon, not a re-architecture. Reaching for replication or sharding before you've exhausted the cheap wins is one of the most expensive mistakes a team can make, because both of them are *permanent complexity* you can't easily take back.
+Here's what nobody tells you in that meeting: **most databases that "need to scale" don't.** They need a better index, a fixed query, or a cache — fixes that cost an afternoon, not a re-architecture. Reaching for replication or sharding before you've exhausted the cheap wins is one of the most expensive mistakes a team can make, because both are *permanent complexity* you can't easily take back.
 
-This guide is about doing it in the right order. First, make the one box you have do less work. Then, when you genuinely need more capacity, scale **reads** with replication — the safe, common, well-understood move. And only when writes themselves are the wall do you reach for **sharding**, the powerful, costly, hard-to-undo option that splits your data across machines. We'll be honest about every trade-off, because the people who get burned are the ones who were sold the shiny version.
+This guide is about doing it in the right order. First, make the one box you have do less work. Then, when you genuinely need more capacity, scale **reads** with replication — the safe, common, well-understood move. Only when writes themselves are the wall do you reach for **sharding**, the powerful, costly, hard-to-undo option that splits your data across machines. We'll be honest about every trade-off, because the people who get burned are the ones who were sold the shiny version.
 
 This guide assumes you're comfortable with what a database is and how queries work. If a query is slow and you're not yet sure *why*, start with [Why Is My Query Slow?](/guides/why-is-my-query-slow) first — most of Phase 1 builds directly on it.
 

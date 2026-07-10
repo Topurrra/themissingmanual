@@ -6,7 +6,7 @@ summary: "REST endpoints over-fetch (they hand you more fields than you asked fo
 tags: [graphql, rest, over-fetching, under-fetching, apis, performance]
 difficulty: intermediate
 synonyms: ["graphql over-fetching", "graphql under-fetching", "why graphql instead of rest", "rest too many requests", "rest returns too much data", "what problem does graphql solve"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Problem REST Leaves
@@ -17,7 +17,7 @@ The good news: both come from the *same* root cause, and once you see it, GraphQ
 
 ## The mental model: who decides the shape?
 
-**What it actually is.** A REST endpoint is a fixed door. The *server* decides, ahead of time, what comes through it. `GET /users/42` returns whatever the team that built that endpoint chose to put in the user representation — every time, for every caller, whether you wanted all of it or none of it.
+A REST endpoint is a fixed door: the *server* decides, ahead of time, what comes through it. `GET /users/42` returns whatever the team that built that endpoint chose to put in the user representation — every time, for every caller, whether you wanted all of it or none of it.
 
 That single design choice — *the server owns the shape of the response* — is the source of both problems below. Hold onto it; it's the hinge the entire guide turns on.
 
@@ -32,9 +32,9 @@ sequenceDiagram
 
 ## Problem 1: over-fetching — more than you asked for
 
-**What it actually is.** Over-fetching is when an endpoint returns far more data than the screen in front of you needs. You wanted a name and an avatar; you got the name, avatar, bio, settings blob, billing address, notification preferences, and a timestamp for every one of them.
+Over-fetching is when an endpoint returns far more data than the screen in front of you needs. You wanted a name and an avatar; you got the name, avatar, bio, settings blob, billing address, notification preferences, and a timestamp for every one of them.
 
-**What it does in real life.** Picture a comment list. Each comment shows an author's name and photo — two fields. But the only endpoint you have is the full user resource:
+Picture a comment list: each comment shows an author's name and photo — two fields. The only endpoint you have is the full user resource:
 
 ```console
 $ curl https://api.example.com/users/42
@@ -52,15 +52,15 @@ $ curl https://api.example.com/users/42
   "updatedAt": "2026-05-30T14:08:11Z"
 }
 ```
-*What just happened:* You asked for one user and the server handed back its complete idea of a user — a dozen fields, a nested address, a preferences object. To render two of them, you downloaded all of them. On one comment that's harmless. On a list of fifty comments, over a phone connection, it's wasted bytes and slower screens, every single time.
+You asked for one user and the server handed back its complete idea of a user — a dozen fields, a nested address, a preferences object — to render two of them. On one comment that's harmless; on a list of fifty, over a phone connection, it's wasted bytes and a slower screen, every time.
 
 ⚠️ **Gotcha — over-fetching hides on fast networks.** On your laptop on office wifi, the extra fields cost nothing you'll notice. The bill arrives on a mid-range phone on a weak connection, which is exactly where you're least able to debug it. "It's fast on my machine" is how over-fetching survives to production.
 
 ## Problem 2: under-fetching — fewer round trips would be nice
 
-**What it actually is.** Under-fetching is the opposite squeeze: a single endpoint doesn't give you enough to build one screen, so you fire several requests and wait for each before you can fire the next.
+Under-fetching is the opposite squeeze: a single endpoint doesn't give you enough to build one screen, so you fire several requests and wait for each before the next can go.
 
-**What it does in real life.** You're building a dashboard header: the logged-in user, their three most recent orders, and the status of each order's shipment. With typical REST resources that's a waterfall:
+Say you're building a dashboard header: the logged-in user, their three most recent orders, and each order's shipment status. With typical REST resources, that's a waterfall:
 
 ```console
 $ curl https://api.example.com/users/42
@@ -75,7 +75,7 @@ $ curl https://api.example.com/shipments/by-order/9001
 $ curl https://api.example.com/shipments/by-order/9002
 $ curl https://api.example.com/shipments/by-order/9003
 ```
-*What just happened:* To fill one header you made seven requests, and they're not all parallel — you couldn't ask for the orders until the user response told you their IDs, and you couldn't ask for shipments until you had the orders. Each step waits on the one before it. That chained waiting is what makes screens feel sluggish, and it's the part you can't fix by adding a faster server.
+Filling one header took seven requests, and they're not parallel — you couldn't ask for the orders until the user response gave you their IDs, or for shipments until you had the orders. Each step waits on the one before it. That chained waiting, not the byte count, is what makes screens feel sluggish, and no faster server fixes it.
 
 📝 **Terminology — round trip.** One round trip is a full request out to the server and its response back. Latency (the travel time of a round trip) is often the dominant cost on mobile and far-away networks, which is why "seven requests instead of one" matters more than the raw byte count.
 
@@ -83,9 +83,7 @@ The usual REST escape hatch is to build a bespoke endpoint — `GET /dashboard-h
 
 ## GraphQL's pitch, in one sentence
 
-Both problems trace back to the same root: *the server decided the shape.* GraphQL inverts that.
-
-**The pitch:** ask for exactly the fields you want, get exactly those fields back, in a single request.
+Both problems trace back to the same root: *the server decided the shape.* GraphQL inverts that — ask for exactly the fields you want, get exactly those back, in a single request.
 
 ```mermaid
 sequenceDiagram

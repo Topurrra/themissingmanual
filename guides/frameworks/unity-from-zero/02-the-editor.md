@@ -6,12 +6,12 @@ summary: "Tour the Unity editor: the Hierarchy, Scene, Game, Inspector, Project,
 tags: [unity, editor, scene, hierarchy, inspector]
 difficulty: beginner
 synonyms: ["unity editor", "unity scene view game view", "unity hierarchy inspector", "unity project window", "unity play mode", "unity interface"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The Editor
 
-Here's the mental model to carry through this whole phase: **the editor is where you assemble a Scene.** Everything you see on screen is one window doing one job in that assembly. The **Hierarchy** lists the objects in your scene. The **Scene view** is where you place and move them. The **Inspector** configures each one. The **Project window** holds the raw assets on disk. And the **Game view** plus the **Play** button show you what the player will actually experience. Once you know which window does what, the editor stops being a wall of panels and becomes a workshop where each tool has its bench.
+**The editor is where you assemble a Scene.** Everything you see on screen is one window doing one job in that assembly. The **Hierarchy** lists the objects in your scene. The **Scene view** is where you place and move them. The **Inspector** configures each one. The **Project window** holds the raw assets on disk. And the **Game view** plus the **Play** button show you what the player will actually experience. Once you know which window does what, the editor stops being a wall of panels and becomes a workshop where each tool has its bench.
 
 > 💡 You don't *program* the layout of a scene - you *arrange* it by hand, visually, and then your scripts (Phase 4 onward) animate that arrangement. The editor is the hands-on half of Unity; C# is the other half.
 

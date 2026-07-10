@@ -6,13 +6,13 @@ summary: "Define tables as Go structs, shape columns with struct tags, embed gor
 tags: [gorm, go, models, migration, struct-tags]
 difficulty: intermediate
 synonyms: ["gorm model", "gorm.Model", "gorm automigrate", "gorm struct tags", "gorm column tags", "gorm table from struct"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Models & Auto-Migration
 
 In [Phase 1](01-what-gorm-is.md) you opened a `*gorm.DB` and watched it log SQL. Now we give it
-something to talk about: a table. And here's the one idea that makes the rest of GORM click.
+something to talk about: a table — and here's the one idea that makes the rest of GORM click.
 
 ## The mental model: a struct *is* the table
 

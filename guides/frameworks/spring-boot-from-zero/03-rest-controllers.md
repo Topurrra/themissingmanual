@@ -6,22 +6,21 @@ summary: "Turn a Spring app into a real HTTP API: @RestController, GET/POST mapp
 tags: [spring-boot, rest-controller, request-mapping, path-variable, request-body, json, rest-api]
 difficulty: beginner
 synonyms: ["spring rest controller", "spring requestmapping getmapping postmapping", "spring path variable request param", "spring request body json", "spring rest api tutorial", "spring responseentity"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Building a REST API: Controllers
 
-In [Phase 2](02-dependency-injection-and-beans.md) you learned how Spring builds and wires your objects for
-you — the container, beans, and dependency injection. So far those objects have just sat there, fully wired
-but waiting. This phase is where they finally do something visible: respond to an HTTP request.
+In [Phase 2](02-dependency-injection-and-beans.md) you learned how Spring builds and wires your objects —
+the container, beans, dependency injection. Those objects have just sat there, fully wired but waiting.
+This phase is where they finally do something visible: respond to an HTTP request.
 
-The mental model to hold onto is this: **a controller is the doorway between the outside world and your
-code.** HTTP requests arrive at your running app from browsers, mobile apps, and other services — and
-something has to catch each one, figure out what it's asking for, run the right code, and send a reply. That
-"something" is a controller. You don't write the part that listens on a socket, parses HTTP, or formats the
-response bytes — Spring does all of that. You write small methods and *label* them so Spring knows "when a
-`GET /api/books` comes in, call this one." This is the same inversion of control from Phase 2: you don't call
-Spring, Spring calls you.
+**A controller is the doorway between the outside world and your code.** HTTP requests arrive from
+browsers, mobile apps, and other services, and something has to catch each one, figure out what it's
+asking for, run the right code, and send a reply — that "something" is a controller. You don't write the
+part that listens on a socket, parses HTTP, or formats response bytes — Spring does that. You write small
+methods and *label* them so Spring knows "when a `GET /api/books` comes in, call this one." Same
+inversion of control as Phase 2: you don't call Spring, Spring calls you.
 
 The running example for this whole guide is a tiny **book API** — a service that lets clients list, fetch,
 and add books. A book is just four fields:
@@ -72,10 +71,10 @@ public class BookController {
 ```
 
 *What just happened:* `@RestController` told Spring this class catches HTTP requests and returns response
-bodies directly. `@GetMapping("/api/books")` mapped this method to `GET /api/books`. When that request arrives,
-Spring calls `listBooks()`, gets back a `List<Book>`, and — because this is a `@RestController` — hands that
-list to **Jackson**, the JSON library Spring Boot includes by default. Jackson reads each book's fields and
-produces JSON automatically. You never wrote a line of serialization code.
+bodies directly. `@GetMapping("/api/books")` mapped this method to `GET /api/books`. When that request
+arrives, Spring calls `listBooks()`, gets back a `List<Book>`, and hands it to **Jackson**, the JSON
+library Spring Boot includes by default. Jackson reads each book's fields and produces JSON automatically
+— you never wrote a line of serialization code.
 
 A request and the response it produces:
 
@@ -246,7 +245,7 @@ client should react differently based on the code. Both are valid; pick the one 
 
 ## How the request flows
 
-It's worth seeing the whole path a request takes, because it demystifies what feels like magic.
+Seeing the whole path a request takes demystifies what feels like magic.
 
 ```mermaid
 flowchart TD
@@ -264,12 +263,11 @@ matches, **binds** the inputs (pulls the `id` from the path, the `author` from t
 the body — converting types as it goes), and then calls your method. Whatever you return goes back through
 Jackson to become the JSON response. Your job is just the middle box: one focused method.
 
-💡 Notice how *thin* these controller methods are. The best ones read the request, hand off to something that
-does the real work, and shape the response — that's it. In these examples `save`, `findById`, and
-`findByAuthor` are placeholders, but in a real app that work belongs in a separate **service layer**, which
-[Phase 6](06-service-layer-and-validation.md) introduces: a `BookService` bean, injected into the controller
-the way Phase 2 showed, that holds the actual logic. The controller speaks HTTP; the service holds the rules.
-Keeping that line clean is what keeps a growing API maintainable.
+💡 Notice how *thin* these controller methods are. The best ones read the request, hand off to something
+that does the real work, and shape the response — that's it. Here `save`, `findById`, and `findByAuthor`
+are placeholders, but in a real app that work belongs in a separate **service layer**, which
+[Phase 6](06-service-layer-and-validation.md) introduces: a `BookService` bean, injected the way Phase 2
+showed, that holds the actual logic. The controller speaks HTTP; the service holds the rules.
 
 ⚠️ **Don't put business logic or database calls directly in a controller.** It's tempting to dump a query or a
 pricing calculation right into the handler because it "works." It does — until that logic needs testing

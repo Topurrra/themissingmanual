@@ -6,12 +6,12 @@ summary: "The core split: an instant on the timeline versus the local wall-clock
 tags: [time, utc, unix-timestamp, instant, mental-model]
 difficulty: intermediate
 synonyms: ["what is a moment in time", "instant vs local time", "what is utc", "what is a unix timestamp", "3pm what timezone", "absolute time vs wall clock"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # A Moment Is Not a Clock Reading
 
-Here's the reality you start from: you think of "time" as the number on a clock. 3:00pm. You and a friend agree to meet at 3pm and you both know what that means. So when you write code, you reach for the same thing - you store "3:00pm" and assume it's a fixed point. That assumption is the source of nearly every time bug you will ever write.
+Here's the reality you start from: you think of "time" as the number on a clock, 3:00pm. You and a friend agree to meet at 3pm and you both know what that means. So when you write code, you reach for the same thing - you store "3:00pm" and assume it's a fixed point. That assumption is the source of nearly every time bug you will ever write.
 
 Because "3:00pm" is not a point in time. It's a clock reading. And clocks all over the world read different things at the same actual instant.
 

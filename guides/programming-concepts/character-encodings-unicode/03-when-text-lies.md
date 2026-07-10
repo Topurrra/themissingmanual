@@ -14,12 +14,12 @@ synonyms:
   - why is string length wrong for emoji
   - what is a code point
   - byte order mark bom problem
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # When Text Lies: Emoji, Graphemes, and the BOM
 
-By now you have two solid ideas: bytes are not characters (Phase 1), and UTF-8 maps Unicode code points to a variable number of bytes (Phase 2). You might think the picture is complete: *byte → code point → character, done.* It is not. There is one more layer, and it is the one that makes `len("👨‍👩‍👧")` return a number that looks insane. The thing a human calls "one character" and the thing Unicode calls "one code point" are **not the same thing**. This phase is about that gap, and about the small landmine called the byte-order mark.
+By now you have two solid ideas: bytes are not characters (Phase 1), and UTF-8 maps Unicode code points to a variable number of bytes (Phase 2). You might think the picture is complete: *byte → code point → character, done.* It isn't. There's one more layer, and it's the one that makes `len("👨‍👩‍👧")` return a number that looks insane. What a human calls "one character" and what Unicode calls "one code point" are **not the same thing**. This phase is about that gap, and about the small landmine called the byte-order mark.
 
 ## Three different lengths for "one" string
 

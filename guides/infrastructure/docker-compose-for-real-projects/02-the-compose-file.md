@@ -6,14 +6,12 @@ summary: "A guided tour of docker-compose.yml - services, image vs build, ports,
 tags: [docker-compose, docker-compose-yml, services, volumes, depends_on, ports]
 difficulty: intermediate
 synonyms: ["how to write docker-compose.yml", "docker compose services example", "docker compose ports environment volumes", "docker compose up logs down", "image vs build in docker compose", "what does depends_on do"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The compose file
 
-This is the file everything else hangs on. Once you can read a `docker-compose.yml` line by line and know what each part *does*, the rest of Compose is just commands that act on it. So we'll build one real file - a web server, an API, a database, and a cache - and walk every section. Then we'll run it for real: bring it up, watch the logs, and tear it down clean.
-
-Don't memorize the shape. By the end you should be able to look at any compose file and reason about what it's going to do.
+This is the file everything else hangs on. Once you can read a `docker-compose.yml` line by line and know what each part *does*, the rest of Compose is just commands that act on it. We'll build one real file - a web server, an API, a database, and a cache - walk every section, then run it for real: bring it up, watch the logs, tear it down clean. Don't memorize the shape; by the end you should be able to look at any compose file and reason about what it's going to do.
 
 ## The whole file, top to bottom
 
@@ -57,13 +55,11 @@ That's the entire stack from Phase 1 - the four `docker run` commands, the netwo
 
 ## `services:` - one block per container
 
-**What it actually is.** The `services` map is the heart of the file. Each key under it (`web`, `api`, `db`, `cache`) is one service - which in practice means one container - and the name you give it matters: it becomes the container's address on the network (more on that in Phase 3).
-
-**What it does in real life.** Compose reads each service block and starts a container for it. The names are yours to choose, but choose them well - `api`, `db`, `cache` read clearly, and they're the hostnames your services will use to reach each other.
+The `services` map is the heart of the file. Each key under it (`web`, `api`, `db`, `cache`) is one service - which in practice means one container - and the name you give it matters: it becomes the container's address on the network (more on that in Phase 3). Compose reads each service block and starts a container for it. Choose names well - `api`, `db`, `cache` read clearly, and they're the hostnames your services will use to reach each other.
 
 ## `image:` vs `build:` - use someone's, or build your own
 
-**What it actually is.** Every service needs an image to run. You have two ways to point at one:
+Every service needs an image to run. You have two ways to point at one:
 
 - **`image:`** - pull a ready-made image from a registry (like Docker Hub). Use this for off-the-shelf software you don't write: databases, caches, web servers.
 - **`build:`** - build the image yourself from a `Dockerfile` in a directory you point at. Use this for *your own* code.
@@ -76,13 +72,13 @@ That's the entire stack from Phase 1 - the four `docker run` commands, the netwo
     build: ./api           # build from the Dockerfile in ./api
 ```
 
-*What just happened:* For `web`, Compose pulls the official `nginx:1.27` image as-is. For `api`, Compose looks in the `./api` directory, finds the `Dockerfile` there, and builds an image from it - the same as running `docker build ./api`, done for you.
+*What just happened:* For `web`, Compose pulls the official `nginx:1.27` image as-is. For `api`, Compose looks in `./api`, finds the `Dockerfile`, and builds an image from it - the same as running `docker build ./api`, done for you.
 
 ⚠️ **Gotcha - pin your versions.** `image: postgres` (no tag) means "whatever `latest` happens to be today," which can change under you and break things weeks later when you least expect it. Always pin a version - `postgres:16`, `nginx:1.27`, `redis:7` - so the stack you run tomorrow is the stack you ran today.
 
 ## `ports:` - open a door from your machine into a container
 
-**What it actually is.** By default a container's ports are private to the stack - reachable by other services, but not from your laptop's browser. `ports:` publishes a port out to your host machine, exactly like `-p` on `docker run`.
+By default a container's ports are private to the stack - reachable by other services, but not from your laptop's browser. `ports:` publishes a port out to your host machine, exactly like `-p` on `docker run`.
 
 ```yaml
   web:
@@ -94,11 +90,11 @@ That's the entire stack from Phase 1 - the four `docker run` commands, the netwo
 
 📝 **Which port goes where.** Left of the colon is *your machine*; right of the colon is *inside the container*. `"8080:80"` means "I'll visit 8080, it arrives at 80." Mixing these up is the single most common Compose port mistake.
 
-💡 **Key point - you don't publish what stays internal.** Notice `db` and `cache` have *no* `ports:` block. The API reaches them inside the stack's private network without any port being exposed to your laptop. Only publish a port when something *outside* the stack (your browser, a tool) needs in. Publishing the database port to your host is a habit worth not forming.
+💡 **Key point - you don't publish what stays internal.** Notice `db` and `cache` have *no* `ports:` block - the API reaches them inside the stack's private network without any port being exposed to your laptop. Only publish a port when something *outside* the stack (your browser, a tool) needs in.
 
 ## `environment:` - configuration the container reads at startup
 
-**What it actually is.** The `environment:` map sets environment variables inside the container. This is the standard way to configure both off-the-shelf images and your own code - connection strings, passwords, feature flags, modes.
+The `environment:` map sets environment variables inside the container. This is the standard way to configure both off-the-shelf images and your own code - connection strings, passwords, feature flags, modes.
 
 ```yaml
   db:
@@ -113,13 +109,13 @@ That's the entire stack from Phase 1 - the four `docker run` commands, the netwo
       REDIS_URL: redis://cache:6379
 ```
 
-*What just happened:* The official `postgres` image reads `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` on first start and creates that user and database for you. Your `api` reads `DATABASE_URL` and `REDIS_URL` to know where to connect. Look closely at `DATABASE_URL`: the host part is `db` - the *service name* from this very file. That's how the API finds the database (Phase 3 explains exactly why that works).
+*What just happened:* The official `postgres` image reads `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` on first start and creates that user and database for you. Your `api` reads `DATABASE_URL` and `REDIS_URL` to know where to connect. Look closely at `DATABASE_URL`: the host part is `db`, the *service name* from this file - that's how the API finds the database (Phase 3 explains why that works).
 
 ⚠️ **Gotcha - secrets in plain text.** Writing `POSTGRES_PASSWORD: secret` straight into the file is fine for local development, but this file usually lives in Git. Don't commit real production passwords this way. The common fix is to read them from a `.env` file or the host environment instead - covered in depth in [Environment Variables & Config](/guides/env-vars-and-config).
 
 ## `depends_on:` - start order, and *only* start order
 
-**What it actually is.** `depends_on:` tells Compose which services must be *started* before this one. It controls the order Compose launches containers.
+`depends_on:` tells Compose which services must be *started* before this one. It controls the order Compose launches containers.
 
 ```yaml
   api:
@@ -134,7 +130,7 @@ That's the entire stack from Phase 1 - the four `docker run` commands, the netwo
 
 ## `volumes:` - where your data lives when the container doesn't
 
-**What it actually is.** Containers are disposable - delete one and everything inside its filesystem is gone. That's fine for stateless services, and a disaster for a database. A **named volume** is storage that lives *outside* any single container, managed by Docker, so your data survives the container being recreated.
+Containers are disposable - delete one and everything inside its filesystem is gone. That's fine for stateless services, and a disaster for a database. A **named volume** is storage that lives *outside* any single container, managed by Docker, so your data survives the container being recreated.
 
 📝 **Named volume.** A chunk of disk Docker manages on your behalf, given a name. You mount it into a container at a path; whatever's written there is kept even after the container is destroyed.
 
@@ -175,7 +171,7 @@ api-1    | Server listening on http://0.0.0.0:3000
 web-1    | start worker processes
 ```
 
-*What just happened:* Compose created a private network for the stack, created and started all four containers in dependency order (`db` and `cache` before `api`, `api` before `web`), then *attached* to them - meaning the logs from every service are now streaming into your terminal, each line prefixed with which service it came from. Your stack is running. Visit `http://localhost:8080` and nginx answers.
+*What just happened:* Compose created a private network for the stack, created and started all four containers in dependency order (`db` and `cache` before `api`, `api` before `web`), then *attached* to them - the logs from every service now stream into your terminal, each line prefixed with which service it came from. Visit `http://localhost:8080` and nginx answers.
 
 💡 **Run it in the background.** Add `-d` (detached) and Compose starts the stack and hands your terminal back instead of streaming logs:
 

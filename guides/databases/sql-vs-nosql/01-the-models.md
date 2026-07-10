@@ -6,7 +6,7 @@ summary: "Relational means tables linked by relationships and queried with SQL; 
 tags: [databases, relational, sql, nosql, document-database, key-value, wide-column, graph]
 difficulty: intermediate
 synonyms: ["what is a relational database", "what does nosql mean", "types of nosql databases", "document vs key-value vs graph database", "what is mongodb redis cassandra neo4j"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Relational Model & What "NoSQL" Even Means
@@ -14,14 +14,13 @@ updated: 2026-06-19
 Before you can compare two things fairly, you have to know what each one actually *is* — not
 the marketing slogan, the real shape. The reason the SQL-vs-NoSQL argument goes in circles is
 that one side names a single, well-defined model and the other side names *everything that
-isn't that model*. Those aren't symmetric. Once you see why, the whole debate gets calmer.
-
-This phase installs two mental models: what "relational" really means, and why "NoSQL" is a
+isn't that model*. Those aren't symmetric. Once you see why, the whole debate gets calmer. This
+phase installs both mental models: what "relational" really means, and why "NoSQL" is a
 category, not a product.
 
 ## The relational model — tables that know about each other
 
-**What it actually is.** A relational database stores data in **tables**: rows and columns,
+A relational database stores data in **tables**: rows and columns,
 like a spreadsheet with rules. Each table holds one kind of thing (users, orders, products),
 and tables are connected by shared values called **keys**. The "relational" part isn't about
 the tables being related to *each other* casually — it's a specific math-backed model where a
@@ -32,7 +31,7 @@ table is a set of rows and you combine tables by matching keys.
 > care about (an order *belongs to* a user) are expressed by storing the user's key inside the
 > order row.
 
-**What it does in real life.** You describe your data once as a **schema** — the tables, their
+You describe your data once as a **schema** — the tables, their
 columns, and the types those columns hold — and the database enforces it. Then you ask
 questions in **SQL** (Structured Query Language), a declarative language where you say *what*
 you want and the engine figures out *how* to get it.
@@ -72,7 +71,7 @@ features and scale, but they share this model.
 
 ## "NoSQL" — an umbrella, not a database
 
-**What it actually is.** "NoSQL" is the worst-named idea in databases. It doesn't mean "no
+"NoSQL" is the worst-named idea in databases. It doesn't mean "no
 SQL" (several NoSQL stores even support SQL-like queries). It started as "non-relational" and
 is best read as **"not the relational model."** That's a definition by *absence* — which is
 why it covers wildly different tools that have little in common with each other beyond "we

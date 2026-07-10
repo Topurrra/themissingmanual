@@ -6,17 +6,17 @@ summary: "When config grows past a few values you reach for structured files —
 tags: [yaml, json, toml, config-files, precedence, indentation, beginner-friendly]
 difficulty: beginner
 synonyms: ["what is yaml used for", "yaml vs json vs toml", "yaml indentation error", "why tabs not allowed in yaml", "config precedence order", "which config setting wins"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Config Files: YAML & Friends
 
 Environment variables are perfect for a handful of flat values. But open a real project and you'll find a
-`config.yaml` or `appsettings.json` describing whole *structures* — a database section with a host and a
-port and a pool size, a list of allowed origins, nested feature flags. Cramming all that into
-`DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_POOL_SIZE` flat variables gets ugly fast. This is where
-structured config files earn their place. Let's read one without fear, then settle the question of *which
-setting wins* when the same thing is defined in two places.
+`config.yaml` or `appsettings.json` describing whole *structures* — a database section with host, port,
+pool size, a list of allowed origins, nested feature flags. Cramming that into `DATABASE_HOST`,
+`DATABASE_PORT`, `DATABASE_POOL_SIZE` flat variables gets ugly fast. This is where structured config files
+earn their place — read one without fear, then settle *which setting wins* when the same thing is defined
+twice.
 
 ## Why a config file instead of more env vars
 
@@ -24,9 +24,9 @@ setting wins* when the same thing is defined in two places.
 nested way — sections within sections, lists, grouped values. Where an environment variable is one flat
 name and value, a config file can express *shape*: "the database section contains a host and a port."
 
-**What it does in real life.** You keep the structural, non-secret settings in a file that's committed to
-the repo (so the whole team shares them), and you keep the per-machine values and secrets in environment
-variables. The file is the skeleton; env vars fill in the parts that differ or must stay private.
+**What it does in real life.** Keep the structural, non-secret settings in a file committed to the repo
+(so the team shares them), and keep per-machine values and secrets in environment variables. The file is
+the skeleton; env vars fill in the parts that differ or must stay private.
 
 The three formats you'll meet most:
 
@@ -80,10 +80,10 @@ $ pip install pyyaml
 $ python3 -c "import yaml; c = yaml.safe_load(open('config.yaml')); print(c['database']['host'])"
 localhost
 ```
-*What just happened:* `yaml.safe_load` read the file and turned it into a nested dictionary, so
-`c['database']['host']` walks into the `database` section and pulls out `host`. The structure you saw in
-the file is exactly the structure you get in code. (`safe_load` is the function to use — plain `load` can
-execute arbitrary tags from an untrusted file.)
+*What just happened:* `yaml.safe_load` read the file into a nested dictionary, so
+`c['database']['host']` walks into the `database` section and pulls out `host`. The structure in the file
+is exactly the structure you get in code. (Use `safe_load`, not plain `load` — that can execute arbitrary
+tags from an untrusted file.)
 
 ## ⚠️ The YAML indentation gotcha
 
@@ -100,9 +100,9 @@ yaml.scanner.ScannerError: while scanning for the next token
 found character '\t' that cannot start any token
   in "config.yaml", line 5, column 1
 ```
-*What just happened:* The parser hit a Tab character (`\t`) where it expected spaces and stopped cold. The
-fix is to set your editor to insert spaces when you press Tab (most editors have an "indent using spaces"
-setting), then replace the offending tab. The error message even tells you the line.
+*What just happened:* The parser hit a Tab character (`\t`) where it expected spaces and stopped cold.
+Fix: set your editor to insert spaces on Tab (most have an "indent using spaces" setting), then replace
+the offending tab — the error message even tells you the line.
 
 **Second: inconsistent depth changes the meaning.** Because indentation defines what's nested inside what,
 a single misaligned space silently restructures your config:
@@ -114,8 +114,8 @@ database:
 ```
 
 Depending on the parser this either errors or — worse — produces a structure you didn't intend, and your
-app reads the wrong shape with no crash. The defense is simple and strict: **pick one indent width (two
-spaces is the common choice) and keep every level perfectly consistent.**
+app reads the wrong shape with no crash. The defense: **pick one indent width (two spaces is common) and
+keep every level perfectly consistent.**
 
 💡 **Key point.** If a YAML file mysteriously won't load or your settings come out wrong, suspect the
 indentation *first*. Nine times out of ten it's a stray tab or a misaligned line, not a bug in your code.
@@ -160,9 +160,9 @@ environment variable won because it sits highest in the stack. Run it again *wit
 you'd get `8080` (the file); delete the file too and you'd get `3000` (the default).
 
 **Why people get this wrong.** Without knowing the precedence, you'll change a value in the config file,
-see no effect, and lose an hour — because an environment variable was quietly overriding it the whole
-time. Most config libraries follow the defaults < file < env order, but **not all** — when in doubt,
-check your framework's docs for its exact ordering rather than assuming.
+see no effect, and lose an hour — an environment variable was quietly overriding it the whole time. Most
+config libraries follow defaults < file < env, but **not all** — check your framework's docs for its
+exact order rather than assuming.
 
 **Why this saves you later.** Understanding the stack means that when a setting "won't change," you know
 immediately where to look: start from the highest-priority source (the environment) and work down. And it

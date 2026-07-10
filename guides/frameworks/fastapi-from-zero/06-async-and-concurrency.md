@@ -6,16 +6,16 @@ summary: "How FastAPI's event loop serves many requests on one thread, when to w
 tags: [fastapi, async, await, asyncio, event-loop, concurrency, blocking, threadpool]
 difficulty: intermediate
 synonyms: ["fastapi async def vs def", "fastapi when to use async", "fastapi blocking event loop", "fastapi asyncio", "fastapi run sync in threadpool", "fastapi async database", "async await fastapi explained"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Async & Concurrency
 
 This is the phase where FastAPI either clicks or burns you. People hear "FastAPI is async, async is fast"
 and sprinkle `async def` on everything like seasoning — then one slow database call quietly freezes their
-entire server under load. The good news: there's a tiny mental model underneath all of it, and once you
-have it, the rules write themselves. Build the model first, then the rules, then the one trap that
-catches almost everyone.
+entire server under load. There's a tiny mental model underneath all of it, and once you have it, the
+rules write themselves. Build the model first, then the rules, then the one trap that catches almost
+everyone.
 
 ## The mental model: one thread that refuses to wait
 

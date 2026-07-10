@@ -6,12 +6,12 @@ summary: "How WebApplicationBuilder wires up the DI container, layered configura
 tags: [aspnet-core, csharp, host, dependency-injection, configuration]
 difficulty: advanced
 synonyms: ["aspnet host", "webapplication builder", "generic host", "aspnet di container", "iconfiguration", "options pattern", "ihostedservice"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The Host, DI & Configuration
 
-Here's the mental model to hold the whole way through: **before your app exists, something has to assemble configuration, the DI container, logging, and Kestrel — and that something is the host.** You've spent four phases watching a request flow through Kestrel and the pipeline. This phase is about the machinery that *stands all of that up* in the first place, then owns its lifecycle from start to shutdown.
+**Before your app exists, something has to assemble configuration, the DI container, logging, and Kestrel — and that something is the host.** You've spent four phases watching a request flow through Kestrel and the pipeline. This phase is about the machinery that *stands all of that up* in the first place, then owns its lifecycle from start to shutdown.
 
 The shape of every ASP.NET Core program is the same three-beat rhythm: `CreateBuilder` → configure the builder → `Build()` → `Run()`. Once you see those four lines as "set up the wiring, then run the machine," the top of `Program.cs` stops being boilerplate you copy and becomes a place you actually understand.
 

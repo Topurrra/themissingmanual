@@ -6,7 +6,7 @@ summary: "Windows services are background programs that run without a window; Ta
 tags: [windows, services, task-manager, registry, regedit, startup, processes, hives]
 difficulty: intermediate
 synonyms: ["what is a windows service", "services vs apps windows", "how to use task manager", "what is in startup tab task manager", "how to kill a process windows", "what is the windows registry", "what are registry hives keys values", "is it safe to edit the registry", "regedit explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Services, Task Manager & the Registry
@@ -33,7 +33,7 @@ This is the layer where "my PC is slow," "something starts on boot that I didn't
 
 **What it does in real life.** Services are *why your computer can do things while you're not looking* - receive a print job, install an update overnight, listen for incoming network connections. They're managed in their own console: press `Win + R`, type `services.msc`, and you'll see the full list with each service's status (Running / Stopped) and **Startup type** (Automatic, Manual, Disabled).
 
-**Why this saves you later.** When something runs on your machine and you can't find a window for it - a stuck print queue, a sync tool eating CPU, a leftover background process from an app you uninstalled - "it's probably a service" is the right first guess, and `services.msc` is where you go to confirm and stop it. (Be conservative: many services are load-bearing. Stop the print spooler, fine; disable things you don't recognize and you may break Windows.)
+**Why this saves you later.** When something runs on your machine with no window for it - a stuck print queue, a sync tool eating CPU, a leftover process from an app you uninstalled - "it's probably a service" is the right first guess, and `services.msc` is where you confirm and stop it. Be conservative: many services are load-bearing. Stop the print spooler, fine; disable things you don't recognize and you may break Windows.
 
 ## Task Manager, properly
 
@@ -78,7 +78,7 @@ The default tab groups everything into **Apps** (things with windows), **Backgro
 
 ⚠️ **Gotcha: ending a process is a hard kill, not a polite close.** The program gets no chance to save. Any unsaved work in it is gone. Use End task when an app is genuinely stuck - not as a normal way to quit, where the app's own "Save?" prompt protects you.
 
-🪖 **War story.** Classic confusion: someone "closes" a heavy app from the Apps list, but it keeps eating CPU. The window closed; a background process of the same app didn't. The Details tab showed two entries with the same name and different PIDs - ending the leftover one fixed it. That's the whole reason the Details tab exists: it shows you *every* process, not just the ones with friendly windows.
+🪖 **War story.** Classic confusion: someone "closes" a heavy app from the Apps list, but it keeps eating CPU. The window closed; a background process of the same app didn't - the Details tab showed two entries with the same name and different PIDs, and ending the leftover one fixed it.
 
 ## The registry: Windows' central settings database
 
@@ -88,7 +88,7 @@ This is the one people are scared of, and the fear comes entirely from not knowi
 
 📝 **Terminology.** *Registry* = the hierarchical database Windows uses to hold configuration for the OS and applications. Think "a giant, system-wide settings file, but structured like a tree."
 
-**Why it exists (the design decision).** Remember from [Phase 1](01-windows-under-the-hood.md): Unix scatters settings across plain-text config files. Early Windows did something similar with `.ini` files and it got messy - settings everywhere, no consistent format, slow to search. The registry was the answer: *one* fast, structured, queryable place for all of it. The trade-off is exactly the one you'd expect - it's centralized and quick, but it's not human-friendly text you can open in Notepad, and there's no "just delete the bad config file" escape hatch when something goes wrong.
+**Why it exists (the design decision).** Early Windows used scattered `.ini` text files, like Unix's config-file approach in [Phase 1](01-windows-under-the-hood.md) - and it got messy: settings everywhere, no consistent format, slow to search. The registry was the fix: one fast, structured, queryable place for all of it. The trade-off is the obvious one - centralized and quick, but not human-friendly text you can open in Notepad, and no "just delete the bad config file" escape hatch when something goes wrong.
 
 **How it's organized.** Three nested concepts - and they map almost exactly onto folders, files, and the contents of files:
 
@@ -126,7 +126,7 @@ HKEY_CURRENT_USER\Control Panel\Desktop
 2. **Export a backup first.** In `regedit`, right-click the key you're about to touch → **Export** → save the `.reg` file. If it goes wrong, double-click that file to restore.
 3. **Know that most things have a normal Settings UI.** If the Settings app or a program's own options can change it, do it *there* - the registry should be the last resort, not the first.
 
-💡 **Key point.** The registry isn't dangerous because it's mysterious - it's the opposite. It's an ordinary settings database (hives → keys → values). It's worth respect for one concrete reason only: **no undo and no Recycle Bin.** Back up the key, change only what you were told to, and it's a fine tool. Poke around blindly and it can bite. The respect is about the missing safety net, not the structure.
+💡 **Key point.** The registry isn't dangerous because it's mysterious - it's an ordinary settings database (hives → keys → values). It earns respect for one concrete reason: **no undo and no Recycle Bin.** Back up the key, change only what you were told to, and it's a fine tool.
 
 ## Recap
 

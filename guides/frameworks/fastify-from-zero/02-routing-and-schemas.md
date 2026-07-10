@@ -6,7 +6,7 @@ summary: "Routing in Fastify by method, params, query, and body — and attachin
 tags: [fastify, javascript, routing, json-schema, validation]
 difficulty: intermediate
 synonyms: ["fastify routing", "fastify json schema", "fastify validation", "fastify serialization", "fastify request params", "fastify route schema"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Routing & Schemas
@@ -15,7 +15,7 @@ Here's the one idea that makes Fastify *Fastify*, and the thing to hold in your 
 
 > 📝 In Fastify, a route isn't only a handler. **A route is a handler PLUS a schema.** The handler is the code that runs; the schema is a description of what goes *in* (body, params, query) and what comes *out* (the response). Once you've written the schema, Fastify does two big chores for you — it **validates** incoming requests and it **serializes** outgoing responses — so you write less code, not more.
 
-Most frameworks make you reach for a separate validation library and wire it up by hand in every handler. Fastify folds that into the route definition. You describe the shape once; the framework enforces it. That's the trade you're learning to make here, and it pays off the moment your API has more than three endpoints.
+Most frameworks make you reach for a separate validation library and wire it up by hand in every handler. Fastify folds that into the route definition — describe the shape once, and the framework enforces it. That pays off the moment your API has more than three endpoints.
 
 We'll keep growing the same **books API** from Phase 1 — a book is just `{ id, title, author }`.
 

@@ -6,20 +6,19 @@ summary: "Assemble routing, middleware, and request/response validation into a f
 tags: [express, javascript, rest, api, crud]
 difficulty: intermediate
 synonyms: ["express rest api", "express crud", "express tasks api", "node rest api example", "express router crud", "express json api"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Building a REST API
 
 This is the payoff phase. Everything you've built so far — routing in Phase 2, the
 middleware chain in Phase 3, reading the body and validating it in
-[Phase 4](04-request-and-response.md) — clicks together here into one working API.
+[Phase 4](04-request-and-response.md) — clicks together into one working API.
 
 ## The mental model: five handlers over one collection
 
-Here's the shape to hold in your head before you write a line of code. A **REST
-resource** is a collection of things — tasks, users, orders, anything — and almost
-every operation you'll ever do on a collection is one of five:
+A **REST resource** is a collection of things — tasks, users, orders, anything —
+and almost every operation you'll do on a collection is one of five:
 
 | You want to… | HTTP method + path | Express handler |
 |--------------|--------------------|-----------------|
@@ -65,11 +64,11 @@ app.listen(3000, () => console.log('Tasks API on http://localhost:3000'));
 ```
 
 *What just happened:* `express.Router()` gives us an isolated bundle of routes.
-`app.use('/api/tasks', router)` mounts that bundle so a route defined as `'/'` on
-the router answers at `/api/tasks`, and `'/:id'` answers at `/api/tasks/:id`. The
-`app.use(express.json())` line is doing real work — without it, `req.body` would be
-`undefined` and every create/update would silently fail. The store is two
-variables: an array of tasks and a counter for handing out unique ids.
+`app.use('/api/tasks', router)` mounts it so `'/'` on the router answers at
+`/api/tasks`, and `'/:id'` answers at `/api/tasks/:id`. `app.use(express.json())`
+is doing real work — without it, `req.body` would be `undefined` and every
+create/update would silently fail. The store is two variables: an array of tasks
+and a counter for unique ids.
 
 > 📝 **Why a plain array is safe here.** Node runs your JavaScript on a single
 > thread per process, so two requests never mutate `tasks` *at the same instant* —

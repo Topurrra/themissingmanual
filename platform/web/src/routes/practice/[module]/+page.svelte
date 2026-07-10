@@ -63,7 +63,7 @@
         </div>
         <p class="pr-mod-summary">{module.summary}</p>
 
-        <div class="pr-mod-prose">{@html data.overviewHtml}</div>
+        <!-- <div class="pr-mod-prose">{@html data.overviewHtml}</div> -->
 
         {#if module.lessons.length}
           <h2 class="pr-mod-sub">Lessons</h2>

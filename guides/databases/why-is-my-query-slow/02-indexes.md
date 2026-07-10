@@ -6,7 +6,7 @@ summary: "An index is a separate, sorted structure (a B-tree) that lets the data
 tags: [databases, indexes, b-tree, create-index, sql, query-performance]
 difficulty: intermediate
 synonyms: ["what is a database index", "how do indexes work", "what is a b-tree index", "how to create an index in sql", "do indexes slow down inserts", "which columns should i index", "why not index every column"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Indexes
@@ -17,7 +17,7 @@ Think about how you find one topic in a 900-page textbook. You don't read all 90
 
 ## What an index actually is
 
-**What it actually is.** An index is a **separate, sorted structure** stored alongside your table. It contains the values from one column (say, `email`), kept in sorted order, and next to each value a pointer to the full row it came from. The table itself stays an unordered pile; the index is the sorted "back of the book" that tells the database where each value lives.
+An index is a **separate, sorted structure** stored alongside your table. It contains the values from one column (say, `email`), kept in sorted order, and next to each value a pointer to the full row it came from. The table itself stays an unordered pile; the index is the sorted "back of the book" that tells the database where each value lives.
 
 Because the index is *sorted*, the database doesn't read it top to bottom either. It uses the same trick you use with a physical index: it can jump to roughly the middle, see whether your value is before or after, throw away half, and repeat. Each step halves what's left.
 
@@ -40,7 +40,7 @@ flowchart TD
 
 ## Creating one
 
-**What it does in real life.** You create an index on the column(s) you search by. The syntax is nearly identical across PostgreSQL, MySQL, and SQLite:
+You create an index on the column(s) you search by. The syntax is nearly identical across PostgreSQL, MySQL, and SQLite:
 
 ```sql
 CREATE INDEX idx_users_email ON users (email);

@@ -6,15 +6,14 @@ summary: "FastAPI is a modern async Python framework where your type hints becom
 tags: [fastapi, python, asgi, uvicorn, openapi, swagger, getting-started]
 difficulty: beginner
 synonyms: ["what is fastapi", "fastapi first app", "fastapi uvicorn", "fastapi automatic docs swagger", "fastapi asgi", "fastapi hello world", "fastapi vs flask"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # What FastAPI Is & Your First App
 
 You know Python and have maybe touched [REST APIs](/guides/rest-apis-explained). Now you want to
-*serve* something over HTTP — a little book API that other programs can call. Plenty of Python
-frameworks do this. This guide covers the one that's become the default for new Python API projects:
-**FastAPI**.
+*serve* something over HTTP — a little book API that other programs can call. This guide covers the
+framework that's become the default for new Python API projects: **FastAPI**.
 
 Hold this in your head before any code: FastAPI's whole personality comes from one decision —
 **your Python type hints are the source of truth.** Annotate a function with the types it expects, and
@@ -38,9 +37,6 @@ other requests instead of sitting idle. Same idea as `async`/`await`, applied to
 💡 If you've read [Python's async chapter](/guides/python-from-zero), this is where it pays off:
 FastAPI lets your handlers be `async def`, so an app waiting on I/O can stay busy. Plain `def` handlers
 work too — FastAPI runs them safely in a threadpool. You don't have to go async on day one.
-
-The one-liner: **FastAPI = Starlette (web) + Pydantic (validation), speaking ASGI, all driven by
-type hints.** Let's make one.
 
 ## Install it and write your first app
 
@@ -81,9 +77,8 @@ Start the server with Uvicorn, pointing it at `main:app` (the `app` object insid
 uvicorn main:app --reload
 ```
 
-The `--reload` flag restarts the server whenever you save a file — exactly what you want while
-developing. (FastAPI also ships a shortcut, `fastapi dev main.py`, which does the same thing with
-reload on by default. Use whichever you like.)
+`--reload` restarts the server on every save. (FastAPI also ships `fastapi dev main.py`, a shortcut
+that does the same thing with reload on by default — use whichever you like.)
 
 ```console
 $ uvicorn main:app --reload
@@ -126,8 +121,8 @@ OpenAPI schema** (served at `/openapi.json`). OpenAPI is the industry-standard w
 generate client libraries, run tests, or import the API into other software.
 
 FastAPI produces all this from nothing because your type hints already told it everything it needed:
-the paths come from your decorators, and (as you'll see next phase) the parameters and response shapes
-come from the types you annotate. **Your code already is the spec** — FastAPI just reads it.
+the paths come from your decorators, and (next phase) the parameters and response shapes come from the
+types you annotate. **Your code already is the spec** — FastAPI just reads it.
 
 ## Type hints as the source of truth
 

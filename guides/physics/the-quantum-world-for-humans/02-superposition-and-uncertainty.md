@@ -6,7 +6,7 @@ summary: "What is actually true about the quantum world, minus the mysticism: su
 tags: [physics, quantum, superposition, uncertainty, entanglement, mental-model]
 difficulty: intermediate
 synonyms: ["what is superposition really", "heisenberg uncertainty principle explained", "is a particle in two places at once", "why measurement changes things quantum", "schrodinger cat explained"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Superposition and uncertainty (the real ones)
@@ -19,7 +19,7 @@ Here's the slogan you've heard: "the particle is in two places at once." Here's 
 
 The accurate statement: a quantum object can be in a **superposition**, which means its state is a specific *combination* of possible outcomes - with definite weights and a definite relationship between them. It is one object in one combined state, not two objects.
 
-An analogy that actually holds: think of a musical chord. Play C and G together and you get one sound that genuinely contains both notes. It isn't "two pianos in two rooms." It's a single thing whose makeup is a weighted blend. A superposition is like that - one state built from possibilities, blended in a precise way.
+An analogy that actually holds: think of a musical chord. Play C and G together and you get one sound that genuinely contains both notes. It isn't "two pianos in two rooms" - it's a single thing whose makeup is a weighted blend, just like a superposition.
 
 ```text
 WRONG picture:                  RIGHT picture:

@@ -6,12 +6,12 @@ summary: "How JPA gives you three layers of querying — JPQL for everyday objec
 tags: [hibernate, jpa, jpql, criteria-api, native-query, projections, parameters, querying]
 difficulty: intermediate
 synonyms: ["jpql tutorial", "jpa criteria api", "hibernate native sql query", "jpa query parameters", "jpa projection dto query", "jpql vs sql", "hibernate typed query"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Querying: JPQL, Criteria & Native SQL
 
-Up to now you've mostly found things by their id — `em.find(Book.class, 1L)`. That's fine when you already know exactly which row you want. But real applications ask open-ended questions: "all books by this author," "the five most-reviewed titles," "every book missing an ISBN." For those you need to *query*, and JPA hands you three different tools for the job.
+Up to now you've mostly found things by their id — `em.find(Book.class, 1L)`. That's fine when you already know exactly which row you want. But real applications ask open-ended questions: "all books by this author," "the five most-reviewed titles," "every book missing an ISBN." For those you need to *query*, and JPA hands you three tools for the job.
 
 The mental model to carry through this whole phase: **JPA queries are layered, and you reach down a layer only when the one above can't reach.** JPQL covers the vast majority of what you'll write. The Criteria API exists for queries you have to *build* in code, piece by piece. Native SQL is the trapdoor for when you need something only your specific database can do. Same data, same entities — three levels of control, each more powerful and more verbose than the last.
 

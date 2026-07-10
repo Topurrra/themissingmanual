@@ -6,14 +6,14 @@ summary: "Inside the ORM session: how it keeps one in-memory object per row (the
 tags: [orm, database, identity-map, unit-of-work, session]
 difficulty: advanced
 synonyms: ["identity map", "unit of work", "orm session", "orm same object per row", "orm batch changes", "orm flush commit"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The Identity Map & Unit of Work
 
-Here's a thing that trips people up the first time they really look at ORM code: you load some objects, you change a few fields, you call `commit()` — and somehow the right SQL comes out, in the right order, all at once. No `UPDATE` written by you. No `INSERT` in the middle. Where did it come from?
+Here's a thing that trips people up the first time they really look at ORM code: you load some objects, change a few fields, call `commit()` — and somehow the right SQL comes out, in the right order, all at once. No `UPDATE` written by you. No `INSERT` in the middle. Where did it come from?
 
-The answer is the **session** — the workspace every ORM gives you for one chunk of business work. Hibernate calls it a `Session`, SQLAlchemy calls it a `Session`, EF Core calls it a `DbContext`, GORM hands you a `*gorm.DB`. Different names, same thing: a short-lived scratchpad, usually living for the span of one web request, that holds your objects while you work.
+The answer is the **session** — the workspace every ORM gives you for one chunk of business work. Hibernate calls it a `Session`, SQLAlchemy calls it a `Session`, EF Core calls it a `DbContext`, GORM hands you a `*gorm.DB`. Different names, same thing: a short-lived scratchpad, usually living for one web request, that holds your objects while you work.
 
 > 📝 **Mental model:** the session is a workspace with two superpowers. First, an **identity map** — at most one in-memory object per database row, so you never end up holding two diverging copies of the same thing. Second, a **unit of work** — it watches everything you touch and writes it all out together in one commit. Hold those two ideas and the "magic" stops being magic.
 
@@ -32,7 +32,7 @@ b = session.find(User, 5)
 assert a is b   # TRUE — same object, not just equal values
 ```
 
-*What just happened:* the first `find` hit the database, built a `User` object for row 5, and recorded it in the session's identity map keyed by `(User, 5)`. The second `find` looked in that map first, found row 5 already there, and handed back the *exact same object*. `a` and `b` aren't two equal users — they are one user with two names pointing at it.
+*What just happened:* the first `find` hit the database, built a `User` object for row 5, and recorded it in the session's identity map keyed by `(User, 5)`. The second `find` looked in that map first, found row 5 already there, and handed back the *exact same object* — `a` and `b` aren't two equal users, they're one user with two names pointing at it.
 
 That buys you two real things:
 
@@ -66,9 +66,7 @@ session.commit()
 #   COMMIT
 ```
 
-*What just happened:* none of the three lines that changed data touched the database when you wrote them. They updated in-memory objects and added entries to the session's to-do list. The single `commit()` is what opened a transaction, emitted all three statements at once, and closed it. Because it's one transaction, it's **all-or-nothing**: if the `INSERT` fails, the two `UPDATE`s roll back too — nobody is left half-saved. (That all-or-nothing guarantee is exactly atomicity from [Transactions & ACID](/guides/transactions-and-acid) — the unit of work is leaning directly on it.)
-
-This is also why batching matters: the ORM can send the statements efficiently and order them so foreign-key dependencies are satisfied (insert the parent before the child), instead of you hand-sequencing every write.
+*What just happened:* none of the three lines that changed data touched the database when you wrote them — they updated in-memory objects and added entries to the session's to-do list. The single `commit()` opened a transaction, emitted all three statements at once, and closed it. Because it's one transaction, it's **all-or-nothing**: if the `INSERT` fails, the two `UPDATE`s roll back too — nobody is left half-saved. (That guarantee is exactly atomicity from [Transactions & ACID](/guides/transactions-and-acid) — the unit of work leans directly on it.) Batching also lets the ORM order statements so foreign-key dependencies are satisfied — parent before child — instead of you hand-sequencing every write.
 
 > 💡 **This is the answer to the opening puzzle.** ORM code reads as "load objects, mutate them, commit" with no SQL in the middle *because the session is accumulating a to-do list and running it at the boundary.* The gap between your edits and the SQL isn't missing code — it's the unit of work doing its job. Once you see the session as "collect changes now, flush them at commit," the control flow stops feeling like sleight of hand.
 
@@ -77,9 +75,9 @@ This is also why batching matters: the ORM can send the statements efficiently a
 Both superpowers depend on the session being **short-lived** — scoped to one unit of work, typically one web request. A session that hangs around is a slow-motion bug:
 
 - **It leaks memory.** The identity map holds onto every object you've loaded. A session that lives for hours, loading thousands of rows, keeps thousands of objects pinned in memory — they can't be collected because the session still references them.
-- **It goes stale.** The identity map will keep handing you the *cached* version of row 5 from whenever you first loaded it. If another process updated that row in the meantime, your long-lived session never notices — it's serving you old data from its own map.
+- **It goes stale.** The identity map keeps handing you the *cached* version of row 5 from whenever you first loaded it. If another process updated that row meanwhile, your long-lived session never notices — it's serving old data from its own map.
 
-The discipline is the same across every ORM: **open a session, do one unit of business work, commit, dispose.** One per request is the standard shape. Resist the temptation to keep a single global session "to save the overhead" — you'll trade a tiny startup cost for memory leaks and stale reads that are miserable to debug.
+The discipline is the same across every ORM: **open a session, do one unit of business work, commit, dispose.** One per request is the standard shape. Resist keeping a single global session "to save the overhead" — you'll trade a tiny startup cost for memory leaks and stale reads that are miserable to debug.
 
 ## Recap
 

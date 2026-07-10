@@ -6,7 +6,7 @@ summary: "The thundering-herd problem, the circuit breaker that stops you hammer
 tags: [thundering-herd, circuit-breaker, resilience, retries, good-client, apis]
 difficulty: intermediate
 synonyms: ["what is the thundering herd problem", "what is a circuit breaker", "circuit breaker pattern explained", "retry storm", "stop retrying a dead service", "how to be a good api client", "graceful degradation api down", "cache rate limit headers"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # When Retrying Isn't Enough
@@ -36,10 +36,9 @@ flowchart TD
   F --> B
 ```
 
-*What just happened:* the diagram is a *loop* on purpose — the retries feed the very outage they're
-reacting to. Jitter softens each wave, but past a certain scale, smearing the spike isn't enough. You need
-clients that recognize "this thing is down" and *stop calling it entirely* for a while. That's the
-circuit breaker.
+The diagram is a *loop* on purpose — the retries feed the very outage they're reacting to. Jitter softens
+each wave, but past a certain scale, smearing the spike isn't enough. You need clients that recognize
+"this thing is down" and *stop calling it entirely* for a while. That's the circuit breaker.
 
 ## The circuit breaker
 
@@ -67,9 +66,9 @@ stateDiagram-v2
 - **Half-open** — after the cooldown, the breaker lets *one* trial call through. If it succeeds, the
   service is back: close the breaker and resume. If it fails, re-open and wait again.
 
-*What just happened:* the half-open state is the clever bit — instead of all clients rushing back the
-instant the cooldown ends (which would re-create the herd), the breaker probes with a single request and
-only fully reopens the floodgates once that probe proves the service is healthy. It recovers *gently*.
+The half-open state is the clever bit — instead of all clients rushing back the instant the cooldown ends
+(which would re-create the herd), the breaker probes with a single request and only fully reopens the
+floodgates once that probe proves the service is healthy. It recovers *gently*.
 
 📝 **Terminology.** *Trip / open* = the breaker has decided the dependency is unhealthy and is short-
 circuiting calls. *Cooldown* = how long it stays open before testing again. *Half-open* = the cautious
@@ -101,10 +100,10 @@ checkout flow, fraud-check service is down (breaker open):
   good:  breaker open -> skip the call -> flag order for manual review -> complete checkout
 ```
 
-*What just happened:* the good path didn't pretend the dependency was up and didn't crash the whole
-checkout because one service was down. It chose a safe fallback (review the order later) so the *core*
-flow — taking the order — still worked. Deciding these fallbacks ahead of time is what separates an app
-that *bends* in an outage from one that *breaks*.
+The good path didn't pretend the dependency was up and didn't crash the whole checkout because one service
+was down. It chose a safe fallback (review the order later) so the *core* flow — taking the order — still
+worked. Deciding these fallbacks ahead of time is what separates an app that *bends* in an outage from one
+that *breaks*.
 
 ## Being a genuinely good client
 

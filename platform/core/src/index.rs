@@ -351,6 +351,7 @@ mod tests {
             html: format!("<p>{body}</p>"),
             updated: "2026-06-17".into(),
             markdown: body.into(),
+            source_file: String::new(),
         }
     }
 

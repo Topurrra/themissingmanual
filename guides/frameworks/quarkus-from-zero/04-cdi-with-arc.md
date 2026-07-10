@@ -6,37 +6,20 @@ summary: "Quarkus's DI container is ArC: the same CDI standard — @Inject, @App
 tags: [quarkus, cdi, arc, dependency-injection, build-time, inject, scopes]
 difficulty: intermediate
 synonyms: ["quarkus cdi arc", "quarkus dependency injection", "quarkus @Inject", "quarkus build time di", "quarkus bean scopes", "arc quarkus container", "quarkus vs spring di"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # CDI in Quarkus (ArC)
 
-In Phase 3 you built a JAX-RS resource that served `Product` JSON over HTTP. That resource was already
-quietly relying on something we glossed over: when you wrote `@Inject ProductService`, *somebody* created
-the service and handed it to the resource. This phase is about that somebody — Quarkus's dependency-injection
-container — and the one surprising thing it does differently from every container you've used before.
+Phase 3's JAX-RS resource quietly relied on something glossed over: when you wrote `@Inject ProductService`, *somebody* created the service and handed it to the resource. This phase is that somebody - Quarkus's dependency-injection container - and the one thing it does differently from every container you've used before.
 
-Here's the mental model to hold the whole way through: **it's the same CDI you already know, but the wiring
-is figured out while your code compiles, not when it starts.** A traditional container wakes up at startup,
-scans your classes, reads annotations with reflection, builds the graph of "who needs what," and *then*
-serves requests. Quarkus does almost all of that work at **build time** — the graph is baked into your
-application before it ever runs. Same annotations, same programming model, radically different timing. That
-timing shift is exactly the build-time-over-runtime idea from Phase 1, applied to dependency injection.
+**It's the same CDI you already know, but the wiring is figured out while your code compiles, not when it starts.** A traditional container wakes up at startup, scans your classes, reads annotations via reflection, builds the "who needs what" graph, and *then* serves requests. Quarkus does almost all of that at **build time** - the graph is baked in before the app ever runs. Same annotations, same programming model, different timing - the build-time-over-runtime idea from Phase 1, applied to DI.
 
-📝 If you've done [CDI in Jakarta EE](/guides/jakarta-ee-from-zero), you already know the entire
-programming model here — `@Inject`, `@ApplicationScoped`, qualifiers, producers, all of it. This phase
-does **not** re-teach CDI from scratch; it shows you Quarkus's twist on it and points you back to the
-Jakarta EE phase for the standard details. If CDI is new to you, read that first — Quarkus is "the
-standards, optimized," and this is one of those standards.
+📝 If you've done [CDI in Jakarta EE](/guides/jakarta-ee-from-zero), you already know the programming model - `@Inject`, `@ApplicationScoped`, qualifiers, producers. This phase shows Quarkus's twist on it rather than re-teaching CDI from scratch.
 
 ## It's CDI, wired at build time
 
-📝 Quarkus's DI container is called **ArC**. It's a build-time implementation of **CDI** — the standard
-dependency-injection spec you met in Jakarta EE. There's no new API to learn: you use the exact same
-`jakarta.inject` and `jakarta.enterprise.context` annotations. The difference lives under the hood, in
-*when* the wiring happens.
-
-Let's make our `Product` service a real CDI bean and inject it into the resource:
+📝 Quarkus's DI container is **ArC** - a build-time implementation of **CDI**. No new API: the exact same `jakarta.inject` and `jakarta.enterprise.context` annotations. The difference is *when* the wiring happens.
 
 ```java
 import jakarta.enterprise.context.ApplicationScoped;
@@ -52,13 +35,7 @@ public class ProductService {
     public void save(Product p)       { store.put(p.id(), p); }
 }
 ```
-*What just happened:* `@ApplicationScoped` is the bean-defining annotation — it tells the container "this
-class is yours to create and manage, and there's one instance for the whole application." It's the standard
-CDI annotation, identical to Jakarta EE; ArC just notices it at compile time instead of startup. The
-`ConcurrentHashMap` is there for the same reason it was in the Jakarta EE phase: one shared instance means
-its mutable state must be thread-safe.
-
-Now the resource asks for it:
+*What just happened:* `@ApplicationScoped` is the standard CDI bean-defining annotation - one instance for the whole app. Identical to Jakarta EE; ArC just notices it at compile time instead of startup.
 
 ```java
 import jakarta.inject.Inject;
@@ -76,35 +53,17 @@ public class ProductResource {
     }
 }
 ```
-*What just happened:* `@Inject` declares "I need a `ProductService`; container, fill this in." When ArC sees
-this injection point, it goes looking for a bean that satisfies the `ProductService` type — finds the
-`@ApplicationScoped` one above — and records the connection. Note the field isn't `private`: ArC needs to
-set it, and a truly `private` field would force reflection, which Quarkus is trying to avoid. (Quarkus
-generates code to do the injection; a package-private field lets that generated code write directly.)
+*What just happened:* `@Inject` says "container, fill this in." ArC finds the `@ApplicationScoped` bean and records the connection. The field isn't `private` - ArC's generated injection code needs to write to it directly, avoiding reflection.
 
-💡 You'll see field injection like this all over Quarkus examples because it's compact. Constructor
-injection is still the better habit for the same reasons it is everywhere else — more on that below.
+💡 Field injection is compact, which is why you see it everywhere in examples. Constructor injection is still the better habit - more below.
 
 ## Why build-time DI is a big deal
 
-💡 Here's the payoff, and it's the reason ArC exists rather than Quarkus just shipping a normal CDI
-container. A runtime container's startup cost is dominated by two things: **scanning the classpath** to
-find your beans, and **reflection** to read their annotations and construct them. Both happen every single
-time the app boots. ArC does that scanning-and-reflection work *once, at build time*, and emits plain
-generated code that wires everything up directly. At runtime there's almost nothing left to do — which is a
-big slice of why a Quarkus app can boot in tens of milliseconds.
+💡 A runtime container's startup cost is dominated by **scanning the classpath** and **reflection** to construct beans - both happen every boot. ArC does that once, at build time, and emits plain generated code that wires everything directly. At runtime there's almost nothing left to do - a big slice of why Quarkus boots in tens of milliseconds.
 
-The deeper win is **native images**. As you'll see in Phase 9, compiling to a native executable with
-GraalVM uses a "closed-world" model that is hostile to reflection — anything discovered dynamically at
-runtime is a problem. Doing DI at build time sidesteps that entirely: there's no runtime classpath scan to
-break, because the wiring is already settled before the native compiler ever runs. **Build-time DI is a big
-part of how Quarkus can offer full CDI and still compile to native** — two things that would otherwise be at
-war with each other.
+The deeper win is **native images**. GraalVM's closed-world model (Phase 9) is hostile to reflection - anything discovered dynamically at runtime is a problem. Build-time DI sidesteps that entirely, because the wiring is settled before the native compiler runs. It's a big part of how Quarkus offers full CDI *and* compiles to native.
 
-⚠️ There's a flip side, and it's mostly good news once you adjust. Errors that a runtime container throws
-when the app *starts* — a missing dependency, an ambiguous bean — ArC often catches when the app *compiles*.
-A build that won't produce a runnable app is annoying; a server that boots fine and then explodes on the
-first request in production is worse. Say you inject a type that no bean satisfies:
+⚠️ The flip side is mostly good news: errors a runtime container throws at *startup* (a missing dependency, an ambiguous bean), ArC often catches at *compile time*.
 
 ```java
 @Path("/products")
@@ -114,8 +73,6 @@ public class ProductResource {
 }
 ```
 
-The build fails, not the server:
-
 ```console
 [ERROR] Build step ...ArcProcessor#validate threw an exception:
 jakarta.enterprise.inject.UnsatisfiedResolutionException:
@@ -123,18 +80,11 @@ Unsatisfied dependency for type com.example.PricingEngine and qualifiers [@Defau
   - java member: com.example.ProductResource#pricing
   - declared on CLASS bean [class=com.example.ProductResource]
 ```
-*What just happened:* ArC validated the whole dependency graph at build time, found that nothing can supply
-a `PricingEngine`, and refused to build. The classic Jakarta EE version of this is an `UnsatisfiedResolutionException`
-*at deploy/startup*; ArC is throwing the same standard exception, just earlier. (An *ambiguous* dependency —
-two beans satisfying one type — fails the same way at build time, and the fix is the same standard `@Qualifier`
-you learned in Jakarta EE.) Shifting these failures left is a feature: you find them on your machine, not in
-prod.
+*What just happened:* ArC validated the whole graph at build time and refused to build. Classic Jakarta EE throws the same standard exception, just at deploy/startup instead. (An ambiguous dependency fails the same way; the fix is the standard `@Qualifier`.) Shifting failures left means you find them on your machine, not in prod.
 
 ## Beans & scopes
 
-The scopes are exactly the CDI scopes from the Jakarta EE phase — same annotations, same meanings — so this
-is a quick recap rather than a re-teach. A scope answers two questions: *how long does a bean live* and *who
-shares the same instance*.
+Same CDI scopes as Jakarta EE - a quick recap, not a re-teach. A scope answers: *how long does a bean live*, and *who shares the same instance*.
 
 | Scope | Annotation | One instance per… | Reach for it when |
 |-------|------------|-------------------|-------------------|
@@ -142,20 +92,13 @@ shares the same instance*.
 | Request | `@RequestScoped` | a single HTTP request | per-request state tied to one call |
 | Singleton | `@Singleton` | the whole application | like app-scoped, but eager and proxy-free (a micro-optimization; usually prefer `@ApplicationScoped`) |
 
-📝 In Quarkus, `@ApplicationScoped` is the workhorse — most of your services and repositories will be
-app-scoped. The full detail on scopes, contexts, and the proxy machinery that makes mismatched lifetimes
-safe lives in the [Jakarta EE CDI phase](/guides/jakarta-ee-from-zero); it all applies here unchanged.
+📝 `@ApplicationScoped` is the workhorse. Full detail on scopes and the proxy machinery lives in the [Jakarta EE CDI phase](/guides/jakarta-ee-from-zero) - it applies here unchanged.
 
-💡 One bonus that falls out of build-time analysis: Quarkus **removes unused beans**. Because ArC computes
-the whole graph at compile time, it can see which beans nothing actually injects and leave them out of the
-application entirely. The result is a smaller app and less to load at startup — a free win you get just for
-the container knowing the full picture ahead of time. (If you ever need to keep an apparently-unused bean —
-say it's only used reflectively — you mark it `@Unremovable`.)
+💡 A bonus from build-time analysis: Quarkus **removes unused beans** - since ArC sees the whole graph, it can leave out beans nothing injects, for a smaller, faster-loading app. (Mark an apparently-unused bean `@Unremovable` if you need to keep it - say it's only used reflectively.)
 
 ## Constructor injection & the basics
 
-Field injection is compact, but **constructor injection** is the better habit — for the same reasons it is
-in Spring and Jakarta EE. Here's the resource rewritten to take its dependency through the constructor:
+Constructor injection is the better habit, for the same reasons as in Spring and Jakarta EE:
 
 ```java
 @Path("/products")
@@ -173,23 +116,13 @@ public class ProductResource {
     }
 }
 ```
-*What just happened:* there's a single injectable constructor, so you don't even need `@Inject` on it — ArC
-treats the sole constructor as the injection point and supplies a `ProductService` when it builds the
-resource. The `service` field can be `final`, the constructor is an honest, visible list of what the class
-needs, and you can unit-test with a plain `new ProductResource(fakeService)` — no container, no Quarkus,
-just a normal object. The constructor *is* the testing seam.
+*What just happened:* a single injectable constructor doesn't even need `@Inject` - ArC treats the sole constructor as the injection point. `service` can be `final`, the constructor is an honest list of dependencies, and you can unit-test with a plain `new ProductResource(fakeService)` - no container needed.
 
-📝 Everything else from standard CDI works in Quarkus exactly as documented: **qualifiers** (a custom
-`@Qualifier` to pick between two beans of the same type) and **producers** (`@Produces` methods to make a
-non-bean object injectable). Rather than re-teach them here, lean on the
-[Jakarta EE CDI phase](/guides/jakarta-ee-from-zero) — the code is identical, and ArC resolves it all
-at build time.
+📝 **Qualifiers** (a custom `@Qualifier` to pick between beans of the same type) and **producers** (`@Produces` methods for non-bean objects) work exactly as in standard CDI - see the [Jakarta EE CDI phase](/guides/jakarta-ee-from-zero); ArC resolves it all at build time.
 
 ## The Spring bridge (brief)
 
-💡 If you're coming from Spring, Quarkus meets you halfway. The `quarkus-spring-di` extension lets Spring's
-DI annotations work directly — `@Autowired`, `@Component`, `@Service`, `@Value` — so you can lift familiar
-code over without rewriting every wiring annotation:
+💡 Coming from Spring? The `quarkus-spring-di` extension lets Spring's DI annotations work directly - `@Autowired`, `@Component`, `@Service`, `@Value` - so you can lift familiar code over:
 
 ```java
 import org.springframework.stereotype.Component;
@@ -201,15 +134,9 @@ public class ProductService {
     ProductRepository repository;
 }
 ```
-*What just happened:* with the `quarkus-spring-di` extension on the classpath, ArC understands Spring's
-`@Component` and `@Autowired` and wires this bean as if it were CDI — still at build time, with all the same
-benefits. It's a **compatibility bridge**, not a Spring runtime: it maps the annotations you know onto ArC,
-which is handy for migration but not the idiomatic path.
+*What just happened:* with the extension present, ArC understands `@Component`/`@Autowired` and wires this bean as if it were CDI - still at build time. It's a **compatibility bridge** for migration, not the idiomatic path.
 
-📝 The throughline of this whole phase: idiomatic Quarkus uses **standard CDI** — the same DX you'd get from
-Jakarta EE or Spring — but resolves the wiring at build time for speed and native-image friendliness. Learn
-CDI once and you've learned the wiring model for Quarkus, Jakarta EE, and (via the bridge) much of Spring too.
-The only thing that's genuinely different here is *when* the magic happens.
+📝 Idiomatic Quarkus uses **standard CDI** but resolves wiring at build time for speed and native-image friendliness. Learn CDI once and you've learned the wiring model for Quarkus, Jakarta EE, and (via the bridge) much of Spring too - the only thing genuinely different is *when* the magic happens.
 
 ## Recap
 

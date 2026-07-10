@@ -8,7 +8,7 @@ category: physics
 order: 2
 difficulty: beginner
 synonyms: ["newtons laws explained", "what is a force", "why do things keep moving in space", "f equals ma meaning", "conservation of energy explained", "kinetic and potential energy", "what is momentum", "newton for beginners", "why do you need a seatbelt physics"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Energy, Forces, and Motion
@@ -17,7 +17,7 @@ If "Newton's laws" makes your shoulders tense, that's because someone probably h
 
 ## How to read this
 
-Read the three phases in order. We start with what a force actually *is* and why a thing in motion stays in motion (the idea that fixes most of the confusion), then walk through how forces change motion in the everyday core of it, then arrive at the deepest payoff - energy and momentum as quantities the universe refuses to lose. Light math, heavy intuition: when a number shows up it's worked out in front of you with the units kept visible. If equations still make you flinch, there's a whole guide for that: [/guides/why-math-isnt-your-enemy](/guides/why-math-isnt-your-enemy). And if you want the bigger picture of what physics even is, start with [/guides/what-physics-actually-is](/guides/what-physics-actually-is).
+Read the three phases in order: what a force actually *is* and why a thing in motion stays in motion (the idea that fixes most of the confusion), how forces change motion day to day, then the deepest payoff - energy and momentum as quantities the universe refuses to lose. Light math, heavy intuition: any number that shows up is worked out in front of you with units kept visible. If equations still make you flinch, there's a whole guide for that: [/guides/why-math-isnt-your-enemy](/guides/why-math-isnt-your-enemy). And for the bigger picture of what physics even is, start with [/guides/what-physics-actually-is](/guides/what-physics-actually-is).
 
 ## The phases
 

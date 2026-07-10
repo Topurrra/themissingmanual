@@ -8,12 +8,12 @@ category: networking
 order: 1
 difficulty: beginner
 synonyms: ["how does the internet work", "what happens when i open a web page", "how does a website load", "what is a packet", "how do computers talk to each other"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # How the Internet Actually Works
 
-You use the internet every waking hour, and it feels like magic - you type something, you press Enter, and a page appears from a machine that might be on the other side of the planet. Nobody ever sat you down and explained what actually happened in that half-second. This guide does that. By the end, the internet will feel less like magic and more like a stack of small, sensible agreements between machines - agreements you can reason about.
+You use the internet every waking hour and it feels like magic - you press Enter, and a page appears from a machine that might be on the other side of the planet. Nobody ever explained what actually happened in that half-second. This guide does. By the end, the internet feels less like magic and more like a stack of small, sensible agreements between machines - agreements you can reason about.
 
 This is the very first "A" of networking. No prior knowledge assumed. We build the picture one layer at a time.
 

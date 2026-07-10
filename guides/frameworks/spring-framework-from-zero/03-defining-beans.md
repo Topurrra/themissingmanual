@@ -6,14 +6,14 @@ summary: "The two ways to put beans in the container — @Bean factory methods a
 tags: [spring, configuration, bean, component-scan, java-config, bean-definition, auto-configuration]
 difficulty: intermediate
 synonyms: ["spring @Configuration @Bean", "spring java config", "spring component scanning vs @Bean", "spring how to define a bean", "spring bean methods", "spring auto configuration manual equivalent"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Defining Beans: @Configuration & @Bean
 
-In the last phase you met the container — the `ApplicationContext` that builds your objects and hands them to each other so you stop writing `new` everywhere. But we glossed over a question that turns out to be the whole game: *how does the container know which objects to build in the first place?* It doesn't read your mind. You have to tell it. And there are exactly two ways to do that.
+In the last phase you met the container — the `ApplicationContext` that builds your objects and hands them to each other so you stop writing `new` everywhere. But we glossed over a question that turns out to be the whole game: *how does the container know which objects to build in the first place?* It doesn't read your mind. You have to tell it, and there are exactly two ways to do that.
 
-Here's the mental model to carry through this phase. The container is a registry of recipes. Every bean in the application started life as a *recipe* you registered — a description that says "here's a thing I want managed, and here's how to make it." The container reads all the recipes at startup, makes one of each, and keeps them. The two ways to define beans are just two ways of writing recipes: one where **you write the factory method by hand**, and one where **Spring discovers your classes and writes the recipe for you**. Same registry, same beans at the end. Different ergonomics. Once you can see them as two doors into the same room, the rest of Spring's configuration stops being a grab-bag of annotations and becomes a single, simple choice.
+The container is a registry of recipes. Every bean started life as a *recipe* you registered — a description that says "here's a thing I want managed, and here's how to make it." The container reads all the recipes at startup, makes one of each, and keeps them. The two ways to define beans are just two ways of writing recipes: one where **you write the factory method by hand**, and one where **Spring discovers your classes and writes the recipe for you**. Same registry, same beans at the end — different ergonomics.
 
 ## Two ways to register a bean
 
@@ -97,7 +97,7 @@ public class AppConfig {
 
 *What just happened:* the `messageSender()` recipe now reads a configuration value (`notify.from-address`) and uses it to set up the `EmailSender` before returning it — that's construction *you* fully own. The `notificationService()` method takes `MessageSender` as a parameter instead of calling `messageSender()` directly; Spring sees the parameter and injects the existing sender bean. Both styles work (we'll get to the subtle difference in calling-vs-injecting shortly), but the point stands: inside a `@Bean` method, you have a normal Java method body and can do whatever construction the object needs.
 
-💡 **Insight — this is exactly what auto-configuration is.** When you used Spring Boot and "magic" beans appeared — a `DataSource`, a JSON serializer, a web server — every one of them came from a `@Bean` method just like these, written by the Spring team instead of by you. Boot ships *thousands* of `@Bean` methods bundled into its auto-configuration classes. There is no separate, mysterious mechanism: auto-configuration is plain `@Bean` methods you didn't have to type. The first time this clicks, Boot stops being a black box. You're learning to read the source code Boot generates on your behalf. (More on Boot in [/guides/spring-boot-from-zero](/guides/spring-boot-from-zero).)
+💡 **This is exactly what auto-configuration is.** When you used Spring Boot and "magic" beans appeared — a `DataSource`, a JSON serializer, a web server — every one came from a `@Bean` method just like these, written by the Spring team instead of by you. Boot ships *thousands* of `@Bean` methods bundled into its auto-configuration classes. There is no separate, mysterious mechanism: auto-configuration is plain `@Bean` methods you didn't have to type. (More on Boot in [/guides/spring-boot-from-zero](/guides/spring-boot-from-zero).)
 
 ## Component scanning: let Spring find them
 
@@ -145,7 +145,7 @@ That `messageSender()` call inside `notificationService()` looks like a plain Ja
 
 📝 But that's not what happens. Inside a `@Configuration` class, calling one `@Bean` method from another returns the **same singleton instance** the container already created — not a new object. You get exactly one `EmailSender`, shared, as you'd expect.
 
-💡 **Why it works: Spring proxies the `@Configuration` class.** At startup Spring doesn't use your `AppConfig` directly — it creates a *subclass proxy* of it and registers that. The proxy intercepts every call to a `@Bean` method: the first call really runs your method and stores the result; every later call to that method returns the stored bean instead of running the method again. So `messageSender()` inside `notificationService()` is intercepted, and it hands back the singleton. This interception is *the* reason `@Configuration` exists as its own annotation rather than just `@Component`.
+💡 **Why it works: Spring proxies the `@Configuration` class.** At startup Spring doesn't use your `AppConfig` directly — it creates a *subclass proxy* of it and registers that. The proxy intercepts every call to a `@Bean` method: the first call really runs your method and stores the result; every later call returns the stored bean instead of running the method again. So `messageSender()` inside `notificationService()` is intercepted, and hands back the singleton. This interception is *the* reason `@Configuration` exists as its own annotation rather than just `@Component`.
 
 ⚠️ **Gotcha — the proxy only applies inside `@Configuration`.** If you put `@Bean` methods on a `@Component` class instead (which is technically allowed, "lite mode"), there's no proxy, and calling one `@Bean` method from another *does* create a new object every time. Same code, different annotation, completely different behavior — and no error to warn you. The safe habit: put `@Bean` methods in `@Configuration` classes, full stop. Then inter-bean calls always give you singletons. (We'll meet this proxy machinery again in [Phase 6](06-spring-aop-and-proxies.md) — it's the same trick Spring uses for transactions and AOP.)
 

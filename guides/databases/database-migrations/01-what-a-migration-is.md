@@ -6,7 +6,7 @@ summary: "A migration is a versioned, ordered change to your schema — checked 
 tags: [databases, migrations, schema, ddl, version-control, up-down]
 difficulty: intermediate
 synonyms: ["what is a database migration", "what does a migration file look like", "up and down migration", "migration vs schema change", "how do migration tools work", "git for your database schema"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What a Migration Is
@@ -16,8 +16,7 @@ exist` error, you've felt the problem migrations solve. Your *code* changed when
 sure of that. But your local database didn't. The schema and the code drifted apart, and the app fell
 into the gap.
 
-A migration is the fix for that drift. Before we run anything, let's install the one idea the whole
-topic rests on.
+A migration is the fix for that drift. Here's the one idea the whole topic rests on.
 
 ## The mental model: git for your schema
 
@@ -122,15 +121,14 @@ ALTER TABLE users
     DROP COLUMN phone_number;            -- …then the column. Reverse order of the up.
 ```
 *What just happened:* The **up** adds a nullable `phone_number` column to `users` and an index to make
-lookups on it fast. Because the column is nullable, every existing row gets `NULL` — nothing
-breaks, no value is required. The **down** undoes both, in reverse order (drop the index before the
-column it sits on). Notice this is a *safe* migration: it's purely additive, it asks nothing of
-existing rows, and its rollback genuinely restores the prior structure with no data loss — because
-there was no data in the new column to lose yet.
+lookups on it fast. Because the column is nullable, every existing row gets `NULL` — nothing breaks, no
+value is required. The **down** undoes both, in reverse order (drop the index before the column it sits
+on). This is a *safe* migration: purely additive, asks nothing of existing rows, and its rollback
+genuinely restores the prior structure with no data loss — because there was no data in the new column
+to lose yet.
 
-That "purely additive, asks nothing of existing rows" quality is not an accident. It's the property
-we'll deliberately engineer for in Phase 2, because it's what makes a change safe to run while real
-users are hitting the table.
+That "purely additive" quality isn't an accident — it's the property Phase 2 deliberately engineers for,
+because it's what makes a change safe to run while real users are hitting the table.
 
 ## Recap
 

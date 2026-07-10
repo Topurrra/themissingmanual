@@ -8,14 +8,14 @@ category: networking
 order: 6
 difficulty: intermediate
 synonyms: ["how to troubleshoot a network", "internet not working how to debug", "is it dns", "ping traceroute dig explained", "where is my connection breaking", "how to read a packet capture", "network debugging method"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Troubleshooting Networks
 
-Something doesn't load. A page hangs on "Connecting…", an API call times out, the whole office Slack goes quiet at once. The instinct is to start poking - toggle Wi-Fi, reload, blame the router, restart the laptop, maybe the server. That's guessing, and guessing is slow and stressful because you never know if the thing you just changed was the thing that mattered.
+Something doesn't load. A page hangs on "Connecting…", an API call times out, the whole office Slack goes quiet at once. The instinct is to start poking - toggle Wi-Fi, reload, blame the router, restart the laptop, maybe the server. That's guessing, and it's slow and stressful because you never know if the thing you just changed was the thing that mattered.
 
-There's a calmer way, and it's the way the people who fix networks for a living actually work. A network connection is a stack of layers, each one depending on the one below it. When something breaks, you don't guess - you walk *up* the stack, asking one yes/no question at each rung: is the link up? do I have an address? can I reach the gateway? can I turn a name into an address? can I reach the far end? The first "no" is your answer. Everything above it is irrelevant, everything below it is fine. This guide teaches you that method, then hands you the small set of tools that answer each question.
+There's a calmer way - the way people who fix networks for a living actually work. A network connection is a stack of layers, each depending on the one below it. When something breaks, you walk *up* the stack, asking one yes/no question at each rung: is the link up? do I have an address? can I reach the gateway? can I turn a name into an address? can I reach the far end? The first "no" is your answer - everything above it is irrelevant, everything below it is fine. This guide teaches you that method, then hands you the small set of tools that answer each question.
 
 ## How to read this
 

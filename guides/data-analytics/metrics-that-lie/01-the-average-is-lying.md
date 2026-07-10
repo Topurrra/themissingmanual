@@ -6,7 +6,7 @@ summary: "How honest-looking numbers mislead: averages hiding skew, survivorship
 tags: [metrics, statistics, data-analytics, bias, critical-thinking]
 difficulty: beginner
 synonyms: ["how averages lie", "survivorship bias explained", "Simpson's paradox example", "vanity metrics vs actionable metrics", "misleading charts truncated axis", "why is the average misleading", "how to read a dashboard critically"]
-updated: 2026-06-30
+updated: 2026-07-11
 ---
 
 # The Average Is Lying to You
@@ -17,7 +17,7 @@ This is the first trick to learn because it's underneath all the others: **the m
 
 ## What "average" actually does
 
-The arithmetic mean adds everything up and divides by the count. That single move has a hidden assumption baked in: that every value pulls with equal, fair weight. When the data is roughly symmetric — heights, say — that's fine. But the moment a few extreme values show up, they yank the mean toward themselves with no resistance.
+The arithmetic mean adds everything up and divides by the count — a move that assumes every value pulls with equal, fair weight. Fine when the data is roughly symmetric (heights, say). But the moment a few extreme values show up, they yank the mean toward themselves with no resistance.
 
 ```text
 Salaries on a small team (in thousands):
@@ -27,7 +27,7 @@ Salaries on a small team (in thousands):
   median = 47   (the middle value when sorted)
 ```
 
-*What just happened:* the mean says the "average" person earns 168k. Not one human on that team earns near that. The single 900 dragged the mean 120k away from where almost everyone actually lives. The median — the middle value, which doesn't care how extreme the extremes are — says 47k, which describes a real person on the team.
+*What just happened:* the mean says the "average" person earns 168k — nobody on the team earns near that. The single 900 dragged it 120k away from where everyone actually lives. The median, unmoved by extremes, says 47k: a real person on the team.
 
 ## Skew is the tell
 
@@ -49,11 +49,11 @@ Right-skewed (long tail to the right):
         └─ sits where most values actually are
 ```
 
-*What just happened:* in any right-skewed distribution the mean sits to the *right* of the median, pulled by the tail. So a reliable gut check: **if the mean is noticeably higher than the median, your data is skewed and the mean is over-reporting the typical case.** When they're close, the data is roughly symmetric and the mean is trustworthy.
+*What just happened:* in any right-skewed distribution the mean sits to the *right* of the median, pulled by the tail. Reliable gut check: **if the mean is noticeably higher than the median, your data is skewed and the mean is over-reporting the typical case.** Close together means roughly symmetric — the mean can be trusted.
 
 ## Why this matters more than it looks
 
-"Average" leaks into decisions everywhere, and each leak is a chance to be wrong:
+"Average" leaks into decisions everywhere — each leak is a chance to be wrong:
 
 - **Performance:** "average API latency is 120ms" hides the user stuck at 4 seconds. This is exactly why engineers track **p95 / p99** (the value 95% or 99% of requests come in under) instead of the mean — the tail is where the suffering lives.
 - **Money:** "average order value is $80" can mean everyone spends ~$80, or it can mean most spend $20 and a few whales spend $5,000. Those are two completely different businesses with the same average.
@@ -75,7 +75,7 @@ print(f"median: {median}")
 print("skewed!" if mean > median * 1.2 else "roughly symmetric")
 ```
 
-*What just happened:* the code computes both and flags skew when the mean runs more than 20% above the median. It prints `mean: 168`, `median: 47`, `skewed!` — a one-line alarm that the average is not describing the typical case here.
+*What just happened:* the code flags skew when the mean runs more than 20% above the median, printing `mean: 168`, `median: 47`, `skewed!` — a one-line alarm that the average isn't describing the typical case here.
 
 ### For builders
 

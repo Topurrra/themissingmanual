@@ -6,15 +6,14 @@ summary: "A practical, judgment-flagged way to pick a language by what you're bu
 tags: [programming-languages, choosing-a-language, beginner, career, comparison]
 difficulty: beginner
 synonyms: ["which language should I learn first", "how to choose a programming language", "best first programming language", "should I learn python or javascript", "does first programming language matter", "do programming concepts transfer between languages"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # How to Choose
 
-Here's where guides usually fail you. They either crown a winner ("learn Python, trust me") or drown you in
-"it depends" and leave. Let's do neither. You now have the map from Phases 1 and 2; this phase turns it into a
-decision you can make today and feel good about - and, just as importantly, releases you from the fear that
-you'll pick wrong.
+Here's where guides usually fail you: they either crown a winner ("learn Python, trust me") or drown you in
+"it depends" and leave. Let's do neither - you now have the map from Phases 1 and 2, and this phase turns it
+into a decision you can make today and feel good about, releasing you from the fear that you'll pick wrong.
 
 A note on what follows: the table is fact. The recommendations are *judgment* - reasonable, but mine, and
 flagged as such. Your situation can override any of them.
@@ -62,7 +61,7 @@ is a genuinely excellent reason to pick it - often better than any property in t
 
 Code is a team sport. A language where someone can answer your questions, review your work, and hand you a
 working setup will carry you further in your first year than a "technically superior" language you're learning
-alone in the dark. If everyone around you writes Python, learning Python means help is everywhere. Don't
+alone in the dark. If everyone around you writes Python, learning Python means help is everywhere - don't
 discount this. "What can I get help with?" is a real engineering criterion, not a cop-out.
 
 ## Choose by how it'll feel (a quieter signal)
@@ -91,7 +90,7 @@ weight. Those skills are **portable**. They transfer to every language you'll ev
 The axes from [Phase 1](01-what-makes-languages-different.md) make this concrete. Once you've internalized
 what a *type* is, what *compiled vs interpreted* means, and how *memory* gets managed, you've learned the deep
 structure that every language is just a different arrangement of. Learning your *second* language is
-dramatically easier than your first, because you're only learning new spelling for ideas you already own. And
+dramatically easier than your first, because you're only learning new spelling for ideas you already own - and
 your *third* is easier still.
 
 Two specific ideas pay off no matter which language you pick:

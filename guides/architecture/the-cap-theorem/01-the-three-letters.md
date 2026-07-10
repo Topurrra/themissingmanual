@@ -12,7 +12,7 @@ synonyms:
   - can you have consistency availability and partition tolerance
   - cp vs ap systems
   - cap theorem database examples
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # The three letters
@@ -64,13 +64,13 @@ During a partition:
                           (network split — C is cut off from A and B)
 ```
 
-*What just happened:* Node C hasn't crashed. It's still running, still has data, still can answer requests from clients that can reach it. What it can't do is talk to A and B to confirm it has the latest value or to tell them about new writes. Partition tolerance is about what happens next — does the system keep working in this split state, or does it stop entirely until the network heals?
+*What just happened:* Node C hasn't crashed — it's still running, still has data, and can still answer requests from clients that reach it. What it can't do is talk to A and B to confirm it has the latest value or hear about new writes. Partition tolerance is about what happens next: does the system keep working in this split state, or stop entirely until the network heals?
 
 > Consistency is about agreement. Availability is about responsiveness. Partition tolerance is about surviving a broken network instead of giving up.
 
 ## Why partition tolerance isn't really optional
 
-It's tempting to read CAP as "pick any two of three," as if you could choose not to have partition tolerance and get to keep both consistency and availability. In practice, that's not a real option for any system whose nodes talk over a network — and every distributed system does. Networks fail. Cables get cut, switches misbehave, cloud regions have outages. A system that isn't partition-tolerant isn't a system that has "chosen CA" — it's a system that stops working correctly the moment a partition happens, which is a matter of when, not if.
+It's tempting to read CAP as "pick any two of three" — as if you could skip partition tolerance and keep both consistency and availability. That's not a real option: every distributed system's nodes talk over a network, and networks fail — cables get cut, switches misbehave, cloud regions have outages. A system that isn't partition-tolerant hasn't "chosen CA"; it just stops working correctly the moment a partition happens, which is a matter of when, not if.
 
 ```text
 Not partition-tolerant  ->  breaks (in some way) the moment a real partition occurs
@@ -78,6 +78,6 @@ Partition-tolerant       ->  keeps running during a partition, but must choose:
                               stay consistent, or stay available. Not both.
 ```
 
-*What just happened:* this reframes the whole theorem. It isn't really "pick two of three" as a free menu. Partition tolerance is a fact of life for any real distributed system — the actual decision, the one you get to make, is what to do *during* a partition: favor consistency, or favor availability. Phase 2 walks through exactly why you can't have both once the network is actually split.
+*What just happened:* this reframes the whole theorem — it isn't really "pick two of three" as a free menu. Partition tolerance is a fact of life for any real distributed system; the actual decision you get to make is what to do *during* a partition: favor consistency, or favor availability. Phase 2 walks through exactly why you can't have both once the network is actually split.
 
 [← Overview](_guide.md) | [Phase 2: Why you can't have all three →](02-why-you-cant-have-all-three.md)

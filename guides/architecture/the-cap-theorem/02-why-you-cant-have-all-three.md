@@ -12,7 +12,7 @@ synonyms:
   - can you have consistency availability and partition tolerance
   - cp vs ap systems
   - cap theorem database examples
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Why you can't have all three
@@ -72,7 +72,7 @@ Option 2 — favor availability:
           The system gave up CONSISTENCY to protect AVAILABILITY.
 ```
 
-*What just happened:* there is no third option. Node B cannot both answer *and* guarantee the answer is correct, because guaranteeing correctness requires confirming with A, and A is unreachable. Every possible response Node B could give falls cleanly into one of these two buckets. This is the theorem, not a metaphor for it — an actual node, facing an actual request, during an actual partition, with only these two shapes of response available to it.
+*What just happened:* there is no third option. Node B cannot both answer *and* guarantee correctness, since confirming correctness requires reaching A, and A is unreachable — every possible response falls cleanly into one of the two buckets above. This is the theorem itself, not a metaphor for it: an actual node, facing an actual request, during an actual partition, with only two shapes of response available.
 
 > During a partition, "answer, but maybe wrong" and "refuse to answer" are the only two moves left on the board. CAP is the statement that there is no third move.
 
@@ -90,7 +90,7 @@ Partition heals     -> back to both, once the nodes resync
 
 ## What "choosing" looks like in practice
 
-Real systems don't have someone manually flipping a switch mid-outage. The choice is a design decision, made in advance, baked into the software: what should a node do if it can't reach its peers? Some systems are built to answer Option 1's way by default — refuse, or elect a leader and only let the leader answer. Others are built to answer Option 2's way by default — always respond, and reconcile the disagreement once the partition heals. Phase 3 looks at real databases that made each choice, and clears up the single most common misunderstanding about what CAP is actually claiming.
+Real systems don't flip a switch mid-outage — the choice is a design decision, baked into the software in advance: what should a node do if it can't reach its peers? Some default to Option 1: refuse, or elect a leader and let only the leader answer. Others default to Option 2: always respond, and reconcile the disagreement once the partition heals — Phase 3 looks at real databases that made each choice, and clears up the most common misunderstanding about what CAP actually claims.
 
 ```quiz
 [

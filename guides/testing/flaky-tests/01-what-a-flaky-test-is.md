@@ -6,7 +6,7 @@ summary: "A flaky test is nondeterministic: the same code yields different resul
 tags: [testing, flaky-tests, nondeterminism, mental-model, determinism]
 difficulty: intermediate
 synonyms: ["what is a flaky test", "why does a test pass and fail randomly", "what does nondeterministic test mean", "test passes sometimes", "why is my test unreliable"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # What a Flaky Test Actually Is
@@ -17,7 +17,7 @@ That test isn't broken in the normal sense. It's *flaky*. And flaky isn't a vibe
 
 ## A passing test is supposed to be a pure function
 
-Think about what a good test promises. You give it the same code, and it gives you the same answer - pass or fail - every single time. Same input, same output, no surprises. In other words, a healthy test behaves like a **pure function**: its result depends *only* on the code under test.
+Think about what a good test promises. You give it the same code, and it gives you the same answer - pass or fail - every single time. A healthy test behaves like a **pure function**: its result depends *only* on the code under test.
 
 ```text
    healthy test:    code  ──►  [ test ]  ──►  PASS   (always)

@@ -6,24 +6,23 @@ summary: "How a plain Java class becomes a database table: @Entity, @Id and key 
 tags: [hibernate, jpa, entity, id, generatedvalue, column, table, mapping]
 difficulty: beginner
 synonyms: ["jpa entity annotation", "jpa @Id @GeneratedValue", "hibernate column mapping", "jpa @Table @Column", "jpa primary key generation strategy", "hibernate entity to table", "jpa basic types mapping"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Entities & Basic Mapping
 
 In Phase 1 you saw the big idea: an ORM lets you work with Java objects and quietly keeps a database
 table in sync underneath. This phase is where that promise gets concrete. We take an ordinary Java
-class — a `Book` — and teach Hibernate to treat it as a row in a table. By the end you'll know how a
-class becomes a table, how a field becomes a column, and how to nudge any of that when the defaults
-aren't what you want.
+class — a `Book` — and teach Hibernate to treat it as a row in a table, and see how a class becomes a
+table, a field becomes a column, and how to nudge any of that when the defaults aren't what you want.
 
 The mental model to hold the whole time: **the entity class is the map between two worlds.** On one
 side, Java objects in memory. On the other, rows in a SQL table. Everything in this phase is you
 drawing that map — and Hibernate following it in both directions.
 
 We're keeping it deliberately small here. Our domain across this guide is `Author`, `Book`, and
-`Review`, but relationships between them don't arrive until [Phase 5](05-mapping-relationships.md).
-For now, `Book` stands alone: just its own data, mapped to its own table.
+`Review`, but relationships between them don't arrive until [Phase 5](05-mapping-relationships.md). For
+now, `Book` stands alone — just its own data, mapped to its own table.
 
 ## `@Entity` — marking a class as a table
 

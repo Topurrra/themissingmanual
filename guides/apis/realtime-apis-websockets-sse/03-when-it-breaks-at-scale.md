@@ -6,7 +6,7 @@ summary: "One server is easy; many servers is the hard part. Sticky sessions, th
 tags: [scaling, sticky-sessions, fan-out, pubsub, websockets, sse, realtime]
 difficulty: intermediate
 synonyms: ["how to scale websockets", "sticky sessions websocket", "websocket fan out", "redis pubsub websocket", "realtime scaling problem", "load balancer websocket", "how to broadcast to all clients"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # When It Breaks at Scale
@@ -23,13 +23,13 @@ problem with a couple of standard solutions.
 
 ## Why one server is easy and many is hard
 
-**The easy case.** On a single server, every connected client is *right there* — they're entries in one
-in-memory list. To broadcast a message, you loop over the list and write to each. Done.
+On a single server, every connected client is *right there* — they're entries in one in-memory list. To
+broadcast a message, you loop over the list and write to each. Done.
 
-**What changes with two servers.** Connections are long-lived and *pinned to whichever server accepted
-them.* Alice's WebSocket lives on Server A; Bob's lives on Server B. Now Alice sends a chat message. It
-arrives at Server A. Server A loops over *its* list of connections — which doesn't include Bob. Bob never
-hears it. The message is stranded on the wrong machine.
+Connections are long-lived and *pinned to whichever server accepted them.* Alice's WebSocket lives on
+Server A; Bob's lives on Server B. Now Alice sends a chat message. It arrives at Server A. Server A loops
+over *its* list of connections — which doesn't include Bob. Bob never hears it. The message is stranded
+on the wrong machine.
 
 ```mermaid
 flowchart TB
@@ -39,9 +39,9 @@ flowchart TB
   S1 -.->|knows only A| A
   S1 -.x|can't reach Bob| B
 ```
-*What just happened:* Alice's message reached Server A, but Bob's connection lives on Server B. Server A
-has no way to push to a client it isn't holding. With persistent connections, your clients are scattered
-across machines, and no single machine can see them all.
+Alice's message reached Server A, but Bob's connection lives on Server B. Server A has no way to push to
+a client it isn't holding. With persistent connections, your clients are scattered across machines, and
+no single machine can see them all.
 
 📝 **Terminology.** This is the **fan-out** problem: one incoming event has to reach *many* connected
 clients, but those clients are spread across servers that don't share memory. Solving fan-out is the
@@ -64,9 +64,9 @@ Without stickiness:  Alice's upgrade → Server A
 With stickiness:     Alice's upgrade → Server A
                      Alice's frames  → Server A   ✓ (same server, connection survives)
 ```
-*What just happened:* Sticky sessions pin a client to one server so the long-lived connection isn't
-ripped apart by ordinary load balancing. It's the first thing to check when WebSockets "randomly"
-disconnect behind a load balancer — and a config most teams forget until it bites.
+Sticky sessions pin a client to one server so the long-lived connection isn't ripped apart by ordinary
+load balancing. It's the first thing to check when WebSockets "randomly" disconnect behind a load
+balancer — and a config most teams forget until it bites.
 
 ⚠️ **Stickiness is necessary but not sufficient.** Pinning Alice to Server A keeps *her* connection
 alive, but it does nothing to get her message to Bob on Server B. Sticky sessions fix the connection
@@ -95,10 +95,10 @@ flowchart LR
   PS -->|fan-out| S2[Server B]
   S2 --> B[Bob]
 ```
-*What just happened:* No single server has to know every client anymore. Servers only know their *own*
-connections; the backplane is the shared nervous system that carries every message to every server. This
-one pattern — publish to a backplane, fan out to local connections — is how essentially all large
-realtime systems scale.
+No single server has to know every client anymore. Servers only know their *own* connections; the
+backplane is the shared nervous system that carries every message to every server. This one pattern —
+publish to a backplane, fan out to local connections — is how essentially all large realtime systems
+scale.
 
 🪖 **War story.** A chat app worked flawlessly in staging (one server) and broke the day it scaled to
 three in production. Messages reached maybe a third of users — exactly the fraction who happened to share

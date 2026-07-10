@@ -6,12 +6,12 @@ summary: "When you run a program, the operating system loads it into RAM and tur
 tags: [process, operating-system, cpu, ram, scheduling, execution]
 difficulty: beginner
 synonyms: ["what does running a program mean", "what is a process", "how does the cpu run my program", "what happens when you run a program", "how does a program use ram", "source code to process"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What "Running" Means
 
-We've followed your code a long way. It started as text. A compiler or interpreter turned it into machine instructions. Those instructions work with data that lives on the stack and the heap. But there's still a word we've been using loosely the whole time: **running**. When you double-click an app or type a command and hit Enter, what *is* the thing that comes to life? Let's give "running" a real definition and snap every piece we've learned into place.
+We've followed your code a long way. It started as text. A compiler or interpreter turned it into machine instructions. Those instructions work with data that lives on the stack and the heap. But there's still a word we've been using loosely the whole time: **running**. When you double-click an app or type a command and hit Enter, what *is* the thing that comes to life? Let's give "running" a real definition and snap every piece into place.
 
 ## A running program is a process
 
@@ -19,7 +19,7 @@ We've followed your code a long way. It started as text. A compiler or interpret
 
 📝 **Terminology.** A *process* is a program in the act of running - its instructions loaded into RAM, its stack and heap set up, and an identity the operating system tracks. The same program can run as several processes at once (think two separate browser windows from one app).
 
-The difference is worth holding onto: your executable is like a recipe sitting in a cookbook. A process is what exists when someone is *actually cooking it* - ingredients out, pots on the stove, the kitchen busy. One recipe; you could cook it twice at once in two kitchens.
+The difference is worth holding onto: your executable is like a recipe sitting in a cookbook. A process is what exists when someone is *actually cooking it* - ingredients out, pots on the stove, the kitchen busy. One recipe, but you could cook it twice at once in two kitchens.
 
 ```mermaid
 flowchart LR
@@ -30,7 +30,7 @@ flowchart LR
 
 Two pieces of hardware do the heavy lifting for a running process, and they have clearly different jobs.
 
-**RAM is where the process lives while it runs.** Its machine instructions, its stack, its heap - all of it sits in **RAM** (random-access memory), the computer's fast working memory. This is *why* a program has to be loaded before it runs: it's being copied from slow long-term storage (your disk) into fast working memory where the CPU can reach it quickly. The difference between RAM and disk - and why it matters so much - is its own topic: [CPU, RAM & Storage](/guides/cpu-ram-and-storage).
+**RAM is where the process lives while it runs.** Its machine instructions, its stack, its heap - all of it sits in **RAM** (random-access memory), the computer's fast working memory. This is *why* a program has to be loaded before it runs: it's copied from slow long-term storage (your disk) into fast working memory where the CPU can reach it quickly. The difference between RAM and disk, and why it matters so much, is its own topic: [CPU, RAM & Storage](/guides/cpu-ram-and-storage).
 
 **The CPU is what actually executes the instructions.** The **CPU** (the processor) is the part that does the work: it reads your process's machine instructions from RAM, one after another, and carries each one out - add these, copy that, compare, jump. This is the literal meaning of "the code is running": the CPU is stepping through your translated instructions, in order, doing exactly what each one says.
 
@@ -42,7 +42,7 @@ flowchart LR
 
 ## The OS schedules your process onto the CPU
 
-Here's the fact that surprises people: your process is almost never running *continuously*. Your computer has dozens - often hundreds - of processes alive at once, but only a handful of CPU cores to run them on. They can't all run at the same instant.
+Here's the fact that surprises people: your process is almost never running *continuously*. Your computer has dozens - often hundreds - of processes alive at once, but only a handful of CPU cores to run them on, so they can't all run at the same instant.
 
 **What the OS does in real life.** The operating system acts as a scheduler. It gives your process a slice of the CPU, lets it run for a tiny moment, then pauses it and hands the CPU to another process, and another - cycling through all of them so fast it *looks* like everything runs at once. Your program experiences this as "running," even though, zoomed in, it's running in rapid bursts with pauses in between.
 

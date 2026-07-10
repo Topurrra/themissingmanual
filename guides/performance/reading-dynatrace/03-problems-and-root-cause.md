@@ -6,7 +6,7 @@ summary: "How Dynatrace folds many correlated symptoms into one 'Problem' and pr
 tags: [dynatrace, problem, root-cause, alerting, incident, davis, troubleshooting]
 difficulty: intermediate
 synonyms: ["dynatrace problem explained", "dynatrace root cause analysis", "dynatrace davis ai root cause", "how does dynatrace find root cause", "dynatrace alert affected entities", "should i trust dynatrace root cause", "dynatrace problem to cause workflow"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Problems & Root Cause
@@ -17,8 +17,7 @@ remembers the time a tool blamed the wrong thing and a team spent an hour restar
 
 Both instincts are right. Dynatrace is genuinely good at the thing humans are bad at half-asleep: collapsing a
 storm of correlated alerts into *one* incident and pointing at where it started. But its "root cause" is a
-*proposal* built from correlation and topology, not a proof. This phase shows you how it builds a Problem, how
-to walk from the alert to the real cause, and exactly where to apply your own judgment.
+*proposal* built from correlation and topology, not a proof.
 
 ## The incident cheat-card
 

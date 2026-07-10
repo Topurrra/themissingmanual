@@ -6,7 +6,7 @@ summary: "The two founding strategies for automatic memory management: counting 
 tags: [garbage-collection, reference-counting, mark-and-sweep, cpython, cycles]
 difficulty: advanced
 synonyms: ["how does reference counting work", "what is mark and sweep algorithm", "why cant reference counting collect cycles", "python garbage collection reference counting"]
-updated: 2026-07-06
+updated: 2026-07-10
 ---
 
 # Reference Counting and Mark-Sweep, the Two Basic Ideas
@@ -15,9 +15,7 @@ Every garbage collector, from CPython's to the JVM's most exotic low-latency eng
 
 ## Reference counting: count who points at you
 
-The idea is mechanical and local. Every object carries a hidden counter: how many references currently point at it. Each time a reference is created - assigned to a variable, stored in a list, passed as an argument - the counter goes up. Each time a reference goes away - the variable goes out of scope, gets reassigned, the containing object is freed - the counter goes down. The moment a counter hits zero, nothing in the program can reach that object anymore, so it's freed immediately, right there, synchronously.
-
-No separate collection pass. No pause where the whole program stops to hunt for garbage. Memory gets reclaimed the instant it becomes unreachable, one object at a time, spread evenly across the program's execution instead of bunched into a collection cycle.
+The idea is mechanical and local. Every object carries a hidden counter: how many references currently point at it. Each time a reference is created - assigned to a variable, stored in a list, passed as an argument - the counter goes up. Each time a reference goes away - the variable goes out of scope, gets reassigned, the containing object is freed - the counter goes down. The moment a counter hits zero, nothing in the program can reach that object anymore, so it's freed immediately, right there, synchronously - no separate collection pass, no pause where the whole program stops to hunt for garbage, just reclamation spread evenly across execution instead of bunched into a collection cycle.
 
 CPython uses this as its primary mechanism. Every Python object has a `refcount` field baked into its C struct; `sys.getrefcount()` reads it directly.
 
@@ -66,7 +64,7 @@ del b
 
 📝 **Terminology.** A **reference cycle** is a set of objects that reference each other (directly or through a chain) but that no root - no live variable, no global, no stack frame - reaches from outside the set. They're garbage by any reasonable definition, but invisible to counting alone.
 
-**CPython's real answer.** Because pure refcounting leaks cycles, CPython runs two collectors, not one. Refcounting handles the vast majority of objects (strings, temporaries, non-circular structures) and frees them instantly. Layered on top is a periodic **cycle detector** - a generational tracing collector (Phase 2's subject) that runs occasionally, specifically to find and break cycles that counting missed. `gc.collect()` triggers it manually; it also runs automatically based on allocation thresholds. Lesson: reference counting is a real, deployed strategy, but every system that uses it as its primary mechanism pairs it with a tracing fallback for cycles.
+**CPython's real answer.** Because pure refcounting leaks cycles, CPython runs two collectors, not one. Refcounting handles the vast majority of objects (strings, temporaries, non-circular structures) and frees them instantly. Layered on top is a periodic **cycle detector** - a generational tracing collector (Phase 2's subject) that runs occasionally, specifically to find and break cycles that counting missed. `gc.collect()` triggers it manually; it also runs automatically based on allocation thresholds.
 
 ## Mark-and-sweep: trace from the roots instead
 
@@ -88,7 +86,7 @@ flowchart LR
   E["E ↔ F<br/>(unreachable cycle)"] <--> F
 ```
 
-*Reading this:* `A`, `B`, `D` are reached by tracing from the roots, so they're marked live - including `B`, even though it's part of a `B ↔ C` cycle, because `B` is *also* reachable from `A`. `C` gets marked too, by extension. `E` and `F` reference each other but nothing traces to either of them from a root - unmarked, and swept. This is the direct answer to Phase 1's cycle problem: mark-and-sweep doesn't care whether objects reference each other. It only cares whether a root can reach them. A cycle with no root reference is exactly as dead as a single unreferenced object.
+*Reading this:* `A`, `B`, `D` are reached by tracing from the roots, so they're marked live - including `B`, even though it's part of a `B ↔ C` cycle, because `B` is *also* reachable from `A`. `C` gets marked too, by extension. `E` and `F` reference each other but nothing traces to either of them from a root - unmarked, and swept. This is the direct answer to Phase 1's cycle problem: mark-and-sweep doesn't care whether objects reference each other, only whether a root can reach them - a cycle with no root reference is exactly as dead as a single unreferenced object.
 
 **The cost profile is the mirror image of reference counting.** No per-mutation overhead - assigning a pointer is a plain pointer assignment, nothing to increment. But reclamation isn't immediate: garbage sits unreclaimed until the next full trace runs, and that trace needs a moment where the object graph holds still - the root of the stop-the-world pause from the intro-level guide. Making that trace fast, frequent, and non-disruptive without giving up its cycle-safety is where the rest of this guide goes next.
 

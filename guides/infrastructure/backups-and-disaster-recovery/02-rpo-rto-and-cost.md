@@ -6,19 +6,18 @@ summary: "How much data you can lose and how long you can be down, and how those
 tags: [backups, disaster-recovery, infrastructure, rpo, rto, ransomware, resilience]
 difficulty: intermediate
 synonyms: ["how to back up a server", "what is the 3-2-1 backup rule", "rpo vs rto", "difference between backup and disaster recovery", "how often should i back up", "ransomware backup strategy", "how to test a backup restore", "offsite backup"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # RPO, RTO, and the Cost Dial
 
-"How often should we back up?" feels like a technical question with a technical answer. It isn't. It's a
-*business* question wearing a technical hat, and you can't answer it sensibly until you know two things:
-how much recent data the business can afford to lose, and how long it can afford to be down. Those two
-numbers have names, and once you have them, every other decision — schedule, storage, spend — falls out
-almost automatically.
+"How often should we back up?" feels technical. It isn't — it's a *business* question wearing a technical
+hat, and you can't answer it sensibly until you know two things: how much recent data the business can
+afford to lose, and how long it can afford to be down.
 
-This is the phase where backups stop being a checkbox and start being a deliberate trade. The dial you're
-turning is cost.
+Those two numbers have names, and once you have them, every other decision — schedule, storage, spend —
+falls out almost automatically. This is where backups stop being a checkbox and start being a deliberate
+trade: the dial you're turning is cost.
 
 ## The two numbers: RPO and RTO
 

@@ -9,7 +9,7 @@ order: 13
 group: "Python"
 difficulty: intermediate
 synonyms: ["learn sqlalchemy", "sqlalchemy tutorial", "sqlalchemy 2.0", "sqlalchemy core vs orm", "sqlalchemy session unit of work", "sqlalchemy select query", "sqlalchemy relationships", "sqlalchemy n+1 selectinload", "alembic migrations"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # SQLAlchemy From Zero

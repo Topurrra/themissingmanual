@@ -6,13 +6,13 @@ summary: "Derive new columns the pandas way: vectorized arithmetic, np.where and
 tags: [pandas, vectorization, apply, map, new-columns, transformation, performance]
 difficulty: intermediate
 synonyms: ["pandas new column", "pandas apply map", "pandas vectorized operations", "pandas don't loop dataframe", "pandas np.where", "pandas transform column", "pandas performance vectorize"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Transforming Data
 
-Cleaning got your data trustworthy. Now you make it *useful* — and most of that work is the same move over
-and over: take the columns you have and compute new ones from them. Revenue from units and price. A
+Cleaning got your data trustworthy. Now you make it *useful* — and most of that work is the same move,
+repeated: take the columns you have and compute new ones from them. Revenue from units and price. A
 "high value" flag from revenue. A size bucket from a number. A full region name from a code.
 
 Here's the mental model for the whole phase, and it's the same one from Phase 1

@@ -6,12 +6,12 @@ summary: "How Blazor ties markup to state: one-way (@field renders into the DOM)
 tags: [blazor, csharp, data-binding, bind, state]
 difficulty: intermediate
 synonyms: ["blazor data binding", "blazor @bind", "blazor two-way binding", "blazor bind:event", "blazor input binding", "blazor one-way binding"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Data Binding
 
-Here's the one idea that makes Blazor feel alive instead of static: **binding ties your markup to your C# state.** You don't manually grab an element and shove text into it the way you would with `document.getElementById` in JavaScript. You declare a relationship — "this bit of UI reflects that field" — and Blazor keeps them in sync for you.
+Here's the one idea that makes Blazor feel alive instead of static: **binding ties your markup to your C# state.** You don't manually grab an element and shove text into it the way you would with `document.getElementById` in JavaScript. You declare a relationship — "this bit of UI reflects that field" — and Blazor keeps them in sync.
 
 That relationship runs in one of two directions:
 
@@ -38,7 +38,7 @@ When you drop `@expression` into your markup, Blazor evaluates that C# and rende
 }
 ```
 
-*What just happened:* The three `@` expressions read straight out of the `@code` fields and render their current values. Notice `@(InStock ? ... : ...)` — when the expression is more than a simple name, wrap it in parentheses so Blazor knows where the C# ends and the markup resumes. This is a one-way relationship: the markup mirrors the fields, but nothing in the markup can change those fields. For that, you need two-way binding.
+*What just happened:* the three `@` expressions read straight out of the `@code` fields and render their current values. Notice `@(InStock ? ... : ...)` — when the expression is more than a simple name, wrap it in parentheses so Blazor knows where the C# ends and markup resumes. This is a one-way relationship: the markup mirrors the fields, but nothing in the markup can change them. For that, you need two-way binding.
 
 ## Two-way binding with `@bind`
 
@@ -66,7 +66,7 @@ A read-out isn't enough for a form. When the user types into a search box or edi
 }
 ```
 
-*What just happened:* `@bind="filter"` connects the text box to the `filter` field. When `filter` changes, the `@foreach` re-runs and the list narrows. The `<strong>@filter</strong>` next to it is *one-way* binding reading the same field — a handy way to see two-way and one-way working side by side. One field, two roles.
+*What just happened:* `@bind="filter"` connects the text box to the `filter` field. When `filter` changes, the `@foreach` re-runs and the list narrows. The `<strong>@filter</strong>` next to it is *one-way* binding reading the same field — one field, two roles, side by side.
 
 `@bind` isn't only for text boxes. It adapts to the element it's on:
 
@@ -90,9 +90,9 @@ A read-out isn't enough for a form. When the user types into a search box or edi
 }
 ```
 
-*What just happened:* On a `<select>`, `@bind` reads and writes the chosen `<option>`'s `value`. On `<input type="checkbox">`, it binds to a `bool` — checked is `true`, unchecked is `false`. Blazor picks the right HTML attribute and conversion for each element type, so you write the same `@bind` everywhere and let the framework sort out the plumbing.
+*What just happened:* on a `<select>`, `@bind` reads and writes the chosen `<option>`'s `value`. On `<input type="checkbox">`, it binds to a `bool` — checked is `true`, unchecked `false`. Blazor picks the right HTML attribute and conversion per element, so you write the same `@bind` everywhere.
 
-> 💡 Here's the timing detail that trips people up: by default `@bind` on a text input syncs on the **`onchange`** event — which fires when the input *loses focus*, not on every keystroke. So in the search example above, `filter` only updates after you click away or press Tab. That's often not what you want for a live search. The next section fixes it.
+> 💡 The timing detail that trips people up: by default `@bind` on a text input syncs on **`onchange`** — fires when the input *loses focus*, not on every keystroke. In the search example above, `filter` only updates after you click away or press Tab, often not what you want for a live search. The next section fixes it.
 
 ## Controlling *when* and *how* it syncs
 
@@ -109,7 +109,7 @@ A read-out isn't enough for a form. When the user types into a search box or edi
 }
 ```
 
-*What just happened:* With `@bind:event="oninput"`, `filter` updates as the user types each character, so the filtered list reacts instantly instead of waiting for the box to lose focus. The default `onchange` is fine for a price field you only care about once editing is done; `oninput` is what you want for anything that should feel live.
+*What just happened:* with `@bind:event="oninput"`, `filter` updates as the user types each character, so the filtered list reacts instantly instead of waiting for the box to lose focus. The default `onchange` is fine for a price field you only care about once editing is done; `oninput` is for anything that should feel live.
 
 **`@bind:format`** controls how a value is rendered into the input — most commonly for dates:
 
@@ -122,7 +122,7 @@ A read-out isn't enough for a form. When the user types into a search box or edi
 }
 ```
 
-*What just happened:* `@bind:format="yyyy-MM-dd"` tells Blazor how to format the `DateTime` when it writes it into the input's value. Without a matching format, an `<input type="date">` may refuse to display the value, since the browser expects exactly `yyyy-MM-dd`.
+*What just happened:* `@bind:format="yyyy-MM-dd"` tells Blazor how to format the `DateTime` when writing it into the input's value. Without a matching format, an `<input type="date">` may refuse to display the value, since the browser expects exactly `yyyy-MM-dd`.
 
 **`@bind:after`** runs a method *after* the bound field has been updated — the right place to react to a change (recalculate, log, call an API):
 
@@ -143,15 +143,15 @@ A read-out isn't enough for a form. When the user types into a search box or edi
 }
 ```
 
-*What just happened:* Each time the bind updates `filter`, Blazor then calls `OnFilterChanged`, which reads the freshly-updated value and sets `status`. The key word is *after* — by the time your method runs, `filter` already holds the new value, so you don't have to chase the event arguments.
+*What just happened:* each time the bind updates `filter`, Blazor calls `OnFilterChanged`, which reads the freshly-updated value and sets `status`. The key word is *after* — by the time your method runs, `filter` already holds the new value.
 
-> ⚠️ This one bites everyone: **`@bind="x"` is shorthand** for `value="@x"` plus an `@onchange` handler that assigns the typed value back to `x`. Because `@bind` already owns the `@onchange` (or `oninput`) handler under the hood, you **cannot** also add your own `@onchange` to the same element — they'd both try to handle the event and Blazor will error. If you need to run code on change, use `@bind:after` (shown above), or drop `@bind` entirely and write `value="@x"` with your own `@onchange` handler that does both the assignment and your logic. Pick one or the other; never both on the same element.
+> ⚠️ This one bites everyone: **`@bind="x"` is shorthand** for `value="@x"` plus an `@onchange` handler that assigns the typed value back to `x`. Because `@bind` already owns that handler, you **cannot** also add your own `@onchange` to the same element — Blazor will error. Use `@bind:after` (shown above), or drop `@bind` entirely and write `value="@x"` with your own `@onchange` handler doing both the assignment and your logic. Never both on the same element.
 
 ## When does the UI actually update?
 
-Binding handles the sync, but *re-rendering* is what makes the change visible. The good news: when a bound field changes **because of the UI** (a keystroke, a checkbox click), Blazor re-renders that component automatically. That's why the filtered list updates without you lifting a finger.
+Binding handles the sync, but *re-rendering* is what makes the change visible. When a bound field changes **because of the UI** (a keystroke, a checkbox click), Blazor re-renders that component automatically — that's why the filtered list updates without you lifting a finger.
 
-> 💡 The exception is state you change from **your own code** outside of a UI event — say, a background timer ticking, or a value updated inside an `async` callback. In those cases Blazor may not know it needs to re-render, and you have to nudge it with `StateHasChanged()`. We cover exactly when and why in [Events & the Component Lifecycle](04-events-and-lifecycle.md). For now, just know: UI-driven changes render themselves; code-driven changes sometimes need a tap on the shoulder.
+> 💡 The exception is state you change from **your own code** outside a UI event — a background timer ticking, a value updated inside an `async` callback. There, Blazor may not know it needs to re-render, and you nudge it with `StateHasChanged()`. Covered in [Events & the Component Lifecycle](04-events-and-lifecycle.md). For now: UI-driven changes render themselves; code-driven changes sometimes need a tap on the shoulder.
 
 ## Recap
 

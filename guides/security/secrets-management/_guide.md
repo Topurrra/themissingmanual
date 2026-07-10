@@ -8,12 +8,12 @@ category: security
 difficulty: intermediate
 order: 8
 synonyms: ["how to keep api keys safe", "stop committing secrets to git", "what is a secret in code", "i committed my api key", "how to store passwords for an app", "what is a secrets manager", "how to rotate a leaked key", "secrets management for beginners"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Secrets Management (Don't Commit Your Keys)
 
-There's a moment that happens to almost every developer once. You wire up a third-party service, paste the API key right into the code to "get it working," push the branch - and three days later get an email from your cloud provider about a $4,000 bill, or a note from a security bot that found your key in a public repo. Your stomach drops. You weren't careless, exactly. Nobody ever showed you where keys are *supposed* to live, so you put it where the code could see it.
+There's a moment that happens to almost every developer once. You wire up a third-party service, paste the API key right into the code to "get it working," push the branch - and three days later get an email from your cloud provider about a $4,000 bill, or a note from a security bot that found your key in a public repo. You weren't careless, exactly. Nobody ever showed you where keys are *supposed* to live, so you put it where the code could see it.
 
 This guide fixes that gap. By the end you'll know exactly what counts as a secret, why secrets leak (it's almost always the same way), how to keep them out of your code and out of Git, and how real teams store and rotate them so a leak is a shrug instead of a disaster. The core idea is calm and simple: **a secret is a key to something that costs money or data, so you treat it like a key - you don't tape it to the front door.**
 

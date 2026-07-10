@@ -6,14 +6,14 @@ summary: "The three ways to score model output — exact and rule-based checks, 
 tags: [evals, grading, llm-as-judge, metrics, rules, testing]
 difficulty: intermediate
 synonyms: ["how to grade llm output", "llm as a judge", "rule based eval", "reference based metric", "exact match eval", "how to score model output", "automated llm evaluation"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # How to Actually Grade Output
 
 You've got your input set from Phase 1. Now the real question: for each output, how does a *machine* decide pass or fail, so you can run the whole set without re-reading every line by hand?
 
-There isn't one answer, because "correct" means different things for different tasks. Extracting a date has one right answer; summarizing an article has a thousand acceptable ones. So you reach for one of three grading methods, from cheapest-and-strictest to most-flexible-and-fuzziest. The skill is matching the method to the task — and knowing exactly how each one can fool you.
+There isn't one answer, because "correct" means different things for different tasks. Extracting a date has one right answer; summarizing an article has a thousand acceptable ones. So you reach for one of three grading methods, from cheapest-and-strictest to most-flexible-and-fuzziest. The skill is matching the method to the task — and knowing how each one can fool you.
 
 ## Method 1: Exact and rule-based checks
 
@@ -38,7 +38,7 @@ print(grade("Account Access!", {"expected_intent": "account_access"})) # False
 
 *What just happened:* The grader returned a hard pass/fail with zero ambiguity and zero cost — perfect for classification. Note the second case fails on a trailing `!` and capitalization: that's the method working as designed, not a bug. Exact checks are unforgiving, which is their strength and their trap.
 
-**Where it lies to you.** It can't see meaning. "Yes." and "Absolutely, that's correct." are the same answer to a human and a fail/pass split to exact match. The moment the acceptable output is a *range* of phrasings — any summary, any explanation, any chat reply — exact match either rejects good answers or you loosen it into uselessness.
+**Where it lies to you.** It can't see meaning. "Yes." and "Absolutely, that's correct." are the same answer to a human and a fail/pass split to exact match. The moment the acceptable output is a *range* of phrasings — any summary, explanation, or chat reply — exact match either rejects good answers or you loosen it into uselessness.
 
 💡 **Key point.** Always reach for rule-based first. It's free, instant, deterministic, and never argues. Use it for everything it *can* cover, and only escalate to the fuzzier methods for the parts it genuinely can't.
 
@@ -60,7 +60,7 @@ semantic similarity:   high      (same meaning, scored as close)
 
 **Where it lies to you.** Three ways, and they bite:
 
-- **A score isn't a verdict.** Reference methods give you a number like `0.82`, not a pass/fail. You have to pick a threshold, and that threshold is a judgment call you can get wrong.
+- **A score isn't a verdict.** Reference methods give you a number like `0.82`, not a pass/fail — you pick a threshold, and that threshold is a judgment call you can get wrong.
 - **High similarity can still be wrong.** An output can be semantically close to the reference and yet have flipped a critical fact — "the migration *succeeded*" is very similar to "the migration *failed*" by overlap, and disastrously different in truth.
 - **It's only as good as your reference.** A mediocre gold answer rewards mediocre outputs and punishes ones that are actually *better* than your reference. Garbage reference in, garbage score out.
 
@@ -89,7 +89,7 @@ Return JSON: {"groundedness": n, "helpfulness": n, "tone": n, "why": "..."}
 - **It has biases.** Many judges favor longer, more confident-sounding answers, or favor an answer that's positioned first, or rate their own model's style highly. A flattering output can score well for being flattering.
 - **A vague rubric gets vague grades.** "Rate the quality 1–10" gives you noise. Specific, behavior-anchored criteria ("invents facts → groundedness = 1") give you something repeatable.
 
-🪖 **War story.** A team automated grading with a judge and watched scores climb release after release — then a customer flagged answers that were polished, friendly, and *wrong*. The judge had a length-and-confidence bias; the prompt changes had been making outputs longer and more assertive, not more correct, and the judge happily rewarded that. The fix was twofold: tighten the rubric to score groundedness explicitly, and **validate the judge against a small human-graded set** to confirm it agreed with people before trusting it on the rest.
+🪖 **War story.** A team automated grading with a judge and watched scores climb release after release — then a customer flagged answers that were polished, friendly, and *wrong*. The judge had a length-and-confidence bias: prompt changes had made outputs longer and more assertive, not more correct, and the judge happily rewarded that. The fix: tighten the rubric to score groundedness explicitly, and validate the judge against a small human-graded set.
 
 💡 **Key point.** Before you trust an LLM judge, grade a few dozen outputs *by hand*, then have the judge grade the same ones, and check that they agree. If the judge disagrees with humans, fix the rubric — don't ship a grader you haven't graded.
 
@@ -109,7 +109,7 @@ open-ended, "is it good?"     ──▶   LLM-as-judge (validated)
 
 ## For builders
 
-Layer them. Run the rule checks first as a hard gate (valid JSON? required field present? not over length?) — those are free and catch the dumb breakages instantly. Only send the outputs that *pass* the gate to a judge for the fuzzy quality score, since judge calls cost tokens and time. And keep a small human-graded sample as ground truth to periodically check that your judge still agrees with actual humans. The grader is code; like any code, it can rot, and an eval you trust blindly is vibes with extra latency.
+Layer them. Run the rule checks first as a hard gate (valid JSON? required field present? not over length?) — free, and they catch the dumb breakages instantly. Only send outputs that *pass* the gate to a judge, since judge calls cost tokens and time. Keep a small human-graded sample as ground truth to periodically check your judge still agrees with actual humans. The grader is code; like any code, it can rot, and an eval you trust blindly is vibes with extra latency.
 
 ```quiz
 [

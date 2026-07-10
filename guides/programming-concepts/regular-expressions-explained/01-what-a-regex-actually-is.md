@@ -6,14 +6,13 @@ summary: "A regex is a pattern that describes the shape of text. You don't write
 tags: [regex, mental-model, pattern-matching, matching, beginner-friendly]
 difficulty: beginner
 synonyms: ["what is a regular expression", "what does a regex do", "regex mental model", "how does a regex match text", "regex match vs no match"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What a Regex Actually Is
 
 Before any symbols, let's fix the one idea the whole topic rests on. Get this, and every confusing
-pattern you ever see afterward becomes something you can reason about instead of something you have
-to fear.
+pattern you ever see afterward becomes something you can reason about instead of fear.
 
 Here's the shift: **a regex is not code you run. It's a description you write.** You're not telling
 the computer *how* to search the text step by step. You're describing the *shape* of the thing
@@ -43,7 +42,7 @@ flowchart LR
 ```
 
 *What this picture says:* you supply two things - a pattern and some text - and the engine reports
-back where (and whether) the pattern's shape appears in the text. You never wrote a loop. You
+back where (and whether) the pattern's shape appears in the text. You never wrote a loop; you
 described, and it matched.
 
 ## Why people get this wrong
@@ -52,11 +51,11 @@ The common wrong picture is that a regex is a *command* - something that "does" 
 "find and delete all the emails." It isn't. On its own, a regex only answers one question: **does
 this shape appear in this text, and if so, where?**
 
-The *actions* - search, highlight, replace, extract - come from the tool you hand the regex to.
-Your editor's Find box uses the regex to decide what to highlight. A replace feature uses it to
-decide what to swap out. `grep` uses it to decide which lines to print. The regex itself is always
-the same humble thing: a description of a shape. Keeping that separation in your head - *pattern
-describes, tool acts* - stops a lot of confusion later.
+The *actions* - search, highlight, replace, extract - come from the tool you hand the regex to. Your
+editor's Find box uses it to decide what to highlight. A replace feature uses it to decide what to
+swap out. `grep` uses it to decide which lines to print. The regex itself is always the same humble
+thing: a description of a shape. Keeping that separation in your head - *pattern describes, tool acts*
+- stops a lot of confusion later.
 
 ## A tiny first example
 

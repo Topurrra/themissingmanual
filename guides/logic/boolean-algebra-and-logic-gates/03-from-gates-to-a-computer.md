@@ -6,34 +6,27 @@ summary: "Wire a few gates together and they start to add: a half-adder from XOR
 tags: [logic, half-adder, full-adder, cpu, hardware]
 difficulty: beginner
 synonyms: ["how does a computer add", "what is a half adder", "what is a full adder", "how do gates make a cpu", "binary addition with gates", "what is an ALU"]
-updated: 2026-06-25
+updated: 2026-07-10
 ---
 
 # From Gates to a Computer
 
-You've built a real toolkit. In [What Logic Actually Is](/guides/what-logic-actually-is) you met
-true and false. In [Propositional Logic](/guides/propositional-logic) you combined them with AND,
-OR, and NOT. In Phase 2 you watched those operations become physical: gates, wires, voltage that
-means something. Each step felt small.
-
-This phase is the payoff. We'll wire a handful of gates together and watch something appear that
-none of them could do alone: they'll start doing **arithmetic**.
+You've built a real toolkit: [true and false](/guides/what-logic-actually-is), then AND/OR/NOT as
+[an algebra you can combine them with](/guides/propositional-logic), then those operations made
+physical as gates in Phase 2. This phase is the payoff - wire a handful of gates together and
+watch them do something none of them can do alone: **arithmetic**.
 
 ## The question driving this phase
 
-Here's the puzzle that should be bugging you. AND, OR, and NOT are about truth - true/false in,
-true/false out. Addition is about *numbers*: `2 + 3 = 5`. Those feel like two different worlds.
-
-So how does a machine that only knows true and false add numbers? Nobody snuck a calculator
-inside. There's no "+" component hiding in the silicon. There are only gates.
-
-The answer is one of the most satisfying ideas in computing, and you already have every piece you
-need.
+AND, OR, and NOT are about truth - true/false in, true/false out. Addition is about *numbers*:
+`2 + 3 = 5`. Those feel like two different worlds. So how does a machine that only knows true and
+false add numbers? Nobody snuck a calculator inside - there's no "+" component hiding in the
+silicon, only gates. The answer is one of the most satisfying ideas in computing, and you already
+have every piece you need.
 
 ## Binary addition, recapped
 
-Computers count in binary - only `0` and `1`. Adding two single bits has exactly four cases, and
-you can work all four out by hand:
+Computers count in binary - only `0` and `1`. Adding two single bits has exactly four cases:
 
 ```text
 0 + 0 = 0
@@ -42,23 +35,16 @@ you can work all four out by hand:
 1 + 1 = 10   ← two! doesn't fit in one bit
 ```
 
-The first three are calm. The fourth is the interesting one. `1 + 1` is two, and two in binary is
-`10` - a `1` followed by a `0`. It doesn't fit in a single bit, so it spills.
-
-That spill is the whole game. When a column overflows, the extra `1` moves to the next column
-over. It's the same move you make in decimal: `7 + 5 = 12`, you write the `2` and **carry** the
-`1`. Binary does it sooner, but the move is identical.
-
-So adding two bits really produces *two* answers:
-
-- a **sum** bit - what you write down in this column
-- a **carry** bit - what spills into the next column
-
-Hold onto those two words. We're about to build a circuit for each.
+The first three are calm. `1 + 1` is two, and two in binary is `10` - it doesn't fit in a single
+bit, so it spills. That spill is the whole game: when a column overflows, the extra `1` moves to
+the next column over, the same move you make in decimal (`7 + 5 = 12`, write the `2`, carry the
+`1`). So adding two bits produces *two* answers: a **sum** bit (what you write down) and a
+**carry** bit (what spills into the next column). Hold onto those two words - we're about to build
+a circuit for each.
 
 ## The half-adder
 
-Let's make one table for both outputs. Inputs `A` and `B`; outputs `sum` and `carry`:
+One table for both outputs. Inputs `A` and `B`; outputs `sum` and `carry`:
 
 ```text
  A   B  | sum  carry
@@ -69,27 +55,23 @@ Let's make one table for both outputs. Inputs `A` and `B`; outputs `sum` and `ca
  1   1  |  0     1
 ```
 
-Now look at each output column on its own and compare it to the gates you know.
-
-The **sum** column is `0, 1, 1, 0`. It's `1` when exactly one input is `1`, and `0` when the
-inputs match. That is precisely XOR - "one or the other, but not both." So:
+Look at each output column on its own. The **sum** column is `0, 1, 1, 0` - `1` when exactly one
+input is `1`, `0` when the inputs match. That's precisely XOR:
 
 ```text
 sum = A XOR B
 ```
 
-The **carry** column is `0, 0, 0, 1`. It's `1` only when *both* inputs are `1`. That's AND. So:
+The **carry** column is `0, 0, 0, 1` - `1` only when *both* inputs are `1`. That's AND:
 
 ```text
 carry = A AND B
 ```
 
-Take a second with that - it's the payoff of the whole guide. We didn't invent a new device. We
-didn't add arithmetic to the hardware. We took two gates you'd already met - one XOR, one AND -
-wired the same two inputs into both, and the pair *adds*. The arithmetic was hiding inside the
-logic the whole time.
+That's the payoff of the whole guide: no new device, no arithmetic bolted onto the hardware. Two
+gates you already knew - one XOR, one AND - wired to the same two inputs, and the pair *adds*.
 
-This circuit has a name: the **half-adder**. Here's the wiring.
+This circuit is the **half-adder**:
 
 ```mermaid
 flowchart LR
@@ -103,24 +85,19 @@ flowchart LR
 
 Two inputs fan out to two gates; two outputs come back. That's all it is.
 
-> Why "half"? Because it can produce a carry *out*, but it has no way to accept a carry coming
-> *in* from a column to its right. To chain columns together, we need to fix that.
+> Why "half"? It can produce a carry *out*, but has no way to accept a carry coming *in* from the
+> column to its right. To chain columns together, we need to fix that.
 
 ## The full adder
 
-In any real addition past a single bit, each column deals with three things: bit `A`, bit `B`,
-and the carry that arrived from the column to its right. Three inputs.
-
-A **full adder** handles all three. It takes `A`, `B`, and a **carry-in**, and produces a **sum**
-and a **carry-out**. You can build one from two half-adders and an OR gate, and the reasoning is
-the same as before - you fold the carry-in into the mix and ask "did *either* stage produce a
-carry?" That's where the OR comes in.
-
-We'll keep this conceptual rather than draw every wire, because the important idea isn't the exact
-diagram. It's what the full adder *lets you do*: chain.
+Past a single bit, each column deals with three things: bit `A`, bit `B`, and the carry that
+arrived from the column to its right. A **full adder** handles all three - it takes `A`, `B`, and
+a **carry-in**, and produces a **sum** and a **carry-out**. You can build one from two half-adders
+and an OR gate: fold the carry-in into the mix and ask "did *either* stage produce a carry?" -
+that's the OR.
 
 Line up one full adder per bit. The carry-out of each feeds the carry-in of its left-hand neighbor
-- exactly the way you carry the `1` when adding by hand, moving left column by column.
+- exactly how you carry the `1` by hand, column by column:
 
 ```text
   bit:    3     2     1     0
@@ -129,63 +106,51 @@ Line up one full adder per bit. The carry-out of each feeds the carry-in of its 
         sum3  sum2  sum1  sum0
 ```
 
-That's a **ripple-carry adder**, because the carry ripples leftward through the chain. Want to add
-8-bit numbers? Chain eight full adders. 64-bit? Chain sixty-four. The building block never changes
-- you line up more of them. A machine that adds whole numbers is a row of the same tiny circuit,
-repeated.
+That's a **ripple-carry adder** - the carry ripples leftward through the chain. Want to add 8-bit
+numbers? Chain eight full adders. 64-bit? Chain sixty-four. A machine that adds whole numbers is a
+row of the same tiny circuit, repeated.
 
 ## The leap, honestly
 
-So you can add. With small variations on the same gates you can also subtract (it's addition with a
-flipped sign), and you can run AND, OR, and NOT across whole numbers at once. Bundle all those
-operations together with some logic that picks *which* one to run, and you've built an **ALU** - an
-Arithmetic Logic Unit. The ALU is the part of a processor that does the math.
+With small variations on the same gates you can also subtract (addition with a flipped sign), and
+run AND, OR, and NOT across whole numbers at once. Bundle those operations with logic that picks
+*which* one to run, and you've built an **ALU** - an Arithmetic Logic Unit, the part of a
+processor that does the math.
 
-Now, the honest part. An ALU is not a computer. It computes an answer the instant its inputs arrive
-and forgets it as fast - no memory, no sense of time. To go further you need two more ingredients:
+An ALU is not a computer, though: it computes an answer the instant its inputs arrive and forgets
+it just as fast - no memory, no sense of time. Two more ingredients get you the rest of the way:
 
-- A **memory element** - a small loop of gates called a *latch* that holds onto a single bit after
-  the input goes away. Stack a lot of these and you get registers and RAM: a place to keep numbers
+- A **memory element** - a small loop of gates called a *latch* that holds a single bit after the
+  input goes away. Stack enough of these and you get registers and RAM: somewhere to keep numbers
   between steps.
 - A **clock** - a steady tick that says "now," so operations happen in order instead of all at
-  once, and so a held bit updates only when you want it to.
+  once, and a held bit updates only when you want it to.
 
 Add **control logic** - gates that read an instruction and decide what the ALU should do and which
-bits to move where - and the skeleton of a computer is in front of you: do math (ALU), remember
-results (latches), take turns (clock), follow instructions (control).
-
-Straight with you: that paragraph is a sketch, not a build. A real CPU is millions to billions of
-gates, and each of those four pieces is a deep topic on its own. But the leap you might have
-thought was magic - from true/false to a working machine - is now a list of named, understandable
-parts. None is a miracle. All are gates.
+bits go where - and the skeleton of a computer is in front of you: do math (ALU), remember results
+(latches), take turns (clock), follow instructions (control). That paragraph is a sketch, not a
+build - a real CPU is millions to billions of gates, and each of those four pieces is a deep topic
+on its own. But the leap that might have looked like magic, from true/false to a working machine,
+is now a list of named, understandable parts. None is a miracle. All are gates.
 
 ## For builders
 
-This isn't trivia. When you write `a + b` in any language, that line ultimately becomes adder
-hardware doing the column-by-column carry you traced. The `+` you type is the visible end of this
-exact circuit.
-
-The bitwise operators (`&`, `|`, `^`, `~`) are even more direct - they *are* AND, OR, XOR, and NOT
-applied across every bit of a number in one shot. The same world you've been reasoning about on
-paper runs underneath your code. When you reach for bit-twiddling tricks later, you'll be thinking
-in gates, whether you call it that or not.
+When you write `a + b` in any language, that line ultimately becomes adder hardware doing the
+column-by-column carry you just traced. The bitwise operators (`&`, `|`, `^`, `~`) are even more
+direct - they *are* AND, OR, XOR, and NOT applied across every bit of a number in one shot. The
+same world you've been reasoning about on paper runs underneath your code.
 
 ## The whole journey
-
-Look back at the distance you've covered:
 
 1. **True and false** - the two values everything is built from.
 2. **Algebra over them** - AND, OR, NOT, and reliable rules for combining them.
 3. **Gates** - those operations made physical, in voltage and silicon.
 4. **Arithmetic** - gates wired together until they add, subtract, and beyond.
 
-Each layer was a short, fair step. Stacked up, they reach from a single bit to the machine on your
-desk.
-
-Where does it go from here? Down into the silicon - how a gate is carved out of transistors, how
-those transistors are etched onto a chip, how memory and clocks are built for real. That's a
-hardware story, and a great one, but it's the physics underneath the logic you now understand.
-You've finished the logic. The foundation is solid, and it's yours.
+Each layer was a short, fair step; stacked up, they reach from a single bit to the machine on your
+desk. From here it's down into the silicon - how a gate is carved from transistors, how memory and
+clocks are built for real. That's a hardware story, but it's the physics underneath the logic you
+now understand. You've finished the logic. The foundation is solid, and it's yours.
 
 ## Open-ended exercise
 

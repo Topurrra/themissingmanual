@@ -6,7 +6,7 @@ summary: "Exponential backoff, why jitter is non-negotiable, a retry budget so y
 tags: [retries, exponential-backoff, jitter, retry-budget, idempotency, idempotency-key, apis]
 difficulty: intermediate
 synonyms: ["how to retry a failed api call", "exponential backoff explained", "why add jitter to retries", "what is a retry budget", "how many times should i retry", "what is an idempotency key", "safe to retry post request", "avoid charging a card twice on retry"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Retrying Without Making It Worse
@@ -31,10 +31,9 @@ attempt 4  ->  fails  ->  wait ~8s
 attempt 5  ->  give up (out of budget)
 ```
 
-*What just happened:* instead of hammering, you backed off — 1, 2, 4, 8 seconds — giving the service room
-to recover. A short hiccup gets caught by the early, quick retries; a longer outage doesn't get a flood
-from you, because your waits stretch out fast. The doubling means you make only a handful of attempts
-even across many seconds.
+Instead of hammering, you backed off — 1, 2, 4, 8 seconds — giving the service room to recover. A short
+hiccup gets caught by the early, quick retries; a longer outage doesn't get a flood from you, because your
+waits stretch out fast. The doubling means you make only a handful of attempts even across many seconds.
 
 📝 **Terminology.** *Backoff* = the wait you insert before a retry. *Exponential* = that wait grows
 multiplicatively (×2 each time here), not by a fixed step. The base delay (1s here) and the multiplier
@@ -58,8 +57,8 @@ with jitter (each waits a random slice up to 2s):
    clients spread ->| . . . . . |<- load smeared across the window
 ```
 
-*What just happened:* jitter smeared the retry wave across the whole window instead of stacking it into
-one spike. The service sees a gentle trickle it can actually absorb, rather than a synchronized wall.
+Jitter smeared the retry wave across the whole window instead of stacking it into one spike. The service
+sees a gentle trickle it can actually absorb, rather than a synchronized wall.
 
 A simple, widely used recipe is **"full jitter"**: instead of waiting the full computed backoff, wait a
 *random* amount between zero and that backoff.
@@ -75,9 +74,9 @@ for attempt in range(5):
     print(f"attempt {attempt + 1}: backoff window={backoff:.0f}s, actually wait={wait:.2f}s")
 ```
 
-*What just happened:* the backoff *window* still doubles (1, 2, 4, 8, 16s), but the actual wait is a
-random point inside that window — so two clients running this same code almost never wait the same amount,
-and their retries don't collide. The `cap` keeps a long outage from producing absurd 10-minute waits.
+The backoff *window* still doubles (1, 2, 4, 8, 16s), but the actual wait is a random point inside that
+window — so two clients running this same code almost never wait the same amount, and their retries don't
+collide. The `cap` keeps a long outage from producing absurd 10-minute waits.
 
 💡 **Key point.** Exponential backoff *without* jitter is a known foot-gun: it turns many clients into a
 synchronized herd. Backoff decides *how long*; jitter decides *who goes when*. You need both.
@@ -101,10 +100,10 @@ if elapsed_seconds >= 30    -> stop, surface the error
 otherwise                   -> back off (with jitter) and try again
 ```
 
-*What just happened:* you bounded the effort in *both* dimensions. The deadline matters because a few
-exponential backoffs can quietly add up to a long time — you want a hard ceiling so a stuck operation
-doesn't hang a user's request for minutes. When the budget runs out, you stop and report a clean failure
-rather than retrying into the void.
+You bounded the effort in *both* dimensions. The deadline matters because a few exponential backoffs can
+quietly add up to a long time — you want a hard ceiling so a stuck operation doesn't hang a user's request
+for minutes. When the budget runs out, you stop and report a clean failure rather than retrying into the
+void.
 
 ⚠️ **Beware nested retries.** If your client retries, and the library *it* calls also retries, and the
 service behind *that* retries too, the attempts multiply: 3 × 3 × 3 = 27 real requests for one logical
@@ -135,8 +134,8 @@ you: (no response — network dropped it)  <-- response lost here
 you: "looks failed, retry!"  -------->  server: ANOTHER charge created  💸
 ```
 
-*What just happened:* the lost *response*, not a lost request, is what makes blind retries dangerous on
-writes. The work happened; only your confirmation went missing. A naive retry does the work a second time.
+The lost *response*, not a lost request, is what makes blind retries dangerous on writes. The work
+happened; only your confirmation went missing. A naive retry does the work a second time.
 
 ## The fix for unsafe retries: idempotency keys
 
@@ -153,11 +152,10 @@ Content-Type: application/json
 { "amount": 5000, "currency": "usd", "source": "tok_visa" }
 ```
 
-*What just happened:* you stamped this charge with a key tied to the *order*, not the attempt. The first
-time the server sees `a1b2c3-charge-order-9921`, it creates the charge and records the result against the
-key. When your retry arrives with the *same* key, the server recognizes it, skips creating a second
-charge, and returns the first charge's response. One key, one charge — no matter how many times the
-network makes you retry.
+You stamped this charge with a key tied to the *order*, not the attempt. The first time the server sees
+`a1b2c3-charge-order-9921`, it creates the charge and records the result against the key. When your retry
+arrives with the *same* key, the server recognizes it, skips creating a second charge, and returns the
+first charge's response. One key, one charge — no matter how many times the network makes you retry.
 
 📝 **Terminology.** *Idempotency key* = a caller-generated unique ID for one logical operation, sent so
 the server can deduplicate retries. Generate it *once per operation* and reuse it across that operation's
@@ -183,9 +181,9 @@ for each attempt, until the budget is spent:
 budget spent -> surface a clean error
 ```
 
-*What just happened:* every habit from this phase is in there — honor `Retry-After` when given, otherwise
-exponential backoff *with jitter*, stop on permanent errors, respect a budget, and keep the idempotency
-key constant across attempts. That loop turns a flaky dependency into a non-event.
+Every habit from this phase is in there — honor `Retry-After` when given, otherwise exponential backoff
+*with jitter*, stop on permanent errors, respect a budget, and keep the idempotency key constant across
+attempts. That loop turns a flaky dependency into a non-event.
 
 ## For builders
 

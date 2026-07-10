@@ -8,7 +8,7 @@ category: programming-concepts
 order: 1
 difficulty: beginner
 synonyms: ["how to start programming", "learn to code from scratch", "what is a program", "programming for beginners", "coding for career switchers", "what is a variable", "what is a function"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Programming From Zero
@@ -18,9 +18,9 @@ needs it. And right now code probably looks like a wall of symbols that everyone
 effortlessly - like there's a secret you missed on day one.
 
 There's no secret. Code is a precise set of instructions you write for a computer, and the computer
-follows them in order, doing exactly what you said and nothing else. That's the whole thing. Once you
-see it that way, the symbols stop being intimidating and start being *readable*. This guide takes you
-from "I have never written a line of code" to "I can read most code and understand what it's doing."
+follows them in order, doing exactly what you said and nothing else. Once you see it that way, the
+symbols stop being intimidating and start being *readable*. This guide takes you from "I have never
+written a line of code" to "I can read most code and understand what it's doing."
 
 We'll use one friendly language - **Python** - for every example, because its code reads almost like
 English. But the ideas you'll learn here are *universal*: variables, types, decisions, loops, and

@@ -6,7 +6,7 @@ summary: "The heart of the ORM: the Session is your handle to SQLAlchemy, an ide
 tags: [sqlalchemy, session, unit-of-work, identity-map, flush, dirty-tracking, orm]
 difficulty: advanced
 synonyms: ["sqlalchemy session", "sqlalchemy unit of work", "sqlalchemy identity map", "sqlalchemy flush vs commit", "sqlalchemy add commit", "sqlalchemy dirty tracking", "sqlalchemy session scope"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The Session & Unit of Work
@@ -16,11 +16,9 @@ In [Phase 3](03-defining-models.md) you taught SQLAlchemy the shape of your worl
 actually *use* it: insert a new author, fetch one back, change a title and have that change reach the
 database. That something is the **`Session`**, and it's the single most important object in the whole ORM.
 
-This is the phase. If you take one idea from this entire guide, take this one. Almost every SQLAlchemy
-surprise you'll ever hit — a change that saved without you calling save, a query that ran once instead of
-twice, a lazy load that worked here but exploded there — traces straight back to what's in this file. So
-we're going slow and making it land, because once the Session clicks, the rest of SQLAlchemy stops being
-magic and starts being obvious.
+If you take one idea from this entire guide, take this one. Almost every SQLAlchemy surprise you'll ever
+hit — a change that saved without you calling save, a query that ran once instead of twice, a lazy load
+that worked here but exploded there — traces straight back to what's in this file.
 
 ## The mental model: a workbench, not a pipe
 
@@ -203,8 +201,8 @@ you. In a web app this becomes **one Session per request**. Keep them short-live
 single Session across threads or across concurrent requests — a Session is not thread-safe, and sharing one
 is a classic source of corrupted state and baffling bugs. One unit of work, one Session, then let it go.
 
-💡 Step back, because this is the lens for everything that follows. Nearly every ORM behavior in the rest of
-this guide is one of these Session ideas wearing a costume:
+💡 This is the lens for everything that follows. Nearly every ORM behavior in the rest of this guide is one
+of these Session ideas wearing a costume:
 
 - *"I changed a field and it saved without calling save"* → the object was **persistent**, and dirty
   tracking caught the change.

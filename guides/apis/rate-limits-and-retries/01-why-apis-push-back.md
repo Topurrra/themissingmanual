@@ -6,7 +6,7 @@ summary: "Rate limits aren't an insult — they're how a shared service stays up
 tags: [rate-limiting, 429, retry-after, token-bucket, http, apis]
 difficulty: intermediate
 synonyms: ["why do apis have rate limits", "what does 429 mean", "http 429 too many requests", "what is the retry-after header", "how do token buckets work", "what is rate limiting", "x-ratelimit headers"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Why APIs Push Back
@@ -52,10 +52,10 @@ bucket capacity: 100 tokens        refill: ~2 tokens/second
 [||||||||||          ] ~10   <- refilled a little: ~10 requests allowed again
 ```
 
-*What just happened:* the bucket let you **burst** — fire a clump of requests quickly using saved-up
-tokens — but it caps your *sustained* rate at the refill speed. Burst for the spike, then settle into the
-steady pace. This is why "100 per minute" doesn't mean "exactly one every 0.6 seconds": you can spend
-fast for a moment, you cannot spend fast *forever*.
+The bucket let you **burst** — fire a clump of requests quickly using saved-up tokens — but it caps your
+*sustained* rate at the refill speed. Burst for the spike, then settle into the steady pace. This is why
+"100 per minute" doesn't mean "exactly one every 0.6 seconds": you can spend fast for a moment, not
+*forever*.
 
 📝 **Terminology.** *Burst* = a short clump of requests above your steady rate, allowed because tokens
 accumulated while you were idle. *Sustained rate* = the long-run average the bucket refills at. Other
@@ -75,10 +75,10 @@ Content-Type: application/json
 { "error": "rate_limited", "message": "Too many requests. Try again in 30 seconds." }
 ```
 
-*What just happened:* the server said **429 Too Many Requests** — "I heard you, but you're going too
-fast" — and the `Retry-After: 30` header is it *telling you exactly how long to wait*: 30 seconds. This
-is the single most useful header in this whole guide. When the server hands you a number, you don't have
-to guess your backoff — you obey the number.
+The server said **429 Too Many Requests** — "I heard you, but you're going too fast" — and the
+`Retry-After: 30` header is it *telling you exactly how long to wait*: 30 seconds. This is the single most
+useful header in this whole guide. When the server hands you a number, you don't guess your backoff — you
+obey the number.
 
 ⚠️ **`429` is not an error you caused by being wrong.** Your request was *valid*; you were merely too
 frequent. That's different from a `400` (your request is malformed) or a `403` (you're not allowed). A
@@ -99,10 +99,9 @@ X-RateLimit-Remaining: 7
 X-RateLimit-Reset: 1730531280
 ```
 
-*What just happened:* even on a successful `200`, the server quietly told you the bucket holds **100**,
-you have **7** left, and it resets at that Unix timestamp. A thoughtful client watches `Remaining` and
-*slows down on its own* as it approaches zero — getting throttled is something you can often see coming
-and avoid.
+Even on a successful `200`, the server quietly told you the bucket holds **100**, you have **7** left, and
+it resets at that Unix timestamp. A thoughtful client watches `Remaining` and *slows down on its own* as
+it approaches zero — getting throttled is something you can often see coming and avoid.
 
 ## A status-code cheat sheet for "should I even retry?"
 

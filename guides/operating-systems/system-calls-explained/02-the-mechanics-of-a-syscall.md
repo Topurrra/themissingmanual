@@ -12,12 +12,12 @@ synonyms:
   - why cant programs access hardware directly
   - why is write slow if called too often
   - what does strace show
-updated: 2026-07-04
+updated: 2026-07-11
 ---
 
 # What actually happens during a syscall
 
-Phase 1 established that a system call is the only sanctioned way across the user-mode/kernel-mode wall. This phase opens that mechanism up: what specific steps happen, in what order, between your program calling `read()` and getting bytes back.
+Phase 1 established that a system call is the only sanctioned way across the user-mode/kernel-mode wall. This phase opens that mechanism up: the specific steps between your program calling `read()` and getting bytes back.
 
 ## Step 1: your program requests a specific syscall, by number
 
@@ -30,11 +30,11 @@ read(fd, buffer, count)
      arguments: fd, buffer address, count
 ```
 
-*What just happened:* when you call a high-level function like `read()` in your language of choice, a thin layer underneath — the C standard library, or your language runtime — packages that call into the specific syscall number and arguments the kernel expects. You almost never deal with the raw number yourself; the library handles the translation.
+*What just happened:* when you call a high-level function like `read()`, a thin layer underneath — the C standard library, or your language runtime — packages that call into the specific syscall number and arguments the kernel expects. You almost never deal with the raw number yourself; the library handles the translation.
 
 ## Step 2: the trap — a deliberate software interrupt
 
-Here's the part that makes the mode switch possible. Your program executes a special CPU instruction whose entire purpose is to voluntarily trigger a switch into kernel mode — on x86-64 Linux this is the `syscall` instruction (older systems used a software interrupt, `int 0x80`). This is often called a **trap**: not an error, but a deliberate, intentional signal that says "kernel, take over from here."
+Here's the part that makes the mode switch possible. Your program executes a special CPU instruction whose entire purpose is to voluntarily trigger a switch into kernel mode — on x86-64 Linux this is the `syscall` instruction (older systems used a software interrupt, `int 0x80`). This is called a **trap**: not an error, but a deliberate signal that says "kernel, take over from here."
 
 ```text
 user mode:   ... normal instructions ...
@@ -42,11 +42,11 @@ user mode:   ... normal instructions ...
 kernel mode: (CPU privilege level switches, kernel's trap handler runs)
 ```
 
-*What just happened:* this single instruction is the entire crossing point. Before it executes, the CPU is in user mode and restricted. The instant it executes, the CPU privilege level flips to kernel mode, and control jumps to a fixed, known entry point inside the kernel — the kernel's trap handler, sitting there waiting specifically for this. Nothing about this is negotiable from the user-mode side; the program can't pick where in the kernel execution lands, which is itself part of the protection Phase 1 described.
+*What just happened:* this single instruction is the entire crossing point. Before it executes, the CPU is in user mode and restricted. The instant it executes, the CPU privilege level flips to kernel mode, and control jumps to a fixed, known entry point inside the kernel — the kernel's trap handler, waiting specifically for this. Nothing about this is negotiable from the user-mode side; the program can't pick where in the kernel execution lands, which is itself part of the protection Phase 1 described.
 
 ## Step 3: the kernel reads the syscall number and dispatches
 
-Once inside the trap handler, the kernel looks at the syscall number your program placed in a specific CPU register before trapping, and uses it to look up which internal kernel function actually handles that request — a **syscall table**, essentially an array of function pointers indexed by syscall number.
+Once inside the trap handler, the kernel looks at the syscall number your program placed in a specific CPU register before trapping, and uses it to look up which internal kernel function handles that request — a **syscall table**, essentially an array of function pointers indexed by syscall number.
 
 ```text
 syscall_table[0]  -> sys_read()
@@ -61,7 +61,7 @@ kernel: number = 0 -> calls sys_read(fd, buffer, count)
 
 ## Step 4: the kernel does the actual work
 
-Now, and only now, does the requested work actually happen — with full kernel privileges. For `read()`, that might mean checking the file descriptor is valid, checking permissions, asking the filesystem where those bytes live on disk, and asking the disk driver to fetch them. None of this could have happened in user mode; this is precisely the privileged work Phase 1 said only the kernel can do.
+Now the requested work actually happens — with full kernel privileges. For `read()`, that means checking the file descriptor is valid, checking permissions, asking the filesystem where those bytes live on disk, and asking the disk driver to fetch them. None of this could have happened in user mode; this is precisely the privileged work Phase 1 said only the kernel can do.
 
 ## Step 5: the return — switching back to user mode
 
@@ -73,7 +73,7 @@ kernel mode: sys_read() finishes, places result in a register
 user mode:   ... program resumes here, with the read bytes now available ...
 ```
 
-*What just happened:* your program's execution wasn't destroyed or restarted — it was paused at one precise instruction boundary, the kernel did privileged work on its behalf, and execution resumed at the very next instruction as if nothing unusual happened, except now a buffer that was empty is full of file data.
+*What just happened:* your program's execution wasn't destroyed or restarted — it was paused at one precise instruction boundary, the kernel did privileged work on its behalf, and execution resumed at the next instruction as if nothing unusual happened, except now a buffer that was empty is full of file data.
 
 > A syscall is not a function call to some code living in your own process. It's a full round trip out of your program's privilege level, into the kernel, and back — with a hardware-enforced wall crossed twice, once in each direction.
 
@@ -89,6 +89,6 @@ user mode:   ... program resumes here, with the read bytes now available ...
 7. Your program resumes with the result
 ```
 
-*What just happened:* every one of your program's interactions with the outside world — every file, every socket, every millisecond of wall-clock time it asks for — runs this exact seven-step sequence. It happens so often, and usually so fast, that you never see it directly. But it isn't free, and that cost is the entire subject of Phase 3.
+*What just happened:* every one of your program's interactions with the outside world — every file, every socket, every millisecond of wall-clock time it asks for — runs this exact seven-step sequence. It happens so often, and usually so fast, that you never see it directly. But it isn't free, and that cost is the subject of Phase 3.
 
 [← Phase 1: Why programs can't touch hardware directly](01-user-mode-vs-kernel-mode.md) | [Phase 3: Why syscalls matter for real performance →](03-why-syscalls-matter-for-performance.md)

@@ -8,7 +8,7 @@ category: apis
 order: 8
 difficulty: advanced
 synonyms: ["how to version an api", "what is a breaking change in an api", "url versioning vs header versioning", "how to deprecate an api", "backward compatible api changes", "how to design an api that lasts", "additive changes api", "api idempotency keys", "how not to break api clients"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Versioning & Designing APIs That Last
@@ -21,10 +21,9 @@ something you thought nobody used — can quietly break someone's production sys
 and the first you'll hear of it is an angry support ticket.
 
 That's the shift this guide is built around: **an API is a promise to everyone who built on it.** Once
-you internalize that, versioning and design stop being bureaucracy and start being the obvious way to
-keep that promise. We'll build the mental model of what a breaking change actually is, work through the
-honest trade-offs of every way to evolve an API without breaking people, and finish with the
-checklist that makes an API durable enough to live for years.
+you internalize that, versioning and design stop being bureaucracy and become the obvious way to keep
+that promise — what a breaking change actually is, the honest trade-offs of every way to evolve an
+API without breaking people, and the checklist that makes an API durable enough to live for years.
 
 ## How to read this
 

@@ -6,7 +6,7 @@ summary: "A fair, hype-free look at Python, JavaScript/Node, Go, and Rust - what
 tags: [python, javascript, nodejs, go, golang, rust, programming-languages]
 difficulty: beginner
 synonyms: ["what is python good for", "what is javascript good for", "what is go good for", "what is rust good for", "python pros and cons", "go vs rust", "is rust hard to learn", "javascript node explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Four, Honestly
@@ -60,11 +60,11 @@ compiled libraries. Judge speed by *your* workload, not a slogan.
 
 ## JavaScript / Node - the language that's everywhere
 
-**What it's for.** JavaScript is the only language that runs natively in every web browser, full stop. That
-single fact made it the language of the web's front end. Then **Node.js** - a runtime that lets JavaScript run
-*outside* the browser, on servers - extended it to the back end too. So one language can run your web page and
-your server, which is a real productivity story for full-stack work. It's also async-first: built from the
-ground up to juggle many waiting tasks (network requests, user clicks) without blocking.
+**What it's for.** JavaScript is the only language that runs natively in every web browser, full stop - that
+single fact made it the language of the web's front end. **Node.js**, a runtime that lets JavaScript run
+*outside* the browser on servers, extended it to the back end too, so one language can run your web page and
+your server - a real productivity story for full-stack work. It's also async-first: built from the ground up
+to juggle many waiting tasks (network requests, user clicks) without blocking.
 
 📝 **Node.js** - not a separate language; it's a runtime that runs JavaScript on a server or your laptop,
 outside a browser.
@@ -164,8 +164,8 @@ speed both matter.
 **The honest cons.** The learning curve is real and steep - the ownership and "borrowing" rules frustrate
 nearly everyone at first ("fighting the borrow checker" is a rite of passage). It's more verbose and slower to
 write than Python or Go. Compiles can be slow on large projects. For everyday web apps or scripts where you
-don't need its speed, Rust often asks more of you than the job requires. It's a precision instrument, and using
-it where a simpler tool would do is its own kind of mistake.
+don't need its speed, Rust often asks more of you than the job requires - it's a precision instrument, and
+using it where a simpler tool would do is its own kind of mistake.
 
 ⚠️ **Gotcha.** Rust's popularity can tempt beginners to reach for it first because it's "the cool one." But
 its difficulty is best paid for when you actually *need* what it offers. Learning Rust to write a simple website

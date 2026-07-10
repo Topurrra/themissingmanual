@@ -6,7 +6,7 @@ summary: "Create a GitHub repo, connect it with git remote add, get past the aut
 tags: [git, github, remote, push, clone, authentication, pull]
 difficulty: beginner
 synonyms: ["how to push to github", "connect local repo to github", "git remote add origin", "github authentication failed", "how to clone a repo", "git push first time"]
-updated: 2026-06-18
+updated: 2026-07-10
 ---
 
 # Putting It on GitHub - remote, push, and clone
@@ -69,9 +69,9 @@ downloading (`fetch`) and uploading (`push`). The connection exists; nothing has
 ## Step 3: The authentication part (read this slowly)
 
 When you push, GitHub needs to confirm you're allowed to. **Here's the thing nobody tells beginners: you
-cannot type your GitHub website password here.** GitHub removed password-over-the-command-line in 2021. If
-you try, you'll get an error that literally says *"Support for password authentication was removed."* Many
-older tutorials still tell you to type your password - they're out of date.
+cannot type your GitHub website password here.** GitHub removed password-over-the-command-line in 2021 -
+try it and you'll get an error that literally says *"Support for password authentication was removed."*
+Many older tutorials still tell you to type your password; they're out of date.
 
 There are a few legitimate ways to authenticate. For someone starting out, the smoothest is the **GitHub
 CLI**, a small official tool that handles the whole handshake through your browser. Install it from
@@ -96,8 +96,8 @@ you push. You only do this once per machine.
 > browser sign-in the *first* time you push - so you may not need `gh` at all; just try Step 4 and follow
 > the prompt. Two more options you'll hear about: a **Personal Access Token** (a long password-like string
 > you generate in GitHub's settings and paste when asked) and **SSH keys** (a more permanent setup). All
-> of them work; `gh auth login` is the least painful on day one. Setting up SSH keys is worth doing
-> eventually - that's a topic for a later guide.
+> of them work; `gh auth login` is least painful on day one - SSH keys are worth setting up eventually, a
+> topic for a later guide.
 
 ## Step 4: Push
 

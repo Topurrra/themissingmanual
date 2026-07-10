@@ -6,15 +6,14 @@ summary: "Build full CRUD for the books API — five handlers over one collectio
 tags: [echo, go, rest, api, crud, error-handling]
 difficulty: advanced
 synonyms: ["echo rest api", "echo crud", "echo httperror", "echo central error handler", "echo httperrorhandler", "go echo books api"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # A REST API with Error Handling
 
 This is the phase where everything from the last five clicks into place. You've got routing, groups,
 binding, validation, responses, and middleware. Now we assemble them into a real REST resource — and
-lean hard on the one feature that's been quietly waiting in the wings since Phase 3: Echo's centralized
-error handling.
+lean hard on a feature that's been quietly waiting since Phase 3: Echo's centralized error handling.
 
 Here's the mental model to carry through this whole phase, two ideas held together:
 
@@ -27,7 +26,7 @@ Here's the mental model to carry through this whole phase, two ideas held togeth
 
 Hold both at once and the code almost writes itself: five small functions, each doing its work and
 either returning JSON on success or returning an error on failure. No handler ever hand-rolls an error
-response. That discipline is Echo's signature, and it's why Echo apps stay readable as they grow.
+response.
 
 We'll keep building the **books API**, where a book is `Book{id, title, author}`.
 
@@ -62,9 +61,9 @@ empty store with IDs starting at 1.
 ⚠️ That mutex is not optional, and this is the trap that bites people who skip it. **Echo serves
 requests concurrently** — each request runs in its own goroutine. If two requests touch `books` at the
 same moment (one reading while another writes), Go's map will panic with `fatal error: concurrent map
-read and map write`, and that one isn't recoverable — not even the Recover middleware from Phase 5
-catches it. The fix is to guard every access: take a *read* lock (`RLock`) when you're only reading,
-and a full *write* lock (`Lock`) when you're modifying. We'll do exactly that in each handler below.
+read and map write`, unrecoverable — not even the Recover middleware from Phase 5 catches it. The fix
+is to guard every access: a *read* lock (`RLock`) when only reading, a full *write* lock (`Lock`) when
+modifying. We'll do exactly that in each handler below.
 
 ## The five handlers
 
@@ -87,10 +86,10 @@ func (s *Store) list(c echo.Context) error {
 }
 ```
 
-*What just happened:* We take a read lock (`RLock`) because we're only reading — multiple list requests
-can run at once without blocking each other, which is the whole point of `RWMutex`. We build a slice
-from the map's values and return it as JSON with `200 OK`. The `make([]Book, 0, ...)` matters: it
-guarantees an empty store serializes to `[]`, not `null`, which clients much prefer.
+*What just happened:* we take a read lock (`RLock`) because we're only reading — multiple list requests
+can run at once without blocking each other, the whole point of `RWMutex`. We build a slice from the
+map's values and return it as JSON with `200 OK`. `make([]Book, 0, ...)` matters: it guarantees an
+empty store serializes to `[]`, not `null`.
 
 ### Get one — `GET /api/v1/books/:id`
 
@@ -112,12 +111,11 @@ func (s *Store) get(c echo.Context) error {
 }
 ```
 
-*What just happened:* We pull `:id` from the path (it's always a string) and convert it with
-`strconv.Atoi`. A non-numeric id is the client's mistake, so we return a `400`. Then we look the book up
-under a read lock. The comma-ok idiom (`book, ok := s.books[id]`) tells us whether it existed — if not,
-we `return echo.NewHTTPError(http.StatusNotFound, "book not found")`. Notice we are *not* writing the
-404 response ourselves; we hand the error up and let the central handler render it. On a hit, `200` with
-the book.
+*What just happened:* we pull `:id` from the path (always a string) and convert it with `strconv.Atoi`.
+A non-numeric id is the client's mistake, so we return a `400`. Then we look the book up under a read
+lock. The comma-ok idiom (`book, ok := s.books[id]`) tells us whether it existed — if not, we
+`return echo.NewHTTPError(http.StatusNotFound, "book not found")` rather than writing the 404 ourselves.
+On a hit, `200` with the book.
 
 ### Create — `POST /api/v1/books`
 
@@ -148,12 +146,11 @@ func (s *Store) create(c echo.Context) error {
 }
 ```
 
-*What just happened:* Same two-step gate from Phase 3 — `c.Bind` decodes the JSON, `c.Validate` runs
+*What just happened:* same two-step gate from Phase 3 — `c.Bind` decodes the JSON, `c.Validate` runs
 the `validate:"..."` rules, and either failure returns a `400` describing what broke. Only once both
 pass do we take a full **write** lock (`Lock`, not `RLock` — we're mutating the map *and* the counter),
 build the `Book` with the next ID, store it, bump the counter, and unlock. Success returns `201 Created`
-with the new resource so the client learns its assigned ID. We hold the write lock around all three
-mutations so no other request can squeeze in between assigning the ID and bumping the counter.
+with the new resource so the client learns its assigned ID.
 
 ### Update — `PUT /api/v1/books/:id`
 
@@ -184,12 +181,11 @@ func (s *Store) update(c echo.Context) error {
 }
 ```
 
-*What just happened:* Update is get-and-create fused. We parse the id, bind+validate the new values
-(reusing the very same `CreateBook` struct — no need for a second type), then take a write lock. We
-check the book exists first; missing means `404`. If it's there, we overwrite it — keeping the original
-`id` so it stays addressable — and return `200` with the updated record. The `defer s.mu.Unlock()` is
-safe here even though we return early from inside the lock; `defer` runs on every exit path, including
-the 404 return.
+*What just happened:* update is get-and-create fused. We parse the id, bind+validate the new values
+(reusing the same `CreateBook` struct — no second type needed), then take a write lock. We check the
+book exists first; missing means `404`. If it's there, we overwrite it — keeping the original `id` so
+it stays addressable — and return `200` with the updated record. `defer s.mu.Unlock()` is safe here
+even on an early return; `defer` runs on every exit path, including the 404.
 
 ### Delete — `DELETE /api/v1/books/:id`
 
@@ -211,9 +207,9 @@ func (s *Store) delete(c echo.Context) error {
 }
 ```
 
-*What just happened:* Parse the id, take a write lock, confirm the book exists (`404` if not), then
+*What just happened:* parse the id, take a write lock, confirm the book exists (`404` if not), then
 `delete(s.books, id)`. The success response is `c.NoContent(http.StatusNoContent)` — a `204` with an
-empty body, which is the conventional answer to a successful delete: "done, nothing to hand back."
+empty body, the conventional answer to a successful delete.
 
 ### Wiring them up
 
@@ -236,19 +232,18 @@ func main() {
 }
 ```
 
-*What just happened:* One group, five routes, each pointing at a method on the shared `Store`. Because
+*What just happened:* one group, five routes, each pointing at a method on the shared `Store`. Because
 the handlers are methods on `*Store`, they all close over the same map and mutex — that's how five
 independent functions cooperate on one collection. We register the Phase 3 validator so `c.Validate`
-works. Notice what's *not* here yet: any error-handling code. By default Echo already turns those
-returned `HTTPError`s into JSON. But the default shape isn't quite what we want — so let's take control.
+works. Notice what's *not* here yet: any error-handling code. Echo already turns returned `HTTPError`s
+into JSON by default — but the default shape isn't quite what we want, so let's take control.
 
 ## The payoff: a centralized `HTTPErrorHandler`
 
 This is Echo's signature feature, the thing that makes all that `return echo.NewHTTPError(...)`
 discipline pay off. Every error your handlers return — plus any error Echo itself raises (a 404 for an
 unknown route, a 405 for the wrong method) — funnels through **one function**: `e.HTTPErrorHandler`.
-Change that one function and you've changed how *every* error in the entire API looks. One place, total
-consistency.
+Change that one function and you've changed how *every* error in the entire API looks.
 
 By default, Echo's handler renders an `*echo.HTTPError` as `{"message": "..."}` with the right status,
 and turns any *other* error into a generic `500`. That's fine, but say your API has standardized on
@@ -266,24 +261,23 @@ e.HTTPErrorHandler = func(err error, c echo.Context) {
 }
 ```
 
-*What just happened:* This function receives every error a handler returns. We start with safe defaults
+*What just happened:* this function receives every error a handler returns. We start with safe defaults
 — `500` and a vague `"internal error"`, because an *unexpected* error (a nil-pointer deref, a failed
 DB call later) should never leak its guts to the client. Then we type-assert: if the error is an
-`*echo.HTTPError` (which is what `echo.NewHTTPError` produces), we trust its `Code` and `Message`,
-because *we* chose those deliberately. Finally we render one consistent JSON body: `{"error": "..."}`,
-every single time. A `book not found` and a malformed `id` and a deep `500` all come out the same shape
-— only the status and message differ. Register it in `main` alongside the validator:
+`*echo.HTTPError` (what `echo.NewHTTPError` produces), we trust its `Code` and `Message`, because *we*
+chose those deliberately. Finally we render one consistent JSON body: `{"error": "..."}`, every time. A
+`book not found`, a malformed `id`, and a deep `500` all come out the same shape — only status and
+message differ. Register it in `main` alongside the validator:
 
 ```go
 e.HTTPErrorHandler = customErrorHandler // the function above
 ```
 
-💡 Sit with what this bought you. Across five handlers we wrote `return echo.NewHTTPError(...)` maybe
-eight times, and *zero* lines of response-formatting code in any of them. The handlers stayed pure
-business logic — look up, check, act. All the "what does an error look like on the wire" logic lives in
-one ten-line function. When a teammate asks "why are our errors shaped like that?" there's exactly one
-file to open. That's the difference between an API that stays clean at fifty endpoints and one that
-rots into copy-pasted `c.JSON(400, ...)` calls everywhere.
+💡 Across five handlers we wrote `return echo.NewHTTPError(...)` maybe eight times, and *zero* lines of
+response-formatting code in any of them. The handlers stayed pure business logic — look up, check, act.
+All the "what does an error look like on the wire" logic lives in one ten-line function. That's the
+difference between an API that stays clean at fifty endpoints and one that rots into copy-pasted
+`c.JSON(400, ...)` calls everywhere.
 
 ## Taking it for a spin
 
@@ -315,16 +309,15 @@ curl -s -i -X DELETE localhost:8080/api/v1/books/1 | head -n 1
 # HTTP/1.1 204 No Content
 ```
 
-*What just happened:* The happy paths return the resource as JSON with the right status. The two failure
+*What just happened:* the happy paths return the resource as JSON with the right status. The two failure
 paths — a missing book and a validation miss — both come back in your `{"error": ...}` shape, even
 though one originated in a handler's `NewHTTPError` and the other in the validator. That uniformity is
-the centralized handler doing its job: the client only ever has to parse one error format.
+the centralized handler doing its job.
 
 💡 Notice the store was the *only* part tied to memory. Every handler talks to `Store`, never to a map
 directly — so when you outgrow in-memory storage, you swap `Store`'s guts for a database and the five
-handlers don't change a line. That's the natural next step: [GORM From Zero](/guides/gorm-from-zero)
-shows how to back this exact API with a real SQL table. Same handlers, same error handling, real
-persistence underneath.
+handlers don't change a line. [GORM From Zero](/guides/gorm-from-zero) shows how to back this exact API
+with a real SQL table. Same handlers, same error handling, real persistence underneath.
 
 ## Recap
 

@@ -6,7 +6,7 @@ summary: "A filter intercepts every request before your servlet and the response
 tags: [servlet, filter, filter-chain, middleware, cross-cutting, webfilter, interceptor]
 difficulty: intermediate
 synonyms: ["servlet filter explained", "servlet filter chain", "java web middleware", "@WebFilter", "servlet filter auth logging", "doFilter chain.doFilter", "what is middleware java"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Filters & the Chain
@@ -14,8 +14,6 @@ updated: 2026-06-22
 Here's a problem you hit on every real web app within about a week. You want to log every request. Then you want to time every request. Then someone says "we need to check the auth token before *any* endpoint runs." Where does that code go?
 
 If your answer is "in every servlet," stop — that's how you end up copy-pasting the same six lines into forty handlers and forgetting one. The Servlet API has a purpose-built place for exactly this kind of code, and once you see it, you'll recognize it in every web framework you ever touch. It's called a **filter**, and the way filters stack up is the literal origin of the word "middleware."
-
-This is one of those phases where the mental model is worth more than the syntax. So let's build the model first.
 
 ## What a filter actually is
 

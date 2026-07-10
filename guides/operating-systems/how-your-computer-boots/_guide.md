@@ -14,14 +14,14 @@ synonyms:
   - what does uefi do
   - how does the bootloader work
   - what happens between power button and login screen
-updated: 2026-07-04
+updated: 2026-07-11
 ---
 
 # How Your Computer Boots
 
 You press the power button. A few seconds later — sometimes a minute, if it's an old machine having a bad day — you're looking at a login screen or a desktop. In between, a surprising amount of handoff happens: firmware waking up the hardware, a small program finding and loading a much bigger program, and that bigger program taking over the entire machine. Each stage exists because the one before it *has to stop trusting itself* and hand control to something that knows more.
 
-This guide walks that chain in order, because it really is a chain — each link only makes sense once you know what came before it.
+This guide walks that chain in order — each link only makes sense once you know what came before it.
 
 ## How to read this
 

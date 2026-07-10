@@ -6,17 +6,16 @@ summary: "Map Express back onto the node:http you just built — routing, body p
 tags: [node, nodejs, http, express, fastify, frameworks]
 difficulty: beginner
 synonyms: ["what express adds over node http", "do i need express", "node http vs express", "node frameworks comparison", "node http enough", "express value"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What Express Adds
 
-Stop for a second and look at what you pulled off. You built a real JSON REST API — a server, a router
-that switches on method and path, body parsing that drains a stream into an object, middleware as plain
-functions running before your handler, async handlers, streaming, a try/catch that turns thrown errors
-into a 500, and a server that shuts down without dropping in-flight requests. And you did it with one
-import: `node:http`. No framework docs. No magic. Just `createServer` and the `(req, res)` function you
-hand it.
+Stop and look at what you pulled off. You built a real JSON REST API — a server, a router that switches
+on method and path, body parsing that drains a stream into an object, middleware as plain functions
+running before your handler, async handlers, streaming, a try/catch that turns thrown errors into a 500,
+and a server that shuts down without dropping in-flight requests. And you did it with one import:
+`node:http`. No framework docs, no magic — just `createServer` and the `(req, res)` function you hand it.
 
 That was the whole point. The frameworks people reach for — [Express](/guides/express-from-zero),
 [Fastify](/guides/fastify-from-zero) — are not a different universe. They're conveniences stacked on the
@@ -69,8 +68,8 @@ you: a lot of the time, plain `node:http` is genuinely fine.
 
 For a tiny service, a one-off script, or learning, the standard library is a real answer — zero
 dependencies, full control, nothing to upgrade or audit, and you understand every line because you wrote
-it. You shipped a working CRUD API in this guide without installing anything. That's not a toy; for a
-small surface it's a legitimate choice.
+it. You shipped a working CRUD API without installing anything — not a toy; for a small surface it's a
+legitimate choice.
 
 So when do you reach for a framework? When the job grows:
 

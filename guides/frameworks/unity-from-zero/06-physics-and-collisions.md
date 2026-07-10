@@ -6,14 +6,14 @@ summary: "Hand an object to the physics engine with a Rigidbody, give it shape w
 tags: [unity, physics, rigidbody, collider, collisions]
 difficulty: advanced
 synonyms: ["unity rigidbody", "unity collider", "unity oncollisionenter", "unity ontriggerenter", "unity physics", "unity trigger vs collision"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Physics & Collisions
 
 At the end of Phase 5 your player walked straight through a wall. That wasn't a bug in your code - it was the whole point. Setting `transform.position` by hand teleports an object; nothing in the world gets a vote. This phase is where you stop teleporting and start letting Unity's physics engine do the heavy lifting: gravity, stopping at walls, bumping into things, and - the payoff for our game - *noticing* when the player touches a pickup.
 
-Here's the mental model to carry through everything below:
+The mental model to carry through everything below:
 
 > **A `Rigidbody` hands an object to the physics engine. `Collider`s give that object a shape. Triggers *sense* overlaps; solid colliders *block* movement. And you drive physics in `FixedUpdate`, not `Update`.**
 

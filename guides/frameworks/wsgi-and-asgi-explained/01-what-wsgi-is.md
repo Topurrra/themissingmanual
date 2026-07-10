@@ -6,7 +6,7 @@ summary: "WSGI is the standard contract between a Python web server and a Python
 tags: [wsgi, python, web, server-interface, gunicorn, flask, django]
 difficulty: beginner
 synonyms: ["what is wsgi", "wsgi explained", "wsgi application callable", "wsgi server vs app", "why does python need wsgi", "wsgi standard pep 3333", "python web server interface"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What WSGI Is
@@ -19,7 +19,6 @@ is about the bedrock it sits on.
 
 This is the roots guide. You'll rarely write raw WSGI by hand at work - frameworks exist precisely so you
 don't have to - but every Python web framework is a convenience layer over the thing you're about to meet.
-Learn the foundation and the layers stop being magic.
 
 ## The problem WSGI solved
 

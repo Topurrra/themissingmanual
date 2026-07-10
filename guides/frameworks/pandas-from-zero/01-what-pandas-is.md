@@ -6,16 +6,16 @@ summary: "The mental model that makes pandas click: a DataFrame is a spreadsheet
 tags: [pandas, dataframe, series, python, data-analysis, getting-started]
 difficulty: beginner
 synonyms: ["what is pandas", "pandas dataframe explained", "pandas series vs dataframe", "pandas vs excel", "create a dataframe", "pandas import", "python data analysis library"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # What pandas Is & the DataFrame
 
 If you've ever stared at a spreadsheet and thought "I wish I could do this with code instead of dragging
 formulas around," pandas is the answer. It's the library Python people reach for the moment data is
-involved — and before you write a single line of it, there's one idea that makes everything else fall into
-place. Get this idea, and pandas stops being a wall of unfamiliar methods and becomes a tool you already
-half-understand.
+involved — and before you write a single line of it, there's one idea that makes everything else fall
+into place. Get this idea, and pandas stops being a wall of unfamiliar methods and becomes a tool you
+already half-understand.
 
 That idea is this: **a DataFrame is a spreadsheet — or a SQL table — that lives in your computer's memory,
 and you poke at it with code instead of a mouse.** Rows and columns. Filters. Group-bys. Joins. You know

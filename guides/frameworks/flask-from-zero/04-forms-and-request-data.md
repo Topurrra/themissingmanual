@@ -6,7 +6,7 @@ summary: "Take in user-submitted data the right way: read raw form fields, apply
 tags: [flask, forms, request-form, flask-wtf, validation, csrf, flash]
 difficulty: intermediate
 synonyms: ["flask forms", "flask request.form", "flask-wtf forms validation", "flask csrf protection", "flask post redirect get", "flask flash messages", "flask handle form submission"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Forms & Request Data
@@ -19,8 +19,8 @@ until it bites them — protecting the form from being submitted by a site that 
 The mental model: **a form submission is just a `POST` request whose body is a bag of named fields.** The
 browser packs up the form's inputs and ships them in the request body; your view reads them out of
 `request.form`. Flask's tiny core gives you exactly that and stops — no form library, no validation, no CSRF.
-Everything richer is something you *add*. We'll start bare-hands to see the raw machinery, then layer on the
-extension that does the tedious parts for you.
+Everything richer is something you *add*. We'll start bare-hands, then layer on the extension that does the
+tedious parts for you.
 
 ## Reading a raw form — the bare-hands version
 

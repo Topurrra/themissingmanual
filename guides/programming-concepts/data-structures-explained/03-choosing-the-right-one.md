@@ -6,7 +6,7 @@ summary: "A three-question decision guide - need order? need fast lookup by key?
 tags: [data-structures, decision-guide, big-o, performance, lists, maps, sets]
 difficulty: beginner
 synonyms: ["which data structure to use", "list vs map vs set", "when to use a hash map instead of a list", "how to choose a data structure", "big o for beginners intuition"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Choosing the Right One
@@ -50,7 +50,7 @@ data grows; "slow" means it gets worse the bigger the collection gets.
 | Allows **duplicates**? | yes | keys: no | no |
 
 Read the table as a map of strengths, not a scoreboard. Each container is *fast at the thing it's for* and
-slower at (or doesn't do at all) the things it isn't for. There's no winner - there's a fit.
+slower at (or doesn't do at all) the things it isn't for - there's no winner, only a fit.
 
 ## Big-O, as intuition only
 
@@ -65,8 +65,9 @@ the symbols scare you; for now they're just two plain ideas:
   everything over, is this kind. This is the "slow" in the table.
 
 That's genuinely all you need to choose well: *is this operation constant, or does it grow with size, and is
-it the operation I do most?* The formal definitions, the math, and the in-between speeds belong to a future
-performance guide - chase them when you're optimizing real code, not before.
+it the operation I do most?* The formal definitions, the math, and the in-between speeds belong to
+[Big-O Without the Math Panic](/guides/big-o-without-the-math-panic) - chase them when you're optimizing real
+code, not before.
 
 ## The classic slowdown: a list where you needed a map
 
@@ -120,9 +121,10 @@ You came in able to write code but unsure which container to grab. Now you have 
 - The deciding question is never "which is best" but "**what does my code keep asking?**" Match the container
   to that question and the right one is usually obvious.
 
-That's the everyday toolkit. When you're ready to go deeper - trees, queues, stacks, and the real math of
-performance - the future performance guide picks up where this leaves off. Until then, you have more than
-enough to choose well and write code that stays fast as it grows.
+That's the everyday toolkit. When you're ready to go deeper, [Phase 4](04-stacks-queues-and-linked-lists.md)
+covers stacks, queues, and linked lists, and [Trees & Binary Search Trees](/guides/trees-and-binary-search-trees)
+picks up from there. Until then, you have more than enough to choose well and write code that stays fast as
+it grows.
 
 ## Recap
 
@@ -136,11 +138,12 @@ enough to choose well and write code that stays fast as it grows.
 
 ---
 
-Two everyday structures, side by side - push/pop a stack (LIFO) versus enqueue/dequeue a queue (FIFO):
+A preview of two more structures - push/pop a stack (LIFO) versus enqueue/dequeue a queue (FIFO). Phase 4
+covers what's happening here in full:
 
 ```playground-ds
 ```
 
-[← Phase 2: Maps & Sets](02-maps-and-sets.md) · [Guide overview](_guide.md)
+[← Phase 2: Maps & Sets](02-maps-and-sets.md) · [Guide overview](_guide.md) · [Phase 4: Stacks, Queues & Linked Lists →](04-stacks-queues-and-linked-lists.md)
 
 **Related guides:** [Programming from Zero](/guides/programming-from-zero) · [What Happens When Code Runs](/guides/what-happens-when-code-runs)

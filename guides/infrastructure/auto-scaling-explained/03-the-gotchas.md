@@ -10,7 +10,7 @@ synonyms:
   - thundering herd problem
   - why does auto scaling need a load balancer
   - why is my app slow right after scaling up
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # The Gotchas
@@ -47,7 +47,7 @@ This is why relying on auto-scaling alone as your entire defense against a launc
 
 ## The piece that makes all of this actually work: a load balancer
 
-Here's the part that's commonly overlooked because it's a separate piece of infrastructure, not something the auto-scaler itself does. Auto-scaling can perfectly detect a spike, correctly decide to add three new servers, and successfully boot them — and none of that matters to a single user unless something is also responsible for actually sending traffic *to* those new servers instead of continuing to hammer the old ones.
+This part gets overlooked because it's a separate piece of infrastructure, not something the auto-scaler itself does. Auto-scaling can perfectly detect a spike, decide to add three new servers, and boot them — and none of that matters to a single user unless something is also responsible for sending traffic *to* those new servers instead of continuing to hammer the old ones.
 
 That's the job of a **load balancer**: it sits in front of your fleet of servers and distributes incoming requests across whichever servers are currently registered and healthy. When auto-scaling adds a server, it isn't useful because it exists — it's useful because the load balancer notices it, confirms it's healthy, and starts routing a share of traffic to it. When auto-scaling removes a server, the load balancer has to stop sending it traffic *before* it's shut down, or requests get dropped mid-flight.
 

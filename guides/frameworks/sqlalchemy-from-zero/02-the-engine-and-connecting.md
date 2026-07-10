@@ -6,7 +6,7 @@ summary: "Meet the Engine — SQLAlchemy's central source of DB connectivity and
 tags: [sqlalchemy, engine, connection, create-engine, core, transactions, dbapi]
 difficulty: beginner
 synonyms: ["sqlalchemy create_engine", "sqlalchemy connection", "sqlalchemy core execute sql", "sqlalchemy transactions commit", "sqlalchemy connection pool", "sqlalchemy text() raw sql", "sqlalchemy database url"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The Engine & Connecting
@@ -14,8 +14,7 @@ updated: 2026-06-23
 Before SQLAlchemy can map a single `Author` to a row, something has to actually *talk to the database* —
 open a connection, send SQL, read rows back, and clean up afterward. That something is the **Engine**.
 Everything else in this guide — models, the Session, `select()` — sits on top of the machinery you'll meet
-here. Get a clear mental model of the Engine now and the ORM later feels like a convenience layer rather
-than a separate mystery.
+here.
 
 The mental model in one sentence: **the Engine is the thing that knows how to reach your database and hands
 out connections from a pool, and a Connection is a single live conversation with that database.** You make

@@ -6,7 +6,7 @@ summary: "Turn raw exceptions into honest HTTP responses: per-controller @Except
 tags: [spring-boot, error-handling, exception-handler, controller-advice, http-status, problem-detail, rest]
 difficulty: intermediate
 synonyms: ["spring exception handling", "spring @ExceptionHandler @ControllerAdvice", "spring rest error response", "spring http status codes", "spring problemdetail rfc 7807", "spring global exception handler"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Error Handling Done Right
@@ -14,13 +14,12 @@ updated: 2026-06-22
 Your API works on the happy path. In [Phase 6](06-service-layer-and-validation.md) the service started
 throwing real exceptions when things go wrong — a `DuplicateIsbnException` when an ISBN already exists, and
 Spring's own `MethodArgumentNotValidException` when `@Valid` rejects a bad request body. The question this
-phase answers is: **what does the client actually see when one of those is thrown?**
+phase answers: **what does the client actually see when one of those is thrown?**
 
-The mental model to carry through this whole phase: **an exception is not the answer the client gets — it's
-a signal you translate into one.** Your service speaks in Java exceptions ("this book wasn't found," "this
-ISBN is a duplicate"). Your client speaks HTTP ("404," "409," "400"). Error handling is the layer that
-translates between those two languages. If you skip it, Spring picks a translation for you — and as you're
-about to see, the one it picks is bad.
+**An exception is not the answer the client gets — it's a signal you translate into one.** Your service
+speaks in Java exceptions ("this book wasn't found," "this ISBN is a duplicate"). Your client speaks HTTP
+("404," "409," "400"). Error handling is the layer that translates between those two languages. Skip it,
+and Spring picks a translation for you — and it's bad.
 
 If you've read the Java side of this, the exception machinery itself — throwing, catching, the
 checked/unchecked split — is covered in [Errors & I/O](/guides/java-from-zero/07-errors-and-io). This phase
@@ -64,11 +63,10 @@ catch it, so it unwinds straight out of the controller and into Spring's hands. 
 ```
 
 *What just happened:* ⚠️ Spring's default for *any* uncaught exception is **500 Internal Server Error** —
-the status that means "the server broke." But the server didn't break. The client asked for a book that
-isn't there, which is entirely their doing. A 500 tells them "this is our fault, try again later," when the
-honest answer is "that book doesn't exist, stop asking." The status is a lie, and there's nothing in the
-body naming *which* book or *why*. (If you hit the same endpoint from a browser instead of an API client,
-you may get the infamous **Whitelabel Error Page** — a generic HTML blob — instead of JSON.)
+the status that means "the server broke." But the server didn't break; the client asked for a book that
+isn't there. A 500 says "this is our fault, try again later," when the honest answer is "that book doesn't
+exist, stop asking." The status is a lie, and nothing in the body names *which* book or *why*. (Hit the
+same endpoint from a browser and you may get the infamous **Whitelabel Error Page** instead of JSON.)
 
 It gets worse in development: depending on your settings, that body can include `"trace"` with the full
 Java stack trace, leaking your class names, file paths, and internal structure to anyone who pokes the API.
@@ -175,10 +173,9 @@ public class GlobalExceptionHandler {
 
 *What just happened:* This one class is now the translation layer for the entire app. Handler 1 turns our
 `BookNotFoundException` into a 404 from any controller. Handler 2 catches the `MethodArgumentNotValidException`
-that `@Valid` throws (from [Phase 6](06-service-layer-and-validation.md)) and walks
-`getBindingResult().getFieldErrors()` to build a tidy field→message map — far cleaner than Spring's noisy
-default validation body. Handler 3 is the safety net: `Exception.class` catches *everything else*, so an
-unexpected bug still produces a deliberate 500 with a generic message instead of leaking internals.
+that `@Valid` throws and walks `getBindingResult().getFieldErrors()` to build a tidy field→message map — far
+cleaner than Spring's noisy default. Handler 3 is the safety net: `Exception.class` catches *everything
+else*, so an unexpected bug still produces a deliberate 500 with a generic message instead of leaking internals.
 
 💡 Spring picks the **most specific** matching handler. A `BookNotFoundException` matches both handler 1 and
 the `Exception` catch-all in handler 3 — Spring chooses 1 because it's the closest match. That's what lets
@@ -275,9 +272,9 @@ public class GlobalExceptionHandler {
 ```
 
 *What just happened:* `ProblemDetail.forStatusAndDetail` builds the standard body and sets the HTTP status
-in one call — note we no longer need `@ResponseStatus`, because the status now lives *in* the
-`ProblemDetail` itself and Spring uses it. We add a `title` and a custom `errorCode` property for clients
-that want to switch on a stable code. A 404 now serializes to:
+in one call — no more `@ResponseStatus`, because the status now lives *in* the `ProblemDetail` itself. We
+add a `title` and a custom `errorCode` property for clients that want to switch on a stable code. A 404 now
+serializes to:
 
 ```json
 {
@@ -295,13 +292,10 @@ when you don't supply a problem-specific URI; that's the spec's "nothing fancier
 The content type even comes back as `application/problem+json`, the standard's official media type, so
 clients can detect a problem response by its type alone.
 
-💡 The deeper point of this whole phase: **good error handling is a contract.** A predictable status code
-plus a predictable body means clients can build robust handling once and trust it across every endpoint —
-the same way the validation 400s from [Phase 6](06-service-layer-and-validation.md) gave a consistent shape
-for bad input. Switch those validation errors to `ProblemDetail` too and your *entire* API, from "missing
-field" to "duplicate ISBN" to "unexpected crash," speaks one error language. That consistency is what makes
-an API pleasant to build against — and it's the foundation the tests in
-[Phase 8](08-testing-spring-boot.md) will assert on.
+💡 **Good error handling is a contract.** A predictable status code plus a predictable body means clients
+can build robust handling once and trust it across every endpoint — the same way the validation 400s from
+Phase 6 gave a consistent shape for bad input. Switch those to `ProblemDetail` too and your *entire* API
+speaks one error language, the foundation the tests in [Phase 8](08-testing-spring-boot.md) assert on.
 
 ## Recap
 

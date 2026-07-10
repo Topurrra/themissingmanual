@@ -12,7 +12,7 @@ synonyms:
   - search as you type performance
   - scroll event firing too often
   - rate limiting events in javascript
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Debounce: wait for a pause
@@ -54,7 +54,7 @@ Applied to the search box's eight keystrokes from Phase 1, with a 300ms debounce
 
 ## Implementing it
 
-The pattern behind essentially every debounce implementation is small enough to write from scratch, which is worth doing once so the library-provided versions don't feel like magic:
+The pattern behind most debounce implementations is small enough to write from scratch — worth doing once so the library-provided versions don't feel like magic:
 
 ```js
 function debounce(fn, delayMs) {

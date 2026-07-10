@@ -6,14 +6,14 @@ summary: "ACID is four promises a database makes about transactions: Atomicity (
 tags: [databases, acid, atomicity, consistency, isolation, durability]
 difficulty: intermediate
 synonyms: ["what does acid mean", "atomicity consistency isolation durability explained", "acid properties of transactions", "what is durability in a database", "what is atomicity"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # ACID, Explained
 
-"ACID-compliant" gets thrown around like a marketing checkbox, and most people can recite that it stands for Atomicity, Consistency, Isolation, and Durability without being able to say what any of them actually buy you. That's a shame, because these aren't academic — each one is a specific promise that defuses a specific way your data could get wrecked.
+"ACID-compliant" gets thrown around like a marketing checkbox, and most people can recite that it stands for Atomicity, Consistency, Isolation, and Durability without being able to say what any of them actually buy you. That's a shame — each one is a specific promise that defuses a specific way your data could get wrecked.
 
-You already met the most important one in Phase 1 without naming it. Here's the whole set, one plain sentence and one concrete example each. Throughout, keep the bundle from Phase 1 in mind: ACID is really four guarantees *about that bundle*.
+You already met the most important one in Phase 1 without naming it. Here's the whole set, one plain sentence and one concrete example each. Keep the bundle from Phase 1 in mind throughout: ACID is really four guarantees *about that bundle*.
 
 ## A — Atomicity: all of it, or none of it
 

@@ -6,7 +6,7 @@ summary: "Create the test file, run pytest, and read a green pass - then break t
 tags: [testing, unit-tests, pytest, python, running-tests, test-failures, beginner-friendly]
 difficulty: beginner
 synonyms: ["how to run pytest", "how to run a test in python", "reading a test failure", "pytest green pass red fail", "why is my test failing", "how to install pytest"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Write It and Run It
@@ -17,8 +17,7 @@ running it once yourself teaches more than reading it ten times.
 
 We'll do the full loop: write the code and the test, run it and read a **green** pass, then deliberately
 break the code and read a **red** failure. That last step matters more than it sounds - a test you've only
-ever seen pass might be passing for the wrong reason. Watching it fail when the code is wrong is how you
-earn the right to trust it.
+ever seen pass might be passing for the wrong reason. Watching it fail is how you earn the right to trust it.
 
 ## Step 1: Install pytest
 
@@ -163,7 +162,7 @@ because that's where the answer is:
 
 This is what a test failure *is*: a precise report of "you said this should be 110, but it was 120, on this
 line." It doesn't just say "something's wrong" - it hands you the expected value, the actual value, and the
-location. Reading that report calmly is most of the skill.
+location.
 
 ⚠️ **Gotcha.** When a test goes red, resist the urge to "fix the test" so it passes again. The test is the
 messenger. Nine times out of ten the *code* is wrong, and the test just did its only job. Change the test

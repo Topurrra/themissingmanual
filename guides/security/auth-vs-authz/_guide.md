@@ -8,14 +8,14 @@ category: security
 order: 4
 difficulty: intermediate
 synonyms: ["difference between authentication and authorization", "authn vs authz", "what is a session vs a token", "what is a jwt", "how does sign in with google work", "what is oauth", "is a jwt encrypted", "session cookie vs jwt", "how does login stay logged in"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Auth vs Authz (Sessions, JWT, OAuth)
 
-Everyone who builds anything with a login screen ends up here. You can wire up a login form, you've copy-pasted a JWT library, you've clicked "Sign in with Google" a thousand times - and yet if someone asked you to explain, precisely, the difference between *authentication* and *authorization*, or whether a JWT is encrypted, or what OAuth actually does, you'd hedge. This is the topic everybody half-understands.
+You've wired up a login form, copy-pasted a JWT library, clicked "Sign in with Google" a thousand times - and yet asked to explain the difference between *authentication* and *authorization*, or whether a JWT is encrypted, you'd hedge. That's not a you-problem: the words look almost identical (*authn*, *authz*), and most tutorials hand you working code without showing the moving parts underneath.
 
-That's not a you-problem. The words look almost identical (*authn*, *authz*), the acronyms pile up, and most tutorials hand you working code without ever showing you the moving parts underneath. This guide fixes that. By the end you'll have a clean mental model for each piece and you'll be able to *reason* about an auth system instead of guessing.
+This guide fixes that. By the end you'll have a clean mental model for each piece and be able to *reason* about an auth system instead of guessing.
 
 ## How to read this
 

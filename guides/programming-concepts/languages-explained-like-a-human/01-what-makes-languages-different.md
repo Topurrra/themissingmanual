@@ -6,20 +6,20 @@ summary: "The four axes that actually separate programming languages - typed vs 
 tags: [programming-languages, static-typing, dynamic-typing, compiled, interpreted, memory-management, runtime]
 difficulty: beginner
 synonyms: ["what makes programming languages different", "static vs dynamic typing explained", "compiled vs interpreted languages", "how do languages manage memory", "garbage collection vs ownership", "where does a language run"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What Actually Makes Languages Different
 
 When you're new, every language looks like a different alphabet - different keywords, different punctuation,
-a different vibe. So it's natural to compare them on surface looks: "Python has no semicolons," "Rust has
-weird arrows." But those are spelling differences. They're not what makes a language *feel* the way it
-feels, or what makes it good at one job and clumsy at another.
+a different vibe - so it's natural to compare them on surface looks: "Python has no semicolons," "Rust has
+weird arrows." But those are spelling differences, not what makes a language *feel* the way it feels or what
+makes it good at one job and clumsy at another.
 
 The real differences live underneath, on a small number of **axes** - design decisions the language made
 about how it treats your code. There are only a few that matter for choosing, and once you can see them,
-every language (including ones not in this guide) clicks into place. Let's install those four ideas now.
-Phase 2 will drop our four languages onto them.
+every language (including ones not in this guide) clicks into place - Phase 2 will drop our four languages
+onto them.
 
 ## Axis 1: Typed vs dynamic - does the language check your work before it runs?
 
@@ -113,7 +113,7 @@ There are three broad answers:
   the source of some of the nastiest, most dangerous bugs in software history - freeing too early, freeing
   twice, or never freeing.
 - **Garbage collected (GC).** A built-in helper periodically finds memory nobody's using and reclaims it for
-  you, automatically. You almost never think about it. The cost is that the helper does work while your
+  you, automatically - you almost never think about it. The cost is that the helper does work while your
   program runs, which can cause small, occasional pauses and uses some extra memory.
 - **Ownership.** A newer idea (Rust's signature): the *compiler* tracks who "owns" each piece of memory and
   inserts the cleanup for you, at compile time, with rules it enforces before the program runs. You get
@@ -148,8 +148,8 @@ written, the tools, the community, and the jobs.
 dates, talking to a database, doing math) from scratch.
 
 **Why this matters more than beginners expect.** You will spend far more time *using* libraries than writing
-clever language tricks. A language with a rich, mature ecosystem for your task can make you productive on day
-one; a language without one means you build everything yourself. Where a language runs also decides whole
+clever language tricks, and a language with a rich, mature ecosystem for your task can make you productive on
+day one, while one without means you build everything yourself. Where a language runs also decides whole
 categories of work: only one mainstream language runs natively in every web browser, for instance, and that
 single fact has shaped careers.
 

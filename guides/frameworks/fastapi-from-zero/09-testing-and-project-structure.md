@@ -6,7 +6,7 @@ summary: "Test FastAPI in-process with TestClient, swap real dependencies for fa
 tags: [fastapi, testing, testclient, pytest, dependency-override, apirouter, project-structure]
 difficulty: intermediate
 synonyms: ["fastapi testclient", "fastapi pytest", "fastapi dependency override testing", "fastapi apirouter structure", "fastapi project layout", "fastapi test database", "fastapi testing endpoints"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Testing & Project Structure
@@ -15,11 +15,11 @@ The moment your Book API touches a real database and real auth, the temptation i
 up the server, opening `/docs`, and clicking around. That works exactly once, on your machine, on a good
 day. It doesn't catch the bug you introduce next Tuesday, and it can't run in CI.
 
-This phase is about two habits that travel together. First, how to test FastAPI *properly* — fast,
-repeatable, in-process, no clicking. Second, how to lay out the project so it stays testable as it grows.
-These aren't separate topics: the reason FastAPI is so pleasant to test is the exact design we've been
-building toward — everything is a dependency — and that same design keeps the codebase from collapsing
-into one unreadable file.
+This phase is about two habits that travel together: testing FastAPI *properly* — fast, repeatable,
+in-process, no clicking — and laying out the project so it stays testable as it grows. These aren't
+separate topics: the reason FastAPI is so pleasant to test is the exact design we've been building
+toward — everything is a dependency — and that same design keeps the codebase from collapsing into one
+unreadable file.
 
 ## The mental model: your app is a callable, not a server
 

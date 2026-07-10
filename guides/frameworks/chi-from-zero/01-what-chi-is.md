@@ -6,15 +6,15 @@ summary: "chi is a lightweight idiomatic Go router that stays 100% compatible wi
 tags: [chi, go, router, net-http, getting-started]
 difficulty: beginner
 synonyms: ["what is chi", "go-chi router", "chi net/http compatible", "chi first server", "chi vs gin", "idiomatic go router"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What chi Is
 
 You know [Go](/guides/go-from-zero), and you already like `net/http`. Maybe you've read the
 [net/http roots guide](/guides/web-services-with-only-net-http) and thought: this is fine, honestly —
-clean types, no magic, the standard library does the work. There's only one thing that gets old fast.
-Telling `/articles/42` apart from `/articles` means hand-rolling a router, and the stdlib mux historically
+clean types, no magic, the standard library does the work. There's only one thing that gets old fast:
+telling `/articles/42` apart from `/articles` means hand-rolling a router, and the stdlib mux historically
 made that more painful than it should be. That's the one gap.
 
 chi fills exactly that gap and nothing more. It's a lightweight, idiomatic router whose entire philosophy
@@ -29,9 +29,9 @@ new request object to memorize, because there isn't one.
 Hold this one idea and the whole framework follows from it.
 
 📝 **chi adds a router to the standard library and then steps aside.** It doesn't wrap your handlers in
-anything. It doesn't give you a special context. It matches an incoming method + path to one of *your*
-plain `net/http` handlers, fills in URL parameters the stdlib mux long lacked, and calls your function with
-the same `w http.ResponseWriter, r *http.Request` you'd write anyway.
+anything, doesn't give you a special context. It matches an incoming method + path to one of *your* plain
+`net/http` handlers, fills in URL parameters the stdlib mux long lacked, and calls your function with the
+same `w http.ResponseWriter, r *http.Request` you'd write anyway.
 
 ```mermaid
 flowchart LR
@@ -52,8 +52,8 @@ go get github.com/go-chi/chi/v5
 ```
 
 *What just happened:* `go get` downloaded chi and recorded it in your `go.mod`/`go.sum`. Note the `/v5` —
-chi uses Go's versioned module paths, so the import path carries the major version. You'll import it as the
-`chi` package. That one command is the whole install.
+chi uses Go's versioned module paths, so the import path carries the major version. That one command is the
+whole install.
 
 Now the smallest server that does something real. Create a file called `main.go`:
 
@@ -80,12 +80,12 @@ func main() {
 - `r.Get("/ping", ...)` registers a **route**: when a `GET` arrives for `/ping`, run the function we pass.
   That function is the **handler**, and its signature — `func(w http.ResponseWriter, req *http.Request)` —
   is the *exact* shape of a plain `http.HandlerFunc`. No chi types in it at all.
-- `w.Write([]byte("pong"))` writes the response body using the standard `http.ResponseWriter`. Same call
+- `w.Write([]byte("pong"))` writes the response body using the standard `http.ResponseWriter` — same call
   you'd make with no framework.
 - `http.ListenAndServe(":3000", r)` starts the server on port 3000 — and here's the key move: the second
   argument to the stdlib's `ListenAndServe` is the handler, and we pass `r`. **The router *is* the handler.**
   Because a chi router satisfies the `http.Handler` interface, you hand it straight to the standard library.
-  There's no `r.Run()` wrapper to learn; you use the function you already know.
+  There's no `r.Run()` wrapper to learn.
 
 Run it like any Go program:
 
@@ -117,19 +117,17 @@ the reason to pick chi.
 💡 Because everything in that server is a stdlib type, **what you learn here transfers straight to plain
 net/http** ([the net/http roots guide](/guides/web-services-with-only-net-http)) and back again. Learn to
 write a chi handler and you've learned to write an `http.HandlerFunc`. Learn chi middleware and you've
-learned `func(http.Handler) http.Handler`, which is *the* standard middleware shape.
+learned `func(http.Handler) http.Handler`, the standard middleware shape.
 
 💡 And it runs in the other direction too: **any stdlib-compatible middleware works with chi unchanged.**
 The whole ecosystem of `func(http.Handler) http.Handler` wrappers — CORS handlers, request loggers,
 auth middleware written for raw `net/http` — drops into a chi router with no adapter, because chi never
-asked them to speak a special dialect. You're not locked into a framework's plugin universe; you're plugged
-into the standard library's.
+asked them to speak a special dialect.
 
 ⚠️ The flip side, worth naming on day one: chi gives you *less* out of the box than Gin or Echo. There's no
 `c.JSON(200, ...)` one-liner waiting for you — you'll reach for `encoding/json` and write the response the
-standard way. That's a deliberate trade: a little more typing in exchange for zero magic and total
-portability. If you'd rather the framework do more of the boring parts for you, [Gin](/guides/gin-from-zero)
-is the guide to read. If you want the standard library with a real router bolted on, you're in the right place.
+standard way. That's a deliberate trade: a little more typing for zero magic and total portability. If
+you'd rather the framework do more of the boring parts, [Gin](/guides/gin-from-zero) is the guide to read.
 
 ## The running example: an articles API
 
@@ -146,8 +144,8 @@ type Article struct {
 
 *What just happened:* we declared the `Article` struct the whole guide builds on. Those `json:"..."`
 **struct tags** tell `encoding/json` what to call each field on the wire — so `Title` becomes `"title"` in
-the JSON, not `"Title"`. They do real work in both directions: when we write articles out as JSON and when
-we read them back in. Here's the type returning itself through a plain chi handler:
+the JSON, not `"Title"`. They do real work in both directions. Here's the type returning itself through a
+plain chi handler:
 
 ```go
 r.Get("/articles/sample", func(w http.ResponseWriter, req *http.Request) {
@@ -158,9 +156,9 @@ r.Get("/articles/sample", func(w http.ResponseWriter, req *http.Request) {
 ```
 
 *What just happened:* the handler built an `Article`, set the `Content-Type` header by hand, and used the
-standard `json.NewEncoder(w).Encode(a)` to serialize it straight to the response writer. (You'd add
-`"encoding/json"` to your imports.) Notice there's no framework helper doing this — it's stdlib JSON,
-exactly as you'd write it without chi. Hit it and you get clean JSON back:
+standard `json.NewEncoder(w).Encode(a)` to serialize it straight to the response writer. No framework
+helper doing this — it's stdlib JSON, exactly as you'd write it without chi. Hit it and you get clean JSON
+back:
 
 ```console
 $ curl localhost:3000/articles/sample

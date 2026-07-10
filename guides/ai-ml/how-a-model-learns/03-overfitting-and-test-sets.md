@@ -6,14 +6,13 @@ summary: "A model can memorize its training data instead of learning the real pa
 tags: [ai-ml, machine-learning, overfitting, train-test-split, generalization, bias, beginner-friendly]
 difficulty: beginner
 synonyms: ["what is overfitting", "why split data into train and test", "what is a validation set", "difference between training and test data", "why does a model do well on training but fail in real life", "is a model biased by its data"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Overfitting & Why Test Sets Exist
 
-By now you know training drives the loss down, lap after lap. So here's an uncomfortable question: if
-lower loss is better, why not keep training until the loss is basically zero? Wouldn't that be a perfect
-model?
+By now you know training drives the loss down, lap after lap. So here's an uncomfortable question: if lower
+loss is better, why not keep training until the loss is nearly zero? Wouldn't that be a perfect model?
 
 It would be a model that's perfect *on the examples it has already seen* — and possibly useless on
 anything new. That trap has a name, and avoiding it is the reason machine learning has the rituals it
@@ -102,10 +101,9 @@ The model isn't being malicious or careless — it's faithfully reflecting the d
 "Garbage in, garbage out" is not a warning about the algorithm; it's a fact about where the weights came
 from.
 
-**Why this matters.** This is the most important honesty in the whole guide: a model's fairness and
-blind spots are inherited from its data, not invented by the math. If you only remember one thing about
-evaluating a model, make it this. The data side of that story — where bias creeps in and what to watch
-for — is covered in [ML Basics for Data People](/guides/ml-basics-for-data-people).
+**Why this matters.** This is the most important honesty in the whole guide: a model's fairness and blind
+spots are inherited from its data, not invented by the math. The data side of that story — where bias creeps
+in and what to watch for — is covered in [ML Basics for Data People](/guides/ml-basics-for-data-people).
 
 **Why this saves you later.** When a model behaves strangely — great in the demo, wrong in the wild;
 fair for some users, unfair for others — your first question is now the right one: *what was it trained

@@ -6,12 +6,12 @@ summary: "TLS wraps plain HTTP in three guarantees - encryption so eavesdroppers
 tags: [security, https, tls, encryption, integrity, authentication, padlock]
 difficulty: intermediate
 synonyms: ["what does the padlock actually mean", "does https mean safe", "what does https protect", "is a site with a padlock trustworthy", "what is the difference between http and https"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What HTTPS Protects (and Doesn't)
 
-Picture sending a postcard through the mail. Anyone who handles it - the mail carrier, the sorting office, a nosy neighbor - can read every word, and a determined one could erase a line and write their own before passing it along. Plain **HTTP** is that postcard. Every page you load, every password you type, every form you submit travels as readable text through a dozen machines you don't control: your router, your internet provider, the coffee-shop Wi-Fi, the backbone routers in between.
+Picture sending a postcard through the mail. Anyone who handles it - the mail carrier, the sorting office, a nosy neighbor - can read every word, and a determined one could erase a line and write their own before passing it along. Plain **HTTP** is that postcard: every page you load, every password you type, every form you submit travels as readable text through a dozen machines you don't control - your router, your internet provider, the coffee-shop Wi-Fi, the backbone routers in between.
 
 **HTTPS** is the same postcard, sealed in an opaque, tamper-evident envelope that only you and the intended recipient can open - and stamped in a way that proves who sealed it. The "S" stands for *secure*, and the security comes from a layer underneath called **TLS**. Let's make that concrete, because the whole guide rests on it.
 
@@ -61,7 +61,7 @@ Here is the single most important sentence in this guide:
 
 This is why the old advice "look for the padlock to know it's safe" is not just incomplete - it's actively dangerous. The padlock answers "is this conversation private and reaching the named server?" It does not answer "is this the server I *meant*?" That second question is on you: read the actual domain name, character by character.
 
-**Why people get this wrong.** Browsers used to show a big green bar with the company's legal name for expensive "Extended Validation" certificates, which trained a generation to equate the padlock with legitimacy. Browsers have since dropped most of that fanfare precisely because it gave false confidence. Today, a padlock is the baseline for *every* site, good and bad.
+**Why people get this wrong.** Browsers used to show a big green bar with the company's legal name for expensive "Extended Validation" certificates, training a generation to equate the padlock with legitimacy. Browsers have since dropped most of that fanfare precisely because it gave false confidence - today, a padlock is the baseline for *every* site, good and bad.
 
 🪖 **War story.** A teammate once approved a vendor invoice from a site that had a padlock and looked exactly like the vendor's portal - same logo, same layout. The domain was off by one hyphen. The padlock was real; the site was not. Encryption did its job flawlessly: it privately and reliably delivered his credentials to the attacker. The lesson stuck: *the padlock protects the pipe, not the destination.*
 
@@ -76,7 +76,7 @@ To round out the model, here's what the padlock stays silent about:
 
 ## Why this saves you later
 
-Once the model is right, two things get easier. First, you'll never be fooled by a padlock on a phishing page again - you'll instinctively read the domain instead. Second, when you build something, you'll know HTTPS is table stakes (it protects credentials and session tokens in transit - see [Authentication vs. Authorization](/guides/auth-vs-authz)) but *not* the finish line: you still owe your users honest behavior and safe storage on the server side.
+Once the model is right, two things get easier. You'll never be fooled by a padlock on a phishing page again - you'll instinctively read the domain instead. And when you build something, you'll know HTTPS is table stakes (it protects credentials and session tokens in transit - see [Authentication vs. Authorization](/guides/auth-vs-authz)) but *not* the finish line: you still owe your users honest behavior and safe storage on the server side.
 
 ## Recap
 

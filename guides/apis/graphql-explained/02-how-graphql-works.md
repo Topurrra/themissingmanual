@@ -6,22 +6,22 @@ summary: "The pieces that make GraphQL run: a typed schema as the contract, one 
 tags: [graphql, schema, query, mutation, resolver, json, apis]
 difficulty: intermediate
 synonyms: ["how does graphql work", "what is a graphql schema", "graphql query vs mutation", "graphql single endpoint", "graphql response shape", "graphql query example with json"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # How GraphQL Works
 
-In Phase 1 we landed on the one move that defines GraphQL: the client decides the shape of the response. This phase shows the four pieces that make that move safe and predictable, so it doesn't collapse into "the client can ask for anything and hope."
+Phase 1 landed on the one move that defines GraphQL: the client decides the shape of the response. This phase shows the four pieces that make that move safe and predictable, so it doesn't collapse into "the client can ask for anything and hope."
 
 None of these pieces are exotic. By the end you'll be able to read a GraphQL query and predict the JSON it returns without running it.
 
 ## Piece 1: the schema — the contract
 
-**What it actually is.** The schema is a typed description of everything the API can do: which fields exist, what type each one is, how objects relate, and which operations are allowed. It's written in the Schema Definition Language (SDL), and it's the single source of truth both sides agree on.
+The schema is a typed description of everything the API can do: which fields exist, what type each one is, how objects relate, and which operations are allowed. It's written in the Schema Definition Language (SDL), and it's the single source of truth both sides agree on.
 
-**Why this matters.** "The client asks for what it wants" only works if there's a shared, enforced list of what's *askable*. The schema is that list. Ask for a field that isn't in it, and the request is rejected before any data is touched — a typo becomes a clear error, not a silent `null`.
+"The client asks for what it wants" only works if there's a shared, enforced list of what's *askable*. The schema is that list — ask for a field that isn't in it, and the request is rejected before any data is touched, so a typo becomes a clear error instead of a silent `null`.
 
-**A real example.** Here's a small slice of a schema:
+A small slice of a schema:
 
 ```graphql
 type User {
@@ -47,15 +47,15 @@ type Query {
   user(id: ID!): User
 }
 ```
-*What just happened:* This declares three object types and their fields. `String!` means "a string that is never null"; the plain `String` on `avatarUrl` means it may be null. `[Order!]!` is "a non-null list of non-null Orders." `orders(last: Int)` shows a field can take arguments. And `type Query` is special — it lists the entry points a client is allowed to start a read from. Here there's one: fetch a `user` by `id`.
+This declares three object types and their fields. `String!` means "a string that is never null"; the plain `String` on `avatarUrl` means it may be null. `[Order!]!` is "a non-null list of non-null Orders," and `orders(last: Int)` shows a field can take arguments. `type Query` is special — it lists the entry points a client can start a read from. Here there's one: fetch a `user` by `id`.
 
 📝 **Terminology — the `!` (bang).** In a GraphQL schema, `!` means non-nullable: the field is guaranteed to have a value. No `!` means it can be null. This is the schema's way of telling you, up front, which fields you can rely on and which you must guard against.
 
 ## Piece 2: one endpoint
 
-**What it actually is.** A GraphQL API almost always lives at a single URL — by convention `/graphql` — and you reach it with one HTTP method, `POST`, carrying your query in the request body.
+A GraphQL API almost always lives at a single URL — by convention `/graphql` — reached with one HTTP method, `POST`, carrying your query in the request body.
 
-**Why this is a deliberate design choice.** REST spreads behavior across many URLs (`/users/42`, `/orders/9001`) and HTTP verbs. GraphQL collapses that to one address. The trade is intentional: you lose URL-per-resource (which, as Phase 3 will show, is exactly what made REST caching easy) and you gain a single place where the *query itself* describes what you want. The endpoint stops being the thing that varies; the query becomes it.
+REST spreads behavior across many URLs (`/users/42`, `/orders/9001`) and HTTP verbs; GraphQL collapses that to one address. The trade is intentional: you lose URL-per-resource (which, as Phase 3 will show, is exactly what made REST caching easy) and gain a single place where the *query itself* describes what you want. The endpoint stops being the thing that varies; the query becomes it.
 
 ```text
    REST                          GraphQL
@@ -67,14 +67,14 @@ type Query {
 
 ## Piece 3: queries (read) vs mutations (write)
 
-**What it actually is.** GraphQL splits operations into two kinds, by intent:
+GraphQL splits operations into two kinds, by intent:
 
 - A **query** reads data. It should never change anything on the server — it's the GraphQL equivalent of a `GET`.
 - A **mutation** writes data: create, update, delete. It's the equivalent of `POST`/`PUT`/`PATCH`/`DELETE`, all under one name.
 
-**Why the split exists.** Separating reads from writes makes intent explicit and lets the server treat them differently — for example, running a list of mutations strictly one after another (so two writes don't race), while queries can be resolved in parallel. The keyword you write (`query` or `mutation`) tells the server which contract it's operating under.
+Separating reads from writes makes intent explicit and lets the server treat them differently — for example, running a list of mutations strictly one after another (so two writes don't race), while queries resolve in parallel. The keyword you write (`query` or `mutation`) tells the server which contract it's operating under.
 
-**A real example — a mutation:**
+A mutation:
 
 ```graphql
 mutation {
@@ -84,17 +84,15 @@ mutation {
   }
 }
 ```
-*What just happened:* You asked the server to change a user's name (the write), and in the *same* request you said which fields you want back afterward — `id` and `name`. A mutation does the change and then returns data you select, so you can update your UI from the response without a second read.
+You asked the server to change a user's name (the write), and in the *same* request said which fields you want back afterward — `id` and `name`. A mutation does the change and then returns data you select, so you can update your UI from the response without a second read.
 
 ⚠️ **Gotcha — "query" never enforces read-only for you.** GraphQL trusts the server author to keep `query` fields side-effect-free. Nothing in the protocol stops someone from writing a `query` field that secretly mutates data. If you build a GraphQL API, honor the convention: reads under `Query`, writes under `Mutation`. Breaking it confuses every caller and every caching layer that assumed queries were safe to repeat.
 
 ## Piece 4: the response mirrors the request
 
-This is the idea that makes GraphQL feel different the first time you use it, and it's worth slowing down on.
+This is the idea that makes GraphQL feel different the first time you use it. The JSON you get back has the *same shape* as the query you sent — the fields you named, nested the way you nested them, are the keys in the response, under a top-level `"data"` object. You don't decode an unfamiliar payload; you described it, so you already know it.
 
-**What it actually is.** The JSON you get back has the *same shape* as the query you sent. The fields you named, nested the way you nested them, are the keys in the response — under a top-level `"data"` object. You don't decode an unfamiliar payload; you described it, so you already know it.
-
-**A real example — the dashboard header from Phase 1, now as one query:**
+The dashboard header from Phase 1, now as one query:
 
 ```graphql
 query {
@@ -142,7 +140,7 @@ And the response, sent back over that single request:
   }
 }
 ```
-*What just happened:* The seven chained REST round trips from Phase 1 became one request. The response is your query with values filled in — `name`, `avatarUrl`, and exactly three orders, each with its shipment nested inside. Order `9001` has no shipment yet, so `shipment` is `null` — which the schema allowed, because `Order.shipment` wasn't marked `!`. No bio, no billing address, no fields you didn't ask for.
+The seven chained REST round trips from Phase 1 became one request. The response is your query with values filled in — `name`, `avatarUrl`, and exactly three orders, each with its shipment nested inside. Order `9001` has no shipment yet, so `shipment` is `null`, which the schema allowed since `Order.shipment` wasn't marked `!`. No bio, no billing address, no fields you didn't ask for.
 
 📝 **Terminology — resolver.** Behind each field is a small server-side function called a *resolver* that knows how to fetch that field's value (read the user row, look up the orders, call the shipment service). You don't see them as a caller, but they're the machinery that walks the relationships in your query. Keep the word in your pocket — it's the star of one of Phase 3's trade-offs.
 

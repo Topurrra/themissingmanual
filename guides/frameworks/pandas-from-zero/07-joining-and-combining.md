@@ -6,13 +6,13 @@ summary: "Stitch separate tables together: merge is the SQL join in DataFrame cl
 tags: [pandas, merge, join, concat, sql-joins, combining-data, inner-outer-join]
 difficulty: intermediate
 synonyms: ["pandas merge", "pandas join dataframes", "pandas concat", "pandas inner outer left join", "pandas merge on key", "pandas combine dataframes", "pandas merge vs sql join"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Joining & Combining
 
-Up to now we've worked one table: the sales DataFrame, all by itself. But real analysis is almost never one
-table. Your sales rows know the `product` name and a `units` count — but *what category is that product?
+Up to now we've worked one table — the sales DataFrame, all by itself — but real analysis is almost never
+one table. Your sales rows know the `product` name and a `units` count — but *what category is that product?
 Who's the supplier?* That information lives somewhere else, in a `products` table, because repeating
 "Widgets are Hardware, supplied by Acme" on every single sales row would be wasteful and error-prone. So the
 data gets split across tables on purpose, linked by a shared value. This phase is about putting it back

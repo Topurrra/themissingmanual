@@ -6,14 +6,14 @@ summary: "Describe request bodies with DTO classes, annotate them with class-val
 tags: [nestjs, typescript, dto, validation, pipes]
 difficulty: advanced
 synonyms: ["nestjs dto", "nestjs validation", "nest class-validator", "nest ValidationPipe", "nest pipes", "nest ParseIntPipe", "nest PartialType"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # DTOs, Validation & Pipes
 
 Back in [Phase 2](02-controllers-and-routing.md), `@Body()` handed you whatever JSON the client sent — typed as `any`, trusted blindly. That's fine in a demo and a disaster in production. A client can post `{ "title": 12345 }`, or `{ }`, or `{ "title": "x", "isAdmin": true }` trying to sneak in a field you never meant to accept. Somebody has to check.
 
-The naive instinct is to write `if (!body.title) throw new BadRequestException(...)` at the top of every handler. Do that across twenty endpoints and your controllers turn into validation sludge — and the rules drift, because nobody keeps twenty copies in sync.
+The naive instinct is to write `if (!body.title) throw new BadRequestException(...)` at the top of every handler. Do that across twenty endpoints and your controllers turn into validation sludge, and the rules drift because nobody keeps twenty copies in sync.
 
 Nest's answer is to make validation **declarative and automatic**. Here's the whole mental model, and it has three moving parts:
 

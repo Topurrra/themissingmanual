@@ -6,16 +6,16 @@ summary: "Your handler's return type IS the HTTP response. Learn Rocket's built-
 tags: [rocket, rust, responder, json, status]
 difficulty: intermediate
 synonyms: ["rocket responder", "rocket json response", "rocket status", "rocket result responder", "rocket option 404", "rocket custom responder"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Responders
 
-Here's the one idea to hold for this whole phase: **in Rocket, the return type of your handler *is* the response.** You don't reach for a `Response` object and start setting status codes and headers by hand. Instead you pick a Rust type that knows how to turn itself into HTTP, return a value of that type, and Rocket does the rest.
+**In Rocket, the return type of your handler *is* the response.** You don't reach for a `Response` object and start setting status codes and headers by hand. Pick a Rust type that knows how to turn itself into HTTP, return a value of that type, and Rocket does the rest.
 
 The trait that makes this work is **`Responder`**. Any type that implements it can be a handler's return type, and Rocket already implements it for the types you reach for most: `String`, `Json<T>`, `Option<T>`, `Result<T, E>`, tuples like `(Status, T)`, and a handful of `status::*` helpers.
 
-The mental shift is real. Coming from frameworks where you write `res.status(404).json(...)`, you might expect to *do* something to produce a response. In Rocket you *describe* it with a type. Want a 404 when a book isn't found? Return `Option<Json<Book>>` — `None` becomes a 404 with zero extra code. That's not a trick; it's the whole design.
+Coming from frameworks where you write `res.status(404).json(...)`, you might expect to *do* something to produce a response. In Rocket you *describe* it with a type. Want a 404 when a book isn't found? Return `Option<Json<Book>>` — `None` becomes a 404 with zero extra code. That's the whole design.
 
 > 📝 We're still growing the same **books API**. Our model is the same as before:
 >

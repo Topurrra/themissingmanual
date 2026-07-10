@@ -6,7 +6,7 @@ summary: "The honest truth: REST is a style, not a strict law, and most 'REST' A
 tags: [rest, restful, over-fetching, under-fetching, api-versioning, graphql, tradeoffs]
 difficulty: intermediate
 synonyms: ["is my api really restful", "rest api over-fetching under-fetching", "why is rest slow many requests", "how to version a rest api", "rest vs graphql why", "rest api downsides"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # REST in the Real World — Where It Bends and Where It Breaks
@@ -19,16 +19,16 @@ that make teams reach for other tools.
 
 ## REST is a style, not a law
 
-**What it actually is.** REST was described in 2000 by Roy Fielding as an *architectural style* — a set of
-constraints, not a specification you can fail a compliance test against. (source:
+REST was described in 2000 by Roy Fielding as an *architectural style* — a set of constraints, not a
+specification you can fail a compliance test against. (source:
 https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) There's no committee that certifies
 an API "RESTful." So in everyday speech, "REST API" has come to mean something looser and more practical:
 *an HTTP API organized around resources and methods, returning JSON, using status codes sensibly.* That's
 the API you'll build and consume 95% of the time.
 
-**Why people get this wrong.** Newcomers sometimes treat the conventions from Phase 2 as sacred rules and
-feel guilty breaking them. But real apps have needs that don't map cleanly onto five verbs and a noun. Two
-common, *accepted* pragmatic deviations:
+Newcomers sometimes treat the conventions from Phase 2 as sacred rules and feel guilty breaking them. But
+real apps have needs that don't map cleanly onto five verbs and a noun. Two common, *accepted* pragmatic
+deviations:
 
 - **Actions that aren't CRUD.** "Cancel this order," "publish this draft," "send this email" are verbs,
   not nouns. The pragmatic move is a sub-resource that reads as an action:
@@ -74,9 +74,8 @@ Content-Type: application/json
   "created": "2023-02-11T00:00:00Z"
 }
 ```
-*What just happened:* You needed two fields and the server sent ten. Each endpoint returns a *fixed*
-representation, so it ships the full record to everyone — wasting bandwidth, which stings most on slow
-mobile connections.
+You needed two fields and the server sent ten. Each endpoint returns a *fixed* representation, so it
+ships the full record to everyone — wasting bandwidth, which stings most on slow mobile connections.
 
 **Under-fetching** — the opposite: one resource isn't enough, so you make several calls. To render
 "a user and the titles of their last 5 orders," the user resource doesn't include orders, so:
@@ -95,9 +94,9 @@ sequenceDiagram
   end
 ```
 
-*What just happened:* One screen became seven sequential requests, each paying its own network round trip.
-On a fast connection it's invisible; on a phone in a tunnel, those round trips stack up into a visibly
-slow screen. This is the **"chatty API" / N+1 requests** problem.
+One screen became seven sequential requests, each paying its own network round trip. On a fast connection
+it's invisible; on a phone in a tunnel, those round trips stack up into a visibly slow screen. This is the
+**"chatty API" / N+1 requests** problem.
 
 There's tension here, too: you can fight over-fetching by making resources skinnier, but that makes
 under-fetching worse (more calls to assemble a page), and you can fight under-fetching by fattening
@@ -110,13 +109,12 @@ resources, which worsens over-fetching. Resource-shaped APIs make you pick a poi
 
 ## Pain point 2: versioning
 
-**The problem.** APIs are contracts, and contracts change. The day you rename a field, split an endpoint,
-or make an optional param required, every existing client that relied on the old shape can break — and you
-often can't update those clients (they're mobile apps in the wild, third-party integrations, scripts you've
+APIs are contracts, and contracts change. The day you rename a field, split an endpoint, or make an
+optional param required, every existing client that relied on the old shape can break — and you often
+can't update those clients (they're mobile apps in the wild, third-party integrations, scripts you've
 never heard of). You need to evolve without pulling the rug out.
 
-**What people do in real life.** The common, blunt tool is to put a version in the URL and run the old and
-new shapes side by side:
+The common, blunt tool is to put a version in the URL and run the old and new shapes side by side:
 
 ```http
 GET /v1/users/42 HTTP/1.1
@@ -124,10 +122,10 @@ GET /v1/users/42 HTTP/1.1
 ```http
 GET /v2/users/42 HTTP/1.1
 ```
-*What just happened:* `/v1` keeps serving the old shape to old clients while `/v2` ships the new one.
-Nobody breaks; you migrate callers over time, then retire `/v1` once it's quiet. (Some teams version via a
-header instead of the URL — same idea, different placement.) It works, but every live version is code you
-maintain, test, and can't delete, so versions are expensive and you want as few as possible.
+`/v1` keeps serving the old shape to old clients while `/v2` ships the new one. Nobody breaks; you
+migrate callers over time, then retire `/v1` once it's quiet. (Some teams version via a header instead of
+the URL — same idea, different placement.) It works, but every live version is code you maintain, test,
+and can't delete, so versions are expensive and you want as few as possible.
 
 The deeper craft here — how to change an API *without* needing a new version most of the time (additive
 changes, deprecation policies, tolerant readers) — is a whole discipline of its own.

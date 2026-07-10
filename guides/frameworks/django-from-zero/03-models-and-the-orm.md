@@ -6,7 +6,7 @@ summary: "Define your data as Python classes, let migrations build the tables, a
 tags: [django, models, orm, migrations, queryset, fields, makemigrations]
 difficulty: beginner
 synonyms: ["django models", "django orm querying", "django migrations makemigrations migrate", "django model fields", "django queryset filter get", "django foreignkey relationship", "django model meta"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Models & the ORM
@@ -15,13 +15,13 @@ So far the blog has had no real data — Phase 2 mapped URLs to views and return
 
 Here's the mental model to carry through everything below. Your database thinks in **tables** — rows and columns and foreign keys, numbers pointing at numbers. Your Python code thinks in **objects** — a `Post` with a `.title` and a `.body`, a `Comment` that *belongs to* a post. Those are two different shapes for the same information, and something has to translate between them. In Django, that something ships in the box: the **ORM**.
 
-If you've read [What an ORM Is](/guides/hibernate-and-jpa-from-zero) for Java, this is the exact same idea — Hibernate for Java, Django's ORM for Python. And if "table," "row," and "foreign key" are fuzzy, [What a Database Actually Is](/guides/what-a-database-is) is the prerequisite mental model. This phase assumes you know *that* a database stores tables; it teaches you how Django turns those tables into Python.
+If you've read [What an ORM Is](/guides/hibernate-and-jpa-from-zero) for Java, this is the exact same idea — Hibernate for Java, Django's ORM for Python. And if "table," "row," and "foreign key" are fuzzy, [What a Database Actually Is](/guides/what-a-database-is) is the prerequisite mental model.
 
 ## Models = tables
 
 📝 **A model is a Python class that maps to a database table.** You write a class that subclasses `models.Model`; Django treats that class as a table, each instance as a row, and each class attribute as a column. You never hand-write `CREATE TABLE` — you describe the *shape* in Python and Django builds the SQL.
 
-The big relief for Python developers coming from other ecosystems: there's no separate ORM library to install and wire up. Java reaches for Hibernate; Node reaches for Prisma or TypeORM; Python web apps often reach for SQLAlchemy. Django's ORM is *built in*. It's already there the moment you start a project — one less decision, one less dependency.
+The big relief for Python developers coming from other ecosystems: there's no separate ORM library to install and wire up. Java reaches for Hibernate; Node reaches for Prisma or TypeORM; Python web apps often reach for SQLAlchemy. Django's ORM is *built in* — one less decision, one less dependency.
 
 Here are the blog's two models. They go in your app's `models.py`:
 
@@ -42,7 +42,7 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 ```
 
-*What just happened:* you described two tables in Python. `Post` becomes a `post` table with columns `id` (Django adds an auto-incrementing primary key for free), `title`, `body`, and `created`. Each **field** is a class attribute whose *type* decides the column type: `CharField` is a short string (it needs `max_length` so the database knows the column width), `TextField` is unbounded long text, and `DateTimeField` stores a timestamp — `auto_now_add=True` means "stamp it once, when the row is first created." The `Comment.post` field is a `ForeignKey` pointing at `Post`: that's the "this comment *belongs to* that post" relationship, stored in the database as a `post_id` column holding a number. We'll come back to `on_delete` and `related_name` shortly.
+*What just happened:* you described two tables in Python. `Post` becomes a `post` table with columns `id` (Django adds an auto-incrementing primary key for free), `title`, `body`, and `created`. Each **field** is a class attribute whose *type* decides the column type: `CharField` is a short string (it needs `max_length` so the database knows the column width), `TextField` is unbounded long text, and `DateTimeField` stores a timestamp — `auto_now_add=True` means "stamp it once, when the row is first created." The `Comment.post` field is a `ForeignKey` pointing at `Post`: the "this comment *belongs to* that post" relationship, stored as a `post_id` column holding a number. More on `on_delete` and `related_name` shortly.
 
 💡 The model is just a class. It doesn't touch the database when Python imports it — it's a *description*. Turning that description into an actual table is the next step, and it's deliberately a separate, explicit action.
 
@@ -77,7 +77,7 @@ Running migrations:
 
 *What just happened:* the first command reported the migration file it created and what's in it. The second applied it — and notice it also applied migrations for `admin`, `auth`, and friends. Those are Django's own built-in apps (you'll meet the admin next phase); they ship migrations too, and `migrate` brings the whole database up to date in one pass.
 
-💡 **Migrations are version control for your database schema.** That's the whole point. The migration files are committed to git alongside your code, so a teammate who pulls your branch runs `migrate` and gets the *exact same* tables — no "works on my machine" schema drift. They're reviewable in a pull request, repeatable on every environment, and they record the full history of how your schema got to where it is. The schema stops being a thing that lives only in someone's local database and becomes part of the codebase.
+💡 **Migrations are version control for your database schema.** The migration files are committed to git alongside your code, so a teammate who pulls your branch runs `migrate` and gets the *exact same* tables — no "works on my machine" schema drift. They're reviewable in a pull request, repeatable on every environment, and record the full history of how your schema got where it is.
 
 ⚠️ **Every model change needs both steps.** Add a field, rename one, change `max_length` — the moment you touch `models.py`, the database is out of sync until you run `makemigrations` *and then* `migrate`. Forgetting `makemigrations` means the change is never even recorded; forgetting `migrate` means it's recorded but never applied. The classic confusing error — a column the database swears doesn't exist, even though it's right there in your model — is almost always a migration you forgot to apply.
 
@@ -113,9 +113,9 @@ Every model has an attribute called `objects` — its **manager** — and that's
 <QuerySet [<Post: Post object (2)>, <Post: Post object (1)>]>
 ```
 
-*What just happened:* you ran five different database operations and never wrote a word of SQL. `objects.create(...)` inserted a new row and handed back the saved `Post` object. `objects.all()` fetched every row. `objects.get(id=1)` fetched exactly one row by its primary key (it raises an error if zero or more than one match — `get` is for "I expect exactly one"). `objects.filter(title__contains="Django")` returned every post whose title contains "Django" — that `__contains` is a *lookup*, the double-underscore syntax Django uses for "WHERE this column does that." And `order_by("-created")` sorted newest-first (the leading `-` means descending). The `<QuerySet [...]>` wrapper is just Django's name for "a collection of rows from a query."
+*What just happened:* you ran five different database operations and never wrote a word of SQL. `objects.create(...)` inserted a new row and handed back the saved `Post` object. `objects.all()` fetched every row. `objects.get(id=1)` fetched exactly one row by its primary key (it raises an error if zero or more than one match — `get` is for "I expect exactly one"). `objects.filter(title__contains="Django")` returned every post whose title contains "Django" — that `__contains` is a *lookup*, the double-underscore syntax Django uses for "WHERE this column does that." `order_by("-created")` sorted newest-first (the leading `-` means descending). `<QuerySet [...]>` is just Django's name for "a collection of rows from a query."
 
-💡 **You write Python; the ORM writes SQL.** Each of those calls became a real query underneath. `Post.objects.filter(title__contains="Django")` generated roughly:
+💡 **You write Python; the ORM writes SQL.** `Post.objects.filter(title__contains="Django")` generated roughly:
 
 ```sql
 SELECT id, title, body, created
@@ -123,7 +123,7 @@ FROM blog_post
 WHERE title LIKE '%Django%';
 ```
 
-*What just happened:* your Python lookup `title__contains="Django"` became a SQL `LIKE` clause, against the `blog_post` table (Django names tables `<app>_<model>` by default). This is the deal an ORM offers: you stay in Python, it produces and runs the SQL. The convenience is real — and like any ORM, it can quietly generate *wasteful* SQL if you're not paying attention. We'll meet that trap (the famous N+1 problem) head-on in [Phase 7](07-the-orm-deeper.md); for now, just hold the idea that there's always real SQL underneath.
+*What just happened:* your Python lookup `title__contains="Django"` became a SQL `LIKE` clause, against the `blog_post` table (Django names tables `<app>_<model>` by default). This is the deal an ORM offers: you stay in Python, it produces and runs the SQL. The convenience is real — and like any ORM, it can quietly generate *wasteful* SQL if you're not paying attention. We meet that trap (the famous N+1 problem) head-on in [Phase 7](07-the-orm-deeper.md).
 
 ## Relationships: following the foreign key
 
@@ -151,9 +151,9 @@ Let's attach a comment to a post and then walk the relationship from both ends:
 <QuerySet [<Comment: Comment object (1)>]>
 ```
 
-*What just happened:* you created a comment by handing it a whole `Post` object (`post=post`) — Django stores the post's id in the `post_id` column for you. Then you walked the link two ways. **Forward** (the direction the `ForeignKey` points): `comment.post` follows the foreign key from the comment back to its single owning post, and you can chain straight on to `.post.title`. **Reverse** (against the arrow): `post.comments.all()` finds every comment whose `post_id` matches this post. That `comments` name is exactly the `related_name="comments"` we set on the field — without it, Django would default the reverse accessor to `post.comment_set.all()`. Setting `related_name` is how you get a readable `post.comments` instead.
+*What just happened:* you created a comment by handing it a whole `Post` object (`post=post`) — Django stores the post's id in the `post_id` column for you. Then you walked the link two ways. **Forward** (the direction the `ForeignKey` points): `comment.post` follows the foreign key from the comment back to its single owning post, chainable straight on to `.post.title`. **Reverse** (against the arrow): `post.comments.all()` finds every comment whose `post_id` matches this post. That `comments` name is exactly the `related_name="comments"` we set on the field — without it, Django would default the reverse accessor to `post.comment_set.all()`.
 
-And `on_delete=models.CASCADE`? That's Django answering a question the database insists on: *if this post is deleted, what happens to its comments?* `CASCADE` means "delete them too" — a post's comments shouldn't outlive the post. (Other options exist, like `PROTECT` to forbid the deletion, but `CASCADE` is the sensible default for "comments belong to a post.")
+And `on_delete=models.CASCADE`? Django answering a question the database insists on: *if this post is deleted, what happens to its comments?* `CASCADE` means "delete them too" — a post's comments shouldn't outlive the post. (Other options exist, like `PROTECT` to forbid the deletion, but `CASCADE` is the sensible default here.)
 
 We're keeping relationship queries deliberately shallow here. The deeper material — how QuerySets are *lazy*, why looping over `post.comments` can secretly fire a query per row, and how to fix it — is all in [Phase 7](07-the-orm-deeper.md).
 
@@ -186,17 +186,17 @@ class Comment(models.Model):
         return f"{self.author} on {self.post.title}"
 ```
 
-*What just happened:* `__str__` defines how an object turns into a readable string — now a post prints as `Hello world` instead of `Post object (1)`, in the shell, in error messages, and (crucially) in the admin you'll build next phase. The `class Meta` block holds model-level settings; `ordering = ["-created"]` makes *every* query for posts come back newest-first by default, so you don't have to remember `.order_by()` each time. (`Meta` is for options *about the table*; the methods like `__str__` are *behavior on a row*.)
+*What just happened:* `__str__` defines how an object turns into a readable string — now a post prints as `Hello world` instead of `Post object (1)`, in the shell, in error messages, and (crucially) in the admin you'll build next phase. The `class Meta` block holds model-level settings; `ordering = ["-created"]` makes *every* query for posts come back newest-first by default, so you don't have to remember `.order_by()` each time.
 
 Now the field option that trips up nearly everyone: **`null` versus `blank`**. They sound identical and are not.
 
 ⚠️ **`null` is about the database; `blank` is about validation.**
-- `null=True` lets the *database column* store `NULL` (no value at all). It's a schema decision.
-- `blank=True` lets a *form* accept an empty value without complaining. It's a validation decision.
+- `null=True` lets the *database column* store `NULL` (no value at all). A schema decision.
+- `blank=True` lets a *form* accept an empty value without complaining. A validation decision.
 
-They operate in completely different layers and you often want different combinations. For a text field you'd usually leave both off (required) or set `blank=True` *without* `null=True` — because Django stores "empty text" as an empty string `""`, not `NULL`, so adding `null=True` to a `CharField`/`TextField` just creates two different ways to say "empty" and invites bugs. You reach for `null=True` mainly on non-text fields (numbers, dates, foreign keys) that genuinely have "no value." A field with `default=...` supplies a value when none is given; `unique=True` tells the database to reject duplicates. The pairing to remember: `null` answers "can the column be empty in the DB?"; `blank` answers "can the form leave it empty?"
+They operate in completely different layers. For a text field you'd usually leave both off (required) or set `blank=True` *without* `null=True` — Django stores "empty text" as an empty string `""`, not `NULL`, so adding `null=True` to a `CharField`/`TextField` just creates two different ways to say "empty." Reach for `null=True` mainly on non-text fields (numbers, dates, foreign keys) that genuinely have "no value." A field with `default=...` supplies a value when none is given; `unique=True` tells the database to reject duplicates.
 
-💡 **The model is the single source of truth.** This is the idea that ties the whole framework together. That one class definition drives *three* things at once: the **database schema** (via migrations, this phase), the **admin interface** ([Phase 4](04-the-django-admin.md) — which reads your fields and `__str__` to build a back-office for free), and **forms** ([Phase 6](06-forms-and-validation.md) — where `blank`, `max_length`, and field types become validation rules). Define your data well in `models.py` and Django propagates it everywhere. That's the payoff of the conventions.
+💡 **The model is the single source of truth.** That one class definition drives *three* things at once: the **database schema** (via migrations, this phase), the **admin interface** ([Phase 4](04-the-django-admin.md) — which reads your fields and `__str__` to build a back-office for free), and **forms** ([Phase 6](06-forms-and-validation.md) — where `blank`, `max_length`, and field types become validation rules). Define your data well in `models.py` and Django propagates it everywhere.
 
 ## Recap
 

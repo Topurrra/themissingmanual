@@ -6,7 +6,7 @@ summary: "Newton without the dread: what a force really is, why things keep movi
 tags: [physics, energy, momentum, conservation, kinetic, potential, seatbelts]
 difficulty: beginner
 synonyms: ["conservation of energy explained", "kinetic and potential energy", "what is momentum", "is energy ever destroyed", "why do you need a seatbelt physics", "how does a crumple zone work", "energy conversion examples"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Energy and momentum: the currencies that never vanish
@@ -19,7 +19,7 @@ The single most useful idea in physics fits in one line:
 
 > Energy is never created and never destroyed. It only changes form.
 
-Think of energy as money in a closed economy. It moves from one account to another, but the total never changes. Nothing is conjured from nothing; nothing vanishes into nothing. When something seems to "lose" energy, follow the ledger and you'll find where it went.
+Think of energy as money in a closed economy. It moves from one account to another, but the total never changes. When something seems to "lose" energy, follow the ledger and you'll find where it went.
 
 The two forms you meet first are:
 

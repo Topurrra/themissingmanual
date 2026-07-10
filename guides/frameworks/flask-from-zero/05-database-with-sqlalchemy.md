@@ -6,12 +6,12 @@ summary: "Flask ships no ORM — you add one. Wire in Flask-SQLAlchemy, define a
 tags: [flask, flask-sqlalchemy, sqlalchemy, orm, database, models, crud]
 difficulty: intermediate
 synonyms: ["flask sqlalchemy", "flask-sqlalchemy tutorial", "flask database models", "flask orm crud", "flask db session", "flask sqlite database", "flask extension pattern"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Working with a Database
 
-Until now our notes have lived in a Python list, so they evaporate the instant you restart the server. That was fine for learning request handling, but no real app remembers its data by holding it in a variable. We need to *persist* — write notes somewhere that survives a restart, a crash, a deploy. That somewhere is a database, and this phase teaches Flask to talk to one.
+Until now our notes have lived in a Python list, so they evaporate the instant you restart the server. That was fine for learning request handling, but no real app remembers its data by holding it in a variable. We need to *persist* — write notes somewhere that survives a restart, a crash, a deploy — and this phase teaches Flask to talk to a database.
 
 📝 **Flask has no built-in database layer.** Unlike Django, which ships its own ORM as part of the framework, Flask's core knows nothing about SQL, tables, or rows — deliberately. Flask is a small core plus whatever you choose to bolt on. Want a database? You *add* an extension. This phase is the clearest, most concrete look you'll get at that philosophy: "Flask = small core + chosen extensions," played out with the most popular choice, Flask-SQLAlchemy.
 

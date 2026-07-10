@@ -6,12 +6,12 @@ summary: "The headers you set on nearly every site - HSTS, X-Content-Type-Option
 tags: [security, hsts, clickjacking, x-frame-options, frame-ancestors, cookies, samesite, referrer-policy, intermediate]
 difficulty: intermediate
 synonyms: ["what does hsts do", "stop downgrade attack header", "prevent clickjacking x-frame-options", "frame-ancestors vs x-frame-options", "httponly secure samesite cookie flags", "x-content-type-options nosniff", "referrer-policy explained", "mime sniffing attack"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Everyday Hardening Set
 
-This is the set you reach for on almost every site - the headers that aren't dramatic to configure but each shut a specific door. We'll go one at a time, and for every one the format is the same: the attack it stops, then the line you set. No magic blocks. By the end you'll be able to look at any of these in a response and know exactly what it's defending against and why it's there.
+This is the set you reach for on almost every site - headers that aren't dramatic to configure but each shut a specific door. Same format each time: the attack it stops, then the line you set. No magic blocks - by the end you'll know exactly what each one defends against and why it's there.
 
 ## HSTS: force HTTPS, stop the downgrade
 
@@ -51,7 +51,7 @@ content-security-policy: frame-ancestors 'none'
 ```
 *What just happened:* `X-Frame-Options: DENY` is the older header - it says *"never let any site put me in a frame."* The CSP directive `frame-ancestors 'none'` is the modern equivalent and it's more flexible: you can write `frame-ancestors 'self'` to allow your own pages to frame each other, or list specific trusted origins. When both are present, browsers honor `frame-ancestors`, so it's the one that matters going forward - but `X-Frame-Options` is harmless to keep for older clients.
 
-💡 **`frame-ancestors` lives inside Content-Security-Policy**, the big header we cover in Phase 3. You can set it on its own today as a standalone CSP, and it's one of the safest CSP directives to start with - it rarely breaks anything.
+💡 **`frame-ancestors` lives inside Content-Security-Policy**, the big header covered in Phase 3. You can set it on its own today as a standalone CSP - it rarely breaks anything, making it one of the safest CSP directives to start with.
 
 ## Referrer-Policy: stop leaking URLs
 

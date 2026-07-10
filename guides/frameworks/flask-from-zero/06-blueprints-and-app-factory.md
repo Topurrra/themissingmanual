@@ -6,14 +6,14 @@ summary: "One app.py stops scaling. Flask's answer is blueprints (modular route 
 tags: [flask, blueprints, app-factory, project-structure, application-context, config, modular]
 difficulty: advanced
 synonyms: ["flask blueprints", "flask app factory pattern", "flask project structure", "flask application context", "flask circular import", "flask config", "flask modular app"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Blueprints & the App Factory
 
 Your notes app works. It persists, it does CRUD, it renders templates — and it all lives in one `app.py` that's quietly getting longer every phase. Routes, models, config, and the `db` object are all piling into a single module, and the day you add login, then tags, then an API, it becomes a 600-line scroll where everything imports everything and you're afraid to touch any of it.
 
-📝 **A growing Flask app is organized by two ideas: blueprints split your routes into modules, and an app factory builds the app inside a function instead of at the top of a file.** Neither is exotic — they're the structure essentially every non-trivial Flask app converges on. Blueprints + factory aren't ceremony; they're what lets Flask grow past the toy stage without collapsing under its own imports.
+📝 **A growing Flask app is organized by two ideas: blueprints split your routes into modules, and an app factory builds the app inside a function instead of at the top of a file.** Neither is exotic — they're the structure essentially every non-trivial Flask app converges on, and what lets Flask grow past the toy stage without collapsing under its own imports.
 
 ## The one-file problem
 

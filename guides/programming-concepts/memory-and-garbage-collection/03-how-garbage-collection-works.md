@@ -6,12 +6,12 @@ summary: "The core idea is reachability: anything you can still reach from your 
 tags: [garbage-collection, reachability, mark-and-sweep, gc-pause, memory-leaks, roots]
 difficulty: intermediate
 synonyms: ["how does garbage collection work", "what is reachability", "what is mark and sweep", "what is a gc pause", "why does my java program pause", "do garbage collected languages have memory leaks", "why does my node app use more and more memory", "how to fix a memory leak in javascript"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # How Garbage Collection Actually Works
 
-We've established *that* a garbage collector reclaims unused objects for you. Now the question that makes the whole thing click: how does it know which objects are unused? It can't read your intentions. It can't tell that you're "done" with an object. So it uses a definition that's both simpler and more reliable than intention - and once you have that definition, GC pauses and the surprising persistence of memory leaks both fall right out of it.
+We've established *that* a garbage collector reclaims unused objects for you. Now the question that makes the whole thing click: how does it know which objects are unused? It can't read your intentions or tell that you're "done" with an object, so it uses a definition that's both simpler and more reliable than intention - and once you have that definition, GC pauses and the surprising persistence of memory leaks both fall right out of it.
 
 ## The core idea: reachability
 
@@ -60,7 +60,7 @@ Here's where the cost from Phase 2 gets concrete. To trace reachability *correct
 
 ⚠️ **Gotcha.** Don't picture an old "freeze for a full second" collector - modern collectors (Go's, the JVM's G1/ZGC, V8's in Node and browsers) work *hard* to keep pauses tiny, doing much of their work concurrently while your program runs and only stopping the world for brief moments. The pauses are usually small enough to ignore. But "usually small" isn't "never" - and when you're chasing a rare tail-latency spike, "is this a GC pause?" is a question worth asking, not dismissing.
 
-This is also the honest answer to "is a garbage collector slower?" Not in a way most programs notice. But it spends some CPU on collection and introduces those occasional pauses - which is exactly the timing cost we put on the trade-off table in Phase 2.
+This is also the honest answer to "is a garbage collector slower?" - not in a way most programs notice, but it spends some CPU on collection and introduces those occasional pauses, which is exactly the timing cost we put on the trade-off table in Phase 2.
 
 ## The uncomfortable truth: leaks still happen
 
@@ -83,7 +83,7 @@ function handleRequest(req) {
 
 This is the GC-language version of the slow-growth-then-crash you can read about in [What "Out of Memory" Really Means](/guides/processes-memory-and-cpu) - resident memory that climbs and never comes back down even when the app is idle.
 
-🪖 **War story.** A long-running Node service got mysteriously slower and heavier every day until a nightly restart "fixed" it. No crash, no error - just memory creeping up and GC working harder and harder over a bigger and bigger live heap. The cause was a module-level object used as a cache, keyed by user session, that nobody ever evicted from. Each day's users were, technically, still reachable. The collector was blameless; the code never let go. The fix wasn't "tune the GC" - it was bounding the cache (evict old entries / use a size limit). Once you know leaks come from *holding references*, you go looking for the thing that's holding on, not for a flag to flip.
+🪖 **War story.** A long-running Node service got mysteriously slower and heavier every day until a nightly restart "fixed" it - no crash, no error, just memory creeping up and GC working harder over a bigger and bigger live heap. The cause was a module-level cache, keyed by user session, that nobody ever evicted from - each day's users were, technically, still reachable. The collector was blameless; the code never let go. The fix wasn't "tune the GC," it was bounding the cache (evict old entries / use a size limit). Once you know leaks come from *holding references*, you go looking for the thing that's holding on, not for a flag to flip.
 
 **The cure.** Because the disease is "holding a reference too long," the cures are all variants of "let go":
 

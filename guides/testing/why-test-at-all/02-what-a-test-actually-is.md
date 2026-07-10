@@ -6,14 +6,14 @@ summary: "A test is a small program that runs your real code with known inputs a
 tags: [testing, assertion, unit-test, example, mental-model]
 difficulty: beginner
 synonyms: ["what is a test in code", "what is an assertion", "what does a unit test look like", "how does a test work", "what makes a test pass or fail"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What a Test Actually Is
 
-The word "test" sounds official and heavy, like an exam your code has to sit. That heaviness scares people off.
-So let's strip it down to what a test really is - because it's smaller and far less magical than the word
-suggests. By the end of this phase you'll be able to read a test and know exactly what it's doing.
+The word "test" sounds official and heavy, like an exam your code has to sit. That heaviness scares people
+off. Let's strip it down to what a test really is - smaller and far less magical than the word suggests. By
+the end of this phase you'll be able to read a test and know exactly what it's doing.
 
 ## A test is just a small program that checks your code
 
@@ -141,11 +141,11 @@ seen (or can believe) it would go red when the thing it guards actually breaks.
 
 ## Why this saves you later
 
-Once you see that a test is just "call the code, check the answer," the fog lifts. You stop imagining testing as
-some separate discipline with its own dark arts, and start seeing it as *writing down, in code, the things you
-already believe about your program.* "A member's $100 order costs $90." You believed that anyway - a test just
-makes the belief permanent and self-checking, so that the day someone breaks it, the code says so out loud
-instead of you finding out from a refund request.
+Once you see that a test is just "call the code, check the answer," the fog lifts. You stop imagining testing
+as some separate discipline with its own dark arts, and start seeing it as *writing down, in code, the things
+you already believe about your program.* "A member's $100 order costs $90." You believed that anyway - a
+test just makes the belief permanent and self-checking, so the day someone breaks it, the code says so out
+loud instead of you finding out from a refund request.
 
 ## Recap
 

@@ -6,12 +6,12 @@ summary: "Test your notes app in-process with Flask's test client and a pytest a
 tags: [flask, testing, test-client, pytest, gunicorn, wsgi, deployment]
 difficulty: intermediate
 synonyms: ["flask testing test client", "flask pytest", "flask gunicorn deployment", "flask wsgi production server", "flask dev server not for production", "flask docker", "flask production config"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Testing & Production
 
-You've built a real notes app — routes, a database, auth, an API. Two questions separate a side project from something you'd let other people touch: *how do I know I didn't break anything?* and *how do I run this so it's not just alive on my laptop?* This phase answers both.
+You've built a real notes app — routes, a database, auth, an API. Two questions separate a side project from something you'd let other people touch: *how do I know I didn't break anything?* and *how do I run this so it's not just alive on my laptop?*
 
 📝 **Testing and deployment are the same idea pointed in two directions: you want your app to run somewhere other than the place you built it.** A test runs your app in a throwaway, controlled environment to check its behavior. Production runs it in a hardened, public environment to serve real users. The thing that makes *both* clean — the payoff of all that structure from Phase 6 — is the app factory. `create_app()` lets you build a fresh app for a test, and a different fresh app for production, from the exact same code.
 

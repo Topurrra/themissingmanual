@@ -11,7 +11,7 @@ updated: 2026-06-19
 
 # Thinking in Trade-offs
 
-By now you can see a system as boxes and arrows, and you know architecture is the set of expensive-to-change decisions driven by needs like scale and reliability. So here's the question every beginner eventually asks: *which architecture is the best one?* This phase gives you the honest answer — there isn't one — and then hands you the single most useful habit in the whole field, plus the rule that keeps beginners out of trouble.
+By now you can see a system as boxes and arrows, and you know architecture is the set of expensive-to-change decisions driven by needs like scale and reliability. So here's the question every beginner eventually asks: *which architecture is the best one?* The honest answer: there isn't one — and what follows is the single most useful habit in the whole field, plus the rule that keeps beginners out of trouble.
 
 ## There is no "best," only "fitting"
 
@@ -19,7 +19,7 @@ By now you can see a system as boxes and arrows, and you know architecture is th
 
 Architecture works exactly the same way. The right shape for a weekend side project is the wrong shape for a bank, and vice versa. A senior engineer doesn't ask "what's the best architecture?" — they ask "what's the architecture that *fits this problem, this team, and these constraints?*"
 
-**Why people get this wrong.** It's comforting to believe there's a "correct" answer you can memorize — a list of "the right way to build software." So beginners (and a lot of blog posts) declare one shape universally superior: "always use microservices," "monoliths are dead," "you must use this pattern." It's reassuring and it's wrong. Any time someone tells you an architecture is *always* the answer regardless of the problem, you've found someone selling a hammer and calling everything a nail.
+**Why people get this wrong.** It's comforting to believe there's a "correct" answer you can memorize — a list of "the right way to build software." So beginners (and a lot of blog posts) declare one shape universally superior: "always use microservices," "monoliths are dead," "you must use this pattern." It's reassuring and it's wrong. Anyone who tells you an architecture is *always* the answer regardless of the problem is selling a hammer and calling everything a nail.
 
 ## Every choice trades something away
 

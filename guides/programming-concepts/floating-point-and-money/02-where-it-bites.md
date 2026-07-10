@@ -6,12 +6,12 @@ summary: "The three places float rounding turns into real bugs - money totals th
 tags: [floating-point, money, equality, summation, bugs, precision]
 difficulty: beginner
 synonyms: ["floating point money bug", "why is my total off by a cent", "comparing floats with ==", "float equality fails", "summing floats error accumulates", "floating point in a loop"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Where It Bites
 
-A tiny error in the 16th decimal sounds harmless, and most of the time it is. The danger isn't the size of one error - it's the three situations where that error gets *noticed*: when you display money, when you check two numbers for being equal, and when you add up many numbers. Let's walk into each, because recognizing them on sight is half the job.
+A tiny error in the 16th decimal sounds harmless, and most of the time it is. The danger isn't the size of one error - it's the three situations where that error gets *noticed*: displaying money, checking two numbers for equality, and adding up many numbers. Recognizing them on sight is half the job.
 
 ## Bite #1: money, off by a cent
 

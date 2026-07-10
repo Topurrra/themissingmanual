@@ -6,7 +6,7 @@ summary: "Physics is the craft of predicting the world with simple models: measu
 tags: [physics, foundations, mental-model, measurement, units, conservation]
 difficulty: beginner
 synonyms: ["what are conservation laws", "conservation of energy explained", "scientific method physics", "deepest idea in physics", "why is energy conserved", "how physics tests ideas"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Deepest Idea: Things That Never Change
@@ -34,7 +34,7 @@ After impact:      motion energy -> sound + heat     (total unchanged)
 
 ## A prediction you can almost feel
 
-Conservation laws make predictions that sound like magic until you see the bookkeeping. A swinging pendulum, pulled back and released, will climb the other side to *almost exactly* the height it started from - never higher. Why never higher? Because climbing higher would mean ending with more energy than you put in, and there's nowhere for extra energy to come from. The law forbids it before you do any calculation.
+Conservation laws make predictions that sound like magic until you see the bookkeeping. A swinging pendulum, pulled back and released, will climb the other side to *almost exactly* the height it started from - never higher, because climbing higher would mean ending with more energy than you put in, and there's nowhere for extra energy to come from. The law forbids it before you do any calculation.
 
 ```text
 Start: pulled to height H, let go.

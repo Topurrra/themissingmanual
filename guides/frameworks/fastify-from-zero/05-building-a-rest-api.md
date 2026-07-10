@@ -6,12 +6,12 @@ summary: "Assemble routing, schemas, plugins, and hooks into a full books CRUD A
 tags: [fastify, javascript, rest, api, crud]
 difficulty: intermediate
 synonyms: ["fastify rest api", "fastify crud", "fastify books api", "fastify plugin routes crud", "fastify schema crud", "node fastify json api"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Building a REST API
 
-This is the payoff phase. Everything you've collected — routes carrying schemas (Phase 2), code organized into encapsulated plugins (Phase 3), and the request lifecycle with hooks (Phase 4) — clicks together here into one working CRUD service. Nothing new to learn; this is assembly.
+This is the payoff phase. Everything you've collected — routes carrying schemas (Phase 2), code organized into encapsulated plugins (Phase 3), and the request lifecycle with hooks (Phase 4) — clicks together here into one working CRUD service. Nothing new to learn here; this is assembly.
 
 Here's the mental model to carry through the whole phase:
 

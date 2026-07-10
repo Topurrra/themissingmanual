@@ -6,12 +6,12 @@ summary: "OWASP is a nonprofit; the Top 10 is its periodically-updated list of t
 tags: [security, owasp, web-security, appsec, mental-model]
 difficulty: intermediate
 synonyms: ["what does owasp stand for", "is owasp a tool", "what is the owasp top 10 list", "owasp top 10 vs standard", "who makes the owasp top 10"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What OWASP & the Top 10 Are
 
-Before we look at a single vulnerability, let's clear up the confusion that trips up almost everyone the first time. The OWASP Top 10 sounds like it should be one specific thing - a piece of software, a certification, a rule you have to obey. It's none of those. Getting the mental model right *first* is what makes the actual list make sense, so we'll spend this whole phase on it.
+Before we look at a single vulnerability, let's clear up the confusion that trips up almost everyone the first time. The OWASP Top 10 sounds like it should be one specific thing - a piece of software, a certification, a rule you have to obey. It's none of those, and getting the mental model right *first* is what makes the actual list make sense.
 
 ## What OWASP actually is
 

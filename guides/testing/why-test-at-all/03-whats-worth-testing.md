@@ -6,17 +6,16 @@ summary: "Test the logic that matters, the bug you just fixed, and the tricky ed
 tags: [testing, code-coverage, edge-cases, regression-test, brittle-tests]
 difficulty: beginner
 synonyms: ["what should i test", "do i need 100% test coverage", "is code coverage worth it", "what is a brittle test", "what is worth testing", "should i test everything"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What's Worth Testing (Honestly)
 
-If Phase 1 sold you on the net and Phase 2 showed you it's not magic, there's a real risk you swing too far the
-other way - and try to test *everything*. That feels responsible. It isn't. Tests cost time to write and, more
-importantly, time to *maintain* forever. So the honest skill isn't "write lots of tests"; it's knowing which
-tests pay for themselves and which ones quietly drain you.
-
-This phase is the cost/benefit conversation a good senior would actually have with you.
+If Phase 1 sold you on the net and Phase 2 showed you it's not magic, there's a real risk you swing too far
+the other way and try to test *everything*. That feels responsible. It isn't. Tests cost time to write and,
+more importantly, time to *maintain* forever. The honest skill isn't "write lots of tests"; it's knowing
+which tests pay for themselves and which ones quietly drain you - the cost/benefit conversation a good
+senior would actually have with you.
 
 ## The cheat-card: test it or skip it?
 
@@ -42,8 +41,8 @@ decides whether an order can ship. These are the load-bearing walls of your prog
 
 **Why people get the priority wrong.** Beginners often test the easy stuff (a getter that returns a name)
 because it's easy, and skip the scary stuff (the tax calculation with five branches) because it's hard. That's
-exactly backwards. The easy code is easy *because* there's nothing to get wrong. Put your testing effort where
-the thinking is, not where the typing is fast.
+exactly backwards - the easy code is easy *because* there's nothing to get wrong. Put your testing effort
+where the thinking is, not where the typing is fast.
 
 **Why this saves you later.** A wrong name in a getter is an annoyance. A wrong number in a billing
 calculation is a refund, an angry email, maybe a finance audit. Your tests should stand guard over the code
@@ -67,9 +66,9 @@ $ npm test
 ```
 
 *What just happened:* months after fixing an empty-cart double-charge bug, this little test is still on duty.
-The day a teammate refactors the cart and accidentally reintroduces the exact same bug, this test goes red and
-catches it - before a customer gets charged twice. You paid for that protection once and it keeps working for
-free.
+The day a teammate refactors the cart and accidentally reintroduces the exact same bug, this test goes red
+and catches it before a customer gets charged twice. You paid for that protection once and it keeps working
+for free.
 
 💡 **Key point.** Never fix a bug without leaving a test behind. A bug fix without a regression test is a bug
 you've agreed to fix *again* later.
@@ -96,8 +95,8 @@ test("rounds when it doesn't divide evenly", () => {  // edge: $100 / 3?
 
 *What just happened:* one test covers the normal case, and two more cover the cases that actually bite - zero
 people (a classic divide-by-zero crash) and money that doesn't divide cleanly (a rounding bug waiting to
-happen). Writing ten more tests with different happy-path numbers would add maintenance without finding new
-bugs. The edges are where the value is: empty, zero, negative, the maximum, the unexpected type.
+happen). Ten more tests with different happy-path numbers would add maintenance without finding new bugs.
+The edges are where the value is: empty, zero, negative, the maximum, the unexpected type.
 
 ## Two ways tests turn into a liability
 
@@ -115,15 +114,15 @@ test("priceFor returns a number", () => {
 ```
 
 *What just happened:* this looks like a test and shows up green, but `priceFor` could return `80`, `0`, or
-`-9999` and it would still pass - they're all numbers. It guards nothing. (Compare it to the Phase 2 test that
-asserted `toBe(90)`, which actually pins down the behavior.) Always ask: *what wrong behavior would make this
-test go red?* If the answer is "nothing," delete it.
+`-9999` and it would still pass - they're all numbers. It guards nothing. (Compare it to the Phase 2 test
+that asserted `toBe(90)`, which actually pins down the behavior.) Always ask: *what wrong behavior would make
+this test go red?* If the answer is "nothing," delete it.
 
-⚠️ **Brittle tests.** A *brittle* test breaks every time you touch unrelated code, even when nothing's actually
-wrong. Usually it's checking *how* the code did something instead of *what* it produced - exact log wording,
-internal call order, private details. The cost shows up later: every refactor turns the suite red for no real
-reason, you start ignoring failures, and a net you ignore isn't a net. Test the *result a user cares about*,
-not the private path the code took to get there.
+⚠️ **Brittle tests.** A *brittle* test breaks every time you touch unrelated code, even when nothing's
+actually wrong. Usually it's checking *how* the code did something instead of *what* it produced - exact log
+wording, internal call order, private details. The cost shows up later: every refactor turns the suite red
+for no real reason, you start ignoring failures, and a net you ignore isn't a net. Test the *result a user
+cares about*, not the private path the code took to get there.
 
 📝 **Terminology.** *Code coverage* is the percentage of your code lines that get run while the tests execute.
 It's a useful hint about what's *un*tested, but it's a terrible *goal*. 100% coverage can be all the
@@ -145,9 +144,9 @@ coverage that actually catches things.
    erode trust in the net.
 6. **Coverage is a hint, not a goal.** 100% of meaningless tests protects nothing.
 
-That's the full mental model: *why* tests matter (the net), *what* a test is (call the code, check the answer),
-and *what's* worth testing (the logic, the bugs, the edges). You now understand testing well enough that
-writing one will feel obvious instead of mysterious.
+That's the full mental model: *why* tests matter (the net), *what* a test is (call the code, check the
+answer), and *what's* worth testing (the logic, the bugs, the edges). You now understand testing well enough
+that writing one will feel obvious instead of mysterious.
 
 When you're ready to actually sit down and write your first one start to finish, go to
 [Your First Unit Test](/guides/your-first-unit-test). And when you want the map of the different *kinds* of

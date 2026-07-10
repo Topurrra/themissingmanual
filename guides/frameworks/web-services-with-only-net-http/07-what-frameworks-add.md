@@ -6,12 +6,12 @@ summary: "Map Gin, Echo, and chi back onto the net/http you just built - router,
 tags: [net-http, go, gin, echo, chi, frameworks]
 difficulty: beginner
 synonyms: ["gin echo chi vs net/http", "what go frameworks add", "do i need a go web framework", "go 1.22 servemux enough", "net/http to framework", "go framework comparison"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What the Frameworks Add
 
-Take a second to notice what you just did. You built a real JSON REST API - routing, request decoding, JSON responses with the right status codes, middleware, a sensible project structure, a `context` that cancels, and a server that shuts down without dropping in-flight requests. And you did all of it with the standard library and nothing else. No imports you had to learn from a framework's docs. Just `Handler`, `ServeMux`, and `Server`.
+Notice what you just did. You built a real JSON REST API - routing, request decoding, JSON responses with the right status codes, middleware, a sensible project structure, a `context` that cancels, and a server that shuts down without dropping in-flight requests. And you did all of it with the standard library and nothing else. No imports you had to learn from a framework's docs. Just `Handler`, `ServeMux`, and `Server`.
 
 That's the whole point of this guide. The frameworks people reach for - [Gin](/guides/gin-from-zero), [Echo](/guides/echo-from-zero), [chi](/guides/chi-from-zero) - are not a different world. They're conveniences layered over the exact skeleton you now have in your hands. So this last phase is the payoff: we point your new X-ray vision at the frameworks and watch the "magic" turn into machinery you can already name.
 

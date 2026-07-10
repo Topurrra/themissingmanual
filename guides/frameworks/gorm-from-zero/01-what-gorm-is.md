@@ -6,15 +6,15 @@ summary: "GORM is Go's de-facto ORM: structs become tables and *gorm.DB is the q
 tags: [gorm, go, orm, database, getting-started]
 difficulty: beginner
 synonyms: ["what is gorm", "gorm open connect", "gorm sqlite", "gorm orm intro", "gorm logger sql", "go database orm"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What GORM Is & Connecting
 
 Here's the situation you're walking into. You've got a Go service, and somewhere it needs to read and
 write rows in a SQL database. You *could* hand-write every `INSERT`, `SELECT`, and `UPDATE`, scanning
-columns into structs by hand, one `rows.Scan(&u.ID, &u.Name, ...)` at a time. People do. It works. It's
-also a lot of repetitive, error-prone plumbing — and the moment your schema changes, you're hunting down
+columns into structs by hand, one `rows.Scan(&u.ID, &u.Name, ...)` at a time. People do — it works, but
+it's a lot of repetitive, error-prone plumbing, and the moment your schema changes, you're hunting down
 every query that touched that column.
 
 GORM is what most Go web services reach for instead. It's the de-facto ORM for Go, and the trade it

@@ -6,7 +6,7 @@ summary: "The analyst superpower: running totals, rankings, and row-to-row compa
 tags: [sql, window-functions, analytics, ranking, running-total]
 difficulty: intermediate
 synonyms: [sql window functions, sql running total, partition by, row_number vs rank, lag lead sql, moving average sql, top n per group sql, over clause sql]
-updated: 2026-06-30
+updated: 2026-07-11
 ---
 
 # OVER, PARTITION BY, ORDER BY
@@ -20,11 +20,11 @@ some_function(...) OVER (
 )
 ```
 
-Three parts. The function on the outside. `PARTITION BY` to slice your data into independent groups. `ORDER BY` to give the rows a sequence inside each slice. You can use one, both, or neither — and each combination unlocks a different question. Let's build it up one piece at a time, all runnable against the same little table.
+Three parts: the function on the outside, `PARTITION BY` to slice your data into independent groups, `ORDER BY` to give the rows a sequence inside each slice. You can use one, both, or neither — each combination unlocks a different question. Let's build it up one piece at a time, all runnable against the same little table.
 
 ## PARTITION BY — "do this separately for each group"
 
-`PARTITION BY` is the windowed cousin of `GROUP BY`. It splits the rows into groups, and the function runs independently inside each one — but the rows stay. Leave it out, and the whole result is one big window.
+`PARTITION BY` is the windowed cousin of `GROUP BY`: it splits the rows into groups, and the function runs independently inside each one — but the rows stay. Leave it out and the whole result is one big window.
 
 ```sql runnable
 WITH sales(salesperson, region, amount) AS (
@@ -54,11 +54,11 @@ Cy          | West   |    600 |        1650 |          700
 Cy          | West   |    100 |        1650 |          700
 ```
 
-*What just happened:* `OVER ()` with an empty parens treats the entire table as one window — every row gets the same grand total, 1650. Add `PARTITION BY region` and the window narrows to each region, so East rows get 950 and West rows get 700. Same function, different window, and not a single row was lost. You can now show each amount *next to* its share of the regional total — something `GROUP BY` could never hand you in one query.
+*What just happened:* `OVER ()` with empty parens treats the entire table as one window — every row gets the same grand total, 1650. Add `PARTITION BY region` and the window narrows to each region, so East rows get 950 and West rows get 700. Same function, different window, and not a single row was lost. You can now show each amount *next to* its share of the regional total — something `GROUP BY` could never hand you in one query.
 
 ## ORDER BY inside OVER — this is what makes a total "run"
 
-Here's the part that surprises people. Inside `OVER`, adding `ORDER BY` changes the *meaning* of an aggregate. Without it, `SUM` covers the whole window. *With* it, `SUM` covers "everything from the start of the window up to and including this row" — a **running total**.
+Here's the part that surprises people: inside `OVER`, adding `ORDER BY` changes the *meaning* of an aggregate. Without it, `SUM` covers the whole window. *With* it, `SUM` covers "everything from the start of the window up to and including this row" — a **running total**.
 
 ```sql runnable
 WITH sales(salesperson, day, amount) AS (
@@ -87,13 +87,13 @@ Ben         |   1 |    250 |           250
 Ben         |   2 |    250 |           500
 ```
 
-*What just happened:* Within each salesperson's window, the rows are now ordered by day, and `SUM` accumulates as it goes: 400, then 400+300, then +200. When the partition switches to Ben, the running total resets, because Ben is a separate window. That single `ORDER BY day` is the difference between "Ana's total" and "Ana's total *so far*." This is the single most useful trick in the whole feature.
+*What just happened:* within each salesperson's window, the rows are now ordered by day, and `SUM` accumulates as it goes: 400, then 400+300, then +200. When the partition switches to Ben, the running total resets, because Ben is a separate window. That single `ORDER BY day` is the difference between "Ana's total" and "Ana's total *so far*" — the single most useful trick in the whole feature.
 
 > The rule to memorize: an aggregate `OVER` with no `ORDER BY` covers the **whole window**; add `ORDER BY` and it covers **the start through the current row**. Same function, two completely different answers.
 
 ## Ranking — ROW_NUMBER, RANK, DENSE_RANK
 
-Ranking functions need an order to rank by, so they always pair with `ORDER BY` inside `OVER`. The three you'll reach for look similar but differ exactly on how they treat ties.
+Ranking functions need an order to rank by, so they always pair with `ORDER BY` inside `OVER`. The three you'll reach for look similar but differ on exactly how they treat ties.
 
 ```sql runnable
 WITH scores(player, points) AS (
@@ -121,11 +121,11 @@ Cy     |     80 |       3 |   3 |         2
 Dee    |     70 |       4 |   4 |         3
 ```
 
-*What just happened:* Ana and Ben tie at 90 points. `ROW_NUMBER` ignores the tie and assigns 1 and 2 arbitrarily — it just numbers rows. `RANK` gives them both 1, then *skips* to 3 (it leaves a gap the size of the tie). `DENSE_RANK` gives them both 1 but does *not* skip, so the next value is 2. Pick by intent: `ROW_NUMBER` when you need one unique number per row (great for "keep exactly one"), `RANK` when ties should share a place and gaps are fine ("you came joint-1st, next person is 3rd"), `DENSE_RANK` when you want tiers with no gaps.
+*What just happened:* Ana and Ben tie at 90 points. `ROW_NUMBER` ignores the tie and assigns 1 and 2 arbitrarily — it just numbers rows. `RANK` gives them both 1, then *skips* to 3 (it leaves a gap the size of the tie). `DENSE_RANK` gives them both 1 but does *not* skip, so the next value is 2. Pick by intent: `ROW_NUMBER` when you need one unique number per row ("keep exactly one"), `RANK` when ties should share a place and gaps are fine ("joint-1st, next person is 3rd"), `DENSE_RANK` when you want tiers with no gaps.
 
 ## LAG and LEAD — reach into the previous or next row
 
-`LAG` pulls a value from a row *before* the current one; `LEAD` pulls from a row *after*. This is how you compare a row to its neighbor — yesterday vs today, this order vs the last one — without a self-join.
+`LAG` pulls a value from a row *before* the current one; `LEAD` pulls from a row *after*. This is how you compare a row to its neighbor — yesterday vs. today, this order vs. the last one — without a self-join.
 
 ```sql runnable
 WITH revenue(month, amount) AS (
@@ -152,11 +152,11 @@ month | amount | prev_month | change_vs_prev
     4 |   1500 |       1100 |            400
 ```
 
-*What just happened:* `LAG(amount)` reaches one row back (in `month` order) and hands you the previous month's amount. Subtract and you've got month-over-month change in a single, readable line. Month 1 has no prior row, so `LAG` returns `NULL` and the subtraction is `NULL` too — that empty first cell is expected, not a bug. `LEAD` works identically but looks forward; swap it in when you want "the next row's value." You can also pass an offset and a default, like `LAG(amount, 1, 0)`, to look back further or replace that `NULL` with 0.
+*What just happened:* `LAG(amount)` reaches one row back (in `month` order) and hands you the previous month's amount. Subtract and you've got month-over-month change in a single, readable line. Month 1 has no prior row, so `LAG` returns `NULL` and the subtraction is `NULL` too — that empty first cell is expected, not a bug. `LEAD` works identically but looks forward; swap it in for "the next row's value." You can also pass an offset and a default, like `LAG(amount, 1, 0)`, to look back further or replace that `NULL` with 0.
 
 For builders: `LAG`/`LEAD` are the natural tool for detecting state changes in event logs — "did this row's status differ from the previous row's?" — and for measuring gaps between timestamps, like the time between a user's consecutive actions. The order you put in `OVER (ORDER BY ...)` *is* your definition of "previous," so choose it deliberately.
 
-Window functions also relate to joins: a self-join was the old way to compare a row to its neighbor, and window functions replace most of that. If joins are still shaky, [/guides/sql-joins-explained](/guides/sql-joins-explained) is worth a detour before phase 3.
+Window functions also relate to joins: a self-join was the old way to compare a row to its neighbor, and window functions replace most of that. If joins are still shaky, [/guides/sql-joins-explained](/guides/sql-joins-explained) is worth a detour first.
 
 ```quiz
 [

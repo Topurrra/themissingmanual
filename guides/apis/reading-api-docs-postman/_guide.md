@@ -8,7 +8,7 @@ category: apis
 order: 4
 difficulty: beginner
 synonyms: ["how to read api documentation", "how to use postman", "how to make an api request", "postman vs curl", "how do i call an api from the docs"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Reading API Docs & Using Postman
@@ -19,9 +19,9 @@ paste it somewhere, and you get back a number you don't understand. The frustrat
 APIs are hard — it's that nobody showed you how a docs page is *organized*, so you don't know where to
 look for the five things you actually need.
 
-That's all this guide fixes. By the end you'll be able to open any well-structured API reference, find
-the exact request you need, fire it from a graphical tool (Postman) or the command line (curl), and
-read what comes back. Same skill, two tools, one calm process.
+That's all this guide fixes. By the end you'll open any well-structured API reference, find the exact
+request you need, fire it from a graphical tool (Postman) or the command line (curl), and read what
+comes back. Same skill, two tools, one calm process.
 
 ## How to read this
 - **Need to send one request right now?** Skim [Phase 1](01-how-to-read-api-docs.md) to find the five

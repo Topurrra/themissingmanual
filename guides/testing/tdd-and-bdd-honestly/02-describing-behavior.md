@@ -6,7 +6,7 @@ summary: "Behavior-driven development frames tests as readable behavior using Gi
 tags: [bdd, behavior-driven-development, given-when-then, gherkin, testing]
 difficulty: intermediate
 synonyms: ["what is bdd", "given when then explained", "bdd vs tdd", "how does bdd relate to tdd", "gherkin example", "writing tests stakeholders can read"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # BDD: Describing Behavior
@@ -18,8 +18,8 @@ That gap is the problem behavior-driven development was invented to close.
 BDD doesn't replace the red-green-refactor loop from [Phase 1](01-red-green-refactor.md). It wraps a layer
 of *language* around it - a way of writing tests that reads like a sentence about what the software should
 do, plain enough that a product manager, a designer, or a support lead can read it, nod, and say "yes,
-that's the behavior we want" (or, just as valuably, "no, that's not it"). Catch the misunderstanding in a
-readable test, and you never write the wrong code at all.
+that's the behavior we want" (or "no, that's not it"). Catch the misunderstanding in a readable test, and
+you never write the wrong code at all.
 
 ## The mental model: tests as readable behavior
 
@@ -137,8 +137,8 @@ is exactly what [Phase 3](03-when-they-help.md) is about.
 The expensive bugs usually aren't "the code did the wrong thing." They're "the code did exactly what we
 asked, and what we asked was wrong." BDD pulls the requirements conversation forward into a shared, concrete
 artifact - *before* code is written - so the misunderstanding surfaces in a fifteen-minute scenario review
-instead of in production three weeks later. When it works, the scenarios double as living documentation that
-never drifts out of date, because the build fails the moment they stop being true.
+instead of in production three weeks later. The scenarios also double as living documentation that never
+drifts out of date, because the build fails the moment they stop being true.
 
 ## Recap
 

@@ -128,6 +128,11 @@
   <p class="pr-try-practice"><a href={`/practice/${practice.module}/${practice.phaseNo}`}>Try it in Practice →</a></p>
 {/if}
 <div style="margin: 0.1rem 0 1.2rem;"><Freshness date={phase.updated} /></div>
+{#if phase.source_file}
+  <p class="pr-edit-link">
+    <a href={`https://github.com/Topurrra/themissingmanual/edit/main/${phase.source_file}`} target="_blank" rel="noopener noreferrer">Edit this page on GitHub →</a>
+  </p>
+{/if}
 
 {#key `${phase.guide_slug}/${phase.phase_no}`}
   <ReaderTTS />
@@ -199,6 +204,16 @@
     color: var(--muted);
   }
   .pr-try-practice a:hover {
+    color: var(--accent);
+  }
+  .pr-edit-link {
+    margin: 0 0 1.2rem;
+    font-size: 0.82rem;
+  }
+  .pr-edit-link a {
+    color: var(--muted);
+  }
+  .pr-edit-link a:hover {
     color: var(--accent);
   }
 </style>

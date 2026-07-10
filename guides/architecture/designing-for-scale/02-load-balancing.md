@@ -6,14 +6,12 @@ summary: "A load balancer sits in front of your pool of identical servers and sp
 tags: [load-balancing, load-balancer, health-checks, round-robin, sticky-sessions, scaling, high-availability]
 difficulty: advanced
 synonyms: ["what is a load balancer", "how does a load balancer work", "what are health checks", "what are sticky sessions", "round robin load balancing", "load balancer distribution algorithms"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Load Balancing
 
-You've got a pool of identical, stateless servers from Phase 1. Now there's an obvious question: when a request arrives, *who decides* which server handles it? Your users only know one address — `api.example.com` — they don't know or care that there are five machines behind it. Something has to stand at the front door and direct traffic. That something is a load balancer, and it's the piece that turns "a bunch of servers" into "a service."
-
-This phase is about what that piece actually does — which is less mysterious than it sounds — and about one specific feature it offers that can quietly drag you back into the stateful world you worked so hard to leave.
+You've got a pool of identical, stateless servers from Phase 1. Now there's an obvious question: when a request arrives, *who decides* which server handles it? Your users only know one address — `api.example.com` — they don't know or care that there are five machines behind it. Something has to stand at the front door and direct traffic. That something is a load balancer, the piece that turns "a bunch of servers" into "a service" — and it also offers one feature that can quietly drag you back into the stateful world you worked so hard to leave.
 
 ## What a load balancer actually is
 
@@ -31,7 +29,7 @@ flowchart TD
   LB -->|traffic| C["server C (healthy)"]
 ```
 
-**Why people get this wrong.** Newcomers picture a load balancer as something exotic and heavyweight. It isn't. Conceptually it's a smart receptionist: it knows which desks are staffed, and it hands each visitor to a free, working one. The "smart" part is two jobs it does relentlessly — *distribution* (spreading the requests) and *health checking* (knowing which backends are actually up). Get those two ideas and you understand a load balancer.
+**Why people get this wrong.** Newcomers picture a load balancer as something exotic and heavyweight. It isn't. Conceptually it's a smart receptionist: it knows which desks are staffed, and it hands each visitor to a free, working one — two jobs, done relentlessly: *distribution* (spreading the requests) and *health checking* (knowing which backends are actually up). Get those two ideas and you understand a load balancer.
 
 ## Job one: distribution
 
@@ -61,9 +59,9 @@ $ tail -f /var/log/lb/health.log
 10:42:16  check server-B /health -> 200 OK (18ms)   [healthy] returned to pool
 ```
 
-*What just happened:* At `10:42:06` server B stopped answering its health check in time, so the load balancer marked it unhealthy and **removed it from the pool** — from that moment, no user requests were sent to B. The two healthy servers absorbed B's share. Ten seconds later B recovered, passed a check, and was put back into rotation automatically. No human touched anything, and no user got an error from the broken box. That's the load balancer doing the job that makes scale-out actually reliable.
+*What just happened:* at `10:42:06` server B stopped answering its health check in time, so the load balancer marked it unhealthy and **removed it from the pool** — from that moment, no requests were sent to B. The two healthy servers absorbed its share. Ten seconds later B recovered, passed a check, and was put back into rotation automatically. No human touched anything, and no user got an error from the broken box.
 
-⚠️ **Gotcha — your health endpoint should mean what it says.** A naive `/health` that just returns `200 OK` proves the web process is running, but not that the server can do real work — it might be up but unable to reach the database, in which case it'll happily pass health checks while failing every real request. Make the health check verify what actually matters (can I reach my critical dependencies?), but be careful not to over-couple it either: if your `/health` checks the database and the database has a blip, *every* backend fails its check at once and the load balancer pulls the *entire* pool, turning a small wobble into a total outage. It's a real balance, and worth thinking about deliberately.
+⚠️ **Gotcha — your health endpoint should mean what it says.** A naive `/health` that just returns `200 OK` proves the web process is running, not that the server can do real work — it might be unable to reach the database, and happily pass health checks while failing every real request. Make the check verify what actually matters, but don't over-couple it either: if `/health` checks the database and the database blips, *every* backend fails at once and the load balancer pulls the *entire* pool, turning a small wobble into a total outage.
 
 ## The sticky-session trap
 
@@ -89,9 +87,9 @@ Now the part this phase exists to warn you about. Most load balancers offer a fe
    a workaround for local state    │     a real fix: no local state at all
 ```
 
-💡 **Key point — externalizing state is the cleaner fix.** Sticky sessions treat the symptom (state is on one server, so keep going back to it). The real cure treats the cause: *don't keep the state on a server at all.* Move it to a shared store every backend can read, and then any server can serve any user again — no stickiness needed, no pinning, no lumpiness, no lost sessions when a box dies. The load balancer goes back to being a simple, dumb, beautiful round-robin director. That move — pulling state out to a place all servers share — is exactly what Phase 3 is about.
+💡 **Key point — externalizing state is the cleaner fix.** Sticky sessions treat the symptom (state is on one server, so keep going back to it). The real cure treats the cause: *don't keep the state on a server at all.* Move it to a shared store every backend can read, and any server can serve any user again — no stickiness, no pinning, no lost sessions when a box dies. The load balancer goes back to being a simple, dumb, beautiful round-robin director. That move — pulling state out to a place all servers share — is exactly what Phase 3 is about.
 
-🪖 **War story.** A team turned on sticky sessions to fix their random-logout bug (the Phase 1 one) and declared victory. It worked — until their busiest day, when one backend got overwhelmed by the long-running sessions that had piled onto it, fell over, and took a chunk of active users down with it while the other servers sat half-idle and couldn't help, because those users were *stuck* to the dead box. The sticky-session "fix" had converted a graceful, survivable architecture back into a fragile one. They ripped it out and moved sessions to a shared store the next week.
+🪖 **War story.** A team turned on sticky sessions to fix their random-logout bug (the Phase 1 one) and declared victory — until their busiest day, when one backend got overwhelmed by the long-running sessions piled onto it, fell over, and took a chunk of active users down with it while the other servers sat half-idle, unable to help, because those users were *stuck* to the dead box. The "fix" had converted a graceful, survivable architecture back into a fragile one. They ripped it out and moved sessions to a shared store the next week.
 
 ## Recap
 

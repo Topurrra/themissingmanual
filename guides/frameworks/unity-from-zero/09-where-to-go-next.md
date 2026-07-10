@@ -6,12 +6,12 @@ summary: "You built a real game in Unity. Now: how Unity compares to Godot and U
 tags: [unity, godot, unreal, scriptableobjects, gamedev, what-to-build]
 difficulty: beginner
 synonyms: ["unity vs godot unreal", "unity scriptableobjects", "unity next steps", "unity animator coroutines", "unity what to build", "unity input system dots"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
-Stop for a second and look at what you can actually do now. You can open the Unity editor and not feel lost in it. You understand that a scene is a pile of **GameObjects**, each one a bag of **Components**, and that your scripts are Components the engine wires into its own loop. You've written a `MonoBehaviour` with `Start` and `Update`, moved an object frame-rate-independently, read input, given things a Rigidbody and watched physics catch collisions, spawned objects from a **prefab** at runtime, put a score on screen, played a sound, and **built** the whole thing into something a person can run. That's not a tech demo you copied. That's a game. You made it.
+Look at what you can actually do now. You can open the Unity editor and not feel lost in it. You understand that a scene is a pile of **GameObjects**, each one a bag of **Components**, and that your scripts are Components the engine wires into its own loop. You've written a `MonoBehaviour` with `Start` and `Update`, moved an object frame-rate-independently, read input, given things a Rigidbody and watched physics catch collisions, spawned objects from a **prefab** at runtime, put a score on screen, played a sound, and **built** the whole thing into something a person can run. That's not a tech demo you copied. That's a game. You made it.
 
 And the quiet bigger win: the composition model you held onto the whole way through isn't a Unity quirk, it's how the engine *thinks*. You can read a scene now. You can look at a GameObject in the Inspector, see its stack of Components, and reason about why it behaves the way it does. That instinct carries into everything you build next.
 

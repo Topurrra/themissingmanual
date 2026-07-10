@@ -6,14 +6,14 @@ summary: "The workflow end to end: pick a realistic scenario, ramp up virtual us
 tags: [load-testing, workflow, ramp-up, breaking-point, knee, reading-results, test-environment]
 difficulty: advanced
 synonyms: ["how to run a load test", "how to read load test results", "what is the knee in a load test", "find the breaking point of a server", "how to ramp up virtual users", "why do load test numbers lie", "test like production"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Running One & Reading It
 
-You know why you're testing and what the numbers mean. Now the actual loop. A load test isn't a button you press for a verdict - it's a small experiment you design, run, and *read*. Done right, it ends with you pointing at one spot on a graph and saying "that's where we break, and it's at a level we won't hit for months" - which is exactly the calm, boring outcome you want.
+You know why you're testing and what the numbers mean. Now the actual loop. A load test isn't a button you press for a verdict - it's a small experiment you design, run, and *read*. Done right, it ends with you pointing at one spot on a graph and saying "that's where we break, and it's at a level we won't hit for months" - the calm, boring outcome you want.
 
-The whole thing is four moves: pick a realistic scenario, ramp the load up, watch the three metrics, and find the knee. Let's walk each one, then read a result together.
+The whole thing is four moves: pick a realistic scenario, ramp the load up, watch the three metrics, and find the knee.
 
 ## Step 1 - Pick a realistic scenario
 
@@ -21,13 +21,13 @@ The whole thing is four moves: pick a realistic scenario, ramp the load up, watc
 
 **Why this matters.** If you blast a single trivial endpoint - say a `/health` check that returns "ok" and touches nothing - you'll get a gorgeous, enormous throughput number that means *nothing*, because no real user spends their day hitting your health check. The endpoints that break under load are the expensive ones: the search that runs a heavy query, the checkout that writes to the database and calls a payment API. Test the journeys that actually cost something, weighted roughly the way real traffic is.
 
-⚠️ **Gotcha - the model is only as honest as the inputs.** Vary your test data. If all ten thousand virtual users search for the same word and request the same product, your database happily serves it all from cache and reports dazzling numbers - numbers production will never reproduce, because real users search for *different* things and blow straight past that cache. Same for logins: reusing one account behaves nothing like thousands of distinct sessions. Realistic, *varied* data is the difference between a test that warns you and a test that flatters you.
+⚠️ **Gotcha - the model is only as honest as the inputs.** Vary your test data. If all ten thousand virtual users search for the same word and request the same product, your database serves it all from cache and reports dazzling numbers production will never reproduce, because real users search for *different* things and blow past that cache. Same for logins: reusing one account behaves nothing like thousands of distinct sessions. Realistic, *varied* data is the difference between a test that warns you and one that flatters you.
 
 ## Step 2 - Ramp up (don't slam)
 
 **What it actually is.** Ramping means adding virtual users *gradually* over time - start at a handful, climb steadily to your target - rather than launching all of them in the first instant. You configure a *ramp profile*: e.g. add 50 users every 30 seconds up to 1,000.
 
-**Why you ramp instead of slamming.** A gradual ramp is what lets you *see the breaking point coming*. As load rises smoothly, you watch latency and errors rise with it and can read the exact level where things turn. If you instead drop all 1,000 users in at once, everything degrades simultaneously and you learn only "1,000 was too many" - not *whether the trouble started at 400 or 900*, which is the number you actually came for. (Slamming is its own test - that's the **spike test** from Phase 2 - but for *finding capacity*, you ramp.)
+**Why you ramp instead of slamming.** A gradual ramp lets you *see the breaking point coming* - as load rises smoothly, you watch latency and errors rise with it and read the exact level where things turn. Drop all 1,000 users in at once and everything degrades simultaneously, so you learn only "1,000 was too many," not *whether the trouble started at 400 or 900* - the number you actually came for. (Slamming is its own test, the **spike test** from Phase 2 - but for *finding capacity*, you ramp.)
 
 ```text
    a ramp profile:
@@ -54,7 +54,7 @@ The moment these three turn together is the whole point of the exercise. It has 
 
 ## Step 4 - Find the knee (the breaking point)
 
-**What it actually is.** The **knee** (also called the *breaking point* or *saturation point*) is the spot on the curve where the system stops scaling gracefully and starts falling apart: throughput flattens, latency turns sharply upward, and errors begin to climb - all around the same load level. Below the knee, more users get served fine. Above it, more users just make everyone slower and then start failing.
+**What it actually is.** The **knee** (also called the *breaking point* or *saturation point*) is the spot on the curve where the system stops scaling gracefully and starts falling apart: throughput flattens, latency turns sharply upward, and errors begin to climb, all around the same load level. Below the knee, more users get served fine; above it, more users just make everyone slower and then start failing.
 
 📝 **Terminology.** The *knee* is the bend in the latency-vs-load curve - named because the line, flat-then-sharply-up, looks like a bent knee. It marks the capacity ceiling: the honest number for "how much can this take?"
 
@@ -88,7 +88,7 @@ $ k6 run --vus-max 1000 ramp-checkout.js
    900    3,040 r/s     280ms  2,100ms   6,400ms    3.10%
   1000    2,780 r/s     640ms  5,800ms  14,000ms   11.40%
 ```
-*What just happened:* (illustrative figures) Read it top to bottom as a story. From 100 to 500 users everything is healthy - throughput climbs in step with users, latency is calm (p99 around 120–210 ms), errors essentially zero. At **700** the first cracks show: throughput growth is slowing and p99 has jumped to 680 ms - the tail is stretching even though the typical user (p50, 68 ms) still feels fine. At **800** throughput has basically *stopped climbing* (3,050 r/s - the ceiling) while p99 crosses well past a second and errors tick up. By **900–1000** it's a cliff: adding users no longer adds throughput (it's *dropping*), p99 has blown out to many seconds, and errors are double digits - real users getting failures, not just waits. **The knee is right around 700–800 users.** That's your honest capacity. If you expect at most 300 concurrent users at launch, you have comfortable headroom and can sleep. If you expect 900, you have a problem to fix *now*, in private, instead of at 2am in public.
+*What just happened:* (illustrative figures) Read it top to bottom as a story. From 100 to 500 users everything is healthy - throughput climbs in step with users, latency is calm (p99 around 120–210 ms), errors essentially zero. At **700** the first cracks show: throughput growth is slowing and p99 has jumped to 680 ms, the tail stretching even though the typical user (p50, 68 ms) still feels fine. At **800** throughput has basically *stopped climbing* (3,050 r/s, the ceiling) while p99 crosses past a second and errors tick up. By **900–1000** it's a cliff: adding users no longer adds throughput (it's *dropping*), p99 blows out to many seconds, errors hit double digits - real users getting failures, not just waits. **The knee is right around 700–800 users.** That's your honest capacity: comfortable headroom if you expect 300 concurrent users at launch, a problem to fix *now* if you expect 900.
 
 ⚠️ **Gotcha - test like production, or the numbers lie.** This is the single biggest way load tests betray you. The result above is only meaningful if the test ran against an environment that *matches production* in the ways that bite:
 
@@ -96,17 +96,17 @@ $ k6 run --vus-max 1000 ramp-checkout.js
 - **Environment shape.** A laptop, or a "staging" box with a quarter of prod's memory and one CPU, will find a fake breaking point far below the real one - or hide a real one you'd hit in prod.
 - **Realistic, varied inputs** (from Step 1) - distinct users, varied searches, so caches behave the way they will in real life.
 
-A load test against a tiny, empty, single-core environment produces confident, precise, *wrong* numbers - arguably worse than no test, because it tells you you're safe when you aren't. If you can't test against true production scale, say so out loud and treat the result as a rough floor, not a guarantee.
+A load test against a tiny, empty, single-core environment produces confident, precise, *wrong* numbers - arguably worse than no test, because it tells you you're safe when you aren't. Can't test against true production scale? Say so out loud and treat the result as a rough floor, not a guarantee.
 
 ## When it breaks: symptom, not cause
 
-You found the knee at ~800 users and decided that's not enough headroom. Now what? Here's the boundary of this guide, stated plainly so you don't go down the wrong path:
+You found the knee at ~800 users and decided that's not enough headroom. Now what? Here's the boundary of this guide, stated plainly:
 
-The load test told you the **symptom** - *"it saturates around 800 concurrent users; p99 and errors explode there."* It did **not** tell you the **cause** - *which* resource ran out, *which* query went quadratic, *where* the time actually went. Those are different questions answered by different tools: profilers, query plan analysis, flame graphs, and distributed tracing - the **performance** category (profiling and observability), a separate hunt with its own guide.
+The load test told you the **symptom** - *"it saturates around 800 concurrent users; p99 and errors explode there."* It did **not** tell you the **cause** - *which* resource ran out, *which* query went quadratic, *where* the time actually went. Those are different questions answered by different tools: profilers, query plan analysis, flame graphs, distributed tracing - the **performance** category (profiling and observability), a separate hunt with its own guide.
 
-⚠️ **Gotcha.** Don't try to *guess* the cause from the load test alone. The temptation is to eyeball the knee and declare "must be the database" and start adding indexes. Sometimes you're right; often you're not, and you burn a day optimizing the wrong thing. The disciplined order is: **load test to find the breaking point → profile/observe to find the cause → fix → load test again to confirm the knee moved.** Load testing is how you *measure*; profiling is how you *diagnose*; re-running the load test is how you *prove the fix worked*.
+⚠️ **Gotcha.** Don't try to *guess* the cause from the load test alone. The temptation is to eyeball the knee, declare "must be the database," and start adding indexes. Sometimes you're right; often you're not, and you burn a day optimizing the wrong thing. The disciplined order: **load test to find the breaking point → profile/observe to find the cause → fix → load test again to confirm the knee moved.** Load testing is how you *measure*; profiling is how you *diagnose*; re-running the load test proves the fix worked.
 
-🪖 **War story.** A team load-tested a reporting endpoint, found a knee at a few hundred users, and "knew" it was the database, so they spent a sprint adding indexes and a read replica. The knee barely moved. When they finally profiled it, the time was going to JSON serialization of an enormous response payload in the app layer - the database was never the bottleneck. The load test had correctly found *where it broke*; only the profiler found *why*. The lesson: trust the load test for the symptom, never for the diagnosis.
+🪖 **War story.** A team load-tested a reporting endpoint, found a knee at a few hundred users, and "knew" it was the database - so they spent a sprint adding indexes and a read replica. The knee barely moved. When they finally profiled it, the time was going to JSON serialization of an enormous response payload in the app layer; the database was never the bottleneck. The load test had correctly found *where* it broke - only the profiler found *why*.
 
 ## Recap
 
@@ -116,7 +116,7 @@ The load test told you the **symptom** - *"it saturates around 800 concurrent us
 4. **Find the knee** - where throughput flattens, p95/p99 curve sharply up, and errors lift off. That's your honest capacity; compare it to the traffic you actually expect.
 5. **Test like production** (data volume, environment, varied inputs) or the result is confident fiction. A load test finds the **symptom**; **profiling** (a future performance guide) finds the cause - keep those two jobs, and that order, separate.
 
-That's the full loop. You can now answer the question that started this guide - *will it hold?* - with a number and a graph instead of a launch-day stomach-drop. The next time someone asks "are we ready for the traffic?", you won't be guessing.
+That's the full loop. You can now answer the question that started this guide - *will it hold?* - with a number and a graph instead of a launch-day stomach-drop.
 
 ---
 

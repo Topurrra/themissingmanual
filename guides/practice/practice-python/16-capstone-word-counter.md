@@ -1,7 +1,7 @@
 ---
 title: "Capstone: word counter"
 guide: practice-python
-phase: 9
+phase: 16
 summary: "Combine a loop, a dict, and string methods to count word frequency in a piece of text."
 tags: [python, capstone, dictionaries, strings]
 difficulty: intermediate

@@ -6,15 +6,15 @@ summary: "How Hibernate decides when to load related data, why lazy loading thro
 tags: [hibernate, jpa, fetching, lazy-loading, eager-loading, n-plus-one, join-fetch, entity-graph]
 difficulty: advanced
 synonyms: ["hibernate n+1 problem", "jpa lazy vs eager fetching", "hibernate fetchtype lazy eager", "jpa join fetch", "hibernate entity graph", "LazyInitializationException", "hibernate fix n+1 queries"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Lazy vs Eager Fetching & the N+1 Problem
 
 You mapped the relationships in Phase 5: an `Author` has many `Book`s, a `Book` has many `Review`s. The
-foreign keys are in place, the object graph navigates cleanly. So here's the question nobody asks until it's
-too late: when you load one `Author`, **does Hibernate also load their books? Their books' reviews? The whole
-tree?**
+foreign keys are in place, the object graph navigates cleanly. Here's the question nobody asks until it's
+too late: when you load one `Author`, **does Hibernate also load their books? Their books' reviews? The
+whole tree?**
 
 The answer to that question is the difference between an app that returns in 8 milliseconds and one that
 returns in 8 seconds. This is the single most important performance lesson in the entire guide, and almost

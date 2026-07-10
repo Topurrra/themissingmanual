@@ -6,15 +6,15 @@ summary: "How a model knows it's wrong and how it fixes itself: loss functions t
 tags: [pytorch, loss-function, optimizer, sgd, adam, gradient-descent, learning-rate]
 difficulty: intermediate
 synonyms: ["pytorch loss function", "pytorch optimizer sgd adam", "pytorch crossentropyloss mseloss", "pytorch learning rate", "pytorch optimizer step", "pytorch gradient descent", "how pytorch updates weights"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Loss Functions & Optimizers
 
 In [Phase 4](04-building-models-with-nn-module.md) you built a model: a `nn.Module` with layers and a
 `forward()` that turns an input into a prediction. But a fresh model is *random* — its weights are
-nonsense, so its predictions are nonsense. Training is the process of fixing that, and to fix something
-you first need two things: a way to measure how wrong you are, and a way to act on that measurement.
+nonsense, so its predictions are nonsense. Training fixes that, and fixing something takes two things: a
+way to measure how wrong you are, and a way to act on that measurement.
 
 Here's the mental model for this whole phase, and it's short: **the loss function tells you how wrong the
 model is, and the optimizer is the thing that does something about it.** Loss is the score. The optimizer

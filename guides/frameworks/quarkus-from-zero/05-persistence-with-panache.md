@@ -6,54 +6,30 @@ summary: "Panache is a thin Quarkus layer over Hibernate ORM that strips the boi
 tags: [quarkus, panache, hibernate, jpa, active-record, repository, persistence, dev-services]
 difficulty: intermediate
 synonyms: ["quarkus panache tutorial", "hibernate orm panache", "quarkus active record pattern", "panache repository pattern", "quarkus database crud", "panacheentity", "quarkus hibernate jpa"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Persistence: Hibernate with Panache
 
-In Phase 4 you wired up beans with ArC and built out the `Product` domain. Those beans were holding data
-in memory, which is fine until the JVM restarts and everything evaporates. This phase is where `Product`
-finally gets a database to live in. And here's the good news up front: you already know most of how this
-works, even if you don't think you do.
+Phase 4 wired up beans with ArC, holding `Product` data in memory - fine until the JVM restarts and everything evaporates. This phase gives `Product` a real database. Good news: you already know most of how this works.
 
 ## The mental model: Panache is Hibernate wearing comfortable shoes
 
-📝 Let's clear up the single most important thing before we touch any code. **Panache is not a new ORM.**
-Underneath, it *is* Hibernate ORM — the exact same engine, entities, persistence context, transactions,
-and dirty checking covered in the
-[Hibernate & JPA guide](/guides/hibernate-and-jpa-from-zero). Panache is a thin Quarkus layer that sits
-on top and deletes the repetitive parts: the hand-written getters and setters, the boilerplate DAO
-methods, the `EntityManager` plumbing you'd otherwise type a hundred times.
+📝 **Panache is not a new ORM.** Underneath, it *is* Hibernate ORM - the same engine, entities, persistence context, transactions, and dirty checking from the [Hibernate & JPA guide](/guides/hibernate-and-jpa-from-zero). Panache is a thin layer that deletes the repetitive parts: hand-written getters/setters, boilerplate DAO methods, `EntityManager` plumbing.
 
-That has a liberating consequence and a sobering one, and you need both:
+- **Liberating:** every bit of JPA knowledge still applies - entities are still transient/managed/detached/removed, and Hibernate still syncs on commit.
+- **Sobering:** every JPA *trap* still applies too. The N+1 problem doesn't disappear because the code got shorter.
 
-- **Liberating:** every bit of JPA knowledge you have still applies. The
-  [persistence context is still a per-transaction workbench](/guides/hibernate-and-jpa-from-zero), entities
-  are still transient/managed/detached/removed, and Hibernate still syncs on commit, not the instant you
-  touch a field.
-- **Sobering:** every JPA *trap* still applies too. The N+1 problem doesn't disappear because the code got
-  shorter. Panache hides the boilerplate, not the database.
-
-> 💡 **Key point.** Read Panache as "Hibernate with less typing," never as "Hibernate but the rules
-> changed." When something behaves surprisingly, the answer is almost always in the JPA guide, not the
-> Panache docs.
+> 💡 Read Panache as "Hibernate with less typing," never "Hibernate but the rules changed." When something surprises you, check the JPA guide, not the Panache docs.
 
 ## Active Record: the entity does the work
 
-📝 Panache gives you two patterns. The first is the **active-record pattern**, and it's the one most
-Quarkus tutorials show. The idea: your entity extends `PanacheEntity`, and the data-access methods live
-*on the entity itself* as static methods. `Product.listAll()`. `Product.findById(id)`. You ask the class
-about its own table.
+📝 The **active-record pattern**: your entity extends `PanacheEntity`, and data-access methods live *on the entity itself* as static methods - `Product.listAll()`, `Product.findById(id)`.
 
-Two things make this work, and both surprise people coming from classic JPA:
+Two things surprise people coming from classic JPA:
 
-1. **Public fields.** You declare fields as `public`, with no getters or setters. Panache rewrites the
-   bytecode at build time to generate proper accessors, so the rest of your code (and frameworks) still
-   see a real JavaBean — you just don't type it.
-2. **A free id.** `PanacheEntity` provides the `Long id` primary key for you, auto-generated. You don't
-   declare `@Id` at all.
-
-Here's `Product` as an active-record entity:
+1. **Public fields.** Declared `public`, no getters/setters - Panache rewrites the bytecode at build time to generate real accessors.
+2. **A free id.** `PanacheEntity` provides an auto-generated `Long id`; you don't declare `@Id`.
 
 ```java
 package org.acme.catalog;
@@ -68,16 +44,10 @@ public class Product extends PanacheEntity {
     public BigDecimal price;     // 'id' comes free from PanacheEntity
 }
 ```
-*What just happened:* `@Entity` is the same JPA annotation as always — this maps to a `product` table.
-By extending `PanacheEntity`, `Product` inherits a generated `Long id` plus a pile of static finder
-methods (`listAll`, `findById`, `find`, `count`, `deleteAll`, …) and instance methods (`persist`,
-`delete`). The `public` fields look wrong if you're used to encapsulation, but the build step turns them
-into private fields with accessors — this is pure ceremony removal, not a different data model.
-
-Now CRUD, with the database calls living right on the type:
+*What just happened:* `@Entity` is the same JPA annotation as always. Extending `PanacheEntity` adds the generated `id` plus static finders (`listAll`, `findById`, `find`, `count`, `deleteAll`) and instance methods (`persist`, `delete`). The `public` fields are pure ceremony removal, not a different data model.
 
 ```java
-// CREATE — must run inside a transaction (more on that below)
+// CREATE — must run inside a transaction (more below)
 Product p = new Product();
 p.name = "Mechanical Keyboard";
 p.price = new BigDecimal("89.90");
@@ -93,22 +63,11 @@ found.price = new BigDecimal("79.90");    // dirty checking writes this at commi
 // DELETE
 found.delete();                           // DELETE scheduled
 ```
-*What just happened:* `new Product()` is a transient object Hibernate has never heard of; `p.persist()`
-makes it managed and schedules the `INSERT`. The update has *no save call at all* — because `found` is a
-managed entity, Hibernate's dirty checking notices the changed `price` and emits the `UPDATE` on commit.
-That "I changed a field and it saved itself" behavior is the persistence context doing its job, exactly
-as in the [Hibernate guide](/guides/hibernate-and-jpa-from-zero) — Panache changed the syntax, not the
-mechanism.
+*What just happened:* `p.persist()` makes the transient object managed and schedules the `INSERT`. The update has **no save call** - because `found` is managed, Hibernate's dirty checking notices the changed `price` and emits `UPDATE` on commit, exactly as in plain Hibernate.
 
 ## Repository: the same power, a separate class
 
-📝 Not everyone wants data-access methods bolted onto the entity. Maybe you can't extend a base class
-(your entity already extends something, or it's a record-like value object), or you prefer keeping
-persistence logic out of the domain object. For that, Panache offers the **repository pattern**.
-
-You keep the entity plain — a normal JPA `@Entity` with private fields and `@Id` if you like — and put a
-separate `ProductRepository` next to it that implements `PanacheRepository<Product>`. The repository is a
-CDI bean, so you inject it wherever you need it (this is the `@Inject` from Phase 4 doing the wiring).
+📝 If you can't extend a base class, or prefer keeping persistence out of the domain object, use the **repository pattern**: keep the entity plain (private fields, `@Id`) and put a separate `ProductRepository` implementing `PanacheRepository<Product>` next to it, injected as a CDI bean.
 
 ```java
 package org.acme.catalog;
@@ -122,12 +81,7 @@ public class ProductRepository implements PanacheRepository<Product> {
     // Add custom finders here as you need them.
 }
 ```
-*What just happened:* `PanacheRepository<Product>` hands the repository the *same* method set the
-active-record entity got — `listAll()`, `findById()`, `persist()`, `count()` — but as instance methods on
-the repository instead of statics on the entity. `@ApplicationScoped` makes it a singleton CDI bean (same
-scope you met in Phase 4), so one instance is shared app-wide.
-
-Using it from a service:
+*What just happened:* `PanacheRepository<Product>` gives the repository the same method set the active-record entity got, but as instance methods.
 
 ```java
 @ApplicationScoped
@@ -140,25 +94,19 @@ public class CatalogService {
     }
 }
 ```
-*What just happened:* `@Inject` asks ArC for the `ProductRepository`, and you call `findById` on that
-injected instance. The entity stays a dumb data holder. Functionally this does the identical SQL the
-active-record version did — the difference is purely *where the methods live* and how you reach them.
+*What just happened:* functionally identical SQL to the active-record version - the difference is purely *where the methods live*.
 
-> 💡 Active-record reads cleaner and is faster to write — great for straightforward CRUD. Repository keeps
-> persistence out of the entity, which is easier to mock in unit tests and separates concerns more
-> strictly. Neither is "correct." Pick one per project and stay consistent; mixing both in one codebase
-> just confuses the next reader. Your call.
+> 💡 Active-record reads cleaner and is faster for straightforward CRUD. Repository is easier to mock in unit tests and separates concerns more strictly. Pick one per project and stay consistent.
 
 ## Queries and transactions
 
-📝 You rarely fetch by id alone. Panache gives a **simplified query syntax** where you write only the
-fragment after the `where`, and it fills in the rest:
+📝 Panache gives a **simplified query syntax** - write only the fragment after `where`:
 
 ```java
 // Panache shorthand — "name = ?1"
 List<Product> hits = Product.list("name", "Mechanical Keyboard");
 
-// Sorted, with named-ish positional params
+// Sorted, with positional params
 List<Product> cheap = Product.list("price < ?1 order by price", new BigDecimal("50"));
 
 // Paging
@@ -169,13 +117,9 @@ List<Product> page = Product.find("order by name")
 ```sql
 select p.id, p.name, p.price from product p where p.name = 'Mechanical Keyboard'
 ```
-*What just happened:* `Product.list("name", value)` expanded to the full JPQL `from Product where name =
-?1` and ran the `SELECT` shown. The shorthand is *just* JPQL with the boilerplate prefix omitted — when
-you need a full query you can still write the whole thing, and the generated SQL is identical to what
-plain Hibernate would produce. Nothing magic, only shorter.
+*What just happened:* `Product.list("name", value)` expands to the full JPQL `from Product where name = ?1`. It's just JPQL with the boilerplate omitted - the generated SQL is identical to plain Hibernate.
 
-Writes need a transaction. As in the Hibernate guide, the method that *modifies* data must be
-transactional — in Quarkus you annotate it with `@Transactional`:
+Writes need a transaction:
 
 ```java
 @ApplicationScoped
@@ -191,37 +135,21 @@ public class CatalogService {
     }
 }
 ```
-*What just happened:* `@Transactional` wraps the method in a database transaction. `persist()` schedules
-the `INSERT` on the persistence context, but the SQL actually flushes when the method returns and the
-transaction commits — the same commit-time sync from the
-[Hibernate guide](/guides/hibernate-and-jpa-from-zero). If the method threw, the transaction would roll
-back and no row would be written. Read methods don't strictly need it, but a transactional read still
-gets you a consistent persistence context for the duration.
+*What just happened:* `@Transactional` wraps the method in a database transaction. `persist()` schedules the `INSERT`, but the SQL flushes when the transaction commits - if the method threw, it would roll back with nothing written.
 
-> ⚠️ The N+1 trap is alive and well. If `Product` had a lazy `@OneToMany` reviews collection and you did
-> `Product.listAll()` then looped touching `product.reviews` on each, Panache would happily fire one
-> `SELECT` for the list plus one *per product* for the reviews — the classic N+1. Panache's tidy syntax
-> hides nothing here: the fix is the same `join fetch` (or an entity graph) from the Hibernate guide.
-> **Watch the generated SQL**, don't trust the short Java. If a list endpoint feels slow, see
-> [Why is my query slow?](/guides/why-is-my-query-slow) — and turn on SQL logging so you can actually
-> count the queries.
+> ⚠️ The N+1 trap is alive and well. `Product.listAll()` then looping over a lazy `reviews` collection fires one `SELECT` for the list plus one *per product*. Panache's tidy syntax hides nothing here - the fix is the same `join fetch` from the Hibernate guide. **Watch the generated SQL.** See [Why is my query slow?](/guides/why-is-my-query-slow).
 
 ## Dev Services: a database that appears out of nowhere
 
-💡 Remember Phase 2's promise that Quarkus dev mode "just works" with zero config? Here's the payoff for
-persistence. Add the JDBC driver and Panache extensions to your build:
+💡 Add the JDBC driver and Panache extensions:
 
 ```console
 quarkus extension add jdbc-postgresql hibernate-orm-panache
 ```
 
-Now run `quarkus dev` with **no datasource configured at all**, and Quarkus notices you have a Postgres
-driver but no connection URL — so it spins up a throwaway PostgreSQL container (via Testcontainers),
-points your app at it, and tears it down when you stop. This is **Dev Services**, and it's why a fresh
-Quarkus project can talk to a real database before you've written a single line of config.
+Run `quarkus dev` with **no datasource configured**, and Quarkus notices you have a Postgres driver but no connection URL, so it spins up a throwaway PostgreSQL container and tears it down when you stop. This is **Dev Services** - a fresh project can talk to a real database before you've written a line of config.
 
-For production, of course, you point at a real database. That's a few lines in
-`src/main/resources/application.properties`:
+For production, a few lines in `application.properties`:
 
 ```properties
 # Production datasource — Dev Services backs off when these are set
@@ -230,17 +158,9 @@ quarkus.datasource.username=catalog
 quarkus.datasource.password=${DB_PASSWORD}
 quarkus.datasource.jdbc.url=jdbc:postgresql://db.internal:5432/catalog
 ```
-*What just happened:* once a real `jdbc.url` is present, Quarkus uses it and Dev Services stays out of the
-way — Dev Services only kicks in when the connection config is *missing*. The `${DB_PASSWORD}` pulls from
-an environment variable, which is the config-injection topic of Phase 6. So you get a frictionless local
-loop *and* a normal production connection, with the same code.
+*What just happened:* once a real `jdbc.url` is present, Dev Services stays out of the way. `${DB_PASSWORD}` pulls from an environment variable (Phase 6). Same code, frictionless local loop *and* normal production connection.
 
-> ⚠️ One thing must change between dev and prod: schema generation. In dev you'll often see
-> `quarkus.hibernate-orm.database.generation=drop-and-create`, which lets Hibernate build the tables from
-> your entities on startup. That is a **development convenience only**. In production, never let Hibernate
-> own your schema — use real migrations (Flyway, which has a Quarkus extension). This is the exact same
-> warning from the [Hibernate guide](/guides/hibernate-and-jpa-from-zero): auto-generation is great for
-> iterating, catastrophic for a database with data you care about.
+> ⚠️ One thing must change between dev and prod: schema generation. Dev often uses `quarkus.hibernate-orm.database.generation=drop-and-create`, letting Hibernate build tables from your entities. That's a **development convenience only** - in production, never let Hibernate own your schema. Use real migrations (Flyway has a Quarkus extension).
 
 ## Recap
 

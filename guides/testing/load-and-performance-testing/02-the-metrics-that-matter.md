@@ -6,20 +6,18 @@ summary: "Three numbers tell the story: throughput (requests/sec), latency (and 
 tags: [throughput, latency, percentiles, p95, p99, error-rate, stress-test, soak-test, spike-test]
 difficulty: advanced
 synonyms: ["what is throughput", "what is latency", "p50 p95 p99 explained", "why percentiles instead of average latency", "what is error rate under load", "load vs stress vs soak vs spike test", "what is a soak test", "what is a spike test"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Metrics That Matter
 
-A load test throws a wall of numbers at you - graphs, tables, counters ticking up. It's tempting to fixate on the one big number ("we did 5,000 requests a second!") and miss the one that's quietly telling you the system is in trouble. So before you run anything, let's get crisp on *what to watch* and *what each number actually means about your users' experience*.
-
-There are only three measurements you truly need, and one of them - latency - is measured in a way that feels strange until you understand *why*, at which point it becomes the most important number on the screen.
+A load test throws a wall of numbers at you - graphs, tables, counters ticking up. It's tempting to fixate on the one big number ("we did 5,000 requests a second!") and miss the one quietly telling you the system is in trouble. There are only three measurements you truly need, and one of them - latency - is measured in a way that feels strange until you understand *why*, at which point it becomes the most important number on the screen.
 
 ## Throughput - how much work it's getting done
 
 **What it actually is.** Throughput is the **rate of work**: how many requests your system completes per second. You'll see it written as **req/s** (requests per second), sometimes **RPS** or, for full multi-step user journeys, transactions per second. It answers "how much is flowing through right now?"
 
-**What it does in real life.** As you add virtual users, throughput climbs - more users, more requests completed per second. Then, at some point, it *stops climbing* even though you keep adding users. That flat ceiling is a signal: the system is now completing work as fast as it possibly can. Pile on more users past that and they don't get served faster - they get served *slower*, because they're queueing for a system that's already maxed out.
+**What it does in real life.** As you add virtual users, throughput climbs - more users, more requests completed per second - until, at some point, it *stops climbing* even though you keep adding users. That flat ceiling means the system is completing work as fast as it possibly can. Pile on more users past that and they don't get served faster - they get served *slower*, queueing for a system already maxed out.
 
 ```text
    throughput
@@ -40,9 +38,7 @@ There are only three measurements you truly need, and one of them - latency - is
 
 **What it actually is.** Latency is the time between a request going out and the response coming back - **how long one user waits**. Throughput is the system's view ("work per second"); latency is the *user's* view ("how long did *I* sit there?"). It's measured in milliseconds (ms).
 
-**Why people get this wrong: the average lies.** The instinct is to track *average* latency. It feels right, and it's almost always misleading. Here's why.
-
-Imagine 100 requests. Ninety-nine come back in 50 ms - lovely. One takes 5,000 ms because it got stuck behind a full connection pool. The average is about 100 ms, which looks great and tells you *nothing* about the user who waited five seconds. Average latency hides the disaster by drowning it in good results. And the slow ones aren't random noise - they're real people, hitting the exact contention that load testing exists to find.
+**Why people get this wrong: the average lies.** The instinct is to track *average* latency, and it's almost always misleading. Imagine 100 requests: ninety-nine come back in 50 ms, one takes 5,000 ms because it got stuck behind a full connection pool. The average is about 100 ms - looks great, and tells you *nothing* about the user who waited five seconds. Average latency hides the disaster by drowning it in good results, and the slow ones aren't random noise - they're real people hitting the exact contention load testing exists to find.
 
 **What it does in real life: read percentiles instead.** A **percentile** answers "what was the experience for the slowest X% of requests?" It's the honest way to see the *tail* - the slow requests that an average smooths away.
 
@@ -59,7 +55,7 @@ Imagine 100 requests. Ninety-nine come back in 50 ms - lovely. One takes 5,000 m
     └── the long slow tail is real users, and it's what they remember ──┘
 ```
 
-💡 **Key point.** Users don't experience your *average* - they experience their *own* request. The person who waited five seconds doesn't feel comforted that the average was 100 ms. Watch **p95 and p99**: they are the felt experience of your unluckiest real users, and they're the first thing to spike when the system gets into trouble. The tail is the truth.
+💡 **Key point.** Users don't experience your *average* - they experience their *own* request. Watch **p95 and p99**: they are the felt experience of your unluckiest real users, and the first thing to spike when the system gets into trouble. The tail is the truth.
 
 ⚠️ **Gotcha.** Don't average percentiles together or across machines - a p99 of two servers is not the average of their two p99s. Percentiles have to be computed from the raw measurements pooled together. Most load tools do this for you; the point is to never hand-compute an "average p99," because the result is meaningless.
 
@@ -69,13 +65,13 @@ Imagine 100 requests. Ninety-nine come back in 50 ms - lovely. One takes 5,000 m
 
 📝 **Terminology.** A *5xx* is an HTTP status code in the 500–599 range - the server admitting *it* failed (500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable). Distinct from *4xx* codes (like 404), which mean the *client* asked for something wrong. Under load, the code you dread is 5xx: the server buckling.
 
-**What it does in real life.** Error rate is usually the *last* thing to go and the most decisive. The typical failure story reads in order: throughput flattens (maxed out) → latency climbs, especially p95/p99 (requests queueing) → then errors begin (requests timing out or being rejected outright). By the time errors are climbing, users aren't just waiting - they're getting failures. That's the line you do not want to cross in production.
+**What it does in real life.** Error rate is usually the *last* thing to go and the most decisive. The typical failure story: throughput flattens (maxed out) → latency climbs, especially p95/p99 (requests queueing) → errors begin (timeouts, outright rejections). By the time errors climb, users aren't just waiting - they're getting failures. That's the line you don't want to cross in production.
 
 💡 **Key point.** Read all three together as one story. **Throughput** = how much work is getting done. **Latency (percentiles)** = how it feels to each user. **Error rate** = whether it's working at all. One number alone always misleads; the three together tell you exactly where on the curve you are.
 
 ## The four test types - same tool, four questions
 
-You drive all of these with the same load tool and the same three metrics. What changes is the *shape* of the load you apply, because each shape answers a different question.
+You drive all four with the same load tool and the same three metrics. What changes is the *shape* of the load, because each shape answers a different question.
 
 ```text
    virtual users over time:
@@ -104,7 +100,7 @@ You drive all of these with the same load tool and the same three metrics. What 
 3. **Error rate** (timeouts, 5xx) should be near zero and is the decisive signal you've gone too far. Read the three metrics together as one story.
 4. **Four test types, one tool, four questions:** **load** (expected peak - fine?), **stress** (where's the breaking point?), **soak** (does it leak over hours?), **spike** (can it absorb a sudden surge?).
 
-You know what to watch and what each number means. Next, the hands-on part: pick a realistic scenario, ramp up the virtual users, and find the exact point where the curve turns - the breaking point.
+Next, the hands-on part: pick a realistic scenario, ramp up the virtual users, and find the exact point where the curve turns - the breaking point.
 
 ---
 

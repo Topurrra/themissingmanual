@@ -14,12 +14,12 @@ synonyms:
   - useMemo explained
   - cache function results by arguments
   - why is recursive fibonacci slow
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Memoization Explained
 
-A pure function called twice with the same arguments does the same work twice and produces the same answer twice. If that work is expensive, the second call is pure waste — you already know the answer, and you made the function recompute it anyway. Memoization is the fix: remember the answer the first time, keyed by the arguments, and hand back the memory instead of redoing the work. This guide covers the idea using the classic slow example, how to actually implement it, and where it backfires.
+A pure function called twice with the same arguments does the same work twice and produces the same answer twice — if that work is expensive, the second call is pure waste, since you already know the answer but made the function recompute it anyway. Memoization is the fix: remember the answer the first time, keyed by the arguments, and hand back the memory instead of redoing the work. This guide covers the idea using the classic slow example, how to implement it, and where it backfires.
 
 ## How to read this
 

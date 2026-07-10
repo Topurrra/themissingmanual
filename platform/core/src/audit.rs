@@ -91,6 +91,7 @@ mod tests {
             html: html.into(),
             updated: "2026-06-19".into(),
             markdown: String::new(),
+            source_file: String::new(),
         }
     }
 

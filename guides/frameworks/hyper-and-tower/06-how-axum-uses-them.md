@@ -6,12 +6,12 @@ summary: "The payoff: axum's Router is a tower Service, axum::serve is hyper, .l
 tags: [axum, hyper, tower, service, framework-internals]
 difficulty: beginner
 synonyms: ["how axum works", "axum router is a service", "axum serve hyper", "axum layer tower", "axum internals", "axum over hyper tower"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # How axum Uses Them
 
-This is the phase where the magic disappears. You've spent five phases on the bare metal — hyper speaking HTTP on the socket, the `Service` trait, `Layer`s wrapping services, the `tower-http` toolbox. Now hold one idea and watch [axum](/guides/axum-from-zero) dissolve into things you already understand.
+This is the phase where the magic disappears. You've spent five phases on the bare metal — hyper speaking HTTP on the socket, the `Service` trait, `Layer`s wrapping services, the `tower-http` toolbox. Hold one idea and watch [axum](/guides/axum-from-zero) dissolve into things you already understand.
 
 📝 **An axum app is a `tower::Service` you assemble. Everything else — extractors, `IntoResponse`, the router DSL — is ergonomics layered on top of the raw `Request`/`Response` that hyper deals in.** The friendly façade you learned in the axum guide was never a separate world. It was Service + hyper + Tokio, wearing a nicer coat.
 

@@ -6,7 +6,7 @@ summary: "A Dockerfile is a recipe and each instruction builds a cached layer, w
 tags: [docker, dockerfile, layers, build, run, registry, ports, caching]
 difficulty: intermediate
 synonyms: ["what is a dockerfile", "how do docker layers work", "why is my docker build slow", "docker build cache explained", "docker run port mapping", "docker push pull registry", "dockerfile copy order"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Building an Image: the Dockerfile & Layers
@@ -18,9 +18,9 @@ explain why two Dockerfiles that produce the identical image can rebuild in 2 se
 
 ## The Dockerfile: a recipe Docker reads top to bottom
 
-**What it actually is.** A Dockerfile is an ordered list of instructions that describe how to assemble an
-image: start from some base, copy your files in, install dependencies, and declare how to run the program.
-Each line is an instruction in `CAPITALS` followed by its arguments.
+A Dockerfile is an ordered list of instructions that describe how to assemble an image: start from some
+base, copy your files in, install dependencies, and declare how to run the program. Each line is an
+instruction in `CAPITALS` followed by its arguments.
 
 Here's a realistic one for a small Node.js app, annotated:
 
@@ -57,9 +57,8 @@ happens at build time, `CMD` at run time.
 
 ## Layers: every instruction is a cached step
 
-**What a layer actually is.** Each instruction in the Dockerfile produces a **layer** - a saved diff of
-what changed in the filesystem at that step. The final image is those layers stacked, read-only, one on
-top of the next:
+Each instruction in the Dockerfile produces a **layer** - a saved diff of what changed in the filesystem
+at that step. The final image is those layers stacked, read-only, one on top of the next:
 
 ```mermaid
 flowchart TD
@@ -75,10 +74,10 @@ flowchart TD
 
 *Each instruction is one read-only layer; the final image is them stacked.*
 
-**Why this matters in real life: the build cache.** When you rebuild, Docker walks the instructions in
-order and **reuses the cached layer for any step whose inputs haven't changed.** The instant it hits a
-step whose inputs *did* change, that layer and **every layer after it** are rebuilt from scratch. The
-cache is a streak that breaks the moment something upstream changes.
+When you rebuild, Docker walks the instructions in order and **reuses the cached layer for any step whose
+inputs haven't changed.** The instant it hits a step whose inputs *did* change, that layer and **every
+layer after it** are rebuilt from scratch. The cache is a streak that breaks the moment something
+upstream changes.
 
 That single rule is why the Dockerfile above copies `package.json` *before* the source code. Your
 dependencies change rarely; your source changes constantly. By installing dependencies before copying
@@ -106,8 +105,8 @@ $ docker build -t my-app:1.0 .
 ```
 
 *What just happened:* `docker build` read the Dockerfile and built each layer in order. `-t my-app:1.0`
-**tags** the result - `my-app` is the name, `1.0` is the *tag* (usually a version). The `.` at the end is
-the **build context**: the folder Docker hands to the build so `COPY` has something to copy from. Notice
+**tags** the result - `my-app` is the name, `1.0` the *tag* (usually a version). The `.` at the end is the
+**build context**: the folder Docker hands to the build so `COPY` has something to copy from. Notice
 `[4/5] RUN npm ci` took 14.8s - the slow step.
 
 Now change one line of `server.js` and build again:
@@ -173,7 +172,7 @@ web` removes it.
 ## The registry: where images live so others can pull them
 
 An image on your laptop helps only you. A **registry** is a server that stores images so anyone (or any
-deploy server) can download them - Docker Hub is the default public one; companies run private ones.
+deploy server) can download them - Docker Hub is the default public one, companies run private ones.
 
 📝 **Terminology.** *Registry* = the image store. *`pull`* = download an image from it. *`push`* = upload
 one to it. This is the actual mechanism behind "works on my machine" finally being true everywhere: you

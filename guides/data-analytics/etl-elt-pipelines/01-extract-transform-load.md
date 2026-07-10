@@ -6,14 +6,14 @@ summary: "A pipeline is an assembly line with three stages: extract pulls data f
 tags: [etl, extract, transform, load, data-pipelines, assembly-line]
 difficulty: intermediate
 synonyms: ["what does extract transform load mean", "three stages of etl", "what is the extract step", "what is the transform step", "what is the load step", "data pipeline stages explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Extract, Transform, Load
 
-The acronym ETL gets thrown around as if it were a single thing, but it's really three separate jobs wearing one name. The reason people tense up is that the three jobs blur together in their head — the data goes "into the pipeline" and "comes out clean," and the middle is fog.
+ETL gets thrown around like one thing, but it's really three separate jobs wearing one name. They blur together because the data goes "into the pipeline" and "comes out clean," and the middle is fog.
 
-Let's clear the fog. The cure is one picture: an assembly line. Raw material comes in one end, gets worked on in the middle, and a finished product comes out the other. That's the entire mental model, and once it's in place every tool and buzzword you meet later will slot into one of the three stations.
+The fix is one picture: an assembly line. Raw material comes in one end, gets worked on in the middle, a finished product comes out the other. That's the whole mental model — once it's in place, every tool and buzzword you meet later slots into one of the three stations.
 
 ## The whole thing, in one picture
 
@@ -57,7 +57,7 @@ Wrote raw/orders_2026-06-19.json
 
 ## Stage 2 — Transform: clean and reshape it
 
-**What it actually is.** Transform is where raw data becomes *useful* data. Source data is messy — inconsistent formats, duplicate rows, codes instead of labels, three systems that each spell "USA" differently. Transform is every operation that turns that into something a human or a dashboard can trust.
+**What it actually is.** Transform is where raw, messy data — inconsistent formats, duplicate rows, codes instead of labels, three systems that each spell "USA" differently — becomes something a human or a dashboard can trust.
 
 **What it does in real life.** Common transforms:
 - **Clean** — fix types, trim whitespace, standardize values (`"usa"`, `"US"`, `"U.S.A."` → `"US"`).
@@ -76,7 +76,7 @@ Joined customer names from customers table
 Wrote staged/orders_clean_2026-06-19.parquet
 ```
 
-*What just happened:* The raw 1,204 rows went in; the script normalized the messy `country` field down to standard codes, removed obvious test data, and attached customer names so downstream reports don't have to. What comes out is the same orders, but *trustworthy and ready to use*. (The variant and row counts above are illustrative of the kind of output you'd see, not measured figures.)
+*What just happened:* The raw 1,204 rows went in; the script normalized the messy `country` field down to standard codes, removed obvious test data, and attached customer names so downstream reports don't have to. What comes out is the same orders, but *trustworthy and ready to use*. (Numbers are illustrative, not measured.)
 
 💡 **Key point.** Transform is the stage that holds all your business logic — what "a valid order" means, how revenue is defined, which records count. That's why it's where most of the real engineering effort goes, and, as the next phase shows, *where* you run it is the choice that defines ETL vs. ELT.
 

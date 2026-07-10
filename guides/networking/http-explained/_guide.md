@@ -8,21 +8,14 @@ category: networking
 difficulty: beginner
 synonyms: ["what is http", "how does http work", "http for beginners", "what is a 404", "what is https", "http request and response explained", "what does GET and POST mean"]
 order: 3
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # HTTP, Explained
 
-Every time you open a website, two computers have a short, polite conversation. Your browser asks for
-something; a server hands it back. That conversation is HTTP - the language the web speaks. You've
-relied on it every day of your life online without ever being shown how it works, and that's fine,
-until the day a page returns `404`, or a developer mentions a "POST request," or you see `https://`
-turn red and wonder if you're about to be robbed.
+Every time you open a website, two computers have a short, polite conversation: your browser asks for something, a server hands it back. That conversation is HTTP - the language the web speaks. You've relied on it every day without ever being shown how it works, and that's fine until a page returns `404`, a developer mentions a "POST request," or `https://` turns red and you wonder if you're about to be robbed.
 
-This guide is the manual nobody handed you. By the end you'll be able to picture exactly what your
-browser and a server are saying to each other, read a status code without panic, and understand what
-that little padlock in the address bar is actually protecting. No deep networking background needed -
-we start from the conversation and build up.
+This guide is the manual nobody handed you. By the end you'll picture exactly what your browser and a server are saying to each other, read a status code without panic, and understand what that little padlock is actually protecting. No deep networking background needed - we start from the conversation and build up.
 
 ## How to read this
 - **Want a specific answer right now?** Phase 2 has the status-code table - if you just want to know

@@ -6,7 +6,7 @@ summary: "Read the status code before the body, tweak parameters and re-send, an
 tags: [apis, postman, curl, http-status-codes, collections, environment-variables, security, beginner-friendly]
 difficulty: beginner
 synonyms: ["what does http 401 mean", "how to read an api response", "postman collections and variables", "how to not leak api key", "http status code cheat sheet"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Reading the Response & Iterating
@@ -40,12 +40,12 @@ of the body.
 
 ## Status code first, then the body
 
-**What it actually is.** Every HTTP response leads with a **status code** — a three-digit number that's
-the server's one-word verdict on your request. The body is the detail; the status is the headline. Read
-the headline first, because a `401` body and a `200` body need completely different reactions, and the
-code tells you which you're holding.
+Every HTTP response leads with a **status code** — a three-digit number that's the server's one-word
+verdict on your request. The body is the detail; the status is the headline. Read the headline first,
+because a `401` body and a `200` body need completely different reactions, and the code tells you which
+you're holding.
 
-**Where to see it.**
+Where to see it:
 
 - **Postman** shows it in bold right above the response panel: `200 OK`, with the response time next to
   it.
@@ -62,10 +62,10 @@ content-length: 102
 {"id":42,"title":"The Left Hand of Darkness","author":"Ursula K. Le Guin","genre":"scifi","year":1969}
 ```
 
-*What just happened:* `-i` ("include") told curl to print the **response headers** along with the body.
-The very first line, `HTTP/2 200`, is the status — `200` means success — followed by the server's own
-headers (it's sending back JSON, 102 bytes of it), a blank line, and then the body. Now you can read the
-verdict before the data.
+`-i` ("include") told curl to print the **response headers** along with the body. The very first line,
+`HTTP/2 200`, is the status — `200` means success — followed by the server's own headers (it's sending
+back JSON, 102 bytes of it), a blank line, and then the body. Now you can read the verdict before the
+data.
 
 **A failure looks like this:**
 
@@ -78,10 +78,10 @@ content-type: application/json
 {"error":"invalid_token","message":"The API key provided is not valid."}
 ```
 
-*What just happened:* the status line says `401` before you read anything else — so this is an auth
-problem, *your* side. The body confirms it in plain words: the token isn't valid. Notice the pattern —
-good APIs put a human-readable `message` in the error body. Read it; it usually names the fix. Here:
-check the token (see [Phase 1, §4](01-how-to-read-api-docs.md)).
+The status line says `401` before you read anything else — so this is an auth problem, *your* side. The
+body confirms it in plain words: the token isn't valid. Good APIs put a human-readable `message` in the
+error body — read it, it usually names the fix. Here: check the token (see
+[Phase 1, §4](01-how-to-read-api-docs.md)).
 
 ⚠️ **Gotcha.** A `200` doesn't always mean you got what you wanted — it means the *request* succeeded.
 `GET /books?genre=banana` might return `200` with an empty list `[]` because "no banana books" is a
@@ -106,8 +106,8 @@ $ curl "https://api.bookshelf.dev/v1/books?genre=scifi&limit=5&sort=newest" \
     -H "Authorization: Bearer sk_live_8Kd2x9..."
 ```
 
-*What just happened:* the `?` begins the query string and `&` separates each parameter, exactly as the
-docs described. You changed the *inputs*, not the endpoint or the auth — same call, narrower question.
+The `?` begins the query string and `&` separates each parameter, exactly as the docs described. You
+changed the *inputs*, not the endpoint or the auth — same call, narrower question.
 
 ⚠️ **Gotcha — quote the whole URL in curl.** Notice the URL is in double quotes here. The `&` character
 means "run this in the background" to most shells, so an unquoted URL with `&` in it gets chopped in
@@ -148,8 +148,8 @@ below.
 
 This is the one mistake in this whole guide that can genuinely hurt you, so it gets its own section.
 
-**What goes wrong.** Your token is your account (Phase 1, §4). It is dangerously easy to leak it without
-noticing, in two specific ways:
+Your token is your account (Phase 1, §4). It is dangerously easy to leak it without noticing, in two
+specific ways:
 
 1. **Exporting a Postman collection with the token baked in.** If you typed your real token directly
    into a request's auth field and then **Export** the collection to a `.json` file — to share it,
@@ -176,9 +176,9 @@ $ curl https://api.bookshelf.dev/v1/books/42 \
     -H "Authorization: Bearer $BOOKSHELF_TOKEN"
 ```
 
-*What just happened:* `export` put the token into a shell variable named `BOOKSHELF_TOKEN`. The curl
-command then refers to it as `$BOOKSHELF_TOKEN`, so the line you'd copy-paste contains the *name*, not
-the secret. Same request, but nothing sensitive to leak.
+`export` put the token into a shell variable named `BOOKSHELF_TOKEN`. The curl command then refers to it
+as `$BOOKSHELF_TOKEN`, so the line you'd copy-paste contains the *name*, not the secret. Same request, but
+nothing sensitive to leak.
 
 🪖 **War story.** Leaked keys get found *fast*. Bots continuously scan public code for things that look
 like API keys, and a key committed to a public repo can be abused within minutes of the push. This is

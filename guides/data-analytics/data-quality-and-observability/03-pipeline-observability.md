@@ -6,7 +6,7 @@ summary: "Seeing the whole system: lineage to trace which downstream tables a br
 tags: [observability, data-lineage, monitoring, alerting, data-sla, alert-fatigue, data-engineering]
 difficulty: advanced
 synonyms: ["what is data observability", "data lineage explained", "monitor data pipeline", "alert on data quality", "data sla", "alert fatigue data", "which tables does a broken source affect", "catch data failure before human"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Pipeline Observability
@@ -23,17 +23,17 @@ bedside. You already have the thermometers. Now we connect them.
 
 ## Lineage — the map of what poisons what
 
-**What it actually is.** *Lineage* is the dependency graph of your data: which tables are built from which
-other tables, all the way from raw sources to the dashboards people read. It's the answer to two questions
-you will be asked in every data incident — *"if this source is broken, what's affected?"* (downstream) and
-*"this dashboard looks wrong, where did the number come from?"* (upstream).
+*Lineage* is the dependency graph of your data: which tables are built from which other tables, all the way
+from raw sources to the dashboards people read. It's the answer to two questions you'll be asked in every
+data incident — *"if this source is broken, what's affected?"* (downstream) and *"this dashboard looks
+wrong, where did the number come from?"* (upstream).
 
 📝 **Terminology.** *Upstream* = the tables your table is built *from* (its inputs). *Downstream* = the
 tables built *from* yours (what depends on you). *Lineage* = the full upstream-to-downstream map across the
 whole platform.
 
-**What it does in real life.** When a freshness check fails on a raw source, lineage instantly tells you the
-blast radius — every mart and dashboard that draws from it, so you know what to quarantine and who to warn.
+When a freshness check fails on a raw source, lineage instantly tells you the blast radius — every mart and
+dashboard that draws from it, so you know what to quarantine and who to warn.
 
 ```mermaid
 flowchart TD
@@ -48,8 +48,7 @@ flowchart TD
 dashboard that depends on it. Without lineage, you'd find out about the blast radius the slow way — one
 angry Slack message per affected dashboard, over hours. With it, you see in one glance that `daily_rev`,
 `cohorts`, `exec_summary`, and the Revenue dashboard are all downstream of the break, so you can hold them
-*before* anyone trusts them. Lineage turns "something's wrong somewhere" into "these exact things are at
-risk, right now."
+*before* anyone trusts them.
 
 💡 **Key point.** Lineage is what makes a single check *systemic*. A check says "this table is bad."
 Lineage says "...and therefore these twelve things built on it cannot be trusted until it's fixed." That
@@ -57,17 +56,13 @@ second sentence is what lets you protect decisions instead of just tables.
 
 ## Monitoring and alerting — getting the signal to a human
 
-**What it actually is.** *Monitoring* is recording the results of your checks over time — not just pass/fail
-right now, but the history (how fresh has this table been every day for a month? how has the row count
-trended?). *Alerting* is the rule that decides when a result is bad enough to interrupt a human, and the
-mechanism that actually reaches them.
+*Monitoring* is recording the results of your checks over time — not just pass/fail right now, but the
+history (how fresh has this table been every day for a month? how has the row count trended?). *Alerting*
+is the rule that decides when a result is bad enough to interrupt a human, and the mechanism that reaches
+them. A check that fails into a void helps no one — monitoring turns each result into a durable signal, and
+alerting routes the *important* ones to a person through a channel they actually watch.
 
-A check that fails into a void helps no one. The point of monitoring is to turn each check result into a
-durable signal, and the point of alerting is to route the *important* ones to a person through a channel
-they actually watch.
-
-**What it does in real life.** Two failures, two very different responses — and the difference is the whole
-craft:
+Two failures, two very different responses — and the difference is the whole craft:
 
 ```text
    FAILURE                         RESPONSE
@@ -87,20 +82,17 @@ check to the same loud channel is how you get to the next gotcha.
 ## ⚠️ Alert fatigue — the failure mode of doing this well
 
 This is the trap that catches teams *after* they get good at quality checks, so it deserves its own
-warning.
+warning. Alert fatigue is what happens when you have so many alerts — many noisy, flaky, or unimportant —
+that people stop reading them. The alarm becomes wallpaper, and the moment it does, the *one that matters*
+scrolls past unread, landing you right back in Phase 1: a real silent failure, except now you technically
+"alerted" on it and still nobody looked.
 
-**What it actually is.** Alert fatigue is what happens when you have so many alerts — many of them noisy,
-flaky, or unimportant — that people stop reading them. The alarm becomes wallpaper. And the moment alerts
-become wallpaper, the *one that matters* scrolls past unread, which lands you right back in Phase 1: a real
-silent failure, except now you technically "alerted" on it and still nobody looked.
+The instinct after Phase 2 is to check *everything* — every column, every table, every dimension — and
+route it all to one channel. It feels thorough. It's actually counterproductive: a hundred low-value alerts
+don't add up to vigilance, they manufacture the indifference that lets the high-value one slip through.
+More checks is not more safety past a point; **more *trusted* checks is.**
 
-**Why people get this wrong.** The instinct after learning Phase 2 is to check *everything* — every column,
-every table, every dimension — and route it all to one channel. It feels thorough. It is actually
-counterproductive: a hundred low-value alerts don't add up to vigilance, they manufacture the indifference
-that lets the high-value one slip through. More checks is not more safety past a point; **more *trusted*
-checks is.**
-
-**What it does in real life — how to keep alerts meaningful:**
+**How to keep alerts meaningful:**
 
 - **Test what matters, not what's easy.** Guard the columns and tables that feed real decisions. A null in
   `amount` pages someone; a null in `notes` does not.
@@ -113,33 +105,33 @@ checks is.**
   it costs attention and gives nothing back. Tune it or delete it.
 
 💡 **Key point.** The goal isn't the *most* alerts — it's that **every alert is worth reading.** A small set
-of trusted, high-signal alerts beats a hundred that everyone has muted. You are protecting a scarce
+of trusted, high-signal alerts beats a hundred that everyone has muted. You're protecting a scarce
 resource: human attention. Spend it only where a wrong number would actually cost something.
 
 ## Data SLAs — promising trust, and measuring it
 
-**What it actually is.** A *data SLA* (service-level agreement) is an explicit, written promise about the
-data — most commonly its **freshness** ("the revenue table is updated by 7am every business day") and its
-**correctness** ("it passes its quality checks before it's published"). It turns vague expectations into a
-number you can monitor against and be held to.
+A *data SLA* (service-level agreement) is an explicit, written promise about the data — most commonly its
+**freshness** ("the revenue table is updated by 7am every business day") and its **correctness** ("it
+passes its quality checks before it's published"). It turns vague expectations into a number you can
+monitor against and be held to.
 
 📝 **Terminology.** *SLA* = service-level agreement, the promise you make to consumers ("fresh by 7am").
 *SLO* = service-level objective, the internal target you actually engineer toward (often a bit tighter, e.g.
 "fresh by 6:30am," to leave headroom). Borrowed straight from how production services are run.
 
-**Why this matters.** An SLA is what makes "is the data trustworthy?" measurable rather than a feeling. It
-converts the freshness and quality checks from Phase 2 into a *commitment*: not just "we noticed it was
-stale" but "we promised 7am, the check tripped at 6:15, on-call had 45 minutes to fix it before anyone
-opened the dashboard." That's the whole arc of this guide closing — the silent failure caught and resolved
-*before* a human ever acted on a bad number, with time to spare because you set a target with headroom.
+An SLA is what makes "is the data trustworthy?" measurable rather than a feeling. It converts the freshness
+and quality checks from Phase 2 into a *commitment*: not just "we noticed it was stale" but "we promised
+7am, the check tripped at 6:15, on-call had 45 minutes to fix it before anyone opened the dashboard." That's
+the silent failure caught and resolved *before* a human ever acted on a bad number, with time to spare
+because you set a target with headroom.
 
 ## Tying it together — observability serves the pipeline you built
 
 Everything here sits *on top of* the pipelines from [ETL & ELT Pipelines](/guides/etl-elt-pipelines). That
-guide builds the machinery that moves data; this one watches the machinery and, more importantly, watches
-the *truth of what comes out of it*. The orchestration that runs your extract/transform/load steps is the
-same orchestration that runs your quality gates, records their history, and fires your alerts — observability
-isn't a separate system bolted on, it's the same pipeline, instrumented so it can tell you when it's lying.
+guide builds the machinery that moves data; this one watches the machinery and, more importantly, the
+*truth of what comes out of it*. The same orchestration that runs your extract/transform/load steps runs
+your quality gates, records their history, and fires your alerts — observability isn't a separate system
+bolted on, it's the same pipeline, instrumented so it can tell you when it's lying.
 
 The full picture, end to end:
 
@@ -153,7 +145,7 @@ flowchart LR
 ```
 
 *What just happened:* This is the whole guide in one line of pipes. You build the pipeline (the ETL/ELT
-guide). You gate it with checks that fail fast and go red (Phase 2). You wrap it in lineage, monitoring,
+guide), gate it with checks that fail fast and go red (Phase 2), and wrap it in lineage, monitoring,
 severity-routed alerts, and an SLA (Phase 3). The payoff is the exact inverse of the Phase 1 nightmare:
 instead of a green job quietly shipping a wrong number that surfaces in a meeting a week later, a tripped
 wire turns the job red, names the broken table, shows you everything downstream it endangers, and reaches a

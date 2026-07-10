@@ -6,15 +6,15 @@ summary: "The golden pattern for live schema changes: add new structure first, b
 tags: [databases, migrations, zero-downtime, expand-contract, parallel-change, backfill, rename-column]
 difficulty: intermediate
 synonyms: ["zero downtime schema change", "how to rename a column without downtime", "expand contract migration", "parallel change pattern", "backfill data migration", "change column type live database", "additive migration first"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Doing It Safely on Live Data
 
-On your laptop, a schema change is one command and you're done. There's no traffic, so it doesn't
-matter that for a moment the column existed but was empty, or that the old code and new code disagreed
-about the table shape. On a live system, those moments are exactly where things break — because the
-*old* version of your app is still running and serving users at the instant your migration lands.
+On your laptop, a schema change is one command and you're done. There's no traffic, so it doesn't matter
+that for a moment the column existed but was empty, or that old code and new code disagreed about the
+table shape. On a live system, those moments are exactly where things break, because the *old* version
+of your app is still running and serving users the instant your migration lands.
 
 The fear here is real but the cure is a single discipline: **never make a change that requires the
 app and the schema to switch over in the same instant.** Let's build that into a repeatable pattern.
@@ -34,10 +34,8 @@ flowchart TD
 
 *What just happened:* The rename took effect while old app instances were still live. Those instances
 keep asking for `name`, the column no longer exists, and every one of those requests throws an error
-until the deploy finishes. Even a "fast" rename causes a burst of 500s. The schema and the code tried
-to switch in the same instant, and they couldn't.
-
-The fix is to stop trying to switch in one instant.
+until the deploy finishes. Even a "fast" rename causes a burst of 500s — the schema and the code tried to
+switch in the same instant, and they couldn't. The fix is to stop trying to switch in one instant.
 
 ## The golden pattern: add, backfill, switch
 
@@ -111,12 +109,11 @@ UPDATE users
 ```console
 UPDATE 10000
 ```
-*What just happened:* You filled in 10,000 rows where `full_name` was still empty. You'd run this
-repeatedly over successive `id` ranges (a loop, or a small script) until no rows remain with
-`full_name IS NULL`. Batching keeps each statement short, so it never holds locks long or strains the
-database while real users are working. Because Step 2 is already keeping new rows in sync, the
-backfill only ever has to catch up the *old* rows — and once it's done, the two columns match
-everywhere.
+*What just happened:* You filled in 10,000 rows where `full_name` was still empty. Run this repeatedly
+over successive `id` ranges (a loop, or a small script) until no rows remain with `full_name IS NULL`.
+Batching keeps each statement short, so it never holds locks long or strains the database while real
+users are working. Because Step 2 is already keeping new rows in sync, the backfill only has to catch up
+the *old* rows — once it's done, the two columns match everywhere.
 
 ### Step 4 — Switch reads to the new column
 

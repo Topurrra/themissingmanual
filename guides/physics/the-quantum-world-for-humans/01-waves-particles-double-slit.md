@@ -6,14 +6,14 @@ summary: "What is actually true about the quantum world, minus the mysticism: su
 tags: [physics, quantum, superposition, uncertainty, entanglement, mental-model]
 difficulty: intermediate
 synonyms: ["double slit experiment explained", "wave particle duality", "what is a quantum", "why do electrons make interference", "is light a wave or particle"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Waves, particles, and the double slit
 
 Here's the honest starting point: your intuition was built by a world of medium-sized things - balls, water, chairs. That intuition is excellent for that world and it quietly fails for very small things. The quantum world doesn't break logic. It breaks the *assumption* that very small things behave like tiny versions of baseballs. Once you let go of that one assumption, most of the "weirdness" stops being contradiction and starts being a new, learnable pattern.
 
-We're going to anchor the whole guide on a single experiment, because it's the cleanest place to watch the assumption fail. It's called the double-slit experiment, and physicist Richard Feynman called it the one experiment that holds the heart of the mystery. We'll build it up one piece at a time.
+The cleanest place to watch that assumption fail is a single experiment: the double-slit, which physicist Richard Feynman called the one experiment that holds the heart of the mystery.
 
 ## Two ways things can behave
 

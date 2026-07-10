@@ -6,16 +6,16 @@ summary: "What you can build now, how Fastify compares to Express, NestJS, and b
 tags: [fastify, javascript, express, nestjs, typescript, what-to-build]
 difficulty: beginner
 synonyms: ["fastify vs express", "fastify vs nestjs", "fastify plugins ecosystem", "fastify typescript type provider", "fastify next steps", "fastify what to build"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
-Stop for a second and look at what you can actually do now. You can stand up a Fastify instance, declare a route as a handler plus a JSON schema and get request validation and fast response serialization for free, register encapsulated plugins so a big app stays a tidy tree instead of a tangle, hook into the request/reply lifecycle (`onRequest`, `preHandler`, and friends), build full CRUD for a resource, catch failures in one `setErrorHandler`, and test the whole thing with `app.inject()` before shipping it with real logging and config. That's a production-shaped REST API, not a toy.
+Stop for a second and look at what you can actually do now. You can stand up a Fastify instance, declare a route as a handler plus a JSON schema and get request validation and fast response serialization for free, register encapsulated plugins so a big app stays a tidy tree instead of a tangle, hook into the request/reply lifecycle (`onRequest`, `preHandler`, and friends), build full CRUD for a resource, catch failures in one `setErrorHandler`, and test the whole thing with `app.inject()` before shipping with real logging and config. That's a production-shaped REST API, not a toy.
 
 And here's the quieter win. You didn't only learn one framework's API — you internalized its *personality*. Fastify is two ideas repeated everywhere: **a route is a handler plus a schema, and the app is a tree of encapsulated plugins.** Validation comes from the schema. Serialization comes from the schema. Docs can come from the schema. Structure comes from encapsulation. Once you see those two patterns, the rest of Fastify stops being a pile of features and becomes a shape you can reason about — including at 2am when something's on fire.
 
-So this last phase isn't more handlers. It's the map: where Fastify sits among the other Node web frameworks, the plugin ecosystem you'll reach for, the TypeScript payoff that makes Fastify shine, and one concrete thing to go build.
+This last phase isn't more handlers — it's the map: where Fastify sits among the other Node web frameworks, the plugin ecosystem you'll reach for, the TypeScript payoff that makes Fastify shine, and one concrete thing to go build.
 
 ## Fastify vs the field
 

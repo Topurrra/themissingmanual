@@ -6,12 +6,12 @@ summary: "A quantum algorithm arranges amplitudes so wrong answers cancel and ri
 tags: [physics, quantum, quantum-computing, interference, amplitude, phase, mental-model]
 difficulty: intermediate
 synonyms: ["quantum interference explained", "how do quantum algorithms work", "constructive destructive interference quantum", "why quantum computers are fast", "what makes a quantum computer powerful", "quantum computing without parallel universes"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Interference is the engine
 
-Phase 1 left you with a problem that sounds fatal: a quantum computer holds a huge superposition, but measuring it hands back one random answer. If that were the end of the story, the machine would be an expensive random number generator. The thing that rescues it - the actual source of all the power - is **interference**. This is the most important idea in the guide, so we'll take it slowly and physically.
+Phase 1 left you with a problem that sounds fatal: a quantum computer holds a huge superposition, but measuring it hands back one random answer. If that were the end of the story, the machine would be an expensive random number generator. The thing that rescues it - the actual source of all the power - is **interference**. This is the most important idea in the guide.
 
 ## Waves cancel and reinforce - that's interference
 

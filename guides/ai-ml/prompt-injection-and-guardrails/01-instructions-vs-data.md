@@ -6,12 +6,12 @@ summary: "To an LLM, your system instructions and any text you paste into the co
 tags: [llm, security, prompt-injection, mental-model, intermediate]
 difficulty: intermediate
 synonyms: ["why does prompt injection work", "can an llm tell instructions from data", "what is a system prompt actually", "llm trust boundary", "why ignore instructions doesnt work"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Why the Model Can't Tell Instructions From Data
 
-Here's the thing that trips up almost everyone, and it's worth slowing down for, because every defense later in this guide grows out of it. When you build an LLM feature, your code assembles a prompt. Some of that prompt is *your* text — the rules, the persona, the task. Some of it is *other people's* text — the user's question, a document you fetched, a web page you scraped. In your head, these feel like different things: yours is trusted, theirs is data to be processed.
+Here's the thing that trips up almost everyone, and every defense later in this guide grows out of it. When you build an LLM feature, your code assembles a prompt. Some of that prompt is *your* text — the rules, the persona, the task. Some of it is *other people's* text — the user's question, a document you fetched, a web page you scraped. In your head, these feel like different things: yours is trusted, theirs is data to be processed.
 
 The model does not see that distinction. At all.
 

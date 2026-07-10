@@ -6,12 +6,12 @@ summary: "Modules group a feature's controllers and providers; the app is a tree
 tags: [nestjs, typescript, modules, imports, exports]
 difficulty: intermediate
 synonyms: ["nestjs module", "nest @Module", "nest imports exports", "nest feature module", "nest root module", "nestjs app structure"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Modules
 
-You've got a `TasksController` handling HTTP and a `TasksService` holding the logic, with Nest's DI container wiring one into the other. But something has to *introduce* them to the container in the first place — to say "these two belong together, here's the controller, here's the provider it depends on." That something is a **module**.
+You've got a `TasksController` handling HTTP and a `TasksService` holding the logic, with Nest's DI container wiring one into the other. But something has to *introduce* them to the container in the first place — to say "these two belong together, here's the controller, here's the provider it depends on." That's a **module**.
 
 Here's the mental model to hold onto: **a module groups a feature's controllers and providers into one cohesive unit, and your whole app is a tree of modules with a single root at the top — `AppModule`.** Every controller and provider lives inside exactly one module. Nest walks that tree on startup, reads each module's metadata, and builds the DI container from it. Once you see the app as a tree of feature modules rather than a pile of files, the structure stops feeling arbitrary and starts feeling like a map.
 

@@ -9,7 +9,7 @@ order: 25
 group: "Rust"
 difficulty: intermediate
 synonyms: ["learn tokio", "tokio tutorial", "rust async runtime", "rust futures await", "tokio spawn tasks", "tokio scheduler", "tokio channels mpsc", "tokio select timeout", "what runs async rust"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Tokio: The Async Runtime

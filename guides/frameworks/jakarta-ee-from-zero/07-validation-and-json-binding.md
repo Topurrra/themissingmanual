@@ -6,14 +6,14 @@ summary: "Reject bad input at the door with Jakarta Bean Validation, control obj
 tags: [jakarta-ee, bean-validation, jakarta-validation, json-b, valid, constraints, jax-rs]
 difficulty: intermediate
 synonyms: ["jakarta bean validation", "jakarta validation @NotNull @Size", "@Valid jax-rs", "json-b jakarta json binding", "jakarta ee request validation", "custom constraint validator jakarta", "jsonb annotations"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Validation & JSON Binding
 
 In [Phase 4](04-jax-rs-rest-apis.md) you built a JAX-RS resource that takes an incoming `Product` from a
 request body and hands it to your service. There's a quiet assumption buried in that code: that the
-`Product` arriving over the wire is *sane*. A real client will eventually send you a product with a blank
+`Product` arriving over the wire is *sane*. A real client will eventually send a product with a blank
 name, a negative price, or a `sku` that's a single character — by accident or on purpose. Where do you
 catch that?
 

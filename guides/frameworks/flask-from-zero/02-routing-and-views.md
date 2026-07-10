@@ -6,15 +6,15 @@ summary: "How Flask turns a URL into a response: dynamic URL segments with conve
 tags: [flask, routing, views, url-parameters, request-object, http-methods, response]
 difficulty: beginner
 synonyms: ["flask routing", "flask url parameters", "flask request object", "flask http methods get post", "flask url_for", "flask return response", "flask dynamic routes"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Routing & Views
 
 In Phase 1 you saw the headline move: `@app.route` maps a URL to a function, and whatever it returns becomes
-the page. This phase puts meat on that skeleton: how do you handle `/notes/7` when the `7` changes every
-request? How does the *same* URL do one thing on a `GET` and another on a `POST`? Where does submitted data
-live, and what are your options for what to hand back?
+the page. This phase puts meat on that skeleton — how you handle `/notes/7` when the `7` changes every
+request, how the *same* URL does one thing on a `GET` and another on a `POST`, where submitted data lives,
+and what your options are for what to hand back.
 
 The mental model: **a Flask view is a function that receives a request and returns a response.** That's the
 entire job. The decorator decides *which* requests reach your function; inside, you read what you need off

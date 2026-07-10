@@ -6,14 +6,14 @@ summary: "Nest's request pipeline has named building blocks, each with one job: 
 tags: [nestjs, typescript, guards, interceptors, middleware]
 difficulty: advanced
 synonyms: ["nestjs guards", "nestjs interceptors", "nestjs middleware", "nest CanActivate", "nest exception filter", "nest request pipeline", "nest @UseGuards"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Guards, Interceptors & Middleware
 
 By [Phase 6](06-building-a-rest-api.md) the tasks API does real work: a controller, a service, DTOs that validate themselves. But every endpoint is still wide open — anyone who knows the URL can list, create, and delete tasks. And nothing is logged, so when something misbehaves in production you're flying blind.
 
-The reflex from an Express background is to reach for middleware and stuff everything into it: auth checks, logging, response shaping, all in one `(req, res, next)` blob. That works, and it also turns into the same "middleware soup" that pushed you toward Nest in the first place.
+The reflex from an Express background is to reach for middleware and stuff everything into it: auth checks, logging, response shaping, all in one `(req, res, next)` blob. That works, but it also turns into the same "middleware soup" that pushed you toward Nest in the first place.
 
 Here's the mental model that replaces the soup, and it's the whole point of this phase: **Nest's request pipeline is a sequence of named building blocks, and each one has exactly one job.** A request doesn't just hit your handler — it flows through a fixed order of slots on the way in, and back out the way it came:
 

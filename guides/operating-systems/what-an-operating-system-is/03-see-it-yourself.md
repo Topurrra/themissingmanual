@@ -6,14 +6,14 @@ summary: "Watch the OS manage processes and memory live in Task Manager / Activi
 tags: [operating-systems, task-manager, top, boot, windows, macos, linux]
 difficulty: beginner
 synonyms: ["how to see running processes", "what is task manager showing", "how does a computer boot", "difference between windows macos linux", "what is top command", "read activity monitor"]
-updated: 2026-06-19
+updated: 2026-07-11
 ---
 
 # See It Yourself
 
-You've got the model: an OS is the manager in the middle, doing four jobs. Now let's make it real. The best
-way to believe all this is to *watch it happening* on your own machine - so this phase is hands-on. Open
-something, look at it, and recognize the ideas from the last two phases staring back at you.
+You've got the model: an OS is the manager in the middle, doing four jobs. Now let's make it real - the
+best way to believe it is to *watch it happening* on your own machine. Open something, look at it, and
+recognize the ideas from the last two phases staring back at you.
 
 ## Watch the processes (Job 1 and Job 2, live)
 
@@ -25,8 +25,8 @@ Every OS ships a window that lists running processes and how much CPU and memory
    Linux    → a System Monitor app, or type `top` in a terminal
 ```
 
-They look different but show the *same four jobs* from Phase 2. Here's the terminal version, `top`, because
-it's the most universal - the others show the same columns with prettier graphics:
+They look different but show the *same four jobs* from Phase 2. Here's the terminal version, `top` - the
+most universal; the others show the same columns with prettier graphics:
 
 ```console
 $ top
@@ -55,8 +55,8 @@ There it all is - scheduling and memory-sharing, the abstract ideas from Phase 2
 
 🪖 **War story.** The first time a senior showed me `top` while a server was "mysteriously slow," one process
 sat pinned at `99% CPU` - a runaway script stuck in a loop. Thirty seconds earlier it had felt like dark
-magic; the moment I saw the process list, it was just *one row, misbehaving.* That's the whole value of
-seeing it: problems shrink from "the computer is haunted" to "that process, right there."
+magic; the moment I saw the process list, it was just *one row, misbehaving.* Problems shrink from "the
+computer is haunted" to "that process, right there."
 
 ## What happens when you press the power button
 
@@ -71,10 +71,10 @@ flowchart TD
   First --> Services[Services + login<br/>background services, login screen]
   Services --> Desktop[Your desktop<br/>your session starts, you're in]
 ```
-*What just happened:* Pressing power runs a tiny built-in program (the **firmware**) that knows just enough
-to wake the hardware and hand control to the **kernel**. The kernel takes over, then starts a first process
-whose job is to start all the others - services, the login screen, and finally your desktop. "Booting" is
-just this hand-off, hardware → kernel → everything else.
+*What just happened:* Pressing power runs a tiny built-in program (the **firmware**) that wakes the
+hardware and hands control to the **kernel**. The kernel takes over, then starts a first process whose job
+is to start all the others - services, the login screen, and finally your desktop. "Booting" is just this
+hand-off: hardware → kernel → everything else.
 
 📝 **Terminology.** *Booting* comes from "pulling yourself up by your bootstraps" - the funny image of a
 computer starting from nothing and bringing itself fully to life, one layer starting the next.
@@ -82,8 +82,7 @@ computer starting from nothing and bringing itself fully to life, one layer star
 ## Same model, different clothes: Windows vs macOS vs Linux
 
 Here's the payoff. The three big operating systems feel like completely different worlds, but everything
-you've learned applies to all of them - they're the same four jobs and the same kernel idea, dressed
-differently:
+you've learned applies to all of them - the same four jobs, the same kernel idea, dressed differently:
 
 | | Windows | macOS | Linux |
 |---|---|---|---|

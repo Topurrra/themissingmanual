@@ -6,21 +6,19 @@ summary: "actix-web runs your routes across worker threads: an App holds them, a
 tags: [actix-web, rust, web, getting-started]
 difficulty: beginner
 synonyms: ["what is actix web", "actix web first server", "actix App HttpServer", "rust actix hello world", "actix handler", "actix web framework"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What actix-web Is & Your First Server
 
-You know [Rust](/guides/rust-from-zero), and you want to ship something fast on the web that won't
-surprise you in production. That's actix-web's corner: one of the oldest Rust web frameworks, and a
-perennial top finisher in the TechEmpower benchmarks. It's the mature, batteries-included sibling to
-[axum](/guides/axum-from-zero): routing, extractors, middleware, websockets, JSON, all in the box.
+You know [Rust](/guides/rust-from-zero) and want something fast and production-proven on the web. That's
+actix-web's corner: one of the oldest Rust frameworks, a perennial TechEmpower top finisher, and the
+mature, batteries-included sibling to [axum](/guides/axum-from-zero) — routing, extractors, middleware,
+websockets, and JSON all in the box.
 
-The name carries history — actix-web grew out of an **actor** framework, hence "actix" — so you'll
-occasionally see "actor" in old blog posts. Day to day you write plain `async fn` handlers and never touch
-an actor; the heritage powers some internals but rarely surfaces in your code. If you've used a web
-framework in any language, the shape here will feel familiar. (If "web framework" itself is fuzzy —
-[What a Framework Even Is](/guides/what-a-framework-even-is) lays the groundwork.)
+The name comes from an **actor** framework it grew out of, but day to day you write plain `async fn`
+handlers and never touch an actor — the heritage powers internals, not your code. (If "web framework"
+itself is fuzzy, [What a Framework Even Is](/guides/what-a-framework-even-is) covers the ground first.)
 
 > 📝 This guide teaches the **framework**, not the language. It assumes you're comfortable with Rust —
 > ownership, traits, `Result`, `async`/`await`. actix-web compiles and runs as a normal Rust program, so
@@ -88,23 +86,18 @@ async fn main() -> std::io::Result<()> {
 }
 ```
 
-*What just happened:* walk it from the top —
-- `async fn ping() -> impl Responder` is the **handler**. It takes no arguments and returns
-  `HttpResponse::Ok().body("pong")` — a `200 OK` with the text `pong` as the body. `impl Responder` means
-  "some type that knows how to become a response"; `HttpResponse` is one such type. (Phase 3 explores
-  everything else that's a `Responder`.)
-- `#[actix_web::main]` is the one macro you'll use. Rust's `main` can't normally be `async`, so this rewrites
-  your `async fn main` to start actix-web's runtime and run it there — the actix-web counterpart to axum's
-  `#[tokio::main]`.
-- `HttpServer::new(|| { ... })` takes a **closure that builds an `App`**. Inside it,
-  `App::new().route("/ping", web::get().to(ping))` creates a fresh app and registers one route: a `GET`
-  request to `/ping` runs the `ping` handler. Read `web::get().to(ping)` as "for GET, call `ping`." There's
-  a `web::post()`, `web::put()`, `web::delete()`, and so on for the other methods.
-- `.bind(("127.0.0.1", 8080))?` opens a socket on port 8080. Binding can fail (port in use, no permission),
-  so it returns a `Result` — the `?` propagates the error up out of `main`, which is why `main` returns
-  `std::io::Result<()>`.
-- `.run().await` starts the accept loop and runs forever, handing each request to a worker's `App`. It
-  blocks here until you stop the program.
+*What just happened:*
+- `async fn ping() -> impl Responder` is the **handler**. It returns `HttpResponse::Ok().body("pong")` — a
+  `200 OK` with body `pong`. `impl Responder` means "some type that knows how to become a response"; Phase 3
+  covers the rest.
+- `#[actix_web::main]` rewrites `async fn main` to start actix-web's runtime — the counterpart to axum's
+  `#[tokio::main]`. Rust's real `main` can't be `async` on its own.
+- `HttpServer::new(|| { ... })` takes a **closure that builds an `App`**. `App::new().route("/ping",
+  web::get().to(ping))` registers one route: `GET /ping` runs `ping`. Read it as "for GET, call `ping`" —
+  there's also `web::post()`, `web::put()`, `web::delete()`.
+- `.bind(("127.0.0.1", 8080))?` opens the socket; binding can fail, so `?` propagates the error, which is
+  why `main` returns `std::io::Result<()>`.
+- `.run().await` starts the accept loop and blocks, handing each request to a worker's `App`.
 
 Build and run it like any Rust binary:
 
@@ -153,32 +146,27 @@ struct Article {
 }
 ```
 
-*What just happened:* we declared the `Article` struct the rest of the guide builds on — right now a plain
-struct with three fields. In Phase 3 we'll derive `Serialize` and `Deserialize` on it so actix-web can turn
-it into JSON on the way out and parse it from a request body on the way in — the moment a plain struct
-becomes a real API resource. You've now met the whole cast: an **`App`** of routes, an **`HttpServer`** that
-runs it across workers, a **handler** returning a **`Responder`**, and the **`Article`** we'll spend the
-next phases turning into a proper REST API.
+*What just happened:* the `Article` struct is a plain type for now — three fields, no traits. Phase 3
+derives `Serialize`/`Deserialize` on it so actix-web can turn it into JSON and parse it from a request
+body, the moment it becomes a real API resource.
 
-Next up: routing in earnest — multiple methods, scopes for grouping routes, and your first extractors
-(`Path`, `Query`, `Json`) that pull pieces out of the incoming request.
+Next: routing in earnest — multiple methods, scopes for grouping routes, and the extractors (`Path`,
+`Query`, `Json`) that pull pieces out of the incoming request.
 
 ## Recap
 
-- **actix-web is the mature, fast, batteries-included Rust framework** — a perennial TechEmpower leader and
-  the closest peer to [axum](/guides/axum-from-zero). Its **actor** heritage powers internals but rarely
-  shows up in your code; you write plain `async fn` handlers.
-- **The mental model is one sentence:** an **`App`** holds routes, an **`HttpServer`** runs copies of the
-  `App` across worker threads, and a **handler** is an `async fn` returning a **`Responder`**.
-- **A first server is small:** `cargo add actix-web` (no separate Tokio install — actix-web bundles its own
-  runtime), build the `App` inside `HttpServer::new(|| ...)`, register `web::get().to(handler)`, then
-  `.bind(...)?.run().await`. `#[actix_web::main]` lets `main` be async.
-- **`HttpServer::new` takes a closure called once per worker.** Each worker builds its own `App`, which is
-  why shared state can't just live inside that closure — `web::Data` handles it in Phase 4.
-- **Run with `cargo run`, test with `curl`.** The handler's returned `HttpResponse` is exactly what the
-  client receives.
-- **The throughline:** an `App` of routes, run by an `HttpServer`, with handlers that return a `Responder`.
-  We grow one **articles API** along that arrow for the rest of the guide.
+- **actix-web** is the mature, fast, batteries-included Rust framework — a perennial TechEmpower leader and
+  the closest peer to [axum](/guides/axum-from-zero). Its **actor** heritage powers internals, not your code.
+- **Mental model:** an **`App`** holds routes, an **`HttpServer`** runs copies of it across worker threads,
+  and a **handler** is an `async fn` returning a **`Responder`**.
+- **First server:** `cargo add actix-web` (bundles its own runtime, no separate Tokio install), build the
+  `App` inside `HttpServer::new(|| ...)`, register `web::get().to(handler)`, then `.bind(...)?.run().await`.
+  `#[actix_web::main]` lets `main` be async.
+- **`HttpServer::new`'s closure runs once per worker** — each worker builds its own `App`, so shared state
+  can't live inside it. `web::Data` fixes that in Phase 4.
+- **Run with `cargo run`, test with `curl`** — the handler's `HttpResponse` is exactly what the client gets.
+- **Throughline:** an `App` of routes, run by an `HttpServer`, handlers returning a `Responder` — grown into
+  one **articles API** across the guide.
 
 ## Quick check
 

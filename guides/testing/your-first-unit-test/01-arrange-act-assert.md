@@ -6,7 +6,7 @@ summary: "Every test, in every language, has the same three parts: arrange the i
 tags: [testing, unit-tests, arrange-act-assert, assertions, python, beginner-friendly]
 difficulty: beginner
 synonyms: ["what is arrange act assert", "the three parts of a test", "structure of a unit test", "what does assert mean in a test", "what is a unit test"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Arrange, Act, Assert
@@ -29,8 +29,8 @@ It is not a special kind of program. It's just a function you write that *calls 
 the answer*. The test runner finds it, runs it, and tells you pass or fail. That's the entire arrangement.
 
 The reason tests feel scary is usually that people meet them as a wall of unfamiliar files before anyone
-explains the shape. Once you have the shape, the wall turns back into a stack of very small, very boring
-functions - which is exactly what you want.
+explains the shape. Once you have the shape, the wall turns back into a stack of small, boring functions -
+which is exactly what you want.
 
 ## The three parts
 

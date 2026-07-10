@@ -9,7 +9,7 @@ order: 2
 group: "Java"
 difficulty: intermediate
 synonyms: ["learn spring boot", "spring boot tutorial", "spring boot for beginners", "spring boot rest api", "spring dependency injection beans", "spring data jpa", "spring security", "spring boot from scratch", "what is spring boot"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Spring Boot From Zero

@@ -6,14 +6,14 @@ summary: "Object-oriented programming bundles data together with the behavior th
 tags: [oop, objects, classes, encapsulation, inheritance, polymorphism]
 difficulty: intermediate
 synonyms: ["what is object oriented programming", "what is encapsulation", "what is inheritance", "what is polymorphism", "what is a class vs object", "why is inheritance bad"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What OOP Actually Is
 
-If you learned to program in the last twenty years, there's a good chance OOP was the water you swam in - `class` this, `self` that - without anyone ever stopping to say what the *point* was. So you ended up writing classes the way you'd been shown, half-suspecting it was ceremony.
+If you learned to program in the last twenty years, OOP was probably the water you swam in - `class` this, `self` that - without anyone explaining the *point*. You wrote classes the way you'd been shown, half-suspecting it was ceremony.
 
-It isn't ceremony. There's one core idea underneath all of it, and once you see it, the three big buzzwords (encapsulation, inheritance, polymorphism) stop being vocabulary and start being tools that each fix a specific, nameable problem.
+It isn't. There's one core idea underneath all of it, and once you see it, the three big buzzwords (encapsulation, inheritance, polymorphism) stop being vocabulary and become tools that each fix a specific, nameable problem.
 
 ## The core idea: bundle data with the behavior that acts on it
 
@@ -55,7 +55,7 @@ print(account.balance())
 $ python bank.py
 70
 ```
-*What just happened:* We made one object from the `BankAccount` blueprint, and that object carries its own `_balance` around with it. Every change to the balance has to go through `deposit` or `withdraw`, which enforce the rules (no negative deposits, no overdrawing). The data and its guardrails travel together as one thing.
+*What just happened:* The object carries its own `_balance` around with it, and every change has to go through `deposit` or `withdraw`, which enforce the rules (no negative deposits, no overdrawing). Data and its guardrails travel together as one thing.
 
 ## Encapsulation - hide the internals, expose a safe surface
 
@@ -89,13 +89,13 @@ print(savings.balance())
 $ python savings.py
 1050.0
 ```
-*What just happened:* `SavingsAccount` didn't redefine `deposit`, `withdraw`, or `balance` - it inherited them from `BankAccount` and added one new method. It even calls the inherited `deposit` inside `add_interest`, so the same "no negative amounts" rule still applies. We described one difference, not a whole new account.
+*What just happened:* `SavingsAccount` didn't redefine `deposit`, `withdraw`, or `balance` - it inherited them and added one new method. It even calls the inherited `deposit` inside `add_interest`, so "no negative amounts" still applies. We described one difference, not a whole new account.
 
-⚠️ **The classic trap: inheritance overuse.** Inheritance is the OOP feature people reach for too often, and it bites hard. The moment a `Penguin` inherits from `Bird` and you discover `Bird` has a `fly()` method, you've built a lie into your type system. Deep inheritance chains (class extends class extends class, four levels down) become impossible to reason about, because to understand one object you have to mentally merge four files. The widely-repeated guideline is **"favor composition over inheritance"** - meaning, instead of saying a `Car` *is a* `Engine`, give the `Car` an engine as one of its pieces (`self.engine = Engine()`). Use inheritance only for genuine "is-a, and always will be" relationships, and keep the chains shallow. When in doubt, hold an object as a field rather than inheriting from it.
+⚠️ **The classic trap: inheritance overuse.** Inheritance is the OOP feature people reach for too often, and it bites hard. The moment a `Penguin` inherits from `Bird` and you discover `Bird` has a `fly()` method, you've built a lie into your type system. Deep inheritance chains (class extends class extends class, four levels down) become impossible to reason about, because understanding one object means mentally merging four files. The widely-repeated guideline is **"favor composition over inheritance"** - instead of saying a `Car` *is a* `Engine`, give the `Car` an engine as one of its pieces (`self.engine = Engine()`). Use inheritance only for genuine "is-a, and always will be" relationships, and keep chains shallow. When in doubt, hold an object as a field rather than inheriting from it.
 
 ## Polymorphism - one interface, many behaviors
 
-**The problem it solves.** You have a list of different objects and you want to do "the same thing" to each - but what that thing *means* differs per object. Without polymorphism you write a giant `if type == "savings": ... elif type == "checking": ...` that grows every time you add a type.
+**The problem it solves.** You have a list of different objects and want to do "the same thing" to each - but what that thing *means* differs per object. Without polymorphism you write a giant `if type == "savings": ... elif type == "checking": ...` that grows every time you add a type.
 
 **What it actually is.** Polymorphism (Greek for "many shapes") means different object types can respond to the same method call in their own way, and the calling code doesn't need to know which type it's holding.
 
@@ -113,9 +113,9 @@ $ python poly.py
 Ana: 50
 Bo: 50
 ```
-*What just happened:* `describe` and the loop call `deposit` and `balance` without caring whether each `acc` is a plain account or a savings account. Each object responds to those calls in its own way. Add a new account type tomorrow and this code keeps working untouched - that's the payoff.
+*What just happened:* `describe` and the loop call `deposit` and `balance` without caring whether `acc` is a plain account or a savings account. Add a new account type tomorrow and this code keeps working untouched - that's the payoff.
 
-**Why this saves you later.** Polymorphism is how you add new cases without editing old code. Every `if/elif` chain on a type field is a place that will need editing every time a type is added; polymorphism turns those into "just write the new class." Fewer edits to working code means fewer chances to break it.
+**Why this saves you later.** Polymorphism is how you add new cases without editing old code. Every `if/elif` chain on a type field needs editing whenever a type is added; polymorphism turns that into "just write the new class." Fewer edits to working code means fewer chances to break it.
 
 ## Recap
 

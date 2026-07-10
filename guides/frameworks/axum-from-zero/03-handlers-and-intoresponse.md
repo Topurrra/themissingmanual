@@ -6,20 +6,19 @@ summary: "How axum handlers really work: arguments extract from the request, the
 tags: [axum, rust, handlers, intoresponse, json]
 difficulty: intermediate
 synonyms: ["axum intoresponse", "axum json extractor", "axum handler return type", "axum json response", "axum status code response", "axum handler trait"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Handlers & IntoResponse
 
-In Phase 2 you pulled pieces out of the URL with `Path` and `Query`. Now we close the loop. A handler
-isn't a special kind of function with a magic signature you have to memorize — it's an ordinary `async fn`
-that obeys one rule on each side.
+Phase 2 pulled pieces out of the URL with `Path` and `Query`. Now we close the loop. A handler isn't a
+special kind of function with a magic signature to memorize — it's an ordinary `async fn` that obeys one
+rule on each side.
 
 📝 **The mental model:** *the arguments extract FROM the request; the return value becomes the response.*
-Every parameter is a type that knows how to read part of the incoming request. The return type is a type
-that knows how to turn itself into an outgoing HTTP response. That pairing — extractors in, `IntoResponse`
-out — is the entire heart of axum. Once it clicks, you stop guessing at signatures and start *deriving*
-them: "I need the JSON body, so I take `Json<T>`; I want to send back a created book with a 201, so I
+Every parameter is a type that knows how to read part of the incoming request; the return type knows how
+to turn itself into an outgoing response. Once that clicks, you stop guessing at signatures and start
+*deriving* them: "I need the JSON body, so I take `Json<T>`; I want to send a created book with a 201, so I
 return `(StatusCode, Json<Book>)`." The framework wires the rest.
 
 We'll keep growing the **books API**. The types from earlier:
@@ -170,11 +169,10 @@ domain errors to clean HTTP responses. For now, the takeaway is just: a fallible
 
 ## What actually makes something a handler
 
-📝 You may have noticed you never *registered* your functions as handlers or implemented any interface.
-That's because axum implements its `Handler` trait *automatically* for any `async fn` whose arguments all
-implement the extractor traits (`FromRequest` / `FromRequestParts`) and whose return type implements
-`IntoResponse`. You don't think about `Handler` directly — you just satisfy the two conditions on each end,
-and the function *is* a handler. That's the whole trick: the type system, not a macro, decides what
+📝 Notice you never *registered* your functions as handlers or implemented any interface. That's because
+axum implements its `Handler` trait *automatically* for any `async fn` whose arguments all implement the
+extractor traits (`FromRequest` / `FromRequestParts`) and whose return type implements `IntoResponse`.
+Satisfy those two conditions and the function *is* a handler — the type system, not a macro, decides what
 `.route()` will accept.
 
 ⚠️ **The error you'll eventually hit.** When an argument or the return type *doesn't* satisfy those traits,

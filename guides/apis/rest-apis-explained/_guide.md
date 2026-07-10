@@ -8,7 +8,7 @@ category: apis
 order: 3
 difficulty: intermediate
 synonyms: ["what is a rest api", "how do rest apis work", "rest vs http", "rest api design", "what does restful mean", "http methods get post put delete"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # REST APIs, Explained
@@ -17,10 +17,10 @@ You've called REST APIs. You've sent a `GET` to fetch some users, `POST`ed a for
 and sighed. But "REST" itself has probably stayed a fuzzy word — something everyone says, nobody
 defines, and that somehow describes most of the APIs you'll ever touch.
 
-Here's the relief this guide gives you: REST is not a framework, a library, or a magic protocol. It's a
-small set of ideas about how to lay an API out — *things live at addresses, and you act on them with a
-fixed handful of verbs.* Once those ideas click, you can read almost any web API on sight, and design
-one that other people can read too.
+Here's the relief: REST is not a framework, a library, or a magic protocol. It's a small set of ideas
+about how to lay an API out — *things live at addresses, and you act on them with a fixed handful of
+verbs.* Once those ideas click, you can read almost any web API on sight, and design one that other
+people can read too.
 
 ## How to read this
 

@@ -2,7 +2,7 @@
 title: "SQL Practice"
 guide: practice-sql
 phase: 0
-summary: "Hands-on SQL lessons - write real queries against a live in-browser database and get checked instantly. No setup, no account."
+summary: "Hands-on SQL lessons - write real queries against a live in-browser database and get checked instantly."
 tags: [sql, practice, lessons, hands-on, queries]
 category: practice
 order: 1
@@ -16,10 +16,10 @@ updated: 2026-07-10
 
 # SQL Practice
 
-Thirteen short, hands-on SQL lessons, from a single `SELECT` all the way past
-joins into subqueries, window functions, messy real-world data, and
-transactions. Each lesson gives you a task, a live database, and a Run
-button - you write the query, run it, and get checked instantly. Everything
-runs in your browser.
+Nineteen short, hands-on SQL lessons, from a single `SELECT` all the way past
+joins into subqueries, window functions, messy real-world data, transactions,
+many-to-many joins, CTEs, CASE, UNION, ALTER TABLE, and self-joins. Each
+lesson gives you a task, a live database, and a Run button - you write the
+query, run it, and get checked instantly. Everything runs in your browser.
 
 Start with lesson 1. You can leave and come back any time - your code is saved locally.

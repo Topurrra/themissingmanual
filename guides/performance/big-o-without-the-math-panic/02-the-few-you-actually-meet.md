@@ -6,7 +6,7 @@ summary: "In real code you mostly see five Big-O shapes: O(1) constant, O(n) lin
 tags: [performance, big-o, constant, linear, quadratic, logarithmic, beginner-friendly]
 difficulty: beginner
 synonyms: ["what does o(1) mean", "what does o(n) mean", "what is o(n squared)", "what is o(log n)", "what is o(n log n)", "common big o complexities", "how to tell big o from code", "nested loop big o"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Few You Actually Meet
@@ -22,34 +22,29 @@ For each one, hold the question from Phase 1 in your head: *double the input - w
 
 ## O(1) - constant: "doesn't care how big the data is"
 
-**What it actually is.** The work is the same no matter how much data you have. Double the input,
-triple it, make it a billion - the code does the same fixed amount of work. The `1` doesn't mean "one
-step"; it means "a *constant* number of steps that doesn't grow with `n`."
-
-**What it does in real life.** Grabbing one item by its position in a list. Reading a value from a
-hash map (a dictionary). Checking whether a number is even. The data could be enormous and these don't
-break a sweat.
+**What it is.** The work stays the same no matter how much data you have - double the input, make it a
+billion, the code does the same fixed amount of work. Grabbing an item by index, reading a hash-map
+value, checking if a number is even: none of these care about size.
 
 **A real example.**
 ```python
 def first_item(items):
     return items[0]
 ```
-*What just happened:* Whether `items` has 5 elements or 5 million, `items[0]` jumps straight to the
-first one. No looping, no searching. The work doesn't grow with the input - that's `O(1)`.
+*What just happened:* `items[0]` jumps straight to the first element whether `items` has 5 entries or 5
+million. No looping, no searching - that's `O(1)`.
 
-**Why this saves you later.** When something is `O(1)`, you can stop worrying about it scaling. These
-are the operations you *want* in your hot paths. A big part of writing fast code is turning expensive
-lookups into `O(1)` ones (more on that in [Phase 3](03-why-it-matters-in-real-life.md)).
+**Why this saves you later.** Once something is `O(1)`, stop worrying about it scaling - these are the
+lookups you want in hot paths. A big part of writing fast code is turning expensive scans into `O(1)`
+lookups (more in [Phase 3](03-why-it-matters-in-real-life.md)).
 
 ## O(n) - linear: "twice the data, twice the work"
 
-**What it actually is.** The work grows in lockstep with the input. Touch every item once. Double the
-input and you do twice the work - a straight, honest line.
+**What it is.** The work grows in lockstep with the input - touch every item once, double the input and
+you do twice the work. A straight, honest line.
 
-**What it does in real life.** Looping through a list to add up the numbers, find the biggest one,
-print each row, or search an *unsorted* list for a value. If you have to *look at everything*, you're at
-least `O(n)`.
+**What it does in real life.** Looping through a list to sum numbers, find the biggest one, print each
+row, or search an *unsorted* list. If you have to look at everything, you're at least `O(n)`.
 
 **A real example.**
 ```python
@@ -59,18 +54,17 @@ def total(numbers):
         running += n
     return running
 ```
-*What just happened:* The loop runs once per element. 100 numbers → 100 additions; 1,000 numbers →
-1,000 additions. Work tracks input one-to-one. That's `O(n)`, and for "I need to see everything," it's
-the best you can do.
+*What just happened:* The loop runs once per element - 1,000 numbers means 1,000 additions. Work tracks
+input one-to-one, and for "I need to see everything," that's the best you can do.
 
-**Why this saves you later.** `O(n)` is usually fine - it's the baseline cost of actually reading your
-data. The thing to watch isn't a single loop; it's a loop *inside another loop*, which is next.
+**Why this saves you later.** `O(n)` is usually fine - it's the baseline cost of reading your data.
+Watch not for a single loop but a loop *inside another loop*, which is next.
 
 ## O(n²) - quadratic: the nested-loop trap
 
-**What it actually is.** For every item, you do work proportional to *all* the items - a loop inside a
-loop. Double the input and the work *quadruples*. This is the handshake-at-a-party shape from Phase 1,
-and it's the one that quietly kills programs.
+**What it is.** For every item, you do work proportional to *all* the items - a loop inside a loop.
+Double the input and the work *quadruples*. This is the handshake-at-a-party shape from Phase 1, and
+it's the one that quietly kills programs.
 
 **What it does in real life.** Comparing every item to every other item: checking a list for duplicates
 the naive way, computing the distance between every pair of points, the classic bubble sort.
@@ -84,9 +78,9 @@ def has_duplicate(items):
                 return True
     return False
 ```
-*What just happened:* For each item, the inner loop walks much of the rest of the list. With 1,000
-items that's on the order of a million comparisons; with a million items it's on the order of a
-*trillion*. The two stacked loops, each running across the data, is the visual signature of `O(n²)`.
+*What just happened:* The inner loop walks much of the rest of the list for each item. With 1,000 items
+that's roughly a million comparisons; with a million items, a *trillion*. Two stacked loops over the
+same data is the visual signature of `O(n²)`.
 
 ⚠️ **Gotcha: the nested loop you didn't notice.** The dangerous version isn't two obvious `for` loops.
 It's a loop that calls something *which itself loops* - like `if x in big_list:` inside a `for` loop,
@@ -96,18 +90,16 @@ built `O(n²)`. (This exact trap gets its own story in
 [Phase 3](03-why-it-matters-in-real-life.md).)
 
 **Why this saves you later.** Most "it was instant in testing and now production hangs" disasters are
-an accidental `O(n²)`. Learning to spot the nested-loop shape is one of the highest-value habits in this
-whole guide.
+an accidental `O(n²)`. Spotting the nested-loop shape is one of the highest-value habits in this guide.
 
 ## O(log n) - logarithmic: "halve the problem each step"
 
-**What it actually is.** Each step throws away *half* of what's left. Because you keep halving,
-even gigantic inputs collapse to a tiny number of steps. The work grows *incredibly* slowly: doubling
-the input adds just **one** more step.
+**What it is.** Each step throws away *half* of what's left, so even gigantic inputs collapse to a tiny
+number of steps - doubling the input adds just **one** more step.
 
-**What it does in real life.** The flagship example is **binary search** - finding a value in a
-*sorted* list by repeatedly checking the middle and discarding the half that can't contain it. Looking
-something up in a balanced search tree works the same way.
+**What it does in real life.** The flagship example is **binary search**: find a value in a *sorted*
+list by repeatedly checking the middle and discarding the half that can't contain it. A balanced search
+tree works the same way.
 
 **A real example.** Searching a sorted phone book of a million names:
 ```text
@@ -117,41 +109,40 @@ something up in a balanced search tree works the same way.
                                                   →    ... and so on
    after ~20 halvings → 1 name left.
 ```
-*What just happened:* Each check cuts the search space in half. A *million* entries are found in about
-20 steps. Double it to two million? You need just *one* more step (~21). That's why `O(log n)` lines
-look almost flat - they barely rise no matter how far right you go.
+*What just happened:* Each check halves the search space - a *million* entries found in about 20 steps,
+two million in about 21. That's why `O(log n)` lines look almost flat, barely rising no matter how far
+right you go.
 
 📝 **Terminology.** A *logarithm* sounds like math homework, but here it means exactly one homely thing:
 *how many times can I halve this before I hit 1?* That count is the log. No calculator required.
 
-**Why this saves you later.** When a lookup is too slow, the dream is often to turn an `O(n)` scan into
-an `O(log n)` search - usually by keeping the data *sorted* or *indexed* first. Binary search has its
-own full walkthrough in [Data Structures, Explained](/guides/data-structures-explained).
+**Why this saves you later.** When a lookup is too slow, turn an `O(n)` scan into an `O(log n)` search -
+usually by keeping the data *sorted* or *indexed*. Binary search gets its own full walkthrough,
+off-by-one bugs included, in
+[Sorting & Searching, Explained](/guides/sorting-and-searching-explained/2).
 
 ## O(n log n) - the shape of good sorting
 
-**What it actually is.** You do a linear amount of work (`n`), but each piece involves a halving-style
-`log n` cost - so you multiply them. It's noticeably more than `O(n)` but *dramatically* better than
-`O(n²)`. Think of it as "linear, with a small, well-behaved tax."
+**What it is.** You do a linear amount of work (`n`), but each piece involves a halving-style `log n`
+cost - so you multiply them. Noticeably more than `O(n)`, dramatically better than `O(n²)` - think of it
+as "linear, with a small, well-behaved tax."
 
 **What it does in real life.** This is the speed of every good general-purpose sort - merge sort,
-heapsort, and the sorts built into real languages. When you call `sorted()` in Python or `.sort()` in
-JavaScript, you're paying `O(n log n)`.
+heapsort, and the sorts built into real languages. `sorted()` in Python and `.sort()` in JavaScript both
+pay `O(n log n)`.
 
 **A real example.**
 ```python
 names = ["Ada", "Linus", "Grace", "Alan", "Margaret"]
 ordered = sorted(names)   # ← the built-in sort: O(n log n)
 ```
-*What just happened:* Sorting can't be done by looking at each item just once - items have to be
-*compared and moved* relative to each other. Good sorts do that cleverly, in `O(n log n)`, instead of
-the `O(n²)` you'd get from comparing every pair. For a million items, that's the difference between
-roughly twenty million steps and a *trillion*.
+*What just happened:* Sorting requires comparing and moving items relative to each other, not just
+looking at each once. Good sorts do that in `O(n log n)` instead of the `O(n²)` of comparing every pair
+- for a million items, twenty million steps versus a *trillion*.
 
 **Why this saves you later.** `O(n log n)` is the practical ceiling for "I need everything in order."
-If you find yourself about to write a hand-rolled sort with nested loops (`O(n²)`), stop - the built-in
-sort is almost always faster and already `O(n log n)`. And once data is sorted, you unlock that lovely
-`O(log n)` binary search.
+About to hand-roll a sort with nested loops (`O(n²)`)? Stop - the built-in sort is almost always faster
+and already `O(n log n)`. And once data is sorted, you unlock that lovely `O(log n)` binary search.
 
 ## Name it from the code
 
@@ -166,10 +157,10 @@ This is your cheat-card. When you're staring at code, match the pattern to the s
 | Repeatedly **halving** (binary search, balanced tree) | **O(log n)** logarithmic | one extra step |
 | Calling a built-in **sort** | **O(n log n)** | a bit more than double |
 
-⚠️ **Read it as the *worst* path, and drop the small stuff.** Big-O describes the *worst case* - the
-most work the code might do - so two separate loops one after the other is still `O(n)` (it's `2n`, but
-Big-O drops constant multipliers - see [Phase 3](03-why-it-matters-in-real-life.md)). What flips you to
-a worse shape is *nesting* - work happening *per item, for every item*.
+⚠️ **Read it as the *worst* path, and drop the small stuff.** Big-O describes the *worst case* - so two
+separate loops one after the other is still `O(n)` (it's `2n`, but Big-O drops constant multipliers -
+see [Phase 3](03-why-it-matters-in-real-life.md)). What flips you to a worse shape is *nesting* - work
+happening *per item, for every item*.
 
 ## Recap
 

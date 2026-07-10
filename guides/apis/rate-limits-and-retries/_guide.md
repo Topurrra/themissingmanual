@@ -8,7 +8,7 @@ category: apis
 order: 9
 difficulty: intermediate
 synonyms: ["what does 429 mean", "http 429 too many requests", "retry-after header", "exponential backoff with jitter", "how to retry a failed api call", "what is a rate limit", "token bucket rate limiting", "idempotency key", "what is a circuit breaker", "thundering herd problem", "how to handle api throttling"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Rate Limits and Retries
@@ -19,10 +19,10 @@ somehow made everything *worse*. That sinking feeling, where the thing meant to 
 hurting you, is exactly what this guide clears up.
 
 Here's the relief: calling a flaky or throttled API well is a small, learnable set of habits, not a dark
-art. APIs rate-limit you on purpose, and they tell you how to behave — you mostly need to listen. And
-retrying safely is a handful of rules: wait longer each time, add a little randomness, cap how hard you
-try, and never blindly retry something that moves money. Learn those, and a wobbly dependency becomes a
-minor annoyance instead of a 2am page.
+art. APIs rate-limit you on purpose, and they tell you how to behave — you mostly need to listen. Retrying
+safely is a handful of rules: wait longer each time, add a little randomness, cap how hard you try, and
+never blindly retry something that moves money. Learn those, and a wobbly dependency becomes a minor
+annoyance instead of a 2am page.
 
 ## How to read this
 

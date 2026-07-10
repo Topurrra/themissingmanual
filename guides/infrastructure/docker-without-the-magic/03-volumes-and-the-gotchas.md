@@ -6,16 +6,16 @@ summary: "Containers are ephemeral so data dies with them unless you use a volum
 tags: [docker, volumes, persistence, environment-variables, secrets, gotchas, troubleshooting]
 difficulty: intermediate
 synonyms: ["docker data disappears on restart", "what is a docker volume", "how to persist data in docker", "docker environment variables config", "docker image too big", "docker secrets in layers", "docker port not working"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Volumes & the Gotchas
 
 Here's where the calm picture from Phase 1 - "a container is a running instance, not a little computer" -
 turns into something you have to act on. Because containers are *instances*, anything they wrote vanishes
-when they're removed. That's not a bug; it's the design. This phase shows you where to keep data that must
-survive, how to feed config in cleanly, and the handful of traps that catch nearly everyone - each named
-before it can ruin your afternoon.
+when they're removed. That's not a bug; it's the design. This phase shows you where to keep data that
+must survive, how to feed config in cleanly, and the traps that catch nearly everyone - each named before
+it can ruin your afternoon.
 
 ## Cheat-card: symptom → calm fix
 
@@ -31,10 +31,10 @@ Arrived here mid-problem? Find your symptom, then read the matching section belo
 
 ## Containers are ephemeral - volumes are how data survives
 
-**What's actually happening.** Recall from Phase 1 that a running container gets a thin **writable layer**
-on top of the frozen image. Every file the app creates - uploaded images, a database's data, logs - lands
-in that writable layer. And that layer belongs to the container, so when the container is removed, the
-layer is removed with it. The data is *gone*.
+Recall from Phase 1 that a running container gets a thin **writable layer** on top of the frozen image.
+Every file the app creates - uploaded images, a database's data, logs - lands in that writable layer. And
+that layer belongs to the container, so when the container is removed, the layer is removed with it. The
+data is *gone*.
 
 ```mermaid
 flowchart LR
@@ -48,10 +48,9 @@ flowchart LR
   C2 -- "/data" --> V
 ```
 
-**What a volume actually is.** A **volume** is storage that lives *outside* the container's lifecycle -
-managed by Docker on the host - and is mounted into the container at a path you choose. The app writes to
-that path as normal, but the bytes land in the volume, which survives the container being stopped,
-removed, and replaced.
+A **volume** is storage that lives *outside* the container's lifecycle - managed by Docker on the host -
+and is mounted into the container at a path you choose. The app writes to that path as normal, but the
+bytes land in the volume, which survives the container being stopped, removed, and replaced.
 
 📝 **Terminology.** *Volume* - Docker-managed persistent storage you attach to a container. There's also a
 *bind mount*, which maps a specific folder from your host machine into the container (handy in development,
@@ -88,11 +87,11 @@ container," that's the moment the data is one `docker rm` away from gone.
 
 ## Config goes in environment variables, not into the image
 
-**The problem.** You want the *same image* to run in development, staging, and production - that's the
-reproducibility promise. But those environments need different database URLs, API keys, and feature flags.
-If you bake those values into the image, you've made three different images and lost the promise.
+You want the *same image* to run in development, staging, and production - that's the reproducibility
+promise. But those environments need different database URLs, API keys, and feature flags. Bake those
+values into the image and you've made three different images and lost the promise.
 
-**The fix.** Pass configuration in at *run time* with `-e` (you already saw `-e POSTGRES_PASSWORD=secret`
+**The fix:** pass configuration in at *run time* with `-e` (you already saw `-e POSTGRES_PASSWORD=secret`
 above). The image stays generic; the environment is supplied when the container starts.
 
 ```console
@@ -104,8 +103,8 @@ $ docker run -d --name web \
 ```
 
 *What just happened:* the app reads `DATABASE_URL` and `LOG_LEVEL` from its environment at startup. The
-same `my-app:1.0` image runs everywhere; only the `-e` values change per environment. (When you have many
-of these, you graduate to an `--env-file` or to Compose - that's the [next guide](/guides/docker-compose-for-real-projects).)
+same `my-app:1.0` image runs everywhere; only the `-e` values change. (Many of these? Graduate to an
+`--env-file` or to Compose - the [next guide](/guides/docker-compose-for-real-projects).)
 
 ## The gotchas everyone hits
 
@@ -136,7 +135,7 @@ container and re-run it with `-p 8080:3000`, and the mapping will appear.
 ### The huge image
 
 ⚠️ **Gotcha.** Reach for a full `ubuntu` or default `node` base "to be safe" and your image balloons to
-hundreds of megabytes or more - slow to push, slow to pull, slow to deploy. Two habits keep it lean:
+hundreds of megabytes or more - slow to push, pull, and deploy. Two habits keep it lean:
 
 - **Start from a slim base.** `node:20-slim` or `-alpine` variants, `python:3.12-slim`, etc., ship far
   less than the full image. (Verify a variant's contents before committing to it - `alpine` uses a
@@ -151,10 +150,10 @@ context entirely, so they're never copied in.
 ### Secrets in layers
 
 ⚠️ **Gotcha - this one is genuinely dangerous.** Anything you put into the image at *build time* becomes a
-permanent layer, and **layers are not erased by deleting the file in a later step.** If you `COPY` a
-private key in, or hardcode a password with `ENV` in the Dockerfile, that secret is baked into the image's
+permanent layer, and **layers are not erased by deleting the file in a later step.** `COPY` a private key
+in, or hardcode a password with `ENV` in the Dockerfile, and that secret is baked into the image's
 history. Anyone who can pull the image can extract it from the layers - even if a later instruction
-"removes" it, because the earlier layer still holds it.
+"removes" it, the earlier layer still holds it.
 
 The rule that keeps you safe: **secrets are run-time input, never build-time content.** Pass them with
 `-e` (or a secrets manager / Compose secrets) when the container *starts* - exactly like the config above -
@@ -172,11 +171,11 @@ so they live in the running container's environment, not frozen into a distribut
    `127.0.0.1`), the **huge image** (slim base + don't ship build tools), and **secrets in layers**
    (never bake them in).
 
-You can now reason about a single container end to end - build it, run it, reach it, persist it, and avoid
-the traps. The next step up is orchestrating *several* containers together - a web app, its database, and
-a cache, defined in one file and started with one command. That's [Docker Compose for Real
-Projects](/guides/docker-compose-for-real-projects). And when it's time to put a container on a real
-server, see [Deploying to a VPS](/guides/deploying-to-a-vps).
+You can now reason about a single container end to end - build it, run it, reach it, persist it, and
+avoid the traps. The next step up is orchestrating *several* containers together - a web app, its
+database, and a cache, defined in one file and started with one command: [Docker Compose for Real
+Projects](/guides/docker-compose-for-real-projects). When it's time to put a container on a real server,
+see [Deploying to a VPS](/guides/deploying-to-a-vps).
 
 ---
 

@@ -8,7 +8,7 @@ category: databases
 order: 8
 difficulty: intermediate
 synonyms: ["sql vs nosql", "should i use a relational or nosql database", "when to use mongodb vs postgres", "difference between sql and nosql", "is nosql faster than sql", "what database should i use"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # SQL vs NoSQL, Honestly
@@ -21,8 +21,8 @@ sound confident, both have battle scars, and you're left wondering which side is
 Here's the honest answer up front: this isn't a fight with a winner. "SQL" and "NoSQL" name
 two different *shapes* of data store, each tuned for different problems. The skill isn't
 picking the "best" one — it's recognizing which shape fits the problem in front of you. This
-guide gives you the mental models and the real trade-offs so you can choose on purpose, not
-on hype.
+guide gives you the mental models and the real trade-offs so you can choose on purpose, not on
+hype.
 
 ## How to read this
 

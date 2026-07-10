@@ -6,12 +6,12 @@ summary: "How a C# script becomes a Component the engine drives: the MonoBehavio
 tags: [unity, monobehaviour, game-loop, update, lifecycle]
 difficulty: intermediate
 synonyms: ["unity monobehaviour", "unity start update", "unity game loop", "unity fixedupdate", "unity time.deltatime", "unity script lifecycle"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # MonoBehaviour & the Game Loop
 
-Here's the one idea that turns Unity scripting from "magic I copy off Stack Overflow" into something you can reason about: **a MonoBehaviour is a Component the engine drives.** You don't write a `main()` and call your own code. You write a class, override a few specially-named methods, attach it to a GameObject - and from then on Unity calls those methods *for* you, on a schedule. `Start` runs once. `Update` runs every single frame, forever, until the object goes away. That repeating call is the game loop, and your scripts ride on top of it.
+**A MonoBehaviour is a Component the engine drives.** You don't write a `main()` and call your own code. You write a class, override a few specially-named methods, attach it to a GameObject - and from then on Unity calls those methods *for* you, on a schedule. `Start` runs once. `Update` runs every single frame, forever, until the object goes away. That repeating call is the game loop, and your scripts ride on top of it.
 
 > 💡 If you've done web work, flip your usual instinct. There you mostly *call* the framework. Here the framework calls *you*. Your job is to fill in the right hooks and trust the engine to invoke them at the right moments. This is the inversion of control that makes a real-time game possible.
 

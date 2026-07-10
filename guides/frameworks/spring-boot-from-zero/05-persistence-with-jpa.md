@@ -6,20 +6,20 @@ summary: "Map a Book object to a database table with JPA, then let Spring Data g
 tags: [spring-boot, spring-data-jpa, jpa, hibernate, entity, repository, orm, derived-queries]
 difficulty: intermediate
 synonyms: ["spring data jpa tutorial", "spring jpa entity repository", "spring boot database crud", "jpa hibernate spring", "spring derived query methods", "spring jparepository", "spring boot h2 postgres"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Persistence with Spring Data JPA
 
-Up to now your API has been making things up. A request comes in, you build a `Book` in memory, you hand it
-back, and the moment the process restarts, it's gone. Real apps remember. They write to a database that
-survives restarts, deploys, and crashes. This phase is about teaching your Spring app to *persist* — to read
-and write rows in a real database — and it's where a famous piece of Spring magic shows up: you'll define a
-repository interface with **no implementation**, and Spring will write the implementation for you at runtime.
+Up to now your API has been making things up. A request comes in, you build a `Book` in memory, hand it
+back, and the moment the process restarts, it's gone. Real apps remember — they write to a database that
+survives restarts, deploys, and crashes. This phase teaches your Spring app to *persist*, and it's where a
+famous piece of Spring magic shows up: you'll define a repository interface with **no implementation**,
+and Spring writes the implementation for you at runtime.
 
-That magic is wonderful right up until it surprises you. So before any annotations, let's build the mental
-model of what's actually happening underneath, because the day the magic bites — and it will — the only thing
-that saves you is knowing what it was hiding.
+That magic is wonderful right up until it surprises you. Before any annotations, let's build the mental
+model of what's actually happening underneath — the day the magic bites, the only thing that saves you is
+knowing what it was hiding.
 
 ## The mental model: layers all the way down
 
@@ -95,11 +95,10 @@ public class Book {
 ```
 
 *What just happened:* `@Entity` marks `Book` as a persistent type — JPA now knows it maps to a table (named
-`book` by default, the class name lowercased). `@Id` names the primary key field, and
-`@GeneratedValue(strategy = GenerationType.IDENTITY)` tells JPA the database generates the id for you (an
-auto-incrementing column), so you never set it by hand. The plain fields `title`, `author`, and `isbn` each
-become a column with the same name. The no-arg constructor is there because Hibernate constructs entities
-*reflectively* when it reads a row back — it makes a blank `Book` and then fills the fields.
+`book` by default). `@Id` names the primary key field, and `@GeneratedValue(strategy = GenerationType.IDENTITY)`
+tells JPA the database generates the id for you, so you never set it by hand. The plain fields each become
+a column with the same name. The no-arg constructor exists because Hibernate constructs entities
+*reflectively* when it reads a row back — it makes a blank `Book` and fills the fields.
 
 The table this maps to looks like:
 
@@ -117,14 +116,12 @@ CREATE TABLE book (
 generate this table for you; in production you'll manage the schema yourself with migrations — but the
 *shape* is exactly this.
 
-⚠️ **Why a mutable class and not a `record`?** Back in
-[Records & Modern Java](/guides/java-from-zero/13-records-and-modern-java) you learned that records are the
-perfect immutable data carrier — and you might reasonably want `Book` to be one here. It can't be. JPA needs
-a no-arg constructor (to build a blank instance before populating it) and mutable fields (to set those fields
-and to update them later, and so Hibernate can swap in a *lazy proxy* for relationships). A `record` is
-immutable with an all-args constructor — the opposite of what the ORM machinery requires. So entities stay as
-plain classes with a no-arg constructor and setters. Records are still the right tool for the *DTOs* you'll
-add in [Phase 6](06-service-layer-and-validation.md); they're just wrong for entities.
+⚠️ **Why a mutable class and not a `record`?** Records are the perfect immutable data carrier
+([Records & Modern Java](/guides/java-from-zero/13-records-and-modern-java)), but JPA needs a no-arg
+constructor (to build a blank instance before populating it) and mutable fields (to update them later, and
+so Hibernate can swap in a *lazy proxy* for relationships) — the opposite of a record's immutable, all-args
+design. Entities stay as plain classes with a no-arg constructor and setters. Records are still right for
+the *DTOs* you'll add in [Phase 6](06-service-layer-and-validation.md); just wrong for entities.
 
 ## Repositories — where the magic happens
 
@@ -138,11 +135,11 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 }
 ```
 
-*What just happened:* That's the whole file. It's an **interface** — no fields, no methods, no implementation.
+*What just happened:* That's the whole file — an **interface** with no fields, methods, or implementation.
 `JpaRepository<Book, Long>` says "this is a repository for `Book` entities whose id type is `Long`." At
 startup, Spring Data JPA finds this interface and **generates a concrete implementation at runtime**, then
-registers it as a bean. You never write the class; Spring writes it for you and dependency-injects it
-wherever you ask. Inheriting from `JpaRepository` gives you a pile of methods for free, including:
+registers it as a bean. You never write the class; Spring writes and injects it for you. Inheriting from
+`JpaRepository` gives you a pile of methods for free, including:
 
 - `save(book)` — insert or update a row, returns the saved entity (now with its generated id)
 - `findById(id)` — look up one row by primary key, returns an `Optional<Book>`
@@ -210,10 +207,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 }
 ```
 
-*What just happened:* You declared three methods and wrote zero implementations. Spring Data reads each name
-as a tiny query language. `findByAuthor` → "select books where `author` equals the argument."
+*What just happened:* You declared three methods and wrote zero implementations. Spring Data reads each
+name as a tiny query language. `findByAuthor` → "select books where `author` equals the argument."
 `findByTitleContainingIgnoreCase` → "where `title` contains the argument, case-insensitively" (a `LIKE`
-with wildcards, lower-cased on both sides). `existsByIsbn` → "is there any row whose `isbn` equals the
+with wildcards, lower-cased both sides). `existsByIsbn` → "is there any row whose `isbn` equals the
 argument?", returning a `boolean`. The keywords (`findBy`, `existsBy`, `Containing`, `IgnoreCase`, `And`,
 `Or`, `OrderBy`...) compose, and Spring builds the query from them.
 
@@ -254,10 +251,10 @@ SQL if you truly need a database-specific feature.)
 
 ## Where the magic stops — and bites
 
-Here's the honest part nobody puts on the brochure: **an ORM removes boilerplate, not the need to understand
-your database.** The abstraction is leaky on purpose, because the database underneath is real. The first time
-you treat JPA as a black box that "handles persistence," it will quietly do something expensive or wrong.
-A few places it bites everyone:
+The honest part nobody puts on the brochure: **an ORM removes boilerplate, not the need to understand
+your database.** The abstraction is leaky on purpose, because the database underneath is real. The first
+time you treat JPA as a black box that "handles persistence," it will quietly do something expensive or
+wrong. A few places it bites everyone:
 
 **The N+1 query problem.** You load 100 books, then loop over them touching a related collection (say each
 book's reviews). If that relationship is lazy, every `book.getReviews()` fires its *own* `SELECT` — so one
@@ -286,15 +283,13 @@ spring:
         format_sql: true           # pretty-print it
 ```
 
-*What just happened:* Turning on `show-sql` logs the exact SQL Hibernate generates for every operation — which
-is how you *see* the N+1 storm instead of guessing, and how you confirm a derived method built the query you
-expected. This is climbing back down the ladder from the top of the phase: object call → generated SQL →
-database. When a query is slow, that SQL is your starting point — and the whole of
-[/guides/why-is-my-query-slow](/guides/why-is-my-query-slow) is about reading it.
+*What just happened:* Turning on `show-sql` logs the exact SQL Hibernate generates for every operation —
+how you *see* the N+1 storm instead of guessing, and confirm a derived method built the query you expected.
+This is climbing back down the ladder: object call → generated SQL → database. When a query is slow, that
+SQL is your starting point — see [/guides/why-is-my-query-slow](/guides/why-is-my-query-slow).
 
-💡 The mature way to hold this: Spring Data JPA is a fantastic productivity tool *and* a thin layer over a
-database you're still responsible for. Let it write the boilerplate; don't let it talk you out of knowing what
-SQL it wrote.
+💡 Spring Data JPA is a fantastic productivity tool *and* a thin layer over a database you're still
+responsible for. Let it write the boilerplate; don't let it talk you out of knowing what SQL it wrote.
 
 ## Recap
 

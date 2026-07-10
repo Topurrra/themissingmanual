@@ -6,35 +6,29 @@ summary: "A custom AppError type that implements IntoResponse turns errors into 
 tags: [axum, rust, errors, intoresponse, result]
 difficulty: advanced
 synonyms: ["axum error handling", "axum custom error intoresponse", "axum result handler", "axum ? operator", "axum apperror enum", "rust web error type"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Error Handling
 
-By Phase 6 the books API works, but look closely at the handlers and you'll see
-a smell. Every one that can fail spells out its own failure inline: look up a
-book, and if it's missing, `return StatusCode::NOT_FOUND`; parse something, and
-if it's bad, build a `(StatusCode::BAD_REQUEST, "...")` tuple by hand. The happy
-path and the sad path are tangled together, and every handler invents its own
-error shape. Add a tenth endpoint and you're copy-pasting the same `if let
-None` dance for the tenth time.
+By Phase 6 the books API works, but the handlers smell. Every one that can fail
+spells out its own failure inline: look up a book, and if it's missing, `return
+StatusCode::NOT_FOUND`; parse something bad, and build a `(StatusCode::BAD_REQUEST,
+"...")` tuple by hand. The happy path and sad path tangle together, and every
+handler invents its own error shape.
 
 Here's the thing other frameworks make hard and axum makes beautiful: in axum,
-**an error is a return value, not an exception.** There is no `throw`, no
-exception that unwinds the stack, no global error handler you register and hope
+**an error is a return value, not an exception.** There's no `throw`, no
+exception unwinding the stack, no global error handler you register and hope
 fires. You make *one* type that knows how to turn itself into an HTTP response,
-and from then on your handlers just hand that type back. The language does the
-rest.
+and your handlers just hand that type back. The language does the rest.
 
-> 📝 **Mental model:** a handler that returns `Result<T, E>` is a valid axum
+> 📝 **Mental model:** a handler returning `Result<T, E>` is a valid axum
 > handler **as long as both `T` and `E` implement `IntoResponse`.** You already
-> know `IntoResponse` from Phase 3 — it's what makes a return value become a
-> response. So define your own `AppError`, implement `IntoResponse` for it
-> *once*, and every handler can return `Result<_, AppError>`. The `?` operator
-> then propagates failures for you, and axum renders whatever comes back —
-> success *or* error — through the same machinery. This is the cleanest error
-> story of any framework in this guide, and it falls straight out of Rust's type
-> system.
+> know `IntoResponse` from Phase 3. So define your own `AppError`, implement
+> `IntoResponse` for it *once*, and every handler can return `Result<_,
+> AppError>`. The `?` operator propagates failures for you, and axum renders
+> whatever comes back — success *or* error — through the same machinery.
 
 ## One error type, one response shape
 
@@ -71,13 +65,12 @@ impl IntoResponse for AppError {
 
 *What just happened:* `AppError` enumerates the failure modes, with
 `BadRequest(String)` carrying a message so callers know *what* was wrong. The
-`impl IntoResponse` is the whole trick — it's the single place that decides how
-an error becomes HTTP. We `match` the variant into a `(status, message)` pair,
-then build the response from a tuple: `(StatusCode, Json<...>)` already
-implements `IntoResponse` (you saw that pattern in Phase 3), so wrapping the
-message in `serde_json::json!` gives every error the same JSON envelope —
-`{"error": "..."}`. Change that shape here, once, and every endpoint's errors
-change with it. No handler ever builds an error response by hand again.
+`impl IntoResponse` is the whole trick — the single place that decides how an
+error becomes HTTP. We `match` the variant into a `(status, message)` pair, then
+build the response from a tuple: `(StatusCode, Json<...>)` already implements
+`IntoResponse` (Phase 3), so wrapping the message in `serde_json::json!` gives
+every error the same JSON envelope — `{"error": "..."}`. Change that shape here,
+once, and every endpoint's errors change with it.
 
 ## Rewriting the handlers with `?`
 
@@ -115,13 +108,12 @@ async fn show(
 
 *What just happened:* the `match` collapsed into one line. `books.get(&id)`
 returns an `Option<&Book>`; `.cloned()` turns it into `Option<Book>`; and
-`.ok_or(AppError::NotFound)` converts that `Option` into a `Result<Book,
-AppError>` — `Some` becomes `Ok`, `None` becomes `Err(AppError::NotFound)`. The
-`?` then says "if this is an `Err`, return it from the function right now;
-otherwise unwrap the `Ok`." Because `AppError: IntoResponse`, returning that
-`Err` is a complete, valid response — axum renders it as our `404` JSON. The
-handler now reads as the happy path with failure points marked by `?`, which is
-exactly how you want to read it.
+`.ok_or(AppError::NotFound)` converts that into a `Result<Book, AppError>` —
+`Some` becomes `Ok`, `None` becomes `Err(AppError::NotFound)`. `?` then says "if
+this is an `Err`, return it right now; otherwise unwrap the `Ok`." Because
+`AppError: IntoResponse`, that `Err` is a complete, valid response — axum
+renders it as our `404` JSON. The handler now reads as the happy path with
+failure points marked by `?`.
 
 Validation gets the same treatment. Suppose creating a book requires a non-empty
 title:
@@ -171,10 +163,9 @@ impl From<sqlx::Error> for AppError {
 ```
 
 *What just happened:* this `From<sqlx::Error>` impl maps a missing row to our
-`NotFound` and treats every other database failure as an `Internal` error —
-logging the real cause with `tracing` (so *you* see it) while sending the client
-only a generic `500` (so you don't leak internals). Now a handler can use `?`
-directly on a `sqlx` call:
+`NotFound` and treats every other database failure as `Internal` — logging the
+real cause with `tracing` while sending the client only a generic `500`. Now a
+handler can use `?` directly on a `sqlx` call:
 
 ```rust
 async fn show_db(
@@ -198,35 +189,31 @@ handler.
 
 > 💡 Writing `impl IntoResponse` and a pile of `From` impls by hand gets old. The
 > **`thiserror`** crate generates them from a derive: annotate each variant with a
-> `#[from]` and a display message and it writes the `From` and `Display` impls for
-> you, leaving you just the `IntoResponse`. For quick application code where you
-> don't need a typed enum at all, **`anyhow`** gives you one catch-all error type
-> (`anyhow::Error`) and an ergonomic `?` everywhere — many people pair an
-> `anyhow`-style internal error with a thin `IntoResponse` wrapper. Reach for
-> `thiserror` when callers need to distinguish variants; reach for `anyhow` when
-> they don't.
+> `#[from]` and a display message and it writes the `From`/`Display` impls for
+> you, leaving just the `IntoResponse`. For quick app code that doesn't need a
+> typed enum, **`anyhow`** gives you one catch-all error type (`anyhow::Error`)
+> and an ergonomic `?` everywhere. Reach for `thiserror` when callers need to
+> distinguish variants; reach for `anyhow` when they don't.
 
 ## Let the framework handle what it already handles
 
 One trap worth naming: don't reinvent error handling axum already does for you.
 
 ⚠️ axum's built-in extractors reject bad input *before your handler runs*, with
-sensible defaults. Send a malformed JSON body to a handler taking
-`Json<Book>` and you get a `400 Bad Request` with a useful message — you never
-wrote that code. Same for a missing path segment, a bad `Query`, an oversized
-body. You *can* customize these rejections (by wrapping an extractor and
-implementing your own rejection type), but the defaults are good; only override
-them when you genuinely need a different shape.
+sensible defaults. Send a malformed JSON body to a handler taking `Json<Book>`
+and you get a `400 Bad Request` with a useful message, unwritten by you. Same
+for a missing path segment, a bad `Query`, an oversized body. You *can*
+customize these rejections, but the defaults are good — only override them when
+you genuinely need a different shape.
 
 ⚠️ And the cardinal rule: **don't panic in a handler — return an error.** A
 `.unwrap()` on a failing `Result`, an out-of-bounds index, an `expect()` that
-fires — these don't produce a tidy `500`, they unwind the task. axum will catch
-it and return a bare `500` to the client, but you've thrown away the chance to
-log context, choose a status, or shape the body. Every fallible step should be a
-`?` into your `AppError`, not a panic. (The one `.unwrap()` you'll see survive in
-this guide is `state.books.lock().unwrap()` on a `Mutex` — a poisoned lock means
-another thread already panicked while holding it, so the process is arguably
-doomed anyway. Even that you'd harden in production code.)
+fires — these unwind the task instead of producing a tidy response. axum
+catches it and returns a bare `500`, but you've lost the chance to log context,
+choose a status, or shape the body. Every fallible step should be a `?` into
+your `AppError`, not a panic. (The one `.unwrap()` surviving in this guide is
+`state.books.lock().unwrap()` — a poisoned `Mutex` means another thread already
+panicked holding it, so the process is arguably doomed anyway.)
 
 > 💡 The shape to keep in your head: **extractor rejections** guard the door
 > (bad input never reaches you), **`?` with `AppError`** handles everything your

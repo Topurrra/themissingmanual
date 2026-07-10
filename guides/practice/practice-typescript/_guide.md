@@ -2,7 +2,7 @@
 title: "TypeScript Practice"
 guide: practice-typescript
 phase: 0
-summary: "Hands-on TypeScript lessons - add types to real JavaScript, run them instantly, and get checked by real tests. No setup, no account."
+summary: "Hands-on TypeScript lessons - add types to real JavaScript, run them instantly, and get checked by real tests."
 tags: [typescript, practice, lessons, hands-on, types]
 category: practice
 order: 5

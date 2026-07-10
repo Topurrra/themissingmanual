@@ -6,23 +6,23 @@ summary: "chi gives you a router and nothing else for I/O — so you read JSON w
 tags: [chi, go, json, request, response, stdlib]
 difficulty: intermediate
 synonyms: ["chi json request response", "go json decode encode", "go writeheader content-type", "chi read body", "go http json helper", "encoding/json http"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Requests & Responses with the Standard Library
 
 Here's the deal with chi, stated plainly so it never surprises you: chi is a
 router and **nothing else**. It matches a method and path to a handler, and then
-it hands you the same `w http.ResponseWriter` and `r *http.Request` you'd get
-from the bare standard library. There's no `c.JSON(...)`, no `c.Bind(...)`, no
-magic context object with convenience methods bolted on.
+hands you the same `w http.ResponseWriter` and `r *http.Request` you'd get from
+the bare standard library. There's no `c.JSON(...)`, no `c.Bind(...)`, no magic
+context object with convenience methods bolted on.
 
 So all the request/response work — reading a JSON body, writing a JSON body,
 choosing a status code — is done with the standard library, mostly the
 `encoding/json` package plus `net/http`. That sounds like more work than Gin or
 Echo, and in raw line count it is a little. But it's a small amount of code, you
 write it once, and the payoff is that you're learning *Go's* HTTP model, not
-chi's. Everything here works in any `net/http` program, framework or not.
+chi's.
 
 > 📝 The mental model for this phase: **the request and response are streams of
 > bytes, and `encoding/json` is your translator at both ends.** Reading = decode
@@ -76,17 +76,17 @@ func createArticle(w http.ResponseWriter, r *http.Request) {
 
 *What just happened:* `json.NewDecoder(r.Body)` wraps the request body stream.
 `.Decode(&in)` reads the JSON and fills in the struct's fields by matching JSON
-keys to struct tags — note the `&`, because Decode needs a pointer so it can
-write into your variable. The critical part is the error check: **malformed JSON
-is the client's fault, so it's a 400, not a 500.** `http.Error` writes a plain
-text message and sets the status in one call. The bare `return` after it is
+keys to struct tags — note the `&`, since Decode needs a pointer to write into
+your variable. The critical part is the error check: **malformed JSON is the
+client's fault, so it's a 400, not a 500.** `http.Error` writes a plain text
+message and sets the status in one call. The bare `return` after it is
 essential — without it, the handler would keep running on garbage data.
 
 ⚠️ A decode error covers a body that isn't valid JSON at all. It does **not**
 catch JSON that's valid but wrong — `{"title": 5}` (number where a string is
 expected) errors, but `{"titlee": "oops"}` (typo'd field) silently decodes to an
-empty `Title`. By default, unknown fields are just ignored. If you'd rather
-reject them — useful for catching client typos early — turn it on explicitly:
+empty `Title`. By default, unknown fields are just ignored. To reject them —
+useful for catching client typos early — turn it on explicitly:
 
 ```go
 dec := json.NewDecoder(r.Body)
@@ -98,11 +98,10 @@ if err := dec.Decode(&in); err != nil {
 ```
 
 *What just happened:* `DisallowUnknownFields()` flips the decoder into strict
-mode, so a body with a key your struct doesn't have now produces an error
-instead of being quietly dropped. It's a small line that turns a whole class of
-silent client bugs into loud 400s. Use it when you control the clients and want
-tight contracts; skip it for public APIs where forward-compatibility (clients
-sending fields you don't know yet) is a feature.
+mode, so a body with a key your struct doesn't have produces an error instead of
+being quietly dropped — a small line that turns a whole class of silent client
+bugs into loud 400s. Use it when you control the clients and want tight
+contracts; skip it for public APIs where forward-compatibility is a feature.
 
 ## Writing JSON — and the one ordering rule that bites everyone
 
@@ -128,16 +127,14 @@ takes any value you can marshal.
 ⚠️ This is the **number-one stdlib HTTP gotcha**, so read it twice. The response
 must be built in this order: **headers first, then status, then body.** The
 reason is how HTTP works on the wire — the headers and status line are sent
-*before* the body, and once any of those go out, they're locked. Concretely:
-
-- `w.Header().Set(...)` must come **before** `w.WriteHeader(...)`. After
-  `WriteHeader`, the header block is already on its way; setting a header after
-  that is too late and is silently ignored.
-- `w.WriteHeader(...)` must come **before** you write the body. The **first**
-  call to `w.Write(...)` (which `Encode` does internally) flushes the status
-  line — and if you never called `WriteHeader`, that first write implicitly
-  sends **`200 OK`**. So if you encode the body and *then* try to set a 201,
-  your 201 is ignored and the client already got a 200.
+*before* the body, and once any of those go out, they're locked.
+`w.Header().Set(...)` must come **before** `w.WriteHeader(...)` — after
+`WriteHeader`, the header block is already on its way, and setting one later is
+silently ignored. `w.WriteHeader(...)` must come **before** you write the
+body — the **first** call to `w.Write(...)` (which `Encode` does internally)
+flushes the status line, and if you never called `WriteHeader`, that first
+write implicitly sends **`200 OK`**. Encode the body first and try to set a 201
+afterward, and your 201 is ignored — the client already got a 200.
 
 Get the order wrong and there's no crash, no error — just a response with the
 wrong status or a missing header, discovered later in a confused debugging
@@ -164,9 +161,8 @@ func createArticle(w http.ResponseWriter, r *http.Request) {
 
 *What just happened:* the handler decodes the input, builds a real `Article`
 (assigning the server-controlled `ID` itself), and replies with `201 Created`
-plus the new article as JSON. Read it top to bottom and the request/response
-shape is obvious — exactly because the ordering complexity is hidden in
-`writeJSON`.
+plus the new article as JSON. Read it top to bottom and the shape is obvious —
+exactly because the ordering complexity is hidden in `writeJSON`.
 
 ## Status codes and the empty-body case
 
@@ -192,8 +188,8 @@ func deleteArticle(w http.ResponseWriter, r *http.Request) {
 
 *What just happened:* we set the status to 204 and then **stop** — no
 `writeJSON`, no `Encode`, nothing. There's no body to send, so we don't reach for
-the helper at all. (If you accidentally wrote a body after a 204, you'd be
-contradicting the status code, and some clients will complain.)
+the helper at all. (Write a body after a 204 and you contradict the status
+code — some clients will complain.)
 
 That snippet also quietly reuses two request-reading tools from earlier phases,
 worth a one-line refresher since you'll use them in the same handlers as your
@@ -205,11 +201,10 @@ sort := r.URL.Query().Get("sort")    // query string param from ?sort=title
 ```
 
 *What just happened:* `chi.URLParam(r, "id")` pulls a value out of the **path**
-for routes declared with `{id}` (this is the one helper chi itself provides, and
-it reads from data chi stashed on the request). `r.URL.Query().Get("sort")` is
-pure stdlib and reads a **query-string** value, returning `""` if it's absent.
-Both give you strings — converting `id` to an int with `strconv.Atoi` (and
-handling the error as a 400) is on you.
+for routes declared with `{id}` (this is the one helper chi itself provides).
+`r.URL.Query().Get("sort")` is pure stdlib and reads a **query-string** value,
+returning `""` if it's absent. Both give you strings — converting `id` to an int
+with `strconv.Atoi` (and handling the error as a 400) is on you.
 
 ## Validation: there's no net here
 
@@ -226,26 +221,24 @@ if in.Title == "" {
 ```
 
 *What just happened:* a plain `if`. That's the whole validation story in raw
-stdlib — you check the fields you care about and return a 400 when something's
-off. For two or three fields this is fine and arguably clearer than anything
+stdlib — check the fields you care about and return a 400 when something's off.
+For two or three fields this is fine and arguably clearer than anything
 fancier. For a large API with many rules, hand-written checks pile up fast, and
 that's where a library earns its keep.
 
 > 💡 Two ways to get more help without abandoning the stdlib model. (1) The
 > `github.com/go-playground/validator` package lets you declare rules as struct
-> tags — `validate:"required,min=1"` — and validate with one call; you opt into
-> it, it doesn't take over your handlers. (2) chi ships a companion package,
-> `github.com/go-chi/render`, with JSON helpers (`render.JSON`, `render.Bind`,
-> `render.Status`) that wrap the decode/encode/order dance for you. Both are
-> optional — the plain stdlib shown above is genuinely enough for most APIs, and
-> it's the version that teaches you what's actually happening.
+> tags — `validate:"required,min=1"` — and validate with one call. (2) chi ships
+> a companion package, `github.com/go-chi/render`, with JSON helpers
+> (`render.JSON`, `render.Bind`, `render.Status`) that wrap the
+> decode/encode/order dance for you. Both are optional — the plain stdlib shown
+> above is genuinely enough for most APIs.
 
 And that's the philosophical fork in the road. Gin and Echo come with
 batteries — `c.ShouldBindJSON` decodes *and* validates in one call, `c.JSON`
 handles the header/status/body order for you. chi deliberately ships none of
 that, betting that a `writeJSON` helper and a few `if` statements are a fair
-price for staying 100% standard-library-native. Neither choice is wrong; now you
-know exactly what each one is trading away.
+price for staying 100% standard-library-native.
 
 ## Recap
 

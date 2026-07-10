@@ -6,12 +6,12 @@ summary: "How honest-looking numbers mislead: averages hiding skew, survivorship
 tags: [metrics, statistics, data-analytics, bias, critical-thinking]
 difficulty: beginner
 synonyms: ["how averages lie", "survivorship bias explained", "Simpson's paradox example", "vanity metrics vs actionable metrics", "misleading charts truncated axis", "why is the average misleading", "how to read a dashboard critically"]
-updated: 2026-06-30
+updated: 2026-07-11
 ---
 
 # Reading a Dashboard Without Getting Fooled
 
-You now know the deep traps: skewed averages, missing data, flipped trends. This phase is the street-level version — the things people do to a chart to make a number land harder than it should, and a fast interrogation you can run the moment a metric makes you feel something. Because that feeling — "wow, that went up a lot" — is exactly when you're easiest to fool.
+You now know the deep traps: skewed averages, missing data, flipped trends. This phase is the street-level version — the things people do to a chart to make a number land harder than it should, plus a fast interrogation to run the moment a metric makes you feel something. Because that feeling — "wow, that went up a lot" — is exactly when you're easiest to fool.
 
 ## Vanity metrics vs actionable metrics
 
@@ -27,11 +27,11 @@ Followers                      Engagement per post
 "$1M raised"                   Monthly recurring revenue, churn
 ```
 
-*What just happened:* the left column only ever grows and never tells you to change course — total signups can't go down, so it always looks like progress even while the product dies. The right column can fall, has a denominator, and points at an action. **The test for a vanity metric: can it go down? And if it moved, would you do anything differently?** If the answer to both is no, it's decoration.
+*What just happened:* the left column only ever grows and never tells you to change course — total signups can't go down, so it always looks like progress even while the product dies. The right column can fall, has a denominator, and points at an action. **The test for a vanity metric: can it go down, and if it moved, would you do anything differently?** If the answer to both is no, it's decoration.
 
 ## Cherry-picked date ranges
 
-The same data tells opposite stories depending on where you start and stop the window. This is the most common honest-looking lie in business reporting.
+The same data tells opposite stories depending on where you start and stop the window — the most common honest-looking lie in business reporting.
 
 ```text
 Full year:                        Cherry-picked window:
@@ -44,11 +44,11 @@ Full year:                        Cherry-picked window:
     "flat, then declining"            "explosive growth!"
 ```
 
-*What just happened:* both charts are drawn from the identical dataset. By starting at a local low (March) and ending at a local high (May), the second chart manufactures a growth story the full year contradicts. **Defense: always ask "why this date range?" and demand to see a longer window.** If someone resists showing you more history, that resistance is your answer.
+*What just happened:* both charts are drawn from the identical dataset. By starting at a local low (March) and ending at a local high (May), the second chart manufactures a growth story the full year contradicts. **Defense: ask "why this date range?" and demand to see a longer window.** If someone resists showing you more history, that resistance is your answer.
 
 ## Truncated axes
 
-A bar or line chart whose y-axis doesn't start at zero exaggerates differences. A 2% change can be drawn to look like a doubling.
+A bar or line chart whose y-axis doesn't start at zero exaggerates differences — a 2% change can be drawn to look like a doubling.
 
 ```text
 Truncated (y starts at 95):       Honest (y starts at 0):
@@ -62,7 +62,7 @@ Truncated (y starts at 95):       Honest (y starts at 0):
                                      "A=97, B=99, nearly identical"
 ```
 
-*What just happened:* the left chart starts its axis at 95, so a difference of 2 (97 vs 99) fills most of the frame and screams "huge gap." The right chart starts at zero and shows the truth: the two bars are almost the same height. **For bar charts, the y-axis should start at zero — full stop.** (Line charts tracking change over time are sometimes a reasonable exception, but a truncated bar chart is almost always a manipulation.) When you see a dramatic-looking bar chart, check the axis before you react.
+*What just happened:* the left chart starts its axis at 95, so a difference of 2 (97 vs 99) fills most of the frame and screams "huge gap." The right chart starts at zero and shows the truth: the two bars are almost the same height. **For bar charts, the y-axis should start at zero — full stop.** (Line charts tracking change over time are a reasonable exception, but a truncated bar chart is almost always a manipulation.) When you see a dramatic-looking bar chart, check the axis before you react.
 
 ## A few more quick tells
 
@@ -85,13 +85,13 @@ When a number makes you feel something, run this before you believe it:
 7. SO WHAT      — if this moved, would any decision change? (vanity test)
 ```
 
-*What just happened:* that's the whole guide compressed into seven questions. You don't need to remember which bias has which name — you need the reflex to ask these before you nod. Most misleading metrics fail at least one of them immediately.
+*What just happened:* that's the whole guide compressed into seven questions. You don't need to remember which bias has which name — just the reflex to ask these before you nod. Most misleading metrics fail at least one of them immediately.
 
 > The goal isn't cynicism, where you trust no number. It's calibration: trust numbers that survive the interrogation, and ask one sharp question about the ones that don't. A good analyst welcomes these questions — they're how honest work proves itself.
 
 ### For builders
 
-If you build the dashboards, you set the defaults that decide whether your org reasons clearly. Bake the defenses in: bar charts that start at zero, comparison-to-target built into every tile, medians shown beside means, a "split by" control on combined KPIs, and date pickers that default to a sensible long window instead of a flattering short one. The full craft of doing this well is its own guide — see [Building a BI Dashboard That's Actually Useful](/guides/bi-dashboards-that-work). The point: the easiest way to stop a team from being fooled is to never build the misleading view in the first place.
+If you build the dashboards, you set the defaults that decide whether your org reasons clearly. Bake the defenses in: bar charts that start at zero, comparison-to-target built into every tile, medians shown beside means, a "split by" control on combined KPIs, and date pickers that default to a sensible long window instead of a flattering short one. The full craft of doing this well is its own guide — see [Building a BI Dashboard That's Actually Useful](/guides/bi-dashboards-that-work). The easiest way to stop a team from being fooled is to never build the misleading view in the first place.
 
 ```quiz
 [

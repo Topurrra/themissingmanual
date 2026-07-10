@@ -6,14 +6,14 @@ summary: "tower-http is a box of ready-made Layers — tracing, CORS, compressio
 tags: [tower-http, rust, middleware, tracing, cors, compression]
 difficulty: intermediate
 synonyms: ["tower-http", "tower TraceLayer", "tower CorsLayer", "tower CompressionLayer", "tower TimeoutLayer", "tower reusable middleware"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The tower-http Toolbox
 
 Here's the mental model for the whole phase: **`tower-http` is a box of ready-made `Layer`s.** In Phases 3 and 4 you learned the abstract machinery — a `Service` turns a request into a response, a `Layer` wraps a `Service` to make a new one. That was the theory. `tower-http` is where you cash it in. It's a crate full of pre-built `Layer`s that do the things every real HTTP service needs — log requests, handle CORS, compress responses, enforce timeouts — and because they're plain tower `Layer`s, they snap onto *any* HTTP tower service. Your axum app, a tonic gRPC server, a bare hyper service, even an HTTP *client*: same layers, same `.layer(...)` move.
 
-That's the dividend the `Service`/`Layer` abstraction was paying toward the whole time. You don't write a tracing middleware. You don't write a CORS handler. You add a crate and hang a layer.
+That's the dividend the `Service`/`Layer` abstraction was paying toward the whole time. You don't write a tracing middleware or a CORS handler — you add a crate and hang a layer.
 
 > 📝 This phase is the *applied* counterpart to Phase 4. Phase 4 showed you how `Layer` and `ServiceBuilder` compose middleware in the abstract; here you get the concrete, production-grade layers you'll actually reach for. The exact same crate, and the exact same layers, are what axum users add with `.layer` — see [axum's middleware phase](/guides/axum-from-zero). We're looking at it from underneath.
 

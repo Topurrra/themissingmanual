@@ -6,7 +6,7 @@ summary: "Walking each STRIDE category against a real app's trust boundaries - c
 tags: [security, threat-modeling, stride, appsec, risk-assessment]
 difficulty: advanced
 synonyms: ["stride model explained", "what does stride stand for security", "how to apply stride to an application", "stride threat categories examples"]
-updated: 2026-07-06
+updated: 2026-07-11
 ---
 
 # STRIDE, Applied
@@ -35,7 +35,7 @@ Working through the file-sharing app's boundaries: browser-to-server, server-to-
 
 ## Information disclosure - is data reaching someone who shouldn't see it?
 
-**Finding:** A share-link page that returns a 404 for "link doesn't exist" but a 403 for "link exists, but it's expired" discloses information through the *shape* of the response - an attacker enumerating tokens learns which guesses are close. Small, but it's exactly the kind of boundary-crossing leak that only shows up when you're deliberately looking at what a response reveals, not just what it's supposed to return.
+**Finding:** A share-link page that returns a 404 for "link doesn't exist" but a 403 for "link exists, but it's expired" discloses information through the *shape* of the response - an attacker enumerating tokens learns which guesses are close. Small, but exactly the kind of leak that only shows up when you're deliberately looking at what a response reveals, not just what it's supposed to return.
 
 **Finding:** File storage URLs - if files are served from predictable, unauthenticated storage URLs (common with misconfigured S3-style buckets) rather than through the web server's auth check, the storage boundary itself leaks every file to anyone with the URL, regardless of what the application layer enforces.
 
@@ -51,7 +51,7 @@ Working through the file-sharing app's boundaries: browser-to-server, server-to-
 
 **Finding:** The webhook boundary, once more: if a successful spoofed "payment succeeded" event (from the Spoofing finding above) also grants an *admin* role rather than just a paid plan - because some setup script uses the same webhook path for both - one weak boundary elevates privilege far past what "faked a payment" should buy an attacker.
 
-Notice the payment webhook shows up in four of six categories. That repetition is the method working as intended - STRIDE doesn't spread your attention evenly, it concentrates it on the boundaries that are actually doing the most trust-shifting, which Phase 1's boundary-marking is what surfaced.
+Notice the payment webhook shows up in four of six categories. That repetition is the method working as intended - STRIDE doesn't spread your attention evenly, it concentrates it on the boundaries doing the most trust-shifting - exactly what Phase 1's boundary-marking surfaces.
 
 ```quiz
 [

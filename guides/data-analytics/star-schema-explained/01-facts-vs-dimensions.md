@@ -12,7 +12,7 @@ synonyms:
   - dimensional modeling explained
   - how do data warehouses organize tables
   - why is it called a star schema
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Facts vs. dimensions
@@ -50,7 +50,7 @@ customer_id | name | tier       product_id | name | category     date_id | date 
 
 ## Why the split matters
 
-Notice the shape this creates: one big table full of numbers and ID references, surrounded by several small tables full of descriptive attributes. That's the whole idea. The fact table is where the *measurements* live; the dimension tables are where the *context* for interpreting those measurements lives.
+This split creates a shape: one big table full of numbers and ID references, surrounded by several small tables full of descriptive attributes. That's the whole idea. The fact table is where the *measurements* live; the dimension tables are where the *context* for interpreting those measurements lives.
 
 ```mermaid
 flowchart TD

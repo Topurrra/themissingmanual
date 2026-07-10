@@ -6,17 +6,17 @@ summary: "A program is a precise list of instructions a computer follows in orde
 tags: [programming, beginner, python, print, instructions, mental-model]
 difficulty: beginner
 synonyms: ["what is a program", "what is code", "what does print do in python", "how does a computer run code", "my first program", "is coding hard"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What a Program Actually Is
 
-Before you write a single line, let's get the most important idea straight - because almost everything
-that feels scary about coding comes from a wrong picture of what's happening.
+Before you write a single line, get the most important idea straight - almost everything that feels
+scary about coding comes from a wrong picture of what's happening.
 
 Here's the wrong picture: that the computer is *smart*, that it understands what you *meant*, that
-there's some intelligence on the other side filling in your gaps. There isn't. And once you stop
-expecting that, code gets dramatically less frustrating.
+there's some intelligence on the other side filling in your gaps. There isn't. Once you stop expecting
+that, code gets dramatically less frustrating.
 
 ## The mental model: instructions, not spells
 
@@ -25,10 +25,10 @@ computer carries out one at a time, in order, from top to bottom. That's it. You
 and the computer is the most literal cook imaginable.
 
 The key word is *literal*. The computer does **exactly** what your instructions say - no more, no less.
-It doesn't guess what you meant. It doesn't skip a step because it seems obvious. It doesn't fix your
-mistake for you. If you tell it to do something nonsensical, it does the nonsensical thing (or stops and
-complains). This sounds like a weakness. It's actually the thing that makes programming *learnable*:
-because the computer is perfectly predictable, every behavior has a cause you can find.
+It doesn't guess what you meant, skip a step because it seems obvious, or fix your mistake for you. Tell
+it to do something nonsensical and it does the nonsensical thing (or stops and complains). That sounds
+like a weakness, but it's what makes programming *learnable*: because the computer is perfectly
+predictable, every behavior has a cause you can find.
 
 📝 **Terminology.** *Code* is the instructions you write, in a language a computer can be made to
 understand. A *program* is a complete set of those instructions that does something. A *programming
@@ -50,7 +50,7 @@ flowchart TD
 ```
 
 Order matters enormously. If line 2 depends on something line 4 sets up, it won't work - the computer
-reached line 2 before line 4 ever happened. Reading code is mostly this: tracing, in your head, what the
+reached line 2 before line 4 ever happened. Reading code is mostly tracing, in your head, what the
 machine does at each line, in sequence.
 
 ## Your first program
@@ -69,8 +69,8 @@ line, it shows:
 Hello, world!
 ```
 
-That's a complete program. One instruction, carried out exactly. Let's break the line into its pieces,
-because every piece is a thing you'll see again and again:
+That's a complete program. One instruction, carried out exactly. Here's the line broken into its pieces
+- you'll see every one of them again and again:
 
 ```text
    print ( "Hello, world!" )
@@ -131,10 +131,10 @@ SyntaxError: unterminated string literal (detected at line 1)
 sentence with no closing quotation mark. The computer can't even *run* it yet, because it can't make
 sense of what you wrote.
 
-This feels harsh at first. But notice what the error gives you: the file, the line number (`line 1`), a
+This feels harsh at first, but notice what the error gives you: the file, the line number (`line 1`), a
 little `^` pointing near the problem, and a description (`unterminated string literal` - "you opened a
-piece of text and never closed it"). Errors aren't the computer being mean. They're the computer telling
-you, precisely, where your instructions didn't make sense. Learning to *read* them calmly is one of the
+piece of text and never closed it"). Errors aren't the computer being mean - they're it telling you,
+precisely, where your instructions didn't make sense. Learning to *read* them calmly is one of the
 biggest things separating someone who's stuck from someone who's moving.
 
 ## Why this saves you later

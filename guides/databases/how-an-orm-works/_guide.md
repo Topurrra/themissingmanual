@@ -8,7 +8,7 @@ category: databases
 order: 10
 difficulty: intermediate
 synonyms: ["how an orm works", "what is an orm", "object relational mapping", "orm under the hood", "identity map unit of work", "orm change tracking", "orm n+1 problem", "orm lazy loading", "when not to use an orm"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # How an ORM Works
@@ -16,8 +16,8 @@ updated: 2026-06-23
 You've probably used an ORM — Hibernate in Java, SQLAlchemy in Python, GORM in Go, Entity Framework Core in
 C# — or you will soon. Each has its own API, but they're all solving the *same* problem the same way, and
 once you understand the underlying pattern, every one of them reads as "oh, that's the same idea, named
-differently." That's the goal here: not a tour of one library, but the **concepts every ORM shares**, so the
-next ORM you meet is mostly vocabulary.
+differently." That's the goal here: not a tour of one library, but the **concepts every ORM shares**, so
+the next ORM you meet is mostly vocabulary.
 
 The core problem is the **object-relational impedance mismatch**: your code thinks in objects with references
 to other objects, but a relational database thinks in rows, columns, and foreign keys. An **Object-Relational

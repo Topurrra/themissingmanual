@@ -6,14 +6,14 @@ summary: "Spring Boot is core Spring plus auto-configuration, starters, and an e
 tags: [spring, spring-framework, applicationcontext, ioc, core-spring, no-boot, java]
 difficulty: beginner
 synonyms: ["spring without spring boot", "core spring framework", "spring applicationcontext setup", "what does spring boot do", "plain spring app", "spring vs spring boot under the hood"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Spring Without Boot — Why Core Spring?
 
-If you came here from Spring Boot, you already have a working app and a comfortable feeling that the framework "handles things." This guide deliberately takes that comfort away — temporarily — so you can see what's underneath. We're going to build a Spring application *without* Boot. More typing, more visible wiring, and at the end, a much deeper understanding of what Boot was doing on your behalf the whole time.
+If you came here from Spring Boot, you already have a working app and a comfortable feeling that the framework "handles things." This guide deliberately takes that comfort away — temporarily — so you can see what's underneath. We're going to build a Spring application *without* Boot: more typing, more visible wiring, and at the end, a much deeper understanding of what Boot was doing on your behalf the whole time.
 
-Think of this as the **roots guide**. The [Spring Boot guide](/guides/spring-boot-from-zero) showed you the fast, pleasant path. Here we walk the slow path once, on purpose, so that when you go back to Boot you'll read its annotations with X-ray vision — you'll *know* what each one replaced.
+Think of this as the **roots guide**. The [Spring Boot guide](/guides/spring-boot-from-zero) showed you the fast, pleasant path. Here we walk the slow path once, on purpose, so when you go back to Boot you'll read its annotations with X-ray vision — you'll *know* what each one replaced.
 
 We'll use one running example across the whole guide: a `NotificationService` that needs to send messages through a `MessageSender` interface, with implementations like `EmailSender` and `SmsSender`. It's a small domain, but it's exactly the shape that makes dependency injection, qualifiers, scopes, and AOP worth learning. The web layer doesn't arrive until phase 7 — for now everything runs in a plain `main`.
 
@@ -123,7 +123,7 @@ public class Main {
 EMAIL to ada@example.com: Welcome aboard!
 ```
 
-*What just happened:* this is the entire lifecycle, in the open. `new AnnotationConfigApplicationContext(AppConfig.class)` constructs the container and points it at `AppConfig`. Because `AppConfig` carries `@ComponentScan`, the container walks the `com.example.notify` package, finds `EmailSender` and `NotificationService`, creates one of each, and — seeing that `NotificationService` needs a `MessageSender` — passes the `EmailSender` bean into its constructor. Then `context.getBean(...)` hands you the fully-wired service and you call it. Every step here — create container, scan, instantiate, inject — is precisely what `SpringApplication.run(...)` does for you in one line. You just watched the curtain go up.
+*What just happened:* this is the entire lifecycle, in the open. `new AnnotationConfigApplicationContext(AppConfig.class)` constructs the container and points it at `AppConfig`. Because `AppConfig` carries `@ComponentScan`, the container walks the `com.example.notify` package, finds `EmailSender` and `NotificationService`, creates one of each, and — seeing that `NotificationService` needs a `MessageSender` — passes the `EmailSender` bean into its constructor. Then `context.getBean(...)` hands you the fully-wired service and you call it. Every step here — create container, scan, instantiate, inject — is precisely what `SpringApplication.run(...)` does in one line.
 
 ## What you had to do that Boot did automatically
 

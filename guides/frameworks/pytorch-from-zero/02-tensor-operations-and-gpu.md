@@ -6,13 +6,13 @@ summary: "Do real math on tensors: elementwise ops, matrix multiply (the heart o
 tags: [pytorch, tensor-operations, broadcasting, reshape, gpu, cuda, device]
 difficulty: beginner
 synonyms: ["pytorch tensor operations", "pytorch broadcasting", "pytorch reshape view", "pytorch gpu cuda", "pytorch to device", "pytorch matrix multiply", "pytorch tensor indexing"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Tensor Operations & the GPU
 
 In [Phase 1](01-what-pytorch-is-and-tensors.md) you met the tensor: a multi-dimensional array that's
-GPU-ready and autograd-aware. That was the noun. This phase is the verbs — the things you *do* to tensors.
+GPU-ready and autograd-aware — that was the noun. This phase is the verbs, the things you *do* to tensors.
 
 Here's the mental model to carry through everything below: **a tensor operation acts on the whole tensor
 at once, not one number at a time.** When you write `a + b`, you're not asking for a loop over elements —

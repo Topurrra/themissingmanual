@@ -12,12 +12,12 @@ synonyms:
   - useMemo explained
   - cache function results by arguments
   - why is recursive fibonacci slow
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # When it backfires
 
-Memoization trades memory for time — you spend space storing answers so you never spend time recomputing them. That trade is excellent right up until the memory side of it stops being free, or until the function you cached wasn't the safe kind to cache in the first place. Both failure modes are quiet: nothing crashes, nothing throws an error. Things get slowly worse, or silently become wrong.
+Memoization trades memory for time — you spend space storing answers so you never spend time recomputing them. That trade is excellent right up until the memory side stops being free, or until the function you cached wasn't safe to cache in the first place. Both failure modes are quiet: nothing crashes or throws an error, things just get slowly worse, or silently wrong.
 
 ## Unbounded memory growth
 
@@ -59,7 +59,7 @@ def get_price(product_id):
 
 *What just happened at first:* `get_price(42)` runs, hits the database, gets back `19.99`, and caches it. Every subsequent call to `get_price(42)` returns `19.99` from the cache — fast, and correct, for now.
 
-*What happens next:* the product's price changes in the database — a sale ends, a price update ships. `get_price(42)` is called again. It does not go back to the database. It returns `19.99` from the cache, because as far as the memoization wrapper is concerned, `42` is `42` and the cached answer for `42` is still sitting right there. The function will keep returning the stale price for as long as the process runs, with no error, no warning, and nothing in the logs to suggest anything is wrong. This is worse than a crash — a crash gets noticed and fixed. A silently stale cached value gets shipped to customers.
+*What happens next:* the product's price changes in the database — a sale ends, a price update ships. `get_price(42)` is called again, but it does not go back to the database: it returns `19.99` from the cache, because as far as the memoization wrapper is concerned, `42` is `42` and the cached answer is still sitting right there. The function keeps returning the stale price for as long as the process runs, with no error, no warning, and nothing in the logs to suggest anything is wrong — worse than a crash, because a crash gets noticed and fixed, while a silently stale cached value just ships to customers.
 
 The fix isn't a trick — it's recognizing that `get_price` was never actually pure, so it was never a valid memoization candidate. The real options are: don't memoize it, memoize a genuinely pure sub-piece of it if one exists, or reach for something built to handle values that intentionally change over time — which is the next distinction.
 

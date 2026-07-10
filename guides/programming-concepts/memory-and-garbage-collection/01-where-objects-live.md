@@ -6,12 +6,12 @@ summary: "A quick recap of the stack (fast, automatic) versus the heap (flexible
 tags: [heap, stack, memory, allocation, lifetime, pointers]
 difficulty: intermediate
 synonyms: ["what is the heap", "stack vs heap", "where do objects live in memory", "what does allocate on the heap mean", "why is heap memory hard to free", "what is a dangling pointer"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Where Objects Live & How They're Allocated
 
-Before we can talk about cleaning up memory, we have to be honest about where the stuff *is*. When your program is running, every value you've created sits somewhere in memory. There are two main neighborhoods it can live in, and they have completely different rules - one cleans up after itself automatically, and one does not. That second one is the whole reason garbage collection exists.
+Before we can talk about cleaning up memory, we have to be honest about where the stuff *is*: every value you create sits somewhere in memory, in one of two neighborhoods with completely different rules - one cleans up after itself automatically, and one does not. That second one is the whole reason garbage collection exists.
 
 > ⏭️ This phase recaps an idea covered in full in [What Actually Happens When Your Code Runs](/guides/what-happens-when-code-runs). If the stack and heap are already solid for you, skim the recap and slow down at *"The hard part."*
 
@@ -80,7 +80,7 @@ Reclaim too *late* - or never - and you get the opposite failure: memory that's 
 
 📝 **Terminology.** *Use-after-free* = using memory through a pointer after that memory has been reclaimed. *Memory leak* = memory that's no longer reachable or needed but never gets reclaimed, so usage grows without bound.
 
-So reclaiming heap memory is a tightrope: too early breaks correctness, too late wastes memory. Getting it *exactly* right requires answering "is anyone still using this?" precisely, every time. That single question is the fork in the road for the next phase. Two whole families of languages exist because they answer it differently: **make the programmer answer it by hand**, or **make the runtime figure it out automatically.**
+So reclaiming heap memory is a tightrope - too early breaks correctness, too late wastes memory - and getting it *exactly* right requires answering "is anyone still using this?" precisely, every time. That single question is the fork in the road for the next phase. Two whole families of languages exist because they answer it differently: **make the programmer answer it by hand**, or **make the runtime figure it out automatically.**
 
 ## Recap
 

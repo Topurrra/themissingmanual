@@ -6,7 +6,7 @@ summary: "An IP address is the number that identifies one machine on a network; 
 tags: [networking, ip-address, ipv4, ipv6, public-ip, private-ip]
 difficulty: beginner
 synonyms: ["what is an ip address", "ipv4 vs ipv6", "why did we run out of ip addresses", "public vs private ip", "what is my ip", "do all my devices have the same ip"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # IP Addresses - A Machine's Number
@@ -50,7 +50,7 @@ The exact count isn't worth memorizing - the point is that IPv6 has so many addr
 
 ## Public vs private - your devices share one address
 
-This is the part that quietly confuses almost everyone, so let's go slowly.
+This is the part that quietly confuses almost everyone.
 
 **Two worlds, two kinds of address.** Your home has many devices - phone, laptop, TV, console. Each gets a **private IP address**, handed out by your router, that only means something *inside your home network*. Out on the public internet, your whole home appears as a *single* **public IP address**, the one your internet provider gave your router.
 
@@ -70,7 +70,7 @@ flowchart LR
 
 ## See it for yourself
 
-Let's make this concrete. First, find a public IP by asking your computer to look up a name (more on *how* that lookup works in the next phase - for now, just watch the number come back):
+First, find a public IP by asking your computer to look up a name (more on *how* that lookup works in the next phase - for now, just watch the number come back):
 
 ```console
 $ ping example.com

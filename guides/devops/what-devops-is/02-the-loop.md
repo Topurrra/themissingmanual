@@ -6,7 +6,7 @@ summary: "DevOps runs as a continuous loop — build, test, ship, observe, repea
 tags: [devops, loop, build, test, ship, observe, automation, feedback, ci-cd]
 difficulty: beginner
 synonyms: ["devops loop", "devops lifecycle", "build test ship observe", "what is the devops cycle", "why is devops continuous"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Loop: Build → Test → Ship → Observe
@@ -29,7 +29,7 @@ flowchart LR
 
 **What it actually is.** DevOps is a *continuous* cycle: you **build** a change, **test** it, **ship** it to users, **observe** how it behaves in the real world, and what you learn there feeds straight back into the next thing you build. Then it turns again. And again.
 
-**Why a loop and not a line.** A straight line says "we built the software, we're done." But software is never done — there are always more features, more fixes, more things to learn from real users. Drawing it as a loop captures the truth: the team is always somewhere on this cycle, and the work never stops being *connected* end-to-end. The output of running the software (what you observe) is the input to improving it.
+**Why a loop and not a line.** A straight line says "we built the software, we're done." But software is never done — there are always more features, fixes, and things to learn from real users. Drawing it as a loop captures the truth: the team is always somewhere on this cycle, connected end-to-end. The output of running the software (what you observe) is the input to improving it.
 
 Let's walk each stage in plain terms.
 
@@ -73,13 +73,13 @@ Here's the tension at the heart of all of this. Going *fast* usually means going
 
 DevOps escapes the trade-off with two ideas working together:
 
-- **Automation makes it fast.** When building, testing, and shipping are done by machines instead of humans clicking through checklists, a change can go from "committed" to "live" in minutes, and it happens the *exact same way* every time. No forgotten steps, no "did you remember to run the tests?" The machinery that does this is called a **CI/CD pipeline**, and it's important enough to have its own guide — [What CI/CD Does](/guides/what-cicd-does).
+- **Automation makes it fast.** When building, testing, and shipping are done by machines instead of humans clicking through checklists, a change can go from "committed" to "live" in minutes, the *exact same way* every time — no forgotten steps, no "did you remember to run the tests?" That machinery is called a **CI/CD pipeline**, and it's important enough to have its own guide — [What CI/CD Does](/guides/what-cicd-does).
 
 - **Feedback makes it safe.** Every loop you complete teaches you something. Automated tests give fast feedback *before* shipping ("this change broke login — stop"). Observing gives feedback *after* shipping ("errors are spiking — roll it back"). Because feedback is fast, mistakes get caught small, while they're still cheap to fix.
 
 💡 **Key point.** Automation makes the loop **fast**; feedback makes it **safe**. Together they dissolve the old "fast *or* safe" trade-off — that's the engine that lets DevOps teams ship many small changes a day instead of one terrifying change a quarter.
 
-**Why this saves you later.** When you hear a team say they "deploy fifty times a day," it sounds reckless — until you understand the loop. Each of those deploys is small, automatically tested, and watched after it ships, so a broken one is caught in minutes and reversed. *That's* why frequent shipping is safer than rare shipping, not despite it. Phase 3 explains why "small and frequent" is a deliberate choice, not chaos.
+**Why this saves you later.** When you hear a team say they "deploy fifty times a day," it sounds reckless — until you understand the loop. Each deploy is small, automatically tested, and watched after it ships, so a broken one is caught in minutes and reversed. *That's* why frequent shipping is safer than rare shipping, not despite it. Phase 3 explains why "small and frequent" is a deliberate choice, not chaos.
 
 ## Recap
 

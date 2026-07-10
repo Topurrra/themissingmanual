@@ -6,7 +6,7 @@ summary: "Shannon entropy and thermodynamic entropy are the same formula, not a 
 tags: [physics, computation, shannon-entropy, boltzmann-entropy, information-theory, landauer, thermodynamics]
 difficulty: advanced
 synonyms: ["Shannon entropy vs thermodynamic entropy", "is information entropy the same as physical entropy", "why is entropy used in information theory", "Boltzmann entropy formula", "information theory and thermodynamics connection", "physical limits of computers"]
-updated: 2026-07-06
+updated: 2026-07-10
 ---
 
 # Information Theory Meets Physics
@@ -29,7 +29,7 @@ This isn't numerology. Both formulas answer the identical underlying question: *
 
 This identity is the reason Phase 1's claim - that erasing a bit has a real thermodynamic energy cost - isn't a metaphor borrowed from physics to make a point about computers. It's a direct consequence.
 
-A bit with an unknown value has two equally likely microstates (0 or 1), so its Shannon entropy is `log 2`. Because Shannon entropy and thermodynamic entropy are the same quantity, that bit's *physical* microstate count also carries `log 2` worth of entropy, in the literal Boltzmann sense - the same sense that applies to a box of gas. Erasing the bit forces it to one definite state, dropping its entropy to `log 1 = 0`. That drop is not "entropy" in some figurative computing sense standing in for a physical idea. It is thermodynamic entropy, full stop, and the second law governs it exactly as it governs a gas that's been compressed into a smaller volume. The dropped entropy has to reappear somewhere else - as heat in the environment - because the underlying law doesn't know or care whether the microstates it's counting belong to gas molecules or to a transistor's charge state.
+A bit with an unknown value has two equally likely microstates (0 or 1), so its Shannon entropy is `log 2`. Because Shannon entropy and thermodynamic entropy are the same quantity, that bit's *physical* microstate count also carries `log 2` worth of entropy, in the literal Boltzmann sense - the same sense that applies to a box of gas. Erasing the bit forces it to one definite state, dropping its entropy to `log 1 = 0`. That drop isn't a figurative "entropy" standing in for a physical idea - it is thermodynamic entropy, full stop, and the second law governs it exactly as it governs a gas that's been compressed into a smaller volume. The dropped entropy has to reappear somewhere else - as heat in the environment - because the underlying law doesn't know or care whether the microstates it's counting belong to gas molecules or to a transistor's charge state.
 
 If Shannon entropy and Boltzmann entropy were only analogous rather than identical, Landauer's principle would have no right to be literally true. It would be a suggestive metaphor, the kind of thing said in a talk and forgotten by the next slide. It's not a metaphor, because there's only one entropy underneath both names, and that's precisely why the k·T·ln 2 bound from Phase 1 is a real, measurable number of joules and not a rhetorical flourish.
 

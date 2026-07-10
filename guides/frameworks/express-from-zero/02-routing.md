@@ -6,16 +6,15 @@ summary: "How Express turns a method and a path into a handler: method routes, r
 tags: [express, javascript, routing, params, router]
 difficulty: beginner
 synonyms: ["express routing", "express route params", "express query string", "express router", "express http methods", "express app.use router"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Routing
 
-Here's the one idea to hold for this whole phase: **a route is a method plus a path, pointing at a
-handler.** That's it. When a request arrives, Express looks at *what verb* it used (`GET`, `POST`,
-`DELETE`…) and *what URL path* it asked for (`/tasks`, `/tasks/42`), then runs the first handler you
-registered that matches both. Everything else in this phase — params, query strings, routers — is just
-detail layered onto that sentence.
+One idea for this whole phase: **a route is a method plus a path, pointing at a handler.** When a
+request arrives, Express looks at *what verb* it used (`GET`, `POST`, `DELETE`…) and *what URL path*
+it asked for (`/tasks`, `/tasks/42`), then runs the first handler you registered that matches both.
+Everything else — params, query strings, routers — is detail layered onto that sentence.
 
 > 📝 Routing answers a different question than the response does. Routing decides *which* function runs;
 > the function decides *what* to send back. Keep those two jobs separate in your head and Express stays
@@ -56,10 +55,10 @@ app.post('/tasks', (req, res) => {
 app.listen(3000, () => console.log('listening on http://localhost:3000'))
 ```
 
-*What just happened:* the **same path** `/tasks` is registered twice — but for different verbs. A
-`GET /tasks` runs the first handler and returns the list; a `POST /tasks` runs the second and creates a
-task. Express never confuses them, because a route is method *and* path, not path alone. The `201` is the
-HTTP status for "created" — we set it explicitly because the default would be `200`.
+*What just happened:* the **same path** `/tasks` is registered twice, for different verbs. `GET /tasks`
+runs the first handler and returns the list; `POST /tasks` runs the second and creates a task. Express
+never confuses them — a route is method *and* path, not path alone. The `201` is the HTTP status for
+"created"; we set it explicitly because the default would be `200`.
 
 The full set you'll reach for: `app.get`, `app.post`, `app.put`, `app.delete`, `app.patch`. There's also
 `app.all(path, handler)`, which matches *every* method for that path — handy for cross-cutting things like
@@ -162,10 +161,10 @@ app.use('/api/tasks', tasksRouter)
 ```
 
 *What just happened:* the router's paths are written **relative to where it's mounted**. Inside the
-router, `'/'` and `'/:id'` look like they'd answer the site root — but because we mounted it at
-`/api/tasks`, they actually answer `GET /api/tasks` and `GET /api/tasks/42`. The mount prefix is glued in
-front of every route the router defines. This is exactly how you'll split routes across files in Phase 7;
-for now, just notice that a router *is* an `app` you can carry around and plug in.
+router, `'/'` and `'/:id'` look like they'd answer the site root, but because we mounted it at
+`/api/tasks`, they answer `GET /api/tasks` and `GET /api/tasks/42` — the mount prefix is glued in front
+of every route the router defines. This is exactly how you'll split routes across files in Phase 7; a
+router *is* an `app` you can carry around and plug in.
 
 ## Route order: first match wins
 

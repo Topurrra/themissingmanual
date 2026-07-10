@@ -6,15 +6,15 @@ summary: "Write a bare ASGI app with scope/receive/send, read the request, run i
 tags: [asgi, uvicorn, starlette, fastapi, async, scope-receive-send, hypercorn]
 difficulty: intermediate
 synonyms: ["asgi app from scratch", "asgi scope receive send", "uvicorn hypercorn asgi server", "bare asgi application", "how fastapi works asgi", "asgi hello world", "starlette asgi"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # An ASGI App & the Servers
 
 Back in [Phase 2](02-a-wsgi-app-from-scratch.md) you wrote a complete WSGI app - one function the
 server calls per request, handed an `environ` dict, returning bytes. [Phase 4](04-why-asgi-exists.md)
-explained *why* that shape couldn't go async, and what ASGI replaced it with. Now we make ASGI real the
-same way we made WSGI real: by writing the whole thing by hand, with no framework in sight.
+explained *why* that shape couldn't go async, and what ASGI replaced it with. Now we make ASGI real
+the same way: by writing the whole thing by hand, with no framework in sight.
 
 The mental model to carry through, and it's a direct echo of the WSGI one: **an ASGI app is one
 `async` function the server calls per connection.** Instead of `(environ, start_response)`, it takes

@@ -6,7 +6,7 @@ summary: "PowerShell is a modern shell whose big idea is that commands pass obje
 tags: [powershell, shell, cmdlets, objects, pipeline, execution-policy, windows]
 difficulty: intermediate
 synonyms: ["what is powershell", "powershell for beginners", "powershell objects vs text", "what does get-process do", "powershell verb noun cmdlet", "how to pipe in powershell", "how to run a powershell script", "powershell execution policy error", "running scripts is disabled on this system"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # PowerShell Basics
@@ -37,7 +37,7 @@ PowerShell flows **objects** instead - structured things with named properties. 
                                           next command just asks for .CPU
 ```
 
-**Why this is the whole game.** Because the data stays structured, you can sort, filter, and select by *property name* with simple, readable commands - instead of writing text-wrangling incantations. That's why PowerShell feels verbose at first and then suddenly feels powerful: you're manipulating data, not scraping text.
+**Why this is the whole game.** Because the data stays structured, you sort, filter, and select by *property name* with simple, readable commands instead of text-wrangling incantations. That's why PowerShell feels verbose at first, then suddenly feels powerful: you're manipulating data, not scraping text.
 
 💡 **Key point.** Whenever you see a PowerShell command, ask "what *object* does this produce, and what properties does it have?" That question is the key to the entire shell. The display you see on screen is just a *printed view* of objects that are richer than what's shown.
 
@@ -134,7 +134,7 @@ PS C:\> Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 ⚠️ **Gotcha - don't reach for `Unrestricted` or `Bypass` to "make the error go away."** Those turn the safety off entirely and let *any* script, including ones you downloaded without thinking, run unchallenged. `RemoteSigned` for `CurrentUser` is the standard, safe choice. If a tutorial tells you to set `Bypass` machine-wide, that's a flag to slow down and understand what you're being asked to disable.
 
-🪖 **War story.** Every Windows developer has watched a colleague (or themselves) paste a script, hit that red "running scripts is disabled" wall, and conclude "PowerShell is broken." It isn't - it's a one-line safety setting doing exactly its job. Knowing this turns a 30-minute confused detour into a 10-second `Set-ExecutionPolicy` and a knowing nod.
+🪖 **War story.** Every Windows developer has watched a colleague paste a script, hit that red "running scripts is disabled" wall, and conclude "PowerShell is broken." It isn't - it's a safety setting doing its job, and now a 30-minute confused detour is a 10-second `Set-ExecutionPolicy`.
 
 ## Where to go from here
 

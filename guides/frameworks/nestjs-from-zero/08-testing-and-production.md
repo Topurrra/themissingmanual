@@ -6,12 +6,12 @@ summary: "Use Nest's DI test module to swap mocks for real deps in unit tests, b
 tags: [nestjs, typescript, testing, production, config]
 difficulty: intermediate
 synonyms: ["nestjs testing", "nest Test.createTestingModule", "nestjs e2e supertest", "nestjs config module", "nestjs production build", "nest deploy"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Testing & Production
 
-Back in [Phase 3](03-providers-and-di.md) there was a promise: dependency injection isn't ceremony for its own sake — it exists to make your code testable. This is where that promise pays off. The same mechanism Nest uses to wire `TasksService` into `TasksController` in production is the mechanism that lets you, in a test, swap that real service for a fake one and check the controller's behavior in isolation.
+Back in [Phase 3](03-providers-and-di.md) there was a promise: dependency injection isn't ceremony for its own sake — it exists to make your code testable, and this is where that promise pays off. The same mechanism Nest uses to wire `TasksService` into `TasksController` in production is the mechanism that lets you, in a test, swap that real service for a fake one and check the controller's behavior in isolation.
 
 Here's the mental model for the whole testing half of this phase: **a test builds its own tiny Nest app.** You hand `@nestjs/testing` a list of providers — some real, some fake — it spins up a DI container exactly like the real one, and you pull pieces out and poke at them. Because the wiring is identical to production, what passes in the test reflects how things behave for real. The only thing you change is *which* objects get injected.
 

@@ -6,16 +6,16 @@ summary: "An honest, judgment-flagged take: TDD shines for well-understood logic
 tags: [tdd, bdd, testing, judgment, when-to-use, trade-offs]
 difficulty: intermediate
 synonyms: ["is tdd worth it", "when should i use tdd", "when to use bdd", "is bdd overkill", "tdd downsides", "cargo cult tdd", "should i always do tdd"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Honestly: When They Help, When They Don't
 
-Here's the phase the conference talks rarely give you. Everything below is **judgment** - my read after
+Here's the phase the conference talks rarely give you. Everything below is **judgment** - a read after
 watching these techniques help on some projects and quietly waste everyone's time on others. Treat it as
 opinion you can argue with, not law. The facts are in Phases 1 and 2; this is about taste.
 
-The single most useful thing I can tell you: **TDD and BDD are tools, not religion.** A tool is something
+The single most useful thing to internalize: **TDD and BDD are tools, not religion.** A tool is something
 you pick up when it fits the job and put down when it doesn't. The moment a technique becomes a thing you do
 *because that's what good developers do*, rather than because it's solving a problem in front of you, it has
 stopped helping.
@@ -43,9 +43,8 @@ concrete checklist you can drive to green one at a time.
 
 **Exploratory work, where you don't yet know what you want.** You can't write a test for behavior you
 haven't decided on. When you're spiking a prototype, learning an unfamiliar API, or feeling out a design,
-test-first inverts badly: it demands answers you don't have. Explore first, *then* TDD the version you
-decide to keep. Forcing TDD here is how you end up writing - and rewriting - tests for code you throw away an
-hour later.
+test-first inverts badly - it demands answers you don't have. Explore first, *then* TDD the version you
+decide to keep. Forcing TDD here means writing, and rewriting, tests for code you throw away an hour later.
 
 **UI and visual work.** Whether a layout *looks right*, whether an animation feels smooth, whether the
 spacing is pleasant - these aren't expressible as `assert`. You can test the logic *behind* a UI (does the
@@ -74,19 +73,19 @@ Here's the same trade-off as a table you can scan:
 
 BDD's extra layer - the English scenarios, the step definitions - earns its keep in exactly one situation:
 **when non-developers actually read and shape the scenarios.** A product owner who reviews the
-Given/When/Then before you build, a compliance requirement that must be traceable to plain-language rules, a
-domain complex enough that getting the *requirements* right is harder than getting the *code* right - that's
-where BDD turns its overhead into a profit. The shared, readable spec prevents the most expensive bug of
-all: building the wrong thing correctly.
+Given/When/Then before you build, a compliance requirement traceable to plain-language rules, a domain
+complex enough that getting the *requirements* right is harder than the *code* - that's where BDD turns its
+overhead into a profit. The shared, readable spec prevents the most expensive bug of all: building the wrong
+thing correctly.
 
 ## When BDD is just overhead
 
 > ⚖️ Judgment.
 
 If the developers are the only people who ever read the scenarios, you're maintaining a translation layer
-with no one on the other end. You've taken a plain unit test - which any developer reads fine - and wrapped
-it in English-parsing plumbing that has to be kept in sync. For a developer-only audience, plain TDD-style
-tests are usually clearer and cheaper. BDD without business readers is BDD's costs without its benefit.
+with no one on the other end - a plain unit test, which any developer reads fine, wrapped in
+English-parsing plumbing that has to be kept in sync. For a developer-only audience, plain TDD-style tests
+are usually clearer and cheaper. BDD without business readers is BDD's costs without its benefit.
 
 ## ⚠️ The big trap: cargo-culting the ritual
 
@@ -105,8 +104,8 @@ In testing, cargo-culting looks like:
   stakeholder in sight.
 - Insisting a teammate redo working, well-tested code because it wasn't written in the approved order.
 
-The tell is always the same: **the ritual is present, but the benefit it exists to produce is absent.** When
-you catch yourself (or a team) doing the ceremony without the payoff, that's the signal to stop and ask what
+The tell is always the same: **the ritual is present, but the benefit it exists to produce is absent.**
+Catch yourself (or a team) doing the ceremony without the payoff, and that's the signal to stop and ask what
 problem you're actually solving.
 
 ## The honest takeaway
@@ -119,8 +118,8 @@ problem you're actually solving.
 - **Neither is a measure of your worth as an engineer.** They're techniques. Reach for them when they solve
   a problem you have, set them down when they don't, and never perform the ritual for its own sake.
 
-The developers who get the most out of these techniques aren't the most devout - they're the ones who know
-exactly when *not* to use them.
+The developers who get the most out of these techniques aren't the most devout - they know exactly when
+*not* to use them.
 
 ## Recap
 
@@ -134,8 +133,8 @@ exactly when *not* to use them.
 5. **Tools, not religion.** Pick the technique that fits the job in front of you, and drop it when it
    doesn't.
 
-That's the honest picture. You now know what TDD and BDD are, how to run each loop, and - most importantly -
-the judgment to use them where they genuinely help.
+That's the honest picture: what TDD and BDD are, how to run each loop, and the judgment to use them where
+they genuinely help.
 
 ---
 

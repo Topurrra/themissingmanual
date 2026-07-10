@@ -6,12 +6,12 @@ summary: "Spawn independent work with tokio::spawn, await its JoinHandle, see wh
 tags: [tokio, rust, tasks, spawn, joinhandle, concurrency]
 difficulty: intermediate
 synonyms: ["tokio spawn", "tokio task", "tokio joinhandle", "rust async tasks vs threads", "tokio concurrency", "tokio join macro"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Tasks & Spawning
 
-Here's the mental model to anchor everything in this phase: **a task is a future that the runtime schedules independently.** In [the last phase](02-async-await-futures.md) you saw that a future is an inert plan - it does nothing until something polls it, and `.await` drives one future to completion *from where you are*. A task is the next step up. When you hand a future to `tokio::spawn`, you're telling the runtime: "take this, run it on your own, alongside everything else." You get back a handle, and the work starts running concurrently right away - you don't have to be sitting there awaiting it.
+**A task is a future that the runtime schedules independently.** In [the last phase](02-async-await-futures.md) you saw that a future is an inert plan - it does nothing until something polls it, and `.await` drives one future to completion *from where you are*. A task is the next step up. When you hand a future to `tokio::spawn`, you're telling the runtime: "take this, run it on your own, alongside everything else." You get back a handle, and the work starts running concurrently right away - you don't have to be sitting there awaiting it.
 
 That distinction is the whole phase. A bare future is potential energy. A spawned task is potential energy that the runtime has already plugged in and switched on.
 

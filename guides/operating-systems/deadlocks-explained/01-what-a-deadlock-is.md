@@ -12,7 +12,7 @@ synonyms:
   - how to prevent a deadlock
   - how to detect a deadlock
   - lock ordering deadlock
-updated: 2026-07-04
+updated: 2026-07-11
 ---
 
 # What a deadlock actually is
@@ -58,13 +58,13 @@ Thread B holds account2, wants account1 (held by A)
 
 A slow lock wait resolves eventually — the other thread finishes and releases it. A deadlock never resolves on its own, because the "other thread" that would release the lock is itself waiting on you. It's not a long queue; it's a queue that loops back on itself. There's no front of the line to reach.
 
-This is also why deadlocks are so timing-dependent and hard to reproduce on demand. If Thread A happens to acquire *both* locks before Thread B starts its transfer, there's no conflict at all — the whole scenario depends on both threads reaching their first lock at close to the same moment, then reaching for the second lock in opposite order. Code that deadlocks under production load might run thousands of times in testing without ever triggering it, purely by scheduling luck.
+This is also why deadlocks are timing-dependent and hard to reproduce on demand: the scenario only occurs if both threads reach their first lock at close to the same moment, then reach for the second lock in opposite order. Code that deadlocks under production load might run thousands of times in testing without ever triggering it, purely by scheduling luck.
 
 ## The mental model to keep
 
 Picture it as a graph: each thread points an arrow at the resource it's waiting for, and each held resource points back at the thread holding it. A deadlock exists exactly when that graph contains a **cycle** — a loop you can trace that comes back to where it started. Two threads is the simplest possible cycle; production deadlocks sometimes involve three, four, or more threads all waiting in a longer loop, but the shape is identical.
 
-That cycle is the entire disease. Phase 2 breaks down the four specific conditions that have to hold at once for such a cycle to form — which matters because prevention comes down to making sure at least one of those four conditions can never be true.
+That cycle is the entire disease. Phase 2 breaks down the four specific conditions that have to hold at once for such a cycle to form.
 
 ```quiz
 [

@@ -6,7 +6,7 @@ summary: "Model relationships in EF Core as foreign keys plus navigation propert
 tags: [efcore, csharp, relationships, navigation-properties, foreign-keys]
 difficulty: advanced
 synonyms: ["ef core relationships", "ef core navigation properties", "ef core one to many", "ef core many to many", "ef core foreign key convention", "ef core fluent api relationships"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Relationships
@@ -38,7 +38,7 @@ public class Post
 }
 ```
 
-*What just happened:* EF Core saw a collection navigation (`Blog.Posts`) and a matching reference navigation on the other side (`Post.Blog`), and concluded these are *the same relationship viewed from both ends*. Then it spotted `Post.BlogId` — an `int` named `<NavigationName>Id` — and recognized it as the foreign key by convention. The `= null!` on `Post.Blog` is the same trick from earlier phases: it tells the C# compiler "trust me, this won't be null at runtime" so the nullable-reference warning goes away (EF populates it when you load the relationship).
+*What just happened:* EF Core saw a collection navigation (`Blog.Posts`) and a matching reference navigation on the other side (`Post.Blog`), and concluded these are *the same relationship viewed from both ends*. Then it spotted `Post.BlogId` — an `int` named `<NavigationName>Id` — and recognized it as the foreign key by convention. The `= null!` on `Post.Blog` tells the C# compiler "trust me, this won't be null at runtime" so the nullable-reference warning goes away (EF populates it when you load the relationship).
 
 When you run `dotnet ef migrations add AddPostBlogRelationship`, the generated migration creates the `BlogId` column **and an index on it** — relational databases index foreign keys because you almost always filter and join on them.
 
@@ -49,7 +49,7 @@ CREATE INDEX "IX_Posts_BlogId" ON "Posts" ("BlogId");
 -- plus a FOREIGN KEY constraint linking Posts.BlogId -> Blogs.Id
 ```
 
-*What just happened:* The migration added the FK column, created the index EF generates automatically for it, and declared the foreign-key constraint so the database itself enforces that every `Post.BlogId` points at a real `Blog`. Two navigation properties and one `int` became a proper, indexed, constrained relationship.
+*What just happened:* the migration added the FK column, created the index EF generates automatically for it, and declared the foreign-key constraint so the database itself enforces that every `Post.BlogId` points at a real `Blog`. Two navigation properties and one `int` became a proper, indexed, constrained relationship.
 
 > 💡 The convention `<NavigationName>Id` is why `BlogId` works without configuration. Named `OwnerId` instead, EF wouldn't recognize it as the FK for the `Blog` navigation — you'd point EF at it with the Fluent API (coming up). Match the convention and you write zero config.
 
@@ -72,7 +72,7 @@ public class BlogHeader
 }
 ```
 
-*What just happened:* Because both sides hold a single reference (no `List<>`), EF infers one-to-one. The foreign key goes on the **dependent** side — the entity that can't exist without the other (`BlogHeader` needs a `Blog`). EF often can't guess which side is dependent here, so one-to-one is the relationship most likely to need a Fluent API hint; the shape of that comes next.
+*What just happened:* because both sides hold a single reference (no `List<>`), EF infers one-to-one. The foreign key goes on the **dependent** side — the entity that can't exist without the other (`BlogHeader` needs a `Blog`). EF often can't guess which side is dependent here, so one-to-one is the relationship most likely to need a Fluent API hint.
 
 **Many-to-many** is where EF Core 5+ earns its keep. A post has many tags; a tag belongs to many posts. Put a collection on *each* side — these are called **skip navigations** — and EF creates the join table for you:
 
@@ -93,7 +93,7 @@ public class Tag
 // EF creates a PostTag join table; add an explicit join entity only if it needs extra columns.
 ```
 
-*What just happened:* EF saw a collection on both ends with no foreign key on either entity, and recognized a many-to-many. It silently created a hidden join table (`PostTag`) with two FK columns — `PostsId` and `TagsId` — to record which posts wear which tags. You never declared that table; it's invisible in your C# model, and you navigate straight from `post.Tags` to `tag.Posts` as if the join didn't exist. That's the "skip" in skip navigation: you skip over the join row.
+*What just happened:* EF saw a collection on both ends with no foreign key on either entity, and recognized a many-to-many. It silently created a hidden join table (`PostTag`) with two FK columns — `PostsId` and `TagsId` — to record which posts wear which tags. You never declared that table; it's invisible in your C# model, and you navigate straight from `post.Tags` to `tag.Posts` as if the join didn't exist — the "skip" in skip navigation.
 
 > ⚠️ The auto join table works only when the join holds *nothing but the two foreign keys*. The moment you need an extra column on the relationship itself — say, `AddedDate` recording when a tag was applied — define an **explicit join entity** (a `PostTag` class with `PostId`, `TagId`, and `AddedDate`) and map two one-to-many relationships through it. Reach for that only when the relationship genuinely carries data of its own.
 
@@ -112,7 +112,7 @@ protected override void OnModelCreating(ModelBuilder b)
 }
 ```
 
-*What just happened:* We spelled out the exact relationship EF had already inferred from the class shapes — `HasOne`/`WithMany` name both ends, `HasForeignKey` pins down which property is the FK, and `OnDelete` declares what happens to posts when their blog is deleted. With a conventional FK name like `BlogId` you don't *need* this — write it when conventions fall short, or when you want delete behavior explicit and reviewed rather than defaulted.
+*What just happened:* we spelled out the exact relationship EF had already inferred from the class shapes — `HasOne`/`WithMany` name both ends, `HasForeignKey` pins down which property is the FK, and `OnDelete` declares what happens to posts when their blog is deleted. With a conventional FK name like `BlogId` you don't *need* this — write it when conventions fall short, or when you want delete behavior explicit and reviewed rather than defaulted.
 
 **Required vs optional** is controlled by whether the FK can be null:
 
@@ -121,7 +121,7 @@ public int BlogId { get; set; }    // non-nullable FK = REQUIRED: a Post must ha
 public int? BlogId { get; set; }   // nullable FK = OPTIONAL: a Post may have no Blog
 ```
 
-*What just happened:* A non-nullable `int BlogId` means the column is `NOT NULL` and every post is required to belong to a blog — and deleting a blog cascades to its posts by default. Making it `int?` flips the relationship to optional: a post can exist with `BlogId = NULL`, and the default delete behavior changes to setting that FK to null rather than deleting the post. The nullability of one property quietly decides both the constraint and the cascade rule — worth being deliberate about.
+*What just happened:* a non-nullable `int BlogId` means the column is `NOT NULL` and every post is required to belong to a blog — and deleting a blog cascades to its posts by default. Making it `int?` flips the relationship to optional: a post can exist with `BlogId = NULL`, and the default delete behavior changes to setting that FK to null rather than deleting the post. The nullability of one property quietly decides both the constraint and the cascade rule.
 
 > 💡 You don't have to choose Fluent-or-nothing. Let conventions handle the 90% they cover for free, and add a Fluent API line *only* for the specific thing a convention got wrong. Every line you add is a line a reviewer has to understand — add them for a reason.
 
@@ -144,9 +144,9 @@ ctx.Blogs.Add(blog);
 ctx.SaveChanges();
 ```
 
-*What just happened:* You added one `Blog` whose `Posts` collection already held two `Post` objects with no `BlogId` set. On `SaveChanges`, EF inserted the blog first, got its generated `Id` back, then inserted both posts with their `BlogId` filled in to match — all in one transaction. You never touched a foreign key value; EF read it off the navigation. Adding the root of a graph pulls every reachable, untracked entity in with it. (Many-to-many works the same way: assign `post.Tags = new() { tag1, tag2 }` and EF writes the join rows for you.)
+*What just happened:* you added one `Blog` whose `Posts` collection already held two `Post` objects with no `BlogId` set. On `SaveChanges`, EF inserted the blog first, got its generated `Id` back, then inserted both posts with their `BlogId` filled in to match — all in one transaction. You never touched a foreign key value; EF read it off the navigation. (Many-to-many works the same way: assign `post.Tags = new() { tag1, tag2 }` and EF writes the join rows for you.)
 
-> ⚠️ Defining a navigation property does **not** mean it gets loaded when you read. Query `ctx.Blogs.First()` and `blog.Posts` will be empty — not because the blog has no posts, but because you didn't ask EF to fetch them. Loading related data on read (`Include`, lazy loading, and the N+1 query trap that catches everyone) is the subject of [Phase 7: Loading Strategies & the N+1 Trap](07-loading-and-n-plus-1.md). For now: a navigation describes the relationship; it doesn't auto-populate.
+> ⚠️ Defining a navigation property does **not** mean it gets loaded when you read. Query `ctx.Blogs.First()` and `blog.Posts` will be empty — not because the blog has no posts, but because you didn't ask EF to fetch them. Loading related data on read (`Include`, lazy loading, and the N+1 query trap that catches everyone) is the subject of [Phase 7](07-loading-and-n-plus-1.md). For now: a navigation describes the relationship; it doesn't auto-populate.
 
 ## Recap
 

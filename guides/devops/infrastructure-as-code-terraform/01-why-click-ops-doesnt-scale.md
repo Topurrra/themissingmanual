@@ -6,7 +6,7 @@ summary: "Clicking through a cloud console is unrepeatable, undocumented, and dr
 tags: [infrastructure-as-code, clickops, drift, desired-state, declarative, devops, mental-model]
 difficulty: advanced
 synonyms: ["what is click ops", "why is clicking in the cloud console bad", "what is configuration drift", "declarative vs imperative infrastructure", "what does desired state mean", "why use infrastructure as code"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why Click-Ops Doesn't Scale
@@ -23,7 +23,7 @@ The trouble starts the second time, and every time after.
 
 **What it actually is.** Click-ops is operating your cloud the way you operate a settings app: you navigate menus, fill in forms, and click buttons, and the cloud provider does what you asked *in that moment*. The result is a running resource. The *record* of how you got there is — nothing. The clicks evaporate the instant you make them.
 
-**Why people start here.** It's the front door. Every cloud console is designed to make the first server easy, because the first server is how they win you. And for genuinely one-off exploration — "what does this service even do?" — clicking around is the right tool. The problem isn't that click-ops exists; it's what happens when it becomes how you *run* things.
+**Why people start here.** It's the front door — every cloud console is designed to make the first server easy, because that's how they win you. For genuinely one-off exploration ("what does this service even do?"), clicking around is the right tool. The problem isn't that click-ops exists; it's what happens when it becomes how you *run* things.
 
 Here's where it falls apart, and these three are worth naming clearly because each maps to a thing IaC fixes:
 
@@ -54,15 +54,15 @@ Six months pass. The person who built the production network has left. A new hir
 
 This is the quiet killer. 📝 **Terminology.** *Drift* is when the real, running infrastructure no longer matches what anyone believes it to be — because someone changed it out-of-band. Production is slow one night, an engineer opens the console and bumps the server to a bigger size to get through the incident, and forgets to tell anyone or write it down. Now the live system silently disagrees with every diagram, every runbook, and every teammate's mental model. The next person who tries to "fix" something is working from a map that's wrong.
 
-🪖 **War story.** A classic version of this: a team rebuilds their staging environment from their notes, points the app at it, and half the features break. The cause turns out to be a single environment variable someone had clicked into the *old* staging months earlier to debug something, never removed, and never documented. The notes were faithful — to a configuration that no longer existed. Days lost chasing a ghost left by a click.
+🪖 **War story.** A classic version: a team rebuilds staging from their notes, points the app at it, and half the features break. The cause: a single environment variable someone had clicked into the *old* staging months earlier to debug something, never removed, never documented. The notes were faithful — to a configuration that no longer existed. Days lost chasing a ghost left by a click.
 
 ## The mental shift: desired state, not steps
 
 Here's the idea the entire rest of this guide stands on. It's a shift in *what you write down*.
 
-**The click-ops way is imperative — you give steps.** "Launch an instance. Then attach this disk. Then open port 443. Then set the name." You're a person performing a procedure, and the cloud follows along one click at a time. If you stop halfway, you're left in a half-built state, and to make a second copy you perform the whole procedure again.
+**The click-ops way is imperative — you give steps.** "Launch an instance. Attach this disk. Open port 443. Set the name." You're a person performing a procedure, and the cloud follows along one click at a time. Stop halfway and you're left in a half-built state; a second copy means performing the whole procedure again.
 
-**Infrastructure as Code is declarative — you describe the destination.** You write down *what should exist*: "there is one web server of this size, in this region, with port 443 open, named `web-1`." You do **not** write the steps to create it. You hand that description to a tool, and the tool figures out the steps — what to create, what to change, what's already correct and can be left alone — to make reality match your description.
+**Infrastructure as Code is declarative — you describe the destination.** You write down *what should exist*: "one web server of this size, in this region, with port 443 open, named `web-1`." You do **not** write the steps to create it — you hand the description to a tool, and it figures out what to create, what to change, and what's already correct, to make reality match.
 
 📝 **Terminology.** *Desired state* is that description: the complete picture of what your infrastructure *should* look like, written in files. *Declarative* means you specify the end state and let the tool work out how to reach it. *Imperative* means you specify the steps yourself. (You've met this split before — `git pull` is declarative-ish "make my branch match the remote," not "fetch object 1, then object 2.")
 

@@ -12,16 +12,16 @@ synonyms:
   - code splitting explained
   - defer loading until needed
   - infinite scroll performance
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # The tradeoff
 
-Lazy loading isn't a free performance upgrade you apply everywhere and walk away from. Deferring work means there's a gap between "the page exists" and "this particular piece of it is ready," and that gap is where things go visibly wrong if you're not careful.
+Lazy loading isn't a free performance upgrade you apply everywhere and walk away from. Deferring work means there's a gap between "the page exists" and "this particular piece of it is ready" — and that gap is where things go visibly wrong if you're not careful.
 
 ## Layout shift: the space where content isn't yet
 
-Imagine a page with lazy-loaded images. Before an image has loaded, the browser doesn't know its dimensions yet — unless you told it. If you didn't, the browser renders the page with zero height where the image will go, and the instant the image arrives, everything below it gets shoved down.
+Before a lazy-loaded image finishes loading, the browser doesn't know its dimensions — unless you told it. Without that, the browser renders zero height where the image will go, and the instant the image arrives, everything below it gets shoved down.
 
 ```text
 1. Page renders. Image not loaded yet — its <img> tag takes up 0px of height.
@@ -59,12 +59,12 @@ better: click tab -> a placeholder that matches the content's shape
 
 ## When eager beats lazy
 
-None of this means "lazy load everything except add a placeholder." Sometimes the right call is to skip lazy loading entirely.
+Lazy loading isn't always the right call. Skip it entirely when:
 
 - **Small content.** If an image is a 2 KB icon, the overhead of setting up a scroll observer to decide *when* to load it can cost more than downloading the icon outright would have. Lazy loading pays off when the deferred thing is expensive enough that skipping it (for users who never trigger it) actually matters.
-- **Critical above-the-fold content.** Anything the user needs the instant the page appears — the main headline image, the primary call-to-action button's icon, the first few rows of a table they came to read — should load eagerly. Deferring something the user is guaranteed to need immediately only adds a delay with no corresponding benefit, since there was never a chance they wouldn't need it.
-- **Content you can't cheaply reserve space for.** If you genuinely cannot predict a lazy-loaded element's size ahead of time (dynamic-height content, for instance), you're trading a slow load for a layout-shift risk. Sometimes eager loading that content — even at the cost of a slightly heavier initial load — is the safer choice than a shift that annoys or misdirects every visitor.
+- **Critical above-the-fold content.** Anything the user needs the instant the page appears — the main headline image, the primary call-to-action button's icon, the first few rows of a table they came to read — should load eagerly. Deferring something the user is guaranteed to need immediately only adds a delay with no corresponding benefit.
+- **Content you can't cheaply reserve space for.** If you genuinely cannot predict a lazy-loaded element's size ahead of time (dynamic-height content, for instance), you're trading a slow load for a layout-shift risk. Eager-loading that content — even at the cost of a slightly heavier initial load — is often the safer choice over a shift that annoys or misdirects every visitor.
 
-The underlying question is always the same one from Phase 1, asked in the other direction: is there a real chance this won't be needed? If the answer is "no, everyone who loads this page needs this immediately," lazy loading has nothing to offer you — you're adding a deferral mechanism to something that was never optional in the first place.
+The underlying question is the same one from Phase 1, asked in reverse: is there a real chance this won't be needed? If the answer is "no, everyone who loads this page needs this immediately," lazy loading has nothing to offer — you're adding a deferral mechanism to something that was never optional.
 
 [← Phase 2: Where you'll actually use it](02-where-youll-use-it.md) | [Overview](_guide.md)

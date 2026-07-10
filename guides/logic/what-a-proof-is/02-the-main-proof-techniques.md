@@ -6,19 +6,18 @@ summary: "Most proofs use one of a few shapes: prove it directly, assume the opp
 tags: [logic, proof, contradiction, contrapositive, counterexample]
 difficulty: beginner
 synonyms: ["proof techniques", "direct proof", "proof by contradiction", "proof by cases", "disprove with a counterexample"]
-updated: 2026-06-25
+updated: 2026-07-10
 ---
 
 # The Main Proof Techniques
 
-When people say "a proof," they often picture one giant skill you either have or
-don't. The reality is smaller than that. Most proofs you'll meet are built from a
-handful of recurring *shapes*. Once you recognize the shape a claim wants, half the
-work is done - you stop staring at a blank page and start filling in a known template.
+When people say "a proof," they often picture one giant skill you either have or don't. The
+reality is smaller than that. Most proofs you'll meet are built from a handful of recurring
+*shapes*. Once you recognize the shape a claim wants, half the work is done - you stop staring at
+a blank page and start filling in a known template.
 
-This phase walks through five of those shapes. None is a trick. Each is a sane
-response to a specific kind of statement, and we'll say *why* each one fits where
-it does.
+This phase walks through five of those shapes. None is a trick - each is a sane response to a
+specific kind of statement, and we'll say *why* each one fits where it does.
 
 ```mermaid
 flowchart LR
@@ -63,13 +62,11 @@ to start from, try direct proof first.
 
 ## Proof by contradiction: assume it's false, hit a wall
 
-Sometimes walking forward from the hypothesis is awkward, or the claim has no obvious
-hypothesis to grip. Then try the opposite move: assume the statement is *false*, and
-show that assumption forces something impossible. If "false" leads to an
-impossibility, "false" can't hold - so the statement must be true.
-
-The mental model is a trap you set on purpose. You let the enemy assumption in,
-follow where it leads, and watch it walk into a wall it can't get past - like
+Sometimes walking forward from the hypothesis is awkward, or the claim has no obvious hypothesis
+to grip. Then try the opposite move: assume the statement is *false*, and show that assumption
+forces something impossible. If "false" leads to an impossibility, "false" can't hold, so the
+statement must be true. The mental model is a trap you set on purpose: you let the enemy
+assumption in, follow where it leads, and watch it walk into a wall it can't get past - like
 `1 = 0`, or "this number is both even and odd."
 
 The classic example is that √2 is irrational - it can't be written as a fraction of
@@ -197,23 +194,16 @@ instead of checking them one by one.
 
 If you write code, you already use two of these shapes - under different names.
 
-**Contradiction is how you isolate a bug.** When you say "assume this layer is
-correct - then the data reaching the next layer should look like *this* - but it
-actually looks like *that*, which is impossible if the layer were correct, so the bug
-is in this layer," you're running a proof by contradiction. You assumed a thing,
-derived a state that can't coexist with that assumption, and concluded the assumption
-was wrong. That's *reductio* with a debugger attached.
+**Contradiction is how you isolate a bug.** When you say "assume this layer is correct - then the
+data reaching the next layer should look like *this* - but it actually looks like *that*, which
+is impossible if the layer were correct, so the bug is in this layer," you're running a proof by
+contradiction. That's *reductio* with a debugger attached.
 
-**A counterexample is a failing test case.** The claim "this function always works"
-is a universal: for all inputs, it behaves. A green test suite of a thousand passing
-cases does *not* prove it - same as a thousand examples don't prove a math universal.
-But one red test, one input that returns the wrong answer, disproves "it always works"
-instantly. That's why a single reproducible failing test is so powerful: it's a
-counterexample, and counterexamples are decisive.
-
-If formal claims still feel intimidating, this is the bridge:
-[/guides/why-math-isnt-your-enemy](/guides/why-math-isnt-your-enemy) makes the case
-that the reasoning you do daily and the reasoning in proofs are the same muscle.
+**A counterexample is a failing test case.** The claim "this function always works" is a
+universal: for all inputs, it behaves. A green test suite of a thousand passing cases does *not*
+prove it, same as a thousand examples don't prove a math universal. But one red test, one input
+that returns the wrong answer, disproves "it always works" instantly - a single reproducible
+failing test is a counterexample, and counterexamples are decisive.
 
 ## Recap
 

@@ -6,12 +6,12 @@ summary: "NestJS brings real architecture to Node — controllers, providers, de
 tags: [nestjs, typescript, nodejs, web, getting-started]
 difficulty: beginner
 synonyms: ["what is nestjs", "nestjs first app", "nest new", "nestjs architecture", "nestjs controllers providers modules", "nest cli"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What NestJS Is & Your First App
 
-Picture a small [Express](/guides/express-from-zero) app you wrote six months ago. One file. A few routes. Lovely. Now picture that same app today, after it grew: route handlers calling helper functions calling other helpers, middleware stacked five deep, business logic smeared across files because there was never an obvious place to put it. That's "middleware soup," and once an app gets big enough, it stops being fun. You spend more time finding where things live than writing them.
+Picture a small [Express](/guides/express-from-zero) app you wrote six months ago. One file. A few routes. Lovely. Now picture that same app today, after it grew: route handlers calling helper functions calling other helpers, middleware stacked five deep, business logic smeared across files because there was never an obvious place to put it. That's "middleware soup" — once an app gets big enough, it stops being fun. You spend more time finding where things live than writing them.
 
 NestJS is the framework you reach for when you want that problem to never start. It's an **opinionated, TypeScript-first** Node framework that brings a real, enforced structure to your backend — borrowed openly from Angular. And here's the part that surprises people: it doesn't throw Express away. By default Nest runs *on top of* Express (you can swap in Fastify via an adapter later), so everything you know about Express is still true underneath. Nest adds the architecture on top.
 

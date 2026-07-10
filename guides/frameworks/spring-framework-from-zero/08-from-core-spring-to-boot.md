@@ -6,16 +6,16 @@ summary: "Tie it all together: Spring Boot is core Spring plus auto-configuratio
 tags: [spring, spring-boot, auto-configuration, starters, demystified, learning-path, what-to-build]
 difficulty: beginner
 synonyms: ["how spring boot works", "spring boot auto-configuration explained", "core spring vs spring boot summary", "spring boot starters under the hood", "spring next steps", "spring framework mastery"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # From Core Spring to Spring Boot
 
-Think back to where you started. Spring Boot felt like a black box - you sprinkled some annotations, ran `main`, and somehow a web server appeared, beans wired themselves up, and a database connection materialized out of thin air. It worked, but you couldn't have told anyone *why*. It was spells all the way down.
+Think back to where you started. Spring Boot felt like a black box - you sprinkled some annotations, ran `main`, and somehow a web server appeared, beans wired themselves up, and a database connection materialized out of thin air. It worked, but you couldn't have told anyone *why*.
 
 Look at what you can do now. You can stand up an `ApplicationContext` by hand. You can declare beans with `@Configuration` and `@Bean`, or let component scanning find them. You can wire dependencies through the constructor and explain exactly how `@Autowired` resolves them. You understand singleton versus prototype scope and the full bean lifecycle, callbacks and all. You know that `@Transactional` and `@Async` work because Spring wraps your bean in a **proxy** - and you know the self-invocation gotcha that trips up developers who *don't* know that. You can wire a `DispatcherServlet` and a `@Controller` without Boot anywhere in sight.
 
-That's not a small thing. That's the whole machine, and you've had your hands inside it. So this final phase isn't new material - it's the payoff. We're going to assemble everything you've learned into one sentence that makes Spring Boot stop being magic forever.
+That's the whole machine, and you've had your hands inside it. This final phase isn't new material - it's the payoff. We're going to assemble everything you've learned into one sentence that makes Spring Boot stop being magic forever.
 
 ## The full equation, assembled
 
@@ -71,7 +71,7 @@ A few honest directions, depending on what you want next:
 
 When you want the authoritative answer on anything, the **Spring Framework reference documentation** is genuinely excellent - it explains the *why* behind the behavior, which is the habit that separates people who fight the framework from people who work with it.
 
-And here's the through-line of this whole guide, the thing to carry with you: **Boot was never magic - it's the core Spring you now understand, configured for you.** You came in wary of the spells. You're leaving able to read what's underneath every one of them, assemble a Spring app from scratch, and reason about it when it breaks. That's the real skill. Go build the small thing, and watch the magic stay gone.
+The through-line of this whole guide: **Boot was never magic - it's the core Spring you now understand, configured for you.** You're leaving able to read what's underneath every annotation, assemble a Spring app from scratch, and reason about it when it breaks. Go build the small thing, and watch the magic stay gone.
 
 ## Recap
 

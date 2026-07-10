@@ -6,7 +6,7 @@ summary: "The mental model: data can be broken even when the job is green. A sil
 tags: [data-quality, observability, mental-model, silent-failures, data-trust, data-engineering]
 difficulty: advanced
 synonyms: ["pipeline succeeded but data wrong", "silent data bug", "why is data quality important", "green job bad data", "data can be broken even when job succeeds", "what does data trust mean", "garbage in garbage out pipeline"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why Trust Is the Whole Product
@@ -14,15 +14,15 @@ updated: 2026-06-19
 Before any checks or tools, let's fix one idea, because every technique later in this guide exists to
 serve it: **the product of a data pipeline is not a successful job. It's a number someone can trust.**
 
-You can have a flawless pipeline — clean code, fast runs, a wall of green in the orchestrator — and still
-be doing active harm, if the numbers coming out the far end are wrong and people are believing them. The
-job succeeding tells you the *machinery* ran. It tells you nothing about whether the *output is true*.
-Those are two completely different questions, and conflating them is the single most expensive mistake in
-data work. Hold that distinction and the rest of this guide will feel obvious.
+You can have a flawless pipeline — clean code, fast runs, a wall of green in the orchestrator — and still be
+doing active harm, if the numbers coming out the far end are wrong and people believe them. The job
+succeeding tells you the *machinery* ran; it tells you nothing about whether the *output is true*. Those
+are two completely different questions, and conflating them is the single most expensive mistake in data
+work.
 
 ## The two questions a pipeline answers (and only one of them is the green checkmark)
 
-**What it actually is.** Every pipeline run silently answers two separate questions:
+Every pipeline run silently answers two separate questions:
 
 1. *Did the job run to completion?* — Did the code execute, did the queries return, did the load finish
    without throwing?
@@ -43,26 +43,25 @@ The green checkmark in your orchestrator only ever answers question 1. It is a s
    "the machine ran"                 │     "the output is true"
 ```
 
-**Why people get this wrong.** We borrow our instincts from application code, where failures are loud. A
-web request that breaks throws a 500. A null pointer crashes the process. You *find out*. So we assume the
-same of data: if something were wrong, surely it would fail. But data pipelines mostly don't work that
-way. Bad data is usually *valid* data — it's the right type, it parses, it loads. A column that should be
-`1000.00` but arrives as `0.00` is a perfectly well-formed number. A table that should have a million rows
-but got ten thousand is a perfectly well-formed table. The machinery has no opinion about whether the
-content is true. It just moves it.
+We borrow our instincts from application code, where failures are loud — a web request that breaks throws a
+500, a null pointer crashes the process, you *find out*. So we assume the same of data: if something were
+wrong, surely it would fail. But data pipelines mostly don't work that way. Bad data is usually *valid*
+data — it's the right type, it parses, it loads. A column that should be `1000.00` but arrives as `0.00` is
+a perfectly well-formed number. A table that should have a million rows but got ten thousand is a perfectly
+well-formed table. The machinery has no opinion about whether the content is true; it just moves it.
 
-**Why this saves you later.** Once you accept that "green" and "correct" are different questions, the
-entire field of data quality stops feeling like overhead and starts feeling necessary. Phase 2 exists
-precisely because the orchestrator can't answer question 2 for you — *you have to add the checks that do.*
+Once you accept that "green" and "correct" are different questions, data quality stops feeling like
+overhead and starts feeling necessary. Phase 2 exists precisely because the orchestrator can't answer
+question 2 for you — *you have to add the checks that do.*
 
 ## A silent data bug is worse than a loud crash
 
 This is the part that surprises people, so let's state it plainly: when it comes to data, **a crash is the
 good outcome.** Counterintuitive, but true, and worth internalizing.
 
-**What it actually is.** A loud failure — the job crashes, the load aborts, the orchestrator turns red —
-announces itself. Someone gets paged. The bad data never reaches a dashboard, because the run didn't
-finish. The blast radius is contained to "the table is stale," which is visible and fixable.
+A loud failure — the job crashes, the load aborts, the orchestrator turns red — announces itself. Someone
+gets paged. The bad data never reaches a dashboard, because the run didn't finish; the blast radius is
+contained to "the table is stale," which is visible and fixable.
 
 A silent failure does the opposite. The job *succeeds*, the bad data flows all the way to the dashboards
 and the reports and the models, and there is no signal anywhere that something is wrong. The only way it
@@ -109,27 +108,25 @@ output as "well, the source was bad." But your pipeline is the last place that b
 *caught* before a human trusts it. If you pass garbage through silently, you've laundered it: the source's
 mistake now wears your pipeline's credibility. Catching bad input is your job, not the source's.
 
-**Why this saves you later.** This is the emotional core of why you'll spend real effort on the next two
-phases. You are not adding checks to make the pipeline *run* — it already runs. You're adding them to
-convert silent failures into loud ones *on purpose*, so that wrong data trips a wire and turns the job red
-instead of slipping quietly onto a dashboard. The whole game of data quality is **buying back the loud
-crash you'd normally get for free in application code.**
+This is why you'll spend real effort on the next two phases. You're not adding checks to make the pipeline
+*run* — it already runs. You're adding them to convert silent failures into loud ones *on purpose*, so
+wrong data trips a wire and turns the job red instead of slipping quietly onto a dashboard. The whole game
+of data quality is **buying back the loud crash you'd normally get for free in application code.**
 
 ## Trust is fragile and slow to rebuild
 
 One more piece of the model, because it explains why this matters beyond any single bug.
 
-**What it actually is.** Trust in a data platform is asymmetric. It takes months of correct numbers to
-build, and a single bad number — caught publicly, in a meeting, after a decision — to destroy. Once a
-stakeholder has been burned by a wrong figure, they stop trusting *all* your numbers, not just the broken
-one. They go back to their own spreadsheets. At that point the pipeline can be technically perfect and
-still be worthless, because nobody believes it.
+Trust in a data platform is asymmetric. It takes months of correct numbers to build, and a single bad
+number — caught publicly, in a meeting, after a decision — to destroy. Once a stakeholder has been burned by
+a wrong figure, they stop trusting *all* your numbers, not just the broken one, and go back to their own
+spreadsheets. At that point the pipeline can be technically perfect and still be worthless, because nobody
+believes it.
 
-**Why this is the whole game.** Every other part of this guide — the freshness checks, the lineage graphs,
-the alerts, the SLAs — is in service of one outcome: that when someone looks at a number you produced, they
-can act on it without second-guessing. That confidence *is* the product. The pipeline is just the
-machinery that delivers it. A pipeline nobody trusts is a very expensive way to compute numbers people then
-ignore.
+Every other part of this guide — the freshness checks, the lineage graphs, the alerts, the SLAs — is in
+service of one outcome: that when someone looks at a number you produced, they can act on it without
+second-guessing. That confidence *is* the product; the pipeline is just the machinery that delivers it. A
+pipeline nobody trusts is a very expensive way to compute numbers people then ignore.
 
 💡 **Key point.** The deliverable of data engineering is not a running pipeline. It's *justified trust* in
 the numbers. Green means the machine ran; it never means the output is true. Your job in the next two

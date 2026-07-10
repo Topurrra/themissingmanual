@@ -12,12 +12,12 @@ synonyms:
   - how to prevent a deadlock
   - how to detect a deadlock
   - lock ordering deadlock
-updated: 2026-07-04
+updated: 2026-07-11
 ---
 
 # Preventing and detecting them in real code
 
-Knowing the four conditions is half the battle; the other half is what you actually type into a real codebase. This phase covers the two prevention techniques you'll use constantly, one detection technique for when prevention wasn't enough, and — because production doesn't wait for you to have the right architecture — what to actually do when a process is hung right now.
+Knowing the four conditions is half the battle; the other half is what you type into a real codebase. This phase covers the two prevention techniques you'll use constantly, one detection technique for when prevention wasn't enough, and — because production doesn't wait for you to have the right architecture — what to do when a process is hung right now.
 
 ## Technique 1: consistent lock ordering
 
@@ -75,7 +75,7 @@ Transaction B: waiting on lock held by Transaction A
 
 *What just happened:* this is prevention's opposite: instead of making the cycle impossible, the system tolerates that cycles will occasionally form and has a plan for breaking them automatically. It works well specifically because the cost of retrying one aborted transaction is small and well understood — the same approach is much riskier for arbitrary application-level threads doing non-transactional work, where "abort and retry" might not be safe or even meaningful.
 
-## What to actually do when you see a hang in production
+## What to do when you see a hang in production
 
 A process that's frozen with no errors, no crash, and low CPU usage is the classic deadlock signature. The practical first move on most platforms is to get a **thread dump** — a snapshot of every thread's current stack trace and, critically, what lock (if any) it's currently blocked waiting on.
 
@@ -88,8 +88,8 @@ A process that's frozen with no errors, no crash, and low CPU usage is the class
 
 *What just happened:* a thread dump turns an invisible hang into readable text — you can see thread A is blocked on lock X, and cross-reference which other thread currently holds lock X. Do that for every blocked thread and you can usually reconstruct the exact wait-for cycle by hand, which tells you precisely which two (or more) code paths need a consistent lock order or a timeout. Some platforms make this even more direct: the JVM's thread dump explicitly flags detected deadlocks by name, no manual cycle-hunting required.
 
-> The fix for a live production deadlock is never "wait longer" — a true deadlock never resolves on its own. The fix is restart the stuck process to unblock users immediately, then use the thread dump you captured *before* restarting to find and fix the actual lock-ordering bug.
+> The fix for a live production deadlock is never "wait longer" — a true deadlock never resolves on its own. The fix is restart the stuck process to unblock users immediately, then use the thread dump you captured *before* restarting to find and fix the lock-ordering bug.
 
-Once you've found the offending pair of locks, the fix is almost always one of the two techniques from earlier in this phase: reorder the acquisition to match the rest of the codebase, or wrap the second acquisition in a timeout. Deadlocks are unusual among production bugs in that the fix is rarely complicated — the hard part is entirely in locating which two lock acquisitions actually formed the cycle.
+Once you've found the offending pair of locks, the fix is almost always one of the two techniques from earlier in this phase: reorder the acquisition to match the rest of the codebase, or wrap the second acquisition in a timeout. Deadlocks are unusual among production bugs in that the fix is rarely complicated — the hard part is entirely in locating which two lock acquisitions formed the cycle.
 
 [← Phase 2: The four conditions that must all be true](02-the-four-conditions.md) | [Overview](_guide.md)

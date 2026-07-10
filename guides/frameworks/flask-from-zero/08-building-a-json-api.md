@@ -6,12 +6,12 @@ summary: "Turn your notes app into a JSON API: return jsonify instead of templat
 tags: [flask, json-api, jsonify, rest, api, error-handling, flask-vs-fastapi]
 difficulty: intermediate
 synonyms: ["flask json api", "flask jsonify", "flask rest api", "flask api error handling", "flask return json", "flask vs fastapi api", "flask api status codes"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Building a JSON API with Flask
 
-Everything you've built so far hands back HTML. A view runs `render_template`, the browser gets a page, a human reads it — the right shape when the *consumer* is a person looking at a screen. But notes don't only get read by people — a mobile app might want them, a React frontend might fetch them, another service might sync them. None of those wants a styled HTML page; they want raw data. They want JSON.
+Everything you've built so far hands back HTML. A view runs `render_template`, the browser gets a page, a human reads it — the right shape when the *consumer* is a person looking at a screen. But notes don't only get read by people: a mobile app might want them, a React frontend might fetch them, another service might sync them. None of those wants a styled HTML page — they want raw data, JSON.
 
 📝 **An API and a web page are the same Flask app wearing two different hats.** Same routing, same view functions, same request cycle — the *only* thing that changes is what a view returns. Return `render_template(...)` and you've served a page for a human. Return `jsonify(...)` and you've served data for a program. Flask was never "a web-page framework" — it's a request-to-response framework, and JSON is just another kind of response. This phase swaps the hat.
 

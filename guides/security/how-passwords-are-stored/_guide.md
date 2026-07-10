@@ -8,7 +8,7 @@ category: security
 difficulty: beginner
 order: 2
 synonyms: ["how to store passwords", "should I encrypt passwords", "how does password hashing work", "what is a salt in passwords", "bcrypt vs sha256", "why not store passwords in plain text"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # How Passwords Should Be Stored (Hashing)
@@ -18,10 +18,10 @@ for a `password` column. It feels natural to drop the password straight in - you
 logins, right? That instinct is the single most expensive mistake in account security, and almost
 everyone has it before they're shown the alternative.
 
-Here's the relief: the alternative is not harder, it's just *different*, and once you see the idea it
-never leaves you. You're going to learn why your database should never contain a single readable
-password - yours, your users', anyone's - and exactly what to store instead so that even an attacker who
-steals the entire table walks away with nothing useful.
+Here's the relief: the alternative isn't harder, just *different*, and once you see the idea it never
+leaves you. You're going to learn why your database should never contain a single readable password -
+yours, your users', anyone's - and exactly what to store instead, so that even an attacker who steals the
+entire table walks away with nothing useful.
 
 ## How to read this
 - **Just need the safe answer right now?** Jump to [Phase 3: Use a Slow Hash Built for Passwords](03-use-a-slow-hash.md) - it has the do-this pseudo-code for signup and login.

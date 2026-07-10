@@ -6,7 +6,7 @@ summary: "The split-apply-combine pattern behind almost every analysis: group ro
 tags: [pandas, groupby, aggregation, split-apply-combine, agg, pivot, summary]
 difficulty: advanced
 synonyms: ["pandas groupby", "pandas split apply combine", "pandas aggregation agg", "pandas groupby multiple columns", "pandas group sum mean count", "pandas groupby vs sql group by", "pandas named aggregation"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # GroupBy & Aggregation
@@ -14,8 +14,8 @@ updated: 2026-06-22
 If you take one idea from this whole guide, make it this one. Every phase so far has been about
 *shaping* a table — selecting it, filtering it, deriving new columns. This phase is about
 *summarizing* it: turning ten thousand rows of raw sales into "revenue per region," "average order
-size per product," "how many orders each region placed." That move — collapse many rows into one
-number per group — is the engine room of data analysis, and pandas has one beautiful pattern for it.
+size per product," "how many orders each region placed." That move — collapse many rows into one number
+per group — is the engine room of data analysis, and pandas has one beautiful pattern for it.
 
 The pattern has a name worth memorizing because it explains *everything* that follows.
 

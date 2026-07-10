@@ -6,23 +6,22 @@ summary: "Give your API a spine: a thin controller, a transactional service hold
 tags: [spring-boot, service-layer, dto, bean-validation, transactional, separation-of-concerns, valid]
 difficulty: intermediate
 synonyms: ["spring service layer", "spring dto vs entity", "spring bean validation @Valid", "spring @Transactional explained", "spring boot validation annotations", "spring layered architecture"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # The Service Layer, DTOs & Validation
 
 By now your API works. Back in [Phase 3](03-rest-controllers.md) you wrote a `BookController` that took
 HTTP requests, and in [Phase 5](05-persistence-with-jpa.md) you wired a `BookRepository` so those requests
-actually hit a database. If you followed along literally, your controller probably calls the repository
-directly — request comes in, controller saves a row, controller returns it. For three endpoints, that's
-fine. It's also a trap, and it's worth seeing why before the trap closes.
+hit a database. If you followed along literally, your controller probably calls the repository directly —
+request comes in, controller saves a row, controller returns it. For three endpoints, that's fine. It's
+also a trap, worth seeing before it closes.
 
-The mental model for this whole phase is **separation of concerns**: each piece of your app should have
-exactly one job, and should hand off to the next piece for everything else. A controller's one job is to
-speak HTTP. It should not also know how to validate a book, calculate a discount, enforce that ISBNs are
-unique, or manage a database transaction. The moment a controller does two of those things, it becomes the
-place every future change has to touch — and the place every bug hides. This phase introduces the three
-layers that fix that, plus the validation that guards the front door.
+The mental model: **separation of concerns**. Each piece of your app should have exactly one job, and hand
+off to the next piece for everything else. A controller's one job is to speak HTTP — not validate a book,
+calculate a discount, enforce that ISBNs are unique, or manage a database transaction. The moment a
+controller does two of those things, it becomes the place every future change has to touch, and every bug
+hides. This phase introduces the three layers that fix that, plus the validation that guards the front door.
 
 ## Why a service layer
 
@@ -54,12 +53,12 @@ touch repositories. Services never touch HTTP. The dependency arrows point one d
 
 💡 Why bother, when calling the repository from the controller "works"? Because the controller is the
 worst possible home for logic. It's hard to test (you need a fake HTTP request to exercise a price
-calculation), it's hard to reuse (a scheduled job can't send itself an HTTP request to run the same rule),
-and it quietly accumulates responsibilities until nobody can read it. A `@Service` is a plain bean you can
-call from a controller, a job, a message listener, or a test — directly, no HTTP required.
+calculation), hard to reuse (a scheduled job can't send itself an HTTP request to run the same rule), and
+quietly accumulates responsibilities until nobody can read it. A `@Service` is a plain bean you can call
+from a controller, a job, a message listener, or a test — directly, no HTTP required.
 
-Let's move the logic out of the Phase 3 controller. Here's roughly the "everything in the controller"
-version we're leaving behind:
+Moving the logic out of the Phase 3 controller — here's the "everything in the controller" version we're
+leaving behind:
 
 ```java
 @RestController
@@ -124,12 +123,12 @@ public class BookController {
 }
 ```
 
-*What just happened:* The `@Service` annotation registers `BookService` as a bean (same dependency
-injection you learned in [Phase 2](02-dependency-injection-and-beans.md)), so Spring constructs it and
-injects the repository, then injects the *service* into the controller. The controller's `create` method
-shrank to a single line: receive, delegate, return. The duplicate-ISBN rule now lives in one place that a
-test can call directly with a plain `Book` object — no HTTP needed. (We'll make `DuplicateIsbnException`
-turn into a clean 409 response in [Phase 7](07-error-handling.md); for now it just signals the problem.)
+*What just happened:* `@Service` registers `BookService` as a bean (same dependency injection from
+[Phase 2](02-dependency-injection-and-beans.md)), so Spring constructs it and injects the repository, then
+injects the *service* into the controller. The controller's `create` method shrank to a single line:
+receive, delegate, return. The duplicate-ISBN rule now lives in one place a test can call directly with a
+plain `Book` object — no HTTP needed. (`DuplicateIsbnException` becomes a clean 409 in
+[Phase 7](07-error-handling.md); for now it just signals the problem.)
 
 ## `@Transactional` — all or nothing
 
@@ -171,10 +170,10 @@ public class BookService {
 ```
 
 *What just happened:* On `createWithStock`, Spring opens a transaction, runs both saves, and commits only
-if the method finishes cleanly. If `inventory.save(...)` throws, the book save is rolled back too — you
-never get the half-written state. On `findAll`, `readOnly = true` tells Spring (and the JDBC driver) this
-method won't modify anything, which lets the database skip some bookkeeping and can perform better. Use
-`readOnly = true` for query methods and a plain `@Transactional` for methods that write.
+if the method finishes cleanly. If `inventory.save(...)` throws, the book save is rolled back too — no
+half-written state. On `findAll`, `readOnly = true` tells Spring (and the JDBC driver) this method won't
+modify anything, which lets the database skip bookkeeping and perform better. Use `readOnly = true` for
+query methods, plain `@Transactional` for methods that write.
 
 ⚠️ Two gotchas that bite everyone at least once:
 
@@ -267,15 +266,14 @@ public class BookService {
 *What just happened:* The incoming `CreateBookRequest` has only the three fields a client is allowed to
 set — no `id`, no `internalNotes` — so over-posting is impossible. The service maps that request onto a
 fresh `Book` entity field by field, saves it, then maps the saved entity back into a `BookResponse` that
-exposes only what we want public. `internalNotes` never appears in either DTO, so it can never leak. The
-record accessors (`req.isbn()`, not `req.getIsbn()`) come straight from the records phase.
+exposes only what we want public. `internalNotes` never appears in either DTO, so it can never leak.
 
 ⚠️ **Returning entities directly causes real pain, not just leakage.** A JPA entity often has *lazy*
-relationships — a `Book` with a lazily-loaded `List<Review>` that isn't fetched until you touch it. Hand
-that entity to the JSON serializer and it tries to read every field, triggering surprise database queries
-mid-serialization (or a `LazyInitializationException` when the transaction has already closed). DTOs sidestep
-this entirely: you map exactly the data you want *inside* the transaction, and the serializer only ever
-sees a plain, fully-populated record.
+relationships — a `Book` with a lazily-loaded `List<Review>` not fetched until you touch it. Hand that
+entity to the JSON serializer and it tries to read every field, triggering surprise database queries
+mid-serialization (or a `LazyInitializationException` once the transaction has closed). DTOs sidestep this
+entirely: map exactly the data you want *inside* the transaction, and the serializer only sees a plain,
+fully-populated record.
 
 ## Bean Validation — reject bad input at the door
 
@@ -330,9 +328,9 @@ public class BookController {
 ```
 
 *What just happened:* The constraints (`@NotBlank`, `@Size`, `@Pattern`, `@Email`, `@Min`) describe the
-valid shape of a request right on the record. The `@Valid` on the `@RequestBody` parameter is the switch
-that tells Spring to actually run those checks before calling `create`. Send a good request and it flows
-straight through to the service; send a bad one and your method body is never entered.
+valid shape of a request right on the record. `@Valid` on the `@RequestBody` parameter is the switch that
+tells Spring to actually run those checks before calling `create`. Send a good request and it flows
+straight through; send a bad one and your method body is never entered.
 
 When validation fails, Spring throws a `MethodArgumentNotValidException`, which by default produces a 400
 Bad Request. The raw response looks roughly like this:
@@ -373,11 +371,10 @@ The controller validates and translates HTTP. The service enforces the rules and
 repository moves rows. Nothing knows more than it needs to.
 
 💡 This layering is the difference between a Spring app you can grow and one you'll rewrite. Each layer has
-a single, testable job: you can unit-test the service with a fake repository and zero HTTP, slice-test the
+a single, testable job: unit-test the service with a fake repository and zero HTTP, slice-test the
 controller's validation without a database, and trust the repository because it's the framework's code, not
-yours. That testability is exactly what [Phase 8](08-testing-spring-boot.md) builds on — and the clean
-exceptions your service throws are what [Phase 7](07-error-handling.md) turns into honest HTTP responses
-next.
+yours. That testability is what [Phase 8](08-testing-spring-boot.md) builds on — and the clean exceptions
+your service throws are what [Phase 7](07-error-handling.md) turns into honest HTTP responses next.
 
 ## Recap
 

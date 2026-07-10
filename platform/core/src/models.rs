@@ -90,6 +90,11 @@ pub struct Phase {
     pub updated: String,
     #[serde(default)]
     pub markdown: String,
+    /// Path to this phase's source `.md` file, relative to the repo root (e.g.
+    /// `guides/version-control/git-from-zero/02-your-first-repository.md`). Empty for
+    /// phases created in the admin CMS (no on-disk file) - used to build "Edit on GitHub" links.
+    #[serde(default)]
+    pub source_file: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

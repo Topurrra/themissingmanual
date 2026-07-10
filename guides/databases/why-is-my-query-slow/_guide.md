@@ -8,14 +8,14 @@ category: databases
 order: 5
 difficulty: intermediate
 synonyms: ["why is my sql query slow", "why is my query fast on my laptop but slow in prod", "what is a database index", "how do indexes work", "how to read explain", "what is a full table scan", "how to speed up a slow query", "what does seq scan mean"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why Is My Query Slow? (Indexes & EXPLAIN)
 
 You wrote a query. On your laptop, against a few hundred rows of test data, it returned instantly. You shipped it. Then production — with ten million real rows — turned that same query into a thirty-second hang, a timeout, a page at 2am. Nothing about the *query* changed. The only thing that changed was the size of the table.
 
-This is the most common performance surprise in all of databases, and it has a single, learnable cause. The good news: once you understand the one mental model behind it, most "my query is slow" problems stop being mysteries and become a short checklist. You'll be able to see exactly what the database is doing, understand *why* it's slow, and fix it with a precise change instead of guessing.
+This is the most common performance surprise in all of databases, and it has a single, learnable cause. Once you understand the one mental model behind it, most "my query is slow" problems stop being mysteries and become a short checklist: see exactly what the database is doing, understand *why* it's slow, and fix it with a precise change instead of guessing.
 
 ## How to read this
 

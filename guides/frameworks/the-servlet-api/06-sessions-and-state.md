@@ -6,7 +6,7 @@ summary: "HTTP forgets you between requests, yet apps keep you logged in. Here's
 tags: [servlet, httpsession, cookies, session-id, state, stateless-http, jsessionid]
 difficulty: intermediate
 synonyms: ["httpsession java", "servlet session cookies", "jsessionid explained", "http stateless session state", "servlet getsession setattribute", "session vs token", "java web session management"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Sessions & State
@@ -14,8 +14,7 @@ updated: 2026-06-22
 You log into a site, click around five pages, and it still knows who you are. Feels obvious. It is not
 obvious at all — because the protocol underneath has no memory whatsoever. Every framework's "current
 user," every shopping cart, every "stay logged in" rests on a single trick the Servlet API gives you raw.
-This phase is that trick, demystified. Once you see it bare, the `@SessionScope` beans and "Spring
-Security handles login" lines stop being magic and start being a mechanism you can reason about.
+This phase is that trick, demystified.
 
 ## The problem: HTTP forgets you between requests
 

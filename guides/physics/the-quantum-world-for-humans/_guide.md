@@ -8,12 +8,12 @@ category: physics
 order: 3
 difficulty: intermediate
 synonyms: ["quantum physics for beginners", "what is superposition", "heisenberg uncertainty principle explained", "quantum entanglement for beginners", "double slit experiment explained", "quantum mechanics without math", "is quantum physics real or mystical", "wave particle duality"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Quantum World, for Humans
 
-You have probably been told that quantum physics means a particle is in two places at once, that watching things changes them by magic, and that nobody understands any of it. Most of that is either wrong or wildly oversold. The real quantum world is stranger than your everyday intuition but far more disciplined than the mysticism around it - it follows rules so precise we build lasers and chips on them. This guide gives you the genuine weirdness, debunks the fake weirdness, and never asks you to swallow something on faith.
+You have probably been told that quantum physics means a particle is in two places at once, that watching things changes them by magic, and that nobody understands any of it. Most of that is either wrong or wildly oversold. The real quantum world is stranger than your everyday intuition but far more disciplined than the mysticism around it - it follows rules so precise we build lasers and chips on them. This guide gives you the genuine weirdness and never asks you to swallow something on faith.
 
 ## How to read this
 

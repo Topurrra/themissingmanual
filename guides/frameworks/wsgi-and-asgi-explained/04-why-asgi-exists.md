@@ -6,12 +6,12 @@ summary: "WSGI's synchronous worker blocks for a whole request and can't do webs
 tags: [asgi, wsgi, async, concurrency, websockets, event-loop, python]
 difficulty: advanced
 synonyms: ["why asgi exists", "wsgi vs asgi", "asgi async python", "wsgi synchronous limitation", "asgi websockets", "asgi vs wsgi concurrency", "python async web"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Why ASGI Exists
 
-By now you've seen the whole WSGI machine: an app callable, a production server like gunicorn running worker processes, middleware wrapping middleware. It's a clean, proven design - Python ran the web on it for over a decade. So why does a *second* contract exist at all?
+You've seen the whole WSGI machine: an app callable, a production server like gunicorn running worker processes, middleware wrapping middleware. It's a clean, proven design - Python ran the web on it for over a decade. So why does a *second* contract exist at all?
 
 Because WSGI has a ceiling, and you hit it the moment your app spends its time *waiting*. This phase is about that ceiling, the idea that breaks through it, and the new contract - ASGI - that bakes that idea in. We won't write a full ASGI app yet (that's [Phase 5](05-an-asgi-app-and-the-servers.md)); the goal here is the mental model, so the code in Phase 5 reads as inevitable rather than mysterious.
 

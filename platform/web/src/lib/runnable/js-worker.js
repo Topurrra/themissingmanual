@@ -8,8 +8,13 @@
 // Protocol:
 //   main → worker:  { code: string }
 //   worker → main:  { ok: true,  logs: [...], result: <string|undefined> }
-//                   { ok: false, logs: [...], error: <string> }
+//                   { ok: false, logs: [...], error: <string>, errorMessage: <string> }
 // Each `logs` entry is { level: 'log'|'warn'|'error'|'info', text: string }.
+// `error` is the full stack (browser-format-dependent - Chrome/Firefox/Safari all
+// render Error.stack differently), kept for the Run-panel/"fix the bug" lessons
+// where seeing a real trace is the point. `errorMessage` is just `name: message`,
+// with no stack frames at all - always clean regardless of browser, meant for
+// anywhere a one-line failure reason is shown (e.g. the test-results list).
 
 function format(value) {
   if (typeof value === 'string') return value;
@@ -65,7 +70,8 @@ self.onmessage = (e) => {
     if (result !== undefined) resultText = format(result);
     self.postMessage({ __id, ok: true, logs, result: resultText });
   } catch (err) {
-    const text = err instanceof Error ? (err.stack || `${err.name}: ${err.message}`) : format(err);
-    self.postMessage({ __id, ok: false, logs, error: text });
+    const message = err instanceof Error ? `${err.name}: ${err.message}` : format(err);
+    const stack = err instanceof Error && err.stack ? err.stack : message;
+    self.postMessage({ __id, ok: false, logs, error: stack, errorMessage: message });
   }
 };

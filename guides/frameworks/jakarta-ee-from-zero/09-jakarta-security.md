@@ -6,12 +6,12 @@ summary: "Secure your Product REST API the standard way: an HttpAuthenticationMe
 tags: [jakarta-ee, jakarta-security, authentication, authorization, roles-allowed, identity-store, jwt]
 difficulty: advanced
 synonyms: ["jakarta ee security", "jakarta security authentication mechanism", "@RolesAllowed jakarta", "jakarta identity store", "jakarta ee roles authentication", "jakarta security jwt", "java ee security api"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Jakarta Security
 
-Your `Product` API from [Phase 4](04-jax-rs-rest-apis.md) works beautifully — and right now, anyone on the internet can read it, write to it, and delete from it. That's fine for a demo on `localhost`. It is a catastrophe in production. So this phase bolts a door onto the front of that API.
+Your `Product` API from [Phase 4](04-jax-rs-rest-apis.md) works beautifully — and right now, anyone on the internet can read it, write to it, and delete from it. That's fine for a demo on `localhost`. It is a catastrophe in production. This phase bolts a door onto the front of that API.
 
 Security has a reputation for being a swamp, and Jakarta's history doesn't help: for years there were three competing, overlapping ways to do it (servlet security, JAAS, vendor-specific config) and tutorials that handed you XML you couldn't read. We're going to ignore all of that. Modern Jakarta EE has *one* coherent story — the **Jakarta Security API** — and it's built on two questions that, once you separate them cleanly, make everything else click into place.
 

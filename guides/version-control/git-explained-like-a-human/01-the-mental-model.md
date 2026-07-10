@@ -6,7 +6,7 @@ summary: "Commits are snapshots, branches are sticky notes pointing at commits, 
 tags: [git, commits, branches, head, staging, remote, mental-model]
 difficulty: beginner
 synonyms: ["what is a git commit", "what is a git branch", "what does HEAD mean", "git staging area explained", "what is origin in git"]
-updated: 2026-06-17
+updated: 2026-07-10
 ---
 
 # The Mental Model - What Git Actually Is
@@ -16,27 +16,22 @@ moment something unexpected happens - a merge conflict, a "detached HEAD," a tea
 your stomach drops.
 
 Here's the secret nobody tells you: **almost every Git nightmare is the same problem wearing different
-masks - not understanding what Git is actually doing underneath.** Git has a reputation for being
-terrifying and arbitrary. It is neither. It's built on about five simple ideas, and once they click,
-the fear doesn't shrink - it disappears, because you can *reason* about what's happening instead of
-guessing.
+masks - not understanding what Git is actually doing underneath.** Git isn't terrifying or arbitrary; it's
+built on about five simple ideas. Once they click, the fear doesn't shrink - it disappears, because you can
+*reason* about what's happening instead of guessing.
 
 So we won't memorize commands yet. First, the five ideas. Give me twenty minutes and Git stops being a
 haunted house.
 
 ## Idea 1: A commit is a snapshot
 
-**What it actually is.** A commit is a photograph of your *entire project* at one moment in time. Not
-"the changes you made" - the whole thing, every file, exactly as it looked when you hit commit. Git
-gives that photograph a unique name (a long ID called a *hash*, like `9f2a1c7`) and remembers which
-commit came right before it: its *parent*.
-
-That's the whole definition. A commit is a snapshot, plus a name, plus a pointer to the previous
-snapshot.
+**What it actually is.** A commit is a photograph of your *entire project* at one moment in time - not
+"the changes you made," the whole thing, every file, exactly as it looked when you hit commit. Git names
+that photograph a unique hash (like `9f2a1c7`) and remembers its *parent*: the commit right before it.
 
 **Why people get this wrong.** Most tutorials say a commit "stores your changes," so people picture Git
-saving little diffs and stacking them up. That picture falls apart the first time you try to undo
-something. The truth - *each commit is a complete snapshot* - is what makes everything else make sense.
+stacking diffs. That breaks the first time you try to undo something - a commit is a complete snapshot,
+not a diff, and that's what makes everything else make sense.
 
 ```mermaid
 gitGraph
@@ -44,8 +39,7 @@ gitGraph
   commit id: "C2"
   commit id: "C3"
 ```
-Each box is a complete snapshot; each commit points back at the one before it (its parent). Follow the arrows backward and you're walking through
-history, one complete snapshot at a time.
+Each box is a full snapshot pointing back at its parent - walk the arrows backward to see history.
 
 **A real example.**
 ```console
@@ -53,21 +47,19 @@ $ git commit -m "Add login button"
 [main 9f2a1c7] Add login button
  1 file changed, 12 insertions(+)
 ```
-*What just happened:* Git took a snapshot of your project, named it `9f2a1c7`, wrote your message on
-it, and recorded that its parent is whatever commit you were sitting on a moment ago. That snapshot is
-now permanent history. The `1 file changed` line is Git being friendly and *summarizing* the difference
-from the parent - but what it stored is the full snapshot, not only those 12 lines.
+*What just happened:* Git snapshotted your project, named it `9f2a1c7`, and recorded its parent - the
+commit you were on a moment ago. The `1 file changed` summary is Git being friendly; what it actually
+stored is the full snapshot, not only those 12 lines.
 
-**Why this saves you later.** Because commits are complete snapshots that only ever point backward, your
-old versions aren't destroyed when you make new ones. "Going back" means walking the arrows. This is why
-"I think I lost my work" is almost always wrong: the snapshot is still there; you only lost sight of it.
+**Why this saves you later.** Old versions aren't destroyed when you make new ones - commits only ever
+point backward. "I think I lost my work" is almost always wrong: the snapshot is still there, you only
+lost sight of it.
 
 ## Idea 2: A branch is a sticky note
 
 **What it actually is.** Here's the idea that unlocks everything: **a branch is a sticky note with a
-name on it, stuck onto one specific commit.** That's the whole thing. `main` is not a copy of your
-project. It's not a folder. It's a label - a small pointer - that says "this commit is the tip of
-`main`."
+name on it, stuck onto one specific commit.** `main` isn't a copy of your project or a folder - it's a
+label that says "this commit is the tip of `main`."
 
 ```mermaid
 gitGraph
@@ -75,11 +67,11 @@ gitGraph
   commit id: "C2"
   commit id: "C3"
 ```
-The `main` label sits on C3, the newest commit - a sticky note, not a copy of your project.
+`main` sits on C3, the newest commit - a sticky note, not a copy.
 
-**What it does in real life.** When you make a new commit on `main`, Git creates the snapshot and then
-*peels the sticky note off the old commit and sticks it on the new one*. The label always moves to
-point at the newest commit on that branch.
+**What it does in real life.** When you commit on `main`, Git creates the snapshot, then *peels the
+sticky note off the old commit and sticks it on the new one*. The label always rides the newest commit on
+that branch.
 
 ```mermaid
 gitGraph
@@ -88,29 +80,27 @@ gitGraph
   commit id: "C3"
   commit id: "C4"
 ```
-You commit C4, and Git peels the `main` label off C3 and sticks it on C4 - the label always rides the newest commit.
+Commit C4, and Git peels `main` off C3 onto C4 - the label always rides the newest commit.
 
-**A real example.** Creating a branch costs almost nothing, because you're adding a second sticky note
-and nothing else:
+**A real example.** Creating a branch costs almost nothing - you're just adding a second sticky note:
 ```console
 $ git branch feature
 $ git log --oneline -1
 9f2a1c7 (HEAD -> main, feature) Add login button
 ```
-*What just happened:* `git branch feature` put a second label - `feature` - on the *exact same commit*
-`main` is on. Nothing was copied. See how the log shows both `main` and `feature` next to `9f2a1c7`?
-Two sticky notes, one commit. That's why branching in Git is instant: it's a line of bookkeeping, not a
-duplicate of your code.
+*What just happened:* `git branch feature` put a second label on the *exact same commit* `main` is on -
+nothing was copied. The log shows both `main` and `feature` on `9f2a1c7`. That's why branching in Git is
+instant: it's a line of bookkeeping, not a duplicate of your code.
 
-**Why this saves you later.** Once you *see* branches as movable labels, a pile of scary things turn
-simple. "Undoing a commit"? Move the label back. "I committed to the wrong branch"? Put a label on the
-commit, move the wrong label back. "Where did my branch go?" The commits are fine; a label moved. Hold
-onto this one - it's the most valuable idea in Git.
+**Why this saves you later.** Once you see branches as movable labels, scary things turn simple: "undo a
+commit" means move the label back; "committed to the wrong branch" means put a label on it, then move the
+wrong label back; "where did my branch go" means the commits are fine, a label moved. Hold onto this
+one - it's the most valuable idea in Git.
 
 ## Idea 3: HEAD is "you are here"
 
-**What it actually is.** `HEAD` is the "you are here" arrow on the map. It points at the branch you're
-currently on - and therefore at the commit you're currently sitting on.
+**What it actually is.** `HEAD` is the "you are here" arrow - it points at the branch you're on, and
+therefore at the commit you're sitting on.
 
 ```mermaid
 flowchart TD
@@ -120,24 +110,21 @@ flowchart TD
 ```
 Read it as: "you are on `main`, which is currently at commit C3."
 
-**What it does in real life.** When you switch branches, you move the "you are here" arrow:
+**What it does in real life.** Switching branches moves the arrow:
 ```console
 $ git switch feature
 Switched to branch 'feature'
 ```
 *What just happened:* HEAD now points at `feature` instead of `main`, and your files on disk changed to
-match whatever commit `feature` points at. You didn't move any commits - you moved *yourself*.
+match `feature`'s commit. You didn't move any commits - you moved *yourself*.
 
-**The gotcha: "detached HEAD."** Sometimes HEAD points *directly at a commit* instead of at a branch
-label. Git calls this a "detached HEAD," which sounds like a horror-movie injury but means something
-tame: "you are here, but not on any branch." It happens when you check out a specific commit by its
-hash. You can look around safely; only remember to create a branch (a fresh sticky note) before making
-commits you want to keep - otherwise there's no label following you, and those commits are hard to find
-later.
+**The gotcha: "detached HEAD."** Sometimes HEAD points *directly at a commit* instead of a branch label -
+it sounds like a horror-movie injury but means something tame: "you're here, but not on any branch." It
+happens when you check out a commit by its hash. Look around safely, but create a branch before committing
+anything you want to keep - otherwise no label is following you and those commits get hard to find later.
 
-**Why this saves you later.** "Detached HEAD" is one of the most common Git panics, and it's harmless.
-It's the "you are here" arrow standing on a commit that has no sticky note next to it. The fix is to put
-a sticky note there: `git switch -c my-branch`.
+**Why this saves you later.** "Detached HEAD" is one of the most common Git panics, and it's harmless -
+just the "you are here" arrow standing on a commit with no sticky note. The fix: `git switch -c my-branch`.
 
 ## Idea 4: The three places your work lives
 
@@ -156,8 +143,8 @@ flowchart LR
    *next* commit. Picture packing a box before you tape it shut.
 3. **Repository** - the committed history; the snapshots that are now permanent.
 
-**What it does in real life.** `git add` copies the current state of a file into the box. `git commit`
-tapes the box shut and turns it into a snapshot.
+**What it does in real life.** `git add` copies the current file into the box; `git commit` tapes the box
+shut into a snapshot.
 
 ```console
 $ git add file.js
@@ -169,9 +156,9 @@ Changes to be committed:
 *What just happened:* `file.js` is now *in the box* ("changes to be committed"). It isn't in history
 yet - you haven't committed - but you've decided it's going in the next snapshot.
 
-**The gotcha that bites everyone.** The staging area holds a snapshot of the file *as it was the moment
-you ran `git add`*. Edit the file again afterward, and those newer edits are not in the box. Git will
-cheerfully show you the same file as both "staged" and "not staged":
+**The gotcha that bites everyone.** Staging holds the file *as it was the moment you ran `git add`*. Edit
+it again afterward and those newer edits aren't in the box - Git will show the same file as both "staged"
+and "not staged":
 ```console
 $ git status
 Changes to be committed:
@@ -179,13 +166,12 @@ Changes to be committed:
 Changes not staged for commit:
   modified:   file.js        (the edits you made AFTER adding)
 ```
-*What just happened:* Both lines are true. The box holds the older version; your working file has newer
-edits on top. Run `git add file.js` again to put the newer version in the box. This confuses
-*everybody* the first time - now it won't confuse you.
+*What just happened:* Both lines are true - the box holds the older version, your working file has newer
+edits on top. Run `git add file.js` again to update the box.
 
-**Why this saves you later.** "Why is my change not in the commit?" and "why is `git diff` empty?" are
-both this. Staging is a real place, separate from your files and separate from history. When you know
-there are three places, you always know which one to look in.
+**Why this saves you later.** "Why isn't my change in the commit?" and "why is `git diff` empty?" are
+both this. Staging is a real place, separate from your files and separate from history - know there are
+three places and you always know which one to check.
 
 ## Idea 5: The remote is another copy
 
@@ -211,14 +197,12 @@ $ git push
  ! [rejected]        main -> main (fetch first)
 error: failed to push some refs to 'origin'
 ```
-*What just happened:* Someone pushed to origin before you. Your copy and origin's copy disagree about
-where `main` should point, and Git won't guess. The fix is to `git pull` first (bring in their
-commits), then push. Not a catastrophe - a sync conflict, the same kind two people get editing a shared
-doc.
+*What just happened:* Someone pushed to origin before you, so the two copies disagree about where `main`
+should point and Git won't guess. Pull first (bring in their commits), then push - a sync conflict, not a
+catastrophe.
 
-**Why this saves you later.** Much of "Git won't let me push!" terror is this: two copies, out of sync,
-and Git refusing to silently clobber one with the other. Once origin is "another copy I sync with,"
-those errors turn from scary into routine.
+**Why this saves you later.** Much of "Git won't let me push!" terror is just two copies out of sync, and
+Git refusing to silently clobber one with the other.
 
 ## The five ideas, recapped
 
@@ -231,13 +215,11 @@ That's the whole foundation. Read these five lines slowly:
 5. **A remote** is another copy you sync with (`push` / `fetch` / `pull`).
 
 Notice what's underneath all five: **Git mostly doesn't destroy things - it moves labels and takes
-snapshots.** Commits keep pointing backward at their parents; branches are cheap labels; your work sits
-in places you can name. That's why, in the next phases, almost every "oh no" turns out to be
-recoverable - and why the commands stop feeling like magic spells and start feeling like tools you
-understand.
+snapshots.** That's why almost every "oh no" ahead turns out to be recoverable, and why the commands stop
+feeling like magic spells.
 
-Next up: **[Phase 2 - the everyday commands](02-everyday-commands.md)**, where we take each command you
-already type and show what it's *actually* doing to these five things.
+Next: **[Phase 2 - the everyday commands](02-everyday-commands.md)** maps each command you already type
+back to these five ideas.
 
 ---
 

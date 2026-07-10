@@ -6,14 +6,14 @@ summary: "Make several writes all-or-nothing with transactions, run your code ar
 tags: [gorm, go, transactions, hooks, migrations]
 difficulty: advanced
 synonyms: ["gorm transaction", "gorm db.transaction", "gorm hooks beforecreate", "gorm migrations", "gorm automigrate production", "golang-migrate goose"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Transactions, Hooks & Migrations
 
-By [Phase 7](07-preloading-and-n-plus-1.md) you can read your blog efficiently. Now we deal with the
-three things that separate a toy from something you'd run in production: writes that can't half-finish,
-code that runs automatically around DB operations, and a schema you can evolve safely over time.
+By [Phase 7](07-preloading-and-n-plus-1.md) you can read your blog efficiently. Now the three things that
+separate a toy from something you'd run in production: writes that can't half-finish, code that runs
+automatically around DB operations, and a schema you can evolve safely over time.
 
 ## The mental model: three guardrails
 

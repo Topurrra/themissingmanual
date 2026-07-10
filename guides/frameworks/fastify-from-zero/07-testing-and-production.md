@@ -6,12 +6,12 @@ summary: "Test the books API in process with Fastify's built-in app.inject(), st
 tags: [fastify, javascript, testing, inject, production]
 difficulty: intermediate
 synonyms: ["fastify testing", "fastify inject", "fastify app.inject", "fastify production", "fastify graceful shutdown", "fastify logger pino", "fastify deploy"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Testing & Production
 
-Here's the mental model that makes Fastify testing click: **a test sends a fake request through your real app, in the same process — no port, no socket, no network.** You hand nothing to an external library; Fastify already ships the tool. You call `app.inject()`, hand it a method and a URL, and Fastify dispatches that request through the *entire* app — every hook, every schema, every plugin, your route handler — exactly as a real HTTP request would travel. Then it hands you back the response object to assert on.
+Here's the mental model that makes Fastify testing click: **a test sends a fake request through your real app, in the same process — no port, no socket, no network.** You call `app.inject()`, hand it a method and a URL, and Fastify dispatches that request through the *entire* app — every hook, every schema, every plugin, your route handler — exactly as a real HTTP request would travel. Then it hands you back the response object to assert on.
 
 > 💡 Coming from Express, you reached for `supertest`. In Fastify you don't install anything: `app.inject()` is built in, and it's the official, recommended way to test. One less dependency, and it understands Fastify's lifecycle natively.
 

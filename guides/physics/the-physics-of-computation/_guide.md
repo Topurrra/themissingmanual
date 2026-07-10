@@ -8,7 +8,7 @@ category: physics
 order: 8
 difficulty: advanced
 synonyms: ["physics of computing", "physical limits of computation", "Landauer's principle explained", "why chips generate heat", "reversible computing explained", "Shannon entropy vs thermodynamic entropy", "energy cost of computing", "thermodynamics of information"]
-updated: 2026-07-06
+updated: 2026-07-10
 ---
 
 # The Physics of Computation
@@ -19,7 +19,7 @@ This guide takes that seriously and follows it to conclusions most programmers n
 
 ## How to read this
 
-This is an advanced guide - it assumes you're comfortable with how computers represent and process information, and it leans on the entropy foundation built in [/guides/heat-energy-and-entropy](/guides/heat-energy-and-entropy) (read at least its second and third phases first if entropy-as-counting-microstates is new to you). No new math is required beyond what that guide already used; where a formula shows up, it's there to make a claim checkable, not to gatekeep it.
+This is an advanced guide - it assumes you're comfortable with how computers represent and process information, and leans on the entropy foundation from [/guides/heat-energy-and-entropy](/guides/heat-energy-and-entropy). If entropy-as-counting-microstates is new to you, read at least that guide's second and third phases first. No new math is required beyond what that guide already used; where a formula shows up, it's there to make a claim checkable, not to gatekeep it.
 
 ## The phases
 

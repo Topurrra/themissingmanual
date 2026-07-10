@@ -14,12 +14,12 @@ synonyms:
   - why is string length wrong for emoji
   - what is a code point
   - byte order mark bom problem
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # How UTF-8 Actually Works
 
-The code-page chaos from Phase 1 had an obvious cure: stop having dozens of conflicting 256-entry tables and build **one table for every character on earth**. That table is **Unicode**. But Unicode by itself only solves half the problem - it assigns numbers; it does not say how to store them in bytes. The genius part, the part that actually runs the modern internet, is the *byte* encoding called **UTF-8**. This phase pulls those two apart, because confusing them is where intermediate developers get stuck.
+The code-page chaos from Phase 1 had an obvious cure: stop having dozens of conflicting 256-entry tables and build **one table for every character on earth**. That table is **Unicode**. But Unicode by itself only solves half the problem - it assigns numbers; it does not say how to store them in bytes. The part that actually runs the modern internet is the *byte* encoding called **UTF-8**. This phase pulls those two apart, because confusing them is where intermediate developers get stuck.
 
 ## Unicode is the catalogue, not the storage
 

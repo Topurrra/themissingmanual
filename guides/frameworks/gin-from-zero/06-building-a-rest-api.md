@@ -6,12 +6,12 @@ summary: "Assemble routing, binding, and responses into full CRUD for the tasks 
 tags: [gin, go, rest, api, crud]
 difficulty: intermediate
 synonyms: ["gin rest api", "gin crud", "gin tasks api", "gin handlers", "gin in-memory store", "go rest api example"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Building a REST API
 
-This is the phase where it all comes together. For five phases you've collected the pieces — the engine and its routes, route groups, binding JSON onto structs, validation tags, `c.JSON` and status codes, middleware. None of those were ends in themselves. They were parts for *this*: a real REST API you can hit with `curl` and watch behave like the services you'll build at work.
+This is the phase where it all comes together. For five phases you've collected the pieces — the engine and its routes, route groups, binding JSON onto structs, validation tags, `c.JSON` and status codes, middleware. None of those were ends in themselves; they were parts for *this*: a real REST API you can hit with `curl` and watch behave like the services you'll build at work.
 
 We're going to grow the tasks API from "a few scattered handlers" into one complete, coherent resource. By the end you'll have create, read, update, and delete all wired up — and, more importantly, a mental model that makes the next resource you build feel like filling in a template.
 

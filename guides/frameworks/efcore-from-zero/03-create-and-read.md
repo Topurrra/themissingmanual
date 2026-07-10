@@ -6,7 +6,7 @@ summary: "Insert rows with Add plus SaveChanges and watch EF write back the gene
 tags: [efcore, csharp, create, read, crud]
 difficulty: intermediate
 synonyms: ["ef core add savechanges", "ef core find first single", "ef core read query", "ef core insert", "ef core tolist", "ef core async savechangesasync"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Create & Read
@@ -57,8 +57,8 @@ WHERE changes() = 1 AND "rowid" = last_insert_rowid();
 *What just happened:* `Add` only marked the object as "to be inserted" — the first line did nothing to
 the database. `SaveChanges` generated the `INSERT`, ran it inside a transaction, then read back the
 auto-generated primary key with that second `SELECT`. EF Core writes that key **into your object** —
-`blog.Id` was `0` before the save and `1` after, automatically, so the object you're holding matches the
-row that now exists.
+`blog.Id` was `0` before the save and `1` after, so the object you're holding matches the row that now
+exists.
 
 > ⚠️ A brand-new object's `Id` is `0` (the default for `int`) until you call `SaveChanges`. If you try
 > to use `blog.Id` before saving, you'll get `0`, not the real key. The Id exists only after the row
@@ -83,8 +83,7 @@ ctx.SaveChanges();   // one trip, one transaction, all rows
 *What just happened:* `AddRange` staged both posts alongside the blog. The single `SaveChanges` flushed
 everything together in **one transaction** — if any insert failed, they'd all roll back, nothing left
 half-written. That's the unit-of-work behavior we'll dig into in
-[Phase 5: Change Tracking & SaveChanges](05-change-tracking.md); for now, just hold "stage as much as
-you want, save once."
+[Phase 5](05-change-tracking.md); for now, hold "stage as much as you want, save once."
 
 ### Async, for web apps
 
@@ -95,10 +94,9 @@ ctx.Blogs.Add(blog);
 await ctx.SaveChangesAsync();
 ```
 
-*What just happened:* Same `INSERT`, same write-back of `blog.Id`, but the thread is freed to handle
+*What just happened:* same `INSERT`, same write-back of `blog.Id`, but the thread is freed to handle
 other requests while the database works. In an ASP.NET Core app, this is the default to reach for. `Add`
-itself stays synchronous (it's just touching the in-memory notepad) — only the flush to the database has
-an async form.
+itself stays synchronous (it's just touching the in-memory notepad) — only the flush has an async form.
 
 ## Reading rows: the four finders
 
@@ -129,7 +127,7 @@ var blog  = ctx.Blogs.First(b => b.Url == "https://battle-hardened.dev");
 var maybe = ctx.Blogs.FirstOrDefault(b => b.Url == "https://nope.dev");
 ```
 
-*What just happened:* These take a predicate (any condition, not just the key) and return the **first**
+*What just happened:* these take a predicate (any condition, not just the key) and return the **first**
 match. EF translates it to:
 
 ```sql
@@ -148,9 +146,9 @@ var blog = ctx.Blogs.Single(b => b.Url == "https://battle-hardened.dev");
 
 *What just happened:* `Single` says "I expect exactly one row to match." It throws if **none** match
 *and* throws if **more than one** matches — doubling as a sanity check on uniqueness. Behind the scenes EF
-fetches up to two rows (`LIMIT 2`) precisely to tell whether there was more than one. `SingleOrDefault` is
-the same but returns `null` when none match (still throws on two or more). Reach for `Single` when a
-duplicate would mean your data is broken and you want to find out loudly.
+fetches up to two rows (`LIMIT 2`) to tell whether there was more than one. `SingleOrDefault` is the same
+but returns `null` when none match (still throws on two or more). Reach for `Single` when a duplicate
+would mean your data is broken and you want to find out loudly.
 
 ### `ToList` / `ToListAsync` — all the rows
 
@@ -163,8 +161,8 @@ var allAsync = await ctx.Blogs.ToListAsync();
 *What just happened:* `ToList` runs the query and materializes **every** matching row into a `List<T>`.
 On its own it's `SELECT * FROM Blogs`; with a `Where`, EF folds the condition into the SQL so only
 matching rows come back — the database filters, not your C#. We'll go deep on `Where`, `OrderBy`,
-`Select`, and how queries build up in [Phase 4: Querying with LINQ](04-querying-with-linq.md). The async
-`ToListAsync` is what you want in web apps, for the same thread-freeing reason as `SaveChangesAsync`.
+`Select` in [Phase 4](04-querying-with-linq.md). The async `ToListAsync` is what you want in web apps,
+for the same thread-freeing reason as `SaveChangesAsync`.
 
 ## `First` vs `FirstOrDefault`: the choice that bites people
 
@@ -187,11 +185,11 @@ if (blog is null)
 var settings = ctx.Blogs.First(b => b.Url == knownSeedUrl);
 ```
 
-*What just happened:* The first case maps a missing row to an HTTP 404 — a user typing a bad Id isn't a
+*What just happened:* the first case maps a missing row to an HTTP 404 — a user typing a bad Id isn't a
 crash, so we check for `null` and respond gracefully. The second uses `First` because absence would mean
 something is genuinely wrong; throwing surfaces the bug instead of letting a `null` slip downstream and
 blow up later with a confusing `NullReferenceException`. Choosing the throwing or `*OrDefault` variant
-*is* you deciding how "missing" should be handled.
+*is* deciding how "missing" should be handled.
 
 ## Two things that come for free
 
@@ -204,8 +202,7 @@ blow up later with a confusing `NullReferenceException`. Choosing the throwing o
 > 📝 **Prefer the async finders in web apps.** `ToListAsync`, `FirstOrDefaultAsync`,
 > `SingleOrDefaultAsync`, `FindAsync`, and `SaveChangesAsync` all exist. In a server handling many
 > concurrent requests, blocking a thread on a synchronous database call wastes a thread that could serve
-> someone else. In a one-off script or console tool it matters far less — but in ASP.NET Core, async is
-> the house style.
+> someone else. It matters far less in a one-off script — but in ASP.NET Core, async is the house style.
 
 ## Recap
 

@@ -9,7 +9,7 @@ order: 7
 group: "Java"
 difficulty: intermediate
 synonyms: ["what is a java servlet", "servlet api tutorial", "httpservlet doget dopost", "servlet container lifecycle", "servlet filters chain", "httpsession java", "front controller pattern servlet", "what spring dispatcherservlet is built on"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # The Servlet API From Zero

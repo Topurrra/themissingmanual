@@ -6,14 +6,14 @@ summary: "Buckets, keys, and signed URLs - how cloud object storage really works
 tags: [object-storage, s3, cloud, buckets, infrastructure]
 difficulty: intermediate
 synonyms: [what is s3, how does object storage work, s3 bucket explained, signed url, presigned url, s3 public bucket leak, store files in the cloud]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # How you really work with it: keys, uploads, and signed URLs
 
 Now you've got the model - bucket plus key, flat strings, no folders. This phase is the day-to-day: how the four operations work, how you choose good keys, and the one mechanism that solves the question every app eventually asks - *"how do I let this one user download this one private file without making it public to the whole internet?"*
 
-## There are basically four verbs
+## There are four verbs
 
 Object storage gives you a tiny, blunt API. Once you see it, the rest is detail:
 

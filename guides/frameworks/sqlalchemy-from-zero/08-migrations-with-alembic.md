@@ -6,18 +6,17 @@ summary: "Why create_all can't evolve a live schema, and how Alembic gives you v
 tags: [sqlalchemy, alembic, migrations, schema, autogenerate, versioning, database]
 difficulty: intermediate
 synonyms: ["alembic migrations tutorial", "sqlalchemy schema migrations", "alembic autogenerate", "alembic upgrade downgrade", "sqlalchemy create_all not enough", "alembic revision", "database schema versioning python"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Migrations with Alembic
 
-Here's the mental model to hold the whole way through this phase: **your models define what the
-schema *should* be; Alembic figures out how to *get there* from whatever the database currently
-is - one small, reviewable, reversible step at a time.** Your `Author`, `Book`, and `Tag` classes
-are the destination. The live database is the starting point. A migration is the recorded set of
-turns that drives from one to the other. And because every turn is written down and applied in
-order, every environment - your laptop, a teammate's, staging, production - drives the exact same
-route and ends up at the exact same place.
+**Your models define what the schema *should* be; Alembic figures out how to *get there* from
+whatever the database currently is - one small, reviewable, reversible step at a time.** Your
+`Author`, `Book`, and `Tag` classes are the destination. The live database is the starting point. A
+migration is the recorded set of turns that drives from one to the other. And because every turn is
+written down and applied in order, every environment - your laptop, a teammate's, staging,
+production - drives the exact same route and ends up at the exact same place.
 
 Up to now you've been leaning on `create_all`. That was the right tool for getting off the ground.
 This phase is about the moment it stops being enough - which arrives the first time you change a
@@ -258,10 +257,9 @@ A handful of gotchas separate smooth Alembic users from the ones who get burned:
   equivalent of a merge conflict; resolve it with `alembic merge` (or by rebasing one revision onto
   the other) before deploying.
 
-💡 The one sentence to carry out of this phase: **your models define the schema; Alembic evolves it
-safely.** `create_all` got you to version one. From here on, every change to your `Author`, `Book`,
-or `Tag` tables flows through a reviewed, ordered, reversible migration - and your database stops
-being the scary part of shipping.
+💡 **Your models define the schema; Alembic evolves it safely.** `create_all` got you to version one.
+From here on, every change to your `Author`, `Book`, or `Tag` tables flows through a reviewed,
+ordered, reversible migration - and your database stops being the scary part of shipping.
 
 ## Recap
 

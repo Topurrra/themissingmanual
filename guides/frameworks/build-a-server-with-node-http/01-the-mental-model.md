@@ -6,14 +6,14 @@ summary: "Node ships a complete HTTP server in node:http; createServer calls you
 tags: [node, nodejs, http, javascript, getting-started]
 difficulty: beginner
 synonyms: ["node http module", "node createServer", "node request listener", "node server from scratch", "node http mental model", "what express is built on"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The node:http Mental Model
 
 Node already has a complete web server built in. No `npm install`, no dependencies — it's the
 **`node:http`** module, and it can listen on a port, accept connections, parse requests, and write
-responses all on its own. Express and Fastify don't replace it. They *wrap* it. Build a small API with
+responses all on its own. Express and Fastify don't replace it, they *wrap* it. Build a small API with
 only `node:http` and `app.get(...)` stops being magic — you'll have written the thing it's hiding.
 
 > 📝 This is a **roots** guide. It assumes you know **JavaScript**/Node — functions, callbacks,
@@ -47,7 +47,7 @@ flowchart LR
 one listener with two arguments. Your function reads what it needs from `req`, sets a status and headers on
 `res`, writes a body, and ends the response. Node ships it back. There's nothing between the server and
 your function — no routing layer deciding *which* function to call, because there's only ever one.
-Branching to different behavior per URL is something you add.
+Branching per URL is something you add.
 
 ## The smallest server that works
 
@@ -67,9 +67,9 @@ server.listen(3000, () => console.log('listening on http://localhost:3000'));
 *What just happened:* four moving parts, top to bottom —
 
 - `require('node:http')` pulls in the built-in module. The `node:` prefix says "this is a core module, not
-  a package from `node_modules`" — no install needed, it's part of Node.
+  a package from `node_modules`" — no install needed.
 - `http.createServer((req, res) => { ... })` builds the server and registers your **request listener** in
-  one move. That arrow function is the `(req, res)` function from the mental model — Node will call it for
+  one move. That arrow function is the `(req, res)` function from the mental model — Node calls it for
   every incoming request. `createServer` *returns* the server; it doesn't start it yet.
 - Inside the listener, `res.writeHead(200, { ... })` sets the **status code** (200 = OK) and the response
   **headers** — here, telling the client the body is plain text. Then `res.end('Hello from node:http')`
@@ -79,8 +79,7 @@ server.listen(3000, () => console.log('listening on http://localhost:3000'));
 
 ⚠️ You **must** call `res.end()`. It's the signal that the response is complete — without it, Node keeps the
 connection open waiting for more, and the client sits there spinning until it times out. A request that
-"hangs forever" in Node is, nine times out of ten, a code path that forgot to call `res.end()`. Make ending
-the response a reflex.
+"hangs forever" in Node is, nine times out of ten, a code path that forgot to call `res.end()`.
 
 Run it and hit it from another terminal:
 
@@ -94,7 +93,7 @@ curl localhost:3000
 *What just happened:* `node server.js` starts the program; it stays running, holding port 3000, because
 `server.listen` keeps the process alive. `curl` opens a connection and sends `GET /`, Node calls your
 listener with that request, your function writes the headers and body and ends, and curl prints what came
-back. That's a web server with zero dependencies.
+back — a web server with zero dependencies.
 
 ## `req` and `res`: two streams, opposite directions
 
@@ -104,19 +103,19 @@ and which direction they flow is the key to understanding them.
 📝 **`req`** is an `IncomingMessage`, and it's a **readable** stream — data flows *from* the client *to*
 you. Some of it is available immediately as properties: `req.method` (`'GET'`, `'POST'`, ...), `req.url`
 (the path and query string, like `/messages?limit=10`), and `req.headers` (an object of the request
-headers). But the **body** — the JSON a client POSTs, say — isn't a property. It arrives as a stream of
+headers). But the **body** — the JSON a client POSTs, say — isn't a property; it arrives as a stream of
 chunks you read over time. That's why reading a request body takes a few lines instead of one; Phase 2 is
 where we do it properly.
 
 📝 **`res`** is a `ServerResponse`, and it's a **writable** stream — data flows *from* you *to* the client.
-You set the status and headers (`res.writeHead(...)`, or `res.statusCode` / `res.setHeader(...)`), then you
+You set the status and headers (`res.writeHead(...)`, or `res.statusCode` / `res.setHeader(...)`), then
 `res.write(...)` body chunks if you want, and finally `res.end(...)` to flush and close. `res.end()` can
 also take a final chunk, which is why the tiny server above wrote its whole body in one `end()` call.
 
 💡 The stream nature matters more than it looks right now. It's why Node can start sending a response before
-the whole thing is built, and why it can handle a huge upload without loading it all into memory. We lean on
-that in Phase 2 (reading bodies) and again in Phase 6 (streaming responses). For now, the takeaway is just
-the shape: **`req` carries the request *in*, `res` carries the response *out*, and both are streams.**
+the whole thing is built, and why it can handle a huge upload without loading it all into memory — we lean
+on that in Phase 2 (reading bodies) and again in Phase 6 (streaming responses). For now: **`req` carries the
+request *in*, `res` carries the response *out*, and both are streams.**
 
 ## Where the frameworks fit — and what we'll build
 
@@ -127,8 +126,8 @@ Here's the reveal that justifies the whole guide. When you reach for Express lat
 an Express app *is* a request listener you hand to `http.createServer`; `app.get('/messages', ...)` is
 their router doing the `req.method` / `req.url` switch you'd otherwise write by hand, and `app.use(...)` is
 their formalized version of "call this function before the handler." Nicer ergonomics, real conveniences —
-but the request still enters through a server, and something still writes to `res`. The skeleton is the one
-you just met. ([Express From Zero](/guides/express-from-zero) walks that mapping in full.)
+but the request still enters through a server, and something still writes to `res`. ([Express From
+Zero](/guides/express-from-zero) walks that mapping in full.)
 
 To keep this concrete instead of abstract, the rest of the guide builds one small thing the whole way
 through: a **messages** service. The data is deliberately tiny — each message is just an object:

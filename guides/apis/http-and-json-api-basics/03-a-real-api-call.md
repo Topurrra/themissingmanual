@@ -6,7 +6,7 @@ summary: "Put HTTP and JSON together: GET a JSON API and read the response, then
 tags: [curl, get, post, json, content-type, apis]
 difficulty: beginner
 synonyms: ["how to call an api with curl", "curl get json example", "curl post json body", "how to send json in a request", "content-type application json", "make a real api call"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # A Real API Call
@@ -20,8 +20,8 @@ you'll meet in the wild. The *shapes* of the requests and responses are exactly 
 
 ## Reading data: GET that returns JSON
 
-**What it does in real life.** The most common thing you'll ever do with an API is ask it for some data.
-That's a `GET`: name the thing you want in the URL, and read the JSON that comes back.
+The most common thing you'll ever do with an API is ask it for some data. That's a `GET`: name the thing
+you want in the URL, and read the JSON that comes back.
 
 ```console
 $ curl -i https://api.example.com/products/15
@@ -31,7 +31,7 @@ Content-Length: 96
 
 {"id":15,"name":"Mechanical Keyboard","price":129.99,"in_stock":true,"tags":["peripherals","input"]}
 ```
-*What just happened:* You sent a `GET` for `/products/15`. The server replied `200 OK` (it worked), and the
+You sent a `GET` for `/products/15`. The server replied `200 OK` (it worked), and the
 `Content-Type: application/json` header told you the body is JSON. The body is one JSON object describing
 product 15 — and you can already read every field: a number `id`, a string `name`, a number `price`, a
 boolean `in_stock`, and an array of `tags`. Everything from Phase 2, on the wire, for real.
@@ -52,10 +52,10 @@ $ curl -s https://api.example.com/products/15 | jq
   ]
 }
 ```
-*What just happened:* The `-s` flag silences `curl`'s progress meter so only the body is passed along, and
-`jq` pretty-prints the JSON with indentation. Same data, same bytes from the server — just spaced out so the
-structure is obvious. (`jq` is a separate tool, not part of `curl`; if you don't have it, the compact line
-above is still perfectly valid JSON.)
+The `-s` flag silences `curl`'s progress meter so only the body is passed along, and `jq` pretty-prints the
+JSON with indentation — same data, same bytes from the server, just spaced out so the structure is obvious.
+(`jq` is a separate tool, not part of `curl`; if you don't have it, the compact line above is still
+perfectly valid JSON.)
 
 ⚠️ **Gotcha.** `-i` (show response headers) and `-s` (silent) do different jobs — don't confuse them.
 Reach for `-i` when you want to *see the status code and headers*; reach for `-s` when you want *only the
@@ -63,10 +63,9 @@ body*, usually to pipe it somewhere like `jq`.
 
 ## Sending data: POST with a JSON body
 
-**What it does in real life.** When you want the API to *create* something — a new user, an order, a
-comment — you send the data in the request body, as JSON, with a `POST`. Two things have to be right for the
-server to accept it: the body must be valid JSON, and you must tell the server it *is* JSON with a
-`Content-Type` header.
+When you want the API to *create* something — a new user, an order, a comment — you send the data in the
+request body, as JSON, with a `POST`. Two things have to be right for the server to accept it: the body
+must be valid JSON, and you must tell the server it *is* JSON with a `Content-Type` header.
 
 ```console
 $ curl -i -X POST https://api.example.com/products \
@@ -78,8 +77,8 @@ Location: /products/16
 
 {"id":16,"name":"Wireless Mouse","price":49.99,"in_stock":true,"tags":[]}
 ```
-*What just happened:* You sent a `POST` to `/products` — the collection of products — asking it to create a
-new one. Let's read each flag, because this is the pattern you'll reuse constantly:
+You sent a `POST` to `/products` — the collection of products — asking it to create a new one. Read each
+flag, because this is the pattern you'll reuse constantly:
 
 - `-X POST` sets the **method** to `POST` (the default is `GET`).
 - `-H "Content-Type: application/json"` adds the **header** that announces "my body is JSON." Without it,
@@ -125,9 +124,9 @@ building blocks, used together:
    └─────────────────────────────────────────────────────────────┘
 ```
 
-*What just happened:* That diagram is every web API request you'll ever make, in one frame. The specifics
-change — different URLs, different fields, an `Authorization` header once you need to log in — but the shape
-is always this. You now have the vocabulary to read it.
+That diagram is every web API request you'll ever make, in one frame. The specifics change — different
+URLs, different fields, an `Authorization` header once you need to log in — but the shape is always this.
+You now have the vocabulary to read it.
 
 💡 **Key point.** HTTP and JSON are the two building blocks, and you've now used both together. What you
 *haven't* learned yet is how APIs are *organized* — why it's `GET /products/15` and `POST /products`, how

@@ -6,39 +6,32 @@ summary: "Induction proves a statement for all natural numbers with two steps: s
 tags: [logic, induction, recursion, proof]
 difficulty: beginner
 synonyms: ["proof by induction", "mathematical induction", "base case inductive step", "induction and recursion", "domino principle proof"]
-updated: 2026-06-25
+updated: 2026-07-10
 ---
 
 # Proof by Induction
 
-One kind of claim should make you nervous: a claim about *all* natural numbers.
-"This formula works for every n." Every n? There are infinitely many. You can't
-check them one by one - you'd never finish. So how could anyone prove something true
-for an infinite list of cases?
+One kind of claim should make you nervous: a claim about *all* natural numbers. "This formula
+works for every n." Every n? There are infinitely many - you can't check them one by one, you'd
+never finish. So how could anyone prove something true for an infinite list of cases?
 
-Induction is the answer, and it does the whole infinite job with a small, finite
-amount of work. Once you see the trick, it stops feeling like a trick and starts
-feeling like the most natural thing in the world.
+Induction is the answer, and it does the whole infinite job with a small, finite amount of work.
+Once you see the trick, it stops feeling like a trick and starts feeling like the most natural
+thing in the world.
 
 ## The domino metaphor
 
-Picture a long line of dominoes, stretching off as far as you can see. You want to
-know: will *all* of them fall?
+Picture a long line of dominoes, stretching off as far as you can see. You want to know: will
+*all* of them fall? You don't need to push each one - you need exactly two things to be true.
 
-You don't need to push each one. You need exactly two things to be true.
+First, the **first domino falls**. Someone tips it over; the chain has to start somewhere. Second,
+the dominoes are **spaced so that each one knocks over the next** - anywhere in the line, if a
+domino falls, the one after it falls too.
 
-First, the **first domino falls**. Someone tips it over. The chain has to start
-somewhere.
-
-Second, the dominoes are **spaced so that each one knocks over the next**. Anywhere
-in the line, if a domino falls, the one after it falls too.
-
-If both hold, then *all* the dominoes fall - and you know it without watching. The
-first falls, so the second falls. The second falls, so the third falls. The rule
-carries you down the entire line, forever.
-
-That's induction. Two facts, one about the start and one about the *step*, and
-between them they cover infinitely many cases.
+If both hold, then *all* the dominoes fall, and you know it without watching. The first falls, so
+the second falls. The second falls, so the third falls. The rule carries you down the entire line,
+forever. That's induction: two facts, one about the start and one about the *step*, and between
+them they cover infinitely many cases.
 
 ## The formal shape
 
@@ -113,14 +106,14 @@ done for us, by us, one step earlier.
 
 ## Why it's valid
 
-Here's the part that feels uncomfortable at first: in the inductive step, you assume
-the very kind of thing you're trying to prove. Isn't that circular?
+Here's the part that feels uncomfortable at first: in the inductive step, you assume the very kind
+of thing you're trying to prove. Isn't that circular?
 
-It isn't, and the domino picture shows why. You're not assuming `P(k)` is true for
-all k. You're proving a *connection*: "wherever the chain has reached, it reaches one
-further." That connection is a single, reusable rule. The base case then proves the
-chain has actually started. Combine "it started" with "it always continues" and you
-get "it reaches everywhere" - no circularity, only a rule applied over and over.
+It isn't, and the domino picture shows why. You're not assuming `P(k)` is true for all k. You're
+proving a *connection*: "wherever the chain has reached, it reaches one further." That connection
+is a single, reusable rule. The base case then proves the chain has actually started. Combine "it
+started" with "it always continues" and you get "it reaches everywhere" - no circularity, only a
+rule applied over and over.
 
 This is the deep payoff. The inductive step is proved *once*, in general, for an
 arbitrary k. But because k stands for any number, that one proof does the work of
@@ -174,24 +167,17 @@ nothing borrowed except the hypothesis itself.
 
 ## Where this leaves you
 
-You've now seen the three pillars of this guide. You know
-[what a proof actually is](01-what-a-proof-actually-is.md) - an argument that forces a
-conclusion. You know
-[the main techniques](02-the-main-proof-techniques.md) - direct proof, contradiction,
-contrapositive. And now you have induction: the tool for taming infinity, two steps
-that topple an endless line of cases.
+You've now seen the three pillars of this guide: [what a proof actually is](01-what-a-proof-actually-is.md)
+- an argument that forces a conclusion; [the main techniques](02-the-main-proof-techniques.md) -
+direct proof, contradiction, contrapositive; and now induction, the tool for taming infinity, two
+steps that topple an endless line of cases. That's a real foundation - you can read a proof and
+follow why each line is forced, and you have a vocabulary for the moves people make to get there.
 
-That's a real foundation. You can read a proof and follow why each line is forced,
-and you have a vocabulary for the moves people make to get there.
-
-One more skill rounds it out, and it points the other direction. So far you've
-studied how arguments go *right*. The natural companion is learning how they go
-*wrong* - the recurring patterns of bad reasoning that look convincing until you name
-them. Spotting fallacies lets you sit through a confident-sounding argument and put
-your finger on exactly where it cheats. If proof is how you build trust in a
-conclusion, fallacy-spotting is how you withhold it when it hasn't been earned.
-That's the last Logic foundation, and it's where the whole toolkit starts paying off
-in everyday life.
+One more skill rounds it out, pointing the other direction. So far you've studied how arguments go
+*right*. The natural companion is learning how they go *wrong* - the recurring patterns of bad
+reasoning that look convincing until you name them. If proof is how you build trust in a
+conclusion, fallacy-spotting is how you withhold it when it hasn't been earned. That's the last
+Logic foundation, and where the whole toolkit starts paying off in everyday life.
 
 ## Open-ended exercise
 

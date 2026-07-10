@@ -6,12 +6,12 @@ summary: "Why changing a field updates the row with no save call: transactions s
 tags: [hibernate, jpa, transactions, dirty-checking, flush, unit-of-work, commit, rollback]
 difficulty: intermediate
 synonyms: ["jpa transactions explained", "hibernate dirty checking", "hibernate flush commit", "jpa unit of work", "hibernate automatic update no save", "hibernate transaction rollback", "jpa flush modes"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Transactions & the Unit of Work
 
-In [Phase 3](03-entitymanager-and-persistence-context.md) you met the persistence context — the in-memory workspace where the `EntityManager` keeps your managed entities, the identity map that guarantees one object per row, and the four states an entity can live in. That phase answered "where do my objects live while Hibernate is looking after them?" This phase answers the question everyone asks next, usually in a panic: *"I changed a field and never called `save` — why did the database update?"*
+In [Phase 3](03-entitymanager-and-persistence-context.md) you met the persistence context — the in-memory workspace where the `EntityManager` keeps your managed entities, the identity map that guarantees one object per row, and the four states an entity can live in. That phase answered "where do my objects live while Hibernate is looking after them?" This one answers the question everyone asks next, usually in a panic: *"I changed a field and never called `save` — why did the database update?"*
 
 Before any code, here's the whole phase in one sentence — paste it on your monitor:
 

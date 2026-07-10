@@ -10,12 +10,12 @@ synonyms:
   - how does a neural network make a prediction
   - what is inference in a neural network
   - how does data flow through a neural network
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # The Forward Pass
 
-You now have every piece: layers arranged input to output, neurons that each compute a weighted sum plus a bias and reshape it through an activation function, and connections carrying values from one layer to the next. This phase puts all of it in motion — following one single prediction as it travels through the whole structure, start to finish.
+You now have every piece: layers arranged input to output, neurons that each compute a weighted sum plus a bias and reshape it through an activation function, and connections carrying values from one layer to the next. This phase puts it all in motion — following one prediction as it travels through the whole structure, start to finish.
 
 ## What "forward pass" means
 

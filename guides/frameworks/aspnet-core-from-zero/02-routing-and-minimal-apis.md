@@ -6,14 +6,14 @@ summary: "How ASP.NET Core matches a request to your code: MapGet/MapPost and fr
 tags: [aspnet-core, csharp, routing, minimal-apis, endpoints]
 difficulty: beginner
 synonyms: ["aspnet core routing", "minimal api mapget mappost", "aspnet route parameters", "aspnet query parameters", "aspnet mapgroup", "aspnet results"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Routing & Minimal APIs
 
-Here's the whole mental model: **a route is an HTTP method plus a path, pointing at a handler.** `GET /products` is one route. `POST /products` is a different route — same path, different method, different code runs. ASP.NET Core keeps a table of these, and when a request arrives it looks up the method-and-path pair, finds the matching handler, and runs it.
+Here's the whole mental model: **a route is an HTTP method plus a path, pointing at a handler.** `GET /products` is one route; `POST /products` is a different one — same path, different method, different code runs. ASP.NET Core keeps a table of these, and when a request arrives it looks up the method-and-path pair and runs the matching handler.
 
-Minimal APIs are the leanest way to fill that table. You call `app.MapGet`, `app.MapPost`, and so on — each registers "when *this* method hits *this* path, run *this* function," usually a small lambda. The clever part: the framework looks at your handler's parameters and **fills them in for you** from the route, the query string, or the request body. You write a function that wants an `int id`, and ASP.NET Core figures out where to get an `id` from.
+Minimal APIs are the leanest way to fill that table. `app.MapGet`, `app.MapPost`, and friends each register "when *this* method hits *this* path, run *this* function," usually a small lambda. The clever part: the framework looks at your handler's parameters and **fills them in for you** from the route, the query string, or the request body.
 
 > 📝 You'll keep growing the **products API** from Phase 1. By the end of this phase it'll answer to a list endpoint and a by-id endpoint, return proper status codes, and live under a versioned URL prefix.
 
@@ -29,7 +29,7 @@ app.MapPatch("/products/{id}", (int id) => $"patch product {id}");
 app.MapDelete("/products/{id}", (int id) => $"delete product {id}");
 ```
 
-*What just happened:* Five routes, registered in five lines. `/products` appears twice — `MapGet` and `MapPost` to the same path are two separate routes because the method is part of the identity. The string is the path; the lambda is the handler. That's the entire shape of a minimal API endpoint, repeated.
+*What just happened:* five routes, registered in five lines. `/products` appears twice — `MapGet` and `MapPost` are two separate routes because the method is part of the identity. The string is the path; the lambda is the handler.
 
 Let's make the products list real instead of returning a string, by seeding a tiny in-memory list:
 
@@ -70,16 +70,16 @@ app.MapGet("/products/{id}", (int id) =>
 });
 ```
 
-*What just happened:* A request to `/products/2` makes ASP.NET Core pull `"2"` out of the URL, see that your parameter is an `int`, parse it, and pass `2` into your lambda as `id`. The match is **by name** — `{id}` binds to the parameter named `id`, not by position. Rename one and not the other and the binding breaks.
+*What just happened:* a request to `/products/2` makes ASP.NET Core pull `"2"` out of the URL, see your parameter is an `int`, parse it, and pass `2` into your lambda as `id`. The match is **by name** — `{id}` binds to the parameter named `id`, not by position.
 
-That automatic conversion has a useful side effect: if someone requests `/products/banana`, `"banana"` can't become an `int`, so the route doesn't match and the framework returns a 400 — your handler never runs with bad data. Make that intent explicit with a **route constraint**, written as `{name:type}`:
+That automatic conversion has a useful side effect: `/products/banana` can't become an `int`, so the route doesn't match and the framework returns a 400 — your handler never runs with bad data. Make that intent explicit with a **route constraint**, written as `{name:type}`:
 
 ```csharp
 app.MapGet("/products/{id:int}", (int id) => products.FirstOrDefault(p => p.Id == id));
 app.MapGet("/products/category/{slug:alpha}", (string slug) => $"category: {slug}");
 ```
 
-*What just happened:* `{id:int}` tells the router "only match this route if the segment is an integer." `{slug:alpha}` matches only letters. Constraints filter *whether the route matches at all* — handy when two routes could otherwise collide, like a numeric id versus a text slug in the same position.
+*What just happened:* `{id:int}` tells the router "only match this route if the segment is an integer." `{slug:alpha}` matches only letters. Constraints filter *whether the route matches at all* — handy when two routes would otherwise collide, like a numeric id versus a text slug in the same position.
 
 > ⚠️ Don't lean on route constraints for *validation*. They decide routing, not correctness — `{id:int}` happily accepts `-999` or `0`. Constraints answer "does this URL belong to this endpoint?" Real input checking is its own job — the whole of Phase 3.
 
@@ -100,16 +100,16 @@ app.MapGet("/products", (int? page, string? q) =>
 });
 ```
 
-*What just happened:* Neither `page` nor `q` appears in the `/products` path, so ASP.NET Core reads them from the query string. `/products?q=mouse` filters by name; `/products?page=2` pages; `/products` with no query gives you defaults because both are nullable (`int?`, `string?`) and come in as `null` when absent. Nullable types are how you mark a parameter optional.
+*What just happened:* neither `page` nor `q` appears in the `/products` path, so ASP.NET Core reads them from the query string. `/products?q=mouse` filters by name; `/products?page=2` pages; no query gives defaults because both are nullable (`int?`, `string?`) and arrive as `null` when absent. Nullable types mark a parameter optional.
 
-When you want the source unmistakable — or the URL name differs from your parameter name — reach for `[FromQuery]`:
+When the URL name differs from your parameter name, reach for `[FromQuery]`:
 
 ```csharp
 app.MapGet("/search", ([FromQuery(Name = "term")] string? searchTerm) =>
     $"searching for: {searchTerm}");
 ```
 
-*What just happened:* `[FromQuery(Name = "term")]` maps the URL's `?term=...` onto a parameter you've chosen to call `searchTerm`. The attribute also documents intent — a reader sees at a glance that this comes from the query string. You don't need it for the common case, since default binding already does the right thing, but it's there when you want the source spelled out.
+*What just happened:* `[FromQuery(Name = "term")]` maps the URL's `?term=...` onto a parameter you've named `searchTerm`. You don't need it for the common case, since default binding already does the right thing, but it's there when you want the source spelled out.
 
 ## Returning the right status with Results
 
@@ -131,7 +131,7 @@ app.MapPost("/products", (Product product) =>
 });
 ```
 
-*What just happened:* `Results.Ok(product)` sends the product with a `200`; `Results.NotFound()` sends a `404` with no body. `Results.Created(uri, body)` returns `201` *and* sets the `Location` header to where the new resource lives — what a well-behaved REST API does after a create. The `Results` factory has one method per common outcome: `Ok`, `NotFound`, `Created`, `BadRequest`, and more.
+*What just happened:* `Results.Ok(product)` sends the product with a `200`; `Results.NotFound()` sends a `404` with no body. `Results.Created(uri, body)` returns `201` *and* sets the `Location` header to where the new resource lives. `Results` has one method per common outcome: `Ok`, `NotFound`, `Created`, `BadRequest`, more.
 
 `TypedResults` is the same idea with the concrete return type baked in:
 
@@ -145,13 +145,13 @@ app.MapGet("/products/{id:int}", (int id) =>
 });
 ```
 
-*What just happened:* Behaviour is identical at runtime — same status codes, same bodies. The difference is the *type*: `TypedResults.Ok(product)` returns a strongly-typed `Ok<Product>` rather than a general result, which makes the endpoint easier to unit test (assert on the exact type) and lets tooling describe your API more precisely. Prefer `TypedResults` for handlers you'll test; `Results` is fine for quick work.
+*What just happened:* behavior is identical at runtime — same status codes, same bodies. The difference is the *type*: `TypedResults.Ok(product)` returns a strongly-typed `Ok<Product>` rather than a general result, easier to unit test and better for tooling. Prefer `TypedResults` for handlers you'll test; `Results` is fine for quick work.
 
 > 💡 A handler can return different result types down different branches. The compiler accepts the `?:` above because `Results.NotFound()` and `Results.Ok(...)` share a common interface, so both branches type-check. With `TypedResults` you'll sometimes declare the return as `Results<Ok<Product>, NotFound>` to keep both concrete types — more on that in later phases.
 
 ## Grouping endpoints with MapGroup
 
-As the API grows, every route starts with the same prefix — `/api/v1/products`, `/api/v1/orders`, and so on. Repeating `/api/v1` in every `Map` call is noise, and typos creep in. **`MapGroup`** factors out a shared prefix once:
+As the API grows, every route starts with the same prefix — `/api/v1/products`, `/api/v1/orders`. Repeating `/api/v1` in every `Map` call is noise, and typos creep in. **`MapGroup`** factors out a shared prefix once:
 
 ```csharp
 var v1 = app.MapGroup("/api/v1");
@@ -169,11 +169,11 @@ v1.MapPost("/products", (Product product) =>
 });
 ```
 
-*What just happened:* `MapGroup("/api/v1")` returns a group object, and every route you map *on the group* inherits the prefix. The first one becomes `GET /api/v1/products`, no repetition. The immediate payoff is versioning — when `/api/v2` arrives you spin up a second group beside the first, and the two versions live side by side without touching each other's routes.
+*What just happened:* `MapGroup("/api/v1")` returns a group object, and every route mapped *on the group* inherits the prefix — no repetition. The immediate payoff is versioning: when `/api/v2` arrives, spin up a second group beside the first, and the two live side by side.
 
-Groups become more powerful later: the same object can attach **authentication, validation filters, and shared metadata** to everything inside it at once, so you secure or document a dozen endpoints with one line. For now, treat `MapGroup` as your tidy prefix — the rest unlocks in the auth and middleware phases.
+Groups become more powerful later: the same object can attach **authentication, validation filters, and shared metadata** to everything inside it at once. For now, treat `MapGroup` as your tidy prefix — the rest unlocks in the auth and middleware phases.
 
-> 📝 Everything in this phase used **minimal APIs**. ASP.NET Core has an older, more structured style too — **controllers**, classes marked `[ApiController]` with methods decorated by attribute routes like `[HttpGet("products/{id}")]`. Controllers shine in large apps with lots of shared conventions; minimal APIs win on leanness and are the modern default for new services. They're not rivals so much as two points on a spectrum, and you can even mix them. We use minimal APIs throughout this guide; Phase 9 lays the two side by side.
+> 📝 Everything here used **minimal APIs**. ASP.NET Core also has an older, more structured style — **controllers**, classes marked `[ApiController]` with methods decorated by attribute routes like `[HttpGet("products/{id}")]`. Controllers shine in large apps with lots of shared conventions; minimal APIs win on leanness and are the modern default. Not rivals so much as two points on a spectrum — Phase 9 lays them side by side.
 
 ## Recap
 

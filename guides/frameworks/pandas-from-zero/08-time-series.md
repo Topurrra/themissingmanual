@@ -6,14 +6,14 @@ summary: "Turn date strings into real datetimes with to_datetime, pull date part
 tags: [pandas, time-series, datetime, resample, date-index, to-datetime, dt-accessor]
 difficulty: intermediate
 synonyms: ["pandas datetime", "pandas to_datetime", "pandas resample", "pandas date index", "pandas dt accessor", "pandas time series", "pandas group by month"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Time Series & Dates
 
 Almost every sales dataset has a `date` column, and almost every interesting question about it is a time
 question: how did revenue trend month over month? Which weekday sells best? What's the seven-day moving
-average? pandas has a whole toolkit for this — but it only works once pandas knows your dates are *dates*.
+average? pandas has a whole toolkit for this, but it only works once pandas knows your dates are *dates*.
 
 Here's the mental model for the entire phase: **a date is only powerful once pandas stores it as a real
 datetime instead of text.** A column of date strings is just letters to pandas — it can't sort them by

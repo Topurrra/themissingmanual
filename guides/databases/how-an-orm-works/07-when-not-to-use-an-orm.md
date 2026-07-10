@@ -6,17 +6,16 @@ summary: "The honest limits of ORMs — where they shine (CRUD over object graph
 tags: [orm, database, raw-sql, dapper, micro-orm, trade-offs]
 difficulty: beginner
 synonyms: ["when not to use an orm", "orm vs raw sql", "micro orm dapper", "orm bulk operations", "orm reporting queries", "orm limits", "orm alternatives"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # When Not to Use an ORM
 
-Take a second to notice how far you've come. Six phases ago an ORM was a black box that sometimes did
-surprising things. Now you know the four jobs every one of them is doing: **mapping** objects to tables,
-keeping an **identity map + unit of work** to track them, **loading** related data on some strategy, and
-**translating** your queries into SQL. That's the whole machine. And the real payoff isn't that you can use
-an ORM — it's that you can *predict* one. Every ORM, and every ORM surprise, now decomposes into those four
-jobs.
+Six phases ago an ORM was a black box that sometimes did surprising things. Now you know the four jobs
+every one of them is doing: **mapping** objects to tables, keeping an **identity map + unit of work** to
+track them, **loading** related data on some strategy, and **translating** your queries into SQL. That's
+the whole machine — and the real payoff isn't that you can use an ORM, it's that you can *predict* one.
+Every ORM, and every ORM surprise, now decomposes into those four jobs.
 
 > 📝 The mental model for this finale: an ORM is **a tool, not a cage.** It's brilliant at one shape of work
 > and awkward at others, and knowing the difference is what separates people who fight their ORM from people
@@ -27,8 +26,8 @@ jobs.
 
 The thing an ORM is *built* for — and genuinely great at — is the everyday work of an application: load a
 record and its related records, change a few fields, save them back. Create, read, update, delete, over a
-graph of connected objects. This is most of your app code, and for it the ORM is a joy: you think in objects,
-the four jobs run quietly underneath, and you don't write boilerplate INSERT/UPDATE statements by hand.
+graph of connected objects. This is most of your app code, and for it the ORM is a joy: you think in
+objects, the four jobs run quietly underneath, and you skip the boilerplate INSERT/UPDATE statements.
 
 ```text
 order = session.find(Order, 42)     # load the order and (eagerly) its lines
@@ -45,16 +44,16 @@ The trouble starts when the work stops looking like "fetch some objects, poke th
 where the object-graph model fights you:
 
 - **Complex reporting and analytics.** Heavy joins, aggregations, window functions, CTEs, ranking. The
-  object query language gets awkward fast, and the SQL the ORM generates is often suboptimal. For a real
-  report, write the SQL yourself — you'll get clearer code *and* a faster query.
+  object query language gets awkward fast and the generated SQL is often suboptimal — write the SQL
+  yourself for clearer code *and* a faster query.
 - **Bulk operations.** Updating or deleting millions of rows. A naive ORM loop loads every row into an
-  object, mutates it, and writes it back — slow and memory-hungry. A single set-based `UPDATE ... WHERE` does
-  it in one statement. (Most ORMs *do* offer a bulk/execute escape hatch — use it instead of the loop.)
-- **Performance-critical hot paths.** The one query that runs ten thousand times a second, where you need to
-  hand-tune the exact SQL and the exact indexes. The abstraction that helps everywhere else gets in your way
+  object, mutates it, and writes it back — slow and memory-hungry. A single set-based `UPDATE ... WHERE`
+  does it in one statement. (Most ORMs offer a bulk/execute escape hatch — use it instead of the loop.)
+- **Performance-critical hot paths.** The one query that runs ten thousand times a second, where you need
+  to hand-tune the exact SQL and indexes. The abstraction that helps everywhere else gets in your way
   here.
-- **Database-specific features the ORM doesn't model.** Vendor extensions, exotic types, fancy locking hints.
-  If the ORM has no vocabulary for it, don't contort the ORM — write the SQL.
+- **Database-specific features the ORM doesn't model.** Vendor extensions, exotic types, fancy locking
+  hints. If the ORM has no vocabulary for it, don't contort the ORM — write the SQL.
 
 💡 The decision is rarely "ORM or not" for the *whole app*. It's per-query: which shape is this piece of work?
 
@@ -73,20 +72,20 @@ Past the full ORM, there's a whole range of tools, trading "magic" for "control"
 
 - **Raw SQL.** You write the query, the driver runs it, you read rows out by hand. Maximum control, zero
   mapping help. Perfect for the gnarly report.
-- **Query builders** (jOOQ in Java, Knex in JavaScript). They build SQL *programmatically* — type-safe,
-  composable — but they don't map rows into your domain objects or track changes. You get SQL-shaped power
-  with nicer ergonomics than string concatenation.
-- **Micro-ORMs** (Dapper in .NET, sqlx and sqlc in Go). The sweet spot for many: **you write the SQL**, and
-  the library maps result rows onto objects for you. Fast, predictable, no identity map, no lazy loading, no
-  dirty-checking surprises — none of the magic from Phases 3–5, and none of its costs.
+- **Query builders** (jOOQ in Java, Knex in JavaScript). Build SQL *programmatically* — type-safe,
+  composable — but don't map rows into domain objects or track changes. SQL-shaped power with nicer
+  ergonomics than string concatenation.
+- **Micro-ORMs** (Dapper in .NET, sqlx and sqlc in Go). The sweet spot for many: **you write the SQL**,
+  and the library maps result rows onto objects for you. Fast, predictable, none of the magic from
+  Phases 3–5, and none of its costs.
 
 💡 Many strong teams **mix**: a full ORM for writes and ordinary CRUD, and raw SQL or a micro-ORM for
 heavy reads and reports. That's not hedging — it's using each tool for the shape it fits.
 
 ## An honest recap of the costs
 
-This guide has been candid about where ORMs bite, and it's worth gathering those in one place. None of them
-is a reason to *avoid* ORMs — they're reasons to *understand* them, which you now do:
+This guide has been candid about where ORMs bite, and it's worth gathering those in one place. None of
+them is a reason to *avoid* ORMs — they're reasons to *understand* them, which you now do:
 
 - **Hidden queries / N+1** ([Phase 5](05-lazy-loading-and-n-plus-1.md)) — lazy loading can fire a flood of
   small SELECTs without a single line in your code looking suspicious.
@@ -96,27 +95,23 @@ is a reason to *avoid* ORMs — they're reasons to *understand* them, which you 
   it well you still have to know what SQL it generates.
 - **A real learning curve** — sessions, flushing, fetch strategies, lifecycle states. It's genuinely a lot.
 
-Here's the reframe: every one of those is a *job you now recognize*. N+1 is the loading job misconfigured.
-The detached trap is the tracking job's boundary. The leak is the translating job showing through. You're not
-memorizing landmines anymore — you're reading a machine you understand.
+Here's the reframe: every one of those is a *job you now recognize*. N+1 is the loading job
+misconfigured. The detached trap is the tracking job's boundary. The leak is the translating job showing
+through. You're not memorizing landmines anymore — you're reading a machine you understand.
 
 ## Where to go next
 
-The four concrete ORM guides will now read completely differently. Where they once looked like four unrelated
-APIs to memorize, you'll see **the same four jobs, only configured**:
+The four concrete ORM guides will now read completely differently — where they once looked like four
+unrelated APIs to memorize, you'll see **the same four jobs, only configured**:
+[Hibernate & JPA from Zero](/guides/hibernate-and-jpa-from-zero) (Java's ORM and the JPA spec),
+[SQLAlchemy from Zero](/guides/sqlalchemy-from-zero) (Python's, with its explicit session),
+[GORM from Zero](/guides/gorm-from-zero) (Go's, lighter on magic), and
+[EF Core from Zero](/guides/efcore-from-zero) (.NET's, with change-tracking front and center).
 
-- [Hibernate & JPA from Zero](/guides/hibernate-and-jpa-from-zero) — Java's ORM and the JPA spec.
-- [SQLAlchemy from Zero](/guides/sqlalchemy-from-zero) — Python's, with its explicit session.
-- [GORM from Zero](/guides/gorm-from-zero) — Go's, lighter on magic.
-- [EF Core from Zero](/guides/efcore-from-zero) — .NET's, with change-tracking front and center.
-
-And whichever you use, keep one habit: **watch the SQL.** Turn on query logging, read what your ORM emits,
-and when a query is slow, go diagnose it — [Why Is My Query Slow?](/guides/why-is-my-query-slow) is your next
-stop the first time a page drags.
-
-You came in seeing a black box. You're leaving able to predict it. An ORM maps objects to rows, tracks them,
-loads their relations, and translates your queries — four jobs, recognized everywhere. That's not a trick you
-memorized for one library; it's a lens you'll carry into every ORM you ever touch. Go build something.
+Whichever you use, keep one habit: **watch the SQL.** Turn on query logging, read what your ORM emits,
+and when a query is slow, go diagnose it — [Why Is My Query Slow?](/guides/why-is-my-query-slow) is your
+next stop the first time a page drags. An ORM maps objects to rows, tracks them, loads their relations,
+and translates your queries — four jobs, recognized everywhere, in every ORM you'll ever touch.
 
 ## Recap
 

@@ -8,7 +8,7 @@ category: programming-concepts
 order: 4
 difficulty: beginner
 synonyms: ["what is a regex", "how do regular expressions work", "regex for beginners", "understand regular expressions", "learn regex", "regex explained simply"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Regular Expressions, Explained
@@ -18,10 +18,10 @@ and your stomach sank a little. Regular expressions have a reputation for being 
 that only wizards understand. That reputation is undeserved. A regex is one small idea wearing a
 scary costume, and once you see the idea, the costume stops working on you.
 
-This guide makes regex readable instead of terrifying. We'll start with what a regex *actually is*
-(a pattern that describes a *shape* of text), learn the handful of pieces you'll reach for almost
-every time, and then meet the real-world traps - greedy matching, escaping, and regex that turns
-into gibberish - so they don't bite you.
+This guide makes regex readable instead of terrifying. We'll start with what a regex *actually is* (a
+pattern that describes a *shape* of text), learn the handful of pieces you'll reach for almost every
+time, and then meet the real-world traps - greedy matching, escaping, and regex that turns into
+gibberish - so they don't bite you.
 
 ## How to read this
 

@@ -6,12 +6,12 @@ summary: "Pull out the columns and rows you actually want: single vs double brac
 tags: [pandas, loc, iloc, boolean-indexing, filtering, selection, query]
 difficulty: beginner
 synonyms: ["pandas select columns", "pandas loc iloc", "pandas boolean filtering", "pandas filter rows condition", "pandas query method", "pandas mask", "pandas select rows by condition"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Selecting & Filtering
 
-Loading a file gives you the whole table. Real work almost never wants the whole table — it wants *these columns* and *the rows where something is true*. This phase is about carving out exactly that slice.
+Loading a file gives you the whole table. Real work almost never wants the whole table — it wants *these columns* and *the rows where something is true*, and this phase is about carving out exactly that slice.
 
 Here is the mental model to carry through everything below. Picture your sales DataFrame as a spreadsheet:
 

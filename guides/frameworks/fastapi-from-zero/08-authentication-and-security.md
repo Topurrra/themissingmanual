@@ -6,7 +6,7 @@ summary: "Protect your Book API the FastAPI way: hash passwords, issue JWT acces
 tags: [fastapi, authentication, oauth2, jwt, security, password-hashing, bearer-token, dependency]
 difficulty: advanced
 synonyms: ["fastapi oauth2 password flow", "fastapi jwt authentication", "fastapi security depends", "fastapi password hashing", "fastapi bearer token", "fastapi get_current_user", "fastapi protect endpoint"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Authentication & Security
@@ -18,8 +18,8 @@ guard's job description. In FastAPI, security is built almost entirely on the de
 [Phase 5](05-dependency-injection.md). "This endpoint requires a logged-in user" is just "this endpoint
 *depends on* there being a current user."
 
-Auth has a reputation for being scary, mostly from treating it as one giant blob. We're going to take it
-apart into four small, separate jobs, each approachable on its own.
+Auth has a reputation for being scary, mostly from treating it as one giant blob. We'll take it apart
+into four small, separate jobs, each approachable on its own.
 
 ## Two different jobs: authentication vs authorization
 

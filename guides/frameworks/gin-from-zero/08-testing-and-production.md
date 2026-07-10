@@ -6,12 +6,12 @@ summary: "Test a Gin app in-memory with net/http/httptest (no ports), structure 
 tags: [gin, go, testing, httptest, production, graceful-shutdown]
 difficulty: intermediate
 synonyms: ["gin testing", "gin httptest", "gin test mode", "gin graceful shutdown", "gin production", "go http server timeouts", "gin deploy"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Testing & Production
 
-You've built the whole tasks API — routing, binding, middleware, CRUD, error handling, a tidy package layout. Now comes the part that decides whether anyone trusts it: proving it works, and running it somewhere real without it falling over at 3am. Good news — both turn out to be small, once you see the one fact that makes them small.
+You've built the whole tasks API — routing, binding, middleware, CRUD, error handling, a tidy package layout. Now comes the part that decides whether anyone trusts it: proving it works, and running it somewhere real without it falling over at 3am. Both turn out to be small, once you see the one fact that makes them small.
 
 ## The mental model: your router is just an `http.Handler`, so testing is calling it in memory
 

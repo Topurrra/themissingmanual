@@ -6,16 +6,16 @@ summary: "When related data loads — lazy (on access) vs eager (up front) — a
 tags: [orm, database, lazy-loading, eager-loading, n-plus-1, performance]
 difficulty: advanced
 synonyms: ["orm lazy loading", "orm eager loading", "n+1 problem", "orm join fetch", "orm preload include", "orm related data loading"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Lazy Loading & the N+1 Trap
 
-In [Phase 4](04-change-tracking.md) the ORM figured out *what to write* without you spelling it out. This
-phase is the mirror image on the read side: when you load an object that has related data — a `Customer` with
-`orders`, a `Post` with `comments` — *when* do those related rows actually come back? The ORM has to choose,
-and the choice it makes (or the one you forget to make) is behind the single most common ORM performance bug
-in existence.
+[Phase 4](04-change-tracking.md) covered how the ORM figures out *what to write* without you spelling it
+out. This phase is the mirror image on the read side: when you load an object that has related data — a
+`Customer` with `orders`, a `Post` with `comments` — *when* do those related rows actually come back? The
+ORM has to choose, and the choice it makes (or the one you forget to make) is behind the single most
+common ORM performance bug in existence.
 
 > 📝 The mental model: **loading is the choice of *when* related data is fetched.** Not *whether* — you'll
 > get the data either way — but *when*. Two strategies: **lazy** (fetch the related data the moment you first
@@ -36,12 +36,12 @@ print(customer.orders.count)        # touching it NOW triggers:
 #                                     SELECT * FROM orders WHERE customer_id = 5
 ```
 
-*What just happened:* Loading the customer was one query. The `orders` collection came back as an empty-handed
-placeholder. Only when you reached for `customer.orders` did the ORM quietly run a second query to fill it.
-This is convenient — you get related data on demand, paying for exactly what you touch — and it's the default
-in **Hibernate** (collections are lazy unless told otherwise) and a configurable mode in **SQLAlchemy**,
-**GORM**, and **EF Core**. The catch is that "fires when you access it" is easy to do *inside a loop* without
-realizing.
+*What just happened:* Loading the customer was one query. The `orders` collection came back as an
+empty-handed placeholder. Only when you reached for `customer.orders` did the ORM quietly run a second
+query to fill it. This is convenient — you get related data on demand, paying for exactly what you touch —
+and it's the default in **Hibernate** (collections are lazy unless told otherwise) and a configurable mode
+in **SQLAlchemy**, **GORM**, and **EF Core**. The catch: "fires when you access it" is easy to do *inside
+a loop* without realizing.
 
 ## Eager loading: bring it along up front
 
@@ -59,9 +59,9 @@ print(customer.orders.count)        # no query: already loaded
 ```
 
 *What just happened:* By asking for `orders` eagerly, the ORM loaded the customer and its orders together.
-Accessing `customer.orders` later costs nothing — the rows are already there. Same idea, different spellings
-per ORM, which we'll name in a moment. Eager loading trades "fetch on demand" for "fetch now, all at once,"
-and that trade is exactly what saves you from the trap below.
+Accessing `customer.orders` later costs nothing — the rows are already there. Same idea, different
+spellings per ORM (named below). Eager loading trades "fetch on demand" for "fetch now, all at once," and
+that trade is exactly what saves you from the trap below.
 
 ## ⚠️ The N+1 trap
 
@@ -76,18 +76,17 @@ for c in customers:
 # total = 1 (the customers) + N (one per customer) = N+1 queries
 ```
 
-*What just happened:* The outer query loaded N customers. Then, because `orders` is lazy, each loop iteration
-fired a fresh query to load *that* customer's orders. With 1,000 customers that's **1 + 1,000 = 1,001
-queries** instead of the 1–2 you actually needed. This is the **N+1 problem**, and it's universal — every ORM
-that supports lazy loading can produce it.
+*What just happened:* The outer query loaded N customers. Then, because `orders` is lazy, each loop
+iteration fired a fresh query to load *that* customer's orders. With 1,000 customers that's **1 + 1,000 =
+1,001 queries** instead of the 1–2 you actually needed. This is the **N+1 problem**, and it's universal —
+every ORM that supports lazy loading can produce it.
 
 The reason it's so dangerous is that it **hides**. The code reads beautifully — a clean loop over objects,
 no SQL in sight. With ten rows in your dev database it runs in milliseconds and every test passes. Then
-production has a hundred thousand rows, the page takes nine seconds, and the database is on fire. It only
-bites under real data volume, which is exactly when you can least afford it. For the full
-diagnosis-and-fix playbook, see [The N+1 Query Problem](/guides/n-plus-one-queries). (If you've ever stared at a slow
-endpoint wondering where the time went, see [Why Is My Query Slow?](/guides/why-is-my-query-slow) — N+1 is
-near the top of the suspect list, and the fix is to *look at the generated SQL*.)
+production has a hundred thousand rows, the page takes nine seconds, and the database is on fire — it
+only bites under real data volume, exactly when you can least afford it. For the full diagnosis-and-fix
+playbook, see [The N+1 Query Problem](/guides/n-plus-one-queries); for reading a slow endpoint's SQL, see
+[Why Is My Query Slow?](/guides/why-is-my-query-slow).
 
 ## The fix: eager-load the relationship
 
@@ -112,27 +111,27 @@ for c in customers:
 # total = 1 or 2 queries, regardless of how many customers
 ```
 
-*What just happened:* Instead of N separate per-customer queries, the ORM either JOINed the orders in or ran
-**one** follow-up query with an `IN (...)` over all the customer ids. Either way the loop now fires **zero**
-queries — the data is already in memory. 1,001 queries became 1 or 2. That's the entire fix, and it's the
-same move whether you're writing `JOIN FETCH`, `selectinload`, `Preload`, or `Include`.
+*What just happened:* Instead of N separate per-customer queries, the ORM either JOINed the orders in or
+ran **one** follow-up query with an `IN (...)` over all the customer ids. Either way the loop now fires
+**zero** queries — the data is already in memory. 1,001 queries became 1 or 2 — the same move whether
+you're writing `JOIN FETCH`, `selectinload`, `Preload`, or `Include`.
 
 ## ⚠️ But don't eager-load everything
 
 The temptation after getting burned by N+1 is to eager-load *all the things, always*. That swings you into
 the opposite ditch:
 
-- **Over-fetching** — you pull related data you never actually use on this page, wasting bandwidth, memory,
-  and database work for rows that get thrown away.
-- **Cartesian explosion** — eager-loading *several* collections with JOINs multiplies rows. A customer with
-  50 orders and 50 addresses, JOINed together, returns 50 × 50 = **2,500 rows** for one customer — the
-  database materializes the cross product and the ORM has to de-duplicate it all back into objects. (This is
-  why batched strategies like `selectinload` often beat a big multi-JOIN: separate `IN (...)` queries don't
-  multiply.)
+- **Over-fetching** — you pull related data you never actually use on this page, wasting bandwidth,
+  memory, and database work for rows that get thrown away.
+- **Cartesian explosion** — eager-loading *several* collections with JOINs multiplies rows. A customer
+  with 50 orders and 50 addresses, JOINed together, returns 50 × 50 = **2,500 rows** for one customer —
+  the database materializes the cross product and the ORM has to de-duplicate it back into objects. (This
+  is why batched strategies like `selectinload` often beat a big multi-JOIN: separate `IN (...)` queries
+  don't multiply.)
 
-So the rule is: **choose the loading strategy per query, based on what that query will actually use.** Need
-the orders on this page? Eager-load orders — and *only* orders. Don't need addresses here? Leave them lazy.
-There is no single "correct" setting; the right answer depends on the access pattern of each specific query.
+So the rule is: **choose the loading strategy per query, based on what that query will actually use.**
+Need the orders on this page? Eager-load orders, and *only* orders. There is no single "correct" setting —
+the right answer depends on each query's access pattern.
 
 > 💡 The reliable way to *know* which trap you're in is to **watch the SQL the ORM generates**. Turn on query
 > logging (or use a query-count assertion in tests) and count the statements per request. One innocent loop

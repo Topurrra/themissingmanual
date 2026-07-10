@@ -6,14 +6,14 @@ summary: "The loop: confirm the hypothesis, change exactly one thing, re-measure
 tags: [profiling, optimization, n-plus-one, caching, big-o, measure-remeasure]
 difficulty: intermediate
 synonyms: ["how to fix a slow function", "what to do after profiling", "how to optimize code after finding the bottleneck", "what is an n+1 query", "accidental o(n squared)", "how to verify a performance fix", "should i optimize cold paths"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # From Profile to Fix
 
 You've found the slow thing. The flame graph has a fat box with your name on it, and you can feel the urge: open the file, start changing things. That urge is where good profiling work goes to die. The gap between "I found the bottleneck" and "I made it faster" is full of ways to fool yourself - fixes that don't help, fixes that help in dev but not in production, fixes that speed up code nobody runs.
 
-This phase is the discipline that closes that gap. It's a short, boring, reliable loop, plus the handful of patterns that turn out to be the bottleneck most of the time, plus the two traps that make a profile lie to you. Boring is the point: boring is repeatable.
+This phase is the discipline that closes that gap: a short, boring, reliable loop, the patterns that turn out to be the bottleneck most of the time, and the two traps that make a profile lie to you. Boring is the point - boring is repeatable.
 
 ## The loop: confirm, change one thing, re-measure
 
@@ -33,13 +33,13 @@ flowchart LR
 - **Change exactly one thing.** This is the rule people break and regret. If you make three changes and the function gets faster, you don't know which change did it - or whether one of them helped while another quietly hurt. One change per loop means every re-measure has a clear verdict.
 - **Re-measure against the *before* number.** "It feels faster" is not a result. You had a number before; get the number after; compare. If it didn't move, **revert** - an optimization that doesn't measurably help is just added complexity and a future bug. Keeping it because you're attached to it is how codebases rot.
 
-⚠️ **Gotcha.** Re-measure the *same way* you measured the first time - same workload, same data size, same machine state. If you profiled a 50,000-row run, don't confirm your fix on a 100-row run. Comparing two numbers taken under different conditions tells you nothing, and it's an easy way to convince yourself a non-fix worked.
+⚠️ **Gotcha.** Re-measure the *same way* you measured the first time - same workload, same data size, same machine state. If you profiled a 50,000-row run, don't confirm your fix on a 100-row run. Comparing numbers from different conditions tells you nothing, and it's an easy way to convince yourself a non-fix worked.
 
-🪖 **War story.** Someone "optimized" a hot loop with three changes at once: a caching layer, a rewritten inner function, and a switched data structure. The endpoint got 20% faster, everyone celebrated, it shipped. A week later a bug surfaced in the cache. They reverted just the cache - and the endpoint got *faster*. The cache had been a net loss the whole time; the data-structure change carried the win and the cache was dragging it down. Three changes at once hid that completely. One change per loop would have caught it in two minutes.
+🪖 **War story.** Someone "optimized" a hot loop with three changes at once - a caching layer, a rewritten inner function, a switched data structure. The endpoint got 20% faster and shipped. A week later a bug surfaced in the cache. They reverted just the cache - and the endpoint got *faster*. The cache had been a net loss the whole time; the data-structure change carried the win and the cache was dragging it down. One change per loop would have caught it in two minutes.
 
 ## The common wins: what the bottleneck usually turns out to be
 
-After you've done this a few times, you start recognizing the same culprits. Three of them account for a huge share of real-world slowness.
+After you've done this a few times, the same culprits keep showing up. Three account for a huge share of real-world slowness.
 
 ### An accidental O(n²)
 
@@ -71,7 +71,7 @@ A profile is honest about what it measured. The danger is measuring the wrong th
 
 ⚠️ **Trap 1: dev data lies - profile a realistic workload.** Your development database has 50 rows; production has 5 million. An O(n²) bottleneck is *invisible* on 50 rows and catastrophic on 5 million. If you profile against tiny dev data, the profile will point you at the wrong function - or at nothing at all - because the real bottleneck only wakes up at scale. Profile against production-sized data (a realistic copy, a load test, a representative sample). A profile of an unrealistic workload is worse than no profile, because it's confidently wrong.
 
-⚠️ **Trap 2: don't optimize cold paths.** A **cold path** is code that runs rarely - startup, an admin-only report, an error handler. A **hot path** runs constantly. The profile makes this distinction for you: hot paths have high time and high call counts; cold paths barely register. It's tempting to optimize a function because it *looks* inefficient, but if the profile shows it's cold, making it faster is wasted effort that buys zero real speedup and adds complexity. Only optimize what the profile shows is actually hot. The whole reason you measured was to avoid spending effort where it doesn't matter - don't throw that away by polishing cold code.
+⚠️ **Trap 2: don't optimize cold paths.** A **cold path** is code that runs rarely - startup, an admin-only report, an error handler. A **hot path** runs constantly. The profile makes this distinction for you: hot paths have high time and high call counts; cold paths barely register. It's tempting to optimize a function because it *looks* inefficient, but if the profile shows it's cold, making it faster is wasted effort for zero real speedup. Only optimize what the profile shows is actually hot - the whole reason you measured was to avoid spending effort where it doesn't matter.
 
 ## Beyond your laptop: production
 

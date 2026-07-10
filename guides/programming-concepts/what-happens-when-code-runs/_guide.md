@@ -8,14 +8,14 @@ category: programming-concepts
 order: 2
 difficulty: beginner
 synonyms: ["what happens when code runs", "how does code run", "compiled vs interpreted", "what is a compiler", "what is an interpreter", "stack vs heap", "what is machine code", "how does a program become a process"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What Actually Happens When Your Code Runs
 
 You can write a little code. You've typed something, pressed Run, and watched it work - or watched it break - without ever being told what happened in between. The file you wrote is just text. The machine in front of you doesn't read English, or Python, or anything that looks like what you typed. So how does a page of words become a thing that *does something*?
 
-That gap - between the code you write and the machine that runs it - is where a lot of programming feels like magic, or superstition. "Use Go because it's compiled." "Python is slow because it's interpreted." "Watch out for stack overflow." These are real, knowable things, and once you can picture the whole chain - text → translated → running program → CPU - they stop being spells and start being something you can reason about.
+That gap - between the code you write and the machine that runs it - is where a lot of programming feels like magic or superstition. "Use Go because it's compiled." "Python is slow because it's interpreted." "Watch out for stack overflow." These are real, knowable things, and once you can picture the whole chain - text → translated → running program → CPU - they stop being spells and start being something you can reason about.
 
 This guide walks that chain end to end, in plain language, with pictures.
 

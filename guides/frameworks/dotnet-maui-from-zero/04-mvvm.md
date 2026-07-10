@@ -6,7 +6,7 @@ summary: "Structure a MAUI app with MVVM: a testable ViewModel holds state and c
 tags: [dotnet-maui, csharp, mvvm, viewmodel, commands]
 difficulty: advanced
 synonyms: ["maui mvvm", "viewmodel", "INotifyPropertyChanged", "communitytoolkit.mvvm", "ObservableProperty RelayCommand", "maui icommand", "mvvm pattern"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The MVVM Pattern
@@ -60,9 +60,9 @@ public class NoteViewModel : INotifyPropertyChanged
 }
 ```
 
-*What just happened:* the property's setter doesn't only store the new value — it fires `PropertyChanged`, naming `Title` as the thing that changed. Any `{Binding Title}` in the XAML is subscribed to that event, hears its name called, and re-reads the property. *That* is the missing piece from Phase 3 — the binding wasn't broken, the object just never told anyone its value had moved.
+*What just happened:* the setter doesn't only store the new value — it fires `PropertyChanged`, naming `Title` as the thing that changed. Any `{Binding Title}` in the XAML hears its name called and re-reads the property. That's the missing piece from Phase 3 — the binding wasn't broken, the object just never told anyone its value had moved.
 
-That's a lot of ceremony for **one** property: a backing field, a hand-written getter and setter, the event invocation, and the `nameof`. A notes page with a title, a body, a "saving…" flag, and a selected note means writing that pattern four times — and one typo in a `nameof` gives a silent bug where the screen mysteriously won't refresh for that field. Nobody writes it by hand anymore.
+That's a lot of ceremony for **one** property. A notes page with a title, a body, a "saving…" flag, and a selected note means writing that pattern four times — and one typo in a `nameof` gives a silent bug where the screen won't refresh for that field. Nobody writes it by hand anymore.
 
 ## The modern way: CommunityToolkit.Mvvm
 
@@ -96,10 +96,10 @@ public partial class NotesViewModel : ObservableObject
 *What just happened:* three pieces of magic, none of which you had to write:
 
 - `[ObservableProperty]` on the field `newTitle` generates a public property `NewTitle` (capital N) — *with* the getter, setter, and `PropertyChanged` notification from the hand-written version above. One line in; the generator writes fifteen.
-- `ObservableCollection<Note>` is a list that *itself* raises change notifications. `Add` to it and any bound list on screen updates automatically — no extra code. (A plain `List<Note>` would not; the UI wouldn't see new items.)
+- `ObservableCollection<Note>` is a list that *itself* raises change notifications. `Add` to it and any bound list on screen updates automatically. (A plain `List<Note>` would not.)
 - `[RelayCommand]` on the method `AddNote` generates a public property `AddNoteCommand` of type `ICommand` — the thing your button binds to.
 
-Notice the symmetry with the hand-written class: `ObservableObject` *is* the `INotifyPropertyChanged` implementation, and `[ObservableProperty]` *is* the verbose setter — both handed to you for free.
+`ObservableObject` *is* the `INotifyPropertyChanged` implementation, and `[ObservableProperty]` *is* the verbose setter — both handed to you for free.
 
 ## Commands: buttons that talk to the ViewModel
 
@@ -110,7 +110,7 @@ In the old code-behind world, a button did its work through a `Clicked` event ha
 <Button Text="Add" Clicked="OnAddClicked" />
 ```
 
-That handler sits in the page's `.xaml.cs` file, tangling your logic up with the View — exactly what MVVM separates. The MVVM way replaces the event with a **command binding**:
+That handler sits in the page's `.xaml.cs` file, tangling logic up with the View — exactly what MVVM separates. The MVVM way replaces the event with a **command binding**:
 
 ```xml
 <VerticalStackLayout Padding="20" Spacing="10">
@@ -130,7 +130,7 @@ That handler sits in the page's `.xaml.cs` file, tangling your logic up with the
 </VerticalStackLayout>
 ```
 
-*What just happened:* the `Entry`'s text is two-way bound to `NewTitle`, so as the user types, the ViewModel's `NewTitle` updates live. The `Button`'s `Command` is bound to `AddNoteCommand` — the property `[RelayCommand]` generated from your `AddNote` method. Tap the button, the command runs `AddNote`, which adds a `Note` to the `ObservableCollection` and clears `NewTitle`. The `CollectionView` shows a new row instantly (the collection announced the add) and the `Entry` clears itself (the `NewTitle` setter announced the change) — no code-behind handler touched. The View describes; the ViewModel decides.
+*What just happened:* the `Entry`'s text is two-way bound to `NewTitle`, so as the user types, the ViewModel's `NewTitle` updates live. The `Button`'s `Command` is bound to `AddNoteCommand` — generated from your `AddNote` method. Tap the button, the command runs `AddNote`, which adds a `Note` and clears `NewTitle`. The `CollectionView` shows a new row instantly and the `Entry` clears itself — no code-behind handler touched. The View describes; the ViewModel decides.
 
 To connect the two, you set the page's `BindingContext` to the ViewModel — typically in the page's constructor:
 
@@ -145,11 +145,11 @@ public partial class NotesPage : ContentPage
 }
 ```
 
-*What just happened:* every unqualified `{Binding ...}` on the page now resolves against this `NotesViewModel` instance — that one line is the wire between the View and the ViewModel. (In a larger app you'd inject the ViewModel through MAUI's dependency injection rather than `new` it here, but the idea is identical: the page gets a ViewModel as its `BindingContext`.)
+*What just happened:* every unqualified `{Binding ...}` on the page now resolves against this `NotesViewModel` instance — that one line is the wire between View and ViewModel. (In a larger app you'd inject the ViewModel through MAUI's dependency injection rather than `new` it here, but the idea is identical.)
 
 ## The one discipline that keeps it testable
 
-⚠️ Here's the trap, and the most common MVVM mistake: the moment something is mildly inconvenient, you reach for a UI call inside the ViewModel. "I'll just pop a `DisplayAlert` to confirm the delete." Don't.
+⚠️ The most common MVVM mistake: the moment something is mildly inconvenient, you reach for a UI call inside the ViewModel. "I'll just pop a `DisplayAlert` to confirm the delete." Don't.
 
 `DisplayAlert`, navigation, and other UI calls live on the *page*, not the ViewModel. The second your ViewModel calls `DisplayAlert`, it can no longer be constructed in a unit test — it depends on a live page — and you've thrown away the entire benefit. Same goes for stuffing logic back into code-behind: decisions living in `.xaml.cs` can't be tested either.
 

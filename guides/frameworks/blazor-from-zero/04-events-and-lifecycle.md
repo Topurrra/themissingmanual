@@ -6,7 +6,7 @@ summary: "Wire up @onclick and other DOM events to C# methods, run code at the r
 tags: [blazor, csharp, events, lifecycle, statehaschanged]
 difficulty: intermediate
 synonyms: ["blazor events onclick", "blazor lifecycle", "OnInitializedAsync", "OnParametersSet", "blazor StateHasChanged", "blazor async event handler"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Events & the Component Lifecycle
@@ -15,7 +15,7 @@ So far your components have rendered and bound data. Now we make them *do* thing
 when a user clicks, and run setup code at exactly the right moment. This is where a
 component stops being a static page and starts feeling alive.
 
-Here's the whole chapter in one breath, so the rest is just detail:
+Here's the whole chapter in one breath — the rest is detail:
 
 - **Events run your C# methods.** A click, a change, a submit — each can call a method in
   your `@code` block.
@@ -52,12 +52,12 @@ You attach a handler to a DOM event with `@on` + the event name, pointing at a m
 
 *What just happened:* `@onclick="Refresh"` tells Blazor "when this button is clicked, call the
 `Refresh` method." `Refresh` bumps `count`, and because this ran inside a Blazor event handler,
-Blazor re-renders automatically afterward — the `<p>` updates with no extra work from you. The
-same pattern works for `@onchange` (value committed), `@oninput` (every keystroke), and
-`@onsubmit` (form submitted).
+Blazor re-renders automatically afterward — the `<p>` updates with no extra work from you. Same
+pattern for `@onchange` (value committed), `@oninput` (every keystroke), and `@onsubmit` (form
+submitted).
 
 Sometimes you need details about the event — which key, which mouse button, the new value.
-Blazor hands you a strongly-typed event-args object if you ask for it:
+Blazor hands you a strongly-typed event-args object when you ask for it:
 
 ```razor
 <input @oninput="OnTyping" placeholder="Type something" />
@@ -74,10 +74,10 @@ Blazor hands you a strongly-typed event-args object if you ask for it:
 }
 ```
 
-*What just happened:* by declaring the parameter as `ChangeEventArgs e`, Blazor passes the event
+*What just happened:* declaring the parameter as `ChangeEventArgs e` makes Blazor pass the event
 data in. `e.Value` is the input's current value (typed as `object?`, so we convert and guard
 against null). Different events carry different args — `MouseEventArgs` for clicks,
-`KeyboardEventArgs` for key presses — and you only take the parameter when you actually need it.
+`KeyboardEventArgs` for key presses — take the parameter only when you need it.
 
 ### Async handlers
 
@@ -110,10 +110,10 @@ and you wire them up exactly the same way:
 ```
 
 *What just happened:* `LoadProducts` is `async Task`, so it can `await` the HTTP call without
-freezing the UI. Notice the timing: when you set `isLoading = true` and then hit the `await`,
-Blazor re-renders *while it waits* (showing "Loading..." and disabling the button). When the
-`await` completes, Blazor re-renders *again* (showing the products, button re-enabled). You set
-the flag; Blazor handles both repaints around the `await` on its own.
+freezing the UI. Notice the timing: when you set `isLoading = true` and hit the `await`, Blazor
+re-renders *while it waits* (showing "Loading..." and disabling the button). When the `await`
+completes, Blazor re-renders *again* (products shown, button re-enabled). You set the flag; Blazor
+handles both repaints around the `await`.
 
 > ⚠️ Make async handlers return `Task`, not `void`. An `async void` method can't be awaited, so
 > Blazor can't track when it finishes or surface its exceptions — errors just vanish. `async Task`
@@ -164,11 +164,11 @@ else
 ```
 
 *What just happened:* Blazor calls `OnInitializedAsync` once, right after creating the component.
-The key detail is the timing again: the component **renders once before the `await` finishes** —
-at that point `products` is still `null`, so the reader sees "Loading products...". When the data
-arrives, Blazor re-renders and the list appears. That `null` check isn't optional ceremony; it's
-the loading state your reader sees for the first beat. (We use `List<Product>?` here precisely so
-`null` can mean "not loaded yet.")
+The timing again matters: the component **renders once before the `await` finishes** — at that
+point `products` is still `null`, so the reader sees "Loading products...". When the data arrives,
+Blazor re-renders and the list appears. That `null` check isn't ceremony; it's the loading state
+your reader sees for the first beat. (`List<Product>?` here precisely so `null` can mean "not
+loaded yet.")
 
 ### `OnParametersSet` — react to the parent
 
@@ -192,9 +192,9 @@ parent changes that value. It's where you respond to new inputs:
 ```
 
 *What just happened:* whenever the parent renders with a different `CategoryId`, Blazor sets the
-new value and then calls `OnParametersSetAsync`, so the products reload for the new category.
-`OnInitializedAsync` would *not* re-run on a parameter change — it only fires once — which is
-exactly why this hook exists.
+new value and calls `OnParametersSetAsync`, so the products reload for the new category.
+`OnInitializedAsync` would *not* re-run on a parameter change — it only fires once — exactly why
+this hook exists.
 
 ### `OnAfterRender` — when you need the real DOM
 
@@ -214,14 +214,14 @@ that has to touch the actual rendered DOM (focusing an element, initializing a J
 ```
 
 *What just happened:* `firstRender` is `true` only on the component's first paint and `false` on
-every re-render after. You guard one-time setup (like wiring up a JS library) with
-`if (firstRender)` so it doesn't re-run on every render. Don't load data here — by the time
-`OnAfterRender` runs, the component has already drawn, so you'd cause an extra render. Data loading
-belongs in `OnInitializedAsync`.
+every re-render after. Guard one-time setup (like wiring up a JS library) with `if (firstRender)`
+so it doesn't re-run on every render. Don't load data here — by the time `OnAfterRender` runs, the
+component has already drawn, so you'd cause an extra render. Data loading belongs in
+`OnInitializedAsync`.
 
 ## `StateHasChanged()` — forcing a re-render
 
-Here's the part that trips people up, so let's be precise about it.
+Here's the part that trips people up, so let's be precise.
 
 Blazor automatically re-renders a component after **its own** events: a UI event handler like
 `@onclick`, a lifecycle method, or the resumption of an `await` inside one of those. In all those
@@ -258,15 +258,13 @@ Blazor has no idea those happened, so it doesn't re-render. You have to tell it:
 `refreshCount` — but nothing on screen would change, because no Blazor event ran. Calling
 `StateHasChanged()` is the explicit "redraw me" signal. We wrap it in `InvokeAsync(...)` because
 the callback is on a background thread, and Blazor's render must happen on its own thread —
-`InvokeAsync` marshals it back. Inside a normal `@onclick` handler you'd never need this; the
-timer is exactly the "outside Blazor's flow" case where you do.
+`InvokeAsync` marshals it back. Inside a normal `@onclick` handler you'd never need this.
 
 > 💡 **The render-loop intuition.** Picture a loop: Blazor **renders** → the user (or a lifecycle
 > hook) triggers an **event/handler** → your code changes **state** → Blazor **re-renders**. As
-> long as the change happens *inside* that loop, the redraw is free. `StateHasChanged()` is how you
-> kick the loop from the *outside* when something changed that the loop never saw. If you ever find
-> yourself reaching for it inside an ordinary click handler, pause — you almost certainly don't need
-> it there.
+> long as the change happens *inside* that loop, the redraw is free. `StateHasChanged()` kicks the
+> loop from the *outside* when something changed that it never saw. If you find yourself reaching
+> for it inside an ordinary click handler, pause — you almost certainly don't need it there.
 
 ## Recap
 

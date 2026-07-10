@@ -6,7 +6,7 @@ summary: "Your code talks to slow, unreliable, and expensive things; to test you
 tags: [testing, test-doubles, dependencies, unit-tests, isolation]
 difficulty: intermediate
 synonyms: ["why use mocks in tests", "how to test code that calls an API", "test code without a database", "what problem do test doubles solve", "isolate unit under test"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why Fake Anything?
@@ -28,8 +28,8 @@ async function chargeCustomer(customerId, amount) {
 The logic *you* wrote is small and worth testing: reject missing customers, reject non-positive amounts,
 record the payment after a successful charge. But to run a single test of that logic, the function drags in
 a live database (`db`) and a real payment provider (`stripe`). To test "does it reject a negative amount?"
-you'd need a working Stripe account and a real customer in a real database. That's absurd - and it's the
-problem test doubles exist to solve.
+you'd need a working Stripe account and a real customer in a real database. That's the problem test doubles
+exist to solve.
 
 ## The dependency is not the thing you're testing
 
@@ -75,9 +75,8 @@ would make the test one of these:
 | **Hard to set up** | You can't easily force the exact situation you want to test | Making the network *fail* on demand to test your retry logic |
 
 That last row is the one people forget. Doubles aren't only about avoiding the real thing - they're often
-the *only* practical way to test the unhappy paths. How do you test "what does my code do when the payment
-API times out"? You can't reliably make a real API time out. But a double can be told to throw a timeout
-every single time, on command.
+the *only* practical way to test the unhappy paths. You can't reliably make a real API time out, but a
+double can be told to throw a timeout every single time, on command.
 
 ⚠️ **Gotcha - the clock is a dependency too.** Code that calls `new Date()`, `time.Now()`, or
 `System.currentTimeMillis()` directly is silently depending on *when the test runs*. A test like "this
@@ -90,8 +89,8 @@ look like a dependency.
 This is where the name comes from, and it's the picture worth keeping.
 
 In a film, the lead actor does the close-up dialogue - the part the movie is actually about. But when the
-scene calls for jumping off a building, a **stunt double** stands in. The double looks enough like the
-actor for the shot, does the dangerous part safely, and the actor (and the production budget) stay intact.
+scene calls for jumping off a building, a **stunt double** stands in, doing the dangerous part safely so the
+actor (and the production budget) stay intact.
 
 A **test double** is exactly that for your code:
 
@@ -154,8 +153,7 @@ on a plane with no Wi-Fi.
 
 Mocking *libraries* exist to make this less tedious - generating these stand-ins, recording how they were
 called, asserting on it. But there is nothing magic underneath: **a double is a stand-in object that honors
-the shape your code expects.** Everything in the next phase is a variation on that one idea, distinguished
-by *how much* the stand-in does.
+the shape your code expects.** Everything in the next phase varies only *how much* the stand-in does.
 
 ## Recap
 
@@ -167,9 +165,9 @@ by *how much* the stand-in does.
 4. Faking works because your code depends on a **shape (an interface)**, not a specific object - a double
    just honors that shape. Code with no seam to inject a double is the hard-to-test code.
 
-Now that you know *why* we fake, the next phase names the family - because "a double that returns canned
-answers" and "a double that asserts it was called correctly" are different tools for different jobs, even
-though people call them all "mocks."
+Now that you know *why* we fake, the next phase names the family - "a double that returns canned answers"
+and "a double that asserts it was called correctly" are different tools, even though people call them all
+"mocks."
 
 ---
 

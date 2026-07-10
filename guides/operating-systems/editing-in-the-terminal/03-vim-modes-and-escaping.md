@@ -6,7 +6,7 @@ summary: "vim's one big idea is modes: normal mode (keys are commands) and inser
 tags: [vim, vi, modes, normal-mode, insert-mode, quit-vim, esc, beginner-friendly]
 difficulty: beginner
 synonyms: ["how to quit vim", "how to exit vim", "how to save in vim", "stuck in vim", "esc colon wq", "wq vs q exclamation", "vim insert mode", "vim normal mode", "what does i do in vim", "force quit vim"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # vim: the mode that traps everyone, and the way out
@@ -18,9 +18,9 @@ rest of this phase explains *why* it works so it stops feeling like a magic spel
 
 ## The one idea behind everything: modes
 
-Here's the thing nobody told you the first time, the thing that makes vim feel broken when you don't know
-it: **vim has modes**. The same keys on your keyboard do *completely different things* depending on which
-mode you're in.
+The thing nobody told you the first time, the thing that makes vim feel broken when you don't know it:
+**vim has modes**. The same keys on your keyboard do *completely different things* depending on which mode
+you're in.
 
 ```mermaid
 flowchart LR
@@ -30,19 +30,16 @@ flowchart LR
   Insert -->|press Esc| Normal
 ```
 
-**Normal mode** is where vim starts. In normal mode, the letter keys are *commands*, not text. Pressing `i`
-doesn't type the letter "i" - it's a command that means "start inserting." Pressing `x` deletes a character.
-This is exactly why beginners panic: they start typing their text, and instead of words appearing, the
-cursor jumps around and things vanish. Nothing is broken. vim is reading every keystroke as a command,
-because that's what normal mode does.
+**Normal mode** is where vim starts. Letter keys are *commands*, not text - `i` doesn't type "i", it means
+"start inserting"; `x` deletes a character. This is why beginners panic: they start typing, the cursor jumps
+around and things vanish, because vim is reading every keystroke as a command. Nothing is broken.
 
-**Insert mode** is where you actually type text. Once you switch into insert mode, the keyboard behaves the
-way you expect - letters appear, Backspace deletes, Enter makes a new line. This is the mode you spend your
-typing time in.
+**Insert mode** is where you actually type text - letters appear, Backspace deletes, Enter makes a new
+line, exactly as expected. This is the mode you spend your typing time in.
 
 💡 **Key point.** The entire "vim is impossible" experience comes from not knowing you start in *normal*
-mode. The fix is to consciously switch to insert mode before typing, and to switch back to normal mode
-before giving commands. Two modes, one toggle. Learn that toggle and vim stops fighting you.
+mode. Switch to insert before typing, switch back to normal before giving commands. Two modes, one toggle -
+learn it and vim stops fighting you.
 
 ## Switching between the two modes
 
@@ -60,10 +57,9 @@ tell. If you don't see it, you're in normal mode.
 ~
 -- INSERT --
 ```
-*What just happened:* That `-- INSERT --` marker at the bottom is vim confirming you're in insert mode, so
-the keys you press now become text. (The `~` lines mark rows below the end of the file - they aren't
-content.) Press `Esc` and that marker disappears, telling you you're back in normal mode where keys are
-commands again.
+*What just happened:* the `-- INSERT --` marker confirms you're in insert mode, so keys now become text.
+(The `~` lines just mark empty rows below the file - not content.) Press `Esc` and the marker disappears -
+you're back in normal mode.
 
 ⚠️ **Gotcha.** When you're lost, your reflex should be **`Esc`**. It's harmless to press in normal mode (it
 stays put) and it always escapes insert mode. Pressing `Esc` first is what makes the `:wq` / `:q!`
@@ -72,8 +68,8 @@ typing them.
 
 ## The colon: giving vim a command
 
-In normal mode, pressing **`:`** moves the cursor to the bottom of the screen and lets you type a longer
-command, ending with Enter. This is how you save and quit. The colon commands you actually need are short:
+In normal mode, pressing **`:`** moves the cursor to the bottom of the screen and lets you type a command,
+ending with Enter. The colon commands you actually need are short:
 
 ```text
 :w      → write (save) the file, stay open
@@ -97,10 +93,7 @@ Put the pieces together and editing a file in vim is a clear sequence:
 ```console
 ada@laptop:~$ vim notes.txt
 ```
-*What just happened:* vim opened the file in **normal mode** - so don't start typing your text yet. The
-keyboard is in command mode right now.
-
-Now the loop, step by step:
+That opens in **normal mode** - don't start typing yet. Now the loop, step by step:
 
 ```text
 1. vim somefile     → opens in NORMAL mode (keys are commands)
@@ -109,26 +102,23 @@ Now the loop, step by step:
 4. press  Esc       → back to NORMAL mode
 5. type  :wq  Enter → save and quit
 ```
-*What just happened:* That's the complete, safe round trip - open, `i` to insert, type, `Esc`, `:wq`. The
-two moments that trip everyone are step 2 (you must enter insert mode before typing) and step 4 (you must
-press `Esc` before the `:wq` command). Once those are muscle memory, vim is no longer scary - it's only an
-editor with one extra concept.
+*What just happened:* the complete, safe round trip - open, `i` to insert, type, `Esc`, `:wq`. The two
+moments that trip everyone are step 2 (enter insert mode before typing) and step 4 (press `Esc` before
+`:wq`). Once those are muscle memory, vim is just an editor with one extra concept.
 
 ## When you've made a mess and want out clean
 
-This is the scenario from the top of the phase, now with the *why* attached. You opened a file, mashed some
-keys in confusion, and you have no idea what state the file is in. You don't want to save whatever
-accidental damage you did. Here's the calm exit:
+You mashed keys in confusion and don't know what state the file is in. Here's the calm exit - the scenario
+from the top of the phase, now with the *why* attached:
 
 ```text
 1. Press  Esc       → guarantees you're in NORMAL mode
 2. Type   :q!       → quit, discard ALL changes
 3. Press  Enter     → you're back at the shell, file untouched
 ```
-*What just happened:* `Esc` got you to normal mode no matter what you'd been doing, and `:q!` quit while
-throwing away every change since you opened the file - so the accidental edits never hit disk. The file on
-disk is exactly as it was before you opened it. This is the sequence to remember for the rest of your life;
-it's the answer to "help, I'm stuck in vim."
+*What just happened:* `Esc` gets you to normal mode no matter what you'd been doing, and `:q!` quits while
+throwing away every change since you opened the file - none of it hits disk. This is the sequence to
+remember for life; it's the answer to "help, I'm stuck in vim."
 
 ## A few normal-mode moves worth knowing (optional)
 
@@ -154,11 +144,10 @@ learned works in both. If `vim` isn't found, try `vi`; if `vi` opens, you alread
 
 ## For builders
 
-If a tool keeps dropping you into vim and you'd rather it didn't, set your preferred editor once. In your
-shell startup file add `export EDITOR=nano` (or `export EDITOR=vim` if you've grown to like it), and tools
-like `git commit` and `crontab -e` will honor it. Either way, knowing the `Esc` → `:wq` / `:q!` escape
-means you're never trapped again, regardless of what a tool throws at you. (If driving the shell itself is
-still shaky, [/guides/the-terminal-and-shell](/guides/the-terminal-and-shell) and
+If a tool keeps dropping you into vim and you'd rather it didn't, add `export EDITOR=nano` (or
+`export EDITOR=vim`) to your shell startup file - `git commit` and `crontab -e` will honor it. Either way,
+knowing the `Esc` → `:wq` / `:q!` escape means you're never trapped again, regardless of what a tool throws
+at you. (Shell itself still shaky? [/guides/the-terminal-and-shell](/guides/the-terminal-and-shell) and
 [/guides/linux-from-zero](/guides/linux-from-zero) are the natural next reads.)
 
 ## Recap

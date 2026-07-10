@@ -8,14 +8,14 @@ category: apis
 order: 1
 difficulty: beginner
 synonyms: ["what is an api", "what does api mean", "api explained for beginners", "what is an api in simple terms", "why do apis exist", "api meaning"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What an API Actually Is
 
 You've seen "API" everywhere — "we have an API," "call the payments API," "the API is down." Maybe you've nodded along while quietly wondering what the word actually *means*, and whether everyone else is in on something you missed. You're not missing anything. "API" is one of those terms people use constantly and define rarely.
 
-Here's the good news: the idea underneath it is genuinely simple, and once it clicks, a huge amount of how modern software fits together suddenly makes sense. This guide builds that idea slowly and properly — no jargon dropped on you undefined, no hand-waving. By the end you'll be able to read "we'll integrate with their API" and know exactly what that sentence promises.
+Here's the good news: the idea underneath it is genuinely simple, and once it clicks, a huge amount of how modern software fits together suddenly makes sense. This guide builds that idea slowly and properly — no jargon dropped on you undefined, no hand-waving. By the end you'll read "we'll integrate with their API" and know exactly what that sentence promises.
 
 ## How to read this
 

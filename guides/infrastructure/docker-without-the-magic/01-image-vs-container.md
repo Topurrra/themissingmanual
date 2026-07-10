@@ -6,7 +6,7 @@ summary: "An image is a frozen, layered snapshot of a filesystem plus how to run
 tags: [docker, images, containers, virtual-machines, kernel, mental-model]
 difficulty: intermediate
 synonyms: ["image vs container difference", "what is a docker image", "what is a docker container", "docker vs virtual machine", "do containers have their own kernel", "why are containers lighter than vms"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Image vs Container (and Why Not a VM)
@@ -29,17 +29,16 @@ flowchart LR
 
 *One image → many containers: run it five times, you get five independent containers.*
 
-**What an image actually is.** An image is a **read-only, packaged snapshot of a filesystem, plus the
-metadata for how to run it** - which command to start, which port the program listens on, what
-environment it expects. It's a frozen template. It doesn't *do* anything on its own, the same way a class
-definition doesn't run until you instantiate it. It sits on disk, and you can copy it, share it, and
-start it as many times as you like.
+An **image** is a **read-only, packaged snapshot of a filesystem, plus the metadata for how to run it** -
+which command to start, which port the program listens on, what environment it expects. It's a frozen
+template. It doesn't *do* anything on its own, the same way a class definition doesn't run until you
+instantiate it. It sits on disk, and you can copy it, share it, and start it as many times as you like.
 
-**What a container actually is.** A container is a **running instance of an image** - the image brought to
-life as a live process, with its own slice of memory, its own writable scratch space on top of the
-image's frozen files, and its own lifecycle (it starts, runs, and stops). One image, many containers:
-start the same image three times and you have three independent containers that can't see each other's
-running state, exactly like three objects built from one class.
+A **container** is a **running instance of an image** - the image brought to life as a live process, with
+its own slice of memory, its own writable scratch space on top of the image's frozen files, and its own
+lifecycle (it starts, runs, and stops). One image, many containers: start the same image three times and
+you have three independent containers that can't see each other's running state, exactly like three
+objects built from one class.
 
 📝 **Terminology.** *Image* = the frozen template on disk. *Container* = a live process running from that
 template. You **build** images and you **run** containers. People say "Docker image" and "Docker
@@ -48,9 +47,9 @@ thing to get straight.
 
 ## Why people get this wrong
 
-The common wrong picture is "a container is a little computer." It feels like one - it has its own
-filesystem, its own processes, its own network address - so calling it a tiny machine seems fair. But
-that picture leads you astray fast:
+The common wrong picture is "a container is a little computer." It feels like one - its own filesystem,
+processes, network address - so calling it a tiny machine seems fair. But that picture leads you astray
+fast:
 
 - It makes you expect the container to *remember* things, like a computer does. It doesn't, by default -
   when a container stops, the writable scratch layer it was using is thrown away. (That's Phase 3's whole
@@ -85,28 +84,24 @@ flowchart LR
 
 **The VM way.** A virtual machine emulates a whole computer. On top of your real OS sits a *hypervisor*,
 and on top of that, each VM runs its **own complete guest operating system** - its own kernel, its own
-boot process, the works - before your app even starts. That's powerful (you can run Windows on Linux) but
-heavy: each VM carries gigabytes of OS and takes the better part of a minute to boot, because it really is
-booting an operating system.
+boot process - before your app even starts. Powerful (you can run Windows on Linux) but heavy: each VM
+carries gigabytes of OS and takes the better part of a minute to boot, because it really is booting one.
 
 **The container way.** Containers don't bring their own OS kernel. They **share the host's kernel** and
-ask it - through the same system calls every normal program uses - to give each container its own isolated
-view of the filesystem, processes, and network. The container holds your app and its libraries, and
-nothing more. There's no guest OS to boot, so a container starts in a fraction of a second and weighs
-megabytes instead of gigabytes.
+ask it - through the same system calls every normal program uses - for their own isolated view of the
+filesystem, processes, and network. The container holds your app and its libraries, nothing more. No
+guest OS to boot, so a container starts in a fraction of a second and weighs megabytes, not gigabytes.
 
 💡 **Key point.** A VM virtualizes the *hardware* and runs a full OS on top. A container virtualizes the
-*operating system* - it's an isolated process group sharing the one kernel that's already running. That
-single design choice is why containers are small and fast, and it's the trade-off too: because they share
-the host kernel, Linux containers need a Linux kernel. (On macOS and Windows, Docker quietly runs a small
-Linux VM in the background to provide one - which is why "it's not a VM" has a footnote on those
-machines.)
+*operating system* - an isolated process group sharing the one kernel that's already running. That single
+design choice is why containers are small and fast, and it's the trade-off too: because they share the
+host kernel, Linux containers need a Linux kernel. (On macOS and Windows, Docker quietly runs a small
+Linux VM in the background to provide one - why "it's not a VM" has a footnote on those machines.)
 
-**The gotcha this dissolves.** People expect a container to be a clean, isolated *security* boundary as
-strong as a VM. It's strong, but it's not the same: a container shares the host kernel, so a kernel-level
-exploit isn't walled off the way it is between VMs. For most work this is fine; for running fully
-untrusted code, it's a real distinction. Knowing *where* the isolation comes from tells you exactly how
-far to trust it.
+**The gotcha this dissolves.** People expect a container to be a *security* boundary as strong as a VM.
+It's strong, but not the same: a container shares the host kernel, so a kernel-level exploit isn't walled
+off the way it is between VMs. Fine for most work; for running fully untrusted code, it's a real
+distinction. Knowing *where* the isolation comes from tells you exactly how far to trust it.
 
 ## Why this saves you later
 

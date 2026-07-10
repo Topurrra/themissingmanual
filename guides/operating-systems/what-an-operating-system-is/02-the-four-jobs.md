@@ -6,7 +6,7 @@ summary: "Every operating system manages four things for you: running programs (
 tags: [operating-systems, processes, memory, filesystem, devices, drivers]
 difficulty: beginner
 synonyms: ["what does an os manage", "what is a process", "how does multitasking work", "what is ram used for", "what is a device driver", "what is a file"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Four Jobs Every OS Does
@@ -27,10 +27,10 @@ that program actually running, with its own memory and a slice of the CPU (the m
 recipe, many meals.
 
 **The job: sharing one CPU among many.** Here's the magic trick at the heart of every OS. You have dozens of
-processes but only a few CPU cores. The OS runs one process for a few milliseconds, pauses it, runs the
-next, pauses it, and cycles through them all - *so fast* that to you they look perfectly simultaneous. This
-is called **scheduling**, and it's why your music keeps playing while your browser loads while your editor
-waits for your next keystroke.
+processes but only a few CPU cores, so the OS runs one process for a few milliseconds, pauses it, runs the
+next, and cycles through them all - *so fast* they look perfectly simultaneous. This is called
+**scheduling**, and it's why your music keeps playing while your browser loads while your editor waits for
+your next keystroke.
 
 ```mermaid
 flowchart LR
@@ -53,9 +53,9 @@ off. The *disk* (or SSD) is *storage*: slower, but it remembers when powered dow
 the disk is the filing cabinet.
 
 **The job: rationing a limited resource.** RAM is limited, and open programs want more than exists. The OS
-parcels it out, and when it runs low it gets clever - shuffling less-used data out to the disk temporarily
-to free room. That trick (called *swapping*) saves you from crashing, but disk is far slower than RAM, which
-is why a computer that's "out of memory" doesn't stop - it gets *painfully* slow.
+parcels it out, and when it runs low it shuffles less-used data out to the disk temporarily to free room -
+a trick called *swapping*. That saves you from crashing, but disk is far slower than RAM, which is why a
+computer that's "out of memory" doesn't stop - it gets *painfully* slow.
 
 **Why this saves you later.** "Out of memory," "this app is using 4 GB of RAM," "close some tabs to speed it
 up" - all the same idea. RAM is the desk space; when it's full, work slows to a crawl as the OS keeps

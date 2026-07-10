@@ -6,7 +6,7 @@ summary: "Gin is a thin, fast layer over net/http: an engine holds your routes a
 tags: [gin, go, web, framework, getting-started]
 difficulty: beginner
 synonyms: ["what is gin", "gin gonic", "gin first server", "gin engine context", "gin hello world", "go web framework gin"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What Gin Is & Your First Server
@@ -17,10 +17,9 @@ a working HTTP server in a handful of lines — no framework required. We even h
 [Web Services with Only net/http](/guides/web-services-with-only-net-http).
 
 So why reach for Gin at all? Because once you go past "hello world," the stdlib makes you hand-roll the
-boring, repetitive parts. You write your own routing logic to tell `/tasks/42` apart from `/tasks`. You
-marshal JSON by hand and remember to set the `Content-Type` header every single time. You build your own
-middleware plumbing for logging and panic recovery. None of it is *hard*, exactly — it's just the same
-wiring, written again, on every project.
+boring, repetitive parts: your own routing logic to tell `/tasks/42` apart from `/tasks`, JSON marshalled
+by hand with the `Content-Type` header set every time, your own middleware plumbing for logging and panic
+recovery. None of it is *hard*, exactly — it's just the same wiring, written again, on every project.
 
 💡 **Gin does the boring parts and stays out of the way.** It's the most popular Go web framework: a
 *thin, fast* layer over `net/http` that hands you a real router, JSON helpers, and middleware — without

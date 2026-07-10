@@ -6,34 +6,30 @@ summary: "Quarkus's signature: live reload that recompiles on the next request, 
 tags: [quarkus, dev-mode, live-reload, dev-ui, continuous-testing, dev-services, developer-experience]
 difficulty: beginner
 synonyms: ["quarkus dev mode", "quarkus live reload", "quarkus dev ui", "quarkus continuous testing", "quarkus dev services", "quarkus developer experience", "quarkus quarkus dev command"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Dev Mode & the Developer Experience
 
-In [Phase 1](01-what-quarkus-is.md) we built the mental model: Quarkus moves work from runtime to build time, which is why it boots in milliseconds. That same build-time machinery has a second payoff that you *feel* every single day — and it's the reason most people who try Quarkus don't want to go back. It's the inner loop: the tiny cycle of edit code, see result, edit again that you run hundreds of times a day.
+Phase 1 built the mental model: Quarkus moves work from runtime to build time, which is why it boots in milliseconds. That same machinery has a second payoff you *feel* every day, and it's the reason most people who try Quarkus don't want to go back: the inner loop of edit-code-see-result, run hundreds of times a day.
 
-Here's the mental model to hold for this whole phase: **Quarkus treats your running dev server as a live thing you talk to, not a build you keep restarting.** Java has a long, painful reputation for the "change one line, wait thirty seconds for the app to rebuild and restart" tax. Quarkus's whole developer experience is an attack on that tax. You start the app once and then *stay* in flow — editing files, hitting endpoints, watching tests go green — without ever stopping and starting it yourself.
+The mental model for this phase: **Quarkus treats your running dev server as a live thing you talk to, not a build you keep restarting.** Java has a long reputation for the "change one line, wait thirty seconds" tax. Quarkus's dev experience is an attack on that tax - you start the app once and stay in flow, without ever stopping and starting it yourself.
 
-We'll walk the four pieces that make that real: live reload, the Dev UI, continuous testing, and Dev Services. Then we'll talk about why fast feedback is worth caring about at all.
+Four pieces make that real: live reload, the Dev UI, continuous testing, and Dev Services.
 
 ## `quarkus dev` and live reload
-
-The front door to all of this is one command:
 
 ```bash
 quarkus dev
 ```
 
-*What just happened:* you started Quarkus in **dev mode**. The app comes up on `http://localhost:8080`, and — this is the important part — it's now *watching your source files*. You did not start a "build watcher" or a separate tool; dev mode is a first-class run mode of Quarkus itself. (If you're using Maven instead of the Quarkus CLI, the equivalent is `./mvnw quarkus:dev`, and `./gradlew quarkusDev` for Gradle — same behavior.)
+*What just happened:* you started Quarkus in **dev mode**. The app comes up on `http://localhost:8080` and is now *watching your source files* - dev mode is a first-class run mode of Quarkus itself, not a separate tool. (Maven: `./mvnw quarkus:dev`; Gradle: `./gradlew quarkusDev` - same behavior.)
 
-Now here's the mental model that trips people up coming from other ecosystems, so let's state it plainly:
+> 📝 **Live reload happens on the *next request*, not on save.** Quarkus doesn't rebuild in the background when you change a file. It waits until the next time you hit the app - a refresh, a `curl`, an API call - and *then* recompiles and reloads the changed code before serving that request. The first request after an edit pays a tiny recompile cost; everything after is instant.
 
-> 📝 **Live reload happens on the *next request*, not on save.** When you change a file, Quarkus doesn't immediately rebuild in the background. It waits until the *next time you hit the app* — a browser refresh, a `curl`, an API call — and *then* recompiles the changed code and reloads it, in the moment, before serving that request. The very first request after an edit pays a tiny recompile cost; everything after is instant.
+Nothing recompiles while you're still typing - the work happens exactly when you ask to *see* a result.
 
-That design is deliberate and worth appreciating: nothing is recompiling while you're still typing. The work happens exactly when you ask to *see* a result, which is the only time you actually care.
-
-Let's make it concrete with our `Product` service. Say you have a resource that returns a greeting:
+Say you have a resource that returns a greeting:
 
 ```java
 package org.acme;
@@ -51,7 +47,7 @@ public class ProductResource {
 }
 ```
 
-With `quarkus dev` already running, hit it:
+With `quarkus dev` running, hit it:
 
 ```bash
 curl http://localhost:8080/products
@@ -61,7 +57,7 @@ curl http://localhost:8080/products
 Product list coming soon
 ```
 
-Now change the returned text — edit the method to return `"We have 3 products"` — and **save**. Don't restart anything. Just run the same `curl` again:
+Now change the returned text to `"We have 3 products"` and **save**. Don't restart anything - run the same `curl` again:
 
 ```bash
 curl http://localhost:8080/products
@@ -71,32 +67,32 @@ curl http://localhost:8080/products
 We have 3 products
 ```
 
-*What just happened:* between the two requests you changed Java source and never touched the server. On that second request, Quarkus noticed the file was newer, recompiled `ProductResource`, swapped in the new bytecode, and served the response — all transparently. No manual rebuild, no restart, no waiting on a fat reboot. Edit, refresh, see it. That loop, repeated all day, is the thing people mean when they say Quarkus is a joy to work in.
+*What just happened:* between the two requests you changed Java source and never touched the server. On the second request Quarkus noticed the file was newer, recompiled `ProductResource`, and served the response - transparently. Edit, refresh, see it.
 
-> 💡 This even covers most config and dependency changes. Add a new endpoint method, tweak `application.properties`, pull in a new extension — dev mode picks it up on the next request. The cases where you *do* need a full restart (deep classpath surgery) are rare enough that you'll forget restarting was ever a habit.
+> 💡 This covers most config and dependency changes too - a new endpoint method, a tweaked `application.properties`, a new extension all get picked up on the next request. Cases needing a full restart (deep classpath surgery) are rare enough you'll forget restarting was ever a habit.
 
 ## The Dev UI: a console for your running app
 
-Live reload keeps you in flow; the **Dev UI** lets you see inside the app while it runs. Point your browser at:
+Live reload keeps you in flow; the **Dev UI** lets you see inside the app while it runs:
 
 ```bash
 http://localhost:8080/q/dev
 ```
 
-> 📝 The **Dev UI** is a web console that Quarkus serves *only in dev mode*. It's a live dashboard of everything in your application: every **extension** you've added, your current **configuration**, the **CDI beans** Quarkus wired up, your **REST endpoints**, plus interactive tools to poke at them. It's not a separate app you install — it ships with the dev-mode runtime and disappears in production.
+> 📝 The **Dev UI** is a web console Quarkus serves *only in dev mode* - a live dashboard of every **extension**, your current **configuration**, the **CDI beans** wired up, your **REST endpoints**, plus interactive tools to poke at them. It ships with the dev-mode runtime and disappears in production.
 
-A quick tour of what you'll actually use:
+What you'll actually use:
 
-- **Extensions** — a card for each extension on your project (REST, Hibernate, a database driver…). Many cards have their own buttons and views, so the UI grows as your app does.
-- **Configuration** — every config property and its current value, editable live. Change a setting here and dev mode reloads it on the next request, same as editing the file.
-- **Beans / CDI** — the full list of beans Quarkus discovered and how they're scoped. When [CDI in Phase 4](04-cdi-with-arc.md) makes you wonder "did my bean even get registered?", this is where you look.
-- **Endpoints** — every route your app exposes, often with a way to invoke them straight from the browser. No Postman needed for a quick check.
+- **Extensions** - a card for each one (REST, Hibernate, a database driver...), often with its own views.
+- **Configuration** - every property and its current value, editable live.
+- **Beans / CDI** - the full list of beans and how they're scoped. When [CDI in Phase 4](04-cdi-with-arc.md) makes you wonder "did my bean get registered?", look here.
+- **Endpoints** - every route, often invokable straight from the browser. No Postman needed.
 
-*What just happened:* the same build-time metadata that makes Quarkus fast — the catalog of beans, routes, and config it computed at build — gets handed to a UI you can browse. The Dev UI is essentially that internal model made visible. When something behaves oddly, "open `/q/dev` and look" is often faster than reading code.
+*What just happened:* the same build-time metadata that makes Quarkus fast - the catalog of beans, routes, and config - gets handed to a UI you can browse. When something behaves oddly, "open `/q/dev` and look" is often faster than reading code.
 
 ## Continuous testing: red/green without leaving the terminal
 
-This is the feature that quietly changes how you work. Look at the terminal where `quarkus dev` is running — there's an interactive prompt at the bottom. Press `r`:
+Look at the terminal where `quarkus dev` is running - there's an interactive prompt at the bottom. Press `r`:
 
 ```console
 Tests paused
@@ -108,15 +104,15 @@ All 1 tests are passing (0 failed), 1 tests were run in 412ms.
 Press [r] to re-run, [o] Toggle test output, [h] for more options>
 ```
 
-*What just happened:* you turned on **continuous testing**. From now on, every time you change code, Quarkus re-runs the affected tests automatically — and it's smart about it, running only the tests touched by your change rather than the whole suite. You get a green "all passing" or a red failure right there in the terminal, seconds after you save, without switching to your IDE's test runner or kicking off a build.
+*What just happened:* you turned on **continuous testing**. From now on, every code change re-runs the affected tests automatically - only the tests touched by the change, not the whole suite - and you get a green or red result right in the terminal, seconds after you save.
 
-The interactive console has more single-key commands worth knowing: `r` to re-run, `o` to toggle test output, `h` for the full menu. You drive your whole inner loop from those keystrokes.
+`r` re-runs, `o` toggles test output, `h` shows the full menu.
 
-> 💡 Notice the *flow* this creates. Change the `Product` resource, glance at the terminal, see the test that covers it go red or green — you're getting TDD-style feedback whether or not you set out to "do TDD." Fast, automatic test feedback nudges you toward writing the test first and watching it pass, because the loop is finally short enough that doing so costs nothing. (We go deeper on testing in [Phase 8](08-testing.md).)
+> 💡 Change the `Product` resource, glance at the terminal, watch its test go red or green - you're getting TDD-style feedback whether or not you set out to "do TDD." (Deeper in [Phase 8](08-testing.md).)
 
 ## Dev Services: zero-config infrastructure
 
-Now the feature that makes people sit up. Suppose your `Product` service needs a real database. You add the Postgres extension to your project — and then, in dev, you *don't* configure a database connection at all. You'd expect the app to fail on startup, right? Watch:
+Suppose your `Product` service needs a real database. Add the Postgres extension and *don't* configure a connection at all. You'd expect it to fail on startup:
 
 ```console
 INFO  Dev Services for default datasource (postgresql) started
@@ -125,25 +121,23 @@ INFO  Profile dev activated. Live Coding activated.
 INFO  Installed features: [cdi, hibernate-orm, jdbc-postgresql, rest, smallrye-context-propagation]
 ```
 
-*What just happened:* Quarkus noticed you have the Postgres extension but **no datasource configured**, and rather than erroring, it spun up a throwaway PostgreSQL **in a container** for you and wired your app to it automatically. That's **Dev Services**. You wrote zero connection strings, installed no database, and yet your app is talking to a real Postgres. When you stop dev mode, the container goes away — nothing to clean up.
+*What just happened:* Quarkus noticed the Postgres extension but **no datasource configured**, and instead of erroring, spun up a throwaway PostgreSQL **in a container** and wired your app to it automatically - **Dev Services**. Zero connection strings, no database installed, yet a real Postgres. Stop dev mode and the container goes away.
 
-This isn't special to Postgres. The same magic covers MySQL, MariaDB, Kafka, Redis, MongoDB, and more: add the extension, leave it unconfigured in dev, and Quarkus provisions a local instance on demand.
+Same for MySQL, MariaDB, Kafka, Redis, MongoDB, and more: add the extension, leave it unconfigured in dev.
 
-> 📝 The rule Dev Services follows is exactly the conditional pattern you saw with Spring Boot's auto-configuration: **if** an extension needs a service **and** you haven't configured one for this profile, **then** start a throwaway one. The moment you *do* set a connection (say, pointing at a shared dev database), Dev Services backs off and uses yours. Your config always wins.
+> 📝 The rule: **if** an extension needs a service **and** you haven't configured one for this profile, **then** start a throwaway one. The moment you *do* set a connection, Dev Services backs off. Your config always wins.
 
-⚠️ **Gotcha — this needs a container runtime.** Dev Services starts containers (via Testcontainers under the hood), so you need **Docker or Podman running** on your machine. No container runtime, no auto-database — Quarkus will tell you it couldn't start Dev Services. And to be clear: this is a **dev and test** convenience only. In production you configure real connections; nothing auto-spawns a database for you when you deploy. If containers are new to you, [Docker Without the Magic](/guides/docker-without-the-magic) is the companion read.
+⚠️ This needs a container runtime - Dev Services starts containers via Testcontainers, so you need **Docker or Podman running**. No runtime, no auto-database. This is a **dev and test** convenience only - production needs real configured connections. See [Docker Without the Magic](/guides/docker-without-the-magic) if containers are new.
 
-> 💡 Step back and appreciate what just got deleted from your life: the "set up your local environment" wiki page. No "install Postgres, create a user, run these schema scripts" ritual before a new teammate can run the app. Clone, `quarkus dev`, and a clean database is waiting. That's a real, measurable DX win — onboarding goes from an afternoon to a minute.
+> 💡 What just got deleted from your life: the "set up your local environment" wiki page. Clone, `quarkus dev`, and a clean database is waiting.
 
 ## Why developer experience actually matters
 
-It's tempting to file all of this under "nice conveniences." It's more than that.
+> 💡 **Fast feedback is a force multiplier.** The length of your inner loop silently sets the ceiling on how fast you can think. A thirty-second rebuild costs your concentration, not just thirty seconds - you context-switch while you wait. Shrink the loop to near-zero and you stay *in* the problem, try more ideas, and catch mistakes while the change is still fresh.
 
-> 💡 **Fast feedback is a force multiplier.** The length of your inner loop — edit, run, see result — silently sets the ceiling on how fast you can think. A thirty-second rebuild doesn't just cost thirty seconds; it costs your concentration, because you context-switch away while you wait. Shrink that loop to near-zero and you stay *in* the problem. You try more ideas, because trying one is cheap. You catch mistakes the moment you make them, while the change is still fresh in your head.
+Phase 1's pitch was about *production*: fast startup, low memory, cheap at scale. This phase's pitch is about *you*, every day at your desk - a language famous for slow rebuilds, made to feel instant.
 
-That's the deeper reason teams pick Quarkus, and it's worth separating from the runtime story. Phase 1's pitch was about *production*: fast startup, low memory, cheap to run at scale. This phase's pitch is about *you*, every day at your desk: a language famous for slow rebuilds, made to feel instant. Both are real, and the second one is the one you'll notice first.
-
-With the loop this tight, we're ready to actually build something. Next we'll write real REST endpoints for the `Product` service — and you'll get to *feel* live reload as we go, editing and re-hitting the API in the same breath.
+Next we write real REST endpoints for the `Product` service - and feel live reload as we go.
 
 ## Recap
 

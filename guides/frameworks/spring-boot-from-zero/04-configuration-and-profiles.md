@@ -6,14 +6,20 @@ summary: "How Spring Boot reads externalized config: application.yml, @Value and
 tags: [spring-boot, configuration, application-yml, profiles, value, configuration-properties, externalized-config]
 difficulty: intermediate
 synonyms: ["spring boot application properties yml", "spring @Value annotation", "spring @ConfigurationProperties", "spring profiles dev prod", "spring externalized configuration", "spring boot environment variables"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Configuration & Profiles
 
-In [Phase 3](03-rest-controllers.md) you built a REST API that returns JSON. Every value in it was *hardcoded* — the port the server runs on, any URL, any tuning knob. That's fine for a demo. It falls apart the moment the same code has to run on your laptop, on a staging box, and in production, where each of those needs *different* values: a different database, different log levels, different secrets.
+In [Phase 3](03-rest-controllers.md) you built a REST API that returns JSON. Every value in it was
+*hardcoded* — the port, any URL, any tuning knob. Fine for a demo; it falls apart the moment the same code
+has to run on your laptop, a staging box, and production, where each needs *different* values: a different
+database, different log levels, different secrets.
 
-The mental model for this phase: **configuration is how one build of your app adapts to many environments without recompiling.** You don't ship three versions of the app — you ship *one* jar and feed it different settings depending on where it lands. Spring Boot has a rich, layered system for doing exactly that, and once you see the layers you'll stop being surprised by "why is it using *that* value?"
+**Configuration is how one build of your app adapts to many environments without recompiling.** You don't
+ship three versions of the app — you ship *one* jar and feed it different settings depending on where it
+lands. Spring Boot has a rich, layered system for exactly that, and once you see the layers you'll stop
+being surprised by "why is it using *that* value?"
 
 ## The config file: `application.properties` / `application.yml`
 
@@ -27,7 +33,7 @@ spring.application.name=bookstore
 logging.level.org.springframework.web=DEBUG
 ```
 
-*What just happened:* Three settings, each a dotted key and a value. `server.port` tells the embedded server to listen on 8081 instead of the default 8080. `spring.application.name` names your app (it shows up in logs and tooling). The `logging.level...` line turns on DEBUG logging for Spring's web package so you can see request handling. These are Boot's own well-known keys — you didn't define them; Boot reads them.
+*What just happened:* Three settings, each a dotted key and a value. `server.port` tells the embedded server to listen on 8081 instead of the default 8080. `spring.application.name` names your app (shows up in logs and tooling). The `logging.level...` line turns on DEBUG logging for Spring's web package so you can see request handling. These are Boot's own well-known keys — you didn't define them; Boot reads them.
 
 The newer format is **`.yml`** (YAML), which expresses the same thing as a nested tree:
 
@@ -103,7 +109,7 @@ app:
   max-results: 50
 ```
 
-*What just happened:* `@ConfigurationProperties(prefix = "app")` says "take everything under the `app.` prefix and map it onto this object's fields by name." `app.name` lands in `name`, `app.greeting` in `greeting`, and `app.max-results` in `maxResults` — note Spring's *relaxed binding* matches the kebab-case `max-results` to the camelCase `maxResults` field automatically. Crucially, `max-results: 50` becomes an `int`, not a string: the binding is **type-safe**, so a non-numeric value fails loudly at startup instead of blowing up later. You then inject `AppProperties` like any other bean and call `appProps.getMaxResults()`.
+*What just happened:* `@ConfigurationProperties(prefix = "app")` says "take everything under the `app.` prefix and map it onto this object's fields by name." `app.name` lands in `name`, `app.greeting` in `greeting`, and `app.max-results` in `maxResults` — Spring's *relaxed binding* matches kebab-case to camelCase automatically. Crucially, `max-results: 50` becomes an `int`, not a string: the binding is **type-safe**, so a non-numeric value fails loudly at startup instead of blowing up later. Inject `AppProperties` like any other bean and call `appProps.getMaxResults()`.
 
 💡 **Prefer `@ConfigurationProperties` for anything more than a value or two.** You get one typed object instead of scattered `@Value` strings, IDE autocomplete on the fields, type checking, and a single place that documents what your app can be configured with. Reach for `@Value` only for the odd one-off.
 
@@ -130,7 +136,7 @@ Or via an environment variable:
 SERVER_PORT=9000 java -jar bookstore.jar
 ```
 
-*What just happened:* In both cases the file says 8081, but the external source sits higher in the precedence order, so the app boots on 9000. The command-line `--server.port=9000` maps straight to the `server.port` key. The env var `SERVER_PORT` does too — Spring translates it back to `server.port`. This is the everyday way config reaches a containerized app: the image holds the jar with its defaults, and the deployment environment injects the overrides.
+*What just happened:* In both cases the file says 8081, but the external source sits higher in the precedence order, so the app boots on 9000. The command-line `--server.port=9000` maps straight to the `server.port` key; the env var `SERVER_PORT` does too — Spring translates it back. This is the everyday way config reaches a containerized app: the image holds the jar with its defaults, and the deployment environment injects the overrides.
 
 ⚠️ **Watch the env-var naming.** Environment variables can't contain dots, so Spring uses *relaxed binding* in reverse: uppercase the key and replace dots with underscores. `app.name` becomes `APP_NAME`; `server.port` becomes `SERVER_PORT`; `spring.datasource.url` becomes `SPRING_DATASOURCE_URL`. Get the translation wrong and your override silently does nothing — the app keeps the file value and you waste an afternoon wondering why. For the broader why-and-how of environment-based config, see [/guides/env-vars-and-config](/guides/env-vars-and-config).
 
@@ -162,7 +168,7 @@ spring:
     url: jdbc:postgresql://db.internal:5432/bookstore
 ```
 
-*What just happened:* Two complete config sets. The dev profile points at a throwaway in-memory H2 database and logs verbosely; the prod profile points at a real PostgreSQL server and keeps logs quiet. They share whatever's in the base `application.yml`. You don't merge these by hand — you activate one and Boot layers the right file automatically.
+*What just happened:* Two complete config sets. The dev profile points at a throwaway in-memory H2 database and logs verbosely; the prod profile points at a real PostgreSQL server and keeps logs quiet. They share whatever's in the base `application.yml`. You activate one and Boot layers the right file automatically.
 
 You can also gate *beans* by profile with `@Profile`, so a whole component only exists in certain environments:
 
@@ -188,7 +194,7 @@ java -jar bookstore.jar --spring.profiles.active=prod
 ... : Started BookstoreApplication in 2.1 seconds
 ```
 
-*What just happened:* `--spring.profiles.active=prod` switched on the prod profile, so Boot loaded `application-prod.yml` over the base — the startup log confirms `"prod"` is active. In a real deployment you'd usually set this with the `SPRING_PROFILES_ACTIVE` environment variable instead, so the platform decides the profile, not the command line. No active profile? Boot runs with just the base `application.yml`, which is the sensible default for local work.
+*What just happened:* `--spring.profiles.active=prod` switched on the prod profile, so Boot loaded `application-prod.yml` over the base — the startup log confirms `"prod"` is active. In a real deployment you'd usually set this with `SPRING_PROFILES_ACTIVE` instead, so the platform decides the profile. No active profile? Boot runs with just the base `application.yml`.
 
 ## Secrets: the one thing that never goes in the file
 
@@ -204,9 +210,9 @@ spring:
     password: ${DB_PASSWORD}
 ```
 
-*What just happened:* The non-secret connection details live in the file, but the password is a `${DB_PASSWORD}` placeholder. At startup Spring resolves it from the `DB_PASSWORD` environment variable, which the deployment platform supplies. The real secret is never written down in the repo — it lives only in the environment (or a dedicated secrets manager that hands it to the process). For production-grade handling — rotation, vaults, managed secret stores — see [/guides/secrets-management](/guides/secrets-management).
+*What just happened:* The non-secret connection details live in the file, but the password is a `${DB_PASSWORD}` placeholder. At startup Spring resolves it from the `DB_PASSWORD` environment variable, which the deployment platform supplies. The real secret is never written down in the repo. For production-grade handling — rotation, vaults, managed secret stores — see [/guides/secrets-management](/guides/secrets-management).
 
-💡 **The whole picture.** Config, profiles, and externalized secrets are three angles on one principle: *one build adapts to dev, staging, and prod by changing inputs, not code.* You compile and test a single artifact, then let the environment decide the port, the database, the log level, and the secrets. That's what makes a Spring Boot app something you can confidently promote from your laptop all the way to production.
+💡 Config, profiles, and externalized secrets are three angles on one principle: *one build adapts to dev, staging, and prod by changing inputs, not code.* Compile and test a single artifact, then let the environment decide the port, database, log level, and secrets.
 
 ## Recap
 

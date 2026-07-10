@@ -12,12 +12,12 @@ synonyms:
   - why cant programs access hardware directly
   - why is write slow if called too often
   - what does strace show
-updated: 2026-07-04
+updated: 2026-07-11
 ---
 
 # Why syscalls matter for real performance
 
-Phase 2 walked through the mechanics: trap, mode switch, dispatch, work, return. Each of those steps takes real time — not a huge amount on any single call, but enough that it shapes how experienced developers write I/O code. This phase covers why that small cost adds up, and how to actually watch it happening on a running program.
+Phase 2 walked through the mechanics: trap, mode switch, dispatch, work, return. Each step takes real time — not a huge amount on any single call, but enough to shape how experienced developers write I/O code. This phase covers why that small cost adds up, and how to actually watch it happening on a running program.
 
 ## The cost of a single mode switch
 
@@ -29,11 +29,11 @@ System call:              tens to low hundreds of nanoseconds — mode switch + 
                           even before the kernel does any actual work
 ```
 
-*What just happened:* even a syscall that does almost nothing — like asking for the current time — pays this fixed overhead just for crossing the wall and coming back. It's not that the kernel is slow at its job; it's that crossing the boundary at all has an unavoidable fixed cost, separate from whatever work happens once you're across.
+*What just happened:* even a syscall that does almost nothing — like asking for the current time — pays this fixed overhead just for crossing the wall and coming back. The kernel isn't slow at its job; crossing the boundary at all has an unavoidable fixed cost, separate from whatever work happens once you're across.
 
 ## Why you buffer instead of calling write() once per byte
 
-This is the single most common place this cost shows up in real code. Imagine writing a file one byte at a time:
+This is the most common place this cost shows up in real code. Imagine writing a file one byte at a time:
 
 ```text
 # the slow way — one syscall per byte
@@ -43,7 +43,7 @@ for byte in data:
 
 *What just happened:* if `data` is a megabyte, that's roughly a million system calls, each paying the full mode-switch overhead from the section above — on top of whatever the actual disk write costs. The fixed per-call overhead, multiplied a million times, can dwarf the cost of the real work being done.
 
-Compare that to buffering: accumulate data in memory (a plain user-mode operation, cheap and cache-friendly) and issue one `write()` call for a large chunk at once.
+Compare that to buffering: accumulate data in memory (cheap, cache-friendly, no mode switch) and issue one `write()` call for a large chunk at once.
 
 ```text
 # the fast way — accumulate in a user-mode buffer, one syscall for the whole chunk
@@ -53,13 +53,13 @@ for byte in data:
 write(fd, buffer, len(buffer))   # one syscall for the entire megabyte
 ```
 
-*What just happened:* you paid the fixed mode-switch cost exactly once instead of a million times. This is precisely why every serious I/O library — file handles, network sockets, standard output — buffers by default. `printf` doesn't call `write()` for every character you print; it accumulates output and flushes in larger chunks. The N+1-style trap here has the same shape as issuing one database query per row instead of one query for all of them: the fix in both cases is batching the expensive boundary crossing instead of paying its fixed cost over and over.
+*What just happened:* you paid the fixed mode-switch cost exactly once instead of a million times. This is why every serious I/O library — file handles, network sockets, standard output — buffers by default. `printf` doesn't call `write()` for every character you print; it accumulates output and flushes in larger chunks. The N+1-style trap here has the same shape as issuing one database query per row instead of one query for all of them: the fix in both cases is batching the expensive boundary crossing instead of paying its fixed cost over and over.
 
 > The lesson isn't "syscalls are bad." It's that crossing the user/kernel wall has a real, fixed cost per crossing — so the number of crossings matters as much as the total amount of work being done across them.
 
 ## Seeing syscalls actually happen: strace and friends
 
-Because syscalls are the exact point where your program touches the outside world, tracing them is one of the most reliable ways to understand what a program is *actually* doing, independent of what its source code claims to do. On Linux, the tool is `strace`; macOS has `dtruss` (built on DTrace); Windows has Process Monitor for similar visibility into system-level activity.
+Because syscalls are the exact point where your program touches the outside world, tracing them is one of the most reliable ways to understand what a program is *actually* doing, independent of what its source code claims. On Linux, the tool is `strace`; macOS has `dtruss` (built on DTrace); Windows has Process Monitor for similar visibility into system-level activity.
 
 ```text
 $ strace -c ./my_program
@@ -72,7 +72,7 @@ $ strace -c ./my_program
   ...
 ```
 
-*What just happened:* `strace -c` runs the program and prints a summary of every syscall it made, how many times, and how much time was spent inside the kernel handling each one. Seeing `write` called 318 times when you expected 3 is often the exact moment you discover an unbuffered loop like the one earlier in this phase — the syscall count is direct, unambiguous evidence, not a guess based on reading the source.
+*What just happened:* `strace -c` runs the program and prints a summary of every syscall it made, how many times, and how much time was spent inside the kernel handling each one. Seeing `write` called 318 times when you expected 3 is often the exact moment you discover an unbuffered loop like the one earlier in this phase — the syscall count is direct, unambiguous evidence, not a guess.
 
 You can also trace without the summary, seeing each call as it happens with its actual arguments:
 
@@ -87,7 +87,7 @@ close(3)                               = 0
 
 ## Bringing it together
 
-The wall between user mode and kernel mode exists for protection. Crossing it is a specific, mechanical process — trap, mode switch, dispatch, work, return — and that process has a real, fixed cost independent of how much work happens on the other side. Once you internalize that cost, a lot of otherwise-mysterious performance advice stops being folklore and starts being a direct consequence of the mechanism: buffer your I/O, batch your writes, and when something's inexplicably slow, look at what it's actually asking the kernel to do.
+The wall between user mode and kernel mode exists for protection. Crossing it is a specific, mechanical process — trap, mode switch, dispatch, work, return — and that process has a real, fixed cost independent of how much work happens on the other side. Once you internalize that cost, a lot of otherwise-mysterious performance advice stops being folklore: buffer your I/O, batch your writes, and when something's inexplicably slow, look at what it's actually asking the kernel to do.
 
 Watch it animated: [system calls](/explainers/SystemCalls.dc.html)
 

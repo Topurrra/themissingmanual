@@ -6,7 +6,7 @@ summary: "Constructor vs setter vs field injection and why constructor wins, exa
 tags: [spring, dependency-injection, autowired, qualifier, primary, constructor-injection, ambiguity]
 difficulty: intermediate
 synonyms: ["spring dependency injection deep", "spring @Autowired how it works", "spring constructor vs field injection", "spring @Qualifier @Primary", "spring multiple beans same type", "spring NoUniqueBeanDefinitionException", "spring inject list of beans"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Dependency Injection, Deep
@@ -17,11 +17,11 @@ bean of each type, everything resolves cleanly. This phase is about what happens
 — two beans that fit the same slot, optional dependencies, a whole *list* of implementations you want to
 loop over. These are the situations where Boot users hit a wall and the error messages stop making sense.
 
-Here's the mental model to carry through: **injection is the container playing matchmaker.** Your class
-declares "I need a `MessageSender`," and Spring goes shopping in its bag of beans for something that fits.
-Most of this phase is understanding the *matching rules* — how Spring decides which bean fits, what it does
-when several fit, and how you can put your thumb on the scale to pick the winner. Once you can predict
-those rules, the scary exceptions become obvious and the fixes become one-liners.
+**Injection is the container playing matchmaker.** Your class declares "I need a `MessageSender`," and
+Spring goes shopping in its bag of beans for something that fits. Most of this phase is understanding the
+*matching rules* — how Spring decides which bean fits, what it does when several fit, and how you can put
+your thumb on the scale to pick the winner. Once you can predict those rules, the scary exceptions become
+obvious and the fixes become one-liners.
 
 Our cast for the whole phase: a `NotificationService` that needs to send messages, a `MessageSender`
 interface, and **two** implementations — `EmailSender` and `SmsSender`. That second implementation is
@@ -94,10 +94,9 @@ public class NotificationService {
 }
 ```
 *What just happened:* Spring reaches in via reflection and sets the private field directly — no constructor,
-no setter. It looks the shortest, and that's the bait. The field can't be `final` (mutable, `null` until
-Spring fills it), the dependency is **hidden** (the constructor no longer advertises what this class needs —
-you have to scan for annotations to find out), and it's painful to test: you can't write
-`new NotificationService(fake)`; you need reflection or a full Spring context just to inject a stand-in.
+no setter. It looks the shortest, and that's the bait. The field can't be `final`, the dependency is
+**hidden** (the constructor no longer advertises what this class needs), and it's painful to test: you
+can't write `new NotificationService(fake)`; you need reflection or a full Spring context.
 
 **Why constructor injection wins:** it's explicit (the signature is an honest list of every dependency),
 immutable (`final` fields, no half-built window), and trivially testable (the constructor *is* the seam —
@@ -309,13 +308,12 @@ into `fromAddress` in the same constructor. The `:noreply@acme.com` part is a de
 isn't set. Same injection mechanism, different source — beans come from the container, `@Value` comes from
 config.
 
-💡 Step back and see the whole point. **Dependency injection is the reason the container exists.** You
-declare what you need *by type*, the container finds it and supplies it, and because you depend on the
-`MessageSender` *interface* rather than a concrete class, you can swap the implementation — real `EmailSender`
-in production, a recording fake in tests — **without touching `NotificationService` at all.** Everything in
-this phase (qualifiers, primaries, collections, optionals) is just refinements of that one matchmaking act:
-giving you precise control over *which* bean lands in *which* slot. Next we look at the beans themselves —
-how long they live, how many copies exist, and what happens to them from birth to shutdown.
+💡 **Dependency injection is the reason the container exists.** You declare what you need *by type*, the
+container finds it and supplies it, and because you depend on the `MessageSender` *interface* rather than a
+concrete class, you can swap the implementation — real `EmailSender` in production, a recording fake in
+tests — **without touching `NotificationService` at all.** Everything in this phase (qualifiers, primaries,
+collections, optionals) is just refinements of that one matchmaking act. Next we look at the beans
+themselves — how long they live, how many copies exist, and what happens from birth to shutdown.
 
 ## Recap
 

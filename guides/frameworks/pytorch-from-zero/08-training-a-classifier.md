@@ -6,14 +6,14 @@ summary: "The payoff: assemble tensors, an nn.Module, a loss, an optimizer, the 
 tags: [pytorch, classifier, mnist, training, evaluation, accuracy, end-to-end]
 difficulty: intermediate
 synonyms: ["pytorch mnist classifier", "pytorch train neural network example", "pytorch evaluation accuracy", "pytorch end to end training", "pytorch image classification", "pytorch train test split", "pytorch model evaluation"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Training a Real Classifier
 
 This is the phase you've been building toward. Every piece you've met so far has been one corner of a
-picture, and now we snap them together into something that actually *works*: a neural network that looks at
-a handwritten digit and tells you which one it is.
+picture, and now we snap them together into something that actually *works* — a neural network that looks
+at a handwritten digit and tells you which one it is.
 
 Here's the mental model to hold onto before any code. **A real training program is always the same five-part
 skeleton**, and you already know all five parts:

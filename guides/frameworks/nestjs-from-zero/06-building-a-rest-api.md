@@ -6,12 +6,12 @@ summary: "Assemble the whole tasks resource — thin controller, service with th
 tags: [nestjs, typescript, rest, api, crud]
 difficulty: intermediate
 synonyms: ["nestjs rest api", "nestjs crud", "nest resource", "nest controller service crud", "nestjs NotFoundException", "nest g resource"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Building a REST API
 
-This is the payoff phase. For five phases you've been collecting parts: a controller that handles HTTP ([Phase 2](02-controllers-and-routing.md)), a service that holds logic and gets injected ([Phase 3](03-providers-and-di.md)), a module that wires them together ([Phase 4](04-modules.md)), and DTOs with a ValidationPipe that guard the input ([Phase 5](05-dtos-validation-pipes.md)). Now we snap them into one complete, working resource.
+This is the payoff phase. For five phases you've been collecting parts: a controller that handles HTTP ([Phase 2](02-controllers-and-routing.md)), a service that holds logic and gets injected ([Phase 3](03-providers-and-di.md)), a module that wires them together ([Phase 4](04-modules.md)), and DTOs with a ValidationPipe that guard the input ([Phase 5](05-dtos-validation-pipes.md)) — now we snap them into one complete, working resource.
 
 Here's the mental model for a REST resource in Nest, and it's the same shape for every resource you'll ever build:
 

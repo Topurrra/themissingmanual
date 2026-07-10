@@ -6,7 +6,7 @@ summary: "Every API reference is telling you the same five things: the base URL,
 tags: [apis, api-docs, http, base-url, endpoint, parameters, authentication, beginner-friendly]
 difficulty: beginner
 synonyms: ["how to read api documentation", "what is a base url", "what is an endpoint", "what are query parameters", "where is the api key in the docs"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # How to Read API Docs
@@ -37,12 +37,12 @@ realistic without leaning on any one vendor's website.
 
 ## 1. The base URL — where the API lives
 
-**What it actually is.** The base URL is the front door of the whole API: the part of the address
-that's the same for *every* request. Everything else you read in the docs gets tacked onto the end of
-it. Find this once and you've found the foundation for every call.
+The base URL is the front door of the whole API: the part of the address that's the same for *every*
+request. Everything else you read in the docs gets tacked onto the end of it. Find this once and you've
+found the foundation for every call.
 
-**Where it lives in the docs.** Look for a section near the top called "Base URL," "Getting Started,"
-or "Introduction." It almost always shows a version number in the path.
+Look for a section near the top called "Base URL," "Getting Started," or "Introduction." It almost always
+shows a version number in the path.
 
 ```text
    https://api.bookshelf.dev/v1
@@ -54,15 +54,15 @@ or "Introduction." It almost always shows a version number in the path.
 behavior under `/v1` and ship new behavior under `/v2`, letting your code keep working. Use the version
 the docs tell you to — usually the newest one shown in their examples.
 
-**The gotcha.** Some docs print the base URL in one place and then show *only the endpoint* (like
-`/books`) everywhere else, assuming you'll remember to glue them together. If a request 404s with "not
-found," the first thing to check is whether you dropped the base URL or the version.
+⚠️ **Gotcha.** Some docs print the base URL in one place and then show *only the endpoint* (like `/books`)
+everywhere else, assuming you'll remember to glue them together. If a request 404s with "not found," the
+first thing to check is whether you dropped the base URL or the version.
 
 ## 2. The endpoint and method — which thing, what action
 
-**What it actually is.** An **endpoint** is the path to a specific resource — the books, one book, the
-reviews on a book. The **method** is the verb that says what you want to *do* to it. Together they read
-almost like a sentence: "`GET /books`" means "fetch the list of books."
+An **endpoint** is the path to a specific resource — the books, one book, the reviews on a book. The
+**method** is the verb that says what you want to *do* to it. Together they read almost like a sentence:
+"`GET /books`" means "fetch the list of books."
 
 📝 **Terminology.** The four you'll meet constantly:
 
@@ -73,8 +73,8 @@ almost like a sentence: "`GET /books`" means "fetch the list of books."
 | `PUT` / `PATCH` | update something existing | "edit this book" |
 | `DELETE` | remove something | "delete this book" |
 
-**Where it lives in the docs.** Reference pages list one endpoint per entry, almost always with the
-method in bold or color right next to the path:
+Reference pages list one endpoint per entry, almost always with the method in bold or color right next to
+the path:
 
 ```text
    GET    /books            list all books
@@ -87,15 +87,15 @@ That `{id}` in curly braces is a **path parameter** — a blank you fill in. `GE
 book whose id is `42`. The braces are the docs' way of saying "put a real value here"; you never send
 the braces themselves.
 
-**Why this saves you later.** When a teammate says "the API returns a 405," knowing methods tells you
-instantly what happened: you sent the wrong verb to a real path — like a `POST` to an endpoint that only
-accepts `GET`. The path was fine; the action wasn't allowed.
+When a teammate says "the API returns a 405," knowing methods tells you instantly what happened: you sent
+the wrong verb to a real path — like a `POST` to an endpoint that only accepts `GET`. The path was fine;
+the action wasn't allowed.
 
 ## 3. The parameters — the details you fill in
 
-**What they actually are.** Parameters are the inputs to a request — the specifics that turn "get some
-books" into "get me 10 science-fiction books, newest first." The docs list every parameter an endpoint
-accepts, and crucially, marks which are **required** and which are **optional**.
+Parameters are the inputs to a request — the specifics that turn "get some books" into "get me 10
+science-fiction books, newest first." The docs list every parameter an endpoint accepts, and crucially,
+marks which are **required** and which are **optional**.
 
 There are three places a parameter can ride along, and the docs will tell you which:
 
@@ -105,8 +105,8 @@ There are three places a parameter can ride along, and the docs will tell you wh
 - **Body** — a chunk of JSON you send along with `POST`/`PUT`, describing the thing you're creating or
   changing.
 
-**Where it lives in the docs.** Usually a table right under the endpoint. The "Required" column is the
-one to read first — it tells you the minimum you must supply for the call to work at all.
+Usually a table right under the endpoint. The "Required" column is the one to read first — it tells you
+the minimum you must supply for the call to work at all.
 
 ```text
    GET /books — query parameters
@@ -117,10 +117,9 @@ one to read first — it tells you the minimum you must supply for the call to w
    sort    no        string   "newest" or "title"
 ```
 
-*Reading this:* nothing is required here, so `GET /books` alone works and gives you the default 20. Want
-fewer, filtered, sorted? That's what the optional query parameters are for. Note the docs even tell you
-the **default** (`20`) and the **limit** (`max 100`) — real numbers from the reference, not ones to
-guess at.
+Nothing is required here, so `GET /books` alone works and gives you the default 20. Want fewer, filtered,
+sorted? That's what the optional query parameters are for. Note the docs even tell you the **default**
+(`20`) and the **limit** (`max 100`) — real numbers from the reference, not ones to guess at.
 
 ⚠️ **Gotcha.** "Optional" doesn't mean "ignored." If you send a query parameter the API doesn't
 recognize (a typo like `limt=10`), most APIs quietly ignore it rather than erroring — so you'll get the
@@ -129,10 +128,10 @@ your parameter *names* against the table, character for character.
 
 ## 4. The auth requirement — how you prove who you are
 
-**What it actually is.** Most useful APIs won't talk to a stranger. **Authentication** is how you prove
-you're an allowed caller, usually by attaching a secret — an **API key** or a **token** — to your
-request. The docs have a section, normally called "Authentication," that tells you exactly two things:
-*what* secret to send and *where* to put it.
+Most useful APIs won't talk to a stranger. **Authentication** is how you prove you're an allowed caller,
+usually by attaching a secret — an **API key** or a **token** — to your request. The docs have a section,
+normally called "Authentication," that tells you exactly two things: *what* secret to send and *where* to
+put it.
 
 📝 **Terminology.** A **bearer token** is the most common pattern: a long secret string you place in a
 header, and whoever "bears" (carries) it is treated as you. The header looks like this:
@@ -143,12 +142,11 @@ header, and whoever "bears" (carries) it is treated as you. The header looks lik
      header name    scheme      the actual secret
 ```
 
-**Where it lives in the docs.** The "Authentication" section spells out the exact header. It will say
-something like: *"Authenticate by sending your API key as a bearer token in the `Authorization`
-header."* That one sentence tells you the header name (`Authorization`), the scheme (`Bearer`), and
-that the value is your key.
+The "Authentication" section spells out the exact header. It will say something like: *"Authenticate by
+sending your API key as a bearer token in the `Authorization` header."* That one sentence tells you the
+header name (`Authorization`), the scheme (`Bearer`), and that the value is your key.
 
-**The gotcha.** A request with the secret missing or malformed comes back as **401 Unauthorized**; a
+⚠️ **Gotcha.** A request with the secret missing or malformed comes back as **401 Unauthorized**; a
 request where the secret is valid but isn't *allowed* to do that thing comes back as **403 Forbidden**.
 People conflate them and chase the wrong fix. 401 means "I don't know who you are" (check the token is
 present and spelled right). 403 means "I know who you are, and no" (your key lacks permission). You'll
@@ -161,13 +159,12 @@ one.
 
 ## 5. The example — a request and response you can copy
 
-**What it actually is.** Good docs give you a worked example for each endpoint: a sample request and the
-response it produces. This is the most valuable thing on the page, because it shows all four pieces
-above *already assembled correctly*. Your job becomes "copy this and change the values to mine," not
-"build it from scratch."
+Good docs give you a worked example for each endpoint: a sample request and the response it produces.
+This is the most valuable thing on the page, because it shows all four pieces above *already assembled
+correctly*. Your job becomes "copy this and change the values to mine," not "build it from scratch."
 
-**What it looks like.** Typically a request snippet (often already written as curl — which you'll
-recognize after [Phase 2](02-making-the-request.md)) and a JSON response:
+Typically a request snippet (often already written as curl — which you'll recognize after
+[Phase 2](02-making-the-request.md)) and a JSON response:
 
 ```text
    Example response — GET /books/42
@@ -181,13 +178,10 @@ recognize after [Phase 2](02-making-the-request.md)) and a JSON response:
    }
 ```
 
-*Reading this:* this is your map of what the answer *will look like* before you ever send the call. If
-your code needs the publication year, you now know it'll arrive under the key `year`. Reading the
-example response is how you know what fields to expect — no guessing.
-
-**Why this saves you later.** When your real response doesn't match the example — a field is missing, or
-the shape is different — that mismatch is the bug, and now you can see it. The example is your "this is
-correct" reference photo.
+This is your map of what the answer *will look like* before you ever send the call. If your code needs
+the publication year, you now know it'll arrive under the key `year`. Reading the example response is how
+you know what fields to expect — no guessing. When your real response doesn't match — a field is missing,
+or the shape is different — that mismatch is the bug, and now you can see it.
 
 ## Putting the five together
 

@@ -6,17 +6,15 @@ summary: "The cautionary tale of the backup job that wrote empty files for month
 tags: [databases, backups, restore, 3-2-1-rule, restore-drill, disaster-recovery, verification]
 difficulty: intermediate
 synonyms: ["backup job wrote empty files", "3-2-1 backup rule explained", "how to test a database restore", "restore drill", "verify backups automatically", "silent backup failure", "backup checksum verification"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # When It Breaks
 
-You now know what a backup is *for* (the restore) and the three ways to take one. This phase is about
-the part that decides whether any of it saves you: the unglamorous discipline of making sure the restore
-actually works on the day it counts. Because the most dangerous backup isn't the one that's missing —
-it's the one that's there, green, and quietly useless.
-
-Let's start with the story that haunts everyone who's lived it.
+You know what a backup is *for* (the restore) and the three ways to take one. This phase is about the
+part that decides whether any of it saves you: the unglamorous discipline of making sure the restore
+actually works on the day it counts. The most dangerous backup isn't the one that's missing — it's the
+one that's there, green, and quietly useless. Here's the story that haunts everyone who's lived it.
 
 ## The cautionary tale: the backup job that wrote empty files
 
@@ -42,8 +40,8 @@ caught this.
 
 ## The 3-2-1 rule: don't keep your eggs near the fire
 
-Even a perfect backup is worthless if it burns in the same fire as the database. The **3-2-1 rule** is
-the old, boring, undefeated answer to "where do I keep these?":
+Even a perfect backup is worthless if it burns in the same fire as the database. The **3-2-1 rule** is the
+old, boring, undefeated answer to "where do I keep these?":
 
 - **3** copies of your data (the live database counts as one).
 - on **2** different kinds of media or storage (not all on the same disk/array).
@@ -68,7 +66,7 @@ radius," not "another folder."
 
 ## Automate, verify, drill — the three habits that make it real
 
-Three habits turn a pile of files into an actual recovery capability. They build on each other.
+Three habits turn a pile of files into an actual recovery capability, and they build on each other.
 
 **1. Automate the backup.** A backup that depends on someone remembering to run it will be skipped the
 week it matters. Schedule it, and alert on the job *not running* — silence should be loud.
@@ -130,11 +128,11 @@ When it's real and the pressure is on, don't improvise — run the procedure you
 
 ## For builders
 
-Put the restore time on a dashboard, not the backup time. The metric that predicts whether you survive
-an incident is "how long did our last *restore drill* take, and did it beat RTO" — not "did last night's
+Put the restore time on a dashboard, not the backup time. The metric that predicts whether you survive an
+incident is "how long did our last *restore drill* take, and did it beat RTO" — not "did last night's
 backup succeed." Tracking the restore makes the team invest in the half that actually saves them, and it
-quietly kills the empty-files class of failure, because you can't fake a drill that has to produce a
-working database at the end.
+kills the empty-files class of failure, because you can't fake a drill that has to produce a working
+database at the end.
 
 ## Recap
 

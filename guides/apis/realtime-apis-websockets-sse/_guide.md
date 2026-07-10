@@ -8,7 +8,7 @@ category: apis
 order: 10
 difficulty: intermediate
 synonyms: ["websockets vs sse", "how to push live updates", "server sent events explained", "realtime api", "long polling vs websockets", "do i need websockets", "live updates without polling", "sse vs websocket vs polling"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Realtime APIs: WebSockets vs SSE vs Polling
@@ -19,11 +19,11 @@ staring at a plain HTTP API thinking: it answers when I ask, but it can't tap me
 gap — between request/response and "tell me the moment something changes" — is exactly the one this
 guide closes.
 
-The relief: there are only three patterns worth knowing, and they line up neatly from simplest to most
-powerful. **Polling** fakes realtime by asking on a loop. **Server-Sent Events** opens a one-way pipe so
-the server can stream updates to the browser over plain HTTP. **WebSockets** open a two-way pipe for
-when both sides need to talk. The whole skill is picking the *simplest one that fits* — and knowing the
-scaling traps before they page you at 3am.
+The relief: there are only three patterns worth knowing, and they line up from simplest to most powerful.
+**Polling** fakes realtime by asking on a loop. **Server-Sent Events** opens a one-way pipe so the server
+can stream updates to the browser over plain HTTP. **WebSockets** open a two-way pipe for when both sides
+need to talk. The whole skill is picking the *simplest one that fits* — and knowing the scaling traps
+before they page you at 3am.
 
 ## How to read this
 

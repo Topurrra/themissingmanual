@@ -6,7 +6,7 @@ summary: "Real apps are a stack of cooperating containers - web, API, database, 
 tags: [docker, docker-compose, mental-model, containers, stack]
 difficulty: intermediate
 synonyms: ["why use docker compose", "what is a docker stack", "managing multiple containers", "docker run is painful for multiple services", "what problem does docker compose solve"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why One Container Isn't Enough
@@ -17,7 +17,7 @@ Open up almost any web app you'd ship and you'll find the same cast: something s
 
 ## What a "stack" actually is
 
-**What it actually is.** A *stack* is the full set of containers that together make up one running application, plus the connections between them. Not one program - a little system of cooperating programs, each in its own container.
+A *stack* is the full set of containers that together make up one running application, plus the connections between them. Not one program - a little system of cooperating programs, each in its own container.
 
 📝 **Stack.** Throughout this guide, "stack" means *all the services that have to be running for your app to work*, treated as a single unit you start and stop together.
 
@@ -40,9 +40,7 @@ The web container takes requests and hands the real work to the API. The API rea
 
 ## Why doing this by hand hurts
 
-**The common picture.** "I know `docker run`. I'll just run it four times." You can - and it works right up until it doesn't.
-
-**What it does in real life.** Here's what running this stack by hand actually involves. You start the database:
+"I know `docker run`. I'll just run it four times." You can - and it works right up until it doesn't. Here's what running this stack by hand actually involves. You start the database:
 
 ```console
 $ docker run -d --name db \
@@ -78,7 +76,7 @@ $ docker run -d --name api \
 
 ## The one idea: declare the stack, don't perform it
 
-**What it actually is.** Docker Compose flips the model from *imperative* (you perform a sequence of `run` commands) to *declarative* (you write down what the finished stack should look like, once, in a file called `docker-compose.yml`). Compose reads that file and makes reality match it.
+Docker Compose flips the model from *imperative* (you perform a sequence of `run` commands) to *declarative* (you write down what the finished stack should look like, once, in a file called `docker-compose.yml`). Compose reads that file and makes reality match it.
 
 📝 **Declarative.** You describe the desired end state - "these four services, on this network, with these settings" - and the tool figures out the steps to get there. The opposite of typing the steps yourself.
 
@@ -94,7 +92,7 @@ $ docker run -d --name api \
     by hand, every time)                  file and builds it all)
 ```
 
-**What it does in real life.** Everything you were juggling by hand - the network, the volumes, the environment, the start order, the published ports - becomes a few lines of text. Bringing the entire stack up is one command:
+Everything you were juggling by hand - the network, the volumes, the environment, the start order, the published ports - becomes a few lines of text. Bringing the entire stack up is one command:
 
 ```console
 $ docker compose up

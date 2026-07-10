@@ -6,14 +6,12 @@ summary: "The dev server isn't enough for production. gunicorn and friends impor
 tags: [wsgi, gunicorn, uwsgi, middleware, workers, deployment, internals]
 difficulty: intermediate
 synonyms: ["wsgi server gunicorn", "wsgi middleware", "gunicorn workers", "uwsgi vs gunicorn", "wsgi middleware wrapping", "why gunicorn in production", "wsgi development vs production server"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The WSGI Server & Middleware
 
 In [Phase 2](02-a-wsgi-app-from-scratch.md) you wrote a WSGI app - a plain callable that takes `(environ, start_response)` and returns bytes - and you ran it with `wsgiref.simple_server` to see it answer a real HTTP request. That was the *app* half of the contract working. This phase is about the *other* half: the **server** that actually calls your app in production, and a single trick - wrapping one WSGI app in another - that turns out to be the root of every "middleware" you've ever met.
-
-Two ideas, one mental model each. Let's build them.
 
 ## The dev server isn't enough
 

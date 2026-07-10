@@ -6,7 +6,7 @@ summary: "A transaction is a bundle of database changes that either all happen o
 tags: [databases, transactions, begin, commit, rollback, sql]
 difficulty: intermediate
 synonyms: ["what is a database transaction", "begin commit rollback", "all or nothing database", "how to do a money transfer in sql", "what does rollback do"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What a Transaction Is
@@ -17,7 +17,7 @@ If anything interrupts you after the first statement and before the second — a
 
 ## The mental model: a bundle that's all-or-nothing
 
-**What a transaction actually is.** A transaction is a way of saying to the database: *"Treat these statements as one indivisible unit. Apply all of them, or — if anything goes wrong — apply none of them. Never leave me halfway."*
+A transaction is a way of saying to the database: *"Treat these statements as one indivisible unit. Apply all of them, or — if anything goes wrong — apply none of them. Never leave me halfway."*
 
 Picture it as wrapping several changes in a single sealed envelope. While the envelope is open you can keep adding changes to it. The moment you seal it (`COMMIT`), everything inside becomes permanent together. If you tear it up instead (`ROLLBACK`), everything inside disappears together, as if you never started.
 

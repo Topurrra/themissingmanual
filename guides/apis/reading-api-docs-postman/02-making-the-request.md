@@ -6,7 +6,7 @@ summary: "Postman and curl are two interfaces to the same thing — building an 
 tags: [apis, postman, curl, http, headers, authentication, beginner-friendly]
 difficulty: beginner
 synonyms: ["how to use postman", "how to make a request in postman", "how to use curl", "curl with authorization header", "postman vs curl"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Making the Request (Postman & curl)
@@ -18,8 +18,8 @@ different clothes.**
 
 ## The one idea: both tools build the same request
 
-**What it actually is.** Whether you click around in Postman or type a command in curl, you are
-assembling the exact same four things and handing them to the same server:
+Whether you click around in Postman or type a command in curl, you are assembling the exact same four
+things and handing them to the same server:
 
 ```text
    An HTTP request = four parts, every time:
@@ -38,9 +38,9 @@ assembling the exact same four things and handing them to the same server:
                     the same server
 ```
 
-**Why this is worth knowing.** The moment you see that Postman fields and curl flags are *the same four
-parts*, you stop memorizing either tool. A header is a header. A method is a method. You learn the
-request once and translate between tools freely.
+The moment you see that Postman fields and curl flags are *the same four parts*, you stop memorizing
+either tool. A header is a header. A method is a method. You learn the request once and translate between
+tools freely.
 
 📝 **Terminology.**
 - **Postman** is a graphical app (GUI) for building and sending HTTP requests. You fill in fields and
@@ -124,11 +124,11 @@ $ curl https://api.bookshelf.dev/v1/books/42 \
 {"id":42,"title":"The Left Hand of Darkness","author":"Ursula K. Le Guin","genre":"scifi","year":1969}
 ```
 
-*What just happened:* curl built an HTTP `GET` request to that URL, attached your `Authorization`
-header, sent it, and printed the server's response body straight to your terminal. That body is JSON —
-the same shape the docs' example promised in Phase 1 — but crammed onto one line, because curl prints
-exactly what the server sent, with no prettifying. (You'll see how to read it, including the status code
-curl hid by default, in [Phase 3](03-reading-the-response.md).)
+curl built an HTTP `GET` request to that URL, attached your `Authorization` header, sent it, and printed
+the server's response body straight to your terminal. That body is JSON — the same shape the docs'
+example promised in Phase 1 — but crammed onto one line, because curl prints exactly what the server
+sent, with no prettifying. (You'll see how to read it, including the status code curl hid by default, in
+[Phase 3](03-reading-the-response.md).)
 
 ⚠️ **Gotcha — the quotes matter.** Wrap the header value in double quotes: `-H "Authorization: Bearer
 ..."`. Without quotes, your shell sees the space after `Bearer` and treats the rest as separate

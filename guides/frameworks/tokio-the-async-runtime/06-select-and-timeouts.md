@@ -6,12 +6,10 @@ summary: "Race several futures with tokio::select! - first to finish wins, the r
 tags: [tokio, rust, select, timeout, cancellation]
 difficulty: advanced
 synonyms: ["tokio select", "tokio timeout", "tokio race futures", "tokio cancellation", "cancellation safety", "tokio graceful shutdown select"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # select! & Timeouts
-
-Here's the mental model to hold for this whole phase, because everything else hangs off it:
 
 > 💡 **`tokio::select!` races several futures at once. The *first* one to finish wins - its branch runs.
 > The moment it wins, every other future is **dropped right where it stood**. Dropped means cancelled.**

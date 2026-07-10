@@ -8,7 +8,7 @@ category: security
 difficulty: intermediate
 order: 6
 synonyms: ["what is sql injection", "how to prevent sql injection", "what is xss", "how to prevent cross-site scripting", "parameterized queries vs string concatenation", "why is string concatenation in sql dangerous", "how does injection work"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # SQL Injection & XSS, Explained
@@ -24,9 +24,8 @@ search term - gets handed to a machine that reads it as **instructions** instead
 input as SQL. A browser that reads your input as HTML and JavaScript. The cure, in both cases, is the same
 sentence: **keep data as data, so it can never be mistaken for code.**
 
-We'll explain each hole the way you'd want a careful teammate to explain it - enough of the mechanism to
-truly understand it, and then the real, production-grade fix. This is defensive throughout: we show the
-minimum needed to *see* the problem so you can *close* it.
+We'll explain each hole the way a careful teammate would: enough of the mechanism to truly understand it,
+then the real, production-grade fix.
 
 ## How to read this
 

@@ -8,21 +8,21 @@ category: data-analytics
 order: 2
 difficulty: beginner
 synonyms: ["when to move from excel to a database", "do i need sql or a spreadsheet", "when do i need a data pipeline", "spreadsheet vs database vs pipeline", "how data work grows"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Spreadsheets → SQL → Pipelines
 
 You started in a spreadsheet. Almost everyone does. Then one day the file got slow, or a teammate
 overwrote your numbers, or you realized you'd been hand-copying the same report every Monday for a year.
-That nagging feeling — *there has to be a better way to do this* — is real, and it has a name. It's the
-moment your data work is ready to grow.
+That nagging feeling — *there has to be a better way to do this* — is real, and it's the moment your
+data work is ready to grow.
 
 This guide walks the path most data work actually travels: **spreadsheet → SQL → pipeline.** Three
-stages, each one solving a specific pain the stage before it couldn't. You don't skip ahead because a
-tool is fancier; you move up only when the work outgrows where it lives. By the end you'll be able to
-look at a messy data task and say, calmly, "this belongs in a spreadsheet" — or "this needs a database
-now" — or "this has to become a pipeline."
+stages, each solving a specific pain the stage before it couldn't. You don't skip ahead because a tool
+is fancier; you move up only when the work outgrows where it lives. By the end you'll be able to look at
+a messy data task and say, calmly, "this belongs in a spreadsheet" — or "this needs a database now" — or
+"this has to become a pipeline."
 
 ## How to read this
 

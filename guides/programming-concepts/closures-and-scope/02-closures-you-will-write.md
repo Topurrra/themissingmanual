@@ -6,7 +6,7 @@ summary: "The everyday jobs closures do: private state nothing else can touch, p
 tags: [closures, private-state, callbacks, partial-application, encapsulation, scope]
 difficulty: intermediate
 synonyms: ["private state with closures", "closure counter example", "how to use closures", "closures for callbacks", "preload argument function", "encapsulation without classes", "data hiding with closures"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Closures You'll Actually Write
@@ -67,7 +67,7 @@ You'll see this constantly: a logger pre-loaded with a category, a fetch helper 
 
 ## Pattern 3: callbacks that remember
 
-This is where closures earn their keep most often. A callback is a function you hand to someone else to call *later* - when a button is clicked, when data arrives, when a timer fires. By the time it runs, the code that created it has long since moved on. The callback needs to remember the context it was born in, and a closure is precisely that memory.
+This is where closures earn their keep most often. A callback is a function you hand to someone else to call *later* - when a button is clicked, when data arrives, when a timer fires. By the time it runs, the code that created it has long since moved on, so the callback needs to remember the context it was born in - a closure is precisely that memory.
 
 ```javascript
 function setupButtons(labels) {

@@ -6,14 +6,14 @@ summary: "Store a one-way hash of the password, never the password itself. On lo
 tags: [security, passwords, hashing, one-way, encryption]
 difficulty: beginner
 synonyms: ["what is password hashing", "hashing vs encryption passwords", "why not store plaintext passwords", "how does login check a password", "one way hash explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Hashing, Not Encrypting
 
-Picture the worst day: someone copies your entire `users` table. Maybe a leaked backup, a SQL injection
-bug, a misconfigured cloud bucket. It happens to careful teams. The question that decides whether this is
-an embarrassing incident or a catastrophe is simple: **when the attacker opens that table, can they read
+Picture the worst day: someone copies your entire `users` table - a leaked backup, a SQL injection bug, a
+misconfigured cloud bucket. It happens to careful teams. The question that decides whether this is an
+embarrassing incident or a catastrophe is simple: **when the attacker opens that table, can they read
 people's passwords?**
 
 If the answer is yes, it's a catastrophe - not just for your site, but for every other site where your

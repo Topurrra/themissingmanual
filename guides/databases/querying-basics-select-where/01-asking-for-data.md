@@ -6,15 +6,15 @@ summary: "Every query starts from the same shape — SELECT which columns FROM w
 tags: [sql, select, from, columns, result-set, queries, beginner-friendly]
 difficulty: beginner
 synonyms: ["what does SELECT do in sql", "select from table sql", "select all columns sql", "select star meaning", "how to read sql results", "sql query basics"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Asking for Data: SELECT ... FROM
 
 A database is, at heart, a set of tables — and a table is just a grid: columns across the top
 (the *kinds* of things you store), rows going down (one row per actual thing). A query is you
-pointing at that grid and saying "give me *these* columns, from *that* table." That's it. Master that
-one sentence and you've got the spine of every `SELECT` you'll ever write.
+pointing at that grid and saying "give me *these* columns, from *that* table." Master that one sentence
+and you've got the spine of every `SELECT` you'll ever write.
 
 Let's meet the table we'll use for the whole guide. Picture a `users` table like this:
 

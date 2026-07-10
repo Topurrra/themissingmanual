@@ -8,14 +8,14 @@ category: testing
 order: 7
 difficulty: advanced
 synonyms: ["what is load testing", "load testing vs stress testing", "why use percentiles not average latency", "p95 p99 latency explained", "will my app handle traffic", "how to do a load test", "what is a soak test", "find the breaking point of a server"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Load & Performance Testing
 
 You've got green tests. Every unit test passes, the integration suite is clean, you clicked through the app yourself and it worked. So why does the launch announcement still tighten your stomach? Because every test you've written so far asked one question - *is it correct?* - and not the one that takes prod down at the worst possible moment: *does it still work when a thousand people show up at the same second?*
 
-Those are different questions with different answers. Code that is perfectly correct for one user can fall apart under a crowd: the database connection pool runs dry, a query that was fine at ten rows crawls at ten million, memory creeps up over six hours until the process is killed. None of that shows up in a passing test suite. It shows up on launch day - unless you go looking for it first.
+Code that is perfectly correct for one user can fall apart under a crowd: the database connection pool runs dry, a query that was fine at ten rows crawls at ten million, memory creeps up over six hours until the process is killed. None of that shows up in a passing test suite - it shows up on launch day, unless you go looking for it first.
 
 This guide is about going looking for it first. It won't make your app faster (that's profiling, a different skill - we'll point you there). It answers a narrower, more urgent question: **will it hold?**
 

@@ -6,12 +6,12 @@ summary: "Updating rows with Update/Updates/Save, the struct zero-value trap (an
 tags: [gorm, go, update, delete, soft-delete]
 difficulty: intermediate
 synonyms: ["gorm update", "gorm save updates", "gorm zero value update", "gorm delete", "gorm soft delete", "gorm unscoped"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Update & Delete
 
-You've created rows and queried them back. Now you need to change them and remove them — and this is where GORM has two surprises that catch nearly everyone the first time. The good news: once you hold the mental model, both stop being surprises and start being predictable.
+You've created rows and queried them back. Now you need to change them and remove them — and this is where GORM has two surprises that catch nearly everyone the first time. Once you hold the mental model, both stop being surprises and start being predictable.
 
 Here's the model, and it's the whole phase in one sentence: **an update targets a row by its primary key (or a `Where` you add) and writes the changed columns; a delete — on a model with `gorm.Model` — hides the row by stamping `deleted_at` instead of removing it.** Hold those two ideas. Every confusing thing below is a consequence of one of them.
 

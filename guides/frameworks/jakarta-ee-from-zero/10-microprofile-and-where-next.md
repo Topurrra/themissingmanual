@@ -6,14 +6,14 @@ summary: "You can build a standard Jakarta EE service end to end. Now meet Micro
 tags: [jakarta-ee, microprofile, quarkus, helidon, cloud-native, microservices, learning-path, what-to-build]
 difficulty: beginner
 synonyms: ["what is microprofile", "jakarta ee microservices", "quarkus helidon jakarta ee", "microprofile config health metrics jwt", "jakarta ee cloud native", "jakarta ee next steps", "jakarta ee vs spring boot career"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # MicroProfile & Where to Go Next
 
 Stop for a second and look at what you can do now. You can stand up a real Jakarta EE service from nothing: wire your objects together with **CDI**, expose them over HTTP with **JAX-RS**, persist data through **Jakarta Persistence**, keep writes honest with **JTA transactions**, guard your inputs with **Validation**, and lock the doors with **Jakarta Security**. More than the annotations, you understand the *model underneath* — specifications you write against, application servers that implement them, and the freedom to swap the engine without rewriting your code.
 
-That's not a small thing. A lot of people who use enterprise Java never quite see that shape. You do. This last phase isn't more specs to memorize — it's the map of where you go from here, and the honest version of what your new skill is worth.
+That's not a small thing. A lot of people who use enterprise Java never quite see that shape. You do. This last phase isn't more specs to memorize — it's the map of where you go from here and the honest version of what your new skill is worth.
 
 ## MicroProfile — the cloud-native companion
 

@@ -6,12 +6,12 @@ summary: "Pull the whole machine together — host, pipeline, RequestDelegate, K
 tags: [aspnet-core, csharp, kestrel, performance, hosted-services, ecosystem]
 difficulty: beginner
 synonyms: ["aspnet core internals next steps", "aspnet performance kestrel", "ihostedservice background", "aspnet health checks opentelemetry", "yarp reverse proxy", "aspnet pipeline mastery"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
-Stop for a second and notice what changed. When you started this guide, a `Program.cs` was a wall of incantations — `builder.Services.Add...`, `app.Use...`, `app.MapGet(...)` — that you copied from a template and hoped worked. Now you can read it line by line and name every piece.
+Notice what changed. When you started this guide, a `Program.cs` was a wall of incantations — `builder.Services.Add...`, `app.Use...`, `app.MapGet(...)` — that you copied from a template and hoped worked. Now you can read it line by line and name every piece.
 
 There's the **host**: the object that reads configuration, builds the dependency-injection container, sets up logging, and starts everything. There's the **middleware pipeline**: an ordered chain of `RequestDelegate`s, each one a function that can do work, call the next, and act again on the way back out. There's **endpoint routing**, which is where your minimal API handler or your MVC controller action actually plugs in. And underneath it all there's **Kestrel**, the web server that opens the socket and speaks HTTP. Four pieces. That's the machine.
 
@@ -110,7 +110,7 @@ Don't let this stay theory. Three small moves will turn "I read about it" into "
 
 If you want to deepen the surface you build on top, go back to [ASP.NET Core From Zero](/guides/aspnet-core-from-zero) — every convenience in it will now read differently, because you can see the plumbing underneath.
 
-You came in seeing a wall of magic. You're leaving able to read it. **Kestrel listens, a pipeline of `RequestDelegate`s processes each request, and the host wires it all together** — that's every .NET web app, and now it's visible to you.
+**Kestrel listens, a pipeline of `RequestDelegate`s processes each request, and the host wires it all together** — that's every .NET web app, and now it's visible to you.
 
 ## Recap
 

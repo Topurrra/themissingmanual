@@ -6,7 +6,7 @@ summary: "Make the get_db yield-dependency real with SQLModel — one class that
 tags: [fastapi, sqlmodel, sqlalchemy, database, orm, session, crud, dependency]
 difficulty: intermediate
 synonyms: ["fastapi sqlmodel tutorial", "fastapi database crud", "fastapi sqlalchemy session", "sqlmodel pydantic sqlalchemy", "fastapi db dependency get_db", "fastapi orm", "fastapi postgres sqlite"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Databases with SQLModel
@@ -17,8 +17,6 @@ injection — but a real service has to *remember* things. [Phase 5](05-dependen
 `get_db` dependency that opened a fake session, handed it to the endpoint, and closed it afterward. This
 phase makes that real: a genuine database, a genuine session, and the four operations every app
 eventually needs — create, read, update, delete.
-
-The pieces snap together cleanly once you see the shape.
 
 ## The mental model: one class, two jobs
 
@@ -31,8 +29,8 @@ Python and it writes the SQL.
 
 If you've met an ORM before — say Java's JPA — the *concepts* transfer almost one-for-one: entities, a
 session/persistence context, lazy loading, the N+1 trap. [Hibernate & JPA From
-Zero](/guides/hibernate-and-jpa-from-zero) covers those ideas in depth and is worth reading because
-they're language-agnostic. SQLModel is the same playbook, Python-flavored.
+Zero](/guides/hibernate-and-jpa-from-zero) covers those ideas in depth. SQLModel is the same playbook,
+Python-flavored.
 
 📝 **SQLModel** — written by Sebastián Ramírez, the same person who wrote FastAPI — sits on top of two
 libraries you'd otherwise wire together by hand:

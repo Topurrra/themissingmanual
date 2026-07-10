@@ -6,16 +6,15 @@ summary: "ASP.NET Core is Microsoft's modern, cross-platform web framework. A re
 tags: [aspnet-core, csharp, dotnet, web, getting-started]
 difficulty: beginner
 synonyms: ["what is asp.net core", "aspnet core first app", "minimal api hello world", "WebApplication CreateBuilder", "dotnet new web", "aspnet core program.cs"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What ASP.NET Core Is & Your First Server
 
 You know [C#](/guides/csharp-from-zero) — classes, records, `async`/`await` — and now you want to put
-something on the web with it. ASP.NET Core is Microsoft's modern web framework: cross-platform (Linux
-and macOS as happily as Windows), fast, and open source. It sits under an enormous share of the world's
-enterprise backends — banks, retailers, government systems. If you write C# on the server, this is the
-framework you'll meet.
+something on the web with it. ASP.NET Core is Microsoft's modern web framework: cross-platform, fast,
+open source, and under an enormous share of the world's enterprise backends. If you write C# on the
+server, this is the framework you'll meet.
 
 The old .NET Framework was Windows-only and ceremony-heavy. This version runs anywhere, and since .NET 6
 it offers **minimal APIs** that let you stand up a working server in a handful of lines — no sprawling
@@ -69,17 +68,15 @@ app.Run();
 ```
 
 *What just happened:* four lines, and that's a complete web server. Top to bottom:
-- `WebApplication.CreateBuilder(args)` creates a **builder** — where the framework wires up
-  configuration (settings and environment variables), logging, and the **dependency injection
-  container** you'll later register services in. `args` are the command-line arguments, passed through
-  so flags can override config.
+- `WebApplication.CreateBuilder(args)` creates a **builder** — wires up configuration, logging, and the
+  **dependency injection container** you'll later register services in. `args` are command-line
+  arguments, passed through so flags can override config.
 - `builder.Build()` takes everything the builder set up and produces the finished `app` — a
-  `WebApplication` object. The builder *configures*; `Build()` *seals it* into a runnable app.
+  `WebApplication`. The builder *configures*; `Build()` *seals it* into a runnable app.
 - `app.MapGet("/", () => "...")` registers an **endpoint**: when a `GET` request arrives for path `/`,
-  run this lambda, your handler. Here it returns a string.
-- `app.Run()` starts **Kestrel** (the server), which begins listening for requests. This call *blocks*
-  — the program parks here, handling requests, until you stop it. Set up anything you need *before*
-  calling `Run()`.
+  run this lambda.
+- `app.Run()` starts **Kestrel** (the server) and begins listening. This call *blocks* — the program
+  parks here handling requests until you stop it. Set up anything you need *before* calling `Run()`.
 
 Now run it:
 
@@ -160,25 +157,21 @@ conventionally wants them. Two endpoints, two return types, zero extra plumbing.
 friends. We lean on those heavily once we build real CRUD (Phases 2 and 6). For now, returning a value
 directly is the quickest way to see data flow.
 
-You've met the whole cast: a **builder** that sets up configuration, logging, and DI; the **`app`** it
-builds; **endpoints** registered with `MapGet`; **Kestrel** started by `app.Run()`; and the **`Product`**
-record we'll grow into a proper API. Next: routing — turning one `/` endpoint into a real set of paths
-with route and query parameters.
+Next: routing — turning one `/` endpoint into a real set of paths with route and query parameters.
 
 ## Recap
 
 - **ASP.NET Core is Microsoft's modern web framework** — cross-platform, fast, open source, and under a
-  huge share of enterprise backends. The modern version is a clean break from old .NET Framework.
-- **The mental model is two pillars:** a request **flows through a middleware pipeline** (Phase 5), and
-  your code **receives services via dependency injection** (Phase 4). Both rest on Kestrel, the server.
-- **A whole app starts in `Program.cs` with minimal APIs.** `WebApplication.CreateBuilder(args)` sets up
-  config, logging, and the DI container; `builder.Build()` produces the `app`; `app.MapGet(...)`
-  registers an endpoint; `app.Run()` starts Kestrel and blocks.
-- **Create and run a project with the CLI:** `dotnet new web -o MyApi` scaffolds it, `dotnet run`
-  compiles and launches it, and `curl` lets you hit your endpoints.
-- **Return type decides the response:** returning a `string` sends text; returning an object
-  auto-serializes to JSON. Use `Results.Ok(...)` / `Results.NotFound()` when you need explicit status.
-- **The running example is a products API**, built on `record Product(int Id, string Name, decimal Price)`.
+  huge share of enterprise backends.
+- **Two pillars:** a request **flows through a middleware pipeline** (Phase 5), and your code
+  **receives services via dependency injection** (Phase 4). Both rest on Kestrel, the server.
+- **A whole app starts in `Program.cs`.** `CreateBuilder(args)` sets up config, logging, and DI;
+  `builder.Build()` produces the `app`; `app.MapGet(...)` registers an endpoint; `app.Run()` starts
+  Kestrel and blocks.
+- **CLI:** `dotnet new web -o MyApi` scaffolds it, `dotnet run` compiles and launches it, `curl` hits it.
+- **Return type decides the response:** a `string` sends text; an object auto-serializes to JSON. Use
+  `Results.Ok(...)` / `Results.NotFound()` for explicit status.
+- **Running example:** a products API, built on `record Product(int Id, string Name, decimal Price)`.
 
 ## Quick check
 

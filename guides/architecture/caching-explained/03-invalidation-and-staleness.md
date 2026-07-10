@@ -6,18 +6,18 @@ summary: "Caches hold copies, so the copy can drift from the truth — that's st
 tags: [caching, cache-invalidation, staleness, ttl, eviction, lru, write-through, cache-aside]
 difficulty: intermediate
 synonyms: ["what is cache invalidation", "why is my cache stale", "what is a ttl", "what is cache eviction", "what is lru", "write-through vs cache-aside", "when not to cache", "why is old data showing", "cache showing wrong data"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Hard Part — Invalidation & Staleness
 
-Everything so far has been the friendly half of caching: keep a copy, serve it fast. This phase is the half that bites. A user updates their profile and the old name keeps showing. A price changes but checkout shows the old one. You deploy a fix and half your users still see the bug. Every one of these is the same problem, and it follows directly from the one idea you've been holding since Phase 1: **the cache holds a copy, but the truth lives elsewhere.** The moment the truth changes, every copy of the old answer becomes a lie waiting to be served.
+Everything so far has been the friendly half of caching: keep a copy, serve it fast. This phase is the half that bites. A user updates their profile and the old name keeps showing. A price changes but checkout shows the old one. You deploy a fix and half your users still see the bug. Every one of these follows from the idea you've held since Phase 1: **the cache holds a copy, but the truth lives elsewhere.** The moment the truth changes, every copy of the old answer becomes a lie waiting to be served.
 
-⚠️ There's a famous line in software, attributed to Phil Karlton: *"There are only two hard things in Computer Science: cache invalidation and naming things."* It's a joke, but it's pointing at something real. Keeping a copy is trivial. Knowing *when the copy has gone wrong and must be thrown away* — that's the hard part, and it's why caching causes as many bugs as it prevents.
+⚠️ Phil Karlton's famous line — *"There are only two hard things in Computer Science: cache invalidation and naming things"* — is a joke pointing at something real. Keeping a copy is trivial. Knowing *when the copy has gone wrong and must be thrown away* is the hard part, and it's why caching causes as many bugs as it prevents.
 
 ## Staleness: when the copy and the truth disagree
 
-**What it actually is.** *Staleness* is when a cache serves a copy of an answer that's no longer true, because the underlying data changed but the cached copy didn't. The cache isn't broken — it's doing exactly its job, faithfully serving the answer it was told to remember. It just wasn't told the answer expired.
+**What it actually is.** *Staleness* is when a cache serves a copy that's no longer true, because the underlying data changed but the cached copy didn't. The cache isn't broken — it's doing exactly its job, faithfully serving the answer it was told to remember. It just wasn't told the answer expired.
 
 ```text
    Time 1:  DB says name = "Sam"     Cache stores "Sam"     ✓ copy matches truth
@@ -26,9 +26,9 @@ Everything so far has been the friendly half of caching: keep a copy, serve it f
    Time 3:  request comes in → cache HIT → serves "Sam"     ← the bug
 ```
 
-*What just happened:* Between Time 1 and Time 2 the truth changed in the database, but nothing told the cache. So at Time 3 the cache does what a cache does — returns its copy on a hit — and that copy is now wrong. No error, no crash. Just an old answer served confidently. This is the entire category of "why is it showing the old value" bugs.
+*What just happened:* between Time 1 and Time 2 the truth changed in the database, but nothing told the cache. At Time 3 the cache does what a cache does — returns its copy on a hit — and that copy is now wrong. No error, no crash. Just an old answer served confidently. This is the entire category of "why is it showing the old value" bugs.
 
-📝 **Terminology.** *Cache invalidation* is the act of telling a cache "this copy is no longer trustworthy — throw it away (or refresh it)." Good caching is mostly about getting invalidation right: making sure stale copies get removed before they're served. The reason it's hard is that the code that *changes the truth* often lives far away from the code that *holds the copy*, and they have to stay in sync.
+📝 **Terminology.** *Cache invalidation* is the act of telling a cache "this copy is no longer trustworthy — throw it away (or refresh it)." Good caching is mostly about getting invalidation right, and it's hard because the code that *changes the truth* often lives far from the code that *holds the copy*, and the two have to stay in sync.
 
 ## TTL: let copies expire on a timer
 
@@ -42,15 +42,13 @@ Everything so far has been the friendly half of caching: keep a copy, serve it f
    t=70s  request → MISS    (past 60s, copy expired → re-fetch the truth)
 ```
 
-**What it does in real life.** A TTL is a deliberate trade: it caps *how stale* a copy can ever be. A 60-second TTL means "I accept showing data up to a minute old, in exchange for not hammering the database every request." You're not eliminating staleness — you're putting a ceiling on it and choosing where that ceiling sits.
+**What it does in real life.** A TTL caps *how stale* a copy can ever be. A 60-second TTL means "I accept showing data up to a minute old, in exchange for not hammering the database every request." There's no universal right number, just the right number *for this data's tolerance for being wrong* — stock prices might tolerate seconds, a "most popular articles" list an hour, a bank balance none at all.
 
-💡 **Key point.** Choosing a TTL is choosing how much staleness you can tolerate for this specific data. Stock prices might tolerate seconds; a "most popular articles" list might happily be an hour stale; a user's bank balance, none at all. There's no universal right number — there's the right number *for this data's tolerance for being wrong.*
-
-⚠️ **Gotcha.** A long TTL hides bugs in slow motion. You fix data in the database, refresh the page, and it's still wrong — so you assume your fix failed and start debugging code that's already correct. Always ask "is there a TTL between me and the truth?" before you conclude a change didn't work. Often the change *did* work; you're just looking at a copy that hasn't expired yet.
+⚠️ **Gotcha.** A long TTL hides bugs in slow motion. You fix data in the database, refresh the page, and it's still wrong — so you assume your fix failed and start debugging code that's already correct. Always ask "is there a TTL between me and the truth?" before concluding a change didn't work.
 
 ## Eviction: caches are small, so old copies get pushed out
 
-**What it actually is.** A cache lives in fast, limited space (RAM is smaller and pricier than disk). It can't keep every copy forever, so when it fills up it must throw something out to make room. *Eviction* is that process — removing a copy to free space, separate from expiry. A TTL removes a copy because it got *old*; eviction removes a copy because the cache is *full*.
+**What it actually is.** A cache lives in fast, limited space (RAM is smaller and pricier than disk), so when it fills up it must throw something out to make room. *Eviction* is that process — separate from expiry. A TTL removes a copy because it got *old*; eviction removes a copy because the cache is *full*.
 
 **The common strategy: LRU.** The usual rule is *LRU* — "least recently used." When space is needed, evict the copy that hasn't been touched in the longest time, on the bet that what you haven't used lately you're least likely to need next.
 
@@ -62,11 +60,11 @@ Everything so far has been the friendly half of caching: keep a copy, serve it f
                                               └─ evicted to make room
 ```
 
-**Why this saves you later.** LRU explains a confusing symptom: a cache that "randomly" misses on data you *did* cache. It wasn't random — that copy was evicted because the cache filled up and it was the coldest thing in there. If your hit rate is mysteriously low, the cache may be too small to hold your working set, evicting copies before they get reused. That's a sizing problem, not a logic bug.
+**Why this saves you later.** LRU explains a confusing symptom: a cache that "randomly" misses on data you *did* cache. It wasn't random — that copy was evicted because the cache filled up and it was the coldest thing in there. A mysteriously low hit rate often means the cache is too small for your working set, evicting copies before they get reused — a sizing problem, not a logic bug.
 
 ## Two strategies for keeping copies honest
 
-When the truth changes, *something* has to keep the cache in line. Two patterns cover most real systems. Here they are honestly, side by side.
+When the truth changes, *something* has to keep the cache in line. Two patterns cover most real systems.
 
 | | **Cache-aside (lazy)** | **Write-through** |
 |---|---|---|
@@ -76,20 +74,18 @@ When the truth changes, *something* has to keep the cache in line. Two patterns 
 | **Strength** | Simple; cache only ever holds things actually requested | Cache and DB stay in sync on every write; fewer stale windows |
 | **Weakness** | A window of staleness if invalidation is missed or races a read | More write-time work; you cache things that may never be read |
 
-**Cache-aside** is the most common pattern, and it's the `cache.get` / `cache.set` flow from Phase 1, plus one rule: *when you change the truth, invalidate the copy.* The discipline is remembering that delete-on-write everywhere the data can change.
+**Cache-aside** is the most common pattern — the `cache.get` / `cache.set` flow from Phase 1, plus one rule: *when you change the truth, invalidate the copy.* The discipline is remembering that delete-on-write everywhere the data can change. **Write-through** keeps the cache updated as part of writing, so a read right after a write sees the new value — trading extra work on every write for fewer stale moments.
 
-**Write-through** keeps the cache updated as part of writing, so a read right after a write sees the new value. It trades extra work on every write for fewer stale moments.
-
-⚠️ **Gotcha.** Neither pattern removes the danger; they relocate it. With cache-aside, the bug is *forgetting to invalidate* — one code path updates the database but doesn't clear the copy, and that field goes stale forever until its TTL (if it has one) saves you. With write-through, a write that updates the DB but fails partway can leave the cache and DB disagreeing. The hard part stays hard; you're choosing which failure shape you'd rather debug.
+⚠️ **Gotcha.** Neither pattern removes the danger; they relocate it. With cache-aside, the bug is *forgetting to invalidate* — one code path updates the database but doesn't clear the copy, and that field goes stale forever until its TTL (if it has one) saves you. With write-through, a write that updates the DB but fails partway can leave the cache and DB disagreeing. You're choosing which failure shape you'd rather debug.
 
 ## When *not* to cache
 
-Caching is so reflexive that it's worth saying plainly: sometimes the right amount of caching is none. Skip it (or be very careful) when:
+Sometimes the right amount of caching is none. Skip it (or be very careful) when:
 
-- **The data must always be correct, to the moment.** Account balances, inventory counts at checkout, anything where showing a stale value causes real harm. Here the cost of being wrong outweighs the speed.
-- **The data is barely reused.** Per-user, per-request, one-off answers (Phase 1's lesson): no repetition, no payoff — only the overhead and the staleness risk.
-- **It changes far more than it's read.** If something is rewritten constantly but rarely read, you'll spend more effort invalidating copies than you ever save serving them.
-- **The underlying work is already cheap and fast.** Caching a query that's already instant adds a layer to keep honest in exchange for a saving you won't notice. Measure first — and if the slow thing is a database query, [Why Is My Query Slow?](/guides/why-is-my-query-slow) is often the better fix than a cache papering over it.
+- **The data must always be correct, to the moment.** Account balances, inventory counts at checkout — anywhere a stale value causes real harm.
+- **The data is barely reused.** Per-user, per-request, one-off answers (Phase 1's lesson): no repetition, no payoff — only overhead and staleness risk.
+- **It changes far more than it's read.** You'll spend more effort invalidating copies than you ever save serving them.
+- **The underlying work is already cheap and fast.** Caching something already instant adds a layer to keep honest for a saving you won't notice. Measure first — and if the slow thing is a database query, [Why Is My Query Slow?](/guides/why-is-my-query-slow) is often the better fix than a cache papering over it.
 
 💡 **Key point.** A cache is a deliberate trade: speed and load relief in exchange for the *risk and effort of keeping copies honest*. When the data tolerates being a little old and gets read repeatedly, that trade is a clear win. When it must be exact, or is rarely reused, you're paying the cost of caching for none of the benefit. Decide on purpose, not by reflex.
 
@@ -102,7 +98,7 @@ Caching is so reflexive that it's worth saying plainly: sometimes the right amou
 5. **Cache-aside vs. write-through** are the two main ways to keep copies honest — one invalidates on write, the other updates on write — and each relocates the danger rather than removing it.
 6. **Don't cache** data that must be exact, is barely reused, changes more than it's read, or is already fast. Caching is a trade; make it on purpose.
 
-You now hold the whole idea: a cache is a copy of an expensive answer kept somewhere fast (Phase 1), those copies live stacked from the browser to the database (Phase 2), and the real work is keeping each copy honest with the truth (Phase 3). That last part is why the old joke survives — and why, the next time something shows the wrong value, your first thought will be the right one: *which layer is holding a stale copy?*
+You now hold the whole idea: a cache is a copy of an expensive answer kept somewhere fast (Phase 1), those copies live stacked from the browser to the database (Phase 2), and the real work is keeping each copy honest with the truth (Phase 3). That's why the old joke survives — and why, the next time something shows the wrong value, your first thought will be the right one: *which layer is holding a stale copy?*
 
 **Related:** [Why Is My Query Slow?](/guides/why-is-my-query-slow) · [Designing for Scale](/guides/designing-for-scale)
 

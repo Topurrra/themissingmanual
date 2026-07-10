@@ -6,25 +6,25 @@ summary: "if/else lets a program branch on a condition, loops repeat work withou
 tags: [programming, beginner, python, if-else, loops, functions, control-flow]
 difficulty: beginner
 synonyms: ["how does if else work", "what is a loop in programming", "what is a function", "how to write a function in python", "for loop python beginner", "branching and looping explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Making Decisions & Reusing Work: Control Flow & Functions
 
 So far your programs have been a straight line: the computer starts at the top, runs each instruction
 once, and reaches the bottom. That's enough to *calculate*, but not enough to *behave*. Real programs do
-different things in different situations, repeat work without you copying it out by hand, and reuse the
-same logic in many places.
+different things in different situations, repeat work without copy-pasting it, and reuse the same logic
+in many places.
 
-Three ideas unlock all of that, and together they're what turn a list of instructions into a real
-program: **`if`/`else`** (choosing), **loops** (repeating), and **functions** (reusing). The last one is
-the most important thing you'll learn as a beginner - we've saved it for the end on purpose.
+Three ideas unlock all of that: **`if`/`else`** (choosing), **loops** (repeating), and **functions**
+(reusing). The last one is the most important thing you'll learn as a beginner - saved for the end on
+purpose.
 
 ## Making decisions with `if` / `else`
 
 **What `if` actually is.** `if` lets the computer choose. You give it a condition - a question that comes
-out `True` or `False` (remember comparison operators from [Phase 2](02-building-blocks.md)) - and a block
-of instructions. The computer runs that block **only if** the condition is `True`. If it's `False`, it
+out `True` or `False` (comparison operators, from [Phase 2](02-building-blocks.md)) - and a block of
+instructions. The computer runs that block **only if** the condition is `True`; if it's `False`, it
 skips the block.
 
 ```python runnable
@@ -42,22 +42,21 @@ It's hot out. Drink water.
 If `temperature` had been `20`, the condition would be `False`, the indented line would be skipped, and
 the program would print nothing at all.
 
-Two pieces of grammar are doing real work here, and they confuse beginners until someone points them
-out:
+Two pieces of grammar are doing real work here, and they confuse beginners until someone points them out:
 
 - **The colon (`:`)** at the end of the `if` line means "here comes the block of instructions that
   belongs to this `if`."
 - **The indentation** (the spaces before `print`) is how Python knows which lines are *inside* the `if`.
-  Indented lines belong to the `if`; un-indented lines come after it and run regardless.
+  Indented lines belong to it; un-indented lines come after and run regardless.
 
-📝 **Terminology.** This whole family of features - `if`, loops, functions - is called **control flow**,
+📝 **Terminology.** This family of features - `if`, loops, functions - is called **control flow**,
 because it controls the *flow* of execution: which instructions run, in what order, how many times.
 Plain top-to-bottom is one path; control flow lets you branch off it.
 
 ### `else` and `elif`: the other paths
 
 `if` alone handles "do this when true, otherwise do nothing." Often you want "do this, *otherwise* do
-that." That's `else`. And for more than two paths, `elif` ("else if") checks another condition:
+that" - that's `else`. For more than two paths, `elif` ("else if") checks another condition:
 
 ```python runnable
 score = 72
@@ -76,9 +75,9 @@ else:
 Grade: B
 ```
 
-That "first match wins, then stop" behavior is the whole point: exactly one of the branches runs, never
-two. Order them carefully - if you'd checked `>= 70` before `>= 90`, a 95 would match the `>= 70` branch
-first and never reach the A.
+That "first match wins, then stop" behavior is the whole point: exactly one branch runs, never two. Order
+them carefully - if you'd checked `>= 70` before `>= 90`, a 95 would match the `>= 70` branch first and
+never reach the A.
 
 ## Repeating work with loops
 
@@ -86,8 +85,8 @@ first and never reach the A.
 printing the numbers 1 through 5 means writing five `print` lines. With a loop, you write the instruction
 once and tell the computer how many times to do it.
 
-The most common loop, the `for` loop, walks through a sequence of values, running its block once for each
-one:
+The most common loop, the `for` loop, walks through a sequence of values, running its block once per
+value:
 
 ```python runnable
 for number in range(1, 6):
@@ -110,11 +109,11 @@ lines are what gets repeated.
 
 ⚠️ **Gotcha: `range(1, 6)` stops *before* `6`, not at it.** This catches everyone. `range(start, stop)`
 includes `start` but excludes `stop` - so `range(1, 6)` gives you 1 through 5, and `range(0, 3)` gives
-you 0, 1, 2. If you want the numbers 1 through 10, you write `range(1, 11)`. The "stops before the end"
-rule shows up all over programming; meet it now and it'll surprise you less later.
+you 0, 1, 2. Want 1 through 10? Write `range(1, 11)`. The "stops before the end" rule shows up all over
+programming; meet it now and it'll surprise you less later.
 
-Loops aren't only for counting. Their real value is doing real work many times. Here we add up a list of
-numbers:
+Loops aren't just for counting - their real value is doing real work many times. Here's summing a list
+of numbers:
 
 ```python runnable
 prices = [10, 25, 5]
@@ -123,9 +122,9 @@ for price in prices:
     total = total + price
 print(total)
 ```
-*What just happened:* We started with `total` at `0`. The loop ran once for each value in `prices`: it
-took `10` and set `total` to `0 + 10` = `10`; then `25`, making `total` `35`; then `5`, making it `40`.
-After the loop finished, we printed the final `total`:
+*What just happened:* Starting with `total` at `0`, the loop ran once per value in `prices`: `10` makes
+`total` `10`, then `25` makes it `35`, then `5` makes it `40`. After the loop finished, we printed the
+final `total`:
 
 ```console
 40
@@ -136,21 +135,21 @@ variable. Lists are how programs hold "many things," and looping over them is ho
 things one by one. (Lists have a lot more to them; that's a topic for
 [Data Structures Explained](/guides/data-structures-explained).)
 
-💡 **Key point.** A loop is the cure for copy-paste. Any time you notice you'd be writing nearly the same
-line over and over, that's a loop waiting to happen. Write the work once; let the loop repeat it.
+💡 **Key point.** A loop is the cure for copy-paste. Any time you'd be writing nearly the same line over
+and over, that's a loop waiting to happen. Write the work once; let the loop repeat it.
 
 ## Functions: the most powerful idea you'll learn
 
-Here it is - the idea that does more for a beginner than any other. Stay with this one.
+Here it is - the idea that does more for a beginner than any other.
 
 **What a function actually is.** A function is a named, reusable block of instructions. You define it
 once, giving it a name and the steps it should perform. Then, anywhere you want those steps to run, you
-**call** the function by its name - and the computer jumps to the block, runs it, and comes back. You
-already met one: `print` is a function someone else wrote, that you call. Now you'll write your own.
+**call** the function by its name, and the computer jumps to the block, runs it, and comes back. You
+already met one: `print` is a function someone else wrote that you call. Now you'll write your own.
 
-Why does this matter so much? Because it lets you name a piece of work and reuse it without repeating
-yourself. Think of a function as a recipe card: written once, followed any number of times, by anyone,
-without re-explaining the steps.
+Why does this matter so much? It lets you name a piece of work and reuse it without repeating yourself.
+Think of a function as a recipe card: written once, followed any number of times, without re-explaining
+the steps.
 
 ```python runnable
 def greet():
@@ -174,11 +173,11 @@ Welcome to the program.
 📝 **Terminology.** `def` (short for "define") starts a function definition. The name is followed by
 parentheses `()` and a colon, and the indented lines beneath are the function's **body** - the
 instructions it runs when called. Defining ≠ running: the body only runs when you *call* the function by
-writing its name with parentheses.
+name with parentheses.
 
 ### Inputs and outputs: parameters and `return`
 
-A function that does the exact same thing every time is useful, but the real power comes from feeding it
+A function that does the exact same thing every time is useful, but the real power is feeding it
 **inputs** and getting a **result** back.
 
 - An **input** is a value you hand the function when you call it (an *argument*, like the text you give
@@ -204,19 +203,19 @@ stored in `answer` and printed:
 
 `return` is the function's way of *answering*. When the computer hits `return`, it stops the function
 immediately and sends that value back to whoever called it. A function with `return` can be used anywhere
-you'd use a value - you can store it, print it, compare it, or feed it into another function.
+you'd use a value - stored, printed, compared, or fed into another function.
 
 ⚠️ **Gotcha: `print` and `return` are not the same thing, and confusing them is extremely common.**
 `print` puts text on the screen for a *human* to read and hands nothing back to the program. `return`
 gives a value back to the *program* so it can keep using it, and puts nothing on the screen. A function
-that `print`s its answer but doesn't `return` it can't have its answer used in the next calculation -
-the value was shown and then thrown away. When a function "works when I print inside it but breaks when I
-try to use the result," this is almost always why.
+that `print`s its answer but doesn't `return` it can't have that answer used in the next calculation -
+it was shown and then thrown away. When a function "works when I print inside it but breaks when I try
+to use the result," this is almost always why.
 
 ## Putting it all together
 
-Here's a tiny but complete program that uses every idea from this guide at once. Read it top to bottom,
-the way the computer does, and you should be able to follow every line:
+Here's a tiny but complete program using every idea from this guide at once. Read it top to bottom, the
+way the computer does - you should be able to follow every line:
 
 ```python runnable
 def grade_for(score):
@@ -232,9 +231,9 @@ for score in scores:
     letter = grade_for(score)
     print(score, "->", letter)
 ```
-*What just happened:* We defined a function `grade_for` that takes a `score`, uses `if`/`elif`/`else` to
-decide a letter grade, and `return`s it. Then we made a list of three scores and looped over them - for
-each one, we called `grade_for`, stored the returned letter, and printed the score next to its grade:
+*What just happened:* `grade_for` takes a `score`, uses `if`/`elif`/`else` to decide a letter grade, and
+`return`s it. We made a list of three scores and looped over them - for each one, called `grade_for`,
+stored the returned letter, and printed the score next to its grade:
 
 ```console
 95 -> A
@@ -243,23 +242,22 @@ each one, we called `grade_for`, stored the returned letter, and printed the sco
 ```
 
 Look at what's working together: a **variable** holds each score; **types** (numbers, strings, the
-booleans the comparisons produce) flow through it; **operators** (`>=`) ask the questions; **`if`/`elif`/
-`else`** chooses the path; a **loop** repeats the work for every score; and a **function** bundles the
-grading logic so it's written once and reused three times. That's not a toy - that's the shape of real
-programs. Bigger ones are this, repeated and combined.
+booleans the comparisons produce) flow through it; **operators** (`>=`) ask the questions;
+**`if`/`elif`/`else`** chooses the path; a **loop** repeats the work for every score; and a **function**
+bundles the grading logic so it's written once and reused three times. That's not a toy - that's the
+shape of real programs. Bigger ones are this, repeated and combined.
 
 ## You can now read most code
 
-Take a breath, because you've crossed a real line. The five ideas you now hold - values in variables,
-their types, operators to combine them, control flow to choose and repeat, and functions to reuse - are
-the load-bearing structure of *every* program. Languages differ in their punctuation and their
-vocabulary, but open almost any codebase and you'll see these same five things arranged in different
-patterns.
+Take a breath - you've crossed a real line. The five ideas you now hold - values in variables, their
+types, operators to combine them, control flow to choose and repeat, and functions to reuse - are the
+load-bearing structure of *every* program. Languages differ in punctuation and vocabulary, but open
+almost any codebase and you'll see these same five things arranged differently.
 
 You won't understand every line of every program yet - there's plenty more (lists and dictionaries in
-depth, working with files, organizing big programs with classes). But you can now read a block of code,
-trace what it does line by line, and reason about it instead of fearing it. That's the skill. Everything
-else is more vocabulary built on this exact grammar.
+depth, files, organizing big programs with classes). But you can now read a block of code, trace what it
+does line by line, and reason about it instead of fearing it. That's the skill - everything else is more
+vocabulary built on this exact grammar.
 
 ## Recap
 

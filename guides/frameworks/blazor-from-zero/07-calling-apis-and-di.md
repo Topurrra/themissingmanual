@@ -6,7 +6,7 @@ summary: "Inject collaborators into components with @inject, register services i
 tags: [blazor, csharp, dependency-injection, httpclient, api]
 difficulty: advanced
 synonyms: ["blazor inject", "blazor httpclient", "blazor call api", "GetFromJsonAsync", "blazor dependency injection", "blazor http service"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Calling APIs & Dependency Injection
@@ -16,7 +16,7 @@ re-rendered when it changed. Real apps aren't like that. A component needs *coll
 something that fetches data, talks to a backend, logs an error. This phase is about how a
 component **gets** those collaborators and how it **reaches a server** to load real data.
 
-Here's the whole chapter in one mental model, so the rest is detail:
+Here's the whole chapter in one mental model — the rest is detail:
 
 - **Components don't build their own dependencies — they ask for them.** A component declares
   "I need a data service" and Blazor hands it one. That's **dependency injection (DI)**, and
@@ -44,8 +44,8 @@ var service = new ProductService(http);
 ```
 
 The problem: the component is now welded to those concrete types. You can't swap the service
-for a fake one in a test, you can't configure the `HttpClient` in one place, and every
-component that needs products repeats this wiring.
+for a fake one in a test, can't configure the `HttpClient` in one place, and every component
+that needs products repeats this wiring.
 
 DI flips it. You register your services **once**, centrally, and components *ask* for
 what they need. Blazor's container constructs them, wires up their own dependencies, and hands
@@ -53,7 +53,7 @@ the finished object over. The component never says `new` — it says "give me on
 
 This is the same `IServiceProvider` container ASP.NET Core uses, with the same lifetimes
 (`Scoped`, `Singleton`, `Transient`). If DI in ASP.NET Core already clicked for you, you
-already understand Blazor's DI.
+already understand Blazor's.
 
 ## Registering services and injecting them
 
@@ -66,8 +66,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 
 *What just happened:* you told the container "whenever something asks for an `IProductService`,
 build a `ProductService` and reuse it for the lifetime of this scope." Registering against the
-**interface** (`IProductService`) is the move that makes the component swappable later — it
-depends on the contract, not the concrete class.
+**interface** is the move that makes the component swappable later — it depends on the
+contract, not the concrete class.
 
 Now a component asks for it with the **`@inject`** directive at the top of the `.razor` file:
 
@@ -96,9 +96,9 @@ Now a component asks for it with the **`@inject`** directive at the top of the `
 
 *What just happened:* `@inject IProductService Products` declares a property named `Products`
 that Blazor fills in before the component renders. By the time `OnInitializedAsync` runs (the
-load-your-data hook from [Phase 4](04-events-and-lifecycle.md)), `Products` is ready to use.
-Notice the component calls `Products.GetAllAsync()` — it has no idea there's an `HttpClient`
-behind it. That's the whole point.
+load-your-data hook from [Phase 4](04-events-and-lifecycle.md)), `Products` is ready to use. The
+component calls `Products.GetAllAsync()` — it has no idea there's an `HttpClient` behind it,
+which is the whole point.
 
 If you prefer attributes over the directive (handy in a code-behind file or a base class), the
 equivalent inside `@code` is:
@@ -109,13 +109,11 @@ public IProductService Products { get; set; } = default!;
 ```
 
 *What just happened:* `[Inject]` does the same job as `@inject` — Blazor sets this property
-after constructing the component. The `= default!` quiets the nullable-reference compiler
-warning: you're promising "Blazor will set this, trust me," since DI assigns it before any of
-your code runs.
+after constructing the component. `= default!` quiets the nullable-reference compiler warning,
+since DI assigns it before any of your code runs.
 
 > 💡 `@inject` is the directive form (top of the markup); `[Inject]` is the attribute form
-> (inside `@code`). Same mechanism, pick whichever reads better where you are. There's no
-> behavioral difference.
+> (inside `@code`). Same mechanism, no behavioral difference — pick whichever reads better.
 
 ## Calling an API with HttpClient
 
@@ -164,11 +162,10 @@ else
 ```
 
 *What just happened:* `GetFromJsonAsync<List<Product>>("api/products")` fires a GET to
-`api/products`, reads the JSON array that comes back, and deserializes it into a
-`List<Product>`. Because the call is `await`ed inside `OnInitializedAsync`, the component
-renders **once before** the data arrives (`products` is still `null`, so the reader sees
-"Loading products..."), then re-renders when it lands. The `null`-as-loading-state pattern is
-the same one you learned for the lifecycle — it carries straight over here.
+`api/products`, reads the JSON array, and deserializes it into a `List<Product>`. Because the
+call is `await`ed inside `OnInitializedAsync`, the component renders **once before** the data
+arrives (`products` is still `null`, so the reader sees "Loading products..."), then re-renders
+when it lands — the same `null`-as-loading-state pattern from the lifecycle phase.
 
 Creating a product is the write side. A small form POSTs a new product, then refreshes the list:
 
@@ -204,7 +201,7 @@ Creating a product is the write side. A small form POSTs a new product, then ref
 to JSON and POSTs it. After it returns, we re-fetch the list so the new item shows up, then
 clear the inputs. Setting `isSaving` around the `await` gives the reader feedback and disables
 the button so a double-click can't double-submit — Blazor re-renders before the `await` (button
-shows "Saving...") and again after it resumes (button re-enabled, list refreshed).
+shows "Saving...") and again after it resumes (re-enabled, list refreshed).
 
 ## ⚠️ WebAssembly vs Server: where the HttpClient call comes from
 
@@ -225,8 +222,8 @@ builder.Services.AddScoped(sp => new HttpClient
 *What just happened:* every component that injects `HttpClient` gets one pointed at your app's
 base URL, and requests originate from the user's browser. ⚠️ Because it's a real browser
 request to (potentially) a different origin, **CORS applies** — if your API is on a different
-domain/port, the API must send the right CORS headers or the browser will block the call.
-That's a server-side configuration on the API, not something the Blazor component can fix.
+domain/port, it must send the right CORS headers or the browser blocks the call. That's a
+server-side configuration on the API, not something the Blazor component can fix.
 
 **Blazor Server** — the C# runs *on the server*. There's no browser making the request, so
 there's **no browser-CORS issue**. The idiomatic approach here is a typed client registered via
@@ -243,8 +240,8 @@ builder.Services.AddHttpClient<IProductService, ProductService>(client =>
 
 *What just happened:* `AddHttpClient<IProductService, ProductService>` registers
 `ProductService` **and** injects a properly-configured `HttpClient` into its constructor — one
-call wires up both. Because the request runs server-to-server, the browser's CORS policy never
-enters the picture.
+call wires up both. Because the request runs server-to-server, browser CORS policy never enters
+the picture.
 
 > ⚠️ The trap is copying a WASM `HttpClient` registration into a Server app (or vice versa) and
 > being surprised. The rule of thumb: **WASM** = `HttpClient` with `BaseAddress`, mind CORS;
@@ -278,9 +275,9 @@ public class ProductService : IProductService
 ```
 
 *What just happened:* the `HttpClient` and the API URLs now live in exactly one place. The
-constructor takes an `HttpClient` — which DI injects automatically, because you registered the
+constructor takes an `HttpClient`, which DI injects automatically because you registered the
 client alongside the service. Components go back to the clean form from earlier: inject
-`IProductService`, call `Products.GetAllAsync()`, and stay blissfully unaware of HTTP.
+`IProductService`, call `Products.GetAllAsync()`, and stay unaware of HTTP.
 
 Why this is worth the extra interface:
 
@@ -292,8 +289,7 @@ Why this is worth the extra interface:
 
 This is the same dependency-inversion idea ASP.NET Core leans on everywhere — your components
 depend on the `IProductService` *contract*, and DI decides which concrete implementation
-satisfies it. The API on the other end is an ASP.NET Core service; if you haven't built that
-side, [ASP.NET Core From Zero](/guides/aspnet-core-from-zero) is its companion guide.
+satisfies it. If you haven't built the API side, [ASP.NET Core From Zero](/guides/aspnet-core-from-zero) is its companion guide.
 
 ## Recap
 

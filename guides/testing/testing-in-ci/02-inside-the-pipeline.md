@@ -6,15 +6,15 @@ summary: "A CI run checks out your code on a clean machine, installs dependencie
 tags: [testing, ci, github-actions, pipeline, ci-config, matrix-testing]
 difficulty: intermediate
 synonyms: ["what does a ci run do", "github actions test workflow example", "what is a ci pipeline step", "how to run tests on github actions", "what is a build matrix", "ci run log explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Inside the Pipeline
 
 You know *what* CI is now: a server that runs your tests on a clean machine. This phase opens the hood
-and walks through *what a single run actually does*, step by step - and then shows you the file that
-tells it to do that. The goal isn't to make you a CI-config expert; it's so that when a run fails, you
-can read the log and know which step broke and why.
+and walks through *what a single run actually does*, step by step, then shows you the file that tells it
+to do that. The goal isn't to make you a CI-config expert; it's so that when a run fails, you can read
+the log and know which step broke and why.
 
 ## What one run does, in order
 
@@ -38,8 +38,8 @@ In GitHub Actions specifically, the file that defines all this is a **workflow**
 
 **Why the early steps matter for testing.** Steps 1–3 are setup, but they're where a surprising number
 of "test failures" actually come from. If *install* fails - a dependency that no longer exists, a
-version conflict - the run goes red before a single test executes. That's not a broken test; it's a
-broken environment. Reading the log top to bottom tells you which it is.
+version conflict - the run goes red before a single test executes. That's a broken environment, not a
+broken test. Reading the log top to bottom tells you which it is.
 
 ## Failing the build, and fast feedback
 
@@ -96,7 +96,7 @@ jobs:
 
 *What just happened:* This file tells GitHub, "on every push or pull request, spin up a clean Ubuntu
 machine, put Node 20 on it, install exactly the dependencies the lockfile pins, check the code style,
-then run the test suite." The `test` job goes green only if **every** `run` step exits successfully. If
+then run the test suite." The `test` job goes green only if **every** step exits successfully. If
 `npm test` reports a single failing test, that step fails, the job fails, and the PR's check turns red.
 
 ⚠️ **Gotcha.** Notice `npm ci`, not `npm install`. `npm ci` installs *exactly* what's pinned in
@@ -158,9 +158,9 @@ Error: Process completed with exit code 1.
 
 *What just happened:* One test - `applies promo code to subtotal` - expected `90` but got `100`. Jest
 reported it, then exited with code `1` (the universal "I failed" signal). CI saw the non-zero exit code,
-marked the step failed, failed the job, and turned the PR red. Crucially, **the log tells you exactly
-which test, what it expected, what it got, and the file and line.** You don't have to guess - you
-re-run that one test locally and start there.
+marked the step failed, failed the job, and turned the PR red. **The log tells you exactly which test,
+what it expected, what it got, and the file and line** - you don't have to guess, just re-run that one
+test locally.
 
 📝 **Terminology.** An **exit code** is the number a command returns when it finishes: `0` means
 success, anything else means failure. This is how CI knows whether a step passed without understanding
@@ -202,8 +202,8 @@ keeping the suite fast in [Phase 3](03-keeping-ci-trustworthy.md).
 
 **Why this saves you later.** When a matrix run is red on `windows-latest` but green on `ubuntu-latest`,
 you've learned something specific and valuable for free: your code has an OS-specific assumption (a file
-path, a line ending, a case-sensitive import). That's a bug a single-machine setup would have shipped to
-a Windows user to discover the hard way.
+path, a line ending, a case-sensitive import) - a bug a single-machine setup would have shipped to a
+Windows user to discover the hard way.
 
 ## Recap
 

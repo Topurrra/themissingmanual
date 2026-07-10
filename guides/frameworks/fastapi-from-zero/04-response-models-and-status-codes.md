@@ -6,7 +6,7 @@ summary: "Shape what your endpoints return with response_model, split input from
 tags: [fastapi, response-model, status-code, serialization, http-status, pydantic, output-filtering]
 difficulty: intermediate
 synonyms: ["fastapi response_model", "fastapi status code", "fastapi hide field response", "fastapi input vs output model", "fastapi 201 created", "fastapi serialization", "fastapi response schema"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Response Models & Status Codes
@@ -20,7 +20,7 @@ Think of an endpoint as having two contracts. The **input contract** is what a c
 you (a new book's title and author — but not its database id, and definitely not your private notes
 about it). The **output contract** is what you promise to hand back (the id you assigned, the public
 fields — but again, not your private notes). Those two contracts are *different*, so they deserve
-*different models*. Everything in this phase is just FastAPI giving you a clean way to declare both.
+*different models* — this phase is FastAPI's clean way to declare both.
 
 ## `response_model` — declaring the shape of what you return
 
@@ -58,9 +58,8 @@ actually sees. `/docs` now shows the precise response schema, so the documentati
 reality.
 
 💡 The return type annotation (`def get_book(...) -> BookPublic:`) works too and is increasingly the
-preferred style. `response_model=` is shown here because it's explicit, still extremely common in real
-code, and has a couple of extra powers (like `response_model=None` to opt out). Pick one; don't use both on
-the same endpoint with conflicting types.
+preferred style. `response_model=` is shown here because it's explicit and has a couple of extra powers
+(like `response_model=None` to opt out). Pick one; don't use both on the same endpoint with conflicting types.
 
 ## Input vs output models — the key pattern
 

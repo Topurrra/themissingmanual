@@ -8,7 +8,7 @@ category: apis
 order: 7
 difficulty: intermediate
 synonyms: ["what is a webhook", "how do webhooks work", "what is a message queue", "webhooks vs message queue", "async integration between services", "how to verify a webhook signature", "what is a dead letter queue", "at least once delivery"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Webhooks & Message Queues
@@ -22,9 +22,9 @@ good answer for "later," and that's the gap this guide fills.
 There are two tools for "later," and people constantly confuse them. A **webhook** is how *another
 company's* system tells *yours* that something happened, by calling a URL you gave them. A **message
 queue** is how *your own* services hand work to each other without waiting around. Both are about events
-and asynchronous work — but they solve different problems, and reaching for the wrong one makes a mess.
-By the end of this guide you'll know which is which, how each actually works under the hood, and the
-handful of gotchas (signatures, duplicates, retries) that bite everyone the first time.
+and asynchronous work, but they solve different problems, and reaching for the wrong one makes a mess. By
+the end you'll know which is which, how each actually works under the hood, and the handful of gotchas
+(signatures, duplicates, retries) that bite everyone the first time.
 
 ## How to read this
 - **Need to wire up a webhook *right now*?** Jump to [Phase 1: Push vs Pull](01-push-vs-pull-webhooks.md) — it's a complete walkthrough of registering a URL and verifying the events are real.

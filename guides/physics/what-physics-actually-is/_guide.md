@@ -8,7 +8,7 @@ category: physics
 order: 1
 difficulty: beginner
 synonyms: ["what is physics", "what does physics actually do", "physics without formulas", "why learn physics", "physics for beginners", "is physics basically math", "how do physicists think"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # What Physics Actually Is
@@ -17,7 +17,7 @@ If physics ever felt like a wall of formulas someone expected you to memorize, y
 
 ## How to read this
 
-Read the three phases in order. Each opens with something you already know in your body - a thrown ball, a checked answer, a coffee cooling - and builds the idea from there. There's no math you have to pre-load. When numbers show up, they're worked out in front of you, slowly, with the units kept visible so you can see *why* the answer is the answer. If equations make you nervous, you'll be glad to know that nervousness is misplaced - and there's a whole separate guide about that: [/guides/why-math-isnt-your-enemy](/guides/why-math-isnt-your-enemy).
+Read the three phases in order. Each opens with something you already know in your body - a thrown ball, a checked answer, a coffee cooling - and builds the idea from there. There's no math you have to pre-load. When numbers show up, they're worked out in front of you, slowly, with the units kept visible so you can see *why* the answer is the answer. If equations make you nervous, there's a whole separate guide for that: [/guides/why-math-isnt-your-enemy](/guides/why-math-isnt-your-enemy).
 
 ## The phases
 

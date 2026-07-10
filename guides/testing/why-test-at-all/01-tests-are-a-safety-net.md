@@ -6,7 +6,7 @@ summary: "The real value of a test isn't catching bugs once - it's letting you c
 tags: [testing, regression, refactoring, confidence, mental-model]
 difficulty: beginner
 synonyms: ["why are tests useful", "what do tests actually do for me", "what is a regression", "how do tests help me refactor", "why am i scared to change code"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Tests Are a Safety Net
@@ -15,9 +15,9 @@ Let's start with the feeling, because that's where the real value lives - not in
 "quality," but in a specific dread you've probably already felt.
 
 You wrote some code. It works. Users are happy. Then, weeks later, you need to change one tiny thing nearby -
-rename a function, tidy up a calculation, add a new option. And you hesitate. Your hand hovers over the
-keyboard. *If I touch this, what else might break? Will I even know?* So you either make the change nervously
-and ship it with crossed fingers, or you don't make it at all and the code rots.
+rename a function, tidy up a calculation, add a new option. And you hesitate. *If I touch this, what else
+might break? Will I even know?* So you either make the change nervously and ship it with crossed fingers, or
+you don't make it at all and the code rots.
 
 That hesitation is the tax you pay for having no safety net. This phase is about what removes it.
 
@@ -101,10 +101,9 @@ rules, extra code, slowing you down. The opposite is true. Tests are about *perm
   what you'll break. A test suite is the previous team leaving you a net so you can move without fear.
 
 **Why this saves you later.** Six months from now you'll inherit code you don't remember writing, or that a
-teammate wrote and left. The day you have to change it under pressure - prod is misbehaving, a deadline is
-looming - the difference between "I can change this confidently" and "I'm guessing and praying" is whether a
-net exists. The tests you write today are a letter to a stressed future you, and the letter says: *go ahead,
-I've got you.*
+teammate left. The day you have to change it under pressure - prod is misbehaving, a deadline is looming -
+the difference between "I can change this confidently" and "I'm guessing and praying" is whether a net
+exists. The tests you write today are a letter to a stressed future you: *go ahead, I've got you.*
 
 ## Recap
 

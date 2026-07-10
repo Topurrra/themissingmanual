@@ -6,14 +6,14 @@ summary: "Middleware in axum is a tower Layer wrapping your whole service. Add r
 tags: [axum, rust, middleware, tower, tower-http, layer]
 difficulty: advanced
 synonyms: ["axum middleware", "axum tower layer", "axum servicebuilder", "tower-http tracelayer corslayer", "axum middleware from_fn", "axum layer order"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Middleware with Tower
 
-Here's the mental model, and it's the whole phase: **middleware in axum is a tower `Layer` that wraps your entire service.** You don't register middleware into some special hook list the way you might in Express or Flask. Instead, you take your `Router` and call `.layer(...)`, which returns a *new* service with the old one tucked inside, like a Russian doll. A request travels inward through each wrapper to reach your handler, and the response travels back out through the same wrappers in reverse.
+Here's the mental model, and it's the whole phase: **middleware in axum is a tower `Layer` that wraps your entire service.** You don't register it into a special hook list the way you might in Express or Flask. Instead, you take your `Router` and call `.layer(...)`, which returns a *new* service with the old one tucked inside, like a Russian doll. A request travels inward through each wrapper to reach your handler, and the response travels back out through the same wrappers in reverse.
 
-That single picture — onion layers around your handler — explains everything that follows: why ordering works the way it does, why a logging layer sees both the request *and* the response, and why the same layers you use here also work with HTTP clients and gRPC services.
+That single picture — onion layers around your handler — explains why ordering works the way it does, why a logging layer sees both the request *and* the response, and why the same layers you use here also work with HTTP clients and gRPC services.
 
 > 📝 The deep machinery — what a `Service` trait actually is, how `Layer` composes them, why this is *poll*-based — lives in the roots guide, [hyper & tower](/guides/hyper-and-tower). You don't need it to be productive here. This phase is the *applied* view: how to reach for layers in a real axum app. When the abstraction feels like magic and you want to dispel it, that guide is where to go.
 

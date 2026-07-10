@@ -8,7 +8,7 @@ category: ai-ml
 difficulty: advanced
 synonyms: ["should i fine-tune or prompt", "when to fine-tune an llm", "fine-tuning vs rag", "is fine-tuning worth it", "do i need to train my own model", "fine-tuning vs prompt engineering", "when does fine-tuning make sense"]
 order: 8
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Fine-Tuning vs Prompting, Honestly

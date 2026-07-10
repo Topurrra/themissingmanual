@@ -52,6 +52,7 @@ impl Store {
             "ALTER TABLE guides ADD COLUMN updated_at TEXT NOT NULL DEFAULT (datetime('now'))",
             "ALTER TABLE guides ADD COLUMN group_name TEXT NOT NULL DEFAULT ''",
             "ALTER TABLE phases ADD COLUMN markdown TEXT NOT NULL DEFAULT ''",
+            "ALTER TABLE phases ADD COLUMN source_file TEXT NOT NULL DEFAULT ''",
         ] {
             let _ = conn.execute(stmt, []);
         }
@@ -141,18 +142,18 @@ impl Store {
         let syns = serde_json::to_string(&p.synonyms)?;
         self.conn.execute(
             "INSERT INTO phases
-               (guide_slug, phase_no, title, summary, tags_json, difficulty, synonyms_json, html, updated, markdown)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
+               (guide_slug, phase_no, title, summary, tags_json, difficulty, synonyms_json, html, updated, markdown, source_file)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
              ON CONFLICT(guide_slug, phase_no) DO UPDATE SET
-               title=?3, summary=?4, tags_json=?5, difficulty=?6, synonyms_json=?7, html=?8, updated=?9, markdown=?10",
-            params![p.guide_slug, p.phase_no, p.title, p.summary, tags, p.difficulty, syns, p.html, p.updated, p.markdown],
+               title=?3, summary=?4, tags_json=?5, difficulty=?6, synonyms_json=?7, html=?8, updated=?9, markdown=?10, source_file=?11",
+            params![p.guide_slug, p.phase_no, p.title, p.summary, tags, p.difficulty, syns, p.html, p.updated, p.markdown, p.source_file],
         )?;
         Ok(())
     }
 
     pub fn get_phase(&self, guide_slug: &str, phase_no: u32) -> Result<Option<Phase>, StoreError> {
         let mut stmt = self.conn.prepare(
-            "SELECT guide_slug, phase_no, title, summary, tags_json, difficulty, synonyms_json, html, updated, markdown
+            "SELECT guide_slug, phase_no, title, summary, tags_json, difficulty, synonyms_json, html, updated, markdown, source_file
              FROM phases WHERE guide_slug = ?1 AND phase_no = ?2",
         )?;
         let mut rows = stmt.query(params![guide_slug, phase_no])?;
@@ -168,6 +169,7 @@ impl Store {
                 html: row.get(7)?,
                 updated: row.get(8)?,
                 markdown: row.get(9)?,
+                source_file: row.get(10)?,
             })),
             None => Ok(None),
         }
@@ -740,6 +742,7 @@ mod tests {
             html: "<h1>Hi</h1>".into(),
             updated: "2026-06-17".into(),
             markdown: "# Hi".into(),
+            source_file: "guides/git/01-mental-model.md".into(),
         }
     }
 

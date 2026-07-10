@@ -6,7 +6,7 @@ summary: "A servlet is a Java object that handles an HTTP request and produces a
 tags: [servlet, java, http, servlet-container, tomcat, jakarta-servlet, web]
 difficulty: beginner
 synonyms: ["what is a java servlet", "servlet explained", "servlet vs framework", "servlet container tomcat jetty", "java web foundation", "httpservlet basics", "jakarta servlet"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # What a Servlet Is
@@ -18,8 +18,7 @@ job is: take an HTTP request, hand back an HTTP response. That object is a **ser
 about the bedrock it sits on.
 
 This is the roots guide. You'll rarely write one of these by hand at work — frameworks exist precisely so
-you don't have to — but every framework is a convenience layer over the thing you're about to meet. Learn
-the foundation and the layers stop being magic.
+you don't have to — but every framework is a convenience layer over the thing you're about to meet.
 
 ## The foundation: what a servlet actually is
 
@@ -151,12 +150,10 @@ Spring's `DispatcherServlet` is the servlet, and your controllers are what it di
 
 ## Why bother learning it
 
-Let's be honest about the trade-off, because the project's whole voice is anti-hand-waving.
-
 ⚠️ **You will rarely write a raw servlet in a real job — and that's fine.** Frameworks exist for good
 reasons: they spare you boilerplate, give you routing and DI and validation, and encode years of hard-won
-defaults. Reaching for raw servlets when Spring would do is usually a mistake, not a badge of honor. So
-this guide is *not* arguing you should write servlets by hand.
+defaults. Reaching for raw servlets when Spring would do is usually a mistake, not a badge of honor. This
+guide is *not* arguing you should write servlets by hand.
 
 It's arguing something more useful: knowing this layer is what makes the layers above it stop being magic.
 Once you've seen the servlet underneath, a pile of mysteries resolve at once —

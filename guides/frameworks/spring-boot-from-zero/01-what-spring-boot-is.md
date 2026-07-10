@@ -6,20 +6,18 @@ summary: "Spring is the giant toolbox; Spring Boot is Spring with auto-configura
 tags: [spring-boot, spring, auto-configuration, spring-initializr, starter, java, getting-started]
 difficulty: beginner
 synonyms: ["what is spring boot", "spring vs spring boot", "spring boot auto configuration", "spring initializr", "spring boot starter dependencies", "spring boot first app", "spring boot hello world"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # What Spring Boot Is & Your First App
 
-If you've heard Spring described as "the heavyweight enterprise Java thing with a thousand XML files," that reputation was earned — about fifteen years ago. Spring Boot is the answer the Spring team built to that exact pain. This phase is about getting the mental model straight *before* you write a line of code, because the single biggest thing that confuses newcomers isn't the syntax — it's not understanding what the framework is doing on your behalf. Once you can see the machinery, Boot stops feeling like magic and starts feeling like a very well-organized assistant.
+If you've heard Spring described as "the heavyweight enterprise Java thing with a thousand XML files," that reputation was earned — about fifteen years ago. Spring Boot is the answer the Spring team built to that exact pain. The single biggest thing that confuses newcomers isn't the syntax — it's not understanding what the framework is doing on your behalf. Once you can see the machinery, Boot stops feeling like magic and starts feeling like a very well-organized assistant.
 
-We'll untangle Spring from Spring Boot, demystify the famous "auto-configuration," meet starters, and then stand up a real web app you can hit in a browser. By the end you'll have a running server *and* a clear picture of everything Boot quietly did so you didn't have to.
+We'll untangle Spring from Spring Boot, demystify "auto-configuration," meet starters, and stand up a real web app you can hit in a browser.
 
-This guide assumes you're comfortable with Java classes, methods, and annotations. If `public class`, `@Override`, and `new` aren't second nature yet, spend a little time in [/guides/java-from-zero](/guides/java-from-zero) first. It also builds directly on the framework mental model from [/guides/what-a-framework-even-is](/guides/what-a-framework-even-is) — we'll lean on that idea of *inversion of control* more than once.
+This guide assumes you're comfortable with Java classes, methods, and annotations — if `public class`, `@Override`, and `new` aren't second nature yet, spend a little time in [/guides/java-from-zero](/guides/java-from-zero) first. It also builds on the framework mental model from [/guides/what-a-framework-even-is](/guides/what-a-framework-even-is) — we'll lean on *inversion of control* more than once.
 
 ## The mental model: Spring is the toolbox, Boot is the toolbox pre-assembled
-
-Here's the distinction that clears up half the confusion people have, so let's plant it firmly.
 
 📝 **Spring (the Framework)** is a huge collection of tools for building Java applications: an **IoC container** that constructs and connects your objects, **Spring MVC** for handling web requests, **Spring Data** for talking to databases, **Spring Security** for auth, and a lot more. It's powerful and flexible — and historically, that flexibility meant *you* had to configure every piece by hand, often in long XML files, before anything would run.
 
@@ -31,7 +29,7 @@ So whenever someone says "I'm using Spring Boot," they're using Spring. Boot is 
 
 ## Auto-configuration, demystified
 
-Auto-configuration is the part that feels like sorcery, so let's pull the curtain back, because it's the single most important idea in this whole guide.
+Auto-configuration is the part that feels like sorcery — the single most important idea in this guide.
 
 📝 **Auto-configuration** is Boot looking at what's on your project's **classpath** — the set of libraries your app has available — and configuring those libraries with reasonable defaults, *automatically*, at startup. Add the library that does web stuff, and Boot notices and sets up a web server and JSON handling. Add a database driver, and Boot notices and sets up a connection to the database.
 
@@ -60,13 +58,13 @@ Here's what adding the web starter looks like in a Maven `pom.xml`:
 </dependency>
 ```
 
-*What just happened:* you declared a single dependency, and behind it sits an entire stack — the web framework, the server, the JSON serializer, the validator — with mutually compatible versions chosen for you. You did **not** list Tomcat, Jackson, or Spring MVC individually, and you did **not** pin any version numbers (Boot's parent project manages those). One line in, and there's now enough on the classpath for auto-configuration to spring into action and stand up a working web server.
+*What just happened:* you declared a single dependency, and behind it sits an entire stack — the web framework, the server, the JSON serializer, the validator — with mutually compatible versions chosen for you. You did **not** list Tomcat, Jackson, or Spring MVC individually, and you did **not** pin any version numbers (Boot's parent project manages those). One line in, and there's enough on the classpath for auto-configuration to stand up a working web server.
 
-💡 **Insight.** This is the loop that *is* Spring Boot: **you add a starter → that starter puts libraries on the classpath → auto-configuration sees them and wires sane defaults.** Almost everything you'll do in Boot is some version of "add the right starter, let Boot configure it, override the bits you care about." Hold onto that sentence — the rest of this guide is just it, in detail.
+💡 **Insight.** This is the loop that *is* Spring Boot: **you add a starter → that starter puts libraries on the classpath → auto-configuration sees them and wires sane defaults.** Almost everything you'll do in Boot is some version of "add the right starter, let Boot configure it, override the bits you care about."
 
 ## Your first app
 
-Enough theory. Let's build something that runs. The fastest way to start a Boot project is **Spring Initializr**.
+The fastest way to start a Boot project is **Spring Initializr**.
 
 📝 **Spring Initializr** (at [start.spring.io](https://start.spring.io)) is a web page that generates a ready-to-run Boot project for you. You pick your build tool (Maven or Gradle), your Java version, and which starters you want, then download a zip with the folder structure, build file, and a main class already in place. It's the official "new project" button for Spring Boot.
 
@@ -87,7 +85,7 @@ public class DemoApplication {
 }
 ```
 
-*What just happened:* this is the entry point of your whole application. Your normal Java `main` method is still here — Boot didn't invent a new way to start a program — but instead of your code doing the work, it calls `SpringApplication.run(...)` and hands control to Spring. That one call boots the framework: it creates the IoC container, runs auto-configuration, finds your code, and starts the embedded server. This is the *inversion of control* from [/guides/what-a-framework-even-is](/guides/what-a-framework-even-is) in the flesh — `main` is the last moment your code is in charge. After `run(...)`, the framework drives and calls back into your code when it needs you.
+*What just happened:* this is the entry point of your whole application. Your normal Java `main` method is still here — Boot didn't invent a new way to start a program — but instead of your code doing the work, it calls `SpringApplication.run(...)` and hands control to Spring. That one call boots the framework: it creates the IoC container, runs auto-configuration, finds your code, and starts the embedded server. This is *inversion of control* in the flesh — `main` is the last moment your code is in charge. After `run(...)`, the framework drives and calls back into your code when it needs you.
 
 The one annotation doing the heavy lifting is `@SpringBootApplication`. It looks innocent, but it's three annotations bundled into one:
 
@@ -116,7 +114,7 @@ public class HelloController {
 }
 ```
 
-*What just happened:* `@RestController` tells Spring "this class holds web request handlers, and whatever they return is the HTTP response body." `@GetMapping("/")` maps HTTP `GET` requests for the root URL to the `hello()` method. You didn't write any code to open a socket, parse the incoming request, match the URL, or format the response — you described *which URL runs which method*, and the framework owns everything around it. That's routing and handlers, exactly the framework anatomy from the previous guide, wearing Spring's clothes.
+*What just happened:* `@RestController` tells Spring "this class holds web request handlers, and whatever they return is the HTTP response body." `@GetMapping("/")` maps HTTP `GET` requests for the root URL to the `hello()` method. You didn't write any code to open a socket, parse the incoming request, match the URL, or format the response — you described *which URL runs which method*, and the framework owns everything around it.
 
 Run it from the project folder. Boot projects ship with a wrapper script so you don't even need Maven installed globally:
 
@@ -141,11 +139,11 @@ INFO  Tomcat started on port 8080 (http) with context path '/'
 INFO  Started DemoApplication in 1.42 seconds
 ```
 
-*What just happened:* read that output as a receipt of everything Boot did. It started **Tomcat** — a full web server — *inside* your process, on port 8080, without you installing or configuring a server anywhere. Now open a browser to `http://localhost:8080` and you'll see `Hello from Spring Boot!`. A real HTTP server, serving your code, from a project you generated minutes ago.
+*What just happened:* that output is a receipt of everything Boot did. It started **Tomcat** — a full web server — *inside* your process, on port 8080, without you installing or configuring a server anywhere. Open a browser to `http://localhost:8080` and you'll see `Hello from Spring Boot!` — a real HTTP server, serving your code, from a project you generated minutes ago.
 
 ## What you didn't have to do
 
-Step back and count what you *didn't* write, because the gap is the entire value proposition:
+Count what you *didn't* write, because the gap is the entire value proposition:
 
 - **No server install or setup.** Tomcat came embedded via the web starter and started itself. There's no separate server to download, configure, or deploy a `.war` file into.
 - **No JSON wiring.** Return an object from a controller and Boot serializes it to JSON automatically (Jackson, auto-configured). You'll lean on this constantly.
@@ -163,9 +161,9 @@ flowchart LR
   D --> E[Running app on :8080]
 ```
 
-That convenience is the payoff — and the thing to stay aware of. Every box in that diagram is a place Boot made a decision *for* you. Most of the time those decisions are exactly right, which is why Boot is a joy to start with. But the engineers who are great with Spring Boot are the ones who can name what's in each box when they need to: which server, which defaults, which auto-configuration rules fired.
+That convenience is the payoff — and the thing to stay aware of. Every box in that diagram is a place Boot made a decision *for* you. Most of the time those decisions are exactly right, which is why Boot is a joy to start with. But engineers who are great with Spring Boot can name what's in each box when they need to: which server, which defaults, which auto-configuration rules fired.
 
-💡 **Insight — make the magic visible.** Boot can tell you exactly what it auto-configured. Set the property `debug=true` (in `application.properties`) and on startup it prints an **auto-configuration report** listing every rule that matched and every rule that didn't, with the reason. When something behaves in a way you didn't ask for, that report is where you go to turn "magic" into "oh, *that's* why." You don't need it today — but knowing it exists is the difference between trusting the framework blindly and understanding it.
+💡 **Insight — make the magic visible.** Boot can tell you exactly what it auto-configured. Set the property `debug=true` (in `application.properties`) and on startup it prints an **auto-configuration report** listing every rule that matched and every rule that didn't, with the reason. When something behaves in a way you didn't ask for, that report is where "magic" turns into "oh, *that's* why."
 
 ## Recap
 

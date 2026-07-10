@@ -8,14 +8,14 @@ category: security
 order: 5
 difficulty: intermediate
 synonyms: ["what does the padlock mean", "how does https work", "what is tls", "is https safe", "what is an ssl certificate", "why does my browser say not secure", "difference between http and https"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # HTTPS / TLS, Explained
 
-You've seen the little padlock in the address bar a thousand times. Maybe someone told you it means "the site is safe," and you half-believed them. Then one day a page threw a full-screen red warning about a certificate, and you had to decide - on the spot - whether to click through or back away. That moment is exactly where this guide helps. By the end, you'll know what the padlock *actually* promises (and the dangerous thing it does **not** promise), how your browser and a server agree on a secret without ever mailing it to each other, and how to read a certificate error calmly instead of guessing.
+You've seen the little padlock in the address bar a thousand times. Maybe someone told you it means "the site is safe," and you half-believed them. Then one day a page threw a full-screen red warning about a certificate, and you had to decide - on the spot - whether to click through or back away. That's exactly where this guide helps. By the end, you'll know what the padlock *actually* promises (and the dangerous thing it does **not** promise), how your browser and a server agree on a secret without ever mailing it to each other, and how to read a certificate error calmly instead of guessing.
 
-This is an intermediate guide. It assumes you know roughly what HTTP is - a browser asking a server for a page. If that's fuzzy, read [HTTP Explained](/guides/http-explained) first, then come back. We build the picture one layer at a time, and we never wave our hands.
+This is an intermediate guide - it assumes you know roughly what HTTP is (a browser asking a server for a page). If that's fuzzy, read [HTTP Explained](/guides/http-explained) first, then come back.
 
 ## How to read this
 - **Want the one idea to carry around?** Read [Phase 1: What HTTPS Protects (and Doesn't)](01-what-https-protects.md). It installs the mental model that fixes the most common and most dangerous misunderstanding about the padlock.

@@ -6,7 +6,7 @@ summary: "SQL injection and XSS are the same bug: user input gets handed to a ma
 tags: [security, injection, sql-injection, xss, mental-model, data-vs-code]
 difficulty: intermediate
 synonyms: ["why are sql injection and xss similar", "what causes injection vulnerabilities", "difference between data and code in security", "what is an injection attack", "keep data as data"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The One Bug Underneath Both: Mixing Data with Code
@@ -105,15 +105,10 @@ data/code boundary intact no matter what the input contains.
 
 ## Why this saves you later
 
-Hold this one model and the rest of the guide reads like consequences, not commandments:
-
-- When Phase 2 says *"use parameterized queries, never build SQL by concatenation,"* you'll already know
-  *why* - concatenation is the hole; parameters are the separate channel that keeps the wall up.
-- When Phase 3 says *"encode on output,"* you'll already know *why* - encoding is how you keep the user's
-  value as data when it lands in a place the browser would otherwise read as code.
-
-And the next time you wire *any* user input into *any* interpreter - a shell command, an LDAP filter, a file
-path - you'll feel the same alarm and reach for the same instinct: keep data as data.
+Hold this one model and the rest of the guide reads like consequences, not commandments: Phase 2's
+"parameterize your queries" and Phase 3's "encode on output" are the same instinct, aimed at two different
+interpreters. And the next time you wire *any* input into *any* interpreter - a shell command, an LDAP
+filter, a file path - you'll feel the same alarm: keep data as data.
 
 ## Recap
 

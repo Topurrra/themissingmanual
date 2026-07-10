@@ -6,14 +6,14 @@ summary: "Middleware in Echo wraps a handler — func(next) handler — and the 
 tags: [echo, go, middleware, logger, recover, cors]
 difficulty: intermediate
 synonyms: ["echo middleware", "echo middlewarefunc", "echo built-in middleware", "echo logger recover cors", "echo custom middleware", "echo context values"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Middleware
 
 Here's the part of a web framework that earns its keep: not the routing, but everything that runs *around* every request. Logging. Auth. Panic recovery. Timing. CORS headers. You don't want to paste those into all forty of your handlers — you write them once and have them wrap the whole app.
 
-That wrapper is **middleware**. Echo's take on it is a little different from what you may have seen in Gin, and once the shape clicks, every middleware pattern in Echo is the same shape.
+That wrapper is **middleware**. Echo's take on it is a little different from Gin's, and once the shape clicks, every middleware pattern in Echo follows it.
 
 ## The mental model: a function that wraps a handler
 
@@ -31,7 +31,7 @@ flowchart LR
   L2 --> Resp[Response]
 ```
 
-That's the whole idea. Gin gives you one flat handler and a `c.Next()` seam to mark "before vs. after." Echo gives you a *wrapper* — you hold a reference to `next` and call it yourself. The "before" code is whatever you write before that call; the "after" code is whatever you write after it.
+Gin gives you one flat handler and a `c.Next()` seam to mark "before vs. after." Echo gives you a *wrapper* — you hold a reference to `next` and call it yourself. The "before" code is whatever you write before that call; the "after" code is whatever you write after it.
 
 ## The signature, and the three ways to register
 
@@ -54,7 +54,7 @@ func Timer(next echo.HandlerFunc) echo.HandlerFunc {
 }
 ```
 
-*What just happened:* `Timer` takes `next` and hands back a brand-new `echo.HandlerFunc`. Inside it, `start := time.Now()` runs on the way *in*. The call `err := next(c)` runs everything deeper in the chain — your actual handler writes its response and returns an error (often `nil`). Only *then* does `log.Printf` run, capturing the full duration. Finally we `return err` so the error keeps flowing outward to whatever wrapped *us*. Forwarding that `err` is not optional — swallow it and Echo's error handler never sees the failure.
+*What just happened:* `Timer` takes `next` and hands back a brand-new `echo.HandlerFunc`. Inside it, `start := time.Now()` runs on the way *in*. The call `err := next(c)` runs everything deeper in the chain — your actual handler writes its response and returns an error (often `nil`). Only *then* does `log.Printf` run, capturing the full duration. Finally we `return err` so the error keeps flowing outward to whatever wrapped *us*. Forwarding that `err` isn't optional — swallow it and Echo's error handler never sees the failure.
 
 You attach a middleware in one of three scopes:
 
@@ -74,7 +74,7 @@ admin := e.Group("/admin", Timer)
 e.GET("/health", healthHandler, Timer)
 ```
 
-*What just happened:* same middleware, three reaches. `e.Use` wraps the whole app; `group.Use` (or passing it to `e.Group`) wraps a subtree of routes — this is how you protect `/api/v1/*` without touching public routes; and listing it after the handler in `e.GET` wraps exactly one endpoint. Pick the narrowest scope that does the job. Notice that you pass `Timer` itself, not `Timer()` — Echo's middleware *is* the function, you're not calling it to produce one.
+*What just happened:* same middleware, three reaches. `e.Use` wraps the whole app; `group.Use` (or passing it to `e.Group`) wraps a subtree of routes — this is how you protect `/api/v1/*` without touching public routes; listing it after the handler in `e.GET` wraps exactly one endpoint. Pick the narrowest scope that does the job. Notice you pass `Timer` itself, not `Timer()` — Echo's middleware *is* the function, you're not calling it to produce one.
 
 > 📝 Order matters. Middleware runs in the order you register it. `e.Use(A); e.Use(B)` makes A the outermost layer: A's "before" code runs first, and A's "after" code runs *last*, because A wraps B which wraps your handler.
 
@@ -92,7 +92,7 @@ e.Use(middleware.CORS())     // adds CORS headers for browser cross-origin calls
 e.Use(middleware.Gzip())     // gzip-compresses responses
 ```
 
-*What just happened:* four lines, four cross-cutting concerns handled for the whole app. `Logger()` is the per-request line you see in your terminal. `Recover()` is the one you should almost never skip — without it, a single nil-pointer dereference in any handler panics and kills the process for *every* user; with it, that one request gets a 500 and the server keeps serving. `CORS()` and `Gzip()` are situational (you add CORS when a browser front-end on another origin calls your API). There are more in the same package — `middleware.RateLimiter(...)` to throttle clients, plus `middleware.JWT(...)` and `middleware.BasicAuth(...)` for authentication.
+*What just happened:* four lines, four cross-cutting concerns handled for the whole app. `Logger()` is the per-request line you see in your terminal. `Recover()` is the one you should almost never skip — without it, a single nil-pointer dereference in any handler panics and kills the process for *every* user; with it, that one request gets a 500 and the server keeps serving. `CORS()` and `Gzip()` are situational (add CORS when a browser front-end on another origin calls your API). There are more in the same package — `middleware.RateLimiter(...)` to throttle clients, plus `middleware.JWT(...)` and `middleware.BasicAuth(...)` for authentication.
 
 > ⚠️ Because Echo opts you in to nothing, you can ship a server with no panic recovery and never notice. If you write `echo.New()` and stop there, one panic anywhere takes the whole process down. Add `middleware.Recover()` unless you have a deliberate reason not to.
 
@@ -120,7 +120,7 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 }
 ```
 
-*What just happened:* this is the whole pattern. There's no separate "abort" call like Gin's `c.Abort()` — in Echo you stop the chain by **not calling `next(c)`** and returning an error instead. Both failure paths `return echo.NewHTTPError(...)`, which Echo's error handler turns into a clean JSON 401 (you'll meet that central handler in the next phase). On success we `c.Set("user", user)` to stash the user, then `return next(c)` to run the rest of the chain. The handler downstream never re-does auth — this middleware is the single place that knows how.
+*What just happened:* this is the whole pattern. There's no separate "abort" call like Gin's `c.Abort()` — in Echo you stop the chain by **not calling `next(c)`** and returning an error instead. Both failure paths `return echo.NewHTTPError(...)`, which Echo's error handler turns into a clean JSON 401 (you'll meet that central handler in the next phase). On success we `c.Set("user", user)` to stash the user, then `return next(c)` to run the rest of the chain — the handler downstream never re-does auth.
 
 Now wire it onto the `/api/v1` books group and read the user inside a handler:
 
@@ -147,11 +147,11 @@ func listBooks(c echo.Context) error {
 }
 ```
 
-*What just happened:* because `Auth` is attached to the `api` group, every route under `/api/v1` is protected — no token, no entry. Inside `listBooks`, `c.Get("user")` retrieves what the middleware stashed; the `.(string)` is a type assertion because `Get` returns `any`. We assert directly because `Auth` guarantees the value is there. If you weren't certain a value had been set, you'd guard it: `user, ok := c.Get("user").(string)` and check `ok` before using it.
+*What just happened:* because `Auth` is attached to the `api` group, every route under `/api/v1` is protected — no token, no entry. Inside `listBooks`, `c.Get("user")` retrieves what the middleware stashed; the `.(string)` is a type assertion because `Get` returns `any`. We assert directly because `Auth` guarantees the value is there — if you weren't certain, you'd guard it: `user, ok := c.Get("user").(string)`.
 
 Try it: `curl localhost:8080/api/v1/books` gets a 401, while `curl -H "Authorization: valid-token" localhost:8080/api/v1/books` gets the list.
 
-> 💡 Coming from Gin? The contrast is the whole lesson. Gin middleware is a flat `func(c *gin.Context)` that calls `c.Next()` to continue and `c.Abort()` to stop. Echo middleware *wraps* — it receives `next` and **calls it** to continue, or **doesn't call it (and returns an error)** to stop. Same onion, different mechanics: Gin marks a seam in one function; Echo hands you the inner function to wrap. Once you internalize "call `next` to go deeper, return an error to bail," Echo middleware stops feeling foreign.
+> 💡 Coming from Gin? Gin middleware is a flat `func(c *gin.Context)` that calls `c.Next()` to continue and `c.Abort()` to stop. Echo middleware *wraps* — it receives `next` and **calls it** to continue, or **doesn't call it (and returns an error)** to stop. Same onion, different mechanics. Once you internalize "call `next` to go deeper, return an error to bail," Echo middleware stops feeling foreign.
 
 ## Recap
 

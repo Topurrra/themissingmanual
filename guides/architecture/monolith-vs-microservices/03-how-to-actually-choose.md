@@ -6,12 +6,12 @@ summary: "A judgment-flagged way to decide: most teams should start with a well-
 tags: [architecture, decision, monolith, microservices, distributed-monolith, judgment]
 difficulty: intermediate
 synonyms: ["when should I use microservices", "monolith or microservices for startup", "when to split into services", "distributed monolith", "premature microservices", "how to choose architecture"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # How to Actually Choose
 
-Everything so far has been fact: what each architecture *is* and what it *costs*. This phase is different — it's **judgment**, and I'm going to flag it as judgment so you can weigh it against your own situation rather than treat it as law. Reasonable, experienced engineers disagree at the edges here. What follows is the position most battle-scarred practitioners land on, and the reasoning behind it, so you can decide for yourself.
+Everything so far has been fact: what each architecture *is* and what it *costs*. This phase is different — it's **judgment**, flagged as judgment so you can weigh it against your own situation rather than treat it as law. Reasonable, experienced engineers disagree at the edges here. What follows is the position most battle-scarred practitioners land on, and the reasoning behind it, so you can decide for yourself.
 
 ## The decision cheat-card
 
@@ -30,7 +30,7 @@ Everything so far has been fact: what each architecture *is* and what it *costs*
 
 **The judgment.** *For most teams, most of the time, the right starting point is a well-structured monolith — ideally a modular one.* This is opinion, but it's opinion grounded in the costs you read in Phase 2.
 
-Here's the reasoning. Early on, the things that kill a product are not scaling limits — they're shipping slowly, building the wrong thing, and running out of runway. A monolith optimizes for exactly the things you need then: fast iteration, easy debugging, cheap refactoring, one thing to deploy. The microservices bill from Phase 2 — network failure handling, distributed debugging, cross-service consistency, an ops platform — is a tax you'd be paying *before* you have the problems that tax buys relief from.
+Here's the reasoning. Early on, the things that kill a product are not scaling limits — they're shipping slowly, building the wrong thing, and running out of runway. A monolith optimizes for exactly the things you need then: fast iteration, easy debugging, cheap refactoring, one thing to deploy. The microservices bill from Phase 2 — network failure handling, distributed debugging, cross-service consistency, an ops platform — is a tax you'd be paying *before* you have the problems it buys relief from.
 
 And critically: a monolith is not a one-way door. If you build it with clean internal module boundaries, those boundaries are the natural seams you'll cut along *later*, when and if a real reason appears.
 
@@ -75,13 +75,11 @@ flowchart TD
   C --> DB
 ```
 
-You now PAY every microservices cost (network, tracing, ops) and get NONE of the benefits (independence).
-
 You're paying the full microservices bill — network calls, distributed debugging, ops overhead — and getting none of the rewards, because the services can't actually move independently. **The tell:** if deploying one service routinely requires deploying others in lockstep, or they all read and write the same tables, you have a distributed monolith. The cure is real boundaries: each service owns its own data and can deploy on its own. If you can't give a candidate service those things, it shouldn't be a separate service yet.
 
 ### Trap 2 — Premature splitting
 
-⚠️ **Premature splitting: drawing service boundaries before you understand the domain.** Early on, you don't yet know where the natural seams in your system are — which parts truly change together and which are independent. If you carve the system into services too early, you'll almost certainly draw the lines in the wrong places. And moving a boundary *after* it's a network boundary is brutally expensive: it means changing API contracts, migrating data between databases, and coordinating across teams — instead of the simple cross-module refactor it would have been inside a monolith (Phase 1).
+⚠️ **Premature splitting: drawing service boundaries before you understand the domain.** Early on, you don't yet know where the natural seams in your system are — which parts truly change together and which are independent. Carve the system into services too early and you'll almost certainly draw the lines in the wrong places. Moving a boundary *after* it's a network boundary is brutally expensive: changing API contracts, migrating data between databases, coordinating across teams — instead of the simple cross-module refactor it would have been inside a monolith (Phase 1).
 
 The deeper irony: splitting a *tangled* monolith into services to "clean it up" doesn't untangle it. It takes the tangle and stretches it across a network, turning every messy function call into a messy network call. **Untangle the code first, inside the monolith, where refactoring is cheap and safe. Find the real seams. Then — if a specific pain still calls for it — split along seams you've actually verified.**
 

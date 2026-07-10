@@ -6,12 +6,12 @@ summary: "How the Jakarta EE container runs transactions for you: declarative @T
 tags: [jakarta-ee, jta, transactions, transactional, container-managed, rollback, distributed-transactions]
 difficulty: intermediate
 synonyms: ["jakarta ee transactions jta", "@Transactional jakarta", "container managed transactions", "jta vs local transactions", "jakarta ee rollback rules", "two phase commit jta", "transaction attributes required requires_new"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Transactions with JTA
 
-In [Phase 5](05-jakarta-persistence.md) you noticed something quietly missing from `ProductService.create`: there was no `em.getTransaction().begin()` and no `commit()`. The `INSERT` still happened, the `id` still came back, the row was still there. This phase is the explanation of that disappearing act — and it's the single biggest day-to-day difference between writing JPA standalone and writing it inside a Jakarta EE container.
+In [Phase 5](05-jakarta-persistence.md) you noticed something quietly missing from `ProductService.create`: there was no `em.getTransaction().begin()` and no `commit()`. The `INSERT` still happened, the `id` still came back, the row was still there. This phase explains that disappearing act — the single biggest day-to-day difference between writing JPA standalone and writing it inside a Jakarta EE container.
 
 Here's the whole phase in one sentence, worth pinning to your monitor:
 

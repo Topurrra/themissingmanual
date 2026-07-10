@@ -6,7 +6,7 @@ summary: "How Fastify makes most error handling automatic — schema-validation 
 tags: [fastify, javascript, error-handling, validation, setErrorHandler]
 difficulty: advanced
 synonyms: ["fastify error handling", "fastify setErrorHandler", "fastify validation error", "fastify setNotFoundHandler", "fastify httperrors", "fastify custom error"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Error Handling
@@ -15,7 +15,7 @@ Here's the reframe that makes this whole phase click, so hold it before you writ
 
 > 📝 In Fastify, **error handling is mostly something you DON'T do**. A request that fails your route schema is rejected for you with a `400`. An error thrown inside an `async` handler is caught for you and routed to one place. Your job isn't to wrap everything in `try/catch` — it's to **throw the right error** and then **decide, in one spot, how errors become responses**. The framework does the catching; you do the shaping.
 
-If you came from [Express](/guides/express-from-zero), this is a genuine relief. There, an unhandled throw in an async route handler in Express 4 silently hangs the request unless you wired up `express-async-errors` or hand-passed errors to `next(err)`. Fastify removes that whole category of bug. We'll keep growing the same **books API** and lean into that.
+If you came from [Express](/guides/express-from-zero), this is a genuine relief. There, an unhandled throw in an async route handler in Express 4 silently hangs the request unless you wired up `express-async-errors` or hand-passed errors to `next(err)`. Fastify removes that whole category of bug. We'll keep growing the same **books API**.
 
 ## The wins you already have for free
 

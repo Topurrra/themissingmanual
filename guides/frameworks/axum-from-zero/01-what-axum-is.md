@@ -6,32 +6,30 @@ summary: "axum maps paths to plain async fn handlers and turns their return valu
 tags: [axum, rust, web, tokio, getting-started]
 difficulty: beginner
 synonyms: ["what is axum", "axum first server", "axum router handler", "axum tokio", "rust axum hello world", "axum serve"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What axum Is & Your First Server
 
-You know [Rust](/guides/rust-from-zero), and you want to put something on the web. The honest news is
-that the Rust web ecosystem can feel intimidating from the outside — async, runtimes, a tower of crates
-with names like hyper and tower. axum's whole pitch is to make that disappear and leave you writing
-something that looks like ordinary Rust.
+You know [Rust](/guides/rust-from-zero) and want to put something on the web. The Rust web ecosystem
+looks intimidating from outside — async, runtimes, crates named hyper and tower. axum's pitch: make that
+disappear and leave you writing ordinary Rust.
 
-Here's the move that makes axum different from a lot of frameworks in other languages: it leans on
-**Rust's type system** instead of macros or magic strings. A handler is a plain `async fn`. There's no
-`#[route("/users")]` annotation hanging over it, no decorator, no registration macro. You write a normal
-function, and axum figures out how to call it from its argument and return types. That's the trick, and
-once you see it the rest of the framework stops looking clever and starts looking obvious.
+Here's what makes axum different from frameworks in other languages: it leans on **Rust's type system**
+instead of macros or magic strings. A handler is a plain `async fn` — no `#[route("/users")]` annotation,
+no decorator, no registration macro. You write a normal function, and axum figures out how to call it from
+its argument and return types. See that, and the rest of the framework stops looking clever and starts
+looking obvious.
 
-💡 This very platform — The Missing Manual — runs on axum. It has quietly become the default for new Rust
-web services. It comes from the **Tokio** team and sits on two layers you'll meet later: **hyper** (the
-actual HTTP implementation) and **tower** (a shared middleware abstraction). You don't need either to
-start, but it's worth knowing axum isn't a walled garden — it's a thin, ergonomic skin over crates the
-whole async-Rust world shares. (New to what a "web framework" even buys you over raw sockets? See
+💡 This platform — The Missing Manual — runs on axum. It comes from the **Tokio** team and sits on two
+layers you'll meet later: **hyper** (the HTTP implementation) and **tower** (the shared middleware
+abstraction). You don't need either to start — axum is a thin, ergonomic skin over crates the whole
+async-Rust world shares, not a walled garden. (New to what a framework buys you over raw sockets? See
 [What a Framework Even Is](/guides/what-a-framework-even-is).)
 
 ## The mental model: a Router maps paths to handlers
 
-Before any code, hold one picture in your head. It is the whole framework.
+Before any code, hold one picture in your head — it's the whole framework.
 
 📝 A **`Router`** maps **paths** to **handlers**. You build it once at startup, registering routes on it,
 and hand it to the server to run.
@@ -41,12 +39,8 @@ axum sends it as text. Return a `String`, same thing. Return JSON, and it serial
 header for you. The return type *is* the response — axum knows how to turn it into one because it
 implements a trait called **`IntoResponse`** (more on that in Phase 3).
 
-Say it once: **the Router routes the request to a handler, and the handler's return value is the
-response.** That's the spine of every axum app you'll ever write.
-
-What about a handler's *arguments*? Those are the other half — **extractors** that pull pieces out of the
-request (the path, the query string, the JSON body). They're the star of the next two phases. For your
-first server, the handler takes no arguments at all.
+A handler's *arguments* are the other half: **extractors** that pull pieces out of the request (path,
+query string, JSON body) — the star of the next two phases. Your first server's handler takes none.
 
 ```mermaid
 flowchart LR
@@ -67,10 +61,9 @@ cargo add axum
 cargo add tokio --features full
 ```
 
-*What just happened:* `cargo add axum` pulls in the framework and writes it into your `Cargo.toml`. The
-second line adds **Tokio**, the async runtime axum runs on, with its `full` feature so you get
-everything (the TCP listener, the multi-threaded scheduler, the macros). Your `Cargo.toml` now lists both
-under `[dependencies]`. Two commands, and you're ready to write a server.
+*What just happened:* `cargo add axum` pulls in the framework. `cargo add tokio --features full` adds the
+async runtime axum runs on, with everything enabled (TCP listener, multi-threaded scheduler, macros). Both
+now sit in `Cargo.toml`.
 
 Now the smallest server that does something real. Put this in `src/main.rs`:
 
@@ -124,29 +117,27 @@ Hello from axum
 ```
 
 *What just happened:* `curl` sent a `GET /`. The Router matched it to your `root` handler, called it, and
-the handler's return value — `"Hello from axum"` — came back as the response body. You have a working
-HTTP server in a dozen lines, and not one of them is a macro-decorated route.
+the handler's return value — `"Hello from axum"` — came back as the response body. A working HTTP server
+in a dozen lines, and not one of them is a macro-decorated route.
 
 ## Why async, and why a runtime?
 
-You might be wondering why `root` is `async fn` and why we needed Tokio at all. Here's the short version.
+Why is `root` `async fn`, and why does it need Tokio at all? Short version:
 
-📝 A web server spends most of its life *waiting* — for a request to arrive, for a database to answer, for
-another service to respond. **Async** lets one thread juggle thousands of those waits at once instead of
-blocking a whole OS thread on each one. That's how a single small server handles many connections
-concurrently.
+📝 A web server spends most of its life *waiting* — for a request, a database answer, another service.
+**Async** lets one thread juggle thousands of those waits instead of blocking a whole OS thread per one.
+That's how a small server handles many connections concurrently.
 
-But Rust's `async`/`await` is just *syntax* — it describes work that can pause and resume, and nothing
-more. Something has to actually *drive* that work: poll the paused tasks, wake them when their data is
-ready, and spread them across threads. That something is a **runtime**, and in axum's world it's **Tokio**.
-That's why `#[tokio::main]` wraps your `main` (it starts the runtime) and why `cargo add tokio` was step
-one. You don't have to understand Tokio's internals to use axum — but when you want to,
+But Rust's `async`/`await` is just *syntax* — it describes work that can pause and resume, nothing more.
+Something has to actually *drive* that work: poll paused tasks, wake them when ready, spread them across
+threads. That's a **runtime**, and in axum's world it's **Tokio** — which is why `#[tokio::main]` wraps
+your `main` and starts it. You don't need to understand Tokio's internals to use axum, but
 [Tokio: The Async Runtime](/guides/tokio-the-async-runtime) removes the rest of the mystery.
 
 ## The running example: a books API
 
-We won't keep returning `"Hello from axum"`. Across this guide we'll grow one real service: a small
-**books API**. The core of it is a single type — a book with an id, a title, and an author:
+We won't keep returning `"Hello from axum"` — across this guide we'll grow one real service: a small
+**books API**, built around one type:
 
 ```rust
 struct Book {
@@ -156,14 +147,14 @@ struct Book {
 }
 ```
 
-*What just happened:* we declared the `Book` struct the rest of the guide builds on. Right now it's just
-a plain struct. In Phase 3 we'll derive `Serialize` and `Deserialize` on it so axum can turn it into JSON
-on the way out and parse it from a request body on the way in — that's how a struct becomes a real API
-resource. For now you've met the cast: a **`Router`**, a **handler**, its **return value** as the
-response, and the **`Book`** we'll spend the next eight phases turning into a proper REST API.
+*What just happened:* we declared the `Book` struct the rest of the guide builds on — for now, a plain
+struct. In Phase 3 we'll derive `Serialize`/`Deserialize` on it so axum can turn it into JSON going out and
+parse it from a request body coming in — that's how a struct becomes a real API resource. You've now met
+the cast: **`Router`**, **handler**, **return value** as response, and **`Book`**, which we'll spend the
+next eight phases turning into a proper REST API.
 
-Next up: routing — multiple methods, path and query parameters (your first extractors), and nesting
-routers so a growing API doesn't sprawl into one giant list.
+Next: routing — methods, path/query parameters (your first extractors), and nesting routers so a growing
+API doesn't sprawl into one giant list.
 
 ## Recap
 

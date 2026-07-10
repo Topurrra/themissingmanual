@@ -12,7 +12,7 @@ synonyms:
   - what does uefi do
   - how does the bootloader work
   - what happens between power button and login screen
-updated: 2026-07-04
+updated: 2026-07-11
 ---
 
 # Kernel init to login screen
@@ -34,18 +34,18 @@ The kernel's first moments are spent setting up its own view of the machine, ind
 
 ## Mounting the root filesystem
 
-Somewhere early in this sequence, the kernel needs to find and mount the **root filesystem** — the `/` on Linux, or the `C:\` on Windows — the actual filesystem holding the rest of the operating system: system libraries, configuration, every program you'll ever run. Until this mount happens, the kernel is running with nothing but what the bootloader handed it in memory (recall the initramfs from Phase 2, on Linux systems that need one).
+Somewhere early in this sequence, the kernel needs to find and mount the **root filesystem** — the `/` on Linux, or the `C:\` on Windows — the filesystem holding the rest of the operating system: system libraries, configuration, every program you'll ever run. Until this mount happens, the kernel is running with nothing but what the bootloader handed it in memory (recall the initramfs from Phase 2, on Linux systems that need one).
 
 ```text
 kernel finds root filesystem (e.g. on /dev/sda2) -> mounts it at /
 kernel switches from temporary initramfs to the real, permanent filesystem
 ```
 
-*What just happened:* this is the moment the "real" operating system installation, sitting on disk, becomes reachable. Before this, the kernel was working from a minimal, temporary environment; after this, every file the OS actually ships with is available.
+*What just happened:* this is the moment the "real" operating system installation, sitting on disk, becomes reachable. Before this, the kernel was working from a minimal, temporary environment; after this, every file the OS ships with is available.
 
 ## Handing off to init
 
-With hardware managed and the root filesystem mounted, the kernel does something it's done at every boot since Unix in the 1970s: it starts exactly one process, and only one, by convention given process ID 1. That process is called **init**.
+With hardware managed and the root filesystem mounted, the kernel does something it's done at every boot since Unix in the 1970s: it starts exactly one process, by convention given process ID 1. That process is called **init**.
 
 On most modern Linux distributions, init is **systemd**. Its job is to bring the rest of userspace to life in the right order: start system services (networking, logging, the display manager), mount any remaining filesystems, and eventually launch whatever presents a login prompt — a text login on a server, or a graphical login manager on a desktop.
 

@@ -6,16 +6,16 @@ summary: "Correctness tests ask 'is it right?' for one user; load tests ask 'doe
 tags: [load-testing, mental-model, correctness, concurrency, capacity, launch-day]
 difficulty: advanced
 synonyms: ["why do load testing", "difference between functional tests and load tests", "what does load testing actually prove", "will my server handle launch traffic", "what is a virtual user"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why Load-Test
 
-Here's the trap, and almost everyone falls into it once. You've done the work. The test suite is green, you've used the app yourself, a teammate clicked through it. By every signal you have, *it works*. So when someone asks "is it ready for launch?" you say yes - because the only question you know how to answer is *does it work?*, and the answer is clearly yes.
+Here's the trap, and almost everyone falls into it once. The test suite is green, you've used the app yourself, a teammate clicked through it. By every signal you have, *it works*. So when someone asks "is it ready for launch?" you say yes - because the only question you know how to answer is *does it work?*
 
-Then launch day arrives, a few thousand people hit it in the same ten minutes, and it falls over. And the worst part is the confusion: *nothing changed*. The code that's failing right now is the exact same code that passed every test this morning. So what broke?
+Then launch day arrives, a few thousand people hit it in the same ten minutes, and it falls over. The confusing part: *nothing changed*. The code failing right now is the exact same code that passed every test this morning.
 
-Nothing broke. You just answered the wrong question. Let's fix the mental model, because once you see the two questions clearly, everything about load testing follows.
+Nothing broke. You just answered the wrong question. Once you see the two questions clearly, everything about load testing follows.
 
 ## Two completely different questions
 
@@ -38,7 +38,7 @@ A correctness test runs your code. A load test runs your code *the way a crowd w
 
 **Why people get this wrong.** The instinct is that a green test suite means "ready." But correctness and capacity are independent. Perfectly correct code can be catastrophically slow under load, and - more confusingly - *fast* code can still collapse under a crowd for reasons that have nothing to do with the logic. The logic was never the bottleneck.
 
-**Why this saves you later.** Once you hold these as two separate questions, "it passed all the tests but died on launch day" stops being a mystery. The tests answered *correct?* They were never asked *holds?* Load testing is you asking the second question on purpose, in private, before the crowd asks it for you in public.
+Once you hold these as two separate questions, "it passed all the tests but died on launch day" stops being a mystery. The tests answered *correct?* They were never asked *holds?* Load testing is asking the second question on purpose, in private, before the crowd asks it for you in public.
 
 ## Why correct code falls over under a crowd
 
@@ -53,7 +53,7 @@ If the code is right, what actually breaks? It's almost never the logic - it's a
 
 The pattern is the same every time: a resource that is effectively infinite for one user is sharply finite for a crowd. Correctness tests use one user, so they never see the edge. A load test exists to walk you up to that edge deliberately.
 
-🪖 **War story.** A team launched a sign-up flow that passed every test and ran beautifully in the demo. The launch tweet went out; within minutes sign-ups were timing out. The code was fine. The cause was a connection pool of 10 against a sudden burst of hundreds of concurrent sign-ups - 10 requests worked, the other hundreds sat in a queue until they timed out. A thirty-minute load test the week before would have shown the exact same queue forming at a few hundred users. Nobody had thought to ask the second question.
+🪖 **War story.** A team launched a sign-up flow that passed every test and ran beautifully in the demo. The launch tweet went out; within minutes sign-ups were timing out. The code was fine - the cause was a connection pool of 10 against a sudden burst of hundreds of concurrent sign-ups, so 10 requests worked and the rest queued until they timed out. A thirty-minute load test the week before would have shown the same queue forming. Nobody had thought to ask the second question.
 
 ## What you're actually trying to learn
 
@@ -65,7 +65,7 @@ A load test isn't a pass/fail gate like a unit test. You're not looking for a gr
 
 📝 **Terminology.** A *virtual user* (VU) is the load tool's stand-in for one person using your app - it sends requests, waits a realistic moment ("think time"), then sends the next, just like a human would. You run a test by simulating many virtual users at once. We'll use the term throughout.
 
-⚠️ **Gotcha - don't confuse "will it hold" with "why is it slow."** Load testing tells you *that* the system slows down or breaks at, say, 800 concurrent users - the symptom. It does **not** tell you *which line of code or which query* caused it - the cause. Finding the cause is profiling and observability, a separate discipline (flame graphs, query plans, traces) that lives in the future **performance** category. Keep the jobs separate: load testing finds the breaking point; profiling explains it. Trying to do both at once is how a clear afternoon turns into a confused one.
+⚠️ **Gotcha - don't confuse "will it hold" with "why is it slow."** Load testing tells you *that* the system slows down or breaks at, say, 800 concurrent users - the symptom. It does **not** tell you *which line of code or query* caused it - the cause. Finding the cause is profiling and observability (flame graphs, query plans, traces), a separate discipline living in the future **performance** category. Load testing finds the breaking point; profiling explains it - trying to do both at once is how a clear afternoon turns into a confused one.
 
 ## Recap
 
@@ -74,7 +74,7 @@ A load test isn't a pass/fail gate like a unit test. You're not looking for a gr
 3. A load test isn't pass/fail; it's how you **learn your real capacity, how it behaves at the edge, and whether it stays healthy over time** - before your users find out for you.
 4. Load testing finds the **symptom** (it breaks at N users); **profiling** finds the cause (why). This guide stays on the first.
 
-Now that you know *why* you're running one, you need to know what to actually watch while it runs. Three numbers tell the whole story - and one of them is measured in a way that trips up almost everyone the first time.
+Now you know *why* you're running one. Next is what to actually watch while it runs - three numbers that tell the whole story, one of which is measured in a way that trips up almost everyone the first time.
 
 ---
 

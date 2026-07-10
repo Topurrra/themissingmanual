@@ -6,14 +6,14 @@ summary: "How a MAUI page is built: one root layout holding controls, arranged w
 tags: [dotnet-maui, csharp, xaml, layouts, grid]
 difficulty: intermediate
 synonyms: ["maui xaml", "maui layouts", "maui verticalstacklayout grid", "maui contentpage", "xaml controls", "maui ui markup"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # XAML & Layouts
 
 Here's the mental model for this whole phase: **a page is one root layout holding controls.** A screen in MAUI is a `ContentPage`, it holds exactly one thing — a layout — and the layout's job is to arrange the controls inside it. Controls are the leaves: labels, buttons, text boxes. Layouts are the branches that decide where those leaves sit.
 
-The markup you write to describe this tree is **XAML** — an XML dialect, and not a separate magic language. Every XAML element is just a C# object: write `<Label Text="Hi" />` and MAUI creates a `Label` object with its `Text` property set to `"Hi"`. The page's `<x:Class>` attribute names a C# partial class, and the XAML becomes part of that class at build time — it compiles down to the same C# objects you could write by hand.
+The markup you write to describe this tree is **XAML** — an XML dialect, not a separate magic language. Every XAML element is just a C# object: write `<Label Text="Hi" />` and MAUI creates a `Label` object with its `Text` property set to `"Hi"`. The page's `<x:Class>` attribute names a C# partial class, and the XAML becomes part of that class at build time — it compiles down to the same C# objects you could write by hand.
 
 > 📝 You *can* build the entire UI in C# instead of XAML — `new ContentPage { Content = new Label { Text = "Hi" } }`. Most MAUI code uses XAML because a declarative tree is easier to read and tweak than nested constructor calls.
 
@@ -74,9 +74,9 @@ Stacks are fine for a line of controls, but real screens have structure: a heade
 </Grid>
 ```
 
-*What just happened:* `RowDefinitions="Auto,*,Auto"` makes three rows. **`Auto`** sizes a row to exactly fit its content — the title and the button take only the height they need. **`*`** means "take all the leftover space" — the middle row stretches to fill whatever's left, exactly what you want for a scrolling list of notes. The header sits in row 0, the body in row 1, the button in row 2: header on top, body fills the gap, action button parked at the bottom.
+*What just happened:* `RowDefinitions="Auto,*,Auto"` makes three rows. **`Auto`** sizes a row to exactly fit its content — the title and the button take only the height they need. **`*`** means "take all the leftover space" — the middle row stretches to fill whatever's left, exactly what you want for a scrolling list of notes. Header on top, body fills the gap, action button parked at the bottom.
 
-> 💡 The sizing tokens are the whole point of `Grid`. **`Auto`** = size to content. **`*`** = take the remaining space (and `2*` takes twice the share of a plain `*`, so `*,2*` splits leftover space one-third / two-thirds). Because `*` rows and columns flex with the screen, the *same* layout looks right on a narrow phone and a wide desktop — no per-device code.
+> 💡 The sizing tokens are the whole point of `Grid`. **`Auto`** = size to content. **`*`** = take the remaining space (`2*` takes twice the share of a plain `*`, so `*,2*` splits leftover space one-third / two-thirds). Because `*` rows and columns flex with the screen, the *same* layout looks right on a narrow phone and a wide desktop.
 
 ### ScrollView — when content overflows
 
@@ -125,7 +125,7 @@ Properties are written as XAML attributes. The ones you'll set most often:
 </VerticalStackLayout>
 ```
 
-*What just happened:* `FontSize` and `TextColor` style the label. `HorizontalOptions` (and its sibling `VerticalOptions`) control how a child sits in the space its parent gives it — values are `Start`, `Center`, `End`, and `Fill`; here the title is centered and the button pushed to the right (`End`). `Margin="0,16,0,0"` adds space *outside* the button (left, top, right, bottom order), nudging it down from the editor. `Placeholder` is the grey hint text shown in an empty `Entry`/`Editor`.
+*What just happened:* `FontSize` and `TextColor` style the label. `HorizontalOptions` (and its sibling `VerticalOptions`) control how a child sits in the space its parent gives it — values are `Start`, `Center`, `End`, and `Fill`; here the title is centered and the button pushed right (`End`). `Margin="0,16,0,0"` adds space *outside* the button (left, top, right, bottom order), nudging it down from the editor. `Placeholder` is the grey hint text shown in an empty `Entry`/`Editor`.
 
 > ⚠️ Margin vs. Padding catches everyone once: **Padding** is space *inside* a container, before its children start. **Margin** is space *outside* a control, pushing its neighbors away. Same four-number order — `left,top,right,bottom` — but opposite sides of the control's edge.
 
@@ -133,7 +133,7 @@ Properties are written as XAML attributes. The ones you'll set most often:
 
 When stacks are the only tool you know, it's tempting to build a whole screen by burying stacks inside stacks inside stacks to push things around. Resist it.
 
-⚠️ **Deeply nested stack layouts hurt performance and are miserable to maintain.** Each stack measures and arranges its children, and nesting multiplies that work on every layout pass — on a scrolling list, it shows up as jank. Worse, six levels deep, *nobody* can tell which container owns which spacing. A `Grid` with a few `RowDefinitions`/`ColumnDefinitions` does the same job flat: one container, every child placed by row and column, far less measuring. **For anything beyond a short line of controls, reach for `Grid` first.**
+⚠️ **Deeply nested stack layouts hurt performance and are miserable to maintain.** Each stack measures and arranges its children, and nesting multiplies that work on every layout pass — on a scrolling list, it shows up as jank. Worse, six levels deep, *nobody* can tell which container owns which spacing. A `Grid` with a few `RowDefinitions`/`ColumnDefinitions` does the same job flat. **For anything beyond a short line of controls, reach for `Grid` first.**
 
 ## Building the notes app's main page
 

@@ -8,7 +8,7 @@ category: ai-ml
 order: 9
 difficulty: intermediate
 synonyms: ["how to evaluate llm output", "what is an eval", "llm as a judge", "how to test prompts", "did my prompt change make it better or worse", "how to measure llm quality", "regression testing prompts", "llm benchmark for my app"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Evaluating LLM Output

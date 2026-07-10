@@ -6,17 +6,15 @@ summary: "gRPC's binary payloads aren't human-readable and need special tools to
 tags: [grpc, rest, graphql, grpc-web, trade-offs, debugging, microservices]
 difficulty: intermediate
 synonyms: ["grpc vs rest vs graphql", "when to use grpc", "grpc disadvantages", "is grpc good for browsers", "grpc-web", "why not use grpc for public api", "debugging grpc"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Honest Trade-offs
 
 Everything in Phases 1 and 2 was the case *for* gRPC. This phase is the part a battle-hardened friend owes
 you: what it costs, and where it's the wrong tool. gRPC is genuinely excellent for one job and genuinely
-awkward for others, and knowing the difference will save you from adopting it somewhere it'll fight you
-every day.
-
-If you only read one thing, read the table — then come back for the *why* underneath it.
+awkward for others, and knowing the difference saves you from adopting it somewhere it'll fight you every
+day. If you only read one thing, read the table below — then come back for the *why* underneath it.
 
 ## When to use which — REST vs GraphQL vs gRPC
 
@@ -43,21 +41,20 @@ Now the costs in detail, because each row above hides a real day-at-work consequ
 
 ## Cost #1: Binary isn't human-readable
 
-This is the trade you make the moment you choose Protocol Buffers. With REST, when something goes wrong you
-can look:
+This is the trade you make the moment you choose Protocol Buffers. With REST, when something goes wrong you just look:
 
 ```console
 $ curl https://api.internal/convert -d '{"amount":1299,"from":"USD","to":"EUR"}'
 {"amount":1187,"currency":"EUR"}
 ```
 
-*What just happened:* You saw the exact request and response in plain text, with your own eyes, in two
-seconds. That readability is REST's superpower for debugging.
+You saw the exact request and response in plain text, with your own eyes, in two seconds. That readability
+is REST's superpower for debugging.
 
 A gRPC call on the wire is binary. You can't `curl` it into something readable, and a packet capture shows
 bytes, not fields. ⚠️ **Gotcha — don't try to debug gRPC with the JSON tools you know; they'll show you
-noise.** The honest fix is that gRPC has its own tooling that *does* make it readable — you point a tool at
-the service and call methods by name, and it uses the contract to render requests and responses as text:
+noise.** gRPC has its own tooling that *does* make it readable — you point a tool at the service and call
+methods by name, and it uses the contract to render requests and responses as text:
 
 ```console
 $ grpcurl -d '{"amount":1299,"from":"USD","to":"EUR"}' \
@@ -68,16 +65,16 @@ $ grpcurl -d '{"amount":1299,"from":"USD","to":"EUR"}' \
 }
 ```
 
-*What just happened:* `grpcurl` (the gRPC cousin of `curl`) used the service's contract to turn your text
-into the right binary call, sent it, and turned the binary reply back into readable JSON for you. The point
-isn't that gRPC is undebuggable — it's that the easy, universal `curl`-it reflex doesn't work, and you have
-to learn a new tool to get the same comfort.
+`grpcurl` (the gRPC cousin of `curl`) used the service's contract to turn your text into the right binary
+call, sent it, and turned the binary reply back into readable JSON for you. The point isn't that gRPC is
+undebuggable — it's that the easy, universal `curl`-it reflex doesn't work, and you have to learn a new
+tool to get the same comfort.
 
 ## Cost #2: Browsers can't speak gRPC directly
 
-A browser cannot make a raw gRPC call. The reason is technical but worth knowing: gRPC needs fine-grained
-control over HTTP/2 frames that browser JavaScript isn't given access to. So a web page can't just
-call your gRPC service the way it calls a REST endpoint.
+A browser cannot make a raw gRPC call: gRPC needs fine-grained control over HTTP/2 frames that browser
+JavaScript isn't given access to, so a web page can't call your gRPC service the way it calls a REST
+endpoint.
 
 The workaround is **grpc-web**: a variant of the protocol that browsers *can* speak, paired with a small
 **proxy** that translates between grpc-web and real gRPC.
@@ -88,11 +85,11 @@ flowchart LR
   Proxy <-->|gRPC| Service["gRPC service (Converter)"]
 ```
 
-*What just happened:* The browser talks grpc-web to a proxy; the proxy talks native gRPC to your service,
-and relays the answer back. It works, and plenty of teams run it — but notice you now have an extra moving
-piece to deploy and operate, and grpc-web doesn't support every streaming mode (client and bidirectional
-streaming are limited). 📝 **Terminology — a "proxy" here is a server that sits in the middle, receiving
-requests in one protocol and forwarding them on in another.**
+The browser talks grpc-web to a proxy; the proxy talks native gRPC to your service and relays the answer
+back. It works, and plenty of teams run it — but you now have an extra moving piece to deploy and operate,
+and grpc-web doesn't support every streaming mode (client and bidirectional streaming are limited).
+📝 **Terminology — a "proxy" here is a server that sits in the middle, receiving requests in one protocol
+and forwarding them on in another.**
 
 This is the single biggest reason gRPC is a poor fit for *public, browser-facing* APIs: you're signing up
 for infrastructure and limitations to do something REST does for free.

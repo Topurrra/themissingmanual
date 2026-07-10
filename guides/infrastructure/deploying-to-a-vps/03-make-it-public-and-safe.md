@@ -6,7 +6,7 @@ summary: "Pointing a domain at your box with a DNS A record, putting nginx in fr
 tags: [dns, nginx, reverse-proxy, https, lets-encrypt, certbot, tls, domain, backups]
 difficulty: intermediate
 synonyms: ["point a domain at a vps", "dns a record setup", "nginx reverse proxy to app", "get free https certificate", "lets encrypt certbot nginx", "make my app reachable by domain", "https for self hosted app", "dont expose app port to internet", "server backups"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Make It Public & Safe
@@ -14,14 +14,12 @@ updated: 2026-06-19
 Your app is running and self-healing, but it's hiding on `127.0.0.1:3000`, reachable only from the box
 itself. The internet can see your server's IP, but not your app. This phase opens the front door - the
 right way - so a real person can type a real domain into a browser and get your app over a secure HTTPS
-connection.
-
-There are three moving parts, and they fit together in a clean chain. Let's see the whole picture before
-touching anything, because each piece only makes sense in light of the others.
+connection. There are three moving parts, and they fit together in a clean chain - let's see the whole
+picture before touching anything, since each piece only makes sense in light of the others.
 
 ## The whole picture first
 
-**What you're building.** A request from a visitor's browser will travel like this:
+A request from a visitor's browser will travel like this:
 
 ```mermaid
 flowchart TD
@@ -47,16 +45,16 @@ internet directly. Only nginx does. Your app stays bound to localhost behind it.
 
 ## Step 1: Point a domain at the box (DNS)
 
-**What it actually is.** **DNS** (*Domain Name System*) is the internet's address book: it maps names
-people can remember (`your-domain.com`) to the IP addresses machines actually use (`203.0.113.10`). To
-point your domain at your box, you add one record - an **A record** - at wherever you bought or manage
-the domain (your registrar or DNS host).
+**DNS** (*Domain Name System*) is the internet's address book: it maps names people can remember
+(`your-domain.com`) to the IP addresses machines actually use (`203.0.113.10`). To point your domain at
+your box, you add one record - an **A record** - at wherever you bought or manage the domain (your
+registrar or DNS host).
 
 📝 **Terminology.** *A record* = a DNS entry mapping a name to an IPv4 address. (*AAAA record* is the
 same for an IPv6 address; add one too if your box has an IPv6 address.) *TTL* = "time to live," how long
 resolvers are allowed to cache the answer.
 
-**What you do.** In your DNS provider's dashboard, create an A record. The form maps onto these fields:
+In your DNS provider's dashboard, create an A record. The form maps onto these fields:
 
 ```text
    FIELD       TYPICAL VALUE              MEANS
@@ -70,8 +68,8 @@ resolvers are allowed to cache the answer.
 `@` means the root of your domain (`your-domain.com` itself); add a second record with name `www` if you
 want `www.your-domain.com` to work too.
 
-**Confirm it took effect.** DNS changes propagate gradually, so don't panic if it's not instant. Check
-from your laptop:
+DNS changes propagate gradually, so don't panic if it's not instant. Confirm it took effect from your
+laptop:
 
 ```console
 $ dig +short your-domain.com
@@ -86,18 +84,18 @@ process relies on the domain reaching your box.
 
 ## Step 2: Put nginx in front (reverse proxy)
 
-**What it actually is.** A **reverse proxy** is a server that sits in front of your app, receives
-requests from the outside world, and passes them along to your app behind it - then relays the app's
-response back out. **nginx** is the most common one. It handles the messy public-facing parts (TLS,
-multiple sites, large numbers of connections) so your app can stay simple and private.
+A **reverse proxy** is a server that sits in front of your app, receives requests from the outside world,
+and passes them along to your app behind it - then relays the app's response back out. **nginx** is the
+most common one. It handles the messy public-facing parts (TLS, multiple sites, large numbers of
+connections) so your app can stay simple and private.
 
-**Why a reverse proxy at all?** Three concrete reasons, beyond "everyone does it": it lets you terminate
-HTTPS in one well-tested place instead of in your app; it lets one box serve multiple apps/domains on the
-same ports; and it keeps your app off the public internet entirely. (nginx does much more - caching, load
-balancing across several app instances - which is the subject of
-[Load Balancers and nginx](/guides/load-balancers-and-nginx). Here we use just the proxy piece.)
+**Why a reverse proxy at all?** Three concrete reasons: it lets you terminate HTTPS in one well-tested
+place instead of in your app; it lets one box serve multiple apps/domains on the same ports; and it keeps
+your app off the public internet entirely. (nginx does much more - caching, load balancing across several
+app instances - the subject of [Load Balancers and nginx](/guides/load-balancers-and-nginx). Here we use
+just the proxy piece.)
 
-**A real example.** Install nginx:
+Install nginx:
 
 ```console
 deploy@web-prod-1:~$ sudo apt install -y nginx
@@ -107,8 +105,8 @@ deploy@web-prod-1:~$ sudo systemctl status nginx
      Active: active (running) since Fri 2026-06-19 14:40:11 UTC; 4s ago
 ```
 
-*What just happened:* `apt` installed nginx, which on Ubuntu starts itself and is enabled on boot
-automatically - note it's already `active (running)`. (You allowed ports 80 and 443 through UFW back in
+*What just happened:* `apt` installed nginx, which on Ubuntu starts and enables itself on boot - note
+it's already `active (running)`. (You allowed ports 80 and 443 through UFW back in
 [Phase 1](01-get-a-box-and-get-in.md), so it's reachable.) Visiting `http://your-domain.com` now would
 show nginx's default welcome page - proof the public path works, before we point it at your app.
 
@@ -156,27 +154,27 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 deploy@web-prod-1:~$ sudo systemctl reload nginx
 ```
 
-*What just happened:* The `ln -s` created a symlink from `sites-available` (where configs live) into
-`sites-enabled` (the ones nginx actually loads) - that two-directory pattern is how nginx lets you keep
-a config on disk without it being live. **`nginx -t`** tested the configuration for syntax errors
-*before* applying it (always run this - a broken config that you reload can take the site down). With the
-test passing, `systemctl reload nginx` applied it without dropping existing connections. Now
+*What just happened:* `ln -s` created a symlink from `sites-available` (where configs live) into
+`sites-enabled` (the ones nginx actually loads) - that two-directory pattern is how nginx lets you keep a
+config on disk without it being live. **`nginx -t`** tested the configuration for syntax errors *before*
+applying it (always run this - a broken config that you reload can take the site down). With the test
+passing, `systemctl reload nginx` applied it without dropping existing connections. Now
 `http://your-domain.com` reaches your app.
 
 ⚠️ **Gotcha - the one that's easy to get wrong.** Do **not** open your app's port (3000) in the
-firewall, and do **not** bind your app to `0.0.0.0`. If you do either, people can skip nginx entirely and
+firewall, and do **not** bind your app to `0.0.0.0`. Either mistake lets people skip nginx entirely and
 hit your app directly - bypassing HTTPS, any access rules, and the whole point of the proxy. Your app
 stays on `127.0.0.1`; only nginx (ports 80/443) is public. That separation *is* the safety.
 
 ## Step 3: Turn on HTTPS with Let's Encrypt
 
-**What it actually is.** **HTTPS** is HTTP wrapped in encryption (**TLS**), so nobody between the visitor
-and your server can read or tamper with the traffic. It requires a **certificate** - a file, signed by a
-trusted authority, that proves you control the domain. **Let's Encrypt** is a free, automated certificate
-authority, and **Certbot** is the tool that gets and installs its certificates for you. The browser
-padlock comes from this.
+**HTTPS** is HTTP wrapped in encryption (**TLS**), so nobody between the visitor and your server can read
+or tamper with the traffic. It requires a **certificate** - a file, signed by a trusted authority, that
+proves you control the domain. **Let's Encrypt** is a free, automated certificate authority, and
+**Certbot** is the tool that gets and installs its certificates for you. The browser padlock comes from
+this.
 
-**A real example.** Install Certbot's nginx plugin and run it:
+Install Certbot's nginx plugin and run it:
 
 ```console
 deploy@web-prod-1:~$ sudo apt install -y certbot python3-certbot-nginx
@@ -198,10 +196,10 @@ Congratulations! You have successfully enabled HTTPS on https://your-domain.com
 
 *What just happened:* `certbot --nginx -d your-domain.com -d www.your-domain.com` asked Let's Encrypt for
 a certificate covering both names. To prove you control the domain, Certbot briefly answered a challenge
-over the domain you set up in Step 1 (this is why DNS had to resolve first). On success, it saved the
-certificate, then - because of `--nginx` - *edited your site config for you*: it added a `listen 443 ssl`
-block pointing at the new certificate and set up a redirect from HTTP to HTTPS. Reload happened
-automatically. Visit `https://your-domain.com` and you'll see the padlock.
+over the domain from Step 1 (this is why DNS had to resolve first). On success it saved the certificate,
+then - because of `--nginx` - *edited your site config for you*: added a `listen 443 ssl` block pointing
+at the new certificate and a redirect from HTTP to HTTPS, and reloaded automatically. Visit
+`https://your-domain.com` and you'll see the padlock.
 
 **Renewal is automatic - but verify it.** Let's Encrypt certificates last 90 days; Certbot installs a
 timer to renew them well before expiry. Confirm it's set up:
@@ -215,10 +213,9 @@ Congratulations, all simulations of the renewal succeeded:
   /etc/letsencrypt/live/your-domain.com/fullchain.pem (success)
 ```
 
-*What just happened:* `renew --dry-run` rehearsed the renewal without actually replacing anything. A
-clean run means the automatic renewal will work when the real expiry approaches, so you won't wake up one
-day to an expired-certificate warning on your own site. This dry-run is the single best "trust but
-verify" step in the whole guide.
+*What just happened:* `renew --dry-run` rehearsed the renewal without replacing anything. A clean run
+means auto-renewal will work when the real expiry approaches, so you won't wake up to an
+expired-certificate warning on your own site - the single best "trust but verify" step in this guide.
 
 ## The safety rules, in one place
 
@@ -232,9 +229,9 @@ are optional for anything real.
   compromised, the blast radius is one limited user, not the whole machine.
 - ⚠️ **Set up backups before you need them.** A VPS is one machine; disks fail, fingers slip, `rm`
   happens. Snapshot the box on a schedule (most providers offer automated snapshots for a small fee) and,
-  separately, back up the *data* that matters - your database and any user-uploaded files - somewhere off
-  the box. The test of a backup is restoring it; an untested backup is a hope, not a plan. Doing this on
-  day one costs little; doing it after you lose data is impossible.
+  separately, back up the *data* that matters - your database, any user-uploaded files - somewhere off the
+  box. The test of a backup is restoring it; an untested one is a hope, not a plan. Doing this on day one
+  costs little; doing it after you lose data is impossible.
 - 💡 **Keep the box patched.** The `apt update && apt upgrade` from Phase 1 isn't a one-time chore - run
   it regularly, and reboot when a kernel update needs it. An unpatched internet-facing box accumulates
   known holes over time.
@@ -251,7 +248,7 @@ are optional for anything real.
    need them**, **box kept patched**.
 
 That's the whole arc - from an empty rented box to your app live at a real `https://` URL, running as a
-service that heals itself, behind a proxy that keeps it safe. You went from zero to live.
+service that heals itself, behind a proxy that keeps it safe. Zero to live.
 
 > Where to go next: when one box isn't enough - multiple app instances, load balancing across them,
 > zero-downtime deploys - pick up [Load Balancers and nginx](/guides/load-balancers-and-nginx), which

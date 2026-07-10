@@ -6,7 +6,7 @@ summary: "A cache keeps a copy of an expensive-to-produce result somewhere fast,
 tags: [caching, cache-hit, cache-miss, mental-model, performance]
 difficulty: intermediate
 synonyms: ["what is a cache", "what does caching mean", "cache hit vs cache miss", "what is a cache hit", "what is a cache miss", "why is caching everywhere", "what does a cache store"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What a Cache Actually Is
@@ -29,7 +29,7 @@ Here's the whole idea: **a cache keeps a copy of an answer that was expensive to
 
 Every cache in computing is this notepad. The "expensive work" might be a database query that scans a million rows, a call to a slow third-party API, rendering an image, or fetching a file from a server on another continent. The cache is wherever you stash the result so you don't pay that cost twice.
 
-**Why people get this wrong.** The common wrong picture is that a cache is a place you *put data on purpose*, like a special fast database you write to. Sometimes it works that way, but the core idea is the opposite: a cache holds *derived* copies of answers whose real home is somewhere else. The truth lives in the database (or the API, or the original file). The cache only holds a copy of an answer you already computed from that truth. Holding that distinction — **truth lives elsewhere, the cache holds a copy** — is what makes Phase 3 make sense later.
+**Why people get this wrong.** The common wrong picture is that a cache is a place you *put data on purpose*, like a special fast database you write to. The core idea is the opposite: a cache holds *derived* copies of answers whose real home — the database, the API, the original file — is somewhere else. Holding that distinction, **truth lives elsewhere, the cache holds a copy**, is what makes Phase 3 make sense later.
 
 ## Hit and miss: the two things that can happen
 
@@ -46,7 +46,7 @@ flowchart TD
   Q -- "no = MISS" --> Miss["Do the real work (query the DB),<br/>return it, AND save a copy for next time"]
 ```
 
-**What it does in real life.** The first request for something is almost always a miss — nobody's computed it yet, so the cache is empty for that item (this first-time miss is often called a *cold* cache). You pay full price once. Every later request for the same thing can be a hit, paying almost nothing. So caching doesn't make any single answer cheaper to *produce* — it makes *repeated* requests for the same answer nearly free.
+**What it does in real life.** The first request for something is almost always a miss — nobody's computed it yet, so the cache is empty for that item (a *cold* cache). You pay full price once; every later request for the same thing can be a hit, paying almost nothing. Caching doesn't make any single answer cheaper to *produce* — it makes *repeated* requests for the same answer nearly free.
 
 **A real example.** Here's the pattern in plain code — ask the cache first, fall back to the real work on a miss, then save the result:
 
@@ -62,13 +62,11 @@ flowchart TD
 ```
 *What just happened:* The first call for `user:42:profile` finds nothing (miss), runs the real database query, and stores the result under that key. The second call finds the stored copy (hit) and returns it without touching the database at all. The key — `user:42:profile` — is just a label so you can find the right copy again, exactly like writing `347×89=` next to your jotted answer.
 
-**The gotcha.** A cache only helps when the *same* answer is asked for more than once. If every request is for something unique — a one-time report, a per-request random value, a query nobody repeats — there's nothing to reuse, every request is a miss, and the cache adds work (check, fail, do the job anyway) without ever paying off. Caching wins on *repetition*. No repetition, no win.
-
-**Why this saves you later.** When someone says "let's cache it" and the data is different on every single request, you'll know to push back instead of adding a layer that can only cost you. And when you *do* see heavy repetition — the same homepage, the same popular product, the same hot query — you'll recognize the obvious win.
+**The gotcha.** A cache only helps when the *same* answer is asked for more than once. If every request is for something unique — a one-time report, a per-request random value, a query nobody repeats — there's nothing to reuse, every request is a miss, and the cache adds work (check, fail, do the job anyway) without ever paying off. Caching wins on *repetition*, and when someone suggests caching data that's different on every request, that's your cue to push back.
 
 ## Why caching is everywhere
 
-**What it actually is.** Once you see "keep a copy of the expensive answer somewhere fast," you start seeing it at every layer of every system, because the gap between *fast* and *slow* is enormous and shows up everywhere.
+**What it actually is.** Once you see "keep a copy of the expensive answer somewhere fast," you start seeing it at every layer of every system — the gap between *fast* and *slow* is enormous and shows up everywhere.
 
 Producing an answer can be slow for very different reasons:
 
@@ -78,7 +76,7 @@ Producing an answer can be slow for very different reasons:
 
 In all three cases the fix is the same shape: do the expensive thing once, keep the result somewhere closer or cheaper, and serve the copy. That's why caching appears in your browser, at the network edge, inside your application, and inside the database itself — which is exactly the tour Phase 2 takes you on.
 
-**Why this saves you later.** Performance work is often just "find the expensive thing that's being redone, and stop redoing it." Caching is the most common tool for that, which is why understanding it as *one idea applied at many layers* — rather than a pile of unrelated technologies — makes the whole landscape readable. (When the expensive thing is a database query specifically, [Why Is My Query Slow?](/guides/why-is-my-query-slow) is the companion to this guide.)
+**Why this saves you later.** Performance work is often just "find the expensive thing that's being redone, and stop redoing it." Seeing caching as *one idea applied at many layers*, rather than a pile of unrelated technologies, makes the whole landscape readable. (When the expensive thing is a database query specifically, [Why Is My Query Slow?](/guides/why-is-my-query-slow) is the companion to this guide.)
 
 ## Recap
 

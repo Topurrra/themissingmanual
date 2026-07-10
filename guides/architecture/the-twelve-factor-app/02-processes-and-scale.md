@@ -6,12 +6,12 @@ summary: "The canonical checklist for an app that is actually shippable and scal
 tags: [architecture, twelve-factor, deployment, config, cloud-native, devops]
 difficulty: intermediate
 synonyms: ["12 factor app", "twelve factor methodology", "12factor", "config in environment", "stateless processes", "cloud native checklist", "heroku twelve factor"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Stateless processes, port binding, and scaling out
 
-The foundation from phase 1 makes a deploy repeatable. This phase is about how the *running* app behaves — and the whole point is one word: **multiplicity**. You want to be able to run many copies of your app, kill any of them, and start new ones, without anyone noticing. Almost every "we can't scale" story is really a story about one of these factors being broken. Once you can run ten copies as safely as one, scaling stops being scary and becomes a slider you drag.
+The foundation from phase 1 makes a deploy repeatable. This phase is about how the *running* app behaves — the whole point is one word: **multiplicity**, the ability to run many copies of your app, kill any of them, and start new ones, without anyone noticing. Almost every "we can't scale" story is really a story about one of these factors being broken, and once you can run ten copies as safely as one, scaling stops being scary and becomes a slider you drag.
 
 ## Factor VI — Processes are stateless
 
@@ -53,7 +53,7 @@ Listening on http://0.0.0.0:8080
 
 ## Factor VIII — Scale out via the process model
 
-Now the payoff. Because processes are stateless (VI) and self-contained (VII), scaling is no longer "buy a bigger server." It's "run more processes." This is **scaling out** (more copies) versus **scaling up** (a beefier box), and the process model is what makes scaling out trivial.
+Now the payoff: because processes are stateless (VI) and self-contained (VII), scaling is no longer "buy a bigger server" — it's "run more processes." This is **scaling out** (more copies) versus **scaling up** (a beefier box), and the process model is what makes scaling out trivial.
 
 The twelve-factor framing is that an app is a collection of **process types**, and you scale each type independently by running more of it:
 
@@ -63,11 +63,11 @@ worker = ./my-app --jobs           → run 3 of these (background jobs)
 clock  = ./my-app --scheduler      → run 1 of these (periodic tasks)
 ```
 
-*What just happened:* traffic spikes? Run more `web` processes. Job queue backing up? Run more `worker` processes. Each type scales on its own axis, and because every process is stateless, adding or removing one is safe at any moment.
+*What just happened:* a traffic spike means running more `web` processes; a backed-up job queue means running more `worker` processes. Each type scales on its own axis, and because every process is stateless, adding or removing one is safe at any moment.
 
-The deep idea: never daemonize your app or write your own PID files to manage copies. Let the process model — the operating system, the container orchestrator, the platform — own that. Your job is to make one process that's safe to run N times. The platform's job is to run N of them.
+The deep idea: never daemonize your app or write your own PID files to manage copies — let the process model (the operating system, the container orchestrator, the platform) own that. Your job is to make one process that's safe to run N times; the platform's job is to run N of them.
 
-For builders: this trio is the entire reason container platforms and orchestrators exist. Kubernetes "replicas," a `docker compose` `scale`, a platform's "dynos" — all of it assumes your process is stateless, self-contained, and safe to clone. When scaling that way fights you, the cause is almost always a broken Factor VI. The trade-offs of scaling out at large numbers — coordination, data partitioning, the limits of horizontal scale — are their own topic in /guides/designing-for-scale.
+For builders: this trio is the entire reason container platforms and orchestrators exist. Kubernetes "replicas," a `docker compose` `scale`, a platform's "dynos" — all of it assumes your process is stateless, self-contained, and safe to clone, and when scaling that way fights you, the cause is almost always a broken Factor VI. The trade-offs of scaling out at large numbers — coordination, data partitioning, the limits of horizontal scale — are their own topic in /guides/designing-for-scale.
 
 ```quiz
 [

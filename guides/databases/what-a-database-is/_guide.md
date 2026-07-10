@@ -8,7 +8,7 @@ category: databases
 order: 1
 difficulty: beginner
 synonyms: ["what is a database", "what is a database actually", "database vs spreadsheet", "what is a dbms", "do i need a database", "database for beginners"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What a Database Actually Is

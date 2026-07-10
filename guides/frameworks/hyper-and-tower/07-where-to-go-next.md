@@ -6,14 +6,14 @@ summary: "The payoff: the same Service and Layer model that runs an axum server 
 tags: [tower, hyper, tonic, grpc, clients, ecosystem]
 difficulty: beginner
 synonyms: ["tower ecosystem", "tonic grpc tower", "tower client middleware", "tower retry timeout load balance", "hyper client", "tower next steps"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
 Take a second to notice how far you've come. When you started, the bottom of the Rust web stack was a wall of names you used but couldn't picture: `axum::serve`, "tower middleware," `tower-http`, hyper somewhere underneath. Now you can name every one of them. **hyper** speaks HTTP on the socket. A **`Service`** is the universal shape — request in, response out, plus a readiness check. A **`Layer`** wraps a `Service` to make a new one, and that's all middleware ever was. `tower-http` is a box of ready-made layers. And axum's `Router` is itself a `Service`, with your layers wrapped around it, handed to hyper to drive.
 
-That's not a small thing. This was the deepest **roots** guide in the Rust set, and the wall is gone. What's left in this last phase isn't new mechanism — it's showing you how far that one model reaches. Because here's the part that makes the effort pay off: the `Service`/`Layer` abstraction wasn't built for axum, or even for servers. It works across the whole ecosystem, and once you see that, a lot of other libraries stop being separate things to learn.
+That's not a small thing. This was the deepest **roots** guide in the Rust set, and the wall is gone. What's left in this last phase isn't new mechanism — it's showing you how far that one model reaches. The `Service`/`Layer` abstraction wasn't built for axum, or even for servers. It works across the whole ecosystem, and once you see that, a lot of other libraries stop being separate things to learn.
 
 ## The same layers, on gRPC
 

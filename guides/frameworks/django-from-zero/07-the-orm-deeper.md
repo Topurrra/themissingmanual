@@ -6,14 +6,14 @@ summary: "QuerySets are lazy and chainable, field lookups and Q/F give you real 
 tags: [django, orm, queryset, n-plus-one, select-related, prefetch-related, aggregation, lazy-evaluation]
 difficulty: advanced
 synonyms: ["django queryset lazy", "django select_related prefetch_related", "django n+1 query problem", "django orm filter chaining", "django aggregation annotate", "django q objects f expressions", "django orm performance"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # The ORM, Deeper
 
 Phase 3 gave you the ORM's friendly face: `Post.objects.filter(...)`, `post.comments.all()`, query in Python and never touch SQL. That face is honest, but it's only half the story. The other half is what happens *underneath* — when the SQL actually runs, how many queries you fire without realizing, and why the same blog loop that's instant on your laptop crawls in production.
 
-Here's the mental model to carry through this whole phase. **A QuerySet is not data — it's a recipe for a query.** It describes *what you would fetch if someone asked*, and it sits there, costing nothing, until something forces it to run. That single fact explains chaining, it explains the surprising moments when the database suddenly lights up, and it explains the most expensive beginner mistake in any ORM: the N+1 problem. We'll build all three on top of it.
+Here's the mental model to carry through this whole phase. **A QuerySet is not data — it's a recipe for a query.** It describes *what you would fetch if someone asked*, and it sits there, costing nothing, until something forces it to run. That single fact explains chaining, the surprising moments when the database suddenly lights up, and the most expensive beginner mistake in any ORM: the N+1 problem.
 
 If you've read [Lazy vs Eager Fetching & the N+1 Problem](/guides/hibernate-and-jpa-from-zero) for Java, you already know the punchline — N+1 is not a Django bug or a Hibernate bug, it's a trap *every* ORM sets the same way. This phase is the Python telling of that same story.
 
@@ -36,7 +36,7 @@ Django is great
 Hello world
 ```
 
-*What just happened:* the first three lines look like they're doing work, but not one of them talked to the database. Each call returns a *new* QuerySet that remembers "filter by this, then exclude that, then sort." Django only assembles and runs the SQL when the `for` loop asks for the first row. And because the whole chain collapses into a single query, those three operations cost exactly one round trip — not three. The chaining is free; the *consumption* is what costs.
+*What just happened:* the first three lines look like they're doing work, but not one of them talked to the database. Each call returns a *new* QuerySet that remembers "filter by this, then exclude that, then sort." Django only assembles and runs the SQL when the `for` loop asks for the first row, and because the whole chain collapses into a single query, those three operations cost exactly one round trip — not three. The chaining is free; the *consumption* is what costs.
 
 Here's the single query that chain produces:
 
@@ -50,9 +50,9 @@ ORDER BY created DESC;
 
 *What just happened:* `filter` became a `WHERE`, `exclude` became `AND NOT (...)`, and `order_by("-created")` became `ORDER BY created DESC` (the leading `-` is descending). Three Python method calls, one SQL statement. The ORM folded your recipe into a single trip to the database.
 
-⚠️ **This laziness is a gift and a landmine.** The gift: you can pass QuerySets around, layer filters in different functions, and pay for exactly one query at the end. The landmine: because the query is invisible until consumed, it's genuinely easy to *accidentally* trigger many of them without noticing — which is precisely how the N+1 problem sneaks in. Hold onto "consuming a QuerySet runs a query"; in a few sections it's going to bite.
+⚠️ **This laziness is a gift and a landmine.** The gift: you can pass QuerySets around, layer filters in different functions, and pay for exactly one query at the end. The landmine: because the query is invisible until consumed, it's genuinely easy to *accidentally* trigger many of them without noticing — precisely how the N+1 problem sneaks in. Hold onto "consuming a QuerySet runs a query"; in a few sections it's going to bite.
 
-💡 One consequence worth knowing now: each time you consume a *fresh* QuerySet, it re-runs the query. `list(qs)` twice is two trips. If you need the results more than once, evaluate it once (`posts = list(qs)`) and reuse the list. Django does cache the results *within* a single QuerySet object once it's been evaluated, but a brand-new `.filter(...)` chain is a brand-new query.
+💡 One consequence worth knowing now: each time you consume a *fresh* QuerySet, it re-runs the query. `list(qs)` twice is two trips. If you need the results more than once, evaluate it once (`posts = list(qs)`) and reuse the list. Django caches results *within* a single QuerySet object once evaluated, but a brand-new `.filter(...)` chain is a brand-new query.
 
 ## Filtering with real power
 
@@ -66,7 +66,7 @@ The `__contains` lookup from Phase 3 was a taste. Django's **field lookups** are
 >>> Post.objects.filter(created__gte="2026-01-01")     # created on or after that date
 ```
 
-*What just happened:* `title__icontains` is case-insensitive `LIKE`; `created__year=2026` digs the year out of a date column; `created__gte` is `>=` ("greater than or equal"). The pattern is always `field__lookup=value`. There are dozens — `__lt`, `__lte`, `__gt`, `__in`, `__isnull`, `__startswith` — but they all read the same way. That `created__gte` becomes:
+*What just happened:* `title__icontains` is case-insensitive `LIKE`; `created__year=2026` digs the year out of a date column; `created__gte` is `>=`. The pattern is always `field__lookup=value`. There are dozens — `__lt`, `__lte`, `__gt`, `__in`, `__isnull`, `__startswith` — but they all read the same way. That `created__gte` becomes:
 
 ```sql
 SELECT id, title, body, created FROM blog_post WHERE created >= '2026-01-01';
@@ -80,7 +80,7 @@ But plain `.filter()` arguments are always joined with `AND`. The moment you nee
 >>> Post.objects.filter(Q(title__icontains="django") | Q(body__icontains="django"))
 ```
 
-*What just happened:* `Q` wraps a condition into something you can combine with `|` (OR) and `&` (AND), and negate with `~`. This finds posts mentioning "django" in *either* the title *or* the body — impossible with plain keyword arguments, which only AND together. The SQL is the natural one:
+*What just happened:* `Q` wraps a condition into something you can combine with `|` (OR) and `&` (AND), and negate with `~`. This finds posts mentioning "django" in *either* the title *or* the body — impossible with plain keyword arguments, which only AND together.
 
 ```sql
 SELECT id, title, body, created FROM blog_post
@@ -96,7 +96,7 @@ The third tool is the **`F` expression**, for when the value you're comparing ag
 >>> Post.objects.update(view_count=F("view_count") + 1)
 ```
 
-*What just happened:* `F("view_count")` means "the current value of this column, in the database, right now." So `view_count=F("view_count") + 1` becomes a single `UPDATE blog_post SET view_count = view_count + 1` — the increment happens *inside* the database, atomically, in one statement. ⚠️ The naive alternative — read the value into Python, add one, save it back — has a race: two requests both read `5`, both write `6`, and you've lost an increment. `F` sidesteps that entirely by never bringing the number into Python in the first place. (`F` also works in filters: `Comment.objects.filter(created__gt=F("post__created"))` finds comments made after their post existed — column compared to column.)
+*What just happened:* `F("view_count")` means "the current value of this column, in the database, right now." So `view_count=F("view_count") + 1` becomes a single `UPDATE blog_post SET view_count = view_count + 1` — the increment happens *inside* the database, atomically, in one statement. ⚠️ The naive alternative — read the value into Python, add one, save it back — has a race: two requests both read `5`, both write `6`, and you've lost an increment. `F` sidesteps that by never bringing the number into Python. (`F` also works in filters: `Comment.objects.filter(created__gt=F("post__created"))` finds comments made after their post existed.)
 
 ## Spanning relationships in queries
 
@@ -110,7 +110,7 @@ Phase 3 walked the foreign key in Python (`comment.post`, `post.comments.all()`)
 >>> Post.objects.filter(comments__author="Sam").distinct()
 ```
 
-*What just happened:* `post__title` reaches *across* the `ForeignKey` from `Comment` to `Post` and filters on the post's title — Django turns that into a SQL `JOIN`. The second query goes the *reverse* direction: from `Post`, through the `comments` relation, to each comment's author, finding posts Sam commented on. (`.distinct()` because a post with three Sam-comments would otherwise appear three times — the join multiplies rows.) Here's the first one's SQL:
+*What just happened:* `post__title` reaches *across* the `ForeignKey` from `Comment` to `Post` and filters on the post's title — Django turns that into a SQL `JOIN`. The second query goes the *reverse* direction: from `Post`, through the `comments` relation, to each comment's author, finding posts Sam commented on. (`.distinct()` because a post with three Sam-comments would otherwise appear three times.) Here's the first one's SQL:
 
 ```sql
 SELECT c.id, c.author, c.body, c.created, c.post_id
@@ -119,7 +119,7 @@ INNER JOIN blog_post p ON c.post_id = p.id
 WHERE p.title = 'Hello world';
 ```
 
-*What just happened:* one query, one join, the filter applied on the joined table. This is spanning relationships *in the query* — Django writes the join for you. Keep that join in mind, because the very next section is about what happens when you *don't* let Django write it and walk the relationship in a Python loop instead.
+*What just happened:* one query, one join, the filter applied on the joined table. Keep that join in mind, because the next section is about what happens when you *don't* let Django write it and walk the relationship in a Python loop instead.
 
 ## The N+1 problem (the main event)
 
@@ -134,7 +134,7 @@ for post in posts:
     print(post.title, post.comments.count())   # ← a NEW query every iteration
 ```
 
-*What just happened:* line one runs **one** query to load all the posts. Then, each time the loop calls `post.comments.count()`, that's a *fresh* QuerySet on the reverse relation — and remember from the top of this phase, **consuming a QuerySet runs a query.** So every single post fires its own `SELECT`. Here's the SQL flood with, say, 100 posts:
+*What just happened:* line one runs **one** query to load all the posts. Then, each time the loop calls `post.comments.count()`, that's a *fresh* QuerySet on the reverse relation — and remember, **consuming a QuerySet runs a query.** So every single post fires its own `SELECT`. Here's the SQL flood with, say, 100 posts:
 
 ```sql
 SELECT id, title, body, created FROM blog_post;                          -- the "1"
@@ -147,9 +147,9 @@ SELECT COUNT(*) FROM blog_comment WHERE post_id = 99;
 SELECT COUNT(*) FROM blog_comment WHERE post_id = 100;
 ```
 
-*What just happened:* **1 query for the posts, then N more — one per post — for the comments.** That's `1 + N` queries. 100 posts = **101 queries**. A thousand posts = 1001. Each one is a separate round trip: network hop, parse, plan, execute, return. Individually they're quick; multiplied by N they're a stampede. This is the **N+1 problem**.
+*What just happened:* **1 query for the posts, then N more — one per post — for the comments.** That's `1 + N` queries. 100 posts = **101 queries**. A thousand posts = 1001. Each is a separate round trip: network hop, parse, plan, execute, return. Individually quick; multiplied by N, a stampede. This is the **N+1 problem**.
 
-⚠️ The cruelty is that it's *invisible in the code*. The loop reads like a normal loop. It's instant with three posts in your test DB. Then it meets 5,000 posts in production and the page times out — and nobody changed a line. The query count grows with your *data*, not your *code*, so it slides through code review and tests you didn't write. The exact same trap exists in Hibernate, SQLAlchemy, ActiveRecord, every ORM — see [the Java telling](/guides/hibernate-and-jpa-from-zero) for proof it's not a Django quirk. You only catch it by *watching the query count*, which is the discipline we close on.
+⚠️ The cruelty is that it's *invisible in the code*. The loop reads like a normal loop. It's instant with three posts in your test DB. Then it meets 5,000 posts in production and the page times out — nobody changed a line. The query count grows with your *data*, not your *code*, so it slides through code review and tests you didn't write. The exact same trap exists in Hibernate, SQLAlchemy, ActiveRecord, every ORM — see [the Java telling](/guides/hibernate-and-jpa-from-zero). You only catch it by *watching the query count*.
 
 Django gives you two cures, and which one you use depends on the *direction* of the relationship.
 
@@ -188,7 +188,7 @@ for post in Post.objects.prefetch_related("comments"):
     print(post.title, [c.author for c in post.comments.all()])
 ```
 
-*What just happened:* `prefetch_related("comments")` can't use a JOIN (joining a one-to-many would multiply rows wastefully), so it does something cleverer: it runs **one** query for the posts, then **one** more query that grabs *all* the comments for *all* those posts in a single `IN`, and stitches them onto the right posts in Python:
+*What just happened:* `prefetch_related("comments")` can't use a JOIN (joining a one-to-many would multiply rows wastefully), so it runs **one** query for the posts, then **one** more query that grabs *all* the comments for *all* those posts in a single `IN`, and stitches them onto the right posts in Python:
 
 ```sql
 SELECT id, title, body, created FROM blog_post;
@@ -197,7 +197,7 @@ SELECT id, author, body, post_id FROM blog_comment WHERE post_id IN (1, 2, 3, ..
 
 *What just happened:* **two queries, total — regardless of whether you have 100 posts or 100,000.** The `post.comments.all()` inside the loop no longer hits the database; it reads from the prefetched cache Django filled. 101 queries became 2.
 
-💡 The rule that sticks: **`select_related` for the "one" side (it JOINs), `prefetch_related` for the "many" side (it does a second `IN` query).** Reach for whichever matches the direction you're traversing — and when you genuinely write a slow query on purpose, that's a different skill, covered in [Why Is My Query Slow?](/guides/why-is-my-query-slow).
+💡 The rule that sticks: **`select_related` for the "one" side (it JOINs), `prefetch_related` for the "many" side (it does a second `IN` query).** Reach for whichever matches the direction you're traversing — covered further in [Why Is My Query Slow?](/guides/why-is-my-query-slow).
 
 ## Aggregation, annotation, and seeing the SQL
 
@@ -212,7 +212,7 @@ For a **single summary number** across the whole table, use `aggregate`:
 >>> Comment.objects.aggregate(total=Count("id"))   # -> {'total': 540}
 ```
 
-*What just happened:* `.count()` is `SELECT COUNT(*)` — one number, one query, far cheaper than `len(Post.objects.all())` (which would pull every row into Python just to count them). `aggregate(...)` collapses a whole QuerySet into a dict of computed values — `Count`, `Avg`, `Sum`, `Min`, `Max` — all computed by the database, not in Python.
+*What just happened:* `.count()` is `SELECT COUNT(*)` — one number, one query, far cheaper than `len(Post.objects.all())` (which pulls every row into Python just to count them). `aggregate(...)` collapses a whole QuerySet into a dict of computed values — `Count`, `Avg`, `Sum`, `Min`, `Max` — all computed by the database, not in Python.
 
 For a **per-row** computed value — "how many comments does *each* post have" — use `annotate`. This is the proper, one-query fix for the N+1 counting loop from earlier:
 
@@ -224,7 +224,7 @@ For a **per-row** computed value — "how many comments does *each* post have" �
 ...     print(post.title, post.num_comments)   # no extra query — it's already on the row
 ```
 
-*What just happened:* `annotate(num_comments=Count("comments"))` attaches a *new, computed attribute* to every post in the QuerySet, calculated by the database with a `GROUP BY`. Each `post.num_comments` is already there — no per-post query. The whole listing is **one** query:
+*What just happened:* `annotate(num_comments=Count("comments"))` attaches a *new, computed attribute* to every post in the QuerySet, calculated by the database with a `GROUP BY`. Each `post.num_comments` is already there. The whole listing is **one** query:
 
 ```sql
 SELECT p.id, p.title, p.body, p.created, COUNT(c.id) AS num_comments
@@ -233,7 +233,7 @@ LEFT OUTER JOIN blog_comment c ON c.post_id = p.id
 GROUP BY p.id;
 ```
 
-*What just happened:* the database did all the counting in a single `GROUP BY` and handed back posts with their counts baked in. Compare that to the 101-query loop we started with — same result, 1 query instead of 101. `aggregate` is the table-wide total; `annotate` is the per-row value. (The difference between the two is the single most common ORM aggregation mix-up — "one summary" vs "one per row.")
+*What just happened:* the database did all the counting in a single `GROUP BY` and handed back posts with their counts baked in — same result as the 101-query loop we started with, 1 query instead of 101. `aggregate` is the table-wide total; `annotate` is the per-row value.
 
 💡 **The #1 Django performance skill is counting your queries.** N+1 doesn't announce itself, so make the SQL visible while you develop:
 
@@ -245,7 +245,7 @@ SELECT "blog_post"."id", "blog_post"."title", ... WHERE ... LIKE %django%
 
 *What just happened:* `str(queryset.query)` shows you the SQL Django *would* emit — invaluable for "wait, why is this slow." Beyond that, install **django-debug-toolbar** (it shows a per-request query count and flags duplicates right in the browser), or turn on SQL logging in settings. If one page action fires dozens of near-identical `SELECT`s, you've found an N+1.
 
-💡 The honest summary of this whole phase: **the ORM is wonderfully convenient, and that convenience is exactly what hides the cost.** Every QuerySet is real SQL underneath. You don't have to write that SQL — but you do have to know it's there, and you have to count it. The developers who command the ORM instead of fighting it are the ones who watch their query count.
+💡 The honest summary of this whole phase: **the ORM is wonderfully convenient, and that convenience is exactly what hides the cost.** Every QuerySet is real SQL underneath. You don't have to write that SQL — but you do have to know it's there, and count it.
 
 ## Recap
 

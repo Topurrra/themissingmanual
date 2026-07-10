@@ -6,7 +6,7 @@ summary: "Committed to the wrong branch, undo a commit but keep the work, merge 
 tags: [git, recovery, reset, merge-conflict, amend, restore, undo]
 difficulty: beginner
 synonyms: ["how to revert a commit", "undo last git commit", "git committed to wrong branch", "fix merge conflict", "change last commit message", "unstage a file"]
-updated: 2026-06-17
+updated: 2026-07-10
 ---
 
 # When It Breaks - Common "Oh No" Moments, Calmly Fixed
@@ -43,8 +43,8 @@ mess into a big one.
 on `feature-cart`. You were on `main`.
 
 **What's actually happening.** Remember from Phase 1: the commit went onto whatever HEAD pointed at, and
-the `main` label slid forward onto it. Nothing is broken. The commit exists; it's attached to the wrong
-label. You need to (a) get the commit onto the right branch, and (b) move `main` back to where it was.
+`main` slid forward onto it. Nothing is broken - the commit exists, it's just attached to the wrong
+label. You need to (a) get the commit onto the right branch, and (b) move `main` back.
 
 **The calm fix** (for a commit you have *not* pushed yet):
 ```console
@@ -54,43 +54,39 @@ Switched to a new branch 'feature-cart'
 $ git switch main                 # go back to main...
 $ git reset --hard HEAD~1         # ...and move main's label back one commit
 ```
-*What just happened:* `git switch -c feature-cart` created the `feature-cart` label on the commit you
-made and moved you onto it - your work is now safely on `feature-cart`. Then you switched back to
-`main` and moved its label back by one (`HEAD~1` means "one commit before HEAD"), so `main` points where
-it did before your stray commit.
-
-**Why it works.** You never *moved* the commit - you put a correct label on it, then slid the wrong label
-back. Labels are cheap and movable (Phase 1). The snapshot itself never went anywhere.
+*What just happened:* `git switch -c feature-cart` created that label on the commit you made and moved
+you onto it - your work is now safely on `feature-cart`. Then you switched back to `main` and moved its
+label back by one (`HEAD~1` = "one commit before HEAD"). You never *moved* the commit - you labeled it
+correctly, then slid the wrong label back.
 
 **⚠ The `--hard` warning.** `git reset --hard` throws away any uncommitted changes in your working
-directory. Here it's safe *because* your work is already saved in the commit now on `feature-cart`. But
-never run `--hard` when you have unsaved edits you care about - it deletes them with no undo. When
-unsure, run `git status` first to confirm there's nothing uncommitted to lose.
+directory. Here it's safe *because* your work is already saved on `feature-cart`. But never run `--hard`
+when you have unsaved edits you care about - it deletes them with no undo. Unsure? Run `git status`
+first to confirm there's nothing uncommitted to lose.
 
 **How to avoid it next time.** Glance at the branch line in `git status` (or your shell prompt) before
-committing. One second of looking saves this whole dance.
+committing.
 
 ## 2. "Undo my last commit - but keep my work"
 
 **The situation.** You committed too early, or the commit was a mistake - but you do *not* want to lose
-the actual code. You want to rewind the commit and keep the changes.
+the code. You want to rewind the commit and keep the changes.
 
 **What's actually happening.** "Undoing a commit" means moving your branch label back to the parent
-commit. The only real question is what happens to the *changes* from the commit you're undoing - and
-that's the single difference between the three forms of `reset`.
+commit. The only real question is what happens to the *changes* from the commit you're undoing - the
+single difference between the three forms of `reset`:
 
 ```mermaid
 flowchart LR
   C1 --> C2 --> C3
   main(main) -.->|"reset moved it back"| C2
 ```
-The label moves from C3 back to C2. The three flavors decide what happens to the *contents* of C3:
+The label moves from C3 back to C2. The three flavors decide what happens to C3's *contents*:
 
-- **`git reset --soft HEAD~1`** - move the label back; keep C3's changes **staged**, in the box, ready
-  to re-commit. (As if you never hit commit.)
-- **`git reset --mixed HEAD~1`** - the default; move the label back; keep C3's changes in your files but
-  **unstaged** (out of the box).
-- **`git reset --hard HEAD~1`** - move the label back **and throw C3's changes away.** Gone.
+- **`git reset --soft HEAD~1`** - keep C3's changes **staged**, in the box, ready to re-commit. (As if
+  you never hit commit.)
+- **`git reset --mixed HEAD~1`** - the default; keep C3's changes in your files but **unstaged**.
+- **`git reset --hard HEAD~1`** - throw C3's changes away. Gone.
 
 **The calm fix** (keep the work - the common case):
 ```console
@@ -100,32 +96,27 @@ On branch main
 Changes to be committed:
   modified:   checkout.js
 ```
-*What just happened:* `main` moved back one commit, and the changes from your undone commit are sitting
-in the staging box, exactly as they were. Edit, re-stage, and commit again whenever you're ready.
-
-**Why it works.** A commit is a snapshot and a branch is a label (Phase 1). `reset` moves the label;
-`--soft` / `--mixed` / `--hard` choose whether the snapshot's contents stay in the box, stay in your
-files, or get discarded.
+*What just happened:* `main` moved back one commit, and the undone commit's changes are sitting staged,
+exactly as they were. Edit, re-stage, and commit again whenever you're ready.
 
 **⚠ The `--hard` warning.** `--hard` is the one that ruins afternoons - it deletes the changes, not only
-the commit. Reach for `--soft` or `--mixed` unless you are *certain* you want the work gone. And this
-whole technique is for commits you **haven't pushed**. Rewinding history others already have is a
-different, more careful game - guide #2.
+the commit. Reach for `--soft` or `--mixed` unless you're *certain* you want the work gone. This whole
+technique is for commits you **haven't pushed**; rewinding history others already have is a different,
+more careful game - guide #2.
 
-> **War story.** Early in my career I wanted to "undo a commit," found `git reset --hard HEAD~1` on the
-> internet, and ran it to fix a typo. It erased a morning of uncommitted work I'd layered on top - and
-> nobody had ever told me `--hard` also meant "delete my files." That afternoon is the entire reason
-> this guide leads with the *meaning* of every command instead of the command.
+> **War story.** Early in my career I found `git reset --hard HEAD~1` on the internet to fix a typo, and
+> ran it without knowing `--hard` also meant "delete my uncommitted files." It erased a morning of work
+> nobody had warned me about. That's why this guide leads with the *meaning* of every command, not the
+> command.
 
 ## 3. "I have a merge conflict and I'm terrified"
 
 **The situation.** You merged (or pulled), and Git stopped cold with `CONFLICT (content): Merge conflict
-in cart.js`. Now there are strange `<<<<<<<` markers in your file and you're sure you broke something.
+in cart.js`. Strange `<<<<<<<` markers are in your file and you're sure you broke something.
 
 **What's actually happening.** You broke nothing. A conflict means two commits changed the *same lines*,
-and Git - true to form - refuses to guess which version wins (Phase 1: Git won't silently clobber). It
-paused the merge and is asking *you* to decide. That's all a conflict is: an unfinished merge, waiting on
-a human.
+and Git - true to form - refuses to guess which wins (Phase 1: Git won't silently clobber). It paused the
+merge and is asking *you* to decide. That's all a conflict is: an unfinished merge, waiting on a human.
 
 **The calm fix.** Open the conflicted file. You'll see your two options, fenced by markers:
 ```text
@@ -143,14 +134,10 @@ $ git add cart.js
 $ git commit            # completes the merge (Git pre-fills a message for you)
 ```
 *What just happened:* You told Git the final text for the conflicting lines, removed the markers, staged
-the result, and committed - which finishes the merge it had paused.
+the result, and committed - finishing the merge it had paused.
 
-**Why it works.** The markers aren't corruption; they're Git showing you both candidate versions in one
-place so you can choose. Staging the file is how you say "this is resolved." The commit seals the merge.
-
-**The escape hatch.** Decide you don't want to deal with it right now? `git merge --abort` puts
-everything back exactly as it was before you started - no harm done. Safe to run any time you're
-mid-conflict and want out.
+**The escape hatch.** Not ready to deal with it? `git merge --abort` puts everything back exactly as it
+was before you started - safe to run any time you're mid-conflict and want out.
 
 **How to avoid it next time.** Conflicts come from divergence, so pull/integrate often and keep changes
 small. You can't prevent them entirely - and now you don't need to.
@@ -159,7 +146,7 @@ small. You can't prevent them entirely - and now you don't need to.
 
 **The situation.** You committed "Fix taht bug," and now it's staring back at you.
 
-**What's actually happening.** A commit's message is part of the commit. You can't edit it in place - but
+**What's actually happening.** A commit's message is part of the commit - you can't edit it in place, but
 you can *replace* the last commit with an identical one that has a better message.
 
 **The calm fix:**
@@ -169,24 +156,18 @@ $ git commit --amend -m "Fix that bug"
  1 file changed, 2 insertions(+)
 ```
 *What just happened:* `--amend` replaced your last commit with a new one - same changes, corrected
-message. Notice the hash changed (`7h8i9j0`): it's technically a brand-new commit that took the old
-one's place.
+message. The hash changed (`7h8i9j0`): it's technically a brand-new commit that took the old one's place.
 
-**Why it works.** `--amend` doesn't edit the old commit (commits are immutable snapshots). It makes a new
-snapshot with your fix and slides the branch label onto it, quietly dropping the old one.
-
-**⚠ The big warning.** Because `--amend` creates a *new* commit with a *new* hash, it rewrites history.
-Harmless for a commit that lives only on your machine. But if you already **pushed** that commit,
-amending it makes your history disagree with the remote's - your next push gets rejected, and if you
-force it, you stomp on anyone who already pulled. Rule of thumb: **amend freely before you push; think
-twice after.** Fixing already-pushed commits safely is guide #2.
-
-**How to avoid it next time.** Nothing to avoid - typos happen. Keep the amend for *before* you push.
+**⚠ The big warning.** Because `--amend` creates a *new* commit with a *new* hash, it rewrites history -
+harmless for a commit that lives only on your machine. But if you already **pushed** that commit,
+amending makes your history disagree with the remote's; your next push gets rejected, and force-pushing
+stomps on anyone who already pulled. Rule of thumb: **amend freely before you push; think twice after.**
+Fixing already-pushed commits safely is guide #2.
 
 ## 5. "I staged the wrong file" / "I changed my mind"
 
 **The situation.** You ran `git add` on something you didn't mean to - a debug file, a half-finished
-change - and you want it *out* of the next commit. But you don't want to lose your edits.
+change - and want it *out* of the next commit, without losing your edits.
 
 **What's actually happening.** The file is in the staging box (Phase 1). You want to take it out of the
 box while leaving your actual edits untouched in your working directory.
@@ -200,20 +181,17 @@ Untracked files:
   debug.log
 ```
 *What just happened:* `git restore --staged` removed `debug.log` from the box. Your file and its
-contents are untouched - only its "staged" status changed. (On older Git you'll see this written as
-`git reset HEAD debug.log`; same effect.)
+contents are untouched - only its "staged" status changed. (On older Git this is written as `git reset
+HEAD debug.log`; same effect.)
 
-**Why it works.** Staging is only the box for your next commit. Unstaging takes the file out of the box
-without touching the file itself - your work is never at risk.
-
-**⚠ The dangerous look-alike.** Be careful: `git restore debug.log` - *without* `--staged` - does
-something very different. It throws away your working-directory edits and reverts the file to its last
-committed state. That one *deletes* your changes. Memorize the pair:
+**⚠ The dangerous look-alike.** `git restore debug.log` - *without* `--staged` - does something very
+different: it throws away your working-directory edits and reverts the file to its last committed state.
+Memorize the pair:
 - `git restore --staged <file>` → unstage, **keep** your edits. (Safe.)
 - `git restore <file>` → discard your edits, revert the file. (Destructive - no undo.)
 
-**How to avoid it next time.** Run `git diff --staged` before committing to see exactly what's in the box.
-If something surprising is there, `restore --staged` it back out.
+**How to avoid it next time.** Run `git diff --staged` before committing to see exactly what's in the
+box. Something surprising there? `restore --staged` it back out.
 
 ---
 

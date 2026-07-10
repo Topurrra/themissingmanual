@@ -6,12 +6,12 @@ summary: "Middleware is a handler that runs around your handlers. Learn c.Next()
 tags: [gin, go, middleware, logger, recovery, auth]
 difficulty: intermediate
 synonyms: ["gin middleware", "gin c.next", "gin handlerfunc middleware", "gin logger recovery", "gin custom middleware", "gin auth middleware", "gin c.set c.get"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Middleware
 
-Here's the thing nobody tells you up front: most of the "framework" part of a web framework isn't the routing — it's the stuff that runs *around* every request. Logging. Auth checks. Panic recovery. Timing. CORS headers. You don't want to paste those into all forty of your handlers. You want to write them once and have them wrap everything.
+Here's the thing nobody tells you up front: most of the "framework" part of a web framework isn't the routing — it's the stuff that runs *around* every request. Logging, auth checks, panic recovery, timing, CORS headers. You don't want to paste those into all forty of your handlers. You want to write them once and have them wrap everything.
 
 That wrapper is **middleware**, and in Gin it's the same shape as a handler. If you can picture a handler, you already understand 90% of middleware.
 

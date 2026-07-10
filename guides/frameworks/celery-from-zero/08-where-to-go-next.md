@@ -6,12 +6,12 @@ summary: "You can define, call, retry, schedule, scale, and monitor background t
 tags: [celery, rq, dramatiq, arq, framework-integration, canvas, what-to-build]
 difficulty: beginner
 synonyms: ["celery vs rq dramatiq arq", "celery alternatives", "celery django flask fastapi integration", "celery canvas chains groups", "celery next steps", "when not to use celery", "python task queue choices"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
-Take a second and look at what you can actually do now. You can define a task, hand it off with `.delay()`, and watch a separate worker pick it up off the broker. You can track its state through a result backend with `AsyncResult`, retry it sanely when a flaky API blinks, schedule it to run every night with Beat, and scale a fleet of workers while watching the whole thing breathe in Flower. None of that is a toy — it's the shape of real production background work.
+Take a second and look at what you can actually do now. Define a task, hand it off with `.delay()`, and watch a separate worker pick it up off the broker. Track its state through a result backend with `AsyncResult`, retry it sanely when a flaky API blinks, schedule it to run every night with Beat, and scale a fleet of workers while watching the whole thing breathe in Flower. None of that is a toy — it's the shape of real production background work.
 
 And the part that makes it *yours* is that you understand the model underneath. Every quirk, every config knob, every confusing error traces back to one picture: **your app puts a message on a broker, a worker pulls it off and runs it, and a result backend optionally remembers what happened.** App → broker → worker → result. Hold those four pieces and Celery stops being intimidating.
 
@@ -23,9 +23,9 @@ So this last phase isn't more decorators. It's where Celery meets the web framew
 
 The wiring differs a little per framework:
 
-- **[Django](/guides/django-from-zero)** — the most paved road. The `django-celery-results` and `django-celery-beat` packages store results and schedules in your database, and you write tasks with `@shared_task` so they don't depend on importing your Celery app directly. A view calls `send_report.delay(user.id)` and returns a response.
-- **[Flask](/guides/flask-from-zero)** — you create the Celery app inside your **app factory** and use a custom `ContextTask` base so tasks run inside a Flask application context (giving them access to config, the DB session, and extensions). After that it's the same `.delay()` from a route.
-- **[FastAPI](/guides/fastapi-from-zero)** — there's no special integration to learn. You import your task and call `.delay()` straight from an endpoint. FastAPI's built-in `BackgroundTasks` covers light fire-and-forget work; Celery is what you graduate to when the job is heavy, retryable, or scheduled.
+- **[Django](/guides/django-from-zero)** — the most paved road. The `django-celery-results` and `django-celery-beat` packages store results and schedules in your database, and you write tasks with `@shared_task` so they don't depend on importing your Celery app directly. A view calls `send_report.delay(user.id)` and returns.
+- **[Flask](/guides/flask-from-zero)** — create the Celery app inside your **app factory** and use a custom `ContextTask` base so tasks run inside a Flask application context (config, DB session, extensions). After that it's the same `.delay()` from a route.
+- **[FastAPI](/guides/fastapi-from-zero)** — no special integration to learn. Import your task and call `.delay()` straight from an endpoint. FastAPI's built-in `BackgroundTasks` covers light fire-and-forget work; Celery is what you graduate to when the job is heavy, retryable, or scheduled.
 
 The pattern underneath never changes. The framework is the front desk that takes the order; the workers are the kitchen out back.
 

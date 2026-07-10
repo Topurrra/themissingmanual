@@ -6,16 +6,20 @@ summary: "Routes are method + path → handler, and a handler's parameters are e
 tags: [axum, rust, routing, extractors, path, query]
 difficulty: beginner
 synonyms: ["axum routing", "axum path extractor", "axum query extractor", "axum nested router", "axum methods get post", "axum Path Query"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Routing & Extractors
 
-In Phase 1 you got a single route answering a single path. That's the whole `Router` in miniature, but real APIs branch: `GET /books` lists, `POST /books` creates, `GET /books/42` shows one. This phase is about how axum decides *which* handler runs, and — the part that makes axum feel like magic until you see it — how a handler reaches into the request and pulls out exactly the data it wants.
+Phase 1 gave you a single route answering a single path. Real APIs branch: `GET /books` lists, `POST
+/books` creates, `GET /books/42` shows one. This phase covers how axum picks *which* handler runs, and how
+a handler reaches into the request and pulls out exactly the data it wants.
 
-📝 **The mental model, and it's the whole framework:** a route is **method + path → handler**. And a handler's **parameters are extractors** — each one is a type that knows how to pull a specific piece out of the incoming request. `Path<u32>` pulls a URL segment. `Query<T>` pulls the query string. Later you'll meet `Json<T>` (the body) and `State<T>` (shared data). You don't parse the request yourself; you *declare what you need by type*, and axum fills it in before your function body ever runs.
-
-Hold that one sentence — "parameters are extractors that pull typed data from the request" — and nothing in this guide will surprise you.
+📝 **The mental model, and it's the whole framework:** a route is **method + path → handler**. A handler's
+**parameters are extractors** — each one a type that knows how to pull a specific piece out of the
+incoming request. `Path<u32>` pulls a URL segment, `Query<T>` pulls the query string; later you'll meet
+`Json<T>` (the body) and `State<T>` (shared data). You don't parse the request yourself — you *declare what
+you need by type*, and axum fills it in before your function body runs.
 
 ## Methods: one path, many verbs
 
@@ -58,7 +62,7 @@ fn app() -> Router {
 }
 ```
 
-*What just happened:* The first `route` maps **two** verbs to the same path — `get(list_books).post(create_book)`. A `GET /books` runs `list_books`; a `POST /books` runs `create_book`; anything else on that path (say `DELETE`) gets an automatic `405 Method Not Allowed`. The second route introduces a **path parameter**: `{id}` is a capture, a placeholder that matches any single segment. So `/books/42` and `/books/abc` both match `/books/{id}` — but the handler hasn't read that segment yet. That's the extractor's job, next.
+*What just happened:* the first `route` maps **two** verbs to the same path — `get(list_books).post(create_book)`. A `GET /books` runs `list_books`; a `POST /books` runs `create_book`; anything else on that path gets an automatic `405 Method Not Allowed`. The second route introduces a **path parameter**: `{id}` is a capture, a placeholder matching any single segment, so `/books/42` and `/books/abc` both match `/books/{id}` — but the handler hasn't read that segment yet. That's the extractor's job, next.
 
 💡 **A version note that will save you a confusing afternoon:** the `{id}` curly-brace syntax is **axum 0.8**. If you're reading older blog posts or a 0.7 codebase, captures looked like `:id` (`"/books/:id"`). Same idea, different punctuation. This guide uses `{id}` throughout; if your compiler complains about the braces, check your axum version in `Cargo.toml`.
 
@@ -120,7 +124,7 @@ async fn list_books(Query(params): Query<Pagination>) -> String {
 }
 ```
 
-*What just happened:* `#[derive(Deserialize)]` teaches `Pagination` how to be built from the query string. `Query<Pagination>` then parses `?page=2&limit=20` into `Pagination { page: Some(2), limit: Some(20) }`. The two fields are `Option<u32>`, which is doing real work: it makes both parameters **optional**. A bare `GET /books` with no query string still succeeds — both fields come back `None`, and `unwrap_or` supplies sensible defaults. If you'd typed them as plain `u32` instead of `Option<u32>`, a request missing `page` would be rejected with a `400`. That choice — `Option` vs. required — is how you encode "optional vs. mandatory" directly in the type.
+*What just happened:* `#[derive(Deserialize)]` teaches `Pagination` how to be built from the query string. `Query<Pagination>` then parses `?page=2&limit=20` into `Pagination { page: Some(2), limit: Some(20) }`. The two fields being `Option<u32>` makes both parameters **optional** — a bare `GET /books` still succeeds, both fields come back `None`, and `unwrap_or` supplies defaults. Type them as plain `u32` instead and a request missing `page` gets rejected with a `400`: `Option` vs. required encodes "optional vs. mandatory" directly in the type.
 
 💡 The same pattern handles filters and flags: a field `author: Option<String>` lets `/books?author=tolkien` flow straight into a typed field. The struct *is* your query API.
 
@@ -148,7 +152,7 @@ fn app() -> Router {
 }
 ```
 
-*What just happened:* `books_router()` defines paths as if they lived at the root — `/books`, `/books/{id}`. Then `nest("/api/v1", ...)` prefixes them all, so the real, reachable URLs become `/api/v1/books` and `/api/v1/books/{id}`. When v2 arrives, you write a `books_router_v2()` and `.nest("/api/v2", ...)` it alongside — the v1 routes keep working, untouched. That's why `nest` is the natural home for versioning: the prefix lives in *one* place, not sprinkled across every route string. Reach for `merge` instead when you're combining routers that should share the same prefix level — say, a `users_router()` and `books_router()` both living under `/api/v1`.
+*What just happened:* `books_router()` defines paths as if they lived at the root — `/books`, `/books/{id}`. `nest("/api/v1", ...)` prefixes them all, so the reachable URLs become `/api/v1/books` and `/api/v1/books/{id}`. When v2 arrives, write a `books_router_v2()` and `.nest("/api/v2", ...)` it alongside — v1 keeps working untouched, because the prefix lives in *one* place, not sprinkled across every route string. Reach for `merge` instead when combining routers that should share the same prefix level, like a `users_router()` and `books_router()` both under `/api/v1`.
 
 ⚠️ **A rule that'll bite you in Phase 3, so plant it now:** an extractor that **consumes the request body** — like `Json<T>`, which you'll meet next phase for reading POST payloads — can appear **only once per handler, and it must be the last parameter.** The body is a stream you can read exactly once, so axum enforces this at compile time. `Path` and `Query` don't touch the body, so they can come in any order and any number. The moment you add a body extractor, it goes at the end: `async fn create_book(Path(id): Path<u32>, Json(body): Json<NewBook>)`. Get the order wrong and you'll get a trait-bound error that looks scary but means exactly this. (Full story in Phase 3.)
 

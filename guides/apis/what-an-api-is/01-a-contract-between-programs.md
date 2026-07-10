@@ -6,7 +6,7 @@ summary: "An API is a defined way for one program to ask another for something �
 tags: [apis, mental-model, contract, abstraction, interface]
 difficulty: beginner
 synonyms: ["what is an api in simple terms", "api restaurant analogy", "what does an api do", "api contract meaning", "what is an interface in programming"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # A Contract Between Programs
@@ -38,13 +38,13 @@ The kitchen could be tiny or enormous. It could change chefs tomorrow. As long a
 
 ## What an API actually is
 
-**What it actually is.** An **API** — Application Programming Interface — is a **defined way for one program to ask another program for something.** It spells out two things: what requests you're allowed to make, and what you'll get back for each one. It is, at heart, a **promise**: "ask me *this*, in *this* way, and I'll give you *that*."
+An **API** — Application Programming Interface — is a **defined way for one program to ask another program for something.** It spells out two things: what requests you're allowed to make, and what you'll get back for each one. It is, at heart, a **promise**: "ask me *this*, in *this* way, and I'll give you *that*."
 
 📝 **Terminology.** *API* stands for **Application Programming Interface**. Don't let the words intimidate you — "interface" here means the same thing it means on a TV remote: the agreed set of buttons you're allowed to press. The remote is the interface to the television; you press a button, something happens inside, and you never open the case. An API is the set of "buttons" one program exposes for other programs to press.
 
-**Why people get this wrong.** The most common wrong picture is thinking an API is *the other program itself* — "the payments API" must be the whole payment system, right? It isn't. The API is the **menu**, not the kitchen. It's the thin, public, agreed-upon front of a much bigger thing you never see. The payment system might be a million lines of code across hundreds of machines; the API is the short list of things you're allowed to ask it to do.
+The most common wrong picture is thinking an API is *the other program itself* — "the payments API" must be the whole payment system, right? It isn't. The API is the **menu**, not the kitchen. It's the thin, public, agreed-upon front of a much bigger thing you never see. The payment system might be a million lines of code across hundreds of machines; the API is the short list of things you're allowed to ask it to do.
 
-**What it does in real life.** When developers say "the weather app uses a weather API," here's the literal sequence: the app sends a request that follows the menu ("give me today's forecast for London"), some other system does the real work (reads sensors, runs models, looks up data), and sends back a tidy answer the app knew to expect. The app never runs the weather models. It orders from the menu.
+When developers say "the weather app uses a weather API," here's the literal sequence: the app sends a request that follows the menu ("give me today's forecast for London"), some other system does the real work (reads sensors, runs models, looks up data), and sends back a tidy answer the app knew to expect. The app never runs the weather models. It orders from the menu.
 
 ## The two halves of the promise
 
@@ -73,7 +73,7 @@ Because the internals are hidden, the team running the kitchen can rip out the o
 
 📝 **Terminology.** This deliberate hiding has a name: **abstraction.** To "abstract away" the kitchen means to give you a simple way to use it (the menu) without exposing the complicated reality behind it. APIs are one of the main ways software hides complexity so humans can build big things without holding all the details in their heads at once.
 
-**Why this saves you later.** Once you see an API as a contract that hides a kitchen, a lot of developer sentences decode themselves. "Don't break the API" means *don't change the menu out from under the people who ordered from it.* "That's not exposed in the API" means *the kitchen can do it, but the menu doesn't offer it to you.* "We're versioning the API" means *we're publishing a new menu without yanking the old one away from existing customers.* You'll meet all of these, and now they'll land.
+Once you see an API as a contract that hides a kitchen, a lot of developer sentences decode themselves. "Don't break the API" means *don't change the menu out from under the people who ordered from it.* "That's not exposed in the API" means *the kitchen can do it, but the menu doesn't offer it to you.* "We're versioning the API" means *we're publishing a new menu without yanking the old one away from existing customers.*
 
 ## Recap
 

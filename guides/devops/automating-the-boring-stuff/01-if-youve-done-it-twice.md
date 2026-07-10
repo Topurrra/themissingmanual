@@ -6,7 +6,7 @@ summary: "Manual steps are slow, error-prone, and unrepeatable; a script is docu
 tags: [automation, mindset, when-to-automate, ops, scripting]
 difficulty: intermediate
 synonyms: ["should i automate this task", "when is it worth writing a script", "why automate repetitive work", "script as documentation", "cost of automation"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # If You've Done It Twice, Script It
@@ -38,9 +38,9 @@ Picture the task you do by hand right now. You open a terminal, you run a handfu
 
 ## The reframe: a script is documentation that runs
 
-Here's the idea that changes how you see this. When you write the task down as a script, you haven't just automated it — you've *documented* it. And unlike a wiki page or a README, this documentation can't go stale, because it's the same thing that does the work.
+When you write the task down as a script, you haven't just automated it — you've *documented* it. And unlike a wiki page or a README, this documentation can't go stale, because it's the same thing that does the work.
 
-A README that says "to deploy, run these five commands" drifts out of date the moment someone changes step three and forgets to update the doc. A script *is* step three. If the process changes, you change the script, and the documentation updated itself. Reading the script tells you — and the next person, and future-you — exactly what happens, in order, with the real paths and real flags. No translation, no "well, actually it's slightly different now."
+A README that says "to deploy, run these five commands" drifts out of date the moment someone changes step three and forgets to update the doc. A script *is* step three — change the process, change the script, and the documentation updates itself. Reading it tells you, and the next person, and future-you, exactly what happens, in order, with the real paths and real flags.
 
 💡 **Key point.** The best reason to automate a boring task usually isn't speed. It's that the script becomes the single, honest, runnable record of how the task is *actually* done — so it survives you forgetting, leaving, or having a bad day.
 
@@ -63,7 +63,7 @@ And the honest counter-cases — when *not* to automate:
 
 ## 🪖 A short war story
 
-A teammate once "knew how" to refresh the staging database from a backup. Four commands. They did it by hand every couple of weeks for a year. Then they were out sick the week before a big demo, staging was stale, and nobody else could do it — because it had never been written down anywhere but their muscle memory. We rebuilt it from shell history and got it wrong twice first. The fix was thirty lines of bash that should have existed eleven months earlier. The task wasn't worth automating for *speed*. It was worth automating so it didn't live in one person's head.
+A teammate "knew how" to refresh the staging database from a backup — four commands, done by hand every couple of weeks for a year. Then they were out sick the week before a big demo, staging was stale, and nobody else could do it: the process had never been written down anywhere but their muscle memory. We rebuilt it from shell history, got it wrong twice, and ended up with thirty lines of bash that should have existed eleven months earlier. It wasn't worth automating for *speed* — it was worth automating so it didn't live in one person's head.
 
 ## Recap
 

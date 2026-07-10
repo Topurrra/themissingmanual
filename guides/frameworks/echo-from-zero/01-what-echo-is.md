@@ -6,16 +6,15 @@ summary: "Echo is a fast Go web framework over net/http where handlers return er
 tags: [echo, go, web, framework, getting-started]
 difficulty: beginner
 synonyms: ["what is echo", "echo labstack", "echo first server", "echo instance context", "echo hello world", "go echo framework"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What Echo Is & Your First Server
 
 You already know [Go](/guides/go-from-zero), and you've maybe met [Gin](/guides/gin-from-zero) — the
 most popular Go web framework. Echo is its closest peer: another fast, focused layer over the standard
-library's `net/http`. If you've read the [net/http roots guide](/guides/web-services-with-only-net-http),
-you know Go can serve HTTP with nothing but the stdlib. Echo, like Gin, handles the repetitive parts —
-routing, JSON, middleware — without hiding what's underneath.
+library's `net/http`. Echo, like Gin, handles the repetitive parts — routing, JSON, middleware — without
+hiding what's underneath.
 
 So why pick Echo over Gin? One design choice, mostly: in Echo, **a handler returns an error**. Not
 `func(c *gin.Context)` with no return value, where you write the error response by hand — but
@@ -32,13 +31,11 @@ error-return style makes it stay clean as it grows. That's the whole pitch.
 Before any code, hold three things in your head. They are the entire framework.
 
 📝 **The instance** (`*echo.Echo`, made with `echo.New()`) is your application. You create it once,
-register all your routes and middleware on it, and start it. When someone says "the Echo app," they mean
-this.
+register all your routes and middleware on it, and start it.
 
 📝 **The context** (`echo.Context`) is one value handed to you for *each incoming request*. It carries
 the request, the response writer, the path and query params, and every helper you use to read input and
-write output. Note that `echo.Context` is an *interface*, not a struct — a detail that won't matter today
-but is good to know.
+write output. Note that `echo.Context` is an *interface*, not a struct — good to know, won't matter today.
 
 📝 **The handler returns an error.** Every handler you write has the shape `func(c echo.Context) error`.
 You do your work, then `return c.JSON(...)` on success or `return someError` on failure. Echo's central
@@ -68,8 +65,8 @@ go get github.com/labstack/echo/v4
 ```
 
 *What just happened:* `go get` downloaded Echo (the `/v4` is the current major version) and added it to
-your `go.mod`/`go.sum`. The import path is `github.com/labstack/echo/v4`, and you refer to it in code as
-the `echo` package. That one command is the whole install.
+your `go.mod`/`go.sum`. The import path is `github.com/labstack/echo/v4`; you refer to it in code as the
+`echo` package.
 
 Now the smallest server that does something real. Create a file called `main.go`:
 
@@ -96,16 +93,15 @@ func main() {
 - `e.GET("/ping", ...)` registers a **route**: when a `GET` request arrives for `/ping`, run the
   function we pass. That function is the **handler**, and its signature — `func(c echo.Context) error` —
   is the shape every Echo handler has.
-- Inside the handler, `c.JSON(http.StatusOK, ...)` uses the **context** to write the response: it sets
-  the status to `200`, sets `Content-Type` to `application/json`, serializes the value, and sends it.
-  Crucially, `c.JSON` *returns an error*, and we `return` it — so if writing the response fails, Echo
-  knows. On the happy path it returns `nil`, which Echo reads as "all good."
-- `http.StatusOK` is just the standard library's name for `200`. Echo leans on `net/http`'s constants
-  rather than inventing its own — a reminder of what's underneath.
-- `e.Start(":1323")` starts the server listening on port 1323 (Echo's docs use that port; nothing
-  magic about it). It blocks, handling requests until you stop the program. We wrap it in
-  `e.Logger.Fatal(...)` so that if `Start` returns an error — say the port is already taken — it's
-  logged and the program exits instead of failing silently.
+- Inside the handler, `c.JSON(http.StatusOK, ...)` uses the **context** to write the response: sets the
+  status to `200`, sets `Content-Type` to `application/json`, serializes the value, and sends it.
+  `c.JSON` *returns an error*, and we `return` it — so if writing the response fails, Echo knows. On the
+  happy path it returns `nil`, which Echo reads as "all good."
+- `http.StatusOK` is the standard library's name for `200`. Echo leans on `net/http`'s constants rather
+  than inventing its own.
+- `e.Start(":1323")` starts the server listening on port 1323 (Echo's docs use that port; nothing magic
+  about it). It blocks until you stop the program. We wrap it in `e.Logger.Fatal(...)` so that if `Start`
+  returns an error — say the port is already taken — it's logged and the program exits.
 
 Run it like any Go program:
 
@@ -124,8 +120,7 @@ $ go run main.go
 ```
 
 *What just happened:* `go run` compiled and started your program, and `e.Start` brought up the server.
-Echo printed its banner and is now waiting for requests. Leave it running and, in another terminal, hit
-the route:
+Leave it running and, in another terminal, hit the route:
 
 ```console
 $ curl localhost:1323/ping
@@ -133,8 +128,7 @@ $ curl localhost:1323/ping
 ```
 
 *What just happened:* `curl` sent a `GET /ping`. The instance matched it to your route, called your
-handler, and the handler used the context to write back JSON — returning `nil` to signal success. You
-have a working JSON API in a dozen lines of real code.
+handler, and the handler used the context to write back JSON — returning `nil` to signal success.
 
 ## The error-returning handler, and why it's different
 
@@ -154,9 +148,9 @@ func(c echo.Context) error {
 ```
 
 *What just happened:* both write the same JSON. But the Echo version *returns* — and that return value is
-the hook. When something goes wrong, you don't have to write a status code and an error body by hand
-every time. You return an error, and Echo's central error handler renders it. Echo even gives you a
-purpose-built error type for this:
+the hook. When something goes wrong, you don't write a status code and an error body by hand every time.
+You return an error, and Echo's central error handler renders it. Echo even gives you a purpose-built
+error type for this:
 
 ```go
 e.GET("/secret", func(c echo.Context) error {
@@ -166,8 +160,7 @@ e.GET("/secret", func(c echo.Context) error {
 
 *What just happened:* instead of manually setting a `401` status and writing a JSON body, you returned
 an `*echo.HTTPError` describing the failure. Echo's default error handler turns it into a clean `401`
-response with a JSON message. Every endpoint that returns this kind of error gets the same consistent
-shape — no copy-pasted error-writing code.
+response with a JSON message — every endpoint gets the same consistent shape, no copy-pasted error code.
 
 ⚠️ Don't worry about *configuring* that central handler yet — that's Phase 6's job, where we wire up a
 custom `HTTPErrorHandler` for the books API. For now, just internalize the habit: **in Echo, you
@@ -207,13 +200,11 @@ func main() {
 *What just happened:* `e.Use(...)` registers **middleware** — code that runs around every request. We
 imported `github.com/labstack/echo/v4/middleware` (a separate package from `echo`) and added two pieces:
 - **`middleware.Logger()`** prints a line for every request — method, path, status, how long it took.
-  It's how you *see* your server working.
 - **`middleware.Recover()`** catches a panic inside any handler, turns it into a clean `500` response,
   and keeps the server running. Without it, one panicking handler takes down the whole process.
 
-We'll cover the middleware signature and write our own in Phase 5. ⚠️ The takeaway for now: unlike Gin,
-Echo doesn't include these by default — if your server runs silent or dies on a panic, it's because you
-haven't added them yet.
+We'll cover the middleware signature and write our own in Phase 5. ⚠️ Unlike Gin, Echo doesn't include
+these by default — if your server runs silent or dies on a panic, it's because you haven't added them yet.
 
 ## The running example: a books API
 
@@ -230,8 +221,8 @@ type Book struct {
 
 *What just happened:* we declared the `Book` struct the whole guide builds on. Those `json:"..."`
 **struct tags** tell Echo what to call each field in JSON — so `Title` becomes `"title"`, not `"Title"`.
-Tags work in both directions; binding incoming JSON in Phase 3 leans on them too. Here's the type
-returning itself through the now-familiar flow:
+Tags work both directions; binding incoming JSON in Phase 3 leans on them too. Here's the type returning
+itself through the now-familiar flow:
 
 ```go
 e.GET("/books/sample", func(c echo.Context) error {
@@ -241,7 +232,7 @@ e.GET("/books/sample", func(c echo.Context) error {
 ```
 
 *What just happened:* the handler built a `Book`, and `return c.JSON(...)` serialized it using those
-tags — no map needed when you already have a struct. Hit it and you get clean JSON back:
+tags — no map needed when you already have a struct.
 
 ```console
 $ curl localhost:1323/books/sample
@@ -250,9 +241,8 @@ $ curl localhost:1323/books/sample
 
 By the end of the guide this grows into full create/read/update/delete over a real collection of books,
 with centralized error handling and tests. For now you've met the cast: an **instance**, a **route**, a
-**handler that returns an error**, a **context**, and the **`Book`** we'll spend the next phases turning
-into a proper REST API. Next up: routing — path params, query params, and grouping routes so they don't
-sprawl.
+**handler that returns an error**, a **context**, and the **`Book`** we'll turn into a proper REST API.
+Next up: routing — path params, query params, and grouping routes so they don't sprawl.
 
 ## Recap
 

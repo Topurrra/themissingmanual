@@ -6,14 +6,14 @@ summary: "The mental model behind the three levels: many small fast tests at the
 tags: [testing, testing-pyramid, test-strategy, unit-tests, e2e-tests, fast-tests]
 difficulty: intermediate
 synonyms: ["what is the testing pyramid", "why is the testing pyramid that shape", "why are unit tests faster than e2e", "where should most of my tests be"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Testing Pyramid
 
-Before we name the three levels, let's install the one picture that makes all of them make sense. Because if you only remember the definitions - "unit tests one thing, E2E tests everything" - you'll still be stuck guessing when you're staring at a new feature and wondering where its tests should go.
+Before we name the three levels, let's install the one picture that makes all of them make sense. If you only remember the definitions - "unit tests one thing, E2E tests everything" - you'll still be stuck guessing when you're staring at a new feature and wondering where its tests should go.
 
-The picture is a pyramid. And the reason it's a *pyramid* and not, say, a stack of equal boxes, is the whole point. Once you see why the shape is what it is, the rest of this guide is mostly footnotes.
+The picture is a pyramid, and the reason it's a *pyramid* and not, say, a stack of equal boxes, is the whole point. Once you see why the shape is what it is, the rest of this guide is mostly footnotes.
 
 ## The one idea underneath everything: how much do you run at once?
 
@@ -44,13 +44,13 @@ flowchart TD
 
 ## Why the shape is this shape (and not flipped)
 
-The pyramid is a recommendation, and the recommendation has two honest reasons behind it. Let's take them one at a time, because they're the reasons you'll repeat to a teammate someday.
+The pyramid is a recommendation, and the recommendation has two honest reasons behind it - the reasons you'll repeat to a teammate someday.
 
 ### Reason 1 - Speed compounds, and you run tests constantly
 
 A unit test that touches no database, no disk, and no network finishes in well under a millisecond. An E2E test has to launch the app, open a browser, click through pages, and wait on a real server and a real database - that's seconds per test, sometimes many.
 
-That gap doesn't stay small. You don't run your suite once. You run it on every save, every commit, every pull request. A base of thousands of unit tests can finish before you've taken your hand off the keyboard. A suite that's mostly E2E turns "let me just run the tests" into a coffee break - so people stop running it, and tests you don't run might as well not exist.
+That gap doesn't stay small. You run your suite on every save, every commit, every pull request. A base of thousands of unit tests can finish before you've taken your hand off the keyboard. A suite that's mostly E2E turns "let me just run the tests" into a coffee break - so people stop running it, and tests you don't run might as well not exist.
 
 💡 **Key point.** The pyramid is wide at the bottom because **fast tests get run, and tests that get run actually protect you.** Speed isn't a nice-to-have; it's what keeps the safety net in use.
 
@@ -75,7 +75,7 @@ When an *E2E* test fails, all you've learned is "something, somewhere in that wh
 
 Fair question - if units are fast and precise, why not write only units?
 
-Because units have a blind spot, and it's a big one: **a unit test only ever sees the one piece it runs.** It can't tell you whether your pieces actually fit together. Your function can pass every unit test while expecting a date as `"2026-06-19"` when the database hands it back as a timestamp, or while calling an API endpoint that the other team renamed last week. Each piece is individually correct; the *seams between them* are broken. Only a test that runs more than one real piece at once can catch that.
+Because units have a blind spot, and it's a big one: **a unit test only ever sees the one piece it runs.** It can't tell you whether your pieces actually fit together. Your function can pass every unit test while expecting a date string when the database hands it back a timestamp, or while calling an API endpoint the other team renamed last week. Each piece is individually correct; the *seams between them* are broken. Only a test that runs more than one real piece at once catches that.
 
 That's what integration and E2E tests are for. They're slower and blunter, so you write few of them - but they cover the exact thing units can't: the connections. The pyramid isn't "units good, E2E bad." It's **each level covers what the level below it is blind to, so you buy a little of the expensive coverage and a lot of the cheap coverage.**
 

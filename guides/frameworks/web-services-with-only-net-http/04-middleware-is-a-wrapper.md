@@ -6,12 +6,12 @@ summary: "Middleware in net/http is a function that takes an http.Handler and re
 tags: [net-http, go, middleware, wrapper, handler]
 difficulty: intermediate
 synonyms: ["go http middleware", "func(http.Handler) http.Handler", "go middleware chain", "go logging middleware", "go auth middleware", "net/http middleware pattern"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Middleware Is Just a Wrapper
 
-Here's the secret that takes the word "middleware" from intimidating to boring: in net/http,
+The secret that takes the word "middleware" from intimidating to boring: in net/http,
 **middleware is a handler that wraps another handler.** That's the whole thing. There is no special
 middleware type, no registration system, no framework magic. It's a function that takes an
 `http.Handler`, holds onto it in a closure, and hands you back a *new* `http.Handler` that does

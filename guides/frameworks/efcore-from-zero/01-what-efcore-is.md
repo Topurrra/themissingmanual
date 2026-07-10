@@ -6,7 +6,7 @@ summary: "EF Core is .NET's flagship ORM: a DbContext is your change-tracking se
 tags: [efcore, csharp, orm, dbcontext, getting-started]
 difficulty: beginner
 synonyms: ["what is ef core", "entity framework core dbcontext", "ef core dbset", "ef core sqlite", "ef core orm intro", "ef core see sql"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What EF Core Is & the DbContext
@@ -18,7 +18,7 @@ plumbing, and the day a column name changes, you're chasing it through every que
 EF Core — Entity Framework Core — is what most ASP.NET Core apps reach for instead. It's .NET's flagship
 **ORM** (object-relational mapper): you describe your tables as plain C# classes, and EF Core writes the SQL
 for create, read, update, delete, relationships, and schema migrations. Fewer typos in column names, less
-boilerplate, and the shape of your data lives in one place — the class.
+boilerplate, and the shape of your data lives in one place.
 
 > 📝 This phase teaches the **library**. It assumes you know **C#** (classes, generics, LINQ basics,
 > `async`/`await` — [C# From Zero](/guides/csharp-from-zero)) and the basics of **databases** (tables,
@@ -35,8 +35,7 @@ mysteriously slow.
 
 ⚠️ The cure isn't avoiding EF Core — it's **watching the SQL it generates**. EF Core can log every statement
 it runs. Turn that on while you learn (we'll do it in a minute), and the ORM stops being a black box. You'll
-see the `INSERT` behind an `Add`, the `SELECT` behind a query — and the moment a call does something
-expensive.
+see the `INSERT` behind an `Add`, the `SELECT` behind a query, and the moment a call does something expensive.
 
 ## The mental model
 
@@ -72,8 +71,8 @@ dotnet add package Microsoft.EntityFrameworkCore.Sqlite
 ```
 
 *What just happened:* `dotnet add package` downloaded the SQLite provider and added it to your `.csproj`.
-That one package brings EF Core's core along as a dependency, plus the adapter that teaches EF Core to
-speak SQLite specifically. Moving to PostgreSQL or SQL Server later just means swapping the provider
+That one package brings EF Core's core along as a dependency, plus the adapter that teaches it to speak
+SQLite specifically. Moving to PostgreSQL or SQL Server later just means swapping the provider
 (`Npgsql.EntityFrameworkCore.PostgreSQL` or `Microsoft.EntityFrameworkCore.SqlServer`) — little else changes.
 
 ## Defining a DbContext and an entity
@@ -104,8 +103,8 @@ public class Blog
 two `DbSet<T>` properties declare the tables — `Blogs` and `Posts` — and `=> Set<Blog>()` is the standard
 way to wire each one up. `OnConfiguring` is where the context learns *which* database to talk to:
 `UseSqlite("Data Source=blog.db")` says "use the SQLite provider, pointed at a file called `blog.db`"
-(created automatically if it doesn't exist). Below that, `Blog` is an **entity** — an ordinary C# class. Its
-`Id` and `Url` properties will become columns; EF Core treats a property named `Id` as the primary key by
+(created automatically if it doesn't exist). `Blog` is an **entity** — an ordinary C# class. Its `Id` and
+`Url` properties will become columns; EF Core treats a property named `Id` as the primary key by
 convention. (We'll define `Post` and turn these into real tables in [Phase 2](02-models-and-migrations.md).)
 
 📝 In an ASP.NET Core app you usually *don't* write `OnConfiguring`. Instead you register the context with
@@ -129,9 +128,9 @@ Run it with `dotnet run`.
 *What just happened:* `new BlogContext()` opened a session. `ctx.Blogs.Add(...)` didn't touch the database
 yet — it told the context "start tracking this new `Blog`, I intend to insert it." Nothing is written until
 `ctx.SaveChanges()`, which looks at everything the context is tracking, generates the SQL, and runs it in a
-single batch (here, one `INSERT`). The `using var` makes this safe: `DbContext` is meant to be
-**short-lived**, and `using` disposes it — releasing the connection — the moment the block ends. Create one,
-do a unit of work, let it go. (`SaveChanges` has an `async` twin, `SaveChangesAsync`, for web apps.)
+single batch (here, one `INSERT`). `using var` makes this safe: `DbContext` is meant to be **short-lived**,
+and `using` disposes it — releasing the connection — the moment the block ends. Create one, do a unit of
+work, let it go. (`SaveChanges` has an `async` twin, `SaveChangesAsync`, for web apps.)
 
 ## Turn on the SQL log
 
@@ -146,9 +145,8 @@ protected override void OnConfiguring(DbContextOptionsBuilder options)
 
 *What just happened:* the only change is `.LogTo(Console.WriteLine)`, which hands EF Core a place to send
 its log lines — here, straight to the console. From now on, every query leaves a trail you can read. (In
-development you can also add `.EnableSensitiveDataLogging()` to see actual parameter *values* in the log,
-not just `@p0` placeholders — handy while learning, but keep it out of production since it can print real
-data.)
+development you can also add `.EnableSensitiveDataLogging()` to see actual parameter *values*, not just
+`@p0` placeholders — handy while learning, but keep it out of production since it can print real data.)
 
 Re-run the save with logging on, and the `INSERT` from a moment ago shows up looking roughly like this:
 
@@ -162,9 +160,8 @@ WHERE changes() = 1 AND "rowid" = last_insert_rowid();
 
 *What just happened:* that's the literal SQL behind `Add` + `SaveChanges`. The first statement inserts the
 row; the second reads back the database-generated `Id` so EF Core can fill it into your `Blog` object in
-memory. Two C# lines, and here's exactly what they became — the antidote to the "black box" problem. 💡 Keep
-this on the entire time you're learning. The instant a single call fires five queries, or runs a `SELECT`
-with no `WHERE`, you'll see it.
+memory. Two C# lines, and here's exactly what they became. 💡 Keep this on the entire time you're learning
+— the instant a single call fires five queries, or runs a `SELECT` with no `WHERE`, you'll see it.
 
 ## The running example: a blog
 
@@ -179,7 +176,7 @@ flowchart LR
 ```
 
 *What just happened:* the diagram lays out where we're headed. A **`Blog`** has many **`Post`s** — a
-one-to-many relationship. And a **`Post`** can carry many **`Tag`s** while each `Tag` labels many posts — a
+one-to-many relationship. A **`Post`** can carry many **`Tag`s** while each `Tag` labels many posts — a
 many-to-many. Right now they're just boxes and arrows; in [Phase 2](02-models-and-migrations.md) we turn
 these into real entity classes, use migrations to create the tables, then create rows, query with LINQ,
 watch change tracking batch our edits, and wire up these relationships.

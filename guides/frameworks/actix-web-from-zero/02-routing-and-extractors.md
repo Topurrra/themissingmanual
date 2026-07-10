@@ -6,15 +6,14 @@ summary: "How actix-web matches a request to a handler: routes as method + path,
 tags: [actix-web, rust, routing, extractors, scope]
 difficulty: beginner
 synonyms: ["actix routing", "actix scope", "actix web::path query json", "actix extractors", "actix attribute macros get post", "actix route"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Routing & Extractors
 
-In Phase 1 you stood up an `App`, handed it to an `HttpServer`, and wrote a single handler that
-answered one path. This phase covers how actix-web decides *which* handler runs for an incoming
-request, and how that handler gets the pieces of the request it cares about without you ever
-touching the raw bytes.
+Phase 1 stood up an `App`, an `HttpServer`, and one handler answering one path. This phase covers
+how actix-web decides *which* handler runs for an incoming request, and how that handler gets the
+request pieces it needs without ever touching the raw bytes.
 
 Two mental models cover everything else.
 
@@ -156,8 +155,7 @@ async fn main() -> std::io::Result<()> {
 route registered inside it is *relative* to that prefix, so `/articles` actually answers
 `GET /api/v1/articles` and `/articles/{id}` answers `GET /api/v1/articles/7`. To cut a v2 of the
 API, add a second scope and leave v1 untouched. Scopes can also carry their own state and
-middleware (Phases 4 and 5), making them the natural seam for "everything under this prefix
-behaves this way."
+middleware (Phases 4 and 5).
 
 ## Extractors: turning a request into typed arguments
 
@@ -286,24 +284,21 @@ called `create_for_author`. List as many extractors as you need; they're just fu
 
 > ⚠️ One real constraint: **only one extractor may read the request body.** `web::Json` consumes
 > the body stream, and a body can only be read once. A handler can have many `Path` and `Query`
-> extractors but effectively **one** body extractor (`Json`, `Form`, or `Bytes`). Asking for two
-> body extractors won't give you the data twice — it's a design error. We lean harder on `Json` for
-> both requests *and* responses in [Phase 3: Responders](03-responders.md).
+> extractors but effectively **one** body extractor (`Json`, `Form`, or `Bytes`) — asking for two
+> won't give you the data twice, it's a design error. More on `Json` in
+> [Phase 3: Responders](03-responders.md).
 
 ## Recap
 
-- A route is `method + path → handler`. `GET /articles` and `POST /articles` are distinct routes;
-  the method is part of the match.
+- A route is `method + path → handler`. `GET /articles` and `POST /articles` are distinct routes.
 - Register routes two ways: the **builder** (`.route("/articles", web::get().to(list))`) or
-  **attribute macros** (`#[get("/articles")]` + `.service(list)`). Same behavior — pick one and
-  stay consistent.
-- `web::scope("/api/v1")` mounts a group of routes under a shared prefix, which is how you version
-  and organize an API.
+  **attribute macros** (`#[get("/articles")]` + `.service(list)`) — same behavior, pick one and stay
+  consistent.
+- `web::scope("/api/v1")` mounts a group of routes under a shared prefix, for versioning an API.
 - Extractors turn a request into typed arguments: `web::Path` (URL segments, `.into_inner()`),
-  `web::Query` (query string into a `Deserialize` struct), and `web::Json` (the request body).
-- Failed extraction means your handler never runs — the client gets a `400` automatically, so your
-  function body only sees valid, typed data.
-- You can combine many extractors as parameters, but only **one** of them may read the body.
+  `web::Query` (query string into a `Deserialize` struct), `web::Json` (the request body).
+- Failed extraction means your handler never runs — the client gets a `400` automatically.
+- You can combine many extractors as parameters, but only **one** may read the body.
 
 ## Quick check
 

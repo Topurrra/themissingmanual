@@ -6,14 +6,14 @@ summary: "How Django turns data into HTML: where templates fit in MTV, the templ
 tags: [django, templates, template-language, render, context, template-inheritance, mtv]
 difficulty: intermediate
 synonyms: ["django templates", "django template language", "django render context", "django template inheritance extends block", "django template tags filters", "django mtv", "django autoescape xss"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Templates & the MTV Pattern
 
 Back in Phase 2 your views already started rendering templates instead of returning hand-typed HTML strings. This phase is where we slow down and look at the **T** in MTV properly — because that letter is doing more work than it looks like.
 
-Here's the mental model to hold onto before any code: **a view's job is to gather data and hand it off; a template's job is to turn that data into HTML.** The view talks to the Model (your `Post` objects), bundles up what it found, and passes it to a Template that knows how to lay it out. Two roles, one clean handoff. The view never builds HTML; the template never touches the database. Keeping those jobs separate is the whole point — it's why the same `Post` list can be rendered as a web page today and (Phase 9) as JSON tomorrow without rewriting your data logic.
+Here's the mental model to hold onto before any code: **a view's job is to gather data and hand it off; a template's job is to turn that data into HTML.** The view talks to the Model (your `Post` objects), bundles up what it found, and passes it to a Template that knows how to lay it out. The view never builds HTML; the template never touches the database. Keeping those jobs separate is why the same `Post` list can be rendered as a web page today and (Phase 9) as JSON tomorrow without rewriting your data logic.
 
 📝 **MTV is Django's name for the same idea most people call MVC.** Model = your data (the ORM). Template = the presentation (HTML). View = the glue in the middle that decides *which* data goes to *which* template. The flow for one request is short and always the same: **request → URLconf picks a view → view queries the Model → view calls `render()` with a template + data → HTML goes back to the browser.**
 
@@ -31,9 +31,9 @@ def post_list(request):
     return render(request, "blog/post_list.html", {"posts": posts})
 ```
 
-*What just happened:* the view fetched every `Post` from the database (Model), then handed that list to `render()` along with a template path and a dict. `render()` finds `blog/post_list.html`, runs it with `posts` available inside, and returns a finished `HttpResponse` full of HTML. Notice the view itself contains zero HTML — it only decides *what* to show, not *how* it looks.
+*What just happened:* the view fetched every `Post` from the database (Model), then handed that list to `render()` along with a template path and a dict. `render()` finds `blog/post_list.html`, runs it with `posts` available inside, and returns a finished `HttpResponse` full of HTML. The view itself contains zero HTML — it only decides *what* to show, not *how* it looks.
 
-📝 That template path — `"blog/post_list.html"` — lives in a `templates/` folder inside your app: `blog/templates/blog/post_list.html`. The doubled `blog/` is deliberate. Django searches *all* apps' `templates/` folders as one merged pile, so the inner `blog/` namespaces your files and stops your `post_list.html` from colliding with some other app's `post_list.html`. It feels redundant the first time; it saves you from a confusing bug the first time two apps share a filename.
+📝 That template path — `"blog/post_list.html"` — lives in a `templates/` folder inside your app: `blog/templates/blog/post_list.html`. The doubled `blog/` is deliberate: Django searches *all* apps' `templates/` folders as one merged pile, so the inner `blog/` namespaces your files and stops your `post_list.html` from colliding with some other app's `post_list.html`.
 
 ## The Django Template Language
 
@@ -59,9 +59,9 @@ Here's `post_list.html` looping over the posts the view passed in:
 {% endfor %}
 ```
 
-*What just happened:* `{% for post in posts %}` walks the list. For each post, `{{ post.title }}` prints the title and `{% url 'post_detail' post.id %}` builds the link by *name* (the same named routes you set up in the URLconf in Phase 2) instead of hardcoding a path — so if the URL pattern ever changes, this link follows it automatically. The filters earn their keep too: `|date:"M j, Y"` formats a datetime into `Jun 22, 2026`, and `|truncatewords:30` clips the body to 30 words. The `{% empty %}` branch runs only when `posts` is empty, and `|default:` supplies a fallback if `empty_message` is missing or falsy.
+*What just happened:* `{% for post in posts %}` walks the list. For each post, `{{ post.title }}` prints the title and `{% url 'post_detail' post.id %}` builds the link by *name* (the named routes from Phase 2's URLconf) instead of hardcoding a path — so if the URL pattern ever changes, this link follows it automatically. The filters earn their keep too: `|date:"M j, Y"` formats a datetime into `Jun 22, 2026`, and `|truncatewords:30` clips the body to 30 words. The `{% empty %}` branch runs only when `posts` is empty, and `|default:` supplies a fallback if `empty_message` is missing or falsy.
 
-⚠️ The Django Template Language is **deliberately limited** — you cannot call arbitrary Python, do math, or run a database query from inside a template. That's a feature, not a missing one. It forces the rule from the top of this phase: real logic belongs in the **view**, where it's testable and visible. If you find yourself fighting the template to compute something, that's the template telling you the work should have happened in the view before the data was handed over.
+⚠️ The Django Template Language is **deliberately limited** — you cannot call arbitrary Python, do math, or run a database query from inside a template. That's a feature, not a missing one: real logic belongs in the **view**, where it's testable and visible. If you find yourself fighting the template to compute something, that's the template telling you the work should have happened in the view first.
 
 ## Context: what the template can see
 
@@ -78,7 +78,7 @@ def post_list(request):
     return render(request, "blog/post_list.html", context)
 ```
 
-*What just happened:* the view built a context with two keys and handed it over. Inside the template, `{{ posts }}` and `{{ show_drafts }}` are now available — and *nothing else from the view is*. The local variable was called `posts`, but the template only sees it because the key `"posts"` is in the dict. Rename the key and the template's `{{ posts }}` goes blank. That tight boundary is what makes templates predictable: to know what a template can use, you only have to read the context, not the whole view.
+*What just happened:* the view built a context with two keys and handed it over. Inside the template, `{{ posts }}` and `{{ show_drafts }}` are now available — and *nothing else from the view is*. Rename the key and the template's `{{ posts }}` goes blank. That tight boundary is what makes templates predictable: to know what a template can use, you only have to read the context, not the whole view.
 
 💡 You can drive logic off context values: `{% if show_drafts %}...{% endif %}` shows a block only to staff. The decision (`request.user.is_staff`) was made in the view; the template just reacts to the boolean it was given. View decides, template displays.
 
@@ -119,9 +119,7 @@ Every page on your site shares chrome — the same `<head>`, nav bar, and footer
 {% endblock %}
 ```
 
-*What just happened:* `base.html` lays out the page once and marks two spots — `{% block title %}` and `{% block content %}` — as overridable. The child template's `{% extends "blog/base.html" %}` says "start from that skeleton," then its own `{% block %}` tags pour content into the matching holes. The child never repeats the `<nav>`, the `<footer>`, or the `<head>` — it inherits them. Change the footer in `base.html` and every page that extends it updates at once.
-
-💡 This is the **DRY** win for server-rendered HTML: Don't Repeat Yourself, applied to layout. One base template, many children, zero duplicated chrome. When a designer asks to add a nav link, you edit one file.
+*What just happened:* `base.html` lays out the page once and marks two spots — `{% block title %}` and `{% block content %}` — as overridable. The child template's `{% extends "blog/base.html" %}` says "start from that skeleton," then its own `{% block %}` tags pour content into the matching holes. The child never repeats the `<nav>`, the `<footer>`, or the `<head>`. Change the footer in `base.html` and every page that extends it updates at once — the **DRY** win for server-rendered HTML.
 
 ## Auto-escaping: the XSS shield you didn't ask for
 
@@ -132,11 +130,11 @@ Stored post body:  Nice post! <script>steal()</script>
 Rendered to page:  Nice post! &lt;script&gt;steal()&lt;/script&gt;
 ```
 
-*What just happened:* a malicious comment body went *into* the template, but auto-escaping defanged it on the way *out*. The user sees the literal text; the browser never runs the script. This is your default defense against **cross-site scripting (XSS)** — the attack where someone smuggles markup through user input to run code in another visitor's browser. It's the same family of trust-the-input mistake as SQL injection; if you want the full picture of why this attack works and how it bites, read [SQL Injection & XSS](/guides/sql-injection-and-xss). The good news: in Django templates, the safe behavior is the one you get for free.
+*What just happened:* a malicious comment body went *into* the template, but auto-escaping defanged it on the way *out*. The user sees the literal text; the browser never runs the script. This is your default defense against **cross-site scripting (XSS)** — the attack where someone smuggles markup through user input to run code in another visitor's browser. Same family of trust-the-input mistake as SQL injection; for the full picture, read [SQL Injection & XSS](/guides/sql-injection-and-xss). In Django templates, the safe behavior is the one you get for free.
 
-⚠️ The escape hatch is `|safe` (or `mark_safe()` in Python), which tells Django "trust this, render it raw." That turns the shield **off** for that value. Only ever reach for it on content *you* generated or have sanitized — never on anything a user typed. `{{ comment.body|safe }}` on a user-submitted comment is exactly how an XSS hole gets created. When in doubt, leave it escaped.
+⚠️ The escape hatch is `|safe` (or `mark_safe()` in Python), which tells Django "trust this, render it raw" — turning the shield **off** for that value. Only reach for it on content *you* generated or have sanitized, never on anything a user typed. `{{ comment.body|safe }}` on a user-submitted comment is exactly how an XSS hole gets created.
 
-💡 You'll also start seeing `{% csrf_token %}` the moment you add a form — it drops a hidden token into the HTML that proves a form submission really came from your own page. We're foreshadowing it here because it lives in templates, but it earns its full explanation in the next phase.
+💡 You'll also start seeing `{% csrf_token %}` the moment you add a form — it drops a hidden token into the HTML that proves a form submission really came from your own page, and earns its full explanation next phase.
 
 💡 Templates are the **V**iew the user actually sees — the rendered surface of your app. So far the data has flowed one direction: database → view → template → browser. Next we reverse it: **forms** are how data flows back *in*, from the user to your app, and that's exactly where `{% csrf_token %}` and validation come in.
 

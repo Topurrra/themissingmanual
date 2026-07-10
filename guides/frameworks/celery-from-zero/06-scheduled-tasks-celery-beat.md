@@ -6,14 +6,14 @@ summary: "Run Celery tasks on a timetable with Celery Beat — a scheduler that 
 tags: [celery, celery-beat, scheduled-tasks, periodic, cron, crontab, scheduling]
 difficulty: intermediate
 synonyms: ["celery beat", "celery scheduled tasks", "celery periodic tasks", "celery crontab schedule", "celery beat_schedule", "celery cron jobs", "celery recurring tasks"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Scheduled Tasks with Celery Beat
 
 So far every task in this guide has been triggered by *something happening* — a user signs up, a report is requested, a web request comes in and your app fires off a job. But a huge amount of real work isn't request-triggered at all. It's work that just needs to happen *on a schedule*, whether anyone's looking or not.
 
-📝 Think about a typical web app: a digest email that goes out every morning at 7am, a cleanup job that sweeps away old reports every hour, a billing summary that runs on the first of the month. Nobody clicks a button for these. They run because the clock said so. What you want is something cron-like — a way to run your existing Celery tasks on a timetable. That's exactly what Celery Beat gives you.
+📝 Think about a typical web app: a digest email that goes out every morning at 7am, a cleanup job that sweeps away old reports every hour, a billing summary that runs on the first of the month. Nobody clicks a button for these — they run because the clock said so. What you want is something cron-like — a way to run your existing Celery tasks on a timetable. That's exactly what Celery Beat gives you.
 
 If you've used Unix cron (covered in [The Terminal & Shell](/guides/the-terminal-and-shell)), the mental model will feel familiar: a clock that fires jobs at set times. Beat is that clock, but for your Celery tasks specifically.
 
@@ -32,7 +32,7 @@ You start Beat as its own process, separate from your worker:
 celery -A tasks beat --loglevel=info
 ```
 
-*What just happened:* We launched the Beat scheduler. `-A tasks` points it at your Celery app (same `tasks.py` as always), and `beat` is the subcommand that says "be the scheduler." This process stays running, watching the clock. When a scheduled time arrives, it enqueues the matching task and goes back to waiting.
+*What just happened:* we launched the Beat scheduler. `-A tasks` points it at your Celery app (same `tasks.py` as always), and `beat` is the subcommand that says "be the scheduler." This process stays running, watching the clock. When a scheduled time arrives, it enqueues the matching task and goes back to waiting.
 
 ⚠️ **Beat only schedules — it never executes.** If you run *only* Beat with no worker, your scheduled tasks will pile up in the broker and never run. You need both processes alive at the same time: Beat to enqueue on schedule, and at least one worker to drain the queue. A common "my nightly job isn't running" bug is forgetting to keep a worker up.
 
@@ -58,7 +58,7 @@ app.conf.beat_schedule = {
 }
 ```
 
-*What just happened:* We defined two scheduled entries. The dictionary *keys* (`"daily-digest-email"`, `"hourly-report-cleanup"`) are just human-readable names for each schedule — pick whatever's clear. Inside each entry, `"task"` is the dotted name of the task to run (the same string you'd see in the worker's `[tasks]` banner), and `"schedule"` says when. The digest uses `crontab(hour=7, minute=0)` — "every day at 7:00am." The cleanup uses a plain number, `3600.0`, which means "every 3600 seconds" — once an hour.
+*What just happened:* we defined two scheduled entries. The dictionary *keys* (`"daily-digest-email"`, `"hourly-report-cleanup"`) are just human-readable names for each schedule — pick whatever's clear. Inside each entry, `"task"` is the dotted name of the task to run (the same string you'd see in the worker's `[tasks]` banner), and `"schedule"` says when. The digest uses `crontab(hour=7, minute=0)` — "every day at 7:00am." The cleanup uses a plain number, `3600.0` — "every 3600 seconds," once an hour.
 
 💡 Two flavors of schedule, two use cases. A **plain number** (or a `timedelta`) means "every N seconds" — a fixed *interval*. A **`crontab(...)`** means "at these calendar times" — wall-clock scheduling. The cleaner version of that hourly cleanup uses `timedelta` so the intent reads at a glance:
 
@@ -73,7 +73,7 @@ app.conf.beat_schedule = {
 }
 ```
 
-*What just happened:* `timedelta(hours=1)` is exactly equivalent to `3600.0` but says what it means. Reach for intervals when you want "every so often" and the exact wall-clock time doesn't matter; reach for `crontab` when it has to happen at, say, 7am sharp.
+*What just happened:* `timedelta(hours=1)` is exactly equivalent to `3600.0` but says what it means. Reach for intervals when "every so often" is enough and the exact wall-clock time doesn't matter; reach for `crontab` when it has to happen at, say, 7am sharp.
 
 If your task takes arguments, pass them with an `"args"` (tuple) or `"kwargs"` (dict) key:
 
@@ -87,11 +87,11 @@ app.conf.beat_schedule = {
 }
 ```
 
-*What just happened:* Each Monday at 9:00am, Beat enqueues `send_summary("weekly")`. The `"args"` tuple is passed straight through to your task function, just as if you'd called `send_summary.delay("weekly")` yourself.
+*What just happened:* each Monday at 9:00am, Beat enqueues `send_summary("weekly")`. The `"args"` tuple passes straight through to your task function, just as if you'd called `send_summary.delay("weekly")` yourself.
 
 ## crontab schedules in a bit more depth
 
-📝 The `crontab()` schedule mirrors Unix cron: you specify some combination of `minute`, `hour`, `day_of_week`, `day_of_month`, and `month_of_year`, and Beat fires the task whenever the clock matches. Anything you leave out defaults to "every" — so `crontab(minute=0)` means "at minute 0 of *every* hour."
+📝 The `crontab()` schedule mirrors Unix cron: you specify some combination of `minute`, `hour`, `day_of_week`, `day_of_month`, and `month_of_year`, and Beat fires the task whenever the clock matches. Anything left out defaults to "every" — so `crontab(minute=0)` means "at minute 0 of *every* hour."
 
 A few examples to anchor it:
 
@@ -102,7 +102,7 @@ crontab(minute="*/15")                             # every 15 minutes
 crontab(minute=0, hour=0, day_of_month=1)          # midnight on the 1st of each month
 ```
 
-*What just happened:* Each line is a wall-clock rule. Note `minute="*/15"` — the `*/N` step syntax is straight from cron and means "every 15th minute." If cron's field syntax is fuzzy for you, the cron reference in [The Terminal & Shell](/guides/the-terminal-and-shell) covers the same `minute hour day month weekday` grammar Beat borrows from.
+*What just happened:* each line is a wall-clock rule. Note `minute="*/15"` — the `*/N` step syntax is straight from cron and means "every 15th minute." If cron's field syntax is fuzzy, the cron reference in [The Terminal & Shell](/guides/the-terminal-and-shell) covers the same `minute hour day month weekday` grammar Beat borrows from.
 
 ⚠️ **Timezones will bite you.** By default Celery interprets `crontab` times in UTC, *not* your local time — so `crontab(hour=7)` might fire at what feels like the middle of the night. Set the timezone explicitly so 7am means 7am where you live:
 
@@ -111,13 +111,13 @@ app.conf.timezone = "America/New_York"
 app.conf.enable_utc = True
 ```
 
-*What just happened:* We told Celery to evaluate schedules against New York time. Now `crontab(hour=7)` fires at 7am Eastern. ⚠️ Double-check this in production: a digest that's supposed to land at breakfast but goes out at 2am is the classic symptom of a forgotten `timezone` setting.
+*What just happened:* we told Celery to evaluate schedules against New York time. Now `crontab(hour=7)` fires at 7am Eastern. ⚠️ Double-check this in production: a digest that's supposed to land at breakfast but goes out at 2am is the classic symptom of a forgotten `timezone` setting.
 
 ## Production gotchas
 
-⚠️ **Run exactly one Beat process. Ever.** This is the big one. Beat is the clock, and if you run *two* clocks, every scheduled task gets enqueued twice — your daily digest goes out to every user twice, your cleanup runs in duplicate. This "double-scheduled tasks" bug is sneaky because everything looks fine until someone notices the duplicate emails. One worker can (and should) be scaled to many processes, but Beat must be a single instance. Be especially careful when deploying multiple app servers — it is dangerously easy to accidentally start Beat on each one.
+⚠️ **Run exactly one Beat process. Ever.** This is the big one. Beat is the clock, and if you run *two* clocks, every scheduled task gets enqueued twice — your daily digest goes out to every user twice, your cleanup runs in duplicate. This "double-scheduled tasks" bug is sneaky because everything looks fine until someone notices the duplicate emails. One worker can (and should) be scaled to many processes, but Beat must be a single instance. Be especially careful deploying multiple app servers — it's dangerously easy to accidentally start Beat on each one.
 
-💡 Because a schedule can fire a task more than once — two Beats, a restart that re-fires a missed slot, a retry from [Phase 5](05-retries-and-error-handling.md) — your **periodic tasks should be idempotent too.** Running `cleanup_old_reports` twice in a row should be harmless; sending the digest twice should not double-charge or double-notify. The same "make running it twice safe" discipline from the retries phase applies here, for the same underlying reason: at-least-once delivery means *plan for twice*.
+💡 Because a schedule can fire a task more than once — two Beats, a restart that re-fires a missed slot, a retry from [Phase 5](05-retries-and-error-handling.md) — your **periodic tasks should be idempotent too.** Running `cleanup_old_reports` twice in a row should be harmless; sending the digest twice should not double-charge or double-notify. Same "make running it twice safe" discipline as the retries phase, same underlying reason: at-least-once delivery means *plan for twice*.
 
 For schedules that need to change at runtime — letting admins add or edit scheduled jobs from a UI, or storing schedules in a database instead of hardcoding them in `tasks.py` — reach for a database-backed scheduler:
 

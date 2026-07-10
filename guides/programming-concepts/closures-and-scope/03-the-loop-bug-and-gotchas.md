@@ -6,12 +6,12 @@ summary: "The classic trap where every callback created in a loop sees the final
 tags: [closures, loop-bug, var-vs-let, capture-by-reference, late-binding, memory-leak, gotchas]
 difficulty: intermediate
 synonyms: ["all my callbacks see the last value", "loop variable closure bug", "closure captures variable not value", "var vs let closure", "python closure loop late binding", "default argument closure fix", "closure memory leak", "why does my loop print the same number"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Loop Bug and Other Gotchas
 
-Now the bug that sends people searching at midnight. It's the single most common closure mistake, it appears in nearly every language with first-class functions, and it looks so wrong that people assume the language is broken. It isn't. The behavior follows directly from the one rule you already know - closures capture the *variable*, not a snapshot of its value - and once you see that, the bug becomes inevitable instead of mysterious.
+Now the bug that sends people searching at midnight: the single most common closure mistake, appearing in nearly every language with first-class functions, looking so wrong that people assume the language is broken. It isn't - the behavior follows directly from the one rule you already know: closures capture the *variable*, not a snapshot of its value. Once you see that, the bug becomes inevitable instead of mysterious.
 
 ## The bug
 

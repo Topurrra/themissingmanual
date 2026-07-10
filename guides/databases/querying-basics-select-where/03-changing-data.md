@@ -6,7 +6,7 @@ summary: "Add rows with INSERT, modify them with UPDATE, and remove them with DE
 tags: [sql, insert, update, delete, where, transactions, data-modification, beginner-friendly]
 difficulty: beginner
 synonyms: ["how to insert a row in sql", "sql update statement", "sql delete row", "update without where danger", "delete without where deleted everything", "how to add data in sql", "sql modify data"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Changing Data: INSERT, UPDATE, DELETE
@@ -45,12 +45,9 @@ decoration — it's the seatbelt. Now let's go command by command.
 
 ## `INSERT` — add a new row
 
-**What it actually is.** `INSERT` adds one (or more) brand-new rows to a table. You tell it which columns
-you're filling and what values to put in them.
-
-**What it does in real life.** This is how data gets *into* a table — a new user signs up, a new order
-is placed. `INSERT` is the gentlest of the three: it only adds, so it can't overwrite or erase existing
-rows.
+**What it actually is.** `INSERT` adds one (or more) brand-new rows to a table — a new user signs up, a
+new order is placed. You tell it which columns you're filling and what values to put in them. It's the
+gentlest of the three: it only adds, so it can't overwrite or erase existing rows.
 
 **A real example.**
 ```sql
@@ -62,12 +59,11 @@ INSERT 0 1
 ```
 *What just happened:* You added one new user. The first part lists the columns you're filling; `VALUES`
 gives the matching values *in the same order* — `name` gets `'Margaret H.'`, `email` gets the address,
-and so on. The `INSERT 0 1` reply (PostgreSQL's wording) confirms one row was inserted. Run a quick
-`SELECT * FROM users WHERE name = 'Margaret H.';` and you'd see her sitting in the table.
+and so on. The `INSERT 0 1` reply (PostgreSQL's wording) confirms one row was inserted.
 
 Notice we didn't set `id`. Many tables generate `id` automatically (an auto-incrementing key), so you
-leave it out and let the database assign the next number. Whether yours does depends on how the table
-was defined — see [Relationships & Keys](/guides/relationships-and-keys) for how that's set up.
+leave it out and let the database assign the next number — see [Relationships & Keys](/guides/relationships-and-keys)
+for how that's set up.
 
 ⚠️ **Gotcha.** The columns list and the `VALUES` list must line up — same count, same order. If you
 swap two values, SQL won't catch it as long as the *types* fit: putting a city where a name goes is a
@@ -76,12 +72,9 @@ names explicitly (rather than relying on table order) makes these mix-ups far le
 
 ## `UPDATE` — change rows that already exist
 
-**What it actually is.** `UPDATE` modifies values in rows that are *already* in the table. You say which
-column(s) to change, what to change them to, and — critically — *which rows* to change.
-
-**What it does in real life.** Someone moves city, fixes a typo in their name, changes their email.
-`UPDATE` reaches into the matching rows and rewrites the values you name. Everything you don't name stays
-as it was.
+**What it actually is.** `UPDATE` modifies values in rows already in the table — someone moves city,
+fixes a typo, changes their email. You say which column(s) to change, what to change them to, and —
+critically — *which rows*. Everything you don't name stays as it was.
 
 **A real example.**
 ```sql
@@ -93,9 +86,8 @@ WHERE id = 3;
 UPDATE 1
 ```
 *What just happened:* You changed exactly one row — Alan Turing, `id = 3` — setting his `city` to
-`'Cambridge'`. His other columns (`name`, `email`, `age`, `created_at`) are untouched. The `UPDATE 1`
-reply tells you one row was affected, which is a number worth reading: if you expected to change one
-row and it says `UPDATE 1`, good. If it says `UPDATE 5`, stop and look.
+`'Cambridge'`. His other columns are untouched. The `UPDATE 1` reply is a number worth reading: expected
+one row and it says `UPDATE 1`, good. Says `UPDATE 5`? Stop and look.
 
 You can change several columns at once by separating them with commas:
 ```sql
@@ -106,8 +98,8 @@ WHERE id = 3;
 ```text
 UPDATE 1
 ```
-*What just happened:* Same single row, two columns updated together. The `SET` list can be as long as you
-like; the `WHERE` still decides *which* rows it applies to.
+*What just happened:* Same single row, two columns updated together. The `SET` list can be as long as
+you like; `WHERE` still decides *which* rows it applies to.
 
 ### ⚠️ The career-defining gotcha: `UPDATE` with no `WHERE`
 
@@ -122,12 +114,12 @@ SET city = 'Cambridge';
 UPDATE 6
 ```
 *What just happened:* With no `WHERE` to narrow it down, the `UPDATE` applied to **every single row**.
-*Everyone* in the table now lives in Cambridge — Ada, Grace, Alan, Katherine, Linus, and Margaret, all
-of them, overwritten in one stroke. The `UPDATE 6` is the database calmly telling you that you just
-changed six rows. There's no "are you sure?" prompt. SQL did exactly what you told it to.
+*Everyone* now lives in Cambridge — Ada, Grace, Alan, Katherine, Linus, and Margaret, all overwritten in
+one stroke. `UPDATE 6` is the database calmly telling you that you just changed six rows. There's no "are
+you sure?" prompt — SQL did exactly what you told it to.
 
-This is not a rare mistake or a beginner-only mistake — experienced people have wiped production tables
-this way, usually while moving fast. The fix is a *habit*, not a feature:
+This is not a rare or beginner-only mistake — experienced people have wiped production tables this way,
+usually while moving fast. The fix is a *habit*, not a feature:
 
 💡 **Key point — the WHERE-first habit.** When writing an `UPDATE` or `DELETE`, type the `WHERE` clause
 *before* you type the `SET` (or before you run anything). Make narrowing the rows the first thing you do,
@@ -151,11 +143,9 @@ keeping the identical `WHERE`, and you change precisely what you just previewed.
 
 ## `DELETE` — remove rows
 
-**What it actually is.** `DELETE` removes whole rows from a table. Same shape as `UPDATE`: a `WHERE`
-decides which rows go.
-
-**What it does in real life.** A user closes their account, a record was created by mistake, old data
-gets cleaned out. `DELETE` takes the matching rows out of the table entirely.
+**What it actually is.** `DELETE` removes whole rows from a table — a user closes their account, a record
+was created by mistake, old data gets cleaned out. Same shape as `UPDATE`: a `WHERE` decides which rows
+go.
 
 **A real example.**
 ```sql
@@ -166,8 +156,8 @@ WHERE id = 5;
 DELETE 1
 ```
 *What just happened:* The row with `id = 5` (Linus T.) is gone — removed from the table. `DELETE 1`
-confirms one row was deleted. As with `UPDATE`, read that number: it's your sanity check on how much you
-just removed.
+confirms one row was deleted. As with `UPDATE`, read that number: your sanity check on how much you just
+removed.
 
 ### ⚠️ The same trap, sharper: `DELETE` with no `WHERE`
 
@@ -182,13 +172,13 @@ DELETE FROM users;
 DELETE 6
 ```
 *What just happened:* With no `WHERE`, `DELETE` removed **every row in the table**. The `users` table is
-now empty — all six users gone. The table structure (the columns) still exists, but it holds nothing.
-Once committed, those rows are not coming back unless you have a backup. This is the single most
-expensive line in this guide, which is exactly why the cheat-card puts "write the `WHERE` first" in bold.
+now empty — all six users gone. The table structure (the columns) still exists, but it holds nothing, and
+once committed, those rows aren't coming back unless you have a backup. The single most expensive line in
+this guide, which is exactly why the cheat-card puts "write the `WHERE` first" in bold.
 
 ## Your safety net: transactions
 
-Habits prevent most accidents. Transactions catch the rest. Here's the idea that makes changing data far
+Habits prevent most accidents. Transactions catch the rest — here's the idea that makes changing data far
 less scary.
 
 📝 **Terminology.** A **transaction** is a group of changes the database treats as one all-or-nothing
@@ -211,7 +201,7 @@ SELECT count(*) FROM users;
      4
 ```
 *What just happened:* You opened a transaction, ran a `DELETE`, then peeked at the table. You expected to
-remove the two London users (Ada and Alan), leaving four — and `count(*)` says 4. That looks right, so
+remove the two London users (Ada and Alan), leaving four, and `count(*)` says 4. That looks right, so
 you'd make it permanent:
 ```sql
 COMMIT;
@@ -222,19 +212,19 @@ Inside a transaction, you're not stuck:
 ROLLBACK;
 ```
 *What just happened:* `ROLLBACK` undid every change since `BEGIN`. The deleted rows snap back as if the
-`DELETE` never ran. This is the seatbelt working: a transaction gives you a chance to *look* before your
-change becomes permanent, and a way to back out if it's wrong.
+`DELETE` never ran — the seatbelt working: a transaction gives you a chance to *look* before your change
+becomes permanent, and a way to back out if it's wrong.
 
 💡 **Key point.** For any `UPDATE` or `DELETE` you're even slightly unsure about, wrap it in a
 transaction: `BEGIN`, run it, `SELECT` to verify, then `COMMIT` if it's right or `ROLLBACK` if it's not.
-It turns "oh no" into "phew." Transactions do more than this — they're how databases keep data consistent
-even when many things happen at once — and that's its own topic. See
-[Transactions & ACID](/guides/transactions-and-acid) for the full picture.
+It turns "oh no" into "phew." Transactions do more — they're how databases keep data consistent even when
+many things happen at once, a topic of its own; see [Transactions & ACID](/guides/transactions-and-acid)
+for the full picture.
 
 ⚠️ **Gotcha.** A transaction only protects you *before you commit*. Once you run `COMMIT`, the change is
-permanent and `ROLLBACK` can't help. And many tools run in "autocommit" mode by default — every statement
-commits instantly unless you explicitly `BEGIN` first. So the protection isn't automatic; you have to
-*start* the transaction. When the change matters, type `BEGIN` first.
+permanent and `ROLLBACK` can't help. Many tools also run in "autocommit" mode by default — every
+statement commits instantly unless you explicitly `BEGIN` first. When the change matters, type `BEGIN`
+first.
 
 ## Recap
 
@@ -249,8 +239,8 @@ commits instantly unless you explicitly `BEGIN` first. So the protection isn't a
    `ROLLBACK`. It only protects you until you commit.
 
 You can now read data with `SELECT`, narrow it with `WHERE`, sort and limit it, and change it safely with
-`INSERT`, `UPDATE`, and `DELETE`. That's the everyday core of SQL — the same handful of shapes you'll use
-for years. When you're ready to pull data from more than one table at a time, head to
+`INSERT`, `UPDATE`, and `DELETE` — the everyday core of SQL, the same handful of shapes you'll use for
+years. When you're ready to pull data from more than one table at a time, head to
 [SQL Joins, Explained](/guides/sql-joins-explained).
 
 ---

@@ -6,7 +6,7 @@ summary: "Why splitting the heap into young and old generations is the single bi
 tags: [garbage-collection, generational-gc, tri-color-marking, concurrent-gc, write-barrier, stop-the-world]
 difficulty: advanced
 synonyms: ["what is the generational hypothesis", "why do garbage collectors have generations", "how does tri-color marking work", "what is a write barrier in garbage collection", "how do concurrent garbage collectors avoid pausing"]
-updated: 2026-07-06
+updated: 2026-07-10
 ---
 
 # Generational and Concurrent Collectors
@@ -40,7 +40,7 @@ One wrinkle: an old object can reference a young one (a long-lived cache pointin
 
 ## Concurrent collection and the tri-color invariant
 
-Generations shrink *how much* gets traced. The other lever is *whether the program has to stop* while tracing happens at all. A naive mark phase needs a stable graph - if your code mutates references while the collector is mid-trace, the collector can lose track of what's reachable and free something still in use. The blunt fix is stop-the-world: freeze every thread, trace, resume. The refined fix is to trace **concurrently**, marking objects while application threads keep running, and this is where modern low-pause collectors (Go's, the JVM's ZGC and Shenandoah, .NET's) spend their engineering effort.
+Generations shrink *how much* gets traced. The other lever is *whether the program has to stop* while tracing happens at all. A naive mark phase needs a stable graph - if your code mutates references while the collector is mid-trace, the collector can lose track of what's reachable and free something still in use. The blunt fix is stop-the-world - freeze every thread, trace, resume; the refined fix is to trace **concurrently**, marking objects while application threads keep running, which is where modern low-pause collectors (Go's, the JVM's ZGC and Shenandoah, .NET's) spend their engineering effort.
 
 To mark concurrently without corrupting the trace, collectors use **tri-color marking**, a bookkeeping scheme that makes "am I done, and is it still correct?" answerable at every point mid-trace, not just at the end.
 

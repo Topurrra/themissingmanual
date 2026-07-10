@@ -6,7 +6,7 @@ summary: "EXPLAIN shows the database's plan for a query and EXPLAIN ANALYZE actu
 tags: [databases, explain, explain-analyze, query-plan, seq-scan, index-scan, sql]
 difficulty: intermediate
 synonyms: ["how to read explain", "what does explain analyze do", "difference between seq scan and index scan", "how to find a missing index", "estimated vs actual rows explain", "how to tell if my query uses an index", "how to debug a slow sql query"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Reading EXPLAIN
@@ -15,7 +15,7 @@ Up to now you've been reasoning about what the database *might* be doing. This p
 
 ## The two commands
 
-**What they actually are.** There are two tools, and the difference matters:
+There are two tools, and the difference matters:
 
 - **`EXPLAIN`** asks the database, *"What's your plan for this query?"* It does **not** run the query. It returns the plan and the planner's *estimates* (how much work it thinks it'll be, how many rows it expects). Safe and instant — even for a query that would take a minute to run.
 - **`EXPLAIN ANALYZE`** *actually runs the query* and reports what really happened — real timings and real row counts, side by side with the estimates. Use this when you want the truth, not a forecast.
@@ -90,7 +90,7 @@ The most powerful habit `EXPLAIN ANALYZE` gives you is comparing the planner's *
                                                           doing millions of slow index lookups. ouch.
 ```
 
-When estimated and actual row counts are wildly apart, that mismatch — not the scan type alone — is often the real cause of a slow query. The usual fix is to refresh the planner's statistics (`ANALYZE users;` in PostgreSQL, `ANALYZE TABLE users;` in MySQL) so it makes better choices. If a plan stays bad after that, you're at the edge of this guide — planner internals and forcing plans are a deeper *performance* topic.
+When estimated and actual row counts are wildly apart, that mismatch — not the scan type alone — is often the real cause of a slow query. The usual fix is to refresh the planner's statistics (`ANALYZE users;` in PostgreSQL, `ANALYZE TABLE users;` in MySQL). If a plan stays bad after that, you're at the edge of this guide — planner internals and forcing plans are a deeper *performance* topic.
 
 ## The loop: measure, fix, re-check
 
@@ -109,9 +109,9 @@ flowchart TD
 
 ⚠️ **Gotcha — always re-check, never assume.** Creating an index does *not* guarantee the database will use it. If your `WHERE` wraps the column in a function (`WHERE lower(email) = ...` won't use a plain index on `email`), or uses a leading wildcard (`LIKE '%example.com'`), or the planner decides a scan is genuinely cheaper, your shiny new index sits unused. The only way to know it worked is step 3: run `EXPLAIN ANALYZE` again and *see* `Index Scan` with a lower execution time. Measure the fix; don't trust it.
 
-🪖 **War story.** The classic version of this: someone "fixes" a slow query by adding three indexes they *think* are relevant, ships it, and the query is still slow — but now writes are slower too. The fix was always one index, and `EXPLAIN ANALYZE` would have named it in ten seconds: one `Seq Scan`, one `Rows Removed by Filter: 4000000`, one column to index. Measure first. The plan tells you exactly which index to add — you don't have to guess, and you shouldn't.
+🪖 **War story.** The classic version: someone "fixes" a slow query by adding three indexes they *think* are relevant, ships it, and the query is still slow — but now writes are slower too. The fix was always one index, and `EXPLAIN ANALYZE` would have named it in ten seconds: one `Seq Scan`, one `Rows Removed by Filter: 4000000`, one column to index. Measure first. The plan tells you exactly which index to add — you don't have to guess.
 
-**Why this saves you later.** The next time a query is slow, you have a procedure instead of a panic. `EXPLAIN ANALYZE` it, look for the scan and the removed-rows count, add the one index the plan points at, and run it again to prove the fix. That loop turns "the database is mysteriously slow" — the worst kind of 2am problem — into a five-minute, evidence-backed fix.
+The next time a query is slow, you have a procedure instead of a panic. `EXPLAIN ANALYZE` it, look for the scan and the removed-rows count, add the one index the plan points at, and run it again to prove the fix. That loop turns "the database is mysteriously slow" — the worst kind of 2am problem — into a five-minute, evidence-backed fix.
 
 ## Recap
 

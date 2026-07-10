@@ -6,16 +6,16 @@ summary: "The decision order: try prompting, then add RAG, then fine-tune — be
 tags: [fine-tuning, decision, prompting, rag, lora, llm, cost, lock-in]
 difficulty: advanced
 synonyms: ["when should i fine-tune vs prompt vs rag", "fine-tuning decision table", "should i fine-tune or use rag", "is fine-tuning worth the cost", "when does fine-tuning make sense", "prompt rag fine-tune order"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Choosing — the Honest Order
 
-You've got the three levers and you know what fine-tuning really costs. Now the decision. The good news is
-there's a default order that's right far more often than not, and it falls straight out of one principle:
-**each step up costs more and locks you in more, so climb only as high as your problem forces you to.**
+You've got the three levers and you know what fine-tuning really costs. Now the decision. There's a default
+order that's right far more often than not, and it falls straight out of one principle: **each step up costs
+more and locks you in more, so climb only as high as your problem forces you to.**
 
-This phase gives you that order, a table to decide from in the moment, and the two traps that catch nearly
+This phase gives you that order, a table to decide from in the moment, and the traps that catch nearly
 everyone — so you can make the call confidently and explain it to whoever's holding the budget.
 
 ## The decision table
@@ -34,14 +34,13 @@ everyone — so you can make the call confidently and explain it to whoever's ho
 
 ## 1. Start with prompting — always
 
-**The move.** Before anything else, push prompting until it genuinely stops improving. Clear instructions, a
-sharp system prompt, a few well-chosen examples in the context, structured output if you need it. Measure where
-it lands.
+**The move.** Before anything else, push prompting until it genuinely stops improving: clear instructions, a
+sharp system prompt, a few well-chosen examples in the context, structured output if you need it. Measure
+where it lands.
 
-**Why it's first.** It's free in every way that matters: you edit a string, the behavior changes on the next
-call, and you can undo it instantly. There's no dataset to build, nothing to host, nothing to retrain when the
-base model improves. Most "we need to fine-tune" problems dissolve here, and the ones that don't, you now
-understand far better.
+**Why it's first.** It's free in every way that matters — you edit a string, the behavior changes on the next
+call, and you can undo it instantly. No dataset to build, nothing to host, nothing to retrain when the base
+model improves. Most "we need to fine-tune" problems dissolve here.
 
 ⚠️ **The trap to avoid.** "We tried prompting" almost always means "we tried *a* prompt, once, and it wasn't
 perfect." That's not exhausting prompting — that's barely starting. Exhausting it means you've seriously
@@ -51,13 +50,13 @@ you need *reliably*. Only a real ceiling justifies climbing higher. Full techniq
 
 ## 2. Add RAG when the problem is knowledge
 
-**The move.** If prompting can't fix it because the model *doesn't know* something — your internal
-docs, your current data, anything specific or fresh — add retrieval. Fetch the relevant facts and put them in
-the context at request time.
+**The move.** If prompting can't fix it because the model *doesn't know* something — your internal docs,
+your current data, anything specific or fresh — add retrieval. Fetch the relevant facts and put them in the
+context at request time.
 
 **Why it's second, not last.** RAG costs more than prompting (you're building a retrieval pipeline) but far
-less than fine-tuning, and critically, it keeps your facts *editable*. Change a document, the next answer is
-correct — no retraining. Any problem that's really about knowledge should stop here and never reach
+less than fine-tuning, and critically, it keeps your facts *editable* — change a document, the next answer is
+correct, no retraining. Any problem that's really about knowledge should stop here and never reach
 fine-tuning. The full build is in [RAG, Explained](/guides/rag-explained).
 
 💡 **Key point.** If you remember one thing from this whole guide, make it this: **never fine-tune to teach
@@ -106,11 +105,11 @@ not a sign of sophistication — reaching exactly the rung you needed is.
 ## The honest bottom line
 
 Fine-tuning is real, useful, and occasionally exactly right — for **behavior** (voice, format, style) on a
-**narrow task at scale**, after prompting is genuinely exhausted and when RAG doesn't fit because the problem
-was never about knowledge. That's a narrower target than the hype suggests, and that's the honest part. Most
-teams get where they're going on prompting and RAG, spend a fraction of the money, and keep the freedom to ride
-the next better model for free. If you do climb to fine-tuning, climb on purpose — with a real dataset, a
-clear baseline, and your eyes open about the standing cost.
+**narrow task at scale**, after prompting is genuinely exhausted and RAG doesn't fit because the problem was
+never about knowledge. That's a narrower target than the hype suggests. Most teams get where they're going on
+prompting and RAG, spend a fraction of the money, and keep the freedom to ride the next better model for free.
+If you do climb to fine-tuning, climb on purpose — with a real dataset, a clear baseline, and your eyes open
+about the standing cost.
 
 ## Recap
 

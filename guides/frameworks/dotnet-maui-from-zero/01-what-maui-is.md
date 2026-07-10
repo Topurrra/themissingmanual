@@ -6,7 +6,7 @@ summary: "MAUI builds native Android, iOS, macOS, and Windows apps from one C# c
 tags: [dotnet-maui, csharp, xaml, cross-platform, getting-started]
 difficulty: beginner
 synonyms: ["what is dotnet maui", "maui first app", "maui xaml code-behind", "maui vs xamarin", "maui cross platform", "net maui hello world"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What MAUI Is & Your First App
@@ -18,8 +18,8 @@ stack for Windows — three languages and toolchains for what is, to the user, o
 **.NET MAUI tears that wall down.** MAUI (Multi-platform App UI) lets you build **native apps for
 Android, iOS, macOS, and Windows from a single C# codebase**. It's the evolution of Xamarin.Forms,
 rebuilt on modern .NET. You describe the UI and write the logic once, and MAUI renders it using
-each platform's *real, native* controls — a MAUI button is a genuine Android button on Android and a
-genuine UIKit button on iOS, not a lookalike.
+each platform's *real, native* controls — a MAUI button is a genuine Android button on Android and
+a genuine UIKit button on iOS, not a lookalike.
 
 If you already write C#, MAUI is your route into mobile and desktop without picking up Swift and
 Kotlin. It's a [framework](/guides/what-a-framework-even-is) — it calls *your* code at the right
@@ -37,12 +37,11 @@ Hold these three pieces and how they connect — everything in this guide hangs 
 together.** That triangle is the **MVVM pattern** (Model-View-ViewModel):
 
 - The **View** is your screen — a tree of controls, usually written in **XAML**, a declarative markup
-  that says *what* the UI looks like (a label here, a button there) without spelling out *how* to draw it.
+  that says *what* the UI looks like without spelling out *how* to draw it.
 - The **ViewModel** is a plain C# class holding the screen's data (the text in a box, the items in a
   list) and the things it can do (save, delete).
 - **Data binding** is the wire between them: the View says "show whatever's in the ViewModel's `Title`
-  property," and when that property changes, the displayed text updates automatically — no manual
-  label updates.
+  property," and when that property changes, the displayed text updates automatically.
 
 You don't need to *build* a ViewModel yet — that's Phases 3 and 4. For now, hold the shape:
 **markup for the look, a C# class for the state, binding to connect them.** This phase uses the
@@ -63,7 +62,7 @@ A MAUI screen is a `ContentPage`. Here's one in XAML — a greeting and a button
 </ContentPage>
 ```
 
-*What just happened:* This is the **View** — pure markup, no logic. Read it top to bottom:
+*What just happened:* this is the **View** — pure markup, no logic. Read it top to bottom:
 
 - `<ContentPage>` is the root: one full screen. The two `xmlns=` lines are namespace declarations —
   boilerplate telling the XAML parser which vocabulary of controls (`Label`, `Button`, layouts) is in
@@ -71,10 +70,10 @@ A MAUI screen is a `ContentPage`. Here's one in XAML — a greeting and a button
 - `x:Class="NotesApp.MainPage"` is the important link: it ties this markup to a C# class named
   `MainPage`. The XAML and the code-behind are **two halves of one page**.
 - `<VerticalStackLayout>` is a layout container — it stacks its children top to bottom, with `Padding`
-  (space inside the edges) and `Spacing` (gaps between children). Layouts are how you arrange controls;
-  you'll meet more in [Phase 2](02-xaml-and-layouts.md).
+  (space inside the edges) and `Spacing` (gaps between children). More on layouts in
+  [Phase 2](02-xaml-and-layouts.md).
 - `<Label>` shows text; `<Button>` is tappable. `Clicked="OnTap"` says "when this button is tapped,
-  call the `OnTap` method" — and that method lives in the other half of the page.
+  call the `OnTap` method" — living in the other half of the page.
 
 Here's that other half — the **code-behind**, a file named `MainPage.xaml.cs`:
 
@@ -88,15 +87,15 @@ public partial class MainPage : ContentPage
 }
 ```
 
-*What just happened:* This is plain C#, and it's the partner to the XAML above.
+*What just happened:* this is plain C#, the partner to the XAML above.
 
 - `partial class MainPage` — `partial` means "this class is defined in more than one file." The other
   part is **generated from your XAML** at build time, fusing markup and code into a single class.
 - `InitializeComponent()` reads your XAML and builds the control tree — the layout, the label, the
-  button. Without it, the page would be blank. Every code-behind constructor calls it first.
+  button. Without it, the page would be blank.
 - `OnTap` is the event handler the XAML pointed at. Its signature — `(object sender, EventArgs e)` — is
-  the standard .NET event shape you already know from C#. When the user taps, MAUI calls it, and
-  `DisplayAlert` pops a native dialog with a title, a message, and an OK button.
+  the standard .NET event shape you already know. When the user taps, MAUI calls it, and `DisplayAlert`
+  pops a native dialog with a title, a message, and an OK button.
 
 💡 This small example is the View (XAML) and its immediate logic (code-behind) for one screen. As the
 app grows, you'll lift that logic out into a ViewModel so it's testable and reusable — the mental
@@ -111,9 +110,9 @@ dotnet new maui -o NotesApp
 cd NotesApp
 ```
 
-*What just happened:* `dotnet new maui` scaffolded a complete cross-platform app named `NotesApp` —
-the project file, a starter `MainPage.xaml` + `MainPage.xaml.cs` (like the pair above), app startup
-code, and the per-platform plumbing for all four targets. One folder, every platform.
+*What just happened:* `dotnet new maui` scaffolded a complete cross-platform app named `NotesApp` — the
+project file, a starter `MainPage.xaml` + `MainPage.xaml.cs` (like the pair above), app startup code,
+and the per-platform plumbing for all four targets — one folder, every platform.
 
 Now run it. Unlike a web app, you don't `dotnet run` into a browser — you build *for a specific
 device target* and launch it there:
@@ -132,10 +131,10 @@ choose a different platform:
 
 The C# and XAML you wrote stay the same across all of them; only the target flag changes.
 
-📝 **iOS and macOS builds require a Mac.** Apple's toolchain (and code signing) only runs on macOS,
-so building the `ios` or `maccatalyst` targets needs a Mac — either as your dev machine or paired
-over the network from Windows. Android and Windows build from a Windows PC directly. This is an
-Apple rule, not a MAUI limitation.
+📝 **iOS and macOS builds require a Mac.** Apple's toolchain (and code signing) only runs on macOS, so
+building the `ios` or `maccatalyst` targets needs a Mac — either as your dev machine or paired over the
+network from Windows. Android and Windows build from a Windows PC directly. An Apple rule, not a MAUI
+limitation.
 
 ⚠️ The first build is slow — it restores packages, spins up an emulator, and compiles for the whole
 platform. That's a one-time cost; later runs are much quicker.

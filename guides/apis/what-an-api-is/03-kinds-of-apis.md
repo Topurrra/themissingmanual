@@ -6,7 +6,7 @@ summary: "APIs come in two broad kinds — local/library APIs that live inside y
 tags: [apis, web-apis, library-apis, rest, graphql, grpc]
 difficulty: beginner
 synonyms: ["types of apis", "library api vs web api", "what is a web api", "rest vs graphql vs grpc", "what is a rest api", "local api vs remote api"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Kinds of APIs
@@ -47,7 +47,7 @@ A **web API** is the kind most people mean when they say "API" today. Here the o
 That journey across the network changes things in ways worth knowing up front:
 
 - **It takes time.** A round trip to a server is far slower than calling code in your own program. Not slow like watching paint dry — but slow enough that it matters.
-- **It can fail.** The network can drop, the other server can be down or busy. A library call in your own house basically can't "fail to arrive"; a request across town can.
+- **It can fail.** The network can drop, the other server can be down or busy. A library call in your own house can't "fail to arrive"; a request across town can.
 - **It needs an address and rules.** To reach a kitchen across town, you need its address and an agreed language for placing orders.
 
 ⚠️ **Gotcha.** This is the single biggest difference to internalize: a **web API call can be slow and can fail**, where a local function call effectively can't. A lot of real-world bugs and confusion come from treating a request across the internet as if it were as instant and reliable as calling code next door. It isn't. Code that talks to web APIs has to expect waiting and has to expect failure.

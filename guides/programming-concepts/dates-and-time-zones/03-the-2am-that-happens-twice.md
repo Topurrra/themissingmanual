@@ -6,12 +6,12 @@ summary: "Daylight saving creates gaps where time skips and overlaps where it re
 tags: [time, dst, daylight-saving, ambiguous-time, gap, overlap, bugs]
 difficulty: intermediate
 synonyms: ["daylight saving time bug", "2am happens twice", "spring forward fall back bug", "off by one hour bug", "ambiguous timestamp dst", "nonexistent time daylight saving", "dst gap and overlap"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The 2am That Happens Twice
 
-This is the phase where you learn *why* the rules from Phase 2 aren't bureaucratic fussiness - they're armor against one specific, recurring disaster. Twice a year, in any region that observes daylight saving time, the local clock does something genuinely strange: it skips an hour, and six months later it repeats an hour. Every naive assumption about time - "each hour happens once," "I can add an hour by adding 3600 seconds to the clock reading" - breaks on exactly these two instants.
+This is the phase where you learn *why* the rules from Phase 2 aren't bureaucratic fussiness - they're armor against one specific, recurring disaster. Twice a year, in any region that observes daylight saving time, the local clock does something genuinely strange: it skips an hour, then six months later repeats one. Every naive assumption about time - "each hour happens once," "I can add an hour by adding 3600 seconds to the clock reading" - breaks on exactly these two instants.
 
 ## Spring forward: the hour that never existed
 

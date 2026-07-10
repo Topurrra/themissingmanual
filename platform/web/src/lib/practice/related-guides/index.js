@@ -4,8 +4,23 @@ import { RELATED as PYTHON } from './python.js';
 import { RELATED as SQL } from './sql.js';
 import { RELATED as TYPESCRIPT } from './typescript.js';
 import { RELATED as GIT } from './git.js';
+import { RELATED as POSTGRES } from './postgres.js';
+import { RELATED as WEBASSEMBLY } from './webassembly.js';
+import { RELATED as MATH } from './math.js';
+import { RELATED as PHYSICS } from './physics.js';
 
-const BY_MODULE = { regex: REGEX, javascript: JAVASCRIPT, python: PYTHON, sql: SQL, typescript: TYPESCRIPT, git: GIT };
+const BY_MODULE = {
+  regex: REGEX,
+  javascript: JAVASCRIPT,
+  python: PYTHON,
+  sql: SQL,
+  typescript: TYPESCRIPT,
+  git: GIT,
+  postgres: POSTGRES,
+  webassembly: WEBASSEMBLY,
+  math: MATH,
+  physics: PHYSICS
+};
 
 export function relatedGuideFor(module, phaseNo) {
   return BY_MODULE[module]?.[phaseNo] ?? null;

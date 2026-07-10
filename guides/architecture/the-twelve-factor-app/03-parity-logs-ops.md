@@ -6,12 +6,12 @@ summary: "The canonical checklist for an app that is actually shippable and scal
 tags: [architecture, twelve-factor, deployment, config, cloud-native, devops]
 difficulty: intermediate
 synonyms: ["12 factor app", "twelve factor methodology", "12factor", "config in environment", "stateless processes", "cloud native checklist", "heroku twelve factor"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Dev-prod parity, logs as streams, and the operations factors
 
-You've made the app repeatable to deploy and safe to clone. The remaining factors are about the part of an app's life that lasts the longest: living in production. These are the factors that decide whether 2am pages are short or long, whether "it works in staging" means anything, and whether a one-off database fix is routine or terrifying. We'll cover the rest of the twelve here, grouped by the day they save you.
+You've made the app repeatable to deploy and safe to clone. The remaining factors are about the part of an app's life that lasts the longest: living in production — they decide whether 2am pages are short or long, whether "it works in staging" means anything, and whether a one-off database fix is routine or terrifying. We'll cover the rest of the twelve here, grouped by the day they save you.
 
 ## Factor IV — Backing services are attached resources
 

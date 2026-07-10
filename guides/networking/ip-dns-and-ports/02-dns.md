@@ -6,7 +6,7 @@ summary: "DNS is the internet's phone book: typing example.com triggers a lookup
 tags: [networking, dns, resolver, caching, name-resolution, dig]
 difficulty: beginner
 synonyms: ["how does dns work", "what is dns", "what does a dns lookup do", "internet phone book", "why is it always dns", "what does dig do", "how does example.com become an ip"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # DNS - Names to Numbers
@@ -17,11 +17,11 @@ In the last phase you saw that machines find each other by number. But you don't
 
 ## What DNS actually does
 
-**What it actually is.** DNS is a lookup service. You hand it a name (`example.com`) and it hands back an IP address (`93.184.215.14`). Your browser then connects to that address. The name is a convenience for you; the address is what the network actually uses.
+DNS is a lookup service: you hand it a name (`example.com`) and it hands back an IP address (`93.184.215.14`). Your browser then connects to that address - the name is a convenience for you, the address is what the network actually uses.
 
-**Why people get this wrong.** It's tempting to imagine one giant computer somewhere holding a master list of every name on earth. There isn't one - there couldn't be. DNS is *distributed*: the answer for any name is spread across a chain of servers, each responsible for one slice of the job. No single machine knows everything, and that's the design, not a flaw.
+It's tempting to imagine one giant computer somewhere holding a master list of every name on earth. There isn't one - there couldn't be. DNS is *distributed*: the answer for any name is spread across a chain of servers, each responsible for one slice of the job. No single machine knows everything, and that's the design, not a flaw.
 
-**What it does in real life.** Every time you visit a site, follow a link, or load an image from another domain, a DNS lookup happens first (or a cached answer is reused - more on that shortly). It's the quiet first step of nearly every internet action.
+Every time you visit a site, follow a link, or load an image from another domain, a DNS lookup happens first (or a cached answer is reused - more on that shortly). It's the quiet first step of nearly every internet action.
 
 ## The lookup chain - who answers, in order
 

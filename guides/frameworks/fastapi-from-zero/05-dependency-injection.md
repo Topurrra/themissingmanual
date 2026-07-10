@@ -6,7 +6,7 @@ summary: "FastAPI's Depends() lets an endpoint declare what it needs and have th
 tags: [fastapi, dependency-injection, depends, reusable-dependencies, yield-dependencies, auth-dependency]
 difficulty: intermediate
 synonyms: ["fastapi depends", "fastapi dependency injection", "fastapi reusable dependency", "fastapi yield dependency", "fastapi db session dependency", "fastapi sub-dependencies", "fastapi pagination dependency"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Dependency Injection with Depends()
@@ -15,10 +15,8 @@ By now your Book service can take a validated request body, shape a clean respon
 status codes. But look closely and the same chores keep repeating: every list endpoint re-reads `skip`
 and `limit`, every protected endpoint re-checks the same token, every database-touching endpoint will (in
 two phases) open and close a session the same way. Copy-paste that into ten endpoints and you've signed
-up to fix the same bug ten times.
-
-FastAPI has a built-in answer, and it's one of the framework's best ideas. The syntax is trivial once the
-*shape* clicks.
+up to fix the same bug ten times. FastAPI has a built-in answer, and it's one of the framework's best
+ideas — trivial syntax once the *shape* clicks.
 
 ## The idea: declare what you need, the framework provides it
 

@@ -6,16 +6,15 @@ summary: "Flaky tests - ones that pass or fail randomly - are what destroy CI's 
 tags: [testing, ci, flaky-tests, required-checks, test-reliability, branch-protection]
 difficulty: intermediate
 synonyms: ["what are flaky tests", "why do my tests pass and fail randomly", "how to fix flaky tests", "why does ci fail intermittently", "what are required status checks", "how to make ci faster", "branch protection rules"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Keeping CI Trustworthy
 
 CI only works if people believe it. A green check is a promise - "this code is safe to merge" - and the
-entire value of CI rests on that promise being true. The fastest way to destroy a CI setup isn't a
-broken server or a bad config. It's something quieter and far more corrosive: tests that lie. Once the
-team stops trusting red, you've lost the gate, and you didn't even get a warning. This phase is about
-protecting that trust.
+entire value of CI rests on that promise being true. The fastest way to destroy a CI setup isn't a broken
+server or a bad config. It's something quieter and far more corrosive: tests that lie. Once the team
+stops trusting red, you've lost the gate, with no warning.
 
 ## The cheat-card: red check, calm response
 
@@ -43,7 +42,7 @@ every time.
 
 **Why this is so much worse than a normal failure.** A real failure is honest: it tells you something is
 broken, you fix it, it goes green. A flaky failure teaches the team a poison lesson - *red doesn't
-necessarily mean broken.* And once people learn that, here's what happens, every time:
+necessarily mean broken.* Once people learn that, here's what happens, every time:
 
 ```text
    Day 1:   Red build.  "Probably just flaky." → click re-run → green → merge.
@@ -52,9 +51,9 @@ necessarily mean broken.* And once people learn that, here's what happens, every
             "ugh, the CI is flaky again" → merge anyway → ships the bug.
 ```
 
-That last line is the catastrophe. The flaky tests trained everyone to ignore red, so when red finally
-*meant* something, nobody listened. **A flaky suite is worse than no suite,** because no suite at least
-doesn't lull you into false confidence.
+That last line is the catastrophe: the flaky tests trained everyone to ignore red, so when red finally
+*meant* something, nobody listened. **A flaky suite is worse than no suite** - no suite at least doesn't
+lull you into false confidence.
 
 💡 **Key point.** Flakiness doesn't cost you one test. It slowly costs you the team's trust in *every*
 test. Treat a flaky test as a real bug - a bug in your test suite - not as background noise.
@@ -75,10 +74,10 @@ expect(screen.getText()).toBe('Loaded');
 await waitFor(() => expect(screen.getText()).toBe('Loaded'));
 ```
 
-*What just happened:* The first version races the clock - a `sleep` is a guess, and a CI machine under
-load is slower than your laptop, so the guess sometimes loses. The second waits for the *thing you
-actually care about* (the text appearing) instead of a fixed delay. **Fixed sleeps are the single most
-common source of flakiness.** Wait for conditions, not for time.
+*What just happened:* The first version races the clock - a `sleep` is a guess, and a busy CI machine is
+slower than your laptop, so the guess sometimes loses. The second waits for the *thing you actually care
+about* instead of a fixed delay. **Fixed sleeps are the single most common source of flakiness.** Wait
+for conditions, not for time.
 
 **2. Test order / shared state.** A test passes alone but fails when run after another, because they
 share something - a database row, a global variable, a file, a clock.
@@ -91,9 +90,8 @@ share something - a database row, a global variable, a file, a clock.
    CI shuffles or parallelizes order → result flips → "flaky."
 ```
 
-*What just happened:* Neither test is wrong in isolation, but they leak state into each other. The fix
-is **isolation**: each test sets up and tears down its own data, assuming nothing about what ran before.
-A test that depends on running order isn't really one test - it's a hidden dependency waiting to flip.
+*What just happened:* Neither test is wrong in isolation, but they leak state into each other. The fix is
+**isolation**: each test sets up and tears down its own data, assuming nothing about what ran before.
 
 **3. External dependencies.** The test reaches out to a real network service, a live API, a real clock,
 or randomness. Anything outside your control can hiccup, and your test fails for a reason that has
@@ -119,8 +117,7 @@ test.skip('reconnects after network drop - FLAKY, see issue #482', () => {
 ```
 
 *What just happened:* The test is temporarily removed from the gate, with a breadcrumb (`#482`) so it's
-tracked, not forgotten. The build's green is honest again. Quarantine is a holding cell, not a graveyard
-- the goal is always to fix and restore it.
+tracked, not forgotten. The build's green is honest again - quarantine is a holding cell, not a graveyard.
 
 ## Keeping the suite fast (so people run it)
 
@@ -128,10 +125,10 @@ A slow suite causes flakiness's cousin: people stop waiting for it. If CI takes 
 merge before it finishes, context-switch away, and the feedback loop you built for safety becomes a
 formality. Speed is a reliability feature.
 
-The biggest lever is the **shape** of your suite - and that's where the test pyramid comes in. Many fast,
-isolated unit tests at the base; fewer integration tests in the middle; a handful of slow end-to-end
-tests at the top. A suite that's mostly slow E2E tests is both *slow* and *flaky-prone* (E2E tests touch
-the most moving parts). The pyramid keeps CI fast *and* reliable at the same time.
+The biggest lever is the **shape** of your suite - the test pyramid. Many fast, isolated unit tests at
+the base; fewer integration tests in the middle; a handful of slow end-to-end tests at the top. A suite
+that's mostly slow E2E tests is both *slow* and *flaky-prone* (E2E tests touch the most moving parts).
+The pyramid keeps CI fast *and* reliable at once.
 
 > ⏭️ The pyramid - what each layer tests and why the proportions matter - is its own topic. See
 > [Unit, Integration & E2E](/guides/unit-integration-e2e) for the full picture. Here, the takeaway:
@@ -150,9 +147,9 @@ A few other practical levers, in rough order of payoff:
 green before the merge button is enabled.* It's what turns "we have CI" into "CI actually protects
 `main`."
 
-**Why you need it.** Without it, CI is advisory - a red check is just a suggestion someone can merge
-right past. With required checks, the platform refuses the merge until the gate is green. On GitHub this
-lives under **branch protection rules** for `main`:
+**Why you need it.** Without it, CI is advisory - a red check is just a suggestion someone can merge past.
+With required checks, the platform refuses the merge until the gate is green. On GitHub this lives under
+**branch protection rules** for `main`:
 
 ```text
    Branch protection on `main`:
@@ -170,11 +167,10 @@ gate is no longer a social norm you hope people honor; it's enforced by the plat
 *merge request approval rules*) is the set of rules guarding a branch - required checks, required
 reviews, "must be up to date." Required *status checks* are the CI piece of that.
 
-🪖 **War story.** I've watched a team add CI, feel safe, and keep shipping bugs to `main` for weeks -
-because the checks ran but were never marked *required.* People glanced at red, judged it "probably
-flaky," and merged anyway. The fix was one checkbox: make the check required. Suddenly red meant
-*blocked*, not *ignorable*, and the bugs stopped reaching `main`. CI you can merge past isn't a gate;
-it's a decoration.
+🪖 **War story.** A team added CI, felt safe, and kept shipping bugs to `main` for weeks - because the
+checks ran but were never marked *required.* People glanced at red, judged it "probably flaky," and
+merged anyway. The fix was one checkbox: make the check required. Suddenly red meant *blocked*, not
+*ignorable*, and the bugs stopped reaching `main`. CI you can merge past isn't a gate; it's a decoration.
 
 ## Recap
 

@@ -6,14 +6,14 @@ summary: "Spring Security is a chain of servlet filters every request passes bef
 tags: [spring-boot, spring-security, authentication, authorization, filter-chain, password-encoder, jwt, security]
 difficulty: advanced
 synonyms: ["spring security tutorial", "spring security filter chain", "spring authentication vs authorization", "spring securityfilterchain config", "spring password encoder bcrypt", "spring security jwt", "spring method security"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Security with Spring Security
 
-Let me say the quiet part out loud: Spring Security intimidates almost everyone. People who write JPA mappings and transactional services without breaking a sweat open the security config, see a wall of `.authorizeHttpRequests(...)` and `.hasRole(...)` and something called a "filter chain," and quietly back away. The reputation is earned — for years the API was genuinely awkward, and most tutorials hand you a magic blob of config without ever explaining the machine underneath.
+Spring Security intimidates almost everyone. People who write JPA mappings and transactional services without breaking a sweat open the security config, see a wall of `.authorizeHttpRequests(...)` and `.hasRole(...)` and something called a "filter chain," and quietly back away. The reputation is earned — for years the API was genuinely awkward, and most tutorials hand you a magic blob of config without explaining the machine underneath.
 
-So we're going to do the opposite. Before a single line of config, here's the one idea that turns Spring Security from voodoo into something you can reason about:
+Before a single line of config, here's the one idea that turns Spring Security from voodoo into something you can reason about:
 
 > **Spring Security is a chain of servlet filters that every request passes through *before* it reaches your controller.**
 
@@ -43,7 +43,7 @@ flowchart LR
   F4 -.reject.-> Deny
 ```
 
-*What just happened:* The request runs a gauntlet of filters, each with one job, and only a request that clears all of them reaches your controller. This is why your controller almost never contains security code — by the time a request gets there, the chain has *already* decided it's authenticated and authorized. When you write a `SecurityFilterChain` bean later in this phase, you're not writing magic; you're configuring *which filters run* and *what they check*. Every confusing config method maps back to one of those filter questions. Keep this diagram in your head and the rest of the phase is just filling in details.
+*What just happened:* The request runs a gauntlet of filters, each with one job, and only a request that clears all of them reaches your controller. This is why your controller almost never contains security code — by the time a request gets there, the chain has *already* decided it's authenticated and authorized. When you write a `SecurityFilterChain` bean, you're not writing magic; you're configuring *which filters run* and *what they check*. Every confusing config method maps back to one of those filter questions.
 
 ## Authentication vs authorization — two different questions
 
@@ -51,7 +51,7 @@ These two words sound alike, get abbreviated to the nearly-identical authN and a
 
 📝 **Authentication (authN) = "who are you?"** It's the login step: you prove your identity with a password, a token, an API key. The output is a verified identity (or a rejection). **Authorization (authZ) = "are you allowed to do this?"** It happens *after* authentication, and it checks whether the now-known user has permission for *this specific action* — usually via **roles** (`ADMIN`, `USER`) or finer-grained permissions.
 
-A worked example makes the split obvious: logging into your bank's app is authentication — the app now knows it's you. Being told "you can view your own account but not transfer from someone else's" is authorization. You're fully authenticated the whole time; you're just not authorized for that one action. Mix these up — say, by checking *that* someone is logged in but never checking *what* they're allowed to do — and any logged-in user can do anything. That's one of the most common real-world security bugs.
+A worked example makes the split obvious: logging into your bank's app is authentication — the app now knows it's you. Being told "you can view your own account but not transfer from someone else's" is authorization. You're fully authenticated the whole time; you're just not authorized for that one action. Mix these up — checking *that* someone is logged in but never *what* they're allowed to do — and any logged-in user can do anything. One of the most common real-world security bugs.
 
 This distinction is foundational enough that it has its own dedicated guide: [Authentication vs Authorization](/guides/auth-vs-authz). For now, the rule to carry forward: **authenticate first (who), authorize second (what), never collapse the two.**
 
@@ -83,7 +83,7 @@ public class SecurityConfig {
 }
 ```
 
-*What just happened:* The `authorizeHttpRequests` block is the **authorization filter** from our diagram, configured rule by rule. Rules are matched **top to bottom, first match wins**, so order matters: `/public/**` and `/login` are open to everyone (`permitAll`), anything under `/api/admin/**` requires the `ADMIN` role (`hasRole`), and the catch-all `anyRequest().authenticated()` says *every other path* needs a logged-in user. `http.build()` assembles the actual chain of filter objects. ⚠️ Put your specific rules *before* the broad `anyRequest()` catch-all — because first-match-wins, a catch-all placed too early swallows the rules below it and they silently never apply. One subtlety worth flagging: `hasRole("ADMIN")` automatically looks for an authority named `ROLE_ADMIN` — Spring adds the `ROLE_` prefix for you, which trips up everyone exactly once.
+*What just happened:* `authorizeHttpRequests` is the **authorization filter** from our diagram, configured rule by rule. Rules are matched **top to bottom, first match wins**: `/public/**` and `/login` are open to everyone, `/api/admin/**` requires the `ADMIN` role, and `anyRequest().authenticated()` says every other path needs a logged-in user. ⚠️ Put specific rules *before* the broad `anyRequest()` catch-all — a catch-all placed too early swallows the rules below it. Also note: `hasRole("ADMIN")` looks for an authority named `ROLE_ADMIN` — Spring adds the `ROLE_` prefix for you, which trips up everyone once.
 
 ## Passwords & users — never store plaintext
 
@@ -115,7 +115,7 @@ public UserDetailsService users(PasswordEncoder encoder) {
 }
 ```
 
-*What just happened:* The `PasswordEncoder` bean tells Spring to hash with BCrypt everywhere. The `UserDetailsService` bean defines a single user whose password is *stored as a BCrypt hash* (`encoder.encode("s3cret")`), not the raw string — when "admin" logs in, the filter hashes their input and compares hashes, never seeing plaintext after registration. We used `InMemoryUserDetailsManager` because it's perfect for a demo; in a real app you'd implement `UserDetailsService` to load users from your database via the repository pattern from [Phase 6](06-service-layer-and-validation.md). The `.roles("ADMIN")` here is what makes the earlier `hasRole("ADMIN")` rule match this user.
+*What just happened:* The `PasswordEncoder` bean tells Spring to hash with BCrypt everywhere. `UserDetailsService` defines a single user whose password is *stored as a BCrypt hash*, not the raw string — when "admin" logs in, the filter hashes their input and compares hashes. `InMemoryUserDetailsManager` is perfect for a demo; a real app implements `UserDetailsService` to load users from your database via the repository pattern from [Phase 6](06-service-layer-and-validation.md). `.roles("ADMIN")` is what makes the earlier `hasRole("ADMIN")` rule match this user.
 
 A quick word on the two built-in login styles you'll choose between. **HTTP Basic** (`httpBasic`) sends the username and password on *every* request in a header — dead simple, common for machine-to-machine APIs. **Form login** (`formLogin`) shows a login page, authenticates once, and tracks you with a session cookie afterward — the right fit for browser apps with human users.
 
@@ -135,7 +135,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1Ni
 
 *What just happened:* The client attaches its token in the `Authorization` header. A JWT-validation filter near the front of the chain reads it, verifies the signature with the server's secret key, checks it hasn't expired, and — if valid — populates the authenticated identity so the authorization rules downstream can do their job. No session, no server-side memory of this user. That's the whole appeal: any server instance can validate the token, so you scale horizontally without sticky sessions.
 
-We're deliberately *not* writing a full JWT implementation here, and you should be wary of any tutorial that casually does. ⚠️ The footguns are real and unforgiving: **where the client stores the token** (`localStorage` is XSS-exposed; `HttpOnly` cookies dodge that but invite CSRF), **expiry and revocation** (a stateless token can't be "logged out" server-side without extra machinery like a denylist or short-lived tokens plus refresh tokens), and the cardinal sin — **rolling your own crypto or token parsing**. Use a vetted, maintained library (e.g. the `jjwt` or Nimbus libraries) and lean on it.
+We're deliberately *not* writing a full JWT implementation here, and you should be wary of any tutorial that casually does. ⚠️ The footguns are real: **where the client stores the token** (`localStorage` is XSS-exposed; `HttpOnly` cookies dodge that but invite CSRF), **expiry and revocation** (a stateless token can't be "logged out" server-side without extra machinery like a denylist or refresh tokens), and the cardinal sin — **rolling your own crypto or token parsing**. Use a vetted, maintained library (`jjwt` or Nimbus) and lean on it.
 
 For finer control than URL rules give you, **method-level security** lets you guard individual methods. Enable it with `@EnableMethodSecurity` and annotate:
 
@@ -146,7 +146,7 @@ public void deleteUser(Long id) { ... }
 
 *What just happened:* `@PreAuthorize` runs its check *before* the method body executes — same authorization question as the URL rules, just expressed at the method instead of the path. It shines when authorization depends on the actual arguments (`@PreAuthorize("#id == authentication.name")` to let users act only on their own data), which URL patterns can't express.
 
-💡 The throughline for this whole phase: **security is the worst possible place to be clever.** The framework's defaults — BCrypt, the filter chain ordering, CSRF protection, vetted token libraries — encode years of hard-won lessons and patched vulnerabilities. Your custom shortcut hasn't survived that. Configure the battle-tested machine; don't reinvent it. The most secure code you'll write here is the code you *didn't* write because the framework already had it.
+💡 **Security is the worst possible place to be clever.** The framework's defaults — BCrypt, filter chain ordering, CSRF protection, vetted token libraries — encode years of hard-won lessons and patched vulnerabilities. Configure the battle-tested machine; don't reinvent it. The most secure code you'll write here is the code you *didn't* write.
 
 ## Recap
 

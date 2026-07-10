@@ -6,18 +6,17 @@ summary: "Route subsets of logs into streams (like just prod ERRORs), save dashb
 tags: [graylog, streams, dashboards, alerts, alerting, error-rate, retention, log-cost, secrets, observability]
 difficulty: intermediate
 synonyms: ["what is a graylog stream", "how to route logs in graylog", "graylog dashboard", "alert on error rate spike", "log based alerting", "graylog retention policy", "log storage cost", "should i log secrets", "kibana saved search dashboard", "set up log alerts"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Streams, Dashboards & Alerts
 
 So far you've been the one asking questions: you open the search box, you scope, you filter, you read the
 histogram. That's the right skill for an incident already in progress. But you can't sit in the search box
-all day, and the worst incidents are the ones nobody was looking at when they started. This phase is about
-making the system work *for* you between emergencies: pre-sorting the logs that matter (streams), keeping a
-view you can glance at (dashboards), and having the system tap you on the shoulder when something's wrong
-(alerts). Then we close on the uncomfortable truth underneath all of it: this is only ever as good as
-what you logged.
+all day, and the worst incidents are the ones nobody was looking at when they started. Making the system
+work *for* you between emergencies means pre-sorting the logs that matter (streams), keeping a
+view you can glance at (dashboards), and having it tap you on the shoulder when something's wrong
+(alerts) - then the uncomfortable truth underneath all of it: this is only ever as good as what you logged.
 
 ## Streams: pre-sorted piles of logs
 

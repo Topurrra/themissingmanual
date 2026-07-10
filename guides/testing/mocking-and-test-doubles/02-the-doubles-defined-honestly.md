@@ -6,19 +6,19 @@ summary: "The five kinds of test double - dummy, stub, fake, spy, and mock - wha
 tags: [testing, test-doubles, stub, fake, spy, mock, dummy]
 difficulty: intermediate
 synonyms: ["difference between stub and mock", "what is a stub", "what is a fake in testing", "what is a spy in testing", "dummy vs stub vs fake vs mock", "test double types explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Doubles, Defined Honestly
 
 If you've ever been confused about the difference between a "mock" and a "stub," it's not you. The words get
 used loosely everywhere - most people say "mock" for *any* test double, and most mocking libraries are named
-for just one member of a larger family. So let's clear it up once, with honest definitions and a small
-example of each.
+for just one member of a larger family. Let's clear it up once, with honest definitions and a small example
+of each.
 
-The classic naming comes from Gerard Meszaros's book *xUnit Test Patterns*, which most teams now use as the
-shared vocabulary (source: <https://martinfowler.com/bliki/TestDouble.html>, Martin Fowler's summary). There
-are five members. The single most useful way to keep them straight is to sort them by **what they do**:
+The classic naming comes from Gerard Meszaros's book *xUnit Test Patterns*, now the shared vocabulary most
+teams use (source: <https://martinfowler.com/bliki/TestDouble.html>, Martin Fowler's summary). There are five
+members. The single most useful way to keep them straight is to sort them by **what they do**:
 
 ```text
    does nothing ──────────────────────────────────► does a lot
@@ -54,8 +54,8 @@ expect(() => createOrder([], dummyLogger)).toThrow("Cart is empty");
 ```
 *What just happened:* We handed `createOrder` an empty object as its logger purely to fill the argument
 slot. The empty-cart check throws before any logging happens, so the dummy is never touched. If the code
-*did* call `dummyLogger.info(...)`, this would blow up - and that's fine, because it would mean we picked
-the wrong kind of double for this test.
+*did* call `dummyLogger.info(...)`, this would blow up - fair, since it would mean we picked the wrong kind
+of double for this test.
 
 ⚠️ **Gotcha - `null` is a trap dummy.** Passing `null` as a dummy works *only* if you're certain the value
 is never used. The moment a refactor makes the code touch it, you get a confusing null-reference crash
@@ -83,9 +83,9 @@ const summary = await buildDashboard("user_42", orderRepoStub);
 
 expect(summary.message).toBe("You have no orders yet.");
 ```
-*What just happened:* The stub's `findByUser` ignores its argument and always returns `[]`. That lets us
-force the "no orders" situation deterministically, without needing a real user who genuinely has no orders.
-We're testing *our* dashboard logic's reaction to empty data - the stub just supplies the data.
+*What just happened:* The stub's `findByUser` ignores its argument and always returns `[]`, forcing the
+"no orders" situation deterministically without needing a real user who genuinely has none. We're testing
+*our* dashboard logic's reaction to empty data - the stub just supplies it.
 
 The same trick forces error paths:
 ```javascript
@@ -94,8 +94,8 @@ const flakyApiStub = {
 };
 // Now we can test that buildDashboard falls back gracefully when rates are down.
 ```
-*What just happened:* A real API won't fail on demand, but a stub will throw reliably - so we can finally
-test the fallback code that only runs when things go wrong.
+*What just happened:* A real API won't fail on demand, but a stub throws reliably - so we can finally test
+the fallback code that only runs when things go wrong.
 
 💡 **Key point.** A stub is about **inputs to your code**. You never assert anything *on the stub itself* -
 you assert on what your code *did* with the canned answer. If you find yourself checking "was the stub
@@ -127,9 +127,9 @@ await registerUser({ id: "u1", name: "Ada" }, repo);
 // It behaves like the real thing: what we saved, we can read back.
 expect(await repo.findById("u1")).toEqual({ id: "u1", name: "Ada" });
 ```
-*What just happened:* Unlike a stub (which would return a hard-coded answer regardless of what you saved),
-the fake genuinely remembers state. `save` then `findById` works the way a real repository works. That makes
-it ideal for testing flows that span several operations, without standing up a real database.
+*What just happened:* Unlike a stub, which would return a hard-coded answer regardless of what you saved,
+the fake genuinely remembers state - `save` then `findById` works the way a real repository works. That
+makes it ideal for testing flows that span several operations, without standing up a real database.
 
 📝 **Terminology - stub vs fake, the one-line version.** A **stub** returns whatever you told it to,
 ignoring reality. A **fake** actually *works* - it has logic and (often) state. Reach for a fake when a stub
@@ -160,7 +160,7 @@ expect(sentEmails).toHaveLength(1);
 expect(sentEmails[0].to).toBe("ada@example.com");
 ```
 *What just happened:* `registerUser` doesn't return anything about email, so we couldn't assert on the
-return value. Instead the spy quietly recorded that `send` was called once, with Ada's address - and we
+return value. Instead the spy quietly recorded that `send` was called once, with Ada's address, and we
 checked that record afterward. The spy answers "*was this interaction triggered?*"
 
 ## Mock - a stub that also demands to be called correctly
@@ -184,9 +184,9 @@ expect(gateway.charge).toHaveBeenCalledTimes(1);
 expect(gateway.charge).toHaveBeenCalledWith("tok_visa", 4999);
 ```
 *What just happened:* `jest.fn()` created a double that both returns a canned `{ id: "ch_1" }` *and* records
-its calls. Then we asserted on the double directly: it must have been called once, with that exact token and
-amount. The test's whole point is the interaction - charge the right card, the right amount, exactly once
-(never double-charge).
+its calls. We then asserted on the double directly: it must have been called once, with that exact token
+and amount. The test's whole point is the interaction - charge the right card, the right amount, exactly
+once (never double-charge).
 
 ### Spy vs mock - the subtle one
 
@@ -199,20 +199,16 @@ People mix these up constantly, so here's the honest distinction:
 | Feel | "Let me check what happened" | "This *must* happen, or fail" |
 
 In day-to-day practice, with libraries like Jest or Sinon, the same object (`jest.fn()`, a Sinon spy) plays
-both roles - you choose spy-style or mock-style by *how you assert*. So don't lose sleep over the boundary;
-the useful thing is knowing whether you're loosely observing (spy) or strictly demanding (mock).
+both roles - you choose spy-style or mock-style by *how you assert*. Don't lose sleep over the boundary; the
+useful thing is knowing whether you're loosely observing (spy) or strictly demanding (mock).
 
 ## "But everyone just says 'mock'"
 
 They do, and that's okay. In casual speech, "mock the database" almost always means "put in *some* double" -
-usually a stub or a fake, despite the word. The precise vocabulary matters in two moments:
-
-1. **When you're choosing a tool** - "do I need a stub here, or a fake?" is a real design question
-   (canned answer vs working state), and getting it right keeps tests simple.
-2. **When you're reading a code review comment** - "this is too mock-heavy" is a specific criticism about
-   asserting on interactions (mocks), not about using doubles at all. That's the subject of the next phase.
-
-So: speak loosely if you like, but *think* precisely.
+usually a stub or a fake, despite the word. The precise vocabulary matters in two moments: choosing a tool
+("do I need a stub here, or a fake?" is a real design question), and reading a code review comment ("this
+is too mock-heavy" is specifically about asserting on interactions, the subject of the next phase). Speak
+loosely if you like, but *think* precisely.
 
 ## Recap
 
@@ -225,7 +221,7 @@ So: speak loosely if you like, but *think* precisely.
    used loosely for all of them - think precisely even when you speak loosely.
 
 You now have the whole family named. The last phase is the judgment that separates tests that protect you
-from tests that lie to you: knowing *when* to reach for these, and when to leave the real thing in place.
+from tests that lie to you.
 
 ---
 

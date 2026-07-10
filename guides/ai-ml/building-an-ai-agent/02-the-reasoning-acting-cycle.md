@@ -6,12 +6,12 @@ summary: "How the loop really runs: function-calling with a JSON schema, the tur
 tags: [ai, agent, function-calling, tool-use, schema, messages, memory]
 difficulty: intermediate
 synonyms: ["how function calling works", "json schema for tools", "agent message exchange", "feed tool result back to model", "what is agent memory", "react cycle in code", "structured tool call from llm"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Reasoning-Acting Cycle
 
-In [Phase 1](01-an-agent-is-a-loop.md) we landed the shape: reason, act, look, repeat. That leaves the question every builder hits next — *how does the model actually "call" a function?* It only emits text. So how does fuzzy English ("I should check the weather") turn into a clean, runnable call your code can trust?
+[Phase 1](01-an-agent-is-a-loop.md) landed the shape: reason, act, look, repeat. That leaves the question every builder hits next — *how does the model actually "call" a function?* It only emits text. So how does fuzzy English ("I should check the weather") turn into a clean, runnable call your code can trust?
 
 The answer is **function-calling**: you describe your tools to the model in a strict format, and it replies with a structured request instead of prose. This phase walks the real exchange, message by message, so you can see exactly what crosses the wire each turn.
 

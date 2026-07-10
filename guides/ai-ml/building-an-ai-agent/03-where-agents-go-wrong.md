@@ -6,12 +6,12 @@ summary: "The honest failure modes: infinite loops, hallucinated tool calls, run
 tags: [ai, agent, failure-modes, guardrails, step-budget, cost, safety]
 difficulty: intermediate
 synonyms: ["why does my agent loop forever", "agent hallucinates tool calls", "agent runaway cost", "agent step budget", "guardrails for ai agents", "agent stuck in a loop", "approval gate for agent actions", "agent keeps repeating"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Where Agents Go Wrong
 
-The loop from the last two phases is elegant on paper. In production it's where the bills, the 2am pages, and the "why did it delete that?" incidents come from. None of this is a reason to avoid agents — it's the reason to build them with a leash. Every failure here traces back to the same root: the model decides, but it has no built-in sense of *when to stop*, *what's real*, or *what's safe*. Those judgments are your code's job, and skipping them is how a demo becomes a disaster.
+The loop from the last two phases is elegant on paper. In production it's where the bills, the 2am pages, and the "why did it delete that?" incidents come from. None of this is a reason to avoid agents — it's the reason to build them with a leash. Every failure traces back to the same root: the model decides, but has no built-in sense of *when to stop*, *what's real*, or *what's safe*. Those judgments are your code's job, and skipping them is how a demo becomes a disaster.
 
 This phase is the honest one. Four ways agents spiral, and the guardrail for each. Build the guardrails first; the agent is the easy part.
 

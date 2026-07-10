@@ -6,7 +6,7 @@ summary: "Fastify is the fast, schema-first Node.js framework — an Express alt
 tags: [fastify, javascript, nodejs, web, getting-started]
 difficulty: beginner
 synonyms: ["what is fastify", "fastify first server", "fastify hello world", "fastify async handler", "fastify listen", "node fastify"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What Fastify Is & Your First Server
@@ -14,9 +14,9 @@ updated: 2026-06-23
 You know [JavaScript](/guides/javascript-from-zero) — functions, `async`/`await`, modules — and you've
 probably met [Express](/guides/express-from-zero), the minimalist Node web framework everyone starts
 with. Fastify is what you reach for when Express's "everything's bolted on, figure it out yourself"
-approach starts to bite. It's an [Express](/guides/express-from-zero) alternative built around two
-promises: it's genuinely **fast** (one of the quickest Node frameworks), and it's **schema-first** —
-input validation and JSON serialization are baked in, not something you wire up later.
+approach starts to bite. It's built around two promises: it's genuinely **fast** (one of the quickest
+Node frameworks), and it's **schema-first** — input validation and JSON serialization are baked in, not
+something you wire up later.
 
 Like Express, Fastify sits on top of the same built-in HTTP server you'd otherwise drive raw
 ([the node:http guide](/guides/build-a-server-with-node-http) shows what's under there, worth seeing
@@ -151,9 +151,8 @@ a Phase 7 concern; for now, know that real logging is on by default.
 
 ## The running example: a books API
 
-One more thing before we go deeper. Across this guide we grow **one** real service so each concept
-lands on something concrete instead of a toy. Meet the **books API** — a small catalog backend where
-each book is an object shaped like this:
+Across this guide we grow **one** real service so each concept lands on something concrete instead of a
+toy. Meet the **books API** — a small catalog backend where each book is an object shaped like this:
 
 ```javascript
 const books = [

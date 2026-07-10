@@ -97,6 +97,10 @@ pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Sta
             .map_err(|e| IngestError::Read(path.display().to_string(), e))?;
         let (fm, body_md) = parse_markdown(&raw)
             .map_err(|e| IngestError::Frontmatter(path.display().to_string(), e))?;
+        // Path relative to the repo root (e.g. `guides/version-control/git-from-zero/02-foo.md`),
+        // for building "Edit this page on GitHub" links - use the real walked path directly
+        // rather than reconstructing it from category+slug+phase_no after the fact.
+        let source_file = path.strip_prefix(root).unwrap_or(path).to_string_lossy().replace('\\', "/");
 
         let html = crate::links::rewrite_internal_links(&render_markdown(&body_md), &fm.guide);
         let plain = html_to_index_text(&html); // index excludes Mermaid diagram source
@@ -132,6 +136,7 @@ pub fn ingest_dir(root: &Path, store: &Store, index: &SearchIndex) -> Result<Sta
             html,
             updated: fm.updated.clone(),
             markdown: body_md,
+            source_file,
         };
         store.upsert_phase(&phase)?;
         writer.add_phase(&phase, &format!("{} {}", fm.summary, plain))?;

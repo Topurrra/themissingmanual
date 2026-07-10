@@ -6,12 +6,12 @@ summary: "The mental model behind GitHub Actions: an event triggers a workflow, 
 tags: [github-actions, workflow, jobs, steps, runner, events, yaml]
 difficulty: intermediate
 synonyms: ["what is a github actions workflow", "job vs step github actions", "what is a runner", "what triggers a github action", "on push pull_request meaning"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Anatomy of a Workflow
 
-A workflow file looks intimidating the first time: a wall of indented YAML with words like `on`, `jobs`, `runs-on`, `uses`, `steps`. The instinct is to copy one from Stack Overflow, change a line until the check goes green, and never look at it again. That works right up until it breaks — and then you're editing a config you don't understand, at the worst possible moment.
+A workflow file looks intimidating the first time: a wall of indented YAML with words like `on`, `jobs`, `runs-on`, `uses`, `steps`. The instinct is to copy one from Stack Overflow, change a line until the check goes green, and never look at it again — that works right up until it breaks, and then you're editing a config you don't understand, at the worst possible moment.
 
 So before a single line of YAML, let's install the mental model. There are really only five ideas. Once they click, every workflow you ever read is just those five ideas in a slightly different arrangement.
 
@@ -44,7 +44,7 @@ on:
   pull_request:
 ```
 
-*What just happened:* You told GitHub two things. First, run this workflow whenever someone pushes commits to the `main` branch. Second, run it whenever someone opens or updates a pull request (against any branch). That `pull_request` trigger is the one producing the green check or red X you see on PRs — the pipeline runs against the proposed change *before* anyone merges it.
+*What just happened:* You told GitHub two things: run this workflow whenever someone pushes commits to `main`, and run it whenever someone opens or updates a pull request (against any branch). That `pull_request` trigger is the one producing the green check or red X you see on PRs — the pipeline runs against the proposed change *before* anyone merges it.
 
 📝 **Terminology.** `push` and `pull_request` are *event types*. There are many (`schedule`, `workflow_dispatch` for a manual button, `release`, and more), but these two cover the everyday "test my code when it changes" job.
 
@@ -52,7 +52,7 @@ on:
 
 **What it actually is.** A workflow is one YAML file living in the special folder `.github/workflows/`. GitHub watches that folder; any `.yml` or `.yaml` file in it is a workflow it will run when the matching event fires.
 
-**Why people get this wrong.** People assume the *filename* matters or that there's one magic workflow per repo. Neither is true. You can have ten workflow files — `ci.yml`, `lint.yml`, `deploy.yml` — and each is independent, with its own `on:` triggers. The `name:` field at the top is just the label you see in the Actions tab; the filename is yours to choose.
+**Why people get this wrong.** People assume the *filename* matters, or that there's one magic workflow per repo. Neither is true — you can have ten workflow files (`ci.yml`, `lint.yml`, `deploy.yml`), each independent with its own `on:` triggers. The `name:` field at the top is just the label you see in the Actions tab; the filename is yours to choose.
 
 ```yaml
 name: CI
@@ -70,7 +70,7 @@ on:
 
 💡 **Key point.** Every job starts on a brand-new, empty machine that is thrown away when the job finishes. Nothing you do in one job survives to the next unless you explicitly pass it along. The runner has no memory of your last run, your laptop, or any other job.
 
-**Why people get this wrong.** Newcomers assume the runner is "their computer in the cloud" with their code already on it. It isn't. It's a blank Ubuntu (or Windows, or macOS) box with common tools pre-installed and *nothing of yours*. That's exactly why the very first step in almost every job is "check out my code" — you have to fetch it onto the empty machine. (That step is the star of Phase 2.)
+**Why people get this wrong.** Newcomers assume the runner is "their computer in the cloud" with their code already on it. It isn't — it's a blank Ubuntu (or Windows, or macOS) box with common tools pre-installed and *nothing of yours*. That's exactly why the first step in almost every job is "check out my code": you have to fetch it onto the empty machine. (That step is the star of Phase 2.)
 
 **What it does in real life.** A job declares which kind of machine it wants with `runs-on`:
 

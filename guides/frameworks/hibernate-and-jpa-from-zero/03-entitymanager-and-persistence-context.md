@@ -6,7 +6,7 @@ summary: "The heart of Hibernate: the EntityManager is your handle to JPA, the p
 tags: [hibernate, jpa, entitymanager, persistence-context, entity-states, identity-map, first-level-cache]
 difficulty: intermediate
 synonyms: ["jpa entitymanager explained", "hibernate persistence context", "jpa entity states transient managed detached removed", "hibernate identity map first level cache", "jpa persist find merge remove", "hibernate session"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # The EntityManager & Persistence Context
@@ -18,9 +18,8 @@ it does its work is the **persistence context**.
 
 This is the phase. If you take one idea from this whole guide, take this one. Almost every Hibernate
 surprise you'll ever hit — a change that saved without you calling save, a lazy load that worked here
-but blew up there, the dreaded N+1 — traces straight back to what's in this file. So we're going to go
-slow and make it land, because once the persistence context clicks, the rest of Hibernate stops being
-magic and starts being obvious.
+but blew up there, the dreaded N+1 — traces straight back to what's in this file. Once the persistence
+context clicks, the rest of Hibernate stops being magic and starts being obvious.
 
 ## The mental model: a workbench, not a pipe
 

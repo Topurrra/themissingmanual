@@ -6,7 +6,7 @@ summary: "How EF Core's DbContext acts as a unit of work: it tracks the entities
 tags: [efcore, csharp, change-tracking, savechanges, unit-of-work]
 difficulty: advanced
 synonyms: ["ef core change tracking", "ef core savechanges", "ef core unit of work", "ef core update delete", "ef core entity state", "ef core detached entity"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Change Tracking & SaveChanges
@@ -29,7 +29,7 @@ post.Title = "Rewritten and better";
 ctx.SaveChanges();
 ```
 
-*What just happened:* The `First` query loaded the post **and** registered it with the change tracker, snapshot included. Setting `post.Title` only changed the in-memory object — nothing hit the database yet. `SaveChanges` diffed the entity against its snapshot, saw exactly one column differed, and emitted SQL touching only that column:
+*What just happened:* the `First` query loaded the post **and** registered it with the change tracker, snapshot included. Setting `post.Title` only changed the in-memory object — nothing hit the database yet. `SaveChanges` diffed the entity against its snapshot, saw exactly one column differed, and emitted SQL touching only that column:
 
 ```sql
 UPDATE Posts SET Title = 'Rewritten and better' WHERE Id = 42;
@@ -45,7 +45,7 @@ ctx.Posts.Remove(post);
 ctx.SaveChanges();
 ```
 
-*What just happened:* `Remove` doesn't delete anything immediately — it flips the tracked entity's state to `Deleted`. `SaveChanges` is what actually runs `DELETE FROM Posts WHERE Id = 42;`. Until you save, the row's still there.
+*What just happened:* `Remove` doesn't delete anything immediately — it flips the tracked entity's state to `Deleted`. `SaveChanges` runs `DELETE FROM Posts WHERE Id = 42;`. Until you save, the row's still there.
 
 ## Entity states: what the tracker is really storing
 
@@ -69,7 +69,7 @@ post.Title = "Edited";
 Console.WriteLine(ctx.Entry(post).State);   // Modified
 ```
 
-*What just happened:* Fresh from the query, the post is `Unchanged`. The instant you mutate a tracked property, the change tracker notices (detected when you inspect state or call `SaveChanges`) and moves the entity to `Modified`. You never set this by hand in the normal flow — the diff drives it. `ctx.Entry(post).State` is your window into what the tracker believes about any entity.
+*What just happened:* fresh from the query, the post is `Unchanged`. The instant you mutate a tracked property, the change tracker notices (detected when you inspect state or call `SaveChanges`) and moves the entity to `Modified`. You never set this by hand in the normal flow — the diff drives it. `ctx.Entry(post).State` is your window into what the tracker believes about any entity.
 
 > 💡 Want to see the whole picture? `ctx.ChangeTracker.Entries()` returns every tracked entity with its state — a great thing to dump when an update mysteriously does nothing (foreshadowing).
 
@@ -86,7 +86,7 @@ int rows = ctx.SaveChanges();
 Console.WriteLine($"{rows} rows affected");              // 3 rows affected
 ```
 
-*What just happened:* Three different operations — an insert, an update, and a delete — accumulated in the tracker. The single `SaveChanges` call issued all three inside one transaction: if any statement fails, the whole batch rolls back and your database is left untouched. The return value is the **number of rows affected**, here `3`. That all-or-nothing guarantee is exactly why the unit-of-work pattern exists.
+*What just happened:* three different operations — an insert, an update, and a delete — accumulated in the tracker. The single `SaveChanges` call issued all three inside one transaction: if any statement fails, the whole batch rolls back and your database is left untouched. The return value is the **number of rows affected**, here `3`.
 
 ## ⚠️ The detached-entity trap — the #1 web-app surprise
 
@@ -104,7 +104,7 @@ public IActionResult UpdatePost(Post post)
 }
 ```
 
-*What just happened:* Nothing, and that's the trap. `post` is detached, so there's no snapshot to diff and no tracked state to mark `Modified`. `SaveChanges` looks at its (empty) change tracker, finds nothing to do, and returns `0`. No error, no exception — just a silent no-op that looks like a database bug. People lose hours here.
+*What just happened:* nothing, and that's the trap. `post` is detached, so there's no snapshot to diff and no tracked state to mark `Modified`. `SaveChanges` looks at its (empty) change tracker, finds nothing to do, and returns `0`. No error, no exception — just a silent no-op that looks like a database bug.
 
 Three honest ways to fix it.
 
@@ -115,7 +115,7 @@ ctx.Update(post);    // attaches as Modified (all properties)
 ctx.SaveChanges();   // UPDATE Posts SET Title=..., Body=..., ... WHERE Id = post.Id
 ```
 
-*What just happened:* `Update` attaches the detached object to the context and stamps it `Modified` wholesale. Now `SaveChanges` has something to write. The cost: you overwrite every column from whatever's on `post` — including any the client didn't intend to change.
+*What just happened:* `Update` attaches the detached object to the context and stamps it `Modified` wholesale, so `SaveChanges` has something to write. The cost: you overwrite every column from whatever's on `post` — including any the client didn't intend to change.
 
 **2. `Attach` + set state explicitly.** When you want finer control over which properties are dirty.
 
@@ -125,7 +125,7 @@ ctx.Entry(post).Property(p => p.Title).IsModified = true;   // only Title
 ctx.SaveChanges();
 ```
 
-*What just happened:* `Attach` brings `post` in as `Unchanged` (a baseline). Marking just `Title` as modified makes the resulting `UPDATE` touch only that one column — the same minimal-write behavior as the tracked path.
+*What just happened:* `Attach` brings `post` in as `Unchanged`. Marking just `Title` as modified makes the resulting `UPDATE` touch only that one column — the same minimal-write behavior as the tracked path.
 
 **3. Load-then-copy.** The safest pattern, and what most production code does: load the real tracked entity, copy the allowed fields onto it, then save.
 
@@ -135,7 +135,7 @@ existing.Title = post.Title;                            // copy only what you al
 ctx.SaveChanges();                                      // normal diff-and-UPDATE
 ```
 
-*What just happened:* You're back on the happy path. `existing` is tracked, so the change tracker diffs it normally and writes only the columns you copied — and it guards against a client smuggling in fields you never meant to expose, since you control which properties get copied.
+*What just happened:* you're back on the happy path. `existing` is tracked, so the change tracker diffs it normally and writes only the columns you copied — and it guards against a client smuggling in fields you never meant to expose, since you control which properties get copied.
 
 > ⚠️ If an update "works locally but does nothing in the web app," your entity is almost certainly detached. Check `ctx.Entry(entity).State` — if it says `Detached`, that's your answer.
 

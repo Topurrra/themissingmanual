@@ -6,12 +6,12 @@ summary: "Wire dependencies onto a struct with handler methods and a routes() se
 tags: [net-http, go, structure, context, graceful-shutdown, http-server]
 difficulty: advanced
 synonyms: ["go http server struct", "go dependency injection handlers", "go context values ctxkey", "go graceful shutdown", "http.Server timeouts", "signal.NotifyContext"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Structure, Context & Graceful Shutdown
 
-You've got a working messages API now. It handles requests, decodes JSON, runs through middleware. And if you wrote it the way most tutorials do, it leans on package-level globals - a `var store *Store` sitting at the top of the file that every handler reaches into. That works right up until you want to write a test, run two configurations side by side, or reason about what a handler actually depends on. Then the globals become quiet handcuffs.
+You've got a working messages API now. It handles requests, decodes JSON, runs through middleware. And if you wrote it the way most tutorials do, it leans on package-level globals - a `var store *Store` sitting at the top of the file that every handler reaches into. That works right up until you want to write a test, run two configurations side by side, or reason about what a handler actually depends on.
 
 The mental model for this phase: **your dependencies live on a struct, your handlers are methods on that struct, and a single `routes()` method assembles the mux.** No package globals, no `init()` magic. The struct *is* your application - you build one, hand it everything it needs, and ask it for an `http.Handler`. That one move makes the whole service testable and explicit. Then we'll make requests carry cancellation through `context`, harden the server against slow clients with timeouts, and teach it to stop without dropping the requests already in flight.
 

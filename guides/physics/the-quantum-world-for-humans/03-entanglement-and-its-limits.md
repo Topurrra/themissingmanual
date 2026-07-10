@@ -6,7 +6,7 @@ summary: "What is actually true about the quantum world, minus the mysticism: su
 tags: [physics, quantum, superposition, uncertainty, entanglement, mental-model]
 difficulty: intermediate
 synonyms: ["quantum entanglement for beginners", "spooky action at a distance", "does entanglement send signals faster than light", "is entanglement real", "epr paradox simple", "no communication theorem"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Entanglement, and why it can't send a message
@@ -33,7 +33,7 @@ Then you measure A → it lands ↑ (say).
 
 ## Why this is not magic: the socks vs. the genuine weirdness
 
-A skeptic's first instinct is right to be raised, so let's honor it. Imagine I mail you one of a pair of gloves and keep the other, randomly. The moment you open your box and see a left glove, you *instantly* know mine is right - across any distance. No spookiness there; the gloves were always left and right, you only learned it.
+A skeptic's first instinct here is right, so let's honor it. Imagine I randomly mail you one of a pair of gloves and keep the other. The moment you open your box and see a left glove, you *instantly* know mine is right - across any distance. No spookiness there; the gloves were always left and right, you only learned it.
 
 If entanglement were *only* that, it'd be boring. The deep result - what the Nobel experiments nailed down - is that entanglement is *more* than gloves. With gloves, each one carried its answer the whole time (hidden, but real). With entangled particles, careful statistical tests (the **Bell test**) show the answers genuinely were *not* sitting there in advance. Reality doesn't have a hidden slip for every particle. *That's* the real shock - not the correlation itself, but that the correlation exists without any pre-written answers.
 

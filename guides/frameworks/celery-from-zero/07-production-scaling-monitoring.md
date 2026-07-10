@@ -6,7 +6,7 @@ summary: "Scaling Celery with more workers and dedicated queues, seeing your tas
 tags: [celery, production, scaling, monitoring, flower, concurrency, pitfalls]
 difficulty: advanced
 synonyms: ["celery production", "celery scaling workers", "celery flower monitoring", "celery concurrency tuning", "celery queues routing", "celery prefetch", "celery common mistakes"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Production: Scaling, Monitoring & Pitfalls
@@ -40,7 +40,7 @@ celery -A tasks worker --queues=fast --concurrency=8 -n fast@%h
 celery -A tasks worker --queues=slow --concurrency=2 -n slow@%h
 ```
 
-*What just happened:* we started **two independent worker pools**, each told via `--queues` which queue to drain. The `fast` pool ignores the `slow` queue entirely, so a backlog of reports can never starve your emails — the fast workers are over in their own lane, idle and ready. We also gave each a distinct node name with `-n` (`%h` expands to the hostname) so they show up as separate workers in monitoring. 💡 This single pattern — a `fast` queue and a `slow`/reports queue with dedicated workers — solves the most common "Celery feels laggy under load" complaint in production.
+*What just happened:* we started **two independent worker pools**, each told via `--queues` which queue to drain. The `fast` pool ignores the `slow` queue entirely, so a backlog of reports can never starve your emails. We also gave each a distinct node name with `-n` (`%h` expands to the hostname) so they show up as separate workers in monitoring. 💡 This single pattern — a `fast` queue and a `slow`/reports queue with dedicated workers — solves the most common "Celery feels laggy under load" complaint in production.
 
 ## Monitoring: you can't see tasks otherwise
 
@@ -52,9 +52,9 @@ celery -A tasks worker --queues=slow --concurrency=2 -n slow@%h
 celery -A tasks flower --port=5555
 ```
 
-*What just happened:* we started Flower, which connects to the same broker, listens to Celery's event stream, and serves a dashboard at `http://localhost:5555`. Open it and you can see your workers (online/offline, how many tasks each is running), live task throughput, success and failure rates, and a searchable list of recent tasks with their args, runtime, and tracebacks. It's the "is anything on fire?" view you were missing — at a glance you know whether tasks are flowing or piling up.
+*What just happened:* we started Flower, which connects to the same broker, listens to Celery's event stream, and serves a dashboard at `http://localhost:5555`. Open it and you can see your workers (online/offline, tasks each is running), live task throughput, success and failure rates, and a searchable list of recent tasks with their args, runtime, and tracebacks — the "is anything on fire?" view you were missing.
 
-📝 Flower is the convenient dashboard, but for real production you also want **the three pillars of observability** wired into your existing stack: structured **logs** from each task (use Celery's task logger so every line is tagged with the task name and id), **metrics** (task counts, failure rate, runtime histograms, and crucially **queue depth**) scraped into something like Prometheus, and **traces** that follow a request from your web app into the task it spawned. That's the full picture covered in [Observability: Logs, Metrics & Traces](/guides/observability-logs-metrics-traces) — Flower answers "right now," and metrics + alerting answer "tell me *before* it's a problem."
+📝 Flower is the convenient dashboard, but for real production you also want **the three pillars of observability** wired into your existing stack: structured **logs** from each task (use Celery's task logger so every line is tagged with the task name and id), **metrics** (task counts, failure rate, runtime histograms, and crucially **queue depth**) scraped into something like Prometheus, and **traces** that follow a request from your web app into the task it spawned. Full picture in [Observability: Logs, Metrics & Traces](/guides/observability-logs-metrics-traces) — Flower answers "right now," metrics + alerting answer "tell me *before* it's a problem."
 
 💡 The line to internalize: **if you can't see your queue depth and your failure rate, you're flying blind.** A queue that's slowly growing instead of draining is the earliest, clearest signal that you're under-provisioned — but only if something is watching it.
 
@@ -74,9 +74,9 @@ These are the traps that get nearly everyone exactly once. Keep this table handy
 
 Three of these deserve a closer look because they're the ones people argue with:
 
-- ⚠️ **Task never runs, no error.** This is the number-one Celery mystery, and the instinct is to debug your *code*. Don't — the code never ran. The message went into a queue nobody is draining (broker down, wrong URL, or no worker on that queue). Always check the broker and worker before the task body.
-- ⚠️ **Passing a model object.** It feels natural to write `send_welcome_email.delay(user)`. But the arguments get **serialized** into a message and may run seconds or minutes later — by then the object is stale, and rich objects often can't be serialized at all. Pass `user.id` and re-fetch fresh inside the task. (Full reasoning in [Defining & Calling Tasks](03-defining-and-calling-tasks.md).)
-- ⚠️ **A giant task argument.** Every argument travels through the broker as part of the message. Shove a 20 MB CSV in there and you bloat broker memory, slow every enqueue, and risk hitting message-size limits. Upload the blob somewhere, pass the key, and let the task fetch it.
+- ⚠️ **Task never runs, no error.** This is the number-one Celery mystery, and the instinct is to debug your *code*. Don't — the code never ran. The message went into a queue nobody is draining (broker down, wrong URL, or no worker on that queue). Check the broker and worker before the task body.
+- ⚠️ **Passing a model object.** It feels natural to write `send_welcome_email.delay(user)`. But the arguments get **serialized** into a message and may run seconds or minutes later — by then the object is stale, and rich objects often can't be serialized at all. Pass `user.id` and re-fetch fresh inside the task.
+- ⚠️ **A giant task argument.** Every argument travels through the broker as part of the message. Shove a 20 MB CSV in there and you bloat broker memory, slow every enqueue, and risk hitting message-size limits. Upload the blob somewhere, pass the key, let the task fetch it.
 
 ## Worker reliability
 
@@ -94,7 +94,7 @@ task_time_limit      = 60   # hard kill the worker process at 60s, no questions
 
 📝 Two more worth setting:
 
-- `worker_max_tasks_per_child = 1000` — recycle each child process after 1000 tasks. If a task slowly leaks memory (a common C-extension reality), this caps the damage by restarting the process before it bloats. Cheap insurance.
+- `worker_max_tasks_per_child = 1000` — recycle each child process after 1000 tasks. If a task slowly leaks memory (a common C-extension reality), this caps the damage by restarting the process before it bloats.
 - `worker_prefetch_multiplier` — how many messages a worker grabs *ahead* of what it's running. The default (4) is great for many short tasks but terrible for long ones: a worker can hoard several slow jobs while siblings sit idle. ⚠️ **For long-running tasks, set `worker_prefetch_multiplier = 1`** so each worker takes one job at a time and work spreads evenly.
 
 ## Deployment shape

@@ -6,18 +6,18 @@ summary: "Build a product create/edit form with EditForm, the built-in input com
 tags: [blazor, csharp, forms, validation, editform]
 difficulty: intermediate
 synonyms: ["blazor editform", "blazor validation", "blazor dataannotationsvalidator", "blazor inputtext inputnumber", "blazor validationmessage", "blazor onvalidsubmit"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Forms & Validation
 
-Sooner or later your products UI needs a real form — a screen where someone types a product name, a price, and hits **Save**. And the moment you have a form, you have a second job: stopping bad data before it reaches your database. Empty names. Negative prices. A description that's three paragraphs longer than your column allows.
+Sooner or later your products UI needs a real form — a screen where someone types a product name, a price, and hits **Save**. The moment you have a form, you have a second job: stopping bad data before it reaches your database. Empty names. Negative prices. A description three paragraphs longer than your column allows.
 
-You could wire all that by hand — track every input, check every value on submit, render every error message yourself. People did, for years. Blazor gives you a system instead, and once you see the shape of it, you won't want to go back.
+You could wire all that by hand — track every input, check every value on submit, render every error message yourself. People did, for years. Blazor gives you a system instead, and once you see its shape, you won't want to go back.
 
 ## The mental model: a form is a model with a guard
 
-Here's the one idea to hold. In Blazor, **a form is built around a model object** — a plain C# class that holds the data being edited. The `<EditForm>` component wraps that model and quietly tracks its state: which fields changed, which are valid, whether the whole thing is ready to submit. That tracking object is called the **`EditContext`**, and Blazor creates it for you the instant you hand `EditForm` a model.
+Here's the one idea to hold. In Blazor, **a form is built around a model object** — a plain C# class holding the data being edited. The `<EditForm>` component wraps that model and quietly tracks its state: which fields changed, which are valid, whether the whole thing is ready to submit. That tracking object is the **`EditContext`**, and Blazor creates it the instant you hand `EditForm` a model.
 
 Three moving parts, and they all point at the same model:
 
@@ -64,7 +64,7 @@ public class ProductForm
 }
 ```
 
-*What just happened:* `EditForm` rendered a real HTML `<form>` and built an `EditContext` around `product`. Each input is a **built-in Blazor component** — not a raw `<input>` — and `@bind-Value="product.Name"` is two-way binding (the same `@bind` idea from [Phase 3](03-data-binding.md), here named `Value` because that's the input's parameter). Type in the box, `product.Name` updates; change `product.Name` in code, the box updates. When you click Save, `OnValidSubmit` runs your `Save` method with the model already populated.
+*What just happened:* `EditForm` rendered a real HTML `<form>` and built an `EditContext` around `product`. Each input is a **built-in Blazor component** — not a raw `<input>` — and `@bind-Value="product.Name"` is two-way binding (the same `@bind` idea from [Phase 3](03-data-binding.md), here named `Value` because that's the input's parameter). Type in the box, `product.Name` updates; change it in code, the box updates. Click Save, and `OnValidSubmit` runs your `Save` method with the model already populated.
 
 Blazor ships an input component for each common field type. You bind every one of them with `@bind-Value`:
 
@@ -100,9 +100,9 @@ public class ProductForm
 }
 ```
 
-*What just happened:* nothing yet, actually — and that's the whole catch. `[Required]`, `[StringLength]`, and `[Range]` are passive metadata. They sit on the class doing absolutely nothing until something reads them. Common annotations include `[Required]`, `[StringLength(max)]`, `[Range(min, max)]`, and `[EmailAddress]`.
+*What just happened:* nothing yet — that's the whole catch. `[Required]`, `[StringLength]`, and `[Range]` are passive metadata, sitting on the class doing nothing until something reads them. Common annotations: `[Required]`, `[StringLength(max)]`, `[Range(min, max)]`, `[EmailAddress]`.
 
-> ⚠️ The annotations alone do **nothing**. They are inert until you place a `<DataAnnotationsValidator />` inside the `EditForm`. This is the single most common Blazor forms mistake — a form that "ignores" its rules almost always means the validator component is missing. The attributes describe the rules; the component enforces them.
+> ⚠️ The annotations alone do **nothing**. They're inert until you place a `<DataAnnotationsValidator />` inside the `EditForm`. This is the single most common Blazor forms mistake — a form that "ignores" its rules almost always means the validator component is missing. Attributes describe the rules; the component enforces them.
 
 So you add the validator, plus a way to show the errors. `<ValidationSummary />` lists every error at once; `<ValidationMessage For="..." />` shows the error for one specific field, right next to it. Here's the full, working form:
 
@@ -148,16 +148,16 @@ public class ProductForm
 }
 ```
 
-*What just happened:* `<DataAnnotationsValidator />` hooked into the `EditContext` and started reading the model's annotations. Now, when the user edits a field or tries to submit, it validates against the rules and marks fields valid or invalid. `<ValidationSummary />` renders the full error list near the top; each `<ValidationMessage For="@(() => product.Name)" />` renders just that field's error inline. The `For` argument is a little lambda that *points at* the property — that's how the message component knows which field it represents.
+*What just happened:* `<DataAnnotationsValidator />` hooked into the `EditContext` and started reading the model's annotations. When the user edits a field or tries to submit, it validates against the rules and marks fields valid or invalid. `<ValidationSummary />` renders the full error list near the top; each `<ValidationMessage For="@(() => product.Name)" />` renders just that field's error inline. The `For` argument is a lambda that *points at* the property — how the message component knows which field it represents.
 
-> 💡 Look closely at `ProductForm`: it's a plain class with `[Required]` and `[Range]`. Those are the **exact same** `System.ComponentModel.DataAnnotations` attributes you'd put on an ASP.NET Core DTO or an EF Core entity. The knowledge transfers directly — if you've validated a request body in a Web API, you already know how to validate a Blazor form.
+> 💡 Look closely at `ProductForm`: a plain class with `[Required]` and `[Range]` — the **exact same** `System.ComponentModel.DataAnnotations` attributes you'd put on an ASP.NET Core DTO or an EF Core entity. The knowledge transfers directly — if you've validated a request body in a Web API, you already know how to validate a Blazor form.
 
 ## Submit events: OnValidSubmit vs OnSubmit
 
 `EditForm` gives you three submit events. Pick based on who does the validating.
 
-- **`OnValidSubmit`** — fires *only* when validation passes. This is the one you'll reach for most: by the time your handler runs, the model is guaranteed valid, so you can save straight away. (Pair it with `OnInvalidSubmit` if you want to react to *failed* attempts — say, scroll to the first error.)
-- **`OnSubmit`** — fires on *every* submit, valid or not. Choosing this means you're taking the wheel: Blazor won't gate the handler, so *you* call the validation yourself and decide what to do.
+- **`OnValidSubmit`** — fires *only* when validation passes. The one you'll reach for most: by the time your handler runs, the model is guaranteed valid, so you save straight away. (Pair it with `OnInvalidSubmit` to react to *failed* attempts — say, scroll to the first error.)
+- **`OnSubmit`** — fires on *every* submit, valid or not. Blazor won't gate the handler; *you* call validation yourself and decide what to do.
 
 You almost always want the first. Here's the contrast:
 
@@ -193,9 +193,9 @@ You almost always want the first. Here's the contrast:
 }
 ```
 
-*What just happened:* the first form splits the two outcomes cleanly — `Save` for success, `ShowProblems` for failure — and you never write an `if` to check validity. The second form routes everything through one handler that receives the `EditContext`; you call `ctx.Validate()` yourself and branch on the result. Use `OnSubmit` only when you need that manual control; for ordinary save-this-product forms, `OnValidSubmit` is less code and harder to get wrong.
+*What just happened:* the first form splits the two outcomes cleanly — `Save` for success, `ShowProblems` for failure — and you never write an `if` to check validity. The second routes everything through one handler receiving the `EditContext`; you call `ctx.Validate()` yourself and branch on the result. Use `OnSubmit` only when you need that manual control; for ordinary save-this-product forms, `OnValidSubmit` is less code and harder to get wrong.
 
-> 💡 Data annotations are perfect for field-level rules. When you need richer logic — "this field is required *only if* that other one is set," or cross-field comparisons — reach for **FluentValidation**, which has community Blazor integrations that slot into the same `EditContext`. Start with annotations; graduate to FluentValidation when the rules outgrow attributes.
+> 💡 Data annotations are perfect for field-level rules. For richer logic — "this field is required *only if* that other one is set," cross-field comparisons — reach for **FluentValidation**, which has community Blazor integrations slotting into the same `EditContext`. Start with annotations; graduate when the rules outgrow attributes.
 
 ## Recap
 

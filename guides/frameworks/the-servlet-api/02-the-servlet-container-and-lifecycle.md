@@ -6,7 +6,7 @@ summary: "How the container runs a servlet: init/service/destroy, one shared ins
 tags: [servlet, servlet-container, lifecycle, init, service, destroy, thread-per-request, thread-safety]
 difficulty: intermediate
 synonyms: ["servlet lifecycle init service destroy", "servlet container explained", "servlet thread per request", "servlet thread safety", "one servlet instance many threads", "tomcat thread pool", "servlet singleton"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # The Servlet Container & Lifecycle
@@ -15,12 +15,11 @@ In Phase 1 you wrote a servlet — an object with methods that handle HTTP. But 
 methods. You never wrote `new MyServlet()`, never wired it to a socket, never spun up a thread to run
 it. So who does?
 
-📝 **The mental model to carry through this whole phase: the container owns your servlet's life, and it
-runs one copy of it across many threads at once.** Tomcat, Jetty, Undertow — these are the *containers*.
-You hand them a class; they decide when to create it, when to call it, when to throw it away, and — the
-part that bites people — they call it from *many threads simultaneously, on a single shared instance*.
-Get that one sentence into your bones and the rest of this phase, plus half of why Spring controllers
-look the way they do, falls out of it.
+📝 **The container owns your servlet's life, and it runs one copy of it across many threads at once.**
+Tomcat, Jetty, Undertow — these are the *containers*. You hand them a class; they decide when to create it,
+when to call it, when to throw it away, and — the part that bites people — they call it from *many threads
+simultaneously, on a single shared instance*. Get that one sentence into your bones and the rest of this
+phase, plus half of why Spring controllers look the way they do, falls out of it.
 
 Let's take it in three moves: the lifecycle (when your code runs), the one-instance fact (how many copies
 exist), and the thread-safety consequence (the lesson that actually matters in production).

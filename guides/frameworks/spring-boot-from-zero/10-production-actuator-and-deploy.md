@@ -6,14 +6,14 @@ summary: "Take a Spring Boot app from 'runs on my machine' to production: Actuat
 tags: [spring-boot, actuator, packaging, fat-jar, docker, deployment, health-checks, production]
 difficulty: intermediate
 synonyms: ["spring boot actuator health metrics", "spring boot fat jar packaging", "spring boot docker", "spring boot deploy production", "spring boot health check", "spring boot prod profile", "spring boot observability"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Production: Actuator, Packaging & Deployment
 
-Everything so far has run one way: you hit the green arrow in your IDE, the app boots on `localhost:8081`, and you poke it from a browser. That's the inner loop, and it's great for building. But "it runs on my machine" is not a deployment — it's a demo that happens to be on the right machine.
+Everything so far has run one way: hit the green arrow in your IDE, the app boots on `localhost:8081`, and you poke it from a browser. That's the inner loop, great for building. But "it runs on my machine" is not a deployment — it's a demo that happens to be on the right machine.
 
-The mental model for this phase: **shipping a Spring Boot app is turning your source into one self-contained file and then putting that file somewhere a server can run it.** No app server to install, no WAR to drop into Tomcat, no fragile setup script. You build a single jar that already *contains* a web server, you feed it production config from the outside (the precedence rules from [Phase 4](04-configuration-and-profiles.md)), and you run it with `java -jar`. Optionally you wrap that jar in a container so the runtime is identical everywhere. Once you see those pieces, deploying stops feeling like a different discipline and starts feeling like the last, easy step.
+**Shipping a Spring Boot app is turning your source into one self-contained file and putting that file somewhere a server can run it.** No app server to install, no WAR to drop into Tomcat, no fragile setup script. You build a single jar that already *contains* a web server, feed it production config from the outside (the precedence rules from [Phase 4](04-configuration-and-profiles.md)), and run it with `java -jar`. Optionally wrap that jar in a container so the runtime is identical everywhere.
 
 We'll go in the order you'd actually do it: first make the app *observable* (can a load balancer tell it's alive?), then *package* it, then *configure* it for prod, then *containerize* it, then talk about where it lands.
 
@@ -44,7 +44,7 @@ curl http://localhost:8081/actuator/health
 { "status": "UP" }
 ```
 
-*What just happened:* Actuator reports the app is `UP`. That tiny response is exactly what a load balancer or container orchestrator polls — if it gets `UP` (HTTP 200), it keeps sending traffic; if it gets `DOWN` (HTTP 503) or no answer, it stops routing to this instance and may restart it. Actuator's health check is also smart: it aggregates the health of things your app depends on, so if your database connection is dead, health flips to `DOWN` automatically. You didn't wire that up — adding the JPA datasource ([Phase 5](05-persistence-with-jpa.md)) registered a database health contributor for you.
+*What just happened:* Actuator reports the app is `UP`. That tiny response is exactly what a load balancer or container orchestrator polls — `UP` (200) keeps traffic flowing; `DOWN` (503) or no answer stops routing and may trigger a restart. The health check is also smart: it aggregates the health of things your app depends on, so a dead database connection flips it to `DOWN` automatically — adding the JPA datasource ([Phase 5](05-persistence-with-jpa.md)) registered that contributor for you.
 
 By default, only `health` is exposed over HTTP. The rest are switched off until you opt in — and that default is a *security feature*, not an oversight:
 
@@ -58,7 +58,7 @@ management:
 
 *What just happened:* You explicitly listed which actuator endpoints are reachable over HTTP — `health`, `info`, and `metrics`. Anything not in the list stays unreachable from the outside.
 
-⚠️ **Never expose actuator endpoints carelessly in production.** Some of them leak serious internals. `/actuator/env` dumps your full configuration — *including resolved property values that may contain secrets*. `/actuator/heapdump` downloads a snapshot of your app's memory (passwords, tokens, user data, all of it). `/actuator/shutdown` can stop the app. Whatever you do, do **not** write `include: "*"` to expose everything in production. Expose the minimal set you actually need, and ideally put the management endpoints behind authentication or on a separate, internal-only port. Treat the actuator surface as part of your attack surface.
+⚠️ **Never expose actuator endpoints carelessly in production.** Some leak serious internals. `/actuator/env` dumps your full configuration — *including resolved property values that may contain secrets*. `/actuator/heapdump` downloads a snapshot of your app's memory. `/actuator/shutdown` can stop the app. Do **not** write `include: "*"` in production. Expose the minimal set you need, and ideally put management endpoints behind authentication or on a separate, internal-only port. Treat the actuator surface as part of your attack surface.
 
 💡 Actuator is your app's *first* observability — health and a handful of metrics out of the box. Real production systems build on this with proper metrics collection, dashboards, and tracing. Actuator exposes metrics in a format tools like Prometheus scrape directly. When you're ready to go deeper than "is it up?", see [/guides/observability-logs-metrics-traces](/guides/observability-logs-metrics-traces).
 
@@ -82,7 +82,7 @@ You build it with one command. If you used Spring Initializr, your project came 
 [INFO] Total time:  18.421 s
 ```
 
-*What just happened:* `clean` wiped the previous build output, then `package` compiled your code, ran your tests, and assembled the jar. The key line is the `spring-boot-maven-plugin:repackage` step — that's the plugin (included automatically in an Initializr project) rewriting the plain jar into a *fat* jar with the server and all dependencies tucked inside. The result lands in `target/`, named like `bookstore-0.0.1-SNAPSHOT.jar`.
+*What just happened:* `clean` wiped the previous build output, then `package` compiled your code, ran your tests, and assembled the jar. The key line is `spring-boot-maven-plugin:repackage` — the plugin (included automatically in an Initializr project) rewriting the plain jar into a *fat* jar with the server and all dependencies tucked inside. The result lands in `target/`, named like `bookstore-0.0.1-SNAPSHOT.jar`.
 
 Now run it the way a server would — no IDE, just Java:
 
@@ -115,7 +115,7 @@ java -jar target/bookstore-0.0.1-SNAPSHOT.jar
 
 *What just happened:* `SPRING_PROFILES_ACTIVE=prod` told Boot to layer `application-prod.yml` over the base config, swapping H2 for the real PostgreSQL and turning logging down to `WARN`. The datasource URL, username, and password came in as environment variables, which sit *above* the config file in precedence — so the real database and the real secret never had to be written into a committed file. Same jar you built a minute ago; production behavior, driven entirely by inputs.
 
-⚠️ **Audit what leaks from dev to prod before you ship.** The usual offenders: the H2 in-memory database (your data vanishes on restart), `spring.jpa.hibernate.ddl-auto=create` (drops and recreates your schema — catastrophic against a real DB), DEBUG logging (slow and noisy, and it can log sensitive request data), and permissive CORS like `allowedOrigins("*")`. None of these belong in production. Make `application-prod.yml` an explicit, conservative override of every one of them rather than trusting that the defaults are safe — they're tuned for your laptop, not the internet.
+⚠️ **Audit what leaks from dev to prod before you ship.** The usual offenders: the H2 in-memory database (data vanishes on restart), `spring.jpa.hibernate.ddl-auto=create` (drops and recreates your schema — catastrophic against a real DB), DEBUG logging (slow, noisy, and can log sensitive request data), and permissive CORS like `allowedOrigins("*")`. Make `application-prod.yml` an explicit, conservative override of every one — the defaults are tuned for your laptop, not the internet.
 
 ## Docker: make the runtime identical everywhere
 
@@ -140,7 +140,7 @@ EXPOSE 8081
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
-*What just happened:* Each line builds up the image. `FROM eclipse-temurin:21-jre` picks a base that already contains a Java 21 *runtime* (a JRE, not the full JDK — smaller, since you only need to *run* the jar, not compile). `COPY` drops your fat jar in as `app.jar`. `EXPOSE` is documentation (it doesn't actually open the port). `ENTRYPOINT` is the command Docker runs on startup — the same `java -jar` you ran by hand, now baked into the image. Because the fat jar already bundles Tomcat and every dependency, the Dockerfile doesn't need to install anything else.
+*What just happened:* `FROM eclipse-temurin:21-jre` picks a base with a Java 21 *runtime* (a JRE, not the full JDK — smaller, since you only need to *run* the jar). `COPY` drops your fat jar in as `app.jar`. `EXPOSE` is documentation. `ENTRYPOINT` is the command Docker runs on startup — the same `java -jar` you ran by hand, baked into the image. Because the fat jar already bundles Tomcat and every dependency, the Dockerfile needs nothing else.
 
 Build the image and run it:
 
@@ -161,7 +161,7 @@ You have a jar, or an image. Where does it go? You've got a spectrum, roughly fr
 - **A container platform.** Push your image to a registry and let something (Kubernetes, ECS, Cloud Run) schedule and run it. This is where your `/actuator/health` endpoint earns its keep: the platform polls it for *liveness* and *readiness* probes, and that's what enables **zero-downtime rollouts** — it starts new instances, waits until their health says `UP`, shifts traffic over, then retires the old ones. No health endpoint, no safe rollout.
 - **A PaaS.** Platforms like Railway, Render, Fly.io, or Heroku take your repo or image and handle the server, TLS, and scaling for you. Least control, least to manage — often the right call for a side project.
 
-💡 Step back and notice *why* all of this was short. The embedded server plus the fat jar is the entire reason Spring Boot deploys so much more easily than classic Java. The old model meant installing and tuning an application server, then deploying a WAR *into* it — a whole separate operational skill. Boot collapsed that: the server lives inside your one runnable artifact, so "deploy" becomes "run a file" (or "run an image"). That single design choice is a big part of why Spring Boot won.
+💡 The embedded server plus the fat jar is the entire reason Spring Boot deploys so much more easily than classic Java. The old model meant installing and tuning an application server, then deploying a WAR *into* it. Boot collapsed that: the server lives inside your one runnable artifact, so "deploy" becomes "run a file" (or "run an image").
 
 For taking a real project the last mile to a live URL — domain, TLS, picking a host, the unglamorous final 20% — see [/guides/ship-your-side-project](/guides/ship-your-side-project).
 

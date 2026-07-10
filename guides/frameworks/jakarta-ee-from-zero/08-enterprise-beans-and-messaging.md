@@ -6,7 +6,7 @@ summary: "Enterprise beans (EJB) give you pooling, transactions, scheduling, and
 tags: [jakarta-ee, ejb, stateless, jms, messaging, scheduling, async, enterprise-beans]
 difficulty: intermediate
 synonyms: ["jakarta ee ejb stateless stateful", "ejb vs cdi bean", "jakarta messaging jms", "jakarta ee scheduled task @Schedule", "jakarta ee async method", "message driven bean", "jakarta ee background jobs"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Enterprise Beans & Messaging
@@ -15,7 +15,7 @@ By now you've met CDI beans (Phase 3) and watched the container build and wire y
 This phase introduces a second family of container-managed components — **enterprise beans (EJB)** — and
 then steps outside the single application entirely to the question every real system eventually hits:
 *how do my services hand work to each other when nobody's waiting for an answer?* That second half is
-**messaging**, and it's the part that keeps enterprise systems from collapsing under their own coupling.
+**messaging** — the part that keeps enterprise systems from collapsing under their own coupling.
 
 Here's the mental model to carry through both halves: so far every call in your app has been *synchronous*
 — someone calls a method, blocks, and gets a result. This phase is about everything that happens **on a

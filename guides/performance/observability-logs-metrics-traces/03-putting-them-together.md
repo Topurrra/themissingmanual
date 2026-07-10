@@ -6,7 +6,7 @@ summary: "Debug a real slowdown end to end - a metric alert points at the sympto
 tags: [observability, debugging, distributed-tracing, opentelemetry, prometheus, grafana, dynatrace, cardinality, alert-fatigue]
 difficulty: intermediate
 synonyms: ["how to debug a slow service", "metric trace log workflow", "how to find a slow query in production", "what is opentelemetry", "what is cardinality explosion", "what is alert fatigue", "observability tools landscape"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Putting Them Together
@@ -52,10 +52,10 @@ $ histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{route="/che
 14:10  0.81
 ```
 
-*What just happened:* The 99th-percentile latency for `/checkout` jumped from about 0.31s to ~0.8s right
-around 14:00 and stayed there. The metric just earned its keep: it confirmed the problem is real (not one
-user's bad wifi), told you it affects the slow tail of *many* requests, and pinned the start time. What it
-can't tell you is *which* of the four services got slow - for that, you follow a single request.
+*What just happened:* p99 for `/checkout` jumped from ~0.31s to ~0.8s at 14:00 and stayed there. The
+metric confirmed the problem is real (not one user's bad wifi), showed it affects many requests, and
+pinned the start time. What it can't tell you is *which* of the four services got slow - for that,
+follow a single request.
 
 ### Step 2 - the trace tells you *where*
 
@@ -70,10 +70,9 @@ api-gateway        ████████████████████�
        └─ payment-db   ██████████████████████████████████     690 ms  ◄── here
 ```
 
-*What just happened:* The trace collapsed "checkout is slow" into "the `payment-db` span took 690 of the
-812ms." Auth, the gateway's own work, everything else - fine. You now know *exactly* which service and
-which operation to investigate, and you didn't have to guess or read four services' worth of logs. You
-also have the `trace_id`, which is your key into the logs.
+*What just happened:* The trace collapsed "checkout is slow" into "`payment-db` took 690 of 812ms." Auth,
+the gateway, everything else - fine. You know exactly which service and operation to investigate without
+guessing or reading four services' worth of logs, plus the `trace_id` as your key into them.
 
 ### Step 3 - the log tells you *why*
 
@@ -84,9 +83,9 @@ $ grep 4bf92f3577b34da6 /var/log/checkout/db.log
 {"ts":"2026-06-19T14:02:11.4Z","level":"WARN","service":"payment-db","trace_id":"4bf92f3577b34da6","msg":"slow query","duration_ms":690,"query":"SELECT * FROM payments WHERE customer_id = ?","rows_scanned":4210567,"plan":"Seq Scan"}
 ```
 
-*What just happened:* There it is - the *why*. That query scanned 4.2 million rows with a `Seq Scan` (a
-full table scan, no index). Someone shipped a query at 14:00 that hits `payments` by `customer_id` without
-an index to support it, so it reads the entire table every time. The fix is now obvious: add the index.
+*What just happened:* There's the *why*: the query scanned 4.2 million rows with a `Seq Scan` (a full
+table scan, no index). Someone shipped a query hitting `payments` by `customer_id` with no supporting
+index, so it reads the entire table every time. The fix: add the index.
 
 Notice what made this fast and calm: you used each pillar for the question it's actually good at, and the
 shared `trace_id` carried you across the handoffs. That's the whole game.
@@ -128,16 +127,15 @@ spot them coming.
 cardinality (a handful of HTTP codes). `user_id` has *enormous* cardinality (one value per user).
 
 ⚠️ **The gotcha.** Metric systems store a separate time series for *every unique combination of label
-values*. Attach a high-cardinality label like `user_id`, `order_id`, or a raw URL with embedded IDs to a
-metric, and you don't get one series - you get one *per user*, per *order*, per URL. That count multiplies
-across every other label, and your metrics backend's memory and cost can blow up fast, sometimes taking
-the whole monitoring system down. This is one of the most common ways teams accidentally break their own
-observability.
+values*. Attach a high-cardinality label like `user_id`, `order_id`, or a raw URL with embedded IDs, and
+you don't get one series - you get one *per user*, per *order*, per URL, multiplying across every other
+label. Backend memory and cost can blow up fast, sometimes taking the whole monitoring system down - one
+of the most common ways teams accidentally break their own observability.
 
-The rule of thumb: **metrics labels should be low-cardinality** (service, endpoint, status, region -
-things with a small, bounded set of values). When you genuinely need per-request detail like a user id or
-order id, that belongs on a **log or a trace**, not a metric label. The pillars have different cost
-shapes for a reason - respect them and you stay out of this hole.
+The rule: **metrics labels should be low-cardinality** (service, endpoint, status, region - a small,
+bounded set of values). Per-request detail like a user or order id belongs on a **log or a trace**, not a
+metric label. The pillars have different cost shapes for a reason - respect them and you stay out of this
+hole.
 
 ### Alert fatigue
 

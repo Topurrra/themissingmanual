@@ -6,7 +6,7 @@ summary: "The three ways to change what a model gives you: prompting changes the
 tags: [prompting, rag, fine-tuning, mental-model, llm, weights, behavior]
 difficulty: advanced
 synonyms: ["difference between prompting rag and fine-tuning", "does fine-tuning add knowledge", "rag vs fine-tuning knowledge", "what does fine-tuning change", "how to steer an llm"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Three Ways to Steer a Model
@@ -17,14 +17,13 @@ model reliably do *our specific thing*, in *our specific way*." That's steering.
 
 There are exactly three levers you can pull, and the entire fine-tuning-vs-prompting debate comes down to
 knowing which lever fixes which problem. Pull the wrong one and you'll spend weeks and a real budget solving
-a problem the cheapest lever would have solved in an afternoon. So before any cost discussion, get this
-mental model solid.
+a problem the cheapest lever would have solved in an afternoon.
 
 ## The one picture to hold onto
 
 A model's output depends on two things: the **weights** (the billions of numbers baked in during training —
-this is the model's "instincts," its defaults) and the **context** (everything you hand it at request time —
-the prompt, the conversation, any documents you paste in). Two of your three levers work on the context; one
+the model's "instincts," its defaults) and the **context** (everything you hand it at request time — the
+prompt, the conversation, any documents you paste in). Two of your three levers work on the context; one
 works on the weights.
 
 ```mermaid
@@ -45,18 +44,17 @@ flowchart TD
 *The dividing line that matters most:* **RAG adds knowledge. Fine-tuning teaches behavior.** Almost every
 expensive mistake in this space is someone fine-tuning to add knowledge (which RAG does better and cheaper)
 or someone trying to prompt their way to a consistent format at scale (which is exactly fine-tuning's job).
-Keep reading and that sentence will become something you can act on.
 
 ## Lever 1 — Prompting: change the instructions at request time
 
-**What it actually is.** You write the model better instructions. That's the whole lever. You tell it who to
-be ("You are a terse senior code reviewer"), what to do, what format to use, and you can show it a couple of
-examples right there in the prompt. Nothing about the model changes — you're feeding a generalist a clearer
-brief each time you call it.
+**What it actually is.** You write the model better instructions — that's the whole lever. Tell it who to be
+("You are a terse senior code reviewer"), what to do, what format to use, and show it a couple of examples
+right there in the prompt. Nothing about the model changes; you're feeding a generalist a clearer brief each
+time you call it.
 
-**What it does in real life.** It's the fastest, cheapest, most reversible way to steer. You edit a string
-and the behavior changes on the very next request. No training, no waiting, no infrastructure. Modern models
-are startlingly steerable this way — far more than most people assume before they've really tried.
+**What it does in real life.** It's the fastest, cheapest, most reversible way to steer. Edit a string and
+the behavior changes on the next request — no training, no waiting, no infrastructure. Modern models are
+startlingly steerable this way.
 
 **A real example.** Showing the model two examples inside the prompt ("few-shot" prompting) often gets you
 most of the way to a consistent format:
@@ -71,27 +69,27 @@ User: "Can you add dark mode?"                  → FEATURE
 User: "App crashes when I open settings."       →
 ```
 
-*What just happened:* You didn't change the model at all. You showed it the pattern in the context, and a
-capable model will continue it (`BUG`). This is the lever you should exhaust before considering the others,
-and it's covered properly in [Prompt Engineering, Honestly](/guides/prompt-engineering-honestly).
+*What just happened:* You didn't change the model at all — you showed it the pattern in the context, and a
+capable model will continue it (`BUG`). This is the lever to exhaust before considering the others; it's
+covered properly in [Prompt Engineering, Honestly](/guides/prompt-engineering-honestly).
 
 **The gotcha.** Prompting has a ceiling. Stuff enough rules and examples into every request and three things
-creep up: the prompt gets long (and you pay per token, every single call), the model starts ignoring
-instructions buried in the middle, and behavior stays *mostly* consistent rather than *reliably* consistent.
-When you hit that ceiling honestly — not in your imagination — that's the first real signal another lever
-might be warranted.
+creep up: the prompt gets long (you pay per token, every call), the model starts ignoring instructions
+buried in the middle, and behavior stays *mostly* consistent rather than *reliably* consistent. When you hit
+that ceiling honestly — not in your imagination — that's the first real signal another lever might be
+warranted.
 
 ## Lever 2 — RAG: inject knowledge at request time
 
 **What it actually is.** RAG (Retrieval-Augmented Generation) means: before you call the model, go fetch the
 relevant facts — from your docs, your database, your knowledge base — and paste them into the prompt. The
-model then answers using text you handed it a moment ago, instead of relying on whatever it happened to
-absorb during training.
+model answers using text you handed it a moment ago, instead of relying on whatever it happened to absorb
+during training.
 
 **What it does in real life.** It gives a general model *your* specific, current knowledge without changing
-the model at all. Your pricing page changed this morning? Update the document; the next answer is correct. A
-customer asks about an internal policy the model has never seen? Retrieve the policy doc, hand it over, and
-the model reads it like an open-book exam.
+the model at all. Pricing page changed this morning? Update the document; the next answer is correct. A
+customer asks about an internal policy the model has never seen? Retrieve the doc and hand it over — the
+model reads it like an open-book exam.
 
 **A real example.** Conceptually, RAG turns a closed-book question into an open-book one:
 
@@ -104,35 +102,32 @@ With RAG:     [retrieve: refund-policy.md]
                                           → model reads it → "30 days." (correct, sourced)
 ```
 
-*What just happened:* The model didn't *learn* your refund policy. It *read* it, at request time, from
-context you supplied. Change the policy file and the answer changes immediately — nothing to retrain. The
+*What just happened:* The model didn't *learn* your refund policy — it *read* it, at request time, from
+context you supplied. Change the policy file and the answer changes immediately, nothing to retrain. The
 full machinery (chunking, embeddings, retrieval) lives in [RAG, Explained](/guides/rag-explained).
 
 **The gotcha.** RAG fixes *what the model knows*, not *how it behaves*. It will happily retrieve your refund
-policy and then answer in a rambling, off-brand, wrong-format way — because RAG never touched its behavior.
-If your problem is "the model doesn't know our facts," RAG is your tool. If your problem is "the model knows
-plenty but won't consistently answer in our voice/format," RAG won't help, and that's the doorway to the
-third lever.
+policy and then answer in a rambling, off-brand, wrong-format way, because RAG never touched its behavior.
+If your problem is "the model doesn't know our facts," RAG is your tool. If it's "the model knows plenty but
+won't consistently answer in our voice/format," RAG won't help — that's the doorway to the third lever.
 
 ## Lever 3 — Fine-tuning: change the model's default behavior
 
 **What it actually is.** Fine-tuning takes an existing trained model and nudges its **weights** — the numbers
 that *are* the model — by training it further on hundreds or thousands of your own example input/output
-pairs. You're not giving it instructions or documents. You're changing its instincts so that the behavior
-you want becomes its *default*, with no special prompting required.
+pairs. You're not giving it instructions or documents; you're changing its instincts so the behavior you
+want becomes its *default*, with no special prompting required.
 
 📝 **Weights.** The billions of numbers learned during a model's original training. They encode everything
 the model "knows" and every habit it has. Prompting and RAG leave the weights untouched; fine-tuning is the
 only lever that edits them.
 
-**What it does in real life.** After fine-tuning on, say, three thousand examples of your support replies, the
-model writes in your support voice *by default* — terse where you're terse, with your standard sign-off, in
-your exact format — even from a bare prompt. The behavior is baked in, so your prompts get shorter (the rules
-are now in the weights, not in every request) and the consistency gets tighter than prompting alone reliably
-delivers.
+**What it does in real life.** After fine-tuning on, say, three thousand examples of your support replies,
+the model writes in your support voice *by default* — terse where you're terse, with your standard sign-off —
+even from a bare prompt. The behavior is baked in, so prompts get shorter (the rules live in the weights now,
+not in every request) and consistency gets tighter than prompting alone reliably delivers.
 
-**A real example.** The shape of fine-tuning is a file of demonstrations — "when the input looks like this,
-this is exactly how I want you to respond":
+**A real example.** The shape of fine-tuning is a file of demonstrations:
 
 ```text
 {"input": "where's my order #4821",
@@ -144,18 +139,18 @@ this is exactly how I want you to respond":
    ... a few thousand more pairs in exactly the tone and format you want ...
 ```
 
-*What just happened:* You're not telling the model rules in prose. You're showing it the behavior, over and
-over, and the training process adjusts the weights until that behavior is the path of least resistance. The
-voice, structure, and sign-off become *defaults* — not instructions you have to repeat every call.
+*What just happened:* You're not telling the model rules in prose — you're showing it the behavior, over and
+over, and training adjusts the weights until that behavior is the path of least resistance. The voice,
+structure, and sign-off become *defaults*, not instructions you repeat every call.
 
 **The gotcha — the one that costs the most.** Fine-tuning is a poor way to teach *facts*. People assume
-"training it on our documents" will make the model *know* our documents. What it mostly learns is the *style*
-and *shape* of those documents, not reliable recall of their contents — and any fact that changes next week is
-now frozen into weights you'd have to retrain to update. For knowledge, RAG wins almost every time. Hold this
-line: **fine-tune for behavior, retrieve for knowledge.**
+"training it on our documents" will make the model *know* our documents. What it mostly learns is the
+*style* and *shape* of those documents, not reliable recall of their contents — and any fact that changes
+next week is now frozen into weights you'd have to retrain to update. For knowledge, RAG wins almost every
+time. Hold this line: **fine-tune for behavior, retrieve for knowledge.**
 
 **Why this saves you later.** When the budget-holder asks "should we train our own model so it knows our
-product?", you now have the honest answer ready: training won't reliably make it *know* the product (that's
+product?", you have the honest answer ready: training won't reliably make it *know* the product (that's
 RAG), and you almost certainly haven't exhausted prompting yet. You've just saved a quarter.
 
 ## Recap

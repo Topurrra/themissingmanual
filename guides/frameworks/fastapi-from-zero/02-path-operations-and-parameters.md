@@ -6,15 +6,15 @@ summary: "How routes work in FastAPI: the decorator picks the HTTP method and pa
 tags: [fastapi, path-operation, path-parameter, query-parameter, type-hints, validation, routing]
 difficulty: beginner
 synonyms: ["fastapi path parameters", "fastapi query parameters", "fastapi get post route", "fastapi type hint validation", "fastapi optional query param", "fastapi path converter", "fastapi 422 validation error"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Path Operations & Parameters
 
 Phase 1 got an app running: write a typed function, get a validated, documented endpoint. This phase
-zooms in on the routes themselves. How do you say "this function handles `GET /books`"? How do you grab
-the `42` out of `/books/42`? How do you read `?limit=10` off the URL? And how does a single `int`
-annotation turn into a real validation rule that rejects garbage before your code ever runs?
+zooms in on the routes themselves — how you say "this function handles `GET /books`," how you grab the
+`42` out of `/books/42`, how you read `?limit=10` off the URL, and how a single `int` annotation turns
+into a validation rule that rejects garbage before your code ever runs.
 
 The mental model: **a route in FastAPI is just a normal Python function, and its signature is the
 spec.** The decorator says *which* requests reach the function. The parameters — and their type hints —

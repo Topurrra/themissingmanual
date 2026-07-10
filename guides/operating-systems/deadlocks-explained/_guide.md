@@ -14,18 +14,18 @@ synonyms:
   - how to prevent a deadlock
   - how to detect a deadlock
   - lock ordering deadlock
-updated: 2026-07-04
+updated: 2026-07-11
 ---
 
 # Deadlocks Explained
 
 Your program hangs. Not crashed, not slow — frozen, forever, using zero CPU, doing absolutely nothing. Two threads are alive and technically "running," except each one is waiting for something the other thread is holding, and neither will ever let go first. That's a deadlock: not a bug that produces a wrong answer, but a bug that produces no answer at all.
 
-This guide builds the concept from a single concrete example, gives you the exact checklist for recognizing one, and ends with what to actually put in your code so it doesn't happen — and what to do when it happens anyway.
+This guide builds the concept from one concrete example, gives you the checklist for recognizing a deadlock, and ends with what to put in your code so it doesn't happen — and what to do when it happens anyway.
 
 ## How to read this
 
-Read it in order. Phase 1 gives you one small, concrete two-lock example and the mental model behind it. Phase 2 is the checklist: four conditions that must *all* be true simultaneously for a deadlock to occur, which means breaking any single one prevents it. Phase 3 is practical — lock ordering, timeouts, detection tools, and what to do when a production process is hung right now. The examples use plain pseudocode; the trap is identical whether you're writing Java, C++, Go, Python, or Rust.
+Read it in order. Phase 1 walks through one concrete two-lock example and the mental model behind it. Phase 2 is the checklist: four conditions that must *all* be true simultaneously for a deadlock to occur. Phase 3 is practical — lock ordering, timeouts, detection tools, and what to do when a production process is hung right now. Examples use plain pseudocode; the trap is identical whether you're writing Java, C++, Go, Python, or Rust.
 
 ## The phases
 

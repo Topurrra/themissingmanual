@@ -14,16 +14,16 @@ synonyms:
   - can you have consistency availability and partition tolerance
   - cp vs ap systems
   - cap theorem database examples
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # The CAP Theorem
 
-Every distributed database makes a promise, and every distributed database eventually has to break part of that promise, on purpose, because the network made it break it. The CAP theorem is the formal statement of exactly which part gets broken and when. It sounds abstract until you see the actual moment it applies — a cable gets cut, two data centers can't talk to each other, and every system behind that cable has to decide, right now, whether to keep answering or keep agreeing. It can't do both.
+Every distributed database makes a promise, and eventually breaks part of it — on purpose, because the network forced it to. The CAP theorem is the formal statement of which part breaks, and when. It sounds abstract until the actual moment it applies: a cable gets cut, two data centers can't talk, and every system behind that cable must decide, right now, whether to keep answering or keep agreeing — it can't do both.
 
 ## How to read this
 
-Read it in order. Phase 1 defines the three letters precisely — most confusion about CAP comes from vague definitions of "consistency" and "availability." Phase 2 is the actual argument for why you can't have all three, walked through with a concrete network partition. Phase 3 grounds it in real databases you've probably used, and clears up the most common misreading of the theorem.
+Read it in order. Phase 1 defines the three letters precisely — most confusion about CAP comes from vague definitions of "consistency" and "availability." Phase 2 walks through the actual argument for why you can't have all three, using a concrete network partition, and Phase 3 grounds it in real databases you've probably used and clears up the most common misreading of the theorem.
 
 ## The phases
 

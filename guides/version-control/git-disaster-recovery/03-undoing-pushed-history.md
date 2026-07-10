@@ -6,7 +6,7 @@ summary: "Once a commit is pushed others may have it; undo it safely with git re
 tags: [git, revert, force-push, force-with-lease, pushed-history, recovery]
 difficulty: advanced
 synonyms: ["undo a pushed commit", "git revert vs reset", "git push force with lease", "remove a commit after pushing", "safely rewrite pushed history", "revert a merge"]
-updated: 2026-06-18
+updated: 2026-07-10
 ---
 
 # Undoing What You've Already Pushed
@@ -60,10 +60,9 @@ $ git revert a1b2c3d
  1 file changed, 2 insertions(+), 40 deletions(-)
 $ git push
 ```
-*What just happened:* Git made a new commit `9z8y7x6` that undoes everything commit `a1b2c3d` did, opened an
-editor with a pre-filled "Revert ..." message (accept it, or use `git revert --no-edit` to skip the
-editor), and you pushed it like any normal commit. The bad change is neutralized, the history is honest
-about what happened, and no teammate's repository was disturbed.
+*What just happened:* Git made a new commit `9z8y7x6` that undoes everything `a1b2c3d` did, opened an
+editor with a pre-filled "Revert ..." message (or use `git revert --no-edit` to skip it), and you pushed
+it like any normal commit. The bad change is neutralized and no teammate's repository was disturbed.
 
 ⚠️ **Gotcha - reverting a merge commit.** A merge commit has two parents, so Git needs to know which side to
 keep. A plain `git revert <merge-hash>` fails asking for a `-m` (mainline) option; the usual form is
@@ -101,8 +100,8 @@ want.
 
 🪖 **War story.** A teammate once ran `git push --force` on `main` to "clean up" his branch, not realizing
 two other people had merged that morning. Their commits vanished from the remote - recoverable only because
-someone still had them in a local reflog. An hour of everyone's day went to the rescue. `--force-with-lease`
-would have refused the push. The lease isn't training wheels; it's the seatbelt seniors keep on.
+someone still had them in a local reflog, costing everyone an hour. `--force-with-lease` would have refused
+the push; the lease isn't training wheels, it's the seatbelt seniors keep on.
 
 ## 4. Communicate - the part Git can't do for you
 

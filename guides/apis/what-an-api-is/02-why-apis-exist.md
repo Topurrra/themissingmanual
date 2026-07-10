@@ -6,7 +6,7 @@ summary: "APIs exist for three reasons — reuse (don't rebuild maps or payments
 tags: [apis, reuse, integration, separation-of-concerns, boundaries]
 difficulty: beginner
 synonyms: ["why do apis exist", "why use an api", "what are apis good for", "frontend backend api", "why integrate with an api", "what problem do apis solve"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why APIs Exist
@@ -28,7 +28,7 @@ So you don't. You use a maps **API** offered by someone who already did all that
    (years of work each)            (a request each)
 ```
 
-**What it does in real life.** This is why you almost never see an app handle credit cards by writing its own banking code. Money is hard and dangerous to get right, so apps use a payments API (the well-known one is Stripe) and let a specialist's system do the risky part. The app's job shrinks to *placing the order correctly.*
+This is why you almost never see an app handle credit cards by writing its own banking code. Money is hard and dangerous to get right, so apps use a payments API (the well-known one is Stripe) and let a specialist's system do the risky part. The app's job shrinks to *placing the order correctly.*
 
 💡 **Key point.** An API lets you **reuse someone else's hard work** without rebuilding it — and without even understanding how they did it. The menu is all you need.
 
@@ -52,7 +52,7 @@ sequenceDiagram
 
 When you log in, the frontend doesn't check your password itself — it sends your details across this API to the backend and asks "is this person allowed in?" The backend does the checking and answers. Because there's a clean contract between them, two different teams can work on the two halves at once, and either side can be rebuilt without dragging the other along — as long as the contract holds.
 
-**Why people get this wrong.** Beginners often picture an app as one single blob of code. Most real apps aren't; they're a frontend and a backend that *only* communicate through an agreed API. Knowing this line exists explains a lot — like why a website can change its entire look overnight while your data and login stay exactly the same. They changed the frontend; the backend and the contract between them didn't move.
+Beginners often picture an app as one single blob of code. Most real apps aren't; they're a frontend and a backend that *only* communicate through an agreed API. Knowing this line exists explains a lot — like why a website can change its entire look overnight while your data and login stay exactly the same. They changed the frontend; the backend and the contract between them didn't move.
 
 ## Reason 3: Integration — plugging into someone else's service
 
@@ -80,7 +80,7 @@ This is why a boundary is so valuable. Software changes constantly — bugs get 
 
 ⚠️ **Gotcha.** That promise is exactly why **breaking an API is a big deal.** If a service changes its menu — renames a request, drops a field from the response — every app that depended on the old menu can break at once, often without warning. This is the reason serious APIs go to great lengths to keep old contracts working (you'll hear this called "versioning"), and why "we broke the API" is something engineers say in a lowered voice.
 
-**Why this saves you later.** When you hear "we expose that through an API," "the frontend calls the backend," or "we integrated with their API," you'll now hear the *reason* underneath: someone wanted to reuse work, separate two halves, or plug into a service — by drawing a stable boundary they could depend on. That's the whole game.
+When you hear "we expose that through an API," "the frontend calls the backend," or "we integrated with their API," you'll now hear the *reason* underneath: someone wanted to reuse work, separate two halves, or plug into a service — by drawing a stable boundary they could depend on. That's the whole game.
 
 ## Recap
 

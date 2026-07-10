@@ -6,23 +6,23 @@ summary: "Look at the real REST API you can now build with Echo, then the honest
 tags: [echo, go, gin, chi, ecosystem, what-to-build]
 difficulty: beginner
 synonyms: ["echo vs gin", "echo vs chi", "go web framework comparison", "when to use net/http", "echo next steps", "echo gorm", "go rest api what to build"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
-Stop for a second and look at what you can actually do now. You can spin up an Echo
-server, route requests with path and query parameters, group routes, bind and validate
-JSON into structs with `c.Bind`, shape responses with `c.JSON` and the right status codes,
-write and chain middleware, build full CRUD for a resource, and let Echo's central
-`HTTPErrorHandler` turn returned errors into clean HTTP responses — then test the whole
-thing with `httptest` and ship it with graceful shutdown. That's a real REST API, not a toy.
+Look at what you can actually do now. You can spin up an Echo server, route requests with
+path and query parameters, group routes, bind and validate JSON into structs with `c.Bind`,
+shape responses with `c.JSON` and the right status codes, write and chain middleware, build
+full CRUD for a resource, and let Echo's central `HTTPErrorHandler` turn returned errors into
+clean HTTP responses — then test the whole thing with `httptest` and ship it with graceful
+shutdown. That's a real REST API, not a toy.
 
 And here's the quieter win. Echo is a thin, error-clean layer over `net/http`. An
 **instance** (`echo.New()`) holds your routes and middleware, an **`echo.Context`** carries
 each request, and your handlers `func(c echo.Context) error` *return* their failures for one
-central handler to render. Nothing was hidden behind magic — which means when something
-breaks at 2am, you can reason about it.
+central handler to render. Nothing was hidden behind magic — so when something breaks at
+2am, you can reason about it.
 
 So this last phase isn't more handlers. It's the map: where Echo sits among the other Go
 web frameworks, the layer you'll almost certainly add next, and one concrete thing to go build.
@@ -65,8 +65,7 @@ A line on each:
 > of the box. Reach for **chi or net/http** instead when you want stdlib purity and zero lock-in.
 
 📝 None of these is "the best." They're aimed at slightly different tastes. The senior instinct
-isn't memorizing a winner — it's asking "best for *this* job and *this* team?" and answering
-honestly. You have the pieces for that now.
+isn't memorizing a winner — it's asking "best for *this* job and *this* team?"
 
 ## The layer you'll add next: a real database
 
@@ -76,8 +75,8 @@ service grows is a **database**.
 
 Here's the reassuring part: your handlers barely change. Remember how Phase 6 kept the HTTP
 logic separate from where the data lived? That paid off. The handler still binds JSON, validates,
-calls a store, and returns a response (or an error, the Echo way). All that swaps underneath is
-the store — from a map to a database-backed one.
+calls a store, and returns a response (or an error). All that swaps underneath is the store —
+from a map to a database-backed one.
 
 [GORM From Zero](/guides/gorm-from-zero) is the natural next read. GORM is Go's most popular ORM:
 you define your `Book` struct, point it at SQLite (or Postgres later), and your create/read/
@@ -86,10 +85,8 @@ you're replacing the bottom layer, not rewriting the top.
 
 ## What to build
 
-Reading more won't make this stick. Building one real thing will. So here's the assignment, and
-it's deliberately concrete.
-
-Take the **books API** you grew across this guide and carry it all the way home:
+Reading more won't make this stick. Building one real thing will. Take the **books API** you
+grew across this guide and carry it all the way home:
 
 - **Swap the in-memory store for GORM + SQLite** so books survive a restart. The handlers stay;
   the store changes. ([GORM From Zero](/guides/gorm-from-zero) walks the persistence part.)
@@ -103,7 +100,7 @@ Take the **books API** you grew across this guide and carry it all the way home:
 
 If the books API feels too familiar, build something small and new end to end instead — a
 **notes API** or a **bookmarks API**. Same muscles: routes, binding, a store, middleware, tests,
-deploy. The point is finishing one project completely, which teaches more than three more tutorials would.
+deploy. Finishing one project completely teaches more than three more tutorials would.
 
 ## The honest close
 
@@ -112,9 +109,8 @@ completely: an **instance** that holds your routes, a **context** that carries e
 **middleware chain** that wraps it all, and handlers that **return errors** for a central handler
 to render — all sitting on the same `net/http` you could write by hand if you had to.
 
-That's why you can read the machine now. You can build a real service on top of Echo, and — more
-importantly — reason about it when it misbehaves. Go finish the books API, give it a database, lock
-it behind JWT, deploy it, and show someone. You're ready.
+That's why you can read the machine now, and reason about it when it misbehaves. Go finish the
+books API, give it a database, lock it behind JWT, deploy it, and show someone. You're ready.
 
 ## Recap
 

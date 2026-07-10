@@ -6,15 +6,15 @@ summary: "The same-origin policy means a web page can't read responses from a di
 tags: [cors, same-origin-policy, browser, security, origin, beginner]
 difficulty: beginner
 synonyms: ["what is the same-origin policy", "why does cors exist", "what is an origin", "why can't my page read the api response", "is cors a firewall"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Why the Browser Blocks You
 
 Before you touch a single header, you need one idea in your head - because every confusing thing about
-CORS comes from *not* having it. The idea is this: **the browser is enforcing a rule to protect the person
-sitting in front of it, and CORS is how the server tells the browser to relax that rule for specific
-friends.** That's the whole game. Let's build up to it.
+CORS comes from *not* having it: **the browser is enforcing a rule to protect the person sitting in front
+of it, and CORS is how the server tells the browser to relax that rule for specific friends.** That's the
+whole game. Let's build up to it.
 
 ## What an "origin" actually is
 

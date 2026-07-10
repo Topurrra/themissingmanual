@@ -6,12 +6,12 @@ summary: "How controllers map HTTP requests to methods: @Controller base paths, 
 tags: [nestjs, typescript, controllers, routing, decorators]
 difficulty: intermediate
 synonyms: ["nestjs controller", "nestjs routing", "nest @Get @Post", "nest @Param @Query @Body", "nestjs route decorators", "nest http methods"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Controllers & Routing
 
-In Phase 1 you got an app running and saw a controller answer a request. Now let's slow down and really look at the thing doing the answering, because once it clicks, the rest of Nest stops feeling like a pile of decorators and starts feeling like a layout you can predict.
+In Phase 1 you got an app running and saw a controller answer a request. Now let's look closely at the thing doing the answering: once it clicks, the rest of Nest stops feeling like a pile of decorators and starts feeling like a layout you can predict.
 
 ## The mental model: a controller is a class of routes
 

@@ -6,12 +6,12 @@ summary: "Pull data out of a request with PathValue, query, headers, and JSON bo
 tags: [net-http, go, json, request, response]
 difficulty: intermediate
 synonyms: ["go read request body json", "go write json response", "r.PathValue query", "go json.NewDecoder Encoder", "go writeheader content-type order", "net/http json"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Reading Requests, Writing JSON
 
-Here's the mental model to hold for this whole phase, because everything else hangs off it: **a handler reads from one thing and writes to another.** It reads from `*http.Request` — the incoming request, with its path, query string, headers, and body. It writes to `http.ResponseWriter` — the outgoing response, where you set headers, a status code, and the body. That's the entire conversation.
+**A handler reads from one thing and writes to another.** It reads from `*http.Request` — the incoming request, with its path, query string, headers, and body. It writes to `http.ResponseWriter` — the outgoing response, where you set headers, a status code, and the body. That's the entire conversation.
 
 Notice what's *not* in that sentence: no framework, no "context object," no magic binding layer. `*http.Request` and `http.ResponseWriter` are plain standard-library types. JSON isn't special either — it's `encoding/json` applied to the body on the way in and to the writer on the way out. Once you see a handler as "read from `r`, write to `w`, with `encoding/json` doing the translation on each side," every Go web handler you'll ever read becomes legible.
 

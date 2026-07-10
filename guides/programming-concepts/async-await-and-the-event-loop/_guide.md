@@ -8,14 +8,14 @@ category: programming-concepts
 difficulty: intermediate
 synonyms: ["why does async exist", "what is the event loop", "how does async await work", "what is a promise", "blocking vs non-blocking", "single threaded but concurrent", "what does await do", "dont block the event loop"]
 order: 5
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Async/Await & the Event Loop
 
-You've written `await` because the tutorial told you to, and the code worked - most of the time. Then one day a function returned `Promise { <pending> }` instead of the value you wanted, or a missing `await` let the next line run too early, or someone said "don't block the event loop" and you nodded along without really knowing what the event loop *is*. Async code has a way of working until it suddenly doesn't, and then it feels like magic that turned on you.
+You've written `await` because the tutorial told you to, and it worked - until a function returned `Promise { <pending> }`, or a missing `await` let the next line run too early, or someone said "don't block the event loop" and you nodded along. Async code works until it suddenly doesn't, and then it feels like magic that turned on you.
 
-It isn't magic. Async is one of the most reasoned-about ideas in programming, built on a problem so ordinary you've felt it yourself: waiting is slow, and a worker who stands idle while waiting is a worker wasted. This guide builds the mental model from the ground up - the problem first, then the engine that solves it, then the syntax that finally makes it readable. By the end, `await` won't be a spell you cast. It'll be a thing you can reason about.
+It isn't magic. Async solves an ordinary problem: waiting is slow, and a worker who stands idle while waiting is a worker wasted. This guide builds the model in order - the problem, then the engine, then the syntax - so `await` stops being a spell and becomes something you can reason about.
 
 We'll use JavaScript for the examples because it has the clearest, most-visible async model - but the underlying idea (waiting is wasteful; let the worker do other things) is universal. Python's `asyncio`, Rust's `async`/`.await`, C#'s `async`/`await`, and Kotlin's coroutines are all the same idea wearing different clothes.
 

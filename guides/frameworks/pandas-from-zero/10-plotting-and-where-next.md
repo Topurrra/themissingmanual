@@ -6,7 +6,7 @@ summary: "Make quick charts straight off a DataFrame, write your results back ou
 tags: [pandas, plotting, matplotlib, visualization, performance, polars, what-to-build]
 difficulty: beginner
 synonyms: ["pandas plot", "pandas matplotlib", "pandas visualization", "pandas performance polars dask", "pandas to excel csv", "pandas next steps", "pandas vs polars"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Plotting & Where to Go Next
@@ -15,7 +15,7 @@ Stop for a second and look at what you can actually do now. You can take a raw, 
 
 And the whole thing rests on two ideas you've been carrying since Phase 1: a **DataFrame is a table you compute on**, and **almost everything is a column operation**. Hold those two and pandas stops being a grab-bag of methods.
 
-So this last phase isn't a pile of new methods. It's turning your analysis into a picture, getting your results back out of pandas, an honest word about where pandas stops being the right tool, and a real project to point all of this at.
+This last phase isn't a pile of new methods — it's turning your analysis into a picture, getting your results back out of pandas, an honest word about where pandas stops being the right tool, and a real project to point all of this at.
 
 ## Quick charts, right off the DataFrame
 

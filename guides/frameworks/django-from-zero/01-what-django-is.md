@@ -6,7 +6,7 @@ summary: "Django is the batteries-included Python web framework: ORM, migrations
 tags: [django, python, mtv, project, app, manage-py, getting-started]
 difficulty: beginner
 synonyms: ["what is django", "django batteries included", "django mtv pattern", "django project vs app", "django startproject startapp", "django manage.py runserver", "django vs flask fastapi"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # What Django Is & Your First Project
@@ -19,8 +19,8 @@ ships every one of those pieces in a single box: **Django**.
 Django's whole personality comes from one bet: **most web apps need the same things, so the framework
 should provide them and ask you to follow its conventions.** Database access, schema changes, an admin
 panel, login, forms, HTML rendering — Django hands you all of it and a sensible way to arrange it. You
-write less plumbing and more of *your* app. The price is learning Django's way of doing things. For a
-full website, that's usually a bargain.
+write less plumbing and more of *your* app. The price is learning Django's way of doing things — for a
+full website, usually a bargain.
 
 ## Batteries included — what Django gives you for free
 
@@ -31,16 +31,16 @@ a **template** engine (HTML with placeholders), and a **forms** layer. "Batterie
 official slogan, and it's literal.
 
 The contrast with a micro-framework makes this concrete. [FastAPI](/guides/fastapi-from-zero) — the
-sibling framework in this library — is lean and API-first: it's brilliant at turning your type hints
-into a validated JSON API, but it deliberately stays out of your way on databases, admin screens, and
-HTML. You bring those yourself, choosing each library. Django takes the opposite stance: it makes
-those choices *for* you and bundles them, so a database-backed website with a login and an admin panel
-is a starting point, not a shopping trip.
+sibling framework in this library — is lean and API-first: brilliant at turning your type hints into a
+validated JSON API, but it deliberately stays out of your way on databases, admin screens, and HTML. You
+bring those yourself, choosing each library. Django takes the opposite stance: it makes those choices
+*for* you and bundles them, so a database-backed website with a login and an admin panel is a starting
+point, not a shopping trip.
 
 💡 **The trade, stated honestly.** Micro-frameworks give you fewer conventions to learn and total
 freedom to assemble. Django gives you far more provided, in exchange for learning *its* conventions —
 where files go, what things are named, how the pieces connect. Neither is "better"; they fit different
-jobs. We'll come back to which is which at the end.
+jobs.
 
 ## The MTV pattern — Django's shape
 
@@ -72,8 +72,7 @@ flowchart LR
 
 *One idea:* a request comes in, the **URLconf** matches its path to a **view**, the view asks the
 **models** for data and feeds it to a **template**, and the rendered HTML goes back as the response.
-Every Django page you ever build flows along that arrow. We'll wire up the URLconf and views in the
-next phase; for now, just hold the shape.
+Every Django page you ever build flows along that arrow. We'll wire up the URLconf and views next phase.
 
 ## Project vs app — the split everyone confuses
 
@@ -106,9 +105,9 @@ python manage.py startapp blog
 
 *What just happened:* `django-admin startproject mysite` generated the project skeleton — settings,
 configuration, and the `manage.py` script. Then `python manage.py startapp blog` created a fresh app
-folder with the empty files a feature needs: a place for models, views, and tests. Note the two
-different commands: `django-admin` bootstraps the project from nothing; `manage.py` (which the project
-just gave you) runs everything *after* that.
+folder with the empty files a feature needs: a place for models, views, and tests. Two different
+commands: `django-admin` bootstraps the project from nothing; `manage.py` (which the project just gave
+you) runs everything *after* that.
 
 After both commands, your directory looks like this:
 
@@ -160,9 +159,9 @@ INSTALLED_APPS = [
 
 *What just happened:* `INSTALLED_APPS` is the list of apps Django activates for this project. The first
 six are Django's own built-in apps — the admin, auth, sessions, and so on, all "batteries" you got for
-free. Adding `"blog"` tells Django to load our app: discover its models, include its migrations, and
-let it participate in the admin. ⚠️ Forgetting this line is a classic beginner bug — your models exist
-but Django acts as if the app isn't there.
+free. Adding `"blog"` tells Django to load our app: discover its models, include its migrations, and let
+it participate in the admin. ⚠️ Forgetting this line is a classic beginner bug — your models exist but
+Django acts as if the app isn't there.
 
 Now bring the site to life. Two commands carry you through almost every dev session:
 
@@ -191,12 +190,11 @@ Starting development server at http://127.0.0.1:8000/
 Quit the server with CTRL-BREAK.
 ```
 
-*What just happened:* `migrate` created the database tables Django's built-in apps need (using SQLite
-by default, so there's nothing to install). `runserver` then started a lightweight development server
-on `http://127.0.0.1:8000/`. Open that URL and you'll see Django's friendly rocket-ship welcome page —
-proof the project is alive. ⚠️ `runserver` is for development *only*; it's not built to handle real
-production traffic. The reloader also means you can edit code and the server picks it up without a
-manual restart.
+*What just happened:* `migrate` created the database tables Django's built-in apps need (SQLite by
+default, so there's nothing to install). `runserver` then started a lightweight development server on
+`http://127.0.0.1:8000/`. Open that URL and you'll see Django's friendly rocket-ship welcome page —
+proof the project is alive. ⚠️ `runserver` is for development *only*, not real production traffic. The
+reloader also means you can edit code and the server picks it up without a manual restart.
 
 ## Where Django fits
 
@@ -207,15 +205,14 @@ split across one project and many apps. So when do you reach for it?
 server-rendered pages, a database behind them, user accounts, and especially when that free admin
 panel saves you from hand-building a back-office UI. Reach for [FastAPI](/guides/fastapi-from-zero)
 when you're building an **API** for other programs (or a JavaScript frontend) to consume, and you want
-lean, async, type-hint-driven endpoints. Both are top-tier Python choices; they're just aimed at
-different targets. (Django *can* build APIs too, via Django REST Framework — but if API-first is the
-whole job, FastAPI is the more natural fit.)
+lean, async, type-hint-driven endpoints. (Django *can* build APIs too, via Django REST Framework — but
+if API-first is the whole job, FastAPI is the more natural fit.)
 
 There's a deeper idea here worth naming. Django is a textbook example of a **framework** in the sense
 covered in [what a framework even is](/guides/what-a-framework-even-is): the classic *"don't call us,
 we'll call you"* relationship. You don't write a main loop that calls Django; Django runs the show and
-calls *your* code — your views, your models — at the right moments. You fill in the blanks inside a
-structure Django defines. That's the trade for all those batteries: you live inside Django's shape.
+calls *your* code — your views, your models — at the right moments. That's the trade for all those
+batteries: you live inside Django's shape.
 
 Next, we make the request flow concrete. You'll write your first **URLconf** and **view** so that
 hitting a path in the browser runs your Python and returns a real page.

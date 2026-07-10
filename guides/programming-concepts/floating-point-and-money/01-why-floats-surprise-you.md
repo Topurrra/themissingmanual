@@ -6,7 +6,7 @@ summary: "A float stores numbers in binary, so most decimal fractions can't be r
 tags: [floating-point, binary, precision, rounding, ieee-754]
 difficulty: beginner
 synonyms: ["why is 0.1 + 0.2 not 0.3", "what is a float", "how does floating point work", "why does 0.1 round", "binary fractions explained", "0.30000000000000004"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Why Floats Surprise You
@@ -67,7 +67,7 @@ print(0.1 + 0.2 == 0.3)
 
 ## Why it's built this way (and why that's okay)
 
-It would be fair to ask: if base 10 is what humans use, why not store numbers in base 10? The answer is speed and range. The format almost every language uses for `float`/`double` is **IEEE 754** - a binary layout your CPU has dedicated hardware to add, multiply, and divide blindingly fast. It also covers an enormous range, from subatomic to astronomical, in a fixed 64 bits.
+It would be fair to ask: if base 10 is what humans use, why not store numbers in base 10? The answer is speed and range. The format almost every language uses for `float`/`double` is **IEEE 754** - a binary layout your CPU has dedicated hardware to add, multiply, and divide blindingly fast, and one that covers an enormous range, from subatomic to astronomical, in a fixed 64 bits.
 
 That's a fantastic trade for measuring, simulating, and rendering - places where being off in the 16th digit is invisible and irrelevant. It's a *terrible* trade the moment "off by a hair" means "off by a cent." Which is exactly where we're headed next.
 

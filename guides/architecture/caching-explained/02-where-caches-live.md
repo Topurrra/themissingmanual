@@ -6,14 +6,12 @@ summary: "A single request can pass through several caches in a row: the browser
 tags: [caching, cdn, redis, browser-cache, application-cache, edge, layers]
 difficulty: intermediate
 synonyms: ["where do caches live", "what is a cdn", "what is a browser cache", "what is an application cache", "what is redis", "in-memory cache vs redis", "does the database have a cache", "cache layers explained"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Where Caches Live
 
-Knowing what a cache *is* leads straight to a practical question: where do you put one? The surprising answer is that you rarely put just one. A single web request typically passes through several caches stacked in a line, each closer to the user and faster than the next one behind it. Understanding that line is what lets you ask the right question when something is slow — or when something is *stale*.
-
-The shape to hold in your head: a request travels from the user toward the truth (your database), and it can be answered and turned around at any cache along the way. The closer to the user the answer comes from, the faster and cheaper it is.
+Knowing what a cache *is* leads straight to a practical question: where do you put one? The surprising answer is that you rarely put just one. A single web request typically passes through several caches stacked in a line, each closer to the user and faster than the next one behind it. A hit at any layer turns the request around right there — the layers behind it never even hear about the request. Understanding that line is what lets you ask the right question when something is slow, or when something is *stale*.
 
 ## The line a request travels
 
@@ -24,15 +22,11 @@ flowchart LR
   User([user]) --> Browser[browser cache] --> CDN[CDN edge] --> App[app server] --> AppCache[app cache] --> DB[(database)]
 ```
 
-A hit at any box turns the request around right there — the boxes to its right never even hear about the request. Closer to the user = faster + cheaper.
-
 Each box is a place a copy of an answer can live. Let's walk them from the user outward.
 
 ## 1. The browser cache: a copy on the user's own device
 
-**What it actually is.** Your browser keeps copies of things it has already downloaded — images, CSS files, JavaScript bundles, sometimes whole pages — right on the user's disk. The next time a page needs that same logo or stylesheet, the browser uses its local copy instead of asking the network at all.
-
-**What it does in real life.** This is why a site feels instant on your second visit but slower on the first: the first visit downloads everything; later visits reuse local copies. The server controls this by sending response headers (like `Cache-Control`) that tell the browser "you may keep this for an hour" or "never reuse this, always re-ask."
+**What it actually is.** Your browser keeps copies of things it has already downloaded — images, CSS files, JavaScript bundles, sometimes whole pages — right on the user's disk. The next time a page needs that same logo or stylesheet, it uses the local copy instead of asking the network at all. This is why a site feels instant on your second visit but slower on the first. The server controls how long a copy lives by sending response headers (like `Cache-Control`) that say "keep this for an hour" or "never reuse this, always re-ask."
 
 **What it's good at.** Static assets that rarely change and belong to *one* user's view — logos, fonts, compiled CSS/JS. It's the fastest cache there is, because the answer never leaves the device.
 
@@ -40,9 +34,9 @@ Each box is a place a copy of an answer can live. Let's walk them from the user 
 
 ## 2. The CDN: a copy at the edge, near the user
 
-**What it actually is.** A *CDN* (Content Delivery Network) is a fleet of servers spread across the world. Each one keeps copies of your content close to the people near it. A user in Tokyo gets your images from a server in Tokyo instead of one in Virginia.
+**What it actually is.** A *CDN* (Content Delivery Network) is a fleet of servers spread across the world, each keeping copies of your content close to the people near it. A user in Tokyo gets your images from a server in Tokyo instead of one in Virginia.
 
-📝 **Terminology.** "The edge" just means *the CDN servers near the user*, as opposed to "the origin" — your actual server where the content really comes from. A CDN answers from the edge so the request never has to travel all the way to the origin.
+📝 **Terminology.** "The edge" just means *the CDN servers near the user*, as opposed to "the origin" — your actual server where the content really comes from.
 
 **What it does in real life.** The first user in a region to request something causes a miss: the CDN fetches it from your origin, hands it over, and keeps a copy. Every later user in that region gets a hit from the nearby edge server — fast, and your origin never sees those requests. This is mainly a fix for the *distance* cost from Phase 1.
 
@@ -53,9 +47,9 @@ Each box is a place a copy of an answer can live. Let's walk them from the user 
 **What it actually is.** This is the cache *you* write in your own code — the `cache.get` / `cache.set` pattern from Phase 1. Your application stores the results of expensive work so it doesn't redo them on the next request. It comes in two common flavors:
 
 - **In-memory cache** — a copy held in your application process's own RAM. Fastest possible for your code to reach (no network hop), but it lives and dies with that one process, and each server has its own separate copy.
-- **A shared cache server like Redis** — a separate service, held in RAM, that all your application servers talk to over the network. Slightly slower than local memory because of the network hop, but *shared*: every server sees the same cached answers, and the cache survives a single app restart.
+- **A shared cache server like Redis** — a separate service, held in RAM, that all your application servers talk to over the network. Slightly slower because of the network hop, but *shared*: every server sees the same cached answers, and the cache survives a single app restart.
 
-📝 **Terminology.** *Redis* is a fast, in-memory data store frequently used as a shared application cache. When people say "put it in Redis," they usually mean "keep this answer in our shared, fast, in-memory cache."
+📝 **Terminology.** *Redis* is a fast, in-memory data store frequently used as a shared application cache. "Put it in Redis" usually means "keep this answer in our shared, fast, in-memory cache."
 
 *In-memory — each server keeps its own copy, so they can disagree:*
 ```mermaid
@@ -72,21 +66,17 @@ flowchart LR
   RC[Server C] --> Redis
 ```
 
-**What it does in real life.** This is where you cache the results of heavy computation and slow queries — a rendered dashboard, an expensive aggregation, the answer from a slow third-party API. It targets the *computation* and *slow dependency* costs from Phase 1.
+**What it's good at.** Expensive, repeated, *computed* answers — a rendered dashboard, an aggregation, a slow third-party API response — especially things specific to your application's logic that a CDN couldn't know how to build.
 
-⚠️ **Gotcha.** With per-process in-memory caches, each server has its *own* copy, so they can disagree. Server A may have updated its copy while Server B still serves the old one — and a user bouncing between them sees the answer flicker. Wanting everyone to agree is a big reason teams reach for a shared cache like Redis.
-
-**What it's good at.** Expensive, repeated, *computed* answers — especially things specific to your application's logic that a CDN couldn't know how to build.
+⚠️ **Gotcha.** With per-process in-memory caches, each server has its *own* copy, so they can disagree. Server A may have updated its copy while Server B still serves the old one, and a user bouncing between them sees the answer flicker. Wanting everyone to agree is a big reason teams reach for a shared cache like Redis.
 
 ## 4. The database's own caches: the source of truth is faster than you think
 
 **What it actually is.** Even your database — the source of truth — caches internally. It keeps recently-read pages of data in RAM (its *buffer cache* / *buffer pool*) so a second read of the same rows doesn't touch the disk. Many databases also cache query plans (the worked-out strategy for running a query) so they don't re-plan an identical query from scratch.
 
-**What it does in real life.** The first read of some rows may hit disk; the next read of the same rows often comes straight from the database's memory. This happens automatically — you don't write code for it — but it's why "run the same slow query twice and the second run is faster" is so common. The first run warmed the database's own cache.
+**What it does in real life.** This happens automatically — you don't write code for it — but it's why "run the same slow query twice and the second run is faster" is so common. The first run warmed the database's own cache. It makes the source of truth itself less expensive to query, without you adding any caching layer — the safety net under everything else.
 
-**What it's good at.** Making the source of truth itself less expensive to query, without you adding any caching layer. It's the safety net under everything else.
-
-💡 **Key point.** These layers stack. A request hits the browser cache first; on a miss it goes to the CDN; on a miss there, to your app and its cache; and only a miss *there* reaches the database (which then leans on its own internal caches). A hit anywhere short-circuits the rest. When something is slow, the useful question becomes "which layer is missing?" — and when something is *stale*, "which layer is holding an old copy?"
+💡 **Key point.** These layers stack. A request hits the browser cache first; on a miss it goes to the CDN; on a miss there, to your app and its cache; and only a miss *there* reaches the database (which then leans on its own internal caches). When something is slow, the useful question becomes "which layer is missing?" — and when something is *stale*, "which layer is holding an old copy?"
 
 ## Recap
 
@@ -96,7 +86,7 @@ flowchart LR
 4. **Application cache (in-memory or Redis)** — copies your code keeps between requests; best for expensive computed answers; in-memory is fastest but per-server, Redis is shared.
 5. **The database's own caches** — automatic internal caching of data pages and query plans; makes the source of truth itself cheaper to read.
 
-Every one of these layers holds a *copy* of an answer whose truth lives further down the line. Which means every one of them can end up holding a copy that's *out of date*. That gap — between the copy and the truth — is the genuinely hard part of caching, and it's next.
+Every one of these layers holds a *copy* of an answer whose truth lives further down the line — which means every one can end up holding a copy that's *out of date*. That gap between the copy and the truth is the genuinely hard part of caching, and it's next.
 
 Watch it animated: [CDN caching](/explainers/CDNCaching.dc.html)
 

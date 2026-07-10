@@ -6,15 +6,15 @@ summary: "The mental model that makes PyTorch click: a tensor is a NumPy array w
 tags: [pytorch, tensor, deep-learning, numpy, gpu, autograd, getting-started]
 difficulty: beginner
 synonyms: ["what is pytorch", "pytorch tensor explained", "pytorch vs numpy", "pytorch create tensor", "pytorch tensor dtype shape", "pytorch vs tensorflow", "deep learning framework"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # What PyTorch Is & Tensors
 
 If you've ever wondered what the big AI models are actually *built in* — the chatbots, the image
 generators, the recommendation engines — the honest answer, most of the time, is PyTorch. It's the tool
-researchers reach for the moment "teach a computer from data" enters the conversation. And before you train
-a single model, there's one idea that makes the whole library fall into place. Get it, and PyTorch stops
+researchers reach for the moment "teach a computer from data" enters the conversation. Before you train a
+single model, there's one idea that makes the whole library fall into place. Get it, and PyTorch stops
 being a wall of unfamiliar functions and starts feeling like something you already half-know.
 
 That idea is the **tensor**. If you've touched NumPy or pandas, you already understand 90% of it — a tensor

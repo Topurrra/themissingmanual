@@ -6,12 +6,12 @@ summary: "A monolith is one deployable application holding all your features; it
 tags: [architecture, monolith, deployment, scaling, transactions, codebase]
 difficulty: intermediate
 synonyms: ["what is a monolith", "is a monolith bad", "monolith advantages", "when does a monolith stop working", "modular monolith", "single deployable application"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Monolith
 
-"Monolith" gets said with a little sneer, like a confession — *we're still on a monolith*. Hold that feeling for a second, because it's doing you a disservice. Most successful software you've ever used started as a monolith, and a great deal of it still is one. Before you can fairly weigh anything against it, you need to see what it really is, on its own terms.
+"Monolith" gets said with a little sneer, like a confession — *we're still on a monolith*. That feeling does you a disservice. Most successful software you've ever used started as a monolith, and a great deal of it still is one. Before you can fairly weigh anything against it, you need to see what it really is, on its own terms.
 
 ## What a monolith actually is
 
@@ -39,7 +39,7 @@ flowchart TD
 
 This is the part the sneer hides. A monolith has real, durable advantages — not "good enough for now" ones.
 
-**It's simple to build, deploy, and run.** One repo to clone, one command to start, one thing to deploy. A new hire is running the whole system locally on their first morning. There's no service-discovery layer, no inter-service auth, no "which of the seventeen services owns this?" When you deploy, you deploy *the app* — one artifact, one version.
+**It's simple to build, deploy, and run.** One repo to clone, one command to start, one thing to deploy. A new hire is running the whole system locally on their first morning — no service-discovery layer, no inter-service auth, no "which of the seventeen services owns this?" When you deploy, you deploy *the app*: one artifact, one version.
 
 **Debugging is one stack trace.** When something breaks, the entire request lives in one process. You set a breakpoint, you step through it, you read one log stream from top to bottom.
 
@@ -52,14 +52,14 @@ ERROR  POST /checkout  500
   at handler (routes/checkout.js:15)
 NullError: card.token is undefined
 ```
-*What just happened:* Because billing and orders run in the same process, the failure is one continuous stack trace from the HTTP handler down to the exact line. You can see that `placeOrder` called `chargeCard` with a card that had no token. No correlation IDs, no jumping between dashboards — the whole story is in one place.
+*What just happened:* billing and orders run in the same process, so the failure is one continuous stack trace from the HTTP handler down to the exact line — `placeOrder` called `chargeCard` with a card that had no token. No correlation IDs, no jumping between dashboards; the whole story is in one place.
 
 **Transactions are easy.** This one is underrated. When billing and orders share a database, "charge the card *and* save the order, or do neither" is a single database transaction. The database guarantees it for you.
 ```console
 $ psql -c "BEGIN; INSERT INTO orders ...; UPDATE accounts SET balance ...; COMMIT;"
 COMMIT
 ```
-*What just happened:* Both writes happened inside one transaction. If either failed, the database rolls back both — you can never end up with a charged card and no order. This atomic-across-features guarantee is something you get almost for free in a monolith and have to fight hard for once features live in separate services (see [Phase 2](02-microservices.md)).
+*What just happened:* both writes happened inside one transaction. If either failed, the database rolls back both — you can never end up with a charged card and no order. This atomic-across-features guarantee is nearly free in a monolith and something you have to fight hard for once features live in separate services (see [Phase 2](02-microservices.md)).
 
 **Refactoring across features is safe.** Renaming a function that billing and orders both use? Your compiler or test suite catches every caller, because they're all in one codebase. Change a shared model and everything that depends on it updates together.
 

@@ -6,7 +6,7 @@ summary: "How chi maps method plus pattern to plain http.HandlerFuncs, reads URL
 tags: [chi, go, routing, url-params, subrouters]
 difficulty: beginner
 synonyms: ["chi routing", "chi url param", "chi route mount", "chi subrouter", "chi nested routes", "chi.URLParam"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Routing, URL Params & Sub-routers
@@ -14,8 +14,8 @@ updated: 2026-06-23
 Here's the whole mental model, and once it clicks the rest of chi is detail: a chi router is a
 lookup table. Each entry is a **method + a URL pattern** on the left, and a plain
 `http.HandlerFunc` on the right. When a request arrives, chi reads its method (`GET`, `POST`, …)
-and its path (`/articles/42`), finds the matching entry, and calls that function. That's it. No
-magic context object, no special handler signature — the right-hand side is the exact same
+and its path (`/articles/42`), finds the matching entry, and calls that function. No magic context
+object, no special handler signature — the right-hand side is the exact same
 `func(w http.ResponseWriter, r *http.Request)` you'd write for the standard library.
 
 The one thing chi adds on top of a flat lookup table is **placeholders**. A pattern like
@@ -81,8 +81,8 @@ func getArticle(w http.ResponseWriter, r *http.Request) {
 *What just happened:* `chi.URLParam(r, "id")` pulls the value that filled the `{id}` slot in the
 pattern. The name you pass (`"id"`) must match the name inside the braces. The big gotcha worth
 burning into memory: **it always returns a string.** A request to `/articles/42` gives you `"42"`,
-not `42`. If you need a number, you convert it yourself with `strconv.Atoi` — and you check the
-error, because nothing stops someone from requesting `/articles/banana`.
+not `42`. If you need a number, convert it yourself with `strconv.Atoi` and check the error,
+because nothing stops someone from requesting `/articles/banana`.
 
 > ⚠️ A common early bug: comparing `chi.URLParam(r, "id")` directly to an integer, or forgetting
 > the conversion can fail. Treat the param as untrusted user input — convert and validate before
@@ -125,9 +125,9 @@ r.Route("/articles", func(r chi.Router) {
 *What just happened:* this registers the exact same five routes as our flat list earlier, but now
 they're visually grouped by resource. Inside `r.Route("/articles", ...)`, the path `"/"` means
 "the prefix itself" (`/articles`), and the nested `r.Route("/{id}", ...)` stacks another segment
-on top, so `"/"` inside *it* means `/articles/{id}`. The `id` param is still read the same way:
-`chi.URLParam(r, "id")`. This nesting is the idiomatic chi way to organize a resource — all the
-"things you can do to articles" live in one block.
+on top, so `"/"` inside *it* means `/articles/{id}`. The `id` param is still read the same way. This
+nesting is the idiomatic chi way to organize a resource — all the "things you can do to articles"
+live in one block.
 
 > 📝 The `r` inside the callback shadows the outer `r` on purpose. It's a new sub-router whose
 > routes are automatically prefixed. Reusing the name keeps the calls looking identical at every
@@ -159,8 +159,8 @@ func main() {
 *What just happened:* `adminRouter()` builds a complete, independent router. `r.Mount("/admin", …)`
 hangs it off the `/admin` prefix, so its `/articles` route becomes `/admin/articles`. The admin
 router can declare its own middleware that applies only to its routes, and `main` doesn't need to
-know any of its internals — it just knows there's an admin module living under `/admin`. As an app
-grows, this lets each feature own a file and a router, and `main` stays a short list of mounts.
+know any of its internals. As an app grows, this lets each feature own a file and a router, and
+`main` stays a short list of mounts.
 
 > 💡 Rule of thumb: use `Route` to group routes that share a prefix in the same place; use `Mount`
 > to plug in a router that was built somewhere else (often in its own package or file).

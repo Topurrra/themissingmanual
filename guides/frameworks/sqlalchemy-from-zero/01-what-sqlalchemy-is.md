@@ -6,7 +6,7 @@ summary: "SQLAlchemy is Python's database toolkit, built in two layers: Core (a 
 tags: [sqlalchemy, python, orm, core, database, toolkit, getting-started]
 difficulty: beginner
 synonyms: ["what is sqlalchemy", "sqlalchemy core vs orm", "sqlalchemy two layers", "sqlalchemy vs django orm", "python orm", "sqlalchemy 2.0", "sqlalchemy under flask"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # What SQLAlchemy Is (Core vs ORM)
@@ -17,11 +17,9 @@ being big and a little intimidating, and there's a reason: it's not one thing, i
 top of each other. Most of the confusion people have with SQLAlchemy — "wait, why are there two ways to do
 this?" — comes from not knowing that up front.
 
-So before any code, here's the one idea this whole guide hangs on: **SQLAlchemy is a toolkit with two
-layers.** Get that picture in your head now and everything else — engines, sessions, queries, relationships —
-slots into place. Get it later, and you'll spend weeks vaguely confused about which half of the library
-you're looking at. We'll spend this phase building that picture. The real domain (authors and books) starts
-in [Phase 2](02-the-engine-and-connecting.md).
+Here's the one idea this whole guide hangs on: **SQLAlchemy is a toolkit with two layers.** Get that
+picture in your head now and everything else — engines, sessions, queries, relationships — slots into
+place. The real domain (authors and books) starts in [Phase 2](02-the-engine-and-connecting.md).
 
 ## What SQLAlchemy actually is
 
@@ -71,9 +69,9 @@ because the ORM is built *on* Core, you can always drop straight down to Core wh
 program, against the same connection.
 
 💡 **The ORM is built on Core, and you never lose access to it.** This is the freedom that makes SQLAlchemy
-different from a "magic box" ORM. You're not locked into the object layer. When the ORM's high-level approach
-gets awkward — a bulk update, a gnarly report — you reach down to Core (or even raw SQL) without leaving the
-library or fighting it. One toolkit, two altitudes, and you choose which one fits the task.
+different from a "magic box" ORM. When the ORM's high-level approach gets awkward — a bulk update, a gnarly
+report — you reach down to Core (or raw SQL) without leaving the library or fighting it. One toolkit, two
+altitudes, and you choose which one fits the task.
 
 ## Core vs ORM — when to reach for each
 

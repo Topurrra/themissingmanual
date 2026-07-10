@@ -6,7 +6,7 @@ summary: "A logic gate is AND, OR, or NOT built as a physical component that tak
 tags: [logic, logic-gates, nand, nor, xor, hardware]
 difficulty: beginner
 synonyms: ["what is a logic gate", "and or not gate", "what is a nand gate", "what is xor", "nand universal gate", "logic gate truth tables"]
-updated: 2026-06-25
+updated: 2026-07-10
 ---
 
 # Logic Gates: Logic Made Physical
@@ -23,16 +23,12 @@ machine does.
 A **logic gate** is a small physical component that takes one or two electrical signals as input
 and produces one signal as output. That's it. No magic.
 
-The trick is in how we read the signals. Inside a chip, a wire carries either a higher voltage or
-a lower one. We call the high voltage `1` and the low voltage `0`. (Some designs flip this, but
-the principle holds.) A wire is never "kind of on" - it's exactly one of two states.
-
-That agreement connects the two worlds. Phase 1's `true` and `false` became `1` and `0`, and now
-those `1`s and `0`s become voltages on a wire. A gate is a boolean operation you can hold in your
-hand.
-
-When you think `A AND B`, a chip does the same thing - it routes two voltages into an AND gate
-and reads what comes out. The logic didn't change. It got physical.
+Inside a chip, a wire carries either a higher voltage or a lower one. We call the high voltage `1`
+and the low voltage `0` (some designs flip this, but the principle holds). A wire is never "kind
+of on" - it's exactly one of two states. That's the whole bridge: Phase 1's `true` and `false`
+became `1` and `0`, and now those become voltages. A gate is a boolean operation you can hold in
+your hand. When you think `A AND B`, a chip routes two voltages into an AND gate and reads what
+comes out - the logic didn't change, it got physical.
 
 ## The basic gates
 
@@ -118,7 +114,7 @@ digit before carrying is exactly XOR. You'll see that in Phase 3.
 
 ## Gate diagrams: how they wire together
 
-The truth tables tell you what a gate does. A diagram shows how gates *talk* to each other. Here's a half-adder - the circuit that adds two single bits - built from the gates you just met:
+The truth tables tell you what a gate does. A diagram shows how gates *talk* to each other. Here's a half-adder - the circuit that adds two single bits:
 
 ```mermaid
 flowchart LR
@@ -130,18 +126,17 @@ flowchart LR
     XOR --> Sum[Sum]
 ```
 
-Two inputs, `A` and `B`, flow into both an AND gate and an XOR gate. The AND gate produces the **carry-out** (`Cout`): it's `1` only when both inputs are `1`. The XOR gate produces the **sum** (`Sum`): it's `1` when the inputs differ, which is exactly the "sum" digit before carrying in binary addition.
-
-This is the circuit that lives inside every adder in your CPU. From this, engineers chain more gates to add multi-bit numbers, and from there you get everything else.
+Two inputs, `A` and `B`, flow into both an AND gate and an XOR gate. AND produces the **carry-out**
+(`Cout`) - `1` only when both inputs are `1`. XOR produces the **sum** (`Sum`) - `1` when the
+inputs differ, exactly the "sum" digit before carrying in binary addition. This is the circuit
+that lives inside every adder in your CPU; chain more gates and you get multi-bit addition.
 
 ## Universality: why NAND is special
 
 Here's a result that sounds too good to be true: **the NAND gate, all by itself, can build every
 other gate.** Give an engineer nothing but NAND gates and enough wire, and they can construct
-AND, OR, NOT, XOR - the whole family. (The same is true of NOR alone.)
-
-This property is called **functional completeness**: a single building block enough to express any
-boolean function whatsoever.
+AND, OR, NOT, XOR - the whole family (the same is true of NOR alone). This property is called
+**functional completeness**: one building block, enough to express any boolean function.
 
 The cleanest place to see it is NOT. Take a NAND gate and feed the *same* signal into both inputs.
 Look at the rows where `A` and `B` are equal:
@@ -165,13 +160,9 @@ Once you have NOT, the rest follows. NAND is already "AND then flip," so flippin
 (with another NAND wired as NOT) gives you back a plain **AND**. Getting **OR** takes more wiring,
 but it's the same idea - chain NANDs until the truth table matches.
 
-Once you have NOT, the rest follows. NAND is already "AND then flip," so flipping a NAND's output
-(with another NAND wired as NOT) gives you back a plain **AND**. Getting **OR** takes more wiring,
-but it's the same idea - chain NANDs until the truth table matches.
-
-Why care? Building a chip from one repeated component is cheaper, more uniform, and easier to
-manufacture than juggling many gate types. Real silicon leans on this hard. The deep idea you saw
-in [what logic actually is](/guides/what-logic-actually-is) - that a few simple rules can express
+Why care? Building a chip from one repeated component is cheaper and easier to manufacture than
+juggling many gate types, and real silicon leans on this hard. The deep idea you saw in
+[what logic actually is](/guides/what-logic-actually-is) - that a few simple rules can express
 enormous complexity - is the literal blueprint for a processor.
 
 ## For builders

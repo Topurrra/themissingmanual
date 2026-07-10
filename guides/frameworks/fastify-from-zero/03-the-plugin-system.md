@@ -6,12 +6,12 @@ summary: "How Fastify organizes apps as a tree of encapsulated plugins: writing 
 tags: [fastify, javascript, plugins, encapsulation, decorate]
 difficulty: advanced
 synonyms: ["fastify plugins", "fastify register", "fastify encapsulation", "fastify decorate", "fastify-plugin fp", "fastify plugin scope"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # The Plugin System
 
-Here's the one sentence that makes Fastify click: **your whole app is a tree of plugins.** Not "an app that *can use* plugins" — the app itself, every route, every shared bit of logic, is a plugin or lives inside one. Once you hold that picture, the things that confuse newcomers (why a decorator "disappears," why two halves of the app can't see each other) stop being mysteries and become the system working exactly as designed.
+Here's the one sentence that makes Fastify click: **your whole app is a tree of plugins.** Not "an app that *can use* plugins" — the app itself, every route, every shared bit of logic, is a plugin or lives inside one. Once you hold that picture, the things that confuse newcomers — why a decorator "disappears," why two halves of the app can't see each other — stop being mysteries and become the system working exactly as designed.
 
 > 💡 The mental model for this whole phase: **a tree of little worlds.** Each plugin is a node. Each node gets its own scope — its own routes, hooks, and decorators — and by default that scope is sealed off from its siblings and its parent. You opt *out* of the sealing on purpose, not into it.
 

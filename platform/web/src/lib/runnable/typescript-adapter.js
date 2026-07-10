@@ -34,7 +34,8 @@ export class TypeScriptAdapter {
       const { transform } = await import('sucrase');
       transpiled = transform(code, { transforms: ['typescript'] }).code;
     } catch (err) {
-      return { error: `TypeScript syntax error: ${err.message || String(err)}` };
+      const text = `TypeScript syntax error: ${err.message || String(err)}`;
+      return { error: text, errorMessage: text };
     }
     // Force a fresh worker for every run. runners.js's freshRun() only forces
     // this for language === 'js' - without resetting here ourselves, a

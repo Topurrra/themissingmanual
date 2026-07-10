@@ -6,14 +6,14 @@ summary: "Functional programming makes functions the core unit, avoids changing 
 tags: [functional-programming, immutability, pure-functions, side-effects, composition]
 difficulty: intermediate
 synonyms: ["what is functional programming", "what is a pure function", "what is immutability", "what are side effects", "what is function composition", "why is functional programming easier to test"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What Functional Programming Actually Is
 
-Functional programming has a reputation for being the hard, mathematical one - monads, lambda calculus, people who say "referential transparency" at parties. That reputation scares off a lot of working developers who would actually love most of what FP offers.
+Functional programming has a reputation for being the hard, mathematical one - monads, lambda calculus, people who say "referential transparency" at parties. That reputation scares off working developers who'd actually love most of what FP offers.
 
-So let's set the jargon aside. At its heart, functional programming is a few down-to-earth habits about *where your logic lives* and *how you treat your data*. You can adopt them in any language with functions, and they pay off immediately in code that's easier to test and easier to trust.
+Set the jargon aside. At its heart, FP is a few down-to-earth habits about *where your logic lives* and *how you treat your data*. Adopt them in any language with functions, and they pay off immediately in code that's easier to test and trust.
 
 ## The core idea: functions are the main building block
 
@@ -23,7 +23,7 @@ That's the shift in worldview. In OOP you ask "what objects do I have, and what 
 
 ## Immutability - don't change data, return new data
 
-**The problem it solves.** When data can be changed in place ("mutated"), tracking *who changed what, when* becomes the source of a whole category of bugs. You pass a list to a function, the function quietly modifies it, and now code somewhere else is holding a list that changed under its feet. These bugs are maddening because the broken value looks fine where you're reading it - the damage happened elsewhere.
+**The problem it solves.** When data can be changed in place ("mutated"), tracking *who changed what, when* becomes a whole category of bugs. You pass a list to a function, the function quietly modifies it, and code somewhere else is now holding a list that changed under its feet. These bugs are maddening because the broken value looks fine where you're reading it - the damage happened elsewhere.
 
 **What it actually is.** Immutability means you don't modify existing data; you produce a new value with the change applied, and leave the original alone.
 
@@ -51,9 +51,9 @@ $ python cart.py
 ['apple']
 ['apple', 'banana']
 ```
-*What just happened:* The immutable version built a brand-new list (`cart + [item]` creates a new list rather than modifying `cart`) and returned it. The `original` is exactly as it was. Nobody holding a reference to `original` gets surprised. The mutating version, by contrast, would have changed `original` for everyone pointing at it.
+*What just happened:* The immutable version built a brand-new list (`cart + [item]` creates a new list rather than modifying `cart`) and returned it. `original` is exactly as it was - nobody holding a reference to it gets surprised. The mutating version, by contrast, would have changed `original` for everyone pointing at it.
 
-**Why this saves you later.** When data can't change out from under you, "how did this value get like this?" stops being a mystery. You can hand the same list to ten different functions and know none of them altered it. Immutability is also what makes a lot of safe concurrency possible - but more on that in [Phase 3](03-which-when.md).
+**Why this saves you later.** When data can't change out from under you, "how did this value get like this?" stops being a mystery. Hand the same list to ten functions and know none of them altered it. Immutability is also what makes a lot of safe concurrency possible - more on that in [Phase 3](03-which-when.md).
 
 ## Pure functions - same input, same output, no surprises
 
@@ -86,11 +86,11 @@ def add_tax_pure(price):
 >>> add_tax_impure(100)
 40.0
 ```
-*What just happened:* `add_tax_pure(100)` returns `20.0` every single time, forever - it depends only on what you pass in. `add_tax_impure(100)` returns a different number on the second call because it secretly reads and updates the `total` global. The pure one you can understand by reading it alone; the impure one you can only understand by also knowing the entire history of the program.
+*What just happened:* `add_tax_pure(100)` returns `20.0` every single time, forever - it depends only on what you pass in. `add_tax_impure(100)` returns a different number on the second call because it secretly reads and updates the `total` global. The pure one you understand by reading it alone; the impure one you can only understand by also knowing the program's entire history.
 
 **Why this saves you later - especially for testing.** A pure function is the easiest thing in the world to test: pass inputs, assert on the output, done. No database to spin up, no mocks, no "set up this global first," no cleanup. This is the single most practical reason working developers adopt FP habits even in OOP languages: **logic written as pure functions is logic you can test in two lines.**
 
-⚠️ **Gotcha - you can't make everything pure, and shouldn't try.** A program that never printed, saved, or sent anything would be useless; side effects are the *point* of software. The functional move isn't to ban side effects - it's to *push them to the edges*. Keep a large core of pure functions that do the real logic, and a thin outer shell that does the I/O. Then almost all your code is the easy-to-test kind, and the risky part is small and isolated.
+⚠️ **Gotcha - you can't make everything pure, and shouldn't try.** A program that never printed, saved, or sent anything would be useless; side effects are the *point* of software. The functional move is to *push them to the edges* - a large core of pure functions doing the real logic, and a thin outer shell doing the I/O. Then almost all your code is the easy-to-test kind, and the risky part is small and isolated.
 
 ## Composition - build big behavior from small functions
 
@@ -112,7 +112,7 @@ print(taxed_total)
 $ python compose.py
 216.0
 ```
-*What just happened:* We expressed the work as a pipeline of small transformations - *keep the positives*, *apply tax to each*, *add them up* - rather than a loop with a running variable we mutate. Each step does one thing. (`100 + 50 + 30 = 180`, times `1.2`, is `216.0`.) Read it top to bottom and the intent is right there: filter, transform, reduce.
+*What just happened:* This expresses the work as a pipeline of small transformations - *keep the positives*, *apply tax to each*, *add them up* - rather than a loop with a running variable we mutate. (`100 + 50 + 30 = 180`, times `1.2`, is `216.0`.) Read it top to bottom and the intent is right there: filter, transform, reduce.
 
 **Why this saves you later.** Small composed functions are small things to understand, test, and reuse. When the requirement changes to "also exclude orders over 1000," you add one condition to the filter step instead of untangling a big imperative loop. And because each piece is pure, you can test the filter and the tax separately and trust the whole.
 

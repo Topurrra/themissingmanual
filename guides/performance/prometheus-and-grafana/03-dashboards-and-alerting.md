@@ -6,14 +6,14 @@ summary: "Build a panel that answers a real question, use RED/USE to decide what
 tags: [grafana, dashboards, alerting, alertmanager, red-method, use-method, cardinality]
 difficulty: intermediate
 synonyms: ["how to build a grafana dashboard", "what should I put on a dashboard", "red method monitoring", "use method monitoring", "how does alertmanager work", "prometheus alert rules", "what causes alert fatigue", "prometheus cardinality explosion"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Dashboards & Alerting
 
 It's tempting to think the goal here is "make a nice dashboard." It isn't. The goal is to *answer questions* and *get woken up only when something is genuinely wrong*. A beautiful dashboard nobody looks at is wasted work; an alert that cries wolf every night gets muted, and then it misses the real fire.
 
-So this phase is less about clicking buttons and more about judgment: what to chart, what to alert on, and the three ways this whole setup quietly rots. Let's start with the rot, so you can avoid it from the first panel.
+This is less about clicking buttons than judgment: what to chart, what to alert on, and the three ways this setup quietly rots.
 
 ## The "what goes wrong" cheat-card
 
@@ -41,7 +41,7 @@ sum(rate(http_requests_total{status=~"5.."}[5m]))
 sum(rate(http_requests_total[5m]))
 ```
 
-*What it's showing you:* the fraction of requests that are server errors, as a live ratio. The top line is "5xx errors per second" (`status=~"5.."` matches any 5xx code with a regex), the bottom is "all requests per second," and dividing gives you "what share of traffic is failing." A panel like this answers the question directly: `0` is healthy, `0.05` means 5% of requests are failing right now. That's something a human can act on at a glance.
+*What it's showing you:* the fraction of requests that are server errors, as a live ratio. The top line is "5xx errors per second" (`status=~"5.."` matches any 5xx code with a regex), the bottom is "all requests per second," and dividing gives you "what share of traffic is failing." A panel like this answers the question directly: `0` is healthy, `0.05` means 5% of requests are failing right now.
 
 💡 **Key point.** Before you add any panel, finish this sentence: *"This panel exists so I can tell whether ______."* If you can't fill the blank, don't add the panel.
 
@@ -75,7 +75,7 @@ The blank-page problem ("what do I even put here?") has two well-known answers, 
 
 **What's actually happening.** The natural failure mode of dashboards is *accretion*. Someone adds a panel during an incident "to see," never removes it, and a year later the dashboard has 40 panels, three of which anyone actually uses. A 40-panel wall isn't more informative than a 5-panel one - it's *less*, because the signal is buried and nobody can hold it in their head.
 
-**The calm fix.** Treat panels like code: if it doesn't earn its place, delete it. A dashboard that answers five real questions clearly beats one that displays fifty metrics nobody reads. When in doubt, ask whose question each panel answers - if the answer is "nobody's, anymore," cut it.
+**The calm fix.** Treat panels like code: if it doesn't earn its place, delete it. A dashboard that answers five real questions clearly beats one that displays fifty metrics nobody reads. When in doubt, ask whose question each panel answers - if nobody's, cut it.
 
 ## 4. Alerting - and ⚠️ alert fatigue
 
@@ -109,9 +109,9 @@ groups:
           summary: "5xx error rate above 5% for 10 minutes"
 ```
 
-*What just happened:* This says "if more than 5% of requests are 5xx errors, *sustained for 10 minutes*, fire a `page`-severity alert." That `for: 10m` is the most important line - it's what stops a one-second blip from paging someone at 3am. The alert only fires if the condition stays true for the whole window.
+*What just happened:* This says "if more than 5% of requests are 5xx errors, *sustained for 10 minutes*, fire a `page`-severity alert." That `for: 10m` is the most important line - it's what stops a one-second blip from paging someone at 3am.
 
-⚠️ **Gotcha - alert fatigue is how monitoring dies.** If alerts fire on things that aren't actionable, or fire so often that they're background noise, people mute the channel - and then they miss the *real* incident. This is the single most common way a monitoring setup becomes worthless. The fixes are discipline, not technology:
+⚠️ **Gotcha - alert fatigue is how monitoring dies.** If alerts fire on things that aren't actionable, or fire so often they're background noise, people mute the channel - and then miss the *real* incident. The fixes are discipline, not technology:
 
 - **Alert on symptoms, not causes.** Page on "users are getting errors" (a symptom) rather than "CPU is at 80%" (a cause that may be totally fine). High CPU that isn't hurting anyone is not an emergency.
 - **Every page must be actionable.** If the on-call person can't *do* anything about it at 3am, it shouldn't page - make it a ticket or a dashboard line instead.

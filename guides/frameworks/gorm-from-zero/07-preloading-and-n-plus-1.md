@@ -6,14 +6,14 @@ summary: "GORM never lazy-loads associations, so Posts comes back empty until yo
 tags: [gorm, go, preload, n-plus-1, joins, performance]
 difficulty: advanced
 synonyms: ["gorm preload", "gorm n+1", "gorm joins vs preload", "gorm load associations", "gorm nested preload", "gorm eager loading"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Preloading & the N+1 Trap
 
-In [Associations](06-associations.md) you wired up the blog's relationships: a `User` has many `Post`s, a `Post` has many `Comment`s and belongs to a `User`. The schema knows about all of this. So you'd expect that when you load a user, their posts ride along for free.
+In [Associations](06-associations.md) you wired up the blog's relationships: a `User` has many `Post`s, a `Post` has many `Comment`s and belongs to a `User`. The schema knows about all of this, so you'd expect that when you load a user, their posts ride along for free.
 
-They don't. And the first time you hit this, you'll stare at an empty slice and wonder what you did wrong. Let's fix the mental model before we fix any code.
+They don't. The first time you hit this, you'll stare at an empty slice and wonder what you did wrong — so let's fix the mental model before we fix any code.
 
 ## The one fact that prevents 90% of the confusion
 

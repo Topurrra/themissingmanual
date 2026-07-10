@@ -6,7 +6,7 @@ summary: "A database with no help reads every single row to find your matches �
 tags: [databases, full-table-scan, seq-scan, query-performance, sql]
 difficulty: intermediate
 synonyms: ["what is a full table scan", "what is a sequential scan", "why does my query get slower with more rows", "why is my query slow in production", "why does the database read every row"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Full-Table Scan
@@ -17,7 +17,7 @@ Here's the real story: the query was always doing the same expensive thing. On y
 
 ## What the database actually does to find a row
 
-**What it actually is.** When you ask for specific rows — say, the user whose email is `ada@example.com` — the database has to *find* them. If you haven't given it any help, it has exactly one strategy: start at the first row of the table, look at it, check if it matches, move to the next, and repeat until it has checked **every single row**. This is called a **full-table scan** (PostgreSQL calls it a *sequential scan* or *seq scan*; MySQL calls it a *full table scan*). Same idea everywhere: read the whole table, top to bottom, because it has no faster way to know where your row lives.
+When you ask for specific rows — say, the user whose email is `ada@example.com` — the database has to *find* them. If you haven't given it any help, it has exactly one strategy: start at the first row of the table, look at it, check if it matches, move to the next, and repeat until it has checked **every single row**. This is called a **full-table scan** (PostgreSQL calls it a *sequential scan* or *seq scan*; MySQL calls it a *full table scan*). Same idea everywhere: read the whole table, top to bottom, because it has no faster way to know where your row lives.
 
 📝 **Terminology.** A *full-table scan* (a.k.a. *sequential scan* / *seq scan*) means the database reads every row in the table to answer your query. It's not a bug — it's the database's fallback when it has no shortcut to your data.
 

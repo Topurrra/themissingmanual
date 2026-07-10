@@ -45,7 +45,7 @@ export async function runLesson(lesson, code, { onStatus } = {}) {
   const adapter = getAdapter(lesson.language);
   await adapter.load(onStatus);
   const runOpts = { onStatus };
-  if (lesson.language === 'sql') runOpts.seed = lesson.setup || '';
+  if (lesson.language === 'sql' || lesson.language === 'postgres') runOpts.seed = lesson.setup || '';
   const t0 = performance.now();
   const res = await freshRun(adapter, lesson.language, code, runOpts);
   const timeMs = Math.round(performance.now() - t0);
@@ -62,7 +62,7 @@ export async function runLesson(lesson, code, { onStatus } = {}) {
 
 function checkMode(lesson) {
   if (lesson.check) return lesson.check;
-  if (lesson.language === 'sql') return 'rows';
+  if (lesson.language === 'sql' || lesson.language === 'postgres') return 'rows';
   if (lesson.tests && lesson.tests.length) return 'tests';
   return 'output';
 }
@@ -73,7 +73,7 @@ function checkMode(lesson) {
 // matters only if the solution itself uses ORDER BY, otherwise rows compare as
 // sorted multisets.
 async function gradeRows(lesson, code) {
-  const adapter = getAdapter('sql');
+  const adapter = getAdapter(lesson.language);
   await adapter.load();
   const seed = lesson.setup || '';
   const [userRes, solRes] = await Promise.all([
@@ -121,13 +121,17 @@ async function gradeRows(lesson, code) {
 // that don't depend on prior-test isolation (each test already re-executes the full
 // userCode prefix, which covers the common case). JS doesn't have this problem -
 // freshRun() gives every JS run its own worker.
-// The checklist shows a one-line reason, not a stack trace. JS worker errors are a
-// single line with the eval stack appended (" at eval (eval at self.onmessage…") -
-// cut it off. Python errors are multi-line tracebacks whose real message is the
-// LAST line ("AssertionError: …").
+// The checklist shows a one-line reason, not a stack trace. For js/typescript,
+// prefer the worker's own `errorMessage` (js-worker.js sends this pre-cleaned,
+// with no stack frames at all - a stack's exact wording is browser-specific, e.g.
+// Chrome's "at eval (eval at self.onmessage…)" vs Firefox/Safari's "@url:line:col",
+// so regex-stripping it here was fragile and previously leaked raw frames on
+// non-Chrome browsers). `err` (the full stack) is only used as a fallback if an
+// adapter didn't provide errorMessage. Python errors are multi-line tracebacks
+// whose real message is the LAST line ("AssertionError: …") - that format comes
+// from CPython/Pyodide itself, not the browser, so it's not affected by the above.
 function testFailureMessage(language, err) {
   if (!err) return '';
-  if (language === 'js') return err.split(/\s+at\s+(?:eval|self\.onmessage)/)[0].trim();
   if (language === 'python') {
     const lines = err.trim().split('\n');
     return lines[lines.length - 1].trim();
@@ -142,7 +146,8 @@ async function gradeTests(lesson, code) {
   const results = [];
   for (const test of tests) {
     const res = await freshRun(adapter, lesson.language, code + '\n' + test.code, {});
-    results.push({ name: test.name, passed: !res.error, message: testFailureMessage(lesson.language, res.error) });
+    const message = res.errorMessage || testFailureMessage(lesson.language, res.error);
+    results.push({ name: test.name, passed: !res.error, message });
   }
   return { passed: results.length > 0 && results.every((r) => r.passed), mode: 'tests', tests: results };
 }
@@ -190,6 +195,53 @@ async function gradeGitState(lesson, code) {
   return { passed, mode: 'gitState', detail };
 }
 
+// WebAssembly Text: a genuinely different shape from every other mode - there's
+// no captured stdout/return value to diff, and no second "solution run" to
+// compare against. The learner's WAT compiles to a real WASM binary (via
+// wat-adapter.js's compileToBytes()), and each lesson test is a JS snippet
+// asserting on a WASM `instance`'s exports - e.g.
+// `if (instance.exports.add(2, 3) !== 5) throw new Error(...)`, same
+// assertion style gradeTests() uses for js/python, just against
+// `instance.exports` instead of top-level functions.
+//
+// CRITICAL: test execution can NOT use `new Function(...)`/`eval()` directly
+// on the main thread - this site's CSP allows `wasm-unsafe-eval` (so
+// WebAssembly.instantiate() works fine on the main thread, which is why the
+// plain "Run" button's compileWat() is safe) but does NOT allow
+// `unsafe-eval` (so evaluating an arbitrary JS *string*, which is what a
+// lesson's `test.code` is, throws a CSP violation and every test silently
+// fails). Confirmed live in a real browser, not assumed. The JS Web Worker
+// (js-worker.js) demonstrably CAN eval - every js/python/typescript lesson's
+// grading already depends on that - so tests run there instead: the compiled
+// WASM bytes are base64-embedded into a small wrapper script and sent through
+// the exact same `getAdapter('js')`/`freshRun()` path gradeTests() uses.
+// `new WebAssembly.Module()`/`new WebAssembly.Instance()` (the SYNCHRONOUS
+// instantiation APIs, unlike the async `WebAssembly.instantiate()`) are used
+// in the wrapper specifically so the whole thing stays a plain synchronous
+// eval - js-worker.js's `eval(code)` doesn't await its result, so an async
+// wrapper's rejection would land as an unhandled promise rejection instead of
+// being caught by the worker's try/catch, silently reporting a false pass.
+async function gradeWat(lesson, code) {
+  const { compileToBytes } = await import('$lib/runnable/wat-adapter.js');
+  const { bytes, errorMessage } = await compileToBytes(code);
+  const tests = lesson.tests || [];
+  if (!bytes) {
+    const results = tests.map((test) => ({ name: test.name, passed: false, message: errorMessage || 'Module failed to compile.' }));
+    return { passed: false, mode: 'tests', tests: results };
+  }
+  const base64 = btoa(String.fromCharCode(...bytes));
+  const adapter = getAdapter('js');
+  await adapter.load();
+  const results = [];
+  for (const test of tests) {
+    const wrapper = `const __bytes = Uint8Array.from(atob("${base64}"), (c) => c.charCodeAt(0));\nconst __module = new WebAssembly.Module(__bytes);\nconst instance = new WebAssembly.Instance(__module, {});\n${test.code}`;
+    const res = await freshRun(adapter, 'js', wrapper, {});
+    const message = res.errorMessage || res.error || '';
+    results.push({ name: test.name, passed: !res.error, message });
+  }
+  return { passed: results.length > 0 && results.every((r) => r.passed), mode: 'tests', tests: results };
+}
+
 async function gradeOutput(lesson, code) {
   const adapter = getAdapter(lesson.language);
   await adapter.load();
@@ -205,5 +257,6 @@ export async function gradeLesson(lesson, code) {
   if (mode === 'rows') return gradeRows(lesson, code);
   if (mode === 'tests') return gradeTests(lesson, code);
   if (mode === 'gitState') return gradeGitState(lesson, code);
+  if (mode === 'wat') return gradeWat(lesson, code);
   return gradeOutput(lesson, code);
 }

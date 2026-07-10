@@ -6,7 +6,7 @@ summary: "You can't improve what you don't measure: eyeballing a few examples li
 tags: [evals, llm, quality, mental-model, testing]
 difficulty: intermediate
 synonyms: ["what is an eval", "why eyeballing llm output is bad", "how to measure if a prompt is better", "what does an eval set look like", "vibe check llm"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # Why Vibes Don't Scale

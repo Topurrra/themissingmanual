@@ -6,7 +6,7 @@ summary: "Internal services that call each other thousands of times need both sp
 tags: [grpc, protobuf, http2, microservices, rpc, contract]
 difficulty: intermediate
 synonyms: ["why use grpc", "what problem does grpc solve", "grpc vs rest performance", "what is a typed contract", "contract first api", "service to service communication"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # The Problem gRPC Solves
@@ -14,11 +14,11 @@ updated: 2026-06-19
 Picture the inside of a modern backend. It's rarely one program anymore — it's a dozen small services. The
 checkout service calls the inventory service to confirm stock. Inventory calls the pricing service. Pricing
 calls the currency service. A single user clicking "buy" can fan out into hundreds of calls *between your
-own services*, all happening in milliseconds, all on your own network.
+own services*, all in milliseconds, all on your own network.
 
-That inside-the-datacenter traffic has different pressures than the API your mobile app talks to. And those
-pressures are exactly what gRPC was built for. Before any `.proto` syntax, let's name the two problems
-honestly — because once you feel them, gRPC stops looking weird and starts looking like an obvious answer.
+That inside-the-datacenter traffic has different pressures than the API your mobile app talks to, and those
+pressures are exactly what gRPC was built for. Before any `.proto` syntax, name the two problems honestly —
+once you feel them, gRPC stops looking weird and starts looking like an obvious answer.
 
 ## The first problem: REST is comfortable, but it isn't cheap
 
@@ -37,12 +37,11 @@ sequenceDiagram
   Note over Pricing,Currency: connection closed — next call starts over
 ```
 
-*What just happened:* The number `1299` was turned into the text `"1299"`, shipped as characters, then
-parsed back into a number on the other side. The field names `"amount"`, `"from"`, `"to"` rode along as
-text on every request. And on HTTP/1.1, each call often pays to set up and tear down a connection. None of
-this hurts much once. Multiply it by hundreds of thousands of internal calls per second and the waste — CPU
-spent serializing text, bytes spent on repeated field names, time spent on connection overhead — becomes
-real money and real latency.
+The number `1299` was turned into the text `"1299"`, shipped as characters, then parsed back into a number
+on the other side. The field names `"amount"`, `"from"`, `"to"` rode along as text on every request, and on
+HTTP/1.1, each call often pays to set up and tear down a connection. None of this hurts much once —
+multiply it by hundreds of thousands of internal calls per second and the waste (CPU serializing text,
+bytes on repeated field names, connection overhead) becomes real money and real latency.
 
 📝 **Terminology — serialize / deserialize.** *Serializing* is turning an in-memory object (a struct, a
 class instance) into a stream of bytes you can send over the network. *Deserializing* is rebuilding the
@@ -67,10 +66,10 @@ the language — and you find out from a customer, not a compiler.
    └──────────────────┘        └──────────────────────┘
 ```
 
-*What just happened:* Two services disagree about the data's shape and neither one knew at build time. With
-plain JSON, the "contract" between services lives in a wiki page, a Slack thread, or someone's memory — not
-in anything a machine enforces. ⚠️ **This is the quiet killer of microservice systems:** integration bugs
-that only surface in production because nothing forced both sides to agree first.
+Two services disagree about the data's shape and neither one knew at build time. With plain JSON, the
+"contract" between services lives in a wiki page, a Slack thread, or someone's memory — not in anything a
+machine enforces. ⚠️ **This is the quiet killer of microservice systems:** integration bugs that only
+surface in production because nothing forced both sides to agree first.
 
 ## The mental model: define the functions once, both sides agree
 
@@ -110,21 +109,20 @@ sequenceDiagram
   Currency-->>Pricing: Money(amount=1187, currency=EUR)
 ```
 
-*What just happened:* From the developer's chair, pricing called a function and got a typed result back. No
-hand-written JSON, no guessing the field names. Underneath, gRPC serialized the call to binary, sent it over
-a connection that stays open for the next call too, and the strong types on both ends came from the one
-contract file they share.
+From the developer's chair, pricing called a function and got a typed result back — no hand-written JSON,
+no guessing field names. Underneath, gRPC serialized the call to binary, sent it over a connection that
+stays open for the next call too, and the strong types on both ends came from the one contract file they
+share.
 
 ## Why this saves you later
 
 The next time a teammate renames a field on a service you depend on, you won't learn about it from an angry
-customer. You'll learn about it when you pull the updated contract and your build breaks — which is exactly
-when you *want* to learn about it. And the next time someone asks why the internal call graph is suddenly
-half the latency it was on JSON, you'll know: smaller payloads, no repeated text parsing, one reused
-connection.
+customer — you'll learn about it when you pull the updated contract and your build breaks, which is exactly
+when you *want* to learn about it. And when someone asks why the internal call graph is suddenly half the
+latency it was on JSON, you'll know: smaller payloads, no repeated text parsing, one reused connection.
 
-That's the trade gRPC offers. You'll see in Phase 3 that it asks for something real in return — but first,
-let's open up the machinery and see how the contract actually becomes running code.
+That's the trade gRPC offers. Phase 3 covers what it asks for in return — first, the machinery that turns
+the contract into running code.
 
 ## Recap
 

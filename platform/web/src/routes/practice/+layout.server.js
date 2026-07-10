@@ -1,4 +1,5 @@
 import { getCategory, getGuide } from '$lib/api.js';
+import { HIDDEN_MODULES } from '$lib/practice/hidden-modules.js';
 
 // Single source of module data for every /practice page (hub, module overview,
 // lesson IDE) - SvelteKit merges this into each child route's `data` automatically.
@@ -8,7 +9,7 @@ import { getCategory, getGuide } from '$lib/api.js';
 // "≤3 extra calls" budget.
 export async function load({ fetch }) {
   const detail = await getCategory(fetch, 'practice');
-  const guides = detail?.guides ?? [];
+  const guides = (detail?.guides ?? []).filter((g) => !HIDDEN_MODULES.has(g.slug.replace(/^practice-/, '')));
 
   const modules = await Promise.all(
     guides.map(async (g) => {

@@ -6,7 +6,7 @@ summary: "Prioritizing threat-model findings by real risk, turning them into con
 tags: [security, threat-modeling, risk-assessment, prioritization, appsec]
 difficulty: advanced
 synonyms: ["how to prioritize security findings", "likelihood vs impact security", "threat modeling vs code review", "what threat modeling does not cover"]
-updated: 2026-07-06
+updated: 2026-07-11
 ---
 
 # From Threats to Action
@@ -15,7 +15,7 @@ Phase 2 produced roughly a dozen findings from one small app. A real system - mo
 
 ## Likelihood times impact, not a flat list
 
-For each finding, ask two questions separately: how likely is someone to actually attempt this, and how bad is it if they succeed? Skipping the first question is the most common mistake - it's easy to fixate on the scariest-sounding outcome and ignore how hard it is to reach.
+For each finding, ask two questions separately: how likely is someone to attempt this, and how bad is it if they succeed? Skipping the first question is the most common mistake - it's easy to fixate on the scariest-sounding outcome and ignore how hard it is to reach.
 
 Rating the file-sharing findings from Phase 2 this way:
 
@@ -29,7 +29,7 @@ Rating the file-sharing findings from Phase 2 this way:
 
 The sequential token and the unverified webhook both land in "fix now" - not because they sound the most technical, but because both are cheap for an attacker to attempt and both hand over something valuable. The `uploaded_by` spoofing finding is real and worth a ticket, but putting it ahead of the webhook issue because it was "creepier" to write up would be optimizing for narrative instead of risk.
 
-This is also where you decide what's not worth fixing at all. A finding with low likelihood and low impact - say, a theoretical timing difference in a rarely-used endpoint - can sit in a backlog indefinitely without that being negligence. Threat modeling that produces an unprioritized wall of findings is often worse than not doing it, because it buries the two things that actually matter under twenty things that don't.
+This is also where you decide what's not worth fixing at all. A finding with low likelihood and low impact - say, a theoretical timing difference in a rarely-used endpoint - can sit in a backlog indefinitely without that being negligence. Threat modeling that produces an unprioritized wall of findings is often worse than not doing it, because it buries the two things that matter under twenty things that don't.
 
 ## Turning a finding into a fix
 
@@ -46,7 +46,7 @@ Each fix is small. What made them findable wasn't cleverness at the fix stage - 
 
 Threat modeling finds *design-level* gaps: missing checks, wrong trust assumptions, boundaries nobody drew before. It does not verify that the code implementing the fix is correct. You can threat-model perfectly, decide "verify the webhook signature," and still ship a broken implementation - comparing signatures with `==` instead of a constant-time comparison, or checking the signature but not the payload it was computed over. That bug is invisible to a threat model and exactly what code review and testing exist to catch.
 
-The reverse gap matters too: code review reads the code you wrote and rarely questions why a component exists at all or whether a boundary was drawn correctly in the first place, since by the time there's a diff to review, the architecture is already a given. A threat model happens earlier and asks a different question - not "is this code correct" but "is this design missing a check somewhere." Run both. Neither substitutes for the other, and neither substitutes for actually testing the running system.
+The reverse gap matters too: code review reads the code you wrote and rarely questions why a component exists at all or whether a boundary was drawn correctly, since by the time there's a diff to review, the architecture is already a given. A threat model happens earlier and asks a different question - not "is this code correct" but "is this design missing a check somewhere." Run both. Neither substitutes for the other, or for testing the running system.
 
 Treat a threat model as a living document, not a one-time exercise. Re-run STRIDE against new boundaries whenever the diagram changes - a new integration, a new endpoint that crosses an existing boundary in a new way, a new "internal" service that turns out not to be as internal as assumed.
 

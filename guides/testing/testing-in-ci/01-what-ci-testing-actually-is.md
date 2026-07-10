@@ -6,7 +6,7 @@ summary: "CI is a server that automatically runs your full test suite on every p
 tags: [testing, ci, continuous-integration, pull-request, automated-testing]
 difficulty: intermediate
 synonyms: ["what is continuous integration testing", "what does the green check mean on a pull request", "why does my code run tests when i push", "what is a ci server", "it works on my machine problem"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # What CI Testing Actually Is
@@ -14,8 +14,7 @@ updated: 2026-06-19
 Picture the moment you open a pull request. You push your branch, the page loads, and there's a small
 spinner next to your commit that turns into a green check or a red X. Most people learn to read that
 check long before they understand it - green good, red bad, merge when green. That's fine for surviving,
-but the moment a check goes red for a reason you can't reproduce, the mystery becomes a problem. Let's
-make it knowable.
+but the moment a check goes red for a reason you can't reproduce, the mystery becomes a problem.
 
 ## The mental model: a tireless teammate who runs your tests
 
@@ -30,8 +29,8 @@ together often and checking it automatically each time. The *server* that does t
 in setup but do the same job.
 
 **Why people get this wrong.** The common picture is that CI is some elaborate, mysterious deployment
-robot. It can grow into that - but the heart of it is humble: *it runs the same `npm test` or `pytest`
-or `cargo test` you already run, just on a fresh machine, automatically, every time.* If you can run
+robot. It can grow into that - but the heart of it is humble: it runs the same `npm test` or `pytest`
+or `cargo test` you already run, just on a fresh machine, automatically, every time. If you can run
 your tests in a terminal, you already understand 90% of what CI does. The other 10% is *where* and
 *when* it runs.
 
@@ -97,9 +96,9 @@ starts from.
 
 🪖 **War story.** A teammate once spent a morning convinced a colleague had broken the build "out of
 nowhere." The tests passed on his machine, failed in CI. The culprit: a config file he'd created weeks
-earlier, used in every test, and never committed. It lived on his laptop and nowhere else. For him the
-suite was green forever; for the clean CI machine - and for every new hire - it had never passed once.
-CI didn't break anything. It told the truth his laptop had been hiding.
+earlier, used in every test, and never committed - it lived on his laptop and nowhere else. For him the
+suite was green forever; for the clean CI machine, and for every new hire, it had never passed once. CI
+didn't break anything. It told the truth his laptop had been hiding.
 
 ⚠️ **Gotcha.** "It passed on my machine" and "it passed in CI" are answers to *different questions.*
 Yours answers "does it work in my exact setup?" CI answers "does it work from a clean copy of the
@@ -108,8 +107,7 @@ production gets, not your laptop.
 
 **Why this saves you later.** Once you internalize that CI runs from a clean room, red checks stop
 feeling like personal attacks and start being useful clues. A test green for you and red in CI is rarely
-the universe being unfair - it's almost always *something on your machine that isn't in the repo.* That
-single reframe will save you hours of confused debugging.
+the universe being unfair - it's almost always *something on your machine that isn't in the repo.*
 
 ## Recap
 

@@ -12,7 +12,7 @@ synonyms:
   - search as you type performance
   - scroll event firing too often
   - rate limiting events in javascript
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # The firehose problem
@@ -58,7 +58,7 @@ window.addEventListener("scroll", () => {
 });
 ```
 
-*What just happened:* `updateParallaxPosition` presumably does some real work — reading the scroll position, computing a new transform, applying it to the DOM. If the scroll event fires 200 times in the second it takes to flick-scroll down a page, that function runs 200 times in that second. Each run costs something: reading layout information from the browser, writing a style change, potentially triggering a repaint. Do enough of this and the page starts to visibly stutter, because the browser is spending its frame budget on work you asked for two hundred times when the user experience only needed it updated at most once per rendered frame — a browser typically renders around 60 frames per second, meaning anything beyond roughly 60 updates in that second was never going to be visible anyway.
+*What just happened:* `updateParallaxPosition` does real work — reading the scroll position, computing a new transform, applying it to the DOM. If the scroll event fires 200 times in the second it takes to flick-scroll down a page, that function runs 200 times, each run reading layout information, writing a style change, and potentially triggering a repaint. Do enough of this and the page starts to visibly stutter, because a browser typically renders around 60 frames per second — anything beyond roughly 60 updates in that second was never going to be visible anyway.
 
 ```text
 scroll event fires:        ~200 times in one second of fast scrolling
@@ -71,7 +71,7 @@ visible to the user:        at most 60 of those 200 updates
 
 ## The shared shape of the problem
 
-Both examples — the search box and the scroll handler — have the same underlying issue: **the event fires far more often than the actual desired outcome needs to happen.** Nobody wants search results for every partial word typed on the way to a full one. Nobody can perceive an update to parallax position happening more often than the screen can redraw. In both cases, running the handler on literally every event is doing work in service of a granularity nobody asked for and nobody benefits from.
+Both examples — the search box and the scroll handler — share the same underlying issue: **the event fires far more often than the desired outcome needs to happen.** Nobody wants search results for every partial word typed on the way to a full one, and nobody can perceive a parallax update happening more often than the screen can redraw. Running the handler on literally every event does work in service of a granularity nobody asked for and nobody benefits from.
 
 > The event firing isn't the problem. Running expensive work on every single firing, when only the last one (or a bounded number per second) actually matters, is the problem.
 

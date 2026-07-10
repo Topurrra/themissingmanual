@@ -12,7 +12,7 @@ synonyms:
   - dimensional modeling explained
   - how do data warehouses organize tables
   - why is it called a star schema
-updated: 2026-07-04
+updated: 2026-07-11
 ---
 
 # Why it's shaped like a star
@@ -56,11 +56,11 @@ flowchart LR
   J2 --> A
 ```
 
-*What just happened:* a typical warehouse query joins the fact table directly to one or two flat dimension tables and aggregates — no chains of joins through sub-tables to reassemble a single product's category. Fewer joins, especially on a table with millions of fact rows, means a faster query and a simpler one to write.
+*What just happened:* a typical warehouse query joins the fact table directly to one or two flat dimension tables and aggregates, instead of chaining through sub-tables to reassemble a product's category. Fewer joins — especially on a table with millions of fact rows — means a faster, simpler query.
 
 > A star schema isn't "worse" normalization — it's a different design goal. Normalized OLTP schemas optimize for correctness under frequent writes; a star schema optimizes for speed under heavy aggregation reads. Neither one is right for the other's job.
 
-This is also why you rarely see anyone running `UPDATE` against a warehouse's dimension tables the way you would against an OLTP database — dimensions are typically reloaded wholesale from the source system, so the "what if the category name changes and it's duplicated everywhere" problem is handled by the load process, not by relying on the schema to prevent it in the first place.
+This is also why you rarely see anyone running `UPDATE` against a warehouse's dimension tables the way you would against an OLTP database — dimensions are typically reloaded wholesale from the source system. That way, the "what if the category name changes and it's duplicated everywhere" problem is handled by the load process, not the schema.
 
 Watch it animated: [a star schema](/explainers/StarSchema.dc.html)
 

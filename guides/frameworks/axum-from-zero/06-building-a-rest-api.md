@@ -6,7 +6,7 @@ summary: "Wire the books API into full CRUD — five async handlers over one sha
 tags: [axum, rust, rest, api, crud]
 difficulty: intermediate
 synonyms: ["axum rest api", "axum crud", "axum books api", "axum state handlers", "rust axum crud example", "axum json crud"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Building a REST API
@@ -14,9 +14,8 @@ updated: 2026-06-23
 This is the phase where the pieces click together. You've met every part already:
 the `Router` and routing (Phase 2), `Path`/`Query` extractors (Phase 2),
 `Json` in and out and `IntoResponse` (Phase 3), and the shared `AppState` store
-(Phase 4). A REST API is nothing more than those four things, assembled.
-
-So before any code, hold this picture in your head.
+(Phase 4). A REST API is nothing more than those four things, assembled — hold
+this picture before any code.
 
 > 📝 **Mental model:** a REST *resource* — here, books — is **five handlers over
 > one shared store**. Each handler is an `async fn` whose arguments are extractors
@@ -74,10 +73,9 @@ struct AppState {
 map with a `next_id` counter, and `AppState` wraps it in `Arc<Mutex<...>>` for the
 same reason as Phase 4: the clone axum makes per request must *share* the store,
 not copy it. ⚠️ The `Mutex` lock is held only for the few lines inside each
-handler — lock, read or mutate, then let the guard drop. Don't hold a lock across
-an `.await`; here we never do, because the work between `lock()` and the end of
-scope is synchronous. And notice every read clones a `Book` *out* of the map
-(`.clone()`), so we hand JSON an owned value and the lock can release immediately.
+handler — lock, read or mutate, let the guard drop, never across an `.await`.
+Every read clones a `Book` *out* of the map, so JSON gets an owned value and the
+lock releases immediately.
 
 ## The five handlers
 
@@ -154,18 +152,16 @@ async fn remove(
 }
 ```
 
-*What just happened:* every handler followed the same recipe. `list` and `show`
+*What just happened:* every handler follows the same recipe. `list` and `show`
 only read, so they lock without `mut`; `create`, `update`, and `remove` mutate, so
 they bind the guard `mut`. The body-consuming `Json` extractor always comes
-**last** in the argument list (axum allows only one body extractor, and it must be
-final) — that's why `create` and `update` put `State`/`Path` first and `Json`
-last. The return types are where `IntoResponse` earns its keep: `list` returns a
-plain `Json<Vec<Book>>` (which becomes a 200), while the handlers with two outcomes
-return `impl IntoResponse` and use `(StatusCode, Json<...>)` tuples — a status code
-*and* a body in one value. Where a branch returns only a status (the 404s, the 204)
-we call `.into_response()` so both arms of the `match` produce the same concrete
-type. `create` builds the `Book` *after* taking the lock so it can read and bump
-`next_id` atomically under that one lock.
+**last** — that's why `create` and `update` put `State`/`Path` first. Return types
+are where `IntoResponse` earns its keep: `list` returns a plain `Json<Vec<Book>>`
+(a 200), while handlers with two outcomes return `impl IntoResponse` and use
+`(StatusCode, Json<...>)` tuples — status *and* body in one value. Where a branch
+returns only a status (the 404s, the 204), we call `.into_response()` so both
+`match` arms share a concrete type. `create` builds the `Book` *after* taking the
+lock so it can read and bump `next_id` atomically under that one lock.
 
 > ⚠️ Notice how much of this code is the 404 plumbing — every `match` repeats the
 > `None => StatusCode::NOT_FOUND` arm, and we sprinkle `.into_response()` to make

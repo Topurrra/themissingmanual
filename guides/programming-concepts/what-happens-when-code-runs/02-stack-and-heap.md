@@ -6,14 +6,14 @@ summary: "While your program runs, every value lives in memory in one of two pla
 tags: [stack, heap, memory, function-calls, stack-overflow, variables]
 difficulty: beginner
 synonyms: ["stack vs heap", "what is the stack", "what is the heap", "where do variables live", "what is a stack overflow", "why does recursion crash", "where is memory stored when code runs"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Where Your Data Lives: the Stack & the Heap
 
-In the last phase, your code became machine instructions that the CPU runs. But those instructions are constantly working with *values* - a number you added, a name you stored, a list you built. Each of those values has to physically sit somewhere while the program runs, and that somewhere is your computer's memory (RAM).
+In the last phase, your code became machine instructions that the CPU runs. But those instructions are constantly working with *values* - a number you added, a name you stored, a list you built. Each value has to physically sit somewhere while the program runs, and that somewhere is your computer's memory (RAM).
 
-Here's the part that's almost never explained to beginners: that memory isn't one undifferentiated blob. While your program runs, it organizes its data into two distinct regions with two different personalities - the **stack** and the **heap**. You don't usually manage them by hand (in most languages the system handles it for you), but knowing they exist explains a whole category of behavior and a famous crash. Let's make them concrete.
+Here's the part almost never explained to beginners: that memory isn't one undifferentiated blob. While your program runs, it organizes its data into two distinct regions with two different personalities - the **stack** and the **heap**. You don't usually manage them by hand (in most languages the system handles it for you), but knowing they exist explains a whole category of behavior and a famous crash.
 
 ## The two regions, side by side
 
@@ -71,7 +71,7 @@ flowchart LR
   end
   s1 --> s2 --> s3
 ```
-*What just happened:* Calling `greet` pushed a new frame on top of the stack, holding its local variables (`name`, `message`). The moment `greet` returned, that whole frame was discarded automatically - no cleanup code from you. That automatic add-on-call, remove-on-return is exactly why the stack is so fast and why you never have to think about freeing a local variable.
+*What just happened:* Calling `greet` pushed a new frame on top of the stack, holding its local variables (`name`, `message`). The moment `greet` returned, that whole frame was discarded automatically - no cleanup code from you. That automatic add-on-call, remove-on-return is why the stack is fast and why you never have to think about freeing a local variable.
 
 💡 **Key point.** Stack memory is *automatic*: a local variable lives exactly as long as its function call, then vanishes on its own when the function returns. You get this for free.
 
@@ -90,15 +90,15 @@ def load_scores():
 
 results = load_scores()           # `results` now uses that same heap data
 ```
-*What just happened:* The list itself can't live on `load_scores`'s stack frame, because that frame is destroyed the instant the function returns - and yet the caller still needs the list. So the list lives on the **heap**, which outlasts the function call. The function returns a reference to it, and `results` uses it afterward. The heap is what makes "create something here, use it over there, later" possible.
+*What just happened:* The list can't live on `load_scores`'s stack frame, because that frame is destroyed the instant the function returns - yet the caller still needs the list. So the list lives on the **heap**, which outlasts the function call. The function returns a reference to it, and `results` uses it afterward. The heap is what makes "create something here, use it over there, later" possible.
 
-**The trade-off.** The heap's flexibility has a cost: nothing automatically removes heap data when a function returns. *Something* has to decide when heap data is finished with and reclaim that space - otherwise the program slowly eats memory it can never get back. In many languages (Python, JavaScript, Go, Java) an automatic system called a **garbage collector** handles this for you; in others (C, Rust) it's managed differently. That whole topic - how heap memory gets cleaned up - is big enough to have its own guide: [Memory & Garbage Collection](/guides/memory-and-garbage-collection).
+**The trade-off.** The heap's flexibility has a cost: nothing automatically removes heap data when a function returns. *Something* has to decide when heap data is finished with and reclaim that space, or the program slowly eats memory it can never get back. In many languages (Python, JavaScript, Go, Java) an automatic **garbage collector** handles this for you; in others (C, Rust) it's managed differently. How heap memory gets cleaned up is its own guide: [Memory & Garbage Collection](/guides/memory-and-garbage-collection).
 
 ## ⚠️ "Stack overflow" - a real, specific thing
 
 You've seen the name on a famous website, but **stack overflow** is a genuine error with a precise cause, and the stack you just learned about is exactly what overflows.
 
-The stack is fast partly because it's *limited in size* - the system sets aside a fixed, fairly small amount of memory for it. Remember that every function call adds a frame on top. So what happens if functions keep calling, deeper and deeper, without ever returning? The frames pile up... and eventually run past the edge of the space reserved for the stack. That's a **stack overflow**: the stack grew beyond its limit, and the program is killed on the spot.
+The stack is fast partly because it's *limited in size* - the system sets aside a fixed, fairly small amount of memory for it. Every function call adds a frame on top, so what happens if functions keep calling, deeper and deeper, without ever returning? The frames pile up... and eventually run past the edge of the space reserved for the stack. That's a **stack overflow**: the stack grew beyond its limit, and the program is killed on the spot.
 
 The classic way to cause it is **recursion** - a function that calls itself - with no stopping condition:
 
@@ -122,7 +122,7 @@ $ python countdown.py
     countdown(n - 1)
 RecursionError: maximum recursion depth exceeded
 ```
-*What just happened:* Each call to `countdown` added another stack frame, and the function never returned, so the frames never got removed - they just kept piling up. Once they crossed the stack's size limit, the program stopped with a recursion/stack error. (Python notices the runaway depth and raises a clean `RecursionError`; lower-level languages like C may crash harder with a literal "stack overflow.") The data wasn't corrupted - the program ran *out of stack room*.
+*What just happened:* Each call to `countdown` added another stack frame, and the function never returned, so the frames never got removed - they just kept piling up. Once they crossed the stack's size limit, the program stopped with a recursion/stack error. (Python raises a clean `RecursionError`; lower-level languages like C may crash harder with a literal "stack overflow.") The data wasn't corrupted - the program ran *out of stack room*.
 
 ⚠️ **Gotcha.** The fix for a stack overflow from recursion is almost never "ask for a bigger stack." It's to make sure recursion actually *stops* - every self-calling function needs a **base case**, a condition where it returns instead of calling itself again. Here, `countdown` should stop at, say, `if n < 0: return`. Bottomless recursion is the cause; a proper stopping point is the cure.
 

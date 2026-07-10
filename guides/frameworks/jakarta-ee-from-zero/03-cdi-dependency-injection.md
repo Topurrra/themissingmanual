@@ -6,7 +6,7 @@ summary: "CDI is Jakarta EE's standard dependency-injection container: @Inject w
 tags: [jakarta-ee, cdi, dependency-injection, inject, beans, scopes, qualifiers, producers]
 difficulty: intermediate
 synonyms: ["jakarta cdi tutorial", "cdi @Inject beans", "cdi scopes application request", "cdi qualifiers", "cdi producers", "cdi vs spring dependency injection", "jakarta ee dependency injection"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # CDI: Contexts & Dependency Injection
@@ -14,8 +14,8 @@ updated: 2026-06-22
 In Phase 2 you packaged a `Product` app, dropped it on an application server, and watched the server
 take over the running of your code. This phase is about the mechanism the server uses to *build and wire*
 your objects once it's running — the engine sitting underneath nearly every Jakarta feature you'll meet
-from here on. It's called **CDI**, and once it clicks, the rest of Jakarta EE stops feeling like a pile
-of unrelated annotations and starts feeling like one connected system.
+from here on. It's called **CDI**, and once it clicks, the rest of Jakarta EE stops feeling like a pile of
+unrelated annotations and starts feeling like one connected system.
 
 Here's the mental model to carry the whole way through: in a normal program, your objects build the
 other objects they need with `new`. In a CDI program, **a container builds your objects for you and hands

@@ -6,7 +6,7 @@ summary: "When data work must be automated, scheduled, and repeatable with no hu
 tags: [pipelines, automation, etl, data-analytics, scheduling, beginner-friendly]
 difficulty: beginner
 synonyms: ["when do i need a data pipeline", "what is a data pipeline", "how to automate a report", "should i build a pipeline", "automate sql query on a schedule"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # When It Has to Run Itself: Pipelines
@@ -107,10 +107,10 @@ entirely on how often the work repeats and how much it matters when it's wrong.
 
 ## ⚠️ Match the tool to the scale — don't over-engineer
 
-This is the most important judgment call in the whole guide, so here it is plainly: **a pipeline is the
-right answer only when the work genuinely repeats and genuinely matters.** Building one for a task you'll
-do twice is a classic, expensive mistake — you'll spend days automating something a five-minute manual
-job would have handled, and then you'll spend more days maintaining it.
+This is the most important judgment call in the whole guide: **a pipeline is the right answer only when
+the work genuinely repeats and genuinely matters.** Building one for a task you'll do twice is a classic,
+expensive mistake — you'll spend days automating something a five-minute manual job would have handled,
+then spend more days maintaining it.
 
 A rough guide to where each stage earns its keep:
 

@@ -9,7 +9,7 @@ order: 31
 group: "C#"
 difficulty: intermediate
 synonyms: ["learn unity", "unity tutorial", "unity c# scripting", "unity gameobject component", "monobehaviour", "unity for beginners", "unity game engine", "make a game in unity"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Unity From Zero

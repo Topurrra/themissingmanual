@@ -6,15 +6,15 @@ summary: "Middleware in chi is plain net/http: a func(http.Handler) http.Handler
 tags: [chi, go, middleware, net-http, stdlib]
 difficulty: intermediate
 synonyms: ["chi middleware", "go http middleware wrapper", "chi r.use", "chi built-in middleware", "func(http.Handler) http.Handler", "chi r.with"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # Middleware the Standard Way
 
 Here's the thing most tutorials bury: chi doesn't have a middleware *system*. It has the
 `net/http` middleware pattern, and a couple of helpers for plugging it in. That's the whole
-story. If you've ever seen middleware in a Go codebase that uses no framework at all, you've
-already seen chi middleware — same signature, same idea.
+story. If you've ever seen middleware in a Go codebase using no framework at all, you've already
+seen chi middleware — same signature, same idea.
 
 So before we touch `r.Use`, let's get the mental model rock-solid, because once it clicks the
 rest is mechanical.
@@ -35,8 +35,8 @@ happens on the way *out*. You're wrapping a present in a slightly bigger box.
 
 This is the exact pattern from the [net/http roots guide](/guides/web-services-with-only-net-http) —
 chi invented none of it. A chi router *is* an `http.Handler`, a chi handler *is* an
-`http.HandlerFunc`, and chi middleware *is* a plain net/http wrapper. The payoff at the end of
-this phase: any middleware written for stdlib works with chi unchanged.
+`http.HandlerFunc`, and chi middleware *is* a plain net/http wrapper. Any middleware written for
+stdlib works with chi unchanged.
 
 Picture the request falling through layers and climbing back out:
 
@@ -85,9 +85,9 @@ runs on the way in; the line **after** runs on the way out.
 
 ⚠️ If you forget to call `next.ServeHTTP(w, r)`, the request stops dead at your middleware — the
 handler never runs and the client gets an empty response. Sometimes that's intentional (an auth
-middleware rejecting a request writes a 401 and *deliberately* doesn't call `next`). But an
-accidental missing call is one of the most common middleware bugs. If a route mysteriously
-returns nothing, check that every middleware in the chain actually calls `next`.
+middleware rejecting a request writes a 401 and *deliberately* doesn't call `next`), but an
+accidental missing call is one of the most common middleware bugs. If a route mysteriously returns
+nothing, check that every middleware in the chain actually calls `next`.
 
 ## Registering: `Use`, `With`, and sub-routers
 
@@ -110,13 +110,13 @@ func main() {
 
 *What just happened:* `r.Use(Logger)` adds `Logger` to this router's stack. Every route
 registered **after** the `Use` call — both `/articles` routes here — runs through `Logger`
-first. You can call `Use` multiple times; they stack in order, the first `Use` being the
-outermost layer.
+first. Call `Use` multiple times and they stack in order, the first `Use` being the outermost
+layer.
 
 ⚠️ **Order matters, and `Use` must come before the routes it should wrap.** chi *panics* at
-startup if you call `Use` after you've already registered routes on the same router. This is a
-feature, not an annoyance: it stops you from silently shipping middleware that doesn't run.
-Group your `Use` calls at the top of each router.
+startup if you call `Use` after you've already registered routes on the same router — a feature,
+not an annoyance, that stops you from silently shipping middleware that doesn't run. Group your
+`Use` calls at the top of each router.
 
 ### `r.With` — for one route (or a few)
 
@@ -178,13 +178,13 @@ func main() {
 ```
 
 *What just happened:* five lines buy you request IDs, real client IPs behind a proxy, request
-logging, panic recovery, and a timeout. `middleware.Recoverer` is the one you'll be most
-grateful for in production — without it, a single nil-pointer panic in a handler takes down the
-whole server; with it, that request gets a clean 500 and the server keeps serving everyone else.
+logging, panic recovery, and a timeout. `middleware.Recoverer` is the one you'll be most grateful
+for in production — without it, a single nil-pointer panic in a handler takes down the whole
+server; with it, that request gets a clean 500 and the server keeps serving everyone else.
 
 💡 Order is deliberate here too: put `RequestID` and `RealIP` near the top so the ID and IP are
 available to everything below (including `Logger`). `Recoverer` should sit high enough to catch
-panics from your handlers, but it's commonly placed right after the logging setup. There's also
+panics from your handlers, but it's commonly placed right after logging setup. There's also
 `middleware.AllowContentType(...)`, `middleware.StripSlashes`, and many more — skim the package
 when you have a real need.
 
@@ -227,13 +227,12 @@ func createArticle(w http.ResponseWriter, r *http.Request) {
 *What just happened:* `RequireAuth` checks the `Authorization` header. No token? It writes a 401
 and `return`s — deliberately skipping `next`, so the handler never runs. With a token, it stashes
 the user on the request context and passes a request carrying that context to `next`. Downstream,
-`createArticle` pulls the user back out. The two functions never call each other directly; the
+`createArticle` pulls the user back out — the two functions never call each other directly; the
 context is the courier.
 
 📝 A small but real detail: `userKey` is a custom `contextKey` type, not a bare string. Context
 keys should be an unexported custom type so two packages can't accidentally collide on the same
-string key. We'll go deeper on context values and the cleaner "typed getter" pattern in Phase 6 —
-this is the minimum to make middleware-to-handler data flow work.
+string key. We'll go deeper on context values and the cleaner "typed getter" pattern in Phase 6.
 
 💡 Because all of this is plain `net/http` — the wrapper signature, the context, `r.WithContext` —
 any middleware written for the standard library drops into chi with zero changes. Need CORS? Grab

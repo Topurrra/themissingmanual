@@ -9,7 +9,7 @@ order: 14
 group: "Python"
 difficulty: intermediate
 synonyms: ["what is wsgi", "what is asgi", "wsgi vs asgi", "wsgi application callable", "asgi async python", "gunicorn uvicorn", "how flask works under the hood", "python web server interface"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # WSGI & ASGI Explained

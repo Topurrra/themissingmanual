@@ -12,7 +12,7 @@ synonyms:
   - is this result statistically significant
   - why do we need a control group
   - how to tell if an experiment result is real
-updated: 2026-07-04
+updated: 2026-07-10
 ---
 
 # Why you'd randomize at all
@@ -35,7 +35,7 @@ The honest problem is that "after" always differs from "before" in dozens of way
 
 The fix is to stop comparing across time and start comparing across groups that exist in the *same* time. Take your incoming users and randomly assign each one to see version A (the **control** — what already exists) or version B (the **variant** — the new thing). Both groups experience the same day, the same marketing email, the same outage, the same everything — except the one thing you're testing.
 
-Randomization is what makes this work, and it's worth being precise about why. If you let users pick which version they see, or if you assign based on any trait (signup date, browser, region), you've reintroduced a confound — now the groups differ by more than just the variant. Random assignment means, on average, the two groups are identical in every way *except* which version they saw. Any difference in outcomes has one remaining explanation: the variant.
+Randomization is what makes this work. If you let users pick which version they see, or assign based on any trait (signup date, browser, region), you've reintroduced a confound — now the groups differ by more than just the variant. Random assignment means, on average, the two groups are identical in every way *except* which version they saw. Any difference in outcomes has one remaining explanation: the variant.
 
 ```mermaid
 flowchart LR
@@ -51,7 +51,7 @@ flowchart LR
 
 ## Why "at the same time" is the whole point
 
-Notice that a proper A/B test never compares control-in-March to variant-in-April. Both groups run **concurrently** — same week, same days, same external conditions. That's the piece "before vs. after" is missing entirely, and it's the piece that makes A/B testing worth the extra setup. You're not asking "did the metric change over time." You're asking "of two groups living through the identical moment, which one did better" — and that question has a clean answer.
+A proper A/B test never compares control-in-March to variant-in-April. Both groups run **concurrently** — same week, same days, same external conditions. That's the piece "before vs. after" is missing entirely, and it's what makes A/B testing worth the extra setup. You're not asking "did the metric change over time." You're asking "of two groups living through the identical moment, which one did better" — and that question has a clean answer.
 
 This doesn't mean before/after comparisons are worthless everywhere. They're a reasonable first signal when you have no way to run a real test. But if you're deciding something that matters — a pricing change, a checkout redesign, anything you'd want to defend later — a random split is what turns "I think it worked" into "I can show it worked."
 

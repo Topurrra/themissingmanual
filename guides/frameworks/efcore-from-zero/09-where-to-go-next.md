@@ -6,7 +6,7 @@ summary: "Where EF Core lands in real .NET apps: dropping to raw SQL with FromSq
 tags: [efcore, csharp, dapper, raw-sql, aspnet-core, what-to-build]
 difficulty: beginner
 synonyms: ["ef core vs dapper", "ef core raw sql fromsql", "when to drop to sql ef core", "ef core aspnet core", "ef core production tips", "ef core next steps"]
-updated: 2026-06-23
+updated: 2026-07-10
 ---
 
 # EF Core in the Real World & Where to Go Next
@@ -15,7 +15,7 @@ Look at the distance you've covered. You can model a table as a C# class and let
 
 And most of all — the whole point of learning EF Core this way — you can read the SQL underneath. With logging on, EF Core stopped being a magic box and became a SQL generator whose output you can predict and debug. That skill outlives any single library.
 
-This last phase isn't new mechanics. It's about where EF Core actually lives in real .NET codebases, where it isn't the right tool, and what to build to make all of this stick.
+This last phase isn't new mechanics. It's where EF Core actually lives in real .NET codebases, where it isn't the right tool, and what to build to make all of this stick.
 
 ## When to drop to raw SQL
 
@@ -35,7 +35,7 @@ var posts = ctx.Posts
     .ToList();
 ```
 
-📝 That `{title}` is **not** string concatenation. The interpolated `FromSql` parameterizes the value for you — the same protection against SQL injection as LINQ. If you need to build parameters yourself, `FromSqlRaw` lets you pass them manually (and puts the safety on you). For writes that don't return rows, reach for `ExecuteSql`:
+📝 That `{title}` is **not** string concatenation. The interpolated `FromSql` parameterizes the value for you — the same protection against SQL injection as LINQ. If you need to build parameters yourself, `FromSqlRaw` lets you pass them manually (and puts the safety on you). For writes that don't return rows, use `ExecuteSql`:
 
 ```csharp
 ctx.Database.ExecuteSql($"UPDATE Posts SET Published = {true} WHERE BlogId = {blogId}");
@@ -60,7 +60,7 @@ flowchart TD
   D -- No, full control --> F[ADO.NET]
 ```
 
-💡 The honest rule: reach for **EF Core when you want productivity** — fast CRUD, relationships handled, migrations baked in, covering most apps. Reach for **Dapper on hot read paths** or when you want SQL-first control without an ORM in the way. The part people miss: **they coexist beautifully.** A very common production setup is EF Core for writes and the everyday model, with Dapper dropped in for a handful of heavy read queries. You don't have to choose one for the whole app.
+💡 The honest rule: reach for **EF Core when you want productivity** — fast CRUD, relationships handled, migrations baked in, covering most apps. Reach for **Dapper on hot read paths** or when you want SQL-first control without an ORM in the way. The part people miss: **they coexist beautifully.** A very common production setup is EF Core for writes and the everyday model, with Dapper dropped in for a handful of heavy read queries.
 
 ## The caveats, honestly — and ASP.NET Core
 
@@ -76,11 +76,11 @@ Now, the place EF Core most often lives: as the data layer of an [ASP.NET Core](
 builder.Services.AddDbContext<BlogContext>(o => o.UseSqlite(conn));
 ```
 
-📝 `AddDbContext` registers the context as **Scoped** — one instance per HTTP request. Inject it into your endpoints or services and use it for that request; the framework disposes it when the request ends. The rule that follows: **don't share a `DbContext` across threads or requests.** A context is a unit of work for one request, not a long-lived singleton — sharing one is how you get tangled change-tracking and concurrency bugs.
+📝 `AddDbContext` registers the context as **Scoped** — one instance per HTTP request. Inject it into your endpoints or services and use it for that request; the framework disposes it when the request ends. **Don't share a `DbContext` across threads or requests** — a context is a unit of work for one request, not a long-lived singleton; sharing one is how you get tangled change-tracking and concurrency bugs.
 
 ## What to build
 
-Reading got you here. Building is what makes it last — and you have the perfect next project waiting. If you've done the [ASP.NET Core](/guides/aspnet-core-from-zero) guide, you built a products (or blog) API backed by an in-memory repository in Phase 6. Swap that repository for an EF Core-backed one and point it at a real database.
+Reading got you here. Building is what makes it last. If you've done the [ASP.NET Core](/guides/aspnet-core-from-zero) guide, you built a products (or blog) API backed by an in-memory repository in Phase 6. Swap that repository for an EF Core-backed one and point it at a real database.
 
 Concretely:
 
@@ -91,7 +91,7 @@ Concretely:
 
 Then deploy it somewhere, even a tiny instance. Keep logging on and watch your endpoints turn into SQL as requests come in. Whatever you build, **finish one** — a small API you actually debugged and deployed teaches more than three half-built ones.
 
-You came in seeing an ORM as a trick that turned objects into rows somehow. You're leaving able to model, migrate, query with LINQ, track changes, relate, beat N+1, transact — and, when the ORM gets in your way, drop to the SQL it was writing all along. A **`DbContext` is a change-tracking session**, **`DbSet`s are your tables**, **LINQ becomes SQL** — and you can always see that SQL and reach past it. Go build the small thing.
+You came in seeing an ORM as a trick that turned objects into rows somehow. You're leaving able to model, migrate, query with LINQ, track changes, relate, beat N+1, transact — and, when the ORM gets in your way, drop to the SQL it was writing all along. A **`DbContext` is a change-tracking session**, **`DbSet`s are your tables**, **LINQ becomes SQL** — and you can always see that SQL and reach past it.
 
 ## Recap
 

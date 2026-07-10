@@ -6,14 +6,14 @@ summary: "You can train and save a real classifier. Now skip training from scrat
 tags: [pytorch, transfer-learning, pretrained-models, huggingface, lightning, llms, what-to-build]
 difficulty: beginner
 synonyms: ["pytorch next steps", "pytorch transfer learning", "pytorch pretrained models torchvision", "huggingface transformers", "pytorch lightning", "pytorch llms", "what to build with pytorch"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Where to Go Next
 
 Stop and look at what you can actually do now. You understand a **tensor** — the GPU-ready, autograd-aware array that everything runs on. You understand **autograd** — how PyTorch tracks operations and computes the gradients that make learning possible. You can build a model as a `nn.Module`, define a `forward()`, pick a loss and an optimizer, and write the **training loop** that ties them together: forward, loss, backward, step. You can feed it data through a `Dataset` and `DataLoader`, move work onto a GPU, and you've trained, evaluated, **saved**, and run inference with a real classifier.
 
-That is not a warm-up. That is the foundation *every* piece of modern deep learning is built on — from a three-line toy model to a model with hundreds of billions of parameters. The rest is the same three ideas at scale, plus tooling. So this last phase isn't another layer type. It's the honest map of where to point what you know.
+That is not a warm-up. That is the foundation *every* piece of modern deep learning is built on — from a three-line toy model to a model with hundreds of billions of parameters. The rest is the same three ideas at scale, plus tooling. This last phase isn't another layer type — it's the honest map of where to point what you know.
 
 ## Don't train from scratch — transfer learning
 

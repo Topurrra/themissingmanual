@@ -6,14 +6,14 @@ summary: "The canonical checklist for an app that is actually shippable and scal
 tags: [architecture, twelve-factor, deployment, config, cloud-native, devops]
 difficulty: intermediate
 synonyms: ["12 factor app", "twelve factor methodology", "12factor", "config in environment", "stateless processes", "cloud native checklist", "heroku twelve factor"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # One codebase, clean dependencies, config outside the code
 
-Picture the most stressful deploy you have lived through. Odds are it traces back to one of three things: nobody was sure which version of the code was running, the new server was missing some library that lived only on the old one, or a password was hard-coded and now it's wrong in the new place. The first three factors exist to make those three confusions impossible. Get them right and a deploy becomes boring, which is the highest praise infrastructure can earn.
+Picture the most stressful deploy you've lived through. Odds are it traces back to one of three things: nobody was sure which version of the code was running, the new server was missing a library that only lived on the old one, or a password was hard-coded and now it's wrong in the new place. The first three factors exist to make those confusions impossible — get them right and a deploy becomes boring, which is the highest praise infrastructure can earn.
 
-The Twelve-Factor App came out of Heroku, written by people who watched thousands of apps get deployed and noticed the same wounds over and over. It is not a framework you install. It is a set of agreements about how an app relates to its code, its dependencies, and its environment. This phase covers the foundation: the three factors that make a deploy repeatable.
+The Twelve-Factor App came out of Heroku, written by people who watched thousands of apps get deployed and noticed the same wounds over and over. It's not a framework you install — it's a set of agreements about how an app relates to its code, its dependencies, and its environment. This phase covers the foundation: the three factors that make a deploy repeatable.
 
 ## Factor I — One codebase, many deploys
 
@@ -57,7 +57,7 @@ The test for whether you've gotten this right: a brand-new developer, or a fresh
 
 ## Factor III — Store config in the environment
 
-This is the factor people violate most and pay for most. The terrible day: a password, an API key, or a database URL is committed to the repo. Now it's in git history forever, visible to everyone with read access, and rotating it means a code change and a deploy. Or the gentler-but-still-bad version: production and staging differ only in config, but that config is baked into the code, so you maintain three nearly-identical config files and inevitably edit the wrong one.
+This is the factor people violate most, and pay for most. The terrible day: a password, an API key, or a database URL gets committed to the repo — now it's in git history forever, visible to everyone with read access, and rotating it means a code change and a deploy. Or the gentler-but-still-bad version: production and staging differ only in config, but that config is baked into the code, so you maintain three nearly-identical files and inevitably edit the wrong one.
 
 **Config is everything that varies between deploys.** Database URLs, credentials, the hostname of a backing service, feature flags per environment. It is *not* your routing table or your internal constants — those are the same everywhere, so they belong in the code.
 

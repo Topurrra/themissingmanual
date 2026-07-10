@@ -6,13 +6,13 @@ summary: "How PyTorch feeds data to the training loop: Dataset knows how to fetc
 tags: [pytorch, dataset, dataloader, batching, shuffling, transforms, data-pipeline]
 difficulty: intermediate
 synonyms: ["pytorch dataset dataloader", "pytorch custom dataset", "pytorch batching shuffling", "pytorch __getitem__ __len__", "pytorch data pipeline", "pytorch transforms", "pytorch num_workers"]
-updated: 2026-06-22
+updated: 2026-07-10
 ---
 
 # Data: Dataset & DataLoader
 
-In [Phase 6](06-the-training-loop.md) you wrote the loop that trains every model — and right in the
-middle of it there was a line we waved at and moved past:
+In [Phase 6](06-the-training-loop.md) you wrote the loop that trains every model — and in the middle of
+it sat a line we waved at and moved past:
 
 ```python
 for X_batch, y_batch in data_loader:

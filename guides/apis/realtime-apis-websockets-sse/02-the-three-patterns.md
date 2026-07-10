@@ -6,7 +6,7 @@ summary: "Hands-on: long-polling that holds the request open, a real SSE stream 
 tags: [sse, websockets, long-polling, eventsource, realtime, code]
 difficulty: intermediate
 synonyms: ["how to use server sent events", "eventsource example", "websocket example javascript", "long polling example", "sse vs websocket code", "how to stream updates to browser", "realtime api tutorial"]
-updated: 2026-06-30
+updated: 2026-07-10
 ---
 
 # The Three Patterns in Practice
@@ -31,9 +31,9 @@ setInterval(async () => {
   if (msgs.length) render(msgs);
 }, 5000);
 ```
-*What just happened:* Every 5 seconds you fire a request asking "anything after `lastId`?" Most of the
-time the answer is an empty array — wasted round-trips — and a new message can sit unseen for up to 5
-seconds. Cheap to build, but it's a tax you pay forever.
+Every 5 seconds you fire a request asking "anything after `lastId`?" Most of the time the answer is an
+empty array — wasted round-trips — and a new message can sit unseen for up to 5 seconds. Cheap to build,
+but it's a tax you pay forever.
 
 **Long-polling — let the server hold the line.** The trick: the server *doesn't answer immediately.* It
 holds your request open until it actually has something, or until a timeout, then replies. The client
@@ -50,10 +50,10 @@ async function longPoll() {
 }
 longPoll();
 ```
-*What just happened:* The `await` parks here until the server sends something back, instead of you
-hammering on a timer. You get near-instant delivery with no persistent connection — but you're still
-opening a fresh HTTP request per message, and a held-open request ties up a server slot. Long-polling is
-the honest fallback when SSE and WebSockets aren't available; otherwise, climb the ladder.
+The `await` parks here until the server sends something back, instead of you hammering on a timer. You
+get near-instant delivery with no persistent connection — but you're still opening a fresh HTTP request
+per message, and a held-open request ties up a server slot. Long-polling is the honest fallback when SSE
+and WebSockets aren't available; otherwise, climb the ladder.
 
 📝 **Terminology.** "Long-polling" sounds like a kind of polling, but it behaves like a push: the latency
 is "as soon as there's news," not "next time the timer fires." The cost is connection churn — a new
@@ -79,10 +79,9 @@ stream.onerror = () => {
   console.log("connection dropped — browser is reconnecting...");
 };
 ```
-*What just happened:* Three lines and you have a live feed. `onmessage` fires every time the server sends
-an event. When the line drops, `EventSource` reconnects on its own and even tells the server where you
-left off — that auto-reconnect is the single biggest reason to prefer SSE over a hand-rolled WebSocket
-for one-way data.
+Three lines and you have a live feed. `onmessage` fires every time the server sends an event. When the
+line drops, `EventSource` reconnects on its own and even tells the server where you left off — that
+auto-reconnect is the single biggest reason to prefer SSE over a hand-rolled WebSocket for one-way data.
 
 **The server — what it actually sends.** SSE isn't JSON-over-HTTP; it's a tiny text format. The
 content type is `text/event-stream`, and each event is `data:` lines ending in a blank line.
@@ -100,10 +99,10 @@ data: {"price": 142.35}
 id: 48
 data: {"price": 142.80}
 ```
-*What just happened:* One response that never ends. Each `data:` block is one event the browser hands to
-`onmessage`. The `id:` line is the magic behind reconnect — the browser remembers the last id and sends
-it back as a `Last-Event-ID` header when it reconnects, so the server can resume from where you dropped
-instead of replaying everything.
+One response that never ends. Each `data:` block is one event the browser hands to `onmessage`. The `id:`
+line is the magic behind reconnect — the browser remembers the last id and sends it back as a
+`Last-Event-ID` header when it reconnects, so the server can resume from where you dropped instead of
+replaying everything.
 
 **The server side, in code.**
 ```javascript
@@ -122,10 +121,9 @@ app.get("/api/stream", (req, res) => {
   req.on("close", () => clearInterval(tick));  // stop when the client leaves
 });
 ```
-*What just happened:* You set the streaming headers, then `res.write()` an event whenever you have news —
-note the `\n\n` that ends each event. Crucially, you clean up on `close`, or you'll leak a timer (and
-eventually a connection) for every client who ever wandered off. That cleanup is the most-forgotten line
-in SSE code.
+You set the streaming headers, then `res.write()` an event whenever you have news — note the `\n\n` that
+ends each event. Crucially, you clean up on `close`, or you'll leak a timer (and eventually a connection)
+for every client who ever wandered off. That cleanup is the most-forgotten line in SSE code.
 
 ⚠️ **The six-connection cap (HTTP/1.1).** Over HTTP/1.1 a browser allows only ~6 connections per domain,
 and an open SSE stream eats one of them *per tab.* Open the app in a few tabs and you can starve your own
@@ -150,9 +148,9 @@ HTTP/1.1 101 Switching Protocols
 Upgrade: websocket
 Connection: Upgrade
 ```
-*What just happened:* The client asked HTTP to "upgrade" to the WebSocket protocol; the server agreed
-with a `101 Switching Protocols`. From this point the connection is no longer request/response — it's an
-open, two-way pipe. That `101` is the moment a WebSocket exists.
+The client asked HTTP to "upgrade" to the WebSocket protocol; the server agreed with a
+`101 Switching Protocols`. From this point the connection is no longer request/response — it's an open,
+two-way pipe. That `101` is the moment a WebSocket exists.
 
 **The client.**
 ```javascript
@@ -166,10 +164,10 @@ ws.onclose = () => {
   setTimeout(connect, 1000);
 };
 ```
-*What just happened:* You can `send()` to the server *and* receive via `onmessage`, both directions, any
-time — that's the full-duplex superpower SSE doesn't have. But notice `onclose`: WebSockets give you
-*no* automatic reconnect. If you want it (and you do), you write the retry loop, the backoff, and the
-heartbeats yourself. That extra labor is the real price of WebSockets.
+You can `send()` to the server *and* receive via `onmessage`, both directions, any time — that's the
+full-duplex superpower SSE doesn't have. But notice `onclose`: WebSockets give you *no* automatic
+reconnect. If you want it (and you do), you write the retry loop, the backoff, and the heartbeats
+yourself. That extra labor is the real price of WebSockets.
 
 💡 **Key point.** Use `wss://` (TLS), never `ws://`, in production — same reasoning as `https`. Plenty of
 corporate proxies also drop plain `ws://` while letting `wss://` through, so TLS isn't only about

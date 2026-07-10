@@ -29,6 +29,26 @@
 //    So: catch it, print a real-git-flavored CONFLICT message, move on.
 // 3. `git.statusMatrix()` works fine on a zero-commit repo (no throw) -
 //    `git.log()` is what throws (`NotFoundError`) before the first commit.
+// 4. GOTCHA FOR LESSON AUTHORS (found while real-browser-testing the stash
+//    lesson, not fixable from this file): isomorphic-git's WORKDIR walker
+//    trusts the git index's CACHED stat entry instead of re-hashing content
+//    when a fresh `lstat()` of the working file matches the stat recorded at
+//    add-time on every field `compareStats()` checks - mode/mtime/ctime/size/
+//    ino (see node_modules/isomorphic-git's WORKDIR.oid(), which calls
+//    `compareStats()` before deciding whether to re-read+hash the file). This
+//    is the "racy git" edge case (kernel.org/racy-git.txt) and isomorphic-git
+//    doesn't implement the usual protection for it. In THIS sandbox, seed
+//    (`precommit`) and `workdirEdits` writes happen back-to-back within the
+//    same execScript call, so mtime/ctime never tick between them - meaning a
+//    `workdirEdits` overwrite of a precommitted file is invisible to
+//    `computeStatus`/`git status`/stash's change-detection UNLESS its new
+//    content is a DIFFERENT BYTE LENGTH than what was committed (confirmed by
+//    testing both ways in a real browser: same-length edit -> invisible,
+//    different-length edit -> detected correctly). Any lesson (or future
+//    command) that needs `workdirEdits` to register as a real change to an
+//    already-committed file MUST make that edit a different length, not just
+//    different content.
+
 
 const AUTHOR = { name: 'learner', email: 'learner@example.com', timestamp: 1700000000 };
 // ^ fixed author + timestamp: commit hashes/timestamps are never compared for
@@ -93,7 +113,9 @@ async function writeFileDeep(fs, filepath, content) {
   await fs.promises.writeFile(`${DIR}/${filepath}`, content, 'utf8');
 }
 
-async function listAllFiles(fs) {
+// `ignore` (optional Set<string>) excludes exact relative-path matches, e.g. a
+// name read straight from .gitignore - see readGitignore below.
+async function listAllFiles(fs, ignore) {
   const out = [];
   async function walk(rel) {
     const abs = rel ? `${DIR}/${rel}` : DIR;
@@ -107,7 +129,19 @@ async function listAllFiles(fs) {
     }
   }
   await walk('');
-  return out.sort();
+  return (ignore && ignore.size ? out.filter((p) => !ignore.has(p)) : out).sort();
+}
+
+// Minimal .gitignore support: exact-filename lines only (no globs/dirs) - a
+// full pattern matcher is out of scope for this beginner sandbox. Missing
+// file -> empty ignore set.
+async function readGitignore(fs) {
+  try {
+    const content = await fs.promises.readFile(`${DIR}/.gitignore`, 'utf8');
+    return new Set(content.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#')));
+  } catch (e) {
+    return new Set();
+  }
 }
 
 // Splits `"foo bar"` / `'foo bar'` / `foo` tokens, so `git commit -m "two words"`
@@ -135,12 +169,15 @@ async function computeStatus(git, fs) {
   const branch = (await git.currentBranch({ fs, dir: DIR })) || 'main';
   const hasCommits = !!(await git.currentBranch({ fs, dir: DIR, test: true }));
   const matrix = await git.statusMatrix({ fs, dir: DIR });
+  const ignore = await readGitignore(fs);
   const staged = [];
   const unstaged = [];
   const untracked = [];
   for (const [path, head, workdir, stage] of matrix) {
     if (head === 0 && stage === 0 && workdir === 2) {
-      untracked.push(path);
+      // Ignored files only ever affect the untracked bucket, same as real git -
+      // a file that's already tracked stays tracked regardless of .gitignore.
+      if (!ignore.has(path)) untracked.push(path);
       continue;
     }
     if (stage !== head) staged.push({ path, kind: head === 0 ? 'new file' : stage === 0 ? 'deleted' : 'modified' });
@@ -201,10 +238,8 @@ function formatStatus({ branch, staged, unstaged, untracked, noCommitsYet }) {
 // -- one command ----------------------------------------------------------
 async function cmdAdd(git, fs, args) {
   if (!args.length) return 'Nothing specified, nothing added.';
-  const paths =
-    args.length === 1 && (args[0] === '.' || args[0] === '-A' || args[0] === '--all')
-      ? await listAllFiles(fs)
-      : args.filter((a) => a !== '-A' && a !== '--all');
+  const isAll = args.length === 1 && (args[0] === '.' || args[0] === '-A' || args[0] === '--all');
+  const paths = isAll ? await listAllFiles(fs, await readGitignore(fs)) : args.filter((a) => a !== '-A' && a !== '--all');
   try {
     for (const p of paths) await git.add({ fs, dir: DIR, filepath: p });
     return '';
@@ -276,6 +311,77 @@ async function cmdMerge(git, fs, args) {
   }
 }
 
+// -- stash ------------------------------------------------------------
+// isomorphic-git has no native stash API. v1 keeps this to a single slot
+// (not a real stack) scoped to one execScript run via `state` - plenty for a
+// beginner lesson, per the round's contract.
+async function cmdStash(git, fs, args, state) {
+  if (args[0] === 'pop') {
+    if (!state.stash) return 'No stash entries found.';
+    for (const [path, content] of Object.entries(state.stash)) {
+      await writeFileDeep(fs, path, content);
+    }
+    state.stash = null;
+    return 'Dropped refs/stash@{0}';
+  }
+  const st = await computeStatus(git, fs);
+  const changedPaths = [...new Set([...st.staged.map((f) => f.path), ...st.unstaged.map((f) => f.path)])];
+  if (!changedPaths.length) return 'No local changes to save';
+  const holding = {};
+  for (const p of changedPaths) holding[p] = await fs.promises.readFile(`${DIR}/${p}`, 'utf8');
+  const branch = (await git.currentBranch({ fs, dir: DIR })) || 'main';
+  // Save the diff ourselves, then force-checkout our own branch to resync the
+  // working tree AND index back to HEAD - same resync trick cmdMerge uses.
+  await git.checkout({ fs, dir: DIR, ref: branch, force: true });
+  state.stash = holding;
+  return `Saved working directory and index state WIP on ${branch}: stash@{0}`;
+}
+
+// -- revert -------------------------------------------------------------
+// isomorphic-git has no native revert either. v1 only supports `revert HEAD`:
+// build a new commit whose tree matches HEAD's parent (undoing whatever HEAD
+// changed), staying on the current branch the whole time - no detached HEAD.
+async function cmdRevert(git, fs, args) {
+  const target = args[0];
+  if (!target) return 'fatal: no commit specified for revert';
+  if (target !== 'HEAD') {
+    return `fatal: '${target}' - this sandbox only supports "git revert HEAD"`;
+  }
+  let commits;
+  try {
+    commits = await git.log({ fs, dir: DIR, depth: 2 });
+  } catch (err) {
+    return 'fatal: your current branch does not have any commits yet';
+  }
+  if (commits.length < 2) {
+    return `fatal: commit ${commits[0] ? commits[0].oid.slice(0, 7) : target} has no parent - nothing to revert to`;
+  }
+  const [headCommit, parentCommit] = commits;
+  const branch = (await git.currentBranch({ fs, dir: DIR })) || 'main';
+
+  const headFiles = await git.listFiles({ fs, dir: DIR, ref: headCommit.oid });
+  const parentFiles = await git.listFiles({ fs, dir: DIR, ref: parentCommit.oid });
+
+  // Anything HEAD added that the parent didn't have gets removed.
+  for (const p of headFiles) {
+    if (!parentFiles.includes(p)) {
+      await fs.promises.unlink(`${DIR}/${p}`);
+      await git.remove({ fs, dir: DIR, filepath: p });
+    }
+  }
+  // Everything else is restored to exactly what the parent's tree had.
+  for (const p of parentFiles) {
+    const { blob } = await git.readBlob({ fs, dir: DIR, oid: parentCommit.oid, filepath: p });
+    await writeFileDeep(fs, p, new TextDecoder().decode(blob));
+    await git.add({ fs, dir: DIR, filepath: p });
+  }
+
+  const message = `Revert "${headCommit.commit.message.trim()}"`;
+  const oid = await git.commit({ fs, dir: DIR, message, author: AUTHOR });
+  const n = new Set([...headFiles, ...parentFiles]).size;
+  return `[${branch} ${oid.slice(0, 7)}] ${message}\n ${n} file${n === 1 ? '' : 's'} changed`;
+}
+
 async function cmdLog(git, fs, args) {
   let commits;
   try {
@@ -291,7 +397,7 @@ async function cmdLog(git, fs, args) {
     .join('\n');
 }
 
-async function runOneCommand(git, fs, line) {
+async function runOneCommand(git, fs, line, state) {
   const tokens = tokenize(line);
   if (tokens[0] !== 'git') {
     const e = new Error(`${tokens[0]}: command not found (this sandbox only runs git commands)`);
@@ -315,6 +421,10 @@ async function runOneCommand(git, fs, line) {
       return cmdCheckout(git, fs, rest);
     case 'merge':
       return cmdMerge(git, fs, rest);
+    case 'stash':
+      return cmdStash(git, fs, rest, state);
+    case 'revert':
+      return cmdRevert(git, fs, rest);
     case 'log':
       return cmdLog(git, fs, rest);
     case 'status': {
@@ -339,6 +449,7 @@ async function execScript(commands, { seedFiles, precommit, workdirEdits, onStat
   const { fs, name } = freshFs(LightningFS);
   const transcript = [];
   let firstError;
+  const state = { stash: null }; // single-slot stash, scoped to this one run
 
   try {
     await fs.promises.mkdir(DIR);
@@ -362,7 +473,7 @@ async function execScript(commands, { seedFiles, precommit, workdirEdits, onStat
     for (const line of parseCommandLines(commands)) {
       transcript.push(`$ ${line}`);
       try {
-        const out = await runOneCommand(git, fs, line);
+        const out = await runOneCommand(git, fs, line, state);
         if (out) transcript.push(out);
       } catch (err) {
         transcript.push(err.message || String(err));

@@ -6,26 +6,26 @@ summary: "Getting your code onto the box, running it once by hand, then handing 
 tags: [systemd, deployment, services, git, scp, ports, logs, journalctl]
 difficulty: intermediate
 synonyms: ["run app as a systemd service", "keep app running after ssh closes", "restart app on crash", "start app on boot linux", "deploy code to server with git", "scp files to server", "check if app is listening on port", "systemd unit file for app", "journalctl read app logs"]
-updated: 2026-06-19
+updated: 2026-07-10
 ---
 
 # Run Your App as a Service
 
-You've got a box. Now you need your app *on* it - and, more importantly, *staying* on it. Because here's
-the trap everyone falls into the first time: you SSH in, you start your app, you see it working, you
-close your laptop... and it dies. Or it crashes at 3am and nobody restarts it. Or the box reboots for a
-kernel update and your app never comes back.
+You've got a box. Now you need your app *on* it - and, more importantly, *staying* on it. Here's the trap
+everyone falls into the first time: you SSH in, start your app, see it working, close your laptop... and
+it dies. Or it crashes at 3am and nobody restarts it. Or the box reboots for a kernel update and it never
+comes back.
 
-The fix isn't discipline or luck. It's handing your app to the part of Linux whose entire job is keeping
+The fix isn't discipline or luck - it's handing your app to the part of Linux whose entire job is keeping
 long-running programs alive: **systemd**. This phase gets your code onto the box, runs it once by hand to
-prove it works, then makes it a real service. Let's start with the mental model, because the whole reason
-this phase exists comes down to one fact about your shell.
+prove it works, then makes it a real service, starting with one fact about your shell that explains why
+this whole phase exists.
 
 ## Why "just run it" doesn't work
 
-**What it actually is.** When you start a program in your SSH session, that program is a *child* of your
-shell, and your shell is tied to your *connection*. When the connection ends - you log out, your laptop
-sleeps, the network blips - the shell goes away, and it takes your program down with it.
+When you start a program in your SSH session, that program is a *child* of your shell, and your shell is
+tied to your *connection*. When the connection ends - you log out, your laptop sleeps, the network
+blips - the shell goes away and takes your program down with it.
 
 ```text
    RUNNING IT BY HAND                      RUNNING IT AS A SERVICE
@@ -37,17 +37,17 @@ sleeps, the network blips - the shell goes away, and it takes your program down 
    logs scroll past and vanish      │      logs captured in the journal
 ```
 
-**Why this matters.** A server's whole job is to keep services alive without a human watching (see
-[Linux for Servers](/guides/linux-for-servers) for the full picture). A program tied to your terminal is
-the opposite of that. So we run it by hand *once* - only to confirm it works - and then immediately hand
-it off to something that won't let it die.
+A server's whole job is to keep services alive without a human watching (see
+[Linux for Servers](/guides/linux-for-servers) for the full picture) - a program tied to your terminal is
+the opposite of that. So we run it by hand *once*, only to confirm it works, then hand it off to
+something that won't let it die.
 
 ## Step 1: Get your code onto the box
 
 You have two clean ways to move your app from your laptop to the server. Pick the one that fits.
 
-**Option A - clone from Git (the usual choice).** If your code is in a Git repository, install Git on
-the box and clone it:
+**Option A - clone from Git**, the usual choice. If your code is in a Git repository, install Git on the
+box and clone it:
 
 ```console
 deploy@web-prod-1:~$ sudo apt install -y git
@@ -66,8 +66,8 @@ deploy@web-prod-1:~$ cd your-app
 `/home/deploy/your-app`. Updating later is `git pull` from inside that directory. For a private repo
 you'll need to authenticate - a deploy key or token - which the repo host documents.
 
-**Option B - copy files directly with `scp`.** If your app isn't in Git, or it's a built artifact (a
-compiled binary, a bundled archive), copy it over from your **laptop**:
+**Option B - copy files directly with `scp`**, if your app isn't in Git or is a built artifact (a
+compiled binary, a bundled archive). From your **laptop**:
 
 ```console
 $ scp ./my-app deploy@203.0.113.10:/home/deploy/
@@ -93,10 +93,10 @@ Starting server...
 Listening on http://127.0.0.1:3000
 ```
 
-*What just happened:* Your app started in the foreground and told you it's listening on port `3000` -
-but note the address: `127.0.0.1`, which is *localhost*, reachable only from the box itself. That's
-exactly what you want for now; the outside world will reach it through nginx in
-[Phase 3](03-make-it-public-and-safe.md), not directly.
+*What just happened:* Your app started in the foreground and reported listening on port `3000` - note
+the address, `127.0.0.1` (*localhost*), reachable only from the box itself. That's exactly what you want
+for now; the outside world will reach it through nginx in [Phase 3](03-make-it-public-and-safe.md), not
+directly.
 
 Leave it running and open a **second** SSH session to confirm it actually answers:
 
@@ -116,13 +116,12 @@ anywhere - which, for your app port, you do **not** want (more on that in Phase 
 
 ## Step 3: Hand it to systemd
 
-**What it actually is.** **systemd** is the *init system* on modern Ubuntu - the very first process to
-start at boot (PID 1) and the manager responsible for starting, stopping, supervising, and restarting
-all the long-running services on the box. You describe your app to it in a small text file called a
-**unit file**, and from then on systemd treats your app exactly like it treats SSH or nginx: a service
-it keeps alive.
+**systemd** is the *init system* on modern Ubuntu - the very first process to start at boot (PID 1),
+responsible for starting, stopping, supervising, and restarting all the long-running services on the box.
+You describe your app to it in a small text file called a **unit file**, and from then on systemd treats
+your app exactly like it treats SSH or nginx: a service it keeps alive.
 
-**A real example.** Create the unit file with `sudo` (it lives in a system directory):
+Create the unit file with `sudo` (it lives in a system directory):
 
 ```console
 deploy@web-prod-1:~$ sudo nano /etc/systemd/system/my-app.service
@@ -211,8 +210,8 @@ and the owning process (`-p`). The line shows your app (`my-app`, PID 8123) list
 `127.0.0.1:3000` - bound to localhost, exactly as intended. (`ss` is the modern replacement for the
 older `netstat`; if a tutorial shows `netstat -tlnp`, this is its equivalent.)
 
-To watch the logs live - the server-world replacement for "the output that used to scroll past in my
-terminal" - use the journal:
+To watch logs live - the server-world replacement for output that used to scroll past in your terminal -
+use the journal:
 
 ```console
 deploy@web-prod-1:~$ sudo journalctl -u my-app -f
@@ -225,10 +224,10 @@ Jun 19 14:25:31 web-prod-1 my-app[8123]: GET / 200 14ms
 doesn't stop the app - just your view of its logs). This is where you'll look first whenever something
 seems wrong.
 
-🪖 **War story.** The classic way to *think* you've deployed but actually haven't: you start the app in a
-plain SSH session, it works, you close the laptop, and the demo dies five minutes into the meeting. The
-whole point of the systemd dance above is that the app's life is no longer connected to yours. Run it as
-a service, verify `active (running)` and `enabled`, and you can disconnect with confidence.
+🪖 **War story.** The classic way to *think* you've deployed but haven't: you start the app in a plain
+SSH session, it works, you close the laptop, and the demo dies five minutes into the meeting. The whole
+point of the systemd dance above is that the app's life is no longer connected to yours - verify
+`active (running)` and `enabled`, then disconnect with confidence.
 
 ⚠️ **Gotcha.** If `systemctl status` shows `failed` or `activating (auto-restart)` flapping, your
 `ExecStart` command, a path, or a missing dependency is almost always the cause. Read `journalctl -u
