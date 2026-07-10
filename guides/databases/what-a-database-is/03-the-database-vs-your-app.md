@@ -22,7 +22,7 @@ flowchart LR
   App["YOUR APP (the client)<br/>give me all orders for customer 2"]
   Server["THE DATABASE SERVER<br/>(the DBMS, e.g. PostgreSQL)<br/>holds the actual data"]
   App -->|request over a connection| Server
-  Server -->|answer (rows)| App
+  Server -->|"answer (rows)"| App
 ```
 
 The two are often on different machines, talking over the network.

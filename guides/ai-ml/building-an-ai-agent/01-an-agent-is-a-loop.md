@@ -1,5 +1,5 @@
 ---
-title: "An Agent Is a Loop"
+title: "An Agent Is a Loop" 
 guide: "building-an-ai-agent"
 phase: 1
 summary: "The mental model for an AI agent: a language model given tools and a loop. It reasons, decides to call a tool, reads the result, and repeats until done — and you write the loop, the model makes the choices."

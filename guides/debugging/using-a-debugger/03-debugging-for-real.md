@@ -105,8 +105,8 @@ tool, same skill as reading a crash: top-to-bottom, newest frame first, click do
 flowchart TD
   mod["&lt;module&gt;  web.py:140  ← where it all started"] -->|called| disp["dispatch  web.py:51"]
   disp -->|called| hc["handle_checkout  web.py:88"]
-  hc -->|called cart_total(cart.items)| ct["cart_total  cart.py:5"]
-  ct -->|called apply_discount(total)| ad["apply_discount  cart.py:8  ← paused; amount looks wrong"]
+  hc -->|"called cart_total(cart.items)"| ct["cart_total  cart.py:5"]
+  ct -->|"called apply_discount(total)"| ad["apply_discount  cart.py:8  ← paused; amount looks wrong"]
 ```
 
 Paused in `apply_discount` with a wrong `amount`? The value came from above. Click `cart_total` to see
