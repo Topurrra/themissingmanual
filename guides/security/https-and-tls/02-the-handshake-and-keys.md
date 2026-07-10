@@ -57,7 +57,7 @@ sequenceDiagram
   participant You as You (browser)
   participant Server as Server (yourbank.com)
   You->>Server: 1. Hello - TLS versions & ciphers I can speak
-  Server-->>You: 2. Hello - use this cipher; here's my certificate (+ public key)
+  Server-->>You: 2. Hello - use this cipher, here's my certificate (+ public key)
   Note over You: 3. CHECK the certificate<br/>(right domain? trusted CA? not expired? - Phase 3)
   You->>Server: 4. Using the public key, both sides agree on a shared SESSION KEY
   Note over You,Server: 5. Everything from here is encrypted<br/>with the fast symmetric session key

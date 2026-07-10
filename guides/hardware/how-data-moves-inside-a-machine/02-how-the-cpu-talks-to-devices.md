@@ -118,7 +118,7 @@ sequenceDiagram
     loop block by block, no CPU involved
         DMA->>RAM: move the megabyte itself
     end
-    DMA-->>CPU: done (an interrupt; Phase 3)
+    DMA-->>CPU: done (an interrupt, Phase 3)
 ```
 
 *What just happened:* the CPU described the transfer, handed the grunt work to the DMA controller, and

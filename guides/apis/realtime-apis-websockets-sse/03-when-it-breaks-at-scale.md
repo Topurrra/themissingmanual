@@ -37,7 +37,7 @@ flowchart TB
   B[Bob] -->|connected to| S2[Server B]
   A -->|sends message| S1
   S1 -.->|knows only A| A
-  S1 -.x|can't reach Bob| B
+  S1 -.-x|can't reach Bob| B
 ```
 Alice's message reached Server A, but Bob's connection lives on Server B. Server A has no way to push to
 a client it isn't holding. With persistent connections, your clients are scattered across machines, and

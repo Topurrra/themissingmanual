@@ -37,7 +37,7 @@ When two transactions touch the same data at the same time, three classic anomal
 sequenceDiagram
   participant A as Transaction A
   participant B as Transaction B
-  A->>A: BEGIN; UPDATE alice balance = 0
+  A->>A: BEGIN, UPDATE alice balance = 0
   B->>B: BEGIN
   B->>A: SELECT alice balance → reads 0 (DIRTY: not committed!)
   B->>B: decides Alice is broke
@@ -54,7 +54,7 @@ sequenceDiagram
   participant B as Transaction B
   A->>A: BEGIN
   A->>A: SELECT alice balance → 400
-  B->>B: UPDATE alice balance = 300; COMMIT
+  B->>B: UPDATE alice balance = 300, COMMIT
   A->>A: SELECT alice balance → 300 (same query, different answer!)
 ```
 
@@ -68,7 +68,7 @@ sequenceDiagram
   participant B as Transaction B
   A->>A: BEGIN
   A->>A: SELECT count(*) WHERE balance > 1000 → 3
-  B->>B: INSERT a $5000 account; COMMIT
+  B->>B: INSERT a $5000 account, COMMIT
   A->>A: SELECT count(*) WHERE balance > 1000 → 4 (a phantom row appeared)
 ```
 
@@ -115,8 +115,8 @@ The classic recipe: two transfers grab the same two rows in *opposite order*.
 sequenceDiagram
   participant A as Transaction A (Alice → Bob)
   participant B as Transaction B (Bob → Alice)
-  A->>A: BEGIN; UPDATE alice (locks Alice's row)
-  B->>B: BEGIN; UPDATE bob (locks Bob's row)
+  A->>A: BEGIN, UPDATE alice (locks Alice's row)
+  B->>B: BEGIN, UPDATE bob (locks Bob's row)
   A-->>B: UPDATE bob → wants Bob's lock, which B holds. WAIT
   B-->>A: UPDATE alice → wants Alice's lock, which A holds. WAIT
   Note over A,B: each waits for the lock the other holds → DEADLOCK
