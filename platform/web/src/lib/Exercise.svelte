@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { checkAnswer } from '$lib/exercises.js';
+  import { checkAnswer, checkRegex, checkJson } from '$lib/exercises.js';
 
   export let guideSlug;
   export let phaseNo;
@@ -8,13 +8,13 @@
 
   $: storeKey = `tmm-exercise:${guideSlug}/${phaseNo}`;
 
-  // One state slot per item: predict -> {value, correct}; task -> {revealed, checks}.
+  // One state slot per item: predict/regex/json -> {value, correct, error}; task -> {revealed, checks}.
   let state = [];
 
   function blankState(item) {
     return item.type === 'task'
       ? { revealed: false, checks: (item.checklist || []).map(() => false) }
-      : { value: '', correct: false };
+      : { value: '', correct: false, error: null };
   }
 
   function persist() {
@@ -23,13 +23,16 @@
 
   function check(i) {
     const item = items[i];
-    const ok = checkAnswer(state[i].value, item.accept);
-    state[i] = { ...state[i], correct: ok };
+    let result;
+    if (item.type === 'regex') result = checkRegex(state[i].value, item.mustMatch, item.mustNotMatch);
+    else if (item.type === 'json') result = checkJson(state[i].value, item.expected);
+    else result = { correct: checkAnswer(state[i].value, item.accept), error: null };
+    state[i] = { ...state[i], correct: result.correct, error: result.error };
     state = [...state];
     persist();
   }
   function setValue(i, v) {
-    state[i] = { ...state[i], value: v, correct: false };
+    state[i] = { ...state[i], value: v, correct: false, error: null };
     state = [...state];
   }
   function reveal(i) {
@@ -110,7 +113,9 @@
                 <button type="button" class="exercise-btn" on:click={() => check(i)} disabled={!s?.value}>Check</button>
               {/if}
             </div>
-            {#if s?.value && !s?.correct && item.hint}
+            {#if s?.value && !s?.correct && s?.error}
+              <p class="exercise-hint">{s.error}</p>
+            {:else if s?.value && !s?.correct && item.hint}
               <p class="exercise-hint">Hint: {item.hint}</p>
             {/if}
           {/if}

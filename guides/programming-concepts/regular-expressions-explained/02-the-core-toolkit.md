@@ -242,3 +242,17 @@ Edit the pattern or the sample text and watch the matches highlight live:
 \b[\w.]+@[\w.]+\.\w+\b
 Email alice@example.com or bob@test.org - but "hello world" matches nothing.
 ```
+
+## Practice
+
+```exercise
+[
+  {
+    "type": "regex",
+    "task": "Write a regex that matches a date shaped like `2026-06-19` - four digits, a dash, two digits, a dash, two digits - and nothing else, not just a piece of a longer string.",
+    "mustMatch": ["2026-06-19", "1999-01-01", "0000-12-31"],
+    "mustNotMatch": ["26-6-19", "2026/06/19", "date: 2026-06-19", "2026-06-19 note"],
+    "hint": "Anchor it with ^ and $ so the whole string has to match, not just part of it."
+  }
+]
+```

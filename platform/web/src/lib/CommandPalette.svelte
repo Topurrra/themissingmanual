@@ -19,6 +19,7 @@
     { title: 'Contribute', type: 'Page', icon: 'ti-pencil', url: '/contribute' },
     { title: 'Cheat Sheet', type: 'Page', icon: 'ti-terminal-2', url: '/cheat-sheet' },
     { title: "What's New", type: 'Page', icon: 'ti-sparkles', url: '/changelog' },
+    { title: 'Practice', type: 'Page', icon: 'ti-keyboard', url: '/practice' },
     { title: 'Subscribe via RSS', type: 'Page', icon: 'ti-rss', url: '/rss.xml', external: true }
   ];
 

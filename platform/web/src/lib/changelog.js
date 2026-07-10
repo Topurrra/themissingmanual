@@ -6,6 +6,8 @@ export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
+      { tag: 'New', text: 'Practice: hands-on coding lessons in a three-panel playground - write real SQL, JavaScript, or Python and get checked instantly, right in your browser.', href: '/practice' },
+      { tag: 'Improved', text: 'Practice: each module (SQL, JavaScript, Python) now has its own overview page and a lesson sidebar, so it\'s easy to see what\'s left and jump straight to any lesson.', href: '/practice' },
       { tag: 'New', text: 'Highlight any passage in a guide and add a private note to it - only you can see them.' },
       { tag: 'Improved', text: 'The lofi player is much more usable on mobile: a full player sheet with volume, shuffle, repeat, and the track/station list, instead of a cramped row.' },
       { tag: 'Improved', text: 'Word Search now has 22 topic packs (was 6), plus a general mix - pick from Networking, Databases, Math, Physics, and more.', href: '/train' },

@@ -162,3 +162,16 @@ Paste or edit JSON — it validates live, and you can format or minify it:
 
 ```playground-json
 ```
+
+## Practice
+
+```exercise
+[
+  {
+    "type": "json",
+    "task": "Type a JSON object with a \"name\" key of \"Ada\" and a \"roles\" array containing \"admin\" and \"author\", in that order.",
+    "expected": { "name": "Ada", "roles": ["admin", "author"] },
+    "hint": "Double quotes on every key and string value - JSON doesn't allow single quotes."
+  }
+]
+```

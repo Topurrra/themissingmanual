@@ -21,6 +21,7 @@
   import Annotations from '$lib/Annotations.svelte';
   export let data;
   $: phase = data.phase;
+  $: practice = data.practice;
 
   const flagOn = (v) => !['0', 'false', 'off', 'no'].includes(String(v ?? '').trim().toLowerCase());
   $: siteConfig = $page.data.siteConfig ?? {};
@@ -123,6 +124,9 @@
   <span>/</span>
   <span>Phase {phase.phase_no}</span>
 </div>
+{#if practice}
+  <p class="pr-try-practice"><a href={`/practice/${practice.module}/${practice.phaseNo}`}>Try it in Practice →</a></p>
+{/if}
 <div style="margin: 0.1rem 0 1.2rem;"><Freshness date={phase.updated} /></div>
 
 {#key `${phase.guide_slug}/${phase.phase_no}`}
@@ -185,3 +189,16 @@
   {#if mermaidOn}<Mermaid />{/if}
   {#if runnableOn}<RunnableCode />{/if}
 {/key}
+
+<style>
+  .pr-try-practice {
+    margin: 0 0 1.2rem;
+    font-size: 0.82rem;
+  }
+  .pr-try-practice a {
+    color: var(--muted);
+  }
+  .pr-try-practice a:hover {
+    color: var(--accent);
+  }
+</style>

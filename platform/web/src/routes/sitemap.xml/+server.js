@@ -5,9 +5,11 @@ import { listGuides, listCategories, getGuide } from '$lib/api.js';
 // on crawlers to follow links - better for search indexing and AI answer engines.
 export async function GET({ fetch, url }) {
   const origin = url.origin;
-  const guides = (await listGuides(fetch)) ?? [];
-  const cats = (await listCategories(fetch)) ?? [];
-  const entries = ['/', '/paths', '/glossary', '/cheat-sheet', '/changelog', '/about', '/train', '/contribute'].map((loc) => ({ loc }));
+  // Practice is an interactive playground with its own hub, not reader content -
+  // exclude its guides/category page and list the hub instead.
+  const guides = ((await listGuides(fetch)) ?? []).filter((g) => g.category !== 'practice');
+  const cats = ((await listCategories(fetch)) ?? []).filter((c) => c.slug !== 'practice');
+  const entries = ['/', '/paths', '/glossary', '/cheat-sheet', '/changelog', '/about', '/train', '/practice', '/contribute'].map((loc) => ({ loc }));
   for (const c of cats) entries.push({ loc: `/categories/${c.slug}` });
   for (const g of guides) entries.push({ loc: `/guides/${g.slug}`, lastmod: g.updated });
   // Phase URLs. The API serializes these at its SQLite mutex and the response is

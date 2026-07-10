@@ -4,7 +4,9 @@ import { listGuides, getGuide, getPhase } from '$lib/api.js';
 // text inline instead of just links, for agents that want everything in one fetch.
 export async function GET({ fetch, url }) {
   const origin = url.origin;
-  const guides = (await listGuides(fetch)) ?? [];
+  // Practice lessons are interactive exercises (raw ```lesson JSON with solutions
+  // inline), not reading content - excluded here like in llms.txt and the sitemap.
+  const guides = ((await listGuides(fetch)) ?? []).filter((g) => g.category !== 'practice');
 
   let out =
     '# The Missing Manual - Full Content\n\n' +

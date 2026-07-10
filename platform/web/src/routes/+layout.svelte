@@ -13,6 +13,10 @@
   import TutorChat from "$lib/TutorChat.svelte";
   import TutorToggleButton from "$lib/TutorToggleButton.svelte";
   import { tutorOpen } from "$lib/tutor-store.js";
+  import {
+    practiceRailCollapsed,
+    togglePracticeRail,
+  } from "$lib/practice/sidebar-store.js";
   import LofiPlayer from "$lib/LofiPlayer.svelte";
   import PathRail from "$lib/PathRail.svelte";
   import WebMcp from "$lib/WebMcp.svelte";
@@ -21,7 +25,9 @@
   import { CHEATSHEETS } from "$lib/cheatsheets.js";
 
   export let data;
-  $: nav = data?.nav ?? [];
+  // The practice category has its own hub (/practice), not a reader shelf - keep
+  // it out of the sidebar, path rail, and command palette topics (all derived below).
+  $: nav = (data?.nav ?? []).filter((c) => c.slug !== "practice");
   $: guidePhases = data?.guidePhases ?? null;
   $: guideTitle = data?.guideTitle ?? null;
   // Flat category + guide lists (derived from nav) feed the right-side path rail.
@@ -53,8 +59,20 @@
       "/glossary",
       "/train",
       "/changelog",
+      "/practice",
     ].includes(path) ||
-    (path === "/review" && !$page.url.searchParams.get("guides"));
+    (path === "/review" && !$page.url.searchParams.get("guides")) ||
+    // /practice/[module] (overview) and /practice/[module]/[phase] (the full-height
+    // 3-panel IDE) are both bare/full-bleed like home (no sidebar, no path rail) -
+    // they render their own PracticeSidebar instead. /practice itself (the hub) is
+    // listed above (no sidebar there either - it's just a plain page, not a
+    // category/guide list).
+    /^\/practice\/[^/]+(?:\/[^/]+)?$/.test(path);
+  // Same test as the practice leg of `bare` above (kept separate, not derived
+  // from it - `bare` is also true for unrelated pages like home/about). Drives
+  // the header rail-toggle button so practice pages get the same affordance as
+  // reader pages, wired to the practice rail's own store instead of `collapsed`.
+  $: practiceRoute = /^\/practice\/[^/]+(?:\/[^/]+)?$/.test(path);
   $: currentGuide = (path.match(/^\/guides\/([^/]+)/) || [])[1] || null;
   // The active phase number on /guides/[slug]/[phase] - null on the guide overview.
   $: currentPhase = (() => {
@@ -302,6 +320,19 @@
           on:click={toggleSidebar}
           aria-label={collapsed ? "Show sidebar" : "Collapse sidebar"}
           title={collapsed ? "Show sidebar" : "Collapse sidebar"}
+        >
+          <i class="ti ti-menu-2" aria-hidden="true"></i>
+        </button>
+      {:else if practiceRoute}
+        <button
+          class="site-rail-btn"
+          on:click={togglePracticeRail}
+          aria-label={$practiceRailCollapsed
+            ? "Show lesson list"
+            : "Hide lesson list"}
+          title={$practiceRailCollapsed
+            ? "Show lesson list"
+            : "Hide lesson list"}
         >
           <i class="ti ti-menu-2" aria-hidden="true"></i>
         </button>
@@ -578,6 +609,7 @@
             <a href="/paths">Learning paths</a>
             <a href="/#topics">Browse topics</a>
             <a href="/train">Brain games</a>
+            <a href="/practice">Practice</a>
           </div>
           <div class="co-col">
             <h3 class="co-col-h">Reference</h3>
@@ -588,10 +620,10 @@
             <h3 class="co-col-h">Project</h3>
             <a href="/about">About</a>
             <a href="/changelog">What's new</a>
-            <a href="/contribute">Contribute</a>
             <a href="/request">Request a guide</a>
             <a href="/backlog">What's next?</a>
-            <a href="/review">Review</a>
+            <a href="/contribute">Contribute</a>
+            <!-- <a href="/review">Review</a> -->
           </div>
         </nav>
       </div>

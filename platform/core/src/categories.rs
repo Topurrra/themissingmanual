@@ -48,6 +48,10 @@ const DEFS: &[Def] = &[
     Def { slug: "tooling", name: "Tools & Workflow", icon: "ti-tools", blurb: "The tools a job expects you to already know - migrations, build systems, message queues, CI/CD, containers, cloud, auth, and observability - each explained for the day you have to use it." },
     Def { slug: "projects", name: "Projects", icon: "ti-rocket", blurb: "Build real things end to end - small projects you follow step by step, with working code you can run in the browser or on your machine. The fastest way to make everything else stick." },
     Def { slug: "working-as-a-developer", name: "Working as a Developer", icon: "ti-briefcase", blurb: "The human side of the job nobody puts in a syllabus - code review, reading someone else's mess, asking good questions, surviving your first on-call, and interviews that don't feel like hazing." },
+    // Practice modules power the /practice IDE surface; the category is hidden
+    // from the reader-facing category shelf (nav/home/paths filter it out) but
+    // must exist here so lessons flow through the normal guides ingest.
+    Def { slug: "practice", name: "Practice", icon: "ti-keyboard", blurb: "Hands-on lessons in a three-panel coding playground - read the task, write real SQL, JavaScript, or Python, run it in your browser, and get checked instantly." },
 ];
 
 /// Upsert the canonical category taxonomy. `DEFS` is the source of truth, so this runs on every
@@ -101,7 +105,7 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         let cats = categories_with_counts(&store).unwrap();
-        assert_eq!(cats.len(), 27);
+        assert_eq!(cats.len(), DEFS.len()); // count tracks the taxonomy, not a hardcoded number
         assert_eq!(cats[0].slug, "logic"); // DEFS array order = display order; foundations lead
         assert_eq!(cats[1].slug, "mathematics");
         assert_eq!(cats[2].slug, "physics");
@@ -141,7 +145,7 @@ mod tests {
         let store = Store::open_in_memory().unwrap();
         seed_categories(&store).unwrap();
         seed_categories(&store).unwrap();
-        assert_eq!(categories_with_counts(&store).unwrap().len(), 27);
+        assert_eq!(categories_with_counts(&store).unwrap().len(), DEFS.len());
     }
 
     #[test]

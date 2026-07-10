@@ -58,7 +58,11 @@
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     },
   ];
-  $: ({ categories, recent, guides } = data);
+  // The practice category has its own hub (/practice), not a reader shelf - keep
+  // its card out of the topic grid and its guides out of "Newly added".
+  $: ({ categories: rawCategories, recent: rawRecent, guides } = data);
+  $: categories = (rawCategories || []).filter((c) => c.slug !== "practice");
+  $: recent = (rawRecent || []).filter((g) => g.category !== "practice");
   $: iconFor = Object.fromEntries(categories.map((c) => [c.slug, c.icon]));
 
   $: begByCat = (guides || []).reduce((m, g) => {
@@ -212,6 +216,13 @@
       <span class="ht-go" aria-hidden="true">→</span>
     </a>
   {/if}
+  <a class="home-train" href="/practice">
+    <span class="ht-icon"><i class="ti ti-keyboard" aria-hidden="true"></i></span>
+    <span class="ht-text">
+      <span class="ht-title">Practice</span>
+    </span>
+    <span class="ht-go" aria-hidden="true">→</span>
+  </a>
   <a class="home-train" href="/train">
     <span class="ht-icon"><i class="ti ti-brain" aria-hidden="true"></i></span>
     <span class="ht-text">

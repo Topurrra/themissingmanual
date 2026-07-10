@@ -6,8 +6,9 @@
 // blocks. Nothing here is in the main entry.
 //
 // We build a minimal-but-comfortable editor: history, bracket matching, the
-// default keymap, line wrapping off (code scrolls), plus a theme that reads the
-// site's design tokens so light/dark match the rest of the reader.
+// default keymap, line wrapping on (long lines wrap instead of scrolling the
+// panel horizontally), plus a theme that reads the site's design tokens so
+// light/dark match the rest of the reader.
 
 import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, highlightActiveLine } from '@codemirror/view';
@@ -117,6 +118,7 @@ export function createEditor({ parent, doc, langExtension }) {
     extensions: [
       lineNumbers(),
       highlightActiveLine(),
+      EditorView.lineWrapping,
       history(),
       indentOnInput(),
       bracketMatching(),

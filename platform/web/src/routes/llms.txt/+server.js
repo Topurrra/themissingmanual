@@ -4,7 +4,9 @@ import { listGuides, listCategories } from '$lib/api.js';
 // LLMs/agents. Every guide page is also available as Markdown via Accept: text/markdown.
 export async function GET({ fetch, url }) {
   const origin = url.origin;
-  const guides = (await listGuides(fetch)) ?? [];
+  // Practice lessons are an interactive playground, not reading material - keep
+  // them out of the curated index.
+  const guides = ((await listGuides(fetch)) ?? []).filter((g) => g.category !== 'practice');
   const cats = (await listCategories(fetch)) ?? [];
   const name = Object.fromEntries(cats.map((c) => [c.slug, c.name]));
 

@@ -96,7 +96,7 @@ async fn lists_categories_with_counts() {
     assert_eq!(res.status(), StatusCode::OK);
     let bytes = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
     let cats: Vec<Category> = serde_json::from_slice(&bytes).unwrap();
-    assert_eq!(cats.len(), 27); // DEFS taxonomy count (see categories.rs)
+    assert_eq!(cats.len(), 28); // DEFS taxonomy count (see categories.rs)
     assert!(cats.iter().find(|c| c.slug == "version-control").unwrap().count >= 1);
 }
 

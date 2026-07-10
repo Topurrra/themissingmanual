@@ -37,6 +37,7 @@ const SQLJS_CDN = `https://cdn.jsdelivr.net/npm/sql.js@${SQLJS_VERSION}/dist`;
 // Because this adapters module is itself only ever dynamically imported, the
 // worker chunk never lands in the main entry either.
 import JsWorker from './js-worker.js?worker';
+import { TypeScriptAdapter } from './typescript-adapter.js';
 
 // Load an external script tag once; resolve when it's on `window`.
 const scriptCache = new Map();
@@ -242,13 +243,22 @@ class SqlAdapter {
     await this.#loading;
   }
 
-  async run(code) {
-    if (!this.#db) return { error: 'SQL runtime not loaded.' };
+  // `seed`, when given, runs against a fresh throwaway Database (seed DDL/INSERTs
+  // first) instead of the shared demo DB, and closes it afterwards - used by
+  // /practice lessons so each run is isolated and never touches the shared demo
+  // tables. Omitting `seed` is byte-for-byte the original behavior (RunnableCode
+  // never passes it).
+  async run(code, { seed } = {}) {
+    if (seed === undefined && !this.#db) return { error: 'SQL runtime not loaded.' };
+    if (seed !== undefined && !this.#SQL) return { error: 'SQL runtime not loaded.' };
+    let scratch = null;
     try {
-      const res = this.#db.exec(code);
+      const db = seed !== undefined ? (scratch = new this.#SQL.Database()) : this.#db;
+      if (scratch && seed) scratch.run(seed);
+      const res = db.exec(code);
       if (!res.length) {
         // No result set (e.g. INSERT/UPDATE/CREATE) - report rows changed.
-        const changes = this.#db.getRowsModified();
+        const changes = db.getRowsModified();
         return { logs: `OK - ${changes} row${changes === 1 ? '' : 's'} affected.` };
       }
       // Render the LAST statement's result set as a table.
@@ -256,6 +266,8 @@ class SqlAdapter {
       return { table: { columns: last.columns, rows: last.values } };
     } catch (err) {
       return { error: String(err.message || err) };
+    } finally {
+      if (scratch) scratch.close();
     }
   }
 
@@ -291,15 +303,20 @@ class UnsupportedAdapter {
 }
 
 // --- registry -------------------------------------------------------------
-// Language aliases → adapter factory. TypeScript routes to the JS worker for
-// now (a transpile step can be added later); go/rust are intentionally absent
-// so they degrade to the "not supported yet" path until a playground embed lands.
+// Language aliases → adapter factory. TypeScript strips types via Sucrase then
+// runs on the same JS worker (see typescript-adapter.js); go/rust are
+// intentionally absent so they degrade to the "not supported yet" path until a
+// playground embed lands. Git lessons don't go through this registry at all -
+// see $lib/practice/git/runtime.js, wired directly from runners.js instead
+// (a command-script + repo-state grading shape, not a single function run).
 const FACTORIES = {
   javascript: () => new JsAdapter(),
   js: () => new JsAdapter(),
   python: () => new PythonAdapter(),
   py: () => new PythonAdapter(),
-  sql: () => new SqlAdapter()
+  sql: () => new SqlAdapter(),
+  typescript: () => new TypeScriptAdapter(),
+  ts: () => new TypeScriptAdapter()
 };
 
 // One adapter instance per language, shared across all blocks on the page so
