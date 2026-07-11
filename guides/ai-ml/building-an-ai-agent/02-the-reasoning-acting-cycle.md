@@ -7,7 +7,7 @@ tags: [ai, agent, function-calling, tool-use, schema, messages, memory]
 difficulty: intermediate
 synonyms: ["how function calling works", "json schema for tools", "agent message exchange", "feed tool result back to model", "what is agent memory", "react cycle in code", "structured tool call from llm"]
 updated: 2026-07-10
----  
+---
 
 # The Reasoning-Acting Cycle
 
