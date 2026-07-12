@@ -72,7 +72,12 @@ function shortSig(name, message, filename, lineno) {
   return `${name || 'Error'}: ${message || ''} @ ${file}:${lineno || 0}`.slice(0, 200);
 }
 
+// Browser-extension / crypto-wallet noise that fires on our pages but isn't our
+// bug (e.g. "Failed to connect to MetaMask"). Dropped so the tracker stays signal.
+const NOISE = /metamask|ethereum|web3|solana|phantom|walletconnect|coinbase|chrome-extension|moz-extension|safari-web-extension|ResizeObserver loop/i;
+
 function recordError(sig) {
+  if (NOISE.test(sig)) return;
   if (errCount >= MAX_ERRORS_PER_LOAD || seenErrors.has(sig)) return;
   seenErrors.add(sig);
   errCount++;

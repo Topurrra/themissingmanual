@@ -129,6 +129,10 @@
   let asciiIdx = 0;
 
   function animateAscii() {
+    // Bail if we've navigated away (the element is gone) — the queued setTimeout
+    // would otherwise deref a null asciiEl and throw. Returning here also stops
+    // the chain from rescheduling, so it self-terminates on unmount.
+    if (!asciiEl) return;
     if (asciiIdx < asciiText.length) {
       asciiEl.textContent += asciiText[asciiIdx];
       asciiIdx++;
