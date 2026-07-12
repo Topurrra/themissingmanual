@@ -183,6 +183,82 @@
     {/if}
   </div>
 
+  <h2 class="admin-h2">AI crawlers vs humans</h2>
+  <p class="admin-note" style="margin:0 0 0.4rem;">
+    Is our GEO work being read by AI engines? Bot hits are known AI/search
+    crawler user agents requesting a page.
+  </p>
+  <div class="metrics">
+    <div class="metric">
+      <span class="metric-n">{hvb.human.toLocaleString()}</span>
+      <span class="metric-l">Human pageviews</span>
+    </div>
+    <div class="metric">
+      <span class="metric-n">{hvb.bot.toLocaleString()}</span>
+      <span class="metric-l">Bot hits ({botPct}% of total)</span>
+    </div>
+  </div>
+  <div class="ranks">
+    {#each botHits as r}
+      {@const mx = peak(botHits)}
+      <div class="rank-row">
+        <span class="rank-label">{r.bot}</span>
+        <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}
+        ></span>
+        <b class="rank-count">{r.count.toLocaleString()}</b>
+      </div>
+    {:else}<p class="admin-empty">No crawler hits recorded yet</p>{/each}
+  </div>
+
+  <h2 class="admin-h2">Core Web Vitals</h2>
+  <div class="metrics">
+    {#each ["LCP", "INP", "CLS"] as m}
+      {@const v = vitals[m]}
+      <div class="metric">
+        <span class="metric-n">{v ? fmtVital(m, v.med) : "—"}</span>
+        <span class="metric-l">{m} (median)</span>
+        {#if v}<span class={`metric-trend ${vitalStatus(m, v.med)}`}
+            >{vitalWord[vitalStatus(m, v.med)]}</span
+          >{/if}
+      </div>
+    {/each}
+  </div>
+  <div class="ranks">
+    {#each ["LCP", "INP", "CLS"] as m}
+      {@const v = vitals[m]}
+      {@const total = v ? v.good + v.ni + v.poor : 0}
+      {#if total > 0}
+        <div class="rank-row">
+          <span class="rank-label">{m} · good split</span>
+          <span class="rank-fill" style={`width:${(v.good / total) * 100}%`}
+          ></span>
+          <b class="rank-count">{Math.round((v.good / total) * 100)}%</b>
+        </div>
+      {/if}
+    {/each}
+    {#if !["LCP", "INP", "CLS"].some((m) => vitals[m] && vitals[m].good + vitals[m].ni + vitals[m].poor > 0)}
+      <p class="admin-empty">No Core Web Vitals samples yet</p>
+    {/if}
+  </div>
+
+  <h2 class="admin-h2">Read completion</h2>
+  <div class="metrics">
+    <div class="metric">
+      <span class="metric-n">{finishRate}%</span>
+      <span class="metric-l">Finished the page (of readers who reached 25%)</span>
+    </div>
+  </div>
+  <div class="ranks">
+    {#each [["25% scrolled", funnel.p25], ["50% scrolled", funnel.p50], ["75% scrolled", funnel.p75], ["100% scrolled", funnel.p100]] as [label, n]}
+      {@const mx = Math.max(1, funnel.p25)}
+      <div class="rank-row">
+        <span class="rank-label">{label}</span>
+        <span class="rank-fill" style={`width:${(n / mx) * 100}%`}></span>
+        <b class="rank-count">{n.toLocaleString()}</b>
+      </div>
+    {/each}
+  </div>
+
   {#if analytics.devices && analytics.devices.length}
     <h2 class="admin-h2">Devices</h2>
     <div class="ranks">
@@ -334,55 +410,6 @@
     {:else}<p class="admin-empty">No zero-result searches recorded</p>{/each}
   </div>
 
-  <h2 class="admin-h2">Read completion</h2>
-  <div class="metrics">
-    <div class="metric">
-      <span class="metric-n">{finishRate}%</span>
-      <span class="metric-l">Finished the page (of readers who reached 25%)</span>
-    </div>
-  </div>
-  <div class="ranks">
-    {#each [["25% scrolled", funnel.p25], ["50% scrolled", funnel.p50], ["75% scrolled", funnel.p75], ["100% scrolled", funnel.p100]] as [label, n]}
-      {@const mx = Math.max(1, funnel.p25)}
-      <div class="rank-row">
-        <span class="rank-label">{label}</span>
-        <span class="rank-fill" style={`width:${(n / mx) * 100}%`}></span>
-        <b class="rank-count">{n.toLocaleString()}</b>
-      </div>
-    {/each}
-  </div>
-
-  <h2 class="admin-h2">Core Web Vitals</h2>
-  <div class="metrics">
-    {#each ["LCP", "INP", "CLS"] as m}
-      {@const v = vitals[m]}
-      <div class="metric">
-        <span class="metric-n">{v ? fmtVital(m, v.med) : "—"}</span>
-        <span class="metric-l">{m} (median)</span>
-        {#if v}<span class={`metric-trend ${vitalStatus(m, v.med)}`}
-            >{vitalWord[vitalStatus(m, v.med)]}</span
-          >{/if}
-      </div>
-    {/each}
-  </div>
-  <div class="ranks">
-    {#each ["LCP", "INP", "CLS"] as m}
-      {@const v = vitals[m]}
-      {@const total = v ? v.good + v.ni + v.poor : 0}
-      {#if total > 0}
-        <div class="rank-row">
-          <span class="rank-label">{m} · good split</span>
-          <span class="rank-fill" style={`width:${(v.good / total) * 100}%`}
-          ></span>
-          <b class="rank-count">{Math.round((v.good / total) * 100)}%</b>
-        </div>
-      {/if}
-    {/each}
-    {#if !["LCP", "INP", "CLS"].some((m) => vitals[m] && vitals[m].good + vitals[m].ni + vitals[m].poor > 0)}
-      <p class="admin-empty">No Core Web Vitals samples yet</p>
-    {/if}
-  </div>
-
   <h2 class="admin-h2">JS errors</h2>
   <div class="ranks">
     {#each topErrors as r}
@@ -394,32 +421,5 @@
         <b class="rank-count">{r.count.toLocaleString()}</b>
       </div>
     {:else}<p class="admin-empty">No client errors — nice.</p>{/each}
-  </div>
-
-  <h2 class="admin-h2">AI crawlers vs humans</h2>
-  <p class="admin-note" style="margin:0 0 0.4rem;">
-    Is our GEO work being read by AI engines? Bot hits are known AI/search
-    crawler user agents requesting a page.
-  </p>
-  <div class="metrics">
-    <div class="metric">
-      <span class="metric-n">{hvb.human.toLocaleString()}</span>
-      <span class="metric-l">Human pageviews</span>
-    </div>
-    <div class="metric">
-      <span class="metric-n">{hvb.bot.toLocaleString()}</span>
-      <span class="metric-l">Bot hits ({botPct}% of total)</span>
-    </div>
-  </div>
-  <div class="ranks">
-    {#each botHits as r}
-      {@const mx = peak(botHits)}
-      <div class="rank-row">
-        <span class="rank-label">{r.bot}</span>
-        <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}
-        ></span>
-        <b class="rank-count">{r.count.toLocaleString()}</b>
-      </div>
-    {:else}<p class="admin-empty">No crawler hits recorded yet</p>{/each}
   </div>
 {/if}
