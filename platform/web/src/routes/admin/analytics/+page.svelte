@@ -58,11 +58,45 @@
   $: viewsPerVisitor = analytics.uniqueVisitors
     ? (analytics.views / analytics.uniqueVisitors).toFixed(1)
     : "0";
+  // Engaged reading time (dwell): active time only, tab-hidden time excluded.
+  const fmtDur = (ms) => {
+    const s = Math.round((ms || 0) / 1000);
+    if (s < 60) return `${s}s`;
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return r ? `${m}m ${r}s` : `${m}m`;
+  };
+  $: avgDwell = analytics.avgDwellMs || 0;
   const trend = (cur, prv) =>
     prv > 0 ? Math.round(((cur - prv) / prv) * 100) : cur > 0 ? null : 0;
   $: tViews = trend(analytics.views, prev.views);
   $: tVisitors = trend(analytics.uniqueVisitors, prev.uniqueVisitors);
   $: tSearches = trend(analytics.searches, prev.searches);
+
+  // New sections: zero-result searches, read-completion funnel, Core Web
+  // Vitals, JS errors, AI-crawler traffic. All keyed off analytics fields
+  // that may be absent on older data, hence the `|| []` / `|| {}` fallbacks.
+  $: zeroSearches = analytics.zeroResultSearches || [];
+  $: funnel = analytics.readFunnel || { p25: 0, p50: 0, p75: 0, p100: 0 };
+  $: finishRate = funnel.p25 ? Math.round((funnel.p100 / funnel.p25) * 100) : 0;
+  $: vitals = analytics.vitals || {};
+  $: topErrors = analytics.topErrors || [];
+  $: botHits = analytics.botHits || [];
+  $: hvb = analytics.humanVsBot || { human: 0, bot: 0 };
+  $: botPct = hvb.human + hvb.bot ? Math.round((hvb.bot / (hvb.human + hvb.bot)) * 100) : 0;
+
+  const fmtVital = (metric, v) => {
+    if (v == null) return "—";
+    if (metric === "CLS") return (v / 1000).toFixed(2);
+    return v >= 1000 ? `${(v / 1000).toFixed(2)}s` : `${Math.round(v)}ms`;
+  };
+  const vitalThresholds = { LCP: [2500, 4000], INP: [200, 500], CLS: [100, 250] };
+  const vitalStatus = (metric, v) => {
+    if (v == null) return "flat";
+    const [good, poor] = vitalThresholds[metric];
+    return v <= good ? "up" : v > poor ? "down" : "flat";
+  };
+  const vitalWord = { up: "good", down: "poor", flat: "needs improvement" };
 </script>
 
 {#snippet chip(t)}
@@ -109,6 +143,10 @@
     <div class="metric">
       <span class="metric-n">{viewsPerVisitor}</span>
       <span class="metric-l">Views / visitor</span>
+    </div>
+    <div class="metric">
+      <span class="metric-n">{avgDwell ? fmtDur(avgDwell) : "—"}</span>
+      <span class="metric-l">Avg engaged time / view</span>
     </div>
   </div>
 
@@ -191,6 +229,23 @@
           </a>
         {:else}<p class="admin-empty">-</p>{/each}
       </div>
+      <h2 class="admin-h2">Guides that hold attention</h2>
+      <div class="ranks">
+        {#each analytics.topDwell || [] as r}
+          {@const mx = Math.max(1, ...(analytics.topDwell || []).map((d) => d.ms))}
+          <a class="rank-row" href={r.path} title={`${r.views} views`}>
+            <span class="rank-label">{pretty(r.path)}</span>
+            <span class="rank-fill" style={`width:${(r.ms / mx) * 100}%`}></span>
+            <b class="rank-count">{fmtDur(r.ms)}</b>
+          </a>
+        {:else}<p class="admin-empty">
+            Not enough engaged-time data yet (needs ≥3 views per guide).
+          </p>{/each}
+      </div>
+      <p class="admin-note" style="margin-top:0.4rem;">
+        Avg active reading time per view — background-tab time excluded. High views +
+        low time here = a guide people open but don't read.
+      </p>
     </div>
     <div>
       <h2 class="admin-h2">Traffic by source</h2>
@@ -261,5 +316,110 @@
         </p>
       {/if}
     </div>
+  </div>
+
+  <h2 class="admin-h2">Zero-result searches</h2>
+  <p class="admin-note" style="margin:0 0 0.4rem;">
+    These are the content backlog — what people search for and don't find.
+  </p>
+  <div class="ranks">
+    {#each zeroSearches as r}
+      {@const mx = peak(zeroSearches)}
+      <div class="rank-row">
+        <span class="rank-label">{r.query}</span>
+        <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}
+        ></span>
+        <b class="rank-count">{r.count.toLocaleString()}</b>
+      </div>
+    {:else}<p class="admin-empty">No zero-result searches recorded</p>{/each}
+  </div>
+
+  <h2 class="admin-h2">Read completion</h2>
+  <div class="metrics">
+    <div class="metric">
+      <span class="metric-n">{finishRate}%</span>
+      <span class="metric-l">Finished the page (of readers who reached 25%)</span>
+    </div>
+  </div>
+  <div class="ranks">
+    {#each [["25% scrolled", funnel.p25], ["50% scrolled", funnel.p50], ["75% scrolled", funnel.p75], ["100% scrolled", funnel.p100]] as [label, n]}
+      {@const mx = Math.max(1, funnel.p25)}
+      <div class="rank-row">
+        <span class="rank-label">{label}</span>
+        <span class="rank-fill" style={`width:${(n / mx) * 100}%`}></span>
+        <b class="rank-count">{n.toLocaleString()}</b>
+      </div>
+    {/each}
+  </div>
+
+  <h2 class="admin-h2">Core Web Vitals</h2>
+  <div class="metrics">
+    {#each ["LCP", "INP", "CLS"] as m}
+      {@const v = vitals[m]}
+      <div class="metric">
+        <span class="metric-n">{v ? fmtVital(m, v.med) : "—"}</span>
+        <span class="metric-l">{m} (median)</span>
+        {#if v}<span class={`metric-trend ${vitalStatus(m, v.med)}`}
+            >{vitalWord[vitalStatus(m, v.med)]}</span
+          >{/if}
+      </div>
+    {/each}
+  </div>
+  <div class="ranks">
+    {#each ["LCP", "INP", "CLS"] as m}
+      {@const v = vitals[m]}
+      {@const total = v ? v.good + v.ni + v.poor : 0}
+      {#if total > 0}
+        <div class="rank-row">
+          <span class="rank-label">{m} · good split</span>
+          <span class="rank-fill" style={`width:${(v.good / total) * 100}%`}
+          ></span>
+          <b class="rank-count">{Math.round((v.good / total) * 100)}%</b>
+        </div>
+      {/if}
+    {/each}
+    {#if !["LCP", "INP", "CLS"].some((m) => vitals[m] && vitals[m].good + vitals[m].ni + vitals[m].poor > 0)}
+      <p class="admin-empty">No Core Web Vitals samples yet</p>
+    {/if}
+  </div>
+
+  <h2 class="admin-h2">JS errors</h2>
+  <div class="ranks">
+    {#each topErrors as r}
+      {@const mx = peak(topErrors)}
+      <div class="rank-row">
+        <span class="rank-label">{r.sig}</span>
+        <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}
+        ></span>
+        <b class="rank-count">{r.count.toLocaleString()}</b>
+      </div>
+    {:else}<p class="admin-empty">No client errors — nice.</p>{/each}
+  </div>
+
+  <h2 class="admin-h2">AI crawlers vs humans</h2>
+  <p class="admin-note" style="margin:0 0 0.4rem;">
+    Is our GEO work being read by AI engines? Bot hits are known AI/search
+    crawler user agents requesting a page.
+  </p>
+  <div class="metrics">
+    <div class="metric">
+      <span class="metric-n">{hvb.human.toLocaleString()}</span>
+      <span class="metric-l">Human pageviews</span>
+    </div>
+    <div class="metric">
+      <span class="metric-n">{hvb.bot.toLocaleString()}</span>
+      <span class="metric-l">Bot hits ({botPct}% of total)</span>
+    </div>
+  </div>
+  <div class="ranks">
+    {#each botHits as r}
+      {@const mx = peak(botHits)}
+      <div class="rank-row">
+        <span class="rank-label">{r.bot}</span>
+        <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}
+        ></span>
+        <b class="rank-count">{r.count.toLocaleString()}</b>
+      </div>
+    {:else}<p class="admin-empty">No crawler hits recorded yet</p>{/each}
   </div>
 {/if}

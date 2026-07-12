@@ -6,6 +6,8 @@
   import { levelLabel } from "$lib/difficulty.js";
   import { afterNavigate } from "$app/navigation";
   import { sendPageview } from "$lib/beacon.js";
+  import { initDwell, startDwell } from "$lib/dwell.js";
+  import { initVitals, setVitalsPath } from "$lib/vitals.js";
   import CommandPalette from "$lib/CommandPalette.svelte";
   import HeaderSearch from "$lib/HeaderSearch.svelte";
   import Appearance from "$lib/Appearance.svelte";
@@ -273,6 +275,16 @@
   afterNavigate(({ to }) => {
     if (mobile) collapsed = true;
     if (to && !to.url.pathname.startsWith("/admin")) sendPageview(to.url);
+    // Dwell: flush the page we left and start timing the new one (initDwell is
+    // idempotent — wires the global visibility/pagehide listeners on first call).
+    if (to) {
+      initDwell();
+      startDwell(to.url.pathname);
+      // Vitals: init once (LCP/CLS/INP are only ever measured for this hard
+      // load); keep the path current so later JS errors attribute correctly.
+      initVitals(to.url.pathname);
+      setVitalsPath(to.url.pathname);
+    }
   });
 
   function toggleSidebar() {

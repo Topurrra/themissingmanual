@@ -352,6 +352,8 @@ pub struct EventInput {
     device: String,
     #[serde(default)]
     source: String,
+    #[serde(default)]
+    value: i64,
 }
 
 // Public: the analytics collector posts here (server-to-server from the web origin).
@@ -364,9 +366,12 @@ pub async fn record_event(State(state): State<Arc<AppState>>, headers: HeaderMap
             return (StatusCode::UNAUTHORIZED, Json(json!({ "error": "bad beacon key" }))).into_response();
         }
     }
-    if e.kind != "pageview" && e.kind != "search" {
+    if !matches!(e.kind.as_str(), "pageview" | "search" | "dwell" | "read" | "vital" | "err" | "bot") {
         return (StatusCode::BAD_REQUEST, Json(json!({ "error": "bad kind" }))).into_response();
     }
+    // `dwell` carries an engaged-time delta in ms; clamp to a sane 0..2h to reject
+    // clock-glitch/tampered values. Other kinds don't use `value`.
+    let value = e.value.clamp(0, 7_200_000);
     let r = {
         state.store.lock().unwrap().record_event(
             &e.kind,
@@ -376,6 +381,7 @@ pub async fn record_event(State(state): State<Arc<AppState>>, headers: HeaderMap
             &truncate(&e.query, 255),
             &truncate(&e.device, 16),
             &truncate(&e.source, 64),
+            value,
         )
     };
     match r {
@@ -390,6 +396,9 @@ pub async fn analytics(State(state): State<Arc<AppState>>, Query(q): Query<HashM
     let build = || -> Result<serde_json::Value, content_core::store::StoreError> {
         let (views, uniq, searches) = store.analytics_totals(days)?;
         let (pviews, puniq, psearches) = store.analytics_totals_prev(days)?;
+        let (p25, p50, p75, p100) = store.read_funnel(days)?;
+        let (lcp, inp, cls) = store.vitals_summary(days)?;
+        let (human, bot) = store.human_vs_bot(days)?;
         Ok(json!({
             "views": views,
             "uniqueVisitors": uniq,
@@ -403,6 +412,18 @@ pub async fn analytics(State(state): State<Arc<AppState>>, Query(q): Query<HashM
             "topSearches": store.top_searches(days, 10)?.into_iter().map(|(p, c)| json!({"query": p, "count": c})).collect::<Vec<_>>(),
             "devices": store.top_devices(days, 5)?.into_iter().map(|(p, c)| json!({"device": p, "count": c})).collect::<Vec<_>>(),
             "topSources": store.top_sources(days, 10)?.into_iter().map(|(p, c)| json!({"source": p, "count": c})).collect::<Vec<_>>(),
+            "avgDwellMs": store.avg_dwell_ms(days)?,
+            "topDwell": store.top_guides_by_dwell(days, 10)?.into_iter().map(|(p, ms, v)| json!({"path": p, "ms": ms, "views": v})).collect::<Vec<_>>(),
+            "zeroResultSearches": store.top_zero_result_searches(days, 10)?.into_iter().map(|(q, c)| json!({"query": q, "count": c})).collect::<Vec<_>>(),
+            "readFunnel": {"p25": p25, "p50": p50, "p75": p75, "p100": p100},
+            "vitals": {
+                "LCP": {"good": lcp.good, "ni": lcp.ni, "poor": lcp.poor, "med": lcp.med},
+                "INP": {"good": inp.good, "ni": inp.ni, "poor": inp.poor, "med": inp.med},
+                "CLS": {"good": cls.good, "ni": cls.ni, "poor": cls.poor, "med": cls.med},
+            },
+            "topErrors": store.top_errors(days, 10)?.into_iter().map(|(sig, c)| json!({"sig": sig, "count": c})).collect::<Vec<_>>(),
+            "botHits": store.bot_hits(days, 10)?.into_iter().map(|(b, c)| json!({"bot": b, "count": c})).collect::<Vec<_>>(),
+            "humanVsBot": {"human": human, "bot": bot},
         }))
     };
     match build() {

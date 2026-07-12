@@ -1,6 +1,23 @@
 import { getGuide, getPhase } from '$lib/api.js';
 import { apiCatalog, skillsIndex, OPENAPI, SKILL_MD } from '$lib/agent-endpoints.js';
 import { checkAndSend } from '$lib/server/push.js';
+import { API_BASE } from '$lib/server/adminApi.js';
+
+// Known AI/search crawler user-agents (case-insensitive substring match).
+// Bots don't run JS, so this can't go through the client beacon - recorded
+// server-side, once per HTML page navigation (see the text/html block below).
+const BOT_UAS = [
+  'GPTBot', 'ChatGPT-User', 'OAI-SearchBot', 'ClaudeBot', 'anthropic-ai', 'Claude-Web',
+  'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Googlebot', 'Bingbot', 'Applebot',
+  'CCBot', 'Amazonbot', 'Bytespider', 'Meta-ExternalAgent', 'cohere-ai', 'DuckDuckBot',
+  'YandexBot', 'Bravebot'
+];
+
+function matchBot(ua) {
+  if (!ua) return null;
+  const ul = ua.toLowerCase();
+  return BOT_UAS.find((name) => ul.includes(name.toLowerCase())) || null;
+}
 
 // The comeback-loop send job: periodically check for subscriptions whose
 // "check back" time has arrived and send a review reminder. Guarded against
@@ -108,6 +125,16 @@ export async function handle({ event, resolve }) {
     if (m) links.push(`<${o}${url.pathname}>; rel="alternate"; type="text/markdown"`);
     response.headers.append('link', links.join(', '));
     response.headers.append('vary', 'Accept');
+
+    // AI/search crawler hit - fire-and-forget, never blocks the response.
+    const bot = matchBot(request.headers.get('user-agent') || '');
+    if (bot) {
+      fetch(`${API_BASE}/api/events`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ kind: 'bot', path: url.pathname, referrer: '', visitor: 'bot', query: bot, device: '', source: '', value: 0 })
+      }).catch(() => {});
+    }
   }
 
   // - Security headers on every response (CSP itself is handled by SvelteKit's

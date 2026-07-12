@@ -5,6 +5,14 @@ pub struct Store {
     conn: Connection,
 }
 
+/// Bucketed counts + representative (median) value for one Core Web Vitals metric.
+pub struct VitalStats {
+    pub good: i64,
+    pub ni: i64,
+    pub poor: i64,
+    pub med: i64,
+}
+
 #[derive(thiserror::Error, Debug)]
 pub enum StoreError {
     #[error(transparent)]
@@ -84,7 +92,8 @@ impl Store {
                  visitor TEXT NOT NULL,
                  query TEXT,
                  device TEXT NOT NULL DEFAULT '',
-                 source TEXT NOT NULL DEFAULT ''
+                 source TEXT NOT NULL DEFAULT '',
+                 value INTEGER NOT NULL DEFAULT 0
              );
              CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
              CREATE TABLE IF NOT EXISTS settings (
@@ -118,6 +127,7 @@ impl Store {
         // Additive migrations for pre-existing events tables (no-op once present).
         let _ = conn.execute("ALTER TABLE events ADD COLUMN device TEXT NOT NULL DEFAULT ''", []);
         let _ = conn.execute("ALTER TABLE events ADD COLUMN source TEXT NOT NULL DEFAULT ''", []);
+        let _ = conn.execute("ALTER TABLE events ADD COLUMN value INTEGER NOT NULL DEFAULT 0", []);
         let _ = conn.execute("ALTER TABLE feedback ADD COLUMN done INTEGER NOT NULL DEFAULT 0", []);
         Ok(Self { conn })
     }
@@ -635,10 +645,10 @@ impl Store {
 
     // ---- analytics ----
 
-    pub fn record_event(&self, kind: &str, path: &str, referrer: &str, visitor: &str, query: &str, device: &str, source: &str) -> Result<(), StoreError> {
+    pub fn record_event(&self, kind: &str, path: &str, referrer: &str, visitor: &str, query: &str, device: &str, source: &str, value: i64) -> Result<(), StoreError> {
         self.conn.execute(
-            "INSERT INTO events (kind, path, referrer, visitor, query, device, source) VALUES (?1,?2,?3,?4,?5,?6,?7)",
-            params![kind, path, referrer, visitor, query, device, source],
+            "INSERT INTO events (kind, path, referrer, visitor, query, device, source, value) VALUES (?1,?2,?3,?4,?5,?6,?7,?8)",
+            params![kind, path, referrer, visitor, query, device, source, value],
         )?;
         Ok(())
     }
@@ -706,6 +716,40 @@ impl Store {
     pub fn top_sources(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
         self.top_by("AND kind='pageview' AND source<>''", "source", days, limit)
     }
+
+    /// Average engaged (active) reading time per pageview, in ms, over the window.
+    /// `dwell` events carry active-time deltas (tab-hidden time excluded); summing
+    /// them and dividing by the pageview count gives avg engaged time per view.
+    pub fn avg_dwell_ms(&self, days: i64) -> Result<i64, StoreError> {
+        let w = format!("-{days} days");
+        let total: i64 = self.conn.query_row(
+            "SELECT COALESCE(SUM(value),0) FROM events WHERE kind='dwell' AND ts>=datetime('now',?1)",
+            params![w], |r| r.get(0))?;
+        let views: i64 = self.conn.query_row(
+            "SELECT COUNT(*) FROM events WHERE kind='pageview' AND ts>=datetime('now',?1)",
+            params![w], |r| r.get(0))?;
+        Ok(if views > 0 { total / views } else { 0 })
+    }
+
+    /// Guides ranked by avg engaged time per view (ms), for guides with enough views
+    /// to be meaningful (>=3). Returns (path, avg_ms, views) — "which guides hold attention".
+    pub fn top_guides_by_dwell(&self, days: i64, limit: i64) -> Result<Vec<(String, i64, i64)>, StoreError> {
+        let w = format!("-{days} days");
+        let mut stmt = self.conn.prepare(
+            "SELECT p.path, COALESCE(d.total,0)/p.views AS avg_ms, p.views
+             FROM (SELECT path, COUNT(*) views FROM events
+                   WHERE kind='pageview' AND path LIKE '/guides/%' AND ts>=datetime('now',?1)
+                   GROUP BY path) p
+             LEFT JOIN (SELECT path, SUM(value) total FROM events
+                        WHERE kind='dwell' AND ts>=datetime('now',?1) GROUP BY path) d
+               ON d.path=p.path
+             WHERE p.views>=3 AND avg_ms>0
+             ORDER BY avg_ms DESC LIMIT ?2")?;
+        let rows = stmt.query_map(params![w, limit], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?, r.get::<_, i64>(2)?))
+        })?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
     /// Totals for the period before the current window (for trend comparison):
     /// events in [now-2*days, now-days).
     pub fn analytics_totals_prev(&self, days: i64) -> Result<(i64, i64, i64), StoreError> {
@@ -722,6 +766,78 @@ impl Store {
             "SELECT COUNT(DISTINCT visitor) FROM events WHERE kind='pageview' AND ts>=datetime('now',?1) AND ts<datetime('now',?2)",
             params![lo, hi], |r| r.get(0))?;
         Ok((views, uniq, searches))
+    }
+
+    /// Searches that returned zero results, most frequent first - a "gap in coverage" list.
+    pub fn top_zero_result_searches(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        self.top_by("AND kind='search' AND value=0 AND query<>''", "query", days, limit)
+    }
+
+    /// Counts of `read` (scroll-depth) events reaching each milestone, over the window.
+    pub fn read_funnel(&self, days: i64) -> Result<(i64, i64, i64, i64), StoreError> {
+        let w = format!("-{days} days");
+        let count = |min: i64| -> Result<i64, StoreError> {
+            Ok(self.conn.query_row(
+                "SELECT COUNT(*) FROM events WHERE kind='read' AND value>=?1 AND ts>=datetime('now',?2)",
+                params![min, w], |r| r.get(0))?)
+        };
+        Ok((count(25)?, count(50)?, count(75)?, count(100)?))
+    }
+
+    /// All `vital` sample values for one metric (path/query untouched), ascending - for bucketing + median.
+    fn vital_values(&self, days: i64, metric: &str) -> Result<Vec<i64>, StoreError> {
+        let w = format!("-{days} days");
+        let mut stmt = self.conn.prepare(
+            "SELECT value FROM events WHERE kind='vital' AND query=?1 AND ts>=datetime('now',?2) ORDER BY value")?;
+        let rows = stmt.query_map(params![metric, w], |r| r.get::<_, i64>(0))?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    /// good/needs-improvement/poor bucket counts + median for one metric, given its thresholds.
+    fn vital_stats_for(&self, days: i64, metric: &str, good_max: i64, poor_over: i64) -> Result<VitalStats, StoreError> {
+        let vals = self.vital_values(days, metric)?;
+        let good = vals.iter().filter(|&&v| v <= good_max).count() as i64;
+        let poor = vals.iter().filter(|&&v| v > poor_over).count() as i64;
+        let ni = vals.len() as i64 - good - poor;
+        let med = if vals.is_empty() {
+            0
+        } else {
+            let mid = vals.len() / 2;
+            if vals.len() % 2 == 0 { (vals[mid - 1] + vals[mid]) / 2 } else { vals[mid] }
+        };
+        Ok(VitalStats { good, ni, poor, med })
+    }
+
+    /// Core Web Vitals summary (LCP, INP, CLS), thresholds per web.dev's good/poor cutoffs.
+    /// CLS is stored as round(cls*1000) by the client, so its thresholds are scaled to match.
+    pub fn vitals_summary(&self, days: i64) -> Result<(VitalStats, VitalStats, VitalStats), StoreError> {
+        Ok((
+            self.vital_stats_for(days, "LCP", 2500, 4000)?,
+            self.vital_stats_for(days, "INP", 200, 500)?,
+            self.vital_stats_for(days, "CLS", 100, 250)?,
+        ))
+    }
+
+    /// Deduped client error signatures, most frequent first.
+    pub fn top_errors(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        self.top_by("AND kind='err' AND query<>''", "query", days, limit)
+    }
+
+    /// AI/search crawler hits by bot name, most frequent first.
+    pub fn bot_hits(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
+        self.top_by("AND kind='bot' AND query<>''", "query", days, limit)
+    }
+
+    /// (human pageviews, bot hits) over the window - traffic composition.
+    pub fn human_vs_bot(&self, days: i64) -> Result<(i64, i64), StoreError> {
+        let w = format!("-{days} days");
+        let human: i64 = self.conn.query_row(
+            "SELECT COUNT(*) FROM events WHERE kind='pageview' AND ts>=datetime('now',?1)",
+            params![w], |r| r.get(0))?;
+        let bot: i64 = self.conn.query_row(
+            "SELECT COUNT(*) FROM events WHERE kind='bot' AND ts>=datetime('now',?1)",
+            params![w], |r| r.get(0))?;
+        Ok((human, bot))
     }
 }
 
@@ -883,10 +999,10 @@ mod tests {
     #[test]
     fn analytics_counts_and_uniques() {
         let s = Store::open_in_memory().unwrap();
-        s.record_event("pageview", "/guides/git", "google.com", "vA", "", "", "twitter").unwrap();
-        s.record_event("pageview", "/guides/git", "", "vA", "", "", "").unwrap(); // same visitor
-        s.record_event("pageview", "/", "reddit.com", "vB", "", "", "").unwrap();
-        s.record_event("search", "/search", "", "vB", "rebase", "", "").unwrap();
+        s.record_event("pageview", "/guides/git", "google.com", "vA", "", "", "twitter", 0).unwrap();
+        s.record_event("pageview", "/guides/git", "", "vA", "", "", "", 0).unwrap(); // same visitor
+        s.record_event("pageview", "/", "reddit.com", "vB", "", "", "", 0).unwrap();
+        s.record_event("search", "/search", "", "vB", "rebase", "", "", 0).unwrap();
         let (views, uniq, searches) = s.analytics_totals(30).unwrap();
         assert_eq!(views, 3);
         assert_eq!(uniq, 2);
@@ -909,11 +1025,46 @@ mod tests {
                 [],
             )
             .unwrap();
-        s.record_event("pageview", "/new", "", "v", "", "", "").unwrap();
+        s.record_event("pageview", "/new", "", "v", "", "", "", 0).unwrap();
 
         let removed = s.prune_events(365).unwrap();
         assert_eq!(removed, 1);
         let total: i64 = s.conn.query_row("SELECT COUNT(*) FROM events", [], |r| r.get(0)).unwrap();
         assert_eq!(total, 1); // only the fresh event survives
+    }
+
+    #[test]
+    fn dwell_avg_per_view() {
+        let s = Store::open_in_memory().unwrap();
+        // Two views of one guide; engaged deltas 3000+1000ms (visitor A) and 2000ms (B).
+        // Total 6000ms of dwell over 2 views => 3000ms avg engaged time / view.
+        s.record_event("pageview", "/guides/git", "", "vA", "", "", "", 0).unwrap();
+        s.record_event("dwell", "/guides/git", "", "vA", "", "", "", 3000).unwrap();
+        s.record_event("dwell", "/guides/git", "", "vA", "", "", "", 1000).unwrap();
+        s.record_event("pageview", "/guides/git", "", "vB", "", "", "", 0).unwrap();
+        s.record_event("dwell", "/guides/git", "", "vB", "", "", "", 2000).unwrap();
+        assert_eq!(s.avg_dwell_ms(30).unwrap(), 3000);
+        // dwell events don't inflate the pageview/search counters.
+        let (views, _uniq, searches) = s.analytics_totals(30).unwrap();
+        assert_eq!(views, 2);
+        assert_eq!(searches, 0);
+    }
+
+    #[test]
+    fn read_funnel_and_human_vs_bot() {
+        let s = Store::open_in_memory().unwrap();
+        s.record_event("pageview", "/guides/git", "", "vA", "", "", "", 0).unwrap();
+        s.record_event("read", "/guides/git", "", "vA", "", "", "", 25).unwrap();
+        s.record_event("read", "/guides/git", "", "vA", "", "", "", 50).unwrap();
+        s.record_event("pageview", "/guides/git", "", "vB", "", "", "", 0).unwrap();
+        s.record_event("read", "/guides/git", "", "vB", "", "", "", 100).unwrap();
+        s.record_event("bot", "/guides/git", "", "bot", "Googlebot", "", "", 0).unwrap();
+
+        let (p25, p50, p75, p100) = s.read_funnel(30).unwrap();
+        assert_eq!((p25, p50, p75, p100), (3, 2, 1, 1)); // vA hits 25+50; vB hits 25+50+75+100
+
+        let (human, bot) = s.human_vs_bot(30).unwrap();
+        assert_eq!((human, bot), (2, 1));
+        assert_eq!(s.bot_hits(30, 10).unwrap()[0], ("Googlebot".to_string(), 1));
     }
 }

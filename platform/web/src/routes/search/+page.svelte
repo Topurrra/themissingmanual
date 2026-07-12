@@ -3,9 +3,19 @@
   import { page } from '$app/stores';
   import AskPanel from '$lib/AskPanel.svelte';
   import Seo from '$lib/Seo.svelte';
+  import { sendSearchResult } from '$lib/beacon.js';
   export let data;
   $: ({ q, hits, suggestion, cmdHits, cmdFirst } = data);
   $: askEnabled = $page.data.askEnabled;
+
+  // Record the search once its result count is known (replaces the old
+  // count-less beacon in lib/beacon.js's sendPageview) - guarded so a query
+  // is only ever recorded once even as unrelated props re-run this block.
+  let recordedFor = null;
+  $: if (q && recordedFor !== q) {
+    recordedFor = q;
+    sendSearchResult(q, hits.length);
+  }
 
   let copied = '';
   function copy(t) {

@@ -1,6 +1,8 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import { afterNavigate } from '$app/navigation';
   import { page } from '$app/stores';
+  import { startScrollTracking, stopScrollTracking } from '$lib/scroll.js';
   import { siteOrigin } from '$lib/site.js';
   import { tutorOpen } from '$lib/tutor-store.js';
   import Seo from '$lib/Seo.svelte';
@@ -46,6 +48,13 @@
   onMount(() => {
     if ($page.url.searchParams.get('tutor') === '1') tutorOpen.set(true);
   });
+
+  // Read-depth tracking: (re)start on every phase navigation, reset per pageview.
+  let articleEl;
+  afterNavigate(() => {
+    startScrollTracking(articleEl, $page.url.pathname);
+  });
+  onDestroy(() => stopScrollTracking());
 
   // Code blocks are commands/syntax, not prose - Google Translate should leave
   // them as-is. Re-runs on every phase nav since `html` is the action param.
@@ -138,7 +147,7 @@
   <ReaderTTS />
 {/key}
 
-<article class="reader" class:has-phasenav={hasFooterNav} use:noTranslateCode={phase.html}>
+<article class="reader" class:has-phasenav={hasFooterNav} use:noTranslateCode={phase.html} bind:this={articleEl}>
   {@html phase.html}
 
   {#key `${phase.guide_slug}/${phase.phase_no}`}

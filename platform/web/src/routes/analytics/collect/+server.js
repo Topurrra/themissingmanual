@@ -36,14 +36,19 @@ export async function POST({ request, getClientAddress, url }) {
     }
   } catch {}
 
+  const ALLOWED_KINDS = new Set(['search', 'dwell', 'read', 'vital', 'err']);
+  const kind = ALLOWED_KINDS.has(data.kind) ? data.kind : 'pageview';
   const body = {
-    kind: data.kind === 'search' ? 'search' : 'pageview',
+    kind,
     path: (data.path || '/').slice(0, 512),
     referrer,
     visitor,
     query: (data.query || '').slice(0, 255),
     device,
-    source: (data.source || '').slice(0, 64)
+    source: (data.source || '').slice(0, 64),
+    // numeric payload per kind: dwell=engaged ms, search=result count,
+    // read=scroll-depth milestone, vital=metric ms; err always 0.
+    value: kind === 'err' ? 0 : Math.max(0, Math.round(Number(data.value) || 0))
   };
   try {
     await fetch(`${API_BASE}/api/events`, {
