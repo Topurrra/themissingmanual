@@ -421,7 +421,7 @@ pub async fn analytics(State(state): State<Arc<AppState>>, Query(q): Query<HashM
                 "INP": {"good": inp.good, "ni": inp.ni, "poor": inp.poor, "med": inp.med},
                 "CLS": {"good": cls.good, "ni": cls.ni, "poor": cls.poor, "med": cls.med},
             },
-            "topErrors": store.top_errors(days, 10)?.into_iter().map(|(sig, c)| json!({"sig": sig, "count": c})).collect::<Vec<_>>(),
+            "topErrors": store.top_errors(days, 10)?.into_iter().map(|(sig, path, c)| json!({"sig": sig, "path": path, "count": c})).collect::<Vec<_>>(),
             "botHits": store.bot_hits(days, 10)?.into_iter().map(|(b, c)| json!({"bot": b, "count": c})).collect::<Vec<_>>(),
             "humanVsBot": {"human": human, "bot": bot},
         }))

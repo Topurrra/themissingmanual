@@ -31,7 +31,7 @@
   const DARK_THEMES = { dark: 1, nord: 1, dracula: 1, 'contrast-dark': 1 };
 
   let open = false;
-  let theme = 'system';
+  let theme = 'light';
   let font = 'IBM Plex Sans';
 
   $: lofiOn = $lofiEnabled;
@@ -40,7 +40,7 @@
   onMount(() => {
     try {
       const t = localStorage.getItem('tmm-theme');
-      theme = THEMES.some((x) => x.id === t) ? t : 'system';
+      theme = THEMES.some((x) => x.id === t) ? t : 'light';
       const f = localStorage.getItem('tmm-font');
       if (f) font = f;
     } catch (e) {}
@@ -53,7 +53,7 @@
     const root = document.documentElement;
     try {
       if (next === 'system') {
-        localStorage.removeItem('tmm-theme');
+        localStorage.setItem('tmm-theme', 'system'); // persist so System survives reload (unset now = light)
         const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         root.dataset.theme = dark ? 'dark' : 'light';
         root.dataset.mode = dark ? 'dark' : 'light';

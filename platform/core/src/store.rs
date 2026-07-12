@@ -818,9 +818,18 @@ impl Store {
         ))
     }
 
-    /// Deduped client error signatures, most frequent first.
-    pub fn top_errors(&self, days: i64, limit: i64) -> Result<Vec<(String, i64)>, StoreError> {
-        self.top_by("AND kind='err' AND query<>''", "query", days, limit)
+    /// Deduped client error signatures with the page each fired on, most frequent
+    /// first. Grouped by (signature, path) so you can see WHERE an error happens.
+    pub fn top_errors(&self, days: i64, limit: i64) -> Result<Vec<(String, String, i64)>, StoreError> {
+        let w = format!("-{days} days");
+        let mut stmt = self.conn.prepare(
+            "SELECT query, path, COUNT(*) c FROM events
+             WHERE kind='err' AND query<>'' AND ts>=datetime('now',?1)
+             GROUP BY query, path ORDER BY c DESC LIMIT ?2")?;
+        let rows = stmt.query_map(params![w, limit], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, i64>(2)?))
+        })?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
     }
 
     /// AI/search crawler hits by bot name, most frequent first.

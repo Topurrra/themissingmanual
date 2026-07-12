@@ -414,8 +414,11 @@
   <div class="ranks">
     {#each topErrors as r}
       {@const mx = peak(topErrors)}
-      <div class="rank-row">
-        <span class="rank-label">{r.sig}</span>
+      <div class="rank-row" title={`${r.sig}  —  on ${r.path || "?"}`}>
+        <span class="rank-label"
+          >{r.sig}{#if r.path}<span style="opacity:.55"> · on {pretty(r.path)}</span
+            >{/if}</span
+        >
         <span class="rank-fill" style={`width:${(r.count / mx) * 100}%`}
         ></span>
         <b class="rank-count">{r.count.toLocaleString()}</b>
