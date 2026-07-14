@@ -53,6 +53,12 @@ services:
       # CF API token), the monthly usage counter, and the ask log. Bind-mounted to
       # ./data/aisearch on the host so it survives image rebuilds / redeploys.
       ASK_DATA_DIR: /data
+      # Shared secret for the JNE-facing JSON endpoints (/guides.json,
+      # /tutor-status.json, /cheat-sheet.json). When set, those require an
+      # `X-JNE-Key: <this>` header; JNE ships the same value. Soft gate, not real
+      # security (extractable from the desktop app) - the per-IP rate limit is the
+      # real abuse defense. Leave empty in dev to keep them open.
+      JNE_KEY: ${JNE_KEY:-}
     volumes:
       - ./data/aisearch:/data
     depends_on:

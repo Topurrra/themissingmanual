@@ -52,7 +52,7 @@
   --faint: #6e6e76;
   --line: #2a2a30;
   --line-soft: #202026;
-  --accent: #43885b;
+  --accent: #0a5f67;
   --accent-strong: #6fb6bc;
   --accent-tint: rgba(77, 150, 156, 0.16);
   --accent-tint-2: rgba(47, 182, 192, 0.07);
@@ -72,7 +72,7 @@
    themes (data-mode="dark") must set the full set. The dark-specific polish
    (icon swap, button hovers) keys off data-mode, not data-theme. */
 :root[data-theme="sepia"] {
-  --bg: #f4ecd8;
+  --bg: #fff;
   --surface: #ece2c9;
   --raise: #fbf5e7;
   --ink: #3a3322;
@@ -91,7 +91,7 @@
 }
 
 :root[data-theme="nord"] {
-  --bg: #2e3440;
+  --bg: #121721;
   --surface: #3b4252;
   --raise: #353c4a;
   --ink: #eceff4;
@@ -100,7 +100,7 @@
   --faint: #727c92;
   --line: #434c5e;
   --line-soft: #3b4252;
-  --accent: #88c0d0;
+  --accent: #2a819a;
   --accent-strong: #8fbcbb;
   --accent-tint: rgba(136, 192, 208, 0.16);
   --accent-tint-2: rgba(136, 192, 208, 0.07);
@@ -115,7 +115,7 @@
 }
 
 :root[data-theme="dracula"] {
-  --bg: #282a36;
+  --bg: #080a14;
   --surface: #343746;
   --raise: #2d3040;
   --ink: #f8f8f2;
@@ -124,7 +124,7 @@
   --faint: #6272a4;
   --line: #44475a;
   --line-soft: #383b4a;
-  --accent: #bd93f9;
+  --accent: #9d60f4;
   --accent-strong: #d6b3ff;
   --accent-tint: rgba(189, 147, 249, 0.18);
   --accent-tint-2: rgba(189, 147, 249, 0.08);

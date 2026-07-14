@@ -79,15 +79,40 @@ fn server_error<E: std::fmt::Display>(e: E) -> Response {
     (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({ "error": e.to_string() }))).into_response()
 }
 
-async fn list_guides(State(state): State<Arc<AppState>>) -> Response {
-    let result = {
-        let store = state.store.lock().unwrap();
-        store.list_guides()
+#[derive(Deserialize)]
+struct GuidesQuery {
+    // `?phases=1` batches each guide's phase list into the response (one call
+    // instead of N+1 getGuide fetches - used by the JNE catalog endpoint).
+    #[serde(default)]
+    phases: Option<String>,
+}
+
+#[derive(Serialize)]
+struct GuideWithPhases {
+    #[serde(flatten)]
+    guide: GuideSummary,
+    phases: Vec<PhaseRef>,
+}
+
+async fn list_guides(State(state): State<Arc<AppState>>, Query(q): Query<GuidesQuery>) -> Response {
+    let store = state.store.lock().unwrap();
+    let guides = match store.list_guides() {
+        Ok(g) => g,
+        Err(e) => return server_error(e),
     };
-    match result {
-        Ok(guides) => Json(guides).into_response(),
-        Err(e) => server_error(e),
+    if !matches!(q.phases.as_deref(), Some("1") | Some("true")) {
+        return Json(guides).into_response();
     }
+    // Batched: attach each guide's phase refs. In-process store queries under the
+    // lock (fast) - this is what the JNE /guides.json catalog uses.
+    let mut out = Vec::with_capacity(guides.len());
+    for g in guides {
+        match store.list_phase_refs(&g.slug) {
+            Ok(phases) => out.push(GuideWithPhases { guide: g, phases }),
+            Err(e) => return server_error(e),
+        }
+    }
+    Json(out).into_response()
 }
 
 #[derive(Serialize)]

@@ -8,6 +8,8 @@ async function getJson(fetch, path) {
 }
 
 export const listGuides = (fetch) => getJson(fetch, '/api/guides');
+// Batched: each guide with its phase list, in one call (for the JNE catalog).
+export const listGuidesWithPhases = (fetch) => getJson(fetch, '/api/guides?phases=1');
 export const getGuide = (fetch, slug) => getJson(fetch, `/api/guides/${encodeURIComponent(slug)}`);
 export const getPhase = (fetch, slug, phase) => getJson(fetch, `/api/guides/${encodeURIComponent(slug)}/${phase}`);
 export const search = (fetch, q) => getJson(fetch, `/api/search?q=${encodeURIComponent(q)}`);

@@ -90,21 +90,24 @@ export async function handle({ event, resolve }) {
   if (m && request.method === 'GET' && prefersMarkdown(accept)) {
     try {
       let md = null;
+      let updated = null;
       if (m[2]) {
         const ph = await getPhase(event.fetch, m[1], Number(m[2]));
         md = ph && ph.markdown ? ph.markdown : null;
+        updated = ph && ph.updated ? ph.updated : null;
       } else {
         md = await guideToMarkdown(event.fetch, m[1]);
       }
       if (md != null) {
-        return new Response(md, {
-          headers: {
-            'content-type': 'text/markdown; charset=utf-8',
-            'x-markdown-tokens': String(Math.ceil(md.length / 4)),
-            vary: 'Accept',
-            'cache-control': 'max-age=3600'
-          }
-        });
+        const headers = {
+          'content-type': 'text/markdown; charset=utf-8',
+          'x-markdown-tokens': String(Math.ceil(md.length / 4)),
+          vary: 'Accept',
+          'cache-control': 'max-age=3600'
+        };
+        // Per-response freshness so JNE can revalidate one cached guide (ISO date).
+        if (updated) headers['x-updated'] = updated;
+        return new Response(md, { headers });
       }
     } catch (e) {
       // fall through to the normal HTML response
