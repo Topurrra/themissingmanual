@@ -2,7 +2,7 @@
 title: "Environment Variables & .env Files"
 guide: "env-vars-and-config"
 phase: 2
-summary: "An environment variable is a name=value pair the operating system hands your process; here's how to read one from the shell and from code, and how .env files load them for local development — plus why you must never commit a .env file."
+summary: "An environment variable is a name=value pair the operating system hands your process; here's how to read one from the shell and from code, and how .env files load them for local development - plus why you must never commit a .env file."
 tags: [environment-variables, dotenv, env, shell, secrets, beginner-friendly]
 difficulty: beginner
 synonyms: ["what is an environment variable", "how to read env var in code", "echo $VAR explained", "what is a .env file", "should i commit .env to git", "how to set an environment variable"]
@@ -20,7 +20,7 @@ magic. Let's make them ordinary.
 
 **What it actually is.** An **environment variable** is a `NAME=value` pair that the operating system
 keeps for a running program and its children. When your program starts, it inherits a little bag of these
-pairs — its **environment** — and it can look any of them up by name. That's the whole concept: named
+pairs - its **environment** - and it can look any of them up by name. That's the whole concept: named
 values handed to a process from the outside.
 
 ```text
@@ -35,12 +35,12 @@ values handed to a process from the outside.
         "give me DATABASE_URL"  →  "postgres://localhost:5432/myapp"
 ```
 
-📝 **Terminology.** The convention is **ALL_CAPS_WITH_UNDERSCORES** for the name — not an OS rule, but
+📝 **Terminology.** The convention is **ALL_CAPS_WITH_UNDERSCORES** for the name - not an OS rule, but
 every project follows it. The value is always text (a string); even a "number" like a port is stored as
 the characters `"5432"`.
 
 **Why people get this wrong.** People assume environment variables are something Python or Node invented.
-They're not — they're an operating-system feature that predates all of them. Your shell has them, every
+They're not - they're an operating-system feature that predates all of them. Your shell has them, every
 program has them, and that `PATH` variable that tells your terminal where to find commands is the same
 mechanism. Frameworks just give you a convenient way to *read* them.
 
@@ -53,11 +53,11 @@ asks the shell for that variable:
 $ echo $HOME
 /home/ada
 ```
-*What just happened:* The shell looked up the `HOME` variable — which the OS set for you at login — and
+*What just happened:* The shell looked up the `HOME` variable - which the OS set for you at login - and
 substituted its value, then `echo` printed it. `HOME` is one your system always sets; it points at your
 user folder.
 
-Ask for one that isn't set, and you get nothing — an empty line, not an error:
+Ask for one that isn't set, and you get nothing - an empty line, not an error:
 
 ```console
 $ echo $DATABASE_URL
@@ -67,9 +67,9 @@ $ echo $DATABASE_URL
 and `echo` printed a blank line. This is the root of those `is not set` errors: the program asked for a
 variable, the OS had nothing, and the program gave up.
 
-⚠️ **Gotcha — Windows is different.** `echo $VAR` is Unix-shell syntax (bash, zsh). On **PowerShell** the
+⚠️ **Gotcha - Windows is different.** `echo $VAR` is Unix-shell syntax (bash, zsh). On **PowerShell** the
 same lookup is `echo $env:HOME`; in the old **Command Prompt** it's `echo %HOME%`. The concept is
-identical everywhere — only the reading syntax differs.
+identical everywhere - only the reading syntax differs.
 
 You can set one for the current shell session like this (Unix):
 
@@ -79,12 +79,12 @@ $ echo $LOG_LEVEL
 debug
 ```
 *What just happened:* `export` created `LOG_LEVEL` and marked it so programs launched *from this shell*
-inherit it. No spaces around the `=`, and it's **temporary** — it lives only until you close this
+inherit it. No spaces around the `=`, and it's **temporary** - it lives only until you close this
 terminal. That temporariness is exactly the problem `.env` files solve, coming up.
 
 ## Reading a variable from your code
 
-Every language has a built-in way to read the environment. You don't import a library for this part — the
+Every language has a built-in way to read the environment. You don't import a library for this part - the
 variables are just *there* for any program. A few of the common ones:
 
 ```text
@@ -105,15 +105,15 @@ $ python3 -c "import os; print(os.environ.get('MISSING', 'default'))"
 default
 ```
 *What just happened:* The first call read `GREETING` from the environment we just exported. The second
-asked for `MISSING`, which we never set — but because we used `.get()` with a fallback of `'default'`, it
+asked for `MISSING`, which we never set - but because we used `.get()` with a fallback of `'default'`, it
 printed that instead of crashing. That fallback pattern is how you give a setting a sensible default while
 still letting the environment override it.
 
-⚠️ **Gotcha — everything is a string.** A variable read from the environment is always text. Set
-`PORT=8080` and need a number? Convert it (`int(os.environ["PORT"])` in Python) — forgetting this gives
+⚠️ **Gotcha - everything is a string.** A variable read from the environment is always text. Set
+`PORT=8080` and need a number? Convert it (`int(os.environ["PORT"])` in Python) - forgetting this gives
 confusing errors like trying to do math on the string `"8080"`.
 
-## `.env` files — sane local development
+## `.env` files - sane local development
 
 **Why people get this wrong.** Setting variables by hand with `export` works, but it's miserable daily:
 the values vanish when you close the terminal, and a real app might need a dozen of them. Nobody wants to
@@ -132,7 +132,7 @@ API_KEY=sk_test_abc123
 PORT=8080
 ```
 
-To load it, you add a tiny library — `python-dotenv` for Python, `dotenv` for Node, and so on. In Python:
+To load it, you add a tiny library - `python-dotenv` for Python, `dotenv` for Node, and so on. In Python:
 
 ```console
 $ pip install python-dotenv
@@ -140,12 +140,12 @@ $ python3 -c "from dotenv import load_dotenv; import os; load_dotenv(); print(os
 debug
 ```
 *What just happened:* `load_dotenv()` found the `.env` file, read each line, and placed those pairs into
-the process environment — exactly as if you'd `export`ed each by hand. `os.environ['LOG_LEVEL']` then
+the process environment - exactly as if you'd `export`ed each by hand. `os.environ['LOG_LEVEL']` then
 reads `debug` from the file. Your code doesn't change; it still just reads environment variables. The
 `.env` file only *populates* them.
 
 💡 **Key point.** The `.env` file is a **development** convenience. In staging and production you usually
-*don't* ship one — the hosting platform (or container, or secrets manager) sets the real environment
+*don't* ship one - the hosting platform (or container, or secrets manager) sets the real environment
 variables directly. Your code reads `os.environ[...]` the same way everywhere; only the *source* of those
 values changes. That's the payoff from [Phase 1](01-why-config-lives-outside-code.md): one codebase,
 different surroundings.
@@ -154,7 +154,7 @@ different surroundings.
 
 This is the rule that gets its own heading because getting it wrong is genuinely costly.
 
-Your `.env` file holds the real values for *your* machine — and on real projects, that includes
+Your `.env` file holds the real values for *your* machine - and on real projects, that includes
 **secrets**: API keys, database passwords, tokens. Commit it to Git and those secrets go into the
 repository's history, visible to everyone with access and effectively impossible to erase (deleting the
 file in a later commit doesn't remove it from history).
@@ -172,12 +172,12 @@ $ git status
 On branch main
 nothing to commit, working tree clean
 ```
-*What just happened:* Even though `.env` exists on disk, it doesn't appear in `git status` — `.gitignore`
+*What just happened:* Even though `.env` exists on disk, it doesn't appear in `git status` - `.gitignore`
 told Git to pretend it isn't there, so you can't accidentally stage or commit it. If `.env` *did* show up,
-it isn't ignored yet — fix that before your next commit.
+it isn't ignored yet - fix that before your next commit.
 
 📝 **The `.env.example` convention.** Since `.env` itself is secret and uncommitted, projects commit a
-companion **`.env.example`** instead — it lists the *names* every variable needs, with fake or blank
+companion **`.env.example`** instead - it lists the *names* every variable needs, with fake or blank
 values, so a new teammate knows what to fill in:
 
 ```text
@@ -195,7 +195,7 @@ properly (vaults, encrypted files, cloud secret managers) is its own topic: [Sec
 Management](/guides/secrets-management).
 
 **Why this saves you later.** Reading config from the environment means the *same code* works on your
-laptop with a `.env` file and in production with platform-injected variables — and keeping `.env` out of
+laptop with a `.env` file and in production with platform-injected variables - and keeping `.env` out of
 Git means a leaked laptop or a public repo doesn't hand an attacker your production keys.
 
 ## Recap
@@ -204,13 +204,13 @@ Git means a leaked laptop or a public repo doesn't hand an attacker your product
    it by name (`os.environ`, `process.env`, `ENV[...]`, etc.).
 2. Read one from the shell with `echo $NAME` (Unix), `$env:NAME` (PowerShell), or `%NAME%` (cmd). An
    unset variable reads as **empty**, which is what `is not set` errors come from.
-3. Everything is a **string** — convert ports and numbers yourself.
+3. Everything is a **string** - convert ports and numbers yourself.
 4. A **`.env` file** loads many variables at once for local development; a small library reads it into the
    environment so your code doesn't change.
-5. **Never commit `.env`** — add it to `.gitignore`. Commit a `.env.example` listing the variable names
+5. **Never commit `.env`** - add it to `.gitignore`. Commit a `.env.example` listing the variable names
    instead.
 
-Next: when a handful of variables isn't enough and you need structured, nested config — YAML and friends.
+Next: when a handful of variables isn't enough and you need structured, nested config - YAML and friends.
 
 ---
 

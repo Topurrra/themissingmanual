@@ -113,4 +113,4 @@ try {
 
 There's the trailing comma biting us. The raw message is cryptic and the line number is useless for a one-line string. We can do far better than `Unexpected token`.
 
-That's exactly Phase 2: catching that throw and turning it into something a human can act on - what broke, and roughly where. You've already got a working pretty-printer. Next we make it honest about failure.
+That's exactly Phase 2: catching that throw and turning it into something a human can act on - what broke, and roughly where. You've already got a working pretty-printer. Next we make it clear about failure.

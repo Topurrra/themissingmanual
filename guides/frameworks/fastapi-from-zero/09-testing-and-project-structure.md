@@ -15,21 +15,21 @@ The moment your Book API touches a real database and real auth, the temptation i
 up the server, opening `/docs`, and clicking around. That works exactly once, on your machine, on a good
 day. It doesn't catch the bug you introduce next Tuesday, and it can't run in CI.
 
-This phase is about two habits that travel together: testing FastAPI *properly* — fast, repeatable,
-in-process, no clicking — and laying out the project so it stays testable as it grows. These aren't
+This phase is about two habits that travel together: testing FastAPI *properly* - fast, repeatable,
+in-process, no clicking - and laying out the project so it stays testable as it grows. These aren't
 separate topics: the reason FastAPI is so pleasant to test is the exact design we've been building
-toward — everything is a dependency — and that same design keeps the codebase from collapsing into one
+toward - everything is a dependency - and that same design keeps the codebase from collapsing into one
 unreadable file.
 
 ## The mental model: your app is a callable, not a server
 
 📝 The single idea that unlocks FastAPI testing: **your app object is just a Python object you can call
 directly.** You don't need a running server, a port, or a real HTTP socket to test an endpoint. FastAPI's
-`TestClient` takes your `app`, sends a request *into it in-process*, and hands you back the response — all
+`TestClient` takes your `app`, sends a request *into it in-process*, and hands you back the response - all
 inside the same Python process as your test.
 
 That's why it's fast (no network, no process startup) and reliable (no "is the server up yet?"
-flakiness). A test is just: build a client, call a route, check what came back — the same
+flakiness). A test is just: build a client, call a route, check what came back - the same
 Arrange-Act-Assert shape you'd use for any function; see [Your First Unit
 Test](/guides/your-first-unit-test) for that shape from scratch.
 
@@ -68,13 +68,13 @@ def test_create_book_returns_201_with_the_title():
 
 *What just happened:* `TestClient(app)` wrapped your application so you can call it like an HTTP client
 without any server running. `client.get("/books")` and `client.post("/books", json=...)` exercise the
-*real* routing, the *real* Pydantic validation, the *real* response models — the whole stack from Phases
-2–4 — and return a response object. You then assert on `status_code` and `response.json()`. We check more
+*real* routing, the *real* Pydantic validation, the *real* response models - the whole stack from Phases
+2–4 - and return a response object. You then assert on `status_code` and `response.json()`. We check more
 than the status: a `201` with the wrong body is still a bug, so we assert the title round-trips and an
 `id` was assigned. A genuine integration test, and it ran in milliseconds.
 
 💡 Run these with `pytest` from your project root. It discovers any file named `test_*.py` and any
-function named `test_*` inside it — no registration, no boilerplate:
+function named `test_*` inside it - no registration, no boilerplate:
 
 ```bash
 pytest -q
@@ -94,7 +94,7 @@ that because the database session, the current user, and everything else come in
 your tests can *swap them out*. This is where you cash that promise.
 
 📝 `app.dependency_overrides` is a dict that maps a dependency function to a replacement. When FastAPI is
-about to call a dependency during a request, it checks this dict first — if there's an override, it calls
+about to call a dependency during a request, it checks this dict first - if there's an override, it calls
 *that* instead. Your endpoint code doesn't change at all. It still asks for `get_session`; FastAPI just
 quietly hands it the test double.
 
@@ -102,7 +102,7 @@ Two cases cover almost everything you'll ever need.
 
 ### Overriding the database with in-memory SQLite
 
-You don't want tests hitting your real Postgres — slow, stateful, and one failing test can poison the
+You don't want tests hitting your real Postgres - slow, stateful, and one failing test can poison the
 next. Point the session dependency at a fresh in-memory SQLite database that exists only for the test run:
 
 ```python
@@ -139,13 +139,13 @@ def client():
 ```
 
 *What just happened:* The fixture stands up a brand-new SQLite database in memory, creates the Book
-tables on it, and defines `get_session_override` — a `yield` dependency with the same shape as the real
+tables on it, and defines `get_session_override` - a `yield` dependency with the same shape as the real
 one, but backed by the throwaway engine. The line `app.dependency_overrides[get_session] =
 get_session_override` is the whole trick: every endpoint that does `Depends(get_session)` now gets the
 test database, with zero changes to the endpoints. Each test that asks for the `client` fixture gets its
 own pristine database, so tests can't contaminate each other.
 
-⚠️ Look at that last line — `app.dependency_overrides.clear()`. **Overrides are global state on the app
+⚠️ Look at that last line - `app.dependency_overrides.clear()`. **Overrides are global state on the app
 object.** If you set one and don't reset it, it leaks into every test that runs afterward, and you get
 the worst kind of bug: tests that pass or fail depending on what ran *before* them. Always undo overrides
 in teardown; putting the override inside a fixture (which auto-runs its teardown after each test) is the
@@ -154,7 +154,7 @@ clean way to guarantee that.
 ### Overriding `get_current_user` to test protected routes
 
 Protected endpoints from [Phase 8](08-authentication-and-security.md) are the other classic case. You
-don't want to mint real JWTs in a test just to check `POST /books` works — you want to *pretend* you're
+don't want to mint real JWTs in a test just to check `POST /books` works - you want to *pretend* you're
 logged in:
 
 ```python
@@ -177,38 +177,38 @@ def test_create_book_when_authenticated(client):
 
 *What just happened:* Instead of producing a valid token, you replaced the entire authentication
 dependency with `fake_current_user`, which just returns a logged-in admin. The endpoint runs as if a real
-user passed auth — no tokens, no password hashing, no headers to fake. The `try/finally` does the same job
+user passed auth - no tokens, no password hashing, no headers to fake. The `try/finally` does the same job
 as the fixture teardown above: it removes the override no matter what, so this test can't sabotage the
 next one. This is how you test "what happens when an admin creates a book?" without dragging the whole
 auth system into every test.
 
 ## The test pyramid, applied to this API
 
-📝 Not every test should be an HTTP round-trip. The classic guidance — see
-[Unit, Integration, E2E](/guides/unit-integration-e2e) — maps cleanly onto a FastAPI project:
+📝 Not every test should be an HTTP round-trip. The classic guidance - see
+[Unit, Integration, E2E](/guides/unit-integration-e2e) - maps cleanly onto a FastAPI project:
 
 - **Unit tests (the wide base).** Test pure functions and service logic *directly*, with no client and no
   app. If you have a `services.py` with `calculate_late_fee(book)` or `slugify_title(title)`, call it as a
   plain function and assert the result. Fastest and most numerous.
 - **Integration tests (the middle).** Use `TestClient` to hit real endpoints against the in-memory test
-  DB — what the examples above are. They prove routing, validation, the DB layer, and your response
+  DB - what the examples above are. They prove routing, validation, the DB layer, and your response
   models all fit together. Most of your FastAPI tests live here.
 - **End-to-end tests (the thin top).** A few tests against a *real* running server and a real (or
   containerized) database, exercising full flows like register → log in → create book → fetch it. Slow
   and more fragile, so keep them few and reserve them for critical paths.
 
-💡 The honest rule of thumb: push logic down into plain functions you can unit-test, and use `TestClient`
+💡 The practical rule of thumb: push logic down into plain functions you can unit-test, and use `TestClient`
 for the seams where pieces meet. If you need an HTTP request just to test a calculation, that calculation
 probably wants to be its own testable function.
 
 ## Project structure: escaping one giant `main.py`
 
-⚠️ Every tutorial app starts as a single `main.py`, and that's fine — until it isn't. Once you have
+⚠️ Every tutorial app starts as a single `main.py`, and that's fine - until it isn't. Once you have
 books, authors, reviews, and auth, a 600-line `main.py` is where bugs hide and merge conflicts breed. You
 can't find anything, and you can't test a slice of it in isolation.
 
 📝 The fix is `APIRouter`. A router is a mini-FastAPI you can declare endpoints on, living in its own
-module. You then *include* it into the main app — same routes, same behavior, just organized by feature.
+module. You then *include* it into the main app - same routes, same behavior, just organized by feature.
 
 A layout that scales without being over-engineered:
 
@@ -266,15 +266,15 @@ app.include_router(auth.router)
 *What just happened:* `APIRouter(prefix="/books", tags=["books"])` defines a self-contained set of routes;
 the `prefix` means you write `@router.get("")` instead of repeating `/books` on every path, and the `tags`
 group these endpoints together in `/docs`. In `main.py`, `app.include_router(books.router)` stitches the
-router into the real application — at runtime the routes behave *identically* to having been declared on
+router into the real application - at runtime the routes behave *identically* to having been declared on
 `app` directly. The payoff: each feature lives in one file you can read, change, and test on its own, and
 `main.py` shrinks to a short table of contents. (Remember from Phase 5 that `APIRouter` can also take
-`dependencies=[...]` — that's how you require auth for every route in a router at once.)
+`dependencies=[...]` - that's how you require auth for every route in a router at once.)
 
 ## Settings, and the payoff
 
 One last piece of structure. Hardcoding the database URL, secret key, or token expiry into your code is a
-trap — different values in dev, test, and production, and secrets that must never be committed. The clean
+trap - different values in dev, test, and production, and secrets that must never be committed. The clean
 answer is **pydantic-settings**: define a typed `Settings` model that reads from environment variables,
 with the same validation you already trust from Pydantic.
 
@@ -294,25 +294,25 @@ settings = Settings()
 ```
 
 *What just happened:* `Settings` pulls each field from an environment variable (or a `.env` file),
-coerces and validates the types — `access_token_expire_minutes` *will* be an `int` or the app refuses to
-start — and gives you one typed object to import. No more scattered `os.environ` lookups, no silently
+coerces and validates the types - `access_token_expire_minutes` *will* be an `int` or the app refuses to
+start - and gives you one typed object to import. No more scattered `os.environ` lookups, no silently
 wrong config. (You can even make `settings` a dependency and override it in tests, just like everything
 else.)
 
-💡 Step back and see the throughline of this whole guide. The reason all of this — swapping the test
-database, faking the current user, splitting features into routers, overriding settings — is *easy* is
+💡 Step back and see the throughline of this whole guide. The reason all of this - swapping the test
+database, faking the current user, splitting features into routers, overriding settings - is *easy* is
 that nothing in your app reaches out and grabs its own dependencies. Everything is injected. Untestable
 code is almost always un-injected code: a handler that constructs its own DB connection or reads
 `os.environ` directly can't be tested without that real thing present. The layered, dependency-driven
-design you've built isn't bureaucracy — it's exactly what makes the app testable, and exactly what makes
+design you've built isn't bureaucracy - it's exactly what makes the app testable, and exactly what makes
 it ready for production. Which is where we go next.
 
 ## Recap
 
-1. **`TestClient(app)`** calls your FastAPI app **in-process** — no server, no port, no network. It's
+1. **`TestClient(app)`** calls your FastAPI app **in-process** - no server, no port, no network. It's
    built on Starlette with a `requests`-style API, so `client.get(...)`, `client.post(..., json=...)`,
    `.status_code`, and `.json()` are all you need. Run tests with `pytest`.
-2. Assert on **more than the status code** — a `201` with the wrong body is still a bug. Check the shape
+2. Assert on **more than the status code** - a `201` with the wrong body is still a bug. Check the shape
    and key fields of `response.json()`.
 3. **`app.dependency_overrides`** swaps a real dependency for a test double: point `get_session` at an
    in-memory SQLite DB, or replace `get_current_user` to test protected routes without real auth. The
@@ -323,7 +323,7 @@ it ready for production. Which is where we go next.
    (integration) tests, and keep a thin layer of real-DB end-to-end tests for critical flows.
 6. **`APIRouter` + `app.include_router(...)`** splits one giant `main.py` into per-feature modules.
    **pydantic-settings** gives you typed config from the environment. Both exist because the whole design
-   is dependency-driven — which is what makes the app testable in the first place.
+   is dependency-driven - which is what makes the app testable in the first place.
 
 ## Quick check
 
@@ -335,7 +335,7 @@ Make sure the testing mechanics stuck before we ship to production:
     "q": "What does TestClient(app) actually do when you call client.get('/books')?",
     "choices": ["Starts a real HTTP server on a port and connects to it", "Sends the request into your app object in-process, no server needed", "Mocks out all your endpoints so nothing real runs", "Only works if `uvicorn` is already running in another terminal"],
     "answer": 1,
-    "explain": "TestClient (from Starlette) wraps your app and dispatches requests directly into it in the same process. No port, no network, no running server — that's why it's fast and reliable."
+    "explain": "TestClient (from Starlette) wraps your app and dispatches requests directly into it in the same process. No port, no network, no running server - that's why it's fast and reliable."
   },
   {
     "q": "Why must you clear app.dependency_overrides after a test?",

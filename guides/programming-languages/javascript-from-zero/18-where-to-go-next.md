@@ -1,19 +1,19 @@
 ---
-title: "Where to Go Next - Honest Signposts From Here"
+title: "Where to Go Next - Straight Signposts From Here"
 guide: "javascript-from-zero"
 phase: 18
-summary: "You know the language; here's the honest map of what's next - frontend frameworks (React/Vue/Svelte), backend with Node/Express, TypeScript (typed JS, strongly worth it), full-stack - plus what to actually build to make it stick."
+summary: "You know the language; here's the clear map of what's next - frontend frameworks (React/Vue/Svelte), backend with Node/Express, TypeScript (typed JS, strongly worth it), full-stack - plus what to actually build to make it stick."
 tags: [javascript, react, vue, svelte, node, express, typescript, full-stack, learning-path]
 difficulty: beginner
 synonyms: ["what to learn after javascript", "react vue or svelte", "should i learn typescript", "javascript backend node express", "what to build to learn javascript", "javascript next steps", "full stack javascript"]
 updated: 2026-06-19
 ---
 
-# Where to Go Next - Honest Signposts From Here
+# Where to Go Next - Straight Signposts From Here
 
 You made it. You can write JavaScript, reason about async, manipulate the DOM, handle errors, and read a real project's tooling without flinching - the foundation every JavaScript career is built on. Everything below is *application* of what you already know.
 
-This phase isn't more syntax - it's a map: the honest paths from here, what each is *for*, and what to build to make it stick.
+This phase isn't more syntax - it's a map: the straight paths from here, what each is *for*, and what to build to make it stick.
 
 ## The branches from here
 

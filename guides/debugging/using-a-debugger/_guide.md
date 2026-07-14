@@ -31,7 +31,7 @@ follow you everywhere.
 ## How to read this
 
 - **Want to know if it's even worth it?** Start with [Phase 1: Why a Debugger Beats print()](01-why-a-debugger-beats-print.md)
-  - it's honest about when print debugging is still the right call.
+  - it's straight about when print debugging is still the right call.
 - **Want it to finally make sense?** Read in order. Phase 2 teaches the universal controls; Phase 3 levels
   you up to the moves that solve the bugs `print()` can't touch.
 
@@ -39,7 +39,7 @@ follow you everywhere.
 
 1. **[Why a Debugger Beats print()](01-why-a-debugger-beats-print.md)** - the mental model: a debugger
    *pauses* your program and lets you inspect reality, instead of guessing and re-running. When that saves
-   you hours (and when `print()` is honestly fine).
+   you hours (and when `print()` is genuinely fine).
 2. **[The Core Moves](02-the-core-moves.md)** - the universal controls every debugger has: breakpoints,
    step over / into / out, inspecting variables and the call stack, and watch expressions. Explained so
    they transfer across tools.

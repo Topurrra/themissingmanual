@@ -145,7 +145,7 @@ The template combined every `Method` with every `Path` - TypeScript takes the cr
 
 ## When to reach for this - and when not
 
-Now the honest part. Everything above is powerful, and that power is a trap if you misjudge when to use it.
+Now the straight-talk part. Everything above is powerful, and that power is a trap if you misjudge when to use it.
 
 💡 **You will read these far more than you write them.** The vast majority of application code - components, API handlers, business logic - is typed perfectly well with tools from earlier phases: interfaces, unions, generics, the built-in utility types. Conditional and template literal types live mostly in the `.d.ts` files of *libraries*, written once by authors so thousands of callers get great autocomplete and safety. Reading them is the daily skill; writing them is the occasional one.
 

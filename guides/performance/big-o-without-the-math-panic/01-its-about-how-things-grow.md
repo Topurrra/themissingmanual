@@ -100,7 +100,7 @@ And here's the shape of it as a rough picture - work going up the side, input go
 ```
 
 *What just happened:* The two lines hugging the bottom (`O(1)` and `O(log n)`) barely rise no matter
-how far right you go - those are the shapes you *want*. The straight diagonal (`O(n)`) is honest and
+how far right you go - those are the shapes you *want*. The straight diagonal (`O(n)`) is plain and
 fine. The one curving sharply upward (`O(n²)`) is the one that looks harmless on the left and becomes a
 cliff on the right. Your job, most of the time, is just to not be on that top curve when `n` is big.
 

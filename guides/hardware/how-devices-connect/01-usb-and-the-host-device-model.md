@@ -149,7 +149,7 @@ shape promised nothing; the *port's* capabilities are what matter.
 
 How to actually tell: look for the icon next to the port (a display symbol means video out; a
 lightning/Thunderbolt bolt means Thunderbolt; an "SS" or a number means the faster data rate) or check
-the spec sheet - when in doubt, the only honest source.
+the spec sheet - when in doubt, the only source you can trust.
 
 ## Recap
 

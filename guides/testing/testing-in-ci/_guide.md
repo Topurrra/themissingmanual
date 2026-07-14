@@ -27,7 +27,7 @@ packaging, and deploying (CI/CD as a whole) is a separate topic for another day.
 - **Just need the gist of that red/green check?** Read [Phase 1](01-what-ci-testing-actually-is.md) -
   it's the whole mental model in one phase.
 - **Want it to finally make sense?** Read in order. Phase 1 is the idea, Phase 2 is what a run does
-  step by step, Phase 3 is how teams keep the gate honest.
+  step by step, Phase 3 is how teams keep the gate trustworthy.
 
 ## The phases
 

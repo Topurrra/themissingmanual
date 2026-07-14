@@ -13,7 +13,7 @@ updated: 2026-07-10
 
 The secret that makes Express click: there is no separate "middleware feature" bolted on the side.
 Middleware *is* Express. Routing is middleware. Body parsing is middleware. Auth, logging, error
-handling — all the same shape. Once you see it, the framework stops being a pile of methods to
+handling - all the same shape. Once you see it, the framework stops being a pile of methods to
 memorize and becomes one idea you understand all the way down.
 
 ## The mental model: a chain of `(req, res, next)` functions
@@ -24,7 +24,7 @@ memorize and becomes one idea you understand all the way down.
 At each door, the function does one of three things:
 
 1. **Read or modify** `req`/`res`, then call `next()` to pass the request along.
-2. **End the response** itself (`res.send(...)`, `res.json(...)`) — the request stops here.
+2. **End the response** itself (`res.send(...)`, `res.json(...)`) - the request stops here.
 3. **Call `next()`** with nothing changed, just to hand off.
 
 A middleware function looks exactly like this:
@@ -36,13 +36,13 @@ function myMiddleware(req, res, next) {
 }
 ```
 
-*What just happened:* three parameters, and a decision about whether to call `next()` — the shape of
+*What just happened:* three parameters, and a decision about whether to call `next()` - the shape of
 every middleware in Express. A route handler like `app.get('/tasks', (req, res) => ...)` is the same
 thing; it just happens to be the *last* door, so it sends a response instead of calling `next()`.
 Routes are middleware bound to a method and a path.
 
 💡 If you read [Build a Server with node:http](/guides/build-a-server-with-node-http), you already met
-`(req, res)` and "call the next function to keep going." Express didn't invent this — it formalized it.
+`(req, res)` and "call the next function to keep going." Express didn't invent this - it formalized it.
 
 ## Writing your first middleware: a request logger
 
@@ -70,8 +70,8 @@ app.listen(3000, () => console.log('http://localhost:3000'));
 ```
 
 *What just happened:* `app.use(logger)` registers `logger` to run at the start of every request. We
-record `start`, then attach a one-time listener to `res`'s `'finish'` event — fired when the response
-is fully sent — so we can log the real status code and duration. `logger` calls `next()` immediately;
+record `start`, then attach a one-time listener to `res`'s `'finish'` event - fired when the response
+is fully sent - so we can log the real status code and duration. `logger` calls `next()` immediately;
 it doesn't wait for `finish`. Its job in the chain is to step aside and let the request continue. Hit
 `GET /tasks` and you'll see `GET /tasks 200 2ms`.
 
@@ -85,7 +85,7 @@ app.get('/tasks/:id', loadTask, handler); // PER-ROUTE: only this route, in this
 
 *What just happened:* same mechanism, three reaches. `app.use(fn)` runs on everything. `app.use('/admin', fn)`
 runs only when the path starts with `/admin`. Listing functions inside a route runs them left to right
-for that one route. The middleware doesn't change — only *where you mount it* does.
+for that one route. The middleware doesn't change - only *where you mount it* does.
 
 ## ⚠️ Order matters (this is the part that bites everyone)
 
@@ -96,16 +96,16 @@ common Express bug there is.
 body into `req.body`. Register your routes *before* it, and `req.body` is `undefined` there.
 
 ```javascript
-// ❌ WRONG — route runs before the body is parsed
+// ❌ WRONG - route runs before the body is parsed
 app.post('/tasks', (req, res) => {
-  res.json(req.body); // undefined — nothing parsed it yet
+  res.json(req.body); // undefined - nothing parsed it yet
 });
 app.use(express.json());
 
-// ✅ RIGHT — parse first, then route
+// ✅ RIGHT - parse first, then route
 app.use(express.json());
 app.post('/tasks', (req, res) => {
-  res.json(req.body); // { title: "..." } — parsed and ready
+  res.json(req.body); // { title: "..." } - parsed and ready
 });
 ```
 
@@ -114,13 +114,13 @@ anything, so `req.body` is `undefined`. In the right version, parsing happens ea
 by the time your handler runs, `req.body` is already populated. Order on the page = order at runtime.
 
 **Trap 2: forgetting `next()` hangs the request.** A middleware that neither responds nor calls
-`next()` is a closed door with no knob — the request stands there forever, until the client times out.
+`next()` is a closed door with no knob - the request stands there forever, until the client times out.
 
 ```javascript
 // ❌ This middleware silently hangs every request
 app.use((req, res, next) => {
   console.log('checking request...');
-  // no next(), no res.send() — DEAD END
+  // no next(), no res.send() - DEAD END
 });
 ```
 
@@ -131,19 +131,19 @@ for a missing `next()` first.
 
 ## Built-in and third-party middleware
 
-You rarely write parsers and security headers yourself — you reach for middleware that already exists.
+You rarely write parsers and security headers yourself - you reach for middleware that already exists.
 
 **Built into Express:**
 
-- `express.json()` — parses JSON request bodies into `req.body`.
-- `express.urlencoded({ extended: true })` — parses HTML form submissions into `req.body`.
-- `express.static('public')` — serves files from a folder (images, CSS, the front end).
+- `express.json()` - parses JSON request bodies into `req.body`.
+- `express.urlencoded({ extended: true })` - parses HTML form submissions into `req.body`.
+- `express.static('public')` - serves files from a folder (images, CSS, the front end).
 
 **Popular third-party packages** (install with npm, then `app.use(...)` them):
 
-- `cors` — adds the headers browsers need to allow cross-origin requests.
-- `morgan` — a polished request logger (like ours, but configurable).
-- `helmet` — sets a bundle of security-related HTTP headers.
+- `cors` - adds the headers browsers need to allow cross-origin requests.
+- `morgan` - a polished request logger (like ours, but configurable).
+- `helmet` - sets a bundle of security-related HTTP headers.
 
 ```javascript
 const cors = require('cors');
@@ -156,7 +156,7 @@ app.use(morgan('dev'));     // log requests
 ```
 
 *What just happened:* each line plugs a ready-made middleware into the chain, listed near the top so
-they run early — security headers and CORS should apply to every response, and `express.json()` must
+they run early - security headers and CORS should apply to every response, and `express.json()` must
 come before any route reading `req.body` (Trap 1). Helmet, cors, json, a logger: the boring, sensible
 opening for most real Express apps.
 
@@ -170,10 +170,10 @@ function requireAuth(req, res, next) {
   const token = req.headers['authorization'];
   if (!token) {
     return res.status(401).json({ error: 'Not authenticated' });
-    // note: we DON'T call next() — the request stops here
+    // note: we DON'T call next() - the request stops here
   }
   req.user = { id: 1, name: 'Ada' }; // in real life: verify the token
-  next(); // authenticated — continue to the route
+  next(); // authenticated - continue to the route
 }
 
 app.use(express.json());
@@ -185,10 +185,10 @@ app.get('/tasks', (req, res) => {
 ```
 
 *What just happened:* no header means an unauthenticated request, so `requireAuth` responds `401` and
-**stops** — note there's no `next()` after it. A header sets `req.user` and calls `next()`, so by the
+**stops** - note there's no `next()` after it. A header sets `req.user` and calls `next()`, so by the
 time `/tasks` runs, `req.user` is populated and the route trusts that auth already happened upstream.
 Two halves of the pattern: **reject and stop**, or **enrich `req` and continue**. The `return` matters
-— without it, the code would respond *and* fall through to `next()`, trying to send two responses.
+ - without it, the code would respond *and* fall through to `next()`, trying to send two responses.
 
 ## Recap
 
@@ -198,7 +198,7 @@ Two halves of the pattern: **reject and stop**, or **enrich `req` and continue**
   **per-route** (`app.get(path, mw, handler)`).
 - **Order matters.** Middleware runs top to bottom. `express.json()` must come before any route that
   reads `req.body`.
-- A middleware that neither responds nor calls `next()` **hangs the request** — the #1 beginner bug.
+- A middleware that neither responds nor calls `next()` **hangs the request** - the #1 beginner bug.
 - Use built-ins (`express.json`, `express.urlencoded`, `express.static`) and third-party packages
   (`cors`, `morgan`, `helmet`) instead of writing your own.
 - Share work down the chain by **attaching to `req`** (e.g. an auth middleware sets `req.user`); reject
@@ -224,7 +224,7 @@ Two halves of the pattern: **reject and stop**, or **enrich `req` and continue**
     "q": "A middleware logs a message but never calls next() and never sends a response. What is the result?",
     "choices": ["The next middleware runs anyway", "Express sends an automatic 404", "The request hangs until it times out", "The response is sent with status 200"],
     "answer": 2,
-    "explain": "Every middleware must either respond or call next(). Doing neither leaves the request with nowhere to go, so it hangs — the most common beginner bug."
+    "explain": "Every middleware must either respond or call next(). Doing neither leaves the request with nowhere to go, so it hangs - the most common beginner bug."
   }
 ]
 ```

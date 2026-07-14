@@ -72,9 +72,18 @@ function shortSig(name, message, filename, lineno) {
   return `${name || 'Error'}: ${message || ''} @ ${file}:${lineno || 0}`.slice(0, 200);
 }
 
-// Browser-extension / crypto-wallet noise that fires on our pages but isn't our
-// bug (e.g. "Failed to connect to MetaMask"). Dropped so the tracker stays signal.
-const NOISE = /metamask|ethereum|web3|solana|phantom|walletconnect|coinbase|chrome-extension|moz-extension|safari-web-extension|ResizeObserver loop/i;
+// Third-party / browser / environmental noise that fires on our pages but isn't our
+// bug. Dropped so the tracker stays signal-only. Covers:
+//  - crypto-wallet + extension injections (MetaMask, chrome-extension://, …)
+//  - "Script error." — cross-origin script errors the browser censors (no file/line,
+//    never actionable); almost always an extension or a third-party embed
+//  - '@context' — an extension parsing our JSON-LD structured data and choking
+//  - "Permission denied to access property" — cross-origin frame access (Translate/extension)
+//  - "Failed to register a ServiceWorker" — our own registration is absolute-path +
+//    .catch()'d; the ones that surface here are stale/mis-scoped or transient/network
+//  - "Failed to fetch" — a fetch aborted by navigating away, or blocked by an ad-blocker
+const NOISE =
+  /metamask|ethereum|web3|solana|phantom|walletconnect|coinbase|chrome-extension|moz-extension|safari-web-extension|ResizeObserver loop|Script error|@context|Permission denied to access property|Failed to register a ServiceWorker|Failed to fetch/i;
 
 function recordError(sig) {
   if (NOISE.test(sig)) return;

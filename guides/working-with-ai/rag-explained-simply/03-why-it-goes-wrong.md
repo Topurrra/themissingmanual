@@ -52,9 +52,9 @@ What it looks like: answers that are about the right *subject* but wrong in the 
 
 Suppose retrieval did its job and handed the model the right passages. The model can *still* produce an answer the passages don't actually back up. It might blend the retrieved text with something half-remembered from training. It might stretch a passage to cover a question it doesn't quite address. It might be handed nothing useful and, instead of saying "I don't know," fill the silence with a plausible guess.
 
-That instruction from Phase 2 - "if the answer isn't in the passages, say you don't know" - reduces this. It does not eliminate it. Models are built to be helpful, and "helpful" and "honest about not knowing" are in tension. Under pressure, helpfulness often wins.
+That instruction from Phase 2 - "if the answer isn't in the passages, say you don't know" - reduces this. It does not eliminate it. Models are built to be helpful, and "helpful" and "upfront about not knowing" are in tension. Under pressure, helpfulness often wins.
 
-This is the failure that erodes trust fastest, because the answer *sounds* grounded - it's fluent, it's specific, it may even carry a citation that, on a click, doesn't actually say what the answer claims. What it looks like: confident claims that aren't in the cited source, details that go beyond what the passages contain, an answer where there should have been an honest "I couldn't find this."
+This is the failure that erodes trust fastest, because the answer *sounds* grounded - it's fluent, it's specific, it may even carry a citation that, on a click, doesn't actually say what the answer claims. What it looks like: confident claims that aren't in the cited source, details that go beyond what the passages contain, an answer where there should have been a plain "I couldn't find this."
 
 The real defense is to **check the citations**, not the prose. A good RAG system shows you the exact passages it used. The discipline - for you and for anyone relying on the tool - is to read those passages, not the AI's summary, whenever the answer matters. If the system can't show its sources, treat its answers like a confident stranger's: possibly right, not to be trusted on anything that counts.
 

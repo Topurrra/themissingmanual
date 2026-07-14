@@ -149,7 +149,7 @@ test is the thing that's broken.
 5. **Never trust a test you haven't watched fail** - a test with no real assertion is worse than none.
 
 You now have the full beginner's toolkit: the shape of a test, how to run it, how to read both outcomes,
-and the habits that keep your tests honest. From here, the next question is *which kinds* of tests to write
+and the habits that keep your tests trustworthy. From here, the next question is *which kinds* of tests to write
 and where they fit - unit tests are the smallest of several layers.
 
 > Ready for the bigger picture? [Unit, Integration, E2E](/guides/unit-integration-e2e) explains how unit

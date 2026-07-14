@@ -113,7 +113,7 @@ clicks. Actions can email, update or create records, run on a schedule, or
 call out to other apps - directly to a few popular ones like Slack, and to
 hundreds more through connector services such as Zapier or Make.
 
-A word of honesty about limits: automations are billed by **runs**, and your
+A plain word about limits: automations are billed by **runs**, and your
 plan includes a monthly allowance. A rule that fires on every record change in
 a busy base can eat through that allowance faster than you'd guess. Trigger on
 the narrow thing you actually care about - a status reaching one specific

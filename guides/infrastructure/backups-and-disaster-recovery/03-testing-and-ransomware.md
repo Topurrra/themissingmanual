@@ -12,18 +12,18 @@ updated: 2026-07-10
 # The Untested Backup, and Ransomware
 
 You've got the model, the rule, and the numbers. Now the two ways teams with all of that *still* lose
-everything — both avoidable. The first is quiet and self-inflicted: a backup that was never tested and
+everything - both avoidable. The first is quiet and self-inflicted: a backup that was never tested and
 turns out not to work. The second is loud and adversarial: ransomware that reaches for your backups on
 purpose. This phase turns a backup *plan* into something that actually saves you.
 
 ## The untested backup is the classic trap
 
 Here is the most expensive sentence in this entire topic: **a backup you have never restored from is not
-a backup — it's a hope.**
+a backup - it's a hope.**
 
 It feels paranoid until you've lived it. Backup jobs fail silently all the time: a path changed, a
 credential expired, a disk filled, a config typo meant the job dumped an empty file every night for six
-months. The job kept reporting "success" because it ran without crashing — it wasn't backing up
+months. The job kept reporting "success" because it ran without crashing - it wasn't backing up
 anything. Nobody noticed, because nobody ever tried to *use* the output. The dashboard was green the
 entire time.
 
@@ -55,27 +55,27 @@ psql restore_test -c "SELECT count(*) FROM orders;"   # expect a real, sane numb
 psql restore_test -c "SELECT max(created_at) FROM orders;"  # expect ~last night
 ```
 
-*What just happened:* you proved the backup is restorable *and* recent, in a sandbox, on a calm Tuesday —
+*What just happened:* you proved the backup is restorable *and* recent, in a sandbox, on a calm Tuesday - 
 not at 3am during a real outage. The row count catches the empty-dump failure; the latest timestamp
 catches a stale or wrong-source backup. Do this on a schedule (a quarterly drill at minimum, automated if
-you can), and treat a failed drill as a real incident, because it is one — you've discovered you were
+you can), and treat a failed drill as a real incident, because it is one - you've discovered you were
 unprotected.
 
 A restore drill also quietly validates your **RTO**: time the drill. If "promise: back in 4 hours" but
-the drill takes 9, your RTO is fiction and now you know — while it's cheap to fix.
+the drill takes 9, your RTO is fiction and now you know - while it's cheap to fix.
 
 > Schrödinger's backup: the condition of any backup is unknown until you attempt a restore. Don't leave
 > the box closed.
 
 ## Ransomware changes the threat model
 
-Classic backups assume *accidents* — a dead disk, a fat-fingered delete. Ransomware is different: it's an
+Classic backups assume *accidents* - a dead disk, a fat-fingered delete. Ransomware is different: it's an
 **intelligent adversary** who *wants* your recovery to fail. Modern ransomware doesn't immediately
 encrypt and announce itself. It often sits quietly, finds your backups, and encrypts or deletes *those
-first* — because a victim who can restore doesn't pay the ransom.
+first* - because a victim who can restore doesn't pay the ransom.
 
 This breaks an assumption hiding inside ordinary 3-2-1. If your "offsite" backup is a cloud bucket your
-production server can write to and delete from, then anyone — or any malware — with your server's
+production server can write to and delete from, then anyone - or any malware - with your server's
 credentials can wipe that backup too. Reachable and deletable means *destroyable*. Same failure domain,
 a logical one instead of a physical one.
 
@@ -85,12 +85,12 @@ The defense is a copy the attacker *cannot* alter or delete, even with full cont
 forms, often combined:
 
 ```text
-IMMUTABLE  — write-once, read-many. The storage itself refuses deletion or
+IMMUTABLE - write-once, read-many. The storage itself refuses deletion or
              overwrite until a retention period expires. (Object-lock /
              "WORM" on cloud object storage.) Even with your keys, an
              attacker can't erase what's locked.
 
-OFFLINE    — physically disconnected. Tapes in a vault, or a drive that's
+OFFLINE - physically disconnected. Tapes in a vault, or a drive that's
              unplugged between backup runs. An air gap is unhackable over the
              network because there's no network to it.
 ```
@@ -98,7 +98,7 @@ OFFLINE    — physically disconnected. Tapes in a vault, or a drive that's
 *What just happened:* both close the loophole. Immutability means even a fully compromised account can't
 delete the locked copy until its retention window passes; offline (the "air gap") means there's no live
 path to the copy at all. This is the modern upgrade to the "1" in 3-2-1: not enough that the offsite copy
-is *elsewhere* — at least one copy must be *unreachable* by a live, compromised system.
+is *elsewhere* - at least one copy must be *unreachable* by a live, compromised system.
 
 A practical small-team version: keep your normal offsite backups, *and* enable object-lock on the bucket
 (or pull periodic copies to a drive you disconnect) so there's always one copy that today's compromised
@@ -110,7 +110,7 @@ If you run your own infrastructure (see [/guides/what-a-server-is](/guides/what-
 non-negotiables into the plan from day one. One: a recurring restore drill, with a row-count-and-timestamp
 check, treated as an incident when it fails. Two: at least one immutable or offline copy, so a stolen
 credential or a ransomware run can't take your recovery down with your production. Everything earlier in
-this guide is preparation; these two are what make it *real* when the bad morning comes — and it does
+this guide is preparation; these two are what make it *real* when the bad morning comes - and it does
 come.
 
 ```quiz
@@ -124,7 +124,7 @@ come.
       "Success only counts if the job runs on a weekend"
     ],
     "answer": 1,
-    "explain": "Jobs fail silently — an expired credential or config typo can dump an empty file while still 'succeeding.' Only an actual restore proves the output is usable."
+    "explain": "Jobs fail silently - an expired credential or config typo can dump an empty file while still 'succeeding.' Only an actual restore proves the output is usable."
   },
   {
     "q": "What is the only reliable way to know a backup actually works?",

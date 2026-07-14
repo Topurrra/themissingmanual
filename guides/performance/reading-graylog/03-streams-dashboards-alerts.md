@@ -91,7 +91,7 @@ Build the search once; reuse it at whichever level fits.
 
 ## The trade-offs underneath all of this
 
-This is where centralized logging stops being free, so it's the part worth being honest about.
+This is where centralized logging stops being free, so it's the part worth being clear about.
 
 ### Logs are only as good as what you logged
 
@@ -127,7 +127,7 @@ longest. Higher-severity, lower-volume logs are cheaper to keep and more valuabl
 first appeared *before* the oldest log you still have. If retention is 7 days and the regression shipped 10
 days ago, the early evidence is gone. It's worth knowing your retention window *before* an incident,
 so you're not surprised by an empty search that just means "older than we keep," not "never happened." The
-honest trade-off: log enough, at the right severity, kept long enough to investigate - without paying to
+real trade-off: log enough, at the right severity, kept long enough to investigate - without paying to
 store noise you'll never read.
 
 ## Recap

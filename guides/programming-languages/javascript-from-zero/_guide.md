@@ -2,7 +2,7 @@
 title: "JavaScript From Zero"
 guide: "javascript-from-zero"
 phase: 0
-summary: "Learn JavaScript from nothing to genuinely advanced: where it runs, values and types, collections, control flow, modules, async and the DOM - then the deep half: scope and closures, this and prototypes, generators, the event loop, functional JS, bundlers, performance, and the road to TypeScript. Small, runnable steps, honest explanations."
+summary: "Learn JavaScript from nothing to genuinely advanced: where it runs, values and types, collections, control flow, modules, async and the DOM - then the deep half: scope and closures, this and prototypes, generators, the event loop, functional JS, bundlers, performance, and the road to TypeScript. Small, runnable steps, clear explanations."
 tags: [javascript, js, node, beginner, advanced, web, programming-language, closures, prototypes, event-loop, typescript]
 category: programming-languages
 order: 2

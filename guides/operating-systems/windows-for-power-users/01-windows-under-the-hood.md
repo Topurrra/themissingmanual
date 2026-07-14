@@ -115,7 +115,7 @@ You met user space and kernel space in the OS guide: untrusted programs run in u
 
 ## How Windows really differs from Unix
 
-You'll hear "Windows is different from Mac/Linux." Here's the honest, concrete version of *how* - the differences that actually bite you, not vibes:
+You'll hear "Windows is different from Mac/Linux." Here's the straight, concrete version of *how* - the differences that actually bite you, not vibes:
 
 | | Windows | Unix (macOS / Linux) |
 |---|---|---|

@@ -68,18 +68,31 @@
 
     <section class="guide-results">
       <p class="count">{hits.length} result{hits.length === 1 ? '' : 's'} for “{q}”.</p>
-      <ul class="results">
-        {#each hits as h}
-          <li>
-            <a href={`/guides/${h.guide_slug}/${h.phase_no}`}>{@html highlight(h.title, q)}</a>
-            {#if h.snippet}
-              <span class="snippet">{@html h.snippet}</span>
-            {:else}
-              <span class="summary">{@html highlight(h.summary, q)}</span>
-            {/if}
-          </li>
-        {/each}
-      </ul>
+      {#if hits.length}
+        <ul class="results">
+          {#each hits as h}
+            <li>
+              <a href={`/guides/${h.guide_slug}/${h.phase_no}`}>{@html highlight(h.title, q)}</a>
+              {#if h.snippet}
+                <span class="snippet">{@html h.snippet}</span>
+              {:else}
+                <span class="summary">{@html highlight(h.summary, q)}</span>
+              {/if}
+            </li>
+          {/each}
+        </ul>
+      {:else}
+        <div class="no-hits">
+          <p class="nh-lead">We don’t have a guide on “{q}” yet.</p>
+          <a class="nh-cta" href={`/request?q=${encodeURIComponent(q)}`}>
+            <i class="ti ti-message-plus" aria-hidden="true"></i> Request this guide
+          </a>
+          <p class="nh-sub">
+            Tell us and it goes straight into the writing queue — or
+            <a href="/backlog">vote on the backlog</a>.
+          </p>
+        </div>
+      {/if}
     </section>
   </div>
 {/if}
@@ -87,6 +100,22 @@
 <style>
   .did-you-mean { color: var(--muted); font-size: 0.95rem; margin: 0.2rem 0 0.6rem; }
   .did-you-mean a { color: var(--accent); font-weight: 600; }
+
+  /* Zero-result → request-a-guide prompt: turns a dead end into a content request. */
+  .no-hits {
+    border: 1px solid var(--line); border-radius: 14px; background: var(--surface);
+    padding: 1.3rem 1.4rem; margin-top: 0.4rem; max-width: 560px;
+  }
+  .nh-lead { margin: 0; color: var(--ink); font-weight: 600; }
+  .nh-cta {
+    display: inline-flex; align-items: center; gap: 0.4rem; margin: 0.9rem 0 0;
+    font-weight: 600; color: #fff; background: var(--accent);
+    border-radius: 10px; padding: 0.5rem 1.1rem; transition: filter 0.15s var(--ease);
+  }
+  .nh-cta:hover { filter: brightness(1.1); }
+  .nh-cta .ti { font-size: 17px; }
+  .nh-sub { margin: 0.8rem 0 0; color: var(--muted); font-size: 0.9rem; }
+  .nh-sub a { color: var(--accent); font-weight: 600; }
   .snippet { display: block; color: var(--muted); font-size: 0.9rem; margin-top: 3px; line-height: 1.5; }
   .snippet :global(b) { color: var(--accent); font-weight: 600; }
 

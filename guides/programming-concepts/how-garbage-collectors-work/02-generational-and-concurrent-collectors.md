@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # Generational and Concurrent Collectors
 
-Phase 1 left mark-and-sweep with an honest weakness: to trace reachability safely, it wants the object graph to hold still, and tracing the *entire* heap every time is slow. Two independent insights fix this, and nearly every collector shipping today - the JVM's, Go's, V8's, .NET's - is built from some combination of them. One shrinks the *amount* of heap you trace on a typical pass. The other lets you trace *while the program keeps running*, instead of freezing it. They're separate ideas that compose.
+Phase 1 left mark-and-sweep with a real weakness: to trace reachability safely, it wants the object graph to hold still, and tracing the *entire* heap every time is slow. Two independent insights fix this, and nearly every collector shipping today - the JVM's, Go's, V8's, .NET's - is built from some combination of them. One shrinks the *amount* of heap you trace on a typical pass. The other lets you trace *while the program keeps running*, instead of freezing it. They're separate ideas that compose.
 
 ## The generational hypothesis
 

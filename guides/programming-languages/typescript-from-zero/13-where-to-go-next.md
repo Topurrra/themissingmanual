@@ -2,7 +2,7 @@
 title: "Where to Go Next - Putting TypeScript to Work"
 guide: "typescript-from-zero"
 phase: 13
-summary: "You learned the durable, hard part - the type system itself. Here's the honest map of where to apply it: typed React, typed Node APIs, and the modern superpower of end-to-end type safety with tools like tRPC and Prisma."
+summary: "You learned the durable, hard part - the type system itself. Here's the clear map of where to apply it: typed React, typed Node APIs, and the modern superpower of end-to-end type safety with tools like tRPC and Prisma."
 tags: [typescript, react, node, full-stack, learning-path, what-to-build, trpc, next]
 difficulty: beginner
 synonyms: ["what to build with typescript", "typescript with react", "typescript with node", "typescript full stack", "typescript next steps", "is typescript worth learning", "typescript end to end type safety"]
@@ -13,7 +13,7 @@ updated: 2026-06-22
 
 You made it. You can read and write generics, model real data with unions and discriminated unions, narrow types until the compiler trusts you, and bend the type system with conditional and mapped types. That's the *hard* part, and the durable one - frameworks come and go, but the type system you just learned is the same whether you're writing a React component, a server, or a build script.
 
-So this last phase isn't more syntax. Everything from here is **applying** what you already know. TypeScript on its own is rarely the destination - it's the language you reach for *while* building something else. This is the honest map of where it goes, and what to build so it sticks.
+So this last phase isn't more syntax. Everything from here is **applying** what you already know. TypeScript on its own is rarely the destination - it's the language you reach for *while* building something else. This is the clear map of where it goes, and what to build so it sticks.
 
 ## The branches from here
 

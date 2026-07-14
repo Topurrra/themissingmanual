@@ -23,7 +23,7 @@ Cloud flows are great when the things you're automating have a connector. But pl
 
 A **desktop flow** automates the user interface directly. It opens an application, clicks the buttons, types into the fields, reads values off the screen, copies data between windows. You build it by recording your clicks or by dragging steps in the desktop designer - open this app, click that field, extract that table, type this value.
 
-The honest mental model: it's a very fast, very literal intern with no judgment. It does exactly what you taught it, in exactly the order you taught it. That's the strength - it can finally automate the legacy app that has no other way in - and the weakness, because anything that moves on screen can break it.
+The plain mental model: it's a very fast, very literal intern with no judgment. It does exactly what you taught it, in exactly the order you taught it. That's the strength - it can finally automate the legacy app that has no other way in - and the weakness, because anything that moves on screen can break it.
 
 Use desktop RPA when there's **no connector and no API**. If a connector exists, use the cloud flow - it's faster, sturdier, and doesn't depend on a screen. RPA is the tool of last resort, not the default. People who lead with RPA end up with brittle automations that snap every time a vendor ships a UI update.
 
@@ -40,7 +40,7 @@ There are two ways to run a desktop flow, and the difference is mostly about lic
 
 ## The licensing gotchas, plainly
 
-The licensing is the part that derails projects, so here's the short, honest version:
+The licensing is the part that derails projects, so here's the short, no-nonsense version:
 
 - **Premium connectors aren't free.** Anything beyond standard 365 connectors needs a premium plan. (Covered last phase - it still applies the moment a desktop flow hands off to a cloud flow that calls something premium.)
 - **Unattended RPA is a separate, paid add-on.** Don't design an overnight bot before you've confirmed someone's paying for unattended.

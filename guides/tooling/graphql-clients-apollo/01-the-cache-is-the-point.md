@@ -83,7 +83,7 @@ This is the mental flip from REST. In a REST app you think in *requests*: "call 
 
 ## What you give up
 
-None of this is free, and pretending otherwise is how people get burned in Phase 3. The normalized cache is a second copy of your server's data living in the browser, and like any cache it can be wrong. After a mutation, after a delete, after another user changes something - the cache can hold data the server no longer agrees with. Most of the real work with Apollo is keeping that cache honest, which is exactly what Phase 2 is about.
+None of this is free, and pretending otherwise is how people get burned in Phase 3. The normalized cache is a second copy of your server's data living in the browser, and like any cache it can be wrong. After a mutation, after a delete, after another user changes something - the cache can hold data the server no longer agrees with. Most of the real work with Apollo is keeping that cache accurate, which is exactly what Phase 2 is about.
 
 **For builders:** the practical line is this. If your app shows the same entities across many screens and edits them in place, the normalized cache earns its weight fast. If you're building a few read-only pages that never share data, `fetch` plus a query string is genuinely enough, and reaching for Apollo is the kind of complexity you'll resent later.
 

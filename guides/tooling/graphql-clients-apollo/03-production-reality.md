@@ -51,7 +51,7 @@ no-cache          always network, never store       (one-off, sensitive data)
 
 ## The refetch storm
 
-`refetchQueries` is the safe, readable way to keep the cache honest after a mutation - but it's also how you accidentally hammer your server. Each named query you list is a fresh network request, and it's tempting to list "everything that might have changed" after every write.
+`refetchQueries` is the safe, readable way to keep the cache accurate after a mutation - but it's also how you accidentally hammer your server. Each named query you list is a fresh network request, and it's tempting to list "everything that might have changed" after every write.
 
 ```jsx
 useMutation(ADD_TODO, {
@@ -76,9 +76,9 @@ renameUser({
 
 *What just happened:* the UI showed "Grace" the instant the button was clicked, before any network round trip. If the mutation succeeds, the real response replaces the optimistic one seamlessly. If it fails, Apollo discards the optimistic write and the old name snaps back. The gotcha: your `optimisticResponse` must include `__typename` and `id`, or Apollo can't apply it to the right entry - the same id discipline as everywhere else.
 
-## The honest tradeoff
+## The real tradeoff
 
-Step back and the shape of the deal is clear. REST gives you a simple mental model - a request, a response, state you hold yourself - and makes over- and under-fetching your problem. Apollo solves fetching shape and cross-screen consistency, and hands you a cache to keep honest in return. You traded *"my data is stale because I forgot to refetch"* for *"my cache is wrong because I forgot to update it."* Different failure mode, not zero failure mode.
+Step back and the shape of the deal is clear. REST gives you a simple mental model - a request, a response, state you hold yourself - and makes over- and under-fetching your problem. Apollo solves fetching shape and cross-screen consistency, and hands you a cache to keep accurate in return. You traded *"my data is stale because I forgot to refetch"* for *"my cache is wrong because I forgot to update it."* Different failure mode, not zero failure mode.
 
 **For builders:** the teams who stay happy with Apollo treat the cache as a real part of their architecture, not an invisible convenience. They select `id` everywhere, choose fetch policies deliberately, write surgical cache updates on hot paths, and keep the Devtools cache tab open when something looks stale. Do that, and the normalized cache pays for itself many times over. Ignore it, and you'll spend Phase 3's gotchas in production instead of in this guide.
 

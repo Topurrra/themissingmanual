@@ -124,7 +124,7 @@ a record stays immutable *and* always valid.
 ## `Optional` - a box that might be empty, instead of `null`
 
 You met `null` and its favorite crime, `NullPointerException`, back in [Phase 7](07-errors-and-io.md). The
-modern reply to "this might not have a value" is `Optional` - and the point isn't magic, it's *honesty*.
+modern reply to "this might not have a value" is `Optional` - and the point isn't magic, it's *being upfront about it*.
 
 `Optional<User>` is a small wrapper holding either one `User` or nothing. A method returning
 `Optional<User>` tells callers, right in the signature, "this might come back empty - deal with it."
@@ -139,7 +139,7 @@ public class Users {
     // New way: the Optional makes "might be missing" part of the contract.
     static Optional<String> findName(int id) {
         if (id == 1) return Optional.of("Ada");
-        return Optional.empty();          // honest "nothing here"
+        return Optional.empty();          // plain "nothing here"
     }
 
     public static void main(String[] args) {

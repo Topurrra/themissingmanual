@@ -21,7 +21,7 @@ The whole thing is four moves: pick a realistic scenario, ramp the load up, watc
 
 **Why this matters.** If you blast a single trivial endpoint - say a `/health` check that returns "ok" and touches nothing - you'll get a gorgeous, enormous throughput number that means *nothing*, because no real user spends their day hitting your health check. The endpoints that break under load are the expensive ones: the search that runs a heavy query, the checkout that writes to the database and calls a payment API. Test the journeys that actually cost something, weighted roughly the way real traffic is.
 
-⚠️ **Gotcha - the model is only as honest as the inputs.** Vary your test data. If all ten thousand virtual users search for the same word and request the same product, your database serves it all from cache and reports dazzling numbers production will never reproduce, because real users search for *different* things and blow past that cache. Same for logins: reusing one account behaves nothing like thousands of distinct sessions. Realistic, *varied* data is the difference between a test that warns you and one that flatters you.
+⚠️ **Gotcha - the model is only as real as the inputs.** Vary your test data. If all ten thousand virtual users search for the same word and request the same product, your database serves it all from cache and reports dazzling numbers production will never reproduce, because real users search for *different* things and blow past that cache. Same for logins: reusing one account behaves nothing like thousands of distinct sessions. Realistic, *varied* data is the difference between a test that warns you and one that flatters you.
 
 ## Step 2 - Ramp up (don't slam)
 
@@ -56,7 +56,7 @@ The moment these three turn together is the whole point of the exercise. It has 
 
 **What it actually is.** The **knee** (also called the *breaking point* or *saturation point*) is the spot on the curve where the system stops scaling gracefully and starts falling apart: throughput flattens, latency turns sharply upward, and errors begin to climb, all around the same load level. Below the knee, more users get served fine; above it, more users just make everyone slower and then start failing.
 
-📝 **Terminology.** The *knee* is the bend in the latency-vs-load curve - named because the line, flat-then-sharply-up, looks like a bent knee. It marks the capacity ceiling: the honest number for "how much can this take?"
+📝 **Terminology.** The *knee* is the bend in the latency-vs-load curve - named because the line, flat-then-sharply-up, looks like a bent knee. It marks the capacity ceiling: the real number for "how much can this take?"
 
 ```text
    latency
@@ -88,7 +88,7 @@ $ k6 run --vus-max 1000 ramp-checkout.js
    900    3,040 r/s     280ms  2,100ms   6,400ms    3.10%
   1000    2,780 r/s     640ms  5,800ms  14,000ms   11.40%
 ```
-*What just happened:* (illustrative figures) Read it top to bottom as a story. From 100 to 500 users everything is healthy - throughput climbs in step with users, latency is calm (p99 around 120–210 ms), errors essentially zero. At **700** the first cracks show: throughput growth is slowing and p99 has jumped to 680 ms, the tail stretching even though the typical user (p50, 68 ms) still feels fine. At **800** throughput has basically *stopped climbing* (3,050 r/s, the ceiling) while p99 crosses past a second and errors tick up. By **900–1000** it's a cliff: adding users no longer adds throughput (it's *dropping*), p99 blows out to many seconds, errors hit double digits - real users getting failures, not just waits. **The knee is right around 700–800 users.** That's your honest capacity: comfortable headroom if you expect 300 concurrent users at launch, a problem to fix *now* if you expect 900.
+*What just happened:* (illustrative figures) Read it top to bottom as a story. From 100 to 500 users everything is healthy - throughput climbs in step with users, latency is calm (p99 around 120–210 ms), errors essentially zero. At **700** the first cracks show: throughput growth is slowing and p99 has jumped to 680 ms, the tail stretching even though the typical user (p50, 68 ms) still feels fine. At **800** throughput has basically *stopped climbing* (3,050 r/s, the ceiling) while p99 crosses past a second and errors tick up. By **900–1000** it's a cliff: adding users no longer adds throughput (it's *dropping*), p99 blows out to many seconds, errors hit double digits - real users getting failures, not just waits. **The knee is right around 700–800 users.** That's your real capacity: comfortable headroom if you expect 300 concurrent users at launch, a problem to fix *now* if you expect 900.
 
 ⚠️ **Gotcha - test like production, or the numbers lie.** This is the single biggest way load tests betray you. The result above is only meaningful if the test ran against an environment that *matches production* in the ways that bite:
 
@@ -113,7 +113,7 @@ The load test told you the **symptom** - *"it saturates around 800 concurrent us
 1. **Pick a realistic scenario** - model real user *journeys* with varied data, not one trivial endpoint, or the numbers flatter you.
 2. **Ramp up gradually**, don't slam - a smooth ramp lets you *see the breaking point arrive* and read the exact level where it turns.
 3. **Watch throughput, latency percentiles, and error rate together** as the load climbs.
-4. **Find the knee** - where throughput flattens, p95/p99 curve sharply up, and errors lift off. That's your honest capacity; compare it to the traffic you actually expect.
+4. **Find the knee** - where throughput flattens, p95/p99 curve sharply up, and errors lift off. That's your real capacity; compare it to the traffic you actually expect.
 5. **Test like production** (data volume, environment, varied inputs) or the result is confident fiction. A load test finds the **symptom**; **profiling** (a future performance guide) finds the cause - keep those two jobs, and that order, separate.
 
 That's the full loop. You can now answer the question that started this guide - *will it hold?* - with a number and a graph instead of a launch-day stomach-drop.

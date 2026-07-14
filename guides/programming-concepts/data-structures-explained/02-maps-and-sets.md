@@ -91,7 +91,7 @@ need the picture: *the key is a label that jumps you near the value.*
 10 million, fetching one by its key feels the same. That "doesn't slow down as it grows" quality is the
 reason maps exist.
 
-A couple of honest caveats, so the picture is true and not a fairy tale:
+A couple of plain caveats, so the picture is true and not a fairy tale:
 
 - ⚠️ **Keys must be unique.** Assign to a key that already exists and you *overwrite* its old value rather
   than adding a second one. A map holds at most one value per key.

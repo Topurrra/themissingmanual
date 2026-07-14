@@ -24,6 +24,6 @@ This guide makes that surprise stop being spooky. You'll see *why* it happens (i
 ## The phases
 1. **[Why Floats Surprise You](01-why-floats-surprise-you.md)** - the mental model: a float stores numbers in binary, so values like 0.1 round on the way in. The 0.1 + 0.2 demo, decoded.
 2. **[Where It Bites](02-where-it-bites.md)** - the three places rounding error turns into real bugs: money, exact equality checks, and long summations. Seen up close.
-3. **[The Fixes (and When Floats Are Fine)](03-the-fixes.md)** - integer cents, a decimal type, comparing with a tolerance - and the honest other half: where floats are exactly the right tool.
+3. **[The Fixes (and When Floats Are Fine)](03-the-fixes.md)** - integer cents, a decimal type, comparing with a tolerance - and the other half of the story: where floats are exactly the right tool.
 
 [Phase 1: Why Floats Surprise You](01-why-floats-surprise-you.md) →

@@ -123,7 +123,7 @@ built exactly for cheap add/remove at *both* ends.
 
 ## Searching for a value - you have to look through them
 
-One more honest limitation. A list is fast at "give me item number N," but it's *not* fast at "is the value
+One more plain limitation. A list is fast at "give me item number N," but it's *not* fast at "is the value
 `"We"` in here, and where?" To answer that, the computer has no shortcut - it walks the slots one by one,
 checking each, until it finds a match or runs out.
 

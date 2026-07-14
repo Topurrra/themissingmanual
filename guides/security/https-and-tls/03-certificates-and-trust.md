@@ -36,7 +36,7 @@ People reach this page while staring at a red error, so here's the quick referen
 
 It bundles together: the **domain name(s)** it's valid for, the server's **public key** (from Phase 2's handshake), a **validity period** (not-before/not-after dates), the **issuer**, and the CA's **digital signature** over all of that.
 
-**Why people get this wrong.** It's tempting to think the certificate *is* the encryption, or some kind of license proving the site is legitimate. It's neither - a certificate does exactly one job: tie a *public key* to a *domain name*, with a trusted third party's signature as proof. (Recall Phase 1: this is why the padlock can't vouch for honesty - the cert only ever claimed "this key belongs to this domain.")
+**Why people get this wrong.** It's tempting to think the certificate *is* the encryption, or some kind of license proving the site is legitimate. It's neither - a certificate does exactly one job: tie a *public key* to a *domain name*, with a trusted third party's signature as proof. (Recall Phase 1: this is why the padlock can't vouch for trustworthiness - the cert only ever claimed "this key belongs to this domain.")
 
 ## The chain of trust - why your browser believes the signature
 

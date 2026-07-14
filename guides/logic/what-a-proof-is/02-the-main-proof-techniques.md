@@ -36,7 +36,7 @@ flowchart LR
 
 The most common shape, and the one you reach for first. A claim of the form "if `P`,
 then `Q`" asks: *whenever `P` holds, does `Q` follow?* So you assume `P` is true and
-walk, step by honest step, until you reach `Q`. No detours, no cleverness - the proof
+walk, step by straight step, until you reach `Q`. No detours, no cleverness - the proof
 *is* the walk.
 
 Take a concrete one: the sum of two even numbers is even. "Even" means "divisible by

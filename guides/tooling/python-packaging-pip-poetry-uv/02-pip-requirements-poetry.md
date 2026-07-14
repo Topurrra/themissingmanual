@@ -19,7 +19,7 @@ updated: 2026-06-30
 
 You've got the model: each project gets its own shelf, and you keep the *recipe* in git. This phase is about writing that recipe well. We'll start where almost everyone starts - `pip` and a `requirements.txt` - see exactly where that recipe falls short, and then move to `pyproject.toml` with Poetry, which fixes the gaps without changing the model underneath.
 
-## pip and requirements.txt: the honest baseline
+## pip and requirements.txt: the plain baseline
 
 Inside an activated environment, `pip install` puts a package on the shelf. To make that repeatable, you write down what you installed. The classic way is a plain text file:
 

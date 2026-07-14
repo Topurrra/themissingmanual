@@ -79,7 +79,7 @@ the truth:  a revert is only real if you've run it against a DB shaped like prod
 
 *What just happened:* Writing the script is necessary but not sufficient. The practice that makes rollback real: in CI, after applying a migration, immediately revert it and re-apply it. dbmate gives you `dbmate up && dbmate down && dbmate up`; Sqitch gives you `sqitch deploy && sqitch revert && sqitch deploy`. If that round-trip fails in CI, you found a broken revert on a calm Tuesday instead of during an outage.
 
-And be honest about what revert *can't* undo: a migration that dropped a column and lost its data cannot be reverted into existence. For destructive changes, the real rollback plan is a backup and a forward-fix migration, not a `down` script. Reverts handle structural mistakes, not data loss.
+And be clear-eyed about what revert *can't* undo: a migration that dropped a column and lost its data cannot be reverted into existence. For destructive changes, the real rollback plan is a backup and a forward-fix migration, not a `down` script. Reverts handle structural mistakes, not data loss.
 
 ## In the wild: where they sit in a pipeline
 

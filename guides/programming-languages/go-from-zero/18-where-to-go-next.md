@@ -2,7 +2,7 @@
 title: "Where to Go Next"
 guide: "go-from-zero"
 phase: 18
-summary: "Honest signposts for what to build with Go now - web services with net/http or chi/gin, CLIs with cobra, and Go's home turf of cloud and infrastructure tooling (Docker and Kubernetes are written in Go) - plus what to build next."
+summary: "Straight signposts for what to build with Go now - web services with net/http or chi/gin, CLIs with cobra, and Go's home turf of cloud and infrastructure tooling (Docker and Kubernetes are written in Go) - plus what to build next."
 tags: [go, golang, net-http, chi, gin, cobra, cli, kubernetes, docker, cloud, what-to-build]
 difficulty: beginner
 synonyms: ["what to build with go", "go web framework chi gin", "go cli cobra", "why is go used for cloud", "is kubernetes written in go", "go next steps after learning", "what is go good for"]
@@ -13,7 +13,7 @@ updated: 2026-06-19
 
 You've covered the whole language: install and syntax, collections and control flow, modules, goroutines and channels, errors and I/O, the toolchain, and the idioms - not a beginner's slice of Go, that's *Go*. The remaining question: now what do you build?
 
-This phase is deliberately short and honest. Go isn't equally good at everything, so the kindest thing I can do is point you at where it genuinely shines, name the few libraries you'll actually reach for, and get out of your way.
+This phase is deliberately short and to the point. Go isn't equally good at everything, so the kindest thing I can do is point you at where it genuinely shines, name the few libraries you'll actually reach for, and get out of your way.
 
 ## Where Go actually shines
 

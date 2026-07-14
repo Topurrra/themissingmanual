@@ -92,7 +92,7 @@ Running 1 test using 1 worker
 
 ## The three side by side
 
-One honest table, since the whole point is the trade-off:
+One plain table, since the whole point is the trade-off:
 
 | | **Unit** | **Integration** | **End-to-end** |
 |---|---|---|---|

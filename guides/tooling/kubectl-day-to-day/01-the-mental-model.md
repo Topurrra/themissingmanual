@@ -76,7 +76,7 @@ kubectl config use-context staging    # switch
 ```bash
 kubectl get pods                       # only the 'default' namespace
 kubectl get pods -n payments           # look in the 'payments' namespace
-kubectl get pods -A                     # ALL namespaces (the honest full picture)
+kubectl get pods -A                     # ALL namespaces (the full, unfiltered picture)
 ```
 
 *What just happened:* `-A` (short for `--all-namespaces`) is the command that ends the "but there's nothing running!" confusion. When a cluster looks empty, run `get pods -A` and the truth appears.

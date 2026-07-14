@@ -16,7 +16,7 @@ money on it, and you'd refuse that same bet on a die showing a 4. Some unknowns 
 likely than others, and you sense it in your gut. Probability turns that gut feeling into a
 number you can reason with, compare, and combine.
 
-This isn't about predicting the future. It's about measuring uncertainty honestly: "I don't
+This isn't about predicting the future. It's about measuring uncertainty in plain terms: "I don't
 know what will happen, but here's exactly how much I don't know."
 
 ## A probability is a number from 0 to 1

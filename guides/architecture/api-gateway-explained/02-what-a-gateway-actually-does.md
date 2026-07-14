@@ -2,7 +2,7 @@
 title: "What a gateway actually does"
 guide: api-gateway-explained
 phase: 2
-summary: "A single front door in front of many backend services — what an API gateway actually does, and when it earns its keep versus when it's overkill."
+summary: "A single front door in front of many backend services - what an API gateway actually does, and when it earns its keep versus when it's overkill."
 tags: [architecture, api-gateway, microservices, routing, api]
 difficulty: intermediate
 synonyms:
@@ -31,7 +31,7 @@ Request path              -> routed to
 /charge                    -> payments-service
 ```
 
-*What just happened:* the gateway inspects the path (sometimes the hostname, sometimes a header) and forwards the request to whichever service owns that piece of the API. This is the piece that makes "one address, many services" actually work — the client's illusion of a single API is a routing table on the gateway's side.
+*What just happened:* the gateway inspects the path (sometimes the hostname, sometimes a header) and forwards the request to whichever service owns that piece of the API. This is the piece that makes "one address, many services" actually work - the client's illusion of a single API is a routing table on the gateway's side.
 
 ## Authentication and authorization at the edge
 
@@ -44,7 +44,7 @@ Instead of every backend service independently verifying who's calling and what 
 4. Only if both pass -> forward to the backend service
 ```
 
-*What just happened:* the backend services can now largely trust that anything reaching them has already been vetted, instead of every one of them reimplementing token validation and permission checks. This isn't just convenience — it's a real security posture. One well-tested piece of auth code protecting every service beats fifteen homegrown copies of the same logic, some of which will inevitably be wrong.
+*What just happened:* the backend services can now largely trust that anything reaching them has already been vetted, instead of every one of them reimplementing token validation and permission checks. This isn't just convenience - it's a real security posture. One well-tested piece of auth code protecting every service beats fifteen homegrown copies of the same logic, some of which will inevitably be wrong.
 
 ## Rate limiting
 
@@ -55,7 +55,7 @@ client_id: acme-corp   requests this minute: 118   limit: 120   -> allow
 client_id: acme-corp   requests this minute: 121   limit: 120   -> reject (429)
 ```
 
-*What just happened:* one client hammering the API gets stopped at the door, before its flood of requests ever reaches — and potentially overwhelms — a backend service. Without a gateway, you'd need to build rate limiting into every service separately, or hope none of them ever need it.
+*What just happened:* one client hammering the API gets stopped at the door, before its flood of requests ever reaches - and potentially overwhelms - a backend service. Without a gateway, you'd need to build rate limiting into every service separately, or hope none of them ever need it.
 
 ## Request and response transformation
 
@@ -90,7 +90,7 @@ Gateway returns one combined JSON response to the client.
 
 ## Why all five live in one place
 
-None of these five jobs strictly requires a gateway — you could build auth checks and rate limiting into every service yourself. The reason they cluster into one component is that they're all *cross-cutting*: every service needs some version of routing awareness, auth, and rate limiting, and duplicating that logic N times means N chances to get it wrong and N places to update when the policy changes. Centralizing it in the gateway means one implementation, one place to patch a bug, one dashboard to watch.
+None of these five jobs strictly requires a gateway - you could build auth checks and rate limiting into every service yourself. The reason they cluster into one component is that they're all *cross-cutting*: every service needs some version of routing awareness, auth, and rate limiting, and duplicating that logic N times means N chances to get it wrong and N places to update when the policy changes. Centralizing it in the gateway means one implementation, one place to patch a bug, one dashboard to watch.
 
 ```quiz
 [
@@ -98,7 +98,7 @@ None of these five jobs strictly requires a gateway — you could build auth che
     "q": "Why do authentication and rate limiting typically live in the gateway rather than in each backend service?",
     "choices": [
       "Backend services are incapable of running auth code",
-      "They're cross-cutting concerns — duplicating them in every service means more chances to get it wrong",
+      "They're cross-cutting concerns - duplicating them in every service means more chances to get it wrong",
       "It's required by the HTTP specification",
       "Gateways are the only place that can see a bearer token"
     ],

@@ -110,7 +110,7 @@ That's a **ripple-carry adder** - the carry ripples leftward through the chain. 
 numbers? Chain eight full adders. 64-bit? Chain sixty-four. A machine that adds whole numbers is a
 row of the same tiny circuit, repeated.
 
-## The leap, honestly
+## The leap, plainly put
 
 With small variations on the same gates you can also subtract (addition with a flipped sign), and
 run AND, OR, and NOT across whole numbers at once. Bundle those operations with logic that picks

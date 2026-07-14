@@ -168,7 +168,7 @@ existing Java code uses the classic `public class { ... }` form, which is what t
 
 ## A smoother workflow
 
-The `javac` → `java` two-step is the honest foundation, worth doing by hand once so the pipeline isn't
+The `javac` → `java` two-step is the real foundation, worth doing by hand once so the pipeline isn't
 magic. Day to day, you'll lean on shortcuts:
 
 - **Single-file run (Java 11+).** For a one-file program, you can skip the separate compile step entirely:

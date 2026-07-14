@@ -13,7 +13,7 @@ updated: 2026-06-22
 
 Back in [Phase 8](08-packages-and-tooling.md) you met the build tool that compiles, packages, and resolves dependencies - and a promise that "we cover testing in Phase 16." This is that phase. You can write Java that compiles and runs; what you can't yet do is *prove* it works, *measure* how fast it is, or *find* the slow part when it isn't.
 
-The mental model for this phase: a real Java codebase doesn't run on hope. It runs on a test suite that fails loudly when behavior breaks, on measurements instead of guesses about speed, and on a profiler that points at the actual hot spot rather than the one you suspected. The JVM ships a mature toolchain for all of it - JUnit for correctness, JMH for honest benchmarks, Java Flight Recorder for profiling. "Is it correct?" and "is it fast?" stop being arguments in code review and become commands you run.
+The mental model for this phase: a real Java codebase doesn't run on hope. It runs on a test suite that fails loudly when behavior breaks, on measurements instead of guesses about speed, and on a profiler that points at the actual hot spot rather than the one you suspected. The JVM ships a mature toolchain for all of it - JUnit for correctness, JMH for accurate benchmarks, Java Flight Recorder for profiling. "Is it correct?" and "is it fast?" stop being arguments in code review and become commands you run.
 
 ## JUnit 5 - the basics and the AAA shape
 
@@ -200,7 +200,7 @@ Correctness is one question; *speed* is another - and here Java sets a trap that
 
 📝 **Why naive microbenchmarks lie.** A hand-rolled `nanoTime` loop measures a moving target (the JIT optimizing mid-run) and an unstable one (the optimizer may delete code whose result you discard). The fix isn't more careful manual timing - it's a framework built to defeat exactly these effects.
 
-That framework is **JMH** (Java Microbenchmark Harness), the official OpenJDK tool. Annotate a method with `@Benchmark`; JMH runs dedicated *warmup* iterations to let the JIT settle, runs your code in a fresh JVM *fork* (so one benchmark can't pollute another's optimization state), and consumes your return values through a `Blackhole` so the optimizer can't delete them. You get an honest number with error bars.
+That framework is **JMH** (Java Microbenchmark Harness), the official OpenJDK tool. Annotate a method with `@Benchmark`; JMH runs dedicated *warmup* iterations to let the JIT settle, runs your code in a fresh JVM *fork* (so one benchmark can't pollute another's optimization state), and consumes your return values through a `Blackhole` so the optimizer can't delete them. You get an accurate number with error bars.
 
 ```java
 import org.openjdk.jmh.annotations.*;
@@ -286,18 +286,18 @@ $ mvn test    # with the jacoco-maven-plugin configured
 
 *What just happened:* JaCoCo instrumented the code during the test run and tracked which lines and branches executed. The HTML report colors your source: green lines ran during tests, red lines never did. The red is the valuable part - it shows the branches your tests forgot, like the `min > max` case nobody wrote.
 
-⚠️ **Coverage is not correctness.** The trap everyone walks into. Coverage tells you a line *executed* - nothing about whether you *checked the result*, or whether the input that breaks it was ever tried. A test that calls `clamp` once and asserts nothing can light up the whole method green. Treat coverage as a *map of the untested* - chase the red - never as a score to maximize. High coverage with weak assertions is more dangerous than honest medium coverage, because it *feels* safe.
+⚠️ **Coverage is not correctness.** The trap everyone walks into. Coverage tells you a line *executed* - nothing about whether you *checked the result*, or whether the input that breaks it was ever tried. A test that calls `clamp` once and asserts nothing can light up the whole method green. Treat coverage as a *map of the untested* - chase the red - never as a score to maximize. High coverage with weak assertions is more dangerous than plain medium coverage, because it *feels* safe.
 
 ## Recap
 
 1. A **unit test** is a `@Test` method that asserts one method's behavior for a known input. Follow the **Arrange-Act-Assert** shape so the test reads as a spec, run it with `mvn test` / `./gradlew test`, and mind the `assertEquals(expected, actual)` argument order.
 2. **`@ParameterizedTest`** with `@ValueSource` / `@CsvSource` runs one method over many input rows - Java's table-driven testing - while `@DisplayName` and `@Nested` make the report read like documentation.
 3. **Mockito** replaces a real dependency with a controllable mock (`mock` / `when` / `verify`) so you can test a unit in isolation; ⚠️ mock the boundaries, not your own internals.
-4. ⚠️ You **cannot** time Java with a `nanoTime` loop - JIT warmup and dead-code elimination make the number a confident lie. **JMH** (`@Benchmark`) handles warmup, forking, and result-sinking, and reports honest **ns/op** with error bars.
+4. ⚠️ You **cannot** time Java with a `nanoTime` loop - JIT warmup and dead-code elimination make the number a confident lie. **JMH** (`@Benchmark`) handles warmup, forking, and result-sinking, and reports accurate **ns/op** with error bars.
 5. **Profilers** - **JFR** + JDK Mission Control, VisualVM, async-profiler - find the real CPU/allocation hot spot. 💡 Measure, don't guess: profile first, then optimize what the profile points at.
 6. **JaCoCo** maps which lines and branches your tests ran - chase the red - but ⚠️ coverage is not correctness: an executed line is not a checked one.
 
-You can now prove your Java is correct, measure how fast it is honestly, and find the slow part with evidence instead of instinct. Next: widening the lens to performance patterns and the broader ecosystem that turns those measurements into action.
+You can now prove your Java is correct, measure how fast it is accurately, and find the slow part with evidence instead of instinct. Next: widening the lens to performance patterns and the broader ecosystem that turns those measurements into action.
 
 ## Quick check
 
@@ -308,7 +308,7 @@ Test yourself on the ideas that separate "I ran it once" from "I proved it works
   {
     "q": "Why can't you reliably benchmark Java code with a `System.nanoTime()` loop, and what does JMH do about it?",
     "choices": [
-      "JIT warmup and dead-code elimination distort the result; JMH adds warmup iterations, JVM forking, and a Blackhole so the numbers are honest",
+      "JIT warmup and dead-code elimination distort the result; JMH adds warmup iterations, JVM forking, and a Blackhole so the numbers are accurate",
       "nanoTime() isn't precise enough; JMH uses a higher-resolution clock",
       "Loops are always optimized away in Java; JMH disables the JIT entirely",
       "nanoTime() returns wall-clock time; JMH measures CPU time instead"

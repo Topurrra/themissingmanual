@@ -26,7 +26,7 @@ We're not going to cover clicking around the desktop - you've got that. We're go
 
 ## The phases
 
-1. **[Windows Under the Hood](01-windows-under-the-hood.md)** - the NT kernel, drive letters and the real folder layout (including `AppData`, the one everyone trips over), how "Run as administrator" maps to the OS permission model, and the honest list of ways Windows differs from Unix.
+1. **[Windows Under the Hood](01-windows-under-the-hood.md)** - the NT kernel, drive letters and the real folder layout (including `AppData`, the one everyone trips over), how "Run as administrator" maps to the OS permission model, and the plain list of ways Windows differs from Unix.
 2. **[Services, Task Manager & the Registry](02-services-task-manager-registry.md)** - what services are and how they differ from apps, Task Manager in depth (Startup, Details, killing a process), and the registry explained for real - what it is, how it's organized, and ⚠️ how to touch it without breaking anything.
 3. **[PowerShell Basics](03-powershell-basics.md)** - the big idea (commands pass *objects*, not text), the verb-noun cmdlet naming, piping objects, running a script, and the ⚠️ execution-policy gotcha that stops every beginner's first script.
 

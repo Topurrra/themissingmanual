@@ -55,7 +55,7 @@ Each entry encodes:  current offset(s)  +  the rules & dates for every change,
 
 Everything above collapses into four habits. Follow them and the whole hairy domain becomes boring, which is exactly what you want from time handling.
 
-**1. Store and compute in UTC (or Unix timestamps).** Inside your system - your database, your business logic, your comparisons - work only with instants. They're unambiguous, they sort correctly, and arithmetic on them is honest. Never store a local wall-clock time as your source of truth.
+**1. Store and compute in UTC (or Unix timestamps).** Inside your system - your database, your business logic, your comparisons - work only with instants. They're unambiguous, they sort correctly, and arithmetic on them is reliable. Never store a local wall-clock time as your source of truth.
 
 **2. Convert only at the edges.** A human types a local time on the way in → convert it to UTC immediately. You show a time on the way out → convert UTC to the viewer's local zone at the last possible moment. The conversions live at the boundary; the core never sees a local time.
 

@@ -251,7 +251,7 @@ $ go tool cover -html=cover.out   # opens a browser: green = covered, red = not
 
 *What just happened:* `-cover` printed the share of statements that ran. `-coverprofile` wrote per-line detail to a file, and `go tool cover -html` turned it into a color-coded view: green lines exercised, red never ran. The red is the useful part - it shows the branches your tests forgot.
 
-⚠️ **100% coverage is not "bug-free."** The trap everyone walks into. Coverage tells you a line *executed*, nothing about whether you *checked the result* or tried the inputs that break it. A test that calls `Clamp` once and asserts nothing lights up the whole function green. Treat coverage as a *map of the untested* - chase the red - not a score to max out. High coverage with weak assertions is worse than honest medium coverage, because it *feels* safe.
+⚠️ **100% coverage is not "bug-free."** The trap everyone walks into. Coverage tells you a line *executed*, nothing about whether you *checked the result* or tried the inputs that break it. A test that calls `Clamp` once and asserts nothing lights up the whole function green. Treat coverage as a *map of the untested* - chase the red - not a score to max out. High coverage with weak assertions is worse than plain medium coverage, because it *feels* safe.
 
 **Fuzzing** attacks the other blind spot: inputs you never thought to write down. A **fuzz test** generates *random, mutating* inputs, hunting for one that crashes your function or breaks an asserted property.
 

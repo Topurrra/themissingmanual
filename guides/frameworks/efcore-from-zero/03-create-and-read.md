@@ -2,7 +2,7 @@
 title: "Create & Read"
 guide: "efcore-from-zero"
 phase: 3
-summary: "Insert rows with Add plus SaveChanges and watch EF write back the generated Id, then read them back with Find, First, Single, and ToList — and know when each one throws."
+summary: "Insert rows with Add plus SaveChanges and watch EF write back the generated Id, then read them back with Find, First, Single, and ToList - and know when each one throws."
 tags: [efcore, csharp, create, read, crud]
 difficulty: intermediate
 synonyms: ["ef core add savechanges", "ef core find first single", "ef core read query", "ef core insert", "ef core tolist", "ef core async savechangesasync"]
@@ -20,13 +20,13 @@ CRUD, and the half of EF Core you'll use every single day.
 Here's the one picture to carry through this whole phase:
 
 **`Add` doesn't touch the database. It stages an insert in your `DbContext`'s memory. `SaveChanges` is
-the moment EF turns everything you've staged into SQL and sends it — in one transaction. The finders
+the moment EF turns everything you've staged into SQL and sends it - in one transaction. The finders
 (`Find`, `First`, `Single`, `ToList`) go the other direction: they run a `SELECT` and pour the rows
 back into C# objects.**
 
 > 💡 Think of the `DbContext` as a notepad, not a phone line. You scribble intentions on it ("insert
 > this blog"), and nothing reaches the database until you call `SaveChanges`. That's why a single
-> `SaveChanges` can flush ten inserts at once — they were all just sitting on the notepad.
+> `SaveChanges` can flush ten inserts at once - they were all just sitting on the notepad.
 
 We'll lean on the SQL logger from Phase 1 throughout, because the fastest way to trust an ORM is to read
 the SQL it writes.
@@ -38,7 +38,7 @@ The pattern is two lines: make an object, hand it to the `DbSet`, then flush.
 ```csharp
 var blog = new Blog { Url = "https://battle-hardened.dev" };
 
-ctx.Blogs.Add(blog);   // staged, not saved — no SQL yet
+ctx.Blogs.Add(blog);   // staged, not saved - no SQL yet
 ctx.SaveChanges();     // NOW the INSERT runs
 
 Console.WriteLine(blog.Id);   // 1  ← EF filled this in for you
@@ -54,9 +54,9 @@ FROM "Blogs"
 WHERE changes() = 1 AND "rowid" = last_insert_rowid();
 ```
 
-*What just happened:* `Add` only marked the object as "to be inserted" — the first line did nothing to
+*What just happened:* `Add` only marked the object as "to be inserted" - the first line did nothing to
 the database. `SaveChanges` generated the `INSERT`, ran it inside a transaction, then read back the
-auto-generated primary key with that second `SELECT`. EF Core writes that key **into your object** —
+auto-generated primary key with that second `SELECT`. EF Core writes that key **into your object** - 
 `blog.Id` was `0` before the save and `1` after, so the object you're holding matches the row that now
 exists.
 
@@ -81,7 +81,7 @@ ctx.SaveChanges();   // one trip, one transaction, all rows
 ```
 
 *What just happened:* `AddRange` staged both posts alongside the blog. The single `SaveChanges` flushed
-everything together in **one transaction** — if any insert failed, they'd all roll back, nothing left
+everything together in **one transaction** - if any insert failed, they'd all roll back, nothing left
 half-written. That's the unit-of-work behavior we'll dig into in
 [Phase 5](05-change-tracking.md); for now, hold "stage as much as you want, save once."
 
@@ -96,14 +96,14 @@ await ctx.SaveChangesAsync();
 
 *What just happened:* same `INSERT`, same write-back of `blog.Id`, but the thread is freed to handle
 other requests while the database works. In an ASP.NET Core app, this is the default to reach for. `Add`
-itself stays synchronous (it's just touching the in-memory notepad) — only the flush has an async form.
+itself stays synchronous (it's just touching the in-memory notepad) - only the flush has an async form.
 
 ## Reading rows: the four finders
 
 Reading is where EF gives you a few tools that look similar but behave differently. Pick the one whose
 **failure mode** matches what you mean.
 
-### `Find(id)` — by primary key, tracker-first
+### `Find(id)` - by primary key, tracker-first
 
 ```csharp
 var blog = ctx.Blogs.Find(1);
@@ -120,7 +120,7 @@ SELECT "Id", "Url" FROM "Blogs" WHERE "Id" = @p
 If no row has that key, `Find` returns `null`. Use it when you have an Id in hand (a route parameter
 like `/blogs/1`) and want the cheapest possible lookup.
 
-### `First` / `FirstOrDefault` — first match of a condition
+### `First` / `FirstOrDefault` - first match of a condition
 
 ```csharp
 var blog  = ctx.Blogs.First(b => b.Url == "https://battle-hardened.dev");
@@ -138,19 +138,19 @@ The difference is what happens when nothing matches: `First` **throws** an
 `InvalidOperationException`; `FirstOrDefault` returns `null`. The first line above succeeds; the second
 returns `null` because no blog has that URL.
 
-### `Single` / `SingleOrDefault` — exactly one match
+### `Single` / `SingleOrDefault` - exactly one match
 
 ```csharp
 var blog = ctx.Blogs.Single(b => b.Url == "https://battle-hardened.dev");
 ```
 
 *What just happened:* `Single` says "I expect exactly one row to match." It throws if **none** match
-*and* throws if **more than one** matches — doubling as a sanity check on uniqueness. Behind the scenes EF
+*and* throws if **more than one** matches - doubling as a sanity check on uniqueness. Behind the scenes EF
 fetches up to two rows (`LIMIT 2`) to tell whether there was more than one. `SingleOrDefault` is the same
 but returns `null` when none match (still throws on two or more). Reach for `Single` when a duplicate
 would mean your data is broken and you want to find out loudly.
 
-### `ToList` / `ToListAsync` — all the rows
+### `ToList` / `ToListAsync` - all the rows
 
 ```csharp
 var all      = ctx.Blogs.ToList();
@@ -160,7 +160,7 @@ var allAsync = await ctx.Blogs.ToListAsync();
 
 *What just happened:* `ToList` runs the query and materializes **every** matching row into a `List<T>`.
 On its own it's `SELECT * FROM Blogs`; with a `Where`, EF folds the condition into the SQL so only
-matching rows come back — the database filters, not your C#. We'll go deep on `Where`, `OrderBy`,
+matching rows come back - the database filters, not your C#. We'll go deep on `Where`, `OrderBy`,
 `Select` in [Phase 4](04-querying-with-linq.md). The async `ToListAsync` is what you want in web apps,
 for the same thread-freeing reason as `SaveChangesAsync`.
 
@@ -169,23 +169,23 @@ for the same thread-freeing reason as `SaveChangesAsync`.
 The single most common stumble in EF Core reads.
 
 > ⚠️ `First` and `Single` **throw** when nothing matches. `FirstOrDefault` and `SingleOrDefault`
-> return **`null`**. They are not interchangeable — pick based on whether "not found" is an *error* or
+> return **`null`**. They are not interchangeable - pick based on whether "not found" is an *error* or
 > an *expected outcome*.
 
-The honest way to choose: ask "if this returns nothing, is my program broken, or is that just a normal
+The clear way to choose: ask "if this returns nothing, is my program broken, or is that just a normal
 'not found'?"
 
 ```csharp
-// A user requested /blogs/999 — "not found" is normal, return a 404.
+// A user requested /blogs/999 - "not found" is normal, return a 404.
 var blog = ctx.Blogs.FirstOrDefault(b => b.Id == id);
 if (blog is null)
     return NotFound();
 
-// We just inserted this and MUST be able to read it back — missing = bug, throw loud.
+// We just inserted this and MUST be able to read it back - missing = bug, throw loud.
 var settings = ctx.Blogs.First(b => b.Url == knownSeedUrl);
 ```
 
-*What just happened:* the first case maps a missing row to an HTTP 404 — a user typing a bad Id isn't a
+*What just happened:* the first case maps a missing row to an HTTP 404 - a user typing a bad Id isn't a
 crash, so we check for `null` and respond gracefully. The second uses `First` because absence would mean
 something is genuinely wrong; throwing surfaces the bug instead of letting a `null` slip downstream and
 blow up later with a confusing `NullReferenceException`. Choosing the throwing or `*OrDefault` variant
@@ -194,21 +194,21 @@ blow up later with a confusing `NullReferenceException`. Choosing the throwing o
 ## Two things that come for free
 
 > 📝 **Your queries are injection-safe by default.** Notice the `@p0` / `@p` in every generated
-> statement above — EF Core turns the values in your LINQ predicates into **SQL parameters**, never
+> statement above - EF Core turns the values in your LINQ predicates into **SQL parameters**, never
 > string-concatenated into the query text. So `b.Url == userInput` is safe even when `userInput` is
-> `"'; DROP TABLE Blogs; --"`; it goes in as a parameter value, not as SQL — one of the real reasons to
+> `"'; DROP TABLE Blogs; --"`; it goes in as a parameter value, not as SQL - one of the real reasons to
 > let the ORM write the SQL.
 
 > 📝 **Prefer the async finders in web apps.** `ToListAsync`, `FirstOrDefaultAsync`,
 > `SingleOrDefaultAsync`, `FindAsync`, and `SaveChangesAsync` all exist. In a server handling many
 > concurrent requests, blocking a thread on a synchronous database call wastes a thread that could serve
-> someone else. It matters far less in a one-off script — but in ASP.NET Core, async is the house style.
+> someone else. It matters far less in a one-off script - but in ASP.NET Core, async is the house style.
 
 ## Recap
 
 - **`Add` stages, `SaveChanges` flushes.** Nothing reaches the database until `SaveChanges` (or
   `SaveChangesAsync`) runs, and it runs everything staged in one transaction.
-- **EF writes the generated `Id` back into your object** after the insert — it's `0` before saving and
+- **EF writes the generated `Id` back into your object** after the insert - it's `0` before saving and
   the real key after.
 - **`Find(id)`** looks up by primary key and checks the in-memory tracker first (no DB hit if already
   loaded); **`ToList`/`ToListAsync`** pull every matching row.
@@ -224,7 +224,7 @@ blow up later with a confusing `NullReferenceException`. Choosing the throwing o
 [
   {
     "q": "You call ctx.Blogs.Add(blog) but never call SaveChanges. What's in the database?",
-    "choices": ["The new blog row", "Nothing — Add only stages the insert in memory", "A row with a null Url", "An empty row reserving the Id"],
+    "choices": ["The new blog row", "Nothing - Add only stages the insert in memory", "A row with a null Url", "An empty row reserving the Id"],
     "answer": 1,
     "explain": "Add only marks the object for insertion on the DbContext. No SQL runs until SaveChanges (or SaveChangesAsync) flushes it."
   },
@@ -236,7 +236,7 @@ blow up later with a confusing `NullReferenceException`. Choosing the throwing o
   },
   {
     "q": "After ctx.Blogs.Add(blog); ctx.SaveChanges();, what is blog.Id?",
-    "choices": ["Still 0 — you must reload the object", "The auto-generated key EF wrote back into the object", "null until you call Find", "A random GUID"],
+    "choices": ["Still 0 - you must reload the object", "The auto-generated key EF wrote back into the object", "null until you call Find", "A random GUID"],
     "answer": 1,
     "explain": "SaveChanges runs the INSERT and reads the database-generated primary key back into your object, so blog.Id holds the real key right after the save."
   }

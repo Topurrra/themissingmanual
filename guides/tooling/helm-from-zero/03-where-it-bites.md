@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Where It Bites: Templating Gotchas and When Not to Use Helm
 
-The commands are the easy part. What actually costs people hours is the templating layer - Helm renders text, and text-templating YAML has sharp edges. This phase is the stuff nobody tells you up front: the gotchas, the habits that catch them early, and the honest answer to "should I even be using Helm here?"
+The commands are the easy part. What actually costs people hours is the templating layer - Helm renders text, and text-templating YAML has sharp edges. This phase is the stuff nobody tells you up front: the gotchas, the habits that catch them early, and the straight answer to "should I even be using Helm here?"
 
 ## Helm templates text, not YAML - and that's the root of most pain
 
@@ -95,7 +95,7 @@ chart's values.yaml   (lowest - the defaults)
 
 ## When Helm is the wrong tool
 
-Helm is not free. The templating layer adds a whole syntax between you and your YAML, and for simple cases that's overhead you don't need. Here's the honest decision guide:
+Helm is not free. The templating layer adds a whole syntax between you and your YAML, and for simple cases that's overhead you don't need. Here's the clear decision guide:
 
 ```text
 Plain manifests (kubectl apply)

@@ -11,7 +11,7 @@ updated: 2026-06-19
 
 # Functional JavaScript - Functions as Building Blocks
 
-You already use functional JavaScript without naming it: every time you wrote `nums.map(n => n * 2)` back in [Phase 9](09-idioms-and-gotchas.md), you handed one function to another. That move is the seed the whole functional style grows from - a *way of thinking*: build programs from small, honest functions and snap them together, for code you can test in isolation, reason about without tracing the whole program, and change without fear. Five ideas carry the weight: functions as values, purity, higher-order functions, immutability, and composition. Each builds on the last.
+You already use functional JavaScript without naming it: every time you wrote `nums.map(n => n * 2)` back in [Phase 9](09-idioms-and-gotchas.md), you handed one function to another. That move is the seed the whole functional style grows from - a *way of thinking*: build programs from small, predictable functions and snap them together, for code you can test in isolation, reason about without tracing the whole program, and change without fear. Five ideas carry the weight: functions as values, purity, higher-order functions, immutability, and composition. Each builds on the last.
 
 ## Functions are first-class values
 

@@ -144,7 +144,7 @@ Routing through `unknown` first tells the compiler "forget what you knew about t
 
 ## Closing the gap: runtime validation
 
-So what *does* close the gap? If types can't verify external data and assertions just lie about it, the only honest answer is to check the data yourself, at runtime, the moment it arrives - and derive the static type from that check so the two can never drift apart.
+So what *does* close the gap? If types can't verify external data and assertions just lie about it, the only real answer is to check the data yourself, at runtime, the moment it arrives - and derive the static type from that check so the two can never drift apart.
 
 The hand-rolled version is a **type guard**: a function that inspects an `unknown` value and returns a special boolean narrowing the type for the compiler.
 

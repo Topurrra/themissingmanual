@@ -20,7 +20,7 @@ The relief here is that once you understand Apollo's **normalized cache**, most 
 
 ## How to read this
 
-Read the phases in order. Phase 1 builds the mental model: what Apollo Client is, why a cache sits at its center, and how that differs from thinking in REST endpoints. Phase 2 is the everyday work: writing queries and mutations with hooks, and keeping the cache honest after a write. Phase 3 is production reality: the gotchas that bite, from cache misses to refetch storms.
+Read the phases in order. Phase 1 builds the mental model: what Apollo Client is, why a cache sits at its center, and how that differs from thinking in REST endpoints. Phase 2 is the everyday work: writing queries and mutations with hooks, and keeping the cache accurate after a write. Phase 3 is production reality: the gotchas that bite, from cache misses to refetch storms.
 
 If you've never written a GraphQL query at all, skim [GraphQL Explained](/guides/graphql-explained) first, then come back. If REST is your only reference point, [REST APIs Explained](/guides/rest-apis-explained) gives you the contrast this guide keeps drawing on.
 

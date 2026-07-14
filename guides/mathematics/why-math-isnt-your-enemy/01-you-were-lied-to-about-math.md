@@ -32,7 +32,7 @@ exasperated adult, one humiliating moment at a chalkboard. It's a trained flinch
 
 That matters, because anything learned can be unlearned. A flinch can be calmed.
 
-People reach instead for genetics: *some people are born wired for math.* The honest version is much
+People reach instead for genetics: *some people are born wired for math.* The real version is much
 smaller than the myth. There's no single "math gene," and nothing in the research locks a normal,
 curious brain out of mathematical thinking. The variation people point to is real but modest - and it's
 swamped by something far bigger: how, and whether, a person was actually taught with meaning.
@@ -122,7 +122,7 @@ mislead. Numeracy is self-defense: the ability to look at a claim, a price, a gr
 *does this actually add up?* Repairing your relationship with math isn't about prestige. It's about not
 being an easy mark.
 
-## The muscle is real, and it's honest
+## The muscle is real, straight up
 
 Let me be straight with you, because empty cheerleading would insult you: mathematical ability does grow
 with practice. That part of the "muscle" metaphor holds up - people who reason with numbers more get

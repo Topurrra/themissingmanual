@@ -151,7 +151,7 @@ have been denied regardless of how correct it was.
 
 ⚠️ **IAM is where people grant too much "to make it work."** When something is denied, the tempting fix
 is broad, sweeping permissions so the error goes away - that's how over-permissioned systems are born,
-and a leaked over-permissioned credential turns a small mistake into a big breach. The honest fix: grant
+and a leaked over-permissioned credential turns a small mistake into a big breach. The real fix: grant
 the *specific* permission the action needed. More on why IAM is the gotcha that scales worst in
 [Phase 3](03-iaas-paas-serverless.md).
 

@@ -2,7 +2,7 @@
 title: "When It Breaks at Scale"
 guide: "realtime-apis-websockets-sse"
 phase: 3
-summary: "One server is easy; many servers is the hard part. Sticky sessions, the fan-out problem, a pub/sub backplane, and the honest case for reaching for the simplest pattern that fits."
+summary: "One server is easy; many servers is the hard part. Sticky sessions, the fan-out problem, a pub/sub backplane, and the clear case for reaching for the simplest pattern that fits."
 tags: [scaling, sticky-sessions, fan-out, pubsub, websockets, sse, realtime]
 difficulty: intermediate
 synonyms: ["how to scale websockets", "sticky sessions websocket", "websocket fan out", "redis pubsub websocket", "realtime scaling problem", "load balancer websocket", "how to broadcast to all clients"]
@@ -11,24 +11,24 @@ updated: 2026-07-10
 
 # When It Breaks at Scale
 
-Everything in Phase 2 works beautifully — on one server. You demo it, it's instant, everyone's happy.
+Everything in Phase 2 works beautifully - on one server. You demo it, it's instant, everyone's happy.
 Then traffic grows, you add a second server behind a load balancer, and realtime quietly breaks in a way
 that's maddening to debug: messages arrive for *some* users and vanish for others, seemingly at random.
 Nothing is wrong with your code. The problem is that a persistent connection and a stateless load
 balancer fundamentally disagree, and this phase is about that fight.
 
 This is the payoff phase. Once you see *why* one server is easy and many is hard, the whole landscape of
-"realtime at scale" — sticky sessions, backplanes, fan-out — stops being jargon and becomes one
+"realtime at scale" - sticky sessions, backplanes, fan-out - stops being jargon and becomes one
 problem with a couple of standard solutions.
 
 ## Why one server is easy and many is hard
 
-On a single server, every connected client is *right there* — they're entries in one in-memory list. To
+On a single server, every connected client is *right there* - they're entries in one in-memory list. To
 broadcast a message, you loop over the list and write to each. Done.
 
 Connections are long-lived and *pinned to whichever server accepted them.* Alice's WebSocket lives on
 Server A; Bob's lives on Server B. Now Alice sends a chat message. It arrives at Server A. Server A loops
-over *its* list of connections — which doesn't include Bob. Bob never hears it. The message is stranded
+over *its* list of connections - which doesn't include Bob. Bob never hears it. The message is stranded
 on the wrong machine.
 
 ```mermaid
@@ -50,7 +50,7 @@ core of scaling any realtime system.
 ## Problem one: the load balancer keeps cutting the line
 
 Before fan-out even bites, there's a more basic break. A normal load balancer spreads each *request*
-across servers — that's its whole job. But a WebSocket or SSE stream is *one* long-lived connection that
+across servers - that's its whole job. But a WebSocket or SSE stream is *one* long-lived connection that
 must stay on the server that's holding it. Worse, the handshake and the upgrade can land on different
 servers, and the connection dies before it starts.
 
@@ -59,14 +59,14 @@ it *stays* on that server for the life of the connection (often keyed by a cooki
 
 ```text
 Without stickiness:  Alice's upgrade → Server A
-                     Alice's frames  → Server B   ✗ (B never saw the handshake — dies)
+                     Alice's frames  → Server B   ✗ (B never saw the handshake - dies)
 
 With stickiness:     Alice's upgrade → Server A
                      Alice's frames  → Server A   ✓ (same server, connection survives)
 ```
 Sticky sessions pin a client to one server so the long-lived connection isn't ripped apart by ordinary
 load balancing. It's the first thing to check when WebSockets "randomly" disconnect behind a load
-balancer — and a config most teams forget until it bites.
+balancer - and a config most teams forget until it bites.
 
 ⚠️ **Stickiness is necessary but not sufficient.** Pinning Alice to Server A keeps *her* connection
 alive, but it does nothing to get her message to Bob on Server B. Sticky sessions fix the connection
@@ -96,21 +96,21 @@ flowchart LR
   S2 --> B[Bob]
 ```
 No single server has to know every client anymore. Servers only know their *own* connections; the
-backplane is the shared nervous system that carries every message to every server. This one pattern —
-publish to a backplane, fan out to local connections — is how essentially all large realtime systems
+backplane is the shared nervous system that carries every message to every server. This one pattern - 
+publish to a backplane, fan out to local connections - is how essentially all large realtime systems
 scale.
 
 🪖 **War story.** A chat app worked flawlessly in staging (one server) and broke the day it scaled to
-three in production. Messages reached maybe a third of users — exactly the fraction who happened to share
+three in production. Messages reached maybe a third of users - exactly the fraction who happened to share
 a server with the sender. The team chased "dropped packets" for a week. The actual fix was one
 component they'd never added because they'd never needed it on one box: a Redis pub/sub backplane. The
-lesson — realtime bugs that only appear with more than one server are almost always fan-out.
+lesson - realtime bugs that only appear with more than one server are almost always fan-out.
 
 💡 **Key point.** SSE has the *exact same* fan-out problem as WebSockets. It's one-directional, but the
 server-to-many-clients broadcast still has to reach clients scattered across machines. SSE being simpler
-on the connection side does not make it simpler to scale the *broadcast* — you still need a backplane.
+on the connection side does not make it simpler to scale the *broadcast* - you still need a backplane.
 
-## The honest tradeoff: cost grows with connections
+## The real tradeoff: cost grows with connections
 
 Persistent connections don't scale like stateless requests. A stateless API server can handle a request
 and forget it; a realtime server holds *every* connection open simultaneously, each consuming memory and
@@ -119,10 +119,10 @@ thousand connections.
 
 That reframes the whole "which pattern" question one last time:
 
-- **Polling** spreads load across short requests your existing infrastructure already handles — no sticky
+- **Polling** spreads load across short requests your existing infrastructure already handles - no sticky
   sessions, no backplane, no held connections. For rare updates it's not the lazy choice, it's the
   *operationally cheapest* one.
-- **SSE** needs a backplane for fan-out but inherits the browser's reconnect and rides plain HTTP/2 — the
+- **SSE** needs a backplane for fan-out but inherits the browser's reconnect and rides plain HTTP/2 - the
   middle of the road.
 - **WebSockets** need sticky sessions, a backplane, *and* your own reconnect/heartbeat logic. Powerful,
   and the most to operate.
@@ -137,11 +137,11 @@ and the backplane that comes with them.
 When you design a realtime feature, design the *scaled* version on paper from day one, even if you ship
 single-server first. Ask: when there are N servers, how does a message reach a client on a different one?
 If the answer isn't "via a backplane," you have a bug that's invisible until your second server. And keep
-climbing *down* the ladder when you can — the cheapest realtime system is the one that's actually plain
+climbing *down* the ladder when you can - the cheapest realtime system is the one that's actually plain
 polling because the data didn't move fast enough to justify more.
 
-For the cross-system cousin of this problem — services handing events to each other rather than to
-browsers — the durable, queue-based tools live in [Webhooks & Message
+For the cross-system cousin of this problem - services handing events to each other rather than to
+browsers - the durable, queue-based tools live in [Webhooks & Message
 Queues](/guides/webhooks-and-message-queues); a pub/sub backplane is the realtime, in-memory relative of
 those same ideas.
 
@@ -150,7 +150,7 @@ those same ideas.
 1. **One server is easy** (one in-memory list of clients); **many servers is hard** because connections
    are pinned to whichever machine accepted them.
 2. **Sticky sessions** keep a long-lived connection on one server so the load balancer doesn't tear it
-   apart — necessary, but it does *not* solve fan-out.
+   apart - necessary, but it does *not* solve fan-out.
 3. **Fan-out** (one event → many clients across servers) is solved with a **pub/sub backplane**: servers
    publish to it and each pushes to its own local connections. SSE needs this too.
 4. **Connection cost is the real tradeoff.** Polling rides existing infra; SSE adds a backplane;
@@ -172,7 +172,7 @@ stays calm at 3am.
       "TLS drops messages across servers"
     ],
     "answer": 1,
-    "explain": "Connections live on whichever server accepted them. A message arriving at Server A can't reach a client whose connection lives on Server B — that's the fan-out problem."
+    "explain": "Connections live on whichever server accepted them. A message arriving at Server A can't reach a client whose connection lives on Server B - that's the fan-out problem."
   },
   {
     "q": "What do sticky sessions fix, and what do they NOT fix?",
@@ -194,7 +194,7 @@ stays calm at 3am.
       "It converts WebSockets to polling"
     ],
     "answer": 1,
-    "explain": "No server knows every client. Servers publish to the backplane, it relays to all subscribers, and each server delivers to the connections it holds — that's the standard scaling pattern."
+    "explain": "No server knows every client. Servers publish to the backplane, it relays to all subscribers, and each server delivers to the connections it holds - that's the standard scaling pattern."
   }
 ]
 ```

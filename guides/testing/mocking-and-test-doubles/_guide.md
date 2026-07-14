@@ -25,13 +25,13 @@ the harder part - knowing when faking *helps* and when it quietly *hurts*.
 
 ## How to read this
 
-- **Just need to know mock vs stub vs fake right now?** Jump to [Phase 2: The Doubles, Defined Honestly](02-the-doubles-defined-honestly.md) - it's a labeled tour of the whole family.
+- **Just need to know mock vs stub vs fake right now?** Jump to [Phase 2: The Doubles, Clearly Defined](02-the-doubles-defined-honestly.md) - it's a labeled tour of the whole family.
 - **Want it to finally make sense?** Read in order. Phase 1 builds the mental model (why we fake anything at all), Phase 2 names the tools, and Phase 3 gives you the judgment to use them well.
 
 ## The phases
 
 1. **[Why Fake Anything?](01-why-fake-anything.md)** - the core problem: your code talks to slow, unreliable, or expensive things, and to test your own logic you replace them with stand-ins. The stunt-double mental model.
-2. **[The Doubles, Defined Honestly](02-the-doubles-defined-honestly.md)** - the family with the confusion cleared up: dummy, stub, fake, spy, and mock. What each one is *for*, with a small example each.
+2. **[The Doubles, Clearly Defined](02-the-doubles-defined-honestly.md)** - the family with the confusion cleared up: dummy, stub, fake, spy, and mock. What each one is *for*, with a small example each.
 3. **[When Mocking Helps vs Hurts](03-when-mocking-helps-vs-hurts.md)** - the judgment call: mock at the boundaries, not your own internals; the over-mocking trap (green tests over a broken product); when a real object or a fake beats a mock.
 
 > Test-double *libraries* (Jest's `jest.fn()`, Python's `unittest.mock`, Mockito, Sinon) all have their

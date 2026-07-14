@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # Data → Weights → Predictions
 
-When someone says "we trained a model," the mind reaches for something almost alive — a little brain that
+When someone says "we trained a model," the mind reaches for something almost alive - a little brain that
 read a library and woke up clever. That picture is why training feels mysterious. Let's replace it with one
 that's accurate and far less spooky.
 
@@ -21,7 +21,7 @@ only thing training ever changes.** Once you see that, everything else in this g
 ## What a model actually is
 
 **What it actually is.** A model is a fixed recipe with a lot of adjustable knobs. The recipe says *how*
-to turn an input into an output — multiply this, add that, combine these. The knobs are numbers, and
+to turn an input into an output - multiply this, add that, combine these. The knobs are numbers, and
 they decide what the recipe actually produces. Those numbers have a name.
 
 📝 **Terminology.** A **weight** is one of those adjustable numbers inside a model. A real model can
@@ -31,7 +31,7 @@ almost interchangeably.
 
 **Why people get this wrong.** The common picture is that the model *stores the data it was trained on*,
 like a database you can search. It doesn't. After training, the original examples are gone; what
-remains is the *settings of the knobs* — the weights that the examples produced. The data shaped the
+remains is the *settings of the knobs* - the weights that the examples produced. The data shaped the
 numbers and then left the room.
 
 **What it does in real life.** A trained model is a file full of numbers. You hand it a new input, it
@@ -65,16 +65,16 @@ good values for those two weights.
      1,500 sq ft  ──►  model guesses  $410,000    (close to reality)
 ```
 
-*What just happened:* Nothing about the recipe changed between those two lines — it's the same
+*What just happened:* Nothing about the recipe changed between those two lines - it's the same
 "size × weight" formula both times. Only the two numbers inside it moved. Training looked at real
 houses with known prices and slid those numbers until the formula's guesses started matching reality.
 That sliding *is* learning.
 
 **The gotcha.** ⚠️ A model can only predict things shaped like what it was trained on. The house model
-knows nothing about cars, and feeding it a car's data won't get you a sensible answer — it'll confidently
+knows nothing about cars, and feeding it a car's data won't get you a sensible answer - it'll confidently
 return a number anyway, because the recipe always produces *something*. A model never says "I don't
 know" unless it was specifically built to; by default it always answers, even when the question is
-nonsense. Hold onto that — it explains a lot of strange AI behavior later.
+nonsense. Hold onto that - it explains a lot of strange AI behavior later.
 
 **Why this saves you later.** Once "a model is tuned numbers running a fixed recipe" is your mental
 picture, the scary words deflate. "Loading the model" means loading those numbers. "The model is 4 GB"
@@ -85,9 +85,9 @@ can reason about all of it instead of treating it as a black box.
 
 1. A **model** is a fixed recipe plus a large set of adjustable numbers called **weights** (a.k.a.
    parameters).
-2. Training only ever changes those weights — it does not store the original data inside the model.
+2. Training only ever changes those weights - it does not store the original data inside the model.
 3. A **prediction** is the recipe's output for a given input, using the current weights.
-4. A model always produces *some* answer, even for inputs it has no business answering — being right is
+4. A model always produces *some* answer, even for inputs it has no business answering - being right is
    what training is for.
 
 Now we know *what* training changes. Next: *how* it figures out which way to nudge each number.

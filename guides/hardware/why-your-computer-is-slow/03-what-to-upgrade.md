@@ -50,7 +50,7 @@ The catch, and it is small: swapping the disk means cloning your operating syste
 
 If your gauge showed red Memory Pressure (or pinned Memory + Disk on Windows), more RAM is your fix. The relief is exactly the kitchen story in reverse: a bigger counter means the chef stops sprinting to the freezer.
 
-How much? The honest rule of thumb for a general-use machine in this era: **8 GB is tight, 16 GB is comfortable for most people, 32 GB is for heavy multitaskers, creative work, or virtual machines.** If you are sitting at 8 GB and watching it peg constantly, the jump to 16 GB is the one that ends the suffering for most people.
+How much? The plain rule of thumb for a general-use machine in this era: **8 GB is tight, 16 GB is comfortable for most people, 32 GB is for heavy multitaskers, creative work, or virtual machines.** If you are sitting at 8 GB and watching it peg constantly, the jump to 16 GB is the one that ends the suffering for most people.
 
 Two cautions before you buy a RAM stick:
 
@@ -61,7 +61,7 @@ Two cautions before you buy a RAM stick:
 
 CPU is the upgrade people *want* it to be and the one it rarely is. If your reading showed the CPU pinned only during genuinely heavy work - long video exports, big compiles, serious number-crunching - then yes, a faster CPU helps *that* work.
 
-But here is the honest part: on most machines, especially laptops, the CPU is soldered and not replaceable, so a "CPU upgrade" usually means a whole new computer - the expensive path. That is exactly why you want to be *certain* the CPU is the bottleneck first, and that the cheaper RAM or SSD fix would not have solved your actual problem.
+But here is the catch: on most machines, especially laptops, the CPU is soldered and not replaceable, so a "CPU upgrade" usually means a whole new computer - the expensive path. That is exactly why you want to be *certain* the CPU is the bottleneck first, and that the cheaper RAM or SSD fix would not have solved your actual problem.
 
 ```text
 The expensive mistake:

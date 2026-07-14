@@ -80,7 +80,7 @@ m/s^2  x  s^2  =  m x (s^2 / s^2)  =  m x 1  =  m
 
 ## Precision is a measurement too
 
-When you measure something, you don't get infinite digits - you get as many as your instrument can resolve. A tape measure gives you millimetres, not nanometres. So when you write "the bridge is 20 metres," you're really saying "somewhere close to 20, give or take." Reporting a falling time as "2.0000001 seconds" from a rough height estimate is claiming a precision you never had. Good physics keeps your answer's confidence honest with your measurement's confidence. Carrying ten decimal places from a one-decimal-place ruler is its own kind of lie.
+When you measure something, you don't get infinite digits - you get as many as your instrument can resolve. A tape measure gives you millimetres, not nanometres. So when you write "the bridge is 20 metres," you're really saying "somewhere close to 20, give or take." Reporting a falling time as "2.0000001 seconds" from a rough height estimate is claiming a precision you never had. Good physics keeps your answer's confidence matched to your measurement's confidence. Carrying ten decimal places from a one-decimal-place ruler is its own kind of lie.
 
 ```quiz
 [

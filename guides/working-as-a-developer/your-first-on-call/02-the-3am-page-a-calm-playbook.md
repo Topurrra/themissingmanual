@@ -53,7 +53,7 @@ why - can happen in daylight, with coffee, and other people awake to help.
 This is the part beginners get wrong most often, almost always in the same direction: they wait too long to
 escalate because asking for help feels like admitting failure.
 
-It isn't. Escalating is the job working correctly. Here's the honest test:
+It isn't. Escalating is the job working correctly. Here's the real test:
 
 - **You've spent 15-20 minutes and don't have a mitigation in sight.** That's long enough. Escalate.
 - **The blast radius is bigger than you expected once you looked closer.** Get someone with more context on

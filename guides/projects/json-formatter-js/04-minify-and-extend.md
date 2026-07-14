@@ -182,6 +182,6 @@ const after = { name: "Ada", age: 37, admin: true, email: "a@x.io" };
 console.log(diff(before, after));
 ```
 
-Run it. You get `age` changed, `admin` changed, and `email` added - a small, honest diff. Notice it uses `JSON.stringify` to compare values, the same trick that lets it tell `[1,2]` apart from `[1,3]` without writing a deep-equality function. Make it recurse into nested objects and you've got something genuinely useful.
+Run it. You get `age` changed, `admin` changed, and `email` added - a small, clear diff. Notice it uses `JSON.stringify` to compare values, the same trick that lets it tell `[1,2]` apart from `[1,3]` without writing a deep-equality function. Make it recurse into nested objects and you've got something genuinely useful.
 
 That's the build. You started with a one-line mess and ended with a tool that formats it, tells you when it's broken and where, checks it's the data you meant, shrinks it back down, and can even tell you what changed between two versions - every line of which you understand, because you ran all of it yourself.

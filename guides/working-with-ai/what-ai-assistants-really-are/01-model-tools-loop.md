@@ -20,7 +20,7 @@ Strip away the branding and every AI assistant you've used is the same three par
 
 ## Part one: the model predicts the next bit of text
 
-At the center is a large language model, the LLM. People describe it as "AI that understands language," but the honest version is smaller and stranger: it predicts the next bit of text, over and over, very fast.
+At the center is a large language model, the LLM. People describe it as "AI that understands language," but the real version is smaller and stranger: it predicts the next bit of text, over and over, very fast.
 
 Think of the world's most over-read autocomplete. You've seen your phone suggest the next word when you text. The model does that, except it has read an enormous amount of writing and it predicts not one word but a whole flowing answer, one small piece at a time. You give it some text - your question - and it produces the text that most plausibly comes next based on everything it has seen.
 

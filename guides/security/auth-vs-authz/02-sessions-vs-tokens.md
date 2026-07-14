@@ -2,7 +2,7 @@
 title: "Keeping You Logged In: Sessions vs Tokens"
 guide: "auth-vs-authz"
 phase: 2
-summary: "After you log in, the server has to remember you on every following request. Two approaches: a server-side session (a random id in a cookie, with the real state kept on the server) or a stateless signed token like a JWT (the client holds the data, the server just verifies the signature). Each has honest trade-offs around revocation, size, and scaling."
+summary: "After you log in, the server has to remember you on every following request. Two approaches: a server-side session (a random id in a cookie, with the real state kept on the server) or a stateless signed token like a JWT (the client holds the data, the server just verifies the signature). Each has plain trade-offs around revocation, size, and scaling."
 tags: [sessions, cookies, jwt, tokens, stateless, revocation, http, security]
 difficulty: intermediate
 synonyms: ["session vs token", "what is a session cookie", "what is a jwt", "is a jwt encrypted", "how do i revoke a jwt", "stateless authentication", "session id in cookie", "jwt vs session which is better", "how does a website keep me logged in"]
@@ -67,7 +67,7 @@ Set-Cookie: session=8f3b9c2e1a7d4b60; HttpOnly; Secure; SameSite=Lax; Max-Age=86
 ```
 *What just happened:* The server gave the browser a random id plus a set of rules for handling it safely (annotated above). The id itself reveals nothing - its only power is that the server can look it up.
 
-**The trade-offs, honestly.**
+**The trade-offs, plainly.**
 - *Revocation is easy and instant.* To log someone out everywhere - or kill a stolen session - delete the id from the server store. The next request with that cookie finds nothing and is rejected.
 - *Every request needs a lookup.* The server hits its session store each time. Usually cheap, but it's real work, and it means the server holds state.
 - *Scaling needs shared state.* Run ten server instances behind a load balancer, and they all need to reach the *same* session store (commonly Redis), or a user who logs in on instance A is a stranger to instance B.
@@ -93,7 +93,7 @@ eyJhbGciOiJIUzI1NiJ9 . eyJzdWIiOiJhbGljZSIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzE4ODAwM
 
 ⚠️ **Gotcha - JWTs are hard to revoke.** This is the flip side of "no server-side state" - the server can't delete a token to log you out, so it stays valid until it *expires* on its own. Fire an employee or have a token stolen, and it keeps working until its `exp` time; there's no built-in off switch. The common fixes *re-introduce* server state: short token lifetimes plus refresh tokens (covered in [Phase 3](03-oauth-and-sign-in-with.md)), or a server-side denylist - at which point you've partly given back the statelessness that was the whole appeal.
 
-**The trade-offs, honestly.**
+**The trade-offs, plainly.**
 - *No per-request lookup, easy to scale.* Any server instance with the secret key can verify a token on its own - no shared session store needed. Real for distributed systems and APIs.
 - *Revocation is genuinely hard.* As above - you trade instant logout for statelessness.
 - *Size and exposure.* A token carries its claims on *every* request, bigger than a tiny session id, and those claims are out in the open.

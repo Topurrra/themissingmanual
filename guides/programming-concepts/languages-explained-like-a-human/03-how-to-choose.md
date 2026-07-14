@@ -119,10 +119,10 @@ experience instead of opinions.
 4. **Relax about the choice** - the real skills are portable; your first language is a starting point, not a
    life sentence. Concepts transfer, and the second language is far easier than the first.
 
-You came in facing a wall of equally-loud options. You leave with a map, four honest profiles, and a way to
+You came in facing a wall of equally-loud options. You leave with a map, four clear profiles, and a way to
 choose on purpose. The best next step isn't more comparing - it's writing your first real program in whichever
 one you picked. Go build something.
 
 ---
 
-[← Phase 2: The Four, Honestly](02-the-four-honestly.md) · [Guide overview](_guide.md)
+[← Phase 2: The Four, Plainly](02-the-four-honestly.md) · [Guide overview](_guide.md)

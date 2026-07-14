@@ -2,7 +2,7 @@
 title: "Go From Zero"
 guide: "go-from-zero"
 phase: 0
-summary: "Learn Go from nothing to genuinely advanced: install it and the basics, then the deep half - interfaces, generics, real concurrency patterns, error handling, the runtime scheduler and GC, testing and profiling, the standard library, and performance - all mental-model-first, with honest explanations."
+summary: "Learn Go from nothing to genuinely advanced: install it and the basics, then the deep half - interfaces, generics, real concurrency patterns, error handling, the runtime scheduler and GC, testing and profiling, the standard library, and performance - all mental-model-first, with clear explanations."
 tags: [go, golang, beginner, advanced, getting-started, concurrency, interfaces, generics, runtime, profiling, performance]
 category: programming-languages
 order: 4

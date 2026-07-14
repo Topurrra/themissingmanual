@@ -47,7 +47,7 @@ Two files. First `templates/base.html` - the wrapper every page shares:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title }} — My Blog</title>
+  <title>{{ title }} - My Blog</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>

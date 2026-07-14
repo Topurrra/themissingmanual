@@ -19,7 +19,7 @@ time.*
 
 You already paid the cost - stress, downtime, lost sleep. The postmortem is how you collect what you bought:
 understanding and prevention. Skip it and you paid full price for nothing. This phase covers running that
-process so it's honest, useful, and safe to participate in.
+process so it's clear, useful, and safe to participate in.
 
 ## Start while it's fresh: the timeline
 
@@ -97,11 +97,11 @@ outage.** In a culture that hunts for someone to fire:
 
 - People hide what they actually did, so your timeline is fiction and you can't learn from it.
 - People stop volunteering for risky-but-important work, so the most fragile systems get the least attention.
-- The deepest, most useful insights - "honestly, I didn't understand what that flag did" - never get spoken,
+- The deepest, most useful insights - "I didn't understand what that flag did" - never get spoken,
   because saying them is dangerous.
 
 A blameless culture is what makes people tell the truth, the only raw material a postmortem has. **Punish
-honesty and get silence; reward it and get the information that prevents the next outage.**
+truth-telling and get silence; reward it and get the information that prevents the next outage.**
 
 **In practice:** "Maria deployed the bad code" is blame and teaches nothing - anyone could deploy that code
 tomorrow. "Our pipeline let a change with no test for a common input go to 100% of production with no canary
@@ -161,7 +161,7 @@ them. An action item that isn't tracked didn't happen.
 ## Every outage is tuition - make it buy something
 
 Look at the arc of this guide: calm in the first five minutes, bleeding stopped before diagnosing, the
-incident run with one coordinator, clear comms, and a live timeline. Now you close the loop - an honest,
+incident run with one coordinator, clear comms, and a live timeline. Now you close the loop - a clear-eyed,
 blameless postmortem that converts the wreckage into prevention.
 
 That last step compounds. A team that does this turns each outage into permanent improvements - better
@@ -181,8 +181,8 @@ bought. Don't leave it on the table.
    to mitigate* off it (and don't fabricate the numbers).
 2. **Root cause vs. contributing factors** - the trigger is rarely the whole story; the leverage lives in the
    factors that let the trigger reach users.
-3. **Blameless means systems fail, not people** - not out of niceness but because blame destroys the honest
-   information a postmortem runs on. Punish honesty, get silence.
+3. **Blameless means systems fail, not people** - not out of niceness but because blame destroys the clear
+   information a postmortem runs on. Punish candor, get silence.
 4. **Watch for blame in disguise** - reframe "why didn't you…?" into "what would have made this easy to catch?"
 5. **Turn it into prevention** - specific, owned, tracked action items; prefer guardrails (make it impossible)
    over vigilance (remember to be careful).

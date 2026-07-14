@@ -45,7 +45,7 @@ INFO: 0.0% coverage on new code
 
 *What just happened:* the path in your config didn't match where tests actually wrote the report, so Sonar imported nothing and reported zero. The fix is almost always the path or the order of steps - tests must run *before* the scanner so the report exists when the scanner looks. Genuinely untested new code is the second cause; the missing report is the first one to rule out.
 
-Note a quirk: SonarQube only counts coverage for lines it also analyzed. Generated files, vendored code, or paths you excluded won't show coverage, which can drag the new-code percentage in surprising ways. Keep your `sonar.sources` and exclusions honest with what you actually want measured.
+Note a quirk: SonarQube only counts coverage for lines it also analyzed. Generated files, vendored code, or paths you excluded won't show coverage, which can drag the new-code percentage in surprising ways. Keep your `sonar.sources` and exclusions aligned with what you actually want measured.
 
 ## Hotspots are not vulnerabilities
 
@@ -66,7 +66,7 @@ Security Hotspot: Make sure using this pseudorandom number generator is safe her
 
 Sometimes the gate is right and you still need to ship - a hotfix at 2am, a coverage gap you'll close next sprint. Resist these temptations: do not delete the Sonar check from CI, do not push a config that turns the gate off, do not lower thresholds on the sly. Each one quietly removes the safety net for everyone after you.
 
-The honest moves: fix the real finding if you can; mark a false positive as such with a reason; or, if your team allows it, use the documented override (an admin can manually pass a gate, or an emergency-merge path can require a second approver). The principle is that bypassing a gate should be *visible and accountable*, never a silent edit. A gate that everyone quietly works around is worse than no gate, because it lies about being a safety net.
+The clear moves: fix the real finding if you can; mark a false positive as such with a reason; or, if your team allows it, use the documented override (an admin can manually pass a gate, or an emergency-merge path can require a second approver). The principle is that bypassing a gate should be *visible and accountable*, never a silent edit. A gate that everyone quietly works around is worse than no gate, because it lies about being a safety net.
 
 In the wild: mature teams treat the gate like a flaky test that's usually right. When it fails, the first question is "is this finding real?" - and most of the time the cheapest path to green is to fix the small real thing Sonar caught, not to argue with it.
 

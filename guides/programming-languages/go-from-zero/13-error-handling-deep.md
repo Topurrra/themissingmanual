@@ -11,7 +11,7 @@ updated: 2026-06-22
 
 # Error Handling, Deep - Wrapping, Inspecting & Recovering
 
-Back in [Phase 7](07-errors-and-io.md) you learned the foundational truth of Go errors: an error is just a value. Return `(result, error)`, check `if err != nil`, deal with the failure right where it happened. That's enough to write honest, correct Go - but it's the *floor*, not the ceiling.
+Back in [Phase 7](07-errors-and-io.md) you learned the foundational truth of Go errors: an error is just a value. Return `(result, error)`, check `if err != nil`, deal with the failure right where it happened. That's enough to write clean, correct Go - but it's the *floor*, not the ceiling.
 
 Here's the problem once programs get real. An error bubbles up through five function calls and lands in your logs as a bare `not found`. Not found *what*? By *whom*? At *which step*? The error has no memory of its own journey. This phase gives errors a memory, and your code the tools to interrogate it later.
 

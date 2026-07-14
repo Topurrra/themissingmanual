@@ -102,7 +102,7 @@ the card was declined (ERROR), and the program calmly told the user "payment req
 narrated it - the levels and messages did. **This is the skill:** not memorizing codes, but reading the
 diary as a story in time order.
 
-The ERROR here was honest - a declined card really is the cause. That won't always be true; spotting a
+The ERROR here was accurate - a declined card really is the cause. That won't always be true; spotting a
 loud ERROR that *isn't* the real cause is one of the most valuable things you'll learn, and the headline
 gotcha of the next phase.
 

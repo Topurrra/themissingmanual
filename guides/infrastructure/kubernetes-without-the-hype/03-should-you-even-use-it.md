@@ -2,7 +2,7 @@
 title: "Should You Even Use It?"
 guide: "kubernetes-without-the-hype"
 phase: 3
-summary: "The honest cost-benefit: Kubernetes is powerful and genuinely complex, and the operational cost is real. Most small apps are happier on a VPS or a PaaS. When k8s actually earns its keep - real scale, many services, a platform team - and how to dodge resume-driven Kubernetes."
+summary: "The straight cost-benefit: Kubernetes is powerful and genuinely complex, and the operational cost is real. Most small apps are happier on a VPS or a PaaS. When k8s actually earns its keep - real scale, many services, a platform team - and how to dodge resume-driven Kubernetes."
 tags: [kubernetes, when-to-use-kubernetes, vps, paas, managed-kubernetes, operational-cost]
 difficulty: advanced
 synonyms: ["do i need kubernetes", "is kubernetes overkill", "kubernetes vs vps", "kubernetes vs paas", "when to use kubernetes", "managed kubernetes worth it", "resume driven kubernetes", "alternatives to kubernetes"]
@@ -31,7 +31,7 @@ If you want the answer before the reasoning:
 
 Now the why.
 
-## The honest trade-off
+## The straight trade-off
 
 Let's put both sides on the table, because a one-sided pitch is exactly what got Kubernetes over-adopted.
 
@@ -70,7 +70,7 @@ For most apps, something far lighter does the job at a fraction of the cost:
   operational work - often the highest-leverage choice for a small team shipping product, not operating
   infrastructure.
 
-The honest framing: a VPS or PaaS asks you to learn and operate *much* less, and for one app or a handful it
+The straight framing: a VPS or PaaS asks you to learn and operate *much* less, and for one app or a handful it
 loses you almost nothing. You can always move to Kubernetes later, and do it better, once you've actually hit
 the problems it solves instead of guessing at them.
 

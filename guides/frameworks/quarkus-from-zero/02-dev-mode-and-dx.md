@@ -2,7 +2,7 @@
 title: "Dev Mode & the Developer Experience"
 guide: "quarkus-from-zero"
 phase: 2
-summary: "Quarkus's signature: live reload that recompiles on the next request, a built-in Dev UI, continuous testing, and Dev Services that auto-start throwaway databases — the fast feedback loop teams fall in love with."
+summary: "Quarkus's signature: live reload that recompiles on the next request, a built-in Dev UI, continuous testing, and Dev Services that auto-start throwaway databases - the fast feedback loop teams fall in love with."
 tags: [quarkus, dev-mode, live-reload, dev-ui, continuous-testing, dev-services, developer-experience]
 difficulty: beginner
 synonyms: ["quarkus dev mode", "quarkus live reload", "quarkus dev ui", "quarkus continuous testing", "quarkus dev services", "quarkus developer experience", "quarkus quarkus dev command"]
@@ -142,10 +142,10 @@ Next we write real REST endpoints for the `Product` service - and feel live relo
 ## Recap
 
 - **`quarkus dev` starts dev mode**, which watches your source and keeps the app running so you never manually restart during development.
-- **Live reload recompiles on the *next request*, not on save** — the first request after an edit pays a tiny recompile cost; the result is "edit, refresh, see it" with no restart.
-- **The Dev UI (`/q/dev`)** is a dev-only web console showing your extensions, config, beans, and endpoints, with tools to poke at them — the app's internal model made visible.
+- **Live reload recompiles on the *next request*, not on save** - the first request after an edit pays a tiny recompile cost; the result is "edit, refresh, see it" with no restart.
+- **The Dev UI (`/q/dev`)** is a dev-only web console showing your extensions, config, beans, and endpoints, with tools to poke at them - the app's internal model made visible.
 - **Continuous testing** (press `r` in the dev console) re-runs the affected tests automatically on every change, giving red/green feedback in the terminal and nudging you toward a TDD-style flow.
-- **Dev Services** auto-starts throwaway containers (Postgres, Kafka, Redis…) when an extension needs a service you haven't configured — zero-config local infra. It needs a container runtime (Docker/Podman) and is **dev/test only**; your own config always wins.
+- **Dev Services** auto-starts throwaway containers (Postgres, Kafka, Redis…) when an extension needs a service you haven't configured - zero-config local infra. It needs a container runtime (Docker/Podman) and is **dev/test only**; your own config always wins.
 - **Fast feedback is the real point.** A near-instant inner loop keeps you in flow and is a genuine reason teams choose Quarkus, separate from its runtime speed.
 
 ## Quick check

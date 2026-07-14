@@ -85,7 +85,7 @@ That same mechanism is why cookies get talked about for tracking: a cookie that 
 
 (There's a third thing - confidence you're really talking to who you think you are, via certificates - but privacy and integrity are the heart of it.)
 
-A common belief is that HTTPS means "this website is safe / honest." It doesn't. HTTPS protects the *conversation*, not the *intentions* of whoever's on the other end - a scam site can have a perfect padlock. The padlock means "no one is eavesdropping on or tampering with what you send" - not "this server is run by good people." Conflating those is how people get caught out.
+A common belief is that HTTPS means "this website is safe / trustworthy." It doesn't. HTTPS protects the *conversation*, not the *intentions* of whoever's on the other end - a scam site can have a perfect padlock. The padlock means "no one is eavesdropping on or tampering with what you send" - not "this server is run by good people." Conflating those is how people get caught out.
 
 The encryption HTTPS adds doesn't live *inside* HTTP - it's a separate layer (called TLS) sitting just beneath it, scrambling bytes before they're sent and unscrambling them on arrival. HTTP doesn't even know it's there. Where that layer sits relative to everything else is the job of [The TCP/IP Model](/guides/tcp-ip-model).
 

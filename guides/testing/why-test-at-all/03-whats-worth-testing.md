@@ -1,5 +1,5 @@
 ---
-title: "What's Worth Testing (Honestly)"
+title: "What's Worth Testing (Straight Talk)"
 guide: "why-test-at-all"
 phase: 3
 summary: "Test the logic that matters, the bug you just fixed, and the tricky edge cases - don't chase 100% coverage of trivial code, and watch out for brittle tests and tests that test nothing."
@@ -9,11 +9,11 @@ synonyms: ["what should i test", "do i need 100% test coverage", "is code covera
 updated: 2026-07-10
 ---
 
-# What's Worth Testing (Honestly)
+# What's Worth Testing (Straight Talk)
 
 If Phase 1 sold you on the net and Phase 2 showed you it's not magic, there's a real risk you swing too far
 the other way and try to test *everything*. That feels responsible. It isn't. Tests cost time to write and,
-more importantly, time to *maintain* forever. The honest skill isn't "write lots of tests"; it's knowing
+more importantly, time to *maintain* forever. The real skill isn't "write lots of tests"; it's knowing
 which tests pay for themselves and which ones quietly drain you - the cost/benefit conversation a good
 senior would actually have with you.
 

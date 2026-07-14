@@ -152,7 +152,7 @@ else
 no score yet
 ```
 *What just happened:* `int` refuses `null` outright. `int?` (shorthand for `Nullable<int>`) adds one extra
-state - "nothing" - modeling "not answered yet" honestly instead of faking it with `-1` or `0`.
+state - "nothing" - modeling "not answered yet" plainly instead of faking it with `-1` or `0`.
 
 **Nullable reference types.** Reference types have *always* been able to be `null`, exactly why crashes
 were so common. Modern C# (`<Nullable>enable</Nullable>` in your project file, default for new projects)

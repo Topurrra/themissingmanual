@@ -166,18 +166,18 @@ Every handler above returned a value *directly* - the **imperative** style: the 
 ## Recap
 
 1. **It's standard JAX-RS, build-time optimized.** Quarkus REST (RESTEasy Reactive) runs the same
-   `@Path`/`@GET`/`@POST`/`@Produces` annotations you'd write on any Jakarta server — but does the wiring
+   `@Path`/`@GET`/`@POST`/`@Produces` annotations you'd write on any Jakarta server - but does the wiring
    at compile time, which is what makes startup nearly instant.
 2. **Path params identify, query params filter.** `@PathParam` binds `{id}` from the path (one specific
    product); `@QueryParam` binds `?maxPrice=...` and is `null` when the client omits it.
 3. **JSON comes from the `quarkus-rest-jackson` extension.** Add it, and the engine deserializes the
    unannotated `@POST` body into a Java object and serializes return values back to JSON.
 4. **`RestResponse` controls status and headers.** Return a bare object for the default 200, or a
-   `RestResponse<Product>` for 201 Created and other honest status codes (the classic `Response` works too).
+   `RestResponse<Product>` for 201 Created and other correct status codes (the classic `Response` works too).
 5. **Extensions are how you add features.** An extension is a build-time-aware module added with
    `quarkus extension add`; it hooks Quarkus's build-time processing, which is why features stay fast and
    work in native images.
-6. **Imperative or reactive, same stack.** A handler can return a plain `Product` or a `Uni<Product>` —
+6. **Imperative or reactive, same stack.** A handler can return a plain `Product` or a `Uni<Product>` - 
    both work; reactive comes in [Phase 7](07-reactive-with-mutiny.md). Keep the resource thin and push
    logic into a CDI bean.
 
@@ -190,13 +190,13 @@ Make sure the Quarkus-flavored bits stuck:
   {
     "q": "Your @POST endpoint takes a Product body, but the incoming JSON isn't being deserialized into the object. What's the most likely cause?",
     "choices": [
-      "The quarkus-rest-jackson extension isn't added — Quarkus doesn't ship JSON binding in the core, you turn it on with an extension",
+      "The quarkus-rest-jackson extension isn't added - Quarkus doesn't ship JSON binding in the core, you turn it on with an extension",
       "JAX-RS annotations don't work in Quarkus; you need Quarkus-specific ones",
       "@POST methods can't accept a request body",
       "You must annotate the body parameter with @QueryParam"
     ],
     "answer": 0,
-    "explain": "JSON binding is a capability you add via an extension. Without quarkus-rest-jackson, the engine has no JSON mapper, so the body won't deserialize. The annotations are standard JAX-RS, and the unannotated parameter IS the body — adding the extension is what's missing."
+    "explain": "JSON binding is a capability you add via an extension. Without quarkus-rest-jackson, the engine has no JSON mapper, so the body won't deserialize. The annotations are standard JAX-RS, and the unannotated parameter IS the body - adding the extension is what's missing."
   },
   {
     "q": "Why does Quarkus use 'extensions' instead of plain Maven/Gradle dependencies for features like JSON and persistence?",
@@ -207,7 +207,7 @@ Make sure the Quarkus-flavored bits stuck:
       "Plain dependencies aren't allowed in a Quarkus project"
     ],
     "answer": 0,
-    "explain": "An extension contributes a build step that moves scanning, reflection registration, and wiring to compile time — the core Quarkus idea. That keeps boot nearly instant and makes the feature survive native compilation, where runtime reflection isn't available."
+    "explain": "An extension contributes a build step that moves scanning, reflection registration, and wiring to compile time - the core Quarkus idea. That keeps boot nearly instant and makes the feature survive native compilation, where runtime reflection isn't available."
   },
   {
     "q": "Your create endpoint returns a plain Product and clients always get HTTP 200, even though a resource was created. How do you report 201 Created?",
@@ -215,10 +215,10 @@ Make sure the Quarkus-flavored bits stuck:
       "Return a RestResponse<Product>, e.g. RestResponse.status(RestResponse.Status.CREATED, saved), which carries the status alongside the body",
       "Add @POST(status = 201) to the method",
       "Throw an exception after saving so the server picks a different code",
-      "Nothing can change it — Quarkus REST methods only return 200"
+      "Nothing can change it - Quarkus REST methods only return 200"
     ],
     "answer": 0,
-    "explain": "Returning a bare object gives the default 200. To set the status (and headers), return a RestResponse — RestResponse.status(Status.CREATED, saved) reports 201 Created with the body. The classic JAX-RS Response works the same way."
+    "explain": "Returning a bare object gives the default 200. To set the status (and headers), return a RestResponse - RestResponse.status(Status.CREATED, saved) reports 201 Created with the body. The classic JAX-RS Response works the same way."
   }
 ]
 ```

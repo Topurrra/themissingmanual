@@ -104,7 +104,7 @@ flowchart LR
 
 **Why this is the whole game.** Nearly every classic vulnerability is, at heart, *trusting data that crossed a trust boundary without checking it*. You trusted the note text, so a script slipped through. You trusted the login form, so a guessed password got in. You trusted the file upload, so something that wasn't an image landed on your server. Find your trust boundaries, and you've found the exact lines where your checks need to live.
 
-⚠️ **Gotcha.** "But the data came from *my own* front-end / mobile app - surely that's trusted?" No. Anything on the user's side of the boundary can be altered, replayed, or skipped entirely. A friendly button in your app and a hostile script hitting your server look *identical* by the time they reach the boundary. Validation has to happen on the trusted side, every time - front-end checks are for helping honest users, not for stopping attackers.
+⚠️ **Gotcha.** "But the data came from *my own* front-end / mobile app - surely that's trusted?" No. Anything on the user's side of the boundary can be altered, replayed, or skipped entirely. A friendly button in your app and a hostile script hitting your server look *identical* by the time they reach the boundary. Validation has to happen on the trusted side, every time - front-end checks are for helping well-meaning users, not for stopping attackers.
 
 🪖 **War story.** A very common mistake: an app validates input nicely in the browser (red error text, the works) and then trusts that the server is therefore safe. An attacker who never loads the page - just sends raw requests - sails straight past all of it. The browser checks were real; they were just on the wrong side of the line.
 

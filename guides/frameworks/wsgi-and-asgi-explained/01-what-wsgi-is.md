@@ -134,7 +134,7 @@ same: the server runs, your handler gets called. (If HTTP status codes and heade
 
 ## Why learn it
 
-Let's be honest about the trade-off, because this project's whole voice is anti-hand-waving.
+Let's look straight at the trade-off, because this project's whole voice is anti-hand-waving.
 
 ⚠️ **You will rarely write a raw WSGI app at a real job - and that's fine.** Frameworks exist for good
 reasons: they spare you boilerplate and give you routing, sessions, and validation for free. Reaching for

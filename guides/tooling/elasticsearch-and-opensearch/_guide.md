@@ -18,7 +18,7 @@ You added a search box. You wired it to `WHERE title LIKE '%term%'` and it worke
 
 ## How to read this
 
-Read it in order the first time. Phase 1 builds the one mental model that makes everything else click: search engines flip the data structure inside out. Phase 2 is the everyday work, indexing documents, mappings, analyzers, and getting back ranked results. Phase 3 is the reality nobody warns you about, near-real-time refresh, eventual consistency, and the honest question of whether you needed search at all. Skim later for reference, but the first pass should be front to back.
+Read it in order the first time. Phase 1 builds the one mental model that makes everything else click: search engines flip the data structure inside out. Phase 2 is the everyday work, indexing documents, mappings, analyzers, and getting back ranked results. Phase 3 is the reality nobody warns you about, near-real-time refresh, eventual consistency, and the real question of whether you needed search at all. Skim later for reference, but the first pass should be front to back.
 
 ## The phases
 

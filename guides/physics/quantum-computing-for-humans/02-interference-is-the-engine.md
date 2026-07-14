@@ -69,7 +69,7 @@ The accurate statement is plainer and more useful: a quantum computer is an **in
 Two consequences fall straight out of this, and they explain almost everything about the field:
 
 - **The hard part is designing the interference.** You can't throw a problem at a qubit register and hope. Someone has to invent a sequence of operations whose interference pattern concentrates amplitude on the right answer for *that specific kind of problem*. That's why there are only a handful of famous quantum algorithms - each one is a hard-won interference design, not a setting you flip on.
-- **If you can't arrange useful interference, quantum gives you nothing.** For a great many problems, nobody knows how to make the wrong answers cancel. For those, a quantum computer is no better than a classical one - sometimes worse. Phase 3 is honest about exactly where the interference trick pays off and where it doesn't.
+- **If you can't arrange useful interference, quantum gives you nothing.** For a great many problems, nobody knows how to make the wrong answers cancel. For those, a quantum computer is no better than a classical one - sometimes worse. Phase 3 is clear-eyed about exactly where the interference trick pays off and where it doesn't.
 
 ## A quick gut-check on the myth
 

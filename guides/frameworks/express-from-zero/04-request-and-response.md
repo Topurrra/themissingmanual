@@ -2,7 +2,7 @@
 title: "Request & Response"
 guide: "express-from-zero"
 phase: 4
-summary: "Read input from req (params, query, body, headers), write output with res (status + json), pick honest status codes, and validate untrusted input before you ever touch it."
+summary: "Read input from req (params, query, body, headers), write output with res (status + json), pick correct status codes, and validate untrusted input before you ever touch it."
 tags: [express, javascript, request, response, validation]
 difficulty: intermediate
 synonyms: ["express req body", "express res json status", "express request object", "express response object", "express validation", "express body parsing"]
@@ -12,7 +12,7 @@ updated: 2026-07-10
 # Request & Response
 
 The whole job of a route handler, stripped of ceremony: **it reads from `req` and writes through
-`res`.** Input arrives on the request object — URL params, query string, parsed body, headers. You do
+`res`.** Input arrives on the request object - URL params, query string, parsed body, headers. You do
 something with it, then reach for the response object and send exactly one answer back: a status code
 and usually some JSON.
 
@@ -20,7 +20,7 @@ A handler is a small machine with one input port (`req`) and one output port (`r
 this phase is just more knobs on those two ports.
 
 > 📝 One thing that trips up everyone once: `req.body` does **not** exist by default. It only gets
-> populated if a body-parsing middleware ran first — `express.json()` from [Phase 3: Middleware](03-middleware.md).
+> populated if a body-parsing middleware ran first - `express.json()` from [Phase 3: Middleware](03-middleware.md).
 > No parser, no `req.body`. Hold that thought; we'll hit it again with code.
 
 ## Reading the request
@@ -50,12 +50,12 @@ app.listen(3000, () => console.log('http://localhost:3000'));
 
 *What just happened:* the same request handed us input through four doors. `req.params` holds the
 named pieces of the route pattern (`:id` became `'42'`). `req.query` holds everything after the `?`.
-`req.body` holds the parsed body — **but only because `express.json()` ran first**. `req.headers` is
+`req.body` holds the parsed body - **but only because `express.json()` ran first**. `req.headers` is
 the raw header object; `req.get('Authorization')` is the case-insensitive, one-header shortcut. Note
-`req.params.id` is the string `'42'`, not the number `42` — everything from `params` and `query` is
+`req.params.id` is the string `'42'`, not the number `42` - everything from `params` and `query` is
 text. Convert when you need a number.
 
-> ⚠️ If you forget `app.use(express.json())` and then read `req.body`, you won't get an error — you'll
+> ⚠️ If you forget `app.use(express.json())` and then read `req.body`, you won't get an error - you'll
 > get `undefined`. That silent `undefined` is the single most common "why is my POST broken" moment in
 > Express. When `req.body` is empty and you swear you sent a body, check the parser first.
 
@@ -78,13 +78,13 @@ app.post('/tasks', (req, res) => {
 
 app.delete('/tasks/:id', (req, res) => {
   // ... delete it ...
-  res.sendStatus(204); // 204 No Content — empty body, status only
+  res.sendStatus(204); // 204 No Content - empty body, status only
 });
 ```
 
-*What just happened:* `res.json(obj)` serializes an object to JSON and sets `Content-Type` for you —
+*What just happened:* `res.json(obj)` serializes an object to JSON and sets `Content-Type` for you - 
 the workhorse. `res.status(code)` sets the status code and **returns `res`**, so you can chain it:
-`res.status(201).json(task)`. `res.sendStatus(204)` sends a status with an empty body — perfect for a
+`res.status(201).json(task)`. `res.sendStatus(204)` sends a status with an empty body - perfect for a
 successful delete. A few more you'll meet: `res.set('X-Foo', 'bar')` for a custom header, `res.send(...)`
 for text/HTML/buffers, `res.redirect(url)` for a redirect.
 
@@ -96,7 +96,7 @@ for text/HTML/buffers, `res.redirect(url)` for a redirect.
 > ```javascript
 > if (!task) {
 >   res.status(404).json({ error: 'Not found' });
->   // forgot `return` here ↓ — code keeps running and sends again
+>   // forgot `return` here ↓ - code keeps running and sends again
 > }
 > res.json(task); // 💥 headers already sent
 > ```
@@ -104,25 +104,25 @@ for text/HTML/buffers, `res.redirect(url)` for a redirect.
 > 💡 The fix is a habit: `return res.status(404).json(...)`. Returning the response ends the handler
 > right there.
 
-## Choosing honest status codes
+## Choosing correct status codes
 
 The status code is a promise to the client about what happened. Lying with `200 OK` on a failure makes
 every consumer of your API guess. Use the codes that match reality:
 
-- **200 OK** — the standard "here's your data" success (a GET that found something).
-- **201 Created** — you created a resource (a successful POST). Often paired with the new object in the body.
-- **204 No Content** — success, but there's nothing to send back (a DELETE).
-- **400 Bad Request** — the client sent something wrong (missing or invalid input). This is *their* fault.
-- **404 Not Found** — the thing they asked for doesn't exist.
+- **200 OK** - the standard "here's your data" success (a GET that found something).
+- **201 Created** - you created a resource (a successful POST). Often paired with the new object in the body.
+- **204 No Content** - success, but there's nothing to send back (a DELETE).
+- **400 Bad Request** - the client sent something wrong (missing or invalid input). This is *their* fault.
+- **404 Not Found** - the thing they asked for doesn't exist.
 
 💡 Rough rule of thumb: `2xx` means "it worked," `4xx` means "you (the client) messed up," `5xx` means
-"I (the server) messed up." Reaching for the honest code costs you nothing and saves whoever calls your
+"I (the server) messed up." Reaching for the accurate code costs you nothing and saves whoever calls your
 API hours of confusion.
 
-## Never trust the input — validate it
+## Never trust the input - validate it
 
 Express has **no built-in validation.** None. It happily hands you whatever the client sent, including
-nothing, garbage, or hostile junk. That's not a gap to apologize for — it's the minimalist philosophy.
+nothing, garbage, or hostile junk. That's not a gap to apologize for - it's the minimalist philosophy.
 But it means validation is *your* job, and skipping it is how APIs crash on a missing field or save
 nonsense to the database.
 
@@ -142,27 +142,27 @@ app.post('/tasks', (req, res) => {
 });
 ```
 
-*What just happened:* before trusting `title` for anything, we checked it — pulled it from `req.body`
+*What just happened:* before trusting `title` for anything, we checked it - pulled it from `req.body`
 (defaulting to `{}` so a missing body doesn't crash us), confirmed it's a non-empty string, and
 `return`ed a `400` with a specific message if not. Only past that guard do we build the task. The early
 `return` does double duty: it sends one response and stops the handler.
 
-For one or two fields, a hand-written guard is honest and readable. As rules grow (optional fields,
+For one or two fields, a hand-written guard is clear and readable. As rules grow (optional fields,
 types, lengths, nested objects), reach for a library: **[express-validator](https://express-validator.github.io/)**
 layers validation onto the request, or a schema library like **zod** or **joi** lets you declare the
 shape once and validate against it.
 
 > ⚠️ The rule never bends: **never trust client input.** Validate before you read it, save it, or pass
-> it anywhere. Anyone can send any bytes to your endpoint — assume someone will.
+> it anywhere. Anyone can send any bytes to your endpoint - assume someone will.
 
 ## Recap
 
 - A handler reads from **`req`** (`params`, `query`, `body`, `headers`/`req.get()`) and writes through **`res`** (status + body).
-- `req.body` only exists if a body parser like `express.json()` ran first — otherwise it's `undefined`, silently.
+- `req.body` only exists if a body parser like `express.json()` ran first - otherwise it's `undefined`, silently.
 - Reply with `res.json(obj)`, set the code with the chainable `res.status(code).json(obj)`, and use `res.sendStatus(204)` for empty successes.
-- Send **exactly one response per request** — a second send throws "Cannot set headers after they are sent." Habitually `return` your responses.
-- Pick honest status codes: 201 created, 400 bad input, 404 not found, 204 no content.
-- Express has no built-in validation. Guard required input by hand (return 400) or use express-validator/zod — and never trust the client.
+- Send **exactly one response per request** - a second send throws "Cannot set headers after they are sent." Habitually `return` your responses.
+- Pick correct status codes: 201 created, 400 bad input, 404 not found, 204 no content.
+- Express has no built-in validation. Guard required input by hand (return 400) or use express-validator/zod - and never trust the client.
 
 ## Quick check
 

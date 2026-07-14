@@ -53,7 +53,7 @@ A few habits keep the code step from becoming the thing nobody else can touch:
 
 ## The other direction: a small dedicated API
 
-Sometimes the honest answer isn't a code step inside the workflow - it's a small API endpoint the workflow calls. If the same logic needs to run from multiple workflows, needs its own tests, or needs to evolve independently of any one automation, wrapping it in a tiny deployed function (a single serverless function is plenty) and calling it via an HTTP node keeps the logic in one governable place instead of copy-pasted into three different code steps across three different tools. This is the same judgment call at a slightly larger scale: reach for it when duplication or complexity earns it, not by default.
+Sometimes the real answer isn't a code step inside the workflow - it's a small API endpoint the workflow calls. If the same logic needs to run from multiple workflows, needs its own tests, or needs to evolve independently of any one automation, wrapping it in a tiny deployed function (a single serverless function is plenty) and calling it via an HTTP node keeps the logic in one governable place instead of copy-pasted into three different code steps across three different tools. This is the same judgment call at a slightly larger scale: reach for it when duplication or complexity earns it, not by default.
 
 ## The judgment call, stated plainly
 

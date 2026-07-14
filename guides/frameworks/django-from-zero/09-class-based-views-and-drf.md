@@ -17,8 +17,8 @@ write views. But once you've written your tenth "fetch all the posts, render a l
 notice you're typing the same shape over and over. Django has two answers to that repetition, and this
 phase is about both.
 
-Here's the mental model to carry in before any code. **A view's job is always the same — turn a request
-into a response — but most views fall into a handful of standard shapes: list these objects, show one
+Here's the mental model to carry in before any code. **A view's job is always the same - turn a request
+into a response - but most views fall into a handful of standard shapes: list these objects, show one
 object, create one, edit one, delete one.** Function views make you write each shape by hand every time.
 *Class-based views* let you describe a view as a class and inherit the boilerplate. *Generic views* go
 further and hand you the whole shape pre-built. And when the response you want is JSON for another program
@@ -26,7 +26,7 @@ instead of HTML for a browser, *Django REST Framework* gives you the same levera
 
 We'll keep building the blog around our `Post` model.
 
-## Class-based views — a view as a class
+## Class-based views - a view as a class
 
 📝 **A class-based view (CBV) is a view written as a Python class instead of a function.** Django still
 calls it for each request, but instead of one function body that has to figure out the HTTP method itself,
@@ -36,7 +36,7 @@ and so on. Django looks at the incoming request's method and routes to the match
 The point isn't "classes are nicer than functions." The point is *inheritance*: once a common pattern lives
 in a base class, every view that needs that pattern can inherit it instead of repeating it.
 
-Here's a plain function view — the kind you already know:
+Here's a plain function view - the kind you already know:
 
 ```python
 # blog/views.py
@@ -49,7 +49,7 @@ def post_list(request):
     return HttpResponse(body)
 ```
 
-*What just happened:* a normal function view — fetch all posts, build a tiny HTML string, return it. If you
+*What just happened:* a normal function view - fetch all posts, build a tiny HTML string, return it. If you
 wanted to also handle `POST` here, you'd write `if request.method == "POST":` branches inside the one
 function.
 
@@ -69,7 +69,7 @@ class PostListView(View):
 ```
 
 *What just happened:* we subclassed Django's base `View` and put the GET logic in a `get()` method. There's
-no `if request.method ==` branching anymore — Django inspects the method and calls `get()` for a GET
+no `if request.method ==` branching anymore - Django inspects the method and calls `get()` for a GET
 request (and would call `post()` for a POST, if we'd written one). The wiring in `urls.py` changes
 slightly, since the URLconf needs a callable, and a class isn't one until you call `.as_view()` on it:
 
@@ -83,21 +83,21 @@ urlpatterns = [
 ]
 ```
 
-*What just happened:* `PostListView.as_view()` returns a function that Django can call like any view — it
+*What just happened:* `PostListView.as_view()` returns a function that Django can call like any view - it
 builds an instance of your class per request and dispatches to the right method. From the URLconf's
 perspective it's still just "a callable that takes a request," exactly like a function view.
 
-⚠️ Honest take, because the hype around CBVs oversells them: a class-based view that just defines one
+⚠️ Straight talk, because the hype around CBVs oversells them: a class-based view that just defines one
 `get()` method is *more* code than the function version, not less. CBVs pay off only when there's a
-pattern worth inheriting, and they have a real cost — when logic lives in a parent class you didn't write,
+pattern worth inheriting, and they have a real cost - when logic lives in a parent class you didn't write,
 reading a CBV can mean chasing methods up an inheritance chain. For genuinely custom, one-off logic, a
 function view is usually clearer. Don't convert working function views to classes just because you can.
 
-## Generic views — the patterns, pre-built
+## Generic views - the patterns, pre-built
 
 The CBV above is still doing its own ORM query and its own response-building. But "list all objects of a
 model" is such a universal pattern that Django already wrote it for you. 📝 **Generic views are Django's
-ready-made class-based views for the common cases** — `ListView`, `DetailView`, `CreateView`, `UpdateView`,
+ready-made class-based views for the common cases** - `ListView`, `DetailView`, `CreateView`, `UpdateView`,
 and `DeleteView`. You point one at a model, tell it which template to use, and you get a working
 list/detail/create/edit/delete page with almost no code of your own.
 
@@ -121,11 +121,11 @@ class PostDetailView(DetailView):
     context_object_name = "post"
 ```
 
-*What just happened:* `ListView` already knows the whole shape — run `Post.objects.all()`, render a
+*What just happened:* `ListView` already knows the whole shape - run `Post.objects.all()`, render a
 template, and pass the results in. You only had to declare *which* model (`model = Post`), *which*
 template, and what name the objects get inside that template (`context_object_name`). `DetailView` does
 the same for a single object: it reads the `pk` (or slug) captured from the URL, fetches that one `Post`,
-and 404s automatically if it doesn't exist — the `get_object_or_404` logic you wrote by hand in Phase 2 is
+and 404s automatically if it doesn't exist - the `get_object_or_404` logic you wrote by hand in Phase 2 is
 baked in. The URLconf uses `.as_view()` just like before:
 
 ```python
@@ -141,37 +141,37 @@ urlpatterns = [
 
 *What just happened:* `DetailView` expects the URL to capture the primary key as `pk` (the default name it
 looks for), so the route is `posts/<int:pk>/`. With those two patterns and the two short classes above,
-you have a fully working list-and-detail blog — including pagination support and not-found handling —
+you have a fully working list-and-detail blog - including pagination support and not-found handling - 
 without writing a single query or `render()` call.
 
 💡 This is where CBVs earn their keep: the generic views collapse the repetitive CRUD scaffolding down to
-a few declarative lines. `CreateView`, `UpdateView`, and `DeleteView` extend the same idea to forms — they
+a few declarative lines. `CreateView`, `UpdateView`, and `DeleteView` extend the same idea to forms - they
 build the form from your model, validate submitted data, save it, and redirect, all from a handful of
 attributes.
 
 ## When to use which
 
-So you have three tools — function views, hand-written CBVs, and generic CBVs — and the natural question is
+So you have three tools - function views, hand-written CBVs, and generic CBVs - and the natural question is
 which one to reach for. The answer is refreshingly simple, and it's *not* "always use the newest one."
 
-💡 **Use a function view when the logic is custom or one-off.** If a view does something unusual — a weird
-multi-step flow, an odd combination of queries, logic that doesn't map cleanly onto "list/detail/create" —
+💡 **Use a function view when the logic is custom or one-off.** If a view does something unusual - a weird
+multi-step flow, an odd combination of queries, logic that doesn't map cleanly onto "list/detail/create" - 
 a plain function is the most readable thing you can write, everything right there in one body, top to
 bottom, no inheritance to chase.
 
 💡 **Use a generic CBV when the view is standard CRUD.** A plain list page, a plain detail page, a basic
-create/edit/delete form over a model — exactly what `ListView` and friends exist for, and writing them as
+create/edit/delete form over a model - exactly what `ListView` and friends exist for, and writing them as
 functions is just re-typing what Django already gave you.
 
 ⚠️ The trap to avoid is cargo-culting: converting *every* view to a class because tutorials use them, or
 forcing genuinely custom logic into a generic view by overriding six methods until it bends to your will.
 At that point the generic view is fighting you, and a function view would have been clearer. Mix both
-freely in the same project — pick per view based on how standard the work is, not on dogma.
+freely in the same project - pick per view based on how standard the work is, not on dogma.
 
-## Django REST Framework — for building APIs
+## Django REST Framework - for building APIs
 
 Everything so far renders **HTML** for a browser. But plenty of the time you're not building a web page at
-all — you're building an **API**: endpoints that return **JSON** for a mobile app, a JavaScript front end,
+all - you're building an **API**: endpoints that return **JSON** for a mobile app, a JavaScript front end,
 or another service to consume. (If "API," "endpoint," and "JSON over HTTP" aren't second nature yet, read
 [REST APIs explained](/guides/rest-apis-explained) alongside this section.)
 
@@ -180,13 +180,13 @@ permissions, and consistent error formats, you'd be rebuilding a lot of machiner
 Framework (DRF) is the de-facto library for building JSON APIs on top of Django.** A separate package you
 install (`pip install djangorestframework`) and add to `INSTALLED_APPS`, bringing four big pieces:
 
-- **Serializers** — convert model instances to JSON and validate incoming JSON back into model data. This
+- **Serializers** - convert model instances to JSON and validate incoming JSON back into model data. This
   is the same role [Pydantic plays in FastAPI](/guides/fastapi-from-zero): the single place that defines
   what your API accepts and emits.
-- **`APIView` / `ViewSet`** — DRF's request handlers, analogous to Django's views but speaking JSON and
+- **`APIView` / `ViewSet`** - DRF's request handlers, analogous to Django's views but speaking JSON and
   HTTP verbs natively.
-- **Routers** — generate the URL patterns for a `ViewSet` automatically, so you don't hand-wire every route.
-- **Auth, permissions, and the browsable API** — pluggable authentication and permission classes, plus a
+- **Routers** - generate the URL patterns for a `ViewSet` automatically, so you don't hand-wire every route.
+- **Auth, permissions, and the browsable API** - pluggable authentication and permission classes, plus a
   rendered HTML interface for exploring your API in a browser during development.
 
 Let's expose `Post` as a JSON API. First, a serializer that says what a `Post` looks like over the wire:
@@ -204,10 +204,10 @@ class PostSerializer(serializers.ModelSerializer):
 ```
 
 *What just happened:* `ModelSerializer` is to APIs what `ModelForm` was to HTML forms in
-[Phase 6](06-forms-and-validation.md) — it inspects the model and builds the field definitions for you.
+[Phase 6](06-forms-and-validation.md) - it inspects the model and builds the field definitions for you.
 You only listed which fields to expose. This one class now does both directions: turning a `Post` object
 into `{"id": ..., "title": ..., ...}` JSON on the way out, *and* validating incoming JSON into clean data
-on the way in — the single source of truth for the shape of your API.
+on the way in - the single source of truth for the shape of your API.
 
 Now a `ViewSet` that wires the serializer to CRUD operations, plus a router to build the URLs:
 
@@ -234,10 +234,10 @@ router.register(r"posts", PostViewSet, basename="post")
 urlpatterns = router.urls
 ```
 
-*What just happened:* `ModelViewSet` is the API cousin of the generic CRUD views — from just a `queryset`
+*What just happened:* `ModelViewSet` is the API cousin of the generic CRUD views - from just a `queryset`
 and a `serializer_class`, it gives you the full set of endpoints: list all posts, retrieve one, create,
 update, delete, each on the correct HTTP verb. `DefaultRouter` then *generates* the URL patterns for that
-ViewSet automatically — you didn't write a `path()` per endpoint. A `GET` to `/posts/` now returns
+ViewSet automatically - you didn't write a `path()` per endpoint. A `GET` to `/posts/` now returns
 something like:
 
 ```json
@@ -258,27 +258,27 @@ something like:
 ```
 
 *What just happened:* DRF ran the queryset, passed each `Post` through `PostSerializer`, and rendered the
-result as a JSON array — a complete, working REST endpoint from a serializer, a ViewSet, and a router. A
+result as a JSON array - a complete, working REST endpoint from a serializer, a ViewSet, and a router. A
 `POST` to the same URL with a JSON body runs that body *through* the serializer's validation and saves a
 new `Post` if it's valid, or returns a structured error response if it isn't. Visit `/posts/` in a browser
 during development and DRF even renders its browsable API: a clickable HTML view of the same endpoint.
 
-## DRF vs FastAPI — the honest comparison
+## DRF vs FastAPI - the plain comparison
 
 You may have noticed this looks a lot like [FastAPI](/guides/fastapi-from-zero), and that's a fair
-observation — both turn typed/declared schemas into validated JSON endpoints. So which do you reach for? The
-honest answer is that it's rarely a head-to-head fight; it's about *what else you need*.
+observation - both turn typed/declared schemas into validated JSON endpoints. So which do you reach for? The
+plain answer is that it's rarely a head-to-head fight; it's about *what else you need*.
 
 💡 **Reach for DRF when you're already in Django.** If your project has the Django ORM, the admin, the auth
-system, migrations, and a body of existing models — and now you also need a JSON API over that same data —
+system, migrations, and a body of existing models - and now you also need a JSON API over that same data - 
 DRF lets you reuse *all of it*. Your serializers wrap models you already have; your API endpoints sit
 inside the project that already runs your site. This is an extremely common situation (a Django site that
 grows a mobile app or a JS front end), which is why "Django + DRF" is one of the most in-demand stacks in
 job listings.
 
 💡 **Reach for FastAPI when you want a lean, API-first service** and you *don't* need the rest of Django.
-If you're building a standalone JSON service — no server-rendered pages, no Django admin, maybe heavy
-async I/O — FastAPI gives you validation and auto-generated docs with far less framework around it.
+If you're building a standalone JSON service - no server-rendered pages, no Django admin, maybe heavy
+async I/O - FastAPI gives you validation and auto-generated docs with far less framework around it.
 
 The decision, boiled down: **pick by whether you want the whole Django stack.** If the API is one feature
 of a larger Django application, DRF is the natural fit. If the API *is* the whole application and you'd
@@ -289,10 +289,10 @@ otherwise be ignoring most of Django, FastAPI is the leaner choice.
 1. 📝 A **class-based view** is a view written as a class with one method per HTTP verb (`get()`, `post()`),
    wired into `urls.py` with `.as_view()`. The payoff is inheriting common patterns instead of repeating
    them.
-2. ⚠️ CBVs aren't automatically better — a one-method CBV is more code than the function version, and logic
+2. ⚠️ CBVs aren't automatically better - a one-method CBV is more code than the function version, and logic
    in a parent class is harder to trace. Function views stay clearer for custom, one-off logic.
 3. 📝 **Generic views** (`ListView`, `DetailView`, `CreateView`, `UpdateView`, `DeleteView`) are Django's
-   pre-built CBVs for standard CRUD — declare a model and template and get a working page in a few lines.
+   pre-built CBVs for standard CRUD - declare a model and template and get a working page in a few lines.
 4. 💡 Choose by the work: **function views for custom logic, generic CBVs for standard CRUD.** Don't
    cargo-cult classes onto everything.
 5. 📝 **Django REST Framework** builds JSON APIs on Django: `ModelSerializer` (validation + JSON, like
@@ -301,13 +301,13 @@ otherwise be ignoring most of Django, FastAPI is the leaner choice.
 6. 💡 **DRF vs FastAPI:** use DRF when the API is part of a Django app and you want to reuse the ORM, admin,
    and auth; use FastAPI when you want a lean, standalone API service without the rest of Django.
 
-You can now serve both halves of the modern web from Django: HTML pages, concisely, via generic views — and
+You can now serve both halves of the modern web from Django: HTML pages, concisely, via generic views - and
 JSON APIs, validated and routed, via DRF. The last phase ties the whole guide together: testing your views
 and models, and structuring a Django project so it stays maintainable as it grows.
 
 ## Quick check
 
-Three questions on the ideas that have to stick — what CBVs and generic views actually buy you, and where
+Three questions on the ideas that have to stick - what CBVs and generic views actually buy you, and where
 DRF fits.
 
 ```quiz
@@ -332,7 +332,7 @@ DRF fits.
       "Hand-written CBVs that re-implement the query and render() yourself"
     ],
     "answer": 0,
-    "explain": "List-all and show-one are exactly the standard CRUD shapes ListView and DetailView were built for. You declare the model and template and get the query, rendering, and 404 handling for free — no reason to hand-write it or pull in DRF."
+    "explain": "List-all and show-one are exactly the standard CRUD shapes ListView and DetailView were built for. You declare the model and template and get the query, rendering, and 404 handling for free - no reason to hand-write it or pull in DRF."
   },
   {
     "q": "When does Django REST Framework make more sense than FastAPI for building a JSON API?",

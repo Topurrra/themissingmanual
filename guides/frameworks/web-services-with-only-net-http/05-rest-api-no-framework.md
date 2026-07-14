@@ -286,7 +286,7 @@ $ curl -s localhost:8080/messages/999
 
 ## So... do you need a framework?
 
-Now the honest comparison, because you've earned it by building the thing.
+Now the plain comparison, because you've earned it by building the thing.
 
 > 💡 For *basic CRUD over one resource*, this is roughly the same amount of code a framework would have you write. The five handlers, the validation, the status codes - Gin or Echo don't make those disappear; they're inherent to the job. So where does a framework actually pay for itself? Three places: **validation** (declarative tag-based binding instead of hand-written `if` checks, which matter once you have ten fields per request), **many routes** (route groups, shared prefixes, and per-group middleware get unwieldy by hand at thirty endpoints), and **ecosystem** (off-the-shelf middleware for auth, CORS, rate limiting, request IDs that you'd otherwise write yourself). For a handful of endpoints, the stdlib is genuinely enough - and now you can tell *when* you've crossed the line. [Phase 7](07-what-frameworks-add.md) maps each of these conveniences back onto exactly the net/http code you just wrote.
 

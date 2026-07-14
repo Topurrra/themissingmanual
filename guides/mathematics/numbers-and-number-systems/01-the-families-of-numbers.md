@@ -25,7 +25,7 @@ the thread, the names stop being trivia and become inevitable.
 Here's the mental model to carry through everything below.
 
 Every family starts as "the numbers we already have." Then someone asks a fair
-question - a subtraction, a division, a length - and the honest answer is: *there
+question - a subtraction, a division, a length - and the plain answer is: *there
 is no number here that works.* A math where reasonable questions have no answer
 feels broken.
 

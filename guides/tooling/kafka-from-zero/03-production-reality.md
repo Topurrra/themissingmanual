@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Production Reality
 
-Everything works on your laptop with one consumer and ten messages. Production is where the log model earns its keep - and where the sharp edges live. None of these are bugs; they're the honest consequences of "durable distributed log." Know them in advance and they're routine. Meet them at 2am during an incident and they're a very bad night.
+Everything works on your laptop with one consumer and ten messages. Production is where the log model earns its keep - and where the sharp edges live. None of these are bugs; they're the plain consequences of "durable distributed log." Know them in advance and they're routine. Meet them at 2am during an incident and they're a very bad night.
 
 ## Delivery guarantees: you'll almost always get at-least-once
 

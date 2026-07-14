@@ -13,10 +13,10 @@ updated: 2026-07-10
 
 When you write an [axum](/guides/axum-from-zero) app, you import a `Router`, hang some handlers off
 it, add a `.layer(...)` or two, and call `axum::serve`. It feels like one tidy thing. But underneath it
-sit two libraries almost nobody learns directly — **hyper** and **tower** — and nearly the whole Rust
+sit two libraries almost nobody learns directly - **hyper** and **tower** - and nearly the whole Rust
 networking world is standing on them too.
 
-This is the deepest **roots** guide in the Rust set. Here's the honest framing up front: you will
+This is the deepest **roots** guide in the Rust set. Here's the plain framing up front: you will
 rarely write hyper or tower by hand, and this guide is most rewarding *after* you've already built
 something with axum, so the pieces have somewhere to land. We're going to assume you've met
 [HTTP](/guides/http-explained) (requests, responses, status codes) and the async runtime underneath
@@ -32,7 +32,7 @@ Before any names or code, hold this picture. It's the whole guide compressed int
 > hyper drives it over the socket. Tokio runs the whole thing.**
 
 That's it. Everything else is detail hanging off those four clauses. Read them as a stack, bottom to
-top — the runtime at the bottom, the network library above it, your wrapped-up app on top:
+top - the runtime at the bottom, the network library above it, your wrapped-up app on top:
 
 ```mermaid
 flowchart TB
@@ -45,12 +45,12 @@ flowchart TB
 engine that actually runs async tasks (it's the *only* one of the four that touches threads and the
 OS scheduler). **hyper** sits on top of Tokio and knows how to read and write HTTP over a TCP
 connection. Above hyper, **tower Layers** wrap your code with reusable middleware. And at the very
-top, **your app is a `Service`** — the thing that takes a request and produces a response. Each layer
+top, **your app is a `Service`** - the thing that takes a request and produces a response. Each layer
 only talks to its neighbors. Keep this diagram; the rest of the guide is just zooming into each box.
 
 ## What hyper is
 
-📝 **hyper** — a fast, correct, **low-level** HTTP library for Rust. It implements HTTP/1 and HTTP/2,
+📝 **hyper** - a fast, correct, **low-level** HTTP library for Rust. It implements HTTP/1 and HTTP/2,
 for both clients and servers. When bytes arrive on a socket, hyper is the thing that parses them into
 a proper HTTP request, and when you hand it a response, it serializes that back into bytes on the
 wire. It speaks the protocol so you don't have to.
@@ -62,19 +62,19 @@ Notice the word **low-level**, because it's doing a lot of work in that sentence
 - It does **not** give you extractors. Nothing pulls a JSON body or a query parameter out for you.
 - It does **not** give you middleware in any built-in sense.
 
-Those conveniences — routing, extractors, middleware — are exactly what a *framework* like axum adds
+Those conveniences - routing, extractors, middleware - are exactly what a *framework* like axum adds
 on top. hyper's job is narrower and deeper: be the correct, performant HTTP implementation that
 everything else builds on. Think of it as the part of the stack that handles "this is genuinely valid
 HTTP/1.1, and here are the parsed pieces," and then steps out of your way.
 
 > 📝 If you've read [/guides/wsgi-and-asgi-explained](/guides/wsgi-and-asgi-explained), hyper plays a
 > role a bit like a WSGI/ASGI *server* (gunicorn, uvicorn): it owns the socket and the HTTP plumbing,
-> then calls into your code. The big difference is *how* it calls your code — and that's tower's
+> then calls into your code. The big difference is *how* it calls your code - and that's tower's
 > story.
 
 ## What tower is
 
-📝 **tower** — a library of reusable, composable components for networking, built around one central
+📝 **tower** - a library of reusable, composable components for networking, built around one central
 idea: the **`Service`** trait. A `Service` is an abstraction for *"an async function from a request to
 a response"* (plus a small readiness check we'll meet in Phase 3). That's the entire concept. Given a
 request, asynchronously produce a response.
@@ -89,21 +89,21 @@ almost anything fits it:
 
 And here's the second half of tower, the part that makes it more than just a trait:
 
-📝 **`Layer`** — a thing that wraps one `Service` to produce another `Service`. That's middleware,
+📝 **`Layer`** - a thing that wraps one `Service` to produce another `Service`. That's middleware,
 made composable. A logging `Layer` wraps your app and returns a new `Service` that logs, then calls
 the inner one. A timeout `Layer` wraps that and returns yet another `Service` that enforces a
 deadline. Because every layer takes a `Service` and returns a `Service`, you can stack them like
 nesting dolls, in any order, and reuse the same `Layer` across completely different apps.
 
 > 💡 This is the quiet superpower. Because a `Layer` is "Service in, Service out," middleware written
-> for one project works in any other — and across whole *libraries*. That's why a crate like
+> for one project works in any other - and across whole *libraries*. That's why a crate like
 > `tower-http` can ship tracing, CORS, compression, and timeouts as `Layer`s that drop into *any*
 > tower-based app, axum included. We're not writing one yet (Phase 4 does); just hold "a `Layer`
 > wraps a `Service`."
 
 ## Where they sit under axum
 
-Now the payoff — let's map those names back onto the axum you've actually used. The same three lines
+Now the payoff - let's map those names back onto the axum you've actually used. The same three lines
 you write every day are, underneath, exactly the three concepts above:
 
 ```rust
@@ -115,20 +115,20 @@ axum::serve(listener, app).await?; // hyper drives it over the socket
 ```
 
 *What just happened:* three lines, three layers of the stack. `Router::new()...` builds an
-`axum::Router`, and a `Router` **is a tower `Service`** — request in, response out, with all the
+`axum::Router`, and a `Router` **is a tower `Service`** - request in, response out, with all the
 routing logic living inside its `call`. The `.layer(...)` adds a **tower `Layer`** that wraps that
 `Service` with middleware (here, request tracing). And `axum::serve` is **hyper**: it takes your
 listening socket, accepts connections, parses HTTP off each one, and calls your top-level `Service`
 once per request. Tokio (started by axum's `#[tokio::main]`) is the runtime quietly executing all of
 it. Every piece of that line traces to a box in the diagram.
 
-So axum isn't a separate magical universe. It's a set of *ergonomics* — routing, extractors, response
-helpers — assembled into a tower `Service`, served by hyper, run on Tokio. The framework is the
+So axum isn't a separate magical universe. It's a set of *ergonomics* - routing, extractors, response
+helpers - assembled into a tower `Service`, served by hyper, run on Tokio. The framework is the
 convenient face; hyper and tower are the foundation it's standing on.
 
 ## Why learn this
 
-Let's be honest about the trade-off, because this project doesn't do hand-waving.
+Let's look straight at the trade-off, because this project doesn't do hand-waving.
 
 ⚠️ **You will rarely write raw hyper or tower at a real job, and that's fine.** Frameworks like axum
 exist precisely so you don't have to wire up sockets and `Service` impls by hand. Reaching for bare
@@ -137,13 +137,13 @@ should hand-roll HTTP servers.
 
 It's arguing something more useful: knowing this layer is what makes the layers above it stop being
 magic. Once you can see the `Service` and the `Layer` underneath, a pile of axum mysteries resolve at
-once —
+once - 
 
-- **Why axum middleware is a `.layer(...)`** — because middleware *is* a tower `Layer`, the same
+- **Why axum middleware is a `.layer(...)`** - because middleware *is* a tower `Layer`, the same
   abstraction the whole ecosystem shares.
-- **What `tower-http` is** — a box of ready-made `Layer`s (tracing, CORS, compression, timeouts) that
+- **What `tower-http` is** - a box of ready-made `Layer`s (tracing, CORS, compression, timeouts) that
   work in any tower app, not just axum.
-- **What `axum::serve` actually does** — it's hyper, accepting connections and calling your `Service`.
+- **What `axum::serve` actually does** - it's hyper, accepting connections and calling your `Service`.
 
 Set your expectations accordingly: this is a **conceptual roots** guide, not day-to-day code. The
 goal isn't a hyper server you'll deploy. It's an X-ray view of the stack you already use, so the next
@@ -157,14 +157,14 @@ bare hyper server.
    **hyper** (HTTP) and **tower** (the `Service`/middleware abstraction).
 2. The mental model: **a `Service` turns a request into a response; a `Layer` wraps a `Service`
    (middleware); hyper drives it over the socket; Tokio runs it all.**
-3. **hyper** is a fast, correct, *low-level* HTTP library — HTTP/1 and HTTP/2, client and server. It
+3. **hyper** is a fast, correct, *low-level* HTTP library - HTTP/1 and HTTP/2, client and server. It
    speaks HTTP on the socket but gives you no routing, extractors, or middleware.
 4. **tower** centers on the **`Service`** trait ("async request → response") and **`Layer`** (wrap a
    `Service` to get a new one). Anything request-to-response can be a `Service`; middleware is a
    `Layer`.
 5. Under axum: a `Router` **is a `Service`**, `.layer(...)` adds **tower `Layer`s**, and `axum::serve`
    **is hyper**. axum is ergonomics assembled into a `Service`, served by hyper, run on Tokio.
-6. ⚠️ You'll rarely write hyper/tower by hand — but understanding them demystifies `Service`, why axum
+6. ⚠️ You'll rarely write hyper/tower by hand - but understanding them demystifies `Service`, why axum
    middleware is a `Layer`, what `tower-http` is, and what `axum::serve` does.
 
 ## Quick check
@@ -187,7 +187,7 @@ Three questions on the ideas that have to stick before Phase 2:
   {
     "q": "What is a tower `Layer`?",
     "choices": [
-      "Something that wraps one Service to produce another Service — that's how middleware is made composable",
+      "Something that wraps one Service to produce another Service - that's how middleware is made composable",
       "A TCP connection pool that hyper manages internally",
       "A trait you implement to parse JSON request bodies",
       "The runtime that schedules async tasks onto threads"

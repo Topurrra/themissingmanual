@@ -13,11 +13,11 @@ updated: 2026-07-10
 
 By now the bad news is clear: you cannot reliably stop a model from being fooled, because being instruction-following is what it's for. So stop trying to make the model un-foolable, and build a system where *being fooled doesn't matter much*. Assume the model **will** eventually follow a malicious instruction, and design so that when it does, the damage is small, caught, or impossible.
 
-These guardrails come from ordinary security engineering — least privilege, validation, trust boundaries, human approval for high-stakes actions. None of them is novel. What's new is *where* you apply them: not to the model's reasoning, which you can't trust, but to its inputs, powers, and outputs.
+These guardrails come from ordinary security engineering - least privilege, validation, trust boundaries, human approval for high-stakes actions. None of them is novel. What's new is *where* you apply them: not to the model's reasoning, which you can't trust, but to its inputs, powers, and outputs.
 
 ## 1. Treat the model as untrusted, and put the boundary after it
 
-The single most important reframe: **the model's output is untrusted data, exactly like the input was.** Don't pipe the model's reply straight into a tool, a shell, a SQL query, or a `delete`. Put your security boundary *after* the model — the model proposes, your code disposes.
+The single most important reframe: **the model's output is untrusted data, exactly like the input was.** Don't pipe the model's reply straight into a tool, a shell, a SQL query, or a `delete`. Put your security boundary *after* the model - the model proposes, your code disposes.
 
 ```text
    untrusted in            untrusted out
@@ -28,18 +28,18 @@ The single most important reframe: **the model's output is untrusted data, exact
                                                     confirm, or refuse)
 ```
 
-*What just happened:* You moved the trust boundary to where you actually have control — your own code, between the model and any real effect. The model can suggest anything; nothing happens until deterministic code you wrote approves it. This single placement is most of what "AI safety" boils down to in practice.
+*What just happened:* You moved the trust boundary to where you actually have control - your own code, between the model and any real effect. The model can suggest anything; nothing happens until deterministic code you wrote approves it. This single placement is most of what "AI safety" boils down to in practice.
 
 ## 2. Least privilege: don't hand the model a loaded gun
 
 An injected instruction can only do what the model's tools can do. Give the model the *least* power that still does the job.
 
-- **Scope tools narrowly.** For "look up an order's status," give it a read-only `get_order_status(id)` — not a general `run_sql` or `http_request`. A read-only tool can't be turned into a delete.
+- **Scope tools narrowly.** For "look up an order's status," give it a read-only `get_order_status(id)` - not a general `run_sql` or `http_request`. A read-only tool can't be turned into a delete.
 - **Separate read from write.** Reading is far lower-risk than changing. Keep write/delete/spend tools behind the strictest guardrails, or out of the model's reach entirely.
-- **Limit scope per call.** Credentials the model's tools run under should see only what *this* user is allowed to see — not the whole database. A successful hijack then costs one user's data, not everyone's.
+- **Limit scope per call.** Credentials the model's tools run under should see only what *this* user is allowed to see - not the whole database. A successful hijack then costs one user's data, not everyone's.
 - **No raw code execution on untrusted input** unless it's in a real sandbox with no network and no secrets.
 
-> 💡 **The test.** For every tool you expose, finish this sentence: "If the model called this with the worst possible arguments, the damage would be ______." If you can't fill that blank with something you can live with, the tool is too powerful — narrow it, or gate it behind step 4.
+> 💡 **The test.** For every tool you expose, finish this sentence: "If the model called this with the worst possible arguments, the damage would be ______." If you can't fill that blank with something you can live with, the tool is too powerful - narrow it, or gate it behind step 4.
 
 ## 3. Validate and constrain the output
 
@@ -47,7 +47,7 @@ Don't trust the shape *or* the content of what comes back.
 
 - **Constrain to choices, not free text, when you can.** Make the model pick from an **allow-list** of known-safe operations. "Choose one of: `refund`, `escalate`, `close`" is far safer than "write the API call to run."
 - **Validate arguments before acting.** Is that order ID this user's? Is the amount within a sane limit? Check it in code, every time.
-- **Strip dangerous output rendering.** Sanitize model output before displaying it as HTML or Markdown — this is what stops the image-tag exfiltration trick from Phase 2. Don't auto-render links or images pointing at arbitrary URLs.
+- **Strip dangerous output rendering.** Sanitize model output before displaying it as HTML or Markdown - this is what stops the image-tag exfiltration trick from Phase 2. Don't auto-render links or images pointing at arbitrary URLs.
 - **Parse defensively.** Treat malformed or surprising output as a failure to handle, not an edge case to ignore.
 
 ```text
@@ -57,13 +57,13 @@ safe:    model returns  →  { "action": "close", "order_id": 7 }
                         →  only then perform it
 ```
 
-*What just happened:* The model's job shrank from "produce a command I'll execute" to "pick a label and an id I'll verify." There's no string the attacker can inject that turns a label-from-a-fixed-list into a destructive command, because your code — not the model's text — decides what each label does.
+*What just happened:* The model's job shrank from "produce a command I'll execute" to "pick a label and an id I'll verify." There's no string the attacker can inject that turns a label-from-a-fixed-list into a destructive command, because your code - not the model's text - decides what each label does.
 
 ## 4. Human-in-the-loop for anything irreversible
 
 Some actions are too costly to let a possibly-hijacked model take alone. For those, the model *proposes* and a human *approves* before anything happens.
 
-- Spending money, sending external communications, deleting data, granting access, changing permissions — these earn a confirmation step.
+- Spending money, sending external communications, deleting data, granting access, changing permissions - these earn a confirmation step.
 - Make the confirmation **meaningful**: show exactly what will happen ("Send this email to these 400 people?"), not a vague "Proceed?"
 - The bar is *reversibility and blast radius.* A draft the user reviews is fine to automate. An irreversible, wide-reach action is not.
 
@@ -74,11 +74,11 @@ Some actions are too costly to let a possibly-hijacked model take alone. For tho
 Tie it together with structure, not hope:
 
 - **Keep secrets out of the context.** If an API key or another user's data isn't in the prompt, it can't be exfiltrated from the prompt. Inject secrets at the tool layer in your code, not into text the model sees.
-- **Separate planning from untrusted content** where you can — let one model call summarize an untrusted document into a constrained, structured result, and never let that document's raw text reach the call that has tool access.
+- **Separate planning from untrusted content** where you can - let one model call summarize an untrusted document into a constrained, structured result, and never let that document's raw text reach the call that has tool access.
 - **Log and monitor.** Record what tools the model called with what arguments, so you can notice an exfiltration attempt and reconstruct what happened.
 - **Cap rate and quantity.** Limits on how many emails, how much spend, how many records per session turn a catastrophic hijack into a contained one.
 
-## What actually protects you — and what doesn't
+## What actually protects you - and what doesn't
 
 ```text
 DOESN'T reliably protect:              DOES protect:
@@ -94,16 +94,16 @@ auto-rendering model output            sanitized rendering, no auto-fetch
 
 ## For builders
 
-This is the same posture you'd take with any untrusted input crossing into a powerful system — the [OWASP Top 10](/guides/owasp-top-10) habits transfer directly: validate at the boundary, apply least privilege, don't trust client-supplied (here, model-supplied) data, sanitize output. The LLM doesn't repeal those lessons; it gives them a new place to apply. Build so the honest answer to "what's the worst an injected instruction could do?" is "annoy one user," not "drain the account."
+This is the same posture you'd take with any untrusted input crossing into a powerful system - the [OWASP Top 10](/guides/owasp-top-10) habits transfer directly: validate at the boundary, apply least privilege, don't trust client-supplied (here, model-supplied) data, sanitize output. The LLM doesn't repeal those lessons; it gives them a new place to apply. Build so the plain answer to "what's the worst an injected instruction could do?" is "annoy one user," not "drain the account."
 
 ## Recap
 
-1. The model is foolable by design, so **don't try to make it un-foolable** — contain it.
+1. The model is foolable by design, so **don't try to make it un-foolable** - contain it.
 2. Treat **model output as untrusted**; put your security boundary in your code, *after* the model.
-3. **Least privilege** — narrow, read-only-where-possible tools scoped to this user. An injected instruction can only do what the tools allow.
-4. **Validate and constrain output** — allow-lists over free text, check arguments, sanitize rendering to kill exfiltration tricks.
+3. **Least privilege** - narrow, read-only-where-possible tools scoped to this user. An injected instruction can only do what the tools allow.
+4. **Validate and constrain output** - allow-lists over free text, check arguments, sanitize rendering to kill exfiltration tricks.
 5. **Human-in-the-loop** for irreversible or wide-reach actions; keep secrets out of the context; log, monitor, and rate-limit.
-6. Stack several of these — **defense in depth** — because any single guardrail can be bypassed.
+6. Stack several of these - **defense in depth** - because any single guardrail can be bypassed.
 
 You now have the real security model for LLM apps: not a magic prompt, but a system that stays safe even when the model is fooled. Build for the fooling, and a hijack becomes a contained incident instead of a headline.
 

@@ -2,7 +2,7 @@
 title: "Building a REST API"
 guide: "axum-from-zero"
 phase: 6
-summary: "Wire the books API into full CRUD — five async handlers over one shared store, each composing State, Path, and Json, returning status codes and JSON through IntoResponse."
+summary: "Wire the books API into full CRUD - five async handlers over one shared store, each composing State, Path, and Json, returning status codes and JSON through IntoResponse."
 tags: [axum, rust, rest, api, crud]
 difficulty: intermediate
 synonyms: ["axum rest api", "axum crud", "axum books api", "axum state handlers", "rust axum crud example", "axum json crud"]
@@ -14,16 +14,16 @@ updated: 2026-07-10
 This is the phase where the pieces click together. You've met every part already:
 the `Router` and routing (Phase 2), `Path`/`Query` extractors (Phase 2),
 `Json` in and out and `IntoResponse` (Phase 3), and the shared `AppState` store
-(Phase 4). A REST API is nothing more than those four things, assembled — hold
+(Phase 4). A REST API is nothing more than those four things, assembled - hold
 this picture before any code.
 
-> 📝 **Mental model:** a REST *resource* — here, books — is **five handlers over
+> 📝 **Mental model:** a REST *resource* - here, books - is **five handlers over
 > one shared store**. Each handler is an `async fn` whose arguments are extractors
 > (`State` for the store, `Path` for an id, `Json` for a request body) and whose
 > return value implements `IntoResponse` (a status code, some JSON, or both). The
 > five map onto HTTP verbs: **list** (GET all), **show** (GET one), **create**
 > (POST), **update** (PUT), **delete** (DELETE). That's the same shape you'd write
-> in Gin, Express, or Spring — axum just expresses it through Rust's type system
+> in Gin, Express, or Spring - axum just expresses it through Rust's type system
 > instead of decorators or annotations.
 
 If you've built a CRUD endpoint in any language, you already know the *job*. The
@@ -32,7 +32,7 @@ rest of this phase is watching that job land in idiomatic axum.
 ## The store, recapped
 
 We keep the in-memory store from Phase 4, and add one thing: a way to mint new
-ids. When a client POSTs a new book it doesn't send an id — the server assigns
+ids. When a client POSTs a new book it doesn't send an id - the server assigns
 one. We'll keep a counter inside the same `Mutex` as the map, so a single lock
 covers both reading the next id and inserting.
 
@@ -48,7 +48,7 @@ struct Book {
     author: String,
 }
 
-// What the client sends to create a book — no id; the server assigns it.
+// What the client sends to create a book - no id; the server assigns it.
 #[derive(Deserialize)]
 struct NewBook {
     title: String,
@@ -73,7 +73,7 @@ struct AppState {
 map with a `next_id` counter, and `AppState` wraps it in `Arc<Mutex<...>>` for the
 same reason as Phase 4: the clone axum makes per request must *share* the store,
 not copy it. ⚠️ The `Mutex` lock is held only for the few lines inside each
-handler — lock, read or mutate, let the guard drop, never across an `.await`.
+handler - lock, read or mutate, let the guard drop, never across an `.await`.
 Every read clones a `Book` *out* of the map, so JSON gets an owned value and the
 lock releases immediately.
 
@@ -155,15 +155,15 @@ async fn remove(
 *What just happened:* every handler follows the same recipe. `list` and `show`
 only read, so they lock without `mut`; `create`, `update`, and `remove` mutate, so
 they bind the guard `mut`. The body-consuming `Json` extractor always comes
-**last** — that's why `create` and `update` put `State`/`Path` first. Return types
+**last** - that's why `create` and `update` put `State`/`Path` first. Return types
 are where `IntoResponse` earns its keep: `list` returns a plain `Json<Vec<Book>>`
 (a 200), while handlers with two outcomes return `impl IntoResponse` and use
-`(StatusCode, Json<...>)` tuples — status *and* body in one value. Where a branch
+`(StatusCode, Json<...>)` tuples - status *and* body in one value. Where a branch
 returns only a status (the 404s, the 204), we call `.into_response()` so both
 `match` arms share a concrete type. `create` builds the `Book` *after* taking the
 lock so it can read and bump `next_id` atomically under that one lock.
 
-> ⚠️ Notice how much of this code is the 404 plumbing — every `match` repeats the
+> ⚠️ Notice how much of this code is the 404 plumbing - every `match` repeats the
 > `None => StatusCode::NOT_FOUND` arm, and we sprinkle `.into_response()` to make
 > branches line up. It works, but it's noisy. Phase 7 replaces all of it with a
 > custom error type and the `?` operator, so a missing book becomes one short line.
@@ -195,7 +195,7 @@ async fn main() {
 ```
 
 *What just happened:* `get(list).post(create)` chains two method handlers onto the
-same path — axum routes by verb, so GET and POST on `/books` reach different
+same path - axum routes by verb, so GET and POST on `/books` reach different
 functions. The `{id}` segment is a path parameter that feeds the `Path<u32>`
 extractor in `show`, `update`, and `remove`. `.with_state(state)` hands every
 handler the shared store; because we pulled the router into its own `app()`
@@ -207,7 +207,7 @@ Start it (`cargo run`) and exercise each verb. The responses below show what the
 handlers above produce.
 
 ```bash
-# Create two books — note the 201 and the server-assigned id
+# Create two books - note the 201 and the server-assigned id
 curl -s -X POST localhost:3000/books \
   -H 'content-type: application/json' \
   -d '{"title":"The Rust Programming Language","author":"Klabnik & Nichols"}'
@@ -232,24 +232,24 @@ curl -s -X PUT localhost:3000/books/1 \
   -d '{"title":"The Rust Programming Language, 2nd Ed.","author":"Klabnik & Nichols"}'
 # {"id":1,"title":"The Rust Programming Language, 2nd Ed.","author":"Klabnik & Nichols"}
 
-# Delete it — 204, empty body
+# Delete it - 204, empty body
 curl -s -i -X DELETE localhost:3000/books/1 | head -n 1
 # HTTP/1.1 204 No Content
 
-# Ask for a book that no longer exists — 404
+# Ask for a book that no longer exists - 404
 curl -s -i localhost:3000/books/1 | head -n 1
 # HTTP/1.1 404 Not Found
 ```
 
 *What just happened:* the full lifecycle of a resource. POST returned `201` with
 the created body (id and all), the reads came back `200`, DELETE returned a bodyless
-`204`, and the follow-up GET on the deleted id returned `404` — exactly the status
+`204`, and the follow-up GET on the deleted id returned `404` - exactly the status
 codes the handlers chose. The `-i` flag prints the status line so you can see the
 codes the JSON body alone wouldn't reveal.
 
 > 💡 The `HashMap` store is a stand-in for a database. When you swap in `sqlx` or
-> SeaORM (Phase 9), the handlers keep this exact shape — extractors in, status +
-> JSON out — only the body changes: `store.books.get(&id)` becomes a `SELECT`,
+> SeaORM (Phase 9), the handlers keep this exact shape - extractors in, status +
+> JSON out - only the body changes: `store.books.get(&id)` becomes a `SELECT`,
 > `insert` becomes an `INSERT`. The `State` already holds a `PgPool` instead of an
 > `Arc<Mutex<...>>` (recall from Phase 4 that a pool is already `Clone`), so the
 > wiring doesn't move. That stability is the payoff of the mental model: once the
@@ -260,8 +260,8 @@ codes the JSON body alone wouldn't reveal.
 - A REST resource is **five `async fn` handlers over one shared `State`**, mapped
   to verbs: list (GET all), show (GET one), create (POST), update (PUT), delete
   (DELETE).
-- Handlers compose the extractors you already know — **`State`** for the store,
-  **`Path<u32>`** for the id, **`Json<NewBook>`** for the body — with the
+- Handlers compose the extractors you already know - **`State`** for the store,
+  **`Path<u32>`** for the id, **`Json<NewBook>`** for the body - with the
   body-consuming `Json` always **last**.
 - Return **`(StatusCode, Json<...>)`** to send a status and a body together;
   return a bare `StatusCode` for empty responses; use **`impl IntoResponse`** and
@@ -269,7 +269,7 @@ codes the JSON body alone wouldn't reveal.
 - The store wraps the map and an **id counter** in one `Mutex`, so a handler takes
   a single brief lock; clone values **out** of the map and never hold a lock across
   an `.await`.
-- The repetitive `404` and `.into_response()` plumbing is the verbose part — Phase
+- The repetitive `404` and `.into_response()` plumbing is the verbose part - Phase
   7 collapses it with a custom error type and the `?` operator.
 - Keeping the router in its own `app()` function lets Phase 8 test it without a
   live server, and swapping the store for a real database (Phase 9) leaves the
@@ -297,7 +297,7 @@ Lock these in before we tackle error handling.
     "choices": [
       "A 200 response with no body",
       "A 201 response whose body is the book serialized as JSON",
-      "A compile error — you can't return a tuple",
+      "A compile error - you can't return a tuple",
       "A 201 response with the book as a plain-text string"
     ],
     "answer": 1,

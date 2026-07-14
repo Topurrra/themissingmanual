@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # Entanglement, and why it can't send a message
 
-This is the one with the worst reputation - "spooky action at a distance," instant communication across the galaxy, telepathic particles. The real phenomenon is genuinely astonishing and was confirmed by experiments careful enough to win a Nobel Prize. It is also *not* faster-than-light texting, and the reason it isn't is precise and worth understanding. Let's get the wonder and the wall, both honestly.
+This is the one with the worst reputation - "spooky action at a distance," instant communication across the galaxy, telepathic particles. The real phenomenon is genuinely astonishing and was confirmed by experiments careful enough to win a Nobel Prize. It is also *not* faster-than-light texting, and the reason it isn't is precise and worth understanding. Let's get the wonder and the wall, both straight.
 
 ## What entanglement actually is
 
@@ -65,7 +65,7 @@ and lining them up needs a normal, light-speed message.
 
 *What just happened:* each side sees only random noise, with no way to tell if or what the other measured. The "spooky" link is real but it's locked inside the correlation, which you can't read without a classical, light-limited channel. This is a proven theorem, the **no-communication theorem** - entanglement cannot transmit information faster than light. Relativity's speed limit stands.
 
-So hold both truths at once, which is the whole skill of thinking about quantum honestly: entanglement is *real* and *deeply strange* (no pre-written answers), and it *cannot* send a faster-than-light message (each side sees only noise). Pop science keeps the first half and drops the second. You now have both.
+So hold both truths at once, which is the whole skill of thinking about quantum clearly: entanglement is *real* and *deeply strange* (no pre-written answers), and it *cannot* send a faster-than-light message (each side sees only noise). Pop science keeps the first half and drops the second. You now have both.
 
 > **Where the wonder actually lives.** Entanglement isn't useless because it can't text faster than light. It's the engine behind quantum cryptography (eavesdropping breaks the correlation, so you *catch* the spy), quantum teleportation (which moves a quantum state - still using a normal channel, still light-limited), and the connectivity that gives quantum computers their reach. The genuine article is more useful than the myth, not less.
 

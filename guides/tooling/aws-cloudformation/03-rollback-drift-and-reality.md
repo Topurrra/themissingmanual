@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # When it breaks: rollback, drift, and Terraform
 
-Everything so far assumed the happy path. Production is where templates meet reality: an update half-applies, someone hotfixes a resource by hand, a stack gets wedged in a state you can't escape. This phase is the survival kit - what CloudFormation does automatically when things go wrong, how to spot the changes you didn't make, the stuck states and how to get out of them, and an honest comparison with Terraform so you pick the right tool instead of defending the one you know.
+Everything so far assumed the happy path. Production is where templates meet reality: an update half-applies, someone hotfixes a resource by hand, a stack gets wedged in a state you can't escape. This phase is the survival kit - what CloudFormation does automatically when things go wrong, how to spot the changes you didn't make, the stuck states and how to get out of them, and a clear-eyed comparison with Terraform so you pick the right tool instead of defending the one you know.
 
 ## Automatic rollback: the safety net you'll meet first
 
@@ -112,7 +112,7 @@ You can do infrastructure as code on AWS with CloudFormation (native) or [/guide
 - **You value the language and ecosystem.** HCL with modules, a huge registry of reusable modules, and `terraform plan` as a fast, readable preview many engineers find friendlier than change sets.
 - **You want explicit state you control** - though that state file is also a thing you must store, lock, and secure, which CloudFormation spares you.
 
-The honest summary: if your world is one AWS account or org and likely to stay that way, CloudFormation's nativeness and zero state-management overhead are a real edge. The moment a second provider enters the picture, Terraform's single workflow usually wins. Plenty of shops run both - CloudFormation for AWS-only foundations, Terraform where the estate spans providers. Pick for the estate you actually have, not the one on a slide.
+The plain summary: if your world is one AWS account or org and likely to stay that way, CloudFormation's nativeness and zero state-management overhead are a real edge. The moment a second provider enters the picture, Terraform's single workflow usually wins. Plenty of shops run both - CloudFormation for AWS-only foundations, Terraform where the estate spans providers. Pick for the estate you actually have, not the one on a slide.
 
 ## In the wild
 

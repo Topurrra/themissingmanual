@@ -111,7 +111,7 @@ Mirror disks in pairs (RAID 1), then stripe across the pairs (RAID 0): the speed
 resilience of mirroring, at mirroring's price - twice the disks. A common choice for databases, where both
 speed and safety matter.
 
-The whole picture in one honest comparison:
+The whole picture in one clear comparison:
 
 ```text
    LEVEL    GIVES YOU              SURVIVES        CAPACITY (of N disks)

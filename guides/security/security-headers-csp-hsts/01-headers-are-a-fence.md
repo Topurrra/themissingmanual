@@ -40,7 +40,7 @@ That last part matters. You will never write a web app with zero bugs. Some day 
 
 ## What headers can and can't do
 
-Be honest with yourself about the limits, because over-trusting a header is its own kind of bug.
+Be clear-eyed with yourself about the limits, because over-trusting a header is its own kind of bug.
 
 ```text
   Security header says:  "Browser, don't do X."

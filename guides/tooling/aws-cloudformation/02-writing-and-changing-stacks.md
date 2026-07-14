@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Writing and changing stacks for real
 
-The single-bucket template in Phase 1 was honest but lonely. Real stacks have parts that talk to each other, values that change between environments, and outputs other systems need to read. This phase is the day-to-day craft: making a template flexible with parameters, wiring resources together with intrinsic functions, handing results out with outputs, and - the habit that will save you most often - previewing every change before it lands.
+The single-bucket template in Phase 1 was plain but lonely. Real stacks have parts that talk to each other, values that change between environments, and outputs other systems need to read. This phase is the day-to-day craft: making a template flexible with parameters, wiring resources together with intrinsic functions, handing results out with outputs, and - the habit that will save you most often - previewing every change before it lands.
 
 ## Parameters: one template, many environments
 
@@ -145,7 +145,7 @@ aws cloudformation execute-change-set \
   --stack-name app-prod --change-set-name bump-retention
 ```
 
-*What just happened:* now - and only now - does CloudFormation make the change. The console's "preview changes" button does the same thing under the hood. Treat the change set as your seatbelt: cheap to create, free to throw away, and the only honest preview of what an update will really do.
+*What just happened:* now - and only now - does CloudFormation make the change. The console's "preview changes" button does the same thing under the hood. Treat the change set as your seatbelt: cheap to create, free to throw away, and the only reliable preview of what an update will really do.
 
 ## In the wild
 

@@ -35,7 +35,7 @@ Reading code tells you what *should* happen. A bug is where what *should* happen
 
 ## The other half: reproduction is how you *verify* the fix
 
-People skip this part: reproduction isn't only for *finding* the bug - it's the only honest way to know you *fixed* it.
+People skip this part: reproduction isn't only for *finding* the bug - it's the only reliable way to know you *fixed* it.
 
 The trap: you can't reliably trigger the bug, so you change something suspicious and it doesn't show up. Fixed, or just didn't happen this time? You can't tell. Ship that "fix," the bug returns next week, and you've burned trust for nothing.
 

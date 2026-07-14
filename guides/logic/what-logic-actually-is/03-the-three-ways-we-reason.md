@@ -74,7 +74,7 @@ That's an excellent conclusion - you'd be foolish to bet against it. But notice 
 The conclusion contains more than the premises gave you, which is exactly why induction can teach
 you new things - and exactly why it can never guarantee them.
 
-💡 The honest summary of induction: it can be overwhelmingly well-supported and still be wrong.
+💡 The plain summary of induction: it can be overwhelmingly well-supported and still be wrong.
 One genuine counterexample - a single black swan after a lifetime of white ones - breaks a
 universal claim no matter how many confirming cases came before it.
 

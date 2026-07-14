@@ -11,15 +11,15 @@ updated: 2026-07-10
 
 # Retrying Without Making It Worse
 
-You know the failure is probably temporary, so retrying feels obvious — and it is, right up until the
+You know the failure is probably temporary, so retrying feels obvious - and it is, right up until the
 naive version bites you. Two failure stories haunt this phase. One: you retry in a tight `while` loop and
 turn a momentary blip into a self-inflicted flood. Two: you retry a "create charge" call that *actually
-succeeded* but timed out on the reply — and bill the customer twice. This phase gives you the recipe that
+succeeded* but timed out on the reply - and bill the customer twice. This phase gives you the recipe that
 avoids both: wait longer each time, add randomness, cap your effort, and only retry what's safe to repeat.
 
 ## Don't retry instantly: exponential backoff
 
-The first instinct — retry immediately, maybe in a loop — is the worst one. If the service is struggling,
+The first instinct - retry immediately, maybe in a loop - is the worst one. If the service is struggling,
 a wall of instant retries is more load, which makes it struggle more. The fix is to **wait longer after
 each failure**, and the standard pattern is **exponential backoff**: each wait roughly doubles.
 
@@ -31,7 +31,7 @@ attempt 4  ->  fails  ->  wait ~8s
 attempt 5  ->  give up (out of budget)
 ```
 
-Instead of hammering, you backed off — 1, 2, 4, 8 seconds — giving the service room to recover. A short
+Instead of hammering, you backed off - 1, 2, 4, 8 seconds - giving the service room to recover. A short
 hiccup gets caught by the early, quick retries; a longer outage doesn't get a flood from you, because your
 waits stretch out fast. The doubling means you make only a handful of attempts even across many seconds.
 
@@ -44,7 +44,7 @@ multiplicatively (×2 each time here), not by a fixed step. The base delay (1s h
 Here's the trap that catches teams who "did backoff right." Imagine the service blips and a thousand of
 your clients all fail at the same instant. With pure exponential backoff, all thousand wait *exactly* 1
 second, then all thousand retry *at the same moment*. You've synchronized a thousand clients into a
-drumbeat of simultaneous spikes — every retry round lands as one giant wave. That's a self-made
+drumbeat of simultaneous spikes - every retry round lands as one giant wave. That's a self-made
 **thundering herd** (much more on this in Phase 3).
 
 The fix is **jitter**: add randomness to each wait so the retries spread out instead of clumping.
@@ -75,7 +75,7 @@ for attempt in range(5):
 ```
 
 The backoff *window* still doubles (1, 2, 4, 8, 16s), but the actual wait is a random point inside that
-window — so two clients running this same code almost never wait the same amount, and their retries don't
+window - so two clients running this same code almost never wait the same amount, and their retries don't
 collide. The `cap` keeps a long outage from producing absurd 10-minute waits.
 
 💡 **Key point.** Exponential backoff *without* jitter is a known foot-gun: it turns many clients into a
@@ -89,8 +89,8 @@ give up gracefully when it's spent.
 
 A budget is usually one or both of:
 
-- **Max attempts** — e.g. "try at most 5 times, then fail."
-- **A deadline** — e.g. "keep retrying, but stop after 30 seconds total, no matter the attempt count."
+- **Max attempts** - e.g. "try at most 5 times, then fail."
+- **A deadline** - e.g. "keep retrying, but stop after 30 seconds total, no matter the attempt count."
 
 ```text
 budget: 5 attempts OR 30s total, whichever comes first
@@ -101,7 +101,7 @@ otherwise                   -> back off (with jitter) and try again
 ```
 
 You bounded the effort in *both* dimensions. The deadline matters because a few exponential backoffs can
-quietly add up to a long time — you want a hard ceiling so a stuck operation doesn't hang a user's request
+quietly add up to a long time - you want a hard ceiling so a stuck operation doesn't hang a user's request
 for minutes. When the budget runs out, you stop and report a clean failure rather than retrying into the
 void.
 
@@ -118,11 +118,11 @@ request already ran, is running it again harmless?**
 That property has a name you met if you read the webhooks guide: **idempotency**. An operation is
 idempotent if doing it twice has the same effect as doing it once.
 
-- `GET /users/42` — reading. Run it a hundred times; nothing changes. **Safe to retry.**
-- `DELETE /sessions/abc` — deleting. Already gone? Deleting again is still "gone." **Safe to retry.**
-- `PUT /users/42 {name: "Sam"}` — setting to a value. Same result every time. **Safe to retry.**
-- `POST /charges {amount: 5000}` — *creating* a charge. Retry a timed-out one and you might **bill twice.**
-  **Not safe** — unless you make it safe.
+- `GET /users/42` - reading. Run it a hundred times; nothing changes. **Safe to retry.**
+- `DELETE /sessions/abc` - deleting. Already gone? Deleting again is still "gone." **Safe to retry.**
+- `PUT /users/42 {name: "Sam"}` - setting to a value. Same result every time. **Safe to retry.**
+- `POST /charges {amount: 5000}` - *creating* a charge. Retry a timed-out one and you might **bill twice.**
+  **Not safe** - unless you make it safe.
 
 The danger case is the timed-out write. Your `POST` to create a charge may have *succeeded* on the server
 while the *response* got lost on the way back. From your side it looks like a failure. Retry it naively
@@ -130,7 +130,7 @@ and you've created a second charge.
 
 ```text
 you: POST /charges  ----------------->  server: charge created
-you: (no response — network dropped it)  <-- response lost here
+you: (no response - network dropped it)  <-- response lost here
 you: "looks failed, retry!"  -------->  server: ANOTHER charge created  💸
 ```
 
@@ -139,7 +139,7 @@ happened; only your confirmation went missing. A naive retry does the work a sec
 
 ## The fix for unsafe retries: idempotency keys
 
-You can't make "create a charge" naturally idempotent — each call is meant to create something new. So
+You can't make "create a charge" naturally idempotent - each call is meant to create something new. So
 serious APIs give you a tool: an **idempotency key**. You generate a unique ID for the *logical*
 operation and send it with the request. The server remembers that key. If it sees the same key twice, it
 returns the *original* result instead of doing the work again.
@@ -155,11 +155,11 @@ Content-Type: application/json
 You stamped this charge with a key tied to the *order*, not the attempt. The first time the server sees
 `a1b2c3-charge-order-9921`, it creates the charge and records the result against the key. When your retry
 arrives with the *same* key, the server recognizes it, skips creating a second charge, and returns the
-first charge's response. One key, one charge — no matter how many times the network makes you retry.
+first charge's response. One key, one charge - no matter how many times the network makes you retry.
 
 📝 **Terminology.** *Idempotency key* = a caller-generated unique ID for one logical operation, sent so
 the server can deduplicate retries. Generate it *once per operation* and reuse it across that operation's
-retries — if you make a fresh key every attempt, you've defeated the whole point.
+retries - if you make a fresh key every attempt, you've defeated the whole point.
 
 💡 **Key point.** Retry idempotent requests freely. For non-idempotent ones (most `POST`s that create or
 charge), either don't retry, or use an idempotency key so the server can make the retry safe. "Could this
@@ -181,17 +181,17 @@ for each attempt, until the budget is spent:
 budget spent -> surface a clean error
 ```
 
-Every habit from this phase is in there — honor `Retry-After` when given, otherwise exponential backoff
+Every habit from this phase is in there - honor `Retry-After` when given, otherwise exponential backoff
 *with jitter*, stop on permanent errors, respect a budget, and keep the idempotency key constant across
 attempts. That loop turns a flaky dependency into a non-event.
 
 ## For builders
 
-Reach for a battle-tested retry library before hand-rolling this — most ecosystems have one that gives you
+Reach for a battle-tested retry library before hand-rolling this - most ecosystems have one that gives you
 backoff, jitter, and budgets in a few lines, and they've already fixed the bugs you'd hit. Your real job
 is *configuration with judgment*: set sane caps, add jitter (confirm the default actually does), retry
 only transient statuses, and decide per-endpoint whether a retry could double a side effect. Phase 3
-covers what to do when even a perfect retry policy isn't enough — when a dependency is *down*.
+covers what to do when even a perfect retry policy isn't enough - when a dependency is *down*.
 
 ```quiz
 [
@@ -204,7 +204,7 @@ covers what to do when even a perfect retry policy isn't enough — when a depen
       "Because the Retry-After header requires it"
     ],
     "answer": 1,
-    "explain": "Pure exponential backoff makes many clients wait the same fixed amount and retry in sync — a self-made thundering herd. Jitter randomizes each wait so the load spreads out."
+    "explain": "Pure exponential backoff makes many clients wait the same fixed amount and retry in sync - a self-made thundering herd. Jitter randomizes each wait so the load spreads out."
   },
   {
     "q": "A POST that creates a charge times out with no response. Why is blindly retrying it dangerous?",
@@ -215,7 +215,7 @@ covers what to do when even a perfect retry policy isn't enough — when a depen
       "Retrying a POST always corrupts the request body"
     ],
     "answer": 1,
-    "explain": "A lost response, not a lost request, is the trap: the work may already be done. A naive retry repeats a non-idempotent operation and can double-charge — unless you use an idempotency key."
+    "explain": "A lost response, not a lost request, is the trap: the work may already be done. A naive retry repeats a non-idempotent operation and can double-charge - unless you use an idempotency key."
   },
   {
     "q": "What is the correct way to use an idempotency key across retries of the same charge?",

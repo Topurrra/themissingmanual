@@ -56,7 +56,7 @@ flowchart TD
   check -->|yes| echo["Access-Control-Allow-Origin:<br/>http://localhost:5173 - echo the exact origin"]
 ```
 
-This is the honest way to support multiple origins. Resist the urge to reach for `*` - the next sections
+This is the correct way to support multiple origins. Resist the urge to reach for `*` - the next sections
 explain why.
 
 ## 2. Make the preflight pass

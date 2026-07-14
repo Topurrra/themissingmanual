@@ -1,5 +1,5 @@
 ---
-title: "Designing Endpoints — Conventions That Read Well"
+title: "Designing Endpoints - Conventions That Read Well"
 guide: "rest-apis-explained"
 phase: 2
 summary: "The practical conventions of good REST: name URLs with nouns not verbs, treat collections and items consistently, return meaningful status codes, and use query params for filtering, sorting, and pagination."
@@ -9,7 +9,7 @@ synonyms: ["rest api naming conventions", "how to design rest endpoints", "rest 
 updated: 2026-07-10
 ---
 
-# Designing Endpoints — Conventions That Read Well
+# Designing Endpoints - Conventions That Read Well
 
 Knowing the mental model is one thing; laying out an API somebody else can use without reading a manual is
 another. The good news is that REST has a well-worn set of conventions, and they're mostly common sense
@@ -17,7 +17,7 @@ once you see why each exists. Follow them and a stranger can guess your endpoint
 your own teammates will be grep-ing the source to find out what `/doUserThing` does.
 
 This phase is the practical layer: how to name things, what to return, and how to handle the everyday
-needs — filtering, sorting, and paging — that every real API runs into.
+needs - filtering, sorting, and paging - that every real API runs into.
 
 ## The endpoint cheat sheet
 
@@ -36,7 +36,7 @@ needs — filtering, sorting, and paging — that every real API runs into.
 
 ## 1. Name with nouns, and be consistent
 
-A REST URL names a *thing*, and the HTTP method supplies the action — so the URL should be a noun, not a
+A REST URL names a *thing*, and the HTTP method supplies the action - so the URL should be a noun, not a
 verb. The verb is already in the method; repeating it in the path (`GET /getOrders`) is redundant and
 breaks the pattern that makes APIs predictable.
 
@@ -52,9 +52,9 @@ breaks the pattern that makes APIs predictable.
 Three conventions make the noun style click:
 
 - **Plural for collections.** Prefer `/orders` over `/order`. Then `/orders` reads as "the orders" and
-  `/orders/42` as "order 42" — one consistent rule instead of guessing singular vs. plural per endpoint.
+  `/orders/42` as "order 42" - one consistent rule instead of guessing singular vs. plural per endpoint.
 - **Nest to show ownership.** `/users/42/orders` means "the orders belonging to user 42." Nest one level
-  for a clear parent-child relationship; resist nesting three or four deep — it gets unwieldy fast, and
+  for a clear parent-child relationship; resist nesting three or four deep - it gets unwieldy fast, and
   usually `/orders?user=42` reads better past one level.
 - **Lowercase, hyphenated, no file extensions.** `/blog-posts`, not `/BlogPosts` or `/blog_posts.json`.
 
@@ -65,10 +65,10 @@ exception is a thing they now have to look up.
 ## 2. Return status codes that actually mean something
 
 Every HTTP response carries a three-digit *status code* that tells the caller, at a glance, how it went.
-The number isn't decoration — clients branch on it. Returning the *right* one is part of your API's
+The number isn't decoration - clients branch on it. Returning the *right* one is part of your API's
 contract, not an afterthought.
 
-📝 **Terminology — the families.** The first digit tells the whole story: **2xx** = it worked, **3xx** =
+📝 **Terminology - the families.** The first digit tells the whole story: **2xx** = it worked, **3xx** =
 go somewhere else (redirects), **4xx** = the *caller* did something wrong, **5xx** = the *server* did.
 That single digit is enough to know whose problem it is.
 
@@ -91,9 +91,9 @@ Here are the ones you'll reach for constantly:
      500 Internal Server Error   something blew up on our side
 ```
 
-⚠️ **Gotcha — `401` vs. `403`.** They feel interchangeable; they're not. `401 Unauthorized` actually
-means *unauthenticated* — "I don't know who you are, log in." `403 Forbidden` means *authenticated but not
-permitted* — "I know exactly who you are, and you still can't touch this." Sending `403` for a missing
+⚠️ **Gotcha - `401` vs. `403`.** They feel interchangeable; they're not. `401 Unauthorized` actually
+means *unauthenticated* - "I don't know who you are, log in." `403 Forbidden` means *authenticated but not
+permitted* - "I know exactly who you are, and you still can't touch this." Sending `403` for a missing
 login tells the client to fix the wrong thing.
 
 A delete, done right:
@@ -106,11 +106,11 @@ Authorization: Bearer eyJhbGciOiInR5cCI6...
 ```http
 HTTP/1.1 204 No Content
 ```
-The order was removed, and the server returned `204 No Content` — success, with an empty body because
+The order was removed, and the server returned `204 No Content` - success, with an empty body because
 there's nothing meaningful to send back about a thing that no longer exists. The caller reads `204` and
 knows the delete worked without having to parse anything.
 
-And an error, done right — note that a good `4xx` *explains itself* in the body:
+And an error, done right - note that a good `4xx` *explains itself* in the body:
 
 ```http
 POST /orders HTTP/1.1
@@ -135,19 +135,19 @@ fix. Returning `400` with a blank body is technically correct and practically us
 ## 3. Query params for filtering, sorting, and pagination
 
 When you `GET` a collection, you rarely want *all* of it in *any* order. The convention is to shape the
-result with **query parameters** — the `?key=value` pairs after the URL. The path still names the
+result with **query parameters** - the `?key=value` pairs after the URL. The path still names the
 collection; the query refines which slice you get and how it's arranged.
 
-📝 **Terminology — query string.** Everything after the `?` in a URL is the *query string*:
+📝 **Terminology - query string.** Everything after the `?` in a URL is the *query string*:
 `?status=open&sort=-created&page=2` is three parameters (`status`, `sort`, `page`) joined by `&`. They're
-for *narrowing or shaping* a read, not for identifying the resource — that's the path's job.
+for *narrowing or shaping* a read, not for identifying the resource - that's the path's job.
 
 Three jobs, three families of params:
 
-- **Filtering** — narrow the set: `?status=open`, `?author=42`, `?created_after=2026-01-01`.
-- **Sorting** — order the set: `?sort=created` (ascending) or `?sort=-created` (a leading `-` for
+- **Filtering** - narrow the set: `?status=open`, `?author=42`, `?created_after=2026-01-01`.
+- **Sorting** - order the set: `?sort=created` (ascending) or `?sort=-created` (a leading `-` for
   descending is a common convention).
-- **Pagination** — return one page at a time so you don't dump a million rows: `?page=2&per_page=25`.
+- **Pagination** - return one page at a time so you don't dump a million rows: `?page=2&per_page=25`.
 
 "Give me the second page of open orders, newest first, 25 per page":
 
@@ -169,33 +169,33 @@ Content-Type: application/json
   "total": 312
 }
 ```
-The path `/orders` named the collection; the query string did the rest — filtered to `open`, sorted
+The path `/orders` named the collection; the query string did the rest - filtered to `open`, sorted
 newest-first, and returned page 2. The server wrapped the list in an envelope with paging info (`page`,
 `per_page`, `total`) so the client knows there are 312 matches and can build "page 13 of 13." Returning a
 bare array instead leaves the client blind to how much more there is.
 
-⚠️ **Gotcha — always paginate list endpoints from day one.** It's tempting to return the whole collection
+⚠️ **Gotcha - always paginate list endpoints from day one.** It's tempting to return the whole collection
 while it's small. Then the table grows, one `GET /orders` tries to serialize a hundred thousand rows, and
-the endpoint times out — for *every* caller at once. Bolting pagination on later is a breaking change to
+the endpoint times out - for *every* caller at once. Bolting pagination on later is a breaking change to
 everyone using it. Build it in before you need it; a default like `per_page=25` costs nothing early and
 saves an outage later.
 
-💡 **Key point — path identifies, query refines.** If a value picks out *which resource* you mean, it
-belongs in the path (`/orders/42`). If it *shapes a read* of a collection — filter, sort, page — it
+💡 **Key point - path identifies, query refines.** If a value picks out *which resource* you mean, it
+belongs in the path (`/orders/42`). If it *shapes a read* of a collection - filter, sort, page - it
 belongs in the query string. Keeping that line clean is most of what makes an API feel coherent.
 
 ## Recap
 
 1. **Name with plural nouns** (`/orders`, `/orders/42`); the HTTP method is the verb, so never put the
    action in the URL.
-2. **Return meaningful status codes** — `200`/`201`/`204` for success, `400`/`401`/`403`/`404` for caller
-   errors, `500` for yours — and explain `4xx` errors in the body.
+2. **Return meaningful status codes** - `200`/`201`/`204` for success, `400`/`401`/`403`/`404` for caller
+   errors, `500` for yours - and explain `4xx` errors in the body.
 3. **`401` is "log in"; `403` is "you're logged in but not allowed."**
 4. **Use query params** for filtering (`?status=open`), sorting (`?sort=-created`), and pagination
-   (`?page=2`) — and paginate list endpoints from the start.
+   (`?page=2`) - and paginate list endpoints from the start.
 5. **Path identifies the resource; query string refines a read of it.**
 
-You can now design endpoints that read cleanly. The last phase steps back and tells you the honest truth:
+You can now design endpoints that read cleanly. The last phase steps back and tells you the plain truth:
 where this style holds up, and where it starts to hurt.
 
 ---

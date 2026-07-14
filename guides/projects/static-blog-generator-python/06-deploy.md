@@ -2,7 +2,7 @@
 title: "Deploying, and Where to Take It"
 guide: "static-blog-generator-python"
 phase: 6
-summary: "Put the generated site on the internet for free with Netlify Drop or GitHub Pages - including the subpath gotcha that breaks root-relative links - then the honest list of what to build next."
+summary: "Put the generated site on the internet for free with Netlify Drop or GitHub Pages - including the subpath gotcha that breaks root-relative links - then the real list of what to build next."
 tags: [deployment, github-pages, netlify, static-hosting, python]
 difficulty: intermediate
 synonyms:
@@ -87,7 +87,7 @@ Notice what you're committing: source *and* output, together. Some people find c
 
 ## Where to take it next
 
-The core is done, and it's genuinely yours. The honest extension list, roughly in the order people want them:
+The core is done, and it's genuinely yours. The real extension list, roughly in the order people want them:
 
 | Want | What it takes |
 |------|--------------|

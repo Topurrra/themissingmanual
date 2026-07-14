@@ -2,7 +2,7 @@
 title: "Testing, Build & Profiling - Proving It Works, Finding the Slow Part"
 guide: "csharp-from-zero"
 phase: 16
-summary: "Prove C# correct with xUnit facts and theories, isolate units with Moq, measure honestly with BenchmarkDotNet (because Stopwatch loops lie), and find real hotspots with dotnet-trace and coverlet."
+summary: "Prove C# correct with xUnit facts and theories, isolate units with Moq, measure accurately with BenchmarkDotNet (because Stopwatch loops lie), and find real hotspots with dotnet-trace and coverlet."
 tags: [csharp, testing, xunit, theory, benchmarkdotnet, profiling, code-coverage, moq]
 difficulty: intermediate
 synonyms: ["c# xunit tutorial", "c# theory inlinedata parameterized test", "c# benchmarkdotnet", "c# profiling dotnet-trace", "c# code coverage coverlet", "c# moq mocking", "how to test c# code"]
@@ -157,7 +157,7 @@ public class PortfolioTests
 
 ⚠️ **Don't over-mock.** Mocking is for slow, external, or non-deterministic dependencies - networks, databases, clocks, the file system. Mock your *own* simple classes and your test stops verifying real behavior, instead verifying that your code calls methods in the order you said it would - breaking the instant you refactor, even when nothing's actually wrong. Mock at the boundaries; use the real thing inside them.
 
-## Benchmarking with BenchmarkDotNet - measuring honestly
+## Benchmarking with BenchmarkDotNet - measuring accurately
 
 Now the speed question. Your instinct will be to wrap the code in a `Stopwatch`, loop it a million times, and print the elapsed milliseconds. ⚠️ **That number will lie to you**, and understanding *why* ties straight back to the runtime internals from [Phase 15](15-the-dotnet-runtime-and-gc.md).
 
@@ -240,14 +240,14 @@ dotnet test --collect:"XPlat Code Coverage"
 
 *What just happened:* coverlet instrumented the build, tracked which lines executed while the tests ran, and wrote a coverage report. Fed to a viewer, it color-codes your source: green lines ran, red lines never did - the *red* is the useful part, a map of the branches your tests forgot.
 
-⚠️ **Coverage is not correctness.** This trap catches everyone. Coverage tells you a line *executed* - nothing about whether you *checked the result*. A test that calls `Clamp` and asserts nothing lights the whole method green. Treat coverage as a map of the untested (chase the red), never a score to maximize - high coverage with weak assertions is *more* dangerous than honest medium coverage, since it feels safe while proving almost nothing.
+⚠️ **Coverage is not correctness.** This trap catches everyone. Coverage tells you a line *executed* - nothing about whether you *checked the result*. A test that calls `Clamp` and asserts nothing lights the whole method green. Treat coverage as a map of the untested (chase the red), never a score to maximize - high coverage with weak assertions is *more* dangerous than plain medium coverage, since it feels safe while proving almost nothing.
 
 ## Recap
 
 1. **xUnit** is the common default (NUnit/MSTest also exist). A `[Fact]` is one test in **Arrange-Act-Assert** shape; `Assert.Equal` checks values, `Assert.Throws<T>` checks error paths. Run everything with `dotnet test`.
 2. **`[Theory]` + `[InlineData]`** is C#'s table-driven testing: one method, many cases, each row an independent pass/fail. Use **`[MemberData]`** for non-constant values.
 3. **Mocking** (Moq/NSubstitute) replaces a real dependency with a controllable fake - `Mock<T>`, `.Setup`, `.Verify` - so you test *your* unit in isolation. ⚠️ Mock at the boundaries (network, DB, clock); over-mocking tests your wiring, not your behavior.
-4. **BenchmarkDotNet** (`[Benchmark]`) measures honestly because ⚠️ a `Stopwatch` loop can't account for JIT warmup, tiered recompilation, and GC pauses ([Phase 15](15-the-dotnet-runtime-and-gc.md)); `[MemoryDiagnoser]` adds allocation columns - often the number to fix first.
+4. **BenchmarkDotNet** (`[Benchmark]`) measures accurately because ⚠️ a `Stopwatch` loop can't account for JIT warmup, tiered recompilation, and GC pauses ([Phase 15](15-the-dotnet-runtime-and-gc.md)); `[MemoryDiagnoser]` adds allocation columns - often the number to fix first.
 5. **Profilers** (`dotnet-trace`, `dotnet-counters`, `dotnet-gcdump`, Visual Studio, PerfView) find the *real* hotspot. 💡 Measure, don't guess - profile first, optimize second.
 6. **Coverage** via coverlet maps which lines ran. ⚠️ Coverage ≠ correctness: it proves a line executed, not that you checked the result. Chase the red, never the score.
 

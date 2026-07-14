@@ -136,7 +136,7 @@ more have been detected since.
 century later, by directly detecting spacetime flexing from a collision more than a billion light-years
 away. The fabric is real, and it rings.
 
-## Keeping it honest
+## Keeping it real
 
 So how settled is all this? The core of special and general relativity is about as solid as physics
 gets. It's been tested across an enormous range of scales - atomic clocks on towers and airplanes,

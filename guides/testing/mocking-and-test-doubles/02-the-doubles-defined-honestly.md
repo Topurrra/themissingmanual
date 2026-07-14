@@ -1,5 +1,5 @@
 ---
-title: "The Doubles, Defined Honestly"
+title: "The Doubles, Clearly Defined"
 guide: "mocking-and-test-doubles"
 phase: 2
 summary: "The five kinds of test double - dummy, stub, fake, spy, and mock - what each is for, with a small example, and why people call all of them 'mocks.'"
@@ -9,11 +9,11 @@ synonyms: ["difference between stub and mock", "what is a stub", "what is a fake
 updated: 2026-07-10
 ---
 
-# The Doubles, Defined Honestly
+# The Doubles, Clearly Defined
 
 If you've ever been confused about the difference between a "mock" and a "stub," it's not you. The words get
 used loosely everywhere - most people say "mock" for *any* test double, and most mocking libraries are named
-for just one member of a larger family. Let's clear it up once, with honest definitions and a small example
+for just one member of a larger family. Let's clear it up once, with plain definitions and a small example
 of each.
 
 The classic naming comes from Gerard Meszaros's book *xUnit Test Patterns*, now the shared vocabulary most
@@ -190,7 +190,7 @@ once (never double-charge).
 
 ### Spy vs mock - the subtle one
 
-People mix these up constantly, so here's the honest distinction:
+People mix these up constantly, so here's the plain distinction:
 
 | | Spy | Mock |
 |---|---|---|

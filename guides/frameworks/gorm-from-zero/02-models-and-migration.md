@@ -12,7 +12,7 @@ updated: 2026-07-10
 # Models & Auto-Migration
 
 In [Phase 1](01-what-gorm-is.md) you opened a `*gorm.DB` and watched it log SQL. Now we give it
-something to talk about: a table — and here's the one idea that makes the rest of GORM click.
+something to talk about: a table - and here's the one idea that makes the rest of GORM click.
 
 ## The mental model: a struct *is* the table
 
@@ -23,13 +23,13 @@ the database stores the struct.
 - Each **field** becomes a **column**.
 - Each **struct tag** adds a **constraint** to that column (size, not-null, unique, an index).
 - The **struct name** decides the **table name** (`User` → `users`).
-- And one call — `AutoMigrate` — makes the real database **match** the struct you wrote.
+- And one call - `AutoMigrate` - makes the real database **match** the struct you wrote.
 
 > 💡 Once you hold "the struct is the source of truth, the database is its shadow," GORM stops feeling
 > like two parallel systems you have to babysit. You edit the struct; you re-run AutoMigrate; the
 > table catches up.
 
-We'll build the **blog** schema this whole guide uses. It has three tables — users, posts, comments —
+We'll build the **blog** schema this whole guide uses. It has three tables - users, posts, comments - 
 and we start with `User`.
 
 ## `gorm.Model`: the four fields you almost always want
@@ -53,9 +53,9 @@ before `Name` and `Email` even appear:
 | `ID` | `uint` | The primary key. Auto-increments. You almost never set it by hand. |
 | `CreatedAt` | `time.Time` | GORM stamps it the moment the row is inserted. |
 | `UpdatedAt` | `time.Time` | GORM re-stamps it on every save. |
-| `DeletedAt` | `gorm.DeletedAt` | Enables **soft delete** — a "deleted" row sticks around but disappears from queries. (Full story in [Phase 5](05-update-and-delete.md).) |
+| `DeletedAt` | `gorm.DeletedAt` | Enables **soft delete** - a "deleted" row sticks around but disappears from queries. (Full story in [Phase 5](05-update-and-delete.md).) |
 
-So `CreatedAt` and `UpdatedAt` are managed *for* you — you don't write code to maintain them. That
+So `CreatedAt` and `UpdatedAt` are managed *for* you - you don't write code to maintain them. That
 one embed is why most GORM models start with `gorm.Model`.
 
 > 📝 `gorm.Model` is plain Go embedding, not magic. It's literally a struct with those four fields,
@@ -64,7 +64,7 @@ one embed is why most GORM models start with `gorm.Model`.
 
 ## A tour of field tags
 
-The backtick string after a field — ``gorm:"..."`` — is a **struct tag**. GORM reads it to learn how
+The backtick string after a field - ``gorm:"..."`` - is a **struct tag**. GORM reads it to learn how
 that column should be shaped. Multiple settings are separated by semicolons. Here are the ones you'll
 reach for constantly:
 
@@ -76,7 +76,7 @@ type User struct {
     Username  string `gorm:"size:50;index"`            // plain (non-unique) index
     Role      string `gorm:"size:20;default:'member'"` // default value if none given
     Bio       string `gorm:"column:about_me"`          // override the column name
-    avatarRaw []byte `gorm:"-"`                         // ignored entirely — no column
+    avatarRaw []byte `gorm:"-"`                         // ignored entirely - no column
 }
 ```
 
@@ -91,10 +91,10 @@ type User struct {
 - `column:about_me` → override GORM's auto-generated column name. Now the Go field is `Bio` but the
   column is `about_me`.
 - `-` → "this field is not a column." GORM skips it entirely. (Note `avatarRaw` is lowercase, so it's
-  also unexported — handy for internal scratch fields.)
+  also unexported - handy for internal scratch fields.)
 
 > ⚠️ A struct tag is a single backtick string with **no commas**, only semicolons between settings.
-> ``gorm:"size:100, not null"`` is a classic typo — that comma makes GORM misread the second setting.
+> ``gorm:"size:100, not null"`` is a classic typo - that comma makes GORM misread the second setting.
 
 There are two more worth naming. `primaryKey` marks a field as *the* primary key (you'll see it below
 when we skip `gorm.Model`), and you can combine settings freely: ``gorm:"size:255;not null;index"``.
@@ -108,7 +108,7 @@ they're predictable:
   `BlogPost` → `blog_posts`, `Comment` → `comments`.
 - **Field → column:** **snake_case**, singular. `CreatedAt` → `created_at`, `Name` → `name`.
 
-When the convention doesn't fit — say your table is legacy and called `tbl_users` — override the whole
+When the convention doesn't fit - say your table is legacy and called `tbl_users` - override the whole
 table name with a `TableName()` method:
 
 ```go
@@ -119,7 +119,7 @@ func (User) TableName() string {
 
 *What just happened:* GORM checks for a `TableName() string` method on your model. If it finds one, it
 uses that string verbatim instead of pluralizing. Now every query for `User` hits `blog_users`. (The
-receiver `(User)` has no name because we don't use it — we only need the method to exist.)
+receiver `(User)` has no name because we don't use it - we only need the method to exist.)
 
 ## `AutoMigrate`: make the database match the structs
 
@@ -153,26 +153,26 @@ CREATE INDEX `idx_users_deleted_at` ON `users`(`deleted_at`);
 *What just happened:* every piece traces back to the struct. `id`/`created_at`/`updated_at`/`deleted_at`
 came from `gorm.Model`. `name` is `NOT NULL` and length-capped because of its tags. The unique index on
 `email` is your `uniqueIndex` tag. GORM even indexes `deleted_at` on its own, because that's the column
-soft-delete filters on. The struct really *is* the table — you're reading your own tags back as SQL.
+soft-delete filters on. The struct really *is* the table - you're reading your own tags back as SQL.
 
-Run `AutoMigrate` again with no changes and GORM does nothing — it's safe to call on every startup.
+Run `AutoMigrate` again with no changes and GORM does nothing - it's safe to call on every startup.
 Add a field to the struct and re-run, and GORM issues an `ALTER TABLE ... ADD COLUMN` to catch up.
 
 > ⚠️ **AutoMigrate is additive only.** It creates tables and *adds* missing columns, indexes, and
 > foreign keys. It will **never drop a column, never delete a table, and never change a column's type
 > in a way that could lose data.** Rename `Email` to `EmailAddress` and AutoMigrate adds a *new*
-> `email_address` column — the old `email` column and its data just sit there. That's a feature in
+> `email_address` column - the old `email` column and its data just sit there. That's a feature in
 > dev (you can't accidentally nuke data) and a limitation in production (it can't express renames,
 > drops, or careful type changes). For real, ordered, reversible schema changes you want a proper
-> migration tool — [Phase 8](08-transactions-hooks-migrations.md) covers when and why.
+> migration tool - [Phase 8](08-transactions-hooks-migrations.md) covers when and why.
 
-So the honest rule: **AutoMigrate is great for development and getting started, not a complete
+So the practical rule: **AutoMigrate is great for development and getting started, not a complete
 migration strategy.** Lean on it now; graduate from it later.
 
 ## A model *without* `gorm.Model`
 
-`gorm.Model` is a convenience, not a requirement. If you don't want the timestamps or soft-delete —
-say a small lookup table — define your own primary key and skip the embed:
+`gorm.Model` is a convenience, not a requirement. If you don't want the timestamps or soft-delete - 
+say a small lookup table - define your own primary key and skip the embed:
 
 ```go
 type Tag struct {
@@ -184,7 +184,7 @@ type Tag struct {
 *What just happened:* with no `gorm.Model`, `Tag` has exactly two columns: `id` and `name`. The
 `primaryKey` tag tells GORM that `ID` is the primary key (GORM also assumes a `uint` field named `ID`
 is the PK by default, so here the tag is explicit insurance). No `created_at`, no `updated_at`, no
-soft-delete — just the columns you declared. Use this when the four `gorm.Model` fields would be dead
+soft-delete - just the columns you declared. Use this when the four `gorm.Model` fields would be dead
 weight.
 
 With `User` defined and migrated, the table exists and is waiting for rows. Next we put data in and
@@ -200,8 +200,8 @@ read it back.
   rename, `-` to ignore. Separate settings with **semicolons, not commas**.
 - **Naming is automatic:** `User` → table `users`, `CreatedAt` → column `created_at`; override the
   table name with a `TableName()` method.
-- **`AutoMigrate` makes the DB match the structs** — creating tables and adding missing
-  columns/indexes — but it's **additive only**: it never drops or destructively retypes. Great in
+- **`AutoMigrate` makes the DB match the structs** - creating tables and adding missing
+  columns/indexes - but it's **additive only**: it never drops or destructively retypes. Great in
   dev, not a full migration tool ([Phase 8](08-transactions-hooks-migrations.md)).
 - You can **skip `gorm.Model`** and declare your own `primaryKey` when you don't want timestamps or
   soft delete.
@@ -218,7 +218,7 @@ read it back.
   },
   {
     "q": "You rename a struct field and re-run AutoMigrate. What happens to the old column?",
-    "choices": ["It is renamed to match", "It is dropped automatically", "It stays — a new column is added alongside it", "AutoMigrate refuses to run"],
+    "choices": ["It is renamed to match", "It is dropped automatically", "It stays - a new column is added alongside it", "AutoMigrate refuses to run"],
     "answer": 2,
     "explain": "AutoMigrate is additive only. It adds a new column for the renamed field and leaves the old column (and its data) untouched. Real renames need a proper migration tool."
   },

@@ -14,7 +14,7 @@ updated: 2026-07-10
 Here's the thing most tutorials bury: chi doesn't have a middleware *system*. It has the
 `net/http` middleware pattern, and a couple of helpers for plugging it in. That's the whole
 story. If you've ever seen middleware in a Go codebase using no framework at all, you've already
-seen chi middleware — same signature, same idea.
+seen chi middleware - same signature, same idea.
 
 So before we touch `r.Use`, let's get the mental model rock-solid, because once it clicks the
 rest is mechanical.
@@ -28,12 +28,12 @@ The new handler does some work, then calls the original. That's it. The type, wr
 func(next http.Handler) http.Handler
 ```
 
-Read that slowly. You receive `next` — the handler that *would* have run. You hand back a
+Read that slowly. You receive `next` - the handler that *would* have run. You hand back a
 *different* handler. Inside that new handler, you decide when (or whether) to call
 `next.ServeHTTP(w, r)`. Everything before that call happens on the way *in*; everything after
 happens on the way *out*. You're wrapping a present in a slightly bigger box.
 
-This is the exact pattern from the [net/http roots guide](/guides/web-services-with-only-net-http) —
+This is the exact pattern from the [net/http roots guide](/guides/web-services-with-only-net-http) - 
 chi invented none of it. A chi router *is* an `http.Handler`, a chi handler *is* an
 `http.HandlerFunc`, and chi middleware *is* a plain net/http wrapper. Any middleware written for
 stdlib works with chi unchanged.
@@ -79,11 +79,11 @@ func Logger(next http.Handler) http.Handler {
 
 *What just happened:* `Logger` takes `next` and returns a brand-new `http.HandlerFunc`. Inside,
 we record `start`, then call `next.ServeHTTP(w, r)` to run the rest of the chain (other
-middleware, then the actual route handler). Only after `next` returns do we log — so
+middleware, then the actual route handler). Only after `next` returns do we log - so
 `time.Since(start)` captures the full request duration. The line **before** `next.ServeHTTP`
 runs on the way in; the line **after** runs on the way out.
 
-⚠️ If you forget to call `next.ServeHTTP(w, r)`, the request stops dead at your middleware — the
+⚠️ If you forget to call `next.ServeHTTP(w, r)`, the request stops dead at your middleware - the
 handler never runs and the client gets an empty response. Sometimes that's intentional (an auth
 middleware rejecting a request writes a 401 and *deliberately* doesn't call `next`), but an
 accidental missing call is one of the most common middleware bugs. If a route mysteriously returns
@@ -93,7 +93,7 @@ nothing, check that every middleware in the chain actually calls `next`.
 
 Writing the function is half the job. Now you tell chi where to apply it. Three ways:
 
-### `r.Use` — for everything below it
+### `r.Use` - for everything below it
 
 ```go
 func main() {
@@ -109,16 +109,16 @@ func main() {
 ```
 
 *What just happened:* `r.Use(Logger)` adds `Logger` to this router's stack. Every route
-registered **after** the `Use` call — both `/articles` routes here — runs through `Logger`
+registered **after** the `Use` call - both `/articles` routes here - runs through `Logger`
 first. Call `Use` multiple times and they stack in order, the first `Use` being the outermost
 layer.
 
 ⚠️ **Order matters, and `Use` must come before the routes it should wrap.** chi *panics* at
-startup if you call `Use` after you've already registered routes on the same router — a feature,
+startup if you call `Use` after you've already registered routes on the same router - a feature,
 not an annoyance, that stops you from silently shipping middleware that doesn't run. Group your
 `Use` calls at the top of each router.
 
-### `r.With` — for one route (or a few)
+### `r.With` - for one route (or a few)
 
 Sometimes you want middleware on a single endpoint, not the whole router. `With` returns a
 temporary router carrying that middleware, and you chain a route off it:
@@ -128,10 +128,10 @@ r.With(RequireAuth).Post("/articles", createArticle)
 ```
 
 *What just happened:* `RequireAuth` wraps **only** the `POST /articles` route. The `GET` routes
-above are untouched. `With` is inline and doesn't mutate the parent router — perfect for
+above are untouched. `With` is inline and doesn't mutate the parent router - perfect for
 "this one mutating endpoint needs auth, the reads don't."
 
-### Sub-routers — middleware scoped to a group
+### Sub-routers - middleware scoped to a group
 
 From the previous phase you know `Route` and `Mount` create sub-routers. Middleware applied
 inside a sub-router only affects that group:
@@ -151,7 +151,7 @@ this block stay open.
 
 ## chi's built-in middleware
 
-You don't have to write the common ones — chi ships a battle-tested set in
+You don't have to write the common ones - chi ships a battle-tested set in
 `github.com/go-chi/chi/v5/middleware`. The greatest hits:
 
 ```go
@@ -179,18 +179,18 @@ func main() {
 
 *What just happened:* five lines buy you request IDs, real client IPs behind a proxy, request
 logging, panic recovery, and a timeout. `middleware.Recoverer` is the one you'll be most grateful
-for in production — without it, a single nil-pointer panic in a handler takes down the whole
+for in production - without it, a single nil-pointer panic in a handler takes down the whole
 server; with it, that request gets a clean 500 and the server keeps serving everyone else.
 
 💡 Order is deliberate here too: put `RequestID` and `RealIP` near the top so the ID and IP are
 available to everything below (including `Logger`). `Recoverer` should sit high enough to catch
 panics from your handlers, but it's commonly placed right after logging setup. There's also
-`middleware.AllowContentType(...)`, `middleware.StripSlashes`, and many more — skim the package
+`middleware.AllowContentType(...)`, `middleware.StripSlashes`, and many more - skim the package
 when you have a real need.
 
 ## Passing data down with `context`
 
-Middleware often computes something — the authenticated user, a request-scoped DB transaction —
+Middleware often computes something - the authenticated user, a request-scoped DB transaction - 
 that the handler needs. You don't reach for a global or a framework-specific bag. You use the
 standard library's `context`, carried on the request itself.
 
@@ -208,7 +208,7 @@ func RequireAuth(next http.Handler) http.Handler {
 		token := r.Header.Get("Authorization")
 		if token == "" {
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return // note: we do NOT call next — the request stops here
+			return // note: we do NOT call next - the request stops here
 		}
 
 		user := lookupUser(token) // pretend this validates the token
@@ -225,16 +225,16 @@ func createArticle(w http.ResponseWriter, r *http.Request) {
 ```
 
 *What just happened:* `RequireAuth` checks the `Authorization` header. No token? It writes a 401
-and `return`s — deliberately skipping `next`, so the handler never runs. With a token, it stashes
+and `return`s - deliberately skipping `next`, so the handler never runs. With a token, it stashes
 the user on the request context and passes a request carrying that context to `next`. Downstream,
-`createArticle` pulls the user back out — the two functions never call each other directly; the
+`createArticle` pulls the user back out - the two functions never call each other directly; the
 context is the courier.
 
 📝 A small but real detail: `userKey` is a custom `contextKey` type, not a bare string. Context
 keys should be an unexported custom type so two packages can't accidentally collide on the same
 string key. We'll go deeper on context values and the cleaner "typed getter" pattern in Phase 6.
 
-💡 Because all of this is plain `net/http` — the wrapper signature, the context, `r.WithContext` —
+💡 Because all of this is plain `net/http` - the wrapper signature, the context, `r.WithContext` - 
 any middleware written for the standard library drops into chi with zero changes. Need CORS? Grab
 `github.com/go-chi/cors` or any stdlib-compatible CORS package and `r.Use` it like anything else.
 That compatibility is chi's entire pitch, and middleware is where you feel it most.
@@ -247,7 +247,7 @@ That compatibility is chi's entire pitch, and middleware is where you feel it mo
   Skipping `next` (e.g. an auth rejection) stops the chain.
 - `r.Use` applies middleware to all routes registered after it; `r.With(mw)` scopes it to one
   route; sub-router `Use` scopes it to that group. ⚠️ `Use` must come before routes or chi panics.
-- chi's built-ins (`Logger`, `Recoverer`, `RequestID`, `RealIP`, `Timeout`) cover the essentials —
+- chi's built-ins (`Logger`, `Recoverer`, `RequestID`, `RealIP`, `Timeout`) cover the essentials - 
   `Recoverer` especially keeps a panicking handler from taking down the server.
 - Pass request-scoped data with `context.WithValue` + `r.WithContext`, read it via
   `r.Context().Value(...)`. Any stdlib-compatible middleware works with chi unchanged.

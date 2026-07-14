@@ -44,7 +44,7 @@ Sam:  "So you want us to stop shipping features forever? Great plan."
 ```
 
 Alex never said "forever." Sam built a scarecrow and toppled it. The tell is a phrase like "so
-what you're really saying is…" followed by something the person would never agree to. The honest
+what you're really saying is…" followed by something the person would never agree to. The straight
 move is the opposite: restate their view in a form *they'd* accept, then respond to that.
 
 ## Forcing the shape of the choice

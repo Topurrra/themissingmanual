@@ -2,7 +2,7 @@
 title: "CDI in Quarkus (ArC)"
 guide: "quarkus-from-zero"
 phase: 4
-summary: "Quarkus's DI container is ArC: the same CDI standard — @Inject, @ApplicationScoped — but the wiring graph is computed at build time, which is what makes fast boot and native images possible."
+summary: "Quarkus's DI container is ArC: the same CDI standard - @Inject, @ApplicationScoped - but the wiring graph is computed at build time, which is what makes fast boot and native images possible."
 tags: [quarkus, cdi, arc, dependency-injection, build-time, inject, scopes]
 difficulty: intermediate
 synonyms: ["quarkus cdi arc", "quarkus dependency injection", "quarkus @Inject", "quarkus build time di", "quarkus bean scopes", "arc quarkus container", "quarkus vs spring di"]
@@ -116,7 +116,7 @@ public class ProductResource {
     }
 }
 ```
-*What just happened:* a single injectable constructor doesn't even need `@Inject` - ArC treats the sole constructor as the injection point. `service` can be `final`, the constructor is an honest list of dependencies, and you can unit-test with a plain `new ProductResource(fakeService)` - no container needed.
+*What just happened:* a single injectable constructor doesn't even need `@Inject` - ArC treats the sole constructor as the injection point. `service` can be `final`, the constructor is a clear list of dependencies, and you can unit-test with a plain `new ProductResource(fakeService)` - no container needed.
 
 📝 **Qualifiers** (a custom `@Qualifier` to pick between beans of the same type) and **producers** (`@Produces` methods for non-bean objects) work exactly as in standard CDI - see the [Jakarta EE CDI phase](/guides/jakarta-ee-from-zero); ArC resolves it all at build time.
 
@@ -140,19 +140,19 @@ public class ProductService {
 
 ## Recap
 
-1. **ArC is build-time CDI.** Quarkus's DI container, ArC, implements the standard CDI spec — same `@Inject`,
-   `@ApplicationScoped`, qualifiers, producers — but computes the wiring graph at compile time instead of at
+1. **ArC is build-time CDI.** Quarkus's DI container, ArC, implements the standard CDI spec - same `@Inject`,
+   `@ApplicationScoped`, qualifiers, producers - but computes the wiring graph at compile time instead of at
    startup. No new API, just different timing.
 2. **Why it matters:** doing scanning and reflection once at build time (not on every boot) is a big reason
-   Quarkus starts in milliseconds, and doing DI at build time sidesteps reflection — which is what lets full
+   Quarkus starts in milliseconds, and doing DI at build time sidesteps reflection - which is what lets full
    CDI coexist with GraalVM native images.
 3. **Errors shift left.** A missing or ambiguous bean that a runtime container would throw at startup, ArC
-   often catches at build time — the build fails on your machine instead of the server failing in prod.
+   often catches at build time - the build fails on your machine instead of the server failing in prod.
 4. **Scopes are standard CDI.** `@ApplicationScoped` is the common Quarkus default; `@RequestScoped` for
    per-request state; `@Singleton` as an eager, proxy-free variant. Full detail lives in the Jakarta EE CDI
    phase. Bonus: ArC removes unused beans for a smaller app.
 5. **Prefer constructor injection** (testable, `final`, no reflection needed); qualifiers and producers work
-   as in standard CDI. For Spring devs, `quarkus-spring-di` bridges `@Autowired`/`@Component` — but idiomatic
+   as in standard CDI. For Spring devs, `quarkus-spring-di` bridges `@Autowired`/`@Component` - but idiomatic
    Quarkus uses CDI.
 
 With wiring understood, the next piece slots right in: a real persistence layer. Next we give `Product` a
@@ -173,18 +173,18 @@ Test yourself on the ideas that have to stick from this phase:
       "ArC runs the application as interpreted bytecode instead of compiled code"
     ],
     "answer": 0,
-    "explain": "ArC is a build-time implementation of the standard CDI spec. The annotations (@Inject, @ApplicationScoped, etc.) are identical to Jakarta EE; what changes is that the wiring is resolved at compile time rather than at startup — which is what enables fast boot and native images."
+    "explain": "ArC is a build-time implementation of the standard CDI spec. The annotations (@Inject, @ApplicationScoped, etc.) are identical to Jakarta EE; what changes is that the wiring is resolved at compile time rather than at startup - which is what enables fast boot and native images."
   },
   {
     "q": "You @Inject a type that no bean satisfies. In Quarkus, when do you find out?",
     "choices": [
-      "At build time — ArC validates the dependency graph and the build fails",
-      "Never — Quarkus silently injects null",
+      "At build time - ArC validates the dependency graph and the build fails",
+      "Never - Quarkus silently injects null",
       "Only in production, on the first request that uses the bean",
       "At unit-test time only, never during the build"
     ],
     "answer": 0,
-    "explain": "Because ArC analyzes the whole graph at build time, an unsatisfied (or ambiguous) dependency fails the build with the standard exception — earlier than a runtime container would throw it at startup. The failure shifts left to your machine."
+    "explain": "Because ArC analyzes the whole graph at build time, an unsatisfied (or ambiguous) dependency fails the build with the standard exception - earlier than a runtime container would throw it at startup. The failure shifts left to your machine."
   },
   {
     "q": "Why does doing dependency injection at build time help Quarkus compile to a native image?",
@@ -195,7 +195,7 @@ Test yourself on the ideas that have to stick from this phase:
       "It disables CDI entirely so there is nothing for the native compiler to analyze"
     ],
     "answer": 0,
-    "explain": "GraalVM's closed-world native compilation struggles with reflection and dynamic discovery. By resolving DI at build time and generating plain wiring code, ArC removes the runtime scanning/reflection that would otherwise break native compilation — letting full CDI and native images coexist."
+    "explain": "GraalVM's closed-world native compilation struggles with reflection and dynamic discovery. By resolving DI at build time and generating plain wiring code, ArC removes the runtime scanning/reflection that would otherwise break native compilation - letting full CDI and native images coexist."
   }
 ]
 ```

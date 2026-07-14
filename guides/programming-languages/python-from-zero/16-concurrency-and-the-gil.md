@@ -2,7 +2,7 @@
 title: "Concurrency & the GIL"
 guide: "python-from-zero"
 phase: 16
-summary: "Python gives you three tools - threading, multiprocessing, and asyncio - that solve different problems; here's the GIL explained honestly (one thread runs Python at a time, but it's released during I/O), and the one decision rule that tells you which tool to reach for: I/O-bound → threads or asyncio, CPU-bound → multiprocessing."
+summary: "Python gives you three tools - threading, multiprocessing, and asyncio - that solve different problems; here's the GIL explained straight (one thread runs Python at a time, but it's released during I/O), and the one decision rule that tells you which tool to reach for: I/O-bound → threads or asyncio, CPU-bound → multiprocessing."
 tags: [python, concurrency, gil, threading, multiprocessing, asyncio, parallelism]
 difficulty: advanced
 synonyms: ["what is the gil in python", "why don't python threads run in parallel", "threading vs multiprocessing vs asyncio", "python threads not faster cpu bound", "when to use multiprocessing python", "does python have real threads", "python gil explained"]
@@ -56,7 +56,7 @@ the difference is the heart of this phase.
 
 That's the menu. You can't just pick the first one for everything, because of the GIL.
 
-## The GIL, explained honestly
+## The GIL, explained straight
 
 This is usually either hand-waved or turned into a boogeyman. Here's the straight version.
 
@@ -68,7 +68,7 @@ must hold the GIL to run your Python code, and there's exactly one GIL per proce
 simple and fast for the common single-threaded case, and lets C extensions be written without worrying
 about thread-safety at every turn. The cost of that simplicity is what everyone trips over next.
 
-**What it does in real life - the honest two-part truth:**
+**What it does in real life - the plain two-part truth:**
 
 1. **For CPU-bound work, threads do NOT speed you up.** Spin up four threads to crunch numbers and they'll
    take turns holding the one GIL - only one runs Python at any instant. Four threads finish in *about the
@@ -211,7 +211,7 @@ for a process pool and the same loop spreads across your cores and actually gets
 data-crunching script, "speed it up with threads," no change, a half-hour staring at the profiler before
 the GIL clicks into place. Knowing it ahead of time is the whole reason this phase exists.
 
-## One honest note on the future
+## One straight note on the future
 
 The GIL has been CPython's defining constraint for decades, and that's finally starting to shift:
 **free-threaded ("no-GIL") CPython is emerging** as an official, still-experimental build where the GIL

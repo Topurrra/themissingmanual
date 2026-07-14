@@ -23,7 +23,7 @@ Instead of "understand the codebase," start with "understand what happens when a
 - A button in the UI (the "Cancel Subscription" link)
 - A scheduled job (the nightly billing sync)
 
-It doesn't matter which one — pick whichever one you were assigned a bug or ticket for. That's your thread. You're going to follow it from the outside in, through every file it touches, and stop caring about everything else for now.
+It doesn't matter which one - pick whichever one you were assigned a bug or ticket for. That's your thread. You're going to follow it from the outside in, through every file it touches, and stop caring about everything else for now.
 
 ## Trace one feature end to end
 
@@ -33,15 +33,15 @@ Say your ticket is "canceling a subscription doesn't refund the prorated amount.
 2. **Follow the function.** `cancelSubscription()` lives in `api/subscriptions.js` and does a `POST /api/subscriptions/:id/cancel`.
 3. **Find the route handler.** Grep the backend for that route: `grep -r "subscriptions/:id/cancel" server/`. You land on `routes/subscriptions.py`, `cancel_subscription()`.
 4. **Read that function, not the whole file.** It calls `SubscriptionService.cancel()`, which sets a status flag and calls `RefundCalculator.prorate()`.
-5. **Follow the refund logic.** `RefundCalculator.prorate()` is where the actual bug probably lives — now you have a specific, small target instead of a codebase-sized one.
+5. **Follow the refund logic.** `RefundCalculator.prorate()` is where the actual bug probably lives - now you have a specific, small target instead of a codebase-sized one.
 
-Five files. Not the 400 in the repo — the five that this one feature actually touches. That's the whole codebase you need for this task.
+Five files. Not the 400 in the repo - the five that this one feature actually touches. That's the whole codebase you need for this task.
 
 ## Use the tools that do the tracing for you
 
 You don't have to do this by memory or by clicking through folders:
 
-- **Grep for UI text or route strings** to jump from "what the user sees" to "what code runs." Exact button labels and URL paths are the most reliable search terms — they don't get renamed as often as variables do.
+- **Grep for UI text or route strings** to jump from "what the user sees" to "what code runs." Exact button labels and URL paths are the most reliable search terms - they don't get renamed as often as variables do.
 - **Set a breakpoint or add a print/log statement** at the entry point and run the flow for real. Watching the actual call stack execute beats guessing from static reading, especially in codebases with dependency injection or dynamic dispatch where grep won't show you the real path.
 - **Use "find usages" / "go to definition"** in your editor once you've found the first function. This is faster than grepping for every subsequent hop.
 - **Check the tests.** A test file named `test_subscription_cancel.py` often lays out the exact call chain you're trying to reconstruct, minus the incidental UI code.
@@ -50,7 +50,7 @@ You don't have to do this by memory or by clicking through folders:
 
 By the time you've traced one feature end to end, you've learned more than a day of skimming would teach you: how the frontend talks to the backend, what the service layer looks like, where business logic lives versus where it's just plumbing, and what naming conventions the codebase actually follows (not what the style guide claims).
 
-Do this for two or three tickets and patterns repeat. The next trace goes faster because you already recognize the shape: route handler → service → data layer. You're not memorizing the codebase — you're building a mental map one real path at a time, and only the paths you actually needed.
+Do this for two or three tickets and patterns repeat. The next trace goes faster because you already recognize the shape: route handler → service → data layer. You're not memorizing the codebase - you're building a mental map one real path at a time, and only the paths you actually needed.
 
 This is also why fixing a real bug is often a better first task than "explore the codebase for a week." A bug gives you a thread to pull. Free exploration gives you nothing to anchor to, so it doesn't stick.
 
@@ -61,7 +61,7 @@ Try tracing one feature in a codebase you're new to (work or personal) using the
   {
     "type": "task",
     "task": "Pick one feature in a codebase you didn't write (work, open source, or a sample repo). Trace it from the entry point (button, route, or CLI command) through every file it touches, down to where the actual logic lives.",
-    "reveal": "Start by grepping for user-facing text or the route/URL string, not for variable names — those are the most stable search anchors. Follow one function call at a time; resist opening files 'just in case' that the trace didn't lead you to.",
+    "reveal": "Start by grepping for user-facing text or the route/URL string, not for variable names - those are the most stable search anchors. Follow one function call at a time; resist opening files 'just in case' that the trace didn't lead you to.",
     "checklist": ["Found the real entry point, not just a guess", "Followed the call chain through at least 3 files", "Could explain the flow out loud without re-reading the code"]
   }
 ]

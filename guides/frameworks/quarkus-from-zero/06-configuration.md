@@ -20,11 +20,11 @@ The mental model is the same as Spring's ([/guides/spring-boot-from-zero](/guide
 📝 Quarkus config is built on **MicroProfile Config**, a standard with a defined API (`@ConfigProperty`, `Config`) and ordering rule, implemented via an engine called SmallRye. One config file drives *both* Quarkus's own machinery and your application's settings.
 
 ```properties
-# Quarkus's own settings — the quarkus.* namespace
+# Quarkus's own settings - the quarkus.* namespace
 quarkus.http.port=8081
 quarkus.log.level=INFO
 
-# Your application's settings — any namespace you like
+# Your application's settings - any namespace you like
 catalog.currency=USD
 catalog.max-page-size=50
 ```
@@ -134,10 +134,10 @@ QUARKUS_HTTP_PORT=9000 java -jar target/quarkus-app/quarkus-run.jar
 Why? Quarkus does aggressive **build-time processing** (Phase 1) - it has to read certain config at build time to pre-compute wiring. A value baked into the build can't be swapped when the process later starts.
 
 ```properties
-# BUILD-TIME — fixed when you build. Changing the env var at runtime does nothing.
+# BUILD-TIME - fixed when you build. Changing the env var at runtime does nothing.
 quarkus.datasource.db-kind=postgresql
 
-# RUNTIME — read at startup. Override freely per environment.
+# RUNTIME - read at startup. Override freely per environment.
 quarkus.datasource.jdbc.url=jdbc:postgresql://db.internal:5432/catalog
 quarkus.datasource.username=catalog
 quarkus.datasource.password=${DB_PASSWORD}
@@ -151,10 +151,10 @@ quarkus.datasource.password=${DB_PASSWORD}
 
 1. 📝 Quarkus config is built on the **MicroProfile Config** standard. One `application.properties` drives both Quarkus's own `quarkus.*` settings and your app's keys, with type-checked conversion built in.
 2. **`@ConfigProperty(name=..., defaultValue=...)`** injects a single value into a bean; a missing required key fails at startup, which is usually what you want.
-3. **`@ConfigMapping`** binds a whole prefixed group into a typed interface — type-safe, autocomplete-friendly, self-documenting. Prefer it for anything beyond one value (it's Quarkus's `@ConfigurationProperties`).
-4. Built-in **profiles** (`%dev.`, `%test.`, `%prod.`) live in the *same* file; `quarkus dev`/`@QuarkusTest`/packaged builds pick them automatically. Sources **layer** (defaults < file < env vars < system props), so env vars override for deployment — mind the `QUARKUS_DATASOURCE_PASSWORD` ↔ `quarkus.datasource.password` naming.
-5. ⚠️ The Quarkus-specific trap: **some config is fixed at BUILD time** (because of build-time optimization) and can't be changed at runtime — like `quarkus.datasource.db-kind`. Most app config is runtime; the docs mark build-time keys, and Quarkus warns when you try to override one.
-6. 💡 **Never commit secrets.** Use a `${PLACEHOLDER}` and supply the value from an environment variable or secrets manager. One artifact, many environments — driven by inputs, not recompiles.
+3. **`@ConfigMapping`** binds a whole prefixed group into a typed interface - type-safe, autocomplete-friendly, self-documenting. Prefer it for anything beyond one value (it's Quarkus's `@ConfigurationProperties`).
+4. Built-in **profiles** (`%dev.`, `%test.`, `%prod.`) live in the *same* file; `quarkus dev`/`@QuarkusTest`/packaged builds pick them automatically. Sources **layer** (defaults < file < env vars < system props), so env vars override for deployment - mind the `QUARKUS_DATASOURCE_PASSWORD` ↔ `quarkus.datasource.password` naming.
+5. ⚠️ The Quarkus-specific trap: **some config is fixed at BUILD time** (because of build-time optimization) and can't be changed at runtime - like `quarkus.datasource.db-kind`. Most app config is runtime; the docs mark build-time keys, and Quarkus warns when you try to override one.
+6. 💡 **Never commit secrets.** Use a `${PLACEHOLDER}` and supply the value from an environment variable or secrets manager. One artifact, many environments - driven by inputs, not recompiles.
 
 ## Quick check
 
@@ -165,35 +165,35 @@ The three ideas worth keeping before you go reactive in the next phase:
   {
     "q": "Your application.properties has quarkus.http.port=8081, but you launch with the environment variable QUARKUS_HTTP_PORT=9000. What port does the app use, and why?",
     "choices": [
-      "9000 — environment variables sit higher in the source precedence order than application.properties, so they override it",
-      "8081 — the packaged file is always authoritative once the app is built",
+      "9000 - environment variables sit higher in the source precedence order than application.properties, so they override it",
+      "8081 - the packaged file is always authoritative once the app is built",
       "It fails to start because two sources set the same key",
       "Whichever was set first wins, so 8081"
     ],
     "answer": 0,
-    "explain": "MicroProfile layers config sources with higher ones overriding lower: defaults < application.properties < env vars < system properties. The env var sits above the file, so the app boots on 9000 — which is exactly how one artifact runs in many environments."
+    "explain": "MicroProfile layers config sources with higher ones overriding lower: defaults < application.properties < env vars < system properties. The env var sits above the file, so the app boots on 9000 - which is exactly how one artifact runs in many environments."
   },
   {
     "q": "Why is @ConfigMapping usually preferred over @ConfigProperty for a group of related settings?",
     "choices": [
-      "It binds a whole prefixed block into one typed interface — type-safe, autocomplete-friendly, and a single documented place for those settings",
+      "It binds a whole prefixed block into one typed interface - type-safe, autocomplete-friendly, and a single documented place for those settings",
       "It is the only way to read config at all in Quarkus",
       "It makes the application start faster",
       "It encrypts the values automatically"
     ],
     "answer": 0,
-    "explain": "@ConfigProperty injects single values one at a time. @ConfigMapping maps a whole prefix onto a typed interface, giving you type checking, autocomplete on the methods, and one interface that documents what's configurable — Quarkus's equivalent of Spring's @ConfigurationProperties."
+    "explain": "@ConfigProperty injects single values one at a time. @ConfigMapping maps a whole prefix onto a typed interface, giving you type checking, autocomplete on the methods, and one interface that documents what's configurable - Quarkus's equivalent of Spring's @ConfigurationProperties."
   },
   {
     "q": "You set QUARKUS_DATASOURCE_DB_KIND at runtime to switch databases, but Quarkus ignores it. What's going on?",
     "choices": [
-      "db-kind is build-time config — Quarkus reads it during the build to bake in the right driver, so it can't be changed when the process starts",
+      "db-kind is build-time config - Quarkus reads it during the build to bake in the right driver, so it can't be changed when the process starts",
       "The environment variable name is wrong; it should have dots, not underscores",
       "Datasource config can never be set from environment variables",
       "Quarkus only reads db-kind from a YAML file, never properties"
     ],
     "answer": 0,
-    "explain": "Because of Quarkus's build-time optimization, a subset of config (like quarkus.datasource.db-kind) is fixed when you build the artifact and cannot be changed at runtime. The driver and dialect were chosen during the build, so a runtime override is ignored — Quarkus even logs a warning. Runtime keys like the jdbc.url override fine."
+    "explain": "Because of Quarkus's build-time optimization, a subset of config (like quarkus.datasource.db-kind) is fixed when you build the artifact and cannot be changed at runtime. The driver and dialect were chosen during the build, so a runtime override is ignored - Quarkus even logs a warning. Runtime keys like the jdbc.url override fine."
   }
 ]
 ```

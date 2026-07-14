@@ -29,7 +29,7 @@ Public bucket "acme-uploads"
 
 The trap is that "public" feels like a reasonable answer to a reasonable question ("how do I serve this file?"). It is almost never the right answer for anything user-specific. The fix is the previous phase: keep buckets private, serve private files with **signed URLs**, and only ever make something public when it's *meant* for the whole world (your site's logo, public CSS).
 
-> Modern S3 ships with **Block Public Access** turned on by default at the account and bucket level - a deliberate guardrail so you can't accidentally make a bucket public without consciously turning protections off. Treat that switch as a smoke detector: if you ever find yourself disabling it, stop and ask whether you really want the literal entire internet to have this data. The honest answer is usually no.
+> Modern S3 ships with **Block Public Access** turned on by default at the account and bucket level - a deliberate guardrail so you can't accidentally make a bucket public without consciously turning protections off. Treat that switch as a smoke detector: if you ever find yourself disabling it, stop and ask whether you really want the literal entire internet to have this data. The real answer is usually no.
 
 The checklist that prevents the headline:
 

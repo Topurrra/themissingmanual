@@ -2,7 +2,7 @@
 title: "What It Is Bad At"
 guide: what-ai-assistants-really-are
 phase: 3
-summary: "The honest failure modes - confident wrong answers, no real memory, shaky exact math, and blindness to your private facts and recent events - and how to work around each."
+summary: "The plain failure modes - confident wrong answers, no real memory, shaky exact math, and blindness to your private facts and recent events - and how to work around each."
 tags: [llm, limits, hallucination, mental-model, how-ai-works]
 difficulty: beginner
 synonyms:

@@ -26,7 +26,7 @@ This is the crux. The AI is optimized to produce text that *sounds right*. Most 
 
 The result is fluent and wrong at the same time. Ask it for a book on a niche topic and it may give you a real-sounding title by a real author that does not exist. Ask for a legal citation and it can produce a case name, a court, and a year, all formatted perfectly, all invented. The famous real-world example: in 2023, lawyers submitted a court brief full of fake cases an AI had generated, complete with fake quotes. The cases looked exactly like real ones. They were not, and the lawyers were sanctioned.
 
-The reason it looks so convincing is the same reason the true answers look convincing - it is using the identical machinery for both. A fake citation is built from the same patterns as a real one. There is no separate "honesty mode" that kicks in for facts.
+The reason it looks so convincing is the same reason the true answers look convincing - it is using the identical machinery for both. A fake citation is built from the same patterns as a real one. There is no separate "truth mode" that kicks in for facts.
 
 ## There is no inner fact-checker
 

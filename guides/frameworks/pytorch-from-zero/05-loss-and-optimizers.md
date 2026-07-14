@@ -12,13 +12,13 @@ updated: 2026-07-10
 # Loss Functions & Optimizers
 
 In [Phase 4](04-building-models-with-nn-module.md) you built a model: a `nn.Module` with layers and a
-`forward()` that turns an input into a prediction. But a fresh model is *random* — its weights are
+`forward()` that turns an input into a prediction. But a fresh model is *random* - its weights are
 nonsense, so its predictions are nonsense. Training fixes that, and fixing something takes two things: a
 way to measure how wrong you are, and a way to act on that measurement.
 
 Here's the mental model for this whole phase, and it's short: **the loss function tells you how wrong the
 model is, and the optimizer is the thing that does something about it.** Loss is the score. The optimizer
-is the player trying to lower the score. Everything below is just the PyTorch names for those two roles —
+is the player trying to lower the score. Everything below is just the PyTorch names for those two roles - 
 and the three magic lines that connect them. This is the missing half of the training loop you'll
 assemble in Phase 6.
 
@@ -26,15 +26,15 @@ assemble in Phase 6.
 
 📝 A **loss function** takes the model's predictions and the true answers and boils the gap between them
 down to a single number. Lower is better. A loss of zero means the predictions matched the truth exactly;
-a big loss means the model is badly off. That's the entire idea — *training is the act of making that one
+a big loss means the model is badly off. That's the entire idea - *training is the act of making that one
 number smaller.*
 
 This is the same picture from [How a Model Learns](/guides/how-a-model-learns): a model learns by being
 wrong, measuring *how* wrong, and nudging its numbers to be a little less wrong next time. The loss
 function is the "how wrong" part, made concrete. PyTorch ships the common ones in `torch.nn`, ready to use.
 
-💡 One number is the point, not a limitation. The optimizer needs a single value to push downhill — you
-can't minimize ten numbers at once. The loss function's job is to be the honest scorekeeper that compresses
+💡 One number is the point, not a limitation. The optimizer needs a single value to push downhill - you
+can't minimize ten numbers at once. The loss function's job is to be the impartial scorekeeper that compresses
 "how did the whole batch do?" into one comparable score.
 
 ## 2. The two losses you'll reach for most
@@ -42,9 +42,9 @@ can't minimize ten numbers at once. The loss function's job is to be the honest 
 📝 Two loss functions cover the overwhelming majority of beginner work, and which one you pick is decided
 by *what kind of problem you have*:
 
-- **`nn.MSELoss`** — for **regression** (predicting a number: a price, a temperature). It's the mean
+- **`nn.MSELoss`** - for **regression** (predicting a number: a price, a temperature). It's the mean
   squared error: average of `(prediction − target)²`.
-- **`nn.CrossEntropyLoss`** — for **classification** (predicting a category: cat vs. dog, digit 0–9).
+- **`nn.CrossEntropyLoss`** - for **classification** (predicting a category: cat vs. dog, digit 0–9).
 
 Let's compute a regression loss. You create the loss object once, then call it like a function with
 `(predictions, targets)`:
@@ -69,11 +69,11 @@ tensor(0.0867)
 *What just happened:* `nn.MSELoss()` built a loss object; calling `loss_fn(predictions, targets)` measured
 the gap. Element by element the errors are `-0.5`, `0.0`, `0.1`; squared they're `0.25`, `0.0`, `0.01`;
 their mean is `0.0867`. One small number, because the guesses were close. If a prediction had been wildly
-off, squaring would have blown that error up and the loss would be large — that's MSE punishing big misses
+off, squaring would have blown that error up and the loss would be large - that's MSE punishing big misses
 hard.
 
-Now classification, where there's a notorious trap. ⚠️ **`nn.CrossEntropyLoss` expects RAW logits — the
-plain, un-softmaxed numbers straight out of your model's last layer — together with the true class labels
+Now classification, where there's a notorious trap. ⚠️ **`nn.CrossEntropyLoss` expects RAW logits - the
+plain, un-softmaxed numbers straight out of your model's last layer - together with the true class labels
 as plain integers.** Applying a softmax yourself before passing predictions in is the classic
 CrossEntropyLoss bug: it double-applies the math and quietly wrecks your training.
 
@@ -95,7 +95,7 @@ tensor(0.2559)
 ```
 
 *What just happened:* We passed `logits` (raw, unnormalized scores) and `targets` as a tensor of integer
-class indices — `0` means "example 1's correct answer is class 0," `2` means "example 2's is class 2."
+class indices - `0` means "example 1's correct answer is class 0," `2` means "example 2's is class 2."
 `CrossEntropyLoss` internally does the softmax *for* us and then measures how much probability the model
 put on the right class. Both examples leaned toward the correct class, so the loss is low. Pass it
 pre-softmaxed numbers or one-hot labels and you'll either get an error or, worse, silently wrong training.
@@ -103,14 +103,14 @@ pre-softmaxed numbers or one-hot labels and you'll either get an error or, worse
 💡 Remember the contract: **raw logits in, integer labels in, softmax stays out of your hands.** If you
 ever catch yourself writing `softmax(...)` right before a `CrossEntropyLoss`, delete it.
 
-## 3. The optimizer — the thing that updates the weights
+## 3. The optimizer - the thing that updates the weights
 
 📝 The loss tells you *how wrong*. Autograd (Phase 3) tells you *which direction* each weight should move
-to reduce that wrongness — the gradients. The **optimizer** is what actually takes those gradients and
+to reduce that wrongness - the gradients. The **optimizer** is what actually takes those gradients and
 *adjusts the weights*. It's the mechanism of learning: no optimizer, no improvement.
 
 Optimizers live in `torch.optim`. You create one by handing it two things: the parameters it's allowed to
-change, and a learning rate. Remember `model.parameters()` from Phase 4 — that's the bundle of every
+change, and a learning rate. Remember `model.parameters()` from Phase 4 - that's the bundle of every
 weight and bias in your model. You pass it in so the optimizer knows exactly *what* it's responsible for
 updating:
 
@@ -135,13 +135,13 @@ Parameter Group 0
 *What just happened:* `optim.SGD(model.parameters(), lr=0.01)` created an optimizer wired directly to this
 model's weights. By passing `model.parameters()`, we told it "these are the numbers you may change." From
 now on, when we ask the optimizer to take a step, it walks through exactly those parameters and nudges each
-one. The `lr=0.01` is the learning rate — coming up next.
+one. The `lr=0.01` is the learning rate - coming up next.
 
 ## 4. SGD vs. Adam, and the learning rate
 
 📝 You'll meet two optimizers early. **SGD** (Stochastic Gradient Descent) is the textbook one: for each
-weight, step a little bit in the downhill direction — `new_weight = old_weight − (gradient × learning
-rate)`. Simple and honest. **Adam** is the smarter default: it adapts the step size per-parameter as it
+weight, step a little bit in the downhill direction - `new_weight = old_weight − (gradient × learning
+rate)`. Simple and predictable. **Adam** is the smarter default: it adapts the step size per-parameter as it
 goes, which usually means it learns faster and needs less hand-tuning. Swapping between them is a one-line
 change:
 
@@ -158,11 +158,11 @@ SGD Adam
 
 *What just happened:* Same `model.parameters()`, two different update strategies. SGD will take steps of a
 fixed size scaled by the gradient; Adam will quietly tune each parameter's step on the fly. The API is
-identical — you'll use the exact same three lines (next section) regardless of which one you chose.
+identical - you'll use the exact same three lines (next section) regardless of which one you chose.
 
-📝 That `lr` — the **learning rate** — is the size of each step downhill, and ⚠️ **it's the single most
+📝 That `lr` - the **learning rate** - is the size of each step downhill, and ⚠️ **it's the single most
 important hyperparameter you'll touch.** Set it too high and the model overshoots the bottom on every step,
-bouncing around or blowing up (loss goes to `nan`). Set it too low and learning crawls — technically
+bouncing around or blowing up (loss goes to `nan`). Set it too low and learning crawls - technically
 correct, but it might take a thousand times longer than it should. Most "my model won't learn" problems
 trace back to the learning rate.
 
@@ -172,8 +172,8 @@ first, fiddle with the learning rate second.
 
 ## 5. The three-line update
 
-Here's where loss and optimizer finally meet. Every PyTorch training step — for the simplest linear model
-and for a giant language model alike — runs these three lines after computing the loss. Learn them once and
+Here's where loss and optimizer finally meet. Every PyTorch training step - for the simplest linear model
+and for a giant language model alike - runs these three lines after computing the loss. Learn them once and
 you've learned the engine of all of deep learning:
 
 ```python
@@ -187,19 +187,19 @@ optimizer.step()        # 3. apply the update to every weight
 ```
 
 *What just happened:* Three jobs, in order. **`optimizer.zero_grad()`** wipes the gradients from the last
-step — ⚠️ this matters because PyTorch *accumulates* gradients by default (you saw this in Phase 3); skip
+step - ⚠️ this matters because PyTorch *accumulates* gradients by default (you saw this in Phase 3); skip
 this line and old and new gradients pile up, corrupting the update. **`loss.backward()`** runs autograd
-backward from the loss, computing a fresh gradient for every parameter — the "which way is downhill"
+backward from the loss, computing a fresh gradient for every parameter - the "which way is downhill"
 answer. **`optimizer.step()`** then reads those gradients and actually moves each weight, using whatever
 strategy (SGD, Adam) you chose. Old grads cleared, new grads computed, step taken.
 
 💡 The clean way to hold this in your head: **the loss says how wrong you are, autograd (`backward`) says
 which way to go, and the optimizer (`step`) takes the step.** Three roles, three lines, in that exact
-order. That ordering — clear, backward, step — is non-negotiable, and getting it wrong (especially
+order. That ordering - clear, backward, step - is non-negotiable, and getting it wrong (especially
 forgetting `zero_grad`) is one of the most common training bugs.
 
 This is the heart of training. In [Phase 6](06-the-training-loop.md) we wrap these three lines inside a
-loop that runs them over and over, batch after batch, epoch after epoch — and you'll watch the loss
+loop that runs them over and over, batch after batch, epoch after epoch - and you'll watch the loss
 actually fall.
 
 ## Recap
@@ -207,12 +207,12 @@ actually fall.
 - A **loss function** measures how wrong the model is in one number; lower is better, and training is the
   act of shrinking it. It makes the "learn by being wrong" idea concrete.
 - **`nn.MSELoss`** is for regression (predicting a number); **`nn.CrossEntropyLoss`** is for
-  classification. ⚠️ CrossEntropyLoss wants **raw logits and integer labels** — never pre-apply softmax.
+  classification. ⚠️ CrossEntropyLoss wants **raw logits and integer labels** - never pre-apply softmax.
 - The **optimizer** (`torch.optim.SGD`, `torch.optim.Adam`) takes autograd's gradients and updates the
   weights. You pass it `model.parameters()` so it knows what to change.
 - **SGD** steps by gradient × learning rate; **Adam** adapts and is the usual default. The **learning
-  rate** is the most important hyperparameter — too high diverges, too low crawls. Start with Adam + `1e-3`.
-- The update is three lines, in order: **`optimizer.zero_grad()`** (clear old grads — they accumulate),
+  rate** is the most important hyperparameter - too high diverges, too low crawls. Start with Adam + `1e-3`.
+- The update is three lines, in order: **`optimizer.zero_grad()`** (clear old grads - they accumulate),
   **`loss.backward()`** (autograd fills grads), **`optimizer.step()`** (apply the update).
 
 ## Quick check

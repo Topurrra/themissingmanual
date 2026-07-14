@@ -12,12 +12,12 @@ updated: 2026-07-10
 # Associations
 
 So far every table in our blog has lived alone. A `User` is a `User`, a `Post` is a `Post`, and nothing
-ties them together. Real data isn't like that — a post is written *by* a user, a comment belongs *to* a
+ties them together. Real data isn't like that - a post is written *by* a user, a comment belongs *to* a
 post, a post is tagged *with* tags. This phase is where the blog stops being a pile of tables and
 becomes a connected schema.
 
 If the words "foreign key," "one-to-many," and "join table" feel hazy, pause and read
-[Relationships & Keys](/guides/relationships-and-keys) first — this phase assumes you know what a
+[Relationships & Keys](/guides/relationships-and-keys) first - this phase assumes you know what a
 foreign key *is* and focuses on how GORM lets you express those relationships in Go.
 
 ## The mental model: an association is a foreign key plus a Go field that mirrors it
@@ -30,12 +30,12 @@ the user who wrote the post. That's the whole relationship, in SQL terms.
 What GORM adds is a second view of that same fact, written in Go. You describe the relationship **twice**
 in your structs:
 
-- the **foreign-key field** (`UserID uint`) — the literal column that stores the link, and
-- a **struct field of the related type** (`User User` or `Posts []Post`) — a Go-side handle that *mirrors*
+- the **foreign-key field** (`UserID uint`) - the literal column that stores the link, and
+- a **struct field of the related type** (`User User` or `Posts []Post`) - a Go-side handle that *mirrors*
   the link so you can walk it in code.
 
 > 💡 GORM doesn't have a separate "define a relationship" function. It reads the **shape of your structs**
-> — a `uint` field named `<Type>ID` next to a field of that type — and infers the relationship from it.
+> - a `uint` field named `<Type>ID` next to a field of that type - and infers the relationship from it.
 > The struct *is* the schema, exactly like Phase 2 promised. You're not configuring associations; you're
 > drawing them with field names.
 
@@ -59,17 +59,17 @@ type Post struct {
     gorm.Model
     Title  string `gorm:"size:200;not null"`
     Body   string
-    UserID uint // the foreign key — the actual column
+    UserID uint // the foreign key - the actual column
     User   User // belongs to: the back-reference
 }
 ```
 
 *What just happened:* we wrote the same link from both directions. `Post.UserID` is the foreign-key
-column — a plain `uint` that holds which user owns the row. `Post.User` is the belongs-to back-reference,
+column - a plain `uint` that holds which user owns the row. `Post.User` is the belongs-to back-reference,
 a Go field you can read to get the whole owner struct. And `User.Posts` is the has-many side, a slice that
 will hold this user's posts. GORM connects all three by **naming convention**: it sees the `[]Post` slice
 on `User`, looks on `Post` for a field named `UserID` (`<Owner>` + `ID`), and uses it as the FK. No tags
-required — the names do the wiring.
+required - the names do the wiring.
 
 When you run `AutoMigrate(&User{}, &Post{})`, GORM creates the column *and* the constraint:
 
@@ -91,14 +91,14 @@ straight from your struct shape. AutoMigrate read `User.Posts` and `Post.UserID`
 direction, and emitted exactly the SQL you'd have written by hand. The relationship you "declared" in Go
 is now a real, enforced FK in the database.
 
-> 📝 GORM infers the FK as `<OwnerType>ID` — `UserID` here. If your column is named something else (a
+> 📝 GORM infers the FK as `<OwnerType>ID` - `UserID` here. If your column is named something else (a
 > legacy `author_id`, say), you tell GORM with a tag: ``Posts []Post `gorm:"foreignKey:AuthorID"` `` and a
 > matching `AuthorID uint` field. But when you follow the convention, you write zero tags.
 
 ## Has-one: User ↔ Profile
 
 Has-one is has-many's quieter sibling: a user has **exactly one** profile, not a slice of them. The shape
-is nearly identical — the only difference is that the parent holds a single struct instead of a slice.
+is nearly identical - the only difference is that the parent holds a single struct instead of a slice.
 
 ```go
 type User struct {
@@ -116,13 +116,13 @@ type Profile struct {
 ```
 
 *What just happened:* `User.Profile` is a single `Profile` (not `[]Profile`), so GORM reads it as has-one.
-The foreign key still lives on the *child* table — `Profile.UserID` — exactly like has-many. That's the
+The foreign key still lives on the *child* table - `Profile.UserID` - exactly like has-many. That's the
 rule worth remembering: in both has-one and has-many, the FK sits on the "many"/owned side, pointing back
 at the owner. The only thing that flips between them is whether the parent field is one struct or a slice.
 
 ## Many-to-many: Post ↔ Tag, through a join table
 
-Tags break the pattern. A post can have many tags, and a tag can label many posts — so a single FK column
+Tags break the pattern. A post can have many tags, and a tag can label many posts - so a single FK column
 can't express it (where would you even put it?). This is what a **join table** is for: a separate little
 table holding pairs of IDs, one row per "this post has this tag" fact.
 
@@ -143,7 +143,7 @@ type Tag struct {
 ```
 
 *What just happened:* the `many2many:post_tags` tag tells GORM "the link between posts and tags lives in a
-join table called `post_tags`." Neither struct gets a foreign-key field — there's nowhere to put it, which
+join table called `post_tags`." Neither struct gets a foreign-key field - there's nowhere to put it, which
 is exactly why the join table exists. Putting the same tag on `Tag.Posts` lets you walk the relationship
 from either side. AutoMigrate now creates a third table you never declared as a struct:
 
@@ -157,14 +157,14 @@ CREATE TABLE `post_tags` (
 );
 ```
 
-*What just happened:* `post_tags` is the generated join table — two FK columns, `post_id` and `tag_id`,
+*What just happened:* `post_tags` is the generated join table - two FK columns, `post_id` and `tag_id`,
 with a composite primary key so the same pair can't be inserted twice. Each row means "post X is tagged
 with tag Y." GORM created and wired it from one struct tag; you never wrote a `PostTag` struct at all.
 
 ## Creating with nested associations
 
 Now the payoff. Because GORM understands these relationships, you can create a parent and its children in
-**one call** — GORM inserts everything and fills in the foreign keys for you. This is on by default (GORM
+**one call** - GORM inserts everything and fills in the foreign keys for you. This is on by default (GORM
 calls it full-save-associations).
 
 ```go
@@ -180,11 +180,11 @@ db.Create(&user)
 
 *What just happened:* one `db.Create` inserted three rows: the user, plus both posts. Crucially, GORM read
 the new `user.ID` after inserting the user, then stamped it into each post's `user_id` before inserting
-them — so the children come out already wired to their parent. You didn't set a single `UserID` by hand.
+them - so the children come out already wired to their parent. You didn't set a single `UserID` by hand.
 This is the everyday way to seed connected data.
 
 Let's complete the blog with a `Comment`. A comment is the textbook double-belongs-to: it belongs to the
-post it's on **and** the user who wrote it — so it carries two foreign keys.
+post it's on **and** the user who wrote it - so it carries two foreign keys.
 
 ```go
 type Comment struct {
@@ -202,7 +202,7 @@ point of two relationships. Each one follows the same `<Type>ID` convention you'
 ## Association mode: managing relations after the fact
 
 Creating everything at once is great for fresh data, but often you need to attach or detach relations on a
-record that already exists — add a tag to a published post, swap a post's whole tag set, clear them all.
+record that already exists - add a tag to a published post, swap a post's whole tag set, clear them all.
 That's **association mode**: `db.Model(&record).Association("FieldName")` gives you a little handle with
 verbs for managing one relationship.
 
@@ -223,7 +223,7 @@ db.Model(&post).Association("Tags").Clear() // remove all tag links (tags themse
 *What just happened:* each verb manages the **link**, not the tag rows themselves. `Append` adds a row to
 `post_tags`. `Replace` swaps the post's entire set of tag links for the ones you pass. `Count` returns how
 many are currently linked. `Clear` deletes the post's rows from the join table but leaves the `tags` table
-untouched — you're cutting the connections, not deleting the tags. (`Delete` removes specific links you
+untouched - you're cutting the connections, not deleting the tags. (`Delete` removes specific links you
 name.) Use association mode whenever you're editing relationships on records that are already in the DB.
 
 > 💡 Want the database to clean up automatically when a parent is deleted? Add a cascade tag:
@@ -232,28 +232,28 @@ name.) Use association mode whenever you're editing relationships on records tha
 
 ## ⚠️ Declaring a relationship is not the same as loading it
 
-Here's the trap that bites everyone exactly once. You define `User.Posts`, you migrate, the FK exists —
+Here's the trap that bites everyone exactly once. You define `User.Posts`, you migrate, the FK exists - 
 and then you fetch a user and `user.Posts` is **empty**. Nothing's broken. GORM does not load associations
 automatically when you read a record; it only loads the columns of the row itself.
 
 ```go
 var user User
 db.First(&user, 1)
-fmt.Println(len(user.Posts)) // 0 — even though this user has posts!
+fmt.Println(len(user.Posts)) // 0 - even though this user has posts!
 ```
 
 *What just happened:* `db.First` ran one `SELECT` against the `users` table and filled in the user's own
 fields. It did **not** go touch the `posts` table, so the `Posts` slice stays at its zero value: an empty
-slice. The relationship is defined and real in the database — GORM just won't walk it unless you ask.
+slice. The relationship is defined and real in the database - GORM just won't walk it unless you ask.
 
-Asking is what **Preload** is for, and it's the entire subject of the next phase — along with the N+1
+Asking is what **Preload** is for, and it's the entire subject of the next phase - along with the N+1
 query explosion that ambushes people who try to load associations the naive way. For now, the takeaway is
 the boundary: **defining an association sets up the wiring; loading it is a separate, deliberate step.**
 
 ## Recap
 
-- An **association is a foreign key plus a Go field that mirrors it**. GORM reads your struct shape — a
-  `<Type>ID` field next to a field of that type — and infers the relationship; you don't configure it
+- An **association is a foreign key plus a Go field that mirrors it**. GORM reads your struct shape - a
+  `<Type>ID` field next to a field of that type - and infers the relationship; you don't configure it
   separately.
 - **Belongs-to / has-many** is one FK seen from two ends: the FK (`UserID`) and back-reference (`User`)
   live on the child; the parent holds a slice (`Posts []Post`). AutoMigrate builds the column and the FK
@@ -265,7 +265,7 @@ the boundary: **defining an association sets up the wiring; loading it is a sepa
   automatically. **Association mode** (`Append`/`Replace`/`Clear`/`Count`) manages links on records that
   already exist.
 - **Defining a relationship does not load it.** Reading a record leaves its association slices empty until
-  you Preload — that's [Phase 7](07-preloading-and-n-plus-1.md).
+  you Preload - that's [Phase 7](07-preloading-and-n-plus-1.md).
 
 ## Quick check
 
@@ -281,11 +281,11 @@ the boundary: **defining an association sets up the wiring; loading it is a sepa
     "q": "You add `Tags []Tag `gorm:\"many2many:post_tags;\"`` to Post and run AutoMigrate. What does GORM create?",
     "choices": ["A tags_id column on the posts table", "Nothing until you also write a PostTag struct", "A post_tags join table with post_id and tag_id columns", "A JSON column holding the tag list"],
     "answer": 2,
-    "explain": "Many-to-many can't be expressed with a single FK column, so GORM generates a join table (post_tags) holding pairs of post_id and tag_id — without you ever declaring it as a struct."
+    "explain": "Many-to-many can't be expressed with a single FK column, so GORM generates a join table (post_tags) holding pairs of post_id and tag_id - without you ever declaring it as a struct."
   },
   {
     "q": "You define User.Posts, then run db.First(&user, 1). Why is user.Posts empty even though the user has posts?",
-    "choices": ["The migration failed silently", "Defining an association doesn't auto-load it — you must Preload", "First only ever returns one field", "The foreign key was never created"],
+    "choices": ["The migration failed silently", "Defining an association doesn't auto-load it - you must Preload", "First only ever returns one field", "The foreign key was never created"],
     "answer": 1,
     "explain": "GORM loads only the record's own columns, not its associations. The relationship is real in the DB; you have to ask for it explicitly with Preload (Phase 7)."
   }

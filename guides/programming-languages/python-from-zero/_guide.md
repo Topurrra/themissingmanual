@@ -2,7 +2,7 @@
 title: "Python From Zero"
 guide: "python-from-zero"
 phase: 0
-summary: "Learn Python from nothing to genuinely advanced: install and the basics, then objects and tooling, then the deep half - the data model, generators, decorators, typing, concurrency and the GIL, performance, and packaging - all in small, runnable steps with honest explanations."
+summary: "Learn Python from nothing to genuinely advanced: install and the basics, then objects and tooling, then the deep half - the data model, generators, decorators, typing, concurrency and the GIL, performance, and packaging - all in small, runnable steps with clear explanations."
 tags: [python, beginner-friendly, advanced, programming-language, learn-python, decorators, generators, typing, concurrency, gil]
 category: programming-languages
 order: 1

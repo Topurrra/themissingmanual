@@ -44,7 +44,7 @@ The reason to group them is that they share a single property: **possession is p
 
 ## Why secrets leak: the number-one cause
 
-Here's the honest part. Secrets rarely leak through some sophisticated hack. The overwhelmingly common way is mundane: **a developer writes the secret directly into the source code and commits it.**
+Here's the plain part. Secrets rarely leak through some sophisticated hack. The overwhelmingly common way is mundane: **a developer writes the secret directly into the source code and commits it.**
 
 It looks innocent in the moment:
 

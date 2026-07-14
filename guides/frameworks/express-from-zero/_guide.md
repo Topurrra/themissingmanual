@@ -14,8 +14,8 @@ updated: 2026-06-23
 
 # Express From Zero
 
-Express is the framework that defined what a Node.js backend looks like. It's deliberately tiny — a thin
-layer over Node's built-in HTTP server — and that minimalism is its whole identity: Express gives you
+Express is the framework that defined what a Node.js backend looks like. It's deliberately tiny - a thin
+layer over Node's built-in HTTP server - and that minimalism is its whole identity: Express gives you
 routing and a middleware system, and leaves everything else (body parsing, auth, validation, templating)
 to middleware you add. A decade-plus of Node tutorials, jobs, and production apps run on it, so even as
 newer frameworks appear, Express is the one you're most likely to meet and the clearest lens on how Node
@@ -25,10 +25,10 @@ The mental model is one idea repeated everywhere: **the middleware chain**. A re
 through an ordered series of functions, each with the shape `(req, res, next)`. Each one can read or change
 the request, send a response, or call `next()` to pass control to the next function. Routes are just
 middleware bound to a method and path; error handlers are middleware with an extra argument. Hold "an
-Express app is a pipeline of `(req, res, next)` functions," and the entire framework — routing, parsing,
-auth, errors — is the same shape in different costumes.
+Express app is a pipeline of `(req, res, next)` functions," and the entire framework - routing, parsing,
+auth, errors - is the same shape in different costumes.
 
-> 📝 This teaches the **framework** — it assumes you know **JavaScript**: functions, callbacks, promises,
+> 📝 This teaches the **framework** - it assumes you know **JavaScript**: functions, callbacks, promises,
 > `async`/`await`, and modules ([JavaScript From Zero](/guides/javascript-from-zero)). It pairs with
 > [What a Framework Even Is](/guides/what-a-framework-even-is), and the
 > [node:http roots guide](/guides/build-a-server-with-node-http) shows exactly what Express wraps. Compare
@@ -37,27 +37,27 @@ auth, errors — is the same shape in different costumes.
 
 ## How to read this
 
-Read in order — it grows one service (a small **tasks API**) from a single route to a structured, tested,
+Read in order - it grows one service (a small **tasks API**) from a single route to a structured, tested,
 deployable REST API. Phases carry difficulty badges.
 
 ## The phases
 
-**Part 1 — The core (🟢 Basic)**
-1. **[What Express Is & Your First Server](01-what-express-is.md)** 🟢 — the app, a route, and a running server in a few lines.
-2. **[Routing](02-routing.md)** 🟢 — methods, route params, query strings, and routers.
-3. **[Middleware](03-middleware.md)** 🟡 — the `(req, res, next)` chain, ordering, and built-in + third-party middleware.
+**Part 1 - The core (🟢 Basic)**
+1. **[What Express Is & Your First Server](01-what-express-is.md)** 🟢 - the app, a route, and a running server in a few lines.
+2. **[Routing](02-routing.md)** 🟢 - methods, route params, query strings, and routers.
+3. **[Middleware](03-middleware.md)** 🟡 - the `(req, res, next)` chain, ordering, and built-in + third-party middleware.
 
-**Part 2 — A real API (🟡 → 🔴)**
-4. **[Request & Response](04-request-and-response.md)** 🟡 — reading the body/params, `res.json`/status, and validation.
-5. **[Building a REST API](05-building-a-rest-api.md)** 🟡 — full CRUD wired through routes and middleware.
-6. **[Error Handling](06-error-handling.md)** 🔴 — the error-handling middleware, async errors, and one consistent shape.
+**Part 2 - A real API (🟡 → 🔴)**
+4. **[Request & Response](04-request-and-response.md)** 🟡 - reading the body/params, `res.json`/status, and validation.
+5. **[Building a REST API](05-building-a-rest-api.md)** 🟡 - full CRUD wired through routes and middleware.
+6. **[Error Handling](06-error-handling.md)** 🔴 - the error-handling middleware, async errors, and one consistent shape.
 
-**Part 3 — Ship it (🟡 → 🟢)**
-7. **[Serving & Structuring an App](07-serving-and-structure.md)** 🟡 — static files, structure beyond one file, and config.
-8. **[Testing & Production](08-testing-and-production.md)** 🟡 — supertest, environment config, and deployment.
-9. **[Where to Go Next](09-where-to-go-next.md)** 🟢 — Express vs Fastify/NestJS, the ecosystem, and what to build.
+**Part 3 - Ship it (🟡 → 🟢)**
+7. **[Serving & Structuring an App](07-serving-and-structure.md)** 🟡 - static files, structure beyond one file, and config.
+8. **[Testing & Production](08-testing-and-production.md)** 🟡 - supertest, environment config, and deployment.
+9. **[Where to Go Next](09-where-to-go-next.md)** 🟢 - Express vs Fastify/NestJS, the ecosystem, and what to build.
 
-> The throughline: an Express app is **a chain of `(req, res, next)` functions** — routes, parsers, auth,
+> The throughline: an Express app is **a chain of `(req, res, next)` functions** - routes, parsers, auth,
 > and error handlers are all that one shape. Hold it and Express is a small tool you fully understand.
 
 ---

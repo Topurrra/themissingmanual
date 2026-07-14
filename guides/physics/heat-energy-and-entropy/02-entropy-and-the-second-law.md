@@ -13,7 +13,7 @@ updated: 2026-07-10
 
 Entropy is the most slandered word in physics. You've heard it means "disorder" or "messiness," and that explanation has confused more people than it has helped. A messy desk is not high-entropy in any rigorous sense, and tidying your room does not violate any law of nature.
 
-Here's the honest definition, and it's about counting, not housekeeping: **entropy measures how many distinct microscopic arrangements of a system look the same from the outside.** The more ways the molecules can be arranged while the big-picture state stays unchanged, the higher the entropy. Once you see entropy as a count, the second law stops sounding mystical and starts sounding inevitable.
+Here's the plain definition, and it's about counting, not housekeeping: **entropy measures how many distinct microscopic arrangements of a system look the same from the outside.** The more ways the molecules can be arranged while the big-picture state stays unchanged, the higher the entropy. Once you see entropy as a count, the second law stops sounding mystical and starts sounding inevitable.
 
 This phase builds it carefully: what a microstate is, why high-entropy states are merely the overwhelmingly likely ones, and how that single fact explains why heat flows one direction, why no engine is perfect, and why you can't even break even.
 

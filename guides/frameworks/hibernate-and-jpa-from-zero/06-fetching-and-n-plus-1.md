@@ -19,17 +19,17 @@ whole tree?**
 The answer to that question is the difference between an app that returns in 8 milliseconds and one that
 returns in 8 seconds. This is the single most important performance lesson in the entire guide, and almost
 every "Hibernate is slow" complaint on the internet traces back to getting it wrong without noticing. So
-slow down here. We're going to make it visceral — you're going to *see* the flood of queries — because once
+slow down here. We're going to make it visceral - you're going to *see* the flood of queries - because once
 you've watched it happen, you'll never write a blind loop over a collection again.
 
 ## The mental model: a switch with two settings
 
-📝 Every association in JPA has a **fetch strategy** — a setting that answers "when do you load this?" There
+📝 Every association in JPA has a **fetch strategy** - a setting that answers "when do you load this?" There
 are exactly two settings:
 
-- **EAGER** — load this association *immediately*, in the same breath as the parent. Load an `Author`, and
+- **EAGER** - load this association *immediately*, in the same breath as the parent. Load an `Author`, and
   their `Book`s come along for the ride whether you asked for them or not.
-- **LAZY** — *don't* load it yet. Hibernate puts a stand-in object in the field — a **proxy** — and only runs
+- **LAZY** - *don't* load it yet. Hibernate puts a stand-in object in the field - a **proxy** - and only runs
   the real query the moment you actually touch the data (call `getBooks()` and read it).
 
 Think of it like ordering at a restaurant. EAGER is the waiter bringing the appetizer, main, dessert, and
@@ -47,11 +47,11 @@ Here's the part that bites everyone, so commit it to memory. The **JPA defaults 
 | `@ManyToMany` | LAZY |
 
 📝 The pattern: the *to-one* sides are eager by default, the *to-many* collections are lazy. This split is a
-trap. Your `Book.author` (`@ManyToOne`) is silently eager — load 50 books and you may quietly load their
+trap. Your `Book.author` (`@ManyToOne`) is silently eager - load 50 books and you may quietly load their
 authors too, even on pages that never show the author.
 
 ⚠️ **Recommendation: make everything LAZY, then fetch what you need explicitly.** Eager-by-default is the
-gift that keeps on taking — it loads data you didn't ask for, on code paths you forgot about, and you only
+gift that keeps on taking - it loads data you didn't ask for, on code paths you forgot about, and you only
 find out when production slows down. Turn the to-one defaults off:
 
 ```java
@@ -68,7 +68,7 @@ public class Book {
 ```
 
 *What just happened:* we forced `Book.author` to LAZY, overriding JPA's eager default for `@ManyToOne`. Now
-loading a `Book` loads exactly the `book` row — no surprise `SELECT` for the author tagging along. The
+loading a `Book` loads exactly the `book` row - no surprise `SELECT` for the author tagging along. The
 reviews were already lazy, but writing it out makes the intent obvious to the next person (and to you, six
 months from now). The rule of thumb that will save you: **lazy everywhere, fetch deliberately.**
 
@@ -92,19 +92,19 @@ select b.id, b.title, b.author_id from book b where b.author_id = 1
 ```
 
 *What just happened:* `find` ran *one* query for the author. The `books` field came back as a Hibernate
-`PersistentBag` — a proxy that knows how to load the books but hasn't yet. Nothing hit the `book` table until
-`size()` forced it. That second query is the proxy "waking up." Lazy isn't *if* you pay for the books — it's
+`PersistentBag` - a proxy that knows how to load the books but hasn't yet. Nothing hit the `book` table until
+`size()` forced it. That second query is the proxy "waking up." Lazy isn't *if* you pay for the books - it's
 *when*. And that timing is exactly what causes the next two problems.
 
 ## `LazyInitializationException`: the classic crash
 
 📝 A lazy proxy can only wake up while its **persistence context is still open**. Remember from
 [Phase 3](03-entitymanager-and-persistence-context.md): when the `EntityManager` closes, every entity it
-loaded becomes **detached** — nobody's watching it, and there's no open context to run a query through. So if
+loaded becomes **detached** - nobody's watching it, and there's no open context to run a query through. So if
 you touch a lazy association *after* the context closed, the proxy has no way to load its data, and Hibernate
 throws.
 
-This is the most famous beginner crash in all of Hibernate. The shape is always the same — load in one
+This is the most famous beginner crash in all of Hibernate. The shape is always the same - load in one
 layer, touch in another:
 
 ```java
@@ -128,8 +128,8 @@ collection of role: com.example.Author.books: could not initialize proxy - no Se
 ```
 
 *What just happened:* `loadAuthor` opened a context, loaded the author *without* the books, then closed the
-context — detaching the author. Back in the controller, `author.getBooks()` asks the lazy proxy to load, but
-its context is gone. No open session, no query, no data — exception. 💡 The fix isn't "make it eager" (that
+context - detaching the author. Back in the controller, `author.getBooks()` asks the lazy proxy to load, but
+its context is gone. No open session, no query, no data - exception. 💡 The fix isn't "make it eager" (that
 just trades this crash for the N+1 you're about to meet). The real fix is to **fetch the books while the
 context is still open**, which is the whole rest of this phase. Tie this back to Phase 3's rule: *a detached
 entity can't lazy-load.* This is that rule biting.
@@ -138,7 +138,7 @@ entity can't lazy-load.* This is that rule biting.
 
 This is the one. The performance killer that ships to production looking completely innocent. Watch closely.
 
-You load all your authors — one clean query — and then loop over them to print each author's book count. The
+You load all your authors - one clean query - and then loop over them to print each author's book count. The
 collection is lazy, so each `getBooks()` call wakes up its proxy:
 
 ```java
@@ -165,14 +165,14 @@ select b.id, b.title, b.author_id from book b where b.author_id = 99;
 select b.id, b.title, b.author_id from book b where b.author_id = 100;
 ```
 
-*What just happened:* **1 query to load the authors, then N more — one per author — to load each one's
+*What just happened:* **1 query to load the authors, then N more - one per author - to load each one's
 books.** That's `1 + N` queries. 100 authors = **101 queries**. A thousand authors = 1001. Every one is a
 separate round trip to the database: network hop, parse, plan, execute, return. Individually they're fast;
 multiplied by N they're a stampede. This is the **N+1 problem**, and it is the number-one reason ORMs get
 blamed for being slow.
 
 ⚠️ The cruelty of N+1 is that it's *invisible in the code*. The Java reads like a normal loop. It works
-perfectly with 3 authors in your test database. Then it meets 5,000 authors in production and falls over —
+perfectly with 3 authors in your test database. Then it meets 5,000 authors in production and falls over - 
 and nobody changed a line. The query count grows with your data, not with your code, so it sails through
 code review and load-tests-you-didn't-run. You have to *watch the SQL* to even know it's there. Which is
 exactly why the discipline at the end of this phase matters.
@@ -182,7 +182,7 @@ exactly why the discipline at the end of this phase matters.
 The cure for N+1 is to tell Hibernate up front: *I'm going to need the books, so fetch them together.* You
 have three tools.
 
-### 1. `JOIN FETCH` — the workhorse
+### 1. `JOIN FETCH` - the workhorse
 
 In JPQL, `join fetch` says "join to this association and load it into the result, in the same query":
 
@@ -193,7 +193,7 @@ List<Author> authors = em.createQuery(
 
 for (Author author : authors) {
     System.out.println(author.getName() + ": " + author.getBooks().size());
-    // no extra queries — the books are already loaded
+    // no extra queries - the books are already loaded
 }
 ```
 ```sql
@@ -204,21 +204,21 @@ join book b on b.author_id = a.id;
 
 *What just happened:* **one query** now does the whole job. `join fetch a.books` told Hibernate to join
 `author` to `book` and hydrate the `books` collection right there in the result set. The loop runs without
-emitting a single extra `SELECT` — the books arrived with their authors. 101 queries collapsed to 1. The
+emitting a single extra `SELECT` - the books arrived with their authors. 101 queries collapsed to 1. The
 `distinct` keyword de-duplicates authors in the Java result (a join repeats the author row once per book);
 it's almost always what you want with a `join fetch` on a collection.
 
 ⚠️ **Two `JOIN FETCH` caveats that bite hard.** First: **`JOIN FETCH` a collection + pagination don't mix.**
 If you add `setMaxResults`/`setFirstResult` to a query that fetches a collection, Hibernate can't apply the
-limit in SQL (the join multiplied your rows), so it pulls *everything* into memory and paginates there —
+limit in SQL (the join multiplied your rows), so it pulls *everything* into memory and paginates there - 
 quietly defeating the point and risking an OOM on a large table. Second: **you can't `JOIN FETCH` two
-collections at once** (e.g. an author's books *and* each book's reviews in one query) — that's a cartesian
+collections at once** (e.g. an author's books *and* each book's reviews in one query) - that's a cartesian
 product, and Hibernate throws `MultipleBagFetchException`. Fetch one collection per query, or use batch
 fetching (below) for the second.
 
-### 2. `@EntityGraph` — the declarative alternative
+### 2. `@EntityGraph` - the declarative alternative
 
-If you'd rather not write JPQL — say you're using Spring Data repositories — an **entity graph** declares
+If you'd rather not write JPQL - say you're using Spring Data repositories - an **entity graph** declares
 which associations to fetch eagerly *for this one call*, without touching the entity's default mapping:
 
 ```java
@@ -227,14 +227,14 @@ List<Author> findAll();    // Spring Data: this findAll fetches books in one que
 ```
 
 *What just happened:* `@EntityGraph(attributePaths = "books")` tells Hibernate "for this query, treat `books`
-as eager — load it with the author." It produces the same single join query as `JOIN FETCH`, but you express
-*what to load* declaratively instead of hand-writing the join. Same fix, different syntax — reach for
+as eager - load it with the author." It produces the same single join query as `JOIN FETCH`, but you express
+*what to load* declaratively instead of hand-writing the join. Same fix, different syntax - reach for
 whichever fits your codebase. The key idea is identical: **the fetch decision belongs to the use-case, not
 the mapping.**
 
-### 3. Batch fetching — collapse N into a few
+### 3. Batch fetching - collapse N into a few
 
-Sometimes you genuinely can't fetch up front — the books load lazily deep in some other code. Batch fetching
+Sometimes you genuinely can't fetch up front - the books load lazily deep in some other code. Batch fetching
 softens the blow: instead of one query *per* author, Hibernate loads the lazy collections in **batches**
 using an `IN` clause.
 
@@ -258,7 +258,7 @@ select b.id, b.title, b.author_id from book b where b.author_id in (76,77, ... ,
 *What just happened:* `@BatchSize(size = 25)` told Hibernate "when you have to wake up these lazy
 collections, grab 25 at a time." The N+1's 100 follow-up queries became `ceil(100/25) = 4`. You can set this
 globally with `hibernate.default_batch_fetch_size` instead of annotating each collection. 💡 Batch fetching
-is the safety net for the lazy loads you can't restructure away — it won't beat a single `JOIN FETCH`, but
+is the safety net for the lazy loads you can't restructure away - it won't beat a single `JOIN FETCH`, but
 turning 101 queries into 5 is a massive win for one config line.
 
 ## The discipline: watch the SQL count
@@ -271,25 +271,25 @@ So make the SQL visible while you develop:
 
 - Turn on `hibernate.show_sql=true` (and `format_sql=true`) and actually look at the console for a given
   page or endpoint. If one user action emits dozens of near-identical `SELECT`s, you've found an N+1.
-- Better, add a **query counter** to your tests — a tool like Hibernate's `Statistics` or a library like
+- Better, add a **query counter** to your tests - a tool like Hibernate's `Statistics` or a library like
   datasource-proxy that asserts "this endpoint runs at most 3 queries." That turns N+1 from a thing you
   notice in prod into a test that fails in CI.
 
-📝 The honest summary of this entire phase: **the #1 reason people say "Hibernate is slow" is really "N+1
+📝 The plain summary of this entire phase: **the #1 reason people say "Hibernate is slow" is really "N+1
 that nobody noticed."** Hibernate isn't slow; a loop that secretly runs 500 queries is slow, and the ORM
 just made it easy to write without seeing it. Counting your queries is how you stay on the fast side of that
-line. (When a query you *did* write deliberately is the slow one, that's a different skill — measuring and
-reading query plans — covered in [Why Is My Query Slow?](/guides/why-is-my-query-slow).)
+line. (When a query you *did* write deliberately is the slow one, that's a different skill - measuring and
+reading query plans - covered in [Why Is My Query Slow?](/guides/why-is-my-query-slow).)
 
 ## Recap
 
 1. Every association has a **fetch strategy**: **EAGER** (load with the parent) or **LAZY** (load a proxy
    now, run the real query only when you touch it). JPA defaults: `@ManyToOne`/`@OneToOne` **EAGER**,
    `@OneToMany`/`@ManyToMany` LAZY.
-2. ⚠️ Prefer **LAZY everywhere** and fetch explicitly per use-case — eager-by-default loads data you didn't
+2. ⚠️ Prefer **LAZY everywhere** and fetch explicitly per use-case - eager-by-default loads data you didn't
    ask for on code paths you forgot about.
 3. **`LazyInitializationException`** happens when you touch a lazy association after the persistence context
-   closed (the entity is detached). Fix it by fetching while the context is open — not by going eager.
+   closed (the entity is detached). Fix it by fetching while the context is open - not by going eager.
 4. The **N+1 problem**: load N parents in 1 query, then trigger 1 query per parent to load each one's lazy
    collection = `1 + N` queries. 100 authors → 101 queries. It's invisible in code and scales with your
    data, not your logic.
@@ -308,10 +308,10 @@ Lock in the one idea that wrecks more Hibernate apps than any other:
   {
     "q": "You load 50 Authors with `select a from Author a`, then loop over them calling `author.getBooks().size()` on each (books is a LAZY @OneToMany). How many SQL queries does Hibernate run?",
     "choices": [
-      "51 — one to load the authors, then one more per author to load each one's books (the N+1 problem)",
-      "1 — Hibernate loads everything in a single query",
-      "2 — one for authors, one for all books",
-      "50 — one per author"
+      "51 - one to load the authors, then one more per author to load each one's books (the N+1 problem)",
+      "1 - Hibernate loads everything in a single query",
+      "2 - one for authors, one for all books",
+      "50 - one per author"
     ],
     "answer": 0,
     "explain": "This is the textbook N+1: 1 query for the authors, then N=50 lazy loads (one per author when you touch getBooks()) = 51 total. The loop looks innocent but each iteration wakes up a lazy proxy with its own SELECT."
@@ -325,7 +325,7 @@ Lock in the one idea that wrecks more Hibernate apps than any other:
       "Call em.close() later, in the controller"
     ],
     "answer": 0,
-    "explain": "The crash happens because the author is detached (context closed) and a lazy proxy can't load with no open session. The right fix is to fetch the books deliberately while the context is open — via JOIN FETCH or @EntityGraph. Going EAGER 'fixes' the crash but reintroduces N+1 elsewhere and loads books even when you don't need them."
+    "explain": "The crash happens because the author is detached (context closed) and a lazy proxy can't load with no open session. The right fix is to fetch the books deliberately while the context is open - via JOIN FETCH or @EntityGraph. Going EAGER 'fixes' the crash but reintroduces N+1 elsewhere and loads books even when you don't need them."
   },
   {
     "q": "Which statement about `JOIN FETCH` on a collection is a real caveat to watch out for?",
@@ -336,7 +336,7 @@ Lock in the one idea that wrecks more Hibernate apps than any other:
       "It permanently changes the entity's default fetch type"
     ],
     "answer": 0,
-    "explain": "JOIN FETCH on a collection plus setMaxResults can't apply the limit in SQL (the join multiplied the rows), so Hibernate loads everything and paginates in memory — slow and memory-risky. Separately, you can't JOIN FETCH two collections at once (MultipleBagFetchException). JOIN FETCH affects only the one query, not the mapping's default."
+    "explain": "JOIN FETCH on a collection plus setMaxResults can't apply the limit in SQL (the join multiplied the rows), so Hibernate loads everything and paginates in memory - slow and memory-risky. Separately, you can't JOIN FETCH two collections at once (MultipleBagFetchException). JOIN FETCH affects only the one query, not the mapping's default."
   }
 ]
 ```

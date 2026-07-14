@@ -36,7 +36,7 @@ Here's the same job - "let customers book a 30-minute call" - across all three:
 | Low-code | Build a booking form in an app builder, add a small rule to block double-bookings and a snippet to sync to two calendars at once. |
 | Code | Write a service that manages availability, handles time zones, prevents conflicts, and sends confirmations - fully yours, fully custom. |
 
-Notice the first option isn't really "building" at all - it's buying a finished tool. That's the honest far end of no-code: a lot of "no-code" is configuring someone else's product.
+Notice the first option isn't really "building" at all - it's buying a finished tool. That's the plain far end of no-code: a lot of "no-code" is configuring someone else's product.
 
 ## Concrete examples of each
 
@@ -61,7 +61,7 @@ Two things follow from this, and they matter:
    that only that vendor's software knows how to run.
 ```
 
-So when a salesperson says "it's just generating code for you," ask the blunt follow-up: *can I export that code and run it without you?* For some low-code tools the answer is a genuine yes. For most pure no-code tools the honest answer is no - what you've built is a saved arrangement inside their product. That's not a dealbreaker. It's a fact to price in.
+So when a salesperson says "it's just generating code for you," ask the blunt follow-up: *can I export that code and run it without you?* For some low-code tools the answer is a genuine yes. For most pure no-code tools the real answer is no - what you've built is a saved arrangement inside their product. That's not a dealbreaker. It's a fact to price in.
 
 ## The mental model to keep
 

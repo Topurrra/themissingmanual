@@ -84,7 +84,7 @@ Your dev machine has a fast CPU and a fast connection. Your users, on average, d
 
 Put the two kinds of data to work in a loop. Use **field data** (CrUX, or real-user monitoring if you have it) to decide *whether* there's a problem and which vital is red. Use **lab tools** (Lighthouse, the Network tab, throttled) to *diagnose* it - find the heavy resource, the blocking script, the unsized image - and to verify your fix made the number move locally. Then wait for the field data to confirm the win for real users, because field is the scoreboard that counts.
 
-That's the honest measurement discipline. Now that you can see *where* the time and bytes go, Phase 3 is the short list of levers that move them.
+That's the no-nonsense measurement discipline. Now that you can see *where* the time and bytes go, Phase 3 is the short list of levers that move them.
 
 ```quiz
 [

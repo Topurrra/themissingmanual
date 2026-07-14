@@ -14,12 +14,12 @@ updated: 2026-06-22
 
 # Jakarta EE From Zero
 
-Jakarta EE (the platform formerly called Java EE) is the *standard* for enterprise Java — a family of
+Jakarta EE (the platform formerly called Java EE) is the *standard* for enterprise Java - a family of
 specifications that a huge share of banks, insurers, governments, and large enterprises build on. If
 [Spring Boot](/guides/spring-boot-from-zero) is the popular framework, Jakarta EE is the official
 standard it grew up alongside: instead of one vendor's framework, it's a set of agreed-upon APIs
 (dependency injection, REST, persistence, transactions, security) that *multiple* server vendors
-implement. Learn it and a whole category of enterprise jobs opens up — and you'll understand where many
+implement. Learn it and a whole category of enterprise jobs opens up - and you'll understand where many
 of Spring's ideas came from.
 
 The mental model that makes Jakarta EE click is **"specification, not implementation."** You write code
@@ -35,28 +35,28 @@ boilerplate to copy.
 
 ## How to read this
 
-Read in order — it builds one example (a small `Product` REST service) spec by spec. Phases carry
+Read in order - it builds one example (a small `Product` REST service) spec by spec. Phases carry
 difficulty badges so you can see the climb.
 
 ## The phases
 
-**Part 1 — The platform (🟢 Basic)**
-1. **[What Jakarta EE Is](01-what-jakarta-ee-is.md)** 🟢 — specs vs implementations, the Java EE → Jakarta rename, and how it compares to Spring.
-2. **[The Application Server & Deployment](02-the-app-server-and-deployment.md)** 🟢 — WildFly/Payara/Open Liberty, WAR packaging, and the container that runs your code.
+**Part 1 - The platform (🟢 Basic)**
+1. **[What Jakarta EE Is](01-what-jakarta-ee-is.md)** 🟢 - specs vs implementations, the Java EE → Jakarta rename, and how it compares to Spring.
+2. **[The Application Server & Deployment](02-the-app-server-and-deployment.md)** 🟢 - WildFly/Payara/Open Liberty, WAR packaging, and the container that runs your code.
 
-**Part 2 — The core specs (🟡 Intermediate)**
-3. **[CDI: Contexts & Dependency Injection](03-cdi-dependency-injection.md)** 🟡 — the standard DI: `@Inject`, beans, scopes, qualifiers, producers.
-4. **[JAX-RS: Building REST APIs](04-jax-rs-rest-apis.md)** 🟡 — `@Path`/`@GET`/`@POST`, JSON-B, and a real REST resource.
-5. **[Jakarta Persistence (JPA)](05-jakarta-persistence.md)** 🟡 — container-managed `EntityManager`, persistence units, and how Hibernate fits in.
-6. **[Transactions with JTA](06-transactions-with-jta.md)** 🟡 — container-managed transactions, `@Transactional`, and what JTA adds.
-7. **[Validation & JSON Binding](07-validation-and-json-binding.md)** 🟡 — Jakarta Validation (`@NotNull`…) and JSON-B, wired into JAX-RS.
-8. **[Enterprise Beans & Messaging](08-enterprise-beans-and-messaging.md)** 🟡 — `@Stateless` beans, scheduling, and asynchronous messaging.
+**Part 2 - The core specs (🟡 Intermediate)**
+3. **[CDI: Contexts & Dependency Injection](03-cdi-dependency-injection.md)** 🟡 - the standard DI: `@Inject`, beans, scopes, qualifiers, producers.
+4. **[JAX-RS: Building REST APIs](04-jax-rs-rest-apis.md)** 🟡 - `@Path`/`@GET`/`@POST`, JSON-B, and a real REST resource.
+5. **[Jakarta Persistence (JPA)](05-jakarta-persistence.md)** 🟡 - container-managed `EntityManager`, persistence units, and how Hibernate fits in.
+6. **[Transactions with JTA](06-transactions-with-jta.md)** 🟡 - container-managed transactions, `@Transactional`, and what JTA adds.
+7. **[Validation & JSON Binding](07-validation-and-json-binding.md)** 🟡 - Jakarta Validation (`@NotNull`…) and JSON-B, wired into JAX-RS.
+8. **[Enterprise Beans & Messaging](08-enterprise-beans-and-messaging.md)** 🟡 - `@Stateless` beans, scheduling, and asynchronous messaging.
 
-**Part 3 — Production & beyond (🔴 Advanced → 🟢)**
-9. **[Jakarta Security](09-jakarta-security.md)** 🔴 — authentication mechanisms, `@RolesAllowed`, and identity stores.
-10. **[MicroProfile & Where to Go Next](10-microprofile-and-where-next.md)** 🟢 — cloud-native EE, how Quarkus/Helidon build on these specs, and what to build.
+**Part 3 - Production & beyond (🔴 Advanced → 🟢)**
+9. **[Jakarta Security](09-jakarta-security.md)** 🔴 - authentication mechanisms, `@RolesAllowed`, and identity stores.
+10. **[MicroProfile & Where to Go Next](10-microprofile-and-where-next.md)** 🟢 - cloud-native EE, how Quarkus/Helidon build on these specs, and what to build.
 
-> Jakarta EE and Spring aren't enemies — they share DNA (Spring helped inspire CDI; both use JPA). Knowing
+> Jakarta EE and Spring aren't enemies - they share DNA (Spring helped inspire CDI; both use JPA). Knowing
 > the *standard* makes every Java framework, including Spring, easier to read.
 
 ---

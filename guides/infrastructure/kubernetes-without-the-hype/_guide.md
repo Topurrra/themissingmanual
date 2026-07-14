@@ -2,7 +2,7 @@
 title: "Kubernetes, Explained Without the Hype"
 guide: "kubernetes-without-the-hype"
 phase: 0
-summary: "What Kubernetes actually does (keeps your declared desired state true across many machines), the handful of objects you really meet - Pod, Deployment, Service, controllers - and an honest answer to whether you need it at all."
+summary: "What Kubernetes actually does (keeps your declared desired state true across many machines), the handful of objects you really meet - Pod, Deployment, Service, controllers - and a straight answer to whether you need it at all."
 tags: [kubernetes, k8s, orchestration, containers, infrastructure, devops]
 category: infrastructure
 order: 8
@@ -18,7 +18,7 @@ You know containers now. You can build an image, run it, wire a few together. Th
 for everything and a different one for the same thing. It gets talked about like a rite of passage and a magic
 scaling button at the same time, and neither of those is true.
 
-Here's the honest version. Kubernetes is a **container orchestrator** - software whose entire job is to run a
+Here's the plain version. Kubernetes is a **container orchestrator** - software whose entire job is to run a
 lot of containers across a lot of machines and keep them running the way you said you wanted, without you
 babysitting them. That's the whole idea. It is genuinely powerful, and it is genuinely heavy, and most small
 apps do not need it. This guide installs the mental model, shows you the few objects you actually touch, and
@@ -29,7 +29,7 @@ then gives you a straight answer to the question nobody seems to ask out loud: *
 - **Just need the verdict?** Jump to [Phase 3: Should You Even Use It?](03-should-you-even-use-it.md) - it
   lays out, plainly, when Kubernetes earns its keep and when a VPS or a PaaS will make you far happier.
 - **Want it to finally make sense?** Read in order. Phase 1 is the one idea everything rests on, Phase 2 is the
-  pieces you'll actually meet, and Phase 3 is the honest cost-benefit.
+  pieces you'll actually meet, and Phase 3 is the straight cost-benefit.
 
 ## The phases
 

@@ -30,7 +30,7 @@ You build this **on your own machine**. The code here is meant to be saved to
 files and run from your terminal with `python script.py`. There's no browser
 sandbox doing the work for you, because real scraping needs the network, the
 filesystem, and a couple of libraries that don't live in your browser. That's
-the honest version of the skill, and it's the version that's useful on Monday.
+the real version of the skill, and it's the version that's useful on Monday.
 
 ## What you'll build
 

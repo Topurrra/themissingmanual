@@ -2,7 +2,7 @@
 title: "Reactive Quarkus with Mutiny"
 guide: "quarkus-from-zero"
 phase: 7
-summary: "Demystifies reactive Quarkus: why non-blocking exists, Mutiny's Uni and Multi, building reactive pipelines and endpoints with reactive Panache, and the honest verdict on when reactive earns its complexity versus plain imperative."
+summary: "Demystifies reactive Quarkus: why non-blocking exists, Mutiny's Uni and Multi, building reactive pipelines and endpoints with reactive Panache, and the clear-eyed verdict on when reactive earns its complexity versus plain imperative."
 tags: [quarkus, reactive, mutiny, uni, multi, non-blocking, asynchronous, event-loop]
 difficulty: advanced
 synonyms: ["quarkus reactive mutiny", "quarkus uni multi", "reactive programming java", "quarkus non-blocking", "mutiny vs imperative", "quarkus reactive rest", "when to use reactive quarkus"]
@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # Reactive Quarkus with Mutiny
 
-Reactive programming has a scary reputation, but the core idea is something you already understand from waiting tables, standing in lines, or (if you've done JavaScript) the event loop. We'll build the mental model, meet Quarkus's reactive library (Mutiny), write a reactive endpoint end-to-end, and then cover the honest part most tutorials skip: **when you should not bother.**
+Reactive programming has a scary reputation, but the core idea is something you already understand from waiting tables, standing in lines, or (if you've done JavaScript) the event loop. We'll build the mental model, meet Quarkus's reactive library (Mutiny), write a reactive endpoint end-to-end, and then cover the plain-spoken part most tutorials skip: **when you should not bother.**
 
 You've carried a `Product` since [Phase 3](03-rest-apis.md), where a handler could return `Uni<Product>` instead of a plain `Product`. This is where that promise gets paid off.
 
@@ -104,7 +104,7 @@ public class ProductResource {
 
 ⚠️ Reactive Panache is a *separate* extension from the classic blocking one (`quarkus-hibernate-reactive-panache` vs `quarkus-hibernate-orm-panache` from [Phase 5](05-persistence-with-panache.md)), talking over a reactive driver. Don't mix a blocking call into a reactive chain - it stalls every other request that thread was juggling.
 
-## When to use it (the honest part)
+## When to use it (the plain-spoken part)
 
 ⚠️ **Reactive is not free.** A Mutiny chain is harder to read, debug, and reason about than straight-line code. Stack traces get worse - a throw three `.onItem()` steps deep points at Mutiny's machinery, not your line number. Mistakes are quiet: block the event loop once and throughput quietly collapses.
 
@@ -117,15 +117,15 @@ public class ProductResource {
 ## Recap
 
 1. **Blocking pins a thread per request.** One thread per request spends most of its life *idle*, frozen
-   on I/O — which caps concurrency and wastes memory when many requests wait at once.
+   on I/O - which caps concurrency and wastes memory when many requests wait at once.
 2. **Reactive hands the thread back during waits.** A few non-blocking event-loop threads keep thousands
-   of waiting requests in flight — the same idea as JavaScript's event loop, brought to Java.
+   of waiting requests in flight - the same idea as JavaScript's event loop, brought to Java.
 3. **Mutiny gives you `Uni` and `Multi`.** `Uni<T>` is a promise of one future value; `Multi<T>` is a
-   stream of many over time. Both describe work to run later, when subscribed — they don't hold a value.
+   stream of many over time. Both describe work to run later, when subscribed - they don't hold a value.
 4. **You compose, not block.** `.onItem().transform(...)` and `.onFailure().recoverWith...()` describe
    "what to do when the value (or error) arrives." The chain reads sequentially but runs asynchronously.
 5. **End-to-end non-blocking.** A handler returning `Uni<Product>` plus reactive Panache (`findById`
-   returning a `Uni`) keeps the whole path off the blocking model — but never sneak a blocking call into a
+   returning a `Uni`) keeps the whole path off the blocking model - but never sneak a blocking call into a
    reactive chain.
 6. **Use it only when the load demands it.** Reactive wins under high concurrency with heavy I/O waiting;
    for ordinary CRUD, imperative Quarkus runs on a worker thread, is plenty fast, and is far simpler. Don't
@@ -133,25 +133,25 @@ public class ProductResource {
 
 ## Quick check
 
-Make sure the reactive model — and the honest caveat — landed:
+Make sure the reactive model - and the clear caveat - landed:
 
 ```quiz
 [
   {
     "q": "In the thread-per-request (blocking) model, why does high concurrency run out of threads even when the CPU is mostly idle?",
     "choices": [
-      "Each request pins a thread for its whole life, and that thread sits frozen and idle while waiting on I/O — so threads run out while the machine is mostly waiting, not computing",
+      "Each request pins a thread for its whole life, and that thread sits frozen and idle while waiting on I/O - so threads run out while the machine is mostly waiting, not computing",
       "Threads are deleted after every request, so the pool empties",
       "The CPU can only run one thread at a time, so extra threads are useless",
       "Blocking code uses more CPU per request than reactive code"
     ],
     "answer": 0,
-    "explain": "A blocked thread is pinned to one request and idle while it waits on the database or network. With most of each request spent waiting, the pool drains and new requests queue — even though the CPU has little to do. Reactive avoids this by handing the thread back during waits."
+    "explain": "A blocked thread is pinned to one request and idle while it waits on the database or network. With most of each request spent waiting, the pool drains and new requests queue - even though the CPU has little to do. Reactive avoids this by handing the thread back during waits."
   },
   {
     "q": "What does a method returning Uni<Product> actually give you the instant it returns?",
     "choices": [
-      "A promise describing how to get a product and what to do when it arrives — no product has been fetched and nothing runs until something subscribes",
+      "A promise describing how to get a product and what to do when it arrives - no product has been fetched and nothing runs until something subscribes",
       "The fully loaded Product object, fetched synchronously",
       "Null, until the database call finishes in the background",
       "A blocking call that freezes the thread until the product is ready"
@@ -160,10 +160,10 @@ Make sure the reactive model — and the honest caveat — landed:
     "explain": "A Uni<Product> is a plan, not an answer. It returns immediately without blocking or even touching the database; the work runs only when subscribed (Quarkus subscribes for you when you return it from a handler)."
   },
   {
-    "q": "You're building an ordinary CRUD service with moderate traffic. What's the honest recommendation?",
+    "q": "You're building an ordinary CRUD service with moderate traffic. What's the straight recommendation?",
     "choices": [
-      "Use imperative Quarkus — it runs handlers on a worker thread, is plenty fast for CRUD, and is far simpler to read and debug; go reactive only when high concurrency with heavy I/O demands it",
-      "Always use reactive — imperative Quarkus is slow and outdated",
+      "Use imperative Quarkus - it runs handlers on a worker thread, is plenty fast for CRUD, and is far simpler to read and debug; go reactive only when high concurrency with heavy I/O demands it",
+      "Always use reactive - imperative Quarkus is slow and outdated",
       "Mix blocking JDBC calls into reactive chains to get the best of both",
       "Reactive is required for any database access in Quarkus"
     ],

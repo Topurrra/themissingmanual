@@ -106,7 +106,7 @@ bash: /etc/hosts: Permission denied
 user has read but not write permission on it, so the filesystem refused before changing a single byte.
 Nothing broke - the rule held.
 
-The honest fix on Unix is to act as the administrator for that one command using `sudo` ("do this as the
+The straight fix on Unix is to act as the administrator for that one command using `sudo` ("do this as the
 superuser"). To actually change a system file, open it as the administrator - for example with a terminal
 editor:
 

@@ -11,30 +11,30 @@ updated: 2026-07-10
 
 # The Problem REST Leaves
 
-Before GraphQL can make sense, you have to feel the specific ache it was built for. If you've shipped a few screens against a REST API, you already have — you just might not have a name for it. There are two aches, and they're opposites of each other.
+Before GraphQL can make sense, you have to feel the specific ache it was built for. If you've shipped a few screens against a REST API, you already have - you just might not have a name for it. There are two aches, and they're opposites of each other.
 
 The good news: both come from the *same* root cause, and once you see it, GraphQL's whole design reads as one long response to it.
 
 ## The mental model: who decides the shape?
 
-A REST endpoint is a fixed door: the *server* decides, ahead of time, what comes through it. `GET /users/42` returns whatever the team that built that endpoint chose to put in the user representation — every time, for every caller, whether you wanted all of it or none of it.
+A REST endpoint is a fixed door: the *server* decides, ahead of time, what comes through it. `GET /users/42` returns whatever the team that built that endpoint chose to put in the user representation - every time, for every caller, whether you wanted all of it or none of it.
 
-That single design choice — *the server owns the shape of the response* — is the source of both problems below. Hold onto it; it's the hinge the entire guide turns on.
+That single design choice - *the server owns the shape of the response* - is the source of both problems below. Hold onto it; it's the hinge the entire guide turns on.
 
 ```mermaid
 sequenceDiagram
   participant Client
   participant Server
-  Note over Client,Server: REST — the server owns the shape
+  Note over Client,Server: REST - the server owns the shape
   Client->>Server: GET /users/42
-  Server-->>Client: fixed payload (always the same — the server's idea of "a user")
+  Server-->>Client: fixed payload (always the same - the server's idea of "a user")
 ```
 
-## Problem 1: over-fetching — more than you asked for
+## Problem 1: over-fetching - more than you asked for
 
 Over-fetching is when an endpoint returns far more data than the screen in front of you needs. You wanted a name and an avatar; you got the name, avatar, bio, settings blob, billing address, notification preferences, and a timestamp for every one of them.
 
-Picture a comment list: each comment shows an author's name and photo — two fields. The only endpoint you have is the full user resource:
+Picture a comment list: each comment shows an author's name and photo - two fields. The only endpoint you have is the full user resource:
 
 ```console
 $ curl https://api.example.com/users/42
@@ -52,11 +52,11 @@ $ curl https://api.example.com/users/42
   "updatedAt": "2026-05-30T14:08:11Z"
 }
 ```
-You asked for one user and the server handed back its complete idea of a user — a dozen fields, a nested address, a preferences object — to render two of them. On one comment that's harmless; on a list of fifty, over a phone connection, it's wasted bytes and a slower screen, every time.
+You asked for one user and the server handed back its complete idea of a user - a dozen fields, a nested address, a preferences object - to render two of them. On one comment that's harmless; on a list of fifty, over a phone connection, it's wasted bytes and a slower screen, every time.
 
-⚠️ **Gotcha — over-fetching hides on fast networks.** On your laptop on office wifi, the extra fields cost nothing you'll notice. The bill arrives on a mid-range phone on a weak connection, which is exactly where you're least able to debug it. "It's fast on my machine" is how over-fetching survives to production.
+⚠️ **Gotcha - over-fetching hides on fast networks.** On your laptop on office wifi, the extra fields cost nothing you'll notice. The bill arrives on a mid-range phone on a weak connection, which is exactly where you're least able to debug it. "It's fast on my machine" is how over-fetching survives to production.
 
-## Problem 2: under-fetching — fewer round trips would be nice
+## Problem 2: under-fetching - fewer round trips would be nice
 
 Under-fetching is the opposite squeeze: a single endpoint doesn't give you enough to build one screen, so you fire several requests and wait for each before the next can go.
 
@@ -75,34 +75,34 @@ $ curl https://api.example.com/shipments/by-order/9001
 $ curl https://api.example.com/shipments/by-order/9002
 $ curl https://api.example.com/shipments/by-order/9003
 ```
-Filling one header took seven requests, and they're not parallel — you couldn't ask for the orders until the user response gave you their IDs, or for shipments until you had the orders. Each step waits on the one before it. That chained waiting, not the byte count, is what makes screens feel sluggish, and no faster server fixes it.
+Filling one header took seven requests, and they're not parallel - you couldn't ask for the orders until the user response gave you their IDs, or for shipments until you had the orders. Each step waits on the one before it. That chained waiting, not the byte count, is what makes screens feel sluggish, and no faster server fixes it.
 
-📝 **Terminology — round trip.** One round trip is a full request out to the server and its response back. Latency (the travel time of a round trip) is often the dominant cost on mobile and far-away networks, which is why "seven requests instead of one" matters more than the raw byte count.
+📝 **Terminology - round trip.** One round trip is a full request out to the server and its response back. Latency (the travel time of a round trip) is often the dominant cost on mobile and far-away networks, which is why "seven requests instead of one" matters more than the raw byte count.
 
-The usual REST escape hatch is to build a bespoke endpoint — `GET /dashboard-header` — that gathers everything server-side. It works, but now you own a custom endpoint per screen, and the next screen with slightly different needs gets its own. The shapes multiply.
+The usual REST escape hatch is to build a bespoke endpoint - `GET /dashboard-header` - that gathers everything server-side. It works, but now you own a custom endpoint per screen, and the next screen with slightly different needs gets its own. The shapes multiply.
 
 ## GraphQL's pitch, in one sentence
 
-Both problems trace back to the same root: *the server decided the shape.* GraphQL inverts that — ask for exactly the fields you want, get exactly those back, in a single request.
+Both problems trace back to the same root: *the server decided the shape.* GraphQL inverts that - ask for exactly the fields you want, get exactly those back, in a single request.
 
 ```mermaid
 sequenceDiagram
   participant Client
   participant Server
-  Note over Client,Server: GraphQL — the client owns the shape
+  Note over Client,Server: GraphQL - the client owns the shape
   Client->>Server: "name, avatar, and last 3 orders with shipment status"
   Server-->>Client: exactly that, in one response
 ```
 
-For over-fetching, that means the comment list asks for `name` and `avatarUrl` and receives a payload with two fields — no bio, no billing address. For under-fetching, the dashboard header describes the user, their last three orders, *and* each shipment's status in one query, and the server walks the relationships and returns the whole nested shape in one round trip.
+For over-fetching, that means the comment list asks for `name` and `avatarUrl` and receives a payload with two fields - no bio, no billing address. For under-fetching, the dashboard header describes the user, their last three orders, *and* each shipment's status in one query, and the server walks the relationships and returns the whole nested shape in one round trip.
 
-💡 **Key point.** GraphQL didn't invent a faster network or a smaller payload format. It moved the decision of *what to return* from the server to the client. Everything else in this guide — the good parts in Phase 2 and the costs in Phase 3 — follows from that one move.
+💡 **Key point.** GraphQL didn't invent a faster network or a smaller payload format. It moved the decision of *what to return* from the server to the client. Everything else in this guide - the good parts in Phase 2 and the costs in Phase 3 - follows from that one move.
 
 That's the promise. The next phase shows the machinery that makes it real: a typed schema that defines what's askable, a single endpoint, and a response that mirrors the request exactly.
 
 ## Recap
 
-1. **A REST endpoint is a fixed door** — the server decides the response shape, the same way for every caller.
+1. **A REST endpoint is a fixed door** - the server decides the response shape, the same way for every caller.
 2. **Over-fetching** is getting more fields than the screen needs; it hides on fast networks and bites on slow ones.
 3. **Under-fetching** is needing several chained round trips to build one screen; the waiting, not the bytes, is what hurts.
 4. **Both come from one root cause:** the server owns the shape.

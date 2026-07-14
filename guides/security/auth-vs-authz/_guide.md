@@ -25,7 +25,7 @@ This guide fixes that. By the end you'll have a clean mental model for each piec
 ## The phases
 
 1. **[Authentication vs Authorization](01-authentication-vs-authorization.md)** - *who you are* (proving identity) versus *what you're allowed to do* (permissions). Two different jobs, both required. The passport-vs-ticket mental model.
-2. **[Keeping You Logged In: Sessions vs Tokens](02-sessions-vs-tokens.md)** - after login, the server has to remember you. Server-side sessions versus stateless tokens (JWT), with the honest trade-offs: revocation, size, scaling.
+2. **[Keeping You Logged In: Sessions vs Tokens](02-sessions-vs-tokens.md)** - after login, the server has to remember you. Server-side sessions versus stateless tokens (JWT), with the plain trade-offs: revocation, size, scaling.
 3. **[Delegated Access: OAuth & "Sign in with…"](03-oauth-and-sign-in-with.md)** - how an app gets limited access to your data without your password, the valet-key mental model, access vs refresh tokens, scopes, and how OAuth (authz) differs from OpenID Connect (authn).
 
 > This guide deliberately stops at the concepts and the shapes of things. Picking a specific library, hardening a production login flow, and the deeper cryptography of token signing are their own topics - the goal here is the mental model that makes those next steps make sense. Related reading: [How Passwords Are Stored](/guides/how-passwords-are-stored), [HTTPS & TLS](/guides/https-and-tls), [What an API Is](/guides/what-an-api-is).

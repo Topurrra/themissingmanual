@@ -45,7 +45,7 @@ This sounds reckless until you meet the cases it's *perfect* for: live video and
 
 💡 **Key point.** The choice isn't "TCP good, UDP bad." It's a trade-off matched to the job. *Does a late or missing piece ruin the result (file, page) or is it just stale (a video frame, a game position)?* Ruined → TCP. Merely stale → UDP.
 
-Here's the honest side-by-side:
+Here's the plain side-by-side:
 
 ```text
                     TCP                         UDP

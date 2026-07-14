@@ -105,7 +105,7 @@ volatile-*   only keys that have a TTL set      → use when Redis mixes cache +
 noeviction   evict nothing; reject writes with an error  (the default)
 ```
 
-*What just happened:* `allkeys-lru` is the standard choice for a dedicated cache - anything can go, oldest-touched first. The default `noeviction` will start returning errors on writes when full, which surprises people who assumed Redis would quietly drop old keys. If Redis is a cache, change the policy; if it's holding data you can't lose, `noeviction` with monitoring is the honest setting.
+*What just happened:* `allkeys-lru` is the standard choice for a dedicated cache - anything can go, oldest-touched first. The default `noeviction` will start returning errors on writes when full, which surprises people who assumed Redis would quietly drop old keys. If Redis is a cache, change the policy; if it's holding data you can't lose, `noeviction` with monitoring is the safer setting.
 
 ## When you outgrow request/response: pub/sub and streams
 

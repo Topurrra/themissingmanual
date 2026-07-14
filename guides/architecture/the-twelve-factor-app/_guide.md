@@ -13,16 +13,16 @@ updated: 2026-07-10
 
 # The Twelve-Factor App
 
-You shipped something that runs great on your laptop and falls over the moment it meets a second server, a real database, or a deploy at 5pm on a Friday: passwords live in the code, restarting loses data, "works on my machine" has become a personal insult. The Twelve-Factor App is the checklist that turns that fragile thing into something you can deploy, scale, and hand off without dread — and once you internalize it, most of "how do I make this production-ready" stops being a mystery.
+You shipped something that runs great on your laptop and falls over the moment it meets a second server, a real database, or a deploy at 5pm on a Friday: passwords live in the code, restarting loses data, "works on my machine" has become a personal insult. The Twelve-Factor App is the checklist that turns that fragile thing into something you can deploy, scale, and hand off without dread - and once you internalize it, most of "how do I make this production-ready" stops being a mystery.
 
 ## How to read this
 
-This is a field guide, not a spec: each factor exists because of a specific terrible day it prevents, so we lead with the pain and then the rule. You don't have to adopt all twelve at once — read them as moves you reach for when the matching problem shows up. If you only remember three, remember config in the environment, stateless processes, and logs as streams — those three carry most of the weight.
+This is a field guide, not a spec: each factor exists because of a specific terrible day it prevents, so we lead with the pain and then the rule. You don't have to adopt all twelve at once - read them as moves you reach for when the matching problem shows up. If you only remember three, remember config in the environment, stateless processes, and logs as streams - those three carry most of the weight.
 
 ## The phases
 
-1. [One codebase, clean dependencies, config outside the code](01-codebase-deps-config.md) — the foundation that makes a deploy repeatable.
-2. [Stateless processes, port binding, and scaling out](02-processes-and-scale.md) — how the running app behaves so you can run many copies.
-3. [Dev-prod parity, logs as streams, and the operations factors](03-parity-logs-ops.md) — the factors that keep you sane once it's live.
+1. [One codebase, clean dependencies, config outside the code](01-codebase-deps-config.md) - the foundation that makes a deploy repeatable.
+2. [Stateless processes, port binding, and scaling out](02-processes-and-scale.md) - how the running app behaves so you can run many copies.
+3. [Dev-prod parity, logs as streams, and the operations factors](03-parity-logs-ops.md) - the factors that keep you sane once it's live.
 
 [Phase 1: One codebase, clean dependencies, config outside the code](01-codebase-deps-config.md) →

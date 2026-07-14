@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # The mental model: templates and stacks
 
-Picture how most AWS environments actually start. Someone opens the console, clicks through a wizard to make an S3 bucket, clicks again for an SQS queue, attaches an IAM role by hand, and wires a Lambda to it. It works. Then three weeks later you need the same setup in a second region, or a new hire asks "what's actually running in this account?", and the honest answer is "nobody fully knows." The knowledge lives in click history and tribal memory. That's the pain CloudFormation exists to kill.
+Picture how most AWS environments actually start. Someone opens the console, clicks through a wizard to make an S3 bucket, clicks again for an SQS queue, attaches an IAM role by hand, and wires a Lambda to it. It works. Then three weeks later you need the same setup in a second region, or a new hire asks "what's actually running in this account?", and the real answer is "nobody fully knows." The knowledge lives in click history and tribal memory. That's the pain CloudFormation exists to kill.
 
 The core idea is two words: **template** and **stack**. Get those two clear and everything else is detail.
 
@@ -72,7 +72,7 @@ If you've only ever clicked through consoles, the payoff might still feel abstra
 
 **Review.** The template is a file. It lives in Git. A change to your infrastructure becomes a pull request someone can read, comment on, and approve - *before* it touches a real account. Infrastructure changes get the same safety net as code changes.
 
-**Honesty.** The template is the source of truth for what exists. Six months from now, the answer to "what's running?" is "read the template," not "spelunk through the console and hope."
+**Truth.** The template is the source of truth for what exists. Six months from now, the answer to "what's running?" is "read the template," not "spelunk through the console and hope."
 
 > [!NOTE]
 > CloudFormation is AWS's *native* tool - it's part of AWS, free to use (you pay only for the resources it creates), and it knows every AWS service the moment that service launches. That nativeness is its biggest strength and, as you'll see in Phase 3, the root of its main limitation too.

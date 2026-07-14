@@ -2,7 +2,7 @@
 title: "Why Run a Model Yourself"
 guide: local-ai-with-ollama
 phase: 1
-summary: "The four real reasons to run a local model - privacy, no per-use cost, offline access, and tinkering - and an honest read on who it suits and who it doesn't."
+summary: "The four real reasons to run a local model - privacy, no per-use cost, offline access, and tinkering - and a straight read on who it suits and who it doesn't."
 tags: [ollama, local-llm, privacy, offline-ai, open-models]
 difficulty: intermediate
 synonyms:
@@ -15,7 +15,7 @@ updated: 2026-06-30
 
 # Why Run a Model Yourself
 
-You already have ChatGPT, Claude, Gemini - fast, smart, always available. So why would you run a model on your own laptop, where it is slower and not as sharp? Four reasons, and they are real ones. But they do not apply to everyone, so let's be honest about who this is for.
+You already have ChatGPT, Claude, Gemini - fast, smart, always available. So why would you run a model on your own laptop, where it is slower and not as sharp? Four reasons, and they are real ones. But they do not apply to everyone, so let's be clear about who this is for.
 
 ## Privacy: nothing leaves the machine
 
@@ -56,6 +56,6 @@ It is a poor fit if you:
 - Have a modest laptop. Local models need real memory and ideally a decent graphics chip; on weak hardware they crawl. (Phase 2 covers the requirements.)
 - Want it to work with zero setup. Cloud AI is a website and a login. Local AI is a download and a terminal - not hard, but not nothing.
 
-Here is the honest summary: for most people, most of the time, cloud AI is the right default. It is sharper, faster, and needs no setup. Local AI earns its place in specific situations - privacy, cost at scale, offline, and tinkering. If one of those describes you, the rest of this guide gets you running. If none does, it is still worth knowing the option exists, because the situation that calls for it tends to arrive without warning.
+Here is the plain summary: for most people, most of the time, cloud AI is the right default. It is sharper, faster, and needs no setup. Local AI earns its place in specific situations - privacy, cost at scale, offline, and tinkering. If one of those describes you, the rest of this guide gets you running. If none does, it is still worth knowing the option exists, because the situation that calls for it tends to arrive without warning.
 
 A useful way to hold it: cloud AI is renting a sports car, local AI is owning a reliable sedan. The rental is faster and you never maintain it, but it is not in your garage, the company knows every trip you take, and you pay each time you drive. The sedan is yours, it is paid for, and it starts even when the rental office is closed.

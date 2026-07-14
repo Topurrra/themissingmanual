@@ -2,7 +2,7 @@
 title: "TypeScript From Zero"
 guide: "typescript-from-zero"
 phase: 0
-summary: "Learn TypeScript from nothing to genuinely advanced: install it and the basics - types, functions, interfaces, unions, generics, classes, and the build - then the deep half: the structural type system, utility and mapped types, conditional and template-literal types, and typing the real world. Mental-model-first, with honest explanations."
+summary: "Learn TypeScript from nothing to genuinely advanced: install it and the basics - types, functions, interfaces, unions, generics, classes, and the build - then the deep half: the structural type system, utility and mapped types, conditional and template-literal types, and typing the real world. Mental-model-first, with clear explanations."
 tags: [typescript, ts, types, type-safety, javascript, beginner, advanced, generics, utility-types, mapped-types]
 category: programming-languages
 order: 3

@@ -51,7 +51,7 @@ Be especially wary of free AI browser extensions, "summarize this page" plugins,
 
 For the most sensitive work, there's an option that sidesteps the whole "where does it go" question: run the model on your own machine. Tools like Ollama or LM Studio let you download an open-weights model (such as Llama or Mistral) and run it entirely offline. Nothing leaves your computer, so there's no third party to worry about.
 
-This is genuinely useful for confidential drafts, sensitive analysis, or regulated data where you can't risk a cloud service. But be honest about the trade-offs:
+This is genuinely useful for confidential drafts, sensitive analysis, or regulated data where you can't risk a cloud service. But be clear about the trade-offs:
 
 - **Quality is lower.** A model that fits on your laptop is smaller and less capable than the big cloud ones. Fine for many tasks, frustrating for hard ones.
 - **It needs decent hardware.** A capable machine with plenty of memory; modest laptops struggle.

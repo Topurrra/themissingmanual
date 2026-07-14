@@ -145,7 +145,7 @@ stops you, you'll know which one it is and the calm, correct response.
 ## Where macOS really differs from Linux
 
 You've seen how alike they are - same Unix shape, same shell feel, same service-manager concept. To close,
-here's an honest list of where the Mac genuinely goes its own way, so the similarities don't lull you into
+here's a clear-eyed list of where the Mac genuinely goes its own way, so the similarities don't lull you into
 wrong assumptions:
 
 | | macOS | Linux |

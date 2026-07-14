@@ -2,7 +2,7 @@
 title: "Doing It Safely on Live Data"
 guide: "database-migrations"
 phase: 2
-summary: "The golden pattern for live schema changes: add new structure first, backfill the data, then switch the app over — and the expand/contract (parallel-change) approach that keeps the running app working through a rename or type change with zero downtime."
+summary: "The golden pattern for live schema changes: add new structure first, backfill the data, then switch the app over - and the expand/contract (parallel-change) approach that keeps the running app working through a rename or type change with zero downtime."
 tags: [databases, migrations, zero-downtime, expand-contract, parallel-change, backfill, rename-column]
 difficulty: intermediate
 synonyms: ["zero downtime schema change", "how to rename a column without downtime", "expand contract migration", "parallel change pattern", "backfill data migration", "change column type live database", "additive migration first"]
@@ -23,7 +23,7 @@ app and the schema to switch over in the same instant.** Let's build that into a
 
 Picture the obvious approach to renaming a column from `name` to `full_name`: write one migration that
 renames it, deploy it alongside the code that uses the new name. The problem is timing. A deploy is
-never instantaneous — for a window of seconds or minutes, you have a mix:
+never instantaneous - for a window of seconds or minutes, you have a mix:
 
 ```mermaid
 flowchart TD
@@ -34,7 +34,7 @@ flowchart TD
 
 *What just happened:* The rename took effect while old app instances were still live. Those instances
 keep asking for `name`, the column no longer exists, and every one of those requests throws an error
-until the deploy finishes. Even a "fast" rename causes a burst of 500s — the schema and the code tried to
+until the deploy finishes. Even a "fast" rename causes a burst of 500s - the schema and the code tried to
 switch in the same instant, and they couldn't. The fix is to stop trying to switch in one instant.
 
 ## The golden pattern: add, backfill, switch
@@ -68,17 +68,17 @@ period where both exist.
 
 Let's rename `users.name` to `users.full_name` on a live table, step by step.
 
-### Step 1 — Expand: add the new column (additive, safe)
+### Step 1 - Expand: add the new column (additive, safe)
 
 ```sql
 -- migration: 0010_add_full_name.sql  (UP)
 ALTER TABLE users ADD COLUMN full_name text;   -- nullable; existing rows get NULL
 ```
 *What just happened:* You added `full_name` alongside the still-present `name`. The running app doesn't
-know or care that this column exists — it's still reading and writing `name`. Zero impact on traffic.
+know or care that this column exists - it's still reading and writing `name`. Zero impact on traffic.
 This is a deploy you can ship in the middle of a Tuesday.
 
-### Step 2 — Write to both columns (dual-write)
+### Step 2 - Write to both columns (dual-write)
 
 Deploy app code that writes to **both** `name` and `full_name` whenever a user is created or updated.
 Reads still come from `name`.
@@ -92,9 +92,9 @@ flowchart LR
 
 *What just happened:* From this deploy onward, any new or changed row keeps the two columns identical.
 You've stopped the new column from falling further behind. What's left is the rows that existed
-*before* this code shipped — they still have `full_name = NULL`. That's the backfill's job.
+*before* this code shipped - they still have `full_name = NULL`. That's the backfill's job.
 
-### Step 3 — Backfill the old rows (in batches)
+### Step 3 - Backfill the old rows (in batches)
 
 Now copy the existing data across. The instinct is one big `UPDATE`; resist it (Phase 3 explains why a
 single huge `UPDATE` is dangerous). Do it in bounded batches:
@@ -113,11 +113,11 @@ UPDATE 10000
 over successive `id` ranges (a loop, or a small script) until no rows remain with `full_name IS NULL`.
 Batching keeps each statement short, so it never holds locks long or strains the database while real
 users are working. Because Step 2 is already keeping new rows in sync, the backfill only has to catch up
-the *old* rows — once it's done, the two columns match everywhere.
+the *old* rows - once it's done, the two columns match everywhere.
 
-### Step 4 — Switch reads to the new column
+### Step 4 - Switch reads to the new column
 
-Now — and only now — deploy app code that **reads** from `full_name`. The data is all there, so this
+Now - and only now - deploy app code that **reads** from `full_name`. The data is all there, so this
 flips cleanly.
 
 ```mermaid
@@ -130,9 +130,9 @@ flowchart LR
 
 *What just happened:* The app now treats `full_name` as the real column. `name` is still being written
 (by the dual-write from Step 2) but nothing reads it anymore. The rename is, for all user-facing
-purposes, complete — and at no single moment did the app ask for a column that wasn't ready.
+purposes, complete - and at no single moment did the app ask for a column that wasn't ready.
 
-### Step 5 — Contract: drop the old column (later, deliberately)
+### Step 5 - Contract: drop the old column (later, deliberately)
 
 After the new code has been running long enough that you're confident you won't need to roll back to
 the old reads, remove the leftovers:
@@ -143,10 +143,10 @@ ALTER TABLE users DROP COLUMN name;
 ```
 *What just happened:* You removed the old column and the dual-write code that fed it (in the same
 deploy). The expansion is contracted; the table is now in its clean, final shape. This is the *only*
-destructive step, and you took it last, on purpose, well after the switch — when nothing reads `name`
+destructive step, and you took it last, on purpose, well after the switch - when nothing reads `name`
 and you've stopped needing it as a safety net.
 
-⚠️ **Gotcha — don't contract too soon.** The whole safety of expand/contract comes from the overlap
+⚠️ **Gotcha - don't contract too soon.** The whole safety of expand/contract comes from the overlap
 period. If you drop `name` in the same deploy that switches reads to `full_name`, you've recreated the
 deploy-gap problem from the top of this phase *and* thrown away your fallback. Let the dust settle
 between switch and contract. A day is cheap; an incident is not.
@@ -155,19 +155,19 @@ between switch and contract. A day is cheap; an incident is not.
 
 Changing a column's type (say, an `integer` id to a `bigint`, or a `varchar` to `text`) is the same
 dance: add a new column of the new type, dual-write, backfill, switch reads, drop the old. You don't
-mutate the column in place while the app depends on it — you stand up its replacement beside it and
+mutate the column in place while the app depends on it - you stand up its replacement beside it and
 move over calmly.
 
 ## Recap
 
-1. The danger in live migrations is the **deploy gap** — old app code running against a schema that
+1. The danger in live migrations is the **deploy gap** - old app code running against a schema that
    already changed. Don't make the app and schema switch in the same instant.
 2. The **golden pattern** is *add → backfill → switch* (then clean up later). Each step is safe on its
    own and can be a separate deploy.
 3. **Expand/contract** (parallel change) applies that to renames and type changes: add the new column,
    **dual-write** to both, backfill old rows in **batches**, switch reads, then drop the old column
    last.
-4. **Contract late.** The overlap period is your safety net and your rollback path — don't collapse it
+4. **Contract late.** The overlap period is your safety net and your rollback path - don't collapse it
    early.
 
 ---

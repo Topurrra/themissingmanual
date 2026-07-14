@@ -20,13 +20,13 @@ This guide replaces the feeling with a model you can reason from. By the end you
 ## How to read this
 
 - **Want the one-sentence answer?** A VPN is an encrypted tunnel to a relay server: your provider sees encrypted traffic to the VPN, websites see the VPN's address instead of yours. Phase 1 makes that picture solid.
-- **Want to stop being fooled by marketing?** Read in order. Phase 2 walks the "who sees what" ledger, and Phase 3 is the honest part - where the promises quietly break.
+- **Want to stop being fooled by marketing?** Read in order. Phase 2 walks the "who sees what" ledger, and Phase 3 is the clear-eyed part - where the promises quietly break.
 
 ## The phases
 
 1. **[The Tunnel - What a VPN Really Is](01-the-tunnel.md)** - the encrypted-tunnel mental model: a VPN doesn't hide you, it *relays* you through one trusted server, and that single move is the whole product.
 2. **[Who Sees What - The Visibility Ledger](02-who-sees-what.md)** - exactly what changes when the tunnel is on: your ISP goes blind to your destinations, websites see the VPN's address, and one party gains the view your ISP lost.
-3. **[Where the Promises Break](03-where-the-promises-break.md)** - the honest part: HTTPS already encrypted your pages, you are not anonymous, and the VPN provider is now the one you're trusting. When a VPN actually helps, and when it's theater.
+3. **[Where the Promises Break](03-where-the-promises-break.md)** - the clear-eyed part: HTTPS already encrypted your pages, you are not anonymous, and the VPN provider is now the one you're trusting. When a VPN actually helps, and when it's theater.
 
 > This guide assumes the basics of how traffic moves and gets addressed. If "ISP," "IP address," or "request" feel shaky, skim [How the Internet Works](/guides/how-the-internet-works) and [IP, DNS & Ports](/guides/ip-dns-and-ports) first - they make this one click into place.
 

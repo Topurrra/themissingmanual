@@ -11,9 +11,9 @@ updated: 2026-07-10
 
 # The Plugin System
 
-Here's the one sentence that makes Fastify click: **your whole app is a tree of plugins.** Not "an app that *can use* plugins" — the app itself, every route, every shared bit of logic, is a plugin or lives inside one. Once you hold that picture, the things that confuse newcomers — why a decorator "disappears," why two halves of the app can't see each other — stop being mysteries and become the system working exactly as designed.
+Here's the one sentence that makes Fastify click: **your whole app is a tree of plugins.** Not "an app that *can use* plugins" - the app itself, every route, every shared bit of logic, is a plugin or lives inside one. Once you hold that picture, the things that confuse newcomers - why a decorator "disappears," why two halves of the app can't see each other - stop being mysteries and become the system working exactly as designed.
 
-> 💡 The mental model for this whole phase: **a tree of little worlds.** Each plugin is a node. Each node gets its own scope — its own routes, hooks, and decorators — and by default that scope is sealed off from its siblings and its parent. You opt *out* of the sealing on purpose, not into it.
+> 💡 The mental model for this whole phase: **a tree of little worlds.** Each plugin is a node. Each node gets its own scope - its own routes, hooks, and decorators - and by default that scope is sealed off from its siblings and its parent. You opt *out* of the sealing on purpose, not into it.
 
 In the last two phases you wrote routes directly on `app`. That works for a toy. The moment you have a books section, a users section, and a shared database, you want them in separate files that don't trip over each other. That's what plugins give you.
 
@@ -22,7 +22,7 @@ In the last two phases you wrote routes directly on `app`. That works for a toy.
 A plugin is just a function. Two shapes are allowed:
 
 ```javascript
-// async style (preferred — Fastify awaits it)
+// async style (preferred - Fastify awaits it)
 async function myPlugin(fastify, opts) {
   // register routes, hooks, decorators here
 }
@@ -34,7 +34,7 @@ function myPlugin(fastify, opts, done) {
 }
 ```
 
-*What just happened:* Fastify handed your function a `fastify` instance and an `opts` object (whatever you passed at registration time). That `fastify` argument is **not** the same object as the top-level app — it's a *child* instance scoped to this plugin. Hold that thought; it's the whole reason encapsulation works.
+*What just happened:* Fastify handed your function a `fastify` instance and an `opts` object (whatever you passed at registration time). That `fastify` argument is **not** the same object as the top-level app - it's a *child* instance scoped to this plugin. Hold that thought; it's the whole reason encapsulation works.
 
 ## Writing a real plugin: book routes
 
@@ -62,7 +62,7 @@ async function bookRoutes(fastify, opts) {
 module.exports = bookRoutes;
 ```
 
-*What just happened:* nothing here registers on the global app — every `fastify.get`/`fastify.post` attaches to the *child* instance for this plugin. The routes don't exist anywhere until someone registers `bookRoutes`. Notice the paths are relative (`/`, `/:id`) — we'll give them a home in the next step.
+*What just happened:* nothing here registers on the global app - every `fastify.get`/`fastify.post` attaches to the *child* instance for this plugin. The routes don't exist anywhere until someone registers `bookRoutes`. Notice the paths are relative (`/`, `/:id`) - we'll give them a home in the next step.
 
 ## Mounting it with `register` and a `prefix`
 
@@ -79,13 +79,13 @@ app.register(bookRoutes, { prefix: '/api/books' });
 app.listen({ port: 3000 });
 ```
 
-*What just happened:* `register` created a child instance, ran `bookRoutes` against it, and the `prefix: '/api/books'` option scoped every route inside the plugin to that path. So the plugin's `'/'` becomes `GET /api/books`, and `'/:id'` becomes `GET /api/books/:id`. The plugin doesn't know or care what prefix it lives under — you decide that at the mount point. That's reusability: register the same plugin twice under two prefixes and you get two mounted copies.
+*What just happened:* `register` created a child instance, ran `bookRoutes` against it, and the `prefix: '/api/books'` option scoped every route inside the plugin to that path. So the plugin's `'/'` becomes `GET /api/books`, and `'/:id'` becomes `GET /api/books/:id`. The plugin doesn't know or care what prefix it lives under - you decide that at the mount point. That's reusability: register the same plugin twice under two prefixes and you get two mounted copies.
 
-> 📝 `register` is **asynchronous** and deferred. Fastify doesn't run your plugin the instant you call `register` — it queues it and boots the whole tree when you call `listen` (or `ready`). If you ever need something to be fully wired up before continuing, `await app.ready()`.
+> 📝 `register` is **asynchronous** and deferred. Fastify doesn't run your plugin the instant you call `register` - it queues it and boots the whole tree when you call `listen` (or `ready`). If you ever need something to be fully wired up before continuing, `await app.ready()`.
 
 ## Encapsulation: the sealed-off scope
 
-Here's the part that surprises people, so let's hit it head-on. Anything you register **inside** a plugin — routes, hooks, decorators, even sub-plugins — is visible to that plugin and its **children**, but invisible to its **siblings and its parent**.
+Here's the part that surprises people, so let's hit it head-on. Anything you register **inside** a plugin - routes, hooks, decorators, even sub-plugins - is visible to that plugin and its **children**, but invisible to its **siblings and its parent**.
 
 Picture two plugins registered on the same app:
 
@@ -100,13 +100,13 @@ app.register(async function publicArea(fastify) {
 });
 ```
 
-*What just happened:* the `requireAdmin` hook is registered *inside* `adminArea`, so it guards `/admin/stats` — and **only** that subtree. It does not touch `/health`, because `publicArea` is a sibling, not a child. The auth check can't leak across. This is the feature that lets a 200-route app stay sane: each section's middleware, error handling, and decorations stay contained in its own little world. No "global middleware accidentally ran on the wrong route" bugs.
+*What just happened:* the `requireAdmin` hook is registered *inside* `adminArea`, so it guards `/admin/stats` - and **only** that subtree. It does not touch `/health`, because `publicArea` is a sibling, not a child. The auth check can't leak across. This is the feature that lets a 200-route app stay sane: each section's middleware, error handling, and decorations stay contained in its own little world. No "global middleware accidentally ran on the wrong route" bugs.
 
-> 💡 Why this matters: in frameworks without encapsulation, registering middleware is a global act and order-of-registration becomes a minefield. In Fastify, scope is structural — where a thing lives in the tree *is* its reach.
+> 💡 Why this matters: in frameworks without encapsulation, registering middleware is a global act and order-of-registration becomes a minefield. In Fastify, scope is structural - where a thing lives in the tree *is* its reach.
 
 ## `decorate`: sharing things on the instance
 
-You'll want shared resources — a database connection, a config object, a helper — available to handlers without importing them everywhere. That's `decorate`:
+You'll want shared resources - a database connection, a config object, a helper - available to handlers without importing them everywhere. That's `decorate`:
 
 ```javascript
 const db = await connectToDatabase();
@@ -127,9 +127,9 @@ app.decorateReply('sendError', function (msg) {
 });
 ```
 
-*What just happened:* `decorateRequest` and `decorateReply` add properties/methods to every `request` and `reply`. Declaring `req.user` up front (with a default) is the right pattern — a hook later fills it in. And here's the catch that sets up the next section: **decorations follow the exact same encapsulation rules as everything else.** Decorate inside a plugin, and only that plugin's subtree sees it.
+*What just happened:* `decorateRequest` and `decorateReply` add properties/methods to every `request` and `reply`. Declaring `req.user` up front (with a default) is the right pattern - a hook later fills it in. And here's the catch that sets up the next section: **decorations follow the exact same encapsulation rules as everything else.** Decorate inside a plugin, and only that plugin's subtree sees it.
 
-## The `fastify.db is undefined` trap — and `fp`
+## The `fastify.db is undefined` trap - and `fp`
 
 This is the single most common Fastify "why?!" moment, so let's make sure you never lose an hour to it.
 
@@ -154,9 +154,9 @@ app.register(bookRoutes, { prefix: '/api/books' });
 // inside bookRoutes: fastify.db  →  undefined  💥
 ```
 
-*What just happened:* `dbPlugin` decorated its **own child instance** with `db`. By the encapsulation rules, that decoration is sealed inside `dbPlugin`'s scope. `bookRoutes` is a *sibling*, not a child — so it never sees `db`. Everything is behaving correctly; the connection is just trapped one level too deep.
+*What just happened:* `dbPlugin` decorated its **own child instance** with `db`. By the encapsulation rules, that decoration is sealed inside `dbPlugin`'s scope. `bookRoutes` is a *sibling*, not a child - so it never sees `db`. Everything is behaving correctly; the connection is just trapped one level too deep.
 
-⚠️ The fix is to **deliberately break encapsulation** for this one plugin using `fastify-plugin` (conventionally imported as `fp`). Wrapping a plugin in `fp` tells Fastify "don't create a sealed child scope for this — apply its decorations and hooks to the parent instead":
+⚠️ The fix is to **deliberately break encapsulation** for this one plugin using `fastify-plugin` (conventionally imported as `fp`). Wrapping a plugin in `fp` tells Fastify "don't create a sealed child scope for this - apply its decorations and hooks to the parent instead":
 
 ```javascript
 // db.js
@@ -179,7 +179,7 @@ Here's the tree we just built, with the books API wired up properly:
 ```mermaid
 flowchart TD
   app["app (root)"]
-  db["dbPlugin — wrapped in fp\ndecorates the WHOLE tree with .db"]
+  db["dbPlugin - wrapped in fp\ndecorates the WHOLE tree with .db"]
   books["bookRoutes (encapsulated)\nprefix /api/books"]
   admin["adminArea (encapsulated)\nonRequest: requireAdmin"]
   app --> db
@@ -192,10 +192,10 @@ flowchart TD
 ## Recap
 
 - **Everything is a plugin.** Your app is a *tree* of plugins; `app.register(plugin, opts)` adds a node, and a plugin is just `async (fastify, opts) => {}` (or a callback form ending in `done()`).
-- A `prefix` option on `register` scopes a plugin's routes under a path — the plugin stays unaware of where it's mounted, so it's reusable.
-- **Encapsulation** is the core idea: routes, hooks, and decorators registered inside a plugin reach that plugin and its children only — never siblings or the parent. That's how big apps stay isolated.
+- A `prefix` option on `register` scopes a plugin's routes under a path - the plugin stays unaware of where it's mounted, so it's reusable.
+- **Encapsulation** is the core idea: routes, hooks, and decorators registered inside a plugin reach that plugin and its children only - never siblings or the parent. That's how big apps stay isolated.
 - `decorate` adds shared things to the instance (`fastify.db`); `decorateRequest`/`decorateReply` add to every request/reply. All of them obey encapsulation.
-- ⚠️ A decorator trapped in a plugin's scope is the classic `fastify.db is undefined` bug. Wrap the plugin in **`fastify-plugin` (`fp`)** to deliberately share across the whole app — use it for app-wide infrastructure, not for ordinary feature plugins.
+- ⚠️ A decorator trapped in a plugin's scope is the classic `fastify.db is undefined` bug. Wrap the plugin in **`fastify-plugin` (`fp`)** to deliberately share across the whole app - use it for app-wide infrastructure, not for ordinary feature plugins.
 
 ## Quick check
 
@@ -226,8 +226,8 @@ flowchart TD
   {
     "q": "When should you wrap a plugin in fastify-plugin (fp)?",
     "choices": [
-      "Always — every plugin should use fp",
-      "Never — fp is deprecated",
+      "Always - every plugin should use fp",
+      "Never - fp is deprecated",
       "When the plugin provides something app-wide (db, auth, config) that siblings legitimately need to share",
       "Only for plugins that define routes"
     ],

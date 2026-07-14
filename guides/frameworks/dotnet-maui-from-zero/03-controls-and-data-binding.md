@@ -11,24 +11,24 @@ updated: 2026-07-10
 
 # Controls & Data Binding
 
-In Phase 2 you arranged controls by hand, setting a `Label`'s text yourself in code. That works for one label, but falls apart once your UI has a dozen fields reflecting a changing object — you'd write `titleLabel.Text = note.Title;` over and over, re-running it every time the data changes. Data binding is the escape hatch.
+In Phase 2 you arranged controls by hand, setting a `Label`'s text yourself in code. That works for one label, but falls apart once your UI has a dozen fields reflecting a changing object - you'd write `titleLabel.Text = note.Title;` over and over, re-running it every time the data changes. Data binding is the escape hatch.
 
 ## The mental model: tie the control to the data, then walk away
 
-Here's the one idea to hold for this whole phase: **data binding connects a control's property to a property on a data object.** You declare the connection once — "this `Label`'s `Text` should mirror this note's `Title`" — and MAUI keeps them in sync. You stop poking the UI by hand.
+Here's the one idea to hold for this whole phase: **data binding connects a control's property to a property on a data object.** You declare the connection once - "this `Label`'s `Text` should mirror this note's `Title`" - and MAUI keeps them in sync. You stop poking the UI by hand.
 
 Two pieces make it work:
 
-- **`BindingContext`** — the data object a control (or a whole page) is pointed at, "the thing this UI is about." A notes detail page is *about* one `Note`, so that `Note` is its `BindingContext`.
-- **`{Binding PropertyName}`** — in XAML, "fill me from the property called `PropertyName`, looked up on the `BindingContext`."
+- **`BindingContext`** - the data object a control (or a whole page) is pointed at, "the thing this UI is about." A notes detail page is *about* one `Note`, so that `Note` is its `BindingContext`.
+- **`{Binding PropertyName}`** - in XAML, "fill me from the property called `PropertyName`, looked up on the `BindingContext`."
 
 The page gets pointed at a `Note`, and each control reaches into that note for the property it cares about. You set the source once; the UI follows.
 
-> 📝 If you've used the web, this is the same instinct as templating — but two-way and live, not a one-time render. The control doesn't *copy* the value; it *subscribes* to it.
+> 📝 If you've used the web, this is the same instinct as templating - but two-way and live, not a one-time render. The control doesn't *copy* the value; it *subscribes* to it.
 
 ## Your first binding
 
-Bind a `Label` to a note's title. First the data object — a plain C# class for now:
+Bind a `Label` to a note's title. First the data object - a plain C# class for now:
 
 ```csharp
 public class Note
@@ -38,7 +38,7 @@ public class Note
 }
 ```
 
-*What just happened:* a class with two properties — the kind of object a binding reads from. (It has one limitation, coming up.)
+*What just happened:* a class with two properties - the kind of object a binding reads from. (It has one limitation, coming up.)
 
 Now the page. Set the `BindingContext` in the code-behind, then bind in XAML:
 
@@ -62,15 +62,15 @@ public partial class NoteDetailPage : ContentPage
 </ContentPage>
 ```
 
-*What just happened:* the page's `BindingContext` is one `Note`. The first `Label` looks up `Title` and shows "Buy milk"; the second shows the body — no `titleLabel.Text = ...` anywhere. Controls inherit the page's `BindingContext`, so set it once and every child can bind against it.
+*What just happened:* the page's `BindingContext` is one `Note`. The first `Label` looks up `Title` and shows "Buy milk"; the second shows the body - no `titleLabel.Text = ...` anywhere. Controls inherit the page's `BindingContext`, so set it once and every child can bind against it.
 
 ## Binding modes: which way does data flow?
 
 A binding has a *direction*. The mode decides who tells whom about changes.
 
-- **OneWay** — source → UI. The data drives the control; default for display controls like `Label`, and usually what you want for read-only text.
-- **TwoWay** — source ↔ UI. Changes flow both directions — for *inputs*, where you want the user's typing written back into the data object. `Entry.Text` and `Switch.IsToggled` default to TwoWay.
-- **OneTime** — set once at bind time, then never again. Rare; useful for values you know won't change.
+- **OneWay** - source → UI. The data drives the control; default for display controls like `Label`, and usually what you want for read-only text.
+- **TwoWay** - source ↔ UI. Changes flow both directions - for *inputs*, where you want the user's typing written back into the data object. `Entry.Text` and `Switch.IsToggled` default to TwoWay.
+- **OneTime** - set once at bind time, then never again. Rare; useful for values you know won't change.
 
 Here's a TwoWay binding on an editable title:
 
@@ -78,26 +78,26 @@ Here's a TwoWay binding on an editable title:
 <Entry Text="{Binding Title, Mode=TwoWay}" Placeholder="Note title" />
 ```
 
-*What just happened:* the `Entry` shows the note's current `Title`, and edits write straight back to `note.Title` — no `TextChanged` handler, no manual assignment. That's the payoff of TwoWay.
+*What just happened:* the `Entry` shows the note's current `Title`, and edits write straight back to `note.Title` - no `TextChanged` handler, no manual assignment. That's the payoff of TwoWay.
 
-> 💡 You often don't need to write `Mode=TwoWay` on an `Entry` — its `Text` is TwoWay by default. Spell it out when you want to be explicit, or when you're binding a property whose default mode isn't what you want.
+> 💡 You often don't need to write `Mode=TwoWay` on an `Entry` - its `Text` is TwoWay by default. Spell it out when you want to be explicit, or when you're binding a property whose default mode isn't what you want.
 
 ## The catch: live updates need change notifications
 
-Now the part that trips up everyone the first time. Bind a `Label` to `note.Title`, then later run `note.Title = "Buy oat milk";` in code — and the label **doesn't change.** The binding read the value once and has no idea the property moved. A plain class like our `Note` has no way to announce "hey, `Title` changed" — the binding wired itself up, but nobody rang the bell.
+Now the part that trips up everyone the first time. Bind a `Label` to `note.Title`, then later run `note.Title = "Buy oat milk";` in code - and the label **doesn't change.** The binding read the value once and has no idea the property moved. A plain class like our `Note` has no way to announce "hey, `Title` changed" - the binding wired itself up, but nobody rang the bell.
 
 The fix is an interface called **`INotifyPropertyChanged`**: your data object raises an event every time a property changes, and the binding listens for it. With that in place, set `note.Title` in code and the label updates instantly.
 
-> ⚠️ A plain object (a "POCO") binds *once* — it'll show the initial value fine — but it won't *live-update* when properties change afterward. If your UI mysteriously goes stale after you change data in code, this is almost always why.
+> ⚠️ A plain object (a "POCO") binds *once* - it'll show the initial value fine - but it won't *live-update* when properties change afterward. If your UI mysteriously goes stale after you change data in code, this is almost always why.
 
-We're not implementing `INotifyPropertyChanged` by hand here — it's the whole reason Phase 4 exists, and CommunityToolkit.Mvvm makes it nearly free. For now, hold the rule: **bindings show the current value at bind time, but only live-update if the source raises change notifications.** See [Phase 4: The MVVM Pattern](04-mvvm.md).
+We're not implementing `INotifyPropertyChanged` by hand here - it's the whole reason Phase 4 exists, and CommunityToolkit.Mvvm makes it nearly free. For now, hold the rule: **bindings show the current value at bind time, but only live-update if the source raises change notifications.** See [Phase 4: The MVVM Pattern](04-mvvm.md).
 
 ## Lists: CollectionView, ItemsSource, and ItemTemplate
 
-A notes app needs to show *many* notes, not one. That's `CollectionView` — MAUI's workhorse for scrolling lists. It has two key bindings:
+A notes app needs to show *many* notes, not one. That's `CollectionView` - MAUI's workhorse for scrolling lists. It has two key bindings:
 
-- **`ItemsSource`** — bound to a *collection* of objects (your list of notes).
-- **`ItemTemplate`** — a `DataTemplate` describing how to render *one* row.
+- **`ItemsSource`** - bound to a *collection* of objects (your list of notes).
+- **`ItemTemplate`** - a `DataTemplate` describing how to render *one* row.
 
 ```xml
 <CollectionView ItemsSource="{Binding Notes}">
@@ -109,11 +109,11 @@ A notes app needs to show *many* notes, not one. That's `CollectionView` — MAU
 </CollectionView>
 ```
 
-*What just happened:* `ItemsSource` points at the page's `Notes` collection, so the `CollectionView` knows it has, say, five notes, and stamps out a copy of the `DataTemplate` for each. Crucially, **inside the `DataTemplate`, `{Binding Title}` is relative to each item — a single `Note` — not the page.** The page's `BindingContext` is the screen as a whole; each row's `BindingContext` is automatically the note for that row.
+*What just happened:* `ItemsSource` points at the page's `Notes` collection, so the `CollectionView` knows it has, say, five notes, and stamps out a copy of the `DataTemplate` for each. Crucially, **inside the `DataTemplate`, `{Binding Title}` is relative to each item - a single `Note` - not the page.** The page's `BindingContext` is the screen as a whole; each row's `BindingContext` is automatically the note for that row.
 
 So you have two layers of binding context at once: the page is about the *list*, each row is about *one note*. MAUI sets the row context for you.
 
-> 💡 Back the list with an **`ObservableCollection<T>`**, not a plain `List<T>`. It tells the `CollectionView` whenever you add or remove an item, so the list redraws automatically — a plain `List` has no such signal. Same problem as `INotifyPropertyChanged`, one level up: the *collection* needs to announce changes too.
+> 💡 Back the list with an **`ObservableCollection<T>`**, not a plain `List<T>`. It tells the `CollectionView` whenever you add or remove an item, so the list redraws automatically - a plain `List` has no such signal. Same problem as `INotifyPropertyChanged`, one level up: the *collection* needs to announce changes too.
 
 ## Wiring the notes app
 
@@ -157,7 +157,7 @@ The list XAML binds the `CollectionView` to it:
 </ContentPage>
 ```
 
-*What just happened:* each note becomes a two-line row — title on top, body in gray underneath. The bindings inside the template read from each individual `Note`, because that's the row's context. One template, every note rendered consistently.
+*What just happened:* each note becomes a two-line row - title on top, body in gray underneath. The bindings inside the template read from each individual `Note`, because that's the row's context. One template, every note rendered consistently.
 
 And the detail page edits one note's title with a TwoWay `Entry`:
 
@@ -168,16 +168,16 @@ And the detail page edits one note's title with a TwoWay `Entry`:
 </VerticalStackLayout>
 ```
 
-*What just happened:* point this page's `BindingContext` at one `Note` and the `Entry`/`Editor` both show and *write back* its title and body as the user types — the "set it once, walk away" promise from the top of the phase.
+*What just happened:* point this page's `BindingContext` at one `Note` and the `Entry`/`Editor` both show and *write back* its title and body as the user types - the "set it once, walk away" promise from the top of the phase.
 
-You now have a list that renders itself and an edit screen that reads and writes a note — all declared in XAML, no manual UI-poking. One gap left: making the UI live-update when data changes in code, the heart of the next phase.
+You now have a list that renders itself and an edit screen that reads and writes a note - all declared in XAML, no manual UI-poking. One gap left: making the UI live-update when data changes in code, the heart of the next phase.
 
 ## Recap
 
-- **Data binding ties a control's property to a data object's property.** Set the source once via `BindingContext`; the UI follows — no manual `label.Text = ...`.
+- **Data binding ties a control's property to a data object's property.** Set the source once via `BindingContext`; the UI follows - no manual `label.Text = ...`.
 - **`{Binding PropertyName}`** looks the property up on the current `BindingContext`. Children inherit the page's context unless overridden.
 - **Modes:** OneWay (source → UI, default for display) and TwoWay (source ↔ UI, default for inputs like `Entry`). OneTime sets once.
-- **Live updates need change notifications** — a plain object binds once but won't refresh when its properties change later. `INotifyPropertyChanged` (Phase 4) fixes that.
+- **Live updates need change notifications** - a plain object binds once but won't refresh when its properties change later. `INotifyPropertyChanged` (Phase 4) fixes that.
 - **Lists** use `CollectionView` + `ItemsSource` + an `ItemTemplate`/`DataTemplate`; bindings inside the template are relative to *each item*. Back the source with an `ObservableCollection` so adds/removes show up automatically.
 
 ## Quick check

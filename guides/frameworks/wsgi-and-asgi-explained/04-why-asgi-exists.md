@@ -78,7 +78,7 @@ So the three-argument, event-driven signature isn't a restyle of WSGI. It's the 
 
 ## WSGI vs ASGI - when to reach for each
 
-Now the honest part, because "newer" does not mean "use it for everything."
+Now the plain-spoken part, because "newer" does not mean "use it for everything."
 
 💡 **WSGI is completely fine - and simpler - for ordinary synchronous apps.** A classic Flask app, a traditional Django project, a CRUD service whose database is fast and local: run it on gunicorn with sync workers and move on. You get a smaller mental model, no async footguns, and battle-tested tooling. Reaching for ASGI here buys you nothing and costs you complexity.
 

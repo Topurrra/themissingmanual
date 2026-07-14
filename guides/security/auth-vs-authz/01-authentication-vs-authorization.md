@@ -73,7 +73,7 @@ content-type: application/json
 ```
 *What just happened:* Alice is fully authenticated - the server knows it's her, and her session cookie is valid. But invoice 777 isn't hers, so the authorization check fails and the server returns `403 Forbidden`. Notice the status code tells the story: not `401` ("we don't know who you are"), but `403` ("we know exactly who you are, and the answer is no").
 
-📝 **Terminology - 401 vs 403.** These two HTTP status codes map cleanly onto our two concepts, and getting them right makes your API honest about what failed. `401 Unauthorized` means *authentication* failed or is missing - "I don't know who you are." `403 Forbidden` means *authorization* failed - "I know who you are, and you may not do this." (Yes, `401` is literally named "Unauthorized" while meaning authentication - a historical naming wart. Read it as "unauthenticated" and you'll stay sane.)
+📝 **Terminology - 401 vs 403.** These two HTTP status codes map cleanly onto our two concepts, and getting them right makes your API clear about what failed. `401 Unauthorized` means *authentication* failed or is missing - "I don't know who you are." `403 Forbidden` means *authorization* failed - "I know who you are, and you may not do this." (Yes, `401` is literally named "Unauthorized" while meaning authentication - a historical naming wart. Read it as "unauthenticated" and you'll stay sane.)
 
 ## How they fit together
 

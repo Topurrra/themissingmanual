@@ -59,7 +59,7 @@ RAM is the desk; the spec is **how many gigabytes**, and its effect on daily lif
 
 💡 **Key point.** RAM is the single spec most likely to fix an *everyday* "this feels slow" - everyday slowness is usually too many things open for the desk you've got. It's why "close some tabs" genuinely helps: you're clearing the desk.
 
-**For buying:** RAM is where a beginner's money is usually best spent. Rough, honest guide for a general-purpose laptop today: around 8 GB handles light use but fills up fast with many browser tabs; around 16 GB suits most people; 32 GB and up is for heavy multitaskers and demanding creative or development work. Rules of thumb, not hard limits - your real number depends on how much you keep open. When unsure, more RAM ages better than a slightly faster CPU.
+**For buying:** RAM is where a beginner's money is usually best spent. Rough, no-nonsense guide for a general-purpose laptop today: around 8 GB handles light use but fills up fast with many browser tabs; around 16 GB suits most people; 32 GB and up is for heavy multitaskers and demanding creative or development work. Rules of thumb, not hard limits - your real number depends on how much you keep open. When unsure, more RAM ages better than a slightly faster CPU.
 
 ## Storage: SSD vs hard drive, and size
 

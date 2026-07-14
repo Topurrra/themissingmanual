@@ -2,7 +2,7 @@
 title: "Cross-Compile and Ship It"
 guide: "cli-tool-go"
 phase: 6
-summary: "Build til for Windows, macOS, and Linux from one machine with GOOS/GOARCH, install it on your PATH with go install, and map the honest next steps."
+summary: "Build til for Windows, macOS, and Linux from one machine with GOOS/GOARCH, install it on your PATH with go install, and map the real next steps."
 tags: [go, cross-compile, goos-goarch, go-install, path]
 difficulty: intermediate
 synonyms:
@@ -28,7 +28,7 @@ windows
 amd64
 ```
 
-Set them to something else and `go build` produces a binary for *that* platform instead. The whole standard library is written in Go and compiles for every target, so there's no cross-compiler to install, no SDK to download - the toolchain you already have contains everything. (The honest caveat: this holds as long as your project is pure Go, like ours. Depend on a package that wraps C code - some SQLite drivers, for instance - and cross-compiling stops being free. It's a real reason people keep CLI tools stdlib-only.)
+Set them to something else and `go build` produces a binary for *that* platform instead. The whole standard library is written in Go and compiles for every target, so there's no cross-compiler to install, no SDK to download - the toolchain you already have contains everything. (The catch: this holds as long as your project is pure Go, like ours. Depend on a package that wraps C code - some SQLite drivers, for instance - and cross-compiling stops being free. It's a real reason people keep CLI tools stdlib-only.)
 
 The pairs you'll actually use:
 
@@ -110,7 +110,7 @@ meta  1
 
 ## Where to take it next
 
-The tool is genuinely done - and genuinely useful, which makes it the perfect codebase to keep learning in. The honest next steps, roughly in the order they start to itch:
+The tool is genuinely done - and genuinely useful, which makes it the perfect codebase to keep learning in. The real next steps, roughly in the order they start to itch:
 
 | Want | What it takes |
 |------|--------------|

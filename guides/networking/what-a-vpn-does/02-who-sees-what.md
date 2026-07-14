@@ -90,7 +90,7 @@ Notice what's *not* in this ledger: there's no row that says "no one can see any
 
 ## Where this genuinely helps
 
-This is the honest case *for* a VPN, and it's a real one:
+This is the real case *for* a VPN, and it's a solid one:
 
 - **Untrusted networks.** On coffee-shop, airport, or hotel Wi-Fi, the network owner is a stranger. The tunnel takes your destinations away from them. Solid, legitimate use.
 - **Your ISP profiling or selling your browsing.** In places where ISPs log and monetize destination data, the tunnel removes that list from their reach.

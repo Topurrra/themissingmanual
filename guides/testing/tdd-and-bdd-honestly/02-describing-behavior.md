@@ -149,8 +149,8 @@ drifts out of date, because the build fails the moment they stop being true.
 5. The readable layer is a **real cost** - worth it when someone outside the dev team actually reads it.
 
 You now know what both techniques are and how they fit together. The last and most important phase is the
-honest one: deciding *when* to actually use them.
+plain-spoken one: deciding *when* to actually use them.
 
 ---
 
-[← Phase 1: TDD - Red, Green, Refactor](01-red-green-refactor.md) · [Guide overview](_guide.md) · [Phase 3: Honestly - When They Help, When They Don't →](03-when-they-help.md)
+[← Phase 1: TDD - Red, Green, Refactor](01-red-green-refactor.md) · [Guide overview](_guide.md) · [Phase 3: Straight Talk - When They Help, When They Don't →](03-when-they-help.md)

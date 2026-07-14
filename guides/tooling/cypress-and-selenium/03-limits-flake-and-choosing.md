@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Limits, Flake, and Choosing
 
-Every tool is wonderful in the demo. The question that actually matters is where it hurts at 2am when the suite is red and you can't tell if the app broke or the test did. This phase is the honest map: where Cypress hits walls it can't climb, where Selenium leaks flake, how each one scales, and how the whole picture shifts now that Playwright exists. By the end you'll be able to choose on purpose.
+Every tool is wonderful in the demo. The question that actually matters is where it hurts at 2am when the suite is red and you can't tell if the app broke or the test did. This phase is the clear-eyed map: where Cypress hits walls it can't climb, where Selenium leaks flake, how each one scales, and how the whole picture shifts now that Playwright exists. By the end you'll be able to choose on purpose.
 
 ## Where Cypress hits a wall
 
@@ -72,7 +72,7 @@ Cypress scales mainly by **splitting specs across CI machines** and running them
 
 ## How both compare to Playwright
 
-You can't choose between Cypress and Selenium honestly without naming the third player, because Playwright reshaped the decision. Playwright is a newer tool that, in a sense, takes the best of both architectures: like Selenium it's an **out-of-process** driver, so it isn't boxed into one tab or one origin; like Cypress it has **auto-waiting and excellent developer experience** built in.
+You can't choose between Cypress and Selenium fairly without naming the third player, because Playwright reshaped the decision. Playwright is a newer tool that, in a sense, takes the best of both architectures: like Selenium it's an **out-of-process** driver, so it isn't boxed into one tab or one origin; like Cypress it has **auto-waiting and excellent developer experience** built in.
 
 A fair, qualitative comparison:
 

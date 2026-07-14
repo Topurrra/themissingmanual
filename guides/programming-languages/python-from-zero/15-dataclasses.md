@@ -26,7 +26,7 @@ can describe *what your data is* and stop typing the parts a machine could.
 
 ## The boilerplate problem - see it first
 
-Here's an honest, hand-written bag-of-fields class. Nothing here is clever - every line is obligatory.
+Here's a plain, hand-written bag-of-fields class. Nothing here is clever - every line is obligatory.
 
 ```python
 class Point:
@@ -238,7 +238,7 @@ Point(x=3, y=4)
 and `p[0]` are the same value, and `a, b = p` unpacks it exactly like `(3, 4)` because it *is* a tuple -
 immutable and hashable automatically, with none of the `frozen=True` ceremony.
 
-**When to reach for which.** Both model immutable bags of fields. The honest trade-off:
+**When to reach for which.** Both model immutable bags of fields. The plain trade-off:
 
 | | `typing.NamedTuple` | `@dataclass(frozen=True)` |
 |---|---|---|

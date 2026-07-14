@@ -99,7 +99,7 @@ Putting it together, here's how a real change rides to production:
 
 Something's wrong in prod. In a push world you'd scramble for the previous tag. Here, rollback is the same loop pointed backward - and you have two clean ways to do it.
 
-The GitOps-pure way is to revert the commit. Argo CD reconciles the cluster to the reverted state, and your Git history stays honest about what happened:
+The GitOps-pure way is to revert the commit. Argo CD reconciles the cluster to the reverted state, and your Git history stays accurate about what happened:
 
 ```console
 $ git revert a1b2c3d        # undo the bad deploy commit

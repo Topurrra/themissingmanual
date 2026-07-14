@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # Where Objects Live & How They're Allocated
 
-Before we can talk about cleaning up memory, we have to be honest about where the stuff *is*: every value you create sits somewhere in memory, in one of two neighborhoods with completely different rules - one cleans up after itself automatically, and one does not. That second one is the whole reason garbage collection exists.
+Before we can talk about cleaning up memory, we have to be clear about where the stuff *is*: every value you create sits somewhere in memory, in one of two neighborhoods with completely different rules - one cleans up after itself automatically, and one does not. That second one is the whole reason garbage collection exists.
 
 > ⏭️ This phase recaps an idea covered in full in [What Actually Happens When Your Code Runs](/guides/what-happens-when-code-runs). If the stack and heap are already solid for you, skim the recap and slow down at *"The hard part."*
 

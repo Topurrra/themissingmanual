@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Production reality: plugins, credentials, and the tradeoffs
 
-You can read and write a `Jenkinsfile` now. This phase is about everything the happy path doesn't show you: where the power comes from, where the pain comes from, how to handle secrets without leaking them, and the honest answer to "should we even be on Jenkins."
+You can read and write a `Jenkinsfile` now. This phase is about everything the happy path doesn't show you: where the power comes from, where the pain comes from, how to handle secrets without leaking them, and the straight answer to "should we even be on Jenkins."
 
 ## Plugins: the superpower and the curse
 
@@ -66,7 +66,7 @@ pipeline {
 
 A blunt rule that has saved many incidents: if you ever see a real password, token, or key typed directly into a `Jenkinsfile` or an `environment` value, treat it as a leak. Move it to the credential store and rotate it.
 
-## The honest tradeoffs: why teams love it and hate it
+## The real tradeoffs: why teams love it and hate it
 
 You will form an opinion about Jenkins. Here is a fair one to start from.
 
@@ -82,7 +82,7 @@ You will form an opinion about Jenkins. Here is a fair one to start from.
 - **The maintenance burden is exactly the cost the "no bill" point hides.** You pay in engineer-hours instead of dollars.
 - **The plugin fragility above is constant**, and the UI and defaults show their age.
 
-Where it fits today, honestly: if you're a small team or a greenfield project with code that's allowed in the cloud, a hosted CI like GitHub Actions (see [/guides/your-first-pipeline-github-actions](/guides/your-first-pipeline-github-actions)) will cost you far less pain to start. Jenkins earns its place when you need self-hosting, when you're already deep in it, or when you need something no SaaS offers. It is not the exciting choice, and it is not going away, because the ground it owns, the enterprise that must self-host, isn't going anywhere either.
+Where it fits today, plainly: if you're a small team or a greenfield project with code that's allowed in the cloud, a hosted CI like GitHub Actions (see [/guides/your-first-pipeline-github-actions](/guides/your-first-pipeline-github-actions)) will cost you far less pain to start. Jenkins earns its place when you need self-hosting, when you're already deep in it, or when you need something no SaaS offers. It is not the exciting choice, and it is not going away, because the ground it owns, the enterprise that must self-host, isn't going anywhere either.
 
 ## What to do when you inherit one
 

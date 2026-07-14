@@ -74,7 +74,7 @@ program continues normally
 
 **What it actually is.** A `catch` block can name the exception type it handles. Stack several, and the runtime picks the *first* matching type. The art is catching failures you can actually do something about, and letting everything else keep rising.
 
-💡 **Catch specific types, not `Exception`.** A bare `catch (Exception ex)` grabs *everything*: the file-not-found you expected, but also out-of-memory, a null-reference bug, a typo you'd want to crash loudly. Swallowing it all hides real bugs behind a calm-looking but quietly broken program. Catch the narrowest type you're prepared to handle; if you can't recover, don't catch - let it propagate (or crash, which is honest).
+💡 **Catch specific types, not `Exception`.** A bare `catch (Exception ex)` grabs *everything*: the file-not-found you expected, but also out-of-memory, a null-reference bug, a typo you'd want to crash loudly. Swallowing it all hides real bugs behind a calm-looking but quietly broken program. Catch the narrowest type you're prepared to handle; if you can't recover, don't catch - let it propagate (or crash, which is the clean outcome).
 
 **A real example.**
 

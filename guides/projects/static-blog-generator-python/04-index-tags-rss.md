@@ -31,7 +31,7 @@ The front page is a heading plus a list of links, newest first. Create `template
 
 Notice what this template *doesn't* do: it doesn't loop over posts. It can't. Our `render()` replaces placeholders; it has no concept of "repeat this bit for each item." A real engine would write `{% for post in posts %}` right in the template - that loop syntax is precisely what Jinja2 sells.
 
-Our honest workaround: build the repeated part in Python, where loops live, and hand the finished block to the template as one value:
+Our no-nonsense workaround: build the repeated part in Python, where loops live, and hand the finished block to the template as one value:
 
 ```python
 def post_list_items(posts):

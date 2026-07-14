@@ -56,7 +56,7 @@ That's senior-level Spring fluency. Not "I memorized more annotations" - "I unde
 
 ## Where to go from here
 
-A few honest directions, depending on what you want next:
+A few straightforward directions, depending on what you want next:
 
 - **Re-read [Spring Boot From Zero](/guides/spring-boot-from-zero) with new eyes.** This is the single highest-leverage thing you can do. Every annotation in that guide now has a visible mechanism underneath it. `@RestController`? A `@Controller` plus `@ResponseBody`, registered as a bean, dispatched by a `DispatcherServlet` you can now picture. Auto-configured `DataSource`? A conditional `@Bean`. The fog won't just thin - it'll lift.
 - **Go one layer deeper: the Servlet API.** Underneath `DispatcherServlet` is the raw Java servlet model - `HttpServletRequest`, `HttpServletResponse`, filters, the servlet container contract. It's the foundation the whole web side of Spring stands on. You don't *need* it day to day, but knowing it exists (and roughly how it works) completes the picture from the metal up.

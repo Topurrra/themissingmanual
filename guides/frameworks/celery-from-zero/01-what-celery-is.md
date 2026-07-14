@@ -18,21 +18,21 @@ handling their request is stuck too, unable to serve anyone else until that mail
 
 The fix is one idea: **do the slow part later, in the background, and answer the user right now.**
 Celery is the tool most Python apps reach for to make that happen. By the end of this phase you'll have
-the mental model — the four moving pieces and why they're separate — so the hands-on setup in later
+the mental model - the four moving pieces and why they're separate - so the hands-on setup in later
 phases makes sense instead of feeling like magic incantations.
 
-## The problem — some work is too slow for a request
+## The problem - some work is too slow for a request
 
-📝 **The core tension.** A web request should be *fast* — measured in milliseconds. But plenty of
+📝 **The core tension.** A web request should be *fast* - measured in milliseconds. But plenty of
 real work isn't: sending an email, generating a PDF report, processing an uploaded video, calling a
 sluggish third-party API. Do that work *inline* (right there in the request handler) and two bad
 things happen at once: the user waits for the whole thing to finish, and your web worker is tied up
 the entire time, unable to handle other requests.
 
-Here's the painful version — work done inline:
+Here's the painful version - work done inline:
 
 ```python
-# views.py — the SLOW way
+# views.py - the SLOW way
 def signup(request):
     user = create_user(request.data)
     send_welcome_email(user)      # blocks ~5s waiting on the mail service
@@ -43,45 +43,45 @@ def signup(request):
 that line until the mail service answers, so the response is held hostage for five seconds. Multiply
 that by a busy signup hour and your web workers spend most of their time waiting.
 
-Now the fix — hand the slow work off and return immediately:
+Now the fix - hand the slow work off and return immediately:
 
 ```python
-# views.py — the BACKGROUND way
+# views.py - the BACKGROUND way
 def signup(request):
     user = create_user(request.data)
     send_welcome_email.delay(user.id)   # enqueue it; returns instantly
     return Response({"status": "ok"})    # user gets a snappy response right away
 ```
 
-*What just happened:* `.delay(...)` doesn't *run* the email code — it drops a "please send this email"
+*What just happened:* `.delay(...)` doesn't *run* the email code - it drops a "please send this email"
 message onto a queue and returns in microseconds. The response goes back to the user immediately. The
 actual sending happens moments later, in a different process, while your web worker has already moved on
-to the next request. (Don't worry about `.delay` or why we pass `user.id` instead of `user` yet — those
+to the next request. (Don't worry about `.delay` or why we pass `user.id` instead of `user` yet - those
 are later phases. For now, notice the *shape*: enqueue, return, run-later.)
 
-💡 **The reframe.** The slow work didn't get faster. You stopped *waiting* for it. That single shift —
-from "do it now while the user waits" to "schedule it and answer now" — is the entire point of a task
+💡 **The reframe.** The slow work didn't get faster. You stopped *waiting* for it. That single shift - 
+from "do it now while the user waits" to "schedule it and answer now" - is the entire point of a task
 queue.
 
 ## What Celery is
 
-📝 **Celery** — a distributed task queue for Python. You define ordinary Python functions as **tasks**,
+📝 **Celery** - a distributed task queue for Python. You define ordinary Python functions as **tasks**,
 your application **enqueues** them when it wants them run, and separate **worker** processes pick them up
 and execute them asynchronously. You write the function once; Celery handles getting it onto a queue,
 delivering it to a worker, running it, and (optionally) reporting back.
 
 ⚠️ **"Asynchronous" here is not asyncio.** This trips up nearly everyone coming from `async`/`await`. In
-Celery, "asynchronous" means the work runs in a *different process* — often on a *different machine* —
+Celery, "asynchronous" means the work runs in a *different process* - often on a *different machine* - 
 not on the same event loop a moment later. It's about handing work off to an entirely separate program
 that runs it independently. If you've read [Python from Zero](/guides/python-from-zero), this is a
 different axis from generators or coroutines: those keep one process busy efficiently, Celery spreads
 work across many processes.
 
-## The four pieces — the mental model
+## The four pieces - the mental model
 
 This is the model to burn into memory. Everything else in Celery is detail hanging off these four parts:
 
-📝 **(1) The client (your app)** enqueues a task — "run `send_welcome_email` with this argument."
+📝 **(1) The client (your app)** enqueues a task - "run `send_welcome_email` with this argument."
 📝 **(2) The broker** (usually Redis or RabbitMQ) is the middleman that *holds the queue* of task
 messages until a worker is ready for them.
 📝 **(3) The workers** are separate processes that pull tasks off the broker and actually execute the
@@ -99,15 +99,15 @@ flowchart LR
 That broker in the middle is exactly the **message queue** idea from
 [Webhooks & Message Queues](/guides/webhooks-and-message-queues): a producer drops a message, the queue
 holds it, a consumer picks it up when ready. Celery is a polished, Python-native layer built on top of
-that pattern — it gives the message a name (`send_welcome_email`), serializes the arguments, and runs the
+that pattern - it gives the message a name (`send_welcome_email`), serializes the arguments, and runs the
 matching function on the other side. If the queue concept feels shaky, that guide is worth a detour
 first; everything here sits on top of it.
 
 The result backend is the one piece you can often skip. For fire-and-forget jobs like sending an email,
-you don't care about a return value — you enqueue it and forget it. You only need one when your app
+you don't care about a return value - you enqueue it and forget it. You only need one when your app
 wants to *check on* a task later (e.g. "is the report ready to download yet?").
 
-## It's separate processes — that's the whole trick
+## It's separate processes - that's the whole trick
 
 💡 **The realization that makes Celery click:** your web app and your workers are *different programs*.
 They don't share memory or call each other's functions. They communicate *only* through the broker, by
@@ -120,16 +120,16 @@ That separation is exactly why Celery is powerful:
   (or spin up another machine running workers). They all pull from the same broker. The web app doesn't
   change at all.
 - **It survives restarts.** Deploy new web code, and the tasks already sitting in the broker are still
-  there — a worker grabs them whenever it's ready. The queue is a buffer between the two halves.
+  there - a worker grabs them whenever it's ready. The queue is a buffer between the two halves.
 
 But that same separation is *why the next two phases exist*. Because the worker is a different process
-that didn't run your web code, it can't see your in-memory objects — so arguments have to be
+that didn't run your web code, it can't see your in-memory objects - so arguments have to be
 **serialized** (turned into data) to travel through the broker. That's why we passed `user.id` (a plain
 integer) earlier and not the `user` object itself. Configuration, serialization, and "how does the
 worker even find my tasks" all flow from this one fact: *they're separate processes talking through a
 broker.*
 
-## Where it fits — and the alternatives
+## Where it fits - and the alternatives
 
 In a real stack, your web framework does the fast part of a request and hands the slow part to Celery:
 
@@ -139,7 +139,7 @@ In a real stack, your web framework does the fast part of a request and hands th
 
 💡 **What about built-in background tasks?** FastAPI has `BackgroundTasks`, Flask has extensions, and all
 of them let you run a little work *after* sending the response. For genuinely light, best-effort,
-fire-and-forget things ("log this, nobody will miss it if it's lost"), that's fine and far simpler — no
+fire-and-forget things ("log this, nobody will miss it if it's lost"), that's fine and far simpler - no
 broker to run. But the moment you need work that is **reliable** (survives a crash and gets retried),
 **scalable** (spread across many workers), or **scheduled** (run nightly, run in an hour), those
 in-process helpers run out of road. That's the territory of a real task queue like Celery.
@@ -151,7 +151,7 @@ the **broker** and a **worker**.
 
 1. Some work (emails, reports, uploads, slow API calls) is too slow to run inside a web request. Doing
    it inline makes the user wait *and* ties up your web worker.
-2. The fix is to do that work in the **background** and return to the user immediately — "schedule it
+2. The fix is to do that work in the **background** and return to the user immediately - "schedule it
    and answer now" instead of "do it now while they wait."
 3. 📝 **Celery** is a distributed task queue for Python: define tasks, enqueue them from your app, and
    separate **worker** processes run them. "Asynchronous" here means *different processes*, not asyncio.
@@ -199,7 +199,7 @@ Make sure the core model stuck before we start wiring things up:
       "It runs only when the user refreshes the page"
     ],
     "answer": 0,
-    "explain": "In Celery, asynchronous means the work happens in a different process entirely — handed off through the broker — not on the same event loop via async/await. It's about spreading work across processes, not concurrency within one."
+    "explain": "In Celery, asynchronous means the work happens in a different process entirely - handed off through the broker - not on the same event loop via async/await. It's about spreading work across processes, not concurrency within one."
   }
 ]
 ```

@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # What a Flaky Test Actually Is
 
-Here's the moment. The build goes red on a test you didn't touch. You frown, re-run it, and it goes green. No code changed. Nothing you did fixed it - it *decided* to pass this time. Your first instinct is relief, your second is unease, and your third, if you're honest, is to never trust that test again.
+Here's the moment. The build goes red on a test you didn't touch. You frown, re-run it, and it goes green. No code changed. Nothing you did fixed it - it *decided* to pass this time. Your first instinct is relief, your second is unease, and your third, if you're being straight with yourself, is to never trust that test again.
 
 That test isn't broken in the normal sense. It's *flaky*. And flaky isn't a vibe or a mystery - it has a precise, almost boring definition. Once you have that definition in your head, every flaky test you'll ever meet stops being spooky and starts being a thing you can reason about.
 
@@ -41,9 +41,9 @@ A flaky test isn't actually getting different inputs from *your code* - the code
 
 📝 **Terminology.** *Deterministic* means same input, same output, every time. *Nondeterministic* means the output can vary even when the input you care about doesn't. "Flaky" is the standard industry word for a nondeterministic test. They're the same idea wearing different clothes.
 
-## Why this is worse than an honest failure
+## Why this is worse than a failure that tells the truth
 
-It's tempting to file a flaky test under "minor annoyance." It isn't. A normal failing test is *honest* - it says "something's broken," you fix it, it goes green, the system told you the truth. A flaky test lies. Sometimes it cries wolf when nothing's wrong; sometimes it stays silent when something *is*. Either way, it teaches everyone the same poisonous lesson:
+It's tempting to file a flaky test under "minor annoyance." It isn't. A normal failing test is straight with you - it says "something's broken," you fix it, it goes green, the system told you the truth. A flaky test lies. Sometimes it cries wolf when nothing's wrong; sometimes it stays silent when something *is*. Either way, it teaches everyone the same poisonous lesson:
 
 ```text
    week 1:   red build → "probably flaky" → re-run → green → merge
@@ -63,7 +63,7 @@ Hold onto this single sentence and the rest of the guide unlocks:
 
 The clock it didn't freeze. The random seed it didn't set. The database it didn't clean up. The async operation it didn't wait for. The API it called for real. Every cause of flakiness is one specific uncontrolled dependency - and the cure is always the same shape: **take control of it.** Freeze the clock. Seed the randomness. Isolate the state. Await the operation. Fake the network.
 
-🪖 **War story.** A test that "only fails on CI, never locally" panicked a team I worked with for a week - they suspected the CI machine was cursed. It wasn't cursed. It was *slower* than their laptops, which exposed a race the fast laptops always won. The CI box wasn't broken; it was honest hardware revealing an uncontrolled dependency on timing. The flaky test had been lying on their laptops the whole time - the slow machine stopped covering for it.
+🪖 **War story.** A test that "only fails on CI, never locally" panicked a team I worked with for a week - they suspected the CI machine was cursed. It wasn't cursed. It was *slower* than their laptops, which exposed a race the fast laptops always won. The CI box wasn't broken; it was hardware telling the truth, revealing an uncontrolled dependency on timing. The flaky test had been lying on their laptops the whole time - the slow machine stopped covering for it.
 
 For builders: when you see "passes locally, fails in CI," don't reach for "CI is flaky." Reach for "CI runs in a different, often slower or more parallel environment, and that difference is *surfacing* a real nondeterminism my fast quiet laptop was hiding." CI is usually the messenger, not the problem.
 
@@ -71,7 +71,7 @@ For builders: when you see "passes locally, fails in CI," don't reach for "CI is
 
 - A healthy test is **deterministic**: same code in, same result out, every time. That repeatability is what makes "green" mean something.
 - A **flaky** test is **nondeterministic**: the result flips with no code change because a hidden input - time, order, randomness, the network, leftover state - leaked in.
-- Flakiness is worse than honest failure because it trains people to **ignore red**, so real failures get ignored too.
+- Flakiness is worse than a failure that tells the truth because it trains people to **ignore red**, so real failures get ignored too.
 - The universal reframe: **a flaky test depends on something it doesn't control.** Every fix is "take control of that thing." Phase 2 names the usual suspects.
 
 ```quiz
@@ -83,7 +83,7 @@ For builders: when you see "passes locally, fails in CI," don't reach for "CI is
     "explain": "Flaky = nondeterministic: the same code can produce pass or fail because a hidden input changed between runs."
   },
   {
-    "q": "Why is a flaky failure considered worse than an honest failing test?",
+    "q": "Why is a flaky failure considered worse than a failure that tells the truth?",
     "choices": ["It takes longer to run", "It trains the team to ignore red, so real failures get ignored too", "It uses more CI minutes", "It can't be skipped"],
     "answer": 1,
     "explain": "A flaky test erodes trust in every test, because people learn that red doesn't necessarily mean broken - and then ignore a real red."

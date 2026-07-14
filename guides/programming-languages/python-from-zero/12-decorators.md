@@ -220,7 +220,7 @@ $ python noidentity.py
 wrapper
 None
 ```
-*What just happened:* `add` is now the `wrapper` function, so `add.__name__` honestly reports `"wrapper"`
+*What just happened:* `add` is now the `wrapper` function, so `add.__name__` correctly reports `"wrapper"`
 and the docstring is gone - `wrapper` never had one. Every function decorated with `log_calls` would
 *claim to be named* `wrapper`, which is confusing in tracebacks and breaks tools that rely on `__name__`.
 

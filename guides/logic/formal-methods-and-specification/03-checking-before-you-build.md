@@ -110,7 +110,7 @@ in the notation a checker can run.
 
 ## What checking can and can't promise
 
-Be honest about the boundaries, because overselling this is how people get burned.
+Be clear-eyed about the boundaries, because overselling this is how people get burned.
 
 A model checker verifies your **model**, not your code. If your spec says transfers are atomic but
 your real code isn't, the checker happily blesses a design your implementation doesn't honor. The
@@ -172,7 +172,7 @@ checked guarantee. Small, targeted specs of the scary 5% deliver almost all the 
     "explain": "The counterexample trace is a reproduction recipe - the precise sequence of transitions that reaches the bad state, turning 'something's wrong' into a line-by-line path."
   },
   {
-    "q": "What is an honest limitation of model checking a bounded spec?",
+    "q": "What is a real limitation of model checking a bounded spec?",
     "choices": [
       "It checks the model, not your actual code, and only within the bounds you set",
       "It can never find any bugs",

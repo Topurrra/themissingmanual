@@ -56,7 +56,7 @@ The `∈` symbol is a stylized "e" for *element*. If unfamiliar notation makes y
 
 A set can have no elements at all. This is the **empty set**, written `∅` or `{ }`.
 
-It sounds like a technicality, but it's genuinely useful - it's the answer to "which weekdays start with the letter Z?" The honest answer is *none*, and `∅` is how we write *none* as a set. Often you don't want a special case for "nothing"; you want "nothing" to be an ordinary set you can work with.
+It sounds like a technicality, but it's genuinely useful - it's the answer to "which weekdays start with the letter Z?" The plain answer is *none*, and `∅` is how we write *none* as a set. Often you don't want a special case for "nothing"; you want "nothing" to be an ordinary set you can work with.
 
 There is exactly one empty set, and it lives inside every other set's story (you'll see why in the next section).
 
@@ -128,7 +128,7 @@ print(a - b)          # difference
 
 If you write code, you already have this tool. Both Python and JavaScript ship a `Set` type.
 
-- **Deduping a list.** Wrapping a list in a set throws away repeats: in Python `set([1, 1, 2, 3])` gives `{1, 2, 3}`; in JS `new Set([1, 1, 2, 3])`. It's the fastest honest way to answer "what are the unique values here?"
+- **Deduping a list.** Wrapping a list in a set throws away repeats: in Python `set([1, 1, 2, 3])` gives `{1, 2, 3}`; in JS `new Set([1, 1, 2, 3])`. It's the fastest, most reliable way to answer "what are the unique values here?"
 - **Fast membership tests.** Checking `x in my_set` is roughly **O(1)** - constant time, no matter how big the set is. Checking `x in my_list` scans the whole list, which is O(n). If you're repeatedly asking "have I seen this?", reach for a set.
 - **Tags and permissions.** These are sets in disguise. "Posts tagged both `python` and `beginner`" is an **intersection**. "Everything a user can do across all their roles" is a **union** of permission sets. "Allowed actions minus the ones currently blocked" is a **difference**. Naming the operation makes the code obvious.
 

@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # The qubit, and the lie about parallel answers
 
-Before anything else, here is the honest center of this whole topic, the sentence to keep when you forget everything else: **a quantum computer does not try all answers at once and read them all back.** When you measure it, you get exactly one ordinary answer, the same as any normal computer would hand you. What's special is everything that happens *before* you measure - and that's where the real machine lives.
+Before anything else, here is the plain center of this whole topic, the sentence to keep when you forget everything else: **a quantum computer does not try all answers at once and read them all back.** When you measure it, you get exactly one ordinary answer, the same as any normal computer would hand you. What's special is everything that happens *before* you measure - and that's where the real machine lives.
 
 ## A classical bit, and then a qubit
 
@@ -72,7 +72,7 @@ One more piece you already met: qubits can be **entangled**. When two qubits are
 
 For computing, entanglement is not a party trick - it's the wiring that lets qubits influence each other so the whole register behaves as one connected system. A quantum algorithm needs that connection; isolated qubits can't conspire to produce a useful answer. (And to head off the usual myth: entanglement still can't send a faster-than-light message - that wall is covered in [/guides/the-quantum-world-for-humans](/guides/the-quantum-world-for-humans).)
 
-## The honest summary so far
+## The plain summary so far
 
 - A qubit, unmeasured, is a weighted blend of 0 and 1 - and the weights (amplitudes) carry a sign, called phase.
 - Many qubits hold an amplitude for every combination at once - real, massive structure.

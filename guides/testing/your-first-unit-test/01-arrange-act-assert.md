@@ -95,7 +95,7 @@ def test_total_with_tax_adds_ten_percent():
 *What just happened:* you read your first complete test. It's an ordinary function whose name starts with
 `test_` (that prefix is how pytest finds it - more on that next phase). Inside, the three parts are right
 there in order: arrange the inputs, act by calling `total_with_tax`, assert the answer is `110`. The
-comments aren't required, but writing them while you learn keeps the shape honest.
+comments aren't required, but writing them while you learn keeps the shape clear.
 
 💡 **Key point.** A test is a function that calls your function and checks the result. Arrange the inputs,
 Act by calling it, Assert the answer. Hold onto that one sentence - everything else in testing is a

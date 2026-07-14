@@ -22,7 +22,7 @@ It's worth slowing down on these two words, because the whole guide hinges on th
 - **Deploy** means the new code is running on your servers. The binary is there. The functions exist in memory. It's *present*.
 - **Release** means users can actually experience the feature. It's *active*.
 
-Most teams treat these as one moment because, by default, they are. You merge code that adds a checkout button, you deploy, and the button is right there for everyone the instant the deploy finishes. Deploy *is* release. That coupling is exactly what turns a small bug into a five-alarm incident — the only way to un-release is to un-deploy.
+Most teams treat these as one moment because, by default, they are. You merge code that adds a checkout button, you deploy, and the button is right there for everyone the instant the deploy finishes. Deploy *is* release. That coupling is exactly what turns a small bug into a five-alarm incident - the only way to un-release is to un-deploy.
 
 A feature flag breaks the weld. It's a runtime switch wrapped around the new behavior, so you can deploy the code in the "off" position and decide *separately*, later, whether and when to flip it on.
 
@@ -43,7 +43,7 @@ if (flags.isEnabled("new-checkout-flow")) {
 
 *What just happened:* both code paths are deployed and sitting on the server right now. Which one a user sees is decided at runtime by `isEnabled`, not at deploy time. Flip the flag's value somewhere else and behavior changes with no new deploy.
 
-That's the mechanical heart of it. The new code shipped, but it's *dark* — present and inert. The old path is still doing its job. Nobody noticed the deploy because, as far as users are concerned, nothing released.
+That's the mechanical heart of it. The new code shipped, but it's *dark* - present and inert. The old path is still doing its job. Nobody noticed the deploy because, as far as users are concerned, nothing released.
 
 The value behind `isEnabled` doesn't live in the code. It lives somewhere you can change at runtime: a config file the app re-reads, a row in a database, an environment variable, or a hosted flag service. The key property is that changing it does **not** require a rebuild or a redeploy. That's the difference between a feature flag and an `if (false)` you have to edit and ship.
 
@@ -67,7 +67,7 @@ WITH FLAGS:      merge → deploy (dark) → flip on for 1% → 10% → 100%
 
 ## For builders
 
-If your team runs CI/CD, flags are the missing safety layer on top of it. A green pipeline tells you the code *builds and tests pass* — it says nothing about whether the feature behaves under real traffic. (For how that pipeline works, see [/guides/what-cicd-does](/guides/what-cicd-does).) Flags let your pipeline deploy aggressively and often, while the release decision stays a small, human, reversible flip made *after* the code is safely in production. Fast deploys plus slow, controlled releases is the combination you're after.
+If your team runs CI/CD, flags are the missing safety layer on top of it. A green pipeline tells you the code *builds and tests pass* - it says nothing about whether the feature behaves under real traffic. (For how that pipeline works, see [/guides/what-cicd-does](/guides/what-cicd-does).) Flags let your pipeline deploy aggressively and often, while the release decision stays a small, human, reversible flip made *after* the code is safely in production. Fast deploys plus slow, controlled releases is the combination you're after.
 
 ```quiz
 [
@@ -102,7 +102,7 @@ If your team runs CI/CD, flags are the missing safety layer on top of it. A gree
       "The code is deleted after deploy"
     ],
     "answer": 0,
-    "explain": "Dark code is present and inert — deployed but switched off, hurting no one until you flip the flag."
+    "explain": "Dark code is present and inert - deployed but switched off, hurting no one until you flip the flag."
   }
 ]
 ```

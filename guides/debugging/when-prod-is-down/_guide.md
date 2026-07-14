@@ -46,7 +46,7 @@ learnable.
    dangerous person on the call.
 3. **[After: the Blameless Postmortem](03-after-the-blameless-postmortem.md)** - once it's over: build the
    timeline, separate root cause from contributing factors, and protect the *blameless* rule that keeps
-   people honest. Then turn the incident into prevention. Every outage is tuition; make it buy something.
+   people forthcoming. Then turn the incident into prevention. Every outage is tuition; make it buy something.
 
 > Deep dives into specific tooling - distributed tracing, chaos engineering, SLO/error-budget math, on-call
 > rotation design - are deliberately left to follow-up guides. This one is about the human procedure that

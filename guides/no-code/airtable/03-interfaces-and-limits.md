@@ -113,7 +113,7 @@ for these:
   spreadsheet-style tool doesn't enforce - transactions, intricate
   validation, audited access - that's database-and-engineer territory.
 
-Here's the honest framing. Airtable is excellent at being the **operational
+Here's the clear-eyed framing. Airtable is excellent at being the **operational
 hub for a team**: pipelines, content calendars, inventory, project tracking,
 applicant lists, anything where a handful to a few hundred people manage
 thousands to tens of thousands of records together. It is not the engine for a

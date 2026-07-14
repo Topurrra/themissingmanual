@@ -42,7 +42,7 @@ have fans posting about them.
 
 New frameworks show up every year. Most developers, including senior ones, have used a handful in
 their career and read *about* the rest. The confident answer to "have you used X?" is usually "no,
-but I could pick it up" - and that's the honest bar to aim for, not universal familiarity.
+but I could pick it up" - and that's the real bar to aim for, not universal familiarity.
 
 ## Depth in one beats a shallow tour of many
 

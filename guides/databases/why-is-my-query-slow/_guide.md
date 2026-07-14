@@ -13,7 +13,7 @@ updated: 2026-07-10
 
 # Why Is My Query Slow? (Indexes & EXPLAIN)
 
-You wrote a query. On your laptop, against a few hundred rows of test data, it returned instantly. You shipped it. Then production — with ten million real rows — turned that same query into a thirty-second hang, a timeout, a page at 2am. Nothing about the *query* changed. The only thing that changed was the size of the table.
+You wrote a query. On your laptop, against a few hundred rows of test data, it returned instantly. You shipped it. Then production - with ten million real rows - turned that same query into a thirty-second hang, a timeout, a page at 2am. Nothing about the *query* changed. The only thing that changed was the size of the table.
 
 This is the most common performance surprise in all of databases, and it has a single, learnable cause. Once you understand the one mental model behind it, most "my query is slow" problems stop being mysteries and become a short checklist: see exactly what the database is doing, understand *why* it's slow, and fix it with a precise change instead of guessing.
 
@@ -24,10 +24,10 @@ This is the most common performance surprise in all of databases, and it has a s
 
 ## The phases
 
-1. **[The Full-Table Scan](01-the-full-table-scan.md)** — why a query that's instant on 100 rows crawls on 10 million. Without help, the database reads *every row* to find your matches. This one idea explains most slowness.
-2. **[Indexes](02-indexes.md)** — what an index actually is: a separate, sorted structure that lets the database jump straight to matching rows, like the index at the back of a book. How to create one, and the real cost of having too many.
-3. **[Reading EXPLAIN](03-reading-explain.md)** — how to *see* what the database is doing. Reading `EXPLAIN` and `EXPLAIN ANALYZE`, telling a scan from an index lookup, comparing estimated vs. actual rows, and spotting the missing index. Then: measure, fix, re-check.
+1. **[The Full-Table Scan](01-the-full-table-scan.md)** - why a query that's instant on 100 rows crawls on 10 million. Without help, the database reads *every row* to find your matches. This one idea explains most slowness.
+2. **[Indexes](02-indexes.md)** - what an index actually is: a separate, sorted structure that lets the database jump straight to matching rows, like the index at the back of a book. How to create one, and the real cost of having too many.
+3. **[Reading EXPLAIN](03-reading-explain.md)** - how to *see* what the database is doing. Reading `EXPLAIN` and `EXPLAIN ANALYZE`, telling a scan from an index lookup, comparing estimated vs. actual rows, and spotting the missing index. Then: measure, fix, re-check.
 
-> This guide is about the everyday 90% — the slow query you can fix by understanding scans and adding the right index. Deep profiling (composite-index ordering, partial and covering indexes, query-planner tuning, lock contention) is a future *performance* topic; we'll point there when it's the right next step.
+> This guide is about the everyday 90% - the slow query you can fix by understanding scans and adding the right index. Deep profiling (composite-index ordering, partial and covering indexes, query-planner tuning, lock contention) is a future *performance* topic; we'll point there when it's the right next step.
 
-Related reading: [SQL Joins Explained](/guides/sql-joins-explained) and [Relationships & Keys](/guides/relationships-and-keys) — joins and keys are exactly the columns you'll most often want to index.
+Related reading: [SQL Joins Explained](/guides/sql-joins-explained) and [Relationships & Keys](/guides/relationships-and-keys) - joins and keys are exactly the columns you'll most often want to index.

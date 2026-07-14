@@ -39,7 +39,7 @@ print(long_enough("correcthorse")) # plenty long
 print(long_enough("12345678"))     # exactly 8 -> True
 ```
 
-See how the function says nothing about whether `12345678` is a *good* password? It only answers the one question it was asked. That's deliberate. Each rule stays dumb and honest; the smarts come from combining them.
+See how the function says nothing about whether `12345678` is a *good* password? It only answers the one question it was asked. That's deliberate. Each rule stays dumb and plain; the smarts come from combining them.
 
 ## Checking for a kind of character
 

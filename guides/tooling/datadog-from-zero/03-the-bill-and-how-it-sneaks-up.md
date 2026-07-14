@@ -66,9 +66,9 @@ Per-host pricing sounds simple until autoscaling and short-lived containers get 
 
 The practical guardrails: don't run the full agent (especially APM) on machines that don't need observability, scope APM to the services that matter rather than everything, and check whether short-lived CI/build hosts are reporting as billable infra.
 
-## Keeping it honest
+## Keeping it in check
 
-You don't fix Datadog cost once; you keep it honest with a few habits:
+You don't fix Datadog cost once; you keep it in check with a few habits:
 
 - **Set a tag budget.** Agree on a small set of allowed metric tags (`env`, `service`, `version`, `region`, `team`) and forbid per-user/per-request IDs on metrics. Most cardinality blowups are one rogue tag.
 - **Audit cardinality monthly.** The Metrics Summary page sorts by volume - the top few metrics are usually most of the bill.
@@ -76,7 +76,7 @@ You don't fix Datadog cost once; you keep it honest with a few habits:
 - **Treat config changes as spend changes.** "Add a tag," "turn on logs for this service," "enable APM everywhere" are budget decisions. Route them through whoever owns the bill.
 - **Use Datadog's own usage dashboards.** It bills you using data it'll happily graph - build a usage/cost dashboard and put a monitor on *that*. Page yourself when spend spikes, the same way you'd page on latency.
 
-## The honest mental model, completed
+## The real mental model, completed
 
 Datadog earns its reputation: one agent, three correlated signals, dashboards and monitors that genuinely shorten incidents. The catch is that its pricing rewards exactly the behavior the product encourages - send everything, tag everything, keep everything - and the meter runs in categories (per-host, per-custom-metric-cardinality, per-log-byte) that don't show up in your code review. Use it fully, but treat cardinality and log indexing as first-class engineering concerns, not afterthoughts. The teams who are happy with Datadog aren't the ones who use it less - they're the ones who decided, on purpose, what to send.
 

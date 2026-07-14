@@ -26,7 +26,7 @@ this slow," and every buying decision becomes something you can reason about ins
 
 ## How to read this
 - **Just need to decide what to buy?** Jump to [Phase 3: NVMe vs SATA](03-nvme-vs-sata.md) and read the
-  "which should you pick" section at the bottom - it covers the common cases honestly.
+  "which should you pick" section at the bottom - it covers the common cases straight.
 - **Want it to finally make sense?** Read in order. We build from the spinning disk up, so each phase
   explains *why* the next one is faster, not just *that* it is.
 

@@ -65,7 +65,7 @@ Found 2 errors.
 
 ## How they fit together
 
-The honest question is: if Ruff also formats now, why mention Black at all? Because Ruff's formatter was deliberately built to match Black's style. They produce nearly identical output, so a team can run Black today and switch to Ruff's formatter later (or the reverse) without a giant reformatting diff. You'll meet both names in real codebases for years, and they play the same tune.
+The real question is: if Ruff also formats now, why mention Black at all? Because Ruff's formatter was deliberately built to match Black's style. They produce nearly identical output, so a team can run Black today and switch to Ruff's formatter later (or the reverse) without a giant reformatting diff. You'll meet both names in real codebases for years, and they play the same tune.
 
 A common setup is Black for formatting plus Ruff for linting. An increasingly common setup is Ruff for both, dropping Black entirely. Either is fine. What matters is that *something* formats and *something* lints, automatically, so humans stop doing it by hand.
 

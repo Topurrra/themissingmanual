@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # Waves, particles, and the double slit
 
-Here's the honest starting point: your intuition was built by a world of medium-sized things - balls, water, chairs. That intuition is excellent for that world and it quietly fails for very small things. The quantum world doesn't break logic. It breaks the *assumption* that very small things behave like tiny versions of baseballs. Once you let go of that one assumption, most of the "weirdness" stops being contradiction and starts being a new, learnable pattern.
+Here's the plain starting point: your intuition was built by a world of medium-sized things - balls, water, chairs. That intuition is excellent for that world and it quietly fails for very small things. The quantum world doesn't break logic. It breaks the *assumption* that very small things behave like tiny versions of baseballs. Once you let go of that one assumption, most of the "weirdness" stops being contradiction and starts being a new, learnable pattern.
 
 The cleanest place to watch that assumption fail is a single experiment: the double-slit, which physicist Richard Feynman called the one experiment that holds the heart of the mystery.
 
@@ -87,7 +87,7 @@ The wave is a probability map, not a thing made of electron-stuff:
 
 Notice what we did *not* say. We did not say the electron splits into two. We did not say it's "in two places at once" like a sci-fi clone. We said: there's a single electron, and its possibilities pass through both slits and combine. That distinction is the whole reason this guide exists, and the next phase makes it sharp.
 
-> **The honest caveat.** *Why* a definite single dot appears at all - what exactly "happens" when the wave of possibility meets the detector - is the part physicists genuinely still argue about (it's called the measurement problem). What's *not* in dispute is the recipe: the wave gives the probabilities, the detector gives one dot, and the math predicts the bands to staggering precision. The mystery is real, but it's narrow and specific - not a license for anything-goes.
+> **The plain caveat.** *Why* a definite single dot appears at all - what exactly "happens" when the wave of possibility meets the detector - is the part physicists genuinely still argue about (it's called the measurement problem). What's *not* in dispute is the recipe: the wave gives the probabilities, the detector gives one dot, and the math predicts the bands to staggering precision. The mystery is real, but it's narrow and specific - not a license for anything-goes.
 
 For builders: this isn't abstract. The probability-wave picture is exactly what makes a quantum computer's "qubit" different from a bit. A bit is a definite dot. A qubit carries the wave-of-possibility structure, and getting interference to line up the right way is how a quantum algorithm gets its edge. You're learning the actual primitive, not a metaphor.
 

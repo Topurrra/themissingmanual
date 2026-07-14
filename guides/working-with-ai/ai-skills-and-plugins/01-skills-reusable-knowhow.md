@@ -52,7 +52,7 @@ Alongside the instructions, a skill can carry files. This is the quiet superpowe
 
 A skill doesn't give the assistant new abilities. It can't make a model that can't browse the web suddenly browse the web, and it can't reach into your database or send an email on its own. A skill is knowledge and guidance - it sharpens how the assistant uses the powers it already has. Adding genuinely new powers is what plugins are for, and that's the next phase.
 
-It's also worth being honest about the term. "Skill" in this packaged-folder sense became common through Anthropic's Claude tooling and similar agent platforms, and the exact shape - what files are required, how triggering works - varies between products and is still settling. The *idea* is consistent everywhere: bundled, reusable, loaded-on-demand know-how. The specific file format is not yet a universal standard, so check the docs for whichever assistant you're using.
+It's also worth being clear about the term. "Skill" in this packaged-folder sense became common through Anthropic's Claude tooling and similar agent platforms, and the exact shape - what files are required, how triggering works - varies between products and is still settling. The *idea* is consistent everywhere: bundled, reusable, loaded-on-demand know-how. The specific file format is not yet a universal standard, so check the docs for whichever assistant you're using.
 
 ## When a skill earns its keep
 

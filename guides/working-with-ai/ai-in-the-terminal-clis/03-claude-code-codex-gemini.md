@@ -2,7 +2,7 @@
 title: "Claude Code, Codex, and Gemini CLI"
 guide: ai-in-the-terminal-clis
 phase: 3
-summary: "An honest comparison of the three main terminal coding agents - what they share, where they differ, and how to pick one without overthinking it."
+summary: "A straight comparison of the three main terminal coding agents - what they share, where they differ, and how to pick one without overthinking it."
 tags: [claude-code, codex, gemini-cli, coding-agents, comparison]
 difficulty: intermediate
 synonyms:
@@ -17,7 +17,7 @@ updated: 2026-06-30
 
 Three terminal coding agents get most of the attention right now: **Claude Code** from Anthropic, the **Codex CLI** from OpenAI, and the **Gemini CLI** from Google. There are others, and the landscape moves fast enough that specifics here may drift - but these three are the ones a normal person is most likely to reach for, and understanding them tells you how to read any newcomer.
 
-The honest headline first: they are more alike than different. All three follow the loop from the last phase - describe, work, review, approve. All three can read your files, run commands, and edit code. All three ask permission before consequential actions and let you tune how often. If you learn one, you can use the others within an afternoon. So don't agonize over the choice; the differences are real but mostly at the margins.
+The plain headline first: they are more alike than different. All three follow the loop from the last phase - describe, work, review, approve. All three can read your files, run commands, and edit code. All three ask permission before consequential actions and let you tune how often. If you learn one, you can use the others within an afternoon. So don't agonize over the choice; the differences are real but mostly at the margins.
 
 ## What they all share
 
@@ -40,7 +40,7 @@ The differences cluster in a few areas: which AI model is behind them, how they'
 | Typical pull | Strong at multi-step coding tasks and staying on track | Tight integration with the OpenAI ecosystem | Large free allowance; ties into Google's tools |
 | Usual access | Paid subscription or API | Subscription or API | Generous free tier, then paid |
 
-A few notes on that table, kept honest:
+A few notes on that table, kept accurate:
 
 - **The model matters most, and it changes constantly.** The quality of any of these comes mostly from the model underneath, and all three makers ship new models often. Any claim that one is flatly "the best coder" has a short shelf life. By the time you read this, the rankings may have shuffled.
 - **Open source isn't only about cost.** Codex CLI and Gemini CLI being open source means you can read exactly what they do and the community can extend them. Claude Code is closed but widely used and heavily polished. None of these positions is wrong - they're different bets.

@@ -59,7 +59,7 @@ kafka-console-consumer \
 
 *What just happened:* the consumer joined the group `billing`, read from offset 0 because that group had no saved position yet, and as it read it committed its progress under the name `billing`. Restart this exact command and it picks up after A101 - not from the beginning - because the *group's* committed offset is remembered by Kafka.
 
-> 📝 **Terminology.** A committed offset is stored per **(group, topic, partition)**. It is "the next offset this group will read." Committing is a deliberate act - commit too early and a crash makes you *skip* unprocessed records; commit too late and a crash makes you *re-read* records. Phase 3 is about living with that trade-off honestly.
+> 📝 **Terminology.** A committed offset is stored per **(group, topic, partition)**. It is "the next offset this group will read." Committing is a deliberate act - commit too early and a crash makes you *skip* unprocessed records; commit too late and a crash makes you *re-read* records. Phase 3 is about living with that trade-off in practice.
 
 ## Consumer groups: the scaling move
 

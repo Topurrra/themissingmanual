@@ -15,18 +15,18 @@ Here's the whole mental model, and once it clicks the rest of chi is detail: a c
 lookup table. Each entry is a **method + a URL pattern** on the left, and a plain
 `http.HandlerFunc` on the right. When a request arrives, chi reads its method (`GET`, `POST`, …)
 and its path (`/articles/42`), finds the matching entry, and calls that function. No magic context
-object, no special handler signature — the right-hand side is the exact same
+object, no special handler signature - the right-hand side is the exact same
 `func(w http.ResponseWriter, r *http.Request)` you'd write for the standard library.
 
 The one thing chi adds on top of a flat lookup table is **placeholders**. A pattern like
 `/articles/{id}` matches `/articles/42` and `/articles/hello` alike, and stashes whatever was in
 the `{id}` slot so your handler can read it back. And because real apps have dozens of routes,
-chi lets you **group** related ones under a shared prefix instead of repeating yourself — that's
+chi lets you **group** related ones under a shared prefix instead of repeating yourself - that's
 what sub-routers are for.
 
 > 📝 We're growing one example through the whole guide: a small **articles API**. An article is
 > just `Article{id, title, body}`. By the end of this phase you'll have all the URLs that API
-> needs — listing, creating, fetching one, updating, deleting — wired up cleanly.
+> needs - listing, creating, fetching one, updating, deleting - wired up cleanly.
 
 ## Methods: one function per verb
 
@@ -45,7 +45,7 @@ r.Delete("/articles/{id}", deleteArticle)
 
 *What just happened:* we registered five routes. Notice that `/articles` and `/articles/{id}`
 are different patterns, and that the *same* path (`/articles/{id}`) can carry different handlers
-depending on the verb — `GET` reads an article, `PUT` replaces it, `DELETE` removes it. chi
+depending on the verb - `GET` reads an article, `PUT` replaces it, `DELETE` removes it. chi
 matches on method **and** path together, so there's no collision.
 
 Beyond these named helpers (`Get`, `Post`, `Put`, `Patch`, `Delete`, `Head`, `Options`), there
@@ -57,7 +57,7 @@ r.MethodFunc("GET", "/ping", pingHandler)    // takes an http.HandlerFunc
 ```
 
 *What just happened:* `r.Method` and `r.MethodFunc` do exactly what `r.Get` does, except you pass
-the verb as a string. Reach for these only when you genuinely need a verb as data — for everyday
+the verb as a string. Reach for these only when you genuinely need a verb as data - for everyday
 routes, the named helpers read better.
 
 ## URL params: reading `{id}` back out
@@ -85,7 +85,7 @@ not `42`. If you need a number, convert it yourself with `strconv.Atoi` and chec
 because nothing stops someone from requesting `/articles/banana`.
 
 > ⚠️ A common early bug: comparing `chi.URLParam(r, "id")` directly to an integer, or forgetting
-> the conversion can fail. Treat the param as untrusted user input — convert and validate before
+> the conversion can fail. Treat the param as untrusted user input - convert and validate before
 > you use it.
 
 If you'd rather reject non-numeric ids at the routing layer instead of inside the handler, chi
@@ -98,7 +98,7 @@ r.Get("/articles/{id:[0-9]+}", getArticle)
 *What just happened:* the `:[0-9]+` part says "only match if this segment is one or more digits."
 Now `/articles/42` reaches `getArticle`, but `/articles/banana` doesn't match this route at all
 and falls through to a 404. You still read the value with `chi.URLParam(r, "id")` (the regex part
-isn't included in the name). Handy, but don't overdo it — for anything beyond simple shapes,
+isn't included in the name). Handy, but don't overdo it - for anything beyond simple shapes,
 validating inside the handler is usually clearer.
 
 > 💡 Query strings (`/articles?q=go`) are *not* URL params and chi doesn't wrap them. They come
@@ -126,17 +126,17 @@ r.Route("/articles", func(r chi.Router) {
 they're visually grouped by resource. Inside `r.Route("/articles", ...)`, the path `"/"` means
 "the prefix itself" (`/articles`), and the nested `r.Route("/{id}", ...)` stacks another segment
 on top, so `"/"` inside *it* means `/articles/{id}`. The `id` param is still read the same way. This
-nesting is the idiomatic chi way to organize a resource — all the "things you can do to articles"
+nesting is the idiomatic chi way to organize a resource - all the "things you can do to articles"
 live in one block.
 
 > 📝 The `r` inside the callback shadows the outer `r` on purpose. It's a new sub-router whose
 > routes are automatically prefixed. Reusing the name keeps the calls looking identical at every
-> level — `r.Get`, `r.Post`, and so on — which is exactly the point.
+> level - `r.Get`, `r.Post`, and so on - which is exactly the point.
 
 ## `Mount`: bolting a whole router onto a path
 
-`Route` is for grouping routes inline. `Mount` is for attaching an *entire pre-built router* —
-with its own routes and its own middleware — at a path. This is how you compose an app out of
+`Route` is for grouping routes inline. `Mount` is for attaching an *entire pre-built router* - 
+with its own routes and its own middleware - at a path. This is how you compose an app out of
 self-contained modules:
 
 ```go
@@ -167,7 +167,7 @@ know any of its internals. As an app grows, this lets each feature own a file an
 
 ## Query params come from the standard library
 
-One last thing, because people expect chi to have a helper for it and it doesn't — on purpose.
+One last thing, because people expect chi to have a helper for it and it doesn't - on purpose.
 Query string values aren't part of the route, so chi leaves them to `net/http`:
 
 ```go
@@ -182,17 +182,17 @@ func listArticles(w http.ResponseWriter, r *http.Request) {
 ```
 
 *What just happened:* `r.URL.Query()` parses the query string into a map-like value, and `.Get("q")`
-reads one key (returning `""` if it's absent). This is plain standard library — the same code works
+reads one key (returning `""` if it's absent). This is plain standard library - the same code works
 without chi at all. It's a perfect little illustration of chi's whole philosophy: it adds the router
 and the URL params the stdlib lacked, and for everything else it gets out of your way.
 
 ## Recap
 
-- A chi router is a lookup table mapping **method + pattern** to a plain `http.HandlerFunc` — no special handler signature, no magic context.
+- A chi router is a lookup table mapping **method + pattern** to a plain `http.HandlerFunc` - no special handler signature, no magic context.
 - Use the named verb helpers (`r.Get`, `r.Post`, `r.Put`, `r.Delete`, …); `r.Method`/`r.MethodFunc` take the verb as a string for dynamic cases.
-- `{id}` in a pattern is a placeholder; read it with `chi.URLParam(r, "id")`, which **always returns a string** — convert with `strconv.Atoi` and validate. Constrain with regex like `{id:[0-9]+}` when you want routing to reject bad shapes.
+- `{id}` in a pattern is a placeholder; read it with `chi.URLParam(r, "id")`, which **always returns a string** - convert with `strconv.Atoi` and validate. Constrain with regex like `{id:[0-9]+}` when you want routing to reject bad shapes.
 - `r.Route` groups routes under a shared prefix with a scoped sub-router (nest them for `/articles/{id}`); `r.Mount` attaches a whole pre-built router (with its own middleware) at a path.
-- Query params aren't routing — read them with the standard library: `r.URL.Query().Get("q")`.
+- Query params aren't routing - read them with the standard library: `r.URL.Query().Get("q")`.
 
 ## Quick check
 

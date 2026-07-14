@@ -14,7 +14,7 @@ updated: 2026-06-30
 
 # Datadog, From Zero
 
-You have metrics in one tool, logs in another, and traces in a third - and when something breaks at 2am you're flipping between three tabs trying to line up timestamps by hand. Datadog's whole pitch is that those three are one story, told through one agent, sliced by one tag. This guide takes you from "we pay for Datadog but only I know how to use it" to a real mental model: how the agent collects everything, why tagging is the lever that makes the data useful, how to read a trace and wire up a monitor - and the honest part nobody puts on the marketing page, which is how the bill sneaks up on you.
+You have metrics in one tool, logs in another, and traces in a third - and when something breaks at 2am you're flipping between three tabs trying to line up timestamps by hand. Datadog's whole pitch is that those three are one story, told through one agent, sliced by one tag. This guide takes you from "we pay for Datadog but only I know how to use it" to a real mental model: how the agent collects everything, why tagging is the lever that makes the data useful, how to read a trace and wire up a monitor - and the plain part nobody puts on the marketing page, which is how the bill sneaks up on you.
 
 ## How to read this
 
@@ -24,6 +24,6 @@ Read the phases in order. Phase 1 builds the mental model: the three telemetry t
 
 1. [What Datadog actually is](01-what-datadog-actually-is.md) - one agent, three signals, and tags as the connective tissue.
 2. [The everyday loop](02-the-everyday-loop.md) - dashboards, APM traces, log queries, and monitors that page the right human.
-3. [The bill, and how it sneaks up](03-the-bill-and-how-it-sneaks-up.md) - custom-metric cardinality, log volume, host pricing, and keeping the cost honest.
+3. [The bill, and how it sneaks up](03-the-bill-and-how-it-sneaks-up.md) - custom-metric cardinality, log volume, host pricing, and keeping the cost in check.
 
 [Phase 1: What Datadog actually is](01-what-datadog-actually-is.md) →

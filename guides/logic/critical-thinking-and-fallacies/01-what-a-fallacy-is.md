@@ -60,7 +60,7 @@ conclusion - which is why you can spot these without knowing a single fact about
 
 ## Informal: when the content cheats
 
-Here the shape is usually fine - what fails is relevance, honesty, or clarity. A few flavors, to
+Here the shape is usually fine - what fails is relevance, fairness, or clarity. A few flavors, to
 show the range:
 
 - **Irrelevance.** The argument brings in something that has nothing to do with whether the claim

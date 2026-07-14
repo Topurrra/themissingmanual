@@ -326,7 +326,7 @@ Go look at the memory. Open `~/.til/notes.json` (on Windows, `C:\Users\you\.til\
 
 ## What you have now
 
-A CLI with durable, crash-safe state and stable note IDs. The `list` output is honest but flat - and there's no way yet to *find* anything, which for a memory tool is the entire point. Next phase: `list` grows flags and a real table, and `search` and `tags` join the roster.
+A CLI with durable, crash-safe state and stable note IDs. The `list` output is plain but flat - and there's no way yet to *find* anything, which for a memory tool is the entire point. Next phase: `list` grows flags and a real table, and `search` and `tags` join the roster.
 
 Lock in the storage ideas before moving on:
 

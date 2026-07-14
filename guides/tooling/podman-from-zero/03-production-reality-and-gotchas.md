@@ -48,7 +48,7 @@ $ podman run -p 80:80 docker.io/library/nginx
 Error: rootless cannot bind to port 80: permission denied
 ```
 
-*What just happened:* the kernel refused, because binding port 80 needs privilege you deliberately gave up. You have three honest options, in rough order of preference:
+*What just happened:* the kernel refused, because binding port 80 needs privilege you deliberately gave up. You have three straightforward options, in rough order of preference:
 
 ```console
 # 1. Publish to a high host port, front it with a reverse proxy:
@@ -86,7 +86,7 @@ $ podman run -v ./data:/data:Z docker.io/library/postgres:16
 
 ## When to reach for Podman
 
-Be honest about the tradeoff so you choose on purpose, not on hype:
+Be clear-eyed about the tradeoff so you choose on purpose, not on hype:
 
 - **Reach for it** when rootless is a security requirement, when you cannot or will not run a root daemon, when you are already on systemd and want first-class integration, or when you want pods that mirror Kubernetes locally.
 - **Stay on Docker** when a critical tool only speaks the real Docker API, when your team's entire toolchain assumes `dockerd`, or when Docker Desktop's polish is worth more to you than the daemonless model. The migration cost is real even when it is small.

@@ -148,7 +148,7 @@ like §4 if one appears), so both sides agree again - and the push goes through.
 
 ⚠️ **Gotcha - never reach for `--force` to make a rejection go away.** `git push --force` *does* silence
 the error, by overwriting whatever was on the remote - including a teammate's commits, permanently. On a
-shared branch that's how you ruin someone's afternoon. The honest fix for a rejection is always `pull`,
+shared branch that's how you ruin someone's afternoon. The straight fix for a rejection is always `pull`,
 then `push`. (There's a genuinely safer cousin, `--force-with-lease`, used when deliberately rewriting your
 *own* branch - that belongs with the rewriting-history material in the advanced guide.)
 

@@ -36,7 +36,7 @@ graph TD
   S --> O3[Client 3]
 ```
 
-There's one decision to make: do you echo the message back to the sender too? Most chat UIs *do* show your own message, but they usually render it locally the moment you hit send rather than waiting for it to round-trip. To keep the server honest and the client lean, we'll broadcast to **everyone except the sender**, and let each client show its own messages. You can flip this later in two lines.
+There's one decision to make: do you echo the message back to the sender too? Most chat UIs *do* show your own message, but they usually render it locally the moment you hit send rather than waiting for it to round-trip. To keep the server simple and the client lean, we'll broadcast to **everyone except the sender**, and let each client show its own messages. You can flip this later in two lines.
 
 ## Update the server
 

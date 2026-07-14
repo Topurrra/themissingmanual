@@ -30,7 +30,7 @@ parent.
 
 versus the same question with no role - which tends to come back clinical and hedged. A role isn't roleplay for its own sake; it's a shortcut for "answer the way this kind of person would." "Act as a skeptical editor." "You're a budget-conscious financial planner." "Respond like a patient IT helpdesk person." Each one shifts what the model emphasizes and what it leaves out.
 
-Keep it honest, though. A role makes the *style* fit; it does not make the model an actual licensed professional. "Act as a doctor" doesn't turn it into one - treat medical, legal, and financial output as a starting point to verify, not advice to follow.
+Keep it grounded, though. A role makes the *style* fit; it does not make the model an actual licensed professional. "Act as a doctor" doesn't turn it into one - treat medical, legal, and financial output as a starting point to verify, not advice to follow.
 
 ## Ask for steps
 

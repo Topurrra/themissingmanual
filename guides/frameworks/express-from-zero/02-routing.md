@@ -14,7 +14,7 @@ updated: 2026-07-10
 One idea for this whole phase: **a route is a method plus a path, pointing at a handler.** When a
 request arrives, Express looks at *what verb* it used (`GET`, `POST`, `DELETE`…) and *what URL path*
 it asked for (`/tasks`, `/tasks/42`), then runs the first handler you registered that matches both.
-Everything else — params, query strings, routers — is detail layered onto that sentence.
+Everything else - params, query strings, routers - is detail layered onto that sentence.
 
 > 📝 Routing answers a different question than the response does. Routing decides *which* function runs;
 > the function decides *what* to send back. Keep those two jobs separate in your head and Express stays
@@ -22,8 +22,8 @@ Everything else — params, query strings, routers — is detail layered onto th
 
 Two things ride along inside the request, and we'll spend most of this phase on them:
 
-- The **path** can carry variable pieces — `/tasks/42` — that Express hands you as **route params**.
-- The **URL** can carry a question-mark **query string** — `/tasks?done=true` — that Express hands you as
+- The **path** can carry variable pieces - `/tasks/42` - that Express hands you as **route params**.
+- The **URL** can carry a question-mark **query string** - `/tasks?done=true` - that Express hands you as
   the **query**.
 
 We'll grow the running **tasks API** (each task is `{ id, title, done }`) one route at a time.
@@ -57,15 +57,15 @@ app.listen(3000, () => console.log('listening on http://localhost:3000'))
 
 *What just happened:* the **same path** `/tasks` is registered twice, for different verbs. `GET /tasks`
 runs the first handler and returns the list; `POST /tasks` runs the second and creates a task. Express
-never confuses them — a route is method *and* path, not path alone. The `201` is the HTTP status for
+never confuses them - a route is method *and* path, not path alone. The `201` is the HTTP status for
 "created"; we set it explicitly because the default would be `200`.
 
 The full set you'll reach for: `app.get`, `app.post`, `app.put`, `app.delete`, `app.patch`. There's also
-`app.all(path, handler)`, which matches *every* method for that path — handy for cross-cutting things like
+`app.all(path, handler)`, which matches *every* method for that path - handy for cross-cutting things like
 a path-specific guard.
 
 > 💡 You can pass more than one handler: `app.get('/x', mw1, handler)`. Express runs them in order, each
-> deciding whether to continue. That's a preview of Phase 3 — under the hood, a route is just middleware
+> deciding whether to continue. That's a preview of Phase 3 - under the hood, a route is just middleware
 > bound to a method and path.
 
 ## Route params: variable pieces of the path
@@ -89,7 +89,7 @@ app.get('/tasks/:id', (req, res) => {
 `return` so the rest of the handler doesn't run.
 
 ⚠️ **Route params are always strings.** `req.params.id` is `"2"`, not the number `2`. Our tasks have
-numeric `id`s, so `tasks.find((t) => t.id === id)` would silently fail with `"2" === 2` being `false` —
+numeric `id`s, so `tasks.find((t) => t.id === id)` would silently fail with `"2" === 2` being `false` - 
 nothing matches, every lookup 404s, and it *looks* like your data is missing. That's why we wrap it in
 `Number(req.params.id)`. This bites everyone once; let it bite you here instead of in production.
 
@@ -124,18 +124,18 @@ app.get('/tasks', (req, res) => {
 ```
 
 *What just happened:* a request to `/tasks?done=true` gives `req.query.done === "true"`. We compare
-against the string `'true'` (⚠️ same string-not-boolean trap as params — there's no `true` boolean
+against the string `'true'` (⚠️ same string-not-boolean trap as params - there's no `true` boolean
 hiding in a URL) and filter accordingly. A plain `/tasks` with no query returns everything, because
 `req.query.done` is `undefined` and we skip the filter. Multiple params work the same way:
 `/tasks?done=true&tag=home` gives you both `req.query.done` and `req.query.tag`.
 
-> 📝 Rule of thumb: **path params identify a resource** (`/tasks/42` — *this* task), **query strings
-> shape a collection** (`/tasks?done=true` — *which* tasks). When you're unsure which to use, ask whether
+> 📝 Rule of thumb: **path params identify a resource** (`/tasks/42` - *this* task), **query strings
+> shape a collection** (`/tasks?done=true` - *which* tasks). When you're unsure which to use, ask whether
 > the value names a thing or filters a list.
 
 ## Routers: splitting routes into modules
 
-Pile every route onto `app` and one file balloons fast. `express.Router()` gives you a **mini-app** —
+Pile every route onto `app` and one file balloons fast. `express.Router()` gives you a **mini-app** - 
 you define routes on it exactly like you do on `app`, then **mount** it under a path prefix.
 
 ```javascript
@@ -162,13 +162,13 @@ app.use('/api/tasks', tasksRouter)
 
 *What just happened:* the router's paths are written **relative to where it's mounted**. Inside the
 router, `'/'` and `'/:id'` look like they'd answer the site root, but because we mounted it at
-`/api/tasks`, they answer `GET /api/tasks` and `GET /api/tasks/42` — the mount prefix is glued in front
+`/api/tasks`, they answer `GET /api/tasks` and `GET /api/tasks/42` - the mount prefix is glued in front
 of every route the router defines. This is exactly how you'll split routes across files in Phase 7; a
 router *is* an `app` you can carry around and plug in.
 
 ## Route order: first match wins
 
-Express checks routes **top to bottom and stops at the first match.** Order is not cosmetic — it changes
+Express checks routes **top to bottom and stops at the first match.** Order is not cosmetic - it changes
 behavior.
 
 ```javascript
@@ -181,7 +181,7 @@ app.get('/tasks/done', (req, res) => {
 })
 ```
 
-*What just happened:* a request to `/tasks/done` is meant for the second handler — but the first one,
+*What just happened:* a request to `/tasks/done` is meant for the second handler - but the first one,
 `/tasks/:id`, matches *anything* after `/tasks/`, including the literal word `done`. So `:id` captures
 `"done"`, the specific route never runs, and you get `{ "id": "done" }`. The fix is to register the
 **specific route before the general one**:
@@ -198,18 +198,18 @@ app.get('/tasks/:id', (req, res) => {
 
 *What just happened:* now `/tasks/done` hits the exact-match route first and never falls through to the
 param route. The guideline that saves you: **specific paths before wildcards, narrow before broad.** The
-same logic applies to catch-all "404" routes — they go *last*, because anything above them gets first dibs.
+same logic applies to catch-all "404" routes - they go *last*, because anything above them gets first dibs.
 
 ## Recap
 
 - A route is **a method + a path → a handler**. `app.get/post/put/delete/patch`, plus `app.all` for every
   verb on one path.
-- **Route params** (`:id`) come through `req.params`, and they are **always strings** — convert with
+- **Route params** (`:id`) come through `req.params`, and they are **always strings** - convert with
   `Number(...)` before comparing to numeric data.
 - **Query strings** (`?done=true&tag=x`) come through `req.query`; use them for optional filtering and
   sorting. Path params identify a resource; query strings shape a collection.
 - `express.Router()` is a mountable mini-app. `app.use('/api/tasks', router)` prefixes every route the
-  router defines — this is how you split routes across files.
+  router defines - this is how you split routes across files.
 - Express matches **top to bottom, first match wins.** Put specific routes before wildcards and catch-alls.
 
 Check yourself before moving on:

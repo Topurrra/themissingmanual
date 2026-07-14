@@ -50,7 +50,7 @@ the CPU talks to fast peripherals; NVMe drives ride on it directly. For how PCIe
 inside the machine, see [How Data Moves Inside a Machine](/guides/how-data-moves-inside-a-machine).
 
 Take the SATA ceiling off and the flash stretches its legs: far faster raw throughput, shining especially
-at many requests at once. The honest nuance: for *everyday* desktop tasks (boot, launch an app, open a
+at many requests at once. The real nuance: for *everyday* desktop tasks (boot, launch an app, open a
 document), a SATA SSD already feels so much better than an HDD that the jump from SATA SSD to NVMe is
 real but far less dramatic than the jump from HDD to *any* SSD was. NVMe's advantage becomes obvious
 under heavy load - large file transfers, video editing, compiling big projects, databases, anything
@@ -94,9 +94,9 @@ true NVMe SSD. (On Windows, Task Manager → Performance shows each disk's type;
 
 ## Which should you pick?
 
-Here's the honest, case-by-case version - no "it depends" cop-out.
+Here's the straight, case-by-case version - no "it depends" cop-out.
 
-| Your situation | The honest pick |
+| Your situation | The clear pick |
 |---|---|
 | **Reviving an old laptop/desktop** | *Any* SSD over the HDD. If the machine only takes SATA, a SATA SSD is a massive, life-changing upgrade - don't skip it waiting for NVMe support it may not have. |
 | **Building/buying a normal modern PC** | NVMe for the drive holding your OS and apps. It's the default now, usually costs about the same as SATA SSD, and there's no reason to choose the slower interface. |

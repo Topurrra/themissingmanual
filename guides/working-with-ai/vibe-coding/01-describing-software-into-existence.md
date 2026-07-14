@@ -20,7 +20,7 @@ updated: 2026-06-30
 
 The term "vibe coding" came from Andrej Karpathy, a well-known AI researcher, in a short post in early 2025. He described a way of working where you "give in to the vibes, embrace exponentials, and forget that the code even exists." You talk to the AI, accept what it produces, run it, and if something's wrong you describe the problem and let the AI fix it. You're not reading the code. You're reacting to the behavior.
 
-The phrase caught on fast because it named something a lot of people were already doing. Worth being honest, though: it's a new term, and people use it loosely. Some mean "I built a whole app without writing a line." Others mean "I let AI write most of it but I still check the important parts." When someone says they vibe-coded something, ask which one they mean. The gap between those two is the whole subject of this guide.
+The phrase caught on fast because it named something a lot of people were already doing. Worth being clear, though: it's a new term, and people use it loosely. Some mean "I built a whole app without writing a line." Others mean "I let AI write most of it but I still check the important parts." When someone says they vibe-coded something, ask which one they mean. The gap between those two is the whole subject of this guide.
 
 ## What the loop actually feels like
 

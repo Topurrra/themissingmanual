@@ -50,7 +50,7 @@ raise the work factor to keep pace.
 hash is. Higher = slower = harder to brute-force. It's stored inside the resulting hash so verification
 knows how much work to redo.
 
-A quick, honest comparison so you can choose without agonizing:
+A quick, no-nonsense comparison so you can choose without agonizing:
 
 | Algorithm | In one line | When to reach for it |
 |---|---|---|

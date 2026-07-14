@@ -2,7 +2,7 @@
 title: "C# From Zero"
 guide: "csharp-from-zero"
 phase: 0
-summary: "Learn C# from nothing to genuinely advanced: install .NET and the basics - types, classes, objects, collections - then the deep half: generics, delegates and lambdas, LINQ, modern records and pattern matching, async/await, the .NET runtime and its garbage collector, testing, and performance. Mental-model-first, with honest explanations."
+summary: "Learn C# from nothing to genuinely advanced: install .NET and the basics - types, classes, objects, collections - then the deep half: generics, delegates and lambdas, LINQ, modern records and pattern matching, async/await, the .NET runtime and its garbage collector, testing, and performance. Mental-model-first, with clear explanations."
 tags: [csharp, dotnet, beginner, advanced, getting-started, oop, generics, linq, async-await, garbage-collection]
 category: programming-languages
 order: 7

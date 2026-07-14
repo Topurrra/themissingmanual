@@ -21,17 +21,17 @@ Computer scientists Edward Coffman and colleagues identified, back in 1971, that
 
 ## 1. Mutual exclusion
 
-A resource can be held by only one thread at a time — two threads can't both hold the same lock simultaneously. This is the entire *point* of a lock. In the transfer example, only one thread can hold `account1`'s lock at once.
+A resource can be held by only one thread at a time - two threads can't both hold the same lock simultaneously. This is the entire *point* of a lock. In the transfer example, only one thread can hold `account1`'s lock at once.
 
 ```text
 lock(account1)   # if another thread already holds it, this one waits
 ```
 
-*What just happened:* mutual exclusion is why Thread B can't barge in and use `account1` while Thread A holds it — it has to wait. That waiting is necessary for correctness, but it's also the raw material a deadlock is built from.
+*What just happened:* mutual exclusion is why Thread B can't barge in and use `account1` while Thread A holds it - it has to wait. That waiting is necessary for correctness, but it's also the raw material a deadlock is built from.
 
 ## 2. Hold and wait
 
-A thread holds at least one resource while simultaneously waiting to acquire another. Thread A holds `account1`'s lock while it waits for `account2`'s lock — it doesn't release what it already has, even though it's stuck waiting for something more.
+A thread holds at least one resource while simultaneously waiting to acquire another. Thread A holds `account1`'s lock while it waits for `account2`'s lock - it doesn't release what it already has, even though it's stuck waiting for something more.
 
 ```text
 lock(account1)      # holding this...
@@ -42,25 +42,25 @@ lock(account2)      # ...while waiting for this
 
 ## 3. No preemption
 
-A resource can't be forcibly taken away from the thread holding it — it can only be released voluntarily, by the thread that holds it, when that thread is good and ready. The operating system (or your locking library) won't reach in and yank a lock out of Thread A's hands to hand it to Thread B, even though Thread B is waiting.
+A resource can't be forcibly taken away from the thread holding it - it can only be released voluntarily, by the thread that holds it, when that thread is good and ready. The operating system (or your locking library) won't reach in and yank a lock out of Thread A's hands to hand it to Thread B, even though Thread B is waiting.
 
 ```text
 # no mechanism does this automatically:
 force_unlock(account1, take_from=ThreadA, give_to=ThreadB)
 ```
 
-*What just happened:* this line doesn't exist in real locking systems for good reason — forcibly revoking a lock mid-use would corrupt whatever the holding thread was in the middle of doing. But its absence is exactly why a stuck thread stays stuck: nothing can rescue it by force.
+*What just happened:* this line doesn't exist in real locking systems for good reason - forcibly revoking a lock mid-use would corrupt whatever the holding thread was in the middle of doing. But its absence is exactly why a stuck thread stays stuck: nothing can rescue it by force.
 
 ## 4. Circular wait
 
-There exists a cycle of threads where each one is waiting for a resource held by the next thread in the cycle. Thread A waits on Thread B; Thread B waits on Thread A. With more threads involved, the cycle can be longer — A waits on B, B waits on C, C waits on A — but it's still a closed loop.
+There exists a cycle of threads where each one is waiting for a resource held by the next thread in the cycle. Thread A waits on Thread B; Thread B waits on Thread A. With more threads involved, the cycle can be longer - A waits on B, B waits on C, C waits on A - but it's still a closed loop.
 
 ```text
 A -> waiting for resource held by B
 B -> waiting for resource held by A
 ```
 
-*What just happened:* this is the condition that completes the trap. The first three conditions describe *how* locks generally behave — sensibly, even necessarily. It's only when those normal behaviors form a closed loop of waiting that you get a deadlock.
+*What just happened:* this is the condition that completes the trap. The first three conditions describe *how* locks generally behave - sensibly, even necessarily. It's only when those normal behaviors form a closed loop of waiting that you get a deadlock.
 
 ## Why "all four" is the useful part
 
@@ -71,7 +71,7 @@ No preemption     -> can be worked around (use try-lock with a timeout instead)
 Circular wait     -> can be prevented (always acquire locks in the same global order)
 ```
 
-*What just happened:* mutual exclusion is almost never the one you attack — you generally need locks to exclude, or your program has a correctness bug instead of a deadlock. That leaves three practical angles of attack, and the most common one in real code is the last: preventing circular wait by imposing a **consistent lock ordering**. If every thread in your system always acquires `account1` before `account2` — never the reverse, no matter which direction the transfer runs — a cycle becomes structurally impossible. Thread B can't wait for `account1` while holding `account2`, because it would have had to acquire `account1` first under the ordering rule.
+*What just happened:* mutual exclusion is almost never the one you attack - you generally need locks to exclude, or your program has a correctness bug instead of a deadlock. That leaves three practical angles of attack, and the most common one in real code is the last: preventing circular wait by imposing a **consistent lock ordering**. If every thread in your system always acquires `account1` before `account2` - never the reverse, no matter which direction the transfer runs - a cycle becomes structurally impossible. Thread B can't wait for `account1` while holding `account2`, because it would have had to acquire `account1` first under the ordering rule.
 
 > You don't have to eliminate all four conditions. You have to eliminate exactly one. That reframes "prevent deadlocks" from an abstract goal into a specific, checkable engineering decision.
 

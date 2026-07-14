@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Caching, Cold Starts, and When Not To
 
-You've got the model and the daily loop. Now the part nobody tells you until you're three months in: where Bazel's promised speed actually comes from, where it bites back, and the most important engineering call of all - whether your project should be using Bazel at all. The honest answer is that for a lot of projects, it shouldn't.
+You've got the model and the daily loop. Now the part nobody tells you until you're three months in: where Bazel's promised speed actually comes from, where it bites back, and the most important engineering call of all - whether your project should be using Bazel at all. The plain answer is that for a lot of projects, it shouldn't.
 
 ## The remote cache: building once for the whole team
 

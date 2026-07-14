@@ -227,7 +227,7 @@ fast precisely by *not* type-checking, giving instant rebuilds during developmen
 protect you - verified by `tsc`, just not by the thing producing your JavaScript.
 
 That closes the loop: a checker, a config file driving it, the settings that matter, strict mode keeping it
-honest, and a clear picture of who emits the JavaScript.
+accurate, and a clear picture of who emits the JavaScript.
 
 ## Recap
 

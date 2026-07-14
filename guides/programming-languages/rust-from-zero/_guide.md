@@ -2,7 +2,7 @@
 title: "Rust From Zero"
 guide: "rust-from-zero"
 phase: 0
-summary: "Learn Rust from nothing to genuinely advanced: install it and the basics, then ownership - and then the deep half: lifetimes, traits and generics, smart pointers, error handling, fearless concurrency, iterators, macros, and performance and unsafe. Mental-model-first, with honest explanations."
+summary: "Learn Rust from nothing to genuinely advanced: install it and the basics, then ownership - and then the deep half: lifetimes, traits and generics, smart pointers, error handling, fearless concurrency, iterators, macros, and performance and unsafe. Mental-model-first, with clear explanations."
 tags: [rust, beginner, advanced, getting-started, ownership, cargo, lifetimes, traits, generics, concurrency, macros, unsafe]
 category: programming-languages
 order: 5

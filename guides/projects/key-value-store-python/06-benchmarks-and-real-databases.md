@@ -2,7 +2,7 @@
 title: "Benchmarks, and What Redis Does Differently"
 guide: "key-value-store-python"
 phase: 6
-summary: "Measure your engine's real throughput, see the brutal price of fsync, and place your design honestly next to Redis, LevelDB, and SQLite - what each one changed and what it cost them."
+summary: "Measure your engine's real throughput, see the brutal price of fsync, and place your design fairly next to Redis, LevelDB, and SQLite - what each one changed and what it cost them."
 tags: [python, benchmarks, fsync, redis, leveldb, lsm-tree]
 difficulty: advanced
 synonyms:
@@ -16,7 +16,7 @@ updated: 2026-07-06
 
 # Benchmarks, and What Redis Does Differently
 
-You built a database. The final phase does what a good engineer does after building anything: measures it honestly, then walks the neighborhood to see how the professionals handled the same trade-offs. There's no better position to understand Redis or LevelDB from - you've personally hit every problem their designs answer.
+You built a database. The final phase does what a good engineer does after building anything: measures it clearly, then walks the neighborhood to see how the professionals handled the same trade-offs. There's no better position to understand Redis or LevelDB from - you've personally hit every problem their designs answer.
 
 ## One knob first: make fsync optional
 
@@ -90,7 +90,7 @@ get (no fsync)                4,327,131 ops/sec
 
 - **The fsync cliff.** Same code, same data - roughly *seven hundred times* fewer writes per second when every one waits for the disk to confirm. A buffered write is a memory copy measured in microseconds; an fsync is a round trip to a physical device measured in milliseconds. Nothing in the software stack is more expensive than genuine durability, which is why every database makes it configurable and why "how often do you fsync?" is arguably *the* defining question of storage engine design.
 - **Reads are absurdly fast.** Millions per second - because a `get` is a dict lookup plus a small file read that the OS serves from the page cache in RAM. Your index did its job: read cost is independent of database size.
-- **Even the "slow" honest mode is fine for many systems.** A couple hundred fully-durable writes per second is a real workload's worth. Know your requirements before buying complexity.
+- **Even the "slow" fully-durable mode is fine for many systems.** A couple hundred fully-durable writes per second is a real workload's worth. Know your requirements before buying complexity.
 
 If you want a third data point, benchmark through `client.py` - you'll find TCP round trips and Python's per-request overhead flatten the fsync gap considerably, a useful reminder that the bottleneck is wherever you *haven't* measured yet.
 
@@ -105,7 +105,7 @@ And commands execute one at a time on a single thread - the serial guarantee you
 
 ## What LevelDB does differently
 
-Your engine has two honest limits, both inherited from the hash index: every key must fit in RAM, and there are no range queries - "give me `user:100` through `user:200`" means checking each key, because a hash map has no order.
+Your engine has two real limits, both inherited from the hash index: every key must fit in RAM, and there are no range queries - "give me `user:100` through `user:200`" means checking each key, because a hash map has no order.
 
 LevelDB (and its descendant RocksDB) restructures everything around *sorted order* to fix both. The design is the **LSM tree** - log-structured merge tree:
 
@@ -116,7 +116,7 @@ LevelDB (and its descendant RocksDB) restructures everything around *sorted orde
 
 Sorted files make range queries a seek-and-scan, and the sparse index frees RAM. The price: a read may probe several files (slower than your one-hop hash lookup), and background compaction consumes real I/O - the write traffic it generates even has a name, *write amplification*. Wins are purchased, never free.
 
-## The honest scorecard
+## The clear-eyed scorecard
 
 | | **Yours (Bitcask-style)** | **Redis** | **LevelDB/RocksDB** | **SQLite/PostgreSQL** |
 |---|---|---|---|---|

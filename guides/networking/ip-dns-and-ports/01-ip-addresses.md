@@ -66,7 +66,7 @@ flowchart LR
 
 **How one public IP serves a whole house.** Your router keeps a little ledger. When your laptop asks for a web page, the router notes "this reply belongs to the laptop," sends the request out under the *public* IP, and routes the answer back to the right device when it returns. That translation trick is called **NAT** (Network Address Translation). It's also one reason IPv4 survived running out of addresses - a thousand homes can hide behind far fewer public addresses.
 
-**Why this saves you later.** "What's my IP?" has two honest answers, and now you can tell them apart. The address a website sees is your *public* one (shared by your household). The address your laptop calls itself on the home network is a *private* one. When a tutorial says "connect to `192.168.x.x`," it means a device on your own network - not something out on the internet.
+**Why this saves you later.** "What's my IP?" has two correct answers, and now you can tell them apart. The address a website sees is your *public* one (shared by your household). The address your laptop calls itself on the home network is a *private* one. When a tutorial says "connect to `192.168.x.x`," it means a device on your own network - not something out on the internet.
 
 ## See it for yourself
 

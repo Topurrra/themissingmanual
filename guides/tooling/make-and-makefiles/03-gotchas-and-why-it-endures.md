@@ -38,7 +38,7 @@ build:$
 
 ## Stale builds: when the graph lies
 
-Make's whole correctness rests on prerequisites being honestly declared. If a target secretly depends on a file you did not list, Make will not rebuild when that file changes - and you get a *stale build*: output that does not match your source, with no error at all.
+Make's whole correctness rests on prerequisites being accurately declared. If a target secretly depends on a file you did not list, Make will not rebuild when that file changes - and you get a *stale build*: output that does not match your source, with no error at all.
 
 ```makefile
 app: main.c
@@ -69,7 +69,7 @@ $ make -n build
 gcc -o app main.c config.h
 ```
 
-*What just happened:* `-n` (dry run) prints the recipes Make *would* run without running them. It is the safest way to understand or debug a Makefile before you let it loose. Pair it with `make -j4` (run up to 4 recipes in parallel) once your prerequisites are honest - parallelism only works if the graph is correct, because Make uses the dependencies to know what is safe to run at the same time.
+*What just happened:* `-n` (dry run) prints the recipes Make *would* run without running them. It is the safest way to understand or debug a Makefile before you let it loose. Pair it with `make -j4` (run up to 4 recipes in parallel) once your prerequisites are accurate - parallelism only works if the graph is correct, because Make uses the dependencies to know what is safe to run at the same time.
 
 By default, if any recipe line returns a non-zero exit code, Make stops immediately. That is usually what you want - a failed compile should not march on to the link step. If you genuinely want to ignore a failure (say, a `rm` of a file that may not exist), prefix the command with `-`:
 
@@ -88,7 +88,7 @@ Step back and look at what Make actually is: a tiny, dependency-aware command ru
 - **It is everywhere.** No install step, no version manager, no lockfile. If there is a terminal, there is probably a `make`.
 - **It is universal.** The graph engine does not care whether you compile C, render PDFs, or run linters. One tool, every stack.
 - **The model is small.** Targets, prerequisites, recipes, timestamps. You learned it in Phase 1 and it has not grown since.
-- **It is honest about being a wrapper.** Newer tools hide your commands behind layers; a Makefile shows you the exact shell commands it runs. When something breaks, you can read it.
+- **It is upfront about being a wrapper.** Newer tools hide your commands behind layers; a Makefile shows you the exact shell commands it runs. When something breaks, you can read it.
 
 The quirks are real - the tab, the per-line shells, the silent stale builds. But for "run these tasks, rebuild only what changed," nothing has matched its blend of ubiquity and simplicity in five decades.
 

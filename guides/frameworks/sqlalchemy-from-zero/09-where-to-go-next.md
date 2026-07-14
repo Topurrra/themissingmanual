@@ -29,7 +29,7 @@ The point lands like this: **most database access in serious Python is SQLAlchem
 
 Back in Phase 1 you learned that SQLAlchemy is two libraries stacked: **Core** (Pythonic SQL building) and the **ORM** (classes mapped to tables) on top of it. At the time that was a mental model. Now it becomes a habit - knowing *which layer for which job*.
 
-💡 Here's the honest map a seasoned hand carries:
+💡 Here's the clear-eyed map a seasoned hand carries:
 
 - **ORM for domain objects and CRUD - the 90%.** Loading an author, saving a book with its tags, updating a row, walking relationships. This is what the ORM was built for, and it's where the overwhelming majority of your code lives. Reach for it by default.
 - **Core or raw SQL for bulk operations.** Updating fifty thousand rows by loading each one into the Session, mutating it, and flushing is the slow path - you're paying for identity tracking you don't need. A single Core `update()` statement, or plain SQL, does it in one trip.
@@ -57,7 +57,7 @@ Every branch is the thing you just learned, pointed at a different framework.
 
 ## What to build, and a last word
 
-Reading got you here. Building is what makes it stay. The schema from this guide - **authors, books, tags** - is a perfect sandbox because it has every relationship shape and the N+1 trap baked right in. A couple of honest projects:
+Reading got you here. Building is what makes it stay. The schema from this guide - **authors, books, tags** - is a perfect sandbox because it has every relationship shape and the N+1 trap baked right in. A couple of no-nonsense projects:
 
 - **Build the model standalone.** Define authors, books, and tags with their relationships (one-to-many and many-to-many), then write a query that loads authors with their books using `selectinload` - and watch the query count drop from N+1 to two. Then add an **Alembic migration** to create the schema instead of `create_all`. That's the two things that separate a tutorial from production: fetch strategy and real migrations, practiced for real.
 - **Or wire it into a framework.** Drop SQLAlchemy into a [Flask](/guides/flask-from-zero) or [FastAPI](/guides/fastapi-from-zero) app, expose a couple of endpoints, and keep `echo=True` on. Watch the SQL scroll past as requests come in. This is the most satisfying exercise in the whole guide - you'll see, line by line, the thing you learned to read being written and run for you.

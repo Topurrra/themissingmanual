@@ -116,9 +116,9 @@ each column properly in [Phase 2](02-the-building-blocks.md).
 identity - and treat each vendor's service names as a translation layer. That knowledge moves with you
 between jobs; memorized service names mostly don't.
 
-## A note on honesty: which one is "best"?
+## A note on plain talk: which one is "best"?
 
-You'll see endless arguments about AWS vs GCP vs Azure. The honest answer: for the building blocks in
+You'll see endless arguments about AWS vs GCP vs Azure. The real answer: for the building blocks in
 this guide, they're far more alike than different, and which one a company uses is usually decided by
 history, existing contracts, and which one the team already knows - not a clean technical win. AWS is
 the oldest and broadest; GCP is often praised for data and Kubernetes heritage; Azure tends to show up

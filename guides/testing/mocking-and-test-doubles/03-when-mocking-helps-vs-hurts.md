@@ -113,7 +113,7 @@ works:
 | **A stub** | You just need to *feed* one canned situation | Simple; forces a specific input |
 | **A mock** | The *interaction itself* is the contract you must guarantee | Verifies the call was made correctly |
 
-The order matters. A real object is the most honest test you can write, so prefer it. Drop to a fake when
+The order matters. A real object is the most trustworthy test you can write, so prefer it. Drop to a fake when
 the real thing is too slow or external but still has behavior worth honoring (an in-memory database is the
 classic - see [Phase 2](02-the-doubles-defined-honestly.md)). Drop to a stub when you only need to set up a
 situation. Only reach for a strict mock when the *interaction* is genuinely the point - "we must call the
@@ -170,6 +170,6 @@ and green. Use them at the seams, keep your own code real, and let the higher la
 
 ---
 
-[← Phase 2: The Doubles, Defined Honestly](02-the-doubles-defined-honestly.md) · [Guide overview](_guide.md)
+[← Phase 2: The Doubles, Clearly Defined](02-the-doubles-defined-honestly.md) · [Guide overview](_guide.md)
 
 **Related guides:** [Your First Unit Test](/guides/your-first-unit-test) · [Unit, Integration & E2E Tests](/guides/unit-integration-e2e)

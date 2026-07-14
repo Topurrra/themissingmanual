@@ -80,6 +80,6 @@ Rough time: a focused afternoon or two evenings, four to five hours if you read 
 3. **Templates Without a Framework** - write a four-line template engine and generate a real HTML page per post.
 4. **The Index, Tags, and an RSS Feed** - the pages that make it a blog instead of a pile of files.
 5. **A Dev Server with Auto-Rebuild** - serve the site locally and rebuild the moment you save a file.
-6. **Deploying, and Where to Take It** - put the folder on the internet for free, and the honest list of what to build next.
+6. **Deploying, and Where to Take It** - put the folder on the internet for free, and the real list of what to build next.
 
 Each phase ends with something that runs. By phase 3 you can open a generated post in your browser. By phase 6 your blog has a URL. Let's set it up.

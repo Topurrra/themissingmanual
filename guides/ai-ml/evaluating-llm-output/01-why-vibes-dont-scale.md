@@ -25,7 +25,7 @@ A model feature has a sharper version of this problem than normal code, for thre
 - **It's non-deterministic.** The same input can give different output on different runs, so a single good result doesn't prove the next one will be good.
 - **Changes have spooky reach.** Editing one line of a prompt can improve the case you were looking at and silently break a category you weren't. There's no compiler to catch it.
 
-Put together: the thing most likely to mislead you is exactly the thing you're using to judge it — your eyes, on a handful of cases, once.
+Put together: the thing most likely to mislead you is exactly the thing you're using to judge it - your eyes, on a handful of cases, once.
 
 ## What "eyeballing doesn't scale" really means
 
@@ -40,18 +40,18 @@ no saved baseline        ──────────▶  "is this better than
 ship on a nod            ──────────▶  the regression three categories over
 ```
 
-*What just happened:* Each thing the vibe loop skips is a place a real bug hides. Eyeballing scales fine for one look at one case — it falls apart the moment you need to compare versions or cover the inputs you didn't think of.
+*What just happened:* Each thing the vibe loop skips is a place a real bug hides. Eyeballing scales fine for one look at one case - it falls apart the moment you need to compare versions or cover the inputs you didn't think of.
 
-The fix isn't to look harder. It's to **write down what you're looking for, once, against a set of inputs you keep** — so the judgment is fixed, repeatable, and the same every time you run it. That fixed set is an eval.
+The fix isn't to look harder. It's to **write down what you're looking for, once, against a set of inputs you keep** - so the judgment is fixed, repeatable, and the same every time you run it. That fixed set is an eval.
 
 ## What an eval actually is
 
 Strip away the jargon and an eval is two things:
 
-1. **A set of real inputs** — the kinds of things your feature actually receives. Not toy examples; the messy, boring, edge-y cases from real usage.
-2. **A way to decide if the output was acceptable** for each input — an *expected behavior* you can check, whether that's an exact value, a rule, or a judgment.
+1. **A set of real inputs** - the kinds of things your feature actually receives. Not toy examples; the messy, boring, edge-y cases from real usage.
+2. **A way to decide if the output was acceptable** for each input - an *expected behavior* you can check, whether that's an exact value, a rule, or a judgment.
 
-If you've written a test suite, this will feel familiar, because it *is* a test suite — for a component whose output you can't pin to a single exact string. Each row is "given this input, the output should behave like *this*," and running the eval scores the current model-plus-prompt against the whole set at once.
+If you've written a test suite, this will feel familiar, because it *is* a test suite - for a component whose output you can't pin to a single exact string. Each row is "given this input, the output should behave like *this*," and running the eval scores the current model-plus-prompt against the whole set at once.
 
 A single row might look like this:
 
@@ -66,23 +66,23 @@ A single row might look like this:
 
 *What just happened:* This row turns a fuzzy hope ("the bot should handle locked-out users well") into checkable facts: it should classify the intent as `account_access`, it should mention the spam folder and a way to reach support, and it must not wander into refunds or invent a ticket number. None of that needs a human re-reading it each run.
 
-The magic isn't any one row. It's that you have *thirty* of them, drawn from real inputs, and you can run all thirty in seconds — so "did my change help?" becomes "27/30 passed, up from 24/30" instead of "felt good to me."
+The magic isn't any one row. It's that you have *thirty* of them, drawn from real inputs, and you can run all thirty in seconds - so "did my change help?" becomes "27/30 passed, up from 24/30" instead of "felt good to me."
 
 ## Where the inputs come from
 
 The most common eval mistake is making up clean, easy inputs that the model was always going to nail. An eval full of softballs tells you nothing. Get real ones:
 
 - **Production logs.** The actual inputs your feature received. Gold.
-- **The failures you remember.** Every time the model embarrassed you, that case belongs in the set — permanently. An eval is also a graveyard of past bugs that must never come back.
+- **The failures you remember.** Every time the model embarrassed you, that case belongs in the set - permanently. An eval is also a graveyard of past bugs that must never come back.
 - **Edge cases on purpose.** Empty input, very long input, a different language, an adversarial "ignore your instructions" attempt, the input that's *almost* in scope but isn't.
 
 You don't need hundreds to start. Twenty to fifty real, varied cases beat a thousand synthetic clean ones, because they exercise the places the model actually fails.
 
-> 🪖 **War story.** A team "improved" their summarizer prompt and shipped on a glowing demo. The new prompt was tuned, unknowingly, for short articles — the demo input. On long articles it now truncated halfway and dropped the conclusion. A ten-row eval with two long articles in it would have turned the celebration into a red row before anyone shipped. They built the eval *after* the incident, which is the most common time teams build their first one.
+> 🪖 **War story.** A team "improved" their summarizer prompt and shipped on a glowing demo. The new prompt was tuned, unknowingly, for short articles - the demo input. On long articles it now truncated halfway and dropped the conclusion. A ten-row eval with two long articles in it would have turned the celebration into a red row before anyone shipped. They built the eval *after* the incident, which is the most common time teams build their first one.
 
 ## For builders
 
-Start smaller than feels respectable. A `evals.jsonl` file with fifteen real inputs and a five-line script that runs them and prints `passed/total` is already better than every team still shipping on vibes — including, until recently, you. The discipline that matters is *keeping* the file and *adding to it* every time something breaks. Phase 2 is about the scoring; this phase is about accepting that without a fixed set to score against, you're guessing with extra steps.
+Start smaller than feels respectable. A `evals.jsonl` file with fifteen real inputs and a five-line script that runs them and prints `passed/total` is already better than every team still shipping on vibes - including, until recently, you. The discipline that matters is *keeping* the file and *adding to it* every time something breaks. Phase 2 is about the scoring; this phase is about accepting that without a fixed set to score against, you're guessing with extra steps.
 
 ```quiz
 [
@@ -106,7 +106,7 @@ Start smaller than feels respectable. A `evals.jsonl` file with fifteen real inp
       "A long prompt and a low temperature"
     ],
     "answer": 2,
-    "explain": "An eval is real inputs paired with an expected behavior you can score — essentially a test suite for fuzzy output."
+    "explain": "An eval is real inputs paired with an expected behavior you can score - essentially a test suite for fuzzy output."
   },
   {
     "q": "Where do the best eval inputs come from?",

@@ -12,18 +12,18 @@ updated: 2026-07-10
 # Path Operations & Parameters
 
 Phase 1 got an app running: write a typed function, get a validated, documented endpoint. This phase
-zooms in on the routes themselves — how you say "this function handles `GET /books`," how you grab the
+zooms in on the routes themselves - how you say "this function handles `GET /books`," how you grab the
 `42` out of `/books/42`, how you read `?limit=10` off the URL, and how a single `int` annotation turns
 into a validation rule that rejects garbage before your code ever runs.
 
 The mental model: **a route in FastAPI is just a normal Python function, and its signature is the
-spec.** The decorator says *which* requests reach the function. The parameters — and their type hints —
+spec.** The decorator says *which* requests reach the function. The parameters - and their type hints - 
 say *what those requests must look like*. You don't write parsing or validation; you describe the shape,
 and FastAPI enforces it.
 
-## Path operations — a route is a decorated function
+## Path operations - a route is a decorated function
 
-📝 **Path operation** — FastAPI's name for a route. "Path" is the URL path (`/books`); "operation" is the
+📝 **Path operation** - FastAPI's name for a route. "Path" is the URL path (`/books`); "operation" is the
 HTTP method (`GET`, `POST`, ...). Together they're "the function that runs for `GET /books`." You declare
 one by decorating a function: the decorator *is* the method-plus-path.
 
@@ -42,7 +42,7 @@ def create_book():
 ```
 
 *What just happened:* `@app.get("/books")` registers `list_books` as the handler for `GET /books`.
-`@app.post("/books")` registers a *different* function for `POST /books` — same path, different method,
+`@app.post("/books")` registers a *different* function for `POST /books` - same path, different method,
 so it's a separate path operation. The decorator name (`get`, `post`, `put`, `delete`, `patch`) maps
 one-to-one onto the HTTP verb, matching the REST model from
 [REST APIs Explained](/guides/rest-apis-explained): the URL names the resource, the method is the verb
@@ -51,9 +51,9 @@ you apply to it. Whatever you `return` becomes the JSON response body.
 💡 You'll almost always use `get` (read), `post` (create), `put`/`patch` (update), and `delete` (remove).
 There's a decorator per method; pick the one that matches what the request *does* to the resource.
 
-## Path parameters — pulling values out of the URL
+## Path parameters - pulling values out of the URL
 
-A `GET /books` lists every book. But `GET /books/42` should return *one* book — the one with id `42`.
+A `GET /books` lists every book. But `GET /books/42` should return *one* book - the one with id `42`.
 That `42` changes per request, so you can't hard-code it into the route string. Mark it as a **path
 parameter** with curly braces, then receive it as a function argument.
 
@@ -65,12 +65,12 @@ def get_book(book_id: int):
 
 *What just happened:* `{book_id}` in the path is a placeholder. FastAPI matches `/books/42`, pulls out
 `"42"`, and passes it to your function as the `book_id` argument. The name in the braces must match the
-parameter name exactly — that's how FastAPI wires them together.
+parameter name exactly - that's how FastAPI wires them together.
 
-Look at the annotation: `book_id: int`. The value in a URL is always *text* — `"42"` is a string. That
+Look at the annotation: `book_id: int`. The value in a URL is always *text* - `"42"` is a string. That
 `int` hint tells FastAPI to convert it to a real integer before handing it over, so inside your function
-`book_id` is the number `42`, not the string `"42"`. If the conversion *fails* — say someone requests
-`/books/banana` — FastAPI doesn't run your function at all. It returns a `422 Unprocessable Entity` with
+`book_id` is the number `42`, not the string `"42"`. If the conversion *fails* - say someone requests
+`/books/banana` - FastAPI doesn't run your function at all. It returns a `422 Unprocessable Entity` with
 a precise error:
 
 ```json
@@ -88,16 +88,16 @@ a precise error:
 
 *What just happened:* `banana` can't be an `int`, so FastAPI rejected the request before your code saw
 it. The error names exactly *where* it went wrong (`["path", "book_id"]`), *what* was expected, and
-*what* it got — zero validation code written.
+*what* it got - zero validation code written.
 
 💡 This is the Phase 1 idea made concrete: **the type hint is doing validation, not just documentation.**
-One word — `int` — bought you parsing, a guaranteed-correct type inside your function, and an automatic,
+One word - `int` - bought you parsing, a guaranteed-correct type inside your function, and an automatic,
 descriptive `422` for bad input. Change it to `str` and `/books/banana` would sail right through. The hint
 *is* the rule.
 
-## Query parameters — everything after the `?`
+## Query parameters - everything after the `?`
 
-Path parameters identify *which* resource. **Query parameters** tune *how* you want it — filtering,
+Path parameters identify *which* resource. **Query parameters** tune *how* you want it - filtering,
 paging, sorting. They're the `?skip=0&limit=10` part of a URL. The rule for declaring them: **any
 function parameter that isn't in the path becomes a query parameter.**
 
@@ -109,7 +109,7 @@ def list_books(skip: int = 0, limit: int = 10):
 
 *What just happened:* `skip` and `limit` don't appear in the path string `"/books"`, so FastAPI treats
 them as query parameters read from the URL's query string. Because they have **default values** (`= 0`,
-`= 10`), they're *optional* — a plain `GET /books` uses the defaults. They're typed `int`, so they get
+`= 10`), they're *optional* - a plain `GET /books` uses the defaults. They're typed `int`, so they get
 the same parse-and-validate treatment as path parameters: `?limit=abc` earns a `422`.
 
 You'd call it like this:
@@ -132,11 +132,11 @@ curl "http://localhost:8000/books?skip=20&limit=5"
 *What just happened:* FastAPI matched `?skip=20&limit=5` to your two parameters by name, converted both
 to `int`, and passed them in. Leave them off (`curl http://localhost:8000/books`) and you'd get the
 defaults, `skip=0` and `limit=10`. Default present means optional; default absent means required (and a
-missing required query param is — you guessed it — a `422`).
+missing required query param is - you guessed it - a `422`).
 
-## Optional & constrained parameters — richer rules than "is it an int"
+## Optional & constrained parameters - richer rules than "is it an int"
 
-Sometimes a query parameter is genuinely optional with *no* meaningful default — "filter by author, but
+Sometimes a query parameter is genuinely optional with *no* meaningful default - "filter by author, but
 only if the caller asked." That's an `Optional` (or `| None`) annotation with a default of `None`:
 
 ```python
@@ -149,11 +149,11 @@ def list_books(author: str | None = None):
 
 *What just happened:* `author: str | None = None` says "a string, or nothing." With no `?author=...` in
 the URL, `author` is `None` and you return everything; with `?author=Herbert`, it's `"Herbert"`. The
-`= None` default is what makes it optional — without a default, FastAPI would *require* it. (`str | None`
-is the modern syntax; older code writes `Optional[str]` from `typing` — same thing.)
+`= None` default is what makes it optional - without a default, FastAPI would *require* it. (`str | None`
+is the modern syntax; older code writes `Optional[str]` from `typing` - same thing.)
 
 But "it's a string" is often too loose. You might want "no longer than 50 characters," or "an id that
-must be at least 1." For that, FastAPI gives you `Query()` and `Path()` — helpers that attach extra
+must be at least 1." For that, FastAPI gives you `Query()` and `Path()` - helpers that attach extra
 validation rules to a parameter:
 
 ```python
@@ -170,7 +170,7 @@ def get_book(
 ```
 
 *What just happened:* `Path(ge=1)` adds the rule "**g**reater than or **e**qual to 1" to the path
-parameter — so `/books/0` is now invalid. `Query(default=None, max_length=50)` keeps `q` optional but
+parameter - so `/books/0` is now invalid. `Query(default=None, max_length=50)` keeps `q` optional but
 caps its length at 50 characters. These constraints join the same validation pass: violate one and you
 get a `422` describing it, exactly like a type mismatch. Now request `/books/0`:
 
@@ -197,12 +197,12 @@ a `422` that names the broken constraint. ⚠️ Don't confuse the helper's argu
 Notice what you never did: parse a string, write an `if not isinstance(...)`, hand-build an error
 response. You *described* each parameter with a type and maybe a constraint, and FastAPI did the rest.
 
-💡 Here's the machinery. **At startup, FastAPI inspects every path-operation function's signature** —
-reading the parameter names, their type hints, and any `Query`/`Path` rules — and builds a schema for
+💡 Here's the machinery. **At startup, FastAPI inspects every path-operation function's signature** - 
+reading the parameter names, their type hints, and any `Query`/`Path` rules - and builds a schema for
 the route. That one schema powers three things at once: **parsing** the incoming request, **validating**
 it (generating the `422` when it fails), and **documenting** it in the auto-generated interactive docs
 from Phase 1. The signature is the single source of truth, so the docs are always in sync with the
-actual behavior — built from the same description.
+actual behavior - built from the same description.
 
 ⚠️ **The ordering gotcha.** FastAPI matches routes **in the order you declare them**, top to bottom, and
 stops at the first match. So a *fixed* path that looks like it could be a path parameter must come
@@ -220,7 +220,7 @@ def featured_books():
 
 *What just happened:* This is broken. A request for `/books/featured` hits `@app.get("/books/{book_id}")`
 *first*, because it's declared first and `/books/featured` matches the `{book_id}` pattern. FastAPI then
-tries to parse `"featured"` as an `int`, fails, and returns a `422` — `featured_books` never runs. Fix it
+tries to parse `"featured"` as an `int`, fails, and returns a `422` - `featured_books` never runs. Fix it
 by declaring the literal route **before** the dynamic one:
 
 ```python
@@ -236,8 +236,8 @@ def get_book(book_id: int):
 *What just happened:* Now `/books/featured` matches the literal route and stops there, while
 `/books/42` falls through to the parameterized one. Rule of thumb: **specific before general.**
 
-So far every endpoint reads data from the *URL*. But creating a book needs a whole payload — title,
-author, year, price — which doesn't belong in the path or query string. That's the request **body**,
+So far every endpoint reads data from the *URL*. But creating a book needs a whole payload - title,
+author, year, price - which doesn't belong in the path or query string. That's the request **body**,
 where Pydantic models take over. Next phase.
 
 ## Recap
@@ -251,16 +251,16 @@ where Pydantic models take over. Next phase.
 4. For optional-with-no-default use `str | None = None`; for richer rules use `Query(...)` / `Path(...)`
    with constraints like `max_length` and `ge`, which produce constraint-specific `422`s.
 5. 💡 FastAPI reads each function's signature **at startup** and builds one schema that drives parsing,
-   validation, and the auto docs — so the docs can never drift from the behavior.
+   validation, and the auto docs - so the docs can never drift from the behavior.
 6. ⚠️ Routes match **in declaration order**: put literal paths (`/books/featured`) **before** dynamic ones
    (`/books/{book_id}`), or the dynamic route swallows them.
 
 You can now route requests and validate everything that arrives in the URL. Next: data that arrives in
-the request *body* — with Pydantic models doing the same type-driven validation, for whole objects.
+the request *body* - with Pydantic models doing the same type-driven validation, for whole objects.
 
 ## Quick check
 
-Make sure the core idea stuck — that the signature drives everything:
+Make sure the core idea stuck - that the signature drives everything:
 
 ```quiz
 [
@@ -278,7 +278,7 @@ Make sure the core idea stuck — that the signature drives everything:
   {
     "q": "How do you make a function parameter a *query* parameter rather than a path parameter?",
     "choices": [
-      "Include it as a function argument but NOT in the path string — anything not in the path becomes a query parameter",
+      "Include it as a function argument but NOT in the path string - anything not in the path becomes a query parameter",
       "Wrap it in curly braces in the path string",
       "Decorate it with @query above the function",
       "Give it the type hint `Query` instead of `int`"
@@ -289,7 +289,7 @@ Make sure the core idea stuck — that the signature drives everything:
   {
     "q": "You declare `@app.get(\"/books/{book_id}\")` first and `@app.get(\"/books/featured\")` second. What goes wrong?",
     "choices": [
-      "`/books/featured` matches the {book_id} route first, FastAPI tries to parse \"featured\" as an int, and returns a 422 — the featured route never runs",
+      "`/books/featured` matches the {book_id} route first, FastAPI tries to parse \"featured\" as an int, and returns a 422 - the featured route never runs",
       "Both routes work fine; FastAPI picks the more specific one automatically",
       "FastAPI refuses to start because of the conflict",
       "`/books/featured` returns featured books, but `/books/42` breaks"

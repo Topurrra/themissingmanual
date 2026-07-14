@@ -22,7 +22,7 @@ This is an intermediate guide - it assumes you know roughly what HTTP is (a brow
 - **Want it to truly click?** Read all three in order. Phase 2 shows *how* the secret gets agreed on, and Phase 3 shows *who* decides the server is who it claims to be - each answers a question the last one opened.
 
 ## The phases
-1. **[What HTTPS Protects (and Doesn't)](01-what-https-protects.md)** - TLS adds three things to HTTP: *encryption* (eavesdroppers can't read it), *integrity* (nobody can tamper with it undetected), and *authentication* (you're talking to the real server). And the big gotcha: the padlock means "encrypted to whoever holds the certificate," **not** "this site is honest."
+1. **[What HTTPS Protects (and Doesn't)](01-what-https-protects.md)** - TLS adds three things to HTTP: *encryption* (eavesdroppers can't read it), *integrity* (nobody can tamper with it undetected), and *authentication* (you're talking to the real server). And the big gotcha: the padlock means "encrypted to whoever holds the certificate," **not** "this site is trustworthy."
 2. **[The Handshake & Keys](02-the-handshake-and-keys.md)** - how two strangers agree on a shared secret over an open wire. The trick: slow *asymmetric* keys to bootstrap, then fast *symmetric* encryption for the actual data. An annotated ASCII handshake.
 3. **[Certificates & Trust](03-certificates-and-trust.md)** - a *certificate* binds a domain to a public key, signed by a *Certificate Authority* your browser already trusts. The chain of trust, why Let's Encrypt changed everything, and how to read "expired," "name mismatch," and "self-signed" errors without panic.
 

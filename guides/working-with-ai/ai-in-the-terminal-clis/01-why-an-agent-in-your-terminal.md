@@ -51,7 +51,7 @@ You might wonder why the terminal and not a nice graphical app. A few reasons, a
 
 The terminal is where your project already lives. Your files, your version control, your test commands, your package manager - they all run there. An agent that lives in the same place doesn't need a bridge to reach any of it.
 
-It's also honest about what's happening. Every command the agent wants to run shows up as text you can read before it runs. There's no hidden machinery. You can watch it work the same way you'd watch over a colleague's shoulder.
+It's also upfront about what's happening. Every command the agent wants to run shows up as text you can read before it runs. There's no hidden machinery. You can watch it work the same way you'd watch over a colleague's shoulder.
 
 And it's composable. The terminal is built for tools that chain together and run in scripts. Once you're comfortable, you can hand the agent a task and have it run as part of a larger process. (Plenty of these agents also offer editor extensions and graphical versions - but the terminal is the common denominator, and it's where the model is clearest about its actions.)
 

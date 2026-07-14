@@ -1,5 +1,5 @@
 ---
-title: "Measuring Similarity — From 'Near' to Search by Meaning"
+title: "Measuring Similarity - From 'Near' to Search by Meaning"
 guide: "embeddings-and-vector-search"
 phase: 2
 summary: "How a computer measures how 'near' two vectors are (cosine similarity / distance), and why embedding your query and finding the nearest stored vectors gives you search by meaning that handles synonyms and paraphrase, not keyword matching."
@@ -9,15 +9,15 @@ synonyms: ["what is cosine similarity", "how is vector distance measured", "how 
 updated: 2026-07-10
 ---
 
-# Measuring Similarity — From "Near" to Search by Meaning
+# Measuring Similarity - From "Near" to Search by Meaning
 
-In [Phase 1](01-meaning-as-coordinates.md) you learned that meaning becomes coordinates, and that *close* means *similar*. But we waved a hand at the most important word: "close." A computer can't squint at a map — it needs a number, a single value that says "these two vectors are 0.91 similar" or "these are basically unrelated."
+In [Phase 1](01-meaning-as-coordinates.md) you learned that meaning becomes coordinates, and that *close* means *similar*. But we waved a hand at the most important word: "close." A computer can't squint at a map - it needs a number, a single value that says "these two vectors are 0.91 similar" or "these are basically unrelated."
 
 This phase makes "close" precise, and then shows the payoff: once you can measure closeness, **search by meaning falls out almost for free.** You embed the question, you find the nearest stored vectors, you return what they point to. That's it. That's semantic search.
 
 ## The intuition: same direction means same meaning
 
-**What it actually is.** The most common way to measure similarity between two embeddings is **cosine similarity**. Forget the dots on the map for a second and picture an *arrow* drawn from the origin to each point. Cosine similarity asks one question — **do these two arrows point the same way?**
+**What it actually is.** The most common way to measure similarity between two embeddings is **cosine similarity**. Forget the dots on the map for a second and picture an *arrow* drawn from the origin to each point. Cosine similarity asks one question - **do these two arrows point the same way?**
 
 ```text
         ^                  arrow A: "a small fluffy cat"
@@ -32,13 +32,13 @@ This phase makes "close" precise, and then shows the payoff: once you can measur
         v   C              → cosine similarity ≈ 0  (unrelated)
 ```
 
-*What just happened:* Arrows A and B point in nearly the same direction, so their cosine similarity is near 1 — the system reads them as meaning almost the same thing. Arrow C heads off elsewhere, so its similarity to A is near 0. Cosine similarity ignores how *long* each arrow is and cares only about its *direction*, which is exactly what you want for comparing meaning.
+*What just happened:* Arrows A and B point in nearly the same direction, so their cosine similarity is near 1 - the system reads them as meaning almost the same thing. Arrow C heads off elsewhere, so its similarity to A is near 0. Cosine similarity ignores how *long* each arrow is and cares only about its *direction*, which is exactly what you want for comparing meaning.
 
-📝 **Terminology — cosine similarity.** A single number, between -1 and 1, that measures how aligned two vectors are. **1** = pointing the same way (most similar). **0** = at right angles (unrelated). **-1** = pointing opposite ways. With text embeddings you'll mostly see values between 0 and 1, "higher = more similar."
+📝 **Terminology - cosine similarity.** A single number, between -1 and 1, that measures how aligned two vectors are. **1** = pointing the same way (most similar). **0** = at right angles (unrelated). **-1** = pointing opposite ways. With text embeddings you'll mostly see values between 0 and 1, "higher = more similar."
 
-**Why people get this wrong.** The frequent confusion is between *similarity* and *distance* — two sides of the same coin, easy to mix up. Higher cosine **similarity** means *more* alike (1 is best). Smaller **distance** means *more* alike (0 is best). Some tools report one, some the other; a few use plain straight-line (Euclidean) distance instead of cosine. The headache isn't the math — it's forgetting which direction means "better" in the tool in front of you.
+**Why people get this wrong.** The frequent confusion is between *similarity* and *distance* - two sides of the same coin, easy to mix up. Higher cosine **similarity** means *more* alike (1 is best). Smaller **distance** means *more* alike (0 is best). Some tools report one, some the other; a few use plain straight-line (Euclidean) distance instead of cosine. The headache isn't the math - it's forgetting which direction means "better" in the tool in front of you.
 
-⚠️ **Gotcha — know whether your tool returns "bigger is better" or "smaller is better."** Sort results the wrong way and you'll proudly return the *least* relevant matches. Before you trust any ranking, confirm: is this a similarity score (sort descending) or a distance (sort ascending)? Check the docs once; it saves a baffling afternoon.
+⚠️ **Gotcha - know whether your tool returns "bigger is better" or "smaller is better."** Sort results the wrong way and you'll proudly return the *least* relevant matches. Before you trust any ranking, confirm: is this a similarity score (sort descending) or a distance (sort ascending)? Check the docs once; it saves a baffling afternoon.
 
 ## Semantic search: embed the query, find the nearest neighbors
 
@@ -50,7 +50,7 @@ This is the whole point. Everything so far was setup for this one move.
 2. **At search time:** embed the user's query with the *same model*.
 3. Find the stored vectors **nearest** to the query vector, and return whatever they point to.
 
-That third step — "find the nearest stored vectors to this one" — is called **nearest-neighbor search**.
+That third step - "find the nearest stored vectors to this one" - is called **nearest-neighbor search**.
 
 ```mermaid
 flowchart LR
@@ -60,7 +60,7 @@ flowchart LR
   N --> R[top-k matches]
 ```
 
-📝 **Terminology — nearest-neighbor search.** Given one query point, find the stored points closest to it. "Find the 5 nearest" is a *k-nearest-neighbors* search, often written `k=5`.
+📝 **Terminology - nearest-neighbor search.** Given one query point, find the stored points closest to it. "Find the 5 nearest" is a *k-nearest-neighbors* search, often written `k=5`.
 
 **What it does in real life.** Here's the move with a small library of stored documents:
 
@@ -86,11 +86,11 @@ flowchart LR
       doc4  "Office holiday hours for December"    0.05
 ```
 
-*What just happened:* The query "I can't get into my account" shares **no words** with doc2 ("Recovering a lost account login") — not one. A keyword search for "account" would miss the *intent* entirely. But in meaning space, "can't get into my account" and "recovering a lost account login" point almost the same direction, so doc2 scores highest. The system understood the *problem*, not the vocabulary.
+*What just happened:* The query "I can't get into my account" shares **no words** with doc2 ("Recovering a lost account login") - not one. A keyword search for "account" would miss the *intent* entirely. But in meaning space, "can't get into my account" and "recovering a lost account login" point almost the same direction, so doc2 scores highest. The system understood the *problem*, not the vocabulary.
 
-💡 **Key point.** This is the superpower in one line: **semantic search matches meaning, so it handles synonyms and paraphrase automatically.** "Car" finds "automobile." "How do I cancel" finds "ending your subscription." "It's broken" finds "troubleshooting a malfunction." You didn't write any synonym lists — the embedding model already knows these things mean the same.
+💡 **Key point.** This is the superpower in one line: **semantic search matches meaning, so it handles synonyms and paraphrase automatically.** "Car" finds "automobile." "How do I cancel" finds "ending your subscription." "It's broken" finds "troubleshooting a malfunction." You didn't write any synonym lists - the embedding model already knows these things mean the same.
 
-## Where it beats keyword search — and where it doesn't
+## Where it beats keyword search - and where it doesn't
 
 Semantic search is not strictly better than keyword search; it's *different*, and the best systems often use both.
 
@@ -100,23 +100,23 @@ Semantic search is not strictly better than keyword search; it's *different*, an
 | Synonyms / paraphrase / typos in meaning | Misses unless you maintain synonym lists | Handles naturally |
 | Exact match needed: an error code, a SKU, a function name like `parseDate` | Nails it | May drift to "similar-looking" but wrong results |
 | Rare proper noun the model never learned well | Finds the literal string | Can fumble it |
-| Explaining *why* a result matched | Easy — show the matched word | Hard — "the vectors were close" isn't satisfying |
+| Explaining *why* a result matched | Easy - show the matched word | Hard - "the vectors were close" isn't satisfying |
 
-*What just happened:* Each method wins where the other is weak. Keyword search is literal and precise; semantic search is flexible and meaning-aware. Production search frequently runs **both** and blends the rankings — a pattern called *hybrid search*. You don't choose a side; you choose per query, or run both and merge.
+*What just happened:* Each method wins where the other is weak. Keyword search is literal and precise; semantic search is flexible and meaning-aware. Production search frequently runs **both** and blends the rankings - a pattern called *hybrid search*. You don't choose a side; you choose per query, or run both and merge.
 
-⚠️ **Gotcha — exact identifiers are semantic search's blind spot.** Search for the error code `ERR_2048` or part number `XJ-9920`, and embeddings may happily return things that *look or feel* similar instead of the exact match. Anything where the literal string is the point — codes, IDs, names — is where you want keyword matching in the mix.
+⚠️ **Gotcha - exact identifiers are semantic search's blind spot.** Search for the error code `ERR_2048` or part number `XJ-9920`, and embeddings may happily return things that *look or feel* similar instead of the exact match. Anything where the literal string is the point - codes, IDs, names - is where you want keyword matching in the mix.
 
-**Why this saves you later.** Almost every "AI that finds the right thing" feature — support-article search, recommendation, deduplication, the retrieval step inside chatbots — is this exact pattern: embed, find nearest, return. When you build [RAG](/guides/rag-explained), the "retrieval" half *is* the semantic search you just learned.
+**Why this saves you later.** Almost every "AI that finds the right thing" feature - support-article search, recommendation, deduplication, the retrieval step inside chatbots - is this exact pattern: embed, find nearest, return. When you build [RAG](/guides/rag-explained), the "retrieval" half *is* the semantic search you just learned.
 
 ## Recap
 
 1. **Cosine similarity** measures whether two vectors point the same direction: **1 = most similar, 0 = unrelated.**
-2. **Similarity** (bigger is better) and **distance** (smaller is better) are two ways to say the same thing — always know which your tool returns.
+2. **Similarity** (bigger is better) and **distance** (smaller is better) are two ways to say the same thing - always know which your tool returns.
 3. **Semantic search** = embed every document ahead of time, embed the query with the *same model*, return the **nearest neighbors**.
-4. Because it matches *meaning*, it handles **synonyms and paraphrase for free** — its biggest advantage over keyword search.
+4. Because it matches *meaning*, it handles **synonyms and paraphrase for free** - its biggest advantage over keyword search.
 5. It's **weak on exact identifiers**; serious systems often blend semantic and keyword search.
 
-You can now reason about search by meaning end to end on a small library. The last question is the practical one: what happens when "compare the query to every stored vector" means comparing against *ten million* of them? That's the next phase — plus the three gotchas that quietly wreck real systems.
+You can now reason about search by meaning end to end on a small library. The last question is the practical one: what happens when "compare the query to every stored vector" means comparing against *ten million* of them? That's the next phase - plus the three gotchas that quietly wreck real systems.
 
 ---
 

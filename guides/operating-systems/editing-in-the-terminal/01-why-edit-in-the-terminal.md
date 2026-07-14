@@ -13,7 +13,7 @@ updated: 2026-06-30
 
 It's a fair question. You have a perfectly good editor on your laptop - VS Code, Notepad, whatever you
 like - with a mouse and menus and a friendly Save button. So why would anyone choose to edit text inside a
-terminal window, with no mouse and cryptic key combinations? The honest answer is that most of the time you
+terminal window, with no mouse and cryptic key combinations? The real answer is that most of the time you
 *don't* choose it. Something puts you there, and you need to be able to handle it without panic.
 
 ## The moment it actually happens to you

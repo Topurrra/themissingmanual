@@ -23,7 +23,7 @@ npm install --save-dev prettier eslint
 
 *What just happened:* `--save-dev` records both in `package.json` under `devDependencies`. Anyone who runs `npm install` afterward gets the exact same tools, so the team lints and formats identically.
 
-For ESLint, the quickest honest start is its own setup command, which asks a few questions and writes a starter config for you:
+For ESLint, the quickest, most straightforward start is its own setup command, which asks a few questions and writes a starter config for you:
 
 ```bash
 npm init @eslint/config@latest

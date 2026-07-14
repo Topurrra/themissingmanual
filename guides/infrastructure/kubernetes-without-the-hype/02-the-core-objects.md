@@ -209,7 +209,7 @@ flowchart TD
 4. **Labels + selectors** are the glue: Deployments own Pods by label, Services route to Pods by label.
    Mismatched labels are a top early bug.
 
-Now the honest part everyone skips: knowing how Kubernetes works doesn't mean you should run it. Next: when
+Now the plain part everyone skips: knowing how Kubernetes works doesn't mean you should run it. Next: when
 it earns its keep - and when it doesn't.
 
 ---

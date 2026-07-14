@@ -153,7 +153,7 @@ to study math so it stays in your head instead of leaking out after the test.
 
 One more habit, quieter than the others but worth its own line.
 
-Math gets written down for a reason beyond record-keeping. Writing forces a kind of honesty:
+Math gets written down for a reason beyond record-keeping. Writing exposes the gaps:
 a thought that felt clear in your head often turns out to have a hole in it the moment you
 put it on paper. The computer scientist Leslie Lamport made the point sharply - if you think
 without writing, you only *think* you're thinking.

@@ -180,7 +180,7 @@ run 4: 8 ms
 ```
 *What just happened:* The identical `work(50_000_000L)` call got dramatically faster across runs without changing a line. Run 0 ran cold - interpreted, then lightly compiled; by later runs the JIT had identified the hot loop, compiled it with C2's aggressive optimizations, and reached steady-state speed. The numbers vary by machine, but the *shape* - slow first, fast once warm - is universal.
 
-⚠️ **This is why naive microbenchmarks lie.** Time a method once and report "Java did X in Y milliseconds," and you almost certainly measured interpretation and warm-up, not real performance - or a JIT that optimized away your unused result entirely. Honest benchmarking requires *warming up* (running the code to steady state) before timing, plus tricks to stop the JIT from deleting ignored results. Don't hand-roll this; use the **JMH** harness, met in [Phase 16: Testing, Build & Profiling](16-testing-and-profiling.md).
+⚠️ **This is why naive microbenchmarks lie.** Time a method once and report "Java did X in Y milliseconds," and you almost certainly measured interpretation and warm-up, not real performance - or a JIT that optimized away your unused result entirely. Accurate benchmarking requires *warming up* (running the code to steady state) before timing, plus tricks to stop the JIT from deleting ignored results. Don't hand-roll this; use the **JMH** harness, met in [Phase 16: Testing, Build & Profiling](16-testing-and-profiling.md).
 
 ## Class loading and memory errors
 

@@ -81,7 +81,7 @@ Gradle's flexibility is also its sharpest edge. The same "it's all code" power t
 
 **Configuration-phase work.** As covered in Phase 1, code in a bare task body runs on *every* build during configuration. Put an expensive operation there - a network call, a file scan - and every single build pays for it, even `./gradlew help`. Symptom: builds feel slow even when nothing changed. Fix: move real work into `doLast` or a proper task action.
 
-**Cache misses from undeclared inputs.** If a task reads a file it didn't declare as an input, Gradle can't see the change and may wrongly report `UP-TO-DATE` - or, if the task is non-deterministic, never cache at all. Symptom: stale outputs, or a task that always reruns. Fix: declare every input and output honestly.
+**Cache misses from undeclared inputs.** If a task reads a file it didn't declare as an input, Gradle can't see the change and may wrongly report `UP-TO-DATE` - or, if the task is non-deterministic, never cache at all. Symptom: stale outputs, or a task that always reruns. Fix: declare every input and output accurately.
 
 **Reaching for `clean` reflexively.** Coming from other tools, people run `./gradlew clean build` out of habit. But `clean` deletes the build directory, which throws away exactly the up-to-date state that makes Gradle fast - you've forced a full rebuild. Use `clean` only when you genuinely suspect corrupted output, not as a ritual.
 

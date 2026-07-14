@@ -13,13 +13,13 @@ updated: 2026-07-10
 
 # HTTP & JSON: the API Building Blocks
 
-You keep hearing that an app "calls an API" — a request goes out, some data comes back, a screen fills
+You keep hearing that an app "calls an API" - a request goes out, some data comes back, a screen fills
 with results. It can feel like magic behind a curtain. It isn't. Almost every web API you'll ever touch
 is built from exactly two things: **HTTP**, the way the message travels, and **JSON**, the way the data
-is written down. Learn those two, and the curtain disappears — you'll be able to read an API call and
+is written down. Learn those two, and the curtain disappears - you'll be able to read an API call and
 actually understand what's going on.
 
-This guide is the calm walkthrough of those two building blocks. No framework, no SDK, no special tools —
+This guide is the calm walkthrough of those two building blocks. No framework, no SDK, no special tools - 
 just `curl` in a terminal so you can see the raw request and the raw response with nothing in the way.
 
 > ⏭️ Brand new to the whole idea of an API? Read [What an API Is](/guides/what-an-api-is) first, then
@@ -34,13 +34,13 @@ just `curl` in a terminal so you can see the raw request and the raw response wi
 
 ## The phases
 
-1. **[HTTP, the Transport](01-http-the-transport.md)** — how a web API rides on HTTP: request and
-   response, the methods (GET/POST/...), status codes, and headers — focused on the API angle. An
+1. **[HTTP, the Transport](01-http-the-transport.md)** - how a web API rides on HTTP: request and
+   response, the methods (GET/POST/...), status codes, and headers - focused on the API angle. An
    annotated `GET` request, start to finish.
-2. **[JSON, the Data Format](02-json-the-data-format.md)** — what JSON actually is (objects, arrays,
+2. **[JSON, the Data Format](02-json-the-data-format.md)** - what JSON actually is (objects, arrays,
    strings, numbers, booleans, null), why it won, and how to read and write it. With the mental map from
    JSON to objects in your code, and the punctuation gotchas that bite everyone.
-3. **[A Real API Call](03-a-real-api-call.md)** — the two halves together: `curl` a JSON API and read
+3. **[A Real API Call](03-a-real-api-call.md)** - the two halves together: `curl` a JSON API and read
    what comes back, then send a `POST` with a JSON body and the right headers. Annotated transcripts of
    both.
 

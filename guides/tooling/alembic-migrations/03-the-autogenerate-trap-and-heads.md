@@ -124,7 +124,7 @@ def downgrade():
 
 *What just happened:* both branches now flow into the merge revision, which is the one true head again. The two feature migrations still run; the merge just reunites the chain.
 
-> Two heads is a normal Tuesday, not an emergency. The mistake is hand-editing `down_revision` to force a fake linear order - that can make a migration claim to follow one it actually doesn't, and break replay on a fresh database. Use `alembic merge`; let Alembic keep the parent pointers honest.
+> Two heads is a normal Tuesday, not an emergency. The mistake is hand-editing `down_revision` to force a fake linear order - that can make a migration claim to follow one it actually doesn't, and break replay on a fresh database. Use `alembic merge`; let Alembic keep the parent pointers straight.
 
 ## In the wild
 

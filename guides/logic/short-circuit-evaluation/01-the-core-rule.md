@@ -17,24 +17,24 @@ updated: 2026-07-04
 
 # Why bother checking the second half
 
-Picture a light switch wired to two switches in series — both have to be flipped on for the light to turn on. The moment you see the first switch is off, you already know the light is off. You don't need to walk over and check the second switch at all; the outcome is settled. That's the entire idea behind short-circuit evaluation, applied to `&&` and `||` in code.
+Picture a light switch wired to two switches in series - both have to be flipped on for the light to turn on. The moment you see the first switch is off, you already know the light is off. You don't need to walk over and check the second switch at all; the outcome is settled. That's the entire idea behind short-circuit evaluation, applied to `&&` and `||` in code.
 
-If you want the background on what AND and OR mean as logical connectives before diving into this specific behavior, [Propositional Logic](/guides/propositional-logic) covers that foundation — this guide picks up from there and focuses on one particular thing your language does when it *evaluates* an AND or OR expression at runtime.
+If you want the background on what AND and OR mean as logical connectives before diving into this specific behavior, [Propositional Logic](/guides/propositional-logic) covers that foundation - this guide picks up from there and focuses on one particular thing your language does when it *evaluates* an AND or OR expression at runtime.
 
 ## The rule for AND
 
-For `&&` (or `and`, depending on the language), the whole expression is `true` only if *both* sides are `true`. That means the instant the left side turns out to be `false`, the answer is already locked in — the entire expression must be `false`, no matter what the right side would have been. So the language doesn't bother evaluating the right side at all.
+For `&&` (or `and`, depending on the language), the whole expression is `true` only if *both* sides are `true`. That means the instant the left side turns out to be `false`, the answer is already locked in - the entire expression must be `false`, no matter what the right side would have been. So the language doesn't bother evaluating the right side at all.
 
 ```text
 false && (anything)   ->  always false, right side never runs
 true  && (right side) ->  right side must be checked to know the answer
 ```
 
-*What just happened:* the left operand alone was enough to determine the result in the first row. There was no point running the right side, so the language skipped it entirely — not "evaluated it and ignored the result," but genuinely never executed it.
+*What just happened:* the left operand alone was enough to determine the result in the first row. There was no point running the right side, so the language skipped it entirely - not "evaluated it and ignored the result," but genuinely never executed it.
 
 ## The rule for OR
 
-`||` (or `or`) works the mirror-image way. The whole expression is `true` if *either* side is `true`. So the instant the left side turns out to be `true`, the answer is already locked in as `true` — the right side is skipped.
+`||` (or `or`) works the mirror-image way. The whole expression is `true` if *either* side is `true`. So the instant the left side turns out to be `true`, the answer is already locked in as `true` - the right side is skipped.
 
 ```text
 true  || (anything)   ->  always true, right side never runs
@@ -65,13 +65,13 @@ result = loud_true() or loud_false()
 print("result:", result)
 ```
 
-*What just happened:* in the AND example, only `"loud_false ran"` prints — `loud_true()` never executes, because `and` already knew the answer was `False` after the left side came back `False`. In the OR example, only `"loud_true ran"` prints, for the same reason in reverse. If short-circuiting weren't happening, both function calls would print every time, regardless of order.
+*What just happened:* in the AND example, only `"loud_false ran"` prints - `loud_true()` never executes, because `and` already knew the answer was `False` after the left side came back `False`. In the OR example, only `"loud_true ran"` prints, for the same reason in reverse. If short-circuiting weren't happening, both function calls would print every time, regardless of order.
 
-> Short-circuiting isn't an optimization trick bolted on afterward — it's the definition of how `&&` and `||` evaluate. The right side runs *only if the left side didn't already settle the answer.*
+> Short-circuiting isn't an optimization trick bolted on afterward - it's the definition of how `&&` and `||` evaluate. The right side runs *only if the left side didn't already settle the answer.*
 
 ## Why this matters beyond trivia
 
-Right now this might look like a curiosity about how your language saves a bit of work. It's more than that: because the right side is *guaranteed* not to run when it's unnecessary, you can rely on that guarantee to write code that would otherwise crash. That's the entire subject of Phase 2 — the guard pattern and default values are both just this one rule, used on purpose.
+Right now this might look like a curiosity about how your language saves a bit of work. It's more than that: because the right side is *guaranteed* not to run when it's unnecessary, you can rely on that guarantee to write code that would otherwise crash. That's the entire subject of Phase 2 - the guard pattern and default values are both just this one rule, used on purpose.
 
 Watch it animated: [short-circuit evaluation](/explainers/ShortCircuit.dc.html)
 
@@ -80,8 +80,8 @@ Watch it animated: [short-circuit evaluation](/explainers/ShortCircuit.dc.html)
   {
     "q": "In `false && someFunction()`, does someFunction() get called?",
     "choices": [
-      "Yes, always — && only skips the return value",
-      "No — the left side being false already determines the result, so the right side never runs",
+      "Yes, always - && only skips the return value",
+      "No - the left side being false already determines the result, so the right side never runs",
       "Only if someFunction() has no arguments",
       "It depends on the return type of someFunction()"
     ],
@@ -92,7 +92,7 @@ Watch it animated: [short-circuit evaluation](/explainers/ShortCircuit.dc.html)
     "q": "In `true || someFunction()`, does someFunction() get called?",
     "choices": [
       "Yes, OR always evaluates both sides",
-      "No — the left side being true already determines the result, so the right side never runs",
+      "No - the left side being true already determines the result, so the right side never runs",
       "Only in compiled languages, not interpreted ones",
       "Only if the function returns a boolean"
     ],

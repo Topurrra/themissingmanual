@@ -15,7 +15,7 @@ updated: 2026-06-30
 
 # Limits vs the Cloud
 
-A local model is a real win in the right spot. But it is not a free lunch, and pretending otherwise sets you up to be disappointed. The honest picture: the model running on your laptop is smaller, slower, and more forgetful than the frontier models the big labs serve from their data centers. Here is each gap, why it exists, and when it actually matters.
+A local model is a real win in the right spot. But it is not a free lunch, and pretending otherwise sets you up to be disappointed. The plain picture: the model running on your laptop is smaller, slower, and more forgetful than the frontier models the big labs serve from their data centers. Here is each gap, why it exists, and when it actually matters.
 
 ## Quality: smaller models, smaller skill
 

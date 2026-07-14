@@ -11,15 +11,15 @@ updated: 2026-07-10
 
 # Joining & Combining
 
-Up to now we've worked one table — the sales DataFrame, all by itself — but real analysis is almost never
-one table. Your sales rows know the `product` name and a `units` count — but *what category is that product?
+Up to now we've worked one table - the sales DataFrame, all by itself - but real analysis is almost never
+one table. Your sales rows know the `product` name and a `units` count - but *what category is that product?
 Who's the supplier?* That information lives somewhere else, in a `products` table, because repeating
 "Widgets are Hardware, supplied by Acme" on every single sales row would be wasteful and error-prone. So the
 data gets split across tables on purpose, linked by a shared value. This phase is about putting it back
 together.
 
 📝 Here's the mental model: **combining means matching rows from one table to rows in another using a shared
-key.** If you've touched SQL, you already know this move by its real name — it's a **JOIN**, and pandas'
+key.** If you've touched SQL, you already know this move by its real name - it's a **JOIN**, and pandas'
 `merge` *is* that join, just with DataFrame syntax instead of `SELECT ... JOIN ... ON`. Same picture, same
 join types, same gotchas. If joins have never quite clicked, the calm walkthrough in
 [SQL Joins, Finally Explained](/guides/sql-joins-explained) draws the picture in pure SQL terms; everything
@@ -46,7 +46,7 @@ products = pd.DataFrame({
 })
 ```
 
-*What just happened:* we built two tables that share a `product` column — that shared column is the **key**
+*What just happened:* we built two tables that share a `product` column - that shared column is the **key**
 that lets us tie a sales row to its product details. Notice the deliberate mismatch: `sales` has a `Gizmo`
 that isn't in `products`, and `products` has a `Sprocket` that never sold. Those non-matches are exactly
 where join types start to matter.
@@ -70,10 +70,10 @@ print(result[["product", "units", "category", "supplier"]])
 
 *What just happened:* `merge` matched each sales row to the `products` row with the same `product`, and
 glued the `category` and `supplier` columns on. The `how="inner"` means **keep only rows that matched on
-both sides** — so the `Gizmo` sale (no product entry) and the `Sprocket` product (no sale) both vanished.
+both sides** - so the `Gizmo` sale (no product entry) and the `Sprocket` product (no sale) both vanished.
 Inner join = the intersection.
 
-Often you don't want rows to disappear — you want every sales row preserved, matched detail where it exists
+Often you don't want rows to disappear - you want every sales row preserved, matched detail where it exists
 and blanks where it doesn't. That's a **left** join (`how="left"`): keep all of the left table:
 
 ```python
@@ -89,7 +89,7 @@ print(result[["product", "units", "category", "supplier"]])
 4   Gizmo      5          NaN      NaN
 ```
 
-*What just happened:* every original sales row survived — including the `Gizmo` sale. But `Gizmo` has no
+*What just happened:* every original sales row survived - including the `Gizmo` sale. But `Gizmo` has no
 entry in `products`, so pandas had nothing to fill `category` and `supplier` with and put `NaN` there.
 ⚠️ This is the thing to internalize about left/right/outer joins: **non-matches don't drop the row, they
 fill the borrowed columns with `NaN`.** A sudden crop of `NaN`s after a merge usually means keys that didn't
@@ -97,10 +97,10 @@ line up, not missing source data.
 
 The `how=` options, in one breath:
 
-- **`inner`** — only rows that match on both sides (the default). The intersection.
-- **`left`** — every row from the left table; `NaN` in the right's columns where there's no match.
-- **`right`** — mirror image: every row from the right table; `NaN` on the left where there's no match.
-- **`outer`** — every row from *both* tables; `NaN` wherever either side had no match. The union.
+- **`inner`** - only rows that match on both sides (the default). The intersection.
+- **`left`** - every row from the left table; `NaN` in the right's columns where there's no match.
+- **`right`** - mirror image: every row from the right table; `NaN` on the left where there's no match.
+- **`outer`** - every row from *both* tables; `NaN` wherever either side had no match. The union.
 
 An outer join shows both lonely rows at once:
 
@@ -118,16 +118,16 @@ print(result[["product", "units", "category"]])
 5    Widget   10.0     Hardware
 ```
 
-*What just happened:* the outer join kept everything — the `Gizmo` sale with no product (`category` is
+*What just happened:* the outer join kept everything - the `Gizmo` sale with no product (`category` is
 `NaN`) *and* the `Sprocket` product with no sale (`units` is `NaN`). Notice `units` turned into floats
 (`4.0`): pandas widens an integer column to float so it can hold `NaN`, since plain ints can't represent
-missing. 💡 Pick the join type by asking "which rows must survive even if they don't match?" — none (inner),
+missing. 💡 Pick the join type by asking "which rows must survive even if they don't match?" - none (inner),
 the left ones (left), or all of them (outer).
 
 ## Choosing the join keys
 
 `on="product"` works when both tables name the key column identically. They often don't. Say `sales` calls
-it `product` but `products` calls it `item` — use `left_on` and `right_on` to name each side:
+it `product` but `products` calls it `item` - use `left_on` and `right_on` to name each side:
 
 ```python
 products_alt = products.rename(columns={"product": "item"})
@@ -158,7 +158,7 @@ print(len(sales), "sales rows ->",
 5 sales rows -> 6 after merge
 ```
 
-*What just happened:* the duplicate `Widget` in the lookup table turned a 5-row merge into a 6-row one — each
+*What just happened:* the duplicate `Widget` in the lookup table turned a 5-row merge into a 6-row one - each
 of the two `Widget` sales matched two product rows... but here only one extra appeared because of how the
 counts fell, and on bigger data this kind of many-to-many blow-up can multiply your rows into the millions.
 The defense is to declare what you expect with `validate=`:
@@ -171,17 +171,17 @@ MergeError: Merge keys are not unique in right dataset; not a one-to-many merge
 ```
 
 *What just happened:* `validate="many_to_one"` asserts "many sales rows, but each product key appears once in
-the lookup." Because the key *wasn't* unique on the right, pandas refused the merge and told you why — far
+the lookup." Because the key *wasn't* unique on the right, pandas refused the merge and told you why - far
 better than a silently inflated result you discover three steps later. Reach for `validate=` whenever you're
 joining a fact table to what's supposed to be a one-row-per-key lookup.
 
 ## concat: stacking, not matching
 
-`merge` relates tables side by side on a key. The other combining move is just **stacking** — gluing rows
+`merge` relates tables side by side on a key. The other combining move is just **stacking** - gluing rows
 on top of each other, or columns next to each other, with no key matching at all.
 
 📝 **`pd.concat([df1, df2])` stacks tables.** By default it stacks rows (one DataFrame's rows after the
-other's) — perfect for "I have January sales in one DataFrame and February in another, give me one table":
+other's) - perfect for "I have January sales in one DataFrame and February in another, give me one table":
 
 ```python
 jan = sales.iloc[:2]
@@ -194,13 +194,13 @@ print(len(jan), "+", len(feb), "->", len(combined), "rows")
 ```
 
 *What just happened:* `concat` lined the two frames up and stacked February's rows below January's into one
-5-row table. The two frames have the **same columns**, which is what makes stacking sensible — concat aligns
+5-row table. The two frames have the **same columns**, which is what makes stacking sensible - concat aligns
 by column name and fills `NaN` for any column one frame lacks. Pass `axis=1` instead and concat glues columns
 side by side (aligning on the index) rather than stacking rows.
 
 So when do you reach for which? **merge when the tables *relate by a key*** (sales ↔ products: different
 shapes, joined on a shared value). **concat when the tables are *more of the same thing*** (Jan + Feb sales:
-same columns, appended). That distinction — relate by key vs. stack more of the same — covers the vast
+same columns, appended). That distinction - relate by key vs. stack more of the same - covers the vast
 majority of data assembly you'll ever do.
 
 ## Suffixes and verifying the join
@@ -226,7 +226,7 @@ the product one as `region_y`. Cryptic. Set readable names yourself with `suffix
 `region_origin`.
 
 ⚠️ And the habit that saves you the most grief: **check the row count before and after every merge.** A
-left/inner merge should never *increase* your left table's row count — if it does, your key isn't unique and
+left/inner merge should never *increase* your left table's row count - if it does, your key isn't unique and
 rows multiplied. A merge that was meant to enrich your data but changed how many rows you have is a bug, not
 a result:
 
@@ -239,26 +239,26 @@ print("before:", before, " after:", len(result))
 before: 5  after: 5
 ```
 
-*What just happened:* a left join with a clean one-row-per-product lookup left the row count untouched at 5 —
+*What just happened:* a left join with a clean one-row-per-product lookup left the row count untouched at 5 - 
 exactly what you want. The two-second `len()` check is the cheapest bug-catcher in pandas; make it reflex.
 💡 The whole phase boils down to two verbs: **merge** to look up related data by key, **concat** to stack
-more of the same — and almost every "combine these datasets" task is one or the other.
+more of the same - and almost every "combine these datasets" task is one or the other.
 
 ## Recap
 
 1. **Combining = matching rows across tables on a shared key.** `pd.merge` is exactly the SQL JOIN
    ([SQL Joins, Finally Explained](/guides/sql-joins-explained)) in DataFrame form.
 2. **`how=` picks which rows survive:** `inner` (matches only), `left` (all left rows), `right` (all right),
-   `outer` (all rows from both). ⚠️ Non-matches don't drop the row in left/right/outer — they fill the
+   `outer` (all rows from both). ⚠️ Non-matches don't drop the row in left/right/outer - they fill the
    borrowed columns with `NaN`.
 3. **Keys:** `on=` for an identically-named column, `left_on`/`right_on` for differently-named ones,
    `left_index`/`right_index` to join on the index.
 4. **The multiplication trap:** if the key isn't unique on the side you join to, rows multiply (a
    many-to-many join can explode the row count). Guard with `validate=`.
-5. **`concat` stacks** rather than matches — rows by default, columns with `axis=1`. Use it for "more of the
+5. **`concat` stacks** rather than matches - rows by default, columns with `axis=1`. Use it for "more of the
    same" (Jan + Feb sales); use merge for "relate by key."
 6. **Verify:** overlapping column names get `_x`/`_y` (override with `suffixes=`), and always check the row
-   count before/after a merge — an unexpected change is a bug.
+   count before/after a merge - an unexpected change is a bug.
 
 ## Quick check
 
@@ -275,7 +275,7 @@ Make sure the join types and the row-count instinct stuck:
       "They're duplicated until a match is found"
     ],
     "answer": 0,
-    "explain": "A left join keeps every left (sales) row. Where there's no matching product, pandas has nothing to fill the borrowed columns with, so it puts NaN there — the row stays."
+    "explain": "A left join keeps every left (sales) row. Where there's no matching product, pandas has nothing to fill the borrowed columns with, so it puts NaN there - the row stays."
   },
   {
     "q": "Your products lookup accidentally lists \"Widget\" on two rows. You inner-merge sales onto it. What's the danger?",
@@ -283,7 +283,7 @@ Make sure the join types and the row-count instinct stuck:
       "Each Widget sale matches both Widget rows, multiplying your row count",
       "The merge silently drops all Widget rows",
       "pandas automatically deduplicates the lookup for you",
-      "Nothing — duplicate keys are always fine"
+      "Nothing - duplicate keys are always fine"
     ],
     "answer": 0,
     "explain": "A non-unique key on the side you join to multiplies rows: every sale matches every duplicate. Declaring validate=\"many_to_one\" makes pandas refuse the merge instead of silently inflating it."
@@ -291,13 +291,13 @@ Make sure the join types and the row-count instinct stuck:
   {
     "q": "You have January sales and February sales in two DataFrames with identical columns, and want one combined table. Which tool fits?",
     "choices": [
-      "pd.concat([jan, feb]) — stacking more of the same",
-      "pd.merge(jan, feb, on=\"date\") — relate by key",
+      "pd.concat([jan, feb]) - stacking more of the same",
+      "pd.merge(jan, feb, on=\"date\") - relate by key",
       "Neither; you must loop and append row by row",
       "pd.merge with how=\"outer\" on every column"
     ],
     "answer": 0,
-    "explain": "Same shape, same columns, just more rows of the same thing — that's concat (stacking). merge is for relating different tables by a shared key, which isn't what's happening here."
+    "explain": "Same shape, same columns, just more rows of the same thing - that's concat (stacking). merge is for relating different tables by a shared key, which isn't what's happening here."
   }
 ]
 ```

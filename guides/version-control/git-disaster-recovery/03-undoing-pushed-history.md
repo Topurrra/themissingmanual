@@ -109,7 +109,7 @@ If you rewrite *any* history other people might share, tell them before and afte
 easy; the damage comes from a teammate who pulls mid-rewrite and ends up with a tangled branch. A thirty-second
 "heads up, I'm force-pushing `feature/cart` in a minute, re-pull after" prevents the whole mess.
 
-And the honest caveat this guide owes you: **none of these tools truly erase data from history.** A
+And the plain caveat this guide owes you: **none of these tools truly erase data from history.** A
 `revert` leaves the original commit in place; even a rewrite leaves the old commits reachable via reflogs
 and any clone that already fetched them. So if you pushed a password or key, *do not* assume revert or
 force-push hides it - **rotate the secret immediately** (invalidate it and issue a new one). Treat anything

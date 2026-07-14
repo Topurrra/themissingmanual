@@ -159,7 +159,7 @@ Step back and look at what these rules bought you:
 - **No manual `free()` to forget**, because cleanup happens automatically when the owner's scope ends (rule 3).
 - **No garbage collector**, because the compiler already knows the exact moment each value dies - no runtime needed to go find out.
 
-Languages with a garbage collector (covered in [How Memory & Garbage Collection Work](/guides/memory-and-garbage-collection)) buy safety by running a collector that periodically pauses your program to figure out what's still in use. Rust buys the *same* safety by proving it at compile time instead. The trade is real and honest: more thinking up front (and sometimes arguing with the borrow checker), in exchange for no GC pauses and predictable, instant cleanup. That trade-off - and how different languages make it - is exactly the kind of design decision [Programming Languages, Explained Like a Human](/guides/languages-explained-like-a-human) walks through.
+Languages with a garbage collector (covered in [How Memory & Garbage Collection Work](/guides/memory-and-garbage-collection)) buy safety by running a collector that periodically pauses your program to figure out what's still in use. Rust buys the *same* safety by proving it at compile time instead. The trade is real, no sugarcoating: more thinking up front (and sometimes arguing with the borrow checker), in exchange for no GC pauses and predictable, instant cleanup. That trade-off - and how different languages make it - is exactly the kind of design decision [Programming Languages, Explained Like a Human](/guides/languages-explained-like-a-human) walks through.
 
 ## When you're "fighting the borrow checker"
 

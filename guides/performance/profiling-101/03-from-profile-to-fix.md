@@ -67,7 +67,7 @@ After you've done this a few times, the same culprits keep showing up. Three acc
 
 ## The two traps that make a profile lie
 
-A profile is honest about what it measured. The danger is measuring the wrong thing, and then trusting the answer.
+A profile doesn't lie about what it measured. The danger is measuring the wrong thing, and then trusting the answer.
 
 ⚠️ **Trap 1: dev data lies - profile a realistic workload.** Your development database has 50 rows; production has 5 million. An O(n²) bottleneck is *invisible* on 50 rows and catastrophic on 5 million. If you profile against tiny dev data, the profile will point you at the wrong function - or at nothing at all - because the real bottleneck only wakes up at scale. Profile against production-sized data (a realistic copy, a load test, a representative sample). A profile of an unrealistic workload is worse than no profile, because it's confidently wrong.
 

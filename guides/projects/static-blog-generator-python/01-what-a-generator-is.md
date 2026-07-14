@@ -165,7 +165,7 @@ Found 2 post(s):
 
 ## What you have now
 
-A project folder with an isolated environment, one installed library, two honest Markdown posts, and a script that finds them. Next phase, the script learns to actually read a post: split the frontmatter from the body, parse the metadata, and convert the Markdown to HTML - the input half of the generator, done properly.
+A project folder with an isolated environment, one installed library, two real Markdown posts, and a script that finds them. Next phase, the script learns to actually read a post: split the frontmatter from the body, parse the metadata, and convert the Markdown to HTML - the input half of the generator, done properly.
 
 Quick check that the mental model stuck before you move on:
 

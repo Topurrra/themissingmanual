@@ -113,7 +113,7 @@ deploy:
 
 *What just happened:* the job fails fast with a clear message instead of making a credential-less API call that fails confusingly downstream. A two-line guard like this turns a 20-minute head-scratch into an instant diagnosis.
 
-**For builders:** the muscle to build here is reading the job log first and the YAML second. CI failures feel mysterious because the pipeline is "out there," but the log is a complete, honest transcript of exactly what ran. If you came from GitHub Actions, the concepts map closely - same build/test/deploy shape, different file format and vocabulary; see [/guides/your-first-pipeline-github-actions](/guides/your-first-pipeline-github-actions) for the comparison.
+**For builders:** the muscle to build here is reading the job log first and the YAML second. CI failures feel mysterious because the pipeline is "out there," but the log is a complete, accurate transcript of exactly what ran. If you came from GitHub Actions, the concepts map closely - same build/test/deploy shape, different file format and vocabulary; see [/guides/your-first-pipeline-github-actions](/guides/your-first-pipeline-github-actions) for the comparison.
 
 ```quiz
 [

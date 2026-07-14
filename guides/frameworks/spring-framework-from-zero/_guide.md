@@ -40,22 +40,22 @@ one piece of "what Boot does for you" per phase. Phases carry difficulty badges.
 ## The phases
 
 **Part 1 - The container (🟢 Basic → 🟡)**
-1. **[Spring Without Boot - Why Core Spring?](01-spring-without-boot.md)** 🟢 — what Spring *is* vs Boot, and standing up an `ApplicationContext` by hand.
-2. **[The IoC Container & ApplicationContext](02-the-ioc-container.md)** 🟡 — the container deeply: what it is, how it bootstraps, what a "bean" really means.
-3. **[Defining Beans: @Configuration & @Bean](03-defining-beans.md)** 🟡 — declaring beans by hand (the explicit version of Boot's auto-config) vs component scanning.
+1. **[Spring Without Boot - Why Core Spring?](01-spring-without-boot.md)** 🟢 - what Spring *is* vs Boot, and standing up an `ApplicationContext` by hand.
+2. **[The IoC Container & ApplicationContext](02-the-ioc-container.md)** 🟡 - the container deeply: what it is, how it bootstraps, what a "bean" really means.
+3. **[Defining Beans: @Configuration & @Bean](03-defining-beans.md)** 🟡 - declaring beans by hand (the explicit version of Boot's auto-config) vs component scanning.
 
-**Part 2 — Wiring & lifecycle (🟡 → 🔴)**
-4. **[Dependency Injection, Deep](04-dependency-injection-deep.md)** 🟡 — constructor/setter/field injection, `@Autowired` resolution, `@Qualifier`/`@Primary`, ambiguity.
-5. **[Bean Scopes & Lifecycle](05-bean-scopes-and-lifecycle.md)** 🔴 — singleton/prototype/web scopes, lazy beans, the full lifecycle, and `BeanPostProcessor`.
-6. **[Spring AOP & Proxies](06-spring-aop-and-proxies.md)** 🔴 — aspect-oriented programming, and how proxies make `@Transactional`/`@Async` actually work (with the self-invocation gotcha explained at the root).
+**Part 2 - Wiring & lifecycle (🟡 → 🔴)**
+4. **[Dependency Injection, Deep](04-dependency-injection-deep.md)** 🟡 - constructor/setter/field injection, `@Autowired` resolution, `@Qualifier`/`@Primary`, ambiguity.
+5. **[Bean Scopes & Lifecycle](05-bean-scopes-and-lifecycle.md)** 🔴 - singleton/prototype/web scopes, lazy beans, the full lifecycle, and `BeanPostProcessor`.
+6. **[Spring AOP & Proxies](06-spring-aop-and-proxies.md)** 🔴 - aspect-oriented programming, and how proxies make `@Transactional`/`@Async` actually work (with the self-invocation gotcha explained at the root).
 
-**Part 3 — Web & beyond (🟡 → 🟢)**
-7. **[Spring MVC Without Boot](07-spring-mvc-without-boot.md)** 🟡 — the `DispatcherServlet`, `@Controller`, and the web config Boot auto-wires.
-8. **[From Core Spring to Spring Boot](08-from-core-spring-to-boot.md)** 🟢 — tie it all back: Boot = core Spring + auto-config + starters + embedded server. The magic, fully seen.
+**Part 3 - Web & beyond (🟡 → 🟢)**
+7. **[Spring MVC Without Boot](07-spring-mvc-without-boot.md)** 🟡 - the `DispatcherServlet`, `@Controller`, and the web config Boot auto-wires.
+8. **[From Core Spring to Spring Boot](08-from-core-spring-to-boot.md)** 🟢 - tie it all back: Boot = core Spring + auto-config + starters + embedded server. The magic, fully seen.
 
-> After this, re-read the Spring Boot guide — every annotation you used there will now have a visible
+> After this, re-read the Spring Boot guide - every annotation you used there will now have a visible
 > mechanism underneath it. That's the whole goal.
 
 ---
 
-[Phase 1: Spring Without Boot — Why Core Spring? →](01-spring-without-boot.md)
+[Phase 1: Spring Without Boot - Why Core Spring? →](01-spring-without-boot.md)

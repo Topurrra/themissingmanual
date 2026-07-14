@@ -114,7 +114,7 @@ Most old, sluggish machines light up #1 or #2 - and both have cheap fixes. The n
       "The CPU percentage"
     ],
     "answer": 1,
-    "explain": "Memory Pressure is the honest signal. macOS uses spare RAM as cache, so a high 'used' number is normal; red pressure is the real out-of-RAM warning."
+    "explain": "Memory Pressure is the reliable signal. macOS uses spare RAM as cache, so a high 'used' number is normal; red pressure is the real out-of-RAM warning."
   },
   {
     "q": "Your Windows machine shows Memory pinned near 100% AND Disk near 100% at the same time during slowness. What is happening?",

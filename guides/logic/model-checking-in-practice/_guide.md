@@ -27,7 +27,7 @@ re-explain states, transitions, or the safety/liveness split.
 - **Want the full worked spec?** [Phase 1](01-writing-a-real-spec.md) specifies a mutual-exclusion
   lock end to end - state, transitions, a safety property, and a liveness property.
 - **Want the mechanics of checking?** [Phase 2](02-exhaustive-state-space-exploration.md) covers
-  how a checker actually walks a state graph, and the state explosion problem - honestly.
+  how a checker actually walks a state graph, and the state explosion problem - in plain terms.
 - **Want to see it catch something real?** [Phase 3](03-a-real-concurrency-bug-caught-before-code.md)
   walks a genuine lost-update race a model checker finds that a human reviewer would not, and where
   model checking still can't save you.
@@ -40,7 +40,7 @@ re-explain states, transitions, or the safety/liveness split.
    checker does step by step, why that's fundamentally not testing, and why state explosion is a
    real ceiling you can work around.
 3. **[A Real Concurrency Bug, Caught Before Code](03-a-real-concurrency-bug-caught-before-code.md)**
-   - a classic lost-update interleaving, the counterexample that finds it, and the honest limits of
+   - a classic lost-update interleaving, the counterexample that finds it, and the real limits of
    the whole approach.
 
 > Prerequisite: [Formal Methods and Specification](/guides/formal-methods-and-specification) -

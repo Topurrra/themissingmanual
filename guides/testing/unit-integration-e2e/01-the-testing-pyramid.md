@@ -44,7 +44,7 @@ flowchart TD
 
 ## Why the shape is this shape (and not flipped)
 
-The pyramid is a recommendation, and the recommendation has two honest reasons behind it - the reasons you'll repeat to a teammate someday.
+The pyramid is a recommendation, and the recommendation has two plain reasons behind it - the reasons you'll repeat to a teammate someday.
 
 ### Reason 1 - Speed compounds, and you run tests constantly
 

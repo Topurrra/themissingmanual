@@ -91,7 +91,7 @@ attacker can try guess after guess after guess at high speed.
 
 **The mental model.** Think of it as a lock. SHA-256 is a lock that opens the instant the right key
 touches it - and the attacker can try millions of keys without tiring. What you actually want is a lock
-that takes a noticeable beat to turn *even with the right key*. For one honest login, a fraction of a
+that takes a noticeable beat to turn *even with the right key*. For one legitimate login, a fraction of a
 second is invisible. For an attacker trying to turn the lock billions of times, that same delay is a
 wall. You don't want a *fast* hash. You want a *deliberately slow* one.
 

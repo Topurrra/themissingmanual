@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Cardinality, cost, and the Elasticsearch tradeoff
 
-Loki's cheapness is real, but it isn't free of rules. The same design that makes it cheap - index the labels, scan the content - has two sharp edges. The first is **cardinality**: get your labels wrong and the tiny index you were promised explodes. The second is the honest tradeoff against full-text engines like Elasticsearch: Loki is cheaper and label-scoped, but it is not a free-text search engine. Knowing both edges is the difference between Loki that hums and Loki that pages you.
+Loki's cheapness is real, but it isn't free of rules. The same design that makes it cheap - index the labels, scan the content - has two sharp edges. The first is **cardinality**: get your labels wrong and the tiny index you were promised explodes. The second is the real tradeoff against full-text engines like Elasticsearch: Loki is cheaper and label-scoped, but it is not a free-text search engine. Knowing both edges is the difference between Loki that hums and Loki that pages you.
 
 ## The cardinality trap
 
@@ -37,7 +37,7 @@ RIGHT:  {app="checkout", level="info"}  user_id=90431 request_id=a1b2c3 payment 
 
 > A useful gut check before you add a label: "how many distinct values can this take, ever?" If the answer is bounded and small - tens, maybe low hundreds - it's a candidate. If it's "one per user" or "one per request" or "I'm not sure," it goes in the line, not the label. When unsure, prefer fewer labels; you can always grep the content.
 
-## The Elasticsearch tradeoff, stated honestly
+## The Elasticsearch tradeoff, stated plainly
 
 This is the comparison everyone asks about, so here it is without spin. A full-text engine like the one in the [elk-elasticsearch-stack](/guides/elk-elasticsearch-stack) indexes the *content* of every log line. That makes arbitrary free-text search across everything fast - and makes the index large and the cost high. Loki indexes only labels, so it's far cheaper to run, but a content search must scan, and that scan is bounded by how well your stream selector narrowed things first.
 
@@ -48,7 +48,7 @@ Loki:           index labels only    → cheap storage, label-scoped       → c
 
 *What just happened:* the two tools optimize for different questions. Loki bets that you almost always know the labels to scope by before you search the text - and within a tight label scope, scanning is fast. Elasticsearch bets you need to search raw text broadly and will pay for the privilege.
 
-So the honest decision rule: if your searches naturally start with "which service / namespace / level" and then grep - Loki is a great fit and will save you a lot of money. If you genuinely need ad-hoc full-text search across all logs with no obvious label to scope by, or rich text analytics and relevance ranking, that's Elasticsearch's home turf and Loki will fight you. Many teams run both: Loki for the high-volume operational firehose, a full-text engine for the smaller slice that needs deep text search.
+So the clear decision rule: if your searches naturally start with "which service / namespace / level" and then grep - Loki is a great fit and will save you a lot of money. If you genuinely need ad-hoc full-text search across all logs with no obvious label to scope by, or rich text analytics and relevance ranking, that's Elasticsearch's home turf and Loki will fight you. Many teams run both: Loki for the high-volume operational firehose, a full-text engine for the smaller slice that needs deep text search.
 
 ## Retention and storage are a separate dial
 

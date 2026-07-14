@@ -115,7 +115,7 @@ Run it. You get a little ASCII strength bar plus the verdict - the same informat
 
 Look closely at the output and something should bug you. `"correct horse battery staple"` - a long, memorable passphrase that's genuinely hard to crack - scores lower than `"P@ssw0rd!"`, a short string a cracking tool guesses fast. Our score rewards *variety of character types* and barely rewards *length*. Real cracking difficulty depends far more on length and unpredictability than on whether you remembered to add a `$`.
 
-We won't rebuild the whole scoring model here - for a beginner checker, "more character classes plus a length floor" is an honest, common heuristic, and it's what most forms actually do. But keep that wrinkle in mind. In the final phase we'll add the one thing that fixes the worst false-positives: catching passwords that are common no matter how they score.
+We won't rebuild the whole scoring model here - for a beginner checker, "more character classes plus a length floor" is a straightforward, common heuristic, and it's what most forms actually do. But keep that wrinkle in mind. In the final phase we'll add the one thing that fixes the worst false-positives: catching passwords that are common no matter how they score.
 
 ## Try it yourself
 

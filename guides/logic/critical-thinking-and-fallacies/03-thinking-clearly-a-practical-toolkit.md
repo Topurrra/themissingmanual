@@ -48,7 +48,7 @@ can evaluate three labeled pieces.
 **Ask "what would change my mind?"** The single most useful question in the toolkit, asked about
 your *own* beliefs. Pick something you believe. Now ask: what specific thing, if I saw it, would
 make me give this up? If you can name it - "if a careful study showed the opposite" - your belief
-is connected to reality; evidence could move it. If the honest answer is *nothing would change my
+is connected to reality; evidence could move it. If the real answer is *nothing would change my
 mind*, then whatever you're holding, you didn't arrive at it by reasoning, and reasoning won't get
 you out of it either. That's an attachment wearing a belief's clothes - there's nothing wrong with
 having those, but it's worth knowing which is which.
@@ -136,7 +136,7 @@ Phase 1 gave you the anatomy of an argument. Phase 2 gave you the catalog of bad
 name them on sight. This phase gave you the proactive habits: steelman the other side, separate
 claim from evidence from conclusion, ask what would change your mind, check the source and the
 incentive, demand evidence sized to the claim, and never mistake correlation for cause - while
-staying honest that your own biases are working the whole time.
+staying clear-eyed that your own biases are working the whole time.
 
 That toolkit zooms all the way out. The Logic foundations - [what logic actually
 is](/guides/what-logic-actually-is), [implication and conditionals](/guides/implication-and-conditionals),
@@ -172,7 +172,7 @@ Here's a quick check on the habits worth keeping.
       "Repeat your own argument more forcefully until the other person gives up"
     ],
     "answer": 0,
-    "explain": "Steelmanning is the opposite of strawmanning. You engage the strongest version of the other side - partly to win honestly, partly because building it often reveals a real point you'd missed."
+    "explain": "Steelmanning is the opposite of strawmanning. You engage the strongest version of the other side - partly to win fairly, partly because building it often reveals a real point you'd missed."
   },
   {
     "q": "Why is asking 'what would change my mind?' such a useful habit?",
@@ -183,7 +183,7 @@ Here's a quick check on the habits worth keeping.
       "It lets you avoid having to check any sources"
     ],
     "answer": 2,
-    "explain": "If you can name what would change your mind, your belief is connected to reality. If the honest answer is 'nothing,' you didn't arrive at it by reasoning - and it's worth knowing the difference."
+    "explain": "If you can name what would change your mind, your belief is connected to reality. If the real answer is 'nothing,' you didn't arrive at it by reasoning - and it's worth knowing the difference."
   },
   {
     "q": "Which of these best describes confirmation bias?",

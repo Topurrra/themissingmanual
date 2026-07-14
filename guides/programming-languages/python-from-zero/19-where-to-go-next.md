@@ -2,7 +2,7 @@
 title: "Where to Go Next"
 guide: "python-from-zero"
 phase: 19
-summary: "An honest map of where Python goes from here - web (Django/FastAPI), data (pandas/NumPy), automation, and packaging - framed as signposts, not hype, with a nudge toward building something real."
+summary: "A clear map of where Python goes from here - web (Django/FastAPI), data (pandas/NumPy), automation, and packaging - framed as signposts, not hype, with a nudge toward building something real."
 tags: [python, next-steps, django, fastapi, pandas, numpy, automation, packaging]
 difficulty: beginner
 synonyms: ["what to learn after python", "python web framework django fastapi", "python for data science pandas numpy", "python automation scripting", "what should i build with python"]
@@ -22,7 +22,7 @@ thing.
 
 ## The four big branches
 
-Each of these is a whole world. Here's the honest one-paragraph version of each, so you can tell which
+Each of these is a whole world. Here's the plain one-paragraph version of each, so you can tell which
 one is yours.
 
 ```mermaid
@@ -80,7 +80,7 @@ You've already seen the mechanics in [Phase 18](18-packaging-and-environments.md
 building, publishing. The "next step" isn't learning *how*, it's having something worth sharing. Don't
 rush it - package a tool once it's genuinely useful to someone other than you.
 
-## The honest advice: build, then look things up
+## The no-nonsense advice: build, then look things up
 
 > 💡 **Key point.** You don't learn the next layer by reading about it. You learn it by trying to build
 > something that needs it, getting stuck, and looking up exactly the piece you're stuck on. A tutorial you
@@ -131,7 +131,7 @@ One last check - the through-lines of the whole guide:
     "explain": "Web is the branch for websites and APIs - Django for full applications, FastAPI for lightweight APIs. Data, automation, and packaging point at different destinations."
   },
   {
-    "q": "What's the guide's honest advice for learning the next layer beyond this guide?",
+    "q": "What's the guide's no-nonsense advice for learning the next layer beyond this guide?",
     "choices": ["Read every framework's docs cover to cover first", "Follow a long tutorial start to finish before building anything", "Build something that needs it, get stuck, and look up exactly the piece you're stuck on", "Memorize the standard library before starting a project"],
     "answer": 2,
     "explain": "You learn by building and looking things up when you get stuck. A tutorial teaches you to follow tutorials; a project you fight through teaches you to build."

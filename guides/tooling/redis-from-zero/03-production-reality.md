@@ -33,7 +33,7 @@ appendonly yes
 appendfsync everysec
 ```
 
-*What just happened:* this is the common production setup - both enabled. RDB gives you a fast-loading backup; AOF caps your worst-case loss at roughly one second (`appendfsync everysec`). You *can* set `appendfsync always` for near-zero loss, but it fsyncs on every write and tanks throughput. The honest default most teams run is `everysec`: lose at most a second, keep the speed.
+*What just happened:* this is the common production setup - both enabled. RDB gives you a fast-loading backup; AOF caps your worst-case loss at roughly one second (`appendfsync everysec`). You *can* set `appendfsync always` for near-zero loss, but it fsyncs on every write and tanks throughput. The practical default most teams run is `everysec`: lose at most a second, keep the speed.
 
 The decode table:
 
@@ -79,7 +79,7 @@ OK
 
 But here's the part the tutorials skip: **even this is not a perfect lock.** If worker-A pauses (a long GC, a network hiccup) for longer than the TTL, the lock expires, worker-B starts the job, and now *both* are running - A doesn't know its lock died. On a single Redis node this is the best you get, and it's fine for "mostly once" jobs. For genuine correctness-critical mutual exclusion across nodes, people reach for the Redlock algorithm - and even Redlock is debated by distributed-systems experts.
 
-> The lazy, honest answer: if double-execution would be catastrophic (double-charging a card), don't rely on a Redis lock alone - make the operation **idempotent** (a unique key the database rejects on the second insert) so running it twice is harmless. A Redis lock is a cheap way to *reduce* contention, not a guarantee of exactly-once.
+> The lazy, straight answer: if double-execution would be catastrophic (double-charging a card), don't rely on a Redis lock alone - make the operation **idempotent** (a unique key the database rejects on the second insert) so running it twice is harmless. A Redis lock is a cheap way to *reduce* contention, not a guarantee of exactly-once.
 
 ## The commands that freeze your server
 

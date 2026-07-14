@@ -2,7 +2,7 @@
 title: "Where to Go Next - Putting C# to Work"
 guide: "csharp-from-zero"
 phase: 18
-summary: "You know the language and the .NET runtime; here's the honest map of where to apply it - web with ASP.NET Core, Blazor, mobile/desktop with MAUI, games with Unity - and what to build to make it stick."
+summary: "You know the language and the .NET runtime; here's the clear map of where to apply it - web with ASP.NET Core, Blazor, mobile/desktop with MAUI, games with Unity - and what to build to make it stick."
 tags: [csharp, aspnet-core, blazor, maui, unity, learning-path, what-to-build]
 difficulty: beginner
 synonyms: ["what to build with c#", "c# aspnet core web", "c# blazor", "c# maui mobile desktop", "c# unity game development", "c# next steps after learning", "what is c# good for"]

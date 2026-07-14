@@ -60,7 +60,7 @@ You can already make a rough guess from how the slowness *feels*, before you mea
 
 For builders: this is profiling. You do not guess which line is slow - you measure, find the actual hot path, and fix *that*. Hardware is the same instinct at machine scale. Guessing wastes money; measuring spends it well.
 
-## The honest caveat
+## The important caveat
 
 These feel-based guesses are a starting hypothesis, not a verdict. Two parts can be slow at once, and a symptom can mislead you - a machine low on RAM also hammers the disk, so heavy disk activity can be a RAM problem wearing a disk costume. That is why the next phase puts a real gauge in front of you: stop guessing from feel, read the numbers the computer is already tracking.
 

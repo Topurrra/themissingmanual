@@ -19,7 +19,7 @@ Not every commit turns out to be a good idea. `git revert` is the safe way to
 undo one: instead of deleting the commit or rewriting history (which gets
 dangerous the moment anyone else has that history too), it makes a **new**
 commit that's the exact opposite of the one you're undoing. Whatever that
-commit added, the revert removes. History stays honest - anyone reading the
+commit added, the revert removes. History stays intact - anyone reading the
 log later can see both "this happened" and "then it got undone," instead of
 the mistake quietly vanishing.
 

@@ -7,6 +7,7 @@
   import { afterNavigate } from "$app/navigation";
   import { sendPageview } from "$lib/beacon.js";
   import { initDwell, startDwell } from "$lib/dwell.js";
+  import { changelogSignature } from "$lib/changelog.js";
   import { initVitals, setVitalsPath } from "$lib/vitals.js";
   import CommandPalette from "$lib/CommandPalette.svelte";
   import HeaderSearch from "$lib/HeaderSearch.svelte";
@@ -285,6 +286,22 @@
       initVitals(to.url.pathname);
       setVitalsPath(to.url.pathname);
     }
+    if (to && to.url.pathname === "/changelog") markChangelogSeen();
+  });
+
+  // "What's new" header dot: lit when the changelog changed since the reader last
+  // opened it (signature = latest month + item count, kept in localStorage).
+  let hasNews = false;
+  function markChangelogSeen() {
+    try {
+      localStorage.setItem("tmm-changelog-seen", changelogSignature());
+    } catch (e) {}
+    hasNews = false;
+  }
+  onMount(() => {
+    try {
+      hasNews = localStorage.getItem("tmm-changelog-seen") !== changelogSignature();
+    } catch (e) {}
   });
 
   function toggleSidebar() {
@@ -366,6 +383,15 @@
         <LofiPlayer />
       {/if}
       <TranslateWidget />
+      <a
+        href="/changelog"
+        class="icon-btn whatsnew"
+        title="What's new"
+        aria-label={hasNews ? "What's new (updates since your last visit)" : "What's new"}
+      >
+        <i class="ti ti-sparkles" aria-hidden="true"></i>
+        {#if hasNews}<span class="wn-dot" aria-hidden="true"></span>{/if}
+      </a>
       <Appearance />
       <TutorToggleButton />
     </div>
@@ -646,6 +672,24 @@
 {/if}
 
 <style>
+  /* "What's new" header control — a subtle sparkle that carries a dot when the
+     changelog has updates the reader hasn't seen. */
+  /* "What's new" reuses the shared .icon-btn look so it matches the other header
+     controls exactly; .whatsnew only positions the unseen-updates dot. */
+  .whatsnew {
+    position: relative;
+  }
+  .wn-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px var(--bg);
+  }
+
   /* Slim announcement banner at the very top of the page (above the header) */
   .announce-banner {
     padding: 0.5rem 1.25rem;

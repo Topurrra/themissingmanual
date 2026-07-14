@@ -2,7 +2,7 @@
 title: "Building a REST API"
 guide: "chi-from-zero"
 phase: 5
-summary: "Assemble routing, middleware, and stdlib JSON I/O into full CRUD for the articles resource — five plain http.HandlerFuncs over a mutex-guarded in-memory store, mounted on a chi sub-router."
+summary: "Assemble routing, middleware, and stdlib JSON I/O into full CRUD for the articles resource - five plain http.HandlerFuncs over a mutex-guarded in-memory store, mounted on a chi sub-router."
 tags: [chi, go, rest, api, crud]
 difficulty: intermediate
 synonyms: ["chi rest api", "chi crud", "go chi articles api", "chi handlers", "chi.URLParam crud", "go stdlib rest api"]
@@ -12,7 +12,7 @@ updated: 2026-07-10
 # Building a REST API
 
 This is the payoff phase. Everything so far has been a separate piece on the
-workbench — the router from Phase 2, the middleware stack from Phase 3, the
+workbench - the router from Phase 2, the middleware stack from Phase 3, the
 JSON read/write helpers from Phase 4. Now we bolt them together into a real,
 working REST API for the **articles** resource. By the end you'll have full CRUD
 (create, read, update, delete) that you can hit with `curl`.
@@ -20,7 +20,7 @@ working REST API for the **articles** resource. By the end you'll have full CRUD
 Here's the thing to hold in your head before any code:
 
 > 📝 **A REST resource is just five plain `http.HandlerFunc`s over one
-> collection, mounted on a sub-router.** List, get-one, create, update, delete —
+> collection, mounted on a sub-router.** List, get-one, create, update, delete - 
 > five functions with the identical signature `func(w http.ResponseWriter, r
 > *http.Request)`. There's no framework "context" object, no special base
 > class, no magic. It's the same conceptual shape you'd draw for Gin or Echo,
@@ -39,7 +39,7 @@ in-memory store: a `map` from ID to `Article`, plus a counter for the next ID.
 But there's a trap here that catches people, so let's name it loudly.
 
 ⚠️ **`net/http` serves every request on its own goroutine.** That means two
-requests can hit your store *at the same time* — one creating an article while
+requests can hit your store *at the same time* - one creating an article while
 another lists them. A plain Go `map` is **not** safe for concurrent
 read/write; do it unguarded and you'll get a runtime panic ("concurrent map
 writes") under load, the kind of bug that never shows up in local testing and
@@ -67,10 +67,10 @@ func newStore() *store {
 }
 ```
 
-*What just happened:* `Article` is the same struct from Phase 4 — plain fields
+*What just happened:* `Article` is the same struct from Phase 4 - plain fields
 with JSON tags. `store` wraps the map together with the mutex that protects it
 and the `nextID` counter. Keeping the mutex *next to* the data it guards (rather
-than as a loose global) is the idiomatic Go move — it's obvious what the lock
+than as a loose global) is the idiomatic Go move - it's obvious what the lock
 protects. `newStore` hands back a ready-to-use store with an empty map and IDs
 starting at 1.
 
@@ -137,7 +137,7 @@ func (s *store) delete(id int) bool {
 map and `defer`-ing the unlock so it always releases even if something returns
 early. `list` and `get` use `RLock` (read-only); `create`, `update`, and
 `delete` use `Lock` (they mutate). Notice the **`(value, bool)` pattern** on
-`get`, `update`, and `delete`: the `bool` says "did it exist?" — how the
+`get`, `update`, and `delete`: the `bool` says "did it exist?" - how the
 handlers know whether to return a 404. `create` builds the `Article` with the
 server-assigned ID, never trusting the client to pick one.
 
@@ -149,7 +149,7 @@ server-assigned ID, never trusting the client to pick one.
 
 Now the heart of it. Each handler is a closure over the store so it can reach the
 data, and each one is a plain `func(w http.ResponseWriter, r *http.Request)`. We
-reuse the `writeJSON` helper from Phase 4 verbatim — here it is again so this
+reuse the `writeJSON` helper from Phase 4 verbatim - here it is again so this
 phase stands alone:
 
 ```go
@@ -160,7 +160,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 }
 ```
 
-*What just happened:* exactly the Phase 4 helper — set the header, write the
+*What just happened:* exactly the Phase 4 helper - set the header, write the
 status, encode the body, in that locked order. All five handlers respond
 *through* it and never repeat that dance.
 
@@ -180,12 +180,12 @@ if err != nil {
 *What just happened:* `chi.URLParam(r, "id")` reads the `{id}` segment from the
 path (chi's one I/O helper). It always hands back a **string**, so
 `strconv.Atoi` converts it to an int. If the URL had `/articles/abc`, `Atoi`
-fails and we return **400** — a non-numeric id is the client's mistake, not the
+fails and we return **400** - a non-numeric id is the client's mistake, not the
 server's.
 
 Now the handlers themselves.
 
-### list — GET the whole collection (200)
+### list - GET the whole collection (200)
 
 ```go
 func listArticles(s *store) http.HandlerFunc {
@@ -199,9 +199,9 @@ func listArticles(s *store) http.HandlerFunc {
 *returns* a handler (a closure capturing `s`). The handler asks the store for
 every article and writes them as a JSON array with **200 OK**. Even when the list
 is empty, `list()` returns a non-nil empty slice, so the client gets `[]`, not
-`null` — a small kindness against special-casing the empty case.
+`null` - a small kindness against special-casing the empty case.
 
-### get — GET one by id (200 or 404)
+### get - GET one by id (200 or 404)
 
 ```go
 func getArticle(s *store) http.HandlerFunc {
@@ -226,9 +226,9 @@ func getArticle(s *store) http.HandlerFunc {
 *What just happened:* parse the id (400 if it's not a number), then ask the
 store. The store's `bool` does the work: if `ok` is false, the article doesn't
 exist and we return **404** and stop; otherwise we write the single article with
-**200**. The canonical get-one shape — two ways to fail, one way to succeed.
+**200**. The canonical get-one shape - two ways to fail, one way to succeed.
 
-### create — POST a new one (201, with decode + manual validation)
+### create - POST a new one (201, with decode + manual validation)
 
 ```go
 func createArticle(s *store) http.HandlerFunc {
@@ -254,7 +254,7 @@ func createArticle(s *store) http.HandlerFunc {
 ```
 
 *What just happened:* the busiest handler, and it earns it. First, decode the
-request body into an **input struct** (`in`) — note it has no `ID` field, because
+request body into an **input struct** (`in`) - note it has no `ID` field, because
 the client doesn't get to choose the id. A decode failure is malformed JSON, so
 **400**. Next, the part the stdlib won't do for you: **validation by hand.** We
 check `in.Title == ""` and reject empty titles with a 400 (add more checks here
@@ -262,7 +262,7 @@ as your rules grow). Finally, `s.create` stores it with a fresh server-assigned
 ID and we reply **201 Created** with the full new article, so the client learns
 the id it was given.
 
-### update — PUT to replace one (200 or 404)
+### update - PUT to replace one (200 or 404)
 
 ```go
 func updateArticle(s *store) http.HandlerFunc {
@@ -297,7 +297,7 @@ func updateArticle(s *store) http.HandlerFunc {
 }
 ```
 
-*What just happened:* update is "get-one and create had a baby" — it parses the
+*What just happened:* update is "get-one and create had a baby" - it parses the
 id *and* decodes a body, validating both. The store's `update` returns the same
 `(value, bool)`: if the id doesn't exist, **404**; otherwise the article is
 replaced and we return the updated version with **200**. We use `PUT` here,
@@ -305,7 +305,7 @@ meaning "replace the whole article with this." (A partial update would be
 `PATCH`, which is fiddlier because you must distinguish "field omitted" from
 "field set to empty"; PUT sidesteps that.)
 
-### delete — DELETE one (204 or 404)
+### delete - DELETE one (204 or 404)
 
 ```go
 func deleteArticle(s *store) http.HandlerFunc {
@@ -327,7 +327,7 @@ func deleteArticle(s *store) http.HandlerFunc {
 ```
 
 *What just happened:* parse the id, ask the store to delete. If it wasn't there,
-**404**. If it was, we set **204 No Content** and write **nothing** — no
+**404**. If it was, we set **204 No Content** and write **nothing** - no
 `writeJSON`, no body at all, because 204 means "success, and there's nothing to
 send back" (the empty-body rule from Phase 4; deletes are its textbook use).
 
@@ -362,9 +362,9 @@ func main() {
 *What just happened:* one store, one router, and the resource laid out as a tree.
 The outer `r.Route("/api/v1/articles", ...)` groups everything under that prefix.
 Inside it, `Get("/")` and `Post("/")` handle the **collection** (`/api/v1/articles`
-itself) — list and create. The nested `r.Route("/{id}", ...)` handles a **single
+itself) - list and create. The nested `r.Route("/{id}", ...)` handles a **single
 item** (`/api/v1/articles/42`), with `Get`/`Put`/`Delete` mapping to get/update/
-delete. Read the registration top to bottom and it *is* the REST table — methods
+delete. Read the registration top to bottom and it *is* the REST table - methods
 on the left, handlers on the right, paths from the nesting. `middleware.Logger`
 wraps the whole thing so every request gets logged. Each handler is called with
 `s` to produce the actual `http.HandlerFunc`, threading the shared store into
@@ -415,7 +415,7 @@ showing up exactly where designed. Create gave a 201 and echoed back the id the
 server assigned. List returned a JSON array. The DELETE returns no body, so we
 used `-w '%{http_code}'` to print the bare status (204) and confirm it. The
 final GET after the delete returns the 404 plain-text message from
-`http.Error` — proof the article is really gone. POST a body with no title and
+`http.Error` - proof the article is really gone. POST a body with no title and
 you get a 400 ("title is required"); GET `/api/v1/articles/abc` and you get a
 400 ("id must be a number").
 
@@ -427,7 +427,7 @@ One last point, and it's the important one for where you're headed.
 > this phase could be about the *API shape* without dragging in SQL. But look at
 > the five handlers: not one of them knows or cares that the data lives in a map.
 > They call `s.list()`, `s.get(id)`, `s.create(...)`, `s.update(...)`,
-> `s.delete(id)` — five methods. Swap the store's *insides* for real persistence
+> `s.delete(id)` - five methods. Swap the store's *insides* for real persistence
 > with [GORM](/guides/gorm-from-zero) and those five methods become database
 > queries, while the handlers, the routing, and the validation **barely change.**
 > The mutex disappears (the database handles concurrency), but the seams you've
@@ -440,20 +440,20 @@ to test all of this with `httptest` so you never have to `curl` by hand again.
 ## Recap
 
 - A REST resource is **five plain `http.HandlerFunc`s over one collection**,
-  mounted on a sub-router — same shape as Gin/Echo, but pure stdlib + chi
+  mounted on a sub-router - same shape as Gin/Echo, but pure stdlib + chi
   routing, no framework context.
 - The in-memory store is a `map[int]Article` guarded by a `sync.RWMutex`.
-  ⚠️ `net/http` serves requests concurrently, so an unguarded map will panic —
+  ⚠️ `net/http` serves requests concurrently, so an unguarded map will panic - 
   `RLock` to read, `Lock` to write.
 - Read the id with `chi.URLParam(r, "id")` then `strconv.Atoi` (400 if it's not
   a number); decode bodies with `json.NewDecoder(r.Body).Decode`; reply through
   the Phase-4 `writeJSON` helper.
 - Status codes map cleanly: list/get/update **200**, create **201**, delete
   **204** (no body), missing item **404**, bad input **400**. Validation is by
-  hand — the stdlib won't do it for you.
+  hand - the stdlib won't do it for you.
 - The `(value, bool)` pattern from the store methods is what drives the 404
   decision in the handlers.
-- The store is a **database stand-in** — swap in [GORM](/guides/gorm-from-zero)
+- The store is a **database stand-in** - swap in [GORM](/guides/gorm-from-zero)
   later and the handlers barely change, because the store/handler seam is the
   real one.
 
@@ -465,17 +465,17 @@ to test all of this with `httptest` so you never have to `curl` by hand again.
     "q": "Why must the in-memory map be guarded by a sync.RWMutex?",
     "choices": ["Maps are slow without a lock", "net/http serves each request on its own goroutine, so concurrent map writes would panic", "chi requires a mutex on every handler", "It makes JSON encoding thread-safe"],
     "answer": 1,
-    "explain": "net/http handles requests concurrently on separate goroutines. A plain Go map is not safe for concurrent read/write and will panic, so every access is guarded — RLock to read, Lock to write."
+    "explain": "net/http handles requests concurrently on separate goroutines. A plain Go map is not safe for concurrent read/write and will panic, so every access is guarded - RLock to read, Lock to write."
   },
   {
     "q": "A successful DELETE handler should return which status, and with what body?",
     "choices": ["200 OK with the deleted article as JSON", "404 Not Found with no body", "204 No Content with no body at all", "201 Created with an empty object"],
     "answer": 2,
-    "explain": "A successful delete returns 204 No Content and writes nothing — 204 means success with no body, so you set the status and stop (no writeJSON)."
+    "explain": "A successful delete returns 204 No Content and writes nothing - 204 means success with no body, so you set the status and stop (no writeJSON)."
   },
   {
     "q": "In createArticle, why decode into a small input struct with only Title and Body instead of straight into Article?",
-    "choices": ["Article has too many fields to decode", "encoding/json can't decode into a struct with an int field", "The client doesn't get to pick the id — the server assigns it, so ID isn't accepted from the body", "It makes the response faster"],
+    "choices": ["Article has too many fields to decode", "encoding/json can't decode into a struct with an int field", "The client doesn't get to pick the id - the server assigns it, so ID isn't accepted from the body", "It makes the response faster"],
     "answer": 2,
     "explain": "The input struct is 'what the client may send.' Leaving ID out means the client can't set it; the server assigns the id in s.create, keeping it authoritative."
   }

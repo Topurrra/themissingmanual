@@ -84,7 +84,7 @@ This is the vital that catches "I clicked and nothing happened." Usually the cul
 
 A page can ace one vital and fail another, and they fail for different reasons. A blog with a giant hero image has bad LCP but probably fine INP. A heavy single-page app might paint fast (good LCP) but choke on every click (bad INP). An ad-heavy news site can load and respond fine yet shove content around constantly (bad CLS).
 
-That's the practical payoff of splitting the feeling into three: when someone says "the page is slow," you don't guess. You check which vital is red, and that tells you *which kind* of slow it is - loading, stability, or responsiveness - and therefore which family of fixes to reach for. Before you can fix anything, though, you have to measure honestly. That's where local tools lie to you, and where field data tells the truth - Phase 2.
+That's the practical payoff of splitting the feeling into three: when someone says "the page is slow," you don't guess. You check which vital is red, and that tells you *which kind* of slow it is - loading, stability, or responsiveness - and therefore which family of fixes to reach for. Before you can fix anything, though, you have to measure it straight. That's where local tools lie to you, and where field data tells the truth - Phase 2.
 
 ```quiz
 [

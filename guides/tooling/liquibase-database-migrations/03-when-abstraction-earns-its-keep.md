@@ -18,7 +18,7 @@ updated: 2026-06-30
 
 # When the abstraction earns its keep
 
-You now have the model and the loop. This last phase is about judgment, the features that justify Liquibase's extra weight, and the gotchas that turn a calm Tuesday into an incident. The honest framing: Liquibase's abstraction is a cost you pay on every changeset, and the skill is knowing when it buys you something worth more than the cost.
+You now have the model and the loop. This last phase is about judgment, the features that justify Liquibase's extra weight, and the gotchas that turn a calm Tuesday into an incident. The plain framing: Liquibase's abstraction is a cost you pay on every changeset, and the skill is knowing when it buys you something worth more than the cost.
 
 ## Database-agnostic changes: the headline feature
 

@@ -2,7 +2,7 @@
 title: "Reading Requests, Writing JSON"
 guide: "web-services-with-only-net-http"
 phase: 3
-summary: "Pull data out of a request with PathValue, query, headers, and JSON body decoding, then write JSON back in the right header-status-body order — including the superfluous-WriteHeader trap and validation by hand."
+summary: "Pull data out of a request with PathValue, query, headers, and JSON body decoding, then write JSON back in the right header-status-body order - including the superfluous-WriteHeader trap and validation by hand."
 tags: [net-http, go, json, request, response]
 difficulty: intermediate
 synonyms: ["go read request body json", "go write json response", "r.PathValue query", "go json.NewDecoder Encoder", "go writeheader content-type order", "net/http json"]
@@ -11,15 +11,15 @@ updated: 2026-07-10
 
 # Reading Requests, Writing JSON
 
-**A handler reads from one thing and writes to another.** It reads from `*http.Request` — the incoming request, with its path, query string, headers, and body. It writes to `http.ResponseWriter` — the outgoing response, where you set headers, a status code, and the body. That's the entire conversation.
+**A handler reads from one thing and writes to another.** It reads from `*http.Request` - the incoming request, with its path, query string, headers, and body. It writes to `http.ResponseWriter` - the outgoing response, where you set headers, a status code, and the body. That's the entire conversation.
 
-Notice what's *not* in that sentence: no framework, no "context object," no magic binding layer. `*http.Request` and `http.ResponseWriter` are plain standard-library types. JSON isn't special either — it's `encoding/json` applied to the body on the way in and to the writer on the way out. Once you see a handler as "read from `r`, write to `w`, with `encoding/json` doing the translation on each side," every Go web handler you'll ever read becomes legible.
+Notice what's *not* in that sentence: no framework, no "context object," no magic binding layer. `*http.Request` and `http.ResponseWriter` are plain standard-library types. JSON isn't special either - it's `encoding/json` applied to the body on the way in and to the writer on the way out. Once you see a handler as "read from `r`, write to `w`, with `encoding/json` doing the translation on each side," every Go web handler you'll ever read becomes legible.
 
 > 💡 You already met `r.PathValue` in [Phase 2](02-handlers-and-routing.md). This phase fills in the *other* three sources of input (query, headers, body) and the full story of writing a response. The running example stays the **messages** service: a `Message` is just `{id, text}`.
 
 ## Reading from the request
 
-Let's gather every kind of input a handler typically needs. Imagine a route registered as `GET /messages/{id}` — we want the path value, a query flag, and an auth header.
+Let's gather every kind of input a handler typically needs. Imagine a route registered as `GET /messages/{id}` - we want the path value, a query flag, and an auth header.
 
 ```go
 type Message struct {
@@ -28,24 +28,24 @@ type Message struct {
 }
 
 func getMessage(w http.ResponseWriter, r *http.Request) {
-	// 1. Path wildcard — from the {id} in the route pattern.
+	// 1. Path wildcard - from the {id} in the route pattern.
 	id := r.PathValue("id")
 
-	// 2. Query string — /messages/42?verbose=true
+	// 2. Query string - /messages/42?verbose=true
 	verbose := r.URL.Query().Get("verbose")
 
-	// 3. Header — case-insensitive lookup.
+	// 3. Header - case-insensitive lookup.
 	auth := r.Header.Get("Authorization")
 
 	fmt.Printf("id=%q verbose=%q auth=%q\n", id, verbose, auth)
 }
 ```
 
-*What just happened:* Three different inputs, three different accessors, all from the standard library. `r.PathValue("id")` reads the `{id}` segment the mux captured. `r.URL.Query()` parses the query string into a map-like value and `.Get("verbose")` returns the first value (or `""` if absent — it never panics on a missing key). `r.Header.Get("Authorization")` looks up a header *case-insensitively*, so `authorization` or `AUTHORIZATION` resolve the same. Every one of these returns an empty string when the thing isn't there, so you check for `""` rather than guarding against a nil.
+*What just happened:* Three different inputs, three different accessors, all from the standard library. `r.PathValue("id")` reads the `{id}` segment the mux captured. `r.URL.Query()` parses the query string into a map-like value and `.Get("verbose")` returns the first value (or `""` if absent - it never panics on a missing key). `r.Header.Get("Authorization")` looks up a header *case-insensitively*, so `authorization` or `AUTHORIZATION` resolve the same. Every one of these returns an empty string when the thing isn't there, so you check for `""` rather than guarding against a nil.
 
 ### Decoding a JSON body
 
-For a `POST` or `PUT`, the interesting data lives in the request body — a stream of bytes you decode with `encoding/json`. The idiom is to declare a struct for the shape you expect and decode into it.
+For a `POST` or `PUT`, the interesting data lives in the request body - a stream of bytes you decode with `encoding/json`. The idiom is to declare a struct for the shape you expect and decode into it.
 
 ```go
 type CreateMessage struct {
@@ -62,7 +62,7 @@ func createMessage(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-*What just happened:* `json.NewDecoder(r.Body)` wraps the body stream, and `.Decode(&in)` reads it and fills the struct — matching JSON keys to fields via the `json:"text"` tags. The part people skip and then regret: **decoding can fail** (malformed JSON, a number where a string was expected, an empty body), so you check `err` and, when it's non-nil, return `400 Bad Request` and `return` immediately. Forgetting that `return` is a classic bug — without it the handler keeps running on garbage data.
+*What just happened:* `json.NewDecoder(r.Body)` wraps the body stream, and `.Decode(&in)` reads it and fills the struct - matching JSON keys to fields via the `json:"text"` tags. The part people skip and then regret: **decoding can fail** (malformed JSON, a number where a string was expected, an empty body), so you check `err` and, when it's non-nil, return `400 Bad Request` and `return` immediately. Forgetting that `return` is a classic bug - without it the handler keeps running on garbage data.
 
 > ⚠️ By default the decoder *silently ignores* JSON keys that don't match any struct field. A client typo like `{"txt": "hi"}` decodes happily into a `Message` with an empty `Text` and no error. If you'd rather reject unknown fields, opt in:
 > ```go
@@ -74,7 +74,7 @@ func createMessage(w http.ResponseWriter, r *http.Request) {
 
 ## Writing JSON back
 
-Writing a response has three moving parts, and — this is the one thing to burn into memory — **they happen in a fixed order**: set headers, then write the status code, then write the body. Get the order wrong and Go quietly ignores half of what you asked for.
+Writing a response has three moving parts, and - this is the one thing to burn into memory - **they happen in a fixed order**: set headers, then write the status code, then write the body. Get the order wrong and Go quietly ignores half of what you asked for.
 
 Because you'll do this on every endpoint, write it once as a helper:
 
@@ -86,7 +86,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 }
 ```
 
-*What just happened:* One function captures the whole ritual. `w.Header().Set(...)` declares the content type so the client parses the body as JSON. `w.WriteHeader(status)` sends the status line (e.g. `201 Created`). `json.NewEncoder(w).Encode(v)` serializes `v` straight to the response stream — no intermediate `[]byte`, no `Marshal` then `Write`. From here on, returning JSON is a one-liner: `writeJSON(w, http.StatusOK, msg)`.
+*What just happened:* One function captures the whole ritual. `w.Header().Set(...)` declares the content type so the client parses the body as JSON. `w.WriteHeader(status)` sends the status line (e.g. `201 Created`). `json.NewEncoder(w).Encode(v)` serializes `v` straight to the response stream - no intermediate `[]byte`, no `Marshal` then `Write`. From here on, returning JSON is a one-liner: `writeJSON(w, http.StatusOK, msg)`.
 
 ### ⚠️ The #1 net/http gotcha: order matters
 
@@ -101,23 +101,23 @@ That last rule is the trap. Look at this *wrong* version:
 ```go
 func brokenHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"error": "nope"}) // sends 200 NOW
-	w.WriteHeader(http.StatusBadRequest)                          // too late — ignored
+	w.WriteHeader(http.StatusBadRequest)                          // too late - ignored
 }
 ```
 
-*What just happened:* The `Encode` call writes to the body, and because no status was set yet, Go automatically commits `200 OK` and flushes the headers. The *next* line tries to set `400`, but the status line already went out the door — so the client receives `200`, your `400` is silently dropped, and Go logs a `http: superfluous response.WriteHeader call` warning to stderr. Nothing crashes; you just get the wrong status and a log line that's easy to miss. The fix is always the same order: **header, status, body** — exactly what `writeJSON` enforces.
+*What just happened:* The `Encode` call writes to the body, and because no status was set yet, Go automatically commits `200 OK` and flushes the headers. The *next* line tries to set `400`, but the status line already went out the door - so the client receives `200`, your `400` is silently dropped, and Go logs a `http: superfluous response.WriteHeader call` warning to stderr. Nothing crashes; you just get the wrong status and a log line that's easy to miss. The fix is always the same order: **header, status, body** - exactly what `writeJSON` enforces.
 
 > 💡 Mnemonic: *headers and status are an envelope, the body is the letter.* You can't change the address after the envelope is sealed and mailed.
 
 ## Status codes, and the no-body case
 
-The status constants live in `net/http` — use the named ones (`http.StatusCreated`) over magic numbers (`201`); they read better and the compiler catches typos. A quick map for the messages service:
+The status constants live in `net/http` - use the named ones (`http.StatusCreated`) over magic numbers (`201`); they read better and the compiler catches typos. A quick map for the messages service:
 
-- `200 OK` — `http.StatusOK`, a successful read.
-- `201 Created` — `http.StatusCreated`, you just made a resource.
-- `400 Bad Request` — `http.StatusBadRequest`, the client sent something invalid.
-- `404 Not Found` — `http.StatusNotFound`, no such message.
-- `204 No Content` — `http.StatusNoContent`, success with *nothing to return* (e.g. a delete).
+- `200 OK` - `http.StatusOK`, a successful read.
+- `201 Created` - `http.StatusCreated`, you just made a resource.
+- `400 Bad Request` - `http.StatusBadRequest`, the client sent something invalid.
+- `404 Not Found` - `http.StatusNotFound`, no such message.
+- `204 No Content` - `http.StatusNoContent`, success with *nothing to return* (e.g. a delete).
 
 That last one is special: **204 means there is no body.** You send the status and stop.
 
@@ -125,7 +125,7 @@ That last one is special: **204 means there is no body.** You send the status an
 func deleteMessage(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	delete(store, id) // pretend store is our in-memory map
-	w.WriteHeader(http.StatusNoContent) // no Encode, no Write — that's the point
+	w.WriteHeader(http.StatusNoContent) // no Encode, no Write - that's the point
 }
 ```
 
@@ -135,7 +135,7 @@ func deleteMessage(w http.ResponseWriter, r *http.Request) {
 
 Here's a truth that surprises people from framework backgrounds: **net/http has no built-in validation.** Decoding fills the struct; it does not check that `Text` is non-empty, or under some length, or anything else. That's your job, in plain Go, right after the decode.
 
-Let's put the whole pipeline together — decode, check, respond — for creating a message:
+Let's put the whole pipeline together - decode, check, respond - for creating a message:
 
 ```go
 func createMessage(w http.ResponseWriter, r *http.Request) {
@@ -145,7 +145,7 @@ func createMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validation is just normal Go — no magic.
+	// Validation is just normal Go - no magic.
 	if strings.TrimSpace(in.Text) == "" {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "text is required"})
 		return
@@ -158,17 +158,17 @@ func createMessage(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-*What just happened:* The handler reads top to bottom as the request's life story. **Decode** into `in`, bailing with `400` if the JSON is broken. **Validate** with an ordinary `if` — `strings.TrimSpace(in.Text) == ""` rejects empty or whitespace-only text, again with `400` and an immediate `return`. Only once the input is trustworthy do we build the `Message`, store it, and reply `201 Created` with the new resource as JSON. Notice there's no validation library and no annotations — just `if` statements you can read and reason about. That directness *is* the net/http philosophy: nothing happens that you didn't write.
+*What just happened:* The handler reads top to bottom as the request's life story. **Decode** into `in`, bailing with `400` if the JSON is broken. **Validate** with an ordinary `if` - `strings.TrimSpace(in.Text) == ""` rejects empty or whitespace-only text, again with `400` and an immediate `return`. Only once the input is trustworthy do we build the `Message`, store it, and reply `201 Created` with the new resource as JSON. Notice there's no validation library and no annotations - just `if` statements you can read and reason about. That directness *is* the net/http philosophy: nothing happens that you didn't write.
 
-> 📝 Each guard ends in `return`. Skipping it means the handler keeps going and may write a *second* response — and now you've written headers twice, which produces (you guessed it) the superfluous-WriteHeader warning. "Check, respond, return" is the rhythm.
+> 📝 Each guard ends in `return`. Skipping it means the handler keeps going and may write a *second* response - and now you've written headers twice, which produces (you guessed it) the superfluous-WriteHeader warning. "Check, respond, return" is the rhythm.
 
 ## Recap
 
-- A handler **reads from `*http.Request`, writes to `http.ResponseWriter`** — both plain stdlib, with `encoding/json` doing the translation on each side.
+- A handler **reads from `*http.Request`, writes to `http.ResponseWriter`** - both plain stdlib, with `encoding/json` doing the translation on each side.
 - Inputs come from four places: path (`r.PathValue("id")`), query (`r.URL.Query().Get("q")`), headers (`r.Header.Get(...)`, case-insensitive), and the body (`json.NewDecoder(r.Body).Decode(&in)`). A failed decode means `400`; add `DisallowUnknownFields()` to reject typos.
 - Writing JSON has a **fixed order**: `Header().Set` → `WriteHeader(status)` → `Encode(body)`. Wrap it in a `writeJSON` helper so you never get it wrong.
 - The first body write implicitly sends `200 OK`, so a `WriteHeader` *after* writing is ignored and logs `superfluous response.WriteHeader call`. Order is everything.
-- Use named status constants; `204 No Content` carries **no body**. There's **no built-in validation** — check fields with ordinary `if` statements and return `400`, always followed by `return`.
+- Use named status constants; `204 No Content` carries **no body**. There's **no built-in validation** - check fields with ordinary `if` statements and return `400`, always followed by `return`.
 
 ## Quick check
 
@@ -200,7 +200,7 @@ func createMessage(w http.ResponseWriter, r *http.Request) {
     "q": "A client POSTs {\"text\": \"   \"} (only spaces). How does net/http reject it as invalid?",
     "choices": [
       "json.Decode returns an error for blank fields",
-      "It doesn't — you validate by hand with an if and return 400",
+      "It doesn't - you validate by hand with an if and return 400",
       "A required:true struct tag enforces it automatically",
       "The mux rejects it before the handler runs"
     ],

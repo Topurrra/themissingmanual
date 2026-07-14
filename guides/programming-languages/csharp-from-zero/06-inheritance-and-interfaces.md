@@ -303,7 +303,7 @@ Rex sleeps.
 
 📝 **`sealed` class** - the opposite: `sealed` *cannot be inherited from* at all. `sealed class Receipt` slams the door so no one can subtype it. Reach for it when behavior must not be altered by subclassing - safety, guarantees, or signaling "this is final." You can also seal an individual `override` to stop *further* overriding down the chain.
 
-💡 **So which do you actually pick?** The honest guidance:
+💡 **So which do you actually pick?** The plain guidance:
 
 - **Default to interfaces.** They model *capability*, a type can implement many, and they avoid a rigid family tree. When types just need to agree on a contract, an interface is almost always right.
 - **Use an abstract class when subtypes genuinely share state and code.** If every subclass would copy-paste the same fields and helpers, an abstract base earns its keep by owning that shared implementation once. The cost is the one-base-class limit.

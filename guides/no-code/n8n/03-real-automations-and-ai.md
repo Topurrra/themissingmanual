@@ -68,7 +68,7 @@ Everything so far moves and reshapes data. The newer trick is a node that *reads
 
 Go back to the contact-form flow. The IF node checked for the literal words "urgent" or "down." Crude - it misses "your service has been broken for an hour and I'm losing money." Swap in an AI step and you can ask, in plain English, "Read this message. Reply with `urgent` or `normal`." The model reads intent, not keywords. You feed its answer into the IF node and the routing gets dramatically smarter for one extra node.
 
-Other honest, everyday uses:
+Other real-world, everyday uses:
 
 - **Summarize.** Turn a long support email into one line before it hits Slack.
 - **Extract.** Pull a date, an amount, and an order number out of free-text and hand back clean fields for the spreadsheet.

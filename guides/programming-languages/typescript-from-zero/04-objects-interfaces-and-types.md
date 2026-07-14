@@ -119,7 +119,7 @@ const point: Pair = [3, 4];
 
 *What just happened:* `ID` names "a string *or* a number" - a union type (more on those next phase). `Pair` names a two-element tuple; `Name` is a readable alias for `string`. None are object shapes, so none could be an `interface`. This breadth is the type alias's superpower: it names *any* type, not only objects.
 
-## `interface` vs `type` - the honest guidance
+## `interface` vs `type` - the plain guidance
 
 The straight answer to the question everyone trips on: **for object shapes, `interface` and `type` are mostly interchangeable.** Both name a shape, both get enforced identically, both support optional and readonly fields and extension. You can write almost any real codebase using only one.
 

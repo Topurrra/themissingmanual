@@ -19,16 +19,16 @@ updated: 2026-07-10
 
 # Lazy Loading Explained
 
-You open a long page with forty images, a chat widget, an analytics script, and a video player near the bottom — if the browser fetched all of it the instant you arrived, you'd wait for things you might never scroll to. Lazy loading is the fix: don't do the work until something proves it's needed. This guide covers the idea, the three places you'll use it constantly, and the tradeoff that keeps it from being a free lunch.
+You open a long page with forty images, a chat widget, an analytics script, and a video player near the bottom - if the browser fetched all of it the instant you arrived, you'd wait for things you might never scroll to. Lazy loading is the fix: don't do the work until something proves it's needed. This guide covers the idea, the three places you'll use it constantly, and the tradeoff that keeps it from being a free lunch.
 
 ## How to read this
 
-Phase 1 builds the mental model — the difference between eager and lazy, and why "load everything now" is the default that quietly costs you. Phase 2 is where you'll actually use it day to day: images, route-based code, and "load more" patterns. Phase 3 is the honest tradeoff — what lazy loading can break, and when loading eagerly is the better call.
+Phase 1 builds the mental model - the difference between eager and lazy, and why "load everything now" is the default that quietly costs you. Phase 2 is where you'll actually use it day to day: images, route-based code, and "load more" patterns. Phase 3 is the clear-eyed tradeoff - what lazy loading can break, and when loading eagerly is the better call.
 
 ## The phases
 
-1. [Don't do work nobody asked for yet](01-dont-do-work-nobody-asked-for.md) — the general principle, contrasted with eager loading.
-2. [Where you'll actually use it](02-where-youll-use-it.md) — images, code-splitting, and infinite scroll.
-3. [The tradeoff](03-the-tradeoff.md) — layout shift, missing content, and when eager wins.
+1. [Don't do work nobody asked for yet](01-dont-do-work-nobody-asked-for.md) - the general principle, contrasted with eager loading.
+2. [Where you'll actually use it](02-where-youll-use-it.md) - images, code-splitting, and infinite scroll.
+3. [The tradeoff](03-the-tradeoff.md) - layout shift, missing content, and when eager wins.
 
 [Phase 1: Don't do work nobody asked for yet](01-dont-do-work-nobody-asked-for.md) →

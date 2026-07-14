@@ -12,32 +12,32 @@ updated: 2026-07-10
 # The Core Patterns
 
 [Phase 1](01-everything-fails.md) showed a single slow dependency take down a whole service while nothing
-technically crashed. This phase hands you the three tools that would have stopped it cold — simple enough
+technically crashed. This phase hands you the three tools that would have stopped it cold - simple enough
 to hold in your head, and they work together:
 
 - **Timeouts** decide *how long you're willing to wait* before giving up. (This is the one most systems
   are missing.)
-- **Retries** decide *whether and how to try again* after a transient failure — carefully, with backoff
+- **Retries** decide *whether and how to try again* after a transient failure - carefully, with backoff
   and jitter, and only for operations that are safe to repeat.
 - **Circuit breakers** decide *when to stop trying altogether* because the dependency is clearly broken
-  — so you fail fast and let it recover instead of pounding on it.
+ - so you fail fast and let it recover instead of pounding on it.
 
 Learn these three and you've covered the overwhelming majority of "my service fell over because of
 something downstream" situations.
 
-## Timeouts — never wait forever
+## Timeouts - never wait forever
 
 **What it actually is.** A *timeout* is a deadline on a call: "if I don't get a response within N
-seconds, stop waiting and treat it as a failure." It's the answer to the third outcome from Phase 1 — the
-*hang* — by refusing to hang.
+seconds, stop waiting and treat it as a failure." It's the answer to the third outcome from Phase 1 - the
+*hang* - by refusing to hang.
 
 **Why people get this wrong.** Most libraries and HTTP clients ship with **no timeout, or a wildly
-generous default** (sometimes effectively infinite). So the code that looks innocent —
-`http.get(recommendations_url)` — is quietly a promise to wait *forever* if the other side never
+generous default** (sometimes effectively infinite). So the code that looks innocent - 
+`http.get(recommendations_url)` - is quietly a promise to wait *forever* if the other side never
 answers. That's the exact mechanism that exhausted the worker pool in Phase 1.
 
 **What it does in real life.** With a timeout, a slow dependency can hold a worker for *at most* the
-timeout duration, not indefinitely — the worker comes back, free to serve someone else, and the slow
+timeout duration, not indefinitely - the worker comes back, free to serve someone else, and the slow
 dependency degrades that one feature instead of starving the entire service.
 
 ```text
@@ -54,34 +54,34 @@ $ curl --max-time 2 https://recs.internal/recommend
 curl: (28) Operation timed out after 2003 milliseconds with 0 bytes received
 ```
 *What just happened:* `curl` waited two seconds, got nothing, and gave up with error 28 instead of
-hanging indefinitely. In your service that translates to "the recommendations call failed; move on" —
+hanging indefinitely. In your service that translates to "the recommendations call failed; move on" - 
 maybe you skip recommendations and return the rest of the page. The worker is free again, and the slow
 dependency cost you one feature for one request, not your whole service.
 
-⚠️ **Gotcha — set timeouts at every layer, and budget them.** A timeout only protects the layer that has
+⚠️ **Gotcha - set timeouts at every layer, and budget them.** A timeout only protects the layer that has
 one. If your outer request has a 30-second timeout but the database call inside it has none, the database
-hang still wins. Inner timeouts should also *add up to less* than the outer one — if the overall request
+hang still wins. Inner timeouts should also *add up to less* than the outer one - if the overall request
 must answer in 3 seconds, you can't give a sub-call 5. This is a **timeout budget**: the parent deadline
 is divided among the children, not handed to each in full.
 
 💡 **Key point.** If you do exactly one thing from this entire guide, set timeouts on every remote call.
 It's the single highest-leverage line of defense, and the one most commonly missing.
 
-## Retries — try again, but carefully
+## Retries - try again, but carefully
 
 **What it actually is.** A *retry* is trying a failed call again, on the bet that the failure was
-**transient** — a momentary blip, a packet drop, a brief overload — rather than permanent. Many network
+**transient** - a momentary blip, a packet drop, a brief overload - rather than permanent. Many network
 failures genuinely are transient, so a retry often turns a glitch the user never sees into a non-event.
 
-**Why people get this wrong — two ways, both bad.** First, **the naive retry loop**: fail, immediately
+**Why people get this wrong - two ways, both bad.** First, **the naive retry loop**: fail, immediately
 try again, fail, immediately try again. If the dependency is struggling because it's *overloaded*,
 hammering it with instant retries pours gasoline on the fire. Worse, if *every* client retries at the
-same instant, they all hit the recovering service together and knock it back down — a **thundering herd**.
+same instant, they all hit the recovering service together and knock it back down - a **thundering herd**.
 The fix is two ideas stacked:
 
-- **Exponential backoff** — wait longer between each attempt: 1s, then 2s, then 4s, then 8s. You give a
+- **Exponential backoff** - wait longer between each attempt: 1s, then 2s, then 4s, then 8s. You give a
   struggling dependency room to breathe instead of crowding it.
-- **Jitter** — add randomness to each wait so clients *don't* line up and retry in sync. Backoff spreads
+- **Jitter** - add randomness to each wait so clients *don't* line up and retry in sync. Backoff spreads
   retries out in time; jitter spreads them out across *clients* (see AWS's
   ["Exponential Backoff And Jitter"](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/)).
 
@@ -106,34 +106,34 @@ room to recover. By the third attempt it was healthy again, and the user never s
 
 The second way people get retries wrong is the dangerous one:
 
-⚠️ **Gotcha — only retry idempotent operations.** An operation is **idempotent** if doing it twice has
+⚠️ **Gotcha - only retry idempotent operations.** An operation is **idempotent** if doing it twice has
 the same effect as doing it once. Reading data is idempotent; setting a value to `X` is idempotent.
-*Charging a credit card is not* — retry that blindly and you may bill the customer twice. The trap is the
+*Charging a credit card is not* - retry that blindly and you may bill the customer twice. The trap is the
 *hang*: the request may have actually *succeeded* on the server, but the response got lost on the way
 back, so the client thinks it failed and retries.
 
 📝 **Terminology.** *Idempotent* = safe to repeat; the end state is the same no matter how many times you
-do it. The safe pattern for non-idempotent actions (payments, "create order") is an **idempotency key** —
+do it. The safe pattern for non-idempotent actions (payments, "create order") is an **idempotency key** - 
 a unique ID the client sends so the server can recognize "I've already processed this one" and skip it.
 This is the heart of reliable webhook delivery, covered in
-[Webhooks & Message Queues](/guides/webhooks-and-message-queues) — read that before retrying anything
+[Webhooks & Message Queues](/guides/webhooks-and-message-queues) - read that before retrying anything
 that *changes state*.
 
 💡 **Key point.** Retries are for *transient* failures on *idempotent* operations. A `503` or a timeout
 on a read? Retry with backoff and jitter. A `400 Bad Request` (your request is malformed) or a
-`404`? Don't retry — the answer won't change, and you're just adding load. Retry the *retryable*, not
+`404`? Don't retry - the answer won't change, and you're just adding load. Retry the *retryable*, not
 everything.
 
-## Circuit breakers — stop hammering a corpse
+## Circuit breakers - stop hammering a corpse
 
 Timeouts cap each call; retries handle the occasional blip. But what about when a dependency isn't
-blipping — it's just *down*, and has been for a while? Retrying every single request, each waiting out
+blipping - it's just *down*, and has been for a while? Retrying every single request, each waiting out
 its full timeout first, is pure waste: you're spending your own resources waiting on something you
 already have strong evidence is broken. That's where the circuit breaker comes in.
 
 **What it actually is.** A *circuit breaker* is exactly the electrical metaphor: a switch that **trips
 open** when it sees too much trouble, cutting the connection so the trouble can't spread. Once tripped,
-calls **fail fast** — instantly, without even attempting the call — until enough time passes to check
+calls **fail fast** - instantly, without even attempting the call - until enough time passes to check
 whether it has recovered.
 
 It lives in three states:
@@ -152,18 +152,18 @@ flowchart LR
 **What it does in real life.** When the dependency is healthy, the breaker is **closed** and traffic flows
 normally while it quietly counts failures. When failures cross a threshold, it trips **open**: for the
 next stretch of time (the cooldown), every call returns an error *immediately* without trying. After the
-cooldown, it goes **half-open** and lets a single test call through — if that succeeds, the breaker closes
+cooldown, it goes **half-open** and lets a single test call through - if that succeeds, the breaker closes
 and normal traffic resumes; if it fails, the breaker opens again and waits another round.
 
-**Why this saves you.** First, **fail fast**: when something's down, your users get a quick, honest error
-(or a fallback — see [Phase 3](03-failing-soft.md)) instead of waiting out a timeout on every request.
+**Why this saves you.** First, **fail fast**: when something's down, your users get a quick, clear error
+(or a fallback - see [Phase 3](03-failing-soft.md)) instead of waiting out a timeout on every request.
 Second, **let it recover**: a dependency struggling under load can't recover if you keep slamming it. The
 open breaker takes the pressure off and protects *both* sides.
 
-⚠️ **Gotcha — tune the thresholds, or the breaker lies.** A breaker that trips on one stray error flaps
+⚠️ **Gotcha - tune the thresholds, or the breaker lies.** A breaker that trips on one stray error flaps
 open and closed, rejecting perfectly good traffic. One that needs a thousand failures won't protect you
 in time. The right thresholds (how many failures, over what window, how long the cooldown) depend on your
-traffic and take observation to get right — start conservative and adjust from what you see in production.
+traffic and take observation to get right - start conservative and adjust from what you see in production.
 
 🪖 **War story.** The combination that bites people: a circuit breaker wrapped around a call that *also*
 has aggressive retries *inside* the breaker. Each "attempt" is really three retried calls, so the
@@ -173,7 +173,7 @@ attempt) and keep it consistent.
 
 ## How the three fit together
 
-These aren't three separate tools you pick between — they're layers on the *same* call:
+These aren't three separate tools you pick between - they're layers on the *same* call:
 
 ```mermaid
 flowchart LR
@@ -186,21 +186,21 @@ flowchart LR
 
 A call goes out; the **timeout** caps how long each attempt can take; **retries** handle a transient
 failure with backoff and jitter; and the **circuit breaker** sits over the whole thing, ready to trip and
-fail fast if the dependency is clearly broken. Timeouts make retries safe — a hung call can't block a
+fail fast if the dependency is clearly broken. Timeouts make retries safe - a hung call can't block a
 retry. Retries make blips invisible. The breaker stops the bleeding when blips become an outage.
 
 ## Recap
 
-1. **Timeouts** cap how long you'll wait — set them on *every* remote call, at every layer, with inner
+1. **Timeouts** cap how long you'll wait - set them on *every* remote call, at every layer, with inner
    timeouts adding up to less than outer ones (a timeout budget). The most commonly missing safeguard.
 2. **Retries** handle *transient* failures, but only with **exponential backoff** and **jitter**, so you
    don't stampede a recovering service.
-3. **Retry only idempotent operations** — anything that changes state needs an **idempotency key**; see
+3. **Retry only idempotent operations** - anything that changes state needs an **idempotency key**; see
    [Webhooks & Message Queues](/guides/webhooks-and-message-queues).
 4. A **circuit breaker** trips **open** after too many failures, **fails fast** during a cooldown, then
-   tests recovery in **half-open** — protecting both your resources and the struggling dependency.
+   tests recovery in **half-open** - protecting both your resources and the struggling dependency.
 5. The three layer onto the same call: breaker outside, retries within an attempt, timeout on each call.
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 3: Failing Soft — Degradation & Redundancy →](03-failing-soft.md)
+[← Guide overview](_guide.md) · [Phase 3: Failing Soft - Degradation & Redundancy →](03-failing-soft.md)

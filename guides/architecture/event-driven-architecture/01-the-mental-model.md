@@ -36,11 +36,11 @@ on signup(user):
     return "ok"
 ```
 
-*What just happened:* the handler did its own job (save the user), shouted one fact into the room — "a user signed up, here are the details" — and returned. It does not know who's listening. It does not wait. Sending the welcome email, starting the trial, tracking analytics — those are now somebody else's problem, and the signup code has no idea how many somebodies there are.
+*What just happened:* the handler did its own job (save the user), shouted one fact into the room - "a user signed up, here are the details" - and returned. It does not know who's listening. It does not wait. Sending the welcome email, starting the trial, tracking analytics - those are now somebody else's problem, and the signup code has no idea how many somebodies there are.
 
-That's the entire idea. An **event** is a statement of fact about something that already happened, in the past tense: `user.signed_up`, `order.placed`, `payment.failed`. Not a command ("send the email"), not a question ("are you there?") — a fact. The producer announces it and moves on. Interested parties react on their own time.
+That's the entire idea. An **event** is a statement of fact about something that already happened, in the past tense: `user.signed_up`, `order.placed`, `payment.failed`. Not a command ("send the email"), not a question ("are you there?") - a fact. The producer announces it and moves on. Interested parties react on their own time.
 
-> The past tense matters more than it looks. `send_welcome_email` is an instruction aimed at one specific service — it couples the sender to the receiver. `user.signed_up` is true; it doesn't care who acts on it. That difference is what buys you the decoupling.
+> The past tense matters more than it looks. `send_welcome_email` is an instruction aimed at one specific service - it couples the sender to the receiver. `user.signed_up` is true; it doesn't care who acts on it. That difference is what buys you the decoupling.
 
 ## The three parts: producer, broker, consumer
 
@@ -56,27 +56,27 @@ Every event-driven system, no matter how fancy the tooling, is these three roles
                └──────────────────────┘  ──►  crm service
 ```
 
-- **Producer** — the thing that emits the event. It knows nothing about consumers. Its only job is to publish the fact.
-- **Broker** — the piece in the middle that receives events and holds them until consumers are ready. This is the part that's new. It's a queue, or a log, or a pub/sub topic — software like RabbitMQ, Kafka, SQS, NATS. We'll get into the flavors in Phase 2.
-- **Consumer** — a service that subscribes to events it cares about and does work when one arrives. Consumers are independent: each one fails, retries, and scales on its own.
+- **Producer** - the thing that emits the event. It knows nothing about consumers. Its only job is to publish the fact.
+- **Broker** - the piece in the middle that receives events and holds them until consumers are ready. This is the part that's new. It's a queue, or a log, or a pub/sub topic - software like RabbitMQ, Kafka, SQS, NATS. We'll get into the flavors in Phase 2.
+- **Consumer** - a service that subscribes to events it cares about and does work when one arrives. Consumers are independent: each one fails, retries, and scales on its own.
 
 The broker is the hero of the story. Without it, "emit an event" would still mean A has to know where B is. *With* it, A talks only to the broker, and the broker is the only thing that knows the routing. That one indirection is where all the benefits come from.
 
 ## Why anyone bothers: three real wins
 
-**1. Decoupling.** The producer and consumers don't know each other exist. You can add a sixth consumer — say, a service that sends a Slack alert to the sales team — without touching the signup code at all. You deploy the new consumer, it subscribes to `user.signed_up`, done. The blast radius of "add a feature" shrinks dramatically.
+**1. Decoupling.** The producer and consumers don't know each other exist. You can add a sixth consumer - say, a service that sends a Slack alert to the sales team - without touching the signup code at all. You deploy the new consumer, it subscribes to `user.signed_up`, done. The blast radius of "add a feature" shrinks dramatically.
 
-**2. Buffering.** Because the broker *holds* events, a slow or briefly-down consumer doesn't break the producer. If the email service is overwhelmed at peak, signups keep flowing — the welcome emails queue up and get sent as the email service catches up. The broker absorbs the spike. (This is the same backpressure idea covered in [Webhooks & Message Queues](/guides/webhooks-and-message-queues).)
+**2. Buffering.** Because the broker *holds* events, a slow or briefly-down consumer doesn't break the producer. If the email service is overwhelmed at peak, signups keep flowing - the welcome emails queue up and get sent as the email service catches up. The broker absorbs the spike. (This is the same backpressure idea covered in [Webhooks & Message Queues](/guides/webhooks-and-message-queues).)
 
-**3. Replay.** Some brokers (the log-shaped ones) keep events around after they're consumed. That means a brand-new consumer can start at the beginning and process the entire history — rebuild a search index, populate a new analytics warehouse, recover from a bug — by re-reading events that were emitted months ago. The event stream becomes a kind of audit trail you can rewind.
+**3. Replay.** Some brokers (the log-shaped ones) keep events around after they're consumed. That means a brand-new consumer can start at the beginning and process the entire history - rebuild a search index, populate a new analytics warehouse, recover from a bug - by re-reading events that were emitted months ago. The event stream becomes a kind of audit trail you can rewind.
 
 ## A quick gut-check on the difference
 
 Direct calls are **synchronous and pointed**: A calls B, A waits, A is coupled to B, A is only as available as B. Events are **asynchronous and broadcast**: A emits, A doesn't wait, A is coupled to nothing, A's availability doesn't depend on anyone downstream.
 
-That sounds strictly better, which is exactly the trap. You're trading a problem you can see (tight coupling, cascading slowness) for problems you *can't* see yet (the work happens "eventually," not now, and debugging means following a fact across services). Phase 3 is where we pay that bill honestly. First, Phase 2 shows how events actually move.
+That sounds strictly better, which is exactly the trap. You're trading a problem you can see (tight coupling, cascading slowness) for problems you *can't* see yet (the work happens "eventually," not now, and debugging means following a fact across services). Phase 3 is where we pay that bill in full. First, Phase 2 shows how events actually move.
 
-**For builders:** before reaching for a broker, look at your existing call graph and ask which calls are *fire-and-forget* — the caller doesn't need the result to respond. Welcome emails, analytics, cache warming: classic fire-and-forget. Those are the calls that want to be events. A call whose result you need *in the same response* (charge this card, then tell the user it worked) usually wants to stay a direct call. Sorting your calls into those two buckets is most of the design work.
+**For builders:** before reaching for a broker, look at your existing call graph and ask which calls are *fire-and-forget* - the caller doesn't need the result to respond. Welcome emails, analytics, cache warming: classic fire-and-forget. Those are the calls that want to be events. A call whose result you need *in the same response* (charge this card, then tell the user it worked) usually wants to stay a direct call. Sorting your calls into those two buckets is most of the design work.
 
 ```quiz
 [

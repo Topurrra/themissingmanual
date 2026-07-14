@@ -68,7 +68,7 @@ const r = buildReport();
 - **Performance and timing.** The collector has to run, and running it takes CPU and sometimes pauses your program briefly (Phase 3 explains why). You give up the fine-grained, predictable control that manual memory gives you.
 - **Less control.** You don't decide *exactly* when memory is reclaimed. Usually you don't care. Occasionally - real-time audio, a tight game loop, a latency-sensitive trading system - you care a great deal, and a surprise GC pause is a genuine problem.
 
-## The trade-off, in one honest table
+## The trade-off, in one plain table
 
 There's no universally better answer here. It's control versus safety, and which one wins depends entirely on what you're building.
 

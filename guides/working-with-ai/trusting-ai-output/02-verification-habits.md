@@ -58,7 +58,7 @@ The cleanest line to draw: **let AI do the work, but keep the judgment.**
 
 Drafting, explaining, brainstorming, summarizing, reformatting, getting unstuck - this is where AI shines, and where a mistake costs you a quick edit, not a bad outcome. Deciding - what to tell a customer, which option to choose, whether a claim is true enough to publish, what advice to follow - stays with you, informed by the draft but not dictated by it.
 
-A useful test before you send or act on anything AI touched: *Would I be comfortable if someone asked "how do you know this is right?"* If your honest answer is "the AI said so," you are not done yet.
+A useful test before you send or act on anything AI touched: *Would I be comfortable if someone asked "how do you know this is right?"* If your real answer is "the AI said so," you are not done yet.
 
 ## A thirty-second checklist
 

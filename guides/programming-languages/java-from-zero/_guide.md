@@ -2,7 +2,7 @@
 title: "Java From Zero"
 guide: "java-from-zero"
 phase: 0
-summary: "Learn Java from nothing to genuinely advanced: install the JDK and the basics - types, classes, objects, collections - then the deep half: generics, lambdas and streams, modern records and pattern matching, concurrency, the JVM and its garbage collector, testing, and performance. Mental-model-first, with honest explanations."
+summary: "Learn Java from nothing to genuinely advanced: install the JDK and the basics - types, classes, objects, collections - then the deep half: generics, lambdas and streams, modern records and pattern matching, concurrency, the JVM and its garbage collector, testing, and performance. Mental-model-first, with clear explanations."
 tags: [java, jvm, beginner, advanced, getting-started, oop, generics, streams, concurrency, garbage-collection]
 category: programming-languages
 order: 6

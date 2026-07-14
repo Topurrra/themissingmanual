@@ -102,7 +102,7 @@ for p in samples:
             print(f"  - {fix}")
 ```
 
-Run it. Each password gets a little checklist. `"cat"` gets a stack of fixes; `"correct horse battery staple"` gets "Looks good!" because a long lowercase passphrase clears the length floor and the lowercase class - which, honestly, matters more than scattering symbols around. The feedback is now something a real human can act on in five seconds.
+Run it. Each password gets a little checklist. `"cat"` gets a stack of fixes; `"correct horse battery staple"` gets "Looks good!" because a long lowercase passphrase clears the length floor and the lowercase class - which matters more than scattering symbols around. The feedback is now something a real human can act on in five seconds.
 
 ## Folding score, label, and feedback together
 

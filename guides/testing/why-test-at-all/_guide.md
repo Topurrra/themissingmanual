@@ -34,7 +34,7 @@ feeling like the thing that finally lets you relax.
    code *without fear*, because something will shout if you break it.
 2. **[What a Test Actually Is](02-what-a-test-actually-is.md)** - demystified: a tiny program that runs your
    real code with known inputs and checks the result, shown passing and failing.
-3. **[What's Worth Testing (Honestly)](03-whats-worth-testing.md)** - the cost/benefit: what to test, what to
+3. **[What's Worth Testing (Straight Talk)](03-whats-worth-testing.md)** - the cost/benefit: what to test, what to
    skip, and why chasing 100% coverage can make things worse.
 
 > This is the **"why"** of testing - the mental model. The **"how"** - actually sitting down and writing one -

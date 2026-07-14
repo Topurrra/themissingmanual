@@ -61,7 +61,7 @@ And the crates built on Tokio that you'll meet at work:
 
 ## A word on the alternatives
 
-Let me be honest, because a roots guide that pretended Tokio were the only option would be doing you a disservice: it isn't. **`async-std`** and **`smol`** are other async runtimes, and they're real, working projects with thoughtful designs.
+Let me be direct, because a roots guide that pretended Tokio were the only option would be doing you a disservice: it isn't. **`async-std`** and **`smol`** are other async runtimes, and they're real, working projects with thoughtful designs.
 
 But here's the practical reality. Tokio is dominant, and most of the async library ecosystem assumes it. The crates above - hyper, tonic, reqwest, sqlx - are built against Tokio. If you pick a different runtime, you'll find a thinner shelf of compatible libraries and more rough edges.
 

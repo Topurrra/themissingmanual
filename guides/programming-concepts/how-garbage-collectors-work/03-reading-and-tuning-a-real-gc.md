@@ -2,7 +2,7 @@
 title: "Reading and Tuning a Real GC"
 guide: "how-garbage-collectors-work"
 phase: 3
-summary: "What a real GC log actually shows, the handful of tuning knobs that matter versus the ones that rarely do, and the honest first move before tuning: allocate less. Plus Rust's alternative - no collector at all."
+summary: "What a real GC log actually shows, the handful of tuning knobs that matter versus the ones that rarely do, and the plain first move before tuning: allocate less. Plus Rust's alternative - no collector at all."
 tags: [garbage-collection, gc-tuning, gc-logs, heap-sizing, allocation-pressure, rust-ownership]
 difficulty: advanced
 synonyms: ["how to read a gc log", "how to tune the jvm garbage collector", "what gc settings actually matter", "how to reduce garbage collection pauses", "why doesn't rust have a garbage collector", "gc tuning best practices"]
@@ -40,7 +40,7 @@ Three questions answer almost everything you need from a stream of these lines:
 
 ## The move that beats tuning: allocate less
 
-Here's the honest order of operations, and it's the same one both the Java and Go per-language guides land on independently: **the collector's total cost is roughly proportional to how much garbage you create**, not to any setting you can flip. A collector spending too much time collecting is very often a program creating unnecessary short-lived garbage in a hot path - a string concatenated in a loop instead of built once, an object allocated per iteration that could be reused, a data structure copied when a reference would do.
+Here's the plain order of operations, and it's the same one both the Java and Go per-language guides land on independently: **the collector's total cost is roughly proportional to how much garbage you create**, not to any setting you can flip. A collector spending too much time collecting is very often a program creating unnecessary short-lived garbage in a hot path - a string concatenated in a loop instead of built once, an object allocated per iteration that could be reused, a data structure copied when a reference would do.
 
 Reducing allocation pressure fixes the actual cause: fewer objects born means fewer minor collections, less promotion pressure, and a smaller working set for any eventual full collection. Tuning a heap size or collector flag around a wasteful allocation pattern treats the symptom - it can buy headroom, but the underlying cost is still there, and it comes back the moment load increases. Profile allocations first (both Java and Go guides show the tools for this in their own performance phases); tune the collector second, with log evidence in hand for what specifically is going wrong.
 

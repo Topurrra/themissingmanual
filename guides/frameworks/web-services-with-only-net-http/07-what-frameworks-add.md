@@ -2,7 +2,7 @@
 title: "What the Frameworks Add"
 guide: "web-services-with-only-net-http"
 phase: 7
-summary: "Map Gin, Echo, and chi back onto the net/http you just built - router, context, middleware, binding - and decide honestly whether you even need a framework now that the stdlib mux does method+path routing."
+summary: "Map Gin, Echo, and chi back onto the net/http you just built - router, context, middleware, binding - and decide plainly whether you even need a framework now that the stdlib mux does method+path routing."
 tags: [net-http, go, gin, echo, chi, frameworks]
 difficulty: beginner
 synonyms: ["gin echo chi vs net/http", "what go frameworks add", "do i need a go web framework", "go 1.22 servemux enough", "net/http to framework", "go framework comparison"]
@@ -39,7 +39,7 @@ That covers the Go web world. The frameworks differ in ergonomics and feature se
 
 ## Do I even need a framework?
 
-📝 Let me be honest, because a roots guide that pretends you must reach for a framework would be lying to you: a lot of the time, plain net/http is genuinely enough now.
+📝 Let me be direct, because a roots guide that pretends you must reach for a framework would be lying to you: a lot of the time, plain net/http is genuinely enough now.
 
 The reason is [Phase 2](02-handlers-and-routing.md). Since **Go 1.22**, the standard `http.ServeMux` does method-and-path routing - `mux.HandleFunc("GET /messages/{id}", ...)` with `r.PathValue("id")` - which is the single biggest thing frameworks used to be *required* for. For a small service with a handful of routes, you can ship the bare stdlib version and not feel like you're missing anything.
 
@@ -48,7 +48,7 @@ So when do you reach for a framework? When you want the batteries:
 - **You want binding and validation, a big middleware ecosystem, and you're writing a lot of routes** - reach for **[Gin](/guides/gin-from-zero)** or **[Echo](/guides/echo-from-zero)**. The `ShouldBindJSON` + validator-tags story alone saves real boilerplate once you have dozens of endpoints.
 - **You love the stdlib but want nicer routing ergonomics without leaving it** - reach for **[chi](/guides/chi-from-zero)**. It's net/http-pure: your `func(http.Handler) http.Handler` middleware and your `w`/`r` handlers work unchanged.
 
-That's the honest decision. Not "always use a framework," and not "frameworks are bloat" - just match the tool to the size of the job.
+That's the plain decision. Not "always use a framework," and not "frameworks are bloat" - just match the tool to the size of the job.
 
 ## Where to go from here
 

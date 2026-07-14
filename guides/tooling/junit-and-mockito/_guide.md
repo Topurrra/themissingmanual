@@ -18,7 +18,7 @@ You opened a Java repo, saw a `src/test/java` folder full of `@Test` methods and
 
 ## How to read this
 
-Read the phases in order. Phase 1 builds the JUnit 5 mental model so the annotations stop being noise. Phase 2 puts Mockito next to it and shows the everyday isolate-the-unit workflow. Phase 3 is the part nobody warns you about: the ways these tools quietly lie to you, and how to keep your tests honest. If you've never written a unit test at all, /guides/your-first-unit-test is the gentler on-ramp; come back here for the Java specifics.
+Read the phases in order. Phase 1 builds the JUnit 5 mental model so the annotations stop being noise. Phase 2 puts Mockito next to it and shows the everyday isolate-the-unit workflow. Phase 3 is the part nobody warns you about: the ways these tools quietly lie to you, and how to keep your tests trustworthy. If you've never written a unit test at all, /guides/your-first-unit-test is the gentler on-ramp; come back here for the Java specifics.
 
 ## The phases
 

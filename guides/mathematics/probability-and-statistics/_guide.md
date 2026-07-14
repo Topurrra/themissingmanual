@@ -22,7 +22,7 @@ a reason: nearly everything downstream - A/B tests, machine learning, risk, poll
 There's a second reason this guide matters more than most. Numbers are the favorite costume of
 misleading arguments: a cherry-picked average, a biased sample, a chart with a doctored axis, a
 "correlation" sold as a cause. The same statistics that help you understand the world are the ones used
-to bamboozle you about it. So this guide does both jobs - it teaches the tools honestly, and it teaches
+to bamboozle you about it. So this guide does both jobs - it teaches the tools straight, and it teaches
 you how those tools get *abused*, so the next misleading number doesn't get past you.
 
 ## How to read this

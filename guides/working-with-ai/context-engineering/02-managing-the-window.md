@@ -37,7 +37,7 @@ Sometimes the material genuinely matters but won't fit, or fitting it would crow
 
 The reliable pattern is summarize-then-work. Ask the model to distill the long thing first - "summarize this 30-page report into the ten decisions it asks me to make" - then work from the summary. You can even do this across a long chat: when a conversation gets unwieldy, ask "summarize what we've decided so far in a tight bullet list," then start fresh with that summary as your opening message. You've hand-rolled a clean window out of a messy one.
 
-Be honest about the tradeoff: summarizing loses detail. If exact wording matters - a contract clause, a quoted figure - keep the original text for that part and summarize the rest. Compression is for the background, not the load-bearing details.
+Be clear about the tradeoff: summarizing loses detail. If exact wording matters - a contract clause, a quoted figure - keep the original text for that part and summarize the rest. Compression is for the background, not the load-bearing details.
 
 ## Move 3: Pull in material on demand (retrieval / RAG)
 

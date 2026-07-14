@@ -12,7 +12,7 @@ updated: 2026-07-10
 # Routing & Views
 
 In Phase 1 you saw the headline move: `@app.route` maps a URL to a function, and whatever it returns becomes
-the page. This phase puts meat on that skeleton — how you handle `/notes/7` when the `7` changes every
+the page. This phase puts meat on that skeleton - how you handle `/notes/7` when the `7` changes every
 request, how the *same* URL does one thing on a `GET` and another on a `POST`, where submitted data lives,
 and what your options are for what to hand back.
 
@@ -20,9 +20,9 @@ The mental model: **a Flask view is a function that receives a request and retur
 entire job. The decorator decides *which* requests reach your function; inside, you read what you need off
 the request, do some work, and return something Flask can turn into an HTTP response.
 
-## Dynamic URLs — capturing part of the path
+## Dynamic URLs - capturing part of the path
 
-A route like `/notes` lists every note. But `/notes/7` should show *one* note — the one with id `7`. That `7`
+A route like `/notes` lists every note. But `/notes/7` should show *one* note - the one with id `7`. That `7`
 changes per request, so you can't bake it into the route string. Mark it as a **variable segment** with angle
 brackets, then receive it as an argument to the view.
 
@@ -33,7 +33,7 @@ def note_detail(note_id):
 ```
 
 *What just happened:* `<int:note_id>` is a placeholder. Flask matches `/notes/7`, pulls out the `7`, and
-passes it to `note_detail` as the `note_id` argument — the name after the colon must match the parameter
+passes it to `note_detail` as the `note_id` argument - the name after the colon must match the parameter
 exactly. `int:` is a **converter**: it tells Flask "this segment is an integer," so `note_id` arrives as the
 number `7`, not the string `"7"`, and `/notes/banana` doesn't match this route at all (a 404 instead of
 garbage).
@@ -46,13 +46,13 @@ The built-in converters you'll reach for:
 | `<int:x>` | a whole number, given to you as an `int` | `/notes/<int:note_id>` |
 | `<path:x>` | text *including* slashes | `/files/<path:subpath>` |
 
-⚠️ If you write `<note_id>` with **no converter**, you get `string` by default — a classic source of "why is
+⚠️ If you write `<note_id>` with **no converter**, you get `string` by default - a classic source of "why is
 my id a string?" bugs. When a segment is a numeric id, say so: `<int:note_id>`.
 
-## HTTP methods — same URL, different verbs
+## HTTP methods - same URL, different verbs
 
 By default a route only answers `GET` requests (the verb a browser uses to *fetch* a page). But creating a
-note is a `POST` — the verb for *submitting* data. The REST idea that the URL names the resource and the
+note is a `POST` - the verb for *submitting* data. The REST idea that the URL names the resource and the
 method is the verb you apply to it (see [What a Framework Even Is](/guides/what-a-framework-even-is)) shows
 up here directly: `/notes` is the collection, and one route can handle both "show me the notes" (`GET`) and
 "add a note" (`POST`).
@@ -70,17 +70,17 @@ def notes_collection():
     return "Your notes: " + ", ".join(notes)
 ```
 
-*What just happened:* `methods=["GET", "POST"]` tells Flask this view answers *both* verbs — without it, a
+*What just happened:* `methods=["GET", "POST"]` tells Flask this view answers *both* verbs - without it, a
 `POST` to `/notes` would be rejected with a `405 Method Not Allowed`. `request.method` tells you *which* verb
 you got, so you branch: `POST` reads the submitted title and creates a note; `GET` lists what's there. This
 **create-on-POST, list-on-GET** pattern on a single collection URL is the bread and butter of web apps.
-(`notes = []` is throwaway in-memory storage so the example runs — real persistence arrives in Phase 5.)
+(`notes = []` is throwaway in-memory storage so the example runs - real persistence arrives in Phase 5.)
 
-💡 The `201` in `return ..., 201` is the HTTP status code for "Created" — more on status codes in a moment.
+💡 The `201` in `return ..., 201` is the HTTP status code for "Created" - more on status codes in a moment.
 
-## The request object — where the incoming data lives
+## The request object - where the incoming data lives
 
-📝 **`flask.request`** is how your view reads everything about the incoming request — a single object Flask
+📝 **`flask.request`** is how your view reads everything about the incoming request - a single object Flask
 hands you (technically per-request, but you import it once and use it anywhere inside a view). The parts
 you'll use constantly:
 
@@ -92,7 +92,7 @@ you'll use constantly:
 | `request.method` | the HTTP verb | `GET`, `POST`, ... |
 | `request.headers` | request headers | `User-Agent`, `Authorization`, ... |
 
-Reading a **query parameter** (the part after `?` in the URL) — handy for search and filtering:
+Reading a **query parameter** (the part after `?` in the URL) - handy for search and filtering:
 
 ```python
 @app.route("/search")
@@ -104,7 +104,7 @@ def search():
 
 *What just happened:* a request to `/search?q=milk` lands here, and `request.args.get("q", "")` pulls `milk`
 out of the query string. Using `.get("q", "")` instead of `request.args["q"]` means a missing `?q=` gives you
-the empty-string default rather than a `400 Bad Request` — the forgiving way to read optional values.
+the empty-string default rather than a `400 Bad Request` - the forgiving way to read optional values.
 
 And reading a **form field** from a submitted body:
 
@@ -118,10 +118,10 @@ def create_note():
 
 *What just happened:* when an HTML form `POST`s to `/notes/new`, the field named `title` shows up in
 `request.form`, read here with a fallback. ⚠️ `request.args` and `request.form` are *different* buckets:
-`args` is the query string, `form` is the request body — reading from the wrong one is a common "why is this
+`args` is the query string, `form` is the request body - reading from the wrong one is a common "why is this
 empty?" moment. We'll build and validate real HTML forms in [Forms & Request Data](04-forms-and-request-data.md).
 
-## Returning responses — your options for what to hand back
+## Returning responses - your options for what to hand back
 
 A view's return value becomes the HTTP response, and Flask is flexible about what it accepts:
 
@@ -147,11 +147,11 @@ def delete_note(note_id):
 *What just happened:* four ways to respond, all from plain `return`:
 
 1. **`abort(404)`** stops the view immediately and makes Flask return its standard `404 Not Found` page (any
-   status works — `abort(403)`, etc.) — the clean way to say "this doesn't exist."
-2. **A string** becomes the response body, served as HTML — exactly what you saw in Phase 1.
+   status works - `abort(403)`, etc.) - the clean way to say "this doesn't exist."
+2. **A string** becomes the response body, served as HTML - exactly what you saw in Phase 1.
 3. **`jsonify(notes)`** turns Python data (a list, a dict) into a proper JSON response with the right
-   `Content-Type` header — the seed of the JSON API in [Building a JSON API](08-building-a-json-api.md).
-4. **`redirect(url_for("api_notes"))`** sends the browser to another URL — the standard move after a
+   `Content-Type` header - the seed of the JSON API in [Building a JSON API](08-building-a-json-api.md).
+4. **`redirect(url_for("api_notes"))`** sends the browser to another URL - the standard move after a
    successful `POST` so a refresh doesn't re-submit.
 
 You can also return a **tuple** to set the status code: `return "Created", 201`. Body first, status second.
@@ -164,17 +164,17 @@ segments, pass the values as keyword arguments: `url_for("note_detail", note_id=
 hardcoded path silently breaks, while `url_for("api_notes")` keeps working because it's tied to the function,
 not the path text.
 
-## The flow — and why views stay thin
+## The flow - and why views stay thin
 
 💡 The whole cycle never changes: **Flask matches the incoming URL to a view function, hands that function the
-request, and sends back whatever the function returns.** Match → call → respond — the same request/response
+request, and sends back whatever the function returns.** Match → call → respond - the same request/response
 loop every framework runs, laid bare here (the point made in
 [What a Framework Even Is](/guides/what-a-framework-even-is)). Routing, the request object, and response
 helpers are the three sides of that one loop.
 
 Because the view *is* that seam, ⚠️ **keep it thin.** A good view does three things and stops: parse what it
 needs from the request, call a function that does the actual work, and return a response. The business
-logic — how a note is validated, how it's saved, how search actually ranks — belongs in plain functions or
+logic - how a note is validated, how it's saved, how search actually ranks - belongs in plain functions or
 modules you call *from* the view, not stuffed inside it. Database access especially lives elsewhere (that's
 [Working with a Database](05-database-with-sqlalchemy.md)).
 
@@ -188,13 +188,13 @@ def create_note():
 ```
 
 *What just happened:* the view reads one field, calls `add_note` (a regular function that owns the logic),
-and redirects — readable, and `add_note` stays testable on its own without faking a web request. Right now
-your views return raw HTML strings, which gets ugly fast — next phase we hand that job to **templates**.
+and redirects - readable, and `add_note` stays testable on its own without faking a web request. Right now
+your views return raw HTML strings, which gets ugly fast - next phase we hand that job to **templates**.
 
 ## Recap
 
 1. **Dynamic URLs** use angle brackets: `<int:note_id>` captures a path segment and passes it to the view.
-   Converters (`int`, `string`, `path`) type and constrain the match — ⚠️ no converter means `string` by
+   Converters (`int`, `string`, `path`) type and constrain the match - ⚠️ no converter means `string` by
    default, so numeric ids arrive as text unless you write `<int:...>`.
 2. **HTTP methods** are declared with `methods=["GET", "POST"]`; branch on `request.method` to do "list on
    GET, create on POST" from a single collection URL.
@@ -202,10 +202,10 @@ your views return raw HTML strings, which gets ugly fast — next phase we hand 
    `request.json`, `request.headers`, `request.method`. Use `.get(key, default)` for optional values.
 4. **Responses** come from `return`: a string (HTML), a `(body, status)` tuple, `jsonify(...)` for JSON,
    `redirect(url_for(...))` to send the browser elsewhere, or `abort(404)` to bail out with an error.
-5. 📝 **`url_for("view_name")`** builds URLs from the view function's name — ⚠️ never hardcode paths, or
+5. 📝 **`url_for("view_name")`** builds URLs from the view function's name - ⚠️ never hardcode paths, or
    they break the moment a route changes.
 6. 💡 The whole framework core is one loop: **match the URL → call the view with the request → return a
-   response.** Keep views thin — parse, delegate to real functions, respond.
+   response.** Keep views thin - parse, delegate to real functions, respond.
 
 ## Quick check
 
@@ -227,13 +227,13 @@ Make sure the request → response cycle stuck:
   {
     "q": "A user submits an HTML form with a field named `title` via POST. Where do you read it?",
     "choices": [
-      "`request.form[\"title\"]` (or `.get`) — form fields live in the request body",
-      "`request.args[\"title\"]` — all submitted values live in args",
+      "`request.form[\"title\"]` (or `.get`) - form fields live in the request body",
+      "`request.args[\"title\"]` - all submitted values live in args",
       "`request.headers[\"title\"]`",
       "`request.method[\"title\"]`"
     ],
     "answer": 0,
-    "explain": "Submitted form fields live in `request.form` (the request body). `request.args` is the URL query string (`?q=...`) — a different bucket."
+    "explain": "Submitted form fields live in `request.form` (the request body). `request.args` is the URL query string (`?q=...`) - a different bucket."
   },
   {
     "q": "Why is `redirect(url_for(\"api_notes\"))` better than `redirect(\"/api/notes\")`?",

@@ -2,7 +2,7 @@
 title: "Lock-In, Cost & When It Fits"
 guide: outsystems-and-mendix
 phase: 3
-summary: "The honest tradeoffs: how licensing is priced, how deep the vendor lock-in runs, what the skills market looks like, where the escape hatches are, and when to choose it or walk away."
+summary: "The real tradeoffs: how licensing is priced, how deep the vendor lock-in runs, what the skills market looks like, where the escape hatches are, and when to choose it or walk away."
 tags: [outsystems, mendix, low-code, vendor-lock-in, pricing]
 difficulty: intermediate
 synonyms:
@@ -29,9 +29,9 @@ Pricing is built around a few levers, usually combined:
 - **Environments and capacity.** Each environment (dev, test, prod) and the compute behind it factors in.
 - **Tier.** Both sell ascending tiers - a smaller starting plan up to large enterprise agreements with negotiated pricing.
 
-The honest summary: a serious production deployment is a five-to-six-figure annual commitment, and the bill grows with usage. There are free or low-cost tiers for learning and small apps (Mendix has long offered a free tier; OutSystems offers a free developer edition), which are great for evaluation but not where the real money or the real apps live. Budget for the platform fee as an ongoing operating cost, not a one-time license - and model how it scales if your user count or app count grows, because that is where teams get surprised.
+The blunt summary: a serious production deployment is a five-to-six-figure annual commitment, and the bill grows with usage. There are free or low-cost tiers for learning and small apps (Mendix has long offered a free tier; OutSystems offers a free developer edition), which are great for evaluation but not where the real money or the real apps live. Budget for the platform fee as an ongoing operating cost, not a one-time license - and model how it scales if your user count or app count grows, because that is where teams get surprised.
 
-## The lock-in, named honestly
+## The lock-in, stated plainly
 
 This is the single most important thing to understand before you commit. Your application is not portable. You are not writing code in a language you could move elsewhere; you are building inside a proprietary model that only that vendor's runtime can execute.
 

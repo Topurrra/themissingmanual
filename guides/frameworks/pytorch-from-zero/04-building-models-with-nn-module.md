@@ -13,16 +13,16 @@ updated: 2026-07-10
 
 In [Phase 3](03-autograd.md) you saw autograd quietly record every operation on a tensor that has
 `requires_grad=True`, then hand you the gradients on demand. That's the engine of learning; this phase is
-about the thing autograd runs *inside* — the model.
+about the thing autograd runs *inside* - the model.
 
 Here's the mental model to hold onto, and it's one you already know from Python: **a model is a class.**
 Specifically, a class that subclasses `nn.Module`. You met classes in
-[Objects & Classes](/guides/python-from-zero) — data bundled with the behavior that acts on it. A PyTorch
+[Objects & Classes](/guides/python-from-zero) - data bundled with the behavior that acts on it. A PyTorch
 model is exactly that: the *data* is the layers (each holding learnable weights), and the *behavior* is the
 forward pass (how an input flows through those layers to an output). Nothing mystical. If you can write a
 `Dog` class, you can write a neural network.
 
-`nn.Module` is the parent class you inherit from, and inheriting from it buys you a lot for free —
+`nn.Module` is the parent class you inherit from, and inheriting from it buys you a lot for free - 
 parameter tracking, device moves, train/eval switching. We'll build up from the smallest possible model to
 a real two-layer network, and end by looking at the parameters the optimizer will update in
 [Phase 5](05-loss-and-optimizers.md).
@@ -54,11 +54,11 @@ TinyModel(
 )
 ```
 
-*What just happened:* `TinyModel(nn.Module)` means "a TinyModel *is an* `nn.Module`" — the same `is-a`
+*What just happened:* `TinyModel(nn.Module)` means "a TinyModel *is an* `nn.Module`" - the same `is-a`
 inheritance from the Python guide. The `super().__init__()` call runs `nn.Module`'s own constructor, which
 sets up the bookkeeping that tracks your layers. Then `self.layer = nn.Linear(3, 1)` stored a layer *on
 this model*, exactly like storing `self.name` on a dog. Printing the model shows PyTorch already knows about
-that layer — because `nn.Module` was watching when you assigned it.
+that layer - because `nn.Module` was watching when you assigned it.
 
 ⚠️ **Always call `super().__init__()` first**, before assigning any layers. `nn.Module`'s constructor sets
 up the internal machinery that records your layers and their parameters. Skip it (or assign layers before
@@ -69,14 +69,14 @@ it) and you'll get a confusing `AttributeError` like *"cannot assign module befo
 > `model.to(device)` call, and it **toggles train/eval mode** with `model.train()` / `model.eval()`. You get
 > all of that by writing `class MyModel(nn.Module)` and calling `super().__init__()`. That's the payoff.
 
-## 2. nn.Linear — a layer is a matmul plus a bias
+## 2. nn.Linear - a layer is a matmul plus a bias
 
 📝 A **linear layer** (also called *fully-connected* or *dense*) computes `output = input @ W + b`. That's
-the exact matrix-multiply-plus-bias from [Phase 2](02-tensor-operations-and-gpu.md) — `nn.Linear` is just
+the exact matrix-multiply-plus-bias from [Phase 2](02-tensor-operations-and-gpu.md) - `nn.Linear` is just
 that operation wrapped up with its weights bundled inside.
 
 `nn.Linear(in_features, out_features)` creates two tensors for you: a weight matrix `W` and a bias vector
-`b`. Crucially, it creates them already marked as **learnable** — their `requires_grad` is `True`
+`b`. Crucially, it creates them already marked as **learnable** - their `requires_grad` is `True`
 automatically (tying back to [Phase 3](03-autograd.md)), so autograd will track them and produce gradients.
 You don't set that up by hand.
 
@@ -94,15 +94,15 @@ torch.Size([2])
 True
 ```
 
-*What just happened:* `nn.Linear(3, 2)` built a weight of shape `(2, 3)` and a bias of shape `(2,)` — sized
+*What just happened:* `nn.Linear(3, 2)` built a weight of shape `(2, 3)` and a bias of shape `(2,)` - sized
 so that an input with 3 features maps to 2 outputs. (PyTorch stores `W` as `(out, in)` and computes
-`input @ W.T + b` under the hood, which is why it's `(2, 3)` and not `(3, 2)` — you rarely need to think
+`input @ W.T + b` under the hood, which is why it's `(2, 3)` and not `(3, 2)` - you rarely need to think
 about the transpose.) Both were initialized to small random values and, as the last line shows, both already
 have `requires_grad=True`. These are the numbers training will adjust.
 
 ## 3. forward() and calling the model
 
-📝 You define the forward pass in a method named `forward(self, x)` — but you **call the model directly**,
+📝 You define the forward pass in a method named `forward(self, x)` - but you **call the model directly**,
 as `model(x)`, *not* `model.forward(x)`. Writing `model(x)` triggers `nn.Module`'s `__call__`, which runs
 some setup (like hooks and train/eval handling) and *then* calls your `forward`. This is the same dunder-method
 trick you saw with `__init__` in the Python guide: PyTorch defines `__call__` so that `model(x)` "just works."
@@ -121,7 +121,7 @@ torch.Size([4, 1])
 ```
 
 *What just happened:* `model(x)` invoked `__call__`, which ran your `forward`, which pushed `x` through the
-linear layer. The input was `(4, 3)` — 4 examples of 3 features each — and the layer mapped each example's
+linear layer. The input was `(4, 3)` - 4 examples of 3 features each - and the layer mapped each example's
 3 features to 1 output, giving `(4, 1)`. Notice the batch dimension (4) flows straight through untouched;
 layers operate per-example. This is the shape-tracking habit from Phase 2 paying off.
 
@@ -134,7 +134,7 @@ now and you'll never get bitten.
 
 Here's a subtle, important truth: 📝 **stacking linear layers with nothing between them gains you nothing.**
 Two matrix multiplies in a row are mathematically just *one* matrix multiply (the product of the two weight
-matrices). So a 10-layer all-linear network has exactly the same expressive power as a single linear layer —
+matrices). So a 10-layer all-linear network has exactly the same expressive power as a single linear layer - 
 it can only draw straight lines.
 
 The fix is a **nonlinearity** (an *activation function*) between the linear layers. The most common is
@@ -167,10 +167,10 @@ print(out.shape)
 torch.Size([4, 1])
 ```
 
-*What just happened:* The input `(4, 3)` flowed through `fc1` to become `(4, 8)` — 8 hidden features per
+*What just happened:* The input `(4, 3)` flowed through `fc1` to become `(4, 8)` - 8 hidden features per
 example. `relu` then zeroed out the negatives (same shape, `(4, 8)`), and `fc2` mapped those 8 hidden
 features down to 1 output, giving `(4, 1)`. The `forward` method reads top-to-bottom like a recipe: that's
-the whole point of defining it yourself — you control exactly how data flows.
+the whole point of defining it yourself - you control exactly how data flows.
 
 For a plain stack like this, `nn.Sequential` is shorthand that chains layers in order, so you don't write
 the `forward` by hand at all:
@@ -191,19 +191,19 @@ torch.Size([4, 1])
 ```
 
 *What just happened:* `nn.Sequential` built a module that runs each layer in the order listed, feeding each
-one's output into the next — the same Linear → ReLU → Linear pipeline as the `MLP` class, in fewer lines. It
+one's output into the next - the same Linear → ReLU → Linear pipeline as the `MLP` class, in fewer lines. It
 produced the identical `(4, 1)` output. 💡 Use `nn.Sequential` when your model is a straight chain; write a
 full `nn.Module` subclass with a custom `forward` when you need branches, skip connections, or any logic that
 isn't a simple line. Most real models start as `Sequential` and grow into a custom class.
 
-## 5. Parameters — what gets learned
+## 5. Parameters - what gets learned
 
 Every layer you defined holds learnable tensors (the `W`s and `b`s). `nn.Module` collects them all so you
 never have to round them up yourself. Two methods matter:
 
-- **`model.parameters()`** — yields every learnable tensor in the model. This is exactly what you'll hand
+- **`model.parameters()`** - yields every learnable tensor in the model. This is exactly what you'll hand
   to the optimizer in [Phase 5](05-loss-and-optimizers.md) so it knows what to update.
-- **`model.state_dict()`** — a dictionary mapping each layer's name to its current values. This is what you
+- **`model.state_dict()`** - a dictionary mapping each layer's name to its current values. This is what you
   save to disk in [Phase 9](09-saving-loading-inference.md).
 
 A common sanity check is counting how many learnable numbers a model has:
@@ -221,13 +221,13 @@ Trainable parameters: 41
 
 *What just happened:* `model.parameters()` walked every layer and yielded each weight and bias tensor;
 `p.numel()` counted the elements in each. `fc1` has a `(8, 3)` weight (24) plus an `(8,)` bias (8) = 32, and
-`fc2` has a `(1, 8)` weight (8) plus a `(1,)` bias (1) = 9, for 41 total. Those 41 numbers *are* the model —
+`fc2` has a `(1, 8)` weight (8) plus a `(1,)` bias (1) = 9, for 41 total. Those 41 numbers *are* the model - 
 training is the process of nudging exactly these values until the outputs are good.
 
 💡 **The big picture for this phase.** A model is a class made of learnable layers. You define what's in it
 (`__init__`) and how data flows through it (`forward`), call it as `model(x)`, and `nn.Module` keeps track of
 every parameter inside. Autograd (Phase 3) tracks those parameters; the optimizer (Phase 5) updates them.
-That's the division of labor — and you've now got the middle piece.
+That's the division of labor - and you've now got the middle piece.
 
 ## Recap
 
@@ -235,7 +235,7 @@ That's the division of labor — and you've now got the middle piece.
    `super().__init__()`), define the forward pass in `forward(self, x)`.
 2. **`nn.Linear(in, out)`** is a layer computing `input @ W + b`. It creates `W` and `b` for you, already
    marked learnable (`requires_grad=True`).
-3. **Call the model as `model(x)`** — this runs `__call__`, which runs your `forward`. Never call
+3. **Call the model as `model(x)`** - this runs `__call__`, which runs your `forward`. Never call
    `model.forward(x)` directly.
 4. **Activations** (`nn.ReLU` / `torch.relu`) between linear layers add nonlinearity; without them, stacked
    linear layers collapse into a single linear layer. `nn.Sequential` is shorthand for a straight chain.

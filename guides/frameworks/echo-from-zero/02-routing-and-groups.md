@@ -23,7 +23,7 @@ more mysterious than that.
 
 That "method *and* path" part matters. `GET /books` and `POST /books` are two different routes with two
 different handlers, even though the path text is identical. People coming from frameworks that only key on
-the path get tripped up here — Echo treats the verb as part of the address.
+the path get tripped up here - Echo treats the verb as part of the address.
 
 Under the hood Echo stores all your routes in a **radix tree** (a prefix tree). You never touch it, but
 it's why matching stays fast even with hundreds of routes, and why a literal path like `/books/new` can
@@ -33,7 +33,7 @@ A **group** is the second idea: a set of routes that share a common path prefix 
 middleware). `/api/v1/books` and `/api/v1/authors` clearly belong together; a group lets you say
 "`/api/v1`" once instead of typing it on every route.
 
-We'll grow the **books API** from Phase 1 — the same `Book{id, title, author}` shape — into a small set
+We'll grow the **books API** from Phase 1 - the same `Book{id, title, author}` shape - into a small set
 of real routes.
 
 ## Registering methods
@@ -81,9 +81,9 @@ func createBook(c echo.Context) error {
 
 *What just happened:* `e.GET` and `e.POST` each registered a route on the **same path** `/books` but for
 different verbs, pointing at different handlers. A `GET /books` request runs `listBooks`; a `POST /books`
-runs `createBook`. (`createBook`'s response is hard-coded for now — reading the request body is Phase 3.)
+runs `createBook`. (`createBook`'s response is hard-coded for now - reading the request body is Phase 3.)
 
-The full set is `e.GET`, `e.POST`, `e.PUT`, `e.PATCH`, `e.DELETE`, `e.HEAD`, and `e.OPTIONS` — all
+The full set is `e.GET`, `e.POST`, `e.PUT`, `e.PATCH`, `e.DELETE`, `e.HEAD`, and `e.OPTIONS` - all
 `(path, handler)`. There's also `e.Any(path, handler)`, which registers the handler for *every* method at
 that path. Reach for `e.Any` rarely; being explicit about verbs is usually clearer and safer.
 
@@ -118,7 +118,7 @@ func getBook(c echo.Context) error {
 
 *What just happened:* the route `/books/:id` matches any single segment after `/books/` and stashes it
 under the name `id`. A request to `/books/2` makes `c.Param("id")` return the string `"2"`. ⚠️ Path
-params are **always strings** — convert them yourself (here with `strconv.Itoa`; you'll more often parse
+params are **always strings** - convert them yourself (here with `strconv.Itoa`; you'll more often parse
 with `strconv.Atoi`). Remember to add `"strconv"` to your imports.
 
 There's also a **wildcard** segment, `*`, for "match the rest of the path, slashes and all." It's mostly
@@ -132,12 +132,12 @@ e.GET("/files/*", func(c echo.Context) error {
 ```
 
 *What just happened:* unlike `:id`, which captures exactly one segment, `*` captures everything after
-`/files/` including any `/`, read with `c.Param("*")`. Use it sparingly — static assets or catch-alls,
+`/files/` including any `/`, read with `c.Param("*")`. Use it sparingly - static assets or catch-alls,
 not normal API routes, where named params read better.
 
 ## Query params: the bit after the `?`
 
-Path params identify *which* resource. **Query params** — the `?key=value` pairs at the end of a URL —
+Path params identify *which* resource. **Query params** - the `?key=value` pairs at the end of a URL - 
 usually *filter* or *modify* a request. Think `GET /books?author=Kennedy`. They're optional by nature, so
 Echo reads them differently: `c.QueryParam("name")` returns the value, or an empty string `""` if it
 wasn't supplied.
@@ -161,7 +161,7 @@ func listBooks(c echo.Context) error {
 ```
 
 *What just happened:* `GET /books` returns everything, while `GET /books?author=Kennedy` returns only the
-matching ones. `c.QueryParam("author")` never errors on a missing param — it just hands back `""`. ⚠️
+matching ones. `c.QueryParam("author")` never errors on a missing param - it just hands back `""`. ⚠️
 That's a footgun if you treat `""` as "no books matched" instead of "no filter requested," so we check
 for the empty string *first*.
 
@@ -177,7 +177,7 @@ func searchBooks(c echo.Context) error {
 
 *What just happened:* `c.QueryParams()` gives you the whole bag of query values, handy when a single key
 can repeat (`?tag=go&tag=web`) or you want to loop over unknown filters. For one known key, stick with
-`c.QueryParam` — it's simpler.
+`c.QueryParam` - it's simpler.
 
 ## Groups: say the prefix once
 
@@ -201,14 +201,14 @@ func main() {
 
 *What just happened:* `e.Group("/api/v1")` returns a group value (`v1`) that carries the prefix. Calling
 `v1.GET("/books", ...)` registers the route at the **combined** path `/api/v1/books`. The group has the
-same method functions as the instance — `v1.GET`, `v1.POST`, and so on — so routes read cleanly with the
+same method functions as the instance - `v1.GET`, `v1.POST`, and so on - so routes read cleanly with the
 shared prefix factored out.
 
-💡 The bigger payoff is middleware. A group can attach middleware that runs only for its routes — for
+💡 The bigger payoff is middleware. A group can attach middleware that runs only for its routes - for
 example, requiring auth on everything under `/admin`:
 
 ```go
-// authMiddleware is defined in Phase 5 — shown here only to make the shape concrete.
+// authMiddleware is defined in Phase 5 - shown here only to make the shape concrete.
 admin := e.Group("/admin", authMiddleware)   // middleware as a second argument
 admin.GET("/stats", adminStats)              // protected: auth runs first
 
@@ -217,7 +217,7 @@ admin.Use(authMiddleware)
 ```
 
 *What just happened:* passing `authMiddleware` as the second argument to `e.Group` (or calling
-`admin.Use(...)`) means every route in that group runs the middleware before its handler — so `/admin/*`
+`admin.Use(...)`) means every route in that group runs the middleware before its handler - so `/admin/*`
 is protected without repeating the check in each handler. **What middleware actually is, and how to
 write `authMiddleware`, is Phase 5.** For now, hold the shape: groups bundle a prefix *and* shared middleware.
 
@@ -227,7 +227,7 @@ write `authMiddleware`, is Phase 5.** For now, hold the shape: groups bundle a p
   path but not a handler.
 - Register routes with `e.GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS(path, handler)`, or `e.Any` for every
   method at once.
-- **Path params** (`/books/:id`) are read with `c.Param("id")` and are **always strings** — convert them
+- **Path params** (`/books/:id`) are read with `c.Param("id")` and are **always strings** - convert them
   yourself. The wildcard `*` captures the rest of the path via `c.Param("*")`.
 - **Query params** are read with `c.QueryParam("author")` (returns `""` when absent) or
   `c.QueryParams()` for the whole `url.Values` bag.
@@ -254,7 +254,7 @@ write `authMiddleware`, is Phase 5.** For now, hold the shape: groups bundle a p
     "q": "A request to GET /api/v1/books has no query string. What does c.QueryParam(\"author\") return?",
     "choices": ["An error", "nil", "An empty string \"\"", "It panics on a missing key"],
     "answer": 2,
-    "explain": "c.QueryParam never errors on a missing key — it returns \"\". Check for the empty string to decide whether a filter was actually requested."
+    "explain": "c.QueryParam never errors on a missing key - it returns \"\". Check for the empty string to decide whether a filter was actually requested."
   }
 ]
 ```

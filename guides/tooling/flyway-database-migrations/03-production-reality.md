@@ -64,7 +64,7 @@ Message    : ERROR: column "status" of relation "orders" already exists
 - **Postgres** wraps DDL in transactions. A failed migration is rolled back as a unit - the database is left as if V4 never ran, and no failed row is recorded. You fix the SQL and re-run. Clean.
 - **MySQL, Oracle** (older versions) do *not* fully support transactional DDL. A migration that does three `ALTER`s and fails on the third leaves the first two applied. The database is now half-migrated, and Flyway records a failed entry it won't run past until you sort it out.
 
-> This is not a Flyway quirk - it's a property of your database engine, and Flyway is honest about it. The practical takeaway: on databases without transactional DDL, **keep each migration small and ideally single-statement**, so "it failed halfway" has the smallest possible blast radius.
+> This is not a Flyway quirk - it's a property of your database engine, and Flyway is upfront about it. The practical takeaway: on databases without transactional DDL, **keep each migration small and ideally single-statement**, so "it failed halfway" has the smallest possible blast radius.
 
 When you do end up with a recorded failure on a non-transactional database, you fix the SQL (or manually undo the partial work) and then run `flyway repair`:
 
@@ -93,7 +93,7 @@ ALTER TABLE orders ALTER COLUMN status SET DEFAULT 'pending';
 UPDATE orders SET status = 'pending' WHERE status = 'unknown';
 ```
 
-*What just happened:* V5 shipped a bad default. Instead of editing V5 (forbidden - it already ran) or trying to undo it, you ship V6 to correct it. The history table now reads V5 then V6, which is the literal truth of what happened to the database. This keeps every environment converging and keeps your migration history an honest, append-only log. (Flyway's commercial editions do offer scripted `U` undo migrations, but even there you write the reversal SQL yourself - there is no magic.)
+*What just happened:* V5 shipped a bad default. Instead of editing V5 (forbidden - it already ran) or trying to undo it, you ship V6 to correct it. The history table now reads V5 then V6, which is the literal truth of what happened to the database. This keeps every environment converging and keeps your migration history an accurate, append-only log. (Flyway's commercial editions do offer scripted `U` undo migrations, but even there you write the reversal SQL yourself - there is no magic.)
 
 > Design migrations to make forward-fixing easy: prefer additive changes, and split risky changes into stages. To remove a column safely, first stop writing to it (one deploy), then drop it in a later migration once you're sure nothing breaks - so a bad step is always recoverable by *not proceeding*, rather than by reversing.
 
@@ -127,7 +127,7 @@ For the wider why behind these patterns - expand/contract migrations, online sch
     "q": "A migration shipped a bad default. What's the production-correct way to fix it?",
     "choices": ["Edit the original migration and re-run it", "Run an automatic Flyway undo", "Write a new, higher-versioned migration that corrects the problem", "Delete the migration's history row"],
     "answer": 2,
-    "explain": "Applied migrations are immutable and true undo is often impossible (dropped data is gone). You fix forward with a new migration, keeping history an honest append-only log."
+    "explain": "Applied migrations are immutable and true undo is often impossible (dropped data is gone). You fix forward with a new migration, keeping history an accurate append-only log."
   },
   {
     "q": "Why does a failed migration leave a Postgres database clean but can leave a MySQL database half-migrated?",

@@ -2,7 +2,7 @@
 title: "Where the Promises Break"
 guide: "what-a-vpn-does"
 phase: 3
-summary: "The honest part: HTTPS already encrypted your pages, you are not anonymous, and the VPN provider now sees what your ISP used to - when a VPN truly helps and when it's pure theater."
+summary: "The clear-eyed part: HTTPS already encrypted your pages, you are not anonymous, and the VPN provider now sees what your ISP used to - when a VPN truly helps and when it's pure theater."
 tags: [networking, vpn, privacy, anonymity, https, trust]
 difficulty: beginner
 synonyms: ["does a vpn make me anonymous", "is a vpn worth it", "do i need a vpn", "vpn vs https", "can a vpn provider see my traffic", "does a vpn protect me from hackers", "is a vpn safe"]
@@ -13,7 +13,7 @@ updated: 2026-06-30
 
 This is the phase the ads don't want you to read, and the one that'll actually save you money and false confidence. A VPN does something real - you saw it in Phase 2. But the gap between what it does and what it's *sold* as is enormous, and that gap is where people get hurt: they pay for a feeling of safety they don't have, and take risks they wouldn't take sober.
 
-So let's be the friend who tells you the truth. Three big promises, examined honestly. None of this means VPNs are useless - it means you'll know exactly what you're buying.
+So let's be the friend who tells you the truth. Three big promises, examined plainly. None of this means VPNs are useless - it means you'll know exactly what you're buying.
 
 ## Promise 1: "A VPN encrypts your traffic and keeps it safe"
 
@@ -60,7 +60,7 @@ flowchart LR
   vpn --> web[Websites]
 ```
 
-*What just happened:* You didn't remove a watcher - you **swapped** one. You traded an ISP you have a contract with and laws over, for a VPN company whose honesty you're taking on faith. A free VPN especially has to make money somehow, and your browsing data is the obvious product. The question "should I trust a VPN?" is really "do I trust this company *more* than my ISP, with the exact same view?" Sometimes yes. Often no. Never automatically.
+*What just happened:* You didn't remove a watcher - you **swapped** one. You traded an ISP you have a contract with and laws over, for a VPN company you're taking on faith. A free VPN especially has to make money somehow, and your browsing data is the obvious product. The question "should I trust a VPN?" is really "do I trust this company *more* than my ISP, with the exact same view?" Sometimes yes. Often no. Never automatically.
 
 ⚠️ **Gotcha.** "No-logs policy" is a marketing claim, not a guarantee. A few providers have had it tested in court or by audit; most have not. You cannot verify from your couch whether a VPN keeps logs. Treat the promise as a promise, not a fact.
 

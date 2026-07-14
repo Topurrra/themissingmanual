@@ -6,6 +6,9 @@
   import Seo from "$lib/Seo.svelte";
   import { page } from "$app/stores";
   import { siteOrigin } from "$lib/site.js";
+  import { recentItems } from "$lib/changelog.js";
+
+  const whatsNew = recentItems(3); // changelog highlights for the "What's new" strip
 
   export let data;
   $: origin = siteOrigin($page.url.origin);
@@ -207,6 +210,27 @@
   </div>
 </section>
 
+{#if whatsNew.length}
+  <section class="whatsnew-strip" aria-label="What's new">
+    <div class="wn-head">
+      <span class="wn-eyebrow">What’s new</span>
+      <a class="wn-all" href="/changelog">See all →</a>
+    </div>
+    <ul class="wn-list">
+      {#each whatsNew as it}
+        <li class="wn-item">
+          <span class="wn-tag wn-{it.tag.toLowerCase()}">{it.tag}</span>
+          {#if it.href}
+            <a class="wn-text" href={it.href} title={it.text}>{it.text}</a>
+          {:else}
+            <span class="wn-text" title={it.text}>{it.text}</span>
+          {/if}
+        </li>
+      {/each}
+    </ul>
+  </section>
+{/if}
+
 {#if bookmarks.length}
   <h2 class="section-eyebrow">Pick up where you left off</h2>
   <ul class="bookmarks">
@@ -320,6 +344,90 @@
 {/if}
 
 <style>
+  /* "Recently added" strip — surfaces What's-new near the top so it isn't buried
+     in the footer. Slim, calm, links out to the full changelog. */
+  .whatsnew-strip {
+    margin: 1.6rem 0 0.4rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+  }
+  .wn-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .wn-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 600;
+  }
+  .wn-all {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .wn-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .wn-item {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--body);
+    min-width: 0;
+  }
+  /* Keep each entry to one tidy line - changelog text can be a full sentence;
+     the full text stays available via the title tooltip. */
+  .wn-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--body);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  a.wn-text:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .wn-tag {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 0.12rem 0.4rem;
+    border-radius: 999px;
+    transform: translateY(-1px);
+  }
+  .wn-new {
+    color: var(--accent-strong);
+    background: var(--accent-tint);
+  }
+  .wn-improved {
+    color: var(--muted);
+    background: var(--raise);
+    border: 1px solid var(--line);
+  }
+
   .ascii-accent {
     font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
     white-space: pre-wrap;

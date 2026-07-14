@@ -2,7 +2,7 @@
 title: "Why Frameworks Exist"
 guide: "what-a-framework-even-is"
 phase: 2
-summary: "The honest case for frameworks: they pre-solve the plumbing every app needs, set sane conventions, ship safe-by-default security, free you to build what's unique, and hand you a whole ecosystem."
+summary: "The plain case for frameworks: they pre-solve the plumbing every app needs, set sane conventions, ship safe-by-default security, free you to build what's unique, and hand you a whole ecosystem."
 tags: [frameworks, productivity, conventions, boilerplate, security-defaults, why-frameworks]
 difficulty: beginner
 synonyms: ["why use a framework", "what problems do frameworks solve", "framework vs build it yourself", "do i need a framework", "benefits of frameworks", "convention over configuration"]

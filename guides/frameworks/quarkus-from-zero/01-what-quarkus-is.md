@@ -126,12 +126,12 @@ That `Live Coding activated` note is a hint at something special about `quarkus 
 
 ## Recap
 
-- **The problem:** classic Java frameworks were built for long-running servers, where slow startup and high memory were one-time costs. In containers, Kubernetes, and serverless, those become *recurring* costs — autoscaling cold starts and per-replica memory bills.
-- **The core idea — build-time over runtime:** classic frameworks scan, reflect, and wire at **startup**; Quarkus moves that work to **build time** so the running app skips it and starts in milliseconds. This single choice explains everything else.
+- **The problem:** classic Java frameworks were built for long-running servers, where slow startup and high memory were one-time costs. In containers, Kubernetes, and serverless, those become *recurring* costs - autoscaling cold starts and per-replica memory bills.
+- **The core idea - build-time over runtime:** classic frameworks scan, reflect, and wire at **startup**; Quarkus moves that work to **build time** so the running app skips it and starts in milliseconds. This single choice explains everything else.
 - **Native images (GraalVM):** because the wiring is resolved at build time (closed-world), Quarkus can compile to a standalone native executable that boots in milliseconds with tiny memory and no JVM warmup. Trade-offs (slow build, reflection limits) come in Phase 9.
-- **JVM mode is still fast:** you get much of the benefit without going native — Quarkus on a normal JVM still beats classic frameworks on startup and memory.
-- **It runs the standards:** Quarkus implements CDI, JAX-RS, Hibernate/Panache, and MicroProfile — the same annotations as Jakarta EE, re-engineered around build-time. It's a faster engine for a contract you may already know, not a new API.
-- **Honest comparison:** Spring Boot, Jakarta EE, and Quarkus are all solid; Quarkus's specific edge is startup time, memory, and native compilation in the cloud.
+- **JVM mode is still fast:** you get much of the benefit without going native - Quarkus on a normal JVM still beats classic frameworks on startup and memory.
+- **It runs the standards:** Quarkus implements CDI, JAX-RS, Hibernate/Panache, and MicroProfile - the same annotations as Jakarta EE, re-engineered around build-time. It's a faster engine for a contract you may already know, not a new API.
+- **Straight comparison:** Spring Boot, Jakarta EE, and Quarkus are all solid; Quarkus's specific edge is startup time, memory, and native compilation in the cloud.
 
 ## Quick check
 
@@ -159,7 +159,7 @@ Lock in the one idea everything else builds on:
       "Because native images don't need any of the framework's features"
     ],
     "answer": 2,
-    "explain": "Native compilation needs a closed-world assumption — knowing at build time every class and method used. Quarkus already resolves its wiring at build time, so it can hand GraalVM that precise list."
+    "explain": "Native compilation needs a closed-world assumption - knowing at build time every class and method used. Quarkus already resolves its wiring at build time, so it can hand GraalVM that precise list."
   },
   {
     "q": "How does Quarkus relate to Jakarta EE and MicroProfile?",

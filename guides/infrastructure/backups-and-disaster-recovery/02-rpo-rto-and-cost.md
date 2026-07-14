@@ -11,22 +11,22 @@ updated: 2026-07-10
 
 # RPO, RTO, and the Cost Dial
 
-"How often should we back up?" feels technical. It isn't — it's a *business* question wearing a technical
+"How often should we back up?" feels technical. It isn't - it's a *business* question wearing a technical
 hat, and you can't answer it sensibly until you know two things: how much recent data the business can
 afford to lose, and how long it can afford to be down.
 
-Those two numbers have names, and once you have them, every other decision — schedule, storage, spend —
+Those two numbers have names, and once you have them, every other decision - schedule, storage, spend - 
 falls out almost automatically. This is where backups stop being a checkbox and start being a deliberate
 trade: the dial you're turning is cost.
 
 ## The two numbers: RPO and RTO
 
-**RPO — Recovery Point Objective** — is how much data you're willing to lose, measured in *time*. It
+**RPO - Recovery Point Objective** - is how much data you're willing to lose, measured in *time*. It
 answers: "when we recover, how far back is our most recent good copy?" An RPO of one hour means: in the
-worst case, you lose up to the last hour of changes. RPO is set by your **backup frequency** — you can't
+worst case, you lose up to the last hour of changes. RPO is set by your **backup frequency** - you can't
 recover to a point you never captured.
 
-**RTO — Recovery Time Objective** — is how long you're willing to be down, measured from "disaster
+**RTO - Recovery Time Objective** - is how long you're willing to be down, measured from "disaster
 strikes" to "service is back." An RTO of four hours means: from the fire alarm to customers logging in
 again, you've promised four hours. RTO is set by how fast your **recovery process** runs.
 
@@ -43,8 +43,8 @@ again, you've promised four hours. RTO is set by how fast your **recovery proces
                    the gap from last backup to disaster)
 ```
 
-*What just happened:* RPO looks *backward* from the disaster — how much recent work vanished. RTO looks
-*forward* from the disaster — how long the lights stay off. They're independent: you can lose only five
+*What just happened:* RPO looks *backward* from the disaster - how much recent work vanished. RTO looks
+*forward* from the disaster - how long the lights stay off. They're independent: you can lose only five
 minutes of data (tiny RPO) but still take two days to get running (huge RTO), or vice versa. People mix
 them up constantly; the fix is to remember RP**O** = recovery *point* (a moment in the past), RT**O** =
 recovery *time* (a duration of downtime).
@@ -56,10 +56,10 @@ own cost curve.
 
 Tightening **RPO** means backing up more often. Going from nightly to hourly is cheap-ish. Going from
 hourly to "near-zero" means continuous replication or streaming the database's write-ahead log to a
-standby — a permanent second system, always running, always costing money.
+standby - a permanent second system, always running, always costing money.
 
 Tightening **RTO** means recovering faster. Restoring from a cold backup might take hours of copying and
-rebuilding. Getting RTO to minutes means a warm or hot standby already running and ready to take over —
+rebuilding. Getting RTO to minutes means a warm or hot standby already running and ready to take over - 
 again, a second system you pay for around the clock.
 
 ```text
@@ -80,7 +80,7 @@ seconds        hot standby / active-active         $$$$
 
 *What just happened:* both dials run from "cheap and slow" to "expensive and instant," and the bottom of
 each table is a permanently-running duplicate of your system. That's why you don't set these numbers by
-asking engineers "how good can we make it" — the answer is always "infinitely good, for infinite money."
+asking engineers "how good can we make it" - the answer is always "infinitely good, for infinite money."
 You set them by asking the business "what does an hour of downtime, or an hour of lost data, actually cost
 us?" and buying down to where the cost of protection meets the cost of the loss.
 
@@ -100,12 +100,12 @@ rendered thumbnails  "who cares"  on rebuild   regenerated from source images
 ```
 
 *What just happened:* you tier your data and spend the tight (expensive) numbers only where loss actually
-hurts. This single move — refusing to protect everything at the highest tier — is what keeps a backup
+hurts. This single move - refusing to protect everything at the highest tier - is what keeps a backup
 budget sane.
 
 > A tempting shortcut: "we'll figure out RTO during the incident." You won't. During an incident you'll
 > be improvising under pressure, and improvised recovery is slow recovery. The number is a promise you
-> make *now* so you can build (and rehearse) the process that keeps it — which is exactly where Phase 3
+> make *now* so you can build (and rehearse) the process that keeps it - which is exactly where Phase 3
 > goes.
 
 ## For builders
@@ -113,7 +113,7 @@ budget sane.
 If you've deployed something to a VPS (see [/guides/deploying-to-a-vps](/guides/deploying-to-a-vps)),
 write your RPO and RTO down in plain words *before* you size any backup tooling: "We can lose at most one
 hour of data. We need to be back within four hours." Now the schedule and the storage choice aren't
-guesses — hourly backups satisfy the RPO, and a tested rebuild script that runs in well under four hours
+guesses - hourly backups satisfy the RPO, and a tested rebuild script that runs in well under four hours
 satisfies the RTO. The numbers turn a vague worry into a spec you can actually verify.
 
 ```quiz
@@ -138,13 +138,13 @@ satisfies the RTO. The numbers turn a vague worry into a spec you can actually v
       "Smaller numbers require more engineers to watch the dashboards"
     ],
     "answer": 1,
-    "explain": "The bottom of both cost curves is a permanently-running duplicate — continuous replication for RPO, a hot standby for RTO — that you pay for around the clock."
+    "explain": "The bottom of both cost curves is a permanently-running duplicate - continuous replication for RPO, a hot standby for RTO - that you pay for around the clock."
   },
   {
     "q": "Which is the sound way to handle backups for regenerable data like rendered thumbnails?",
     "choices": [
       "Give it the same tight RPO/RTO as the orders database",
-      "Don't back it up at the highest tier — it regenerates from source, so a loose RPO is fine",
+      "Don't back it up at the highest tier - it regenerates from source, so a loose RPO is fine",
       "Never back up anything that can be regenerated",
       "Back it up more often than the database since there's more of it"
     ],

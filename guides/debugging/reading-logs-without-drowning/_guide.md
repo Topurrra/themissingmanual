@@ -20,7 +20,7 @@ where somebody lied. The flood is real, and the panic is normal.
 
 Here's the relief: a log file is not noise. It's a diary the program wrote about its own life, in order,
 as things happened. Once you know what each line *is* and a few ways to filter the flood down to the part
-that matters, logs stop being a wall of text and become the single most honest witness to what went
+that matters, logs stop being a wall of text and become the single clearest witness to what went
 wrong. This guide gets you there.
 
 ## How to read this

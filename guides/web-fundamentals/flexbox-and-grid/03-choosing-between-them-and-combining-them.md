@@ -12,7 +12,7 @@ updated: 2026-07-06
 # Choosing Between Them (and Combining Them)
 
 By now you've used both systems on real layouts. The question left is which one to reach for first -
-and the honest answer is that it's rarely either/or.
+and the real answer is that it's rarely either/or.
 
 ## The rule of thumb
 

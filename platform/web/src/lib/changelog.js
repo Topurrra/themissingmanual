@@ -6,6 +6,10 @@ export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
+      { tag: 'New', text: 'C and C++ from zero: two deep, from-scratch courses - pointers, memory, RAII, templates, the STL, and the ideas that separate writing code from understanding it.', href: '/categories/programming-languages' },
+      { tag: 'New', text: 'Power BI from zero, plus a DAX deep dive - from a spreadsheet to a live, trustworthy report, and the row-vs-filter-context reasoning behind DAX.', href: '/categories/data-analytics' },
+      { tag: 'New', text: 'Searches that turn up nothing now offer to add the topic straight to the writing queue.', href: '/request' },
+      { tag: 'Improved', text: 'A "What\'s new" shortcut in the header (with a dot when there\'s something new), and a recently-added strip on the home page.' },
       { tag: 'New', text: 'Spotted a typo or a gap? Every guide page now links straight to GitHub\'s editor for that exact file.' },
       { tag: 'New', text: 'Practice: hands-on coding lessons in a three-panel playground - write real SQL, JavaScript, or Python and get checked instantly, right in your browser.', href: '/practice' },
       { tag: 'Improved', text: 'Practice: each module (SQL, JavaScript, Python) now has its own overview page and a lesson sidebar, so it\'s easy to see what\'s left and jump straight to any lesson.', href: '/practice' },
@@ -55,6 +59,26 @@ export const CHANGELOG = [
     ]
   }
 ];
+
+// Stable signature of the newest changelog state - changes whenever an item is added
+// to the top month or a new month lands. Stored in localStorage to flag "new since
+// your last visit" (the header sparkle dot) without needing per-item ids.
+export function changelogSignature() {
+  const top = CHANGELOG[0];
+  return top ? `${top.date}:${top.items.length}` : '';
+}
+
+// The most recent N changelog items, newest first - for the homepage "recently added" strip.
+export function recentItems(n = 4) {
+  const out = [];
+  for (const rel of CHANGELOG) {
+    for (const it of rel.items) {
+      out.push(it);
+      if (out.length >= n) return out;
+    }
+  }
+  return out;
+}
 
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',

@@ -239,7 +239,7 @@ err: recovered from: runtime error: integer divide by zero
 5. **I/O** - `os.Open` + `bufio.Scanner` reads line by line; `defer f.Close()`; always check `scanner.Err()` after the loop.
 6. **`panic`/`recover`** - Go's real exceptions, reserved for unrecoverable bugs, not everyday failures. ⚠️ Never ignore an error with `_`.
 
-You now write code that runs concurrently and fails honestly. Next: stepping back from the language to the *toolbox* around it - the batteries-included commands (`go build`, `go test`, `go fmt`) that make Go projects low-fuss to work in.
+You now write code that runs concurrently and fails clearly. Next: stepping back from the language to the *toolbox* around it - the batteries-included commands (`go build`, `go test`, `go fmt`) that make Go projects low-fuss to work in.
 
 ---
 

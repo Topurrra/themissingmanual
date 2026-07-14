@@ -2,7 +2,7 @@
 title: "Model Binding & Validation"
 guide: "aspnet-core-from-zero"
 phase: 3
-summary: "How ASP.NET Core turns a raw HTTP request into typed C# parameters, and how to check those values with data annotations — including the honest minimal-API gotcha that validation isn't automatic."
+summary: "How ASP.NET Core turns a raw HTTP request into typed C# parameters, and how to check those values with data annotations - including the sharp minimal-API gotcha that validation isn't automatic."
 tags: [aspnet-core, csharp, model-binding, validation, data-annotations]
 difficulty: intermediate
 synonyms: ["aspnet model binding", "aspnet frombody fromroute fromquery", "aspnet validation data annotations", "minimal api validation", "aspnet modelstate", "aspnet bind json"]
@@ -11,9 +11,9 @@ updated: 2026-07-10
 
 # Model Binding & Validation
 
-Here's the mental model: **a raw HTTP request is just bytes — a URL, some headers, maybe a blob of JSON. Model binding turns those bytes into typed C# parameters. Validation then checks those values are actually sane before your real logic runs.** Two steps, in order: shape the data, then trust the data.
+Here's the mental model: **a raw HTTP request is just bytes - a URL, some headers, maybe a blob of JSON. Model binding turns those bytes into typed C# parameters. Validation then checks those values are actually sane before your real logic runs.** Two steps, in order: shape the data, then trust the data.
 
-Phase 2 had handlers take parameters and ASP.NET Core somehow filled them in — this phase is the "somehow." We'll keep growing the **products API** and be honest about a sharp edge that trips up nearly everyone moving from controllers to minimal APIs.
+Phase 2 had handlers take parameters and ASP.NET Core somehow filled them in - this phase is the "somehow." We'll keep growing the **products API** and look plainly at a sharp edge that trips up nearly everyone moving from controllers to minimal APIs.
 
 ## Where does each parameter come from?
 
@@ -24,7 +24,7 @@ For each parameter in a minimal API handler, ASP.NET Core decides *which part of
 - A **complex type** (your own class or record) binds from the **JSON body**.
 - Known framework types (like a `CancellationToken` or a registered service) are supplied by the framework.
 
-Most of the time you don't annotate anything — inference just works.
+Most of the time you don't annotate anything - inference just works.
 
 ```csharp
 // GET /products/42?fields=name
@@ -36,7 +36,7 @@ app.MapGet("/products/{id:int}", (int id, string? fields) =>
 });
 ```
 
-*What just happened:* `id` matched the route placeholder, so it bound from the path. `fields` is a simple type with no matching route segment, so ASP.NET Core looked in the query string. Nothing was annotated — names and types told the framework everything.
+*What just happened:* `id` matched the route placeholder, so it bound from the path. `fields` is a simple type with no matching route segment, so ASP.NET Core looked in the query string. Nothing was annotated - names and types told the framework everything.
 
 ### When you need to be explicit
 
@@ -50,7 +50,7 @@ Inference is a default, not a law. To override it, or just make the source obvio
 | `[FromHeader]` | a request header |
 | `[FromServices]` | the dependency-injection container (more on this in [Dependency Injection](04-dependency-injection.md)) |
 
-> 💡 You rarely *need* `[FromBody]` for a complex type — it's already inferred. But you can only have **one** body-bound parameter per handler (a request has one body), and that's a common source of "why is this null?" confusion when you accidentally mark two parameters to read the body.
+> 💡 You rarely *need* `[FromBody]` for a complex type - it's already inferred. But you can only have **one** body-bound parameter per handler (a request has one body), and that's a common source of "why is this null?" confusion when you accidentally mark two parameters to read the body.
 
 ## Binding the body to a record
 
@@ -61,16 +61,16 @@ app.MapPost("/products", (CreateProduct input) =>
 {
     var id = Guid.NewGuid();
     var product = new Product(id, input.Name, input.Price);
-    // (save it somewhere — that's Phase 6's job)
+    // (save it somewhere - that's Phase 6's job)
     return Results.Created($"/products/{id}", product);
 });
 
 public record CreateProduct(string Name, decimal Price);
 ```
 
-*What just happened:* `CreateProduct` is a complex type, so ASP.NET Core deserialized the JSON body into it — matching `Name` and `Price` by property name (case-insensitive by default). POST `{ "name": "Keyboard", "price": 49.99 }` and `input` arrives fully populated. You return `201 Created` with a `Location` header.
+*What just happened:* `CreateProduct` is a complex type, so ASP.NET Core deserialized the JSON body into it - matching `Name` and `Price` by property name (case-insensitive by default). POST `{ "name": "Keyboard", "price": 49.99 }` and `input` arrives fully populated. You return `201 Created` with a `Location` header.
 
-📝 If the JSON is *malformed*, binding fails before your handler runs and the client gets a `400`. But if it's well-formed yet *nonsense for your domain* — an empty name, a negative price — binding happily succeeds. The bytes parsed fine; they're just bad data. Catching that is validation's job.
+📝 If the JSON is *malformed*, binding fails before your handler runs and the client gets a `400`. But if it's well-formed yet *nonsense for your domain* - an empty name, a negative price - binding happily succeeds. The bytes parsed fine; they're just bad data. Catching that is validation's job.
 
 ## Validation with data annotations
 
@@ -90,19 +90,19 @@ public class CreateProduct
 }
 ```
 
-*What just happened:* we declared, right next to the data, what "valid" means — `Name` must be present and at most 120 characters, `Price` must sit between 0 and 100,000. (We switched from a `record` to a `class` with settable properties; a mutable class is the more common shape for a validated input model.) These attributes are pure declarations — they don't *do* anything on their own, and that's the part that surprises people.
+*What just happened:* we declared, right next to the data, what "valid" means - `Name` must be present and at most 120 characters, `Price` must sit between 0 and 100,000. (We switched from a `record` to a `class` with settable properties; a mutable class is the more common shape for a validated input model.) These attributes are pure declarations - they don't *do* anything on their own, and that's the part that surprises people.
 
-## ⚠️ The honest minimal-API gotcha
+## ⚠️ The plain minimal-API gotcha
 
-Here's the thing nobody warns you about until it bites: **minimal APIs do not automatically run DataAnnotations validation.** Decorate every property with `[Required]` and `[Range]` you like — a minimal API handler will run anyway, with an empty name and a price of -5, because nothing in the default pipeline ever checked.
+Here's the thing nobody warns you about until it bites: **minimal APIs do not automatically run DataAnnotations validation.** Decorate every property with `[Required]` and `[Range]` you like - a minimal API handler will run anyway, with an empty name and a price of -5, because nothing in the default pipeline ever checked.
 
-This catches experienced ASP.NET developers especially hard, because in **MVC controllers** it *does* happen automatically (more below). In a minimal API, the rules are documentation until you wire up an enforcer. Three honest options:
+This catches experienced ASP.NET developers especially hard, because in **MVC controllers** it *does* happen automatically (more below). In a minimal API, the rules are documentation until you wire up an enforcer. Three straightforward options:
 
 1. **Validate manually** in the handler.
 2. **Add an endpoint filter** that validates every request to that endpoint.
-3. **Use a library** — `MinimalApis.Extensions` / `MiniValidation` (a tiny helper that runs DataAnnotations for you) or **FluentValidation** (rules in separate validator classes, popular on bigger teams).
+3. **Use a library** - `MinimalApis.Extensions` / `MiniValidation` (a tiny helper that runs DataAnnotations for you) or **FluentValidation** (rules in separate validator classes, popular on bigger teams).
 
-Let's do option 1 so you can *see* the machinery — then you'll appreciate why the others exist.
+Let's do option 1 so you can *see* the machinery - then you'll appreciate why the others exist.
 
 ```csharp
 using System.ComponentModel.DataAnnotations;
@@ -129,13 +129,13 @@ app.MapPost("/products", (CreateProduct input) =>
 });
 ```
 
-*What just happened:* `Validator.TryValidateObject` is the engine that reads the annotations and runs them (`validateAllProperties: true` checks every property instead of stopping at the first). On failure we reshape the results into a dictionary of field → messages and hand it to `Results.ValidationProblem`, which returns a `400` with a standard **ProblemDetails** body. On success we proceed to create the product — validation runs *before* the create logic, that ordering is the whole point.
+*What just happened:* `Validator.TryValidateObject` is the engine that reads the annotations and runs them (`validateAllProperties: true` checks every property instead of stopping at the first). On failure we reshape the results into a dictionary of field → messages and hand it to `Results.ValidationProblem`, which returns a `400` with a standard **ProblemDetails** body. On success we proceed to create the product - validation runs *before* the create logic, that ordering is the whole point.
 
 > 💡 In real projects you'd lift that block into an **endpoint filter** or let **MiniValidation** do the `TryValidateObject` dance for you. The manual version above is here so the magic isn't magic.
 
 ## Why some teams still reach for controllers
 
-📝 If validation being automatic sounds appealing, you're not alone — that's one real reason teams pick MVC **controllers** over minimal APIs. A controller marked `[ApiController]` validates the bound model *for you*: it runs the DataAnnotations, populates `ModelState`, and short-circuits with a `400` and a ProblemDetails body **before your action method ever runs**.
+📝 If validation being automatic sounds appealing, you're not alone - that's one real reason teams pick MVC **controllers** over minimal APIs. A controller marked `[ApiController]` validates the bound model *for you*: it runs the DataAnnotations, populates `ModelState`, and short-circuits with a `400` and a ProblemDetails body **before your action method ever runs**.
 
 ```csharp
 [ApiController]
@@ -146,24 +146,24 @@ public class ProductsController : ControllerBase
     public IActionResult Create(CreateProduct input)
     {
         // If we got here, input is already valid.
-        // [ApiController] auto-returned 400 otherwise — ModelState was checked for us.
+        // [ApiController] auto-returned 400 otherwise - ModelState was checked for us.
         var product = new Product(Guid.NewGuid(), input.Name, input.Price);
         return Created($"/products/{product.Id}", product);
     }
 }
 ```
 
-*What just happened:* `[ApiController]` opted this class into a bundle of conventions, one being automatic model validation. By the time `Create` runs, the framework has already inspected `ModelState`; if `Name` was empty it never called your method. You write less plumbing; you give up some of the explicitness of minimal APIs. Neither choice is wrong — it's a trade.
+*What just happened:* `[ApiController]` opted this class into a bundle of conventions, one being automatic model validation. By the time `Create` runs, the framework has already inspected `ModelState`; if `Name` was empty it never called your method. You write less plumbing; you give up some of the explicitness of minimal APIs. Neither choice is wrong - it's a trade.
 
-Pick whichever fits the project. This guide stays on minimal APIs and wires validation in deliberately — it keeps the "request flows in, gets shaped, gets checked" model visible instead of hidden behind a convention.
+Pick whichever fits the project. This guide stays on minimal APIs and wires validation in deliberately - it keeps the "request flows in, gets shaped, gets checked" model visible instead of hidden behind a convention.
 
 ## Recap
 
-- **Binding turns the request into typed C# parameters; validation checks those values** — always in that order, before your logic runs.
+- **Binding turns the request into typed C# parameters; validation checks those values** - always in that order, before your logic runs.
 - In minimal APIs the source is **inferred**: route placeholders by name, simple types from the query string, a **complex type from the JSON body**. Override with `[FromBody]`, `[FromRoute]`, `[FromQuery]`, `[FromHeader]`, `[FromServices]`.
-- **DataAnnotations** (`[Required]`, `[StringLength]`, `[Range]`, `[EmailAddress]`) declare validity right on the model — but they're inert until something runs them.
+- **DataAnnotations** (`[Required]`, `[StringLength]`, `[Range]`, `[EmailAddress]`) declare validity right on the model - but they're inert until something runs them.
 - ⚠️ **Minimal APIs do NOT auto-validate.** Validate manually, add an endpoint filter, or use MiniValidation / FluentValidation. On failure return `Results.ValidationProblem(errors)` for a standard `400`.
-- 💡 **`[ApiController]` controllers DO auto-validate** via `ModelState` and return `400` automatically — a real reason some teams still choose controllers.
+- 💡 **`[ApiController]` controllers DO auto-validate** via `ModelState` and return `400` automatically - a real reason some teams still choose controllers.
 
 ## Quick check
 
@@ -185,7 +185,7 @@ Pick whichever fits the project. This guide stays on minimal APIs and wires vali
     "q": "What does a controller marked with [ApiController] do that a plain minimal API does not?",
     "choices": ["Binds the JSON body", "Automatically validates the model and returns 400 before your method runs", "Generates routes from the method name", "Runs faster"],
     "answer": 1,
-    "explain": "[ApiController] auto-runs DataAnnotations, populates ModelState, and short-circuits with a 400 + ProblemDetails when validation fails — before your action executes."
+    "explain": "[ApiController] auto-runs DataAnnotations, populates ModelState, and short-circuits with a 400 + ProblemDetails when validation fails - before your action executes."
   }
 ]
 ```

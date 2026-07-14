@@ -11,7 +11,7 @@ updated: 2026-06-19
 
 # Packaging & Environments
 
-You have a folder full of `.py` files that does something useful. A friend asks for it, and your honest
+You have a folder full of `.py` files that does something useful. A friend asks for it, and your real
 answer is "clone this, make a venv, install these three things, and run `python main.py` from the right
 directory." That works, barely, and only because you're standing next to them. What you actually want is
 for them to type one line - `pip install your-thing` - and have it work on a machine you'll never see.
@@ -55,7 +55,7 @@ its own installed packages. Activate it and `pip install` drops things *into tha
 
 The reason it leads this phase: you build and test a package *inside* a clean venv. Build against your
 messy global Python and you can't tell which dependencies you actually declared versus which just happened
-to be lying around - and your users have a different pile lying around. A fresh venv is the honest test of
+to be lying around - and your users have a different pile lying around. A fresh venv is the real test of
 "did I declare everything this project needs?"
 
 ```console
@@ -67,10 +67,10 @@ $ source .venv/bin/activate          # macOS/Linux  (Windows: .venv\Scripts\acti
 the `(.venv)` prefix proves you're inside the box. Everything you install from here on lands in this
 folder and nowhere else.
 
-## The dependency-tool landscape, honestly
+## The dependency-tool landscape, plainly
 
 There are two ways people manage a project's dependencies today, and the right answer depends on how much
-the project will grow. Here's the honest comparison, both sides, not a sales pitch for either.
+the project will grow. Here's the plain comparison, both sides, not a sales pitch for either.
 
 | | **`pip` + `venv`** (built-in) | **`poetry`** / **`uv`** (all-in-one) |
 |---|---|---|
@@ -88,7 +88,7 @@ like `poetry` and `uv` generate and update one automatically.
 `urllib3<2` and package B needs `urllib3>=2`, a real resolver tells you *before* installing; naive
 installation discovers it only when something breaks at runtime.
 
-**The honest take.** For your first shareable package, plain `pip` + `venv` + a `pyproject.toml` is
+**The straight take.** For your first shareable package, plain `pip` + `venv` + a `pyproject.toml` is
 completely enough, and it's the foundation everything else is built on - so that's what we'll use below.
 If you later fight dependency conflicts or want one-command reproducible installs, reach for `uv` or
 `poetry`; they automate the same `pyproject.toml` you're about to write, plus the lockfile. Nothing here
@@ -246,7 +246,7 @@ tool's credential store, never pasted into a tracked file.
    install`**. Every command lives on exactly one of those arrows.
 2. A **virtual environment** (from [Phase 8](08-ecosystem-and-tooling.md)) isolates each project's deps -
    build and test inside a clean one so you know you've declared everything.
-3. The tool landscape, honestly: **`pip` + `venv`** is the built-in baseline and enough for a first
+3. The tool landscape, plainly: **`pip` + `venv`** is the built-in baseline and enough for a first
    package; **`poetry`/`uv`** add lockfiles and one-command resolve-install-venv when a project grows.
 4. **`pyproject.toml`** is the modern, standard descriptor - name, version, dependencies, and build-system
    in one declarative file.
@@ -274,7 +274,7 @@ Quick check - see if the assembly line and the isolation rule stuck:
       "Virtual environments are required to write a pyproject.toml"
     ],
     "answer": 1,
-    "explain": "A venv is a private box with its own Python and packages. Building inside a clean one is the honest test of whether you declared every dependency, instead of relying on whatever happens to be installed globally."
+    "explain": "A venv is a private box with its own Python and packages. Building inside a clean one is the real test of whether you declared every dependency, instead of relying on whatever happens to be installed globally."
   },
   {
     "q": "Which file is the modern, standard descriptor for a Python project - its name, version, dependencies, and build backend?",

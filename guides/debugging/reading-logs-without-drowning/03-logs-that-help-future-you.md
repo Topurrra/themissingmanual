@@ -2,7 +2,7 @@
 title: "Logs That Help Future-You"
 guide: "reading-logs-without-drowning"
 phase: 3
-summary: "What makes a log line genuinely useful - structured key/value fields, levels used honestly, and enough context to act - plus the writing habits that save future-you, and a light nod to log aggregators."
+summary: "What makes a log line genuinely useful - structured key/value fields, levels used accurately, and enough context to act - plus the writing habits that save future-you, and a light nod to log aggregators."
 tags: [logs, logging, structured-logging, best-practices, observability, beginner]
 difficulty: beginner
 synonyms: ["what makes a good log", "structured logging explained", "how to write useful logs", "key value logs", "logging best practices", "what is a log aggregator", "should i log this"]
@@ -39,7 +39,7 @@ Three things separate the good line from the useless one:
 but "failed to save order 4821: disk full." Include IDs (order, user, request) and actual values - could
 someone who's never seen the code understand what happened and roughly where to look?
 
-**2. Levels used honestly.** This bites hardest, as you saw in Phase 2. Tag routine, self-correcting events
+**2. Levels used accurately.** This bites hardest, as you saw in Phase 2. Tag routine, self-correcting events
 as ERROR and you train everyone to ignore ERROR - then a real one hides in plain sight. Use the levels as
 [Phase 1](01-what-logs-actually-are.md) defined them: INFO normal, WARN "off but surviving," ERROR
 "actually failed," FATAL "can't continue."
@@ -111,7 +111,7 @@ later **performance and observability** guide.
 
 ## Recap
 
-1. A **useful log line** has enough context to act on without reading the code, an **honest level**, and
+1. A **useful log line** has enough context to act on without reading the code, an **accurate level**, and
    the error's **cause**, not just its symptom.
 2. **Structured logs** record `key=value` fields instead of prose, so any field is exactly searchable -
    less skimmable by eye, but worth it at scale.

@@ -58,7 +58,7 @@ small index, 2 shards:
 
 *What just happened:* this is not a bug and not something to fix in production, it is just why a five-document test fixture can rank in an order that feels arbitrary. Knowing it exists saves an afternoon of chasing a ghost.
 
-## The honest question: did you need search at all?
+## The real question: did you need search at all?
 
 Before you stand up a cluster, run the ladder. A search engine is real operational weight, another system to run, monitor, secure, keep in sync, and pay for. Often you do not need it:
 

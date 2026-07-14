@@ -59,7 +59,7 @@ The pattern is the same every time: a resource that is effectively infinite for 
 
 A load test isn't a pass/fail gate like a unit test. You're not looking for a green checkmark - you're trying to *learn three numbers about your system* before reality teaches them to you:
 
-1. **How much can it take?** At what level of traffic does it stop being fast and reliable? This is your **capacity** - the honest ceiling, not the hopeful one.
+1. **How much can it take?** At what level of traffic does it stop being fast and reliable? This is your **capacity** - the real ceiling, not the hopeful one.
 2. **What happens *at* the edge?** When you push past comfortable, does it degrade gracefully (gets a bit slower, keeps serving) or fall off a cliff (errors spike, everything times out at once)? The difference decides whether a traffic spike is a slow afternoon or a full outage.
 3. **Does it stay healthy over time?** Run it for hours, not minutes - does it hold steady, or does something slowly leak (memory, connections, disk) until it dies at hour six? A short test can't see this; a sustained one can.
 

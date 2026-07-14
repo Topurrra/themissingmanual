@@ -152,7 +152,7 @@ This is the one trap to remember, because it's tempting to treat `P(x)` like a f
 P(x) = "x is even"
 ```
 
-If someone asks "is `P(x)` true?", the honest answer is *the question is incomplete*. There's a free
+If someone asks "is `P(x)` true?", the real answer is *the question is incomplete*. There's a free
 variable `x` with no value, so there's nothing to evaluate. It's like asking "is the door locked?"
 when there are a hundred doors and you haven't said which one.
 

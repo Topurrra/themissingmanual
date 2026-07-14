@@ -74,7 +74,7 @@ the place to look. (Order and timing illustrative.)
 change started the cascade - derived from the dependency graph (what could affect what) and the timeline (what
 degraded first). It's typically your single best starting lead.
 
-**Why you don't trust it blindly.** It's an inference from *correlation plus topology*, and that has honest
+**Why you don't trust it blindly.** It's an inference from *correlation plus topology*, and that has plain
 failure modes:
 
 - **Two things break at once.** If a deploy and an unrelated cloud-network blip happen in the same minute, the

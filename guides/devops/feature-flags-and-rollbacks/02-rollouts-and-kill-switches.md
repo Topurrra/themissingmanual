@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # Living with flags
 
-You've got the mental model: code can be deployed and still dark. Now the practical question — what do you actually *do* with that switch? It turns out a single boolean, once you can target *who* sees it, covers four very different jobs that teams used to handle with four very different (and more painful) tools. Let's walk each one the way you'd hit them in a real week.
+You've got the mental model: code can be deployed and still dark. Now the practical question - what do you actually *do* with that switch? It turns out a single boolean, once you can target *who* sees it, covers four very different jobs that teams used to handle with four very different (and more painful) tools. Let's walk each one the way you'd hit them in a real week.
 
 ## The gradual rollout: don't release to everyone at once
 
@@ -27,7 +27,7 @@ A rollout is a sequence of flag states, not one flip:
 5. Enable for: 100%                       → fully released
 ```
 
-*What just happened:* you converted a binary launch into a dimmer switch. At each step the blast radius of a bug is capped — a problem at 1% touches 1% of users, and you caught it before it reached the other 99%. This is what people mean by a *canary release*: a small group goes first, like the canary in the mine.
+*What just happened:* you converted a binary launch into a dimmer switch. At each step the blast radius of a bug is capped - a problem at 1% touches 1% of users, and you caught it before it reached the other 99%. This is what people mean by a *canary release*: a small group goes first, like the canary in the mine.
 
 The targeting logic usually lives in the flag service, but conceptually it's plain:
 
@@ -39,7 +39,7 @@ function isEnabled(flagName, user) {
 }
 ```
 
-*What just happened:* hashing the user id and comparing against a percentage means the *same* user lands in the same bucket every call. That stability matters — without it, a user at 10% rollout would flicker between old and new on every page load, which feels broken even when nothing is wrong.
+*What just happened:* hashing the user id and comparing against a percentage means the *same* user lands in the same bucket every call. That stability matters - without it, a user at 10% rollout would flicker between old and new on every page load, which feels broken even when nothing is wrong.
 
 > Roll out by percentage of *users*, not percentage of *requests*. A single confused user seeing the new feature half the time is a worse experience than a clean 10% who consistently get it.
 
@@ -53,7 +53,7 @@ $ flagctl disable new-checkout-flow
 ✓ new-checkout-flow → OFF (propagating to all instances ~10s)
 ```
 
-*What just happened:* every server re-reads the flag within seconds and routes all traffic back to the old, known-good path. No pipeline ran. No artifact was rebuilt. The mean-time-to-recovery dropped from "however long a deploy takes" to "however long a config propagation takes" — typically seconds.
+*What just happened:* every server re-reads the flag within seconds and routes all traffic back to the old, known-good path. No pipeline ran. No artifact was rebuilt. The mean-time-to-recovery dropped from "however long a deploy takes" to "however long a config propagation takes" - typically seconds.
 
 A kill switch is most valuable around the things most likely to go wrong: a new third-party integration, an expensive query, a risky algorithm. Wrap those in a flag *specifically* so you have an off button, even if you never plan a gradual rollout. The flag exists to fail safely, not to release slowly.
 
@@ -66,7 +66,7 @@ Group A (50%):  old button copy   → measured conversion: baseline
 Group B (50%):  new button copy   → measured conversion: +4.1%
 ```
 
-*What just happened:* the flag stopped being a pure on/off and became a *which-variant* selector. The mechanism is identical — stable per-user bucketing — but the goal shifted from risk control to learning. (One honest caveat: a real A/B test needs enough traffic and a proper significance check before you trust a difference. The flag delivers the split; it doesn't do the statistics for you.)
+*What just happened:* the flag stopped being a pure on/off and became a *which-variant* selector. The mechanism is identical - stable per-user bucketing - but the goal shifted from risk control to learning. (One plain caveat: a real A/B test needs enough traffic and a proper significance check before you trust a difference. The flag delivers the split; it doesn't do the statistics for you.)
 
 ## Trunk-based development: flags as the unlock
 
@@ -81,7 +81,7 @@ Trunk-based:   small commits to main daily, feature behind an off flag → flip 
 
 ## For builders
 
-These four uses share one engine: a runtime-changeable value plus per-user targeting. You can start with the crudest possible version — a JSON file your app re-reads, or a single environment variable — and it'll genuinely work for a small team. Reach for a hosted flag service when you need per-user targeting, an audit trail of who flipped what, and instant propagation across many instances. Don't buy that complexity on day one; grow into it when a config file stops being enough.
+These four uses share one engine: a runtime-changeable value plus per-user targeting. You can start with the crudest possible version - a JSON file your app re-reads, or a single environment variable - and it'll genuinely work for a small team. Reach for a hosted flag service when you need per-user targeting, an audit trail of who flipped what, and instant propagation across many instances. Don't buy that complexity on day one; grow into it when a config file stops being enough.
 
 ```quiz
 [
@@ -94,14 +94,14 @@ These four uses share one engine: a runtime-changeable value plus per-user targe
       "Random rollouts are not allowed by most flag services"
     ],
     "answer": 1,
-    "explain": "Without stable bucketing a user at 10% would flip between old and new on every page load — that feels broken even when nothing is wrong."
+    "explain": "Without stable bucketing a user at 10% would flip between old and new on every page load - that feels broken even when nothing is wrong."
   },
   {
     "q": "What is the main thing a kill switch reduces compared to a traditional rollback?",
     "choices": [
       "The number of tests you need to write",
       "The size of the codebase",
-      "Mean-time-to-recovery — from 'a deploy length' down to a config propagation",
+      "Mean-time-to-recovery - from 'a deploy length' down to a config propagation",
       "The cost of cloud hosting"
     ],
     "answer": 2,

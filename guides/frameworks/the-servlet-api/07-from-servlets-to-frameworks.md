@@ -46,7 +46,7 @@ That covers two whole worlds. Spring's web layer lives on top of this - see [Spr
 
 ## Why you still reach for a framework
 
-Let me be honest, because a roots guide that pretends raw servlets are enough would be doing you a disservice: you don't want to build a real app out of bare servlets. It's genuinely tedious.
+Let me be direct, because a roots guide that pretends raw servlets are enough would be doing you a disservice: you don't want to build a real app out of bare servlets. It's genuinely tedious.
 
 You'd hand-write the routing table and keep it in sync by hand. You'd serialize and deserialize JSON yourself, field by field. There's no dependency injection, so you'd wire every collaborator manually. Validation, content negotiation, error pages, exception mapping - all boilerplate you'd write and maintain. The frameworks exist because smart people got tired of writing that code a thousand times, and the conveniences they added are real and worth having.
 
@@ -54,7 +54,7 @@ You'd hand-write the routing table and keep it in sync by hand. You'd serialize 
 
 ## A note on the modern shift
 
-One honest caveat, because the picture isn't frozen. A newer wave of stacks - reactive, non-blocking, built on event-loop servers like Netty (think Spring WebFlux, or parts of Quarkus) - steps *outside* the classic servlet model. They trade the familiar thread-per-request shape for a smaller pool of threads juggling many requests, and in doing so they bypass the servlet container you met here.
+One plain caveat, because the picture isn't frozen. A newer wave of stacks - reactive, non-blocking, built on event-loop servers like Netty (think Spring WebFlux, or parts of Quarkus) - steps *outside* the classic servlet model. They trade the familiar thread-per-request shape for a smaller pool of threads juggling many requests, and in doing so they bypass the servlet container you met here.
 
 Don't let that unsettle what you just learned. The servlet API still underlies the **vast majority** of Java web running in production today, and the mental model - a request arriving, something routing it, filters wrapping it, a response going back - carries over even to the reactive world; the plumbing differs, the shape rhymes. Knowing the servlet model is still the right foundation, and it's the one almost everything you'll touch is built on.
 

@@ -86,7 +86,7 @@ to move, so "scattered" costs nothing. (More on why in the next phase.)
 
 ## So what is an HDD still good for?
 
-Writing the HDD off as obsolete wouldn't be honest: it stores a *lot* of data for very little money,
+Writing the HDD off as obsolete would miss the point: it stores a *lot* of data for very little money,
 better than anything else. Per gigabyte, HDDs are the cheapest storage you can buy, by a wide margin, and
 they come in very large capacities. For data you write once and read rarely and sequentially - backups,
 archives, a media library, security-camera footage, the "bulk" tier of a NAS - the slow random access
@@ -97,7 +97,7 @@ the app crawled under load. A database does the *most* random thing imaginable -
 scattered records, constantly. It was the worst possible match. Moving the database to flash (next phase)
 fixed it overnight, while the HDDs went on doing what they're good at: holding the nightly backups.
 
-The honest summary: an HDD is a record player for your data. Smooth when it can ride one groove; slow and
+The plain summary: an HDD is a record player for your data. Smooth when it can ride one groove; slow and
 clunky when it has to keep lifting the needle and hunting for a new spot. Cheap, roomy, and mechanical -
 perfect for cold bulk storage, painful for anything that boots, launches, or does lots of small scattered
 reads.

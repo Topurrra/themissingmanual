@@ -2,7 +2,7 @@
 title: "The Arrow of Time"
 guide: "heat-energy-and-entropy"
 phase: 3
-summary: "Why time has a direction: entropy. Eggs don't unscramble, the heat-death idea, how Maxwell's demon is defeated, and the honest cost of erasing one bit of information."
+summary: "Why time has a direction: entropy. Eggs don't unscramble, the heat-death idea, how Maxwell's demon is defeated, and the real cost of erasing one bit of information."
 tags: [physics, thermodynamics, entropy, arrow-of-time, heat-death, maxwells-demon, landauers-principle, information]
 difficulty: intermediate
 synonyms: ["arrow of time", "why does time have a direction", "why dont eggs unscramble", "heat death of the universe", "Maxwell's demon explained", "Landauer's principle", "energy cost of erasing a bit", "entropy and information", "is entropy why time moves forward"]
@@ -42,7 +42,7 @@ Follow the arrow to its logical end. If entropy always rises and usable energy a
 
 This is the **heat death of the universe**: not an explosion or a freeze, but a final, featureless sameness - maximum entropy, where nothing more can happen because everything already has.
 
-Keep it honest, though. Heat death is the straightforward extrapolation of thermodynamics, and it's taken seriously, but it rests on assumptions about cosmology - how the universe expands, what dark energy does over immense timescales - that are still open questions. The arrow's direction is on extremely firm ground; exactly where it lands is not.
+Keep it grounded, though. Heat death is the straightforward extrapolation of thermodynamics, and it's taken seriously, but it rests on assumptions about cosmology - how the universe expands, what dark energy does over immense timescales - that are still open questions. The arrow's direction is on extremely firm ground; exactly where it lands is not.
 
 ## Maxwell's demon: the clever cheat
 
@@ -86,7 +86,7 @@ And it slays the demon. The demon's sorting *does* lower the gas's entropy, but 
 
 ## The reach of one idea
 
-The same law that cools your coffee sets a hard ceiling on every engine ever built, forbids perpetual motion of every kind, gives time its forward direction, predicts (with honest caveats) the ultimate fate of the universe, and puts a price tag on erasing a single bit.
+The same law that cools your coffee sets a hard ceiling on every engine ever built, forbids perpetual motion of every kind, gives time its forward direction, predicts (with clear caveats) the ultimate fate of the universe, and puts a price tag on erasing a single bit.
 
 That's the quiet grandeur of thermodynamics. It started as practical advice for building better steam engines and turned out to be a statement about counting, probability, time, and information all at once. It's running in your coffee mug, your freezer, your phone's processor, and the stars, all obeying the same simple, relentless rule: *spread out, count the ways, and the universe goes where the ways are most.*
 

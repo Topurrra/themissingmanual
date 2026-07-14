@@ -82,7 +82,7 @@ The split is a licensing story, not a technical one. Elasticsearch is made by El
 
 ## For builders
 
-Reach for this when your search must understand language: relevance ranking, typo tolerance, matching "run" against "running," searching across many fields at once, faceted filters, autocomplete. Stay with your database when you need exact lookups, joins, transactions, or your "search" is honestly a filter on a few well-indexed columns. The two are not rivals; most real systems keep the database as the source of truth and feed a search engine alongside it. Phase 3 makes that call concrete.
+Reach for this when your search must understand language: relevance ranking, typo tolerance, matching "run" against "running," searching across many fields at once, faceted filters, autocomplete. Stay with your database when you need exact lookups, joins, transactions, or your "search" is really just a filter on a few well-indexed columns. The two are not rivals; most real systems keep the database as the source of truth and feed a search engine alongside it. Phase 3 makes that call concrete.
 
 ```quiz
 [

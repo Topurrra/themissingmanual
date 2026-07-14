@@ -26,7 +26,7 @@ An AI model learns from a giant pile of text up to a cutoff date, and then it st
 
 And even for things that *were* in the training data, the model absorbed the public internet, not your private drive. Your internal runbooks, your customer records, your unreleased product specs were never part of it. The model is a brilliant generalist who has read a library but never set foot in your office.
 
-So when you ask it about your world, it has two failure modes. It admits it doesn't know - honest but useless. Or it pattern-matches to something plausible and states it as fact. That second one is the dangerous default, because the confidence never drops to match the ignorance.
+So when you ask it about your world, it has two failure modes. It admits it doesn't know - truthful but useless. Or it pattern-matches to something plausible and states it as fact. That second one is the dangerous default, because the confidence never drops to match the ignorance.
 
 ## Two ways to fix it (and why one wins)
 

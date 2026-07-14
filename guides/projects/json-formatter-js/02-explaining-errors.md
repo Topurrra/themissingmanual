@@ -106,7 +106,7 @@ console.log(pointAt(broken, 21));
 
 Run it and you get the line with a caret sitting under the character the parser choked on. For broken JSON that's usually right at - or one past - the real mistake, which is close enough to find it by eye.
 
-## Wiring it into one honest formatter
+## Wiring it into one clear formatter
 
 Now we fold parsing, error catching, position-finding, and the caret into a single function that returns a clean result either way.
 

@@ -35,7 +35,7 @@ npx jest -u              # same flag in Jest
 
 *What just happened:* every failing snapshot was overwritten with the current output, failures and all. If a bug changed the output, you've enshrined the bug as the new "correct" answer. This is how snapshot suites rot into meaningless green.
 
-> **Snapshot rules that keep them honest.** Keep snapshots small and reviewable - a giant blob nobody reads catches nothing. Treat a snapshot diff in code review like any other code change; read it. Prefer an explicit matcher (`toBe`, `toEqual`, `toContain`) whenever you can name what you expect - `expect(total).toBe(42)` tells a reader the intent; a snapshot doesn't. Use snapshots for output that's tedious to assert by hand, not as a substitute for thinking.
+> **Snapshot rules that keep them trustworthy.** Keep snapshots small and reviewable - a giant blob nobody reads catches nothing. Treat a snapshot diff in code review like any other code change; read it. Prefer an explicit matcher (`toBe`, `toEqual`, `toContain`) whenever you can name what you expect - `expect(total).toBe(42)` tells a reader the intent; a snapshot doesn't. Use snapshots for output that's tedious to assert by hand, not as a substitute for thinking.
 
 ## Flakiness: the trust killer
 

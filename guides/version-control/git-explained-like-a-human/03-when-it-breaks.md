@@ -202,7 +202,7 @@ you - moving a label, or reading a snapshot - with full knowledge of what Git wa
 learned the model first.
 
 That's the whole point of this guide. Git was never the haunted house it pretended to be. It's a small
-set of honest tools: snapshots that don't vanish, labels you can move, three places your work can live,
+set of no-nonsense tools: snapshots that don't vanish, labels you can move, three places your work can live,
 and copies you keep in sync.
 
 **Where to go next.** When you're ready for the advanced nightmares - recovering commits you thought were

@@ -162,4 +162,4 @@ limited time, *what* should you actually bother testing - and what's a waste?
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 3: What's Worth Testing (Honestly) →](03-whats-worth-testing.md)
+[← Guide overview](_guide.md) · [Phase 3: What's Worth Testing (Straight Talk) →](03-whats-worth-testing.md)

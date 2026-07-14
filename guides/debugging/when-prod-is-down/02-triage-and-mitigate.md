@@ -179,7 +179,7 @@ zero memory required.
    14:18  posted status update; starting root-cause investigation
 ```
 
-*What this gives you:* an honest, minute-by-minute record while it's fresh, for mining later - *time to detect*
+*What this gives you:* a clear, minute-by-minute record while it's fresh, for mining later - *time to detect*
 (alert to declared) and *time to mitigate* (declared to bleeding stopped) - numbers only trustworthy if
 written down live.
 

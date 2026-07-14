@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # INNER vs LEFT (and the Others)
 
-In Phase 1 you wrote a plain `JOIN` and noticed something: an order disappeared, and a user with no orders never showed up. That wasn't random — it's the single most important choice in joining tables: **do you want to keep the rows that don't have a match, or drop them?** SQL gives it different join *types* with different names.
+In Phase 1 you wrote a plain `JOIN` and noticed something: an order disappeared, and a user with no orders never showed up. That wasn't random - it's the single most important choice in joining tables: **do you want to keep the rows that don't have a match, or drop them?** SQL gives it different join *types* with different names.
 
 Two join types cover almost everything you'll ever write: `INNER JOIN` and `LEFT JOIN`. We'll do each with a query and its result side by side, then explain RIGHT and FULL calmly so they hold no mystery either. Same tables as Phase 1:
 
@@ -46,11 +46,11 @@ flowchart LR
   end
 ```
 
-The word that controls everything is "left." The **left table** is the one named first, in the `FROM` clause. In `FROM users LEFT JOIN orders`, `users` is the left table — so a LEFT JOIN guarantees every user appears, matched up with their orders or padded with NULLs.
+The word that controls everything is "left." The **left table** is the one named first, in the `FROM` clause. In `FROM users LEFT JOIN orders`, `users` is the left table - so a LEFT JOIN guarantees every user appears, matched up with their orders or padded with NULLs.
 
-## INNER JOIN — only the matches
+## INNER JOIN - only the matches
 
-`INNER JOIN` keeps a row only when it finds a match on *both* sides. No match, no row. (Plain `JOIN` *is* an `INNER JOIN` — the word `INNER` is optional. Spelling it out makes your intent obvious, which is worth the four extra letters.)
+`INNER JOIN` keeps a row only when it finds a match on *both* sides. No match, no row. (Plain `JOIN` *is* an `INNER JOIN` - the word `INNER` is optional. Spelling it out makes your intent obvious, which is worth the four extra letters.)
 
 **A real example.** Show each order with the buyer's name:
 
@@ -68,7 +68,7 @@ INNER JOIN orders ON orders.user_id = users.id;
  Grace │ 103      │ 90
 ```
 
-*What just happened:* The database kept only rows where a user and an order matched on `user_id = id`. Linus is gone — no orders, no match. Order `104` is gone too — its `user_id = 7` matches no user. INNER is ruthless in both directions: anything without a partner is dropped.
+*What just happened:* The database kept only rows where a user and an order matched on `user_id = id`. Linus is gone - no orders, no match. Order `104` is gone too - its `user_id = 7` matches no user. INNER is ruthless in both directions: anything without a partner is dropped.
 
 **When you want this.** Use INNER when the question only makes sense for matched rows: "list all orders with who bought them," "show employees with the department they belong to." If an unmatched row would be meaningless in the answer, INNER is right.
 
@@ -81,11 +81,11 @@ INNER JOIN books ON books.author_id = authors.id;
 ```
 *What just happened:* The database kept only rows where an author matched a book on `author_id = id`. Every author who wrote at least one book in the table shows up beside each of their books; an author with no book here would simply not appear.
 
-## LEFT JOIN — every left row, no matter what
+## LEFT JOIN - every left row, no matter what
 
 `LEFT JOIN` keeps **every** row from the left table. Where a left row has a matching right row, it attaches it. Where it doesn't, it still keeps the left row and fills the right table's columns with `NULL`.
 
-📝 **Terminology — NULL.** `NULL` is SQL's "there is no value here." It is not zero and not an empty string — it specifically means *unknown / absent*. A LEFT JOIN produces NULLs on purpose, to say "this left row had no match on the right."
+📝 **Terminology - NULL.** `NULL` is SQL's "there is no value here." It is not zero and not an empty string - it specifically means *unknown / absent*. A LEFT JOIN produces NULLs on purpose, to say "this left row had no match on the right."
 
 **A real example.** List *every* user, with their orders if they have any:
 
@@ -104,15 +104,15 @@ LEFT JOIN orders ON orders.user_id = users.id;
  Linus │ NULL     │ NULL
 ```
 
-*What just happened:* Every user from the left table survived — including Linus. Ada and Grace got their orders attached as before. Linus had no matching order, so the database kept his row anyway and put `NULL` in the columns from `orders`. That NULL row is the whole reason to reach for a LEFT JOIN: "this user has zero orders" shows up instead of silently vanishing.
+*What just happened:* Every user from the left table survived - including Linus. Ada and Grace got their orders attached as before. Linus had no matching order, so the database kept his row anyway and put `NULL` in the columns from `orders`. That NULL row is the whole reason to reach for a LEFT JOIN: "this user has zero orders" shows up instead of silently vanishing.
 
 Notice what's *still* missing: order `104`. It points at the non-existent user `7`, and we put `users` on the left, so an unmatched *order* still gets dropped. A LEFT JOIN protects the left table's rows, not the right table's.
 
 **When you want this.** Use LEFT when you need the complete left side regardless of matches: "all users and how many orders each has (including zero)," "every product and its reviews, even products with none." Any time "show me the ones with *none*" is part of the question, you want a LEFT JOIN.
 
-💡 **Key point.** The difference in one line: **INNER answers "where both exist," LEFT answers "everything on the left, plus the right where it exists."** Choosing wrong is how you accidentally hide your zero-order users — or accidentally include rows you meant to filter out.
+💡 **Key point.** The difference in one line: **INNER answers "where both exist," LEFT answers "everything on the left, plus the right where it exists."** Choosing wrong is how you accidentally hide your zero-order users - or accidentally include rows you meant to filter out.
 
-## RIGHT and FULL — the other two, demystified
+## RIGHT and FULL - the other two, demystified
 
 Two more names, neither mysterious once you have INNER and LEFT.
 
@@ -123,7 +123,7 @@ FROM users LEFT JOIN orders ON ...    -- keeps every user
 FROM orders RIGHT JOIN users ON ...   -- also keeps every user
 ```
 
-Because you can always rewrite a RIGHT JOIN as a LEFT JOIN by swapping the table order, most people pick LEFT and stick with it — it reads left-to-right, the way you think. RIGHT isn't wrong; it's just rarely the clearer choice.
+Because you can always rewrite a RIGHT JOIN as a LEFT JOIN by swapping the table order, most people pick LEFT and stick with it - it reads left-to-right, the way you think. RIGHT isn't wrong; it's just rarely the clearer choice.
 
 **FULL JOIN** (also written `FULL OUTER JOIN`) keeps **every row from both tables**: matched rows are paired up, and any unmatched row from *either* side is kept with NULLs on the other side. With our data:
 
@@ -143,29 +143,29 @@ FULL JOIN orders ON orders.user_id = users.id;
  NULL  │ 104      │ 25        ← order with no user
 ```
 
-*What just happened:* FULL kept the matched rows, *plus* Linus (a user with no order, NULLs on the right), *plus* order `104` (an order with no user, NULLs on the left). It's the only join here that surfaces *both* kinds of orphan at once — which is exactly why it's handy for data-quality checks like "find everything that doesn't line up."
+*What just happened:* FULL kept the matched rows, *plus* Linus (a user with no order, NULLs on the right), *plus* order `104` (an order with no user, NULLs on the left). It's the only join here that surfaces *both* kinds of orphan at once - which is exactly why it's handy for data-quality checks like "find everything that doesn't line up."
 
-📝 **Terminology — outer join.** LEFT, RIGHT, and FULL are collectively called *outer joins* — they all keep unmatched ("outer") rows and pad with NULLs. INNER is the only one that doesn't. So when someone says "use an outer join," they mean "keep the non-matching rows too."
+📝 **Terminology - outer join.** LEFT, RIGHT, and FULL are collectively called *outer joins* - they all keep unmatched ("outer") rows and pad with NULLs. INNER is the only one that doesn't. So when someone says "use an outer join," they mean "keep the non-matching rows too."
 
 ⚠️ **Heads-up on database support.** INNER and LEFT work everywhere. FULL JOIN is supported by PostgreSQL, SQL Server, and Oracle, but **MySQL does not support `FULL JOIN`** (you emulate it with a `UNION` of a LEFT and a RIGHT join). If a `FULL JOIN` throws a syntax error, check which database you're on before assuming you mistyped.
 
 ## Why this saves you later
 
-The day a report is "missing" rows, or a count comes out too low, the cause is almost always an INNER join where you needed a LEFT — the unmatched rows got silently dropped. And the day NULLs appear where you didn't expect them, you'll recognize them instantly as outer-join padding, not corrupt data.
+The day a report is "missing" rows, or a count comes out too low, the cause is almost always an INNER join where you needed a LEFT - the unmatched rows got silently dropped. And the day NULLs appear where you didn't expect them, you'll recognize them instantly as outer-join padding, not corrupt data.
 
 ## Recap
 
 1. **INNER JOIN** keeps only rows that match on both sides; unmatched rows on either side are dropped.
-2. **LEFT JOIN** keeps every row from the **left** (first-named) table, attaching matches where they exist and **NULLs where they don't** — this is how "has none" shows up.
+2. **LEFT JOIN** keeps every row from the **left** (first-named) table, attaching matches where they exist and **NULLs where they don't** - this is how "has none" shows up.
 3. **RIGHT JOIN** is LEFT with the tables flipped; you can almost always just write LEFT instead.
-4. **FULL JOIN** keeps unmatched rows from **both** sides with NULLs — great for finding orphans, but unsupported in MySQL.
+4. **FULL JOIN** keeps unmatched rows from **both** sides with NULLs - great for finding orphans, but unsupported in MySQL.
 5. LEFT/RIGHT/FULL are **outer joins** (they keep non-matches); INNER is the only one that doesn't.
 
-Now you can get exactly the rows you intend. Next, the ways a join can betray you even when the type is right — and how to catch them.
+Now you can get exactly the rows you intend. Next, the ways a join can betray you even when the type is right - and how to catch them.
 
 ---
 
-Switch the join type and watch which rows survive — and where NULLs appear:
+Switch the join type and watch which rows survive - and where NULLs appear:
 
 ```playground-join
 ```

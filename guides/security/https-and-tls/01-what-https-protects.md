@@ -2,7 +2,7 @@
 title: "What HTTPS Protects (and Doesn't)"
 guide: "https-and-tls"
 phase: 1
-summary: "TLS wraps plain HTTP in three guarantees - encryption so eavesdroppers can't read it, integrity so nobody can tamper with it undetected, and authentication so you know you reached the real server. The padlock proves the connection is encrypted to whoever holds the certificate; it does not prove the site is honest or safe."
+summary: "TLS wraps plain HTTP in three guarantees - encryption so eavesdroppers can't read it, integrity so nobody can tamper with it undetected, and authentication so you know you reached the real server. The padlock proves the connection is encrypted to whoever holds the certificate; it does not prove the site is trustworthy or safe."
 tags: [security, https, tls, encryption, integrity, authentication, padlock]
 difficulty: intermediate
 synonyms: ["what does the padlock actually mean", "does https mean safe", "what does https protect", "is a site with a padlock trustworthy", "what is the difference between http and https"]
@@ -55,7 +55,7 @@ flowchart TD
 
 Here is the single most important sentence in this guide:
 
-> The padlock means **"this connection is encrypted, and the other end is whoever the certificate is for."** It does **not** mean "this website is safe, honest, or run by good people."
+> The padlock means **"this connection is encrypted, and the other end is whoever the certificate is for."** It does **not** mean "this website is safe, trustworthy, or run by good people."
 
 ⚠️ **The gotcha that gets people phished.** A scammer can register `paypaI-login.com` (that's a capital *I* dressed up to look like an *l*), get a free, perfectly valid certificate for it in minutes, and serve their fake login page over HTTPS. Your browser shows a padlock. Everything *is* encrypted - securely, all the way to the scammer's server. The padlock is telling the literal truth: your connection to this site is private. It has no opinion whatsoever about whether the site itself deserves your password.
 
@@ -69,21 +69,21 @@ This is why the old advice "look for the padlock to know it's safe" is not just 
 
 To round out the model, here's what the padlock stays silent about:
 
-- **It doesn't vouch for the site's honesty.** Covered above. Read the domain.
+- **It doesn't vouch for the site's trustworthiness.** Covered above. Read the domain.
 - **It doesn't hide *who* you're talking to.** Observers can still see the destination domain and IP, just not the content. HTTPS gives you privacy of *contents*, not invisibility.
 - **It doesn't protect data once it arrives.** TLS guards data *in transit*. Once it lands on the server, how that server stores and handles it is a separate problem entirely.
 - **It doesn't fix a compromised endpoint.** If malware is running on your laptop, it reads your data before TLS ever encrypts it. TLS protects the wire, not the machines at each end.
 
 ## Why this saves you later
 
-Once the model is right, two things get easier. You'll never be fooled by a padlock on a phishing page again - you'll instinctively read the domain instead. And when you build something, you'll know HTTPS is table stakes (it protects credentials and session tokens in transit - see [Authentication vs. Authorization](/guides/auth-vs-authz)) but *not* the finish line: you still owe your users honest behavior and safe storage on the server side.
+Once the model is right, two things get easier. You'll never be fooled by a padlock on a phishing page again - you'll instinctively read the domain instead. And when you build something, you'll know HTTPS is table stakes (it protects credentials and session tokens in transit - see [Authentication vs. Authorization](/guides/auth-vs-authz)) but *not* the finish line: you still owe your users clear-cut behavior and safe storage on the server side.
 
 ## Recap
 
 1. Plain HTTP is a postcard - readable and editable by everyone in the path.
 2. TLS wraps HTTP in three guarantees: **encryption** (can't read it), **integrity** (can't tamper undetected), **authentication** (you reached the real server).
 3. SSL is the old, broken name for TLS; "SSL certificate" really means a TLS certificate.
-4. The padlock means *encrypted to whoever holds the certificate* - **not** *this site is safe or honest*.
+4. The padlock means *encrypted to whoever holds the certificate* - **not** *this site is safe or trustworthy*.
 5. A scammer can get a valid padlock for a lookalike domain in minutes. Read the domain name yourself.
 6. HTTPS protects data **in transit only** - not the servers at the ends, not your own compromised laptop.
 

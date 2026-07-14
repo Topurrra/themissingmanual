@@ -44,11 +44,11 @@ because each step only ever passed that certainty along.
 
 So the test for a proof is brutally simple, and you can apply it yourself:
 
-> Walk it step by step. At every step, ask: *could someone honestly deny this,
+> Walk it step by step. At every step, ask: *could someone reasonably deny this,
 > given everything before it?* If the answer is ever "yes," you have a gap, and
 > you don't yet have a proof. If the answer is always "no," you do.
 
-A proof is exactly an argument where the honest answer is always "no."
+A proof is exactly an argument where the true answer is always "no."
 
 ## Axioms: where the chain is anchored
 
@@ -140,7 +140,7 @@ Proof:  an argument that add(a, b) == a + b for EVERY a and b
 This is the exact reason "the tests pass" is not the same as "the code is correct."
 Tests sample reality; proofs cover it. Most of the time sampling is all you can
 afford, and that's fine - but knowing *which* kind of certainty you have keeps you
-honest about what could still break.
+clear-eyed about what could still break.
 
 ⚠️ **The gotcha that catches everyone.** "It works on the cases I tried" is not
 "it works always." A handful of green checks, a few hand-traced examples, a demo
@@ -154,7 +154,7 @@ not a proof."* That one sentence has saved more shipped code than any linter.
 ## Recap
 
 - A **proof** is a gap-free chain of **valid** steps from accepted truths to a
-  claim. Every step must be one no honest reader could deny.
+  claim. Every step must be one no reasonable reader could deny.
 - The accepted truths are **axioms** (agreed starting assumptions), **definitions**
   (agreed meanings), and **previously-proven results**.
 - A correct proof gives **certainty** (deductive reasoning). **Evidence** -

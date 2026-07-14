@@ -24,7 +24,7 @@ You've got the two halves now: a dictionary store (Phase 1) and a base62 code ge
 
 `resolve(code)` takes a code and returns the long URL it points to - or tells you it doesn't know that code, without crashing.
 
-Here's the first honest version. Run it end to end:
+Here's the first real version. Run it end to end:
 
 ```python runnable
 ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

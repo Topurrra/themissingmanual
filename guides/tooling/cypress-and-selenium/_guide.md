@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 You need to test a real app in a real browser, and somebody told you to "use Cypress" or "set up Selenium" without telling you what either of them actually is or why they're different. One runs inside the browser and gives you a gorgeous time-travel debugger. The other has been the cross-language industry standard since before most of your dependencies existed. They solve the same problem from opposite ends, and picking wrong means months of fighting your tools.
 
-This guide gives you the mental model for both, shows you what writing and running tests actually feels like, and tells you honestly where each one breaks so you can choose without regret.
+This guide gives you the mental model for both, shows you what writing and running tests actually feels like, and tells you plainly where each one breaks so you can choose without regret.
 
 ## How to read this
 

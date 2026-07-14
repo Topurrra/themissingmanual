@@ -2,7 +2,7 @@
 title: "Where to Go Next - Putting Java to Work"
 guide: "java-from-zero"
 phase: 18
-summary: "You learned the language and the JVM; now you apply it. Honest signposts to the branches from here - Spring Boot, Android, big data, Jakarta EE - plus what to build to make it stick."
+summary: "You learned the language and the JVM; now you apply it. Straight signposts to the branches from here - Spring Boot, Android, big data, Jakarta EE - plus what to build to make it stick."
 tags: [java, spring-boot, android, big-data, learning-path, what-to-build, jakarta-ee]
 difficulty: beginner
 synonyms: ["what to build with java", "java spring boot", "java android development", "java big data kafka spark", "java next steps after learning", "what is java good for", "java backend career"]
@@ -13,7 +13,7 @@ updated: 2026-06-22
 
 Notice what you've done. You didn't only learn a language - you learned the *platform* it runs on: objects, generics, collections, exceptions, threads, the standard library, and the JVM underneath (bytecode, garbage collection, the JIT). That's not a beginner's slice of Java - that's the real thing, language and runtime both.
 
-This last phase isn't more syntax - everything from here is *application*, pointing what you know at a real target. The Java world is huge, and it's tempting to feel you must learn all of it at once. You don't. Here's the honest map of where Java genuinely shines, and - most importantly - what to build so it sticks.
+This last phase isn't more syntax - everything from here is *application*, pointing what you know at a real target. The Java world is huge, and it's tempting to feel you must learn all of it at once. You don't. Here's the clear map of where Java genuinely shines, and - most importantly - what to build so it sticks.
 
 ## The branches from here
 
@@ -38,7 +38,7 @@ The leap from here is short *because* you understand the Java underneath. People
 
 ## Android - Java still works, concepts transfer
 
-**Android** is the other place a lot of Java has historically lived. The honest update: **Kotlin** is now Google's primary recommended language for Android, and most new code is written in it. But Java still works for Android, and Kotlin runs on the *same JVM* you just learned - its objects, collections, null-handling, and concurrency are concepts you already have, with friendlier syntax on top.
+**Android** is the other place a lot of Java has historically lived. The straight update: **Kotlin** is now Google's primary recommended language for Android, and most new code is written in it. But Java still works for Android, and Kotlin runs on the *same JVM* you just learned - its objects, collections, null-handling, and concurrency are concepts you already have, with friendlier syntax on top.
 
 The Java you learned isn't wasted here even if you write Kotlin. If building things people tap on their phones excites you, this path is open, and your foundation carries over almost completely.
 
@@ -56,7 +56,7 @@ That means your Java - and your understanding of threads, memory, and the JVM fr
 
 ## What to actually build
 
-Reading guides got you here; *building* turns knowledge into skill. The trick is something small enough to finish but real enough to teach you the messy parts. A few honest suggestions:
+Reading guides got you here; *building* turns knowledge into skill. The trick is something small enough to finish but real enough to teach you the messy parts. A few no-nonsense suggestions:
 
 - **A REST API with Spring Boot, backed by a database.** A handful of endpoints - create, read, list, delete - storing data through JPA. The single most career-relevant thing you can build, making dependency injection and persistence concrete.
 - **A command-line tool.** Take a chore you do by hand - renaming files, summarizing a log, checking a list of URLs - and make it a Java program, exercising classes, collections, file I/O, and exceptions at once, no framework in the way.

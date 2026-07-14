@@ -79,7 +79,7 @@ So where do laws like this come from, and how do we trust them? Not from authori
 
 ## Where this pillar goes
 
-You now have the three load-bearing ideas. Physics is **model-building** - the deliberate, useful cartoon. Every quantity is a **number with a unit**, and the units quietly guard your work. And underneath the motion sit **conserved quantities** that never change, tested and re-tested by **the loop**. Everything else in this pillar - motion, forces, energy in depth, heat, light, the strange quantum rules - is these three instincts applied harder and to stranger corners of the world. You're not memorizing a wall of formulas. You're learning to think like the world's most patient, most honest accountant. And if the math still makes you flinch, go meet it on friendlier terms first: [/guides/why-math-isnt-your-enemy](/guides/why-math-isnt-your-enemy).
+You now have the three load-bearing ideas. Physics is **model-building** - the deliberate, useful cartoon. Every quantity is a **number with a unit**, and the units quietly guard your work. And underneath the motion sit **conserved quantities** that never change, tested and re-tested by **the loop**. Everything else in this pillar - motion, forces, energy in depth, heat, light, the strange quantum rules - is these three instincts applied harder and to stranger corners of the world. You're not memorizing a wall of formulas. You're learning to think like the world's most patient, most careful accountant. And if the math still makes you flinch, go meet it on friendlier terms first: [/guides/why-math-isnt-your-enemy](/guides/why-math-isnt-your-enemy).
 
 ```quiz
 [

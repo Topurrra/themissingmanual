@@ -58,7 +58,7 @@ sum_list(list(range(100_000)))   # RecursionError
 
 ## Recursion versus iteration
 
-Here is the honest truth: any recursion can be rewritten as a loop, and any loop can be rewritten as recursion. They are equally powerful. The choice is about which one makes the code clearer and which one fits in memory.
+Here is the plain truth: any recursion can be rewritten as a loop, and any loop can be rewritten as recursion. They are equally powerful. The choice is about which one makes the code clearer and which one fits in memory.
 
 The same countdown, as a loop:
 

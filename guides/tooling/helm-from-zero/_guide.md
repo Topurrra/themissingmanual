@@ -20,7 +20,7 @@ Helm is the way out. A chart is your manifests with the per-environment parts pu
 
 ## How to read this
 
-Go in order. Phase 1 builds the mental model: what a chart actually is and the problem it solves, so the commands later feel obvious instead of magic. Phase 2 is the everyday loop - `install`, `upgrade`, `rollback`, values, releases - the stuff you'll run every day. Phase 3 is where it bites: templating gotchas, the `--dry-run` habit that saves you, and the honest call on Helm vs Kustomize vs plain manifests.
+Go in order. Phase 1 builds the mental model: what a chart actually is and the problem it solves, so the commands later feel obvious instead of magic. Phase 2 is the everyday loop - `install`, `upgrade`, `rollback`, values, releases - the stuff you'll run every day. Phase 3 is where it bites: templating gotchas, the `--dry-run` habit that saves you, and the clear-eyed call on Helm vs Kustomize vs plain manifests.
 
 If Kubernetes itself is still fuzzy, read [Kubernetes Without the Hype](/guides/kubernetes-without-the-hype) first - Helm only makes sense once you know what a Deployment and a Service are.
 

@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # What it actually buys you, and the sober reality
 
-You now have the real mental model: interference, not parallel-universe brute force. That's the only honest way to answer what this thing can actually do. There are a few places where quantum computing gives a genuine, dramatic advantage - and vastly more where it gives nothing. Even where the advantage is real, the hardware to claim it isn't here yet.
+You now have the real mental model: interference, not parallel-universe brute force. That's the only straight way to answer what this thing can actually do. There are a few places where quantum computing gives a genuine, dramatic advantage - and vastly more where it gives nothing. Even where the advantage is real, the hardware to claim it isn't here yet.
 
 ## The real wins
 
@@ -76,7 +76,7 @@ Even for the problems where the advantage is real, there's a gap between the alg
 
 **NISQ: where we actually are.** Today's machines are described as **NISQ** - Noisy Intermediate-Scale Quantum. *Noisy*, because they don't yet have full error correction. *Intermediate-scale*, because they have enough qubits to be interesting but not enough error-corrected ones to break RSA or solve a problem of real commercial value that a classical computer can't. They're genuine, valuable research instruments - not yet the world-changing machines of the headlines.
 
-## The honest takeaway
+## The plain takeaway
 
 - Real, dramatic advantage exists for a **narrow** set of problems - Shor's factoring (exponential-class, threatening RSA-style crypto) and Grover's search (a square-root speedup).
 - The world is already moving to **post-quantum cryptography** to stay ahead of the factoring threat.

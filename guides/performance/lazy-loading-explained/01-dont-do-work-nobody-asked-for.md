@@ -17,11 +17,11 @@ updated: 2026-07-10
 
 # Don't do work nobody asked for yet
 
-Here's the default most software falls into without anyone deciding it on purpose: when the page loads, fetch everything it could ever need — every image, script, and chunk of data, all up front, before the user scrolls a pixel or clicks a button. This is called **eager loading**, and it has one real virtue: it's simple to reason about. Everything is just... there.
+Here's the default most software falls into without anyone deciding it on purpose: when the page loads, fetch everything it could ever need - every image, script, and chunk of data, all up front, before the user scrolls a pixel or clicks a button. This is called **eager loading**, and it has one real virtue: it's simple to reason about. Everything is just... there.
 
 The problem is that "could ever need" and "will actually use" are very different sets. A product page might have twenty photos but the visitor reads three and leaves; a dashboard might have six tabs but a session only opens one. Fetching all twenty photos and all six tabs' worth of code is work spent on a bet that mostly doesn't pay off.
 
-**Lazy loading** flips the default: defer the work until something concrete proves it's needed — the element scrolls into view, the route gets visited, the button gets clicked. Nobody asked for the twentieth photo yet, so don't fetch it yet.
+**Lazy loading** flips the default: defer the work until something concrete proves it's needed - the element scrolls into view, the route gets visited, the button gets clicked. Nobody asked for the twentieth photo yet, so don't fetch it yet.
 
 > The question lazy loading always asks is: has anyone actually asked for this, or are we guessing they might?
 
@@ -38,13 +38,13 @@ lazy:   fetch the hero image now; fetch each of the other 9
         -> user sees the hero almost immediately, nothing else competes
 ```
 
-*What just happened:* in the eager version, the browser doesn't know the user cares more about the hero than image #9 — it started ten downloads at once and let them race. In the lazy version, the one thing the user can actually see gets the network to itself, and the other nine only start when there's a real signal ("we're about to scroll there") that they're about to matter.
+*What just happened:* in the eager version, the browser doesn't know the user cares more about the hero than image #9 - it started ten downloads at once and let them race. In the lazy version, the one thing the user can actually see gets the network to itself, and the other nine only start when there's a real signal ("we're about to scroll there") that they're about to matter.
 
-## It's not about doing less work — it's about doing it later, or never
+## It's not about doing less work - it's about doing it later, or never
 
-A common misreading is that lazy loading skips work — mostly it doesn't, it reschedules. The twentieth photo still loads if the user scrolls that far, and the dashboard tab's code still runs the moment it's opened. What lazy loading buys you is that the work happens closer to when it's needed, instead of all being crammed into the first render.
+A common misreading is that lazy loading skips work - mostly it doesn't, it reschedules. The twentieth photo still loads if the user scrolls that far, and the dashboard tab's code still runs the moment it's opened. What lazy loading buys you is that the work happens closer to when it's needed, instead of all being crammed into the first render.
 
-But there's a real bonus hiding in that reschedule: for anyone who *doesn't* scroll that far, or *doesn't* open that tab, the work never happens at all. Nobody had to decide "let's skip the twentieth photo for users who leave early" — it falls out naturally from only doing work once it's asked for.
+But there's a real bonus hiding in that reschedule: for anyone who *doesn't* scroll that far, or *doesn't* open that tab, the work never happens at all. Nobody had to decide "let's skip the twentieth photo for users who leave early" - it falls out naturally from only doing work once it's asked for.
 
 ```text
 100 visitors load a 20-photo page, average visitor views the first 4 photos
@@ -53,7 +53,7 @@ eager:  100 visitors x 20 photo-downloads = 2,000 downloads
 lazy:   100 visitors x  ~4 photo-downloads = ~400 downloads
 ```
 
-*What just happened:* nobody wrote code that says "only download 4 photos." The savings are a side effect of only fetching what scrolling into view asks for. That's the core appeal — the lazy version isn't a smarter algorithm, it's the same plain rule ("fetch it when it's needed") applied consistently.
+*What just happened:* nobody wrote code that says "only download 4 photos." The savings are a side effect of only fetching what scrolling into view asks for. That's the core appeal - the lazy version isn't a smarter algorithm, it's the same plain rule ("fetch it when it's needed") applied consistently.
 
 ## Where this idea shows up outside images
 
@@ -61,13 +61,13 @@ This principle is older and broader than any one web API. A few examples that ar
 
 - A database connection pool that opens connections as requests need them, instead of opening the maximum possible connections at startup.
 - A settings screen that only builds its "advanced options" panel when the user clicks "show advanced," instead of building every panel on page load.
-- An object whose expensive field is computed the first time something reads it, and cached from then on — rather than computed in the constructor whether anyone reads it or not.
+- An object whose expensive field is computed the first time something reads it, and cached from then on - rather than computed in the constructor whether anyone reads it or not.
 
-The database example is worth calling out by name: this project has a separate guide on N+1 queries that discusses "lazy loading" in the ORM sense — a related object fetched from the database only when your code touches it. That's the same underlying idea (defer until asked) applied to database relationships instead of UI assets. This guide focuses specifically on the frontend/asset flavor: images, routes, and scroll-triggered content.
+The database example is worth calling out by name: this project has a separate guide on N+1 queries that discusses "lazy loading" in the ORM sense - a related object fetched from the database only when your code touches it. That's the same underlying idea (defer until asked) applied to database relationships instead of UI assets. This guide focuses specifically on the frontend/asset flavor: images, routes, and scroll-triggered content.
 
 ## The mental model to keep
 
-One sentence: **do the work when something proves it's needed, not on the chance that it might be.** Whenever you catch yourself loading, fetching, or computing something "just in case," ask whether there's a concrete trigger to wait for instead — a scroll position, a click, a route change. If there is, that's a lazy-loading opportunity; Phase 2 walks through the three places you'll use this constantly.
+One sentence: **do the work when something proves it's needed, not on the chance that it might be.** Whenever you catch yourself loading, fetching, or computing something "just in case," ask whether there's a concrete trigger to wait for instead - a scroll position, a click, a route change. If there is, that's a lazy-loading opportunity; Phase 2 walks through the three places you'll use this constantly.
 
 ```quiz
 [
@@ -91,13 +91,13 @@ One sentence: **do the work when something proves it's needed, not on the chance
       "The server refuses to send more than 4 images per session"
     ],
     "answer": 1,
-    "explain": "The savings are a side effect of consistently applying 'fetch on demand' — nobody special-cased early-leavers, it falls out of the rule on its own."
+    "explain": "The savings are a side effect of consistently applying 'fetch on demand' - nobody special-cased early-leavers, it falls out of the rule on its own."
   },
   {
     "q": "Why is eager loading not \"wrong\" outright?",
     "choices": [
       "It's always slower in every situation",
-      "It's simple to reason about — everything is available immediately, with no scheduling logic",
+      "It's simple to reason about - everything is available immediately, with no scheduling logic",
       "It only works on mobile devices",
       "It's required by every browser"
     ],

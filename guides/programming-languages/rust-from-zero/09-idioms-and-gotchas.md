@@ -14,7 +14,7 @@ There's a moment, a few weeks into Rust, when your code stops being "C with extr
 
 None of this is mandatory to write working programs, but these are the idioms you'll see in every real codebase (including [this project's Rust backend](08-ecosystem-and-tooling.md)) - idiomatic precisely because they make the compiler do more of the work for you.
 
-## Enums + exhaustive `match`: model your data honestly
+## Enums + exhaustive `match`: model your data plainly
 
 **What it actually is.** An enum is a type that is *exactly one of several variants*, and in Rust, each variant can carry its own data - far more powerful than the integer-constants "enum" in many languages. It lets you say "a shape is a circle *with a radius*, or a rectangle *with a width and height*," making any other possibility impossible.
 
@@ -205,7 +205,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 ## Recap
 
-1. **Enums + exhaustive `match`**: model "one of a fixed set" honestly; the compiler forces you to handle every variant (`error[E0004]` when you don't).
+1. **Enums + exhaustive `match`**: model "one of a fixed set" plainly; the compiler forces you to handle every variant (`error[E0004]` when you don't).
 2. **Traits**: shared behavior without inheritance - implement a trait for any type, then accept `&impl Trait`.
 3. **Iterator combinators** (`.iter().filter().map().collect()`): describe the transformation instead of writing the loop - readable *and* fast. Remember they're lazy until consumed.
 4. **`Option`/`Result` combinators** (`.map`, `.ok`, `.unwrap_or`, `.and_then`): handle the simple maybe-cases without a full `match`.

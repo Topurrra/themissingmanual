@@ -60,4 +60,4 @@ None of this means don't vibe-code. It means know which thing you're building an
 - **Will it need to keep running for months?** Someone has to maintain it. Plan for who.
 - **Is it only for you, or a quick experiment?** Go fast. This is exactly the right tool. Enjoy it.
 
-The honest summary: vibe coding is a genuine breakthrough for prototypes, personal tools, learning, and disposable scripts - and a quiet trap for anything important enough to hurt people when it fails. The skill isn't writing the perfect prompt. It's telling the two apart, every single time, and being honest with yourself about which one you're holding.
+The plain summary: vibe coding is a genuine breakthrough for prototypes, personal tools, learning, and disposable scripts - and a quiet trap for anything important enough to hurt people when it fails. The skill isn't writing the perfect prompt. It's telling the two apart, every single time, and being clear with yourself about which one you're holding.

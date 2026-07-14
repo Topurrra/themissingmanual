@@ -115,7 +115,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
 *What just happened:* The file didn't exist, so `File::open` returned `Err(...)`. `.unwrap()` looked inside, found an `Err`, and did the only thing it knows how: panic and crash the program. The message gives you the exact line and OS error - useful, but your program is *dead*. In a real service, that's an outage.
 
-⚠️ **When `.unwrap()` is okay vs. not.** Be honest with yourself every time you type it:
+⚠️ **When `.unwrap()` is okay vs. not.** Be straight with yourself every time you type it:
 
 - ✅ **Fine** in quick experiments, throwaway scripts, examples, and tests, where crashing on failure is exactly what you want and clutter would hurt clarity.
 - ✅ **Fine** when failure is *truly* impossible and you can prove it (e.g. parsing a hard-coded constant string you wrote yourself). Even then, prefer `.expect("reason this can't fail")` so the panic message explains your assumption.

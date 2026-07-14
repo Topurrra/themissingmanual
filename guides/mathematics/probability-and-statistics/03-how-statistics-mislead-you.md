@@ -11,7 +11,7 @@ updated: 2026-06-25
 
 # How Statistics Mislead You
 
-In Phase 2 you learned to read data honestly: averages, spread, distributions. This phase is
+In Phase 2 you learned to read data clearly: averages, spread, distributions. This phase is
 the other half. The same tools - averages, percentages, correlations, charts - are the favorite
 weapons of anyone who wants to sell you something, win an argument, or move a dashboard number.
 
@@ -128,7 +128,7 @@ That's the engine behind two related tricks:
 
 - **Cherry-picking** - showing only the data that flatters your point. "Sales are up 40%!"
   (since the worst month last year, conveniently chosen as the starting line). The same dataset
-  with an honest start date might show flat or falling sales.
+  with a fairly chosen start date might show flat or falling sales.
 - **p-hacking** - testing so many things that something crosses the "statistically significant"
   line by accident, then presenting that one result as if it were the question all along. Does
   this food cause cancer? Test it against 20 diseases and one will look significant at the usual
@@ -212,7 +212,7 @@ Everything above shows up in your own work the moment you start measuring a prod
 - Followers, downloads, raw totals - any cumulative count that can't go down and so can never
   tell you something got worse.
 
-The honest replacements measure a *rate* or a *retained* behavior: active users this week,
+The real replacements measure a *rate* or a *retained* behavior: active users this week,
 conversion percentage, whether people came back. If a metric can't get worse, it can't teach you
 anything.
 
@@ -232,7 +232,7 @@ and of the Mathematics foundations. We started in
 [/guides/why-math-isnt-your-enemy](/guides/why-math-isnt-your-enemy) with one promise: math
 isn't a wall keeping you out, it's a set of tools that make the world legible. Probability taught
 you to reason about uncertainty instead of fearing it. Statistics taught you to read data
-honestly. And this phase taught you the defensive half - because the same numbers that
+clearly. And this phase taught you the defensive half - because the same numbers that
 illuminate are used, constantly, to manipulate.
 
 That's the mission in one line: **numeracy is self-defense.** Not so you can win arguments with

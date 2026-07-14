@@ -29,7 +29,7 @@ git commit --no-verify -m "wip: debugging prod, fix lint later"
 
 The trap is the lesson it teaches: **a local pre-commit hook is advisory, not enforcement.** Anyone can bypass it, on purpose or by forgetting to run `pre-commit install` after cloning. If your team's quality bar lives *only* in local hooks, it isn't really a bar - it's a polite request. That single fact is why the next section exists.
 
-You can also skip *one* hook instead of all of them, which is the honest middle ground:
+You can also skip *one* hook instead of all of them, which is the sensible middle ground:
 
 ```bash
 SKIP=ruff git commit -m "intentional pattern ruff flags here"

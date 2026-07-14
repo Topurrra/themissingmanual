@@ -2,7 +2,7 @@
 title: "Authentication & Security"
 guide: "fastapi-from-zero"
 phase: 8
-summary: "Protect your Book API the FastAPI way: hash passwords, issue JWT access tokens from an OAuth2 password flow, and gate endpoints with a get_current_user dependency — plus the security must-knows."
+summary: "Protect your Book API the FastAPI way: hash passwords, issue JWT access tokens from an OAuth2 password flow, and gate endpoints with a get_current_user dependency - plus the security must-knows."
 tags: [fastapi, authentication, oauth2, jwt, security, password-hashing, bearer-token, dependency]
 difficulty: advanced
 synonyms: ["fastapi oauth2 password flow", "fastapi jwt authentication", "fastapi security depends", "fastapi password hashing", "fastapi bearer token", "fastapi get_current_user", "fastapi protect endpoint"]
@@ -13,7 +13,7 @@ updated: 2026-07-10
 
 Your Book API can now validate requests, shape responses, and talk to a real database. One thing's
 missing that every real service needs: a lock on the door. Right now anyone who can reach `/books` can
-create, edit, or delete a book. This phase puts a guard at the entrance — and you already know the
+create, edit, or delete a book. This phase puts a guard at the entrance - and you already know the
 guard's job description. In FastAPI, security is built almost entirely on the dependency system from
 [Phase 5](05-dependency-injection.md). "This endpoint requires a logged-in user" is just "this endpoint
 *depends on* there being a current user."
@@ -31,7 +31,7 @@ into four small, separate jobs, each approachable on its own.
   Ada, can Ada *delete* this book? Maybe only admins can.
 
 A passport proves who you are (authn). A concert ticket says what you're allowed into (authz). You need
-both, and they're different checks. The full mental model — sessions, tokens, OAuth — lives in a
+both, and they're different checks. The full mental model - sessions, tokens, OAuth - lives in a
 dedicated guide: [Auth vs Authz](/guides/auth-vs-authz). Here we focus on wiring it into FastAPI.
 
 💡 The throughline for this whole phase: **both jobs flow through `Depends()`.** Authentication is a
@@ -40,20 +40,20 @@ second one) that decides *whether they may proceed*. Same machinery, two questio
 
 ## Step 1: never store passwords in plaintext
 
-Before anyone can log in, you need somewhere to keep their credentials — and the single most important
+Before anyone can log in, you need somewhere to keep their credentials - and the single most important
 rule in this guide is this:
 
 ⚠️ **Never store a password as plaintext.** Not in your database, not in a log file, not anywhere. If
-your database leaks (and databases leak), every plaintext password is instantly stolen — and because
+your database leaks (and databases leak), every plaintext password is instantly stolen - and because
 people reuse passwords, you've also handed attackers their email and bank logins.
 
 📝 Instead you store a **hash**: a one-way scramble of the password. You run the password through a
 slow, deliberate hashing algorithm (bcrypt or argon2 are the standard choices) and store the result.
-When someone logs in, you hash *what they typed* and compare it to the stored hash — you never need the
+When someone logs in, you hash *what they typed* and compare it to the stored hash - you never need the
 original password back, the whole point of "one-way." The deeper story of salting, slow hashing, and why
 these algorithms exist is in [How Passwords Are Stored](/guides/how-passwords-are-stored).
 
-In Python, the `passlib` library wraps all of this (shown as plain code — `passlib` isn't guaranteed in
+In Python, the `passlib` library wraps all of this (shown as plain code - `passlib` isn't guaranteed in
 the browser sandbox, so read it, don't run it):
 
 ```python
@@ -79,16 +79,16 @@ verify_password("wrong guess", stored)                   # False
 
 *What just happened:* `hash_password` turns a plaintext password into an opaque string you can safely
 store on a `User` row. `verify_password` re-hashes the login attempt and checks it against that stored
-hash, returning `True`/`False` — without ever un-scrambling anything. You store the output of
+hash, returning `True`/`False` - without ever un-scrambling anything. You store the output of
 `hash_password`, and only ever compare with `verify_password`. The plaintext password lives for a
 fraction of a second in memory and is never written down.
 
-💡 You didn't write the bcrypt algorithm yourself — deliberate; see the last section.
+💡 You didn't write the bcrypt algorithm yourself - deliberate; see the last section.
 
 ## Step 2: the OAuth2 password flow + JWT
 
 A user can sign up and we store their hash. Now: how do they *log in*, and how does the server remember
-them on the *next* request? HTTP is stateless — each request arrives with no memory of the last one. We
+them on the *next* request? HTTP is stateless - each request arrives with no memory of the last one. We
 can't make the user re-send their password on every call (that would mean storing it client-side, the
 exact thing we're avoiding).
 
@@ -98,15 +98,15 @@ exact thing we're avoiding).
 2. The server verifies the password against the stored hash.
 3. If it checks out, the server hands back a signed **access token**.
 4. On every later request, the client sends that token in the header:
-   `Authorization: Bearer <token>` — no password needed again.
+   `Authorization: Bearer <token>` - no password needed again.
 
 The token of choice here is a **JWT** (JSON Web Token). 📝 A JWT is a compact, **signed**,
 self-contained string carrying a few **claims** (small facts, like "subject: ada" and "expires: 3pm").
 "Signed" means the server stamps it with a secret key so it can later verify the token wasn't tampered
-with — change one character and the signature breaks.
+with - change one character and the signature breaks.
 
 ⚠️ The trap everyone falls into: **a JWT is signed, not *encrypted*.** Anyone holding it can decode and
-read the payload (it's just base64 — paste one into jwt.io and you'll see). The signature stops forgery;
+read the payload (it's just base64 - paste one into jwt.io and you'll see). The signature stops forgery;
 it does **not** hide what's inside. Never put secrets (passwords, credit card numbers, anything
 sensitive) in a JWT payload.
 
@@ -144,11 +144,11 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": token, "token_type": "bearer"}
 ```
 
-*What just happened:* `OAuth2PasswordRequestForm = Depends()` is itself a dependency — it pulls the
+*What just happened:* `OAuth2PasswordRequestForm = Depends()` is itself a dependency - it pulls the
 `username` and `password` out of the form body for you. You verify the password against the stored hash
 with the function from Step 1. On success you build a JWT carrying the username (`sub`, "subject"), the
 role, and an expiry (`exp`), sign it with your secret, and return it in the shape OAuth2 clients expect:
-`{"access_token": ..., "token_type": "bearer"}`. On failure you return a clean `401` — we don't say
+`{"access_token": ..., "token_type": "bearer"}`. On failure you return a clean `401` - we don't say
 *which* field was wrong, so we don't help attackers guess usernames.
 
 A login request and its response look like this:
@@ -167,7 +167,7 @@ username=ada&password=correct+horse+battery+staple
 }
 ```
 
-*What just happened:* the client sent form-encoded credentials (not JSON — the OAuth2 password flow uses
+*What just happened:* the client sent form-encoded credentials (not JSON - the OAuth2 password flow uses
 a form body) and got back a token. The client stashes that `access_token` and attaches it to every future
 request, never sending the password again until the token expires.
 
@@ -205,9 +205,9 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
 
 *What just happened:* `Depends(oauth2_scheme)` extracts the raw token string from the `Authorization`
 header (and auto-rejects requests that have none). `jwt.decode` verifies the signature **and** the
-expiry against your secret — if the token was forged, tampered with, or expired, it raises `JWTError`
+expiry against your secret - if the token was forged, tampered with, or expired, it raises `JWTError`
 and we turn that into a `401`. If it's valid, we read the `sub` claim and return the user. An ordinary
-dependency, exactly like the ones in Phase 5 — it just happens to do auth.
+dependency, exactly like the ones in Phase 5 - it just happens to do auth.
 
 Protect the write endpoint. Any route that requires a login adds one parameter:
 
@@ -220,7 +220,7 @@ def create_book(title: str, current_user: dict = Depends(get_current_user)):
 *What just happened:* `current_user: dict = Depends(get_current_user)` is the entire lock. FastAPI runs
 `get_current_user` *before* your function body. No valid token? It raises `401` and `create_book` never
 executes. Valid token? Your endpoint receives the authenticated user and can record who created the book.
-Zero auth logic inside the handler — it just declares the need.
+Zero auth logic inside the handler - it just declares the need.
 
 A request with no token gets stopped cold:
 
@@ -233,13 +233,13 @@ POST /books?title=Dune HTTP/1.1
 ```
 
 *What just happened:* the request arrived with no `Authorization` header, so `oauth2_scheme` rejected it
-with `401` before `get_current_user` even ran. Send the header — `Authorization: Bearer eyJhbGci...` —
+with `401` before `get_current_user` even ran. Send the header - `Authorization: Bearer eyJhbGci...` - 
 and it sails through. 💡 As a bonus, because you declared `OAuth2PasswordBearer`, FastAPI adds an
 **Authorize** button to `/docs`: testers paste a token once and the interactive docs send it on every call.
 
 ### Authorization: checking what they're allowed to do
 
-That covered authn (who you are). For authz (what you may do), do the check inside a dependency too —
+That covered authn (who you are). For authz (what you may do), do the check inside a dependency too - 
 one that requires the admin role:
 
 ```python
@@ -256,7 +256,7 @@ def delete_book(book_id: int, admin: dict = Depends(require_admin)):
     return {"deleted": book_id, "by": admin["username"]}
 ```
 
-*What just happened:* `require_admin` is a **sub-dependency** — it depends on `get_current_user` to
+*What just happened:* `require_admin` is a **sub-dependency** - it depends on `get_current_user` to
 establish *who* the caller is, then checks their `role`. A logged-in non-admin gets `403 Forbidden`
 (`401` means "I don't know who you are," `403` means "I know who you are and you can't do this"). Same
 dependency machinery, now answering the authorization question.
@@ -265,7 +265,7 @@ dependency machinery, now answering the authorization question.
 
 Auth code is the worst place to improvise. A handful of rules carry most of the safety:
 
-- ⚠️ **Always HTTPS in production.** A Bearer token in a plaintext HTTP request is sitting in the open —
+- ⚠️ **Always HTTPS in production.** A Bearer token in a plaintext HTTP request is sitting in the open - 
   anyone on the network path can copy it and impersonate the user. TLS is what stops that; see
   [HTTPS & TLS](/guides/https-and-tls). Locally `http://localhost` is fine; in production it is not.
 - ⚠️ **Keep the JWT secret out of your code.** That `SECRET_KEY` signs every token. If it leaks,
@@ -274,26 +274,26 @@ Auth code is the worst place to improvise. A handful of rules carry most of the 
 - ⚠️ **Set token expiry, and consider refresh tokens.** Short-lived access tokens (minutes to an hour)
   limit the damage if one is stolen. The common pattern is a short access token plus a longer-lived
   *refresh* token used only to mint new access tokens.
-- ⚠️ **Don't put sensitive data in the JWT payload.** It's decodable, remember — username and role are
+- ⚠️ **Don't put sensitive data in the JWT payload.** It's decodable, remember - username and role are
   fine; passwords, card numbers, and PII are not.
 - 💡 **Don't roll your own crypto.** Use FastAPI's OAuth2 utilities and battle-tested libraries
   (`passlib`, `python-jose`). Hand-written hashing or token signing is how subtle, catastrophic bugs get
-  in. Security is the one area where "clever" is a red flag — boring and standard wins.
+  in. Security is the one area where "clever" is a red flag - boring and standard wins.
 
 Notice how little new machinery this phase actually introduced. Hashing is two function calls. The token
-endpoint is a normal POST handler. Protecting routes is the *same* `Depends()` you already knew —
+endpoint is a normal POST handler. Protecting routes is the *same* `Depends()` you already knew - 
 `get_current_user` is just a dependency that reads a header and validates a token. Auth felt big because
 it bundles four jobs together; taken one at a time, each is something you can already do.
 
 ## Recap
 
-1. **Authentication** (who you are) and **authorization** (what you may do) are two distinct checks —
+1. **Authentication** (who you are) and **authorization** (what you may do) are two distinct checks - 
    and in FastAPI both flow through the dependency system from Phase 5.
 2. **Never store plaintext passwords.** Hash them with bcrypt/argon2 via `passlib`: store the hash,
    verify login attempts against it, and never recover the original.
 3. The **OAuth2 password flow** takes username/password at a `/token` endpoint (`OAuth2PasswordRequestForm`),
    verifies the hash, and returns a signed **JWT** the client resends as `Authorization: Bearer <token>`.
-4. A JWT is **signed, not encrypted** — its payload is readable by anyone, so it stops forgery but hides
+4. A JWT is **signed, not encrypted** - its payload is readable by anyone, so it stops forgery but hides
    nothing. Keep secrets out of it.
 5. Protect endpoints with `OAuth2PasswordBearer` + a `get_current_user` dependency that decodes and
    validates the token; add `Depends(get_current_user)` to require auth (and a role check inside a
@@ -315,7 +315,7 @@ Make sure the core ideas stuck before moving on:
   },
   {
     "q": "True or false: because a JWT is signed, the data inside it is hidden from anyone holding the token.",
-    "choices": ["True — signing encrypts the payload", "False — a JWT is signed, not encrypted; the payload is readable", "True, but only if you use HS256", "False — JWTs have no payload at all"],
+    "choices": ["True - signing encrypts the payload", "False - a JWT is signed, not encrypted; the payload is readable", "True, but only if you use HS256", "False - JWTs have no payload at all"],
     "answer": 1,
     "explain": "Signing proves the token wasn't tampered with; it does not hide the contents. Anyone can base64-decode and read a JWT payload, so never put secrets in it."
   },

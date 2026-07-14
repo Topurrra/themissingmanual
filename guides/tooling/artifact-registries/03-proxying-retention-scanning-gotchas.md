@@ -76,7 +76,7 @@ Total: 4 (HIGH: 3, CRITICAL: 1)
 └────────────┴────────────────┴──────────┴───────────────┴──────────────┘
 ```
 
-*What just happened:* the scanner cross-referenced every package in the image against CVE databases and flagged a critical one in a system library you never directly installed - it rode in on the base image. The "Fixed Version" column tells you the cure: rebuild on a patched base. Nexus and Artifactory run this server-side and can *block* a pull or promotion if an artifact is too risky; tools like Trivy or Grype run the same check in CI. The honest caveat: a scan reflects what the database knew *at scan time*, so scanning continuously (not once at build) is what keeps it useful.
+*What just happened:* the scanner cross-referenced every package in the image against CVE databases and flagged a critical one in a system library you never directly installed - it rode in on the base image. The "Fixed Version" column tells you the cure: rebuild on a patched base. Nexus and Artifactory run this server-side and can *block* a pull or promotion if an artifact is too risky; tools like Trivy or Grype run the same check in CI. The key caveat: a scan reflects what the database knew *at scan time*, so scanning continuously (not once at build) is what keeps it useful.
 
 ## The gotcha that bites everyone: the moving public tag
 

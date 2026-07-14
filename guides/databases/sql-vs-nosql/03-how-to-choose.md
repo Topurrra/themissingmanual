@@ -2,7 +2,7 @@
 title: "How to Actually Choose"
 guide: "sql-vs-nosql"
 phase: 3
-summary: "The judgment call: a relational database is the boring-correct default for most apps; reach for a specific NoSQL store for a specific access pattern. Plus the two traps — NoSQL isn't schemaless, and you're allowed to mix."
+summary: "The judgment call: a relational database is the boring-correct default for most apps; reach for a specific NoSQL store for a specific access pattern. Plus the two traps - NoSQL isn't schemaless, and you're allowed to mix."
 tags: [databases, sql, nosql, decision, polyglot-persistence, caching, architecture]
 difficulty: intermediate
 synonyms: ["which database should i use", "when to use nosql vs sql", "default database choice", "is nosql schemaless", "can i use both sql and nosql", "what is polyglot persistence"]
@@ -11,9 +11,9 @@ updated: 2026-07-10
 
 # How to Actually Choose
 
-You've got the mental models and the honest trade-offs. Now the part that actually feels hard
+You've got the mental models and the real trade-offs. Now the part that actually feels hard
 under deadline pressure: picking one. This phase is mostly **judgment**, flagged as judgment
-where it is — weigh it against your own situation, don't take it as law. But there's a default
+where it is - weigh it against your own situation, don't take it as law. But there's a default
 that's right far more often than the internet's energy around this topic would suggest, and
 two traps that catch people who pick NoSQL for the wrong reason.
 
@@ -21,15 +21,15 @@ two traps that catch people who pick NoSQL for the wrong reason.
 
 > **Find the row that matches your situation, then read the section below it.**
 
-| Your situation | The honest move | Why |
+| Your situation | The straight move | Why |
 |---|---|---|
-| "It's a normal app — users, things they own, relationships between them." | **Relational** (Postgres, MySQL, SQLite). | The boring-correct default. Integrity + flexible queries cover most apps for years. (§1) |
+| "It's a normal app - users, things they own, relationships between them." | **Relational** (Postgres, MySQL, SQLite). | The boring-correct default. Integrity + flexible queries cover most apps for years. (§1) |
 | "I need to make repeated reads blazing fast / store sessions / counters." | Add a **key-value cache** (Redis) *alongside* your main DB. | A cache is a *complement*, not a replacement. (§2) |
 | "I'm absorbing a firehose of writes across many machines." | Consider **wide-column** (Cassandra) for that workload. | Built for write scale past one machine. (§2) |
-| "My core problem is deep relationships — friends-of-friends, recommendations." | Consider a **graph** store (Neo4j) for that part. | Deep traversal is its native strength. (§2) |
+| "My core problem is deep relationships - friends-of-friends, recommendations." | Consider a **graph** store (Neo4j) for that part. | Deep traversal is its native strength. (§2) |
 | "My records are genuinely irregular / document-shaped and read as a unit." | Consider a **document** store (MongoDB). | Flexible, read-it-as-one-unit records. (§2) |
-| "I picked NoSQL because 'no schema' sounds easier." | Stop — read §3 first. | The schema didn't vanish; it moved into your code. |
-| "I think I need more than one of these." | You probably do, and that's fine — §4. | Polyglot persistence is normal. |
+| "I picked NoSQL because 'no schema' sounds easier." | Stop - read §3 first. | The schema didn't vanish; it moved into your code. |
+| "I think I need more than one of these." | You probably do, and that's fine - §4. | Polyglot persistence is normal. |
 
 ## 1. The boring-correct default: a relational database
 
@@ -48,8 +48,8 @@ documented everywhere, and unlikely to surprise you at 2am. Choosing it is rarel
 you regret; choosing something exotic *without a reason* is.
 
 ⚠️ **"We might need web-scale someday" is not a reason today.** Picking a distributed NoSQL
-store to handle traffic you don't have yet means paying its costs — weaker consistency, harder
-queries, more operational complexity — *now*, for a problem that may never arrive. If it does
+store to handle traffic you don't have yet means paying its costs - weaker consistency, harder
+queries, more operational complexity - *now*, for a problem that may never arrive. If it does
 arrive, you'll have real numbers to design against. Optimize for the app you have.
 
 ## 2. Reach for a NoSQL store for a *specific* access pattern
@@ -60,10 +60,10 @@ problem:
 
 - **Cache / sessions / counters → key-value (Redis).** When the same expensive read happens
   over and over, put a fast key-value store in front of it. This is the most common and most
-  clearly-justified NoSQL adoption — and it sits *alongside* your relational database, not
+  clearly-justified NoSQL adoption - and it sits *alongside* your relational database, not
   instead of it.
 - **Huge write volume across machines → wide-column (Cassandra).** Time-series, event logs,
-  sensor data, activity feeds at enormous scale — workloads where writes-per-second outgrow a
+  sensor data, activity feeds at enormous scale - workloads where writes-per-second outgrow a
   single server and your queries are known in advance.
 - **Deep relationship traversal → graph (Neo4j).** When the *queries themselves* are about
   walking connections many hops deep (social graphs, fraud rings, recommendation paths), a
@@ -76,7 +76,7 @@ The test for all four: **can you name the access pattern out loud?** "I need sub
 lookups by session ID" is a reason. "It's more modern" is not.
 
 🪖 **A common arc.** Plenty of teams start on a relational database, run fine for years, then
-add Redis the day a hot query starts hurting — relational core, a specialized store bolted on
+add Redis the day a hot query starts hurting - relational core, a specialized store bolted on
 for one measured problem. The unhealthy pattern is the reverse: choosing an exotic store first
 and discovering later you've made the *normal* parts of the app harder.
 
@@ -85,12 +85,12 @@ and discovering later you've made the *normal* parts of the app harder.
 This is the most expensive misconception in the whole topic, so it gets its own section.
 
 A schema-flexible store doesn't mean your data has no schema. Your data **always** has a
-structure — your code reads `user.email` and `order.total` and expects them to exist and be the
+structure - your code reads `user.email` and `order.total` and expects them to exist and be the
 right type. The only question is **who enforces that structure.**
 
 - In a relational database, the *database* enforces it. A bad write is rejected at the door
   (you saw `ERROR: invalid input syntax` in Phase 2).
-- In a schema-flexible store, *your application code* enforces it — or nobody does, and then
+- In a schema-flexible store, *your application code* enforces it - or nobody does, and then
   malformed records pile up silently until something downstream chokes on them.
 
 ```mermaid
@@ -103,7 +103,7 @@ flowchart LR
   end
 ```
 
-The honest version: "schemaless" really means "the schema moved out of the database and into
+The plain version: "schemaless" really means "the schema moved out of the database and into
 your code and your discipline." That can be the right trade, but it's a *relocation* of the
 work, never a *deletion* of it. Teams that picked NoSQL expecting to skip data modeling
 entirely tend to rediscover, painfully, that the modeling was load-bearing.
@@ -111,9 +111,9 @@ entirely tend to rediscover, painfully, that the modeling was load-bearing.
 > 💡 **Key point.** You never get to *not* have a schema. You only get to choose whether the
 > database guards it or you do.
 
-## 4. ⚠️ Trap two: it's not either/or — you can mix
+## 4. ⚠️ Trap two: it's not either/or - you can mix
 
-The framing "SQL *vs* NoSQL" quietly implies you must pick one for your whole app. You don't —
+The framing "SQL *vs* NoSQL" quietly implies you must pick one for your whole app. You don't - 
 real systems routinely use several stores, each for what it's best at. There's even a name for
 it: **polyglot persistence.**
 
@@ -124,7 +124,7 @@ A very ordinary, healthy architecture:
 
 ```mermaid
 flowchart LR
-  PG["PostgreSQL<br/>source of truth: users, orders, products<br/>(relational — integrity + flexible queries)"]
+  PG["PostgreSQL<br/>source of truth: users, orders, products<br/>(relational - integrity + flexible queries)"]
   PG --> Redis["Redis<br/>cache hot reads + sessions<br/>(key-value, speed)"]
   PG --> ES["Elasticsearch<br/>full-text product search<br/>(a search-tuned store)"]
 ```
@@ -135,33 +135,33 @@ store does the one thing it's shaped for, and the relational database stays the 
 of truth the others derive from.
 
 The cost of mixing is real and worth naming: more moving parts to operate, more places data can
-drift out of sync, more for a new teammate to learn. Mix *deliberately* — add a store when a
+drift out of sync, more for a new teammate to learn. Mix *deliberately* - add a store when a
 measured problem justifies it, not because variety feels sophisticated.
 
 ## Recap
 
-1. **Default to relational.** For most apps it's the boring-correct choice — integrity,
+1. **Default to relational.** For most apps it's the boring-correct choice - integrity,
    flexible queries, maturity. You should need a *reason* to deviate.
-2. **Reach for a specific NoSQL store for a specific, nameable access pattern** — cache
+2. **Reach for a specific NoSQL store for a specific, nameable access pattern** - cache
    (key-value), write-firehose (wide-column), deep traversal (graph), irregular documents
    (document).
 3. **"NoSQL ≠ no schema."** The schema moves into your code; it never disappears. Decide who
    guards it on purpose.
-4. **You can mix.** Polyglot persistence — a relational core plus specialized stores — is
+4. **You can mix.** Polyglot persistence - a relational core plus specialized stores - is
    normal and often right. Mix deliberately, because each store adds operational cost.
 
-That's the whole honest picture: not a winner, but a set of shapes and trades you can now reason
+That's the whole clear picture: not a winner, but a set of shapes and trades you can now reason
 about. Pick the shape that fits the problem in front of you, name your reason, and you'll defend
 a real decision instead of taking a side in a holy war.
 
 ## Where to go next
 
-- [What a Database Is](/guides/what-a-database-is) — the groundwork beneath this whole comparison.
-- [Relationships and Keys](/guides/relationships-and-keys) — how the relational model actually
+- [What a Database Is](/guides/what-a-database-is) - the groundwork beneath this whole comparison.
+- [Relationships and Keys](/guides/relationships-and-keys) - how the relational model actually
   links tables, in depth.
-- [Scaling a Database](/guides/scaling-a-database) — the "scale up vs scale out" and consistency
+- [Scaling a Database](/guides/scaling-a-database) - the "scale up vs scale out" and consistency
   story from Phase 2, taken further.
 
 ---
 
-[← Phase 2: The Honest Trade-offs](02-the-trade-offs.md) · [Guide overview](_guide.md)
+[← Phase 2: The Real Trade-offs](02-the-trade-offs.md) · [Guide overview](_guide.md)

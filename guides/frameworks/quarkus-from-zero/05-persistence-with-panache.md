@@ -40,14 +40,14 @@ import java.math.BigDecimal;
 
 @Entity
 public class Product extends PanacheEntity {
-    public String name;          // public field — Panache generates the accessor
+    public String name;          // public field - Panache generates the accessor
     public BigDecimal price;     // 'id' comes free from PanacheEntity
 }
 ```
 *What just happened:* `@Entity` is the same JPA annotation as always. Extending `PanacheEntity` adds the generated `id` plus static finders (`listAll`, `findById`, `find`, `count`, `deleteAll`) and instance methods (`persist`, `delete`). The `public` fields are pure ceremony removal, not a different data model.
 
 ```java
-// CREATE — must run inside a transaction (more below)
+// CREATE - must run inside a transaction (more below)
 Product p = new Product();
 p.name = "Mechanical Keyboard";
 p.price = new BigDecimal("89.90");
@@ -57,7 +57,7 @@ p.persist();                              // INSERT scheduled on the persistence
 Product found = Product.findById(1L);     // SELECT by primary key
 List<Product> all = Product.listAll();    // SELECT * from product
 
-// UPDATE — no save() call needed
+// UPDATE - no save() call needed
 found.price = new BigDecimal("79.90");    // dirty checking writes this at commit
 
 // DELETE
@@ -77,7 +77,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ProductRepository implements PanacheRepository<Product> {
-    // Empty body — listAll(), findById(), persist(), delete()... are all inherited.
+    // Empty body - listAll(), findById(), persist(), delete()... are all inherited.
     // Add custom finders here as you need them.
 }
 ```
@@ -103,7 +103,7 @@ public class CatalogService {
 📝 Panache gives a **simplified query syntax** - write only the fragment after `where`:
 
 ```java
-// Panache shorthand — "name = ?1"
+// Panache shorthand - "name = ?1"
 List<Product> hits = Product.list("name", "Mechanical Keyboard");
 
 // Sorted, with positional params
@@ -152,7 +152,7 @@ Run `quarkus dev` with **no datasource configured**, and Quarkus notices you hav
 For production, a few lines in `application.properties`:
 
 ```properties
-# Production datasource — Dev Services backs off when these are set
+# Production datasource - Dev Services backs off when these are set
 quarkus.datasource.db-kind=postgresql
 quarkus.datasource.username=catalog
 quarkus.datasource.password=${DB_PASSWORD}
@@ -164,19 +164,19 @@ quarkus.datasource.jdbc.url=jdbc:postgresql://db.internal:5432/catalog
 
 ## Recap
 
-1. 📝 **Panache is Hibernate ORM with less boilerplate** — same engine, same persistence context, same
+1. 📝 **Panache is Hibernate ORM with less boilerplate** - same engine, same persistence context, same
    entity states. Your JPA knowledge (and JPA's traps) carry over unchanged.
 2. **Active-record pattern:** `Product extends PanacheEntity`, public fields (accessors generated at build
-   time), a free `id`, and static methods on the entity — `Product.findById(id)`, `product.persist()`.
+   time), a free `id`, and static methods on the entity - `Product.findById(id)`, `product.persist()`.
 3. **Repository pattern:** keep the entity plain and put a `ProductRepository implements
-   PanacheRepository<Product>` next to it, injected as a CDI bean. Same methods, separate class — better
+   PanacheRepository<Product>` next to it, injected as a CDI bean. Same methods, separate class - better
    for testability and separation. Pick one pattern per project.
 4. **Queries** use a shorthand (`Product.list("name", name)`, paging, sorting) that's plain JPQL
    underneath; **writes** need `@Transactional`, and the SQL flushes at commit, not at `persist`.
-5. ⚠️ **N+1 still bites** — Panache hides boilerplate, not the database. Watch the generated SQL and use
+5. ⚠️ **N+1 still bites** - Panache hides boilerplate, not the database. Watch the generated SQL and use
    `join fetch` when looping over lazy relationships.
 6. 💡 **Dev Services** auto-starts a throwaway Postgres in dev (zero config); production uses a real
-   datasource in `application.properties`. Schema auto-generation is dev-only — use Flyway migrations in
+   datasource in `application.properties`. Schema auto-generation is dev-only - use Flyway migrations in
    prod.
 
 ## Quick check
@@ -188,9 +188,9 @@ The three ideas worth keeping:
   {
     "q": "You write `Product.findById(1L)` and `product.persist()`, with public fields and no `@Id` on the entity. Which Panache pattern is this, and where does the `id` come from?",
     "choices": [
-      "Active-record — the entity extends PanacheEntity, which provides the generated Long id and the static/instance data methods",
-      "Repository — findById only exists on a PanacheRepository",
-      "Plain JPA — Panache isn't involved when you call findById",
+      "Active-record - the entity extends PanacheEntity, which provides the generated Long id and the static/instance data methods",
+      "Repository - findById only exists on a PanacheRepository",
+      "Plain JPA - Panache isn't involved when you call findById",
       "It won't compile, because an @Entity must declare its own @Id"
     ],
     "answer": 0,
@@ -199,24 +199,24 @@ The three ideas worth keeping:
   {
     "q": "Inside a `@Transactional` method you load a managed Product and set `product.price` to a new value, but never call any save/update method. What happens at commit?",
     "choices": [
-      "Hibernate's dirty checking detects the changed field and emits an UPDATE — Panache uses the same persistence context as plain JPA",
-      "Nothing — without an explicit update() call the change is lost",
+      "Hibernate's dirty checking detects the changed field and emits an UPDATE - Panache uses the same persistence context as plain JPA",
+      "Nothing - without an explicit update() call the change is lost",
       "It throws, because you must call persist() again to save changes",
       "The change is saved immediately when you set the field, before commit"
     ],
     "answer": 0,
-    "explain": "Panache is Hibernate underneath. A managed entity is tracked by the persistence context, so dirty checking notices the changed price and flushes an UPDATE when the transaction commits — no save call required."
+    "explain": "Panache is Hibernate underneath. A managed entity is tracked by the persistence context, so dirty checking notices the changed price and flushes an UPDATE when the transaction commits - no save call required."
   },
   {
     "q": "You `Product.listAll()` and then loop over each product touching a lazy `reviews` collection, and the endpoint is slow. What's the most likely cause?",
     "choices": [
-      "The N+1 problem — one SELECT for the list plus one per product for its reviews; Panache doesn't prevent it, so use join fetch and watch the SQL",
+      "The N+1 problem - one SELECT for the list plus one per product for its reviews; Panache doesn't prevent it, so use join fetch and watch the SQL",
       "Dev Services is using a slow throwaway container; it goes away in production",
       "Panache is missing an index, which it should have generated automatically",
       "listAll() is deprecated and you should use find() with paging to fix performance"
     ],
     "answer": 0,
-    "explain": "This is the classic N+1: the list query plus one lazy-load query per product. Panache's short syntax hides the boilerplate but not the database behavior, so the same JPA fix applies — fetch the relationship eagerly with join fetch (or an entity graph) and verify by counting the generated queries."
+    "explain": "This is the classic N+1: the list query plus one lazy-load query per product. Panache's short syntax hides the boilerplate but not the database behavior, so the same JPA fix applies - fetch the relationship eagerly with join fetch (or an entity graph) and verify by counting the generated queries."
   }
 ]
 ```

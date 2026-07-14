@@ -44,7 +44,7 @@ That covers the whole Python web world. The frameworks differ in ergonomics and 
 
 ## Why you still reach for a framework
 
-Let me be honest, because a roots guide that pretends raw WSGI/ASGI is enough would be doing you a disservice: you don't want to build a real app out of bare callables. It's genuinely tedious.
+Here's the plain truth, because a roots guide that pretends raw WSGI/ASGI is enough would be doing you a disservice: you don't want to build a real app out of bare callables. It's genuinely tedious.
 
 You'd hand-write the routing and keep it in sync. You'd parse query strings and JSON bodies yourself, then serialize responses by hand. There's no dependency injection, no validation, no friendly request object - you'd reach into `environ` and `scope` for every value and write the same boilerplate a thousand times. The frameworks exist because smart people got tired of doing exactly that, and the conveniences they add are real and worth having.
 

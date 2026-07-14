@@ -11,7 +11,7 @@ updated: 2026-07-10
 
 # Selecting & Filtering
 
-Loading a file gives you the whole table. Real work almost never wants the whole table — it wants *these columns* and *the rows where something is true*, and this phase is about carving out exactly that slice.
+Loading a file gives you the whole table. Real work almost never wants the whole table - it wants *these columns* and *the rows where something is true*, and this phase is about carving out exactly that slice.
 
 Here is the mental model to carry through everything below. Picture your sales DataFrame as a spreadsheet:
 
@@ -26,9 +26,9 @@ Here is the mental model to carry through everything below. Picture your sales D
 Two questions answer almost everything you'll ever do:
 
 1. **Which columns?** Grab them by name.
-2. **Which rows?** Build a *mask* — a column of True/False — and keep the True ones.
+2. **Which rows?** Build a *mask* - a column of True/False - and keep the True ones.
 
-Selecting columns is the easy half. The row half — boolean masks — is the real engine of pandas, and the thing worth getting fluent in. Let's take them in order.
+Selecting columns is the easy half. The row half - boolean masks - is the real engine of pandas, and the thing worth getting fluent in. Let's take them in order.
 
 ## Selecting columns
 
@@ -47,7 +47,7 @@ df["price"]
 Name: price, dtype: float64
 ```
 
-*What just happened:* `df["price"]` handed back a single column — and a single column is a **Series**, the 1-D pandas object from phase 1. Notice the output: it has the index on the left, the values on the right, and a `Name`/`dtype` footer. That's a Series, not a table.
+*What just happened:* `df["price"]` handed back a single column - and a single column is a **Series**, the 1-D pandas object from phase 1. Notice the output: it has the index on the left, the values on the right, and a `Name`/`dtype` footer. That's a Series, not a table.
 
 To pull several columns, pass a **list** of names:
 
@@ -64,15 +64,15 @@ df[["product", "price"]]
 4  Gadget  19.99
 ```
 
-*What just happened:* the inner `[...]` is a Python list of column names, and asking for a list of columns gives you back a **DataFrame** — a 2-D table, with column headers across the top.
+*What just happened:* the inner `[...]` is a Python list of column names, and asking for a list of columns gives you back a **DataFrame** - a 2-D table, with column headers across the top.
 
-> ⚠️ This is the single most common beginner trip-up: **single brackets vs double brackets.** `df["price"]` (one name) is a Series; `df[["price"]]` (a list with one name) is a one-column DataFrame. Same data, different *type* — and the type changes what methods work and what your downstream code expects. When something later complains that a Series has no such method, or a DataFrame showed up where you wanted a column, check your brackets first.
+> ⚠️ This is the single most common beginner trip-up: **single brackets vs double brackets.** `df["price"]` (one name) is a Series; `df[["price"]]` (a list with one name) is a one-column DataFrame. Same data, different *type* - and the type changes what methods work and what your downstream code expects. When something later complains that a Series has no such method, or a DataFrame showed up where you wanted a column, check your brackets first.
 
 ## `loc` vs `iloc`
 
-Selecting whole columns is fine, but often you want a specific *cell* or a rectangular block — particular rows *and* particular columns. pandas gives you two indexers for that, and the difference between them is the thing everyone has to internalize once and never forgets again.
+Selecting whole columns is fine, but often you want a specific *cell* or a rectangular block - particular rows *and* particular columns. pandas gives you two indexers for that, and the difference between them is the thing everyone has to internalize once and never forgets again.
 
-> 📝 **`loc` selects by LABEL** — the actual index values and column *names*. **`iloc` selects by POSITION** — integer offsets, counting from 0, exactly like list slicing. Label vs position. That's the whole distinction.
+> 📝 **`loc` selects by LABEL** - the actual index values and column *names*. **`iloc` selects by POSITION** - integer offsets, counting from 0, exactly like list slicing. Label vs position. That's the whole distinction.
 
 Here's `loc`, working by name:
 
@@ -97,7 +97,7 @@ df.loc[:, ["product", "units"]]   # all rows, just these two columns
 4  Gadget     60
 ```
 
-*What just happened:* `loc` reads the labels you give it. `0` is the row's index label, `"price"` is the column's name. The `:` means "every row," and the list picks columns by name. Because our index happens to be 0,1,2,… the row label `0` looks like a position — but it isn't. If the index were dates or product codes, you'd pass *those* to `loc`.
+*What just happened:* `loc` reads the labels you give it. `0` is the row's index label, `"price"` is the column's name. The `:` means "every row," and the list picks columns by name. Because our index happens to be 0,1,2,… the row label `0` looks like a position - but it isn't. If the index were dates or product codes, you'd pass *those* to `loc`.
 
 Now `iloc`, working by position:
 
@@ -122,15 +122,15 @@ df.iloc[:5]        # first five rows, like list slicing
 4 2026-01-05  Gadget   West     60  19.99
 ```
 
-*What just happened:* `iloc` ignores names entirely and counts. `[0, 3]` is "row index 0, column index 3" — and since columns go `date`(0), `product`(1), `region`(2), `units`(3), that cell is `120`. `df.iloc[:5]` slices the first five rows by position, and just like Python slices, the end is *exclusive*.
+*What just happened:* `iloc` ignores names entirely and counts. `[0, 3]` is "row index 0, column index 3" - and since columns go `date`(0), `product`(1), `region`(2), `units`(3), that cell is `120`. `df.iloc[:5]` slices the first five rows by position, and just like Python slices, the end is *exclusive*.
 
 > 💡 One quirk worth knowing: `loc` slicing is *inclusive* of its endpoint (`df.loc[0:2]` gives rows 0, 1, **and** 2), because labels aren't necessarily contiguous numbers. `iloc` slicing is *exclusive* like normal Python. When a slice returns one more or one fewer row than you expected, this is usually why.
 
-## Boolean filtering (masks) — the workhorse
+## Boolean filtering (masks) - the workhorse
 
 Now the important half: keeping rows where a condition holds. This is where you'll spend most of your pandas life, so go slow here.
 
-> 📝 A comparison on a column doesn't return one True/False — it returns a whole **Series of True/False**, one per row. That Series is called a **mask**. When you index the DataFrame *with* a mask, pandas keeps every row where the mask is True and drops the rest.
+> 📝 A comparison on a column doesn't return one True/False - it returns a whole **Series of True/False**, one per row. That Series is called a **mask**. When you index the DataFrame *with* a mask, pandas keeps every row where the mask is True and drops the rest.
 
 Look at the mask by itself first:
 
@@ -147,7 +147,7 @@ df["units"] > 100
 Name: units, dtype: bool
 ```
 
-*What just happened:* `df["units"] > 100` compared every value in the `units` column against 100 *at once* (vectorized — no loop) and gave back a boolean Series. Rows 0 and 3 cleared the bar; the rest didn't. This Series *is* the mask.
+*What just happened:* `df["units"] > 100` compared every value in the `units` column against 100 *at once* (vectorized - no loop) and gave back a boolean Series. Rows 0 and 3 cleared the bar; the rest didn't. This Series *is* the mask.
 
 Now hand that mask back to the DataFrame:
 
@@ -161,13 +161,13 @@ df[df["units"] > 100]
 3 2026-01-04   Gizmo   West    200   4.50
 ```
 
-*What just happened:* `df[ mask ]` kept only the rows where the mask was True — the two high-volume sales. The original index labels (0 and 3) come along for the ride, which is your proof these are the same rows from the source table, not renumbered copies.
+*What just happened:* `df[ mask ]` kept only the rows where the mask was True - the two high-volume sales. The original index labels (0 and 3) come along for the ride, which is your proof these are the same rows from the source table, not renumbered copies.
 
-That two-step — *build a mask, index with it* — is **the** way to filter rows in pandas. Everything in the next section is just building fancier masks.
+That two-step - *build a mask, index with it* - is **the** way to filter rows in pandas. Everything in the next section is just building fancier masks.
 
 ## Combining conditions
 
-Real filters usually have more than one clause: West region *and* more than 50 units. You combine masks with `&` (and), `|` (or), and `~` (not) — and there are two rules you must follow or pandas bites you.
+Real filters usually have more than one clause: West region *and* more than 50 units. You combine masks with `&` (and), `|` (or), and `~` (not) - and there are two rules you must follow or pandas bites you.
 
 ```python
 df[(df["region"] == "West") & (df["units"] > 50)]
@@ -180,9 +180,9 @@ df[(df["region"] == "West") & (df["units"] > 50)]
 4 2026-01-05  Gadget   West     60  19.99
 ```
 
-*What just happened:* two masks — "region is West" and "units over 50" — combined with `&`, which does an element-by-element AND. A row survives only if it's True in *both*. Each condition is wrapped in its own parentheses, and that's not optional.
+*What just happened:* two masks - "region is West" and "units over 50" - combined with `&`, which does an element-by-element AND. A row survives only if it's True in *both*. Each condition is wrapped in its own parentheses, and that's not optional.
 
-> ⚠️ **Use `&` / `|` / `~`, never Python's `and` / `or` / `not`.** The word `and` tries to collapse a whole Series into a single True/False and throws; the symbols operate element-wise, which is what you want. **And wrap every condition in parentheses.** `&` binds tighter than `>` in Python, so without parens, `df["region"] == "West" & df["units"] > 50` is parsed as `"West" & df["units"]` first — nonsense — and you get this classic error:
+> ⚠️ **Use `&` / `|` / `~`, never Python's `and` / `or` / `not`.** The word `and` tries to collapse a whole Series into a single True/False and throws; the symbols operate element-wise, which is what you want. **And wrap every condition in parentheses.** `&` binds tighter than `>` in Python, so without parens, `df["region"] == "West" & df["units"] > 50` is parsed as `"West" & df["units"]` first - nonsense - and you get this classic error:
 
 ```console
 ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
@@ -198,7 +198,7 @@ df[df["region"].isin(["West", "North"])]   # membership: region in a set
 df[df["units"].between(50, 150)]           # range: 50 <= units <= 150 (inclusive)
 ```
 
-*What just happened:* `~` flips a mask (keep the rows the condition is False for). `.isin([...])` builds a mask that's True wherever the value is in your list — far cleaner than chaining `==` with `|`. `.between(a, b)` is shorthand for `(col >= a) & (col <= b)`, inclusive on both ends. Each still returns a mask, so each still goes inside `df[ ... ]`.
+*What just happened:* `~` flips a mask (keep the rows the condition is False for). `.isin([...])` builds a mask that's True wherever the value is in your list - far cleaner than chaining `==` with `|`. `.between(a, b)` is shorthand for `(col >= a) & (col <= b)`, inclusive on both ends. Each still returns a mask, so each still goes inside `df[ ... ]`.
 
 ## `query()` & the assignment gotcha
 
@@ -217,7 +217,7 @@ df.query("region == 'West' and units > 50")
 
 *What just happened:* same result as the `&` version above, but easier to read. Inside the `query()` string you *do* write `and`/`or` (it's a mini-language pandas parses, not raw Python), and columns are referenced by name without `df[...]`. Use whichever style is clearer for the filter at hand; for long multi-clause filters, `query()` usually wins.
 
-Now the gotcha that catches everyone eventually. Filtering gives you a *view or a copy* of the original — pandas itself isn't always sure which — and **writing to a filtered slice may silently fail to update the original** while warning you about it:
+Now the gotcha that catches everyone eventually. Filtering gives you a *view or a copy* of the original - pandas itself isn't always sure which - and **writing to a filtered slice may silently fail to update the original** while warning you about it:
 
 ```python
 high = df[df["units"] > 100]
@@ -239,15 +239,15 @@ df.loc[df["units"] > 100, "price"] = 0.0   # edit the ORIGINAL, in place
 subset = df[df["units"] > 100].copy()      # an INDEPENDENT subset to edit freely
 ```
 
-*What just happened:* if you mean to change the original table, do the masking and the assignment in **one `.loc` step** — pandas knows that targets `df` directly, no ambiguity, no warning. If you instead want a separate working table, call `.copy()` to make the break explicit; now editing `subset` can't surprise you because it's genuinely its own object.
+*What just happened:* if you mean to change the original table, do the masking and the assignment in **one `.loc` step** - pandas knows that targets `df` directly, no ambiguity, no warning. If you instead want a separate working table, call `.copy()` to make the break explicit; now editing `subset` can't surprise you because it's genuinely its own object.
 
-> 💡 Step back and notice the shape of this whole phase: boolean masks are the heart of pandas. Selecting columns, `loc`/`iloc`, `query()` — all useful — but you will *build masks* constantly, every day you touch pandas. Get comfortable reading `df[(...) & (...)]` at a glance and most of the rest follows. Next phase puts these to work on data that's actually messy.
+> 💡 Step back and notice the shape of this whole phase: boolean masks are the heart of pandas. Selecting columns, `loc`/`iloc`, `query()` - all useful - but you will *build masks* constantly, every day you touch pandas. Get comfortable reading `df[(...) & (...)]` at a glance and most of the rest follows. Next phase puts these to work on data that's actually messy.
 
 ## Recap
 
 - **One column is a Series, a list of columns is a DataFrame.** `df["price"]` (single brackets) → Series; `df[["product", "price"]]` (double brackets) → DataFrame. Wrong type downstream usually traces back to your brackets.
 - **`loc` is by label, `iloc` is by position.** `df.loc[0, "price"]` uses index/column *names*; `df.iloc[0, 3]` counts from 0. `loc` slices are inclusive of the endpoint; `iloc` slices are exclusive.
-- **A comparison builds a mask** — a boolean Series — and `df[mask]` keeps the True rows. This two-step (build a mask, index with it) is the core way to filter.
+- **A comparison builds a mask** - a boolean Series - and `df[mask]` keeps the True rows. This two-step (build a mask, index with it) is the core way to filter.
 - **Combine conditions with `&` `|` `~`, not `and` `or` `not`, and parenthesize each clause.** Forgetting either gives "The truth value of a Series is ambiguous." `.isin([...])` and `.between(a, b)` build common masks cleanly.
 - **`query("...")` reads cleaner for complex filters** and lets you use bare column names and `and`/`or` inside the string.
 - **Editing a filtered slice triggers `SettingWithCopyWarning`** and may not write back. Use `df.loc[mask, "col"] = value` to edit the original, or `.copy()` to take an independent subset.

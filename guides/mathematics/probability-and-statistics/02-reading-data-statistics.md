@@ -13,7 +13,7 @@ updated: 2026-06-25
 
 You have a pile of numbers - salaries, page-load times, exam scores - and someone asks the
 most natural question in the world: *so, what's it like?* You can't read out all 10,000
-values. You need to compress them into a few honest numbers that capture the shape of the pile
+values. You need to compress them into a few clear numbers that capture the shape of the pile
 without lying about it.
 
 That's this phase. Three questions, three kinds of answer: **where is the center?**, **how
@@ -55,7 +55,7 @@ like they earn \$100 million. Nine earn \$50k; one earns a fortune. The mean got
 toward the one extreme value, and now it describes nobody.
 
 The **median** doesn't flinch. Line up all ten incomes and look at the middle: still about
-\$50,000. The median answers "what does a typical person here earn?" honestly, because a single
+\$50,000. The median gives a straight answer to "what does a typical person here earn?" because a single
 huge value can't move the middle of the line - it sits at the far end.
 
 This is the core lesson: **the mean is sensitive to outliers and skew; the median resists
@@ -63,7 +63,7 @@ them.** When data is lumpy - a few values far from the rest - the mean tells you
 lump, and the median tells you about the people.
 
 That's why you hear "median household income" and "median home price" in the news, almost never
-"average." For money, the median is the honest number.
+"average." For money, the median is the trustworthy number.
 
 ## How spread out: range and standard deviation
 
@@ -132,7 +132,7 @@ are between 2 and 4. That single `100` dragged the average into a range where no
 point lives. The median is `4` - the genuine middle of the pile - and it doesn't budge no
 matter how extreme that outlier gets. The standard deviation is large precisely because one
 value sits so far from the mean. Same data, two very different stories about "the typical
-value," and only one is honest.
+value," and only one tells it straight.
 
 ## For builders: why teams track p95, not the average
 
@@ -168,7 +168,7 @@ up anywhere you summarize counts - and counting itself has its own toolkit in
 - **Center**: the **mean** is the balance point, the **median** is the middle value, the
   **mode** is the most common value. On gentle data they agree.
 - **Mean vs median** is the key skill: the mean gets pulled by outliers and skew; the median
-  resists them. For money and other lumpy data, the median is the honest summary.
+  resists them. For money and other lumpy data, the median is the reliable summary.
 - **Spread**: the **range** is max minus min; **standard deviation** is the typical distance of
   values from the mean. Same center, different spread = different data.
 - **Shape**: a **distribution** describes how values pile up. The **normal** curve is the

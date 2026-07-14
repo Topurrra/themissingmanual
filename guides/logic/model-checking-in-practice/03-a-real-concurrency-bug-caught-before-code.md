@@ -2,7 +2,7 @@
 title: "A Real Concurrency Bug, Caught Before Code"
 guide: "model-checking-in-practice"
 phase: 3
-summary: "A worked lost-update race in a connection pool's reference count, the interleaving a model checker finds that human review misses, and the honest limits of model checking."
+summary: "A worked lost-update race in a connection pool's reference count, the interleaving a model checker finds that human review misses, and the real limits of model checking."
 tags: [logic, model-checking, concurrency-bugs, race-condition, formal-methods, limits]
 difficulty: advanced
 synonyms: ["lost update race example", "connection pool race condition", "concurrency bug model checker finds", "when is model checking not worth it", "limits of formal verification"]
@@ -13,7 +13,7 @@ updated: 2026-07-06
 
 Phase 2 explained the mechanism. This phase runs it on a genuine bug pattern - one that has shipped
 in real connection pools, semaphore implementations, and reference-counted resource managers - and
-then gets honest about where model checking stops helping.
+then gets clear-eyed about where model checking stops helping.
 
 ## The system: a bounded resource pool
 

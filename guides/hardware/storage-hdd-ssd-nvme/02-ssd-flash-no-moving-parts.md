@@ -64,7 +64,7 @@ apps, all snappy. Same CPU, same RAM; what changed is that every operation
 secretly waiting on a moving arm now isn't. The computer was rarely slow at *thinking*; it was slow at
 *fetching*.
 
-## The trade-offs (the honest part)
+## The trade-offs (the real part)
 
 An SSD isn't strictly better than an HDD on every axis. Two real costs:
 

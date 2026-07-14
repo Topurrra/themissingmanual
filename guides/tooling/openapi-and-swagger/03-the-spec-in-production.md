@@ -30,7 +30,7 @@ POST /bookmarks   { "title": "no url here" }
 
 *What just happened:* the request never reached your code. The middleware compared the body against the spec's schema, saw `url` missing, and returned a 400 with a precise reason. You wrote the rule once (in the spec) and it's enforced automatically. The same idea runs in reverse - *response* validation in tests catches the day your handler starts returning a shape the spec doesn't promise.
 
-> Validation is only as honest as the spec. If the spec is generated code-first from the same handlers it's "validating," it can't catch a mismatch - the handler and the rule have the same author. Design-first specs (written independently) make validation a genuine second opinion.
+> Validation is only as accurate as the spec. If the spec is generated code-first from the same handlers it's "validating," it can't catch a mismatch - the handler and the rule have the same author. Design-first specs (written independently) make validation a genuine second opinion.
 
 ## Mocking: an API before the API exists
 
@@ -53,7 +53,7 @@ schemathesis run --url http://localhost:3000 openapi.yaml
 # FAILED: GET /bookmarks/1 - response has 'created_at', spec declares 'createdAt'
 ```
 
-*What just happened:* Schemathesis read the spec, generated real requests for every endpoint, hit the running API, and compared each response against the promised schema. It found the drift a human review would have missed. Wire this into CI and the build goes red the moment code and contract part ways - the spec stays honest because a machine checks it on every push.
+*What just happened:* Schemathesis read the spec, generated real requests for every endpoint, hit the running API, and compared each response against the promised schema. It found the drift a human review would have missed. Wire this into CI and the build goes red the moment code and contract part ways - the spec stays accurate because a machine checks it on every push.
 
 ```text
   spec ──┐

@@ -105,7 +105,7 @@ def before_send(event, hint):
     return event
 ```
 
-*What just happened:* returning `None` from `before_send` drops the event so it's never sent or stored. `BrokenPipeError` from a client hanging up isn't your bug - filtering it keeps the dashboard honest.
+*What just happened:* returning `None` from `before_send` drops the event so it's never sent or stored. `BrokenPipeError` from a client hanging up isn't your bug - filtering it keeps the dashboard accurate.
 
 Second, alert on **state changes**, not on every event. The useful triggers are "a *new* issue appeared" and "a resolved issue *regressed*" - not "an event happened," which fires constantly for known issues.
 

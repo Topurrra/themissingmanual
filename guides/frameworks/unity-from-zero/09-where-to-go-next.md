@@ -15,11 +15,11 @@ Look at what you can actually do now. You can open the Unity editor and not feel
 
 And the quiet bigger win: the composition model you held onto the whole way through isn't a Unity quirk, it's how the engine *thinks*. You can read a scene now. You can look at a GameObject in the Inspector, see its stack of Components, and reason about why it behaves the way it does. That instinct carries into everything you build next.
 
-So this last phase isn't more `Update` loops. It's the map: where Unity sits among the other engines, the features you'll reach for as your games get bigger, an honest word about what gamedev actually demands, and one concrete thing to go finish.
+So this last phase isn't more `Update` loops. It's the map: where Unity sits among the other engines, the features you'll reach for as your games get bigger, a clear word about what gamedev actually demands, and one concrete thing to go finish.
 
 ## Unity vs the field
 
-Unity isn't the only engine, and pretending otherwise does you no favors. Here's the honest lay of the land for the three you'll hear about most.
+Unity isn't the only engine, and pretending otherwise does you no favors. Here's the clear-eyed lay of the land for the three you'll hear about most.
 
 ```mermaid
 flowchart TD
@@ -105,7 +105,7 @@ Three calls to take with you as you leave this guide:
     "explain": "ScriptableObjects are data assets - config, item definitions, event channels - that live in your project and are edited in the Inspector, keeping data out of your scenes. Coroutines handle timed sequences, the Animator handles animation, and DOTS is for massive object counts."
   },
   {
-    "q": "Which piece of advice matches the honest take on getting good at gamedev?",
+    "q": "Which piece of advice matches the straight-talk take on getting good at gamedev?",
     "choices": [
       "Start with a huge ambitious project so you learn everything at once",
       "Gamedev is purely a programming problem; art and audio don't matter",

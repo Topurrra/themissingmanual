@@ -40,7 +40,7 @@ it's flipping a coin.
 input doesn't always give the same output. A reliable test is *deterministic* - same code, same result,
 every time.
 
-**Why this is so much worse than a normal failure.** A real failure is honest: it tells you something is
+**Why this is so much worse than a normal failure.** A real failure is straight with you: it tells you something is
 broken, you fix it, it goes green. A flaky failure teaches the team a poison lesson - *red doesn't
 necessarily mean broken.* Once people learn that, here's what happens, every time:
 
@@ -117,7 +117,7 @@ test.skip('reconnects after network drop - FLAKY, see issue #482', () => {
 ```
 
 *What just happened:* The test is temporarily removed from the gate, with a breadcrumb (`#482`) so it's
-tracked, not forgotten. The build's green is honest again - quarantine is a holding cell, not a graveyard.
+tracked, not forgotten. The build's green means something again - quarantine is a holding cell, not a graveyard.
 
 ## Keeping the suite fast (so people run it)
 
@@ -179,7 +179,7 @@ merged anyway. The fix was one checkbox: make the check required. Suddenly red m
    red is ignorable, so real failures get ignored too. A flaky suite is worse than no suite.
 3. Flakiness comes from **timing** (fixed sleeps), **shared state / order**, and **external
    dependencies** - fix by waiting on conditions, isolating tests, and controlling the edges.
-4. Can't fix now? **Quarantine** the test (skip + tracking ticket) so the build is honestly green.
+4. Can't fix now? **Quarantine** the test (skip + tracking ticket) so the build stays reliably green.
 5. Keep the suite **fast** - mostly via the test pyramid ([Unit, Integration & E2E](/guides/unit-integration-e2e)),
    plus parallelism and caching - so people actually wait for it.
 6. **Required status checks / branch protection** make the gate real: the merge button stays blocked

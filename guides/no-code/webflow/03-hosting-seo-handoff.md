@@ -46,7 +46,7 @@ There's also `alt` text on every image - a short description of what the image s
 
 For Collection pages, you set these fields **once on the template**, often by binding the title tag to the item's Title field - so all fifty blog posts get sensible SEO automatically. Webflow also generates a `sitemap.xml` (a map of your pages for search engines) and lets you control `robots.txt` (which pages crawlers may visit) from the site settings.
 
-The honest caveat: these controls let you do SEO right, but they don't *do* SEO for you. Rankings come from useful content, real links, and time. Webflow removes the technical excuses; it doesn't replace the work.
+The plain caveat: these controls let you do SEO right, but they don't *do* SEO for you. Rankings come from useful content, real links, and time. Webflow removes the technical excuses; it doesn't replace the work.
 
 ## Performance: mostly handled, partly on you
 

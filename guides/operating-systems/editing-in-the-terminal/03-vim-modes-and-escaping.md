@@ -83,7 +83,7 @@ anyway" - it's what you use when you've made a mess and want to bail without sav
 
 📝 **Why `:q` sometimes refuses.** If you try `:q` after changing the file, vim stops you with
 `E37: No write since last change` - it's refusing to silently lose your edits, the same protective instinct
-nano has. Your two honest answers are `:wq` (keep the changes) or `:q!` (throw them away). vim won't decide
+nano has. Your two real answers are `:wq` (keep the changes) or `:q!` (throw them away). vim won't decide
 for you.
 
 ## The full survival workflow

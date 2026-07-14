@@ -36,7 +36,7 @@ Here's our record, byte by byte:
 
 📝 **Terminology:** *CRC32* is a fast 32-bit checksum, in Python's stdlib as `zlib.crc32`. It detects accidental corruption; it is not cryptographic and won't stop a malicious editor - the right tool here, where the enemy is crashes, not attackers.
 
-Notice what a record *doesn't* have: types, encodings, field names. To a storage engine, keys and values are **bytes**, period. Meaning belongs to the caller. That's why everything below traffics in `b"name"` rather than `"name"` - the honesty of `bytes` in, `bytes` out is exactly how real engines think.
+Notice what a record *doesn't* have: types, encodings, field names. To a storage engine, keys and values are **bytes**, period. Meaning belongs to the caller. That's why everything below traffics in `b"name"` rather than `"name"` - the plain fact of `bytes` in, `bytes` out is exactly how real engines think.
 
 ## Encoding a record
 
@@ -123,9 +123,9 @@ Two details deserve a hard look.
 your process (Python's buffer)  --flush()-->  OS page cache  --fsync()-->  the disk
 ```
 
-`self._log.write(...)` may only copy bytes into Python's userspace buffer. `flush()` pushes them to the operating system - now they survive your *process* crashing, because the OS owns them. But the OS keeps them in RAM (the page cache) and writes them to the physical disk at its leisure, seconds later. If the *machine* loses power in that window, flushed data is gone. `os.fsync()` is the third push: it blocks until the disk itself confirms the bytes are persistent. Only after `fsync` returns can you honestly tell a caller "your write is durable."
+`self._log.write(...)` may only copy bytes into Python's userspace buffer. `flush()` pushes them to the operating system - now they survive your *process* crashing, because the OS owns them. But the OS keeps them in RAM (the page cache) and writes them to the physical disk at its leisure, seconds later. If the *machine* loses power in that window, flushed data is gone. `os.fsync()` is the third push: it blocks until the disk itself confirms the bytes are persistent. Only after `fsync` returns can you truly tell a caller "your write is durable."
 
-That honesty has a price - `fsync` waits for a physical device, thousands of times slower than a memory copy. Every real database sits somewhere on this durability-versus-speed dial, and in phase 6 you'll measure the gap on your own machine and see exactly why Redis offers three settings for it. For now we pay full price on every write, because correct-then-fast beats fast-then-sorry.
+That certainty has a price - `fsync` waits for a physical device, thousands of times slower than a memory copy. Every real database sits somewhere on this durability-versus-speed dial, and in phase 6 you'll measure the gap on your own machine and see exactly why Redis offers three settings for it. For now we pay full price on every write, because correct-then-fast beats fast-then-sorry.
 
 ## Watch the log grow
 

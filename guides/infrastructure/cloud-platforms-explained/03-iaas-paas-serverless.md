@@ -133,7 +133,7 @@ cloud (or your own servers) with effort but no rewrite. Build deeply on one prov
 serverless triggers, managed queues, and specialized databases, and your application is woven into *that*
 provider - moving means rewriting.
 
-**The honest framing: lock-in is a trade, not a sin.** Those deeply-managed, provider-specific services
+**The clear-eyed framing: lock-in is a trade, not a sin.** Those deeply-managed, provider-specific services
 are often genuinely the most productive way to ship. The mistake isn't using them; it's using them
 *without knowing you're making the trade.* Decide deliberately how much portability this system is worth.
 

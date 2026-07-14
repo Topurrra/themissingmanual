@@ -61,7 +61,7 @@ Agentless is elegant, but "one control node opens an SSH connection to every tar
 $ ansible-playbook -i inventory.ini site.yml --forks 50
 ```
 
-*What just happened:* `--forks 50` lets Ansible work 50 hosts in parallel instead of the conservative default. Higher fan-out finishes faster but loads the control node's CPU, memory, and network harder. For genuinely large fleets people add SSH pipelining, mitogen, or pull-mode (`ansible-pull`, where each node pulls and runs its own config from git on a schedule - flipping the push model). The honest summary: Ansible is superb for tens to low hundreds of hosts and needs care beyond that.
+*What just happened:* `--forks 50` lets Ansible work 50 hosts in parallel instead of the conservative default. Higher fan-out finishes faster but loads the control node's CPU, memory, and network harder. For genuinely large fleets people add SSH pipelining, mitogen, or pull-mode (`ansible-pull`, where each node pulls and runs its own config from git on a schedule - flipping the push model). The straight summary: Ansible is superb for tens to low hundreds of hosts and needs care beyond that.
 
 ## Order, failure, and not breaking everything at once
 

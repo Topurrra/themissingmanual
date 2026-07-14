@@ -60,7 +60,7 @@ Here's where the cost from Phase 2 gets concrete. To trace reachability *correct
 
 ⚠️ **Gotcha.** Don't picture an old "freeze for a full second" collector - modern collectors (Go's, the JVM's G1/ZGC, V8's in Node and browsers) work *hard* to keep pauses tiny, doing much of their work concurrently while your program runs and only stopping the world for brief moments. The pauses are usually small enough to ignore. But "usually small" isn't "never" - and when you're chasing a rare tail-latency spike, "is this a GC pause?" is a question worth asking, not dismissing.
 
-This is also the honest answer to "is a garbage collector slower?" - not in a way most programs notice, but it spends some CPU on collection and introduces those occasional pauses, which is exactly the timing cost we put on the trade-off table in Phase 2.
+This is also the straight answer to "is a garbage collector slower?" - not in a way most programs notice, but it spends some CPU on collection and introduces those occasional pauses, which is exactly the timing cost we put on the trade-off table in Phase 2.
 
 ## The uncomfortable truth: leaks still happen
 

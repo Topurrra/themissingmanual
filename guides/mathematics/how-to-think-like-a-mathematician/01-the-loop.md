@@ -26,7 +26,7 @@ and the last one.
 1. **Understand the problem.** What are you given? What are you asked for? Could you
    state it back in your own words?
 2. **Devise a plan.** What approach might connect what you have to what you want?
-3. **Carry out the plan.** Do the work, one honest step at a time, checking each.
+3. **Carry out the plan.** Do the work, one careful step at a time, checking each.
 4. **Look back.** Did it answer the actual question? Does the answer make sense? What
    did you learn that you could reuse?
 

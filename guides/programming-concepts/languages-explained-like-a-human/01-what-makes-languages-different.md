@@ -54,7 +54,7 @@ STATIC (checked before running)
   The program never even builds until you fix it.
 ```
 
-**The trade-off, honestly.** Static typing trades a little upfront effort and ceremony for fewer surprises
+**The trade-off, plainly.** Static typing trades a little upfront effort and ceremony for fewer surprises
 later, and it makes large codebases easier to change safely (the compiler re-checks everything). Dynamic
 typing trades that safety net for speed and looseness - you move fast and write less, which is wonderful for
 small scripts and exploration and occasionally painful when a project gets big. Neither is "better." They're
@@ -93,7 +93,7 @@ flowchart TB
   end
 ```
 
-**The trade-off, honestly.** Compiling costs you a build step and a slower edit-test loop, and buys you fast
+**The trade-off, plainly.** Compiling costs you a build step and a slower edit-test loop, and buys you fast
 startup, fast execution, and an artifact you can hand someone with nothing else installed. Interpreting buys
 you an instant edit-run-edit loop (great for learning and iterating) and costs you raw speed plus a runtime
 dependency on the target machine. Again: a bet, not a verdict.
@@ -129,7 +129,7 @@ OWNERSHIP     you allocate, compiler     fast AND safe, but you must
               proves when to free.       learn its rules first.
 ```
 
-**The trade-off, honestly.** This is the axis where "free lunch" doesn't exist. GC buys ease and safety with
+**The trade-off, plainly.** This is the axis where "free lunch" doesn't exist. GC buys ease and safety with
 some runtime overhead. Ownership buys speed and safety with a steep learning curve. Manual buys raw control
 with sharp edges. Most everyday application work is perfectly happy with GC; you reach for ownership or
 manual when speed and predictability are the whole point.
@@ -153,7 +153,7 @@ day one, while one without means you build everything yourself. Where a language
 categories of work: only one mainstream language runs natively in every web browser, for instance, and that
 single fact has shaped careers.
 
-**The trade-off, honestly.** A huge ecosystem means "there's a library for that" - and also more
+**The trade-off, plainly.** A huge ecosystem means "there's a library for that" - and also more
 abandoned, half-broken, or conflicting libraries to wade through. A smaller, newer ecosystem is cleaner and
 more consistent but may be missing the exact thing you need. Maturity and breadth are a genuine asset, not a
 detail to wave away.
@@ -176,4 +176,4 @@ Python here, JavaScript there, Go and Rust over here - each a deliberate set of 
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 2: The Four, Honestly →](02-the-four-honestly.md)
+[← Guide overview](_guide.md) · [Phase 2: The Four, Plainly →](02-the-four-honestly.md)

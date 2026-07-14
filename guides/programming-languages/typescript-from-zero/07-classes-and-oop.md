@@ -15,7 +15,7 @@ You already know what a class *is*. Over in [JavaScript from Zero](/guides/javas
 
 **TypeScript doesn't give classes new powers - it adds a type layer on top of the class you already know:** field types, visibility rules, and contracts that say "this class must match that shape." All of it is checked before your code runs, and most is *erased* before it ships. The class that lands in the browser is plain JavaScript; the types were a conversation between you and the checker.
 
-One honest caveat: TypeScript leans functional, so you won't reach for classes as often as in Java or C#. They earn their keep in two places - **stateful objects** (data and behavior bundled together, like an account) and **implementing an interface** (when something else expects a specific shape). That's where we'll focus.
+One straight caveat: TypeScript leans functional, so you won't reach for classes as often as in Java or C#. They earn their keep in two places - **stateful objects** (data and behavior bundled together, like an account) and **implementing an interface** (when something else expects a specific shape). That's where we'll focus.
 
 ## Typed fields and a typed constructor
 

@@ -61,7 +61,7 @@ Sandbox only   → agent can't touch the real thing at all.   (untrusted / new)
 
 You do not have to commit to one. The right move with a new agent, or a new kind of task, is to start tight and loosen as it earns trust. Run it in a sandbox or with approvals the first few times. Watch where it stumbles. Once you have seen it handle that task cleanly a dozen times, you can let it run with a lighter touch - for *that* task. A different task starts tight again.
 
-## A word of honesty
+## A word of straight talk
 
 Agents are genuinely useful and getting better fast. They are also not trustworthy in the way a careful colleague is. They will, on occasion, do something confident and wrong - misread a result, take a step you did not intend, declare a half-done job finished. This is not a flaw that the next version fully erases; it is the nature of a system that decides step by step in a messy world.
 

@@ -117,7 +117,7 @@ The catch: auto-rollback only works for changes Liquibase can reverse. Raw SQL i
             sql: SELECT 1
 ```
 
-*What just happened:* because raw SQL has no automatic inverse, you declared the rollback explicitly. Here the update is not reversible (the old casing is gone), so the rollback is a deliberate no-op, `SELECT 1` does nothing, documenting that this change cannot be undone. Being honest about that in the changelog beats a rollback that silently corrupts data.
+*What just happened:* because raw SQL has no automatic inverse, you declared the rollback explicitly. Here the update is not reversible (the old casing is gone), so the rollback is a deliberate no-op, `SELECT 1` does nothing, documenting that this change cannot be undone. Being upfront about that in the changelog beats a rollback that silently corrupts data.
 
 > Test your rollbacks. A rollback you have never run is a guess, not a safety net. Many teams run `update` then `rollback` in CI against a throwaway database so every changeset is proven reversible (or proven irreversible on purpose) before it reaches production.
 

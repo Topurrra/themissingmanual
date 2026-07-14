@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 You opened a repo, ran the build, and got coffee. Forty minutes later it was still going - and your one-line change rebuilt the entire world. Bazel exists to make that not happen: it knows exactly what each piece depends on, rebuilds only what actually changed, and runs everything it can in parallel. The price is that you have to tell it the truth about your code, in its own language, up front.
 
-This guide is about that bargain. What Bazel is really doing under the hood, how you live with it day to day, and the honest question of whether your project is big enough to need it at all.
+This guide is about that bargain. What Bazel is really doing under the hood, how you live with it day to day, and the real question of whether your project is big enough to need it at all.
 
 ## How to read this
 

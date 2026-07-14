@@ -211,7 +211,7 @@ alembic downgrade -1
 
 *What just happened:* Alembic looked at the current revision, ran its `downgrade()` function
 (here, `op.drop_table("books")`), and moved the version pointer back one. This is why both functions
-matter: a migration is only as reversible as its `downgrade()` is honest. `-1` means "one step
+matter: a migration is only as reversible as its `downgrade()` is accurate. `-1` means "one step
 back"; you can also downgrade to a specific revision id, or all the way to `base` (the very
 beginning).
 

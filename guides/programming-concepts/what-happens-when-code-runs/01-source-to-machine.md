@@ -86,7 +86,7 @@ Hello, world!
 
 ⚠️ **Gotcha - "compiled" and "interpreted" describe how a language is *usually run*, not a law of nature.** The same language can often be run either way, and many modern languages blur the line (some interpreters compile hot code to machine instructions while running, a technique called just-in-time compilation). So when someone says "Python is interpreted," hear it as "Python is normally run by an interpreter," not "Python can only ever be interpreted." Don't over-trust the label.
 
-## The honest comparison
+## The straight comparison
 
 Neither approach is "better" - they're optimized for different moments. Here's both sides, plainly:
 

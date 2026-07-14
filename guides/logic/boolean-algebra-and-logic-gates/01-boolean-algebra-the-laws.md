@@ -190,7 +190,7 @@ Simplifying boolean conditions buys you three concrete things:
 - **Clearer guards.** A short condition is one a reviewer can hold in their head.
 - **Fewer bugs.** Redundant terms (`A + A·B`) are where a future edit changes one copy and
   forgets the other.
-- **Honest intent.** When the code says `isAdmin && !isSuspended`, the rule is obvious; the
+- **Clear intent.** When the code says `isAdmin && !isSuspended`, the rule is obvious; the
   tangled version leaves everyone guessing what it tests.
 
 You don't have to do this by hand every time. But knowing the laws means you can *recognize*

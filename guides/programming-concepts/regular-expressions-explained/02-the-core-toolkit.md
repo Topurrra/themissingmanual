@@ -182,7 +182,7 @@ the toolkit.
 *sensible*. Knowing where that line falls - and not asking regex to cross it - is half of using it
 well.
 
-## An honest word: the "perfect email regex" is a trap
+## A straight word: the "perfect email regex" is a trap
 
 A rite of passage is trying to write one regex that matches *every* valid email address and rejects
 every invalid one. Don't. The rules for what's technically a valid email are genuinely strange and

@@ -133,13 +133,13 @@ afterAll(async () => {
 Sometimes you find a flaky test and genuinely can't fix it this minute - it's deep, you're mid-incident, the owner is out. Two of your three options are wrong: leaving it failing randomly **poisons trust** (Phase 1's warning), and deleting it **loses coverage** silently. The right move is the third: **quarantine** it.
 
 ```javascript
-// Skip until fixed - keeps the build honestly green without losing the test.
+// Skip until fixed - keeps the build reliably green without losing the test.
 test.skip('reconnects after network drop - FLAKY, see issue #482', () => {
   // ...
 });
 ```
 
-*What just happened:* The test is pulled out of the gate *with a breadcrumb* - a tracking issue so it's remembered, not forgotten. The build's green is honest again, with a paper trail back to the work. Quarantine is a holding cell, not a graveyard.
+*What just happened:* The test is pulled out of the gate *with a breadcrumb* - a tracking issue so it's remembered, not forgotten. The build's green means something again, with a paper trail back to the work. Quarantine is a holding cell, not a graveyard.
 
 🪖 **War story.** The difference between a healthy team and a doomed one isn't whether they have flaky tests - everyone does. It's what they do with them. The doomed team adds a retry and moves on; a year later "CI is flaky" is a fact of life nobody questions. The healthy team quarantines with a ticket, fixes them off the critical path, and keeps the green check meaning something. Same flakes, opposite outcomes.
 
@@ -162,7 +162,7 @@ For builders: in CI, a flaky test is a slow leak in the thing protecting your `m
 - **Diagnose first.** Rerun in a loop, isolate (alone vs. in-suite), and pin seed + order to turn "sometimes" into "always/never." A reproducible flake is half-fixed.
 - **Fix by taking control:** freeze the clock, seed randomness, `await` async work, isolate and tear down state, fake externals, close every resource you open.
 - **Don't retry away a race.** Retries hide flakiness and slow the suite; they belong around unreliable externals in E2E, not your own code's races.
-- **Quarantine, never silently ignore.** Can't fix today? Skip with a tracking issue so the build is honestly green and the work is remembered.
+- **Quarantine, never silently ignore.** Can't fix today? Skip with a tracking issue so the build stays reliably green and the work is remembered.
 
 ```quiz
 [
@@ -182,7 +182,7 @@ For builders: in CI, a flaky test is a slow leak in the thing protecting your `m
     "q": "You found a flaky test but can't fix it right now. What's the correct move?",
     "choices": ["Delete it to keep the build green", "Leave it failing randomly", "Quarantine it: skip it with a tracking issue", "Wrap the whole suite in a retry"],
     "answer": 2,
-    "explain": "Quarantine keeps the build honestly green without losing track: skip plus a tracking issue is a tracked promise to fix, unlike deleting or silently ignoring."
+    "explain": "Quarantine keeps the build reliably green without losing track: skip plus a tracking issue is a tracked promise to fix, unlike deleting or silently ignoring."
   }
 ]
 ```

@@ -64,7 +64,7 @@ print(is_common("w3lc0me"))    # -> 'welcome' -> True
 print(is_common("hunter2"))    # genuinely not common -> False
 ```
 
-Run it. `P@ssw0rd!` is caught now. Notice `Welcome1` slips through this naive normalizer - a digit in the *middle* of the strip set isn't removed, and we don't strip trailing digits. That's a real limit, and it's the honest signal that hand-rolled normalization only gets you so far. Catching everything is what a real wordlist and a real breach database are for, which we'll get to.
+Run it. `P@ssw0rd!` is caught now. Notice `Welcome1` slips through this naive normalizer - a digit in the *middle* of the strip set isn't removed, and we don't strip trailing digits. That's a real limit, and it's the clear signal that hand-rolled normalization only gets you so far. Catching everything is what a real wordlist and a real breach database are for, which we'll get to.
 
 ## The full checker
 
@@ -137,7 +137,7 @@ A `set` of a million strings still answers `in` in a microsecond, so this scales
 
 ## Where real systems go further
 
-Our checker is honest about what it is: a good floor and a friendly nudge. Production password checking does more, and it's worth knowing the names so you can reach for the right tool later.
+Our checker is upfront about what it is: a good floor and a friendly nudge. Production password checking does more, and it's worth knowing the names so you can reach for the right tool later.
 
 | Idea | What it adds | Why ours doesn't |
 |------|--------------|------------------|

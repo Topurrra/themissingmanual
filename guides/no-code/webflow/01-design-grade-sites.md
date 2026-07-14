@@ -71,6 +71,6 @@ The rule that saves headaches: design on desktop first, then check the smaller v
 
 ## Who Webflow is for
 
-Be honest with yourself about the trade. Webflow rewards people who care about how their site looks and are willing to spend a weekend learning the canvas. Designers, marketers building a brand site, founders who want pixel control without hiring out - this is your tool.
+Be clear with yourself about the trade. Webflow rewards people who care about how their site looks and are willing to spend a weekend learning the canvas. Designers, marketers building a brand site, founders who want pixel control without hiring out - this is your tool.
 
 If you want a site live in twenty minutes with no learning curve, or you only need to fill in a template and never touch layout, a simpler builder will frustrate you less. Webflow's ceiling is high, but so is its first step. The good news: the four ideas above - nested boxes, padding and margin, flex, and classes - cover most of what you'll do. Everything else is detail.

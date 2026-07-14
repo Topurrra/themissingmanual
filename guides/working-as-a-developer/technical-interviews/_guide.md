@@ -32,7 +32,7 @@ about a time," and the offer conversation at the end.
 2. **[The Coding Round Without the Panic](02-the-coding-round-without-the-panic.md)** - thinking out loud,
    asking clarifying questions, admitting you forgot the syntax, and what to do when you get stuck.
 3. **[System Design and the Human Round](03-system-design-and-the-human-round.md)** - why the non-coding
-   rounds still count, good questions to ask them, and an honest look at negotiating an offer.
+   rounds still count, good questions to ask them, and a clear-eyed look at negotiating an offer.
 
 Read them in order if an interview is coming up. If you're already mid-loop and the coding round is what's
 looming, skip to Phase 2.

@@ -12,10 +12,10 @@ updated: 2026-07-10
 # Tensor Operations & the GPU
 
 In [Phase 1](01-what-pytorch-is-and-tensors.md) you met the tensor: a multi-dimensional array that's
-GPU-ready and autograd-aware — that was the noun. This phase is the verbs, the things you *do* to tensors.
+GPU-ready and autograd-aware - that was the noun. This phase is the verbs, the things you *do* to tensors.
 
 Here's the mental model to carry through everything below: **a tensor operation acts on the whole tensor
-at once, not one number at a time.** When you write `a + b`, you're not asking for a loop over elements —
+at once, not one number at a time.** When you write `a + b`, you're not asking for a loop over elements - 
 you're asking the underlying engine (highly optimized C++, and on a GPU, thousands of cores) to do the
 whole thing in one shot. Your job is to line the shapes up correctly; the engine does the grunt work. Get
 comfortable here and the rest of PyTorch is mostly arranging these operations in the right order.
@@ -26,7 +26,7 @@ shape a layer expects), and finally moving the work onto a GPU.
 
 ## 1. Elementwise math
 
-The everyday operators — `+`, `-`, `*`, `/`, `**` — work on whole tensors, position by position. No loop
+The everyday operators - `+`, `-`, `*`, `/`, `**` - work on whole tensors, position by position. No loop
 required. This is called **vectorized** math, and it's the first reason PyTorch is fast.
 
 ```python
@@ -47,7 +47,7 @@ tensor([1., 4., 9.])
 ```
 
 *What just happened:* Each operation lined up `a` and `b` by position and combined them. `a + b` added
-the first elements (1 + 10), then the second (2 + 20), and so on — all at once, no `for` loop in your
+the first elements (1 + 10), then the second (2 + 20), and so on - all at once, no `for` loop in your
 code. `a ** 2` squared every element independently. To you it reads like ordinary arithmetic; underneath,
 it's a single fast pass over the data.
 
@@ -70,14 +70,14 @@ tensor(14.)
 tensor(4.6667)
 ```
 
-*What just happened:* `torch.sqrt` and `torch.exp` are elementwise — same shape out as in. `x.sum()` and
+*What just happened:* `torch.sqrt` and `torch.exp` are elementwise - same shape out as in. `x.sum()` and
 `x.mean()` are **reductions**: they squash the whole tensor into a single scalar tensor. You'll lean on
-`sum` and `mean` constantly later — a loss value, for instance, is usually the *mean* error over a batch.
+`sum` and `mean` constantly later - a loss value, for instance, is usually the *mean* error over a batch.
 
-💡 Notice `x.sum()` returns `tensor(14.)`, not `14.` — it's still a tensor (a zero-dimensional one). If
+💡 Notice `x.sum()` returns `tensor(14.)`, not `14.` - it's still a tensor (a zero-dimensional one). If
 you need a plain Python number out of it, call `.item()`.
 
-## 2. Matrix multiply — the heart of a neural net
+## 2. Matrix multiply - the heart of a neural net
 
 Elementwise math is the warm-up. The operation deep learning is actually *built* from is **matrix
 multiplication**, written `@` (or `torch.matmul`).
@@ -106,7 +106,7 @@ dotted with `v` (`[1, 1]`) gives `1*1 + 2*1 = 3`; row 2 (`[3, 4]`) gives `3*1 + 
 shape `(2, 1)`. This dot-product-of-rows-and-columns pattern is the single most-run computation in all of
 deep learning.
 
-⚠️ **Shapes must align.** To multiply `(m, k) @ (k, n)` the inner dimensions must match — the number of
+⚠️ **Shapes must align.** To multiply `(m, k) @ (k, n)` the inner dimensions must match - the number of
 columns on the left must equal the number of rows on the right. Mismatch them and PyTorch stops you cold:
 
 ```python
@@ -121,7 +121,7 @@ RuntimeError: mat1 and mat2 shapes cannot be multiplied (2x3 and 2x3)
 ```
 
 *What just happened:* `left` is `(2, 3)` and `right` is `(2, 3)`. For `@` to work the inner dimensions
-have to agree: `(2, 3) @ (3, n)` is fine, but here the left's `3` columns meet the right's `2` rows —
+have to agree: `(2, 3) @ (3, n)` is fine, but here the left's `3` columns meet the right's `2` rows - 
 no match, so PyTorch refuses rather than guessing. This is one of the most common errors you'll hit, and
 the message tells you exactly which two shapes collided. Read it, fix the shapes, move on.
 
@@ -148,17 +148,17 @@ tensor([[11., 22., 33.],
         [14., 25., 36.]])
 ```
 
-*What just happened:* `matrix` is `(2, 3)` and `bias` is just `(3,)` — a single row. Instead of erroring,
+*What just happened:* `matrix` is `(2, 3)` and `bias` is just `(3,)` - a single row. Instead of erroring,
 PyTorch **broadcast** the bias: it acted as if `bias` were stretched to `(2, 3)` (copied down both rows)
 and then added elementwise. `[10, 20, 30]` got added to row 1 *and* row 2. No actual copy happens in
-memory — it's a view-level trick — which is why it's fast and memory-cheap. This is exactly the
+memory - it's a view-level trick - which is why it's fast and memory-cheap. This is exactly the
 `input + bias` step inside a layer.
 
 The rule (identical to NumPy's): line the shapes up from the **right**. Two dimensions are compatible if
 they're equal, or one of them is `1` (or missing). Here `(2, 3)` and `(3,)` align as `(2, 3)` and
-`(1, 3)` — the `1` stretches to `2`. Done.
+`(1, 3)` - the `1` stretches to `2`. Done.
 
-⚠️ Broadcasting is powerful but it's *silent* — it won't always error when you make a mistake; sometimes
+⚠️ Broadcasting is powerful but it's *silent* - it won't always error when you make a mistake; sometimes
 it produces a valid-but-wrong shape. A `(3, 1)` and a `(1, 3)` will broadcast to `(3, 3)`, which is
 occasionally what you wanted and occasionally a bug you won't notice until your loss looks insane.
 **Always sanity-check the shape of a broadcast result** with `.shape` if you're unsure:
@@ -175,8 +175,8 @@ torch.Size([3, 3])
 ```
 
 *What just happened:* A column `(3, 1)` plus a row `(1, 3)` broadcast both directions and produced a full
-`(3, 3)` grid — every column value added to every row value. Perfectly legal PyTorch, and a real surprise
-if you expected a length-3 result. The lesson isn't "avoid broadcasting" — it's "print the shape when the
+`(3, 3)` grid - every column value added to every row value. Perfectly legal PyTorch, and a real surprise
+if you expected a length-3 result. The lesson isn't "avoid broadcasting" - it's "print the shape when the
 result matters."
 
 ## 4. Reshaping & indexing
@@ -185,7 +185,7 @@ Most of practical PyTorch is getting data into the *shape* a layer expects, then
 PyTorch gives you sharp tools for both.
 
 **Reshape** rearranges the same data into a new shape (the total number of elements must stay the same).
-`.reshape()` and `.view()` do the same thing for our purposes — `.reshape()` is the safe default.
+`.reshape()` and `.view()` do the same thing for our purposes - `.reshape()` is the safe default.
 
 ```python
 x = torch.arange(6)          # tensor([0, 1, 2, 3, 4, 5]), shape (6,)
@@ -202,11 +202,11 @@ tensor([[0, 1],
         [4, 5]])
 ```
 
-*What just happened:* The six numbers never changed — only how they're laid out. `(6,)` became `(2, 3)`
+*What just happened:* The six numbers never changed - only how they're laid out. `(6,)` became `(2, 3)`
 and then `(3, 2)`. The element count (6) is identical each time, which is the one rule reshape enforces.
 
 **`.squeeze()` and `.unsqueeze()`** remove or add a dimension of size 1. This sounds fussy, but it's
-everywhere — a model often expects a batch dimension, so you wrap a single example with `.unsqueeze(0)`,
+everywhere - a model often expects a batch dimension, so you wrap a single example with `.unsqueeze(0)`,
 and you peel an extra dimension back off the output with `.squeeze()`.
 
 ```python
@@ -224,7 +224,7 @@ torch.Size([3])
 ```
 
 *What just happened:* `unsqueeze(0)` inserted a new axis at the front, turning a lone `(3,)` vector into a
-`(1, 3)` "batch of one" — the shape many models demand. `squeeze()` then dropped that size-1 axis, getting
+`(1, 3)` "batch of one" - the shape many models demand. `squeeze()` then dropped that size-1 axis, getting
 us back to `(3,)`. You'll do this dance constantly when feeding single examples to a model built for
 batches.
 
@@ -247,17 +247,17 @@ tensor(22)
 ```
 
 *What just happened:* `g[0]` grabbed the whole first row. `g[:, 1]` used `:` to mean "all rows" and `1`
-to pick column 1 — that's how you slice a column. `g[1, 2]` indexed both dimensions at once for a single
+to pick column 1 - that's how you slice a column. `g[1, 2]` indexed both dimensions at once for a single
 element. Same syntax you already know from NumPy, no relearning required.
 
-💡 Shape-wrangling is a genuinely large part of day-to-day PyTorch, and here's the honest truth most
+💡 Shape-wrangling is a genuinely large part of day-to-day PyTorch, and here's the plain truth most
 tutorials skip: **the majority of PyTorch bugs are shape bugs.** A model that "doesn't work" is far more
 often a `(batch, features)` that should've been `(features, batch)` than a deep conceptual error. When
 something breaks, print `.shape` first.
 
 ## 5. The GPU
 
-Now the payoff. 📝 Everything above runs fine on your CPU — but deep learning runs on **GPUs**, and it's
+Now the payoff. 📝 Everything above runs fine on your CPU - but deep learning runs on **GPUs**, and it's
 worth understanding *why.*
 
 A CPU has a handful of very fast, very general cores (see
@@ -267,7 +267,7 @@ math in parallel. And what is a matrix multiply? Thousands of independent multip
 can all happen at once. That's a perfect match. The same training that takes a CPU hours can take a GPU
 minutes, purely because the GPU does the parallel arithmetic of deep learning far faster.
 
-In PyTorch, a tensor lives on a **device** — either `"cpu"` or `"cuda"` (NVIDIA GPU). You move tensors
+In PyTorch, a tensor lives on a **device** - either `"cpu"` or `"cuda"` (NVIDIA GPU). You move tensors
 between devices with `.to(device)`. The standard, do-it-once-at-the-top pattern looks like this:
 
 ```python
@@ -287,7 +287,7 @@ tensor([1., 2., 3.], device='cuda:0')
 ```
 
 *What just happened:* `torch.cuda.is_available()` checks whether a usable GPU exists; if so we pick
-`"cuda"`, otherwise we fall back to `"cpu"`. Then `x.to(device)` moved the tensor onto that device — note
+`"cuda"`, otherwise we fall back to `"cpu"`. Then `x.to(device)` moved the tensor onto that device - note
 the output now shows `device='cuda:0'` (GPU number 0). The exact same code runs unchanged on a laptop with
 no GPU (it'd print `cpu`) and on a Colab machine with one. That's the goal: **device-agnostic code.**
 
@@ -307,12 +307,12 @@ RuntimeError: Expected all tensors to be on the same device, but found at least
 two devices, cuda:0 and cpu!
 ```
 
-*What just happened:* `a` lives on `cuda:0` and `b` lives on `cpu`. An operation can't span two devices —
+*What just happened:* `a` lives on `cuda:0` and `b` lives on `cpu`. An operation can't span two devices - 
 the data would have to physically move, and PyTorch won't do that silently behind your back. The error
 names both devices so you can see the mismatch. The fix is to put `b` on the GPU too (`b = b.to("cuda")`).
 
 💡 The whole headache disappears if you adopt one habit: **pick `device` once, then `.to(device)`
-everything** — your model and every batch of data. Because you reuse the same `device` variable, your
+everything** - your model and every batch of data. Because you reuse the same `device` variable, your
 tensors can't drift onto different devices. This one discipline prevents the most common GPU bug in
 PyTorch, and it's the pattern you'll see in every training loop from Phase 6 onward.
 
@@ -320,12 +320,12 @@ PyTorch, and it's the pattern you'll see in every training loop from Phase 6 onw
 
 - **Elementwise math** (`+`, `*`, `torch.sqrt`, `torch.exp`, …) acts on the whole tensor at once, no
   loops; reductions like `.sum()` and `.mean()` collapse a tensor to a summary value.
-- **Matrix multiply** (`@` / `torch.matmul`) is the operation neural nets are built from — a layer is a
+- **Matrix multiply** (`@` / `torch.matmul`) is the operation neural nets are built from - a layer is a
   matmul plus a bias. Inner dimensions must align: `(m, k) @ (k, n) -> (m, n)`.
 - **Broadcasting** combines different-but-compatible shapes (like adding a bias vector to every row)
-  without copying — but it's silent, so check the result's `.shape` when in doubt.
+  without copying - but it's silent, so check the result's `.shape` when in doubt.
 - **Reshaping & indexing** (`.reshape`/`.view`, `.squeeze`/`.unsqueeze`, NumPy-style slicing) get data
-  into the shape a layer expects. Most PyTorch bugs are shape bugs — print `.shape` first.
+  into the shape a layer expects. Most PyTorch bugs are shape bugs - print `.shape` first.
 - **GPUs** do the parallel matmuls of deep learning far faster than CPUs. Write device-agnostic code: pick
   `device` once, `.to(device)` everything, and never mix tensors across devices.
 

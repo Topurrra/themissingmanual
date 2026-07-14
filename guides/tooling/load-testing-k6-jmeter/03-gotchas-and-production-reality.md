@@ -76,7 +76,7 @@ Even a careful test is a model, and the territory has features the map omits. Ke
 - **Real traffic is spiky and mixed.** Users do not arrive in a tidy ramp. They spike, they hit a mix of cheap and expensive endpoints, and they retry on failure (which *amplifies* load right when you can least afford it). A single-endpoint test misses this entirely.
 - **Downstream dependencies have their own limits.** Your service may scale fine, but the third-party payment API, the shared database, or the rate-limited search backend may not. The bottleneck is often something you do not own.
 
-> The honest summary of any load test: it tells you a *lower bound* on your problems under one specific, simplified scenario. It cannot prove the system is fine. It can only prove it is not *clearly* broken in the way you tested. Treat a green run as one piece of evidence, not a guarantee.
+> The plain summary of any load test: it tells you a *lower bound* on your problems under one specific, simplified scenario. It cannot prove the system is fine. It can only prove it is not *clearly* broken in the way you tested. Treat a green run as one piece of evidence, not a guarantee.
 
 ## In the wild
 

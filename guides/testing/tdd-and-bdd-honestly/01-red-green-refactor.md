@@ -141,7 +141,7 @@ guessing; refactoring with them is engineering.
 ⚠️ **Gotcha - refactor means changing structure, *not* behavior.** If you find yourself changing what the
 code outputs during the refactor step, you've slipped back into writing new features. Add a failing test
 for that new behavior first (back to red). Keep the two activities separate; that separation is what keeps
-TDD honest.
+TDD clean.
 
 ## Why this saves you later
 

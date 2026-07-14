@@ -102,7 +102,7 @@ echo "<commit-hash>" >> .git-blame-ignore-revs
 
 **Warnings that everyone ignores.** If a rule is set to `"warn"`, it shows up but never fails CI - and warnings nobody is forced to fix pile up until they're noise. Decide deliberately: a rule that matters should be `"error"`; a rule that's truly advisory can be `"warn"`; a rule you don't care about should be `"off"`, not a warning that trains the team to ignore the linter.
 
-> The honest test of your setup: clone the repo fresh, make a deliberately messy and slightly buggy change, and try to merge it. If the editor cleans the mess, the hook catches what's left, and CI blocks the bug - your three nets hold.
+> The real test of your setup: clone the repo fresh, make a deliberately messy and slightly buggy change, and try to merge it. If the editor cleans the mess, the hook catches what's left, and CI blocks the bug - your three nets hold.
 
 ## In the wild
 

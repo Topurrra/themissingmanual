@@ -2,7 +2,7 @@
 title: "From Threats to Action"
 guide: "threat-modeling-a-real-system"
 phase: 3
-summary: "Prioritizing threat-model findings by real risk, turning them into concrete fixes, and being honest about what threat modeling doesn't replace."
+summary: "Prioritizing threat-model findings by real risk, turning them into concrete fixes, and being clear about what threat modeling doesn't replace."
 tags: [security, threat-modeling, risk-assessment, prioritization, appsec]
 difficulty: advanced
 synonyms: ["how to prioritize security findings", "likelihood vs impact security", "threat modeling vs code review", "what threat modeling does not cover"]

@@ -1,15 +1,15 @@
 ---
-title: "Honestly: When They Help, When They Don't"
+title: "Straight Talk: When They Help, When They Don't"
 guide: "tdd-and-bdd-honestly"
 phase: 3
-summary: "An honest, judgment-flagged take: TDD shines for well-understood logic and bug fixes and fights you on exploratory or UI work; BDD pays off when business stakeholders are involved and is overhead when they're not - and cargo-culting the ritual without the benefit helps no one."
+summary: "A clear, judgment-flagged take: TDD shines for well-understood logic and bug fixes and fights you on exploratory or UI work; BDD pays off when business stakeholders are involved and is overhead when they're not - and cargo-culting the ritual without the benefit helps no one."
 tags: [tdd, bdd, testing, judgment, when-to-use, trade-offs]
 difficulty: intermediate
 synonyms: ["is tdd worth it", "when should i use tdd", "when to use bdd", "is bdd overkill", "tdd downsides", "cargo cult tdd", "should i always do tdd"]
 updated: 2026-07-10
 ---
 
-# Honestly: When They Help, When They Don't
+# Straight Talk: When They Help, When They Don't
 
 Here's the phase the conference talks rarely give you. Everything below is **judgment** - a read after
 watching these techniques help on some projects and quietly waste everyone's time on others. Treat it as
@@ -50,10 +50,10 @@ decide to keep. Forcing TDD here means writing, and rewriting, tests for code yo
 spacing is pleasant - these aren't expressible as `assert`. You can test the logic *behind* a UI (does the
 button dispatch the right action?), and that's worth doing test-first. But the visual layer itself is judged
 by eyes, not assertions. Trying to TDD "the page looks good" produces brittle tests that break on every
-honest design tweak.
+plain design tweak.
 
 **Throwaway code and one-off scripts.** If you'll run it once and delete it, the test is overhead with no
-payoff. Be honest about whether it's really throwaway, though - plenty of "temporary" scripts outlive their
+payoff. Be clear-eyed about whether it's really throwaway, though - plenty of "temporary" scripts outlive their
 authors.
 
 Here's the same trade-off as a table you can scan:
@@ -108,7 +108,7 @@ The tell is always the same: **the ritual is present, but the benefit it exists 
 Catch yourself (or a team) doing the ceremony without the payoff, and that's the signal to stop and ask what
 problem you're actually solving.
 
-## The honest takeaway
+## The plain takeaway
 
 - **TDD** is a sharp tool for well-understood logic, bug fixes, and gnarly edge cases - and an awkward one
   for exploration and visual work. Use the loop where answers exist before the code; explore freely where
@@ -133,7 +133,7 @@ The developers who get the most out of these techniques aren't the most devout -
 5. **Tools, not religion.** Pick the technique that fits the job in front of you, and drop it when it
    doesn't.
 
-That's the honest picture: what TDD and BDD are, how to run each loop, and the judgment to use them where
+That's the plain picture: what TDD and BDD are, how to run each loop, and the judgment to use them where
 they genuinely help.
 
 ---

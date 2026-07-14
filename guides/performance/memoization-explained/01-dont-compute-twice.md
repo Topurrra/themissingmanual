@@ -17,15 +17,15 @@ updated: 2026-07-10
 
 # Don't compute the same answer twice
 
-Take a function that always gives the same output for the same input — no randomness, no reading a clock, no touching a database. Call it `f(5)` and you get a value back; call it again a minute later and you get exactly the same value, guaranteed, because nothing the function depends on has changed. So why did the second call redo all the work to arrive at an answer you already had?
+Take a function that always gives the same output for the same input - no randomness, no reading a clock, no touching a database. Call it `f(5)` and you get a value back; call it again a minute later and you get exactly the same value, guaranteed, because nothing the function depends on has changed. So why did the second call redo all the work to arrive at an answer you already had?
 
-**Memoization** is remembering that answer: the first time you call `f(5)`, you compute it and stash the result in a lookup keyed by the argument, `5`. The next time anything calls `f(5)`, you hand back the stashed value instead of running the function body again — same input, same output, computed once.
+**Memoization** is remembering that answer: the first time you call `f(5)`, you compute it and stash the result in a lookup keyed by the argument, `5`. The next time anything calls `f(5)`, you hand back the stashed value instead of running the function body again - same input, same output, computed once.
 
-> If a function always gives the same answer for the same input, computing that answer twice is pure waste — you're spending time to relearn something you already knew.
+> If a function always gives the same answer for the same input, computing that answer twice is pure waste - you're spending time to relearn something you already knew.
 
 ## The classic slow example: recursive Fibonacci
 
-The Fibonacci sequence is a textbook example precisely because the naive recursive version is dramatically, needlessly slow — and it's slow for exactly the reason memoization fixes. Each number in the sequence is the sum of the two before it: `fib(n) = fib(n-1) + fib(n-2)`.
+The Fibonacci sequence is a textbook example precisely because the naive recursive version is dramatically, needlessly slow - and it's slow for exactly the reason memoization fixes. Each number in the sequence is the sum of the two before it: `fib(n) = fib(n-1) + fib(n-2)`.
 
 ```js
 function fib(n) {
@@ -34,7 +34,7 @@ function fib(n) {
 }
 ```
 
-*What just happened:* this reads like a direct translation of the math, and it is — but look at what `fib(n - 1)` and `fib(n - 2)` each do internally. `fib(n - 1)` calls `fib(n - 2)` and `fib(n - 3)`, while `fib(n - 2)` calls `fib(n - 3)` and `fib(n - 4)` — so `fib(n - 3)` gets computed by *both* branches, and each of those recomputes its own overlapping subproblems too.
+*What just happened:* this reads like a direct translation of the math, and it is - but look at what `fib(n - 1)` and `fib(n - 2)` each do internally. `fib(n - 1)` calls `fib(n - 2)` and `fib(n - 3)`, while `fib(n - 2)` calls `fib(n - 3)` and `fib(n - 4)` - so `fib(n - 3)` gets computed by *both* branches, and each of those recomputes its own overlapping subproblems too.
 
 ```text
                     fib(5)
@@ -59,11 +59,11 @@ fib(30)  ->      2,692,537 calls
 fib(40)  ->    331,160,281 calls
 ```
 
-*What just happened:* going from `n=10` to `n=40` — four times larger input — turned 177 calls into over 331 million. That's not linear, or even polynomial: naive recursive Fibonacci does roughly `2^n` work for an input of size `n`, yet there are only 41 *distinct* answers between `fib(0)` and `fib(40)`. You're doing 331 million calls to learn 41 numbers you'd only need to learn once each.
+*What just happened:* going from `n=10` to `n=40` - four times larger input - turned 177 calls into over 331 million. That's not linear, or even polynomial: naive recursive Fibonacci does roughly `2^n` work for an input of size `n`, yet there are only 41 *distinct* answers between `fib(0)` and `fib(40)`. You're doing 331 million calls to learn 41 numbers you'd only need to learn once each.
 
 ## What memoization changes
 
-Now hold onto the fix conceptually, before the mechanics in Phase 2: keep a lookup table from `n` to `fib(n)`. Before computing `fib(n)`, check the table — if it's already there, return it immediately (no recursion, no repeated subtree); if it isn't, compute it the normal way and write the answer into the table before returning.
+Now hold onto the fix conceptually, before the mechanics in Phase 2: keep a lookup table from `n` to `fib(n)`. Before computing `fib(n)`, check the table - if it's already there, return it immediately (no recursion, no repeated subtree); if it isn't, compute it the normal way and write the answer into the table before returning.
 
 ```text
 fib(5) called, not in table -> needs fib(4) and fib(3)
@@ -76,11 +76,11 @@ fib(4) resumes -> already has fib(3) and fib(2) -> computes, stores fib(4)
 fib(5) resumes -> already has fib(4) and fib(3) -> computes, stores fib(5)
 ```
 
-*What just happened:* every distinct value of `n` from 0 to 5 got computed exactly once. The second time anything asks for `fib(3)`, it's a table lookup, not a re-triggered subtree of recursive calls. This turns the `2^n` explosion into something that does roughly `n` total units of work — a change from millions of calls to dozens, for the same input.
+*What just happened:* every distinct value of `n` from 0 to 5 got computed exactly once. The second time anything asks for `fib(3)`, it's a table lookup, not a re-triggered subtree of recursive calls. This turns the `2^n` explosion into something that does roughly `n` total units of work - a change from millions of calls to dozens, for the same input.
 
 ## The mental model to keep
 
-One picture: **a function plus a notebook.** Before doing the work, check the notebook for this exact input — if it's written down, read the answer and stop; if not, do the work, then write the answer down before returning it. The notebook is the whole trick — everything in Phase 2 is different ways of building and managing it automatically instead of by hand.
+One picture: **a function plus a notebook.** Before doing the work, check the notebook for this exact input - if it's written down, read the answer and stop; if not, do the work, then write the answer down before returning it. The notebook is the whole trick - everything in Phase 2 is different ways of building and managing it automatically instead of by hand.
 
 ```quiz
 [
@@ -115,7 +115,7 @@ One picture: **a function plus a notebook.** Before doing the work, check the no
       "It must only take numeric arguments"
     ],
     "answer": 1,
-    "explain": "Memoization assumes the same input always deserves the same cached answer. That's only true for pure functions — Phase 2 covers this requirement directly, and Phase 3 covers what breaks when it's violated."
+    "explain": "Memoization assumes the same input always deserves the same cached answer. That's only true for pure functions - Phase 2 covers this requirement directly, and Phase 3 covers what breaks when it's violated."
   }
 ]
 ```

@@ -41,7 +41,7 @@ lookups (more in [Phase 3](03-why-it-matters-in-real-life.md)).
 ## O(n) - linear: "twice the data, twice the work"
 
 **What it is.** The work grows in lockstep with the input - touch every item once, double the input and
-you do twice the work. A straight, honest line.
+you do twice the work. A straight, plain line.
 
 **What it does in real life.** Looping through a list to sum numbers, find the biggest one, print each
 row, or search an *unsorted* list. If you have to look at everything, you're at least `O(n)`.
@@ -165,7 +165,7 @@ happening *per item, for every item*.
 ## Recap
 
 1. **O(1)** - same work regardless of size; the lookups you want everywhere.
-2. **O(n)** - touch everything once; the honest baseline.
+2. **O(n)** - touch everything once; the plain baseline.
 3. **O(n²)** - a loop inside a loop; double the data, quadruple the work; **the trap**.
 4. **O(log n)** - halve each step; gigantic inputs in a handful of steps (binary search).
 5. **O(n log n)** - the speed of good sorting; far better than `O(n²)`.

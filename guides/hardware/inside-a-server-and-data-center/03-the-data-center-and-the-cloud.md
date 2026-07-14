@@ -155,7 +155,7 @@ flowchart TD
   end
 ```
 
-The honest, precise version:
+The plain, precise version:
 
 > **The cloud is real, physical servers - in someone else's buildings, with their power, cooling, and
 > redundancy - divided by software into rentable slices, billed by the hour.** "Someone else's computer"

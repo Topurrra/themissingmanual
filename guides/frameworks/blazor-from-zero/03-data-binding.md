@@ -11,14 +11,14 @@ updated: 2026-07-10
 
 # Data Binding
 
-Here's the one idea that makes Blazor feel alive instead of static: **binding ties your markup to your C# state.** You don't manually grab an element and shove text into it the way you would with `document.getElementById` in JavaScript. You declare a relationship — "this bit of UI reflects that field" — and Blazor keeps them in sync.
+Here's the one idea that makes Blazor feel alive instead of static: **binding ties your markup to your C# state.** You don't manually grab an element and shove text into it the way you would with `document.getElementById` in JavaScript. You declare a relationship - "this bit of UI reflects that field" - and Blazor keeps them in sync.
 
 That relationship runs in one of two directions:
 
 - **One-way** (`@field`): your C# state flows *into* the markup. When the field changes and the component re-renders, the DOM updates. The data travels state → UI.
 - **Two-way** (`@bind`): your C# state and a form input stay locked together in *both* directions. The user types, the field updates; your code changes the field, the input updates. Data travels state ↔ UI.
 
-Hold that picture — **one-way is a read-out, two-way is a handshake** — and everything below is just syntax for those two cases. We'll build it on the running **products** UI from the earlier phases.
+Hold that picture - **one-way is a read-out, two-way is a handshake** - and everything below is just syntax for those two cases. We'll build it on the running **products** UI from the earlier phases.
 
 > 📝 You already met one-way binding in [Components & Razor](02-components-and-razor.md) without us naming it. Every time you wrote `@something` in markup, that was one-way binding. This phase names it, then adds the two-way kind.
 
@@ -38,7 +38,7 @@ When you drop `@expression` into your markup, Blazor evaluates that C# and rende
 }
 ```
 
-*What just happened:* the three `@` expressions read straight out of the `@code` fields and render their current values. Notice `@(InStock ? ... : ...)` — when the expression is more than a simple name, wrap it in parentheses so Blazor knows where the C# ends and markup resumes. This is a one-way relationship: the markup mirrors the fields, but nothing in the markup can change them. For that, you need two-way binding.
+*What just happened:* the three `@` expressions read straight out of the `@code` fields and render their current values. Notice `@(InStock ? ... : ...)` - when the expression is more than a simple name, wrap it in parentheses so Blazor knows where the C# ends and markup resumes. This is a one-way relationship: the markup mirrors the fields, but nothing in the markup can change them. For that, you need two-way binding.
 
 ## Two-way binding with `@bind`
 
@@ -66,7 +66,7 @@ A read-out isn't enough for a form. When the user types into a search box or edi
 }
 ```
 
-*What just happened:* `@bind="filter"` connects the text box to the `filter` field. When `filter` changes, the `@foreach` re-runs and the list narrows. The `<strong>@filter</strong>` next to it is *one-way* binding reading the same field — one field, two roles, side by side.
+*What just happened:* `@bind="filter"` connects the text box to the `filter` field. When `filter` changes, the `@foreach` re-runs and the list narrows. The `<strong>@filter</strong>` next to it is *one-way* binding reading the same field - one field, two roles, side by side.
 
 `@bind` isn't only for text boxes. It adapts to the element it's on:
 
@@ -90,15 +90,15 @@ A read-out isn't enough for a form. When the user types into a search box or edi
 }
 ```
 
-*What just happened:* on a `<select>`, `@bind` reads and writes the chosen `<option>`'s `value`. On `<input type="checkbox">`, it binds to a `bool` — checked is `true`, unchecked `false`. Blazor picks the right HTML attribute and conversion per element, so you write the same `@bind` everywhere.
+*What just happened:* on a `<select>`, `@bind` reads and writes the chosen `<option>`'s `value`. On `<input type="checkbox">`, it binds to a `bool` - checked is `true`, unchecked `false`. Blazor picks the right HTML attribute and conversion per element, so you write the same `@bind` everywhere.
 
-> 💡 The timing detail that trips people up: by default `@bind` on a text input syncs on **`onchange`** — fires when the input *loses focus*, not on every keystroke. In the search example above, `filter` only updates after you click away or press Tab, often not what you want for a live search. The next section fixes it.
+> 💡 The timing detail that trips people up: by default `@bind` on a text input syncs on **`onchange`** - fires when the input *loses focus*, not on every keystroke. In the search example above, `filter` only updates after you click away or press Tab, often not what you want for a live search. The next section fixes it.
 
 ## Controlling *when* and *how* it syncs
 
 `@bind` has a few companion directives that tune its behavior.
 
-**`@bind:event`** changes the event that triggers the sync. Switch it to `oninput` and the field updates on every keystroke — perfect for a live filter:
+**`@bind:event`** changes the event that triggers the sync. Switch it to `oninput` and the field updates on every keystroke - perfect for a live filter:
 
 ```razor
 <input @bind="filter" @bind:event="oninput" placeholder="Search products..." />
@@ -111,7 +111,7 @@ A read-out isn't enough for a form. When the user types into a search box or edi
 
 *What just happened:* with `@bind:event="oninput"`, `filter` updates as the user types each character, so the filtered list reacts instantly instead of waiting for the box to lose focus. The default `onchange` is fine for a price field you only care about once editing is done; `oninput` is for anything that should feel live.
 
-**`@bind:format`** controls how a value is rendered into the input — most commonly for dates:
+**`@bind:format`** controls how a value is rendered into the input - most commonly for dates:
 
 ```razor
 <input type="date" @bind="restockDate" @bind:format="yyyy-MM-dd" />
@@ -124,7 +124,7 @@ A read-out isn't enough for a form. When the user types into a search box or edi
 
 *What just happened:* `@bind:format="yyyy-MM-dd"` tells Blazor how to format the `DateTime` when writing it into the input's value. Without a matching format, an `<input type="date">` may refuse to display the value, since the browser expects exactly `yyyy-MM-dd`.
 
-**`@bind:after`** runs a method *after* the bound field has been updated — the right place to react to a change (recalculate, log, call an API):
+**`@bind:after`** runs a method *after* the bound field has been updated - the right place to react to a change (recalculate, log, call an API):
 
 ```razor
 <input @bind="filter" @bind:event="oninput" @bind:after="OnFilterChanged" />
@@ -143,23 +143,23 @@ A read-out isn't enough for a form. When the user types into a search box or edi
 }
 ```
 
-*What just happened:* each time the bind updates `filter`, Blazor calls `OnFilterChanged`, which reads the freshly-updated value and sets `status`. The key word is *after* — by the time your method runs, `filter` already holds the new value.
+*What just happened:* each time the bind updates `filter`, Blazor calls `OnFilterChanged`, which reads the freshly-updated value and sets `status`. The key word is *after* - by the time your method runs, `filter` already holds the new value.
 
-> ⚠️ This one bites everyone: **`@bind="x"` is shorthand** for `value="@x"` plus an `@onchange` handler that assigns the typed value back to `x`. Because `@bind` already owns that handler, you **cannot** also add your own `@onchange` to the same element — Blazor will error. Use `@bind:after` (shown above), or drop `@bind` entirely and write `value="@x"` with your own `@onchange` handler doing both the assignment and your logic. Never both on the same element.
+> ⚠️ This one bites everyone: **`@bind="x"` is shorthand** for `value="@x"` plus an `@onchange` handler that assigns the typed value back to `x`. Because `@bind` already owns that handler, you **cannot** also add your own `@onchange` to the same element - Blazor will error. Use `@bind:after` (shown above), or drop `@bind` entirely and write `value="@x"` with your own `@onchange` handler doing both the assignment and your logic. Never both on the same element.
 
 ## When does the UI actually update?
 
-Binding handles the sync, but *re-rendering* is what makes the change visible. When a bound field changes **because of the UI** (a keystroke, a checkbox click), Blazor re-renders that component automatically — that's why the filtered list updates without you lifting a finger.
+Binding handles the sync, but *re-rendering* is what makes the change visible. When a bound field changes **because of the UI** (a keystroke, a checkbox click), Blazor re-renders that component automatically - that's why the filtered list updates without you lifting a finger.
 
-> 💡 The exception is state you change from **your own code** outside a UI event — a background timer ticking, a value updated inside an `async` callback. There, Blazor may not know it needs to re-render, and you nudge it with `StateHasChanged()`. Covered in [Events & the Component Lifecycle](04-events-and-lifecycle.md). For now: UI-driven changes render themselves; code-driven changes sometimes need a tap on the shoulder.
+> 💡 The exception is state you change from **your own code** outside a UI event - a background timer ticking, a value updated inside an `async` callback. There, Blazor may not know it needs to re-render, and you nudge it with `StateHasChanged()`. Covered in [Events & the Component Lifecycle](04-events-and-lifecycle.md). For now: UI-driven changes render themselves; code-driven changes sometimes need a tap on the shoulder.
 
 ## Recap
 
 - **Binding ties markup to state.** One-way (`@field`) flows state → UI; two-way (`@bind`) keeps a form input and a C# field in sync in both directions.
-- **One-way** is anything you write as `@expression` in markup — a read-out of your fields. Wrap non-trivial expressions in `@( ... )`.
-- **`@bind`** works on text inputs, `<select>`, `<textarea>`, and checkboxes (bound to a `bool`), picking the right attribute and conversion for each. By default it syncs on `onchange` — when the element loses focus.
+- **One-way** is anything you write as `@expression` in markup - a read-out of your fields. Wrap non-trivial expressions in `@( ... )`.
+- **`@bind`** works on text inputs, `<select>`, `<textarea>`, and checkboxes (bound to a `bool`), picking the right attribute and conversion for each. By default it syncs on `onchange` - when the element loses focus.
 - **Tune the sync** with `@bind:event="oninput"` (every keystroke), `@bind:format` (e.g. date formatting), and `@bind:after` (run a method once the field has updated).
-- **`@bind` is sugar** for `value` + an `@onchange` handler, so you can't add a second manual `@onchange` to the same element — use `@bind:after` or hand-roll value + handler instead.
+- **`@bind` is sugar** for `value` + an `@onchange` handler, so you can't add a second manual `@onchange` to the same element - use `@bind:after` or hand-roll value + handler instead.
 - **UI-driven changes re-render automatically**; changes from your own code may need `StateHasChanged()` (Phase 4).
 
 ## Quick check

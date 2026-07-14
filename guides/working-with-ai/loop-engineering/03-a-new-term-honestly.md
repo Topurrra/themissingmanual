@@ -1,5 +1,5 @@
 ---
-title: "A New Term, Honestly"
+title: "A New Term, Stated Plainly"
 guide: loop-engineering
 phase: 3
 summary: "Where 'loop engineering' came from, how it sits next to prompt and context engineering, and which parts of the term are still genuinely up for grabs."
@@ -14,9 +14,9 @@ synonyms:
 updated: 2026-06-30
 ---
 
-# A New Term, Honestly
+# A New Term, Stated Plainly
 
-It would be a disservice to teach you a phrase and let you walk away thinking it's settled vocabulary that everyone agrees on. "Loop engineering" is not that. It's a young term, used loosely, and you'll meet smart people who've never heard it and other smart people who mean slightly different things by it. So let's place it honestly: where it came from, what it's pointing at, and what's still being worked out.
+It would be a disservice to teach you a phrase and let you walk away thinking it's settled vocabulary that everyone agrees on. "Loop engineering" is not that. It's a young term, used loosely, and you'll meet smart people who've never heard it and other smart people who mean slightly different things by it. So let's place it plainly: where it came from, what it's pointing at, and what's still being worked out.
 
 ## The line that led here
 

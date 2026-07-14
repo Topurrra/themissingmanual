@@ -14,7 +14,7 @@ updated: 2026-06-25
 In [Phase 1](01-the-multiplication-principle.md) you learned to count step by step: if a
 choice has *a* options and the next has *b* options, the two together have *a × b*
 outcomes. That idea powers everything here. This phase asks two of the most common
-counting questions you'll ever meet — and the only thing separating them is a question
+counting questions you'll ever meet - and the only thing separating them is a question
 you have to learn to ask out loud.
 
 ## The two questions
@@ -27,7 +27,7 @@ Almost every "how many ways…" problem is one of these:
   A committee is the same committee no matter who you name first. Counting these is
   **combinations**.
 
-Same raw ingredients — pick *r* things from *n* — but two very different counts. Before
+Same raw ingredients - pick *r* things from *n* - but two very different counts. Before
 any formula, build the reflex: *does swapping two of my chosen things change the answer?*
 If yes, order matters. If no, it doesn't.
 
@@ -39,7 +39,7 @@ How many ways can 3 books sit on a shelf? Pick the leftmost: 3 choices. The next
 2 books remain. The last spot: 1 book left. By the multiplication principle that's
 `3 × 2 × 1 = 6`.
 
-That product — multiply every whole number from *n* down to 1 — is the **factorial**,
+That product - multiply every whole number from *n* down to 1 - is the **factorial**,
 written `n!`:
 
 ```
@@ -50,7 +50,7 @@ So `5! = 5 × 4 × 3 × 2 × 1 = 120`. Factorials grow ferociously fast: `10!` i
 over three million.
 
 One value surprises people: `0! = 1`. Read it as "how many ways are there to arrange
-nothing?" Exactly one — the empty arrangement. It isn't a typo or a special case bolted
+nothing?" Exactly one - the empty arrangement. It isn't a typo or a special case bolted
 on; it's the value that keeps the formulas below from breaking, as you'll see in a
 moment.
 
@@ -87,7 +87,7 @@ Now change one word in the question.
 
 **Eight pizza toppings, and you want three of them.** Mushroom-pepper-onion is the *same
 pizza* as onion-mushroom-pepper. Order doesn't matter, so we should count *fewer* than
-336 — because we decided a bunch of those 336 were duplicates.
+336 - because we decided a bunch of those 336 were duplicates.
 
 How many duplicates? Any single group of 3 toppings can be listed in `3! = 6` orders,
 and the permutation count treated all 6 as separate. So we overcounted every real
@@ -103,7 +103,7 @@ That's the **combination** count, and the formula bakes in that division:
 nCr = n! / (r! (n − r)!)
 ```
 
-It's `nPr` with one extra `r!` in the denominator — the exact factor by which order
+It's `nPr` with one extra `r!` in the denominator - the exact factor by which order
 inflated the count. Same eight things, same three picks, but 56 instead of 336.
 
 ## See it run
@@ -117,15 +117,15 @@ print(math.perm(8, 3))     # ordered: 8*7*6 = 336
 print(math.comb(8, 3))     # unordered: 56
 ```
 
-*What just happened:* `math.factorial(5)` printed **120** — the orderings of 5 items.
-`math.perm(8, 3)` printed **336** — the ordered top-3 podiums (`8 × 7 × 6`).
-`math.comb(8, 3)` printed **56** — the unordered 3-topping selections. The permutation count
+*What just happened:* `math.factorial(5)` printed **120** - the orderings of 5 items.
+`math.perm(8, 3)` printed **336** - the ordered top-3 podiums (`8 × 7 × 6`).
+`math.comb(8, 3)` printed **56** - the unordered 3-topping selections. The permutation count
 is larger than the combination count because order multiplies in extra arrangements: every
 one of those 56 selections shows up `3! = 6` times when order is tracked, and `56 × 6 = 336`.
 
 ## The deciding question, side by side
 
-Hold the contrast in your head — the numbers are identical and the answers are not:
+Hold the contrast in your head - the numbers are identical and the answers are not:
 
 | Question | Order? | Count |
 |---|---|---|
@@ -151,20 +151,20 @@ thing," you want `comb`. If reordering gives you "a different thing," you want `
 Both live in Python's `math` module, so you rarely write the factorials by hand.
 
 > ⚠️ **The classic mistake:** using permutations when order doesn't matter. You'll overcount
-> by exactly a factor of `r!`. That isn't a coincidence — it *is* the `r!` sitting in the
+> by exactly a factor of `r!`. That isn't a coincidence - it *is* the `r!` sitting in the
 > denominator of `nCr`. If a count comes out suspiciously large (your 56 committees ballooned
 > to 336), ask whether you accidentally counted the same group in every possible order.
 
 ## Recap
 
 - `n!` counts the orderings of *n* distinct items; `0! = 1`.
-- **Permutations** (`nPr = n! / (n − r)!`) count arrangements — order matters.
-- **Combinations** (`nCr = n! / (r! (n − r)!)`) count selections — order doesn't.
+- **Permutations** (`nPr = n! / (n − r)!`) count arrangements - order matters.
+- **Combinations** (`nCr = n! / (r! (n − r)!)`) count selections - order doesn't.
 - The difference between them is the factor `r!`, the number of ways to reorder your *r* picks.
 - Always ask the deciding question first: *does order matter?* Everything else follows.
 
 This whole machine is built from the multiplication principle and the idea of distinct
-items — if "distinct" feels slippery, [Sets, relations, and functions](/guides/sets-relations-and-functions)
+items - if "distinct" feels slippery, [Sets, relations, and functions](/guides/sets-relations-and-functions)
 makes the notion of a set (order-free, no repeats) precise. And if the formulas still
 feel like spells, [Why math isn't your enemy](/guides/why-math-isnt-your-enemy) is worth
 a detour.
@@ -190,7 +190,7 @@ Quick check before moving on:
       "Permutation, because you pick people one at a time",
       "Combination, because the committee is the same regardless of the order you name people",
       "Permutation, because 3 is smaller than 10",
-      "Neither — it's a plain factorial"
+      "Neither - it's a plain factorial"
     ],
     "answer": 1,
     "explain": "Reordering the committee members gives the same committee, so order doesn't matter. That's a combination (nCr)."

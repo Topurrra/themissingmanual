@@ -18,7 +18,7 @@ You have a pile of AWS resources that belong together: a bucket, a queue, a role
 
 ## How to read this
 
-Three phases, in order. Phase 1 builds the mental model: what a template and a stack actually are, and why a managed unit beats a folder of scripts. Phase 2 is the everyday work: writing templates with parameters and outputs, previewing changes before they land, and wiring resources together. Phase 3 is production reality: rollbacks, drift, the failure modes that bite, and an honest look at where Terraform wins instead.
+Three phases, in order. Phase 1 builds the mental model: what a template and a stack actually are, and why a managed unit beats a folder of scripts. Phase 2 is the everyday work: writing templates with parameters and outputs, previewing changes before they land, and wiring resources together. Phase 3 is production reality: rollbacks, drift, the failure modes that bite, and a clear-eyed look at where Terraform wins instead.
 
 If you have never touched infrastructure as code, the broader idea is worth a detour: see [/guides/infrastructure-as-code-terraform](/guides/infrastructure-as-code-terraform) for the tool-agnostic concept. And if AWS itself is new, [/guides/cloud-platforms-explained](/guides/cloud-platforms-explained) sets the scene.
 

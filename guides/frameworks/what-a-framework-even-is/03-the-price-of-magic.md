@@ -45,7 +45,7 @@ A framework is a *second* thing to learn, stacked on top of the language - its o
 
 That's fine if you're standing on solid ground first.
 
-⚠️ Learning a framework *before* the language leaves you helpless the moment you step off the happy path. Copy-paste carries you as long as your problem matches a tutorial - but the first time you hit something the framework didn't anticipate, you have no fundamentals to fall back on, and you can't even tell which part is "the framework" and which is "the language." The honest sequence is language first, framework second.
+⚠️ Learning a framework *before* the language leaves you helpless the moment you step off the happy path. Copy-paste carries you as long as your problem matches a tutorial - but the first time you hit something the framework didn't anticipate, you have no fundamentals to fall back on, and you can't even tell which part is "the framework" and which is "the language." The sensible sequence is language first, framework second.
 
 ## Lock-in and inertia
 

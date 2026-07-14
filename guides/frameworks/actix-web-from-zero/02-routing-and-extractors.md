@@ -17,19 +17,19 @@ request pieces it needs without ever touching the raw bytes.
 
 Two mental models cover everything else.
 
-> 📝 **Mental model #1 — a route is a tiny rule: `method + path → handler`.** When a request
+> 📝 **Mental model #1 - a route is a tiny rule: `method + path → handler`.** When a request
 > arrives, actix-web walks its list of registered rules looking for the first one whose HTTP
 > method *and* path pattern match. `GET /articles` and `POST /articles` are two different routes
 > even though the path is identical, because the method is part of the key.
 
-> 📝 **Mental model #2 — a handler's parameters are extractors.** You don't reach into the request
-> object. Instead you declare what you want as typed arguments — `web::Path<u32>`,
-> `web::Query<Pagination>`, `web::Json<NewArticle>` — and actix-web *extracts* those values from
+> 📝 **Mental model #2 - a handler's parameters are extractors.** You don't reach into the request
+> object. Instead you declare what you want as typed arguments - `web::Path<u32>`,
+> `web::Query<Pagination>`, `web::Json<NewArticle>` - and actix-web *extracts* those values from
 > the request before your function body ever runs. If extraction fails (bad path segment,
 > malformed JSON), your handler isn't called at all; the framework returns an error response for
 > you. Your function body only ever sees already-valid, already-typed data.
 
-We'll keep growing the **articles API** from Phase 1 — same familiar shape:
+We'll keep growing the **articles API** from Phase 1 - same familiar shape:
 
 ```rust
 struct Article {
@@ -41,7 +41,7 @@ struct Article {
 
 ## Registering routes: two styles, same idea
 
-actix-web gives you two ways to attach a handler to a route, producing identical behavior — the
+actix-web gives you two ways to attach a handler to a route, producing identical behavior - the
 difference is purely *where the route lives in your source*. You'll see both in the wild.
 
 ### Style 1: the builder
@@ -74,7 +74,7 @@ async fn main() -> std::io::Result<()> {
 
 *What just happened:* `web::get()` builds a route guard that only matches `GET` requests; `.to(list)`
 says "when it matches, call `list`." Chaining two `.route(...)` calls gives the routing table two
-rules. The `{id}` in the second path is a **placeholder** — it matches any single path segment
+rules. The `{id}` in the second path is a **placeholder** - it matches any single path segment
 (`/articles/7`, `/articles/42`) and captures it for an extractor to read later. Routes are checked
 top to bottom, and the first match wins.
 
@@ -111,17 +111,17 @@ async fn main() -> std::io::Result<()> {
 
 *What just happened:* `#[get("/articles")]` bundles the method + path *with* the function. The
 function now *is* a service, registered with `.service(list)` instead of a `.route(...)` call.
-There's a macro for each verb — `#[post(...)]`, `#[put(...)]`, `#[delete(...)]`, and so on.
+There's a macro for each verb - `#[post(...)]`, `#[put(...)]`, `#[delete(...)]`, and so on.
 Behaviorally this is the same routing table as Style 1; many codebases prefer it because each
 handler carries its own route declaration right above it instead of a central list elsewhere.
 
-> 💡 Pick one style and stay consistent within a project — a reader shouldn't have to check two
+> 💡 Pick one style and stay consistent within a project - a reader shouldn't have to check two
 > places to learn where routes are defined. Macros read nicely for CRUD-style apps; the builder
 > shines when composing routes programmatically.
 
 ## Grouping routes with `web::scope`
 
-Real APIs version their endpoints and share common prefixes — `/api/v1/articles`,
+Real APIs version their endpoints and share common prefixes - `/api/v1/articles`,
 `/api/v1/authors`, and so on. Typing `/api/v1/...` in front of every route is noisy and error-prone.
 `web::scope` mounts a whole group of routes under a shared prefix:
 
@@ -162,7 +162,7 @@ middleware (Phases 4 and 5).
 A handler's parameters are how it asks for pieces of the request. The three you'll reach for
 constantly are `Path`, `Query`, and `Json`.
 
-### `web::Path` — values from the URL
+### `web::Path` - values from the URL
 
 That `{id}` placeholder captures a path segment. `web::Path<T>` pulls it out and parses it into the
 type you ask for:
@@ -179,7 +179,7 @@ async fn show(path: web::Path<u32>) -> impl Responder {
 *What just happened:* the handler declared `path: web::Path<u32>`. actix-web took the `{id}` segment
 from the URL, parsed it as a `u32`, and only then called `show`. `path.into_inner()` unwraps the
 `Path` wrapper to give you the plain `u32` inside. If the URL had been `/articles/banana`, the parse
-would fail, `show` would never run, and the client would get a `400 Bad Request` automatically — zero
+would fail, `show` would never run, and the client would get a `400 Bad Request` automatically - zero
 validation code needed for "is this segment actually a number."
 
 When a route has several placeholders, ask for a tuple and destructure it:
@@ -194,12 +194,12 @@ async fn show_by_author(path: web::Path<(String, u32)>) -> impl Responder {
 }
 ```
 
-*What just happened:* with two placeholders, `web::Path<(String, u32)>` captures both in order —
+*What just happened:* with two placeholders, `web::Path<(String, u32)>` captures both in order - 
 `{name}` becomes the `String`, `{id}` becomes the `u32`. `into_inner()` hands back the tuple to
 destructure in one line. The tuple's *order* matches the order the placeholders appear in the path,
 not their names, so keep them lined up.
 
-### `web::Query` — values from the query string
+### `web::Query` - values from the query string
 
 Query parameters (`?page=2&per_page=20`) come in through `web::Query<T>`, where `T` is a struct that
 derives serde's `Deserialize`:
@@ -226,7 +226,7 @@ parses the values into the field types. A request to `/articles?page=2&per_page=
 handler is never called and the client gets a `400`. (Add `serde` to `Cargo.toml` with
 `features = ["derive"]`; we lean on it heavily from here on.)
 
-### `web::Json` — the request body
+### `web::Json` - the request body
 
 For `POST`/`PUT` bodies sent as JSON, `web::Json<T>` deserializes the body into your type:
 
@@ -249,9 +249,9 @@ async fn create(body: web::Json<NewArticle>) -> impl Responder {
 *What just happened:* `web::Json<NewArticle>` read the raw request body, parsed it as JSON, and
 deserialized it into a `NewArticle` before `create` ran. `body.into_inner()` (or field access like
 `body.title`) gets at the data. A malformed body or missing required field produces a `400`
-automatically — your handler only ever sees a fully-formed `NewArticle`.
+automatically - your handler only ever sees a fully-formed `NewArticle`.
 
-## Combining extractors — and the one body rule
+## Combining extractors - and the one body rule
 
 Extractors compose: a handler can ask for several at once, and actix-web fills them all in before
 calling you. A create-under-an-author handler might want the author from the path *and* the article
@@ -279,12 +279,12 @@ async fn create_for_author(
 ```
 
 *What just happened:* the handler declared two extractors as separate parameters. actix-web ran both
-— pulled `{name}` from the URL into `path`, deserialized the JSON body into `body` — and only then
+ - pulled `{name}` from the URL into `path`, deserialized the JSON body into `body` - and only then
 called `create_for_author`. List as many extractors as you need; they're just function parameters.
 
 > ⚠️ One real constraint: **only one extractor may read the request body.** `web::Json` consumes
 > the body stream, and a body can only be read once. A handler can have many `Path` and `Query`
-> extractors but effectively **one** body extractor (`Json`, `Form`, or `Bytes`) — asking for two
+> extractors but effectively **one** body extractor (`Json`, `Form`, or `Bytes`) - asking for two
 > won't give you the data twice, it's a design error. More on `Json` in
 > [Phase 3: Responders](03-responders.md).
 
@@ -292,12 +292,12 @@ called `create_for_author`. List as many extractors as you need; they're just fu
 
 - A route is `method + path → handler`. `GET /articles` and `POST /articles` are distinct routes.
 - Register routes two ways: the **builder** (`.route("/articles", web::get().to(list))`) or
-  **attribute macros** (`#[get("/articles")]` + `.service(list)`) — same behavior, pick one and stay
+  **attribute macros** (`#[get("/articles")]` + `.service(list)`) - same behavior, pick one and stay
   consistent.
 - `web::scope("/api/v1")` mounts a group of routes under a shared prefix, for versioning an API.
 - Extractors turn a request into typed arguments: `web::Path` (URL segments, `.into_inner()`),
   `web::Query` (query string into a `Deserialize` struct), `web::Json` (the request body).
-- Failed extraction means your handler never runs — the client gets a `400` automatically.
+- Failed extraction means your handler never runs - the client gets a `400` automatically.
 - You can combine many extractors as parameters, but only **one** may read the body.
 
 ## Quick check
@@ -318,7 +318,7 @@ called `create_for_author`. List as many extractors as you need; they're just fu
   },
   {
     "q": "How many extractors in a single handler may read the request body?",
-    "choices": ["As many as you want", "Exactly one", "Two, one for JSON and one for form data", "Zero — the body is never extracted"],
+    "choices": ["As many as you want", "Exactly one", "Two, one for JSON and one for form data", "Zero - the body is never extracted"],
     "answer": 1,
     "explain": "The body stream can only be read once, so a handler can have many Path/Query extractors but effectively only one body extractor such as web::Json."
   }

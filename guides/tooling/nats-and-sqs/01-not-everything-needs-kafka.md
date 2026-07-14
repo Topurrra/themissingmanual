@@ -60,7 +60,7 @@ FIFO queue       →  strict ordering within a message group
 
 ## How to choose
 
-The honest decision tree is short:
+The straightforward decision tree is short:
 
 - **You're already on AWS and want zero ops** → SQS. It's the path of least resistance for background jobs and decoupling services.
 - **You want very low latency, request-reply, or true pub/sub fan-out, and you can run a binary** → NATS.

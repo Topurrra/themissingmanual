@@ -2,7 +2,7 @@
 title: "Responses & Rendering"
 guide: "echo-from-zero"
 phase: 4
-summary: "How Echo sends data back: every response helper returns an error you return — JSON with status codes, String/Blob/File/Redirect/NoContent, HTML templates via a Renderer, and serving static files."
+summary: "How Echo sends data back: every response helper returns an error you return - JSON with status codes, String/Blob/File/Redirect/NoContent, HTML templates via a Renderer, and serving static files."
 tags: [echo, go, responses, json, templates, static]
 difficulty: intermediate
 synonyms: ["echo c.json", "echo response", "echo nocontent", "echo templates renderer", "echo static files", "echo c.string c.file"]
@@ -16,17 +16,17 @@ getting data back out to the client.
 
 ## The mental model: a response is something you *return*
 
-In Echo, every helper that sends a response **also returns an `error`** — and you `return` that value
+In Echo, every helper that sends a response **also returns an `error`** - and you `return` that value
 straight out of your handler. You don't call `c.JSON(...)` and then keep going; you `return c.JSON(...)`.
 
 Think of it as: *pick a helper, pick a status code, return it.* That's the whole shape of a handler's
 last line. The framework writes the response and propagates any write error up to Echo's error handler
 (which you'll meet properly in [Phase 6](06-rest-api-and-errors.md)). Forgetting that little `return` is
-the single most common Echo beginner bug — the response doesn't get sent, or your code runs past the
+the single most common Echo beginner bug - the response doesn't get sent, or your code runs past the
 point where it should have stopped.
 
 > 📝 The status code is always the **first argument** to these helpers, and it always comes from the
-> `net/http` constants — `http.StatusOK` (200), `http.StatusCreated` (201), `http.StatusNotFound` (404),
+> `net/http` constants - `http.StatusOK` (200), `http.StatusCreated` (201), `http.StatusNotFound` (404),
 > and friends. Use the named constants, not bare numbers; they read better and they're impossible to
 > typo into a wrong-but-valid number.
 
@@ -76,10 +76,10 @@ e.POST("/books", func(c echo.Context) error {
 
 *What just happened:* notice every branch ends in `return c.JSON(...)`. The 404 path returns a small
 JSON object so the client gets a parseable body, not an empty 404. The create path returns **201 Created**
-(not 200) with the new book, including its freshly assigned `ID` — the main reason clients want the
+(not 200) with the new book, including its freshly assigned `ID` - the main reason clients want the
 created object echoed back.
 
-Returning a **list** is the same call — just hand it a slice:
+Returning a **list** is the same call - just hand it a slice:
 
 ```go
 // GET /books  → 200 with all books as a JSON array
@@ -93,11 +93,11 @@ e.GET("/books", func(c echo.Context) error {
 ```
 
 *What just happened:* we build the slice with `make([]Book, 0, ...)` rather than a `nil` slice. That
-matters: a `nil` slice marshals to `null`, but an empty initialized slice marshals to `[]` — clients
+matters: a `nil` slice marshals to `null`, but an empty initialized slice marshals to `[]` - clients
 iterating the response would rather get an empty array than `null`.
 
 > 💡 During development, `c.JSONPretty(status, value, "  ")` indents the output so you can read it in a
-> terminal. In production, stick with plain `c.JSON` — the extra whitespace is wasted bytes over the wire.
+> terminal. In production, stick with plain `c.JSON` - the extra whitespace is wasted bytes over the wire.
 
 ## The other response helpers
 
@@ -107,7 +107,7 @@ JSON isn't the only way to answer. Each of these follows the same return-an-erro
 // Plain text
 return c.String(http.StatusOK, "pong")
 
-// Raw HTML string (not a template — just a string of HTML)
+// Raw HTML string (not a template - just a string of HTML)
 return c.HTML(http.StatusOK, "<h1>Books</h1>")
 
 // Raw bytes with a content type you choose
@@ -119,7 +119,7 @@ return c.File("reports/books.pdf")
 // Redirect the browser elsewhere
 return c.Redirect(http.StatusFound, "/books")
 
-// Empty body — perfect for DELETE
+// Empty body - perfect for DELETE
 return c.NoContent(http.StatusNoContent)
 ```
 
@@ -142,12 +142,12 @@ e.DELETE("/books/:id", func(c echo.Context) error {
 })
 ```
 
-*What just happened:* on success there's nothing meaningful to send back — the resource is gone — so
+*What just happened:* on success there's nothing meaningful to send back - the resource is gone - so
 `c.NoContent(http.StatusNoContent)` returns **204** with an empty body.
 
 ### Setting your own headers
 
-Sometimes you need to add a header before you send the body — a cache directive, a custom `X-` header, a
+Sometimes you need to add a header before you send the body - a cache directive, a custom `X-` header, a
 location. You reach through to the underlying response writer:
 
 ```go
@@ -163,12 +163,12 @@ e.GET("/books/:id", func(c echo.Context) error {
 ```
 
 *What just happened:* `c.Response().Header().Set("X-Resource-Version", "1")` sets a header. The order
-matters — set headers **before** the response helper, since that helper writes the status line and
+matters - set headers **before** the response helper, since that helper writes the status line and
 flushes headers. Set one after `c.JSON(...)` and it's too late; the bytes are already going out.
 
 ## HTML templates: the Renderer interface
 
-Not every Echo app is an API — sometimes you render server-side HTML. Unlike some frameworks, Echo
+Not every Echo app is an API - sometimes you render server-side HTML. Unlike some frameworks, Echo
 doesn't ship a built-in template engine. Instead it defines a small interface and lets you plug in
 whatever you like (almost always Go's standard `html/template`).
 
@@ -221,9 +221,9 @@ func main() {
 ```
 
 *What just happened:* `template.Must(template.ParseGlob(...))` parses all your templates once at boot and
-panics if any fail to parse — a broken template should stop startup, not surface as a runtime surprise.
+panics if any fail to parse - a broken template should stop startup, not surface as a runtime surprise.
 We hang that on `e.Renderer`. From then on `c.Render(status, "books.html", data)` runs `Render`, which
-calls `ExecuteTemplate` with the data — here, our slice of books.
+calls `ExecuteTemplate` with the data - here, our slice of books.
 
 And the template file itself:
 
@@ -232,14 +232,14 @@ And the template file itself:
 <h1>Books</h1>
 <ul>
   {{range .}}
-    <li>{{.Title}} — {{.Author}}</li>
+    <li>{{.Title}} - {{.Author}}</li>
   {{end}}
 </ul>
 ```
 
 *What just happened:* the `data` you passed to `c.Render` arrives as `.` (dot) inside the template.
 `{{range .}}` loops the slice; inside the loop, `.` is each `Book`, so `{{.Title}}` and `{{.Author}}`
-pull its fields. Crucially, `html/template` **auto-escapes** these values — a title of
+pull its fields. Crucially, `html/template` **auto-escapes** these values - a title of
 `<script>alert(1)</script>` renders as harmless text, not executable script. That's the whole reason to
 use `html/template` and not string concatenation for HTML.
 
@@ -256,23 +256,23 @@ e.Static("/assets", "assets")
 e.File("/favicon.ico", "images/favicon.ico")
 ```
 
-*What just happened:* `e.Static(prefix, root)` maps a URL prefix to a folder on disk — great for a whole
+*What just happened:* `e.Static(prefix, root)` maps a URL prefix to a folder on disk - great for a whole
 `assets/` tree. `e.File(path, file)` wires a single URL to a single file, for one-offs like a favicon
 that doesn't live where the URL implies.
 
-> 💡 Most Echo services in the wild are pure JSON APIs — they use `c.JSON` and little else, and never
+> 💡 Most Echo services in the wild are pure JSON APIs - they use `c.JSON` and little else, and never
 > touch a Renderer or static files at all. Templates and static serving are there when you need a
 > server-rendered page or a small bundled front-end, but don't feel you must reach for them. Reach for
 > the response helper that fits the job.
 
 ## Recap
 
-- Every response helper **returns an `error` you return** — the handler's last line is
+- Every response helper **returns an `error` you return** - the handler's last line is
   `return c.Something(...)`. Forgetting the `return` is the classic Echo bug.
 - `c.JSON(status, value)` is the API workhorse: **201** for creates, **404** for missing,
   and pair an empty initialized slice with 200 so lists serialize as `[]`, not `null`.
-- `c.NoContent(http.StatusNoContent)` is the clean **204** answer for a successful `DELETE` — status, no body.
-- Other helpers — `c.String`, `c.HTML`, `c.Blob`, `c.File`, `c.Redirect` — each set the right content type;
+- `c.NoContent(http.StatusNoContent)` is the clean **204** answer for a successful `DELETE` - status, no body.
+- Other helpers - `c.String`, `c.HTML`, `c.Blob`, `c.File`, `c.Redirect` - each set the right content type;
   set custom headers via `c.Response().Header().Set(...)` **before** sending.
 - HTML rendering needs a Renderer: implement `echo.Renderer`, assign `e.Renderer`, call `c.Render`;
   `html/template` auto-escapes your data. Serve assets with `e.Static` / `e.File`.
@@ -285,7 +285,7 @@ that doesn't live where the URL implies.
     "q": "What's the idiomatic Echo response for a successful DELETE that has nothing to return?",
     "choices": ["c.JSON(http.StatusOK, nil)", "c.String(http.StatusOK, \"\")", "c.NoContent(http.StatusNoContent)", "return nil with no helper call"],
     "answer": 2,
-    "explain": "c.NoContent(http.StatusNoContent) sends a 204 status with an empty body — exactly right for a successful delete."
+    "explain": "c.NoContent(http.StatusNoContent) sends a 204 status with an empty body - exactly right for a successful delete."
   },
   {
     "q": "Why must you write `return c.JSON(...)` rather than just `c.JSON(...)`?",

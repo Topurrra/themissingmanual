@@ -40,7 +40,7 @@ Depends entirely on which account you're using.
 
 The practical move: in any account you use for real work, go find the "improve the model for everyone" or "data controls" toggle and turn it off. It takes two minutes and removes the scariest possibility.
 
-One honest caveat: turning off training does not mean your text vanishes. It still gets sent, still gets processed, and is usually still retained for a window. Off-training is necessary, not sufficient.
+One plain caveat: turning off training does not mean your text vanishes. It still gets sent, still gets processed, and is usually still retained for a window. Off-training is necessary, not sufficient.
 
 ## How long do they keep it?
 

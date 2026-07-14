@@ -70,7 +70,7 @@ In practice that means: separate systems so one falling doesn't topple the rest,
 
 ⚠️ **Gotcha.** Hiding how something works is *not* the same as protecting it. A secret URL anyone can guess or stumble onto, a "hidden" admin page with no real login, a homemade scheme kept private - these feel safe right up until someone finds them, and then offer no protection at all.
 
-The honest version: *obscurity can be a thin extra layer, but never the layer you rely on.* A real lock works even when the attacker knows exactly how it works - that's the whole point of a good lock. If your security depends on the attacker not knowing your secret *method*, you've built on sand. (This is why serious cryptography is published openly and still holds: the strength is in the key, not in hiding the design.)
+The plain version: *obscurity can be a thin extra layer, but never the layer you rely on.* A real lock works even when the attacker knows exactly how it works - that's the whole point of a good lock. If your security depends on the attacker not knowing your secret *method*, you've built on sand. (This is why serious cryptography is published openly and still holds: the strength is in the key, not in hiding the design.)
 
 ### Humans are the soft target
 
@@ -86,7 +86,7 @@ Security is never *only* a technical problem. The most carefully secured system 
 2. **Least privilege** - give every person and component the minimum access it needs; this is what makes a breach *cheap* instead of catastrophic.
 3. **Assume breach** - design for *when* someone gets in, not just *if*; keep the blast radius small and make breaches visible.
 4. **Obscurity isn't security** - hiding how something works is at best a thin extra layer, never the one you rely on.
-5. **Humans are the soft target** - phishing skips your code entirely, so your layers have to survive a person making one honest mistake.
+5. **Humans are the soft target** - phishing skips your code entirely, so your layers have to survive a person making one innocent mistake.
 
 ## Where to go next
 

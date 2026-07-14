@@ -37,7 +37,7 @@ The healthy shape, in rough proportions (these are a rule of thumb, not a measur
 
 The instinct to fight is "more E2E = more confidence." It feels true - E2E tests look the most like real usage, so surely they prove the most? But recall Phase 1: an E2E test is slow and, when it fails, points at a whole region instead of a bug. A suite built mostly of them is slow to run and slow to diagnose - the *most realistic* tests and the *least usable* suite. Confidence you can't run often, and can't act on quickly, isn't worth what it costs.
 
-💡 **Key point.** Push every test **down** to the lowest level that can honestly catch the bug you're worried about. If a unit test can catch it, that's where it goes. Reserve the slow, blunt, expensive E2E tests for the handful of journeys where "the whole thing works end to end" is the actual risk - and let units and integration carry everything below that.
+💡 **Key point.** Push every test **down** to the lowest level that can actually catch the bug you're worried about. If a unit test can catch it, that's where it goes. Reserve the slow, blunt, expensive E2E tests for the handful of journeys where "the whole thing works end to end" is the actual risk - and let units and integration carry everything below that.
 
 ## How to decide the level for a given risk
 
@@ -82,7 +82,7 @@ The cure isn't to delete your E2E tests. It's to **invert the cone**: for each b
 
 ## Recap
 
-1. **Push every test down** to the lowest level that can honestly catch the bug - unit if it can, integration for the seams, E2E only for whole journeys that matter.
+1. **Push every test down** to the lowest level that can actually catch the bug - unit if it can, integration for the seams, E2E only for whole journeys that matter.
 2. The healthy mix is **lots of unit, some integration, a few E2E** - and "more E2E" buys realism at the cost of a slow, hard-to-diagnose, flaky suite.
 3. To place a specific test, ask: *one piece's logic?* → unit · *two things agreeing?* → integration · *a whole journey?* → E2E. Stop at the first yes.
 4. The **ice-cream cone** (mostly E2E, almost no units) is the common failure: slow, vague, flaky, expensive - invert it by moving coverage down, not by adding more E2E.

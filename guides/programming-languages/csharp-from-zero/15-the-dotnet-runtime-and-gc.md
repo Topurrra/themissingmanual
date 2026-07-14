@@ -41,7 +41,7 @@ Back in [Phase 2](02-syntax-values-and-types.md) you met the split between **val
 
 📝 **Stack** - a small, fast, per-thread region of memory that grows and shrinks with method calls. When a method is called, its locals get a slice of the stack ("stack frame"); when it returns, that slice vanishes instantly and for free - allocation is a pointer bump, cleanup is automatic and costs nothing. **Managed heap** - a larger shared pool where reference-type objects live, not freed when a method returns; reclaiming it is the garbage collector's job.
 
-The rough rule: **value types live where they're declared; reference types live on the heap with a reference pointing to them.** A local `int` sits right in the method's stack frame. A local `Customer c = new Customer()` puts the `Customer` *object* on the heap and keeps a *reference* (a pointer) to it on the stack. An `int` field inside a class rides along on the heap inside that object; a local `int` is on the stack. ("Often on the stack" is the honest phrasing - the CLR can put value types on the heap when captured by a lambda or boxed, the next gotcha.)
+The rough rule: **value types live where they're declared; reference types live on the heap with a reference pointing to them.** A local `int` sits right in the method's stack frame. A local `Customer c = new Customer()` puts the `Customer` *object* on the heap and keeps a *reference* (a pointer) to it on the stack. An `int` field inside a class rides along on the heap inside that object; a local `int` is on the stack. ("Often on the stack" is the accurate phrasing - the CLR can put value types on the heap when captured by a lambda or boxed, the next gotcha.)
 
 ```csharp
 struct Point { public int X, Y; }          // value type

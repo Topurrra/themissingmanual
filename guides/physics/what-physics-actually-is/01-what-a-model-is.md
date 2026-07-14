@@ -49,7 +49,7 @@ Treating a thrown ball as a point with no air resistance predicts its landing sp
 
 ## A worked first cartoon
 
-Let's predict something. You drop a stone off a bridge and want to know roughly how long until it hits the water. The honest answer involves air resistance, the stone's shape, and the wind. The *useful* answer throws all of that away and keeps one fact: near Earth's surface, things speed up by about 9.8 metres per second, every second they fall.
+Let's predict something. You drop a stone off a bridge and want to know roughly how long until it hits the water. The complete answer involves air resistance, the stone's shape, and the wind. The *useful* answer throws all of that away and keeps one fact: near Earth's surface, things speed up by about 9.8 metres per second, every second they fall.
 
 ```text
 Model:   ignore air. Falling speed grows 9.8 m/s each second.
@@ -61,7 +61,7 @@ Try time = 2 seconds:  1/2 x 9.8 x (2 x 2) = 4.9 x 4 = 19.6 metres.
 19.6 is almost exactly 20. So the stone hits at roughly 2 seconds.
 ```
 
-*What just happened:* with one stripped-down rule and no air, we predicted a real event before it happened. The prediction is a little optimistic - real air would slow the stone, so it'd take a touch longer - but for "is it 2 seconds or 20 seconds?" the cartoon nails it. That gap between our 2 seconds and the true answer is honest information, not a mistake to hide.
+*What just happened:* with one stripped-down rule and no air, we predicted a real event before it happened. The prediction is a little optimistic - real air would slow the stone, so it'd take a touch longer - but for "is it 2 seconds or 20 seconds?" the cartoon nails it. That gap between our 2 seconds and the true answer is real information, not a mistake to hide.
 
 **For builders:** this is exactly what a good first version of anything is. You don't model every edge case before shipping - you build the simplest thing that predicts the common path, measure where it's wrong, and add detail only where the wrongness costs you. A frictionless plane and a happy-path prototype are the same instinct.
 

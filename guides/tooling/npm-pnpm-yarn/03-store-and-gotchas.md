@@ -83,7 +83,7 @@ npm warn ... (nothing to warn about here)
 added 412 packages in 4s
 ```
 
-*What just happened:* `npm ci` ("clean install") deletes `node_modules`, then installs **strictly from the lockfile** - no version re-resolution. If `package.json` and the lockfile disagree, it *errors out* instead of quietly fixing things. That's exactly the behavior you want in automated builds: identical, frozen, and honest. The equivalents are `pnpm install --frozen-lockfile` and `yarn install --immutable`.
+*What just happened:* `npm ci` ("clean install") deletes `node_modules`, then installs **strictly from the lockfile** - no version re-resolution. If `package.json` and the lockfile disagree, it *errors out* instead of quietly fixing things. That's exactly the behavior you want in automated builds: identical, frozen, and reliable. The equivalents are `pnpm install --frozen-lockfile` and `yarn install --immutable`.
 
 ⚠️ **Gotcha.** This is the root-cause fix for the "works locally, breaks in CI" dependency mystery from Phase 1. If CI runs a lock-respecting frozen install and *still* differs from your machine, the difference is real and committed - not random - and now you can actually find it. Make every CI pipeline use the frozen variant; it's a one-line change that ends a whole genre of bug.
 
@@ -102,7 +102,7 @@ yarn      mature workspaces, large ecosystem;         classic vs modern (PnP) mo
           fast modern versions                        lot - know which one a repo uses
 ```
 
-*What just happened:* the honest summary is - npm is the safe default that's always there; pnpm wins on speed, disk, and correctness for anything non-trivial or monorepo-shaped; Yarn is a strong choice especially where a team already standardized on it. **What matters more than the choice: pick one per repo and commit its lockfile.** Mixing managers in one project produces conflicting lockfiles and exactly the non-reproducibility this whole guide is about avoiding.
+*What just happened:* the plain summary is - npm is the safe default that's always there; pnpm wins on speed, disk, and correctness for anything non-trivial or monorepo-shaped; Yarn is a strong choice especially where a team already standardized on it. **What matters more than the choice: pick one per repo and commit its lockfile.** Mixing managers in one project produces conflicting lockfiles and exactly the non-reproducibility this whole guide is about avoiding.
 
 ⚠️ **Gotcha.** Commit *one* lockfile per repo. Seeing `package-lock.json`, `pnpm-lock.yaml`, *and* `yarn.lock` side by side is a red flag - it means different people used different tools, and none of the locks can be trusted. Delete the strays, agree on a manager, regenerate the one true lock.
 
@@ -153,7 +153,7 @@ That's the whole model: a manifest of intent, a lockfile of truth, ranges that n
       "It works without a package.json"
     ],
     "answer": 2,
-    "explain": "ci installs exactly what the lockfile pins and fails loudly on drift instead of quietly rewriting the lock. That gives CI identical, reproducible, honest builds."
+    "explain": "ci installs exactly what the lockfile pins and fails loudly on drift instead of quietly rewriting the lock. That gives CI identical, reproducible, reliable builds."
   }
 ]
 ```

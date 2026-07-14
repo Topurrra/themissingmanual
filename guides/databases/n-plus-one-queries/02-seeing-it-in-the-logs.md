@@ -17,7 +17,7 @@ updated: 2026-06-30
 
 # Seeing it in your logs
 
-You can't fix what you can't see, and N+1 is built to stay unseen. The whole point of an ORM is to hide SQL from you — which is wonderful right up until the hidden SQL is the bug. So the single most useful skill here isn't memorizing fixes. It's learning to make the database *show its work*, then recognizing the telltale pattern in what it shows.
+You can't fix what you can't see, and N+1 is built to stay unseen. The whole point of an ORM is to hide SQL from you - which is wonderful right up until the hidden SQL is the bug. So the single most useful skill here isn't memorizing fixes. It's learning to make the database *show its work*, then recognizing the telltale pattern in what it shows.
 
 Once you've caught N+1 in the act even once, you'll never un-see it. The pattern is loud and unmistakable. You have to turn the lights on.
 
@@ -38,7 +38,7 @@ Every ORM can be told to print the SQL it runs. The setting has a different name
 
 ## Step two: read the pattern
 
-Now reload your suspicious page and watch the log. N+1 has a fingerprint you cannot mistake for anything else — **the same query, repeated, with only the ID changing.**
+Now reload your suspicious page and watch the log. N+1 has a fingerprint you cannot mistake for anything else - **the same query, repeated, with only the ID changing.**
 
 ```sql
 SELECT * FROM orders WHERE status = 'open';     -- the +1
@@ -52,25 +52,25 @@ SELECT * FROM customers WHERE id = 56;
 -- ... 200 more lines exactly like these ...
 ```
 
-*What just happened:* the wall of near-identical `SELECT ... WHERE id = ?` lines IS the N+1. One outer query, then a long stutter of single-row lookups that differ only in the number. That repetition is the signature — when your log scrolls with the same statement over and over, you've found it. Bonus tell: notice `id = 17` shows up twice. The lazy loader doesn't even remember it already fetched customer 17; it asks again. That's pure waste on top of the waste.
+*What just happened:* the wall of near-identical `SELECT ... WHERE id = ?` lines IS the N+1. One outer query, then a long stutter of single-row lookups that differ only in the number. That repetition is the signature - when your log scrolls with the same statement over and over, you've found it. Bonus tell: notice `id = 17` shows up twice. The lazy loader doesn't even remember it already fetched customer 17; it asks again. That's pure waste on top of the waste.
 
 > The fingerprint is repetition. One unique query repeated 200 times is N+1. Two hundred genuinely different queries is a different (and rarer) problem.
 
 ## Step three: count, don't eyeball
 
-On a real page you might have several relations and several loops, and the log becomes a blur. Don't try to read every line — **count the queries instead.** Most stacks give you a query counter for exactly this.
+On a real page you might have several relations and several loops, and the log becomes a blur. Don't try to read every line - **count the queries instead.** Most stacks give you a query counter for exactly this.
 
 ```text
 Page rendered. Database: 1 + 247 queries in 1,830 ms.
 ```
 
-*What just happened:* this is the smoking gun in numeric form. A page that should need a small, fixed handful of queries instead ran 248. The number to watch is whether query count grows when your data grows. The honest test: load the page with 10 rows, note the count; load it with 50 rows, note it again. If the count jumped roughly fivefold, your queries scale with rows — that's N+1, confirmed. A healthy page's query count barely moves when the row count changes.
+*What just happened:* this is the smoking gun in numeric form. A page that should need a small, fixed handful of queries instead ran 248. The number to watch is whether query count grows when your data grows. The clear test: load the page with 10 rows, note the count; load it with 50 rows, note it again. If the count jumped roughly fivefold, your queries scale with rows - that's N+1, confirmed. A healthy page's query count barely moves when the row count changes.
 
 ## In production: lean on your APM
 
-You can't tail a console in production, and that's where N+1 actually hurts. This is what an **APM** (Application Performance Monitoring tool — think Datadog, New Relic, Sentry, Scout) is for. It records every request and breaks down where the time went, including how many database queries each endpoint fired and how long they took in total.
+You can't tail a console in production, and that's where N+1 actually hurts. This is what an **APM** (Application Performance Monitoring tool - think Datadog, New Relic, Sentry, Scout) is for. It records every request and breaks down where the time went, including how many database queries each endpoint fired and how long they took in total.
 
-The N+1 signature in an APM is visual and as obvious as in the log: a request's timeline shows a dense ladder of dozens or hundreds of tiny, identical database spans stacked one after another. Each bar is short; the stack of them is enormous. Many APMs will even flag it for you with a literal "N+1 queries detected" warning on the endpoint — they pattern-match the same repetition you learned to read by eye.
+The N+1 signature in an APM is visual and as obvious as in the log: a request's timeline shows a dense ladder of dozens or hundreds of tiny, identical database spans stacked one after another. Each bar is short; the stack of them is enormous. Many APMs will even flag it for you with a literal "N+1 queries detected" warning on the endpoint - they pattern-match the same repetition you learned to read by eye.
 
 The workflow that actually works in practice:
 
@@ -84,7 +84,7 @@ The workflow that actually works in practice:
 
 *What just happened:* you closed the loop from symptom to confirmation. Production told you *where* (which endpoint), local logging told you *what* (the repeated query), and the before/after count proves the fix worked instead of you just hoping it did.
 
-For builders: if your APM says the time is in the database but you *don't* see the repetition fingerprint — it's one query that's genuinely slow, not N+1 — that's a different diagnosis. Head to [why is my query slow](/guides/why-is-my-query-slow) instead; the fix there is indexes and query shape, not eager loading.
+For builders: if your APM says the time is in the database but you *don't* see the repetition fingerprint - it's one query that's genuinely slow, not N+1 - that's a different diagnosis. Head to [why is my query slow](/guides/why-is-my-query-slow) instead; the fix there is indexes and query shape, not eager loading.
 
 ```quiz
 [
@@ -97,13 +97,13 @@ For builders: if your APM says the time is in the database but you *don't* see t
       "Errors about too many open connections"
     ],
     "answer": 1,
-    "explain": "N+1 shows up as a long stutter of near-identical single-row lookups — same statement, only the ID changes."
+    "explain": "N+1 shows up as a long stutter of near-identical single-row lookups - same statement, only the ID changes."
   },
   {
     "q": "You load a page with 10 rows (12 queries), then with 50 rows (52 queries). What does this tell you?",
     "choices": [
       "The database needs a bigger connection pool",
-      "Query count scales with rows — classic N+1",
+      "Query count scales with rows - classic N+1",
       "The queries are slow and need an index",
       "Nothing; query count always grows with data"
     ],
@@ -115,7 +115,7 @@ For builders: if your APM says the time is in the database but you *don't* see t
     "choices": [
       "Still N+1, just hidden",
       "A connection leak",
-      "A single slow query — an indexing/query-shape problem, not N+1",
+      "A single slow query - an indexing/query-shape problem, not N+1",
       "A caching misconfiguration"
     ],
     "answer": 2,

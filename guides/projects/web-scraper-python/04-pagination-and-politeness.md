@@ -59,7 +59,7 @@ print(urljoin(current, "page-2.html"))
 
 Before we loop, one courtesy and one practicality. Every request carries a
 `User-Agent` header that says who's calling. By default `requests` sends
-something like `python-requests/2.x`, which is honest but anonymous. Many servers
+something like `python-requests/2.x`, which is genuine but anonymous. Many servers
 treat the default Python agent with suspicion or block it outright.
 
 Set a real one that identifies you and, ideally, how to reach you. This is both
@@ -170,7 +170,7 @@ agent = "weekend-book-scraper/1.0"
 print(rp.can_fetch(agent, "https://books.toscrape.com/catalogue/page-1.html"))
 ```
 
-`can_fetch` returns `True` or `False`. The honest move is to check it before you
+`can_fetch` returns `True` or `False`. The straightforward move is to check it before you
 scrape a path and skip what's disallowed. (Our practice site allows everything;
 real sites often disallow `/search`, `/cart`, login areas, and the like.)
 
@@ -195,7 +195,7 @@ understanding a careful person operates with:
 - **Prefer an API.** If the site offers one, use it. It's faster, more stable,
   and it's them *inviting* you in.
 
-The short version: scrape public facts, slowly, with an honest User-Agent, while
+The short version: scrape public facts, slowly, with a genuine User-Agent, while
 respecting robots.txt and ToS, and never for personal data or behind a login.
 That posture covers the vast majority of legitimate scraping.
 
@@ -205,7 +205,7 @@ graph TD
   B -->|yes| C[Use the API]
   B -->|no| D{robots.txt + ToS allow it?}
   D -->|no| E[Stop or ask permission]
-  D -->|yes| F[Scrape slowly, honest UA]
+  D -->|yes| F[Scrape slowly, genuine UA]
 ```
 
 ## Where we are

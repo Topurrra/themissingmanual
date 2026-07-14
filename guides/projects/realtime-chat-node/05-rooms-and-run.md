@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 # Rooms, and Running It
 
-One big room is fine until two conversations want to happen at once. The fix is **rooms** - named channels where a message only reaches the people in the same channel. This phase adds them, then we run the finished app start to finish and look at the honest next steps if you want to keep going.
+One big room is fine until two conversations want to happen at once. The fix is **rooms** - named channels where a message only reaches the people in the same channel. This phase adds them, then we run the finished app start to finish and look at the real next steps if you want to keep going.
 
 By the end you'll have a small but real chat server: named users, join and leave notices, and separate rooms, all running on your machine.
 

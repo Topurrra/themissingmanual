@@ -78,7 +78,7 @@ The `arn:aws:s3:::my-app-uploads/*` is an **ARN** (Amazon Resource Name), AWS's 
 
 *What just happened:* this says "this identity can do anything to everything in the account." It will absolutely make your error go away - and it's the policy attached to most of the credentials that have ever been stolen and used to ransack an account. A role this wide, if its credentials leak, hands an attacker your entire AWS footprint. The narrow policy from the previous section, leaked, costs you one bucket's contents. That gap is the entire argument for least privilege.
 
-> The honest workflow: start with nothing, run your code, read the exact action it was denied, and add *that one action* on *that one resource*. It's slower than `"*"` for about ten minutes and saves you from a catastrophe you'll never see coming.
+> The straightforward workflow: start with nothing, run your code, read the exact action it was denied, and add *that one action* on *that one resource*. It's slower than `"*"` for about ten minutes and saves you from a catastrophe you'll never see coming.
 
 ## The gotchas that actually bite
 

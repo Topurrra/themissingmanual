@@ -95,7 +95,7 @@ false row again.
 So when the condition doesn't fire, the promise can't be broken - and "not broken" is exactly what
 **true** means. The conditional holds vacuously.
 
-## A quick honesty note: this is about truth, not causes
+## A quick clarification: this is about truth, not causes
 
 One thing worth being upfront about. Logical implication - sometimes called **material
 implication** - is purely a rule about **truth values**. `P → Q` does *not* claim that P

@@ -11,7 +11,7 @@ updated: 2026-06-30
 
 # When it breaks: flaky tests, slow builds, and managed-CI tradeoffs
 
-A pipeline that works on day one will eventually go red for reasons that have nothing to do with your code. Tests that pass locally fail in CI. The build that took two minutes now takes twelve. And one morning your whole team is blocked because someone else's infrastructure is having a bad day. This phase is about those moments - speeding pipelines up, debugging the weird ones, and being honest about what you give up by not running your own CI.
+A pipeline that works on day one will eventually go red for reasons that have nothing to do with your code. Tests that pass locally fail in CI. The build that took two minutes now takes twelve. And one morning your whole team is blocked because someone else's infrastructure is having a bad day. This phase is about those moments - speeding pipelines up, debugging the weird ones, and being clear about what you give up by not running your own CI.
 
 ## Parallelism and test splitting: the real speed lever
 

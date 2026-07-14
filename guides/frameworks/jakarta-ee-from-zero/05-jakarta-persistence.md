@@ -12,9 +12,9 @@ updated: 2026-07-10
 # Jakarta Persistence (JPA)
 
 In Phase 4 your `ProductResource` happily served JSON, but every product was hand-built or kept in a
-list. Now we make them real — rows in a database, fetched and saved through JPA. If you've done any
+list. Now we make them real - rows in a database, fetched and saved through JPA. If you've done any
 Hibernate, almost all of this will feel familiar, and that's the point: **Jakarta Persistence *is* the
-JPA you already know.** What changes inside a Jakarta EE app server is *who holds the wiring* — this
+JPA you already know.** What changes inside a Jakarta EE app server is *who holds the wiring* - this
 phase is about that difference, and almost nothing else.
 
 ## The mental model: same JPA, the container holds the plumbing
@@ -29,18 +29,18 @@ Liberty) reads a small config file, builds the factory, manages a connection poo
 ready-to-use `EntityManager` through an annotation. Your job shrinks to: *describe* the persistence
 setup once, then *ask* for an `EntityManager` and use it.
 
-> 💡 **Key point.** The JPA *API* — `@Entity`, `persist`, `find`, JPQL, the persistence context, lazy
-> loading — is identical. The only EE-specific parts are three things: the **persistence unit**
+> 💡 **Key point.** The JPA *API* - `@Entity`, `persist`, `find`, JPQL, the persistence context, lazy
+> loading - is identical. The only EE-specific parts are three things: the **persistence unit**
 > (config), the **container-managed `EntityManager`** (injection), and **container-managed
 > transactions** (Phase 6). Everything else you already know carries over unchanged.
 
 ## JPA is a Jakarta EE spec
 
-📝 **Jakarta Persistence** is one of the specifications bundled into Jakarta EE — the same "spec, not
+📝 **Jakarta Persistence** is one of the specifications bundled into Jakarta EE - the same "spec, not
 implementation" idea from [Phase 1](01-what-jakarta-ee-is.md). The spec defines the annotations and the
 `EntityManager` API; a **provider** supplies the actual engine. **Hibernate is the most common
 provider** (EclipseLink is the other big one), and most app servers ship one by default. So "JPA" and
-"the Hibernate you may know" are not competitors — JPA is the standard, Hibernate is the thing under it.
+"the Hibernate you may know" are not competitors - JPA is the standard, Hibernate is the thing under it.
 
 The entity mapping itself is plain JPA. Here's our `Product`, mapped the same way you'd map anything in
 the standalone guide:
@@ -74,11 +74,11 @@ public class Product {
     // getters and setters omitted
 }
 ```
-*What just happened:* This is ordinary JPA mapping — `@Entity` marks the class as a table-backed type,
+*What just happened:* This is ordinary JPA mapping - `@Entity` marks the class as a table-backed type,
 `@Id` + `@GeneratedValue` make the database assign the primary key, and `@Column(unique = true)` mirrors
 a `UNIQUE` constraint on `sku`. Nothing here is Jakarta-EE-specific. For the full story on mapping
 (relationships, embeddables, inheritance), lean on the
-[Hibernate & JPA guide](/guides/hibernate-and-jpa-from-zero) — we won't re-teach it. What's new starts
+[Hibernate & JPA guide](/guides/hibernate-and-jpa-from-zero) - we won't re-teach it. What's new starts
 with *where this entity gets registered*.
 
 ## The persistence unit & `persistence.xml`
@@ -105,10 +105,10 @@ WAR.
 ```
 *What just happened:* We named one persistence unit `storePU`. The big EE difference is
 `<jta-data-source>java:/jdbc/StoreDS</jta-data-source>`: instead of putting a JDBC URL, username, and
-connection-pool settings here, we point at a **JNDI name** — a datasource the *app server* already
+connection-pool settings here, we point at a **JNDI name** - a datasource the *app server* already
 defined and manages. You configure `StoreDS` once in the server (its URL, credentials, pool size), and
 every app just references it by name. `transaction-type="JTA"` says "let the container run the
-transactions" (Phase 6). We didn't even name a provider — the server's default (often Hibernate) is
+transactions" (Phase 6). We didn't even name a provider - the server's default (often Hibernate) is
 assumed.
 
 > 📝 **Where did the connection pool go?** In standalone Hibernate you'd configure the JDBC URL and a
@@ -146,13 +146,13 @@ public class ProductService {
 
     public List<Product> all() {
         return em.createQuery("SELECT p FROM Product p", Product.class)
-                 .getResultList();           // JPQL — same as ever
+                 .getResultList();           // JPQL - same as ever
     }
 }
 ```
 *What just happened:* `@PersistenceContext(unitName = "storePU")` tells the container: "inject an
 `EntityManager` bound to the `storePU` unit." The container creates it, wires it to the datasource, and
-manages its whole lifecycle — **you never call `createEntityManager` and you never call `em.close()`.**
+manages its whole lifecycle - **you never call `createEntityManager` and you never call `em.close()`.**
 From there, `em.persist`, `em.find`, and `createQuery` behave *exactly* as they do in the
 [EntityManager phase](/guides/hibernate-and-jpa-from-zero) of the Hibernate guide: `persist` makes a
 transient `Product` managed and schedules an `INSERT`, `find` hits the first-level cache then the
@@ -160,10 +160,10 @@ database, and the persistence context is still the same per-transaction identity
 understand.
 
 > ⚠️ Don't reach for `EntityManagerFactory.createEntityManager()` inside a managed bean. That's the
-> standalone pattern — in a container it gives you an *unmanaged* `EntityManager` you'd have to close
+> standalone pattern - in a container it gives you an *unmanaged* `EntityManager` you'd have to close
 > yourself, and it won't join the container's transaction. In EE, `@PersistenceContext` is the way.
 
-A `ProductResource` from [Phase 4](04-jax-rs-rest-apis.md) just injects this service and calls it — the
+A `ProductResource` from [Phase 4](04-jax-rs-rest-apis.md) just injects this service and calls it - the
 resource stays thin, the service owns persistence:
 
 ```java
@@ -194,7 +194,7 @@ persistence. `@Inject` (CDI, [Phase 3](03-cdi-dependency-injection.md)) hands th
 ## Transactions are container-managed (a preview)
 
 Notice what's *missing* from `ProductService.create`: there's no `em.getTransaction().begin()` and no
-`commit()`. In the standalone Hibernate guide those calls were mandatory — forget the commit and nothing
+`commit()`. In the standalone Hibernate guide those calls were mandatory - forget the commit and nothing
 saved. Here they're gone on purpose.
 
 📝 Because we marked the bean `@Stateless` and the unit `transaction-type="JTA"`, the **container wraps
@@ -204,11 +204,11 @@ flushes); if the method throws, the container rolls back. Your `em.persist` call
 transaction the container has running.
 
 That's why the `id` is populated and the row is saved even though you never wrote a single transaction
-line. The full mechanics — `@Transactional`, rollback rules, what JTA coordinates across multiple
-resources — are [Phase 6](06-transactions-with-jta.md). For now, the takeaway is just: **in EE you
+line. The full mechanics - `@Transactional`, rollback rules, what JTA coordinates across multiple
+resources - are [Phase 6](06-transactions-with-jta.md). For now, the takeaway is just: **in EE you
 describe boundaries with annotations, you don't hand-code begin/commit.**
 
-## Hibernate underneath — reuse everything you know
+## Hibernate underneath - reuse everything you know
 
 💡 Step back and see how little is actually new. The request path through your app is:
 
@@ -222,18 +222,18 @@ flowchart LR
 
 Of that whole chain, the *only* EE-specific links are the persistence unit, the injected
 `EntityManager`, and the container transaction. Everything to the right of the `EntityManager` is plain
-JPA running on plain Hibernate — which means **everything from the
+JPA running on plain Hibernate - which means **everything from the
 [Hibernate & JPA guide](/guides/hibernate-and-jpa-from-zero) still applies, byte for byte:**
 relationships and `@OneToMany`, JPQL and the Criteria API, lazy vs eager fetching, the persistence
 context as identity map and first-level cache, dirty checking, and the N+1 problem.
 
 ⚠️ Which also means the *traps* come along unchanged. The container injecting your `EntityManager`
-doesn't make N+1 disappear — loop over 100 products touching a lazy relationship and you'll fire 100
+doesn't make N+1 disappear - loop over 100 products touching a lazy relationship and you'll fire 100
 extra `SELECT`s, same as anywhere. Lazy-loading still needs an open persistence context, so reaching for
 an un-fetched relationship after the transaction ends still throws `LazyInitializationException`. The
 fix is the same one the Hibernate guide teaches: watch the SQL your provider emits (turn on SQL logging
 in dev), fetch what you need with a `JOIN FETCH`, and don't trust that "it's a managed `EntityManager`
-now" changes any of the performance rules. The container manages the *lifecycle*, not the *queries* —
+now" changes any of the performance rules. The container manages the *lifecycle*, not the *queries* - 
 those are still yours to get right.
 
 ## Recap
@@ -242,15 +242,15 @@ those are still yours to get right.
    (`@Entity`, `persist`, `find`, JPQL) is the same one you learn in the
    [Hibernate & JPA guide](/guides/hibernate-and-jpa-from-zero).
 2. A **persistence unit**, declared in `persistence.xml`, names the provider, the **datasource (by JNDI
-   name)**, and the entities. The app server owns the connection pool — you reference it, you don't wire
+   name)**, and the entities. The app server owns the connection pool - you reference it, you don't wire
    it.
 3. **`@PersistenceContext EntityManager em`** gives you a **container-managed** `EntityManager`: the
    container creates it, wires it, and closes it. You never call `createEntityManager` or `em.close()`.
-4. Transactions are **container-managed** — no `begin`/`commit` by hand. `em` operations join the
+4. Transactions are **container-managed** - no `begin`/`commit` by hand. `em` operations join the
    container's transaction automatically; rollback on a thrown exception. Full detail in
    [Phase 6](06-transactions-with-jta.md).
 5. ⚠️ The container manages the EntityManager's *lifecycle*, not your *queries*. **N+1, lazy-loading
-   pitfalls, and `LazyInitializationException` all still apply** — watch the SQL.
+   pitfalls, and `LazyInitializationException` all still apply** - watch the SQL.
 
 ## Quick check
 
@@ -261,7 +261,7 @@ The three things that are actually different about JPA in a container:
   {
     "q": "What does `@PersistenceContext EntityManager em;` give you inside a Jakarta EE managed bean?",
     "choices": [
-      "A container-managed EntityManager — the container creates, wires, and closes it; you never call createEntityManager or em.close()",
+      "A container-managed EntityManager - the container creates, wires, and closes it; you never call createEntityManager or em.close()",
       "A new EntityManagerFactory you must call createEntityManager() on",
       "A second-level cache instance shared across all requests",
       "A raw JDBC connection you manage by hand"
@@ -278,12 +278,12 @@ The three things that are actually different about JPA in a container:
       "Because each entity needs its own separate connection"
     ],
     "answer": 0,
-    "explain": "The container manages the datasource (URL, credentials, pool). You configure it once in the server and every app references it by JNDI name — one less thing your app wires, and it stays consistent across environments."
+    "explain": "The container manages the datasource (URL, credentials, pool). You configure it once in the server and every app references it by JNDI name - one less thing your app wires, and it stays consistent across environments."
   },
   {
     "q": "You inject a container-managed EntityManager and loop over products touching a lazy relationship. What happens to the N+1 problem?",
     "choices": [
-      "It still happens — container management handles lifecycle, not query efficiency; you still need JOIN FETCH and to watch the SQL",
+      "It still happens - container management handles lifecycle, not query efficiency; you still need JOIN FETCH and to watch the SQL",
       "It disappears, because container-managed EntityManagers auto-batch all queries",
       "It throws a compile error before the loop runs",
       "It's impossible, because JTA prevents extra SELECTs"

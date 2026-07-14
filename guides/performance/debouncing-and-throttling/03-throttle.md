@@ -2,7 +2,7 @@
 title: "Throttle: cap the rate"
 guide: debouncing-and-throttling
 phase: 3
-summary: "Two related techniques for taming a firehose of events — waiting for a pause versus capping the rate — and how to pick between them."
+summary: "Two related techniques for taming a firehose of events - waiting for a pause versus capping the rate - and how to pick between them."
 tags: [performance, debouncing, throttling, events, frontend]
 difficulty: intermediate
 synonyms:
@@ -17,7 +17,7 @@ updated: 2026-07-10
 
 # Throttle: cap the rate
 
-Debounce is the wrong tool for the scroll handler from Phase 1: it would only run once scrolling *stops*, but a parallax effect or a "sticky header that fades in" needs to update *while* the user is scrolling. Waiting for a pause would mean the page visibly does nothing for the entire scroll, then suddenly catches up all at once — not what anyone wants.
+Debounce is the wrong tool for the scroll handler from Phase 1: it would only run once scrolling *stops*, but a parallax effect or a "sticky header that fades in" needs to update *while* the user is scrolling. Waiting for a pause would mean the page visibly does nothing for the entire scroll, then suddenly catches up all at once - not what anyone wants.
 
 **Throttling** solves a different problem: guarantee the handler runs at most once every fixed interval, no matter how many events fire in that interval. Events keep being allowed through at a steady, capped rate, instead of being collapsed down to a single one at the end.
 
@@ -34,7 +34,7 @@ each new event:
   3. if no  -> ignore this event entirely, do nothing
 ```
 
-*What just happened:* unlike debounce, nothing gets rescheduled or delayed here — an event either qualifies to trigger the action right now, or it's dropped. There's no waiting for quiet; there's only a gate that only opens once every `interval` milliseconds.
+*What just happened:* unlike debounce, nothing gets rescheduled or delayed here - an event either qualifies to trigger the action right now, or it's dropped. There's no waiting for quiet; there's only a gate that only opens once every `interval` milliseconds.
 
 Applied to a scroll handler throttled to 100ms, during one second of continuous fast scrolling that fires roughly 200 scroll events:
 
@@ -50,7 +50,7 @@ event at 200ms  -> RUN, last ran = 200ms
 ... repeats every 100ms ...
 ```
 
-*What just happened:* out of roughly 200 events in that second, only about 10 ran the handler — one every 100ms, like clockwork. Compare that to debounce, which would have produced zero runs during the scroll and exactly one run after it stopped. Throttle keeps the page updating *throughout* the scroll, at a rate the eye can actually follow, instead of either running 200 times (wasteful) or 0 times until the end (unresponsive).
+*What just happened:* out of roughly 200 events in that second, only about 10 ran the handler - one every 100ms, like clockwork. Compare that to debounce, which would have produced zero runs during the scroll and exactly one run after it stopped. Throttle keeps the page updating *throughout* the scroll, at a rate the eye can actually follow, instead of either running 200 times (wasteful) or 0 times until the end (unresponsive).
 
 ## Implementing it
 
@@ -73,9 +73,9 @@ const throttledParallax = throttle(updateParallaxPosition, 100);
 window.addEventListener("scroll", throttledParallax);
 ```
 
-*What just happened:* `lastRan` remembers the timestamp of the most recent time `fn` actually ran. Every call checks `now - lastRan` against the interval — if enough time has passed, it runs `fn` and updates `lastRan`; if not, the call does nothing at all. Note the structural difference from `debounce`'s implementation in Phase 2: debounce always eventually calls `fn` (once things go quiet), while throttle may call `fn` many times across a long event stream, spaced out, and drops whichever events land in between without rescheduling them.
+*What just happened:* `lastRan` remembers the timestamp of the most recent time `fn` actually ran. Every call checks `now - lastRan` against the interval - if enough time has passed, it runs `fn` and updates `lastRan`; if not, the call does nothing at all. Note the structural difference from `debounce`'s implementation in Phase 2: debounce always eventually calls `fn` (once things go quiet), while throttle may call `fn` many times across a long event stream, spaced out, and drops whichever events land in between without rescheduling them.
 
-A common refinement is to also fire on the *last* event of a burst even if it lands inside the cooldown window, so the final state (like the exact scroll position where the user stopped) still gets reflected — but the core mechanism above is the part worth understanding first.
+A common refinement is to also fire on the *last* event of a burst even if it lands inside the cooldown window, so the final state (like the exact scroll position where the user stopped) still gets reflected - but the core mechanism above is the part worth understanding first.
 
 ## Choosing between them
 
@@ -91,9 +91,9 @@ The two techniques answer different questions, and the question your situation i
      tracking for a cursor trail)
 ```
 
-*What just happened:* the search box never benefits from an update mid-typing — a partial word isn't a valid search, so waiting for the pause is strictly correct, not a performance shortcut taken at the expense of correctness. A parallax effect is the opposite: it needs to look continuous *during* the scroll, so collapsing it down to one update after scrolling stops would make the effect disappear entirely while it matters most.
+*What just happened:* the search box never benefits from an update mid-typing - a partial word isn't a valid search, so waiting for the pause is strictly correct, not a performance shortcut taken at the expense of correctness. A parallax effect is the opposite: it needs to look continuous *during* the scroll, so collapsing it down to one update after scrolling stops would make the effect disappear entirely while it matters most.
 
-A shorthand worth keeping: **debounce waits for silence; throttle keeps things flowing but capped.** If your instinct says "I want this to feel continuous while it's happening," reach for throttle. If your instinct says "I only care what things look like once they stop changing," reach for debounce. "Run the handler on every event" was never really the requirement in either case — naming which kind of "less often" you need is what picks the tool.
+A shorthand worth keeping: **debounce waits for silence; throttle keeps things flowing but capped.** If your instinct says "I want this to feel continuous while it's happening," reach for throttle. If your instinct says "I only care what things look like once they stop changing," reach for debounce. "Run the handler on every event" was never really the requirement in either case - naming which kind of "less often" you need is what picks the tool.
 
 ```quiz
 [
@@ -101,7 +101,7 @@ A shorthand worth keeping: **debounce waits for silence; throttle keeps things f
     "q": "What does a throttled function do when an event arrives before the interval has elapsed since the last run?",
     "choices": [
       "It queues the event and runs it later, once the interval passes",
-      "It ignores that event entirely — the call does nothing and is not rescheduled",
+      "It ignores that event entirely - the call does nothing and is not rescheduled",
       "It runs the function immediately anyway",
       "It resets the interval timer, the same way debounce does"
     ],
@@ -135,4 +135,4 @@ A shorthand worth keeping: **debounce waits for silence; throttle keeps things f
 
 Watch it animated: [debouncing](/explainers/Debouncing.dc.html)
 
-[← Phase 2: Debounce — wait for a pause](02-debounce.md) | [Overview](_guide.md)
+[← Phase 2: Debounce - wait for a pause](02-debounce.md) | [Overview](_guide.md)

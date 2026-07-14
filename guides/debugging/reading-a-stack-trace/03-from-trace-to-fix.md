@@ -97,7 +97,7 @@ Once you've found the suspect frame, two cheap moves land the fix.
 
 A stack trace *looks* like an obituary. It isn't - it's a map drawn in the program's final instant, marking exactly where it broke and the path that led there. The error line is the X; the frames are the trail back to the treasure.
 
-Read calmly, in order - error line, crash point, your code, then *downward* toward the cause - and the forty-line wall that dropped your stomach at 2am becomes the fastest, most honest debugging tool you have.
+Read calmly, in order - error line, crash point, your code, then *downward* toward the cause - and the forty-line wall that dropped your stomach at 2am becomes the fastest, clearest debugging tool you have.
 
 ## Recap
 

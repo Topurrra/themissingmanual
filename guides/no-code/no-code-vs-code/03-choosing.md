@@ -16,7 +16,7 @@ updated: 2026-06-30
 
 # A Decision Framework
 
-You don't need a 40-row spreadsheet to choose a tier. You need a handful of honest questions, asked in order, and the discipline to act on the first one that gives a clear answer. Here's the short version, then the warning signs, then the pattern that lets you stop choosing sides.
+You don't need a 40-row spreadsheet to choose a tier. You need a handful of clear-eyed questions, asked in order, and the discipline to act on the first one that gives a clear answer. Here's the short version, then the warning signs, then the pattern that lets you stop choosing sides.
 
 ## The questions, in order
 

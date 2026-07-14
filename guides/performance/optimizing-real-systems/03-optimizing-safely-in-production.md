@@ -90,7 +90,7 @@ people. Optimize the experience of your unluckiest users, because the average us
 
 ## The traps that make a win worthless
 
-You can run the loop perfectly, measure honestly, verify in production - and still waste your effort or
+You can run the loop perfectly, measure accurately, verify in production - and still waste your effort or
 do harm. Three traps account for most of it.
 
 ### Trap 1 - micro-optimizing a cold path
@@ -135,7 +135,7 @@ you've hit it, stop - don't risk a bug for a millisecond no one will notice.
 
 ## The fastest code is the work you avoid
 
-Pull the whole guide together and it collapses into one idea. The optimization loop keeps you honest
+Pull the whole guide together and it collapses into one idea. The optimization loop keeps you disciplined
 about *what* to change and *when* to stop. Knowing where the time goes points you at the boundaries -
 database, network, I/O, then CPU - instead of your guesses. Production verification and percentiles make
 sure the win is real for real users. And the traps remind you that a faster number isn't automatically a

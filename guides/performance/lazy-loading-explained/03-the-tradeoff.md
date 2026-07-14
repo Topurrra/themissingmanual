@@ -17,23 +17,23 @@ updated: 2026-07-10
 
 # The tradeoff
 
-Lazy loading isn't a free performance upgrade you apply everywhere and walk away from. Deferring work means there's a gap between "the page exists" and "this particular piece of it is ready" — and that gap is where things go visibly wrong if you're not careful.
+Lazy loading isn't a free performance upgrade you apply everywhere and walk away from. Deferring work means there's a gap between "the page exists" and "this particular piece of it is ready" - and that gap is where things go visibly wrong if you're not careful.
 
 ## Layout shift: the space where content isn't yet
 
-Before a lazy-loaded image finishes loading, the browser doesn't know its dimensions — unless you told it. Without that, the browser renders zero height where the image will go, and the instant the image arrives, everything below it gets shoved down.
+Before a lazy-loaded image finishes loading, the browser doesn't know its dimensions - unless you told it. Without that, the browser renders zero height where the image will go, and the instant the image arrives, everything below it gets shoved down.
 
 ```text
-1. Page renders. Image not loaded yet — its <img> tag takes up 0px of height.
+1. Page renders. Image not loaded yet - its <img> tag takes up 0px of height.
 2. User starts reading the paragraph that follows.
 3. Image finishes loading, snaps in at 400px tall.
 4. Everything below jumps down 400px. The paragraph the user was
    reading is now somewhere else on the screen.
 ```
 
-*What just happened:* the user experienced **layout shift** — content moving after they've already started interacting with the page. This is jarring on a good day and genuinely harmful on a bad one: a shift at the exact moment someone taps a button can make them tap the wrong thing entirely, because whatever was under their finger moved.
+*What just happened:* the user experienced **layout shift** - content moving after they've already started interacting with the page. This is jarring on a good day and genuinely harmful on a bad one: a shift at the exact moment someone taps a button can make them tap the wrong thing entirely, because whatever was under their finger moved.
 
-The fix is straightforward: reserve the space up front. Set `width` and `height` attributes (or a CSS aspect-ratio) on lazy-loaded images, so the browser blocks out the right amount of space before the image arrives — even though the pixels themselves aren't there yet.
+The fix is straightforward: reserve the space up front. Set `width` and `height` attributes (or a CSS aspect-ratio) on lazy-loaded images, so the browser blocks out the right amount of space before the image arrives - even though the pixels themselves aren't there yet.
 
 ```html
 <img src="diagram-12.jpg" alt="Architecture diagram"
@@ -55,16 +55,16 @@ better: click tab -> a placeholder that matches the content's shape
                       replaces the placeholder in the same spot
 ```
 
-*What just happened:* the "better" version doesn't make the fetch any faster — it's the same lazy load, the same wait. What changes is that the user isn't staring at an unexplained blank space wondering if something broke. A placeholder that already occupies the right amount of room solves both problems at once: no layout shift when the real content lands, and no confusing gap while it's in flight.
+*What just happened:* the "better" version doesn't make the fetch any faster - it's the same lazy load, the same wait. What changes is that the user isn't staring at an unexplained blank space wondering if something broke. A placeholder that already occupies the right amount of room solves both problems at once: no layout shift when the real content lands, and no confusing gap while it's in flight.
 
 ## When eager beats lazy
 
 Lazy loading isn't always the right call. Skip it entirely when:
 
 - **Small content.** If an image is a 2 KB icon, the overhead of setting up a scroll observer to decide *when* to load it can cost more than downloading the icon outright would have. Lazy loading pays off when the deferred thing is expensive enough that skipping it (for users who never trigger it) actually matters.
-- **Critical above-the-fold content.** Anything the user needs the instant the page appears — the main headline image, the primary call-to-action button's icon, the first few rows of a table they came to read — should load eagerly. Deferring something the user is guaranteed to need immediately only adds a delay with no corresponding benefit.
-- **Content you can't cheaply reserve space for.** If you genuinely cannot predict a lazy-loaded element's size ahead of time (dynamic-height content, for instance), you're trading a slow load for a layout-shift risk. Eager-loading that content — even at the cost of a slightly heavier initial load — is often the safer choice over a shift that annoys or misdirects every visitor.
+- **Critical above-the-fold content.** Anything the user needs the instant the page appears - the main headline image, the primary call-to-action button's icon, the first few rows of a table they came to read - should load eagerly. Deferring something the user is guaranteed to need immediately only adds a delay with no corresponding benefit.
+- **Content you can't cheaply reserve space for.** If you genuinely cannot predict a lazy-loaded element's size ahead of time (dynamic-height content, for instance), you're trading a slow load for a layout-shift risk. Eager-loading that content - even at the cost of a slightly heavier initial load - is often the safer choice over a shift that annoys or misdirects every visitor.
 
-The underlying question is the same one from Phase 1, asked in reverse: is there a real chance this won't be needed? If the answer is "no, everyone who loads this page needs this immediately," lazy loading has nothing to offer — you're adding a deferral mechanism to something that was never optional.
+The underlying question is the same one from Phase 1, asked in reverse: is there a real chance this won't be needed? If the answer is "no, everyone who loads this page needs this immediately," lazy loading has nothing to offer - you're adding a deferral mechanism to something that was never optional.
 
 [← Phase 2: Where you'll actually use it](02-where-youll-use-it.md) | [Overview](_guide.md)

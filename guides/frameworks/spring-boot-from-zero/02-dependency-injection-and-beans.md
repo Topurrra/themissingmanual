@@ -12,14 +12,14 @@ updated: 2026-07-10
 # Dependency Injection & Beans
 
 In Phase 1 you got a Spring Boot app running and saw that the "magic" was really auto-configured Spring
-quietly wiring things up for you. This phase is about the single mechanism doing most of that wiring —
+quietly wiring things up for you. This phase is about the single mechanism doing most of that wiring - 
 the one idea that, once it clicks, makes the rest of Spring stop feeling like sorcery: **dependency
 injection**, sitting at the dead center of everything Spring does.
 
 The mental model to carry through: in a normal program, your objects build the other objects they need.
 In a Spring program, **a container builds your objects for you and hands them the things they depend
 on.** You stop writing `new`, and you start *describing* what you need. Get that single inversion, and
-`@Service`, `@Autowired`, repositories, controllers — all of it — turn from incantations into plain
+`@Service`, `@Autowired`, repositories, controllers - all of it - turn from incantations into plain
 machinery.
 
 ## The problem: objects building their own dependencies
@@ -42,32 +42,32 @@ public class OrderService {
 }
 ```
 *What just happened:* `OrderService` reached out and built its own `SmtpEmailSender`, hard-coding the
-server and port right into its constructor. It works — until it doesn't. Look at what you've trapped
+server and port right into its constructor. It works - until it doesn't. Look at what you've trapped
 yourself into:
 
 - **Tight coupling.** `OrderService` is now welded to `SmtpEmailSender` specifically. Want to swap in a
-  different sender — say one that uses a third-party API? You have to crack open `OrderService` and edit
+  different sender - say one that uses a third-party API? You have to crack open `OrderService` and edit
   it.
 - **Untestable.** To test `placeOrder`, you'd fire a *real email* at a *real SMTP server* every test
   run. There's no seam to slip a fake emailer in.
 - **Hidden setup.** That SMTP host and port are buried inside the class. Configuration is tangled up with
   business logic.
 
-The root cause: `OrderService` is doing two jobs — deciding *what* its dependency is, and using it.
+The root cause: `OrderService` is doing two jobs - deciding *what* its dependency is, and using it.
 Dependency injection's whole pitch is to take the first job away.
 
 ## Inversion of Control: let the container build your objects
 
-📝 **Inversion of Control (IoC)** — instead of *your code* creating the objects it needs, a **container**
+📝 **Inversion of Control (IoC)** - instead of *your code* creating the objects it needs, a **container**
 creates them and supplies them to your code. Control over object creation is *inverted*: it moves out of
 your classes and into the framework. (This is the framework principle from
-[What a Framework Even Is](/guides/what-a-framework-even-is) — "don't call us, we'll call you" — made
+[What a Framework Even Is](/guides/what-a-framework-even-is) - "don't call us, we'll call you" - made
 concrete: the framework even *builds* your code's objects.)
 
 Spring's container is the engine that does this. You hand it the recipe for your objects; it
 constructs them, figures out what each one depends on, and wires the whole graph together at startup.
 
-📝 **Bean** — an object that the Spring container creates, wires up, and manages. That's the entire
+📝 **Bean** - an object that the Spring container creates, wires up, and manages. That's the entire
 definition. A "bean" isn't a special kind of class or some exotic type; it's just one of *your* ordinary
 objects that you've handed to Spring to own. When people say "register a bean," they mean "tell the
 container to manage this object for you."
@@ -79,7 +79,7 @@ you say that.
 ## Declaring beans: `@Component` and its flavors
 
 You tell the container "manage this class" by annotating it. The base annotation is `@Component`. When
-your app starts, Spring does **component scanning** — it walks the packages under your main application
+your app starts, Spring does **component scanning** - it walks the packages under your main application
 class, finds every class marked as a component, and creates one instance of each as a bean.
 
 ```java
@@ -93,17 +93,17 @@ public class SmtpEmailSender implements EmailSender {
     }
 }
 ```
-*What just happened:* `@Component` is a flag that says "Spring, this is yours — make a bean out of it."
+*What just happened:* `@Component` is a flag that says "Spring, this is yours - make a bean out of it."
 On startup, component scanning spots it, calls `new SmtpEmailSender()` *for* you, and stashes the
 resulting object in the container, ready to hand to anything that needs an `EmailSender`.
 
 💡 Spring gives you **semantic flavors** of `@Component` that mean the exact same thing to the container
-but document a class's *role* — and let Spring add layer-specific behavior later:
+but document a class's *role* - and let Spring add layer-specific behavior later:
 
-- `@Service` — business logic (your `OrderService`).
-- `@Repository` — data access; also translates database exceptions into Spring's consistent ones.
-- `@Controller` / `@RestController` — handles web requests (Phase 3's whole topic).
-- `@Component` — the generic fallback when none of the above fit.
+- `@Service` - business logic (your `OrderService`).
+- `@Repository` - data access; also translates database exceptions into Spring's consistent ones.
+- `@Controller` / `@RestController` - handles web requests (Phase 3's whole topic).
+- `@Component` - the generic fallback when none of the above fit.
 
 They're all components under the hood. Use the specific one that names what the class *does*; it makes
 the architecture readable at a glance. So our service becomes:
@@ -122,7 +122,7 @@ class." Functionally identical to `@Component`; clearer to every human who reads
 ## Injecting dependencies: constructor injection
 
 Now the payoff. `OrderService` needs an `EmailSender`. Instead of building one, it **declares** that it
-needs one — by taking it as a constructor parameter. Spring sees the parameter and supplies the matching
+needs one - by taking it as a constructor parameter. Spring sees the parameter and supplies the matching
 bean automatically.
 
 ```java
@@ -143,22 +143,22 @@ public class OrderService {
     }
 }
 ```
-*What just happened:* `OrderService` no longer knows or cares *which* `EmailSender` it gets — it just asks
+*What just happened:* `OrderService` no longer knows or cares *which* `EmailSender` it gets - it just asks
 for one in its constructor. At startup Spring sees this class needs an `EmailSender`, finds the
 `SmtpEmailSender` bean it already created, and passes it in. This is **constructor injection**:
 dependencies arrive through the constructor, and the container fills them in. Notice `emailSender` is
-`final` — once Spring sets it, it can never change.
+`final` - once Spring sets it, it can never change.
 
 This is the recommended way to inject in Spring, and it's worth knowing *why*:
 
-- **Explicit dependencies.** The constructor signature is an honest list of everything this class needs.
+- **Explicit dependencies.** The constructor signature is a clear list of everything this class needs.
   Read the constructor, know the dependencies. Nothing hidden.
 - **Immutable & safe.** `final` fields can't be reassigned, and the object is fully built the moment it
-  exists — there's no half-constructed window where a dependency is still `null`.
-- **Trivially testable.** In a test you just call `new OrderService(fakeEmailSender)` — no Spring required.
+  exists - there's no half-constructed window where a dependency is still `null`.
+- **Trivially testable.** In a test you just call `new OrderService(fakeEmailSender)` - no Spring required.
   That seam we were missing earlier? The constructor *is* the seam.
 
-💡 When a class has exactly **one constructor**, you don't even need an annotation on it — Spring uses it
+💡 When a class has exactly **one constructor**, you don't even need an annotation on it - Spring uses it
 for injection automatically. (Older code you'll meet puts `@Autowired` on the constructor; with a single
 constructor it's optional and usually omitted now.)
 
@@ -169,7 +169,7 @@ You'll see a lot of older tutorials inject straight into a field instead:
 ```java
 @Service
 public class OrderService {
-    @Autowired                       // ⚠️ field injection — avoid this
+    @Autowired                       // ⚠️ field injection - avoid this
     private EmailSender emailSender;
 
     public void placeOrder(Order order) {
@@ -178,23 +178,23 @@ public class OrderService {
 }
 ```
 *What just happened:* `@Autowired` on the field tells Spring to reach in and set `emailSender` directly,
-no constructor needed. It looks shorter — that's the trap.
+no constructor needed. It looks shorter - that's the trap.
 
 ⚠️ **Prefer constructor injection over field `@Autowired`.** Field injection hides dependencies (the
 constructor no longer lists them, so the only way to know what a class needs is to scan for annotations),
-can't use `final` (the field is mutable and `null` until Spring fills it), and is painful to test — you
+can't use `final` (the field is mutable and `null` until Spring fills it), and is painful to test - you
 can't just `new` the object with fakes; you need reflection or a full Spring context. Use the constructor.
 Newer code rarely uses field injection at all.
 
 ## The ApplicationContext: where swapping implementations pays off
 
-📝 **ApplicationContext** — Spring's container itself; the registry that holds every bean and knows how
+📝 **ApplicationContext** - Spring's container itself; the registry that holds every bean and knows how
 they connect. At startup Spring builds the context, fills it with your scanned beans, and wires each one's
 dependencies. When your app needs an object, it comes from the context, fully assembled.
 
 Here's the part that makes the whole exercise worth it. `OrderService` depends on the **interface**
 `EmailSender`, not on the concrete `SmtpEmailSender`. So the container can inject *any* class that
-implements `EmailSender` — and `OrderService` never notices the difference. In production it gets the
+implements `EmailSender` - and `OrderService` never notices the difference. In production it gets the
 real SMTP sender; in a test you swap in a fake:
 
 ```java
@@ -202,7 +202,7 @@ public class OrderServiceTest {
     @Test
     void placingAnOrderSendsConfirmation() {
         var fakeSender = new RecordingEmailSender();      // a test double, no real email
-        var service = new OrderService(fakeSender);       // inject it by hand — that's the seam
+        var service = new OrderService(fakeSender);       // inject it by hand - that's the seam
 
         service.placeOrder(new Order("ada@example.com"));
 
@@ -216,10 +216,10 @@ $ ./mvnw test
 [INFO] BUILD SUCCESS
 ```
 *What just happened:* because `OrderService` only ever asked for an `EmailSender` interface, the test
-handed it a `RecordingEmailSender` instead of the real one — no SMTP server, no network, instant test.
+handed it a `RecordingEmailSender` instead of the real one - no SMTP server, no network, instant test.
 Depend on interfaces, inject through the constructor, and swapping real for fake is one line.
 
-Here's the container's job in one picture — it scans your classes, creates a bean for each, and wires
+Here's the container's job in one picture - it scans your classes, creates a bean for each, and wires
 the dependencies between them:
 
 ```mermaid
@@ -245,15 +245,15 @@ nature, every Spring feature you meet from here on is just more beans being wire
    coupled, hard to test, and tangled with configuration. DI removes the job of *choosing* dependencies
    from your classes.
 2. **Inversion of Control:** the Spring **container** creates your objects and supplies their
-   dependencies, instead of you `new`-ing them — the framework principle made concrete. A **bean** is
+   dependencies, instead of you `new`-ing them - the framework principle made concrete. A **bean** is
    an object the container creates, wires, and manages.
 3. **Declaring beans:** annotate a class with `@Component` (or the role-specific `@Service`,
    `@Repository`, `@Controller`) and component scanning registers it as a bean at startup.
 4. **Constructor injection** is the recommended way: dependencies arrive as constructor parameters, so
    they're explicit, can be `final` (immutable), and trivially testable. ⚠️ Field `@Autowired` is
-   discouraged — it hides dependencies and resists testing.
+   discouraged - it hides dependencies and resists testing.
 5. **The ApplicationContext** holds every bean. Because you depend on **interfaces**, the container can
-   inject any implementation — the real one in production, a fake in tests. You describe what you need;
+   inject any implementation - the real one in production, a fake in tests. You describe what you need;
    the container assembles it.
 
 With dependency injection in hand, you have the spine of every Spring app. Next we put a web layer on
@@ -285,12 +285,12 @@ Test yourself on the ideas that have to stick from this phase:
       "Constructor injection is the only way to inject interfaces"
     ],
     "answer": 0,
-    "explain": "Constructor injection makes dependencies an honest, visible list, allows final fields (immutable, never null), and lets you test with `new MyService(fake)` without any Spring context. Field @Autowired hides dependencies and resists plain testing."
+    "explain": "Constructor injection makes dependencies a clear, visible list, allows final fields (immutable, never null), and lets you test with `new MyService(fake)` without any Spring context. Field @Autowired hides dependencies and resists plain testing."
   },
   {
     "q": "OrderService takes an `EmailSender` interface in its constructor. How can a test run it without sending real email?",
     "choices": [
-      "Construct OrderService directly and pass a fake EmailSender implementation — the container isn't needed",
+      "Construct OrderService directly and pass a fake EmailSender implementation - the container isn't needed",
       "You can't; you must start the full ApplicationContext and a real SMTP server",
       "Annotate the test with @NoEmail to disable sending",
       "Edit OrderService to remove the EmailSender before testing"

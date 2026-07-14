@@ -1,15 +1,15 @@
 ---
-title: "Honestly: Which, When?"
+title: "Plainly: Which, When?"
 guide: "oop-vs-functional"
 phase: 3
-summary: "The honest truth is that most real languages and codebases are both - OOP and FP are tools, not religions. Here's a fair comparison of where each one genuinely shines, with the judgment calls flagged as judgment."
+summary: "The plain truth is that most real languages and codebases are both - OOP and FP are tools, not religions. Here's a fair comparison of where each one genuinely shines, with the judgment calls flagged as judgment."
 tags: [oop, functional-programming, paradigms, comparison, multi-paradigm, judgment]
 difficulty: intermediate
 synonyms: ["should i use oop or functional", "oop vs functional which is better", "when to use functional programming", "when to use oop", "is python object oriented or functional", "do real codebases mix paradigms"]
 updated: 2026-07-10
 ---
 
-# Honestly: Which, When?
+# Plainly: Which, When?
 
 Now the question you actually came for. You understand both worldviews - so which one is *right*?
 
@@ -36,7 +36,7 @@ Each paradigm is strong exactly where its core idea pays off.
 
 **FP shines when you're transforming data.** Take input, run it through steps, produce output: parsing, report generation, ETL pipelines, anything analytics-shaped. It also shines for **concurrency** - when nothing can be mutated, multiple threads can read the same data with no locks and no race conditions, because there's nothing to race over. And it shines for **testability**: pure functions need no setup and no mocks, so the test is just "input → expected output."
 
-## The honest comparison table
+## The plain comparison table
 
 This covers both sides fairly - including each one's costs.
 

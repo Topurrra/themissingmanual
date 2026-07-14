@@ -93,7 +93,7 @@ Checked.java:9: error: unreported exception IOException; must be caught or decla
 ```
 *What just happened:* `Files.readString` declares `throws IOException` - checked - so the compiler demanded we acknowledge it. We did neither, so compilation failed *before the program ran*. Fix it by adding `throws IOException` to our method or wrapping the call in `try`/`catch`. Compare to `10 / 0`: `ArithmeticException` is unchecked, so the compiler said nothing - it only blew up at runtime.
 
-💡 **Why checked exceptions are controversial.** The idea is honest: the compiler guarantees you can't *accidentally* ignore a failure mode the API author thought important. In practice, many find them noisy - they push `throws` up through every layer, and tired programmers "shut the compiler up" with an empty `catch {}` that swallows the very error checked exceptions existed to surface. That's why Kotlin and Scala dropped them entirely, and why much Java code wraps checked exceptions in unchecked ones. Know which camp an exception is in - the compiler will tell you.
+💡 **Why checked exceptions are controversial.** The idea is sound: the compiler guarantees you can't *accidentally* ignore a failure mode the API author thought important. In practice, many find them noisy - they push `throws` up through every layer, and tired programmers "shut the compiler up" with an empty `catch {}` that swallows the very error checked exceptions existed to surface. That's why Kotlin and Scala dropped them entirely, and why much Java code wraps checked exceptions in unchecked ones. Know which camp an exception is in - the compiler will tell you.
 
 ## Throwing - and writing your own exceptions
 
@@ -225,7 +225,7 @@ first line: hello
 5. **try-with-resources** - `try (var r = open()) { ... }` auto-closes anything `AutoCloseable`, on every exit path - the leak-proof way to handle files and connections.
 6. **`java.nio.file.Files`** - `readString`, `readAllLines`, `writeString` cover everyday file I/O in one call each. ⚠️ Watch for `NullPointerException`, the most common runtime exception - more in Phase 9.
 
-You now write code that fails honestly and cleans up after itself. Next: the *toolbox* around the language - how Java projects organize into packages and build with the tools the ecosystem actually uses.
+You now write code that fails clearly and cleans up after itself. Next: the *toolbox* around the language - how Java projects organize into packages and build with the tools the ecosystem actually uses.
 
 ## Quick check
 

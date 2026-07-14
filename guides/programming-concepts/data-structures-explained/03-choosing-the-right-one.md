@@ -13,7 +13,7 @@ updated: 2026-07-10
 
 You've met the three containers and seen what each is built for. This phase is the payoff: a way to pick the
 right one in a few seconds, and the comparison table to glance at when you forget. There's no clever theory
-here - picking a data structure comes down to honestly answering what your code keeps *asking* of the data.
+here - picking a data structure comes down to clearly answering what your code keeps *asking* of the data.
 
 If you're here mid-task and just need an answer, the three questions below and the table will get you sorted.
 If you want the reasoning, it's all underneath.

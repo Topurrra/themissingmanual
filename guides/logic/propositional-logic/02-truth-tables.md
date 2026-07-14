@@ -26,7 +26,7 @@ yourself into an answer that *feels* right. But feeling right and being right ar
 things, and with logic the gap between them is where bugs live.
 
 There's a way to **know** - not guess, not estimate. You enumerate every possibility and check
-each one. That tool is the truth table, and it's the most honest thing in logic: it can't
+each one. That tool is the truth table, and it's the most reliable thing in logic: it can't
 bluff, skip a case, or change its mind under pressure.
 
 ## What a truth table is

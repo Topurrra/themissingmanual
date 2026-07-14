@@ -2,7 +2,7 @@
 title: "When You Don't Need a Framework Yet"
 guide: "choosing-your-first-framework"
 phase: 3
-summary: "Sometimes the standard library is enough for what you're building - the honest alternative to picking a framework, and why knowing that boundary matters more than picking fast."
+summary: "Sometimes the standard library is enough for what you're building - the plain alternative to picking a framework, and why knowing that boundary matters more than picking fast."
 tags: [frameworks, standard-library, node-http, net-http, beginner]
 difficulty: beginner
 synonyms: ["do i need a framework", "build a server without a framework", "net http vs framework", "node http vs express", "when to skip a framework"]
@@ -11,7 +11,7 @@ updated: 2026-07-11
 
 # When You Don't Need a Framework Yet
 
-Phase 2 gave a starting framework for every major language. Here's the honest exception: for some
+Phase 2 gave a starting framework for every major language. Here's the plain exception: for some
 of what you're building, you don't need any of them yet.
 
 ## The standard library already does a lot

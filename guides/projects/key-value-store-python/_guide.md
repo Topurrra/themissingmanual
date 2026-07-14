@@ -59,7 +59,7 @@ Rough time: a weekend. Six to eight focused hours if you read as you go.
 - What an index physically is: a map from key to file offset, so reads don't scan
 - Compaction: why logs grow forever and how engines reclaim the space without downtime
 - How to put a real wire protocol in front of it all with a threaded TCP server
-- Where your engine sits next to Redis, LevelDB, and SQLite - honestly measured
+- Where your engine sits next to Redis, LevelDB, and SQLite - measured plainly
 
 ## The phases
 

@@ -37,7 +37,7 @@ same in every language and every test framework - only the spelling changes.
 2. **[Write It and Run It](02-write-it-and-run-it.md)** - actually do it: create the test file, run
    pytest, read a green pass, then break the code on purpose and read the red failure (expected vs. actual).
 3. **[What Makes a Good Test](03-what-makes-a-good-test.md)** - the habits that separate a test you trust
-   from one that lies to you: one behavior per test, an honest name, speed and independence, and the edge
+   from one that lies to you: one behavior per test, a clear name, speed and independence, and the edge
    cases that catch real bugs.
 
 > This guide gets you writing tests for plain functions. Mocking, fixtures, and testing code that talks to

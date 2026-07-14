@@ -62,7 +62,7 @@ paths.
 
 ## The state explosion problem
 
-Here's the honest part. The lock example has two processes and three locations each. Bump it to
+Here's the catch. The lock example has two processes and three locations each. Bump it to
 five processes and the raw combinations jump from 27 (3 x 3 x 3 lock values) to roughly 3 x (3^5)
 location combinations - already over 700, and that's before counting the unreachable ones out. Add
 a counter that can hold values 0 to 99, and multiply again. State spaces grow **multiplicatively**

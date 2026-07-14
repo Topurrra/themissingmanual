@@ -13,7 +13,7 @@ updated: 2026-07-10
 
 # Quantum Computing, for Humans
 
-You have probably heard that a quantum computer tries every possible answer at the same time, peeks into parallel universes, and will break all encryption next Tuesday. That story is exciting, easy to repeat, and mostly wrong. A real quantum computer is stranger and more disciplined than the hype, and once you see the actual mechanism - amplitudes, phase, and interference - the magic doesn't vanish, it sharpens into something you can reason about. This guide gives you the honest version and never asks you to take a slogan on faith.
+You have probably heard that a quantum computer tries every possible answer at the same time, peeks into parallel universes, and will break all encryption next Tuesday. That story is exciting, easy to repeat, and mostly wrong. A real quantum computer is stranger and more disciplined than the hype, and once you see the actual mechanism - amplitudes, phase, and interference - the magic doesn't vanish, it sharpens into something you can reason about. This guide gives you the clear version and never asks you to take a slogan on faith.
 
 ## How to read this
 

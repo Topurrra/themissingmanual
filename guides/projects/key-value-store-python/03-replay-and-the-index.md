@@ -53,7 +53,7 @@ flowchart LR
 
 That dict-of-offsets is an **index** in the full database sense of the word: a structure that turns "search everything" into "go directly there." It's the same job an index does for [a slow SQL query](/guides/why-is-my-query-slow) - only here you can see the mechanism with no abstraction in the way: literally a Python dict pointing into a file. This exact design - append-only log plus in-memory hash of key → offset - is **Bitcask**, the engine that shipped inside the Riak database, where the index goes by "keydir."
 
-The trade, stated honestly: every *key* must still fit in RAM (values don't), and a hash index can't answer range queries like "every key between `user:100` and `user:200`" - hash maps have no order. Phase 6 shows what LevelDB pays to lift those limits.
+The trade, stated plainly: every *key* must still fit in RAM (values don't), and a hash index can't answer range queries like "every key between `user:100` and `user:200`" - hash maps have no order. Phase 6 shows what LevelDB pays to lift those limits.
 
 ## The full engine
 

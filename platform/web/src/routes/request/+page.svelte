@@ -1,10 +1,12 @@
 <script>
   import Seo from '$lib/Seo.svelte';
+  import { page } from '$app/stores';
 
   // Guide requests ride the existing feedback pipeline (POST /feedback) with a
   // sentinel slug instead of a new backend table - the admin inbox already
   // shows every row, so requests land there tagged as "guide-request".
-  let topic = '';
+  // Prefill from ?q= so a zero-result search flows straight into a filled request.
+  let topic = $page.url.searchParams.get('q') || '';
   let details = '';
   let sending = false;
   let sent = false;

@@ -13,7 +13,7 @@ updated: 2026-06-22
 
 Every program you've written so far has done one thing at a time: line runs, finishes, next line runs. Concurrency breaks that: you ask the machine to run several paths of execution *simultaneously*, so a server can handle a thousand requests at once, or an app can download a file without freezing the UI.
 
-The honest framing: **starting threads is easy; sharing data without corrupting it is the hard part.** A thread alone is tame. Two threads touching the same variable with no coordination is where careers' worth of subtle, intermittent, impossible-to-reproduce bugs come from. We'll make threads, learn the danger they create, then spend most of our time on the tools that tame it.
+The plain framing: **starting threads is easy; sharing data without corrupting it is the hard part.** A thread alone is tame. Two threads touching the same variable with no coordination is where careers' worth of subtle, intermittent, impossible-to-reproduce bugs come from. We'll make threads, learn the danger they create, then spend most of our time on the tools that tame it.
 
 The arc: raw `Thread`s (the bricks), race conditions (the disease), `synchronized` and the memory model (the cure), `java.util.concurrent` (the tools to actually reach for), and virtual threads (the modern leap that makes blocking code scale).
 

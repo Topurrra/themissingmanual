@@ -124,8 +124,8 @@ $ python compose.py
 4. **Push side effects to the edges** - a big pure core, a thin I/O shell.
 5. **Composition** - build big behavior by chaining small, single-purpose functions.
 
-That's FP's worldview: model your program as data flowing through transformations. Now you've got both mental models - so we can finally have the honest conversation about which to reach for, and when.
+That's FP's worldview: model your program as data flowing through transformations. Now you've got both mental models - so we can finally have the plain conversation about which to reach for, and when.
 
 ---
 
-[← Phase 1: What OOP Actually Is](01-what-oop-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Honestly - Which, When? →](03-which-when.md)
+[← Phase 1: What OOP Actually Is](01-what-oop-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Plainly - Which, When? →](03-which-when.md)

@@ -40,7 +40,7 @@ A load test throws a wall of numbers at you - graphs, tables, counters ticking u
 
 **Why people get this wrong: the average lies.** The instinct is to track *average* latency, and it's almost always misleading. Imagine 100 requests: ninety-nine come back in 50 ms, one takes 5,000 ms because it got stuck behind a full connection pool. The average is about 100 ms - looks great, and tells you *nothing* about the user who waited five seconds. Average latency hides the disaster by drowning it in good results, and the slow ones aren't random noise - they're real people hitting the exact contention load testing exists to find.
 
-**What it does in real life: read percentiles instead.** A **percentile** answers "what was the experience for the slowest X% of requests?" It's the honest way to see the *tail* - the slow requests that an average smooths away.
+**What it does in real life: read percentiles instead.** A **percentile** answers "what was the experience for the slowest X% of requests?" It's the clear way to see the *tail* - the slow requests that an average smooths away.
 
 📝 **Terminology.** A *percentile* (written **pN**) is the value below which N% of your measurements fall. **p50** (the *median*) = half of requests were faster than this, half slower - your typical experience. **p95** = 95% were faster, so this is roughly your "unlucky but not rare" user. **p99** = 99% were faster; this is the worst 1% - and on a busy site, 1% of requests is a *lot* of real, annoyed people.
 

@@ -61,7 +61,7 @@ Rubber-stamping happens for understandable reasons - review fatigue, trusting a 
 much, a backlog of five PRs waiting and a meeting in ten minutes. It's still a real cost: review is one of
 the few places that catches bugs before they ship, and an LGTM that means "I didn't really look" quietly
 turns that safety net into theater. If you don't have time to actually review something, "haven't had a
-chance to look closely, will circle back this afternoon" is more honest than a fast, empty approval - and
+chance to look closely, will circle back this afternoon" is more upfront than a fast, empty approval - and
 it's a completely normal thing to say.
 
 A useful personal rule: never approve a PR you haven't actually opened and scrolled through. If you trust the

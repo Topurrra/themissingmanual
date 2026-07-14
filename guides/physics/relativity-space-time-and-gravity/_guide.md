@@ -16,7 +16,7 @@ updated: 2026-06-30
 You were told relativity is the hardest idea in science, the one only geniuses understand. That's a
 story, and it's wrong. Relativity grows out of a single stubborn fact about light - and once you hold
 that fact in your hand, everything strange about it stops being magic and starts being *consequence*.
-Nothing here needs heavy math. It needs one honest thought experiment at a time.
+Nothing here needs heavy math. It needs one clear thought experiment at a time.
 
 Here's the promise. By the end you'll know why a clock on a fast spaceship genuinely ticks slower,
 why standing on Earth and accelerating in a rocket feel exactly the same, and why your phone's

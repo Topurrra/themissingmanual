@@ -39,7 +39,7 @@ This is fine - until `f.read()` raises (the disk hiccups, the file is malformed,
 your parsing blows up). Then `f.close()` never runs, because the exception jumps
 straight out of the function. The file handle leaks.
 
-**The careful version.** The honest fix is `try`/`finally` - the `finally` block
+**The careful version.** The real fix is `try`/`finally` - the `finally` block
 runs whether or not an exception happened:
 
 ```python

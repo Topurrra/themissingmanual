@@ -25,7 +25,7 @@ more urgent question: given the language you already know, where do you start to
 
 1. **[You Don't Need to Learn Ten Frameworks](01-you-dont-need-to-learn-ten-frameworks.md)** - why the anxiety is normal, and why the real question is narrower than it feels.
 2. **[A Starting Point, Language by Language](02-a-starting-point-language-by-language.md)** - one opinionated recommendation per language, with why.
-3. **[When You Don't Need a Framework Yet](03-when-you-dont-need-a-framework-yet.md)** - the honest alternative: sometimes the standard library is enough.
+3. **[When You Don't Need a Framework Yet](03-when-you-dont-need-a-framework-yet.md)** - the straight alternative: sometimes the standard library is enough.
 
 ---
 

@@ -35,7 +35,7 @@ The payoff, if it could be fully realized: a reversible computer's energy dissip
 
 ## Why nobody has actually built one
 
-Be honest about where this stands: reversible computing is a proven theoretical framework and an active research area, not a technology sitting in a store. A few real obstacles explain why:
+Be clear about where this stands: reversible computing is a proven theoretical framework and an active research area, not a technology sitting in a store. A few real obstacles explain why:
 
 - **You still have to erase eventually.** A useful computer takes many inputs and produces one useful output - it needs somewhere to put the intermediate information it didn't erase. Bennett's own scheme handles this by running the computation forward, copying out the answer, then running everything backward to reclaim the circuit's original state - but that "uncompute" step doubles the work.
 - **Reversible logic needs more hardware.** Reversible gates typically need extra "garbage" output bits to preserve enough information to invert the operation - more transistors and wiring per logical operation than irreversible logic needs.
@@ -44,7 +44,7 @@ Be honest about where this stands: reversible computing is a proven theoretical 
 
 Small reversible and adiabatic circuits have been built and demonstrated in labs, and reversible logic is used today in a different context: quantum computers are built entirely from reversible gates, because quantum mechanics itself requires it (a topic [/guides/quantum-computing-for-humans](/guides/quantum-computing-for-humans) covers from the quantum side). But a general-purpose, reversible classical CPU that beats ordinary chips on real workloads remains a research goal, not a shipping product.
 
-## The honest bottom line
+## The plain bottom line
 
 The power wall is real today, measured in watts and throttled clock speeds. Landauer's limit is real but not yet the binding constraint on any real chip. Reversible computing is a legitimate, physics-respecting escape route from that eventual limit - and also a genuinely hard engineering problem that decades of research haven't fully solved. All three of those statements are true at once, and treating any of them as settled in the other direction - "chips will keep getting faster forever" or "reversible computers are just around the corner" - overstates what's known.
 
@@ -73,7 +73,7 @@ The power wall is real today, measured in watts and throttled clock speeds. Land
     "explain": "Ordinary logic gates like AND collapse multiple possible inputs onto the same output, destroying information (and, by Landauer's principle, costing energy). Reversible gates like the Toffoli gate preserve enough output bits to always recover the input, avoiding that Landauer-costing collapse."
   },
   {
-    "q": "What is the honest current status of reversible computing?",
+    "q": "What is the real current status of reversible computing?",
     "choices": [
       "It has been fully implemented and already replaced conventional CPUs",
       "It is a proven theoretical framework and active research area that could, in principle, beat the Landauer limit, but no practical general-purpose reversible CPU exists yet due to overhead, extra hardware, and speed trade-offs",

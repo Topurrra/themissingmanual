@@ -23,8 +23,8 @@ approach that actually surfaces the truth.
 
 Here's why. If postmortems hunt for someone to blame, people learn fast to protect themselves instead of
 the process: they leave out the part where they almost pushed a bad config, they downplay how confused they
-were, they stay quiet about the workaround they didn't fully understand. None of that is dishonesty for its
-own sake - it's a rational response to a process that punishes honesty.
+were, they stay quiet about the workaround they didn't fully understand. None of that is deceit for its
+own sake - it's a rational response to a process that punishes candor.
 
 Take away the blame, and the same person tells you exactly what happened, including the embarrassing parts,
 because nothing bad happens to them for saying it. Those embarrassing parts are usually where the real fix
@@ -72,7 +72,7 @@ gap you found in [Phase 1](01-before-your-first-shift.md) is exactly the gap thi
 
 ## The upside nobody mentions
 
-A rough first on-call shift feels like a personal ordeal in the moment. Written up honestly, it becomes
+A rough first on-call shift feels like a personal ordeal in the moment. Written up clearly, it becomes
 institutional memory - the next new hire on this rotation gets a runbook you didn't have, an alert that
 didn't exist before your outage, or a documented escalation contact instead of a guess. That's the actual
 payoff of on-call: not that you survived it, but that the team is measurably better prepared because you

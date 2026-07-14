@@ -122,7 +122,7 @@ reset` and start fresh - eight tests is cheap.
 ## Skip a commit you can't test
 
 Sometimes the midpoint can't be tested - it doesn't build, or fails for an unrelated reason, so your
-yes/no test can't give an honest answer. Don't guess - tell Git to set it aside:
+yes/no test can't give a reliable answer. Don't guess - tell Git to set it aside:
 ```console
 $ git bisect skip
 Bisecting: 52 revisions left to test after this (roughly 6 steps)

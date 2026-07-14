@@ -12,7 +12,7 @@ updated: 2026-07-10
 # What Fine-Tuning Actually Involves
 
 If you've decided (or are tempted) to fine-tune, here's the part the demos skip: what it actually takes, day
-to day, and where the cost really lives. Spoiler — it's almost never the training run. The training is a
+to day, and where the cost really lives. Spoiler - it's almost never the training run. The training is a
 button. The hard part is everything around it.
 
 Knowing the real shape of the work is what stops you from saying "yes" in a meeting and discovering three
@@ -31,61 +31,61 @@ flowchart LR
 
 The widest part of that diagram is stage 1, and that's not an accident.
 
-## Stage 1 — The dataset (this is the real cost)
+## Stage 1 - The dataset (this is the real cost)
 
 **What it actually is.** A fine-tuning dataset is a collection of example pairs: an input, and the *exact*
-output you wish the model had produced. Not roughly — exactly. Each pair demonstrates the behavior you're
+output you wish the model had produced. Not roughly - exactly. Each pair demonstrates the behavior you're
 trying to make default. You'll typically want hundreds at a minimum and often thousands, and every one has
 to be *good*.
 
-**What it does in real life.** This is where weeks go. Someone who understands the domain — not a junior with
-a spare afternoon — has to gather real inputs, write or clean up the ideal outputs, make them consistent with
+**What it does in real life.** This is where weeks go. Someone who understands the domain - not a junior with
+a spare afternoon - has to gather real inputs, write or clean up the ideal outputs, make them consistent with
 each other, and check them. Inconsistent examples teach the model an inconsistent habit. The dataset *is* the
 product; the model just absorbs whatever's in it.
 
-⚠️ **The gotcha — garbage in, garbage model.** This is the single most important sentence in this guide:
+⚠️ **The gotcha - garbage in, garbage model.** This is the single most important sentence in this guide:
 **a fine-tuned model is only as good as its training data, and bad data is worse than no fine-tuning at all.**
 If your examples contradict each other, contain mistakes, or aren't actually in the voice you want, you'll
-get a model that has *confidently learned the wrong habit* — harder to debug than a base model, because the
+get a model that has *confidently learned the wrong habit* - harder to debug than a base model, because the
 bad behavior is now baked into the weights instead of sitting in a prompt you can edit. Curation is not the
 boring prerequisite. Curation is the job.
 
-**Why this saves you later.** Scope the *dataset* first, honestly. If nobody on the team has the time or
+**Why this saves you later.** Scope the *dataset* first, plainly. If nobody on the team has the time or
 domain knowledge to produce a few thousand consistent, high-quality examples, you don't have a fine-tuning
-project yet — you have a data project wearing a fine-tuning costume. Better to learn that on day one.
+project yet - you have a data project wearing a fine-tuning costume. Better to learn that on day one.
 
-## Stage 2 — The training run
+## Stage 2 - The training run
 
-**What it actually is.** You hand your dataset to a training process — through your model provider's
-fine-tuning API, or your own setup if you're hosting open-weight models — and it adjusts the weights over a
+**What it actually is.** You hand your dataset to a training process - through your model provider's
+fine-tuning API, or your own setup if you're hosting open-weight models - and it adjusts the weights over a
 number of passes through your data. With a hosted provider, this is genuinely close to "upload file, click
 start, wait."
 
 **What it does in real life.** It runs for a while (minutes to hours) and hands you back a tuned model you
-can call like any other. The compute has a real but usually modest cost next to stage 1's human cost — this
+can call like any other. The compute has a real but usually modest cost next to stage 1's human cost - this
 is the stage people *picture* when they think "fine-tuning," and it's the easiest by far.
 
 **The gotcha.** A training run that completes without errors is not a training run that succeeded. "It
-finished" tells you nothing about whether the model got *better* — only that the machinery ran. Two failure
+finished" tells you nothing about whether the model got *better* - only that the machinery ran. Two failure
 modes to know by name:
 
 📝 **Overfitting.** The model memorizes your training examples instead of learning the general behavior
-behind them — nails inputs it has seen, falls apart on anything slightly different, like a student who
+behind them - nails inputs it has seen, falls apart on anything slightly different, like a student who
 memorized the practice exam instead of understanding the subject.
 
 📝 **Catastrophic forgetting.** Fine-tuning hard on a narrow task degrades the general abilities the model
-used to have — you taught it your support voice so intensely that it got worse at basic reasoning. The cure
+used to have - you taught it your support voice so intensely that it got worse at basic reasoning. The cure
 is usually a lighter touch, which is exactly what the next section is about.
 
-## Stage 3 — Hosting and serving (the part people forget)
+## Stage 3 - Hosting and serving (the part people forget)
 
 **What it actually is.** A fine-tuned model is *yours* now, which means it has to live somewhere and be
-served to your application. With a hosted provider this is mostly handled — you call your tuned model by its
+served to your application. With a hosted provider this is mostly handled - you call your tuned model by its
 ID. With open-weight models you're running yourself, you own the serving infrastructure: the GPUs, the
 scaling, the uptime.
 
 **What it does in real life.** This is the cost that doesn't show up in the proof-of-concept and never goes
-away. A base model from a provider is shared infrastructure — you pay per call and someone else keeps it
+away. A base model from a provider is shared infrastructure - you pay per call and someone else keeps it
 running. The moment the model is custom-tuned for you, the economics shift toward *you*, directly or folded
 into per-call pricing. It's an ongoing line item, not a one-time setup.
 
@@ -93,40 +93,40 @@ into per-call pricing. It's an ongoing line item, not a one-time setup.
 operational commitment, not the end of a project. Factor in who keeps the tuned model running, and what it
 costs, *before* you commit.
 
-## A lighter way in — LoRA and parameter-efficient tuning
+## A lighter way in - LoRA and parameter-efficient tuning
 
-Full fine-tuning — rewriting all of a model's weights — is heavy: expensive to train and a whole model to
+Full fine-tuning - rewriting all of a model's weights - is heavy: expensive to train and a whole model to
 store and serve per variant. Most teams don't do that. They use **parameter-efficient fine-tuning**, and the
 name you'll hear most is **LoRA**.
 
 📝 **LoRA (Low-Rank Adaptation).** Instead of editing all the model's weights, LoRA freezes the original model
-and trains a small set of *new* weights — an "adapter" — that ride alongside it and adjust its behavior. You
+and trains a small set of *new* weights - an "adapter" - that ride alongside it and adjust its behavior. You
 train far fewer numbers, so it's cheaper and faster, and the adapter is a small file you can attach to the
 base model rather than a whole new copy of it.
 
 **Why this matters for your decision.** LoRA lowers the cost and lock-in of fine-tuning meaningfully. It also
 softens catastrophic forgetting, because the original model is left intact underneath the adapter. If you've
-honestly decided to fine-tune, parameter-efficient methods like LoRA are usually where to start rather than
-full fine-tuning — you get most of the benefit for a fraction of the cost and commitment.
+clearly decided to fine-tune, parameter-efficient methods like LoRA are usually where to start rather than
+full fine-tuning - you get most of the benefit for a fraction of the cost and commitment.
 
-## Stage 4 — Evaluation: how you'd actually know it worked
+## Stage 4 - Evaluation: how you'd actually know it worked
 
-**What it actually is.** A held-back set of test cases — inputs you did *not* train on, plus a way to judge
-the outputs — that tells you whether the tuned model is genuinely better than what you had before. "Before"
-means the honest baseline: your best prompt on the base model.
+**What it actually is.** A held-back set of test cases - inputs you did *not* train on, plus a way to judge
+the outputs - that tells you whether the tuned model is genuinely better than what you had before. "Before"
+means the plain baseline: your best prompt on the base model.
 
 **What it does in real life.** You run the same test inputs through (a) your best-prompted base model and (b)
 your fine-tuned model, and compare. Did the format get more consistent? Did the voice match? Did general
 ability survive (no catastrophic forgetting)? Without this, you have a vibe, not a result.
 
 **The gotcha.** ⚠️ Evaluate against the *prompted base model*, not a naked, un-prompted one. The fair question
-is never "is the tuned model better than nothing?" — it's "is it better than the cheapest thing I could have
+is never "is the tuned model better than nothing?" - it's "is it better than the cheapest thing I could have
 done instead?" Skip that comparison and you can convince yourself fine-tuning won when a good prompt would
 have tied it for a fraction of the cost.
 
 ## Recap
 
-1. Fine-tuning is four stages — **dataset, training, hosting, evaluation** — and they're wildly unequal in
+1. Fine-tuning is four stages - **dataset, training, hosting, evaluation** - and they're wildly unequal in
    effort.
 2. **The dataset is the real cost.** Hundreds to thousands of consistent, high-quality, exact example pairs,
    built by someone with domain knowledge.
@@ -139,8 +139,8 @@ have tied it for a fraction of the cost.
 6. **Evaluate against your best-prompted base model**, not against nothing.
 
 You now know what the lever actually costs to pull. The final phase turns all of this into a decision you can
-make — and defend — in the right order.
+make - and defend - in the right order.
 
 ---
 
-[← Phase 1: Three Ways to Steer a Model](01-three-ways-to-steer-a-model.md) · [Guide overview](_guide.md) · [Phase 3: Choosing — the Honest Order →](03-choosing-the-honest-order.md)
+[← Phase 1: Three Ways to Steer a Model](01-three-ways-to-steer-a-model.md) · [Guide overview](_guide.md) · [Phase 3: Choosing - the No-Nonsense Order →](03-choosing-the-honest-order.md)

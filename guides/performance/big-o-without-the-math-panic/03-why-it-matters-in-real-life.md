@@ -75,7 +75,7 @@ pick the structure whose fast operation matches what you do most. The
 [Data Structures, Explained](/guides/data-structures-explained) guide is the companion to this one -
 it walks through which structure gives you which Big-O, and why.
 
-## The honest caveat: Big-O ignores constants
+## The plain caveat: Big-O ignores constants
 
 Now the part most "learn Big-O" material skips, and it'll keep you from being smug at the wrong moment.
 
@@ -99,7 +99,7 @@ faster is to **measure it**, not to argue from the notation.
 
 This isn't a contradiction of everything above - it's the mature version of it. Use Big-O to *avoid the
 cliffs* (don't ship accidental `O(n²)` over data that will grow). Use a **profiler and a clock** to
-*pick between two reasonable options* on the data you actually have. How to measure honestly - what to
+*pick between two reasonable options* on the data you actually have. How to measure accurately - what to
 time, why micro-benchmarks lie, how to read the result - is its own skill, covered in
 [What "Performance" Actually Means](/guides/what-performance-means).
 

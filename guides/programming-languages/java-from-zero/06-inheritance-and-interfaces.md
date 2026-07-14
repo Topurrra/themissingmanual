@@ -2,7 +2,7 @@
 title: "Inheritance & Interfaces - Sharing Behavior"
 guide: "java-from-zero"
 phase: 6
-summary: "How Java classes share behavior: inheritance with extends, overriding methods, polymorphism, interfaces as contracts, and the honest call between an interface and an abstract class."
+summary: "How Java classes share behavior: inheritance with extends, overriding methods, polymorphism, interfaces as contracts, and the plain call between an interface and an abstract class."
 tags: [java, inheritance, interfaces, polymorphism, abstract, extends, implements, override]
 difficulty: intermediate
 synonyms: ["java inheritance extends", "java interface implements", "java polymorphism explained", "java abstract class vs interface", "java method override", "java super keyword", "java default method interface"]
@@ -309,7 +309,7 @@ it by implementing `area()`, and inherited the ready-made `describe()` and `name
 `describe()` calls `area()` and gets `Rectangle`'s version via dynamic dispatch: the abstract class wrote
 shared logic once, letting each subclass fill in the one differing piece.
 
-💡 **The honest guidance: interface or abstract class?**
+💡 **The plain guidance: interface or abstract class?**
 - **Interface** for a *capability or contract* - "can be drawn," "can be compared," "can be saved." Lighter
   and more flexible; a class can implement many, and modern default methods cover most cases interfaces
   once couldn't. **When unsure, prefer an interface.**

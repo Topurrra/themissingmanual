@@ -37,7 +37,7 @@ gibberish - so they don't bite you.
    and not-match against.
 2. **[The Core Toolkit](02-the-core-toolkit.md)** - the pieces you'll use 90% of the time:
    literals, character classes, quantifiers, anchors, and groups - built up to matching something
-   real, and an honest word on why "the perfect email regex" is a trap.
+   real, and a straight word on why "the perfect email regex" is a trap.
 3. **[Using Regex for Real (and the Gotchas)](03-using-regex-for-real.md)** - where you meet regex
    (editors, `grep`, code), and the classic traps: greedy vs lazy matching, escaping special
    characters, and regex becoming unreadable - with the cure for each.

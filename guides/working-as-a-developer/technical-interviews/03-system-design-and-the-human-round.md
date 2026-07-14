@@ -2,7 +2,7 @@
 title: "System Design and the Human Round"
 guide: "technical-interviews"
 phase: 3
-summary: "Why system design conversations and behavioral rounds are still evaluable skills, what to ask the interviewer about team structure and on-call, and an honest, non-scary look at negotiating an offer."
+summary: "Why system design conversations and behavioral rounds are still evaluable skills, what to ask the interviewer about team structure and on-call, and a clear-eyed, non-scary look at negotiating an offer."
 tags: [interviews, system-design, career, soft-skills, negotiation]
 difficulty: beginner
 synonyms: ["system design interview for beginners", "what questions to ask an interviewer", "tell me about a time question", "how to negotiate a job offer", "is negotiating salary rude"]
@@ -61,7 +61,7 @@ it gets you real information before you commit a year of your life to a team. Wo
 Asking these isn't adversarial. A good interviewer will answer them plainly, because they want the fit to
 work too.
 
-## Negotiating: the honest version
+## Negotiating: the real version
 
 Negotiating offers feels like a confrontation. It's usually a short, low-drama conversation, and skipping it
 almost always costs money for no benefit to anyone. A few grounded facts:

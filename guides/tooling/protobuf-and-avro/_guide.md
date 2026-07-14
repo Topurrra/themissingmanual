@@ -14,7 +14,7 @@ updated: 2026-06-30
 
 # Protobuf and Avro
 
-You have been shipping JSON between services for years and it works fine, until the day the payloads get huge, the parsing gets slow, or someone renames a field in a producer and a dozen consumers fall over with no warning. JSON is honest and readable, but it carries its field names in every single message and trusts everyone to agree on the shape by hand. Protobuf and Avro fix both problems: a real schema, a compact binary wire format, and rules for changing that schema without breaking the world. This guide gives you the mental model so the two stop blurring together, then the everyday mechanics, then the part nobody warns you about: evolution.
+You have been shipping JSON between services for years and it works fine, until the day the payloads get huge, the parsing gets slow, or someone renames a field in a producer and a dozen consumers fall over with no warning. JSON is plain and readable, but it carries its field names in every single message and trusts everyone to agree on the shape by hand. Protobuf and Avro fix both problems: a real schema, a compact binary wire format, and rules for changing that schema without breaking the world. This guide gives you the mental model so the two stop blurring together, then the everyday mechanics, then the part nobody warns you about: evolution.
 
 ## How to read this
 

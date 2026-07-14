@@ -67,7 +67,7 @@ The debugger pulls ahead in exactly the situations that make `print()` miserable
 - **Re-running is expensive.** Slow startup, a hard-to-reproduce setup, a ten-click flow to the bug - pause
   once, ask every question from that stop.
 
-## When print() is honestly still fine
+## When print() is still fine
 
 A guide that says *always* use the debugger would be lying. Print and log debugging is respectable, and
 sometimes the *better* tool:

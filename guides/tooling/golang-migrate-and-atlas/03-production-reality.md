@@ -32,7 +32,7 @@ $ migrate -database "$DATABASE_URL" -path migrations force 3
 
 *What just happened:* `force 3` cleared the dirty flag and set the recorded version to 3 - *without running any SQL*. You are asserting "the database is genuinely at version 3, trust me." Get this wrong and you'll skip or re-run a migration. The deeper lesson: golang-migrate does not wrap migrations in a transaction for you. If your database supports transactional DDL (PostgreSQL mostly does; MySQL mostly does not), the engine may roll back a failed statement - but the dirty flag is still your responsibility to clear.
 
-> The dirty flag is golang-migrate keeping you honest. It would rather halt and make you look than silently continue on a half-applied schema. Respect it: never `force` a version without first checking the real schema with your own eyes.
+> The dirty flag is golang-migrate keeping you accountable. It would rather halt and make you look than silently continue on a half-applied schema. Respect it: never `force` a version without first checking the real schema with your own eyes.
 
 ## Atlas: drift and the dev database
 
@@ -68,7 +68,7 @@ Apply changes? [y/N]
 
 *What just happened:* you deleted six lines from a schema file in a pull request, and Atlas turned that into a data-destroying `DROP`. This is *the* reason you never auto-approve a declarative plan without reading it. Atlas helps here: you can run `atlas migrate lint` (or schema apply with linting) to flag destructive and risky changes in CI, so a `DROP` or a `NOT NULL` added without a default gets caught before review, not after deploy.
 
-golang-migrate has the mirror-image risk in its `down` files. A reversal that does `DROP COLUMN` will happily destroy data if you ever roll back in production. The honest stance both tools share: **down/rollback is rarely safe to run against real data.** In production, the usual practice is roll *forward* with a new corrective migration, not roll back.
+golang-migrate has the mirror-image risk in its `down` files. A reversal that does `DROP COLUMN` will happily destroy data if you ever roll back in production. The plain stance both tools share: **down/rollback is rarely safe to run against real data.** In production, the usual practice is roll *forward* with a new corrective migration, not roll back.
 
 ## Choosing, concretely
 
