@@ -366,7 +366,6 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--faint);
-    font-weight: 600;
   }
   .wn-all {
     font-size: 0.85rem;
@@ -401,7 +400,6 @@
     white-space: nowrap;
     color: var(--body);
     text-decoration: none;
-    border-bottom: 1px solid transparent;
   }
   a.wn-text:hover {
     color: var(--accent);
@@ -413,7 +411,6 @@
     font-size: 0.6rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    font-weight: 700;
     padding: 0.12rem 0.4rem;
     border-radius: 999px;
     transform: translateY(-1px);
