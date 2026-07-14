@@ -49,8 +49,8 @@ fn main() {
 ```
 ```console
 $ cargo build
-error: 1 positional argument in format string, but there is 1 argument
- --> src/main.rs:2:14
+error: 2 positional arguments in format string, but there is 1 argument
+ --> src/main.rs:2:15
 ```
 *What just happened:* The macro read your literal `"{} and {}"` *during compilation*, counted two placeholders, saw one value, and refused to build. A regular function receives its arguments at runtime and can't see inside a string literal like that. Because a macro runs at compile time with your source code in hand, it catches the mistake before your program ever runs - the superpower the `!` is announcing.
 
@@ -175,7 +175,7 @@ equal? true
 Custom `#[derive(...)]` is one of three kinds of procedural macro. You don't need to write any of these to be productive, but you'll meet them constantly in libraries:
 
 - **Custom derive** - `#[derive(Serialize)]` from the `serde` crate generates JSON (de)serialization code for your struct. This is how serialization in Rust feels effortless.
-- **Attribute macros** - `#[tokio::main]` on your `main` function rewrites it to set up an async runtime, and `#[test]` marks a function as a test. They wrap or transform the item they're attached to.
+- **Attribute macros** - `#[tokio::main]` on your `main` function rewrites it to set up an async runtime, and a web framework's `#[rocket::get("/")]` turns a plain function into a route handler. They wrap or transform the item they're attached to.
 - **Function-like macros** - they look like `macro_rules!` calls (`name!(...)`) but are backed by a full Rust program; `sqlx::query!` checks your SQL against a real database at compile time.
 
 All three operate on the **token stream** - the raw sequence of tokens making up your code - using `proc_macro` machinery. They're powerful enough to inspect and rewrite arbitrary code, which is why they must live in their own dedicated crate. Writing one is an advanced topic involving crates like `syn` and `quote`, a deep dive we won't take here.

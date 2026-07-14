@@ -185,7 +185,7 @@ import { z } from "zod";
 const UserSchema = z.object({
   id: z.number(),
   name: z.string(),
-  email: z.string().email(),
+  email: z.email(),
 });
 
 // Derive the static type from the schema - single source of truth:

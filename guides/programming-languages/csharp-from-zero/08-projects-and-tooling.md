@@ -58,7 +58,7 @@ Here's a complete, tiny `.csproj` - notice how little is in it:
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -66,7 +66,7 @@ Here's a complete, tiny `.csproj` - notice how little is in it:
 </Project>
 ```
 
-*What just happened:* This is the entire project definition for a runnable app. `Sdk="Microsoft.NET.Sdk"` brings in the default build machinery. `<OutputType>Exe</OutputType>` says "build an executable" (drop this and you get a library `.dll`). `<TargetFramework>net8.0</TargetFramework>` pins the .NET version. `<ImplicitUsings>enable</ImplicitUsings>` is the auto-import switch from above; `<Nullable>enable</Nullable>` turns on the nullable-reference warnings from Phase 9. No source file list - every `.cs` under this folder is included by convention.
+*What just happened:* This is the entire project definition for a runnable app. `Sdk="Microsoft.NET.Sdk"` brings in the default build machinery. `<OutputType>Exe</OutputType>` says "build an executable" (drop this and you get a library `.dll`). `<TargetFramework>net10.0</TargetFramework>` pins the .NET version. `<ImplicitUsings>enable</ImplicitUsings>` is the auto-import switch from above; `<Nullable>enable</Nullable>` turns on the nullable-reference warnings from Phase 9. No source file list - every `.cs` under this folder is included by convention.
 
 You don't hand-write these. The `dotnet` CLI scaffolds, builds, and runs them:
 
@@ -130,7 +130,7 @@ dotnet publish -c Release -o ./out             # produce a deployable bundle
 
 The `dotnet` CLI is the engine, but you'll spend your days inside richer tools built around it:
 
-- **IDEs & editors.** **Visual Studio** (Windows/Mac, full-featured heavyweight), **VS Code** with the **C# Dev Kit** extension (lightweight, cross-platform, hugely popular), and **JetBrains Rider** (cross-platform, beloved for refactoring). All three give IntelliSense, a visual debugger, and one-click run/test - all driving the same `dotnet` build.
+- **IDEs & editors.** **Visual Studio** (Windows-only, full-featured heavyweight), **VS Code** with the **C# Dev Kit** extension (lightweight, cross-platform, hugely popular), and **JetBrains Rider** (cross-platform, beloved for refactoring; the usual pick on Mac and Linux). All three give IntelliSense, a visual debugger, and one-click run/test - all driving the same `dotnet` build.
 - **`dotnet format`.** The built-in formatter. Like `gofmt` or `black`, it enforces consistent whitespace so code review stops being about indentation. Run before committing, or wire it to run on save.
 - **Analyzers & Roslyn.** C#'s compiler is **Roslyn**, exposing its understanding of your code to *analyzers* - plugins flagging bugs, style violations, and risky patterns *as you type*. Many ship with the SDK automatically; teams add more for their own rules.
 - **Testing & profiling.** Unit testing (**xUnit** and friends) and profiling are first-class here, big enough for their own treatment in Phase 16. For now, know `dotnet test` exists.

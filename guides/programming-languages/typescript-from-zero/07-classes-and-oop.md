@@ -126,20 +126,20 @@ class Account {
   }
 
   // validated write - guards the invariant
-  set deposit(amount: number) {
+  set credit(amount: number) {
     if (amount > 0) this.balance += amount;
   }
 }
 
 const acct = new Account("A-1", 100);
-acct.deposit = 50;          // calls the setter
+acct.credit = 50;           // calls the setter
 console.log(acct.summary);  // getter: "#A-1: 150"
 acct.id = "A-2";            // Error
 ```
 ```console
 Cannot assign to 'id' because it is a read-only property.
 ```
-*What just happened:* `readonly id` can be assigned once, inside the constructor, and never again - the final line is flagged. The `get summary()` accessor exposes a *computed* string built from internal state without exposing the fields themselves; read it as `acct.summary` (no parentheses - looks like a field but runs code). The `set deposit(...)` accessor runs validation on assignment, so `acct.deposit = 50` looks like a plain write but invokes a guarded method. Getters and setters are typed like any other member.
+*What just happened:* `readonly id` can be assigned once, inside the constructor, and never again - the final line is flagged. The `get summary()` accessor exposes a *computed* string built from internal state without exposing the fields themselves; read it as `acct.summary` (no parentheses - looks like a field but runs code). The `set credit(...)` accessor runs validation on assignment, so `acct.credit = 50` looks like a plain write but invokes a guarded method (a distinct name from the earlier `deposit()` method, so the setter isn't confused with it). Getters and setters are typed like any other member.
 
 ## `implements` and `abstract` - contracts and forced shapes
 

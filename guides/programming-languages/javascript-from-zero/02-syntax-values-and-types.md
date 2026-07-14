@@ -142,7 +142,7 @@ values, opposite conversions, depending on the operator - loose typing in a nuts
 converts types before comparing, producing baffling results; `===` ("strict equality") compares without
 converting - values must match in *both* value and type.
 ```javascript runnable
-console.log(0 == "");      // true  (both convert to "falsy")
+console.log(0 == "");      // true  ("" converts to the number 0)
 console.log(0 === "");     // false (number vs string - no conversion)
 console.log(1 == "1");     // true  ("1" converted to 1)
 console.log(1 === "1");    // false (number vs string)

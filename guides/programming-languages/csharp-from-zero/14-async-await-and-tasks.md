@@ -227,9 +227,9 @@ Everything above was *I/O-bound* (waiting on the network). Sometimes you have ge
 
 ```csharp
 // CPU-bound: a heavy calculation. Move it off the UI thread.
-int sum = await Task.Run(() =>
+long sum = await Task.Run(() =>
 {
-    int total = 0;
+    long total = 0;
     for (int i = 0; i < 1_000_000_000; i++) total += i % 7;
     return total;
 });

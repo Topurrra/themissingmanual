@@ -48,10 +48,10 @@ Go to **[dotnet.microsoft.com/download](https://dotnet.microsoft.com/download)**
 brew install --cask dotnet-sdk
 
 # Debian / Ubuntu (Microsoft package feed configured)
-sudo apt-get install -y dotnet-sdk-8.0
+sudo apt-get install -y dotnet-sdk-10.0
 
 # Windows (winget)
-winget install Microsoft.DotNet.SDK.8
+winget install Microsoft.DotNet.SDK.10
 ```
 
 *What just happened:* Each fetches and installs the .NET SDK - compiler, `dotnet` CLI, and a runtime - and puts `dotnet` on your `PATH`. Pick the line matching your machine.
@@ -63,7 +63,7 @@ dotnet --version
 ```
 
 ```console
-8.0.401
+10.0.100
 ```
 
 *What just happened:* `--version` reported the installed SDK version - anything 8.0 or newer is fine here. A version line means the toolchain is on your `PATH`.
@@ -125,12 +125,12 @@ class Program
 
 That `hello.csproj` file the template created is the **project file**, central to how C# work is organized. Peek inside - it's surprisingly small:
 
-```csharp
+```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>

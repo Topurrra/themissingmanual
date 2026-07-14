@@ -204,7 +204,8 @@ Denied: insufficient funds
 ```
 *What just happened:* `balance` is `private`, so the only way to change it from outside is `withdraw`,
 which checks the amount before touching the field. The bad withdrawal was rejected and the balance held at
-`70.0`. With no other door into `balance`, you get a guarantee: *no account can ever go negative*.
+`70.0`. With `withdraw` the only door that subtracts from `balance`, you get a guarantee: *no withdrawal can
+ever push the balance negative*.
 
 💡 **Expose behavior, not raw data.** Don't reflexively generate a getter and setter for every field - that
 just makes the field public with extra steps. Ask what the object should let callers *do*: an account

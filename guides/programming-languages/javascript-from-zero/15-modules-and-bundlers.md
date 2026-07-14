@@ -64,8 +64,9 @@ difference is mechanical: ESM uses dedicated `import`/`export` keywords at the t
 CommonJS uses a plain function call (`require`) assigned to a special `module.exports` object. That
 distinction looks cosmetic, but it's the whole ballgame, as the next section shows.
 
-⚠️ **Gotcha - don't mix them carelessly.** You can't `require()` an ESM file or sprinkle `import` into a
-CommonJS file freely; Node decides a file's mode from `package.json`'s `"type"` field (`"module"` = ESM) or
+⚠️ **Gotcha - don't mix them carelessly.** You can't drop `import` statements into a CommonJS-mode file, and
+`require()`-ing an ESM file only works in newer Node and still fails if that module uses top-level `await`.
+Node decides a file's mode from `package.json`'s `"type"` field (`"module"` = ESM) or
 the extension (`.mjs` = ESM, `.cjs` = CommonJS). "Cannot use import statement outside a module" or "require
 is not defined" means you've crossed the streams. Prefer ESM for new code.
 

@@ -21,7 +21,7 @@ This phase is about the gap between "I can write a class" and "I can work on an 
 
 📝 **Package** - a namespace for your classes, written as a dotted name like `com.example.billing`. It maps one-to-one to a directory path (`com/example/billing/`), groups related code, and prevents name clashes: your `User` and a library's `User` coexist because their *full* names differ (`com.example.User` vs `org.lib.User`).
 
-**Why this exists.** Without packages, every class name would need to be globally unique - impossible once you pull in libraries, since two might both define a `Logger`. Packages also control visibility: a class or member with no access modifier (met in [Phase 4](05-classes-and-objects.md)) is *package-private* - visible only within the same package.
+**Why this exists.** Without packages, every class name would need to be globally unique - impossible once you pull in libraries, since two might both define a `Logger`. Packages also control visibility: a class or member with no access modifier (met in [Phase 5](05-classes-and-objects.md)) is *package-private* - visible only within the same package.
 
 To use a class from another package, you `import` it:
 
@@ -81,7 +81,7 @@ A **build tool** does everything tedious about turning source into a runnable, s
     <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.11.0</version>
+        <version>2.13.1</version>
     </dependency>
 </dependencies>
 ```
@@ -92,7 +92,7 @@ A **build tool** does everything tedious about turning source into a runnable, s
 
 ```text
 dependencies {
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.13.1")
 }
 ```
 

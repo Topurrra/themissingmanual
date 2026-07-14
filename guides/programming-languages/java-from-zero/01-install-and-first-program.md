@@ -63,7 +63,7 @@ Java is open source; several distributions ship essentially the same thing. The 
 
 A friendly, free, no-licensing-drama OpenJDK build is **Eclipse Temurin** from
 [adoptium.net](https://adoptium.net): grab the installer for your OS (Windows `.msi`, macOS `.pkg`, or a
-Linux package) and choose a **LTS** (Long-Term Support) version like 21. Accept the installer's defaults;
+Linux package) and choose a **LTS** (Long-Term Support) version like 25 (the newest LTS). Accept the installer's defaults;
 on Windows, let it add Java to your `PATH` when offered.
 
 Confirm both halves of the JDK are present - the runtime *and* the compiler:
@@ -74,12 +74,12 @@ javac -version
 ```
 ```console
 $ java -version
-openjdk version "21.0.3" 2024-04-16
-OpenJDK Runtime Environment Temurin-21.0.3+9 (build 21.0.3+9)
-OpenJDK 64-Bit Server VM Temurin-21.0.3+9 (build 21.0.3+9, mixed mode)
+openjdk version "25.0.1" 2025-10-21
+OpenJDK Runtime Environment Temurin-25.0.1+9 (build 25.0.1+9)
+OpenJDK 64-Bit Server VM Temurin-25.0.1+9 (build 25.0.1+9, mixed mode)
 
 $ javac -version
-javac 21.0.3
+javac 25.0.1
 ```
 *What just happened:* `java -version` reports the **runtime**; `javac -version` reports the **compiler**.
 If *both* answer with a version, you have a complete JDK. The exact numbers will differ over time -
@@ -161,10 +161,10 @@ Hello.java`. This catches everyone once. The rule exists so the compiler can fin
 predicting its filename - but the takeaway is simpler: **public class name = filename**, capital letter
 and all.
 
-A note on the future: very recent Java (21+) *loosens* this, letting you write a stripped-down program
-with just a `main` method and no visible class wrapper, to ease beginners in. It's still settling in - all
-existing Java code uses the classic `public class { ... }` form, which is what this guide uses and what
-"Java" means in practice today.
+A note on the future: recent Java *loosens* this, letting you write a stripped-down program
+with just a `main` method and no visible class wrapper, to ease beginners in. It was a preview feature in
+Java 21-24 and became standard in Java 25 (JEP 512). Even so, essentially all existing Java code uses the
+classic `public class { ... }` form, which is what this guide uses and what "Java" means in practice today.
 
 ## A smoother workflow
 

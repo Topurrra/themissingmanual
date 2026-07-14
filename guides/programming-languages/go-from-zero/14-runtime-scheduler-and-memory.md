@@ -99,7 +99,7 @@ goroutines now:  2
 ```
 *What just happened:* `GOMAXPROCS(0)` reports how many Ps exist - 8 here, matching the cores, so up to 8 goroutines run in parallel. `NumGoroutine()` shows 2: `main`'s goroutine plus the one launched. The takeaway: a small, fixed number of Ps governs parallelism, while the goroutine count balloons independently.
 
-⚠️ **Gotcha - `GOMAXPROCS` is parallelism, not concurrency.** Setting `GOMAXPROCS=1` does *not* break a concurrent program; goroutines still interleave on that single P, it just limits how many run at the literal same instant. Concurrency (structure) and parallelism (simultaneous execution) are different knobs - see [Phase 11: Concurrency Patterns](12-concurrency-patterns.md) for the structure side.
+⚠️ **Gotcha - `GOMAXPROCS` is parallelism, not concurrency.** Setting `GOMAXPROCS=1` does *not* break a concurrent program; goroutines still interleave on that single P, it just limits how many run at the literal same instant. Concurrency (structure) and parallelism (simultaneous execution) are different knobs - see [Phase 12: Concurrency Patterns](12-concurrency-patterns.md) for the structure side.
 
 ## Stack vs heap - where your values live
 
@@ -142,8 +142,8 @@ You don't have to guess what the compiler decided - ask it. The `-gcflags=-m` fl
 
 ```console
 $ go build -gcflags=-m main.go
-./main.go:11:2: moved to heap: p
-./main.go:12:9: &p escapes to heap
+./main.go:13:2: moved to heap: p
+./main.go:14:9: &p escapes to heap
 ```
 *What just happened:* The compiler reported `p` inside `makePointer` **moved to heap** because its address escapes via `return &p`. It said *nothing* about `makeValue`'s `p`, which stayed on the stack and vanished for free. Same-looking code, two fates, decided entirely by whether a pointer leaked. (Returning a *pointer* can be more expensive than a *value* here, precisely because it forces a heap allocation.)
 
@@ -222,7 +222,7 @@ func remember(key string, val []byte) {
 	cache[key] = val // never deleted → cache (and its memory) grows without bound
 }
 ```
-*What just happened:* The goroutine blocks on a channel that never receives, so it never returns - and because it closes over `data`, that slice stays reachable forever. A pile of such stuck goroutines is the most common real Go memory leak. The global `cache` similarly keeps every value reachable for the program's life; without an eviction policy it grows until memory runs out. The GC does its job perfectly in both cases - the memory genuinely *is* still reachable. The fix isn't a GC setting; it's making sure goroutines can exit (a `context` or done channel, from [Phase 11](12-concurrency-patterns.md)) and long-lived maps have a bound.
+*What just happened:* The goroutine blocks on a channel that never receives, so it never returns - and because it closes over `data`, that slice stays reachable forever. A pile of such stuck goroutines is the most common real Go memory leak. The global `cache` similarly keeps every value reachable for the program's life; without an eviction policy it grows until memory runs out. The GC does its job perfectly in both cases - the memory genuinely *is* still reachable. The fix isn't a GC setting; it's making sure goroutines can exit (a `context` or done channel, from [Phase 12](12-concurrency-patterns.md)) and long-lived maps have a bound.
 
 ## Recap
 

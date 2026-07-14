@@ -154,7 +154,7 @@ $ dotnet run -c Release
 The same principle shows up in three other everyday spots:
 
 - **Presize collections you'll fill.** `new List<int>(10_000)` or `new Dictionary<string,int>(capacity)` reserves the backing array once, instead of starting tiny and reallocating a bigger array (copying everything) each time it outgrows itself.
-- **Avoid boxing value types.** Storing an `int` (or any `struct`) in an `object`, a non-generic collection, or `params object[]` *boxes* it - a fresh heap allocation per value in a hot loop. Generics (`List<int>`, not `ArrayList`) keep value types unboxed and on the stack.
+- **Avoid boxing value types.** Storing an `int` (or any `struct`) in an `object`, a non-generic collection, or `params object[]` *boxes* it - a fresh heap allocation per value in a hot loop. Generics (`List<int>`, not `ArrayList`) keep value types unboxed - no per-item heap allocation.
 - **Prefer a `struct` for small, hot, short-lived values.** A small value type used heavily in a tight loop lives on the stack and never touches the GC. (Mind the copy cost - keep structs small and ideally immutable, or the copying outweighs the saving.)
 
 ## A taste of `Span<T>` and low-allocation APIs

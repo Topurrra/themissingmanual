@@ -112,7 +112,7 @@ name = "greet-cli"
 version = "0.1.0"
 description = "A tiny CLI that greets people."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "requests>=2.32",
 ]
@@ -195,8 +195,9 @@ new release. It'll prompt for an API token the first time (generate one in your 
 username/password uploads are no longer accepted). From this moment, `pip install greet-cli` works for
 everyone.
 
-If you're using `uv`, the same step is one command - `uv publish` - which builds (if needed) and uploads
-in one go. Same destination, same result; it just folds the `build` + `twine` steps together.
+If you're using `uv`, it's the same two steps under one tool - `uv build` writes the wheel and sdist to
+`dist/`, then `uv publish` uploads them. Same destinations, same result; `uv build` replaces `python -m
+build` and `uv publish` replaces `twine upload`.
 
 > 🪖 **War story - the version you can't take back.** PyPI won't let you re-upload a version number once
 > it's published; `0.1.0` is `0.1.0` forever, even if you spot a typo thirty seconds later. The fix is

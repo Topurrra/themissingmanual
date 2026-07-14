@@ -77,7 +77,7 @@ int back = (int)boxed;   // UNBOXING: copies the value back out of the heap obje
 
 You allocate heap objects constantly - every `new` on a class, every `string` concatenation, every list that grows - and never free any of them. What stops the heap from filling up forever? The garbage collector.
 
-📝 **Garbage collector (GC)** - the CLR component that automatically finds heap objects your program can no longer reach and reclaims their memory, so you never call `free` yourself. .NET's GC is a **generational, tracing, mark-and-sweep** collector.
+📝 **Garbage collector (GC)** - the CLR component that automatically finds heap objects your program can no longer reach and reclaims their memory, so you never call `free` yourself. .NET's GC is a **generational, tracing, compacting** collector: it marks what's reachable, reclaims the rest, and slides the survivors together so free space stays in one contiguous block (which is what makes a new allocation a cheap pointer bump).
 
 The core idea is **reachability**. The GC starts from a set of **roots** - static fields, local variables and method arguments live on every thread's stack right now - and traces every reference it can follow. Every object it reaches is *live* and kept; every object it *can't* reach is unreachable - garbage - and its memory goes back into the pool. Reachability *is* the lifetime: the moment nothing points to an object, it's eligible for collection (not necessarily immediately, but eventually).
 
@@ -95,7 +95,7 @@ flowchart LR
 
 Two more dials worth knowing by name. **Workstation vs server GC**: workstation GC (default for desktop/client apps) is tuned for low latency on one or two cores; **server GC** (typical for ASP.NET and high-throughput services) runs parallel collection threads across many cores for higher throughput. Every collection involves a brief **stop-the-world (STW)** pause - threads freeze for at least part of the work so the object graph doesn't change mid-trace. Modern .NET keeps these small (often sub-millisecond for Gen 0), but never *zero*.
 
-Step through a mark-and-sweep collection yourself - roots, what's reachable, and what gets swept:
+Step through a collection yourself - roots, what's reachable, and what gets reclaimed:
 
 ```playground-gc
 ```

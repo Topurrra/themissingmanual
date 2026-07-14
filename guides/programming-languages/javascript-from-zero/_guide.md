@@ -57,7 +57,7 @@ JavaScript." Each phase carries a difficulty badge so you can see the climb.
 8. **[Ecosystem & Tooling](08-ecosystem-and-tooling.md)** 🟡 - npm, linters, formatters, bundlers, and where TypeScript fits.
 9. **[Idioms & Gotchas](09-idioms-and-gotchas.md)** 🟡 - the fluent patterns, and the famous footguns explained once, properly.
 
-**Part 2 - Beyond the basics (🔴 Advanced)**
+**Part 2 - Beyond the basics (🟡 Intermediate → 🔴 Advanced)**
 10. **[Scope, Closures & Hoisting](10-scope-and-closures.md)** 🔴 - the scope chain, the TDZ, and how a function remembers where it was born.
 11. **[this, Prototypes & the Object Model](11-this-prototypes-and-objects.md)** 🔴 - the four `this` rules, the prototype chain, classes as sugar.
 12. **[Iterators, Generators & Symbols](12-iterators-generators-symbols.md)** 🟡 - the iterable protocol, `function*`, and values on demand.

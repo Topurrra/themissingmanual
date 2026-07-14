@@ -34,7 +34,7 @@ type B = IsString<42>;      // false
 
 `IsString<T>` takes another type `T` as input (that's what `<T>` is - a type parameter, like a function argument but for types). Asking for `IsString<"hello">`, TypeScript checks "is `"hello"` assignable to `string`?" - yes - so the result is `true`. For `IsString<42>`, `42` is not a string, so you get `false`. The type literally *decided* its own value from its input.
 
-Now one you've already used without knowing how it's built. The standard library's `NonNullable<T>` strips `null` and `undefined` out of a type. Its actual definition:
+Now one you've already used without knowing how it's built. The standard library's `NonNullable<T>` strips `null` and `undefined` out of a type. A conditional-type version of it (the modern standard library uses a shorter `T & {}` trick, but this spells out the same logic):
 
 ```typescript
 type MyNonNullable<T> = T extends null | undefined ? never : T;

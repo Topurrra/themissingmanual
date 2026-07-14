@@ -46,7 +46,7 @@ Peek at it:
 $ cat go.mod
 module example.com/greeter
 
-go 1.22
+go 1.25
 ```
 `go.mod` is small and human-readable: the module's name and the Go version it targets. Third-party
 libraries get listed here too once added - the single source of truth for "what does my project depend
@@ -130,7 +130,7 @@ Hello, Ada!
 ```
 `go build` compiled the module into a single executable named after its last path segment (`greeter` here;
 `greeter.exe` on Windows). Running `./greeter` ran it directly - no `go` involved. That binary is
-self-contained: copy it to another machine of the same OS and it just runs, no Go installed there.
+self-contained: copy it to another machine of the same OS and CPU type and it just runs, no Go installed there.
 **`go run` = try it now; `go build` = produce the thing you ship.**
 
 ## A sane small layout

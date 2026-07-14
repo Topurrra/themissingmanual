@@ -38,9 +38,9 @@ Console.WriteLine("this line never runs");
 $ dotnet run
 about to read index 5
 Unhandled exception. System.IndexOutOfRangeException: Index was outside the bounds of the array.
-   at Program.<Main>$(String[] args) in /app/Program.cs:line 5
+   at Program.<Main>$(String[] args) in /app/Program.cs:line 4
 ```
-*What just happened:* `scores[5]` reached past the end of a three-element array, so the runtime threw an `IndexOutOfRangeException`. The third `WriteLine` never ran - the throw aborted the method immediately. With no `catch` anywhere up the stack, the program printed "Unhandled exception," the type and message, and the stack trace pointing at `line 5` - your best clue for *where* a crash happened.
+*What just happened:* `scores[5]` reached past the end of a three-element array, so the runtime threw an `IndexOutOfRangeException`. The third `WriteLine` never ran - the throw aborted the method immediately. With no `catch` anywhere up the stack, the program printed "Unhandled exception," the type and message, and the stack trace pointing at `line 4` - your best clue for *where* a crash happened.
 
 Now wrap it so the failure is handled instead of fatal:
 

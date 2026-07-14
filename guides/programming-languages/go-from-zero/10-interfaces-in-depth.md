@@ -115,8 +115,8 @@ $ go run main.go
 an int, doubled: 42
 a string of length 2
 a point at (3, 4)
-some other type: float64
 nothing at all
+some other type: float64
 ```
 
 *What just happened:* each `case` matched against `x`'s dynamic type - in `int`, `v` was already usable (`v*2` compiled); in `Point`, `v` had real `.X`/`.Y` fields. `nil` caught the empty box, and `default` swept up `float64` (`%T` prints the dynamic type). One switch replaced five separate comma-ok assertions.
@@ -194,7 +194,7 @@ $ go run main.go
 caller thinks there was an error: <nil>
 ```
 
-*What just happened:* even with `fail == false`, `e` is a nil `*MyError` - but `return e` stuffs it into the `error` interface, filling the **type slot** with `*MyError`. The value slot is nil, the type slot isn't, so `err != nil` is `true` and the caller wrongly concludes work failed. (The printed `<nil>` works only because `.Error()` doesn't dereference `e`; touching `e.msg` would panic instead - either way, the `if` already took the wrong branch.)
+*What just happened:* even with `fail == false`, `e` is a nil `*MyError` - but `return e` stuffs it into the `error` interface, filling the **type slot** with `*MyError`. The value slot is nil, the type slot isn't, so `err != nil` is `true` and the caller wrongly concludes work failed. (When printing, `fmt` calls `.Error()`, which panics dereferencing the nil `e` - but `fmt` recovers from that panic and, seeing a nil pointer, prints `<nil>`. Either way, the `if` already took the wrong branch.)
 
 The fix: never let a typed nil leak into the interface. Return a *bare* `nil` when there's no error:
 

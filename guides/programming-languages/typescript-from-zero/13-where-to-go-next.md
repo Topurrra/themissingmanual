@@ -41,7 +41,7 @@ The natural path if you liked modeling data more than rendering it.
 
 ## Full-stack and end-to-end type safety
 
-Here's where it gets good. Combine a typed frontend, a typed backend, and a database, and you can make **one type definition flow across all three**. Tools like **tRPC** and **Prisma** are built on exactly the conditional and mapped types from [Phase 11](11-conditional-and-template-types.md): Prisma generates types from your database schema, tRPC carries your server's function signatures to the client untouched. The result is autocomplete from the database row all the way to the button in the UI - no hand-written API contract in between.
+Here's where it gets good. Combine a typed frontend, a typed backend, and a database, and you can make **one type definition flow across all three**. Tools like **tRPC** and **Prisma** are built on exactly the mapped and conditional types from [Phase 10](10-utility-and-mapped-types.md) and [Phase 11](11-conditional-and-template-types.md): Prisma generates types from your database schema, tRPC carries your server's function signatures to the client untouched. The result is autocomplete from the database row all the way to the button in the UI - no hand-written API contract in between.
 
 > 💡 This is *the* reason TypeScript is everywhere. One type definition can travel from database → server → client. Rename a column or change an API's return shape, and the frontend lights up with red squiggles **before you ship** - the compiler catches the mismatch across the entire stack, in your editor, the moment you make it. No other mainstream stack gives you that for free.
 
@@ -110,7 +110,7 @@ One last check on the big picture:
       "Nothing from the type system - they're written in plain JavaScript"
     ],
     "answer": 0,
-    "explain": "Prisma generates types from your database schema and tRPC carries your server's signatures to the client - both lean on the conditional and mapped types you met in Phase 11 to transform one type into another automatically."
+    "explain": "Prisma generates types from your database schema and tRPC carries your server's signatures to the client - both lean on the mapped and conditional types you met in Phases 10-11 to transform one type into another automatically."
   }
 ]
 ```

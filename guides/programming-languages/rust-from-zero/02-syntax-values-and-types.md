@@ -160,7 +160,7 @@ that reuses the name. It's called **shadowing**, and it's genuinely useful:
 ```rust
 fn main() {
     let spaces = "   ";        // spaces is text (&str)
-    let spaces = spaces.len(); // now spaces is a number (how many characters)
+    let spaces = spaces.len(); // now spaces is a number (its length)
     println!("{spaces}");
 }
 ```

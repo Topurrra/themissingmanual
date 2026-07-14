@@ -142,15 +142,15 @@ fn greet(name: &str) {        // accepts a view into any text
 }
 
 fn main() {
-    let owned = String::from("Hello, world");
+    let owned = String::from("world");
     greet("typed inline"); // a &str literal - works
     greet(&owned);         // &owned borrows the String *as* a &str - also works
 }
 ```
 ```console
 $ cargo run
-Hello, world!
 Hello, typed inline!
+Hello, world!
 ```
 *What just happened:* `greet` asks for `&str`, and happily took both a literal *and* `&owned` (a borrow of
 a `String`). That's the payoff: callers can hand you either kind of text. If `greet` demanded a `String`,

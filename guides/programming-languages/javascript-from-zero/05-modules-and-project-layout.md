@@ -60,7 +60,7 @@ console.log(PI);
 *What just happened:* `import { add, PI } from "./math.js"` reached into `math.js` and pulled out the two
 exported names. The `./` at the front means "a file right next to me" (a *relative* path), resolving the
 same way regardless of which folder you run the program from. ES modules in Node need the `.js`
-extension. Run with `node main.js` and Node loads `math.js` automatically because `main.js` asked for it.
+extension. Run with `node main.js` and Node loads `math.js` automatically because `main.js` asked for it. (For this to run, your project needs the `"type": "module"` setting covered in the next section - or, to skip setup entirely and run right now, name the files `math.mjs`/`main.mjs`: the `.mjs` extension tells Node a file is a module all on its own, with no `package.json`.)
 
 Here's the relationship as a picture - a small **module graph**:
 
@@ -108,8 +108,8 @@ Wrote to /home/ada/my-project/package.json
 ```
 *What just happened:* `npm init -y` created a starter `package.json` with sensible defaults (`-y` says
 "yes to all the prompts"). `npm` is Node's package manager, shipped with Node - more in
-[Phase 8](08-ecosystem-and-tooling.md). It writes roughly this:
-```javascript
+[Phase 8](08-ecosystem-and-tooling.md). For an ES module project you want it to look roughly like this:
+```json
 {
   "name": "my-project",
   "version": "1.0.0",

@@ -47,14 +47,14 @@ function first<T>(arr: T[]): T | undefined {
   return arr[0];
 }
 
-const n = first([1, 2, 3]);     // n is `number`
-const s = first(["a", "b"]);    // s is `string`
+const n = first([1, 2, 3]);     // n is `number | undefined`
+const s = first(["a", "b"]);    // s is `string | undefined`
 const u = first<boolean>([]);   // u is `boolean | undefined`
 ```
 
-*What just happened:* `<T>` declares a type parameter - a blank. The signature reads: "take an array of `T`, return a `T` or `undefined`." Call `first([1, 2, 3])` and TypeScript sees a `number[]` and *infers* `T = number` - the return type is `number | undefined`, and `n` is a `number`. Call it with strings and `T` becomes `string`. The same function, written once, produces the *correct, specific* type at every call site. You almost never write `<boolean>` explicitly; inference fills `T` in from the argument.
+*What just happened:* `<T>` declares a type parameter - a blank. The signature reads: "take an array of `T`, return a `T` or `undefined`." Call `first([1, 2, 3])` and TypeScript sees a `number[]` and *infers* `T = number` - the return type is `number | undefined` (the array could be empty, so the element might not be there), so that's what `n` is. Call it with strings and `T` becomes `string`, making `s` a `string | undefined`. The same function, written once, produces the *correct, specific* type at every call site. You almost never write `<boolean>` explicitly; inference fills `T` in from the argument.
 
-The payoff isn't only safety - it's tooling. TypeScript now knows `n` is a `number`, so your editor offers number methods and red-underlines `n.toUpperCase()` instantly:
+The payoff isn't only safety - it's tooling. TypeScript now knows `n` is `number | undefined`, not `any`, so your editor red-underlines `n.toUpperCase()` - a string method a number doesn't have - instantly:
 
 ```console
 Property 'toUpperCase' does not exist on type 'number'.
@@ -196,13 +196,13 @@ Test yourself on the one idea that drives this whole phase - that a generic *kee
   {
     "q": "Why does `function first<T>(arr: T[]): T | undefined` give a better result than `function first(arr: any[]): any`?",
     "choices": [
-      "The generic version infers the element type at the call site, so `first([1,2,3])` returns `number`, while the `any` version returns `any` and stops type-checking the result",
+      "The generic version infers the element type at the call site, so `first([1,2,3])` returns `number | undefined`, while the `any` version returns `any` and stops type-checking the result",
       "The generic version runs faster because TypeScript optimizes type parameters at runtime",
       "There's no real difference - `T` and `any` mean the same thing",
       "The `any` version is safer because it accepts more argument types"
     ],
     "answer": 0,
-    "explain": "A type parameter is inferred from the argument and preserved in the return type, so the caller gets a precise type (`number`). `any` discards the type and switches off checking, so the result is unchecked `any`. Types are erased at runtime, so there's no speed difference."
+    "explain": "A type parameter is inferred from the argument and preserved in the return type, so the caller gets a precise type (`number | undefined`). `any` discards the type and switches off checking, so the result is unchecked `any`. Types are erased at runtime, so there's no speed difference."
   },
   {
     "q": "In `function getProp<T, K extends keyof T>(obj: T, key: K): T[K]`, what does the constraint `K extends keyof T` accomplish?",

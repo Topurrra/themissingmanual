@@ -60,7 +60,7 @@ specific version, and nvm makes that painless. On Windows, use
 Either way, confirm it worked by asking Node its version:
 ```console
 $ node --version
-v22.11.0
+v24.11.0
 ```
 *What just happened:* `node --version` printed the installed version. The exact number will differ - what
 matters is a `v` and some numbers, not `command not found`. Getting that error means Node isn't on your
@@ -95,7 +95,8 @@ reads your source directly and runs it.
 Running JavaScript in a browser needs no install - it's already there. Open any web page, then open the
 **developer console**:
 
-- **Chrome / Edge / Firefox:** press `F12`, or `Ctrl+Shift+J` (Windows/Linux) / `Cmd+Option+J` (Mac).
+- **Chrome / Edge:** press `F12`, or `Ctrl+Shift+J` (Windows/Linux) / `Cmd+Option+J` (Mac).
+- **Firefox:** press `F12`, or `Ctrl+Shift+K` (Windows/Linux) / `Cmd+Option+K` (Mac).
 - Click the **Console** tab.
 
 Type JavaScript at the prompt and press Enter to run it immediately:

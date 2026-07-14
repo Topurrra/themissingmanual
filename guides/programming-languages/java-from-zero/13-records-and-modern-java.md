@@ -62,7 +62,7 @@ public final class Point {
 }
 ```
 
-*What just happened:* Forty-ish lines, none interesting - just the mechanical bookkeeping the
+*What just happened:* Thirty-odd lines, none interesting - just the mechanical bookkeeping the
 [Phase 5 trio](05-classes-and-objects.md) warned you to get right. Worse, every line risks a bug: forget a
 field in `equals`, mismatch `hashCode`, and your objects misbehave in a `HashSet`.
 

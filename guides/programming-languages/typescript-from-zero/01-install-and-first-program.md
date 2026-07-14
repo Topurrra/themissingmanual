@@ -58,7 +58,7 @@ Confirm it landed by asking the compiler its version:
 tsc --version
 ```
 ```console
-Version 5.4.5
+Version 5.8.3
 ```
 
 *What just happened:* `tsc --version` reported the installed compiler version. Your number will differ - what matters is getting `Version` and digits back instead of `command not found`. (Installed locally instead? The bare `tsc` command won't be found; use `npx tsc --version` instead.)
@@ -87,13 +87,14 @@ Silence means success. But look in your folder and you'll find a new file next t
 
 ```typescript
 // hello.js  - emitted by tsc
+"use strict";
 function greet(name) {
     return `Hello, ${name}!`;
 }
 console.log(greet("TypeScript"));
 ```
 
-*What just happened:* `tsc` checked your types, found no problems, and wrote `hello.js` - the same code with `: string` and the return annotation **stripped away**. The types did their job at check time, then disappeared, leaving plain JavaScript. That emitted `.js` is what you actually run.
+*What just happened:* `tsc` checked your types, found no problems, and wrote `hello.js` - the same code with `: string` and the return annotation **stripped away** (plus a `"use strict";` header `tsc` adds on top). The types did their job at check time, then disappeared, leaving plain JavaScript. That emitted `.js` is what you actually run.
 
 Run it with Node, like any JavaScript file:
 
@@ -144,7 +145,7 @@ Typing `tsc hello.ts` for one file is fine, but real projects have dozens of fil
 tsc --init
 ```
 
-*What just happened:* `tsc --init` created a `tsconfig.json` - a heavily-commented file listing every compiler option with sensible defaults. Now you can run plain `tsc` (no filename), and the compiler finds every `.ts` file in the project and compiles them per the rules in that file. The config *is* your project's compile recipe.
+*What just happened:* `tsc --init` created a `tsconfig.json` - a short, commented starter file preset with sensible defaults. Now you can run plain `tsc` (no filename), and the compiler finds every `.ts` file in the project and compiles them per the rules in that file. The config *is* your project's compile recipe.
 
 📝 **`tsconfig.json`** - the configuration file for `tsc`. It defines which files to compile, what JavaScript version to emit, where output goes, and - most importantly - how strict the type checking is. Running `tsc` in a folder that has one means "compile this whole project, my way."
 

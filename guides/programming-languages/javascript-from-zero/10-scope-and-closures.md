@@ -251,7 +251,7 @@ Test yourself on where a function looks for its variables:
     "explain": "`let`/`const` are hoisted enough that the name is reserved, but reading them before their declaration line throws `ReferenceError: Cannot access 'x' before initialization`. That stretch is the TDZ - it fails loud instead of giving you a silent `undefined`."
   },
   {
-    "q": "After `const c = makeCounter()` returns, why can the returned function still increment `count`?",
+    "q": "After `const counter = makeCounter()` returns, why can the returned function still increment `count`?",
     "choices": [
       "The returned function is a closure - it holds a live link to the scope where it was defined, keeping `count` alive",
       "`count` was copied into the returned function as a private constant",

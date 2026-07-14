@@ -49,7 +49,7 @@ print(apply_twice(shout, "hi"))
 ```console
 $ python firstclass.py
 HELLO!
-HIHI!
+HI!!
 ```
 *What just happened:* `yell = shout` didn't *call* `shout` - no parentheses. It bound a second name to the
 same function object, so `yell` and `shout` are now two names for one thing. `apply_twice` received
@@ -189,7 +189,7 @@ print(slow_sum(1_000_000))
 ```console
 $ python timer.py
 slow_sum took 0.0143s
-9999990000
+499999500000
 ```
 *What just happened:* `@timer` rewrote `slow_sum` into `timer(slow_sum)` - the wrapper that times the
 call. We never touched `slow_sum`'s body; the timing logic lives entirely in the decorator and can be

@@ -21,7 +21,7 @@ The naive story - "JavaScript is interpreted, so the engine reads each line and 
 
 📝 **JIT (Just-In-Time) compiler** - a compiler that runs *while your program runs*: it interprets quickly at first, watches which functions get called over and over ("hot" code), then compiles those into optimized machine code on the fly - so the parts that matter run at near-native speed.
 
-The real flow: source is parsed and handed to a fast interpreter (Ignition) so the program starts immediately, no waiting for a full compile. V8 counts how often each function is called and what types it sees; once hot, the optimizing compiler (TurboFan) compiles a specialized, fast version *based on the types observed so far*.
+The real flow: source is parsed and handed to a fast interpreter (Ignition) so the program starts immediately, no waiting for a full compile. V8 counts how often each function is called and what types it sees; once hot, the optimizing compiler (TurboFan) compiles a specialized, fast version *based on the types observed so far*. (Today's V8 slots two more tiers between these - Sparkplug, a quick baseline compiler, and Maglev, a mid-tier optimizer - but the two-endpoint story, interpret then optimize, is the model that matters.)
 
 ```mermaid
 flowchart LR

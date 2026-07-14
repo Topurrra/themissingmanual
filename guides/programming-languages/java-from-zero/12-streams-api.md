@@ -144,9 +144,9 @@ int total = prices.stream()
 System.out.println("total: " + total);
 ```
 ```console
-total: 55
+total: 80
 ```
-*What just happened:* `reduce` takes a starting value (`0`) and a function combining the running result with the next element: `0+10`, `10+25`, `35+5`, `40+40`, arriving at `55` - the general shape of "boil a sequence down to one answer." For common cases (sum, average, count) reach for a purpose-built collector or `IntStream.sum()` instead; `reduce` is the engine underneath them all.
+*What just happened:* `reduce` takes a starting value (`0`) and a function combining the running result with the next element: `0+10`, `10+25`, `35+5`, `40+40`, arriving at `80` - the general shape of "boil a sequence down to one answer." For common cases (sum, average, count) reach for a purpose-built collector or `IntStream.sum()` instead; `reduce` is the engine underneath them all.
 
 ## Collectors - reshaping a stream into a result
 
@@ -216,9 +216,9 @@ Map<String, Long> countByCity = people.stream()
 System.out.println(countByCity);
 ```
 ```console
-{Paris=2, London=2}
+{London=2, Paris=2}
 ```
-*What just happened:* the second argument, `Collectors.counting()`, tells `groupingBy` not to collect the people themselves but to *count* them per group - `{Paris=2, London=2}`. Other downstream collectors work the same way: `Collectors.toMap` builds a key→value map directly, `Collectors.mapping(...)` transforms group members before collecting. One collector can feed another.
+*What just happened:* the second argument, `Collectors.counting()`, tells `groupingBy` not to collect the people themselves but to *count* them per group - `{London=2, Paris=2}`. Other downstream collectors work the same way: `Collectors.toMap` builds a key→value map directly, `Collectors.mapping(...)` transforms group members before collecting. One collector can feed another.
 
 ## Parallel streams & when to use streams
 

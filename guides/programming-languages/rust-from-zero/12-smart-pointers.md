@@ -40,7 +40,7 @@ error[E0072]: recursive type `List` has infinite size
 2 |     Cons(i32, List),
   |               ---- recursive without indirection
   |
-help: insert some indirection (e.g., a `Box`) to break the cycle
+help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle
   |
 2 |     Cons(i32, Box<List>),
   |               ++++    +
@@ -196,10 +196,10 @@ fn main() {
 ```
 ```console
 $ cargo run
-thread 'main' panicked at src/main.rs:7:25:
-already borrowed: BorrowMutError
+thread 'main' panicked at src/main.rs:7:26:
+RefCell already borrowed
 ```
-*What just happened:* The `read` borrow was still alive when we asked for `write`, violating "many readers *or* one writer." A plain `&`/`&mut` would have failed to compile (`error[E0502]`); `RefCell` instead let it compile and caught it at runtime, panicking with `BorrowMutError`. ⚠️ **This is the price of `RefCell`:** a compile-time guarantee becomes a runtime check, so a violation the compiler would have caught for free now becomes a crash that only shows up when that path runs. Keep your borrows short and scoped.
+*What just happened:* The `read` borrow was still alive when we asked for `write`, violating "many readers *or* one writer." A plain `&`/`&mut` would have failed to compile (`error[E0502]`); `RefCell` instead let it compile and caught it at runtime, panicking with a `BorrowMutError` (the message reads `RefCell already borrowed`). ⚠️ **This is the price of `RefCell`:** a compile-time guarantee becomes a runtime check, so a violation the compiler would have caught for free now becomes a crash that only shows up when that path runs. Keep your borrows short and scoped.
 
 **The classic combo: `Rc<RefCell<T>>`.** Stack the two and you get what neither gives alone: `Rc` provides multiple owners, `RefCell` lets each mutate the shared value. This pair is the standard Rust recipe for shared mutable state in single-threaded code (graphs, trees with back-references, observer-style structures).
 

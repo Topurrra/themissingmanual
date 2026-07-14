@@ -90,7 +90,6 @@ System.out.println(shown);
 
 ```java
 import java.util.List;
-import java.util.stream.Collectors;
 
 List<String> names = List.of("ada", "bob", "cleo");
 
@@ -102,7 +101,7 @@ for (var name : names) {
 // Stream - describe the transformation as a pipeline.
 List<String> longOnes = names.stream()
         .filter(n -> n.length() > 3)
-        .collect(Collectors.toList());
+        .toList();
 System.out.println(longOnes);
 ```
 ```console

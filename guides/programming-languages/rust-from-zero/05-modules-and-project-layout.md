@@ -36,7 +36,7 @@ Two things matter:
 **`Cargo.toml` - the manifest.** A small config file describing your project: name, version, and the
 libraries it depends on. You'll edit this whenever you add a dependency.
 
-```rust
+```toml
 [package]
 name = "hello"
 version = "0.1.0"

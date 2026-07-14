@@ -48,7 +48,7 @@ console.log(new whoAmI());             // new: a fresh object
 obj
 undefined
 explicit
-whoAmI {}
+{}
 ```
 *What just happened:* The function never changed - only the call site did. `obj.whoAmI()` had `obj` to the left of the dot, so `this` was `obj`. The bare `whoAmI()` had nothing to the left, so in strict mode `this` was `undefined`. `whoAmI.call({...})` forced `this` to the object we handed it, and `new whoAmI()` ignored everything else and made `this` a fresh empty object. Same body, four `this` values, decided entirely by *how* it was called.
 
@@ -89,6 +89,8 @@ Hello, I am Ada?
 Arrow functions break all four rules above on purpose - an arrow **doesn't get its own `this`**. Writing `this` inside an arrow doesn't fill it in at call time; it's read from the surrounding scope where the arrow was *defined*, exactly like any other variable. This is **lexical `this`** - a feature when the arrow is a callback, a bug when it's a method.
 
 ```javascript runnable
+"use strict";
+
 const timer = {
   seconds: 0,
   startBroken() {
@@ -109,7 +111,7 @@ console.log("seconds:", timer.seconds);
 broken throws: TypeError
 seconds: 2
 ```
-*What just happened:* In `startBroken`, the plain `function` callback followed the default rule - its `this` was `undefined` (strict mode inside a method), so `this.seconds++` threw a `TypeError`. In `startFixed`, the arrow had no `this` of its own, so it reached outward to `startFixed`'s `this`, which implicit binding had set to `timer`. The arrow "captured" the right receiver automatically - **this is why arrows fixed the callback problem from Phase 9.**
+*What just happened:* In `startBroken`, the plain `function` callback followed the default rule - in strict mode its `this` was `undefined`, so `this.seconds++` threw a `TypeError`. In `startFixed`, the arrow had no `this` of its own, so it reached outward to `startFixed`'s `this`, which implicit binding had set to `timer`. The arrow "captured" the right receiver automatically - **this is why arrows fixed the callback problem from Phase 9.**
 
 ⚠️ **Gotcha - never use an arrow as an object method.** `const obj = { name: "x", hi: () => this.name }` is broken: the arrow captures `this` from wherever `obj` was defined (the module top level, where `this` is `undefined`), *not* from `obj`. There's no dot magic for arrows. Methods that need `this` to mean "my object" must be regular functions (or the `method() {}` shorthand); save arrows for callbacks.
 
@@ -183,7 +185,7 @@ Rex makes a sound (woof)
 false
 true
 function
-Dog.prototype.speak === a function on the chain
+true
 ```
 *What just happened:* `Dog`'s `speak` lives on `Dog.prototype` (not the instance - `hasOwnProperty` is `false`), identical to the hand-rolled version above. `extends` set `Dog.prototype`'s own prototype to `Animal.prototype`, so `super.speak()` reached one link up and ran `Animal`'s method. The class syntax wrote all the `Dog.prototype.x = ...` plumbing for you, plus guardrails (no calling a class without `new`, non-enumerable methods) - but strip the syntax away and it's the same chain of objects.
 

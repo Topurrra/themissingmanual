@@ -44,7 +44,7 @@ For each, the loop is the same: write it, run `go fmt`, `go vet ./...`, and `go 
 
 ## Where to go from here
 
-The official **A Tour of Go** (tour.golang.org) and **Effective Go** (go.dev) are the two resources worth bookmarking - maintained by the Go team. And if you want to think about *why* languages make the choices they do - static binaries and goroutines versus a VM and threads - that's the subject of [Languages, Explained Like a Human](/guides/languages-explained-like-a-human).
+The official **A Tour of Go** (go.dev/tour) and **Effective Go** (go.dev) are the two resources worth bookmarking - maintained by the Go team. And if you want to think about *why* languages make the choices they do - static binaries and goroutines versus a VM and threads - that's the subject of [Languages, Explained Like a Human](/guides/languages-explained-like-a-human).
 
 You came in not knowing Go. You're leaving able to read it, write it idiomatically, handle concurrency and errors without fear, and reach for the right tool from the box. That transfers - the cloud-native world runs on it. Go build the small thing. You're ready.
 

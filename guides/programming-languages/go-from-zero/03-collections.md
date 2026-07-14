@@ -43,10 +43,10 @@ func main() {
 ```console
 $ go run main.go
 [2 3 5 7]
-7 2
+2 7
 ```
 `[]int{2, 3, 5, 7}` created a slice of four integers, printed in brackets. `primes[0]` reads the **first**
-element (Go counts from zero), `primes[3]` the fourth - so we printed `7` then `2`. Indexing past the end
+element (Go counts from zero), `primes[3]` the fourth - so we printed `2` then `7`. Indexing past the end
 (say `primes[4]`) crashes with an out-of-range error, since there's no fifth element.
 
 ## Growing a slice with `append`
@@ -128,8 +128,8 @@ $ go run main.go
 map[Ada:36 Alan:41 Grace:28]
 ```
 We created a map with two entries, looked up `"Ada"` to get `36`, then added an entry by assigning to a
-fresh key (`ages["Grace"] = 28`). Go printed them in tidy order here, but **maps have no guaranteed
-order** - don't rely on it.
+fresh key (`ages["Grace"] = 28`). Go printed them in tidy order here (because `fmt` sorts map keys when printing), but **maps have no
+guaranteed order** - ranging over a map visits keys in randomized order, so don't rely on it.
 
 When you look up a key that might not exist, use the **two-value form** to ask "did it exist?":
 ```go

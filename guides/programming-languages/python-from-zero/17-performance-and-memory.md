@@ -85,9 +85,9 @@ dis.dis(add)
 ```
 ```console
 $ python show_bytecode.py
-  2           RESUME                   0
+  3           RESUME                   0
 
-  3           LOAD_FAST                a
+  4           LOAD_FAST                a
               LOAD_FAST                b
               BINARY_OP                0 (+)
               RETURN_VALUE

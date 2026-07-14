@@ -111,6 +111,11 @@ for a first project; `pyproject.toml` is where things head as it grows.
 is a looser *range* that picks up newer compatible releases. Pin for apps you deploy; ranges are common
 for libraries.
 
+📝 **You'll increasingly see `uv`.** By 2026 many teams reach for [uv](https://docs.astral.sh/uv/), a
+single fast tool that bundles the install/venv/lockfile steps above (it replaces `pip` and `venv` with
+`uv add`, `uv run`, and a `uv.lock`). Learn `pip` and `venv` first - they're the universal baseline every
+Python install has - then `uv` is an easy step up once these click.
+
 ## The quality tools - black, ruff, pytest at a glance
 
 These three show up on almost every serious Python project. Install them into your venv
@@ -141,7 +146,7 @@ unused imports, undefined names, suspicious patterns. **ruff** is a very fast on
 ```console
 $ ruff check app.py
 app.py:1:8: F401 [*] `os` imported but unused
-app.py:14:5: F821 undefined name `reqeusts`
+app.py:14:5: F821 Undefined name `reqeusts`
 Found 2 errors.
 ```
 *What just happened:* ruff caught two things *before running the code*: an unused `import os`, and a

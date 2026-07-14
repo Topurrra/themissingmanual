@@ -2,7 +2,7 @@
 title: "Install & Your First Program"
 guide: "go-from-zero"
 phase: 1
-summary: "Install the Go toolchain from go.dev, confirm it with go version, write a three-line hello.go, run it with go run - and meet Go's surprise: unused imports and variables are compile errors, not warnings."
+summary: "Install the Go toolchain from go.dev, confirm it with go version, write a tiny hello.go, run it with go run - and meet Go's surprise: unused imports and variables are compile errors, not warnings."
 tags: [go, install, go-run, hello-world, package-main, compile-error]
 difficulty: beginner
 synonyms: ["how to install go", "go version command", "first go program", "go run hello.go", "why does go fail on unused import", "package main func main explained"]
@@ -40,7 +40,7 @@ Close it and open a fresh one.
 Before writing any code, ask Go to introduce itself:
 ```console
 $ go version
-go version go1.22.4 linux/amd64
+go version go1.25.0 linux/amd64
 ```
 The `version` sub-command reports the installed release and platform (`linux/amd64` here - yours may say
 `windows/amd64`, `darwin/arm64`, etc.). The patch number will differ over time; anything `go1.22` or newer
@@ -58,7 +58,7 @@ func main() {
 	fmt.Println("Hello, Go!")
 }
 ```
-That's a complete Go program. Six lines, each with a specific job:
+That's a complete Go program. Five lines of code, each with a specific job:
 
 - `package main` - Go organizes all code into **packages** (named groups of related code). The package
   named `main` is special: it's the one Go turns into a runnable program. Every program you can *run*

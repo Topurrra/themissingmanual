@@ -86,7 +86,7 @@ const cache: Record<number, User> = {};
 
 💡 **The bug class these kill:** the "I changed `User` but forgot to update `UserUpdate`" family. Add a `phone` field to `User`, and `Partial<User>`, `Omit<User, "id">`, and `Record<number, User>` *all* gain it the instant you save. A hand-maintained parallel type would silently fall behind, surfacing only when something broke at runtime - far from the line you actually changed.
 
-⚠️ **`Omit` doesn't warn on a typo'd key.** `Omit<User, "emial">` (misspelled) doesn't error in older TypeScript versions - it just omits nothing and returns `User` unchanged, because `Omit` accepts any string key, not only real ones. Modern versions are stricter, but if a `Pick`/`Omit` misbehaves, check the key spelling first. `Pick<User, "emial">` *does* error, since `Pick`'s key parameter is constrained to `keyof T`.
+⚠️ **`Omit` doesn't warn on a typo'd key.** `Omit<User, "emial">` (misspelled) doesn't error - it just omits nothing and returns `User` unchanged, because `Omit`'s key parameter accepts any string, not only real keys of `User`. This is still true in current TypeScript, so if a `Pick`/`Omit` misbehaves, check the key spelling first. `Pick<User, "emial">` *does* error, since `Pick`'s key parameter is constrained to `keyof T`.
 
 ## Mapped types - the engine underneath
 

@@ -178,10 +178,10 @@ Console.WriteLine($"filter ran {calls} times for {firstCount} results");
 ```
 
 ```console
-filter ran 2 times for 2 results
+filter ran 3 times for 2 results
 ```
 
-*What just happened:* `ToList()` executed the pipeline exactly once and captured the survivors into a real list. Now `results` is concrete data, not a recipe - `results.Count` just reads the stored length, and the filter never runs again. Rule of thumb: enumerating more than once, or needing results to reflect the source *as it is now*, means ending the chain with `.ToList()`.
+*What just happened:* `ToList()` executed the pipeline exactly once - one pass over all three source items, so the filter ran three times and let two through. Now `results` is concrete data, not a recipe - `results.Count` just reads the stored length, and the filter never runs again. Rule of thumb: enumerating more than once, or needing results to reflect the source *as it is now*, means ending the chain with `.ToList()`.
 
 ## The powerful operators - a realistic query
 

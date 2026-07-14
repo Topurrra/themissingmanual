@@ -206,14 +206,15 @@ overloaded to compare the actual *text*:
 
 ```csharp
 var a = "hello";
-var b = "hel" + "lo";       // a different object, same text
+var part = "hel";
+var b = part + "lo";        // built at runtime - a genuinely different object, same text
 Console.WriteLine(a == b);  // True - compares the characters
 ```
 ```console
 True
 ```
-*What just happened:* `a` and `b` are (potentially) different objects, but `==` on `string` compares their
-*contents*, so you get `True`. This is special to `string` - your *own* classes compare references by
+*What just happened:* `a` and `b` are different objects in memory (`b` is built at runtime, so it isn't the
+same interned literal as `a`), but `==` on `string` compares their *contents*, so you get `True`. This is special to `string` - your *own* classes compare references by
 default, a different story told in [Phase 9](09-idioms-and-gotchas.md). For now: strings compare by value
 with `==`, and that's the one you want.
 

@@ -93,17 +93,17 @@ fn main() {
 ```console
 $ cargo build
 error[E0382]: borrow of moved value: `data`
- --> src/main.rs:9:5
-  |
-4 |     let mut data = vec![1, 2, 3];
-  |         -------- move occurs because `data` has type `Vec<i32>`, which does not implement the `Copy` trait
-6 |     let handle = thread::spawn(move || {
-  |                                ------- value moved into closure here
-7 |         data.push(4);
-  |         ---- variable moved due to use in closure
+  --> src/main.rs:10:5
+   |
+4  |     let mut data = vec![1, 2, 3];
+   |         -------- move occurs because `data` has type `Vec<i32>`, which does not implement the `Copy` trait
+6  |     let handle = thread::spawn(move || {
+   |                                ------- value moved into closure here
+7  |         data.push(4);
+   |         ---- variable moved due to use in closure
 ...
-9 |     data.push(5);
-  |     ^^^^ value used here after move
+10 |     data.push(5);
+   |     ^^^^ value used here after move
 ```
 *What just happened:* The `move` closure took ownership of `data` for the thread, so `main` no longer owns it - `data.push(5)` in `main` is a use-after-move, the same error from Phase 6. The compiler won't let two owners mutate the same value. There's no way to express "both threads freely write to this" without a synchronization tool - that's the whole point: the *only* way forward is to make the sharing safe.
 

@@ -90,7 +90,7 @@ Point { X = 1, Y = 99 }
 
 💡 **When to reach for a record.** Use records for **data defined by its values** - DTOs, value objects (`Money`, `Coordinate`, `DateRange`), events, query results. Use a regular `class` for things with *identity and behavior* that mutate over their lifetime - a `ShoppingCart`, a database connection, a game's `Player`. Quick test: if "two of these are the same when their contents match," it wants to be a record.
 
-📝 **`record struct`.** `record` defaults to a reference type (a class). Write `record struct Point(int X, int Y);` for the same conveniences on a *value type* - copied on assignment, lives on the stack when local, no heap allocation. Reach for it for tiny, short-lived values to avoid heap pressure; plain `record` is the right default until you've measured a reason to switch.
+📝 **`record struct`.** `record` defaults to a reference type (a class). Write `record struct Point(int X, int Y);` for the same conveniences on a *value type* - copied on assignment, lives on the stack when local, no heap allocation. One difference to know: a positional `record struct`'s properties are mutable (`get; set;`) by default, so it is *not* immutable like a `record` class; write `readonly record struct Point(int X, int Y);` if you want the same init-only immutability. Reach for it for tiny, short-lived values to avoid heap pressure; plain `record` is the right default until you've measured a reason to switch.
 
 ## `init` and `required` members - immutability without a giant constructor
 
@@ -336,7 +336,7 @@ Test yourself on the two ideas that define this phase - records' value equality 
       "A list of ages between 18 and 65"
     ],
     "answer": 0,
-    "explain": "It's a property pattern (`{ Age: ... }`) reaching into the record's Age, combined with relational patterns (`>= 18`, `< 65`) joined by the logical pattern `and`. It matches when Age is in the range 18–64 inclusive."
+    "explain": "It's a property pattern (`{ Age: ... }`) reaching into the record's Age, combined with relational patterns (`>= 18`, `< 65`) joined by the logical pattern `and`. It matches when Age is in the range 18 to 64 inclusive."
   },
   {
     "q": "Under `<Nullable>enable</Nullable>`, what does declaring a variable as `string` (no `?`) actually give you?",

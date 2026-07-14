@@ -53,7 +53,7 @@ added 1 package in 1s
 ```console
 $ npm run dev
 
-  VITE v5.4.0  ready in 412 ms
+  VITE v7.0.0  ready in 412 ms
 
   ➜  Local:   http://localhost:5173/
 ```

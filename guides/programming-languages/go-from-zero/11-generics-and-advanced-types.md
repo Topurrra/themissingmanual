@@ -103,10 +103,10 @@ func Map[T, U any](in []T, f func(T) U) []U {
 
 func main() {
 	nums := []int{1, 2, 3}
-	lengths := Map(nums, func(n int) string {
+	labels := Map(nums, func(n int) string {
 		return fmt.Sprintf("#%d", n)
 	})
-	fmt.Println(lengths)
+	fmt.Println(labels)
 }
 ```
 ```console

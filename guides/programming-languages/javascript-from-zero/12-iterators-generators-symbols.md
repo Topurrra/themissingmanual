@@ -75,7 +75,6 @@ console.log(Object.keys(user));          // ['name'] - Symbol key is hidden
 ```
 ```console
 false
-Ada
 42
 [ 'name' ]
 ```

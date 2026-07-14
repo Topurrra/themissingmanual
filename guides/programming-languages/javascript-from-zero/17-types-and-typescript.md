@@ -70,8 +70,8 @@ function priceWithTax(item: Product, rate: number): number {
   return item.price + item.price * rate;
 }
 
-const product = { name: "Notebook", cost: 12 }; // Error flagged here
-console.log(priceWithTax(product, 0.2));
+const product = { name: "Notebook", cost: 12 };
+console.log(priceWithTax(product, 0.2)); // Error flagged here
 ```
 
 *What just happened:* `interface Product` declares the shape an item must have: a `name` string and a `price` number. The function signature takes a `Product` and a `number`, returning a `number`. Passing `{ name, cost }`, the checker compares it against `Product`, sees there's no `price` (and a stray `cost`), and reports the error **in your editor, before you run anything** - something like *"Property 'price' is missing in type."* The exact bug from the runnable demo above, caught at rest. Once satisfied, TypeScript strips the annotations and emits plain JavaScript.
@@ -85,6 +85,7 @@ Not ready for a build step and a `tsconfig.json`? Get most of the benefit in pla
 📝 **JSDoc** - a structured comment format (`/** ... */`) that describes a function's parameters and return type. Modern editors (anything running the TypeScript language service, including VS Code out of the box) *read* these comments and type-check against them - in regular JavaScript, no compiler in the pipeline.
 
 ```javascript
+// @ts-check
 /**
  * @param {{ name: string, price: number }} item
  * @param {number} rate
@@ -98,7 +99,7 @@ const product = { name: "Notebook", cost: 12 };
 priceWithTax(product, 0.2); // editor underlines this - wrong shape
 ```
 
-*What just happened:* The `@param` and `@returns` tags spell out the same types as the TypeScript version, but live in a comment inside an ordinary `.js` file. Your editor parses them, giving the same red underline for the wrong-shaped `product` and the same autocomplete on `item.`. The file still runs as plain JavaScript - the comment is invisible to the runtime, so no build, new file extension, or deploy changes.
+*What just happened:* The `@param` and `@returns` tags spell out the same types as the TypeScript version, but live in a comment inside an ordinary `.js` file. The `// @ts-check` line at the top is the switch that turns the error underlines on - autocomplete on `item.` works without it, but the red squiggle for the wrong-shaped `product` needs `// @ts-check` per file (or `checkJs` set once in a `jsconfig.json`). The file still runs as plain JavaScript - both the comment and the tags are invisible to the runtime, so no build, new file extension, or deploy changes.
 
 💡 **Why this matters.** JSDoc is low-commitment: *feel* what typing does before committing to a toolchain. Many large codebases run entirely on JSDoc-typed JavaScript. If a build step feels like a big leap, start here: add types to one tricky module and watch the bugs surface.
 

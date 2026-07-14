@@ -163,8 +163,8 @@ to `None` and create a fresh list inside the function each call.
 
 **`is` vs `==`:**
 ```python runnable
-a = 257
-b = 257
+a = int("257")     # built at runtime, not a shared literal
+b = int("257")
 print(a == b)      # equal value?  yes
 print(a is b)      # same object?  no (above the cached range)
 ```
@@ -175,7 +175,9 @@ False
 ```
 *What just happened:* `a` and `b` hold equal values, so `==` is `True`. But they're separate integer
 objects in memory (257 is past CPython's small-int cache), so `is` - "the *same* object?" - is `False`.
-Use `==` for values, `is` for `None`/`True`/`False`.
+We built them with `int("257")` on purpose: two bare `257` literals in one file get folded into a single
+shared object by the compiler, so `is` would sneakily report `True` there - one more reason never to
+trust `is` on numbers. Use `==` for values, `is` for `None`/`True`/`False`.
 
 > 💡 **Key point.** Almost every gotcha here comes from one of two confusions: *when* something is
 > created (default args, closures - timing), or *what* equality means (`is` vs `==` - identity vs

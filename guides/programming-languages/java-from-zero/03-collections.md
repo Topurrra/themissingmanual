@@ -159,8 +159,8 @@ public class Main {
 ```console
 36
 0
-Ada -> 36
 Alan -> 41
+Ada -> 36
 ```
 *What just happened:* `put` stored two key→value pairs. `get("Ada")` returned `36`. The interesting one is
 `getOrDefault("Nobody", 0)`: plain `get` on a missing key returns `null` (often a `NullPointerException` two
@@ -206,7 +206,7 @@ processed items, testing membership in a hot loop.
 → `List`. **Lookup by key**? → `Map`. **Uniqueness or fast membership**? → `Set`.
 
 ⚠️ **Gotcha - `HashMap` and `HashSet` have no order.** They're optimized for speed, not for preserving
-insertion order - iterate one and the order can look random and even differ between runs. If you need order,
+insertion order - iterate one and the order can look scrambled, with no tie to how you inserted. If you need order,
 the framework has drop-in replacements: **`LinkedHashMap`/`LinkedHashSet`** preserve *insertion* order, and
 **`TreeMap`/`TreeSet`** keep keys *sorted*. Same interfaces, so swapping one in is a one-line change.
 

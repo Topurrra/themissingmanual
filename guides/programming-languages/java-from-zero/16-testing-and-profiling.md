@@ -211,6 +211,7 @@ import java.util.concurrent.TimeUnit;
 @Warmup(iterations = 5)   // let the JIT warm up before measuring
 @Measurement(iterations = 5)
 @Fork(1)
+@State(Scope.Benchmark)   // required so JMH can hold the instance field `parts`
 public class StringBuildBenchmark {
 
     private final String[] parts = {"a", "b", "c", "d", "e", "f", "g", "h"};

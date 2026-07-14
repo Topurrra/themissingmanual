@@ -280,7 +280,7 @@ Console.WriteLine(a == a);   // True  - same object
 False
 True
 ```
-*What just happened:* `a` and `b` describe the same account on paper, but they're two distinct objects at different spots in memory, so `==` says `False`. This is *reference equality*, the default for all classes - it trips people constantly. **Records** flip this to compare by *value* automatically (Phase 13); the full gotcha, including how to override equality yourself, is in Phase 9. For now: `==` on class objects asks "same object?", not "same contents?"
+*What just happened:* `a` and `b` describe the same account on paper, but they're two distinct objects at different spots in memory, so `==` says `False`. This is *reference equality*, the default for all classes (a few built-in types like `string` override it to compare contents, which is why `string ==` behaved the way you'd expect back in Phase 2, but your own classes get reference equality by default) - it trips people constantly. **Records** flip this to compare by *value* automatically (Phase 13); the full gotcha, including how to override equality yourself, is in Phase 9. For now: `==` on class objects asks "same object?", not "same contents?"
 
 ## Recap
 

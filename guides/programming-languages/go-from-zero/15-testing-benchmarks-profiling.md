@@ -130,6 +130,8 @@ Correctness is one question. *Speed* is different, and Go answers it with the sa
 
 **Why the `b.N` loop is shaped that way.** You can't time a single function call reliably - it's over in nanoseconds, swamped by clock noise. Go runs your operation `b.N` times (maybe millions), measures the total, and divides. You never set `b.N` yourself; the framework starts small, sees how long that took, and scales up until it trusts the average.
 
+💡 **Newer idiom (Go 1.24+).** `for b.Loop() { ... }` does the same job and is now the recommended form: it manages the count for you, keeps any setup before the loop out of the timed region, and stops the compiler from optimizing the measured code away. `b.N` still works everywhere and fills most existing code, so it's worth reading both - the examples below use `b.N`.
+
 **A real example.** Benchmarking two ways of building a string from a slice - naive `+=` concatenation versus `strings.Builder`:
 
 ```go
@@ -261,7 +263,10 @@ $ go tool cover -html=cover.out   # opens a browser: green = covered, red = not
 // reverse_test.go
 package strbuild
 
-import "testing"
+import (
+	"testing"
+	"unicode/utf8"
+)
 
 func Reverse(s string) string {
 	r := []rune(s)
@@ -275,6 +280,9 @@ func FuzzReverse(f *testing.F) {
 	f.Add("hello")        // seed corpus: starting examples
 	f.Add("Göteborg")     // includes multi-byte runes on purpose
 	f.Fuzz(func(t *testing.T, s string) {
+		if !utf8.ValidString(s) {
+			return // []rune can't round-trip invalid UTF-8, so skip it
+		}
 		// property: reversing twice returns the original
 		if Reverse(Reverse(s)) != s {
 			t.Errorf("double reverse changed %q", s)
@@ -292,7 +300,7 @@ fuzz: elapsed: 12s, execs: 1843201 (no new interesting), 0 failures
 ^C
 ```
 
-*What just happened:* `f.Add` seeded a few starting strings, and `f.Fuzz` ran a *property check* - "reversing twice gets the original back" - against a torrent of generated inputs. We asserted a property rather than specific outputs, since we don't know in advance what Go will invent. If a generated string ever broke the property, Go would stop, *shrink* it to the smallest failing input, and save it as a permanent regression test. (A normal `go test` still runs the seed corpus as ordinary cases - fuzzing only does open-ended generation under `-fuzz`.)
+*What just happened:* `f.Add` seeded a few starting strings, and `f.Fuzz` ran a *property check* - "reversing twice gets the original back" - against a torrent of generated inputs. We asserted a property rather than specific outputs, since we don't know in advance what Go will invent. We skip invalid UTF-8 because `[]rune` can't round-trip it - drop that one guard and the fuzzer finds a failing input within seconds, which is exactly the kind of edge case it exists to surface. If a generated string ever broke the property, Go would stop, *shrink* it to the smallest failing input, and save it as a permanent regression test. (A normal `go test` still runs the seed corpus as ordinary cases - fuzzing only does open-ended generation under `-fuzz`.)
 
 💡 **Key point.** Coverage asks "what code did my chosen inputs reach?" Fuzzing asks "what inputs did I never think to choose?" Coverage finds untested *code*; fuzzing finds untested *cases* - the empty string, the lone multi-byte rune, the overflow. Complementary; neither alone makes your code safe.
 

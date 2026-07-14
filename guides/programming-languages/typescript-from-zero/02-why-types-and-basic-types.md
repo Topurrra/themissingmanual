@@ -52,9 +52,9 @@ console.log(priceWithTax(product, 0.2)); // error flagged here
 ```
 ```console
 Argument of type '{ name: string; cost: number; }' is not assignable to parameter of type 'Product'.
-  Object literal may only specify known properties, and 'cost' does not exist in type 'Product'.
+  Property 'price' is missing in type '{ name: string; cost: number; }' but required in type 'Product'.
 ```
-*What just happened:* `interface Product` declares the shape an item must have. Pass `{ name, cost }` and the checker compares it against `Product`, sees no `price` (and a stray `cost`), and reports the error **in your editor, before you run anything** - the exact bug from the runnable demo above, caught by a tool that never executed your code.
+*What just happened:* `interface Product` declares the shape an item must have. Pass `{ name, cost }` and the checker compares it against `Product`, sees the required `price` is missing, and reports the error **in your editor, before you run anything** - the exact bug from the runnable demo above, caught by a tool that never executed your code.
 
 ## The basic types
 

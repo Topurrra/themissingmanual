@@ -248,6 +248,7 @@ Console.WriteLine(typeof(List<int>) == typeof(List<string>));
 ```console
 T is List`1
 made: System.Collections.Generic.List`1[System.Int32]
+False
 ```
 *What just happened:* inside `Inspect<T>`, both `typeof(T)` and `new T()` work because the runtime genuinely *knows* what `T` is. The final comparison prints `False`: `List<int>` and `List<string>` are different runtime types. (``List`1`` is .NET's name for "a generic List with 1 type parameter.") Under Java's erasure, `T` would be unknowable, `new T()` impossible, `List<Integer>`/`List<String>` indistinguishable.
 

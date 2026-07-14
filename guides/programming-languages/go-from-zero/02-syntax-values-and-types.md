@@ -89,7 +89,7 @@ variable, and the top level is for declaring package-level things, `var`'s job. 
 These cover almost everything early on:
 
 - **`int`** - a whole number, positive or negative (`-3`, `0`, `42`). Your default for counting.
-- **`float64`** - a number with a decimal point (`3.14`, `-0.5`). The `64` is bits of precision; the
+- **`float64`** - a number with a decimal point (`3.14`, `-0.5`). The `64` is how many bits it uses; the
   normal choice for fractional numbers.
 - **`string`** - text, written in double quotes (`"hello"`). 
 - **`bool`** - a truth value, either `true` or `false`. Named after George Boole.

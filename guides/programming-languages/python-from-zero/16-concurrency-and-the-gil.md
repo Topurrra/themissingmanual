@@ -214,10 +214,11 @@ the GIL clicks into place. Knowing it ahead of time is the whole reason this pha
 ## One straight note on the future
 
 The GIL has been CPython's defining constraint for decades, and that's finally starting to shift:
-**free-threaded ("no-GIL") CPython is emerging** as an official, still-experimental build where the GIL
-can be disabled, aiming to let threads run Python in genuine parallel. It's early, not the default, and
-many C extensions aren't ready - so for everything you write today, plan around the GIL exactly as
-described above. The ground may move under this in the next few years.
+**free-threaded ("no-GIL") CPython is real** - an optional build (experimental in Python 3.13,
+officially supported since 3.14) where the GIL can be disabled, letting threads run Python in genuine
+parallel. It's still not the default, and many C extensions aren't ready for it - so for everything you
+write today, plan around the GIL exactly as described above. The ground may move under this in the next
+few years.
 
 ## Recap
 
@@ -232,7 +233,8 @@ described above. The ground may move under this in the next few years.
    GILs = true parallelism, at the cost of copying data between them).
 5. The classic trap - threading a number-crunching loop and seeing no speedup - *is* the GIL telling you
    that you wanted `multiprocessing`.
-6. **Free-threaded / no-GIL CPython is emerging**, but it's experimental; design around the GIL for now.
+6. **Free-threaded / no-GIL CPython is real** (officially supported since Python 3.14) but not the
+   default; design around the GIL for now.
 
 Concurrency is one half of "making Python fast." The other half is the work each core actually does - how
 Python uses memory, where the time goes, and how to measure it instead of guessing. That's next.

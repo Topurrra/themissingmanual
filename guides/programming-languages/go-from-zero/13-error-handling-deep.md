@@ -249,6 +249,7 @@ func main() {
 $ go run main.go
 handled "good" OK
 ERROR: recovered from panic handling "bad": unexpected nil in handler
+handled "good" OK
 server still running
 ```
 *What just happened:* The `"bad"` request panicked - normally a program-ending event. But `handle`'s deferred `recover()` caught the panic value mid-unwind and turned it into an ordinary `error` assigned to the named return `err`. The panic was *contained* at the request boundary: that request failed, the loop continued, the next `"good"` request ran normally - the program survived. This recover-at-the-boundary pattern is the main legitimate use of `recover`: a safety net for bugs, not a handler for expected failures.

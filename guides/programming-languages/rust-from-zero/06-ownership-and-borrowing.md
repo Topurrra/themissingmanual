@@ -30,7 +30,7 @@ That third rule is the quiet miracle: no garbage collector pausing your program 
 
 ## Move semantics: giving a value away
 
-**What it actually is.** In most languages, `let t = s` copies a reference and both names point at the same thing. In Rust, for a value that owns heap memory (like a `String`), `let t = s` *moves* ownership: `t` becomes the owner, and `s` is no longer valid. The value wasn't copied - it changed hands.
+**What it actually is.** In most garbage-collected languages (Python, Java, JavaScript), `let t = s` copies a reference and both names point at the same thing. In Rust, for a value that owns heap memory (like a `String`), `let t = s` *moves* ownership: `t` becomes the owner, and `s` is no longer valid. The value wasn't copied - it changed hands.
 
 **Why this exists.** If both `s` and `t` owned the same `String`, then when both went out of scope, Rust would try to free the same memory twice - a "double free," a classic crash. Making the assignment a move guarantees there's always exactly one owner to do the cleanup. Rule 2, enforced.
 

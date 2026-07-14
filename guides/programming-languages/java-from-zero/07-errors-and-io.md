@@ -123,7 +123,8 @@ public class Account {
 $ java Account.java
 70
 Exception in thread "main" java.lang.IllegalArgumentException: amount must be positive, got -5
-	at Account.main(Account.java:13)
+	at Account.withdraw(Account.java:4)
+	at Account.main(Account.java:14)
 ```
 *What just happened:* The first `withdraw` returned `70` normally. The second hit `amount <= 0`, so `throw new IllegalArgumentException(...)` fired, constructing and launching an exception with our message. `withdraw` never returned a value - the throw replaced it - and since `main` didn't catch it, the program crashed with our message attached. The key habit: *fail fast and loud* - validate at the boundary so the stack trace points at the real culprit.
 

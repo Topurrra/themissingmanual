@@ -20,7 +20,7 @@ executes your code. When people say "run it in Python," they mean "hand this fil
 
 ## Install Python 3
 
-You want **Python 3** (3.12 or newer is great; anything 3.10+ is fine for this guide). Pick your
+You want **Python 3** (3.13 or newer is great; anything 3.10+ is fine for this guide). Pick your
 operating system:
 
 **Windows** - Go to [python.org/downloads](https://www.python.org/downloads/), download the latest
@@ -49,7 +49,7 @@ the admin rights that installing system software requires.
 Open a fresh terminal (a new window, so it picks up the updated PATH) and ask Python its version:
 ```console
 $ python3 --version
-Python 3.12.4
+Python 3.14.0
 ```
 *What just happened:* `--version` makes the interpreter print its version and exit instead of running
 code. A `Python 3.x.x` line proves it's installed and reachable - your exact number may differ.
@@ -60,7 +60,7 @@ Python 2). On Windows, the installer typically sets up `python` (and `py`). If o
 not found," try the other:
 ```console
 $ python --version
-Python 3.12.4
+Python 3.14.0
 ```
 This guide writes `python3` throughout. **On Windows, type `python` (or `py`) wherever you see
 `python3`** - same interpreter, different spelling.
@@ -76,7 +76,7 @@ Run `python3` with no file name to get the **REPL** - an interactive prompt wher
 press Enter, and immediately see the result. It's the fastest way to test an idea.
 ```console
 $ python3
-Python 3.12.4 (main, Jun  6 2024, 18:26:44) [Clang 15.0.0] on darwin
+Python 3.14.0 (main, Oct  7 2025, 12:00:00) [Clang 17.0.0] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
 >>> 2 + 2
 4
@@ -88,7 +88,7 @@ hi from the REPL
 printed `4` back - no `print` needed, the REPL shows the value of whatever you type. It's a scratchpad:
 try a snippet, see what it does, throw it away.
 
-📝 **Terminology.** **REPL** stands for **R**ead–**E**val–**P**rint **L**oop: it *reads* your line,
+📝 **Terminology.** **REPL** stands for **R**ead-**E**val-**P**rint **L**oop: it *reads* your line,
 *evaluates* it, *prints* the result, then *loops* back for the next one.
 
 To leave the REPL and return to your normal terminal, type `exit()` and press Enter (or press

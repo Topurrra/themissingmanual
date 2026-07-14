@@ -219,9 +219,9 @@ fn main() {
 ```
 ```console
 $ cargo run
-166666500
+167167000
 ```
-*What just happened:* Both versions produce `166666500`, and after the optimizer runs, both produce nearly identical machine code - no extra allocations, no closure objects on the heap, no virtual calls. The `filter` and `map` closures were inlined into one tight loop. The choice between them is purely about *which you'd rather read and maintain* - the performance is the same.
+*What just happened:* Both versions produce `167167000`, and after the optimizer runs, both produce nearly identical machine code - no extra allocations, no closure objects on the heap, no virtual calls. The `filter` and `map` closures were inlined into one tight loop. The choice between them is purely about *which you'd rather read and maintain* - the performance is the same.
 
 💡 **You don't trade readability for speed.** That's the whole pitch of this phase, and arguably of Rust. In many languages the iterator chain is the "elegant but slower" option you avoid in hot loops. In Rust it's the idiomatic default precisely *because* it costs nothing. Reach for the chain first; drop to a manual loop only when profiling gives you a concrete reason, which is rare.
 

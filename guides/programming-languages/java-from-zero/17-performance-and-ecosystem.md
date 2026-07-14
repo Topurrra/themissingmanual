@@ -119,7 +119,7 @@ static String joinFast(List<String> parts) {
 }
 ```
 
-*What just happened:* `joinSlow` creates a fresh `String` every iteration and copies all characters accumulated so far, so the work (and garbage) grows with the *square* of the number of parts. `joinFast` writes into a single `StringBuilder`, a mutable buffer growing in chunks that only materializes one `String` at the end - same output, a fraction of the allocations. (The JIT can rewrite a *simple* `a + b + c` into a `StringBuilder` for you, but not across a loop - reach for `StringBuilder` yourself there.)
+*What just happened:* `joinSlow` creates a fresh `String` every iteration and copies all characters accumulated so far, so the work (and garbage) grows with the *square* of the number of parts. `joinFast` writes into a single `StringBuilder`, a mutable buffer growing in chunks that only materializes one `String` at the end - same output, a fraction of the allocations. (The compiler can rewrite a *simple* `a + b + c` into a single optimized concatenation for you, but not across a loop - reach for `StringBuilder` yourself there.)
 
 ```console
 $ java -jar benchmarks.jar Join -prof gc
@@ -134,7 +134,7 @@ joinFast:·gc.alloc.rate.norm      avgt    5      24_576 B/op
 The same "stop making needless garbage" principle shows up in three other everyday spots:
 
 - **Presize your collections.** `new ArrayList<>()` starts with a small backing array and reallocates a bigger one (copying everything) each time it fills up. Knowing roughly how many elements you'll add, `new ArrayList<>(expectedSize)` (or `HashMap` with an initial capacity) reserves the room up front - one allocation instead of a series of resize-and-copies.
-- **Avoid needless autoboxing in hot loops.** Recall from [Phase 15] that `int` is a primitive but `Integer` is a heap object. Summing into a `List<Integer>` or a `Long` accumulator boxes every value - millions of tiny objects in a hot loop. Keep the loop counter and accumulator as primitives (`int`, `long`); let boxing happen only where you genuinely need an object.
+- **Avoid needless autoboxing in hot loops.** Recall from [Phase 15](15-the-jvm-memory-and-gc.md) that `int` is a primitive but `Integer` is a heap object. Summing into a `List<Integer>` or a `Long` accumulator boxes every value - millions of tiny objects in a hot loop. Keep the loop counter and accumulator as primitives (`int`, `long`); let boxing happen only where you genuinely need an object.
 - **Reach for primitive arrays when it truly matters.** An `int[]` stores raw ints packed together; an `ArrayList<Integer>` stores *pointers* to boxed `Integer` objects scattered on the heap - far more memory, far worse cache behavior. For large, hot numeric data, a primitive array can be a big win. (Measure first - for most code, `ArrayList<Integer>` is perfectly fine and more convenient.)
 
 ## Choosing collections & APIs wisely
