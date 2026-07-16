@@ -39,15 +39,19 @@ pub fn html_to_text(html: &str) -> String {
     out
 }
 
-/// Plain text for the **search index**: like [`html_to_text`], but first drops Mermaid diagram
-/// source (`<code class="language-mermaid">…</code>`) so diagram DSL - `flowchart`, `-->`, node
-/// labels - never pollutes search or the "did you mean" vocabulary. The *stored* HTML keeps the
-/// source untouched; the frontend needs it to render the diagram.
+/// Plain text for the **search index**: like [`html_to_text`], but first drops rendered Mermaid
+/// diagrams (the `<figure class="mmd-ssr">…</figure>` SVG, plus any `<code class="language-mermaid">`
+/// fallback block) so diagram labels, SVG markup, and internal `<style>` CSS never pollute search
+/// or the "did you mean" vocabulary. The *stored* HTML keeps the diagram; only the index text drops it.
 pub fn html_to_index_text(html: &str) -> String {
     use std::sync::OnceLock;
     static MERMAID: OnceLock<regex::Regex> = OnceLock::new();
-    let re = MERMAID
-        .get_or_init(|| regex::Regex::new(r#"(?s)<code class="language-mermaid">.*?</code>"#).unwrap());
+    let re = MERMAID.get_or_init(|| {
+        regex::Regex::new(
+            r#"(?s)<figure class="mmd-ssr"[^>]*>.*?</figure>|<code class="language-mermaid">.*?</code>"#,
+        )
+        .unwrap()
+    });
     html_to_text(&re.replace_all(html, ""))
 }
 
@@ -153,19 +157,20 @@ mod tests {
     use std::fs;
 
     #[test]
-    fn mermaid_source_is_excluded_from_index_text() {
+    fn mermaid_diagram_is_excluded_from_index_text() {
         let html = render_markdown(
             "Intro prose.\n\n```mermaid\nflowchart LR\n  Apple --> Banana\n```\n\nMore prose.\n",
         );
+        // The diagram renders to an inline SVG whose node labels (Apple/Banana) appear as
+        // <text>. Prose is kept; the diagram is dropped from the index so labels and SVG
+        // markup don't pollute search.
         let idx = html_to_index_text(&html);
         assert!(idx.contains("Intro prose"), "prose kept: {idx}");
         assert!(idx.contains("More prose"), "prose kept: {idx}");
-        assert!(
-            !idx.to_lowercase().contains("flowchart"),
-            "diagram DSL must be excluded from the index: {idx}"
-        );
-        // Sanity: a plain de-HTML *would* have included it - proving the exclusion does work.
-        assert!(html_to_text(&html).to_lowercase().contains("flowchart"));
+        assert!(!idx.contains("Apple") && !idx.contains("Banana"), "diagram excluded: {idx}");
+        // Sanity: a plain de-HTML that does NOT strip the figure WOULD include the labels,
+        // proving the exclusion is what removes them.
+        assert!(html_to_text(&html).contains("Apple"));
     }
 
     #[test]

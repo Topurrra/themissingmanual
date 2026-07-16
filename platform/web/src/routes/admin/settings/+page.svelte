@@ -55,7 +55,6 @@
 
   let lofi = isOn(data.flag_lofi);
   let runnable = isOn(data.flag_runnable);
-  let mermaid = isOn(data.flag_mermaid);
 
   // Lofi playlist - a JSON string of [{ title, artist, src }] stored under
   // lofi_tracks. Seed defensively: invalid/empty ⇒ [].
@@ -145,11 +144,10 @@
     sponsors: serSponsors(sponsorRows),
     social: serSocial(socialObj),
     lofi: isOn(data.flag_lofi),
-    runnable: isOn(data.flag_runnable),
-    mermaid: isOn(data.flag_mermaid)
+    runnable: isOn(data.flag_runnable)
   });
   $: dirty =
-    JSON.stringify({ siteName, tagline, announcement, sponsors, social, lofi, runnable, mermaid }) !==
+    JSON.stringify({ siteName, tagline, announcement, sponsors, social, lofi, runnable }) !==
     initial;
 
   // Validate a JSON textarea: blank is allowed (means "use defaults" → send "").
@@ -184,7 +182,6 @@
       social: String(social ?? '').trim() === '' ? '' : social,
       flag_lofi: lofi ? '1' : '0',
       flag_runnable: runnable ? '1' : '0',
-      flag_mermaid: mermaid ? '1' : '0',
       lofi_tracks: JSON.stringify(tracks)
     };
 
@@ -242,12 +239,6 @@
       <input type="checkbox" bind:checked={runnable} />
       <span class="set-track" aria-hidden="true"></span>
       <span class="set-toggle-label">Runnable code blocks</span>
-    </label>
-
-    <label class="set-toggle">
-      <input type="checkbox" bind:checked={mermaid} />
-      <span class="set-track" aria-hidden="true"></span>
-      <span class="set-toggle-label">Mermaid diagrams</span>
     </label>
   </section>
 

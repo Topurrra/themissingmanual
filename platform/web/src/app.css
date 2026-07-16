@@ -4074,3 +4074,76 @@ a.rank-row:hover .rank-fill {
   background: none;
   padding: 0;
 }
+
+/* SPIKE: server-rendered mermaid (content-core feature `server-mermaid`). The SVG
+   is baked ONCE with sentinel colors; these rules remap each sentinel to a live
+   design token, so every theme (incl. sepia/nord/dracula/contrast) themes the
+   diagram through the normal cascade - no per-theme baking, no JS. The sentinel map
+   must stay in sync with content-core::mermaid_ssr::sentinel_theme(). Remove this
+   block if the spike doesn't graduate. Mirrors figure.mmd visuals. */
+figure.mmd-ssr {
+  margin: 1.6rem 0;
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  background: var(--raise);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.2rem 1rem;
+}
+figure.mmd-ssr svg { max-width: 100%; height: auto; display: block; }
+/* sentinel -> token. The attribute form (fill="…"/stroke="…") covers the
+   flowchart/state path; the !important [style*=…] variant also catches renderers
+   that emit inline style= (e.g. erDiagram rows). */
+figure.mmd-ssr [fill="#ff00f1"],   figure.mmd-ssr [style*="#ff00f1"] { fill: var(--surface) !important; }
+figure.mmd-ssr [stroke="#ff00f2"], figure.mmd-ssr [style*="#ff00f2"] { stroke: var(--accent) !important; }
+figure.mmd-ssr [fill="#ff00f3"],   figure.mmd-ssr [style*="#ff00f3"] { fill: var(--ink) !important; }
+figure.mmd-ssr [fill="#ff00f4"] { fill: var(--accent-strong) !important; }
+figure.mmd-ssr [stroke="#ff00f4"] { stroke: var(--accent-strong) !important; }
+figure.mmd-ssr [style*="#ff00f4"] { fill: var(--accent-strong) !important; stroke: var(--accent-strong) !important; }
+figure.mmd-ssr [fill="#ff00f5"],   figure.mmd-ssr [style*="#ff00f5"] { fill: var(--surface) !important; }
+figure.mmd-ssr [stroke="#ff00f6"], figure.mmd-ssr [style*="#ff00f6"] { stroke: var(--line) !important; }
+/* hardcoded edge-label background -> themed surface */
+figure.mmd-ssr [fill^="rgba(232,232,232"] { fill: var(--raise) !important; }
+/* erDiagram paints via an internal <style> (class names) + inline row fills that
+   the sentinel-attribute rules above can't reach; target its classes directly.
+   These internal rules aren't !important, so !important here wins. */
+figure.mmd-ssr .entityBox { fill: var(--surface) !important; stroke: var(--line) !important; }
+figure.mmd-ssr .attributeBoxOdd { fill: var(--raise) !important; stroke: var(--line) !important; }
+figure.mmd-ssr .attributeBoxEven { fill: var(--surface) !important; stroke: var(--line) !important; }
+figure.mmd-ssr .relationshipLine { stroke: var(--accent-strong) !important; }
+figure.mmd-ssr .divider { stroke: var(--line) !important; }
+figure.mmd-ssr .marker circle { fill: var(--raise) !important; }
+/* sequenceDiagram: hardcoded note + fragment colors (attribute form). */
+figure.mmd-ssr [fill="#fff2b0"] { fill: var(--surface) !important; }   /* note background */
+figure.mmd-ssr [fill="#333333"] { fill: var(--ink) !important; }       /* note text */
+figure.mmd-ssr [stroke="#d7c8f8"] { stroke: var(--accent) !important; }/* fragment frame */
+figure.mmd-ssr [fill="#4c3f6f"] { fill: var(--ink) !important; }       /* fragment tab text */
+/* gitGraph paints via an internal <style> (class names). Non-branch chrome -> tokens; */
+figure.mmd-ssr .commit-id, figure.mmd-ssr .commit-msg { fill: var(--body) !important; }
+figure.mmd-ssr .branch { stroke: var(--line) !important; }
+figure.mmd-ssr .commit-label { fill: var(--ink) !important; }
+figure.mmd-ssr .commit-label-bkg { fill: var(--surface) !important; }
+figure.mmd-ssr .tag-label, figure.mmd-ssr .tag-hole { fill: var(--ink) !important; }
+figure.mmd-ssr .tag-label-bkg { fill: var(--surface) !important; stroke: var(--line) !important; }
+figure.mmd-ssr .commit-merge, figure.mmd-ssr .commit-reverse { fill: var(--surface) !important; stroke: var(--accent) !important; }
+/* branch palette: keep branches DISTINCT, but use tones that read on any theme
+   (same set the client-side renderer uses); branch-label text sits white on them. */
+figure.mmd-ssr { --g0:#0e8a86; --g1:#3b74b0; --g2:#8a63a8; --g3:#c07d3a; --g4:#4f9d5b; --g5:#b4566b; --g6:#5a8fa8; --g7:#9a8a3e; }
+figure.mmd-ssr .commit0, figure.mmd-ssr .commit-highlight0, figure.mmd-ssr .label0 { fill: var(--g0) !important; }
+figure.mmd-ssr .commit0, figure.mmd-ssr .commit-highlight0, figure.mmd-ssr .arrow0 { stroke: var(--g0) !important; }
+figure.mmd-ssr .commit1, figure.mmd-ssr .commit-highlight1, figure.mmd-ssr .label1 { fill: var(--g1) !important; }
+figure.mmd-ssr .commit1, figure.mmd-ssr .commit-highlight1, figure.mmd-ssr .arrow1 { stroke: var(--g1) !important; }
+figure.mmd-ssr .commit2, figure.mmd-ssr .commit-highlight2, figure.mmd-ssr .label2 { fill: var(--g2) !important; }
+figure.mmd-ssr .commit2, figure.mmd-ssr .commit-highlight2, figure.mmd-ssr .arrow2 { stroke: var(--g2) !important; }
+figure.mmd-ssr .commit3, figure.mmd-ssr .commit-highlight3, figure.mmd-ssr .label3 { fill: var(--g3) !important; }
+figure.mmd-ssr .commit3, figure.mmd-ssr .commit-highlight3, figure.mmd-ssr .arrow3 { stroke: var(--g3) !important; }
+figure.mmd-ssr .commit4, figure.mmd-ssr .commit-highlight4, figure.mmd-ssr .label4 { fill: var(--g4) !important; }
+figure.mmd-ssr .commit4, figure.mmd-ssr .commit-highlight4, figure.mmd-ssr .arrow4 { stroke: var(--g4) !important; }
+figure.mmd-ssr .commit5, figure.mmd-ssr .commit-highlight5, figure.mmd-ssr .label5 { fill: var(--g5) !important; }
+figure.mmd-ssr .commit5, figure.mmd-ssr .commit-highlight5, figure.mmd-ssr .arrow5 { stroke: var(--g5) !important; }
+figure.mmd-ssr .commit6, figure.mmd-ssr .commit-highlight6, figure.mmd-ssr .label6 { fill: var(--g6) !important; }
+figure.mmd-ssr .commit6, figure.mmd-ssr .commit-highlight6, figure.mmd-ssr .arrow6 { stroke: var(--g6) !important; }
+figure.mmd-ssr .commit7, figure.mmd-ssr .commit-highlight7, figure.mmd-ssr .label7 { fill: var(--g7) !important; }
+figure.mmd-ssr .commit7, figure.mmd-ssr .commit-highlight7, figure.mmd-ssr .arrow7 { stroke: var(--g7) !important; }
+figure.mmd-ssr [class*="branch-label"] { fill: #ffffff !important; }

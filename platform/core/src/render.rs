@@ -110,7 +110,11 @@ pub fn render_markdown(md: &str) -> String {
     let mut plugins = ComrakPlugins::default();
     plugins.render.codefence_syntax_highlighter = Some(highlighter());
 
-    markdown_to_html_with_plugins(md, &opts, &plugins)
+    let html = markdown_to_html_with_plugins(md, &opts, &plugins);
+    // Bake ```mermaid fences to themed SVG so the browser never loads mermaid.js.
+    // The highlighter keeps the `language-mermaid` class above so inject can find the
+    // block; a diagram that fails to render is left as its code block.
+    crate::mermaid_ssr::inject_mermaid_svgs(html)
 }
 
 /// CSS for the `tok-`-prefixed highlight classes, generated from a dark syntect theme.
@@ -140,12 +144,11 @@ mod tests {
     }
 
     #[test]
-    fn mermaid_fences_keep_their_language_class() {
+    fn mermaid_fences_render_to_svg() {
         let html = render_markdown("```mermaid\nflowchart LR\n  A --> B\n```\n");
-        assert!(
-            html.contains("language-mermaid"),
-            "mermaid blocks must stay detectable for the frontend: {html}"
-        );
+        assert!(html.contains("class=\"mmd-ssr\""), "mermaid renders to an SVG figure: {html}");
+        assert!(html.contains("<svg"), "{html}");
+        assert!(!html.contains("language-mermaid"), "raw fence is replaced: {html}");
     }
 
     #[test]

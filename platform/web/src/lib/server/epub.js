@@ -103,6 +103,9 @@ const VOID_TAGS = 'br|hr|img|input|meta|link|source|track|col|wbr';
 function sanitizeForEpub(html) {
   let out = String(html || '');
   out = out.replace(/<pre>\s*<code class="language-(quiz|exercise|playground-[\w-]+|explainer-[\w-]+)">[\s\S]*?<\/code>\s*<\/pre>/g, '');
+  // Server-rendered mermaid diagrams are inline SVG themed via the site's CSS vars,
+  // which the e-book doesn't have - strip them rather than ship raw sentinel colors.
+  out = out.replace(/<figure class="mmd-ssr"[\s\S]*?<\/figure>/g, '');
   const voidRe = new RegExp(`<(${VOID_TAGS})((?:\\s+[^<>]*)?)>`, 'gi');
   out = out.replace(voidRe, (m, tag, attrs) => (attrs.trimEnd().endsWith('/') ? `<${tag}${attrs}>` : `<${tag}${attrs.trimEnd()} />`));
   return out;

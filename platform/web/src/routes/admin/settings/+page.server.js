@@ -13,7 +13,6 @@ export async function load({ request }) {
     sponsors: s.sponsors ?? '',
     social: s.social ?? '',
     flag_lofi: s.flag_lofi ?? '',
-    flag_runnable: s.flag_runnable ?? '',
-    flag_mermaid: s.flag_mermaid ?? ''
+    flag_runnable: s.flag_runnable ?? ''
   };
 }

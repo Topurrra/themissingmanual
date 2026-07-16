@@ -35,7 +35,6 @@
     "codemirror": "^6.0.2",
     "expr-eval": "^2.0.2",
     "isomorphic-git": "^1.38.6",
-    "mermaid": "^11.15.0",
     "sucrase": "^3.35.1",
     "wabt": "^1.0.39",
     "web-push": "^3.6.7"

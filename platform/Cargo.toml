@@ -1,3 +1,6 @@
 [workspace]
 resolver = "2"
 members = ["core", "server"]
+# Vendored third-party Mermaid stack (MIT + Apache-2.0). Used as path deps by core;
+# not workspace members, so their own lints/settings stay intact. See third_party/NOTICE.
+exclude = ["third_party"]

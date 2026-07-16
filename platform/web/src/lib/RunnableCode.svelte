@@ -10,14 +10,14 @@
   // innerHTML would be wrong), and replace each <pre> with a CodeMirror editor +
   // Run button + output panel + Reset.
   //
-  // Lifecycle mirrors Mermaid.svelte: this component is mounted INSIDE the phase
+  // Lifecycle: this component is mounted INSIDE the phase
   // page's {#key} block, so it re-mounts on every phase navigation. We register a
   // SYNCHRONOUS destroy callback (onMount must return one directly - an async
   // onMount's cleanup is ignored), so each nav tears down all editors, workers and
   // runtime handles, leaving no leaks and no duplicate widgets.
   //
-  // Coexistence: Mermaid targets `code.language-mermaid`; we target `[data-runnable]`
-  // (mermaid is never marked runnable, so no overlap). ReaderTools snapshots
+  // We target `[data-runnable]` blocks only (mermaid renders to SVG server-side and
+  // is never marked runnable, so no overlap). ReaderTools snapshots
   // `.reader > *` blocks for the bookmark - we replace each <pre> with a
   // `figure.run-widget`, which is a fine block-level anchor for that.
   //

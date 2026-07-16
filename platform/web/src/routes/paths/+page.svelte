@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
   import { LEVELS, generatePath } from '$lib/pathgen.js';
   import { levelLabel } from '$lib/difficulty.js';
   import Seo from '$lib/Seo.svelte';
@@ -70,6 +71,15 @@
     done = [];
     try { localStorage.setItem(DONE_KEY, '[]'); } catch (e) {}
   }
+
+  // Destroy the saved path (config + progress) and leave for the landing page.
+  function deletePath() {
+    try {
+      localStorage.removeItem(CFG_KEY);
+      localStorage.removeItem(DONE_KEY);
+    } catch (e) {}
+    goto('/');
+  }
 </script>
 
 <Seo
@@ -132,6 +142,7 @@
       <div class="progress-actions">
         <button type="button" class="link-btn" on:click={edit}>Edit choices</button>
         {#if doneCount}<button type="button" class="link-btn" on:click={resetProgress}>Reset progress</button>{/if}
+        <button type="button" class="link-btn danger" on:click={deletePath}>Delete path</button>
       </div>
     </div>
 
@@ -165,6 +176,7 @@
     <div class="progress-card">
       <p>No guides matched those choices yet. Try a higher level or fewer focus areas.</p>
       <button type="button" class="link-btn" on:click={edit}>Edit choices</button>
+      <button type="button" class="link-btn danger" on:click={deletePath}>Delete path</button>
     </div>
   {/if}
 {/if}
@@ -220,6 +232,7 @@
     background: none; border: none; padding: 0.3rem 0; text-decoration: underline; text-underline-offset: 3px;
   }
   .link-btn:hover { color: var(--ink); }
+  .link-btn.danger:hover { color: #b4533a; }
 
   .progress-card { border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.2rem; background: var(--raise); margin-bottom: 2rem; }
   .progress-top { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.6rem; }

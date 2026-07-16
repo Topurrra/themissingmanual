@@ -17,7 +17,6 @@
   import Explainers from '$lib/Explainers.svelte';
   import ReaderTTS from '$lib/ReaderTTS.svelte';
   import Quiz from '$lib/Quiz.svelte';
-  import Mermaid from '$lib/Mermaid.svelte';
   import RunnableCode from '$lib/RunnableCode.svelte';
   import FeedbackWidget from '$lib/FeedbackWidget.svelte';
   import Annotations from '$lib/Annotations.svelte';
@@ -28,7 +27,6 @@
   const flagOn = (v) => !['0', 'false', 'off', 'no'].includes(String(v ?? '').trim().toLowerCase());
   $: siteConfig = $page.data.siteConfig ?? {};
   $: runnableOn = flagOn(siteConfig.flag_runnable);
-  $: mermaidOn = flagOn(siteConfig.flag_mermaid);
 
   $: trackQ = $page.url.searchParams.get('track');
   $: q = trackQ ? `?track=${trackQ}` : '';
@@ -200,7 +198,6 @@
   <Glossary />
   <Playgrounds />
   <Explainers />
-  {#if mermaidOn}<Mermaid />{/if}
   {#if runnableOn}<RunnableCode />{/if}
 {/key}
 

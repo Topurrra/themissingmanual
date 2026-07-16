@@ -14,7 +14,6 @@ const EMPTY_SITE_CONFIG = {
   announcement: '',
   flag_lofi: '',
   flag_runnable: '',
-  flag_mermaid: '',
   lofi_tracks: ''
 };
 

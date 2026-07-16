@@ -20,5 +20,9 @@ walkdir = "2"
 thiserror = "1"
 regex = "1"
 
+# Renders ```mermaid fences to themed SVG at ingest (no client-side mermaid.js).
+# Vendored under platform/third_party (MIT + Apache-2.0); see mermaid_ssr.rs.
+mermaid-to-svg = { path = "../third_party/mermaid-to-svg" }
+
 [dev-dependencies]
 tempfile = "3"

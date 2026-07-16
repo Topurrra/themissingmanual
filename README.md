@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="platform/web/static/icon-512.png" alt="The Missing Manual logo" width="120">
+</p>
+
 # The Missing Manual
 
 **The free, text-first library of real-world developer and STEM knowledge.**
@@ -52,6 +56,18 @@ platform/
   raw Markdown to anything that asks for it (`Accept: text/markdown`) - including a small
   [MCP server](platform/web/src/routes/mcp/+server.js) so AI agents can search and read the library
   directly.
+- **Diagrams render server-side and follow your theme.** Mermaid diagrams in guides are baked to
+  static SVG at ingest by a pure-Rust engine - [`mermaid-to-svg`](platform/third_party/mermaid-to-svg),
+  vendored from xAI's Grok Build (itself a patched fork of
+  [warpdotdev/mermaid-to-svg](https://github.com/warpdotdev/mermaid-to-svg)) - so the browser never
+  loads mermaid.js. The engine bakes fixed colors, so to make one baked SVG follow every site theme
+  (light, dark, sepia, nord, dracula, ...) *live*, each diagram is rendered once with **sentinel
+  colors** that [`app.css`](platform/web/src/app.css) remaps to the theme's design tokens in the CSS
+  cascade - no per-theme baking, no JavaScript, and it themes gitGraph/sequence/ER diagrams too. If
+  you want theme-adaptive server-rendered Mermaid in your own Rust project, that sentinel + CSS-remap
+  technique (see [`mermaid_ssr.rs`](platform/core/src/mermaid_ssr.rs)) is
+  yours to reuse. The vendored crates keep their own MIT / Apache-2.0 licenses
+  ([NOTICE](platform/third_party/NOTICE)).
 
 ## Contributing
 
