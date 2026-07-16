@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:glossary": "node scripts/build-glossary.mjs",
-    "lint:content": "node scripts/lint-content.mjs"
+    "lint:content": "node scripts/lint-content.mjs",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "^5",
