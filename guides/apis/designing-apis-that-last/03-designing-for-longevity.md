@@ -270,4 +270,4 @@ Watch it animated: [idempotency keys](/explainers/IdempotencyKeys.dc.html)
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 2: Versioning Strategies →](02-versioning-strategies.md)
+[← Guide overview](_guide.md)

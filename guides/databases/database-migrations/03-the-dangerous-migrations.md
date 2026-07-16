@@ -179,4 +179,4 @@ transaction, see [Transactions and ACID](/guides/transactions-and-acid).
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 1: What a Migration Is →](01-what-a-migration-is.md)
+[← Guide overview](_guide.md)

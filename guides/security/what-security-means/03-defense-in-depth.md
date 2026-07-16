@@ -99,4 +99,4 @@ Read those with the mindset you just built, and they'll read like a checklist of
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 2: Threat Modeling, Lightly →](02-threat-modeling-lightly.md)
+[← Guide overview](_guide.md)

@@ -287,7 +287,7 @@ one box. Which you now can.
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 1: The Server Mindset →](01-the-server-mindset.md)
+[← Guide overview](_guide.md)
 
 ## Try it yourself
 

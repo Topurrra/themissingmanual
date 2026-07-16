@@ -107,4 +107,4 @@ For now, double down on the foundations: [What Is Data Engineering](/guides/what
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 1: What ML Actually Is →](01-what-ml-actually-is.md)
+[← Guide overview](_guide.md)

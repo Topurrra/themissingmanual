@@ -93,4 +93,4 @@ That's DevOps - the way of working, the loop, and the culture underneath it. The
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 1: Not a Team, a Way of Working →](01-not-a-team.md)
+[← Guide overview](_guide.md)

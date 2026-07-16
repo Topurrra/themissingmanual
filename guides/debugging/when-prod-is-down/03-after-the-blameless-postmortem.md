@@ -192,4 +192,4 @@ Watch it animated: [root-cause analysis](/explainers/RootCause.dc.html)
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 1: The First Five Minutes →](01-the-first-five-minutes.md)
+[← Guide overview](_guide.md)

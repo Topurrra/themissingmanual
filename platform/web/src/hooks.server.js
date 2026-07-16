@@ -91,10 +91,24 @@ export async function handle({ event, resolve }) {
     try {
       let md = null;
       let updated = null;
+      let meta = null;
       if (m[2]) {
-        const ph = await getPhase(event.fetch, m[1], Number(m[2]));
+        const no = Number(m[2]);
+        const ph = await getPhase(event.fetch, m[1], no);
         md = ph && ph.markdown ? ph.markdown : null;
         updated = ph && ph.updated ? ph.updated : null;
+        if (md != null) {
+          // Phase bounds, so clients never have to sniff the footer markup to work
+          // out "is there a next phase" (footers vary by category, and the old
+          // convention lied on last phases). Phase 0 is the overview, so it's not
+          // counted but does get a next.
+          const detail = await getGuide(event.fetch, m[1]);
+          const nos = (detail?.phases ?? [])
+            .map((p) => p.phase_no)
+            .filter((n) => n > 0)
+            .sort((a, b) => a - b);
+          if (nos.length) meta = { no, count: nos.length, next: nos.find((n) => n > no) };
+        }
       } else {
         md = await guideToMarkdown(event.fetch, m[1]);
       }
@@ -107,6 +121,12 @@ export async function handle({ event, resolve }) {
         };
         // Per-response freshness so JNE can revalidate one cached guide (ISO date).
         if (updated) headers['x-updated'] = updated;
+        if (meta) {
+          headers['x-phase'] = String(meta.no);
+          headers['x-phase-count'] = String(meta.count);
+          // Absent on the last phase - that absence IS the "no next" signal.
+          if (meta.next != null) headers['x-next-phase'] = String(meta.next);
+        }
         return new Response(md, { headers });
       }
     } catch (e) {
