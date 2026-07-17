@@ -25,7 +25,7 @@ work, and ends with a clear-eyed look at when gRPC is the right call and when it
 
 ## How to read this
 - **Just need the "REST vs GraphQL vs gRPC, when do I use which" answer?** Jump to the table at the top of
-  [Phase 3: The Real Trade-offs](03-the-honest-trade-offs.md).
+  [Phase 3: The Real Trade-offs](03-the-real-trade-offs.md).
 - **Want it to finally make sense?** Read in order - each phase builds on the last. The mental model in
   Phase 1 is what makes the machinery in Phase 2 feel obvious.
 
@@ -34,7 +34,7 @@ work, and ends with a clear-eyed look at when gRPC is the right call and when it
    thousands of times need speed *and* a strict typed contract, and how gRPC delivers both.
 2. **[How gRPC Works](02-how-grpc-works.md)** - the `.proto` file, code generation, binary serialization,
    and the four call types (unary plus three streaming modes), at a gentle level.
-3. **[The Real Trade-offs](03-the-honest-trade-offs.md)** - what you give up (human-readable payloads,
+3. **[The Real Trade-offs](03-the-real-trade-offs.md)** - what you give up (human-readable payloads,
    easy browser support), what you gain, and a fair REST-vs-GraphQL-vs-gRPC "when to use which" table.
 
 > Deep material - custom interceptors, deadlines and retries, load balancing, mutual TLS, and the wire

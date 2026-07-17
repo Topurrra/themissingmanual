@@ -180,4 +180,4 @@ Test yourself on the two ideas that cause the most confusion here - that filter 
 
 ---
 
-[← Phase 1: Row Context vs Filter Context](01-row-context-vs-filter-context.md) · [Phase 3: Common DAX Patterns →](03-common-dax-patterns.md)
+[← Phase 1: Row Context vs Filter Context](01-row-context-vs-filter-context.md) · [Phase 3: Common DAX Patterns →](03-common-dax-patterns-running-totals-yoy-ranking-t.md)

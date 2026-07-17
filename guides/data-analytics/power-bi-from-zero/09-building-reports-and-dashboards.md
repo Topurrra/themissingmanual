@@ -129,4 +129,4 @@ Test yourself on the ideas that trip people up most in this phase - the report/d
 
 ---
 
-[← Phase 8: Visualizations That Do Not Lie](08-visualizations-that-do-not-lie.md) · [Phase 10: Publishing & Sharing (Workspaces, Apps, RLS) →](10-publishing-and-sharing.md)
+[← Phase 8: Visualizations That Do Not Lie](08-visualizations-that-do-not-lie.md) · [Phase 10: Publishing & Sharing (Workspaces, Apps, RLS) →](10-publishing-and-sharing-workspaces-apps-rls.md)

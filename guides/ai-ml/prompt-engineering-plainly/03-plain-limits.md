@@ -1,6 +1,6 @@
 ---
 title: "Plain Limits"
-guide: "prompt-engineering-honestly"
+guide: "prompt-engineering-plainly"
 phase: 3
 summary: "What prompting can't do: it can't add knowledge the model lacks, can't guarantee correctness, and 'magic phrases' are mostly folklore - the real work is iteration, testing on real cases, and watching for prompt injection."
 tags: [prompt-engineering, llm, hallucination, prompt-injection, limits, beginner-friendly]

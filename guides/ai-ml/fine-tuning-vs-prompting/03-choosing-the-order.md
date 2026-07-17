@@ -46,7 +46,7 @@ model improves. Most "we need to fine-tune" problems dissolve here.
 perfect." That's not exhausting prompting - that's barely starting. Exhausting it means you've seriously
 iterated and hit a real ceiling: instructions ignored, prompts ballooning, consistency stuck at *mostly* when
 you need *reliably*. Only a real ceiling justifies climbing higher. Full technique lives in
-[Prompt Engineering, Honestly](/guides/prompt-engineering-honestly).
+[Prompt Engineering, Plainly](/guides/prompt-engineering-plainly).
 
 ## 2. Add RAG when the problem is knowledge
 
@@ -129,5 +129,5 @@ order instead of a reflex - and that answer will usually save your team a great 
 
 [← Phase 2: What Fine-Tuning Actually Involves](02-what-fine-tuning-actually-involves.md) · [Guide overview](_guide.md)
 
-**Related guides:** [Prompt Engineering, Honestly](/guides/prompt-engineering-honestly) ·
+**Related guides:** [Prompt Engineering, Plainly](/guides/prompt-engineering-plainly) ·
 [RAG, Explained](/guides/rag-explained) · [Using an LLM API](/guides/using-an-llm-api)

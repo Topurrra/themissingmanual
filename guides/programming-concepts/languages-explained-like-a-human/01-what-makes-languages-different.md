@@ -176,4 +176,4 @@ Python here, JavaScript there, Go and Rust over here - each a deliberate set of 
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 2: The Four, Plainly →](02-the-four-honestly.md)
+[← Guide overview](_guide.md) · [Phase 2: The Four, Plainly →](02-the-four-plainly.md)

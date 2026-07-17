@@ -25,7 +25,7 @@ This guide walks through why randomizing matters, how a real test is put togethe
 
 ## How to read this
 
-Read it in order. Phase 1 is the core idea - why you need a control group at all. Phase 2 is how a real test is structured, including just enough of "statistical significance" to make the phrase mean something. Phase 3 is the part that actually matters day to day: the mistakes that make a fair test dishonest.
+Read it in order. Phase 1 is the core idea - why you need a control group at all. Phase 2 is how a real test is structured, including just enough of "statistical significance" to make the phrase mean something. Phase 3 is the part that actually matters day to day: the mistakes that turn a fair test into a misleading one.
 
 ## The phases
 

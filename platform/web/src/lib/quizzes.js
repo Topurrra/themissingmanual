@@ -5809,7 +5809,7 @@ export const QUIZZES = {
       explain: 'Alert on symptoms not causes, make every page actionable, and use for: generously - alert fatigue is how monitoring dies.'
     },
   ],
-  'prompt-engineering-honestly/1': [
+  'prompt-engineering-plainly/1': [
     {
       q: 'What is a language model fundamentally doing?',
       choices: [
@@ -5844,7 +5844,7 @@ export const QUIZZES = {
       explain: 'Nine times out of ten the answer was vague because the question was; add information that narrows the target.'
     },
   ],
-  'prompt-engineering-honestly/2': [
+  'prompt-engineering-plainly/2': [
     {
       q: 'What does giving the model a role and audience actually change?',
       choices: [
@@ -5879,7 +5879,7 @@ export const QUIZZES = {
       explain: 'Match the technique to the task; bolting step by step onto write me a haiku just makes it longer, not better.'
     },
   ],
-  'prompt-engineering-honestly/3': [
+  'prompt-engineering-plainly/3': [
     {
       q: 'What is the hard limit no clever prompt can overcome?',
       choices: [
@@ -8854,7 +8854,7 @@ export const QUIZZES = {
       explain: 'OSI\'s top three fold into TCP/IP\'s Application layer and its bottom two into Link; the two different counts do not mean you misunderstood something.'
     },
   ],
-  'tdd-and-bdd-honestly/1': [
+  'tdd-and-bdd-no-nonsense/1': [
     {
       q: 'What is TDD really for, beyond catching bugs?',
       choices: [
@@ -8889,7 +8889,7 @@ export const QUIZZES = {
       explain: 'Red first means that when it goes green, you know your code is why.'
     },
   ],
-  'tdd-and-bdd-honestly/2': [
+  'tdd-and-bdd-no-nonsense/2': [
     {
       q: 'What is BDD\'s Given/When/Then format for?',
       choices: [
@@ -8924,7 +8924,7 @@ export const QUIZZES = {
       explain: 'BDD pays off when real non-developers read and shape the scenarios; otherwise it is BDD\'s costs without its benefit.'
     },
   ],
-  'tdd-and-bdd-honestly/3': [
+  'tdd-and-bdd-no-nonsense/3': [
     {
       q: 'Where does TDD genuinely shine?',
       choices: [

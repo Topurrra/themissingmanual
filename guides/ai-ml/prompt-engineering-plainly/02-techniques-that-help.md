@@ -1,6 +1,6 @@
 ---
 title: "The Techniques That Actually Help"
-guide: "prompt-engineering-honestly"
+guide: "prompt-engineering-plainly"
 phase: 2
 summary: "The handful of prompting techniques that genuinely improve output: give context and a role, be specific about format and length, show examples, break hard tasks into steps, and say what to do rather than only what not to."
 tags: [prompt-engineering, llm, few-shot, chain-of-thought, prompting, beginner-friendly]
@@ -26,7 +26,7 @@ Explain what a "variable" is in programming, using one everyday analogy.
 
 *What just happened:* The role ("patient tutor") and the audience ("never coded") tell the model to avoid jargon and reach for an analogy. Without them, "explain what a variable is" could just as easily produce a formal, technical definition - correct, but useless to a beginner.
 
-⚠️ **Plain caveat.** A role helps because it nudges *style and framing*. It does not make the model more knowledgeable or more accurate. "You are a world-class cardiologist" does not give it medical facts it didn't already have - it changes how the answer sounds, not whether it's true. (More on this in [Phase 3](03-honest-limits.md).)
+⚠️ **Plain caveat.** A role helps because it nudges *style and framing*. It does not make the model more knowledgeable or more accurate. "You are a world-class cardiologist" does not give it medical facts it didn't already have - it changes how the answer sounds, not whether it's true. (More on this in [Phase 3](03-plain-limits.md).)
 
 ## 2. Be specific about format and length
 
@@ -120,4 +120,4 @@ These work. The next phase is about being clear-eyed on what they *don't* - so y
 
 ---
 
-[← Phase 1: A Prompt Is an Instruction](01-instruction-not-a-spell.md) · [Guide overview](_guide.md) · [Phase 3: Plain Limits →](03-honest-limits.md)
+[← Phase 1: A Prompt Is an Instruction](01-instruction-not-a-spell.md) · [Guide overview](_guide.md) · [Phase 3: Plain Limits →](03-plain-limits.md)

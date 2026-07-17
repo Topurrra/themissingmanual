@@ -18,7 +18,7 @@ updated: 2026-07-10
 
 # Regex Practice
 
-Thirteen short, hands-on regex lessons, from your first `.test()` call to
+Fourteen short, hands-on regex lessons, from your first `.test()` call to
 lookahead, backreferences, and capstones that pull real data out of messy
 text. Each lesson gives you a task and a Run button - your code is checked
 against real tests the moment you run it. Everything runs in your browser.

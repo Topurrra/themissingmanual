@@ -17,7 +17,7 @@ updated: 2026-07-10
 
 # Postgres Practice
 
-Six short, hands-on lessons on what Postgres adds on top of standard SQL: a
+Seven short, hands-on lessons on what Postgres adds on top of standard SQL: a
 `JSONB` column for document-shaped data, arrays as a real column type,
 `RETURNING` to get a row back from an `INSERT`, `UUID` primary keys generated
 with `gen_random_uuid()`, and `ON CONFLICT DO UPDATE` for upserts. If you've

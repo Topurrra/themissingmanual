@@ -59,7 +59,7 @@ it's optional - this guide stands on its own.
 
 **Part 1 - The basics (🟢 Basic → 🟡 Intermediate)**
 1. **[Compiling & Your First Program](01-compiling-and-your-first-program.md)** 🟢 - a compiler, `g++`/`clang++`, and what compiling a C++ program looks like.
-2. **[From C to C++: What Changed](02-from-c-to-cpp-what-changed.md)** 🟢 - `iostream` over `printf`, `bool`, references, `new`/`delete`, and namespaces - the surface differences, named.
+2. **[From C to C++: What Changed](02-from-c-to-c-what-changed.md)** 🟢 - `iostream` over `printf`, `bool`, references, `new`/`delete`, and namespaces - the surface differences, named.
 3. **[Types, Variables & Control Flow](03-types-variables-and-control-flow.md)** 🟢 - C++'s type system, `auto`, and control flow with C++'s small extra conveniences.
 4. **[Functions, Overloading & Default Arguments](04-functions-overloading-and-default-arguments.md)** 🟢 - multiple functions sharing a name, default parameter values, and how overload resolution picks one.
 5. **[References vs Pointers](05-references-vs-pointers.md)** 🟡 - what a reference actually is, when to reach for one over a pointer, and why C++ has both.
@@ -75,7 +75,7 @@ it's optional - this guide stands on its own.
 13. **[Smart Pointers & Modern Memory Management](13-smart-pointers-and-modern-memory-management.md)** 🔴 - `unique_ptr`, `shared_ptr`, and RAII applied to `new`/`delete` so you (almost) never call them.
 14. **[Inheritance & Polymorphism](14-inheritance-and-polymorphism.md)** 🟡 - `virtual`, base and derived classes, and when inheritance is actually the right tool.
 15. **[Error Handling: Exceptions and Alternatives](15-error-handling-exceptions-and-alternatives.md)** 🟡 - `try`/`catch`/`throw`, exception safety, and why some modern C++ avoids exceptions entirely.
-16. **[Modern C++: auto, Lambdas, Ranges & What Changed Since C++11](16-modern-cpp-auto-lambdas-ranges-and-what-changed-since-cpp11.md)** 🟡 - the features that make current C++ read nothing like the C++ of 15 years ago.
+16. **[Modern C++: auto, Lambdas, Ranges & What Changed Since C++11](16-modern-c-auto-lambdas-ranges-and-what-changed-si.md)** 🟡 - the features that make current C++ read nothing like the C++ of 15 years ago.
 17. **[Undefined Behavior, Gotchas & Where to Go Next](17-undefined-behavior-gotchas-and-where-to-go-next.md)** 🔴 - the mistakes that compile fine and misbehave anyway, and what to build next.
 
 > C++'s wider ecosystem (build systems, package managers, specific frameworks like Qt or game

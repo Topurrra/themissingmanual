@@ -60,7 +60,7 @@ name on it.
    sources; import vs DirectQuery, and why that choice matters early.
 3. **[Shaping Data with Power Query](03-shaping-data-with-power-query.md)** 🟡 - get & transform, the
    Applied Steps list, and why Power Query records *how* you cleaned the data, not just the result.
-4. **[The Data Model & Relationships](04-data-model-and-relationships.md)** 🟡 - a star schema in different
+4. **[The Data Model & Relationships](04-the-data-model-and-relationships.md)** 🟡 - a star schema in different
    clothes: fact tables, dimension tables, relationships, and cardinality.
 5. **[DAX From Intuition](05-dax-from-intuition.md)** 🟡 - row context vs filter context, the idea that
    makes every DAX formula make sense once it clicks.
@@ -72,7 +72,7 @@ name on it.
    matches the question, axis and scale traps, and what to leave out.
 9. **[Building Reports & Dashboards](09-building-reports-and-dashboards.md)** 🟡 - pages, slicers,
    drill-through, bookmarks, and report vs dashboard (they are not the same thing).
-10. **[Publishing & Sharing (Workspaces, Apps, RLS)](10-publishing-and-sharing.md)** 🔴 - workspaces, Apps,
+10. **[Publishing & Sharing (Workspaces, Apps, RLS)](10-publishing-and-sharing-workspaces-apps-rls.md)** 🔴 - workspaces, Apps,
     and row-level security so the right person sees only their own data.
 11. **[Refresh, Gateways & Capacity Basics](11-refresh-gateways-and-capacity-basics.md)** 🔴 - scheduled
     refresh, the on-premises data gateway, and what capacity limits mean for you in practice.

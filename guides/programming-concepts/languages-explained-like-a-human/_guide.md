@@ -37,7 +37,7 @@ This guide won't sell you a favorite. It'll give you the map.
 1. **[What Actually Makes Languages Different](01-what-makes-languages-different.md)** - the handful of axes
    that matter (typed vs dynamic, compiled vs interpreted, how memory is managed, and where the language
    runs), so the four aren't random names but points on a map.
-2. **[The Four, Plainly](02-the-four-honestly.md)** - one fair section each for Python, JavaScript/Node,
+2. **[The Four, Plainly](02-the-four-plainly.md)** - one fair section each for Python, JavaScript/Node,
    Go, and Rust: what it's for, a tiny taste of how it reads, and the real trade-offs - no fanboyism.
 3. **[How to Choose](03-how-to-choose.md)** - a practical, judgment-flagged way to pick by what you're
    building and the people around you, with a side-by-side table and the reassurance that your first

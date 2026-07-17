@@ -12,7 +12,7 @@
 
 ## What's inside
 
-- **350 guides, 1,384 phases, 27 categories** - Git, operating systems, hardware, networking,
+- **367 guides, 1,575 phases, 27 categories** - Git, operating systems, hardware, networking,
   databases, architecture, security, DevOps, infrastructure, performance, 7 full programming
   languages and 30+ frameworks end-to-end, plus Logic, Mathematics, and Physics for the reasoning
   underneath it all.

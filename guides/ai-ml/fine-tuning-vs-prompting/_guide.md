@@ -30,7 +30,7 @@ into one decision.
 
 ## How to read this
 
-- **Need to decide right now?** Jump to [Phase 3: Choosing - the No-Nonsense Order](03-choosing-the-honest-order.md)
+- **Need to decide right now?** Jump to [Phase 3: Choosing - the No-Nonsense Order](03-choosing-the-order.md)
   and use the decision table at the top.
 - **Want it to finally make sense?** Read in order - each phase builds on the last. Phase 1 gives you the
   three-way mental model, Phase 2 shows what fine-tuning really involves, and Phase 3 turns it into a
@@ -44,7 +44,7 @@ into one decision.
 2. **[What Fine-Tuning Actually Involves](02-what-fine-tuning-actually-involves.md)** - the dataset (where the
    real cost lives), the training run, hosting your tuned model, the lighter LoRA approach, and how you'd
    know if it worked.
-3. **[Choosing - the No-Nonsense Order](03-choosing-the-honest-order.md)** - try prompt → RAG → fine-tune, in that
+3. **[Choosing - the No-Nonsense Order](03-choosing-the-order.md)** - try prompt → RAG → fine-tune, in that
    order, because each step costs more and locks you in more. A decision table, and the two traps that catch
    everyone.
 
@@ -52,5 +52,5 @@ into one decision.
 > is deliberately out of scope here. This guide is about the *decision*, not the implementation. Once you've
 > clearly decided fine-tuning is right, your model provider's tuning docs are your next stop.
 
-**Related guides:** [Prompt Engineering, Honestly](/guides/prompt-engineering-honestly) ·
+**Related guides:** [Prompt Engineering, Plainly](/guides/prompt-engineering-plainly) ·
 [RAG, Explained](/guides/rag-explained) · [Using an LLM API](/guides/using-an-llm-api)

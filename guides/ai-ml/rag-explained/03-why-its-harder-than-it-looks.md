@@ -114,7 +114,7 @@ The clear split, both sides:
 
 The rule of thumb: **RAG adds knowledge; fine-tuning adds behavior.** "The model doesn't know our stuff" is RAG. "The model doesn't *answer in our style/format*" is fine-tuning. They're not rivals - plenty of serious systems do both: fine-tune for the voice, retrieve for the facts. Deeper on the other half: [Fine-Tuning vs Prompting, Plainly](/guides/fine-tuning-vs-prompting).
 
-> ⏭️ Want to sharpen the *instruction* half of the augmented prompt - getting the model to obey "answer only from context" reliably? Covered in [Prompt Engineering, Honestly](/guides/prompt-engineering-honestly).
+> ⏭️ Want to sharpen the *instruction* half of the augmented prompt - getting the model to obey "answer only from context" reliably? Covered in [Prompt Engineering, Plainly](/guides/prompt-engineering-plainly).
 
 ## Recap
 

@@ -1,6 +1,6 @@
 ---
 title: "TDD & BDD, No-Nonsense"
-guide: "tdd-and-bdd-honestly"
+guide: "tdd-and-bdd-no-nonsense"
 phase: 0
 summary: "What test-driven and behavior-driven development actually are, the red-green-refactor and Given/When/Then cycles, and a clear-eyed take on when each one earns its keep - and when it's just ritual."
 tags: [tdd, bdd, testing, test-driven-development, behavior-driven-development]

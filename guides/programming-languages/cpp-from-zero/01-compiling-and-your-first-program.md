@@ -174,4 +174,4 @@ Test yourself on the ideas this phase depends on - what compiling ahead of time 
 
 ---
 
-[Phase 2: From C to C++: What Changed →](02-from-c-to-cpp-what-changed.md)
+[Phase 2: From C to C++: What Changed →](02-from-c-to-c-what-changed.md)

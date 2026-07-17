@@ -1,6 +1,6 @@
 ---
 title: "Straight Talk: When They Help, When They Don't"
-guide: "tdd-and-bdd-honestly"
+guide: "tdd-and-bdd-no-nonsense"
 phase: 3
 summary: "A clear, judgment-flagged take: TDD shines for well-understood logic and bug fixes and fights you on exploratory or UI work; BDD pays off when business stakeholders are involved and is overhead when they're not - and cargo-culting the ritual without the benefit helps no one."
 tags: [tdd, bdd, testing, judgment, when-to-use, trade-offs]

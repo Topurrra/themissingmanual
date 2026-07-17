@@ -72,7 +72,7 @@ it shows you what your other languages have been doing for you all along.
 **Part 2 - Beyond the basics (🟡 Intermediate → 🔴 Advanced)**
 10. **[Dynamic Memory: malloc & free](10-dynamic-memory-malloc-and-free.md)** 🔴 - asking for memory at runtime, and the discipline of giving it back.
 11. **[The Stack vs the Heap](11-the-stack-vs-the-heap.md)** 🔴 - two totally different regions of memory, and why mixing them up crashes programs.
-12. **[Pointers II: Arithmetic, Double & Function Pointers](12-pointers-ii-arithmetic-double-and-function-pointers.md)** 🔴 - pointer math, pointers to pointers, and pointers to code.
+12. **[Pointers II: Arithmetic, Double & Function Pointers](12-pointers-ii-arithmetic-double-and-function-point.md)** 🔴 - pointer math, pointers to pointers, and pointers to code.
 13. **[The Standard Library Essentials](13-the-standard-library-essentials.md)** 🟡 - `stdio.h`, `string.h`, `stdlib.h`, and the functions you'll reach for constantly.
 14. **[Undefined Behavior & Common Footguns](14-undefined-behavior-and-common-footguns.md)** 🔴 - what "undefined" really means, and the mistakes that cause it.
 

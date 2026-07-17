@@ -17,7 +17,7 @@ updated: 2026-07-10
 
 # Git Practice
 
-Eight short, hands-on Git lessons: make your first commit, build a real
+Nine short, hands-on Git lessons: make your first commit, build a real
 commit history, branch and switch, merge your work back in, learn to read
 `git status` like a pro, stash changes mid-edit, keep files out of git with
 `.gitignore`, and undo a commit safely with `git revert`. Each lesson gives

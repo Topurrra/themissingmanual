@@ -196,4 +196,4 @@ This one pattern - a struct holding a pointer to its own type - is the entire fo
 
 ---
 
-[Phase 8: Header Files & the Preprocessor →](08-header-files-and-preprocessor.md)
+[Phase 8: Header Files & the Preprocessor →](08-header-files-and-the-preprocessor.md)

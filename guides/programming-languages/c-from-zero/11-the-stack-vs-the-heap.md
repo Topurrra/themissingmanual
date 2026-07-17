@@ -228,4 +228,4 @@ Test yourself on the idea that separates the two regions - who manages the lifet
 
 ---
 
-[← Phase 10: Dynamic Memory](10-dynamic-memory-malloc-and-free.md) · [Phase 12: Pointers II - Arithmetic, Double & Function Pointers →](12-pointers-ii-arithmetic-double-and-function-pointers.md)
+[← Phase 10: Dynamic Memory](10-dynamic-memory-malloc-and-free.md) · [Phase 12: Pointers II - Arithmetic, Double & Function Pointers →](12-pointers-ii-arithmetic-double-and-function-point.md)

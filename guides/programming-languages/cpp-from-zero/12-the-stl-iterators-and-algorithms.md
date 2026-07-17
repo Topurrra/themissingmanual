@@ -123,7 +123,7 @@ The rule of thumb: get a fresh iterator (or index) right before you use it, don'
 
 ## What C++20 ranges do about all this
 
-Writing `v.begin(), v.end()` everywhere gets repetitive, and it's easy to accidentally mix a `begin()` from one container with an `end()` from another. C++20 added **ranges**, which let you write `std::ranges::sort(v)` instead of `std::sort(v.begin(), v.end())` - the range itself carries its own bounds. Under the hood it's still iterators doing the work; ranges are a friendlier front door on the same machinery you just learned. [Phase 16](16-modern-cpp-auto-lambdas-ranges-and-what-changed-since-cpp11.md) covers this properly.
+Writing `v.begin(), v.end()` everywhere gets repetitive, and it's easy to accidentally mix a `begin()` from one container with an `end()` from another. C++20 added **ranges**, which let you write `std::ranges::sort(v)` instead of `std::sort(v.begin(), v.end())` - the range itself carries its own bounds. Under the hood it's still iterators doing the work; ranges are a friendlier front door on the same machinery you just learned. [Phase 16](16-modern-c-auto-lambdas-ranges-and-what-changed-si.md) covers this properly.
 
 ## Recap
 

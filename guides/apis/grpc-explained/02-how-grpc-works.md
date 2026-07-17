@@ -212,4 +212,4 @@ all this worth it, and when is it the wrong tool?
 
 ---
 
-[← Phase 1: The Problem gRPC Solves](01-the-problem-grpc-solves.md) · [Guide overview](_guide.md) · [Phase 3: The Real Trade-offs →](03-the-honest-trade-offs.md)
+[← Phase 1: The Problem gRPC Solves](01-the-problem-grpc-solves.md) · [Guide overview](_guide.md) · [Phase 3: The Real Trade-offs →](03-the-real-trade-offs.md)

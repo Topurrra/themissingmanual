@@ -19,13 +19,13 @@ There is: instead of the server deciding what each endpoint returns, the *client
 
 ## How to read this
 
-- **Want to know if GraphQL is even worth it?** Skim [Phase 1: The Problem REST Leaves](01-the-problem-rest-leaves.md) for the motivation, then jump straight to [Phase 3: The Real Trade-offs](03-the-honest-trade-offs.md).
+- **Want to know if GraphQL is even worth it?** Skim [Phase 1: The Problem REST Leaves](01-the-problem-rest-leaves.md) for the motivation, then jump straight to [Phase 3: The Real Trade-offs](03-the-real-trade-offs.md).
 - **Want it to finally make sense?** Read in order - each phase builds on the last. The mental model in Phase 1 makes the machinery in Phase 2 obvious, and the trade-offs in Phase 3 only land once you've seen how it works.
 
 ## The phases
 
 1. **[The Problem REST Leaves](01-the-problem-rest-leaves.md)** - over-fetching and under-fetching, the two everyday REST frustrations, and the one-sentence pitch GraphQL makes in response.
 2. **[How GraphQL Works](02-how-graphql-works.md)** - the pieces: a typed schema (the contract), one endpoint, queries vs mutations, and the idea that the response mirrors the request. With an annotated query and its matching JSON.
-3. **[The Real Trade-offs](03-the-honest-trade-offs.md)** - what GraphQL costs you: harder caching, the N+1 problem, query-complexity and abuse concerns, and added tooling. When REST (or gRPC) is the better choice.
+3. **[The Real Trade-offs](03-the-real-trade-offs.md)** - what GraphQL costs you: harder caching, the N+1 problem, query-complexity and abuse concerns, and added tooling. When REST (or gRPC) is the better choice.
 
 > This guide is the mental model and the decision, not a build tutorial. Schema-design patterns, resolver internals, subscriptions, and federation are deep topics deferred to a follow-up guide. Sibling reads: [REST APIs, Explained](/guides/rest-apis-explained) and [gRPC, Explained](/guides/grpc-explained).

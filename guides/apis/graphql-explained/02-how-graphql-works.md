@@ -158,4 +158,4 @@ You now know enough to read GraphQL and predict its output. But everything above
 
 ---
 
-[← Phase 1: The Problem REST Leaves](01-the-problem-rest-leaves.md) · [Guide overview](_guide.md) · [Phase 3: The Real Trade-offs →](03-the-honest-trade-offs.md)
+[← Phase 1: The Problem REST Leaves](01-the-problem-rest-leaves.md) · [Guide overview](_guide.md) · [Phase 3: The Real Trade-offs →](03-the-real-trade-offs.md)

@@ -171,4 +171,4 @@ and "a double that asserts it was called correctly" are different tools, even th
 
 ---
 
-[← Guide overview](_guide.md) · [Phase 2: The Doubles, Clearly Defined →](02-the-doubles-defined-honestly.md)
+[← Guide overview](_guide.md) · [Phase 2: The Doubles, Clearly Defined →](02-the-doubles-defined.md)

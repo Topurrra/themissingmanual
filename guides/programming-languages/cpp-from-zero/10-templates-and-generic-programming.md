@@ -10,7 +10,7 @@ updated: 2026-07-14
 ---
 # Templates & Generic Programming
 
-Go back to [Phase 8: Copy, Move & the Rule of Five](08-copy-move-and-rule-of-five.md) and [Phase 9: Operator Overloading](09-operator-overloading.md) for a second and picture what you've built so far: a `Matrix` class, say, that overloads `+`, has proper copy and move constructors, and cleans up after itself with RAII. It's solid. But it only works for `Matrix<double>`. What if someone needs a matrix of `int`, or `float`, or a custom fraction type? Do you copy-paste the whole class and change one word?
+Go back to [Phase 8: Copy, Move & the Rule of Five](08-copy-move-and-the-rule-of-five.md) and [Phase 9: Operator Overloading](09-operator-overloading.md) for a second and picture what you've built so far: a `Matrix` class, say, that overloads `+`, has proper copy and move constructors, and cleans up after itself with RAII. It's solid. But it only works for `Matrix<double>`. What if someone needs a matrix of `int`, or `float`, or a custom fraction type? Do you copy-paste the whole class and change one word?
 
 That's the problem templates exist to solve, and it's the last big piece of the puzzle before you're fluent in modern C++. Once you have templates, the STL (next two phases) stops being a black box of container types you memorize and becomes something you understand from the inside, because the STL *is* templates, top to bottom.
 

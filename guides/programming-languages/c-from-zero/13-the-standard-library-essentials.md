@@ -29,7 +29,7 @@ already know the shape of - `#include`, declare-in-header-define-elsewhere, from
 declaring functions that live in a library called **libc**, which your linker attaches automatically.
 
 You already met part of the standard library without calling it that: `printf` and `scanf` from
-`<stdio.h>` in [Phase 1](01-install-and-first-program.md), and `malloc`/`free` from `<stdlib.h>` in
+`<stdio.h>` in [Phase 1](01-install-compiling-and-your-first-program.md), and `malloc`/`free` from `<stdlib.h>` in
 [Phase 10](10-dynamic-memory-malloc-and-free.md). This phase fills in the rest of what you'll reach for
 in nearly every real program: working with strings, classifying characters, converting between text and
 numbers, and basic math.
@@ -238,4 +238,4 @@ Test yourself on the sharp edges that trip people up most:
 
 ---
 
-[← Phase 12: Pointers II](12-pointers-ii-arithmetic-double-and-function-pointers.md) · [Phase 14: Undefined Behavior & Common Footguns →](14-undefined-behavior-and-common-footguns.md)
+[← Phase 12: Pointers II](12-pointers-ii-arithmetic-double-and-function-point.md) · [Phase 14: Undefined Behavior & Common Footguns →](14-undefined-behavior-and-common-footguns.md)

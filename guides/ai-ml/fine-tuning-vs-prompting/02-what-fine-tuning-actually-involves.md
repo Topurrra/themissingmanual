@@ -143,4 +143,4 @@ make - and defend - in the right order.
 
 ---
 
-[← Phase 1: Three Ways to Steer a Model](01-three-ways-to-steer-a-model.md) · [Guide overview](_guide.md) · [Phase 3: Choosing - the No-Nonsense Order →](03-choosing-the-honest-order.md)
+[← Phase 1: Three Ways to Steer a Model](01-three-ways-to-steer-a-model.md) · [Guide overview](_guide.md) · [Phase 3: Choosing - the No-Nonsense Order →](03-choosing-the-order.md)

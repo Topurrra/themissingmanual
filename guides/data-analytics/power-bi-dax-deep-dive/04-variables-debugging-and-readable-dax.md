@@ -139,4 +139,4 @@ Test yourself on the idea that makes VAR more than a style choice - that a varia
 
 ---
 
-[← Phase 3: Common DAX Patterns](03-common-dax-patterns.md) · [Phase 5: Performance & the VertiPaq Engine →](05-performance-and-the-vertipaq-engine.md)
+[← Phase 3: Common DAX Patterns](03-common-dax-patterns-running-totals-yoy-ranking-t.md) · [Phase 5: Performance & the VertiPaq Engine →](05-performance-and-the-vertipaq-engine.md)

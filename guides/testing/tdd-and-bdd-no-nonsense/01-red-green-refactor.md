@@ -1,6 +1,6 @@
 ---
 title: "TDD: Red, Green, Refactor"
-guide: "tdd-and-bdd-honestly"
+guide: "tdd-and-bdd-no-nonsense"
 phase: 1
 summary: "Test-driven development is a design discipline: write a failing test first (red), make it pass with the simplest code (green), then clean up (refactor) - using the test to pin down what you want before you build it."
 tags: [tdd, red-green-refactor, testing, test-first, design]

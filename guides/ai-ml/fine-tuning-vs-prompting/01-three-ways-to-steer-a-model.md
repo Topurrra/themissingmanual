@@ -71,7 +71,7 @@ User: "App crashes when I open settings."       →
 
 *What just happened:* You didn't change the model at all - you showed it the pattern in the context, and a
 capable model will continue it (`BUG`). This is the lever to exhaust before considering the others; it's
-covered properly in [Prompt Engineering, Honestly](/guides/prompt-engineering-honestly).
+covered properly in [Prompt Engineering, Plainly](/guides/prompt-engineering-plainly).
 
 **The gotcha.** Prompting has a ceiling. Stuff enough rules and examples into every request and three things
 creep up: the prompt gets long (you pay per token, every call), the model starts ignoring instructions

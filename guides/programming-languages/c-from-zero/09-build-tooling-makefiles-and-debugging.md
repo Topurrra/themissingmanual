@@ -174,4 +174,4 @@ Test yourself on the two ideas that matter most here - why `make` only rebuilds 
 
 ---
 
-[← Phase 8: Header Files & the Preprocessor](08-header-files-and-preprocessor.md) · [Phase 10: Dynamic Memory: malloc & free →](10-dynamic-memory-malloc-and-free.md)
+[← Phase 8: Header Files & the Preprocessor](08-header-files-and-the-preprocessor.md) · [Phase 10: Dynamic Memory: malloc & free →](10-dynamic-memory-malloc-and-free.md)

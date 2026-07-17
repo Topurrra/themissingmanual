@@ -43,7 +43,7 @@ here builds directly on that foundation.
   context transition (phase 2) are the two ideas everything else in DAX is built from. Rush these and
   every later phase will feel like memorizing tricks instead of understanding a system.
 - **Already comfortable with context and CALCULATE?** Jump straight to
-  [Phase 3: Common DAX Patterns](03-common-dax-patterns.md) for the running-totals, year-over-year,
+  [Phase 3: Common DAX Patterns](03-common-dax-patterns-running-totals-yoy-ranking-t.md) for the running-totals, year-over-year,
   ranking, and top-N formulas you'll actually reuse on the job.
 - **Writing DAX that works but that you can't explain to a teammate?** Phase 4 is for you - variables,
   debugging technique, and what makes a measure readable instead of a wall of nested functions.
@@ -54,7 +54,7 @@ here builds directly on that foundation.
 
 1. **[Row Context vs Filter Context](01-row-context-vs-filter-context.md)** 🔴 - the two invisible frames every DAX formula runs inside, and why the same measure reads differently depending on which one it's in.
 2. **[CALCULATE and Context Transition](02-calculate-and-context-transition.md)** 🔴 - the function you reach for to rewrite filter context, and the automatic row-to-filter conversion that trips everyone up first.
-3. **[Common DAX Patterns](03-common-dax-patterns.md)** 🔴 - running totals, year-over-year, ranking, and top-N: the formulas you'll actually reuse, built from context you now understand instead of copy-pasted blind.
+3. **[Common DAX Patterns](03-common-dax-patterns-running-totals-yoy-ranking-t.md)** 🔴 - running totals, year-over-year, ranking, and top-N: the formulas you'll actually reuse, built from context you now understand instead of copy-pasted blind.
 4. **[Variables, Debugging & Readable DAX](04-variables-debugging-and-readable-dax.md)** 🔴 - `VAR`/`RETURN`, how to actually debug a wrong number, and writing measures your future self can still read.
 5. **[Performance & the VertiPaq Engine](05-performance-and-the-vertipaq-engine.md)** 🔴 - how Power BI actually stores your data in memory, and why that explains which DAX is fast and which DAX quietly isn't.
 

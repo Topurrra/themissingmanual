@@ -68,7 +68,7 @@ Without the sanitizer this might print garbage, print `5`, or crash somewhere un
 
 Pick one and finish it. A small project you complete teaches you more than an ambitious one you abandon halfway through fighting the linker.
 
-- **A dynamic array (a "vector") from scratch.** Implement `push`, `get`, and automatic growth via `realloc`. This forces you to actually use everything from [Phase 10](10-dynamic-memory-malloc-and-free.md) and [Phase 12](12-pointers-ii-arithmetic-double-and-function-pointers.md) in one place, and it's the exact data structure most higher-level languages hide from you.
+- **A dynamic array (a "vector") from scratch.** Implement `push`, `get`, and automatic growth via `realloc`. This forces you to actually use everything from [Phase 10](10-dynamic-memory-malloc-and-free.md) and [Phase 12](12-pointers-ii-arithmetic-double-and-function-point.md) in one place, and it's the exact data structure most higher-level languages hide from you.
 - **A simple key-value store.** A hash table backed by linked lists for collisions, built on structs ([Phase 7](07-structs-and-typedef.md)) and pointers. It's small enough to finish in a weekend and touches nearly every idea in this guide.
 - **A text adventure or a tiny shell.** Something that reads input, branches on it, and manages some state - good practice for [Phase 6](06-arrays-and-strings.md)'s string handling and [Phase 3](03-control-flow.md)'s control flow, without a memory-management deep end.
 

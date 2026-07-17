@@ -30,4 +30,4 @@ Here's the part nobody says out loud: a hosted language model is reached the exa
 2. **[Tokens, Context & Cost](02-tokens-context-and-cost.md)** - what a token is, the context window (the model's limited short-term memory), why you pay per token, and why long conversation histories cost more and can overflow. Plus streaming for responsiveness.
 3. **[Building Reliably](03-building-reliably.md)** - the model is non-deterministic, it can be confidently wrong, it can be slow, and it can fail. How to handle errors, timeouts, and retries; how to ask for structured output; and how not to ship a foot-gun.
 
-> This guide deliberately stops at *how to call the thing well*. Getting the model to actually do what you want - writing the instructions - is its own craft, covered in [Prompt Engineering, Honestly](/guides/prompt-engineering-honestly).
+> This guide deliberately stops at *how to call the thing well*. Getting the model to actually do what you want - writing the instructions - is its own craft, covered in [Prompt Engineering, Plainly](/guides/prompt-engineering-plainly).

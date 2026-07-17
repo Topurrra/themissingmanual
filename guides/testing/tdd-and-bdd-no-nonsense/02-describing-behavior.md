@@ -1,6 +1,6 @@
 ---
 title: "BDD: Describing Behavior"
-guide: "tdd-and-bdd-honestly"
+guide: "tdd-and-bdd-no-nonsense"
 phase: 2
 summary: "Behavior-driven development frames tests as readable behavior using Given/When/Then language, so non-developers can understand and even help write them - a collaboration and vocabulary layer that sits on top of the TDD loop."
 tags: [bdd, behavior-driven-development, given-when-then, gherkin, testing]

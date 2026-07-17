@@ -19,7 +19,7 @@ language - it teaches you what's actually happening underneath the languages you
 That reputation comes with a warning label: C doesn't stop you from shooting yourself in the foot. It won't
 check array bounds for you, it won't garbage-collect your memory, and it will happily compile code that
 crashes or does something quietly wrong. That's not this phase's problem to solve (we'll get there, all the
-way through to [Phase 14: Undefined Behavior & Common Footguns](14-undefined-behavior-and-footguns.md)) -
+way through to [Phase 14: Undefined Behavior & Common Footguns](14-undefined-behavior-and-common-footguns.md)) -
 but it's worth naming up front, because it explains why C feels different from languages you may have
 tried before. You are closer to the machine here, on purpose.
 
@@ -118,7 +118,7 @@ Every line here is doing real work, so let's take them one at a time before you 
 
 - **`#include <stdio.h>`** pulls in declarations for the standard input/output functions - `printf` among
   them. C's standard library isn't built into the language itself; you ask for the pieces you need. This
-  gets a full phase of its own in [Phase 8: Header Files & the Preprocessor](08-header-files-and-preprocessor.md).
+  gets a full phase of its own in [Phase 8: Header Files & the Preprocessor](08-header-files-and-the-preprocessor.md).
 - **`int main(void)`** defines `main`, the one function every C program must have - it's where execution
   begins. `int` is the type of value `main` hands back to the operating system when it finishes. `void`
   here means "takes no arguments."

@@ -1,6 +1,6 @@
 ---
 title: "A Prompt Is an Instruction, Not a Spell"
-guide: "prompt-engineering-honestly"
+guide: "prompt-engineering-plainly"
 phase: 1
 summary: "A language model predicts the most likely continuation of your text, so clear, specific, well-structured instructions get better outputs and vague ones get vague outputs."
 tags: [prompt-engineering, llm, mental-model, prompting, beginner-friendly]
