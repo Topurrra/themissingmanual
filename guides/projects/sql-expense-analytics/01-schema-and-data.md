@@ -11,7 +11,7 @@ synonyms:
   - sql schema design
   - expenses table
   - sqlite setup
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # The Schema and Seed Data
@@ -69,6 +69,8 @@ a scatter of groceries and dining, one travel splurge.
 
 Run this block. It creates the table, inserts everything, then selects it back
 sorted by date so you can see what you're working with.
+
+Before you run it, guess: how many rows come back, and which expense is first?
 
 ```sql runnable
 CREATE TABLE expenses (

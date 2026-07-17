@@ -11,7 +11,7 @@ synonyms:
   - tag pages static site
   - rss pubdate format
   - xml escape python
-updated: 2026-07-06
+updated: 2026-07-16
 ---
 
 # The Index, Tags, and an RSS Feed
@@ -31,18 +31,21 @@ The front page is a heading plus a list of links, newest first. Create `template
 
 Notice what this template *doesn't* do: it doesn't loop over posts. It can't. Our `render()` replaces placeholders; it has no concept of "repeat this bit for each item." A real engine would write `{% for post in posts %}` right in the template - that loop syntax is precisely what Jinja2 sells.
 
-Our no-nonsense workaround: build the repeated part in Python, where loops live, and hand the finished block to the template as one value:
+Our no-nonsense workaround: build the repeated part in Python, where loops live, and hand the finished block to the template as one value.
+
+## Your turn: post_list_items
+
+You already have every piece this needs. You built `post["slug"]`, `post["title"]`, and `post["date"]` back in phase 2, and `parse_post`'s tags line already builds-and-joins a list in one f-string loop - this is the same shape.
 
 ```python
 def post_list_items(posts):
-    items = []
-    for post in posts:
-        items.append(
-            f'<li><a href="/{post["slug"]}.html">{post["title"]}</a>'
-            f' <span class="date">{post["date"]:%Y-%m-%d}</span></li>'
-        )
-    return "\n".join(items)
+    # your turn: for each post, build one <li> line shaped like
+    #   <li><a href="/SLUG.html">TITLE</a> <span class="date">YYYY-MM-DD</span></li>
+    # then join them all with newlines
+    return ""
 ```
+
+An `f"..."` per post, `list.append`, and `"\n".join(...)` at the end - nothing new. My version is in the full file below; run the build and open `http://localhost:8000` and the front page's list is exactly what this function generated.
 
 💡 **Key point:** this is the line where you now know *when* to reach for Jinja2 - the moment your templates need repetition or conditionals, not before. Until then, an engine you fully understand beats one you don't. For a blog this size, the workaround costs eight lines.
 

@@ -6,7 +6,7 @@ summary: "Prioritizing threat-model findings by real risk, turning them into con
 tags: [security, threat-modeling, risk-assessment, prioritization, appsec]
 difficulty: advanced
 synonyms: ["how to prioritize security findings", "likelihood vs impact security", "threat modeling vs code review", "what threat modeling does not cover"]
-updated: 2026-07-11
+updated: 2026-07-16
 ---
 
 # From Threats to Action
@@ -71,6 +71,86 @@ Treat a threat model as a living document, not a one-time exercise. Re-run STRID
     "explain": "A threat model is only as complete as the diagram it's built on - once the architecture changes, the old diagram no longer reflects reality and needs revisiting."
   }
 ]
+```
+
+## Your turn: ship day, twelve findings, one ranked table
+
+Reading Phase 2's findings is the easy part. Deciding what actually gets fixed before the deploy is the job -
+and every hour you spend on one fix is an hour you don't have for anything else on the list. There's no single
+right answer below and nothing is scored right or wrong, but the clock is real. Ship with your top risks
+closed, then read the debrief.
+
+```scenario
+{
+  "title": "Ship day: twelve findings, one ranked table",
+  "brief": "Phase 2 left you with twelve STRIDE findings on the file-sharing app, already ranked by likelihood and impact. The release ships today. Every hour you spend on one fix is an hour you don't have for the deploy, for testing, or for anything else on the list.",
+  "prompt": "Which fixes do you commit to?",
+  "clock": { "unit": "hr", "running": "before ship", "resolved": "shipped" },
+  "resolvedHeading": "Shipped. Here's what went out the door.",
+  "actions": [
+    {
+      "id": "fix-tokens",
+      "label": "Rewrite share-link tokens as unguessable strings",
+      "cost": 2,
+      "reveals": "before: token = str(next_share_id)\nafter:  token = secrets.token_urlsafe(32)",
+      "note": "Sequential tokens were the single highest combined risk on Phase 2's table: no skill required, direct access to someone else's files."
+    },
+    {
+      "id": "fix-webhook",
+      "label": "Verify the payment webhook signature",
+      "cost": 2,
+      "reveals": "before: def handle_webhook(payload):\n            process(payload)\nafter:  def handle_webhook(payload, signature):\n            verify_signature(payload, signature, WEBHOOK_SECRET)\n            process(payload)",
+      "note": "This is the boundary that showed up in four different STRIDE categories in Phase 2. Verifying it closes the other 'fix now' item."
+    },
+    {
+      "id": "fix-quota",
+      "label": "Add a per-account upload size and rate limit",
+      "cost": 2,
+      "reveals": "before: no limit on the upload endpoint\nafter:  @rate_limit(max_bytes=500_000_000, per=\"account\", window=\"1d\")",
+      "note": "Real, and rated 'fix soon' - high likelihood, but medium impact. It degrades service, it doesn't hand over anyone's files."
+    },
+    {
+      "id": "fix-spoofing",
+      "label": "Fix the uploaded_by field to derive identity from the session",
+      "cost": 1,
+      "reveals": "before: uploaded_by = form.get(\"uploaded_by\")\nafter:  uploaded_by = session.user.id",
+      "note": "Rated 'backlog' on Phase 2's table - low likelihood, low-to-medium impact. Worth a ticket. Not worth your ship-day hours."
+    },
+    {
+      "id": "audit-elevation",
+      "label": "Trace every code path that can grant premium or admin access",
+      "cost": 4,
+      "reveals": "$ grep -rn 'user.plan ==' app/\napp/storage.py:44:      if user.plan == \"premium\":\napp/bulk_import.py:118: if user.plan == \"premium\":   # added last quarter, no test coverage\napp/admin_tools.py:9:    # TODO: this endpoint predates the plan check entirely",
+      "note": "Genuinely useful, and it turns up more than Phase 2 found. It also doesn't close a single 'fix now' item, and it's the most expensive thing on this list."
+    },
+    {
+      "id": "write-priority-doc",
+      "label": "Write a document ranking all twelve findings by risk",
+      "cost": 1,
+      "reveals": "THREAT-MODEL-PRIORITY.md (draft)\n| Finding | Likelihood | Impact | Priority |\n|---|---|---|---|\n| Sequential tokens | High | High | Fix now |\n| Unverified webhook | Medium | High | Fix now |\n| ... | | | (same ranking as Phase 2's table) |",
+      "note": "The ranking you'd be writing already exists - it's Phase 2's own table. This produces a document, not a fix."
+    },
+    {
+      "id": "ship",
+      "label": "Ship the release with whatever's fixed",
+      "cost": 0,
+      "resolves": true,
+      "reveals": "$ git push origin release/2026-07-17\n$ ./deploy.sh\ndeploy: release/2026-07-17 -> production ... done",
+      "note": "Whatever you closed is closed. Whatever's still open ships with you."
+    }
+  ],
+  "debrief": {
+    "ideal": 4,
+    "text": "The output of a threat model isn't the list, it's what you fix. The two moves worth your hours were already sitting in the 'fix now' row of Phase 2's table: the sequential tokens and the unverified webhook, both cheap for an attacker to try and both worth real money or real data. The uploaded_by field is a genuine finding too, but reaching for it first because it felt creepier to write up is optimizing for narrative instead of risk - exactly the trap Phase 3 names. Ship with the top two closed; the rest sits in the backlog on purpose, not from neglect.",
+    "notes": [
+      { "when": "if-taken", "action": "audit-elevation", "text": "The audit was real work and it found real paths. It also spent four of your hours finding more problems instead of fixing the two you already knew were fix-now." },
+      { "when": "if-taken", "action": "fix-spoofing", "text": "Fixing uploaded_by wasn't wasted work, but Phase 2's own table rated it low-likelihood, low-impact. Shipping it ahead of the webhook signature check is choosing the finding that read worse over the one that costs the most." },
+      { "when": "if-taken", "action": "write-priority-doc", "text": "Re-ranking the findings feels like progress. It fixes nothing - the ranking was the output of Phase 2 and Phase 3, not a new step you needed to take today." },
+      { "when": "if-not-taken", "action": "fix-tokens", "text": "You shipped without touching the share-link tokens. They're sequential, guessable, and rated high-likelihood/high-impact for a reason: anyone who noticed could enumerate their way into someone else's files with no login at all." },
+      { "when": "if-not-taken", "action": "fix-webhook", "text": "The webhook still trusts any request that hits the right URL. That's the boundary Phase 2 flagged in four separate STRIDE categories, and it shipped unverified." }
+    ]
+  }
+}
 ```
 
 ---

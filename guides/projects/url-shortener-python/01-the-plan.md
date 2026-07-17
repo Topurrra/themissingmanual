@@ -11,7 +11,7 @@ synonyms:
   - key value lookup
   - short code mapping
   - in-memory store
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # The Plan and the Data Model
@@ -76,7 +76,9 @@ Run that and you'll see the lookup resolve. The output shows the code, the URL i
 
 There's a sharp edge here. If you ask the dictionary for a code it's never seen, indexing it with `store["nope"]` raises a `KeyError` and your program crashes. A real shortener gets garbage requests constantly - typos, expired links, people guessing codes - so it can't crash on every miss.
 
-The standard-library answer is `dict.get()`, which returns a fallback instead of exploding. Run this:
+The standard-library answer is `dict.get()`, which returns a fallback instead of exploding.
+
+Before you run it, guess what prints for the code we've never stored. Then check.
 
 ```python runnable
 store = {"aZ4": "https://example.com/some/very/long/path"}

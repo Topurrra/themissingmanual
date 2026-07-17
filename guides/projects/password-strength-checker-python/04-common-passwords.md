@@ -11,7 +11,7 @@ synonyms:
   - leaked passwords
   - reject password
   - password blacklist
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Catching Common Passwords
@@ -23,6 +23,8 @@ No character-class rule can catch this, because the password genuinely satisfies
 ## A small built-in blocklist
 
 For a hobby checker, a short hardcoded set covers the worst offenders. Store them as a Python `set`, not a list - checking membership in a set is instant no matter how big it gets, while a list has to scan item by item. We also lowercase the password before checking, so `Password` and `password` both get caught.
+
+Before you run this, guess which of the four calls below come back `True`. Then check.
 
 ```python runnable
 COMMON = {
@@ -44,7 +46,33 @@ The lowercasing matters. Attackers don't care about your capitalization tricks -
 
 ## Catching the substitution trick
 
-`P@ssw0rd!` won't be in our set as written, because it's `password` wearing a disguise. We can undo the most common disguises before checking: map `@` back to `a`, `0` to `o`, `1` to `i`, `$` to `s`, strip trailing punctuation, and *then* look it up. This is a small `str.translate` table - we're not trying to reverse every trick, only the handful that catch the bulk of real-world cases.
+`P@ssw0rd!` won't be in our set as written, because it's `password` wearing a disguise: `@` for `a`, `0` for `o`, and a trailing `!` for decoration. To catch it, undo the disguise before checking - swap the common substitute characters back to letters, drop decorative punctuation off the end, then look up the result in `COMMON`.
+
+**Your turn.** This is the point of the phase, so have a go before you read on. Write `is_common` so it catches disguised passwords too, not just exact matches. Fill it in and hit Run - the checks underneath tell you whether it works. My version is in the next block whenever you want it.
+
+```python runnable
+COMMON = {"password", "123456", "qwerty", "admin", "letmein", "welcome", "iloveyou"}
+
+def is_common(password):
+    # Return True if `password` is a disguised version of something
+    # in COMMON. Undo these substitutions before checking:
+    #   @ -> a   0 -> o   1 -> i   3 -> e   $ -> s   5 -> s
+    # Also strip these trailing decoration characters: !?.*#
+    # Compare case-insensitively (lowercase before checking).
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+assert is_common("P@ssw0rd!") == True, f"disguised 'password', got {is_common('P@ssw0rd!')}"
+assert is_common("w3lc0me") == True, f"disguised 'welcome', got {is_common('w3lc0me')}"
+assert is_common("hunter2") == False, f"genuinely uncommon, got {is_common('hunter2')}"
+assert is_common("QWERTY") == True, f"already in COMMON (case-folded), got {is_common('QWERTY')}"
+print("All good.")
+```
+
+Stuck on the substitution part? Python strings have a `.translate()` method that swaps characters according to a mapping table built with `str.maketrans(...)`.
+
+### One way to write it
 
 ```python runnable
 COMMON = {"password", "123456", "qwerty", "admin", "letmein", "welcome", "iloveyou"}
@@ -64,7 +92,7 @@ print(is_common("w3lc0me"))    # -> 'welcome' -> True
 print(is_common("hunter2"))    # genuinely not common -> False
 ```
 
-Run it. `P@ssw0rd!` is caught now. Notice `Welcome1` slips through this naive normalizer - a digit in the *middle* of the strip set isn't removed, and we don't strip trailing digits. That's a real limit, and it's the clear signal that hand-rolled normalization only gets you so far. Catching everything is what a real wordlist and a real breach database are for, which we'll get to.
+This is a small `str.translate` table - we're not trying to reverse every trick, only the handful that catch the bulk of real-world cases. Run it. `P@ssw0rd!` is caught now. Notice `Welcome1` slips through this naive normalizer - a digit in the *middle* of the strip set isn't removed, and we don't strip trailing digits. That's a real limit, and it's the clear signal that hand-rolled normalization only gets you so far. Catching everything is what a real wordlist and a real breach database are for, which we'll get to.
 
 ## The full checker
 

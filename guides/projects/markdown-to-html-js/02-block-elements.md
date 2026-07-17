@@ -11,7 +11,7 @@ synonyms:
   - block level markdown parser
   - markdown paragraph html
   - regex capture group javascript
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Block Elements
@@ -45,9 +45,33 @@ without the `#`. That captured text is exactly what goes between `<h1>` and `</h
 
 ## Headings at six levels
 
-Markdown has six heading levels, `#` through `######`. We could write six patterns, but
-one regex with two capture groups handles them all: capture the run of hashes to count
-them, capture the text to wrap it.
+Markdown has six heading levels, `#` through `######`. Writing six separate patterns would
+work, but there's a shorter way that handles all of them at once.
+
+**Your turn.** Write a `heading` function that turns a line into its HTML tag, or returns
+`null` if the line isn't a heading at all. Fill it in, run it, and let the checks tell you
+when it's right. My version is right after.
+
+```js runnable
+function heading(line) {
+  // Return an HTML heading tag string, e.g. "<h1>Big</h1>", if `line` starts
+  // with 1 to 6 "#" characters followed by a space. The number of "#"s sets
+  // the heading level. If `line` is not a heading, return null.
+}
+
+// --- checks: fix your function until this prints "All good." ---
+if (heading("# Big") !== "<h1>Big</h1>") throw new Error(`heading("# Big") should be "<h1>Big</h1>", got: ${heading("# Big")}`);
+if (heading("### Smaller") !== "<h3>Smaller</h3>") throw new Error(`heading("### Smaller") should be "<h3>Smaller</h3>", got: ${heading("### Smaller")}`);
+if (heading("###### Tiny") !== "<h6>Tiny</h6>") throw new Error(`heading("###### Tiny") should be "<h6>Tiny</h6>", got: ${heading("###### Tiny")}`);
+if (heading("Not a heading") !== null) throw new Error(`heading("Not a heading") should be null, got: ${heading("Not a heading")}`);
+console.log("All good.");
+```
+
+Stuck on handling all six levels with one pattern? A quantifier like `{1,6}` inside a
+regex means "repeat the last thing between 1 and 6 times" - the same idea as `*` for
+"zero or more".
+
+### One way to write it
 
 ```js runnable
 function heading(line) {
@@ -97,6 +121,8 @@ graph TD
 Here it all comes together. We walk the lines, track whether we are inside a list, and
 emit the right tags. Paragraphs are the fallback - any non-blank line that is not a
 heading or list item.
+
+Before you run this, guess how many `<li>` tags show up in the output.
 
 ```js runnable
 function toBlocks(markdown) {

@@ -160,6 +160,82 @@ zero customer impact.
 > log-reading and stack-trace reading. See [Reading Logs Without Drowning](/guides/reading-logs-without-drowning)
 > and [Reading a Stack Trace](/guides/reading-a-stack-trace) for the calm-investigation half of the job.
 
+## Your turn: it's 14:03 and checkout is down
+
+Reading the checklist is the easy part. Doing it while a clock runs is the job. There is no single right
+answer below and nothing is scored right or wrong - but the clock is real, and every minute you spend is a
+minute nobody can check out. Restore service, then read the debrief.
+
+```scenario
+{
+  "title": "14:03 - checkout is returning 500s",
+  "brief": "You're on call. The alert fired sixty seconds ago: checkout is throwing 500s. You do not know why. Nothing else has been touched yet, and every minute on this clock is a minute customers cannot buy anything.",
+  "actions": [
+    {
+      "id": "curl",
+      "label": "Hit the health endpoint from outside, twice",
+      "minutes": 1,
+      "reveals": "$ curl -s -o /dev/null -w \"%{http_code} %{time_total}s\\n\" https://api.example.com/health\n503 0.42s\n$ curl -s -o /dev/null -w \"%{http_code} %{time_total}s\\n\" https://api.example.com/health\n503 0.39s",
+      "note": "Consistent 503s from a clean path, in under half a second. It's real, it's server-side, and it isn't your VPN."
+    },
+    {
+      "id": "deploys",
+      "label": "Check what shipped recently",
+      "minutes": 1,
+      "reveals": "$ kubectl rollout history deployment/checkout-api\nREVISION  CHANGE-CAUSE\n6         release v2.31.0\n7         release v2.32.0      # shipped 14:01",
+      "note": "v2.32.0 went out at 14:01. The alert fired at 14:03. That is not proof, but it is the prime suspect, and you got it in under a minute."
+    },
+    {
+      "id": "declare",
+      "label": "Declare the incident in the channel",
+      "minutes": 1,
+      "reveals": "you: Declaring an incident: checkout 500s since ~14:03, all users. I'm coordinating.\nrota-bot: paged @secondary\nmaya: on it - I shipped v2.32.0 at 14:01, want me to prep a rollback?",
+      "note": "Costs a minute, buys you a second pair of hands and a record. Notice who answered, and what she just told you."
+    },
+    {
+      "id": "logs",
+      "label": "Tail the application logs and read the stack traces",
+      "minutes": 4,
+      "reveals": "checkout-api  ERROR  NullPointerException: cart.discount is null\n  at CheckoutService.total(CheckoutService.java:88)\n  ... 2,140 more in the last 60s",
+      "note": "Genuinely interesting: a null discount is blowing up the total. It is also still true after you mitigate, and it cost four minutes with the site down to learn it."
+    },
+    {
+      "id": "db",
+      "label": "Check the database for load or locks",
+      "minutes": 4,
+      "reveals": "connections: 41/200   slow queries: 0   replication lag: 0.1s\ncpu: 12%",
+      "note": "Healthy, and boring. A reasonable hypothesis, ruled out - that is what investigation is. It cost four minutes."
+    },
+    {
+      "id": "restart",
+      "label": "Restart the app servers to clear it",
+      "minutes": 3,
+      "reveals": "deployment.apps/checkout-api restarted\n$ curl -s -o /dev/null -w \"%{http_code}\\n\" https://api.example.com/health\n503",
+      "note": "Still 503. You changed something you could not explain on a system you had not diagnosed, and got nothing for it. If it HAD worked you would never know why."
+    },
+    {
+      "id": "rollback",
+      "label": "Roll back to v2.31.0",
+      "minutes": 2,
+      "resolves": true,
+      "reveals": "$ kubectl rollout undo deployment/checkout-api\ndeployment.apps/checkout-api rolled back\n$ curl -s -o /dev/null -w \"%{http_code}\\n\" https://api.example.com/health\n200",
+      "note": "Green. You still do not know exactly what v2.32.0 did - and you did not need to."
+    }
+  ],
+  "debrief": {
+    "idealMinutes": 4,
+    "text": "The move that ends this outage is the one you can make before you understand it. Confirm it's real, ask what changed, put it back. Root cause is a question for a calm afternoon with the site up - and the null discount will still be in the logs when you get there.",
+    "notes": [
+      { "when": "if-taken", "action": "logs", "text": "You read the logs before mitigating. That instinct is correct for a normal bug and expensive during an outage: the stack trace was still waiting for you after the rollback, but those four minutes of downtime were not refundable." },
+      { "when": "if-taken", "action": "db", "text": "Checking the database was a sensible hypothesis, and ruling it out is real work. Notice only what it cost: four minutes, while the answer was one line of deploy history away." },
+      { "when": "if-taken", "action": "restart", "text": "The restart is this phase's war story in miniature - an action you could not explain, on a system you had not diagnosed. It happened to be harmless. The version that flushes a cache and causes a thundering herd is the same decision with worse luck." },
+      { "when": "if-not-taken", "action": "declare", "text": "You never declared the incident. It worked, because you were right and quick. It also meant nobody else knew, nobody checked your thinking, and there is no record - and Maya, who shipped v2.32.0 and could have told you in one line, never got asked." },
+      { "when": "if-not-taken", "action": "curl", "text": "You never confirmed it from the user's side. It was real this time. The times it isn't, you have just rolled back production to chase your own VPN." }
+    ]
+  }
+}
+```
+
 ## Recap
 
 1. **Don't panic, don't randomly change things.** The adrenaline urge to "do something" is the danger. Change

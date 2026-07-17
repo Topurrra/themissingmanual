@@ -11,7 +11,7 @@ synonyms:
   - websocket frontend
   - send message input box
   - live message list
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # The Browser Client
@@ -21,6 +21,20 @@ You've been talking to your server with throwaway scripts. Time to give it a rea
 The browser is the best WebSocket client there is, because it ships with one built in. No library, no install. You write `new WebSocket(...)` and it works.
 
 Built on your machine. Make sure your server from phase 2 is running.
+
+## Your turn: addMessage
+
+Before the full page, here's one piece you can write yourself. The rest of this phase is new - `WebSocket`, `addEventListener`, `event.data` - but rendering a line of text into a list is plain DOM work you already know.
+
+`addMessage` takes a string, builds an `<li>` holding that text, appends it to the `#messages` list, and scrolls the list so the newest line stays visible.
+
+```javascript
+function addMessage(text) {
+  // your turn
+}
+```
+
+`document.createElement`, `.textContent`, and `.appendChild` build and insert the line; setting `messages.scrollTop = messages.scrollHeight` is the trick that scrolls to the bottom. My version is in the full page below - once you've got it wired up and running, type a message and watch it land in the list to check.
 
 ## The page
 

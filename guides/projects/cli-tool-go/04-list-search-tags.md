@@ -11,7 +11,7 @@ synonyms:
   - go cli table output
   - case insensitive search go
   - count values in map go
-updated: 2026-07-06
+updated: 2026-07-16
 ---
 
 # list, search, and tags
@@ -95,6 +95,20 @@ func runList(args []string) error {
 Order matters here, and it's a decision, not an accident: **filter first, then limit.** `til list -tag go -n 3` means "my last three *Go* notes" - so we narrow to the tag before taking the tail. Do it the other way around and a tag that hasn't appeared recently returns nothing, which is never what you meant. `notes[len(notes)-*n:]` takes the last `n` elements - the most recent, since `add` always appends.
 
 (`runList` now takes `args` - remember to pass `os.Args[2:]` in the `main` switch. The full listing below has it.)
+
+## Your turn: searchNotes
+
+Before wiring up the `search` command, try the matching logic yourself. `searchNotes` takes every note plus a query string and returns only the notes whose text contains that query - case-insensitively, matching the function's own comment below.
+
+```go
+// searchNotes returns notes whose text contains the query, case-insensitively.
+func searchNotes(notes []Note, query string) []Note {
+	// your turn
+	return nil
+}
+```
+
+`strings.ToLower` (you already reached for it in `parseTags`) and `strings.Contains` are the only two calls you need. My version is in the section below; once `runSearch` is wired in, `go run . search lifo` should match notes containing "LIFO" despite the case difference - exactly what the walkthrough shows later in this phase.
 
 ## search
 

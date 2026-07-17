@@ -11,7 +11,7 @@ synonyms:
   - sort json keys
   - stable json output
   - diff two json
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Minify and Extend
@@ -21,6 +21,8 @@ Pretty-printing makes JSON readable. Sometimes you want the opposite - the small
 ## Minify is the same call, minus the indent
 
 You already know how to minify. It's `JSON.stringify` with no indent argument. Parse to clean out whatever spacing was there, stringify with no spacing to get the tightest valid form.
+
+Guess roughly how many characters shorter the minified version will be before you run it and see the real number.
 
 ```js runnable
 function minify(text) {
@@ -65,7 +67,52 @@ Run it and watch the same input come out two ways. That's your formatter and you
 
 Here's a problem you hit the moment you try to compare two JSON files: object key order. `{"a":1,"b":2}` and `{"b":2,"a":1}` are the *same data*, but as text they're different lines, and any diff tool will light up red. The fix is to sort keys before stringifying, so the same data always produces the same text.
 
-That third argument to `JSON.stringify` - the replacer we skipped in Phase 1 - has a second form: pass it an *array of keys* and it outputs only those keys, in that order. Hand it the sorted list of every key and you get sorted output.
+That third argument to `JSON.stringify` - the replacer we skipped in Phase 1 - has a second form worth knowing about. We'll use it here, alongside the function form from a moment ago.
+
+**Your turn.** `sortedFormat` is the point of this phase - the thing that makes two files holding the same data produce identical text. Have a go before you read on. Fill it in and hit Run: the checks underneath tell you whether it works. My version is in the next block whenever you want it.
+
+```js runnable
+function sortedFormat(text, indent = 2) {
+  // Parse `text`, then stringify it with every key across the whole
+  // structure written in alphabetical order (not just the top level).
+  // Use `indent` spaces per level. Return the formatted string.
+  //
+  // Hint: JSON.stringify's second argument (the replacer) can be either
+  // a function called for every key/value, or an array of key names to
+  // include (in that order). You get to use both forms here.
+}
+
+// --- checks: fix your function until this prints "All good." ---
+const messy = '{"name":"Ada","age":36,"admin":true,"name2":"x"}';
+const out = sortedFormat(messy);
+if (typeof out !== "string") {
+  throw new Error(`sortedFormat should return a string, got: ${JSON.stringify(out)}`);
+}
+
+const keysInOrder = [...out.matchAll(/"(\w+)":/g)].map((m) => m[1]);
+const expectedOrder = ["admin", "age", "name", "name2"];
+if (JSON.stringify(keysInOrder) !== JSON.stringify(expectedOrder)) {
+  throw new Error(`keys should come out alphabetically as ${JSON.stringify(expectedOrder)}, got: ${JSON.stringify(keysInOrder)}`);
+}
+
+const parsed = JSON.parse(out);
+if (parsed.name !== "Ada" || parsed.age !== 36 || parsed.admin !== true || parsed.name2 !== "x") {
+  throw new Error(`sorting keys should not change the values, got: ${out}`);
+}
+
+const nested = '{"b":{"z":1,"a":2},"a":1}';
+const nestedOut = sortedFormat(nested);
+const nestedKeys = [...nestedOut.matchAll(/"(\w+)":/g)].map((m) => m[1]);
+if (JSON.stringify(nestedKeys) !== JSON.stringify(["a", "b", "a", "z"])) {
+  throw new Error(`sorting should reach into nested objects too, got: ${JSON.stringify(nestedKeys)}`);
+}
+
+console.log("All good.");
+```
+
+Stuck on reaching the nested keys too? The function-form replacer runs once for every key anywhere in the structure, not just the top-level ones - that's how you can collect all of them in a single pass.
+
+### One way to write it
 
 ```js runnable
 function sortedFormat(text, indent = 2) {
@@ -88,7 +135,7 @@ console.log("--- keys sorted ---");
 console.log(sortedFormat(messy));
 ```
 
-Run it. The first block keeps the original key order; the second alphabetizes every key. We use the *replacer-as-function* form once to collect all keys, then the *replacer-as-array* form to emit them in sorted order. Now two files holding the same data, formatted this way, produce identical text - and a diff between them shows only real differences.
+That second form: pass the replacer an *array of keys* and it outputs only those keys, in that order - hand it the sorted list of every key and you get sorted output. We use the *replacer-as-function* form once to collect all keys, then the *replacer-as-array* form to emit them in sorted order. Run it. The first block keeps the original key order; the second alphabetizes every key. Now two files holding the same data, formatted this way, produce identical text - and a diff between them shows only real differences.
 
 ## The whole tool, assembled
 
@@ -161,6 +208,8 @@ You've got a working formatter and validator. Here are directions worth a future
 | Sort + diff combo | Sort both inputs first so the diff shows only real changes |
 
 The diff is the most fun, so here's a starting sketch - a shallow compare of two flat objects that reports what changed.
+
+Before you run it, count by eye: how many keys change value between `before` and `after`, and how many are brand new?
 
 ```js runnable
 function diff(a, b) {

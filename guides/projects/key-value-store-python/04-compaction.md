@@ -10,7 +10,7 @@ synonyms:
   - why does append only log grow
   - atomic file swap os.replace
   - database vacuum reclaim space
-updated: 2026-07-06
+updated: 2026-07-16
 ---
 
 # Compaction - the Log Can't Grow Forever
@@ -35,6 +35,18 @@ b'999'
 ```
 
 One live key, three live value bytes - and 21,890 bytes of file. Every one of the thousand records is still in there; 999 of them are unreachable, because the index points only at the last. The ratio only gets worse with time: the file grows with *write traffic*, while the useful content grows with *data size*. Those are different curves, and the gap between them is garbage.
+
+## Your turn: wasted_bytes
+
+Before the reveal, write it yourself. `wasted_bytes` returns how many bytes in the log are dead: work out what a file holding *only* the live records would take - one `HEADER.size` plus the key length plus the value length, per live key in `self._index` - then subtract that from the actual file size, `self._offset`.
+
+```python
+    def wasted_bytes(self) -> int:
+        # your turn
+        return 0
+```
+
+`self._index` (key -> `(offset, length)`) and `self._offset` are already on `self` from phase 3; `HEADER.size` is the module-level constant from phase 2. Add it to `KV`, rerun the thousand-`set` loop above, and check your number against the `21868` a few lines down.
 
 It's worth being able to see the gap from inside the store. Add this small method to `KV`:
 

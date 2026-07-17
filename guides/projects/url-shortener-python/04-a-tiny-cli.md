@@ -11,7 +11,7 @@ synonyms:
   - interactive shell
   - next steps
   - extend the project
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # A Tiny CLI, and Where to Take It
@@ -27,7 +27,78 @@ A command-line tool is a loop: read what the user typed, figure out which comman
 
 On your own machine you'd read commands with Python's `input()` in a `while True:` loop. Here in the browser there's no keyboard prompt, so we'll feed the loop a fixed list of commands and process them the same way `input()` would. The command-parsing logic is identical - only the source of the lines changes.
 
-Run this. It's the whole thing, end to end:
+**Your turn.** `handle()` is the piece that ties everything together, so it's the point of this phase. Fill it in and hit Run: the checks underneath tell you whether it works. My version - plus the full command transcript - is in the next block whenever you want it.
+
+```python runnable
+import io, contextlib
+
+ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+BASE = len(ALPHABET)
+
+def encode(number):
+    if number == 0:
+        return ALPHABET[0]
+    chars = []
+    while number > 0:
+        number, remainder = divmod(number, BASE)
+        chars.append(ALPHABET[remainder])
+    return "".join(reversed(chars))
+
+code_to_url = {}
+url_to_code = {}
+counter = 0
+
+def shorten(long_url):
+    global counter
+    if long_url in url_to_code:
+        return url_to_code[long_url]
+    code = encode(counter)
+    code_to_url[code] = long_url
+    url_to_code[long_url] = code
+    counter += 1
+    return code
+
+def resolve(code):
+    return code_to_url.get(code, None)
+
+def handle(line):
+    # Parse `line` into a command and act on it.
+    #   "shorten <url>" -> print "  shortened -> <code>"
+    #   "get <code>"    -> print "  <code> -> <url>"
+    #                      or   "  <code> -> unknown code" if resolve() finds nothing
+    #   anything else   -> print "  ? unknown command: <line>"
+    # An empty line does nothing.
+    pass
+
+
+# --- checks: fix handle() until this prints "All good." ---
+def capture(line):
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        handle(line)
+    return buf.getvalue()
+
+out = capture("shorten https://example.com/pricing")
+assert out == "  shortened -> 0\n", f"got: {out!r}"
+
+out = capture("shorten https://example.com/pricing")
+assert out == "  shortened -> 0\n", f"repeating a URL should return the same code, got: {out!r}"
+
+out = capture("get 0")
+assert out == "  0 -> https://example.com/pricing\n", f"got: {out!r}"
+
+out = capture("get zzz")
+assert out == "  zzz -> unknown code\n", f"got: {out!r}"
+
+out = capture("frobnicate now")
+assert "unknown command" in out, f"got: {out!r}"
+
+print("All good.")
+```
+
+Stuck? `line.split(maxsplit=1)` splits the command word from everything after it in one step - `"shorten https://x".split(maxsplit=1)` gives `["shorten", "https://x"]`.
+
+### One way to write it
 
 ```python runnable
 ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

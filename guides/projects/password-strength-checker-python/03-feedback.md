@@ -11,7 +11,7 @@ synonyms:
   - what to fix password
   - password hints
   - improve password
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Useful Feedback
@@ -22,7 +22,51 @@ Good news - we already did the hard part. Each failed rule maps to exactly one f
 
 ## Pairing rules with advice
 
-The clean way to do this is a list of `(rule_function, message)` pairs. We walk the list, run each rule, and whenever a rule returns `False` we keep its message. The result is a list of fixes - empty if the password passed everything.
+**Your turn.** This function is the point of the phase, so have a go before you read on. Build `feedback`: it should run the five rules and return the list of fix messages for whichever ones fail, in rule order, using the exact wording in the stub's comment. A password that passes everything gets an empty list back. Fill it in and hit Run - the checks underneath tell you whether it works. My version is in the next block whenever you want it.
+
+```python runnable
+def long_enough(password, minimum=8):
+    return len(password) >= minimum
+
+def has_lower(password):
+    return any(c.islower() for c in password)
+
+def has_upper(password):
+    return any(c.isupper() for c in password)
+
+def has_digit(password):
+    return any(c.isdigit() for c in password)
+
+def has_symbol(password):
+    return any(not c.isalnum() for c in password)
+
+def feedback(password):
+    # Return a list of fix messages, one for each rule the password
+    # fails. Use these exact messages, in this order:
+    #   long_enough -> "Make it at least 8 characters long"
+    #   has_lower   -> "Add a lowercase letter"
+    #   has_upper   -> "Add an uppercase letter"
+    #   has_digit   -> "Add a number"
+    #   has_symbol  -> "Add a symbol like ! or @"
+    # A password that passes everything gets an empty list back.
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+assert feedback("Password1!") == [], f"a strong password needs no fixes, got {feedback('Password1!')}"
+assert feedback("PASSWORD") == [
+    "Add a lowercase letter", "Add a number", "Add a symbol like ! or @"
+], f"got: {feedback('PASSWORD')}"
+assert feedback("cat") == [
+    "Make it at least 8 characters long", "Add an uppercase letter",
+    "Add a number", "Add a symbol like ! or @"
+], f"got: {feedback('cat')}"
+print("All good.")
+```
+
+Stuck? Try pairing each rule function with its message in one list of `(rule, message)` tuples, then walk that list once.
+
+### One way to write it
 
 ```python runnable
 def long_enough(password, minimum=8):
@@ -54,7 +98,7 @@ print(feedback("PASSWORD"))     # missing lower, digit, symbol
 print(feedback("Password1!"))   # passes everything -> []
 ```
 
-Read the `feedback` function once and the whole design clicks. It's a list comprehension that keeps a message only when its rule fails (`if not rule(password)`). One pass, no flags, no nested `if`. Add a rule to the `checks` list and its advice shows up automatically - same pattern as the score in the last phase, which is the point: the rules are the single source of truth and everything hangs off them.
+The clean way to do this is a list of `(rule_function, message)` pairs. We walk the list, run each rule, and whenever a rule returns `False` we keep its message. Read the `feedback` function once and the whole design clicks. It's a list comprehension that keeps a message only when its rule fails (`if not rule(password)`). One pass, no flags, no nested `if`. Add a rule to the `checks` list and its advice shows up automatically - same pattern as the score in the last phase, which is the point: the rules are the single source of truth and everything hangs off them.
 
 ## When there's nothing to fix
 
@@ -63,6 +107,8 @@ Notice `feedback("Password1!")` returns an empty list. That's not a bug, it's in
 ## Feedback for every sample
 
 Let's run it over a spread of passwords and print each one's fixes as a tidy list. This is what you'd render under a password field as the user types.
+
+Before you run this, guess which sample is the only one to print "Looks good!". Then check.
 
 ```python runnable
 def long_enough(password, minimum=8):

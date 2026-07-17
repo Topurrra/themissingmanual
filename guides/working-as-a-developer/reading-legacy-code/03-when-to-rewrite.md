@@ -6,7 +6,7 @@ summary: "Why the urge to rewrite legacy code is usually wrong, how Chesterton's
 tags: [legacy-code, rewrite, chestertons-fence, refactoring, beginner-friendly]
 difficulty: beginner
 synonyms: ["should I rewrite legacy code", "chesterton's fence", "when to rewrite vs refactor", "why not to rewrite old code"]
-updated: 2026-07-06
+updated: 2026-07-16
 ---
 
 # When (and When Not) to Rewrite
@@ -76,6 +76,75 @@ The clear-eyed default: assume the rewrite urge is sunk-cost thinking in disguis
 ## Where to go next
 
 Reading and understanding the code is half the job - the other half is knowing when to ask for help instead of guessing. See [Asking Good Questions](/guides/asking-good-questions) for how to ask the person who wrote it (or anyone else) without wasting their time or yours.
+
+## Your turn: the grace-period ticket is due today
+
+Knowing the rewrite urge is a trap is the easy part. Feeling the deadline while a genuinely tempting rewrite sits right there is the actual test. There is no single right answer below and nothing is scored right or wrong - but the clock is real, and it's the same six hours either way you spend them.
+
+```scenario
+{
+  "title": "The grace-period ticket is due today",
+  "brief": "It's 10am. Ticket: add a 48-hour grace period before a canceled subscription's refund finalizes, so support can reverse an accidental cancellation without reissuing money. You've never opened this codebase before. It's due end of day - six hours from now. You open RefundCalculator.prorate() and find 140 lines of nested conditionals, including one with no comment: `if not line_item.is_tax:`. Nothing else has been touched yet.",
+  "prompt": "What do you do first?",
+  "clock": { "unit": "hr", "running": "until the ticket is due", "resolved": "shipped, tests green" },
+  "resolvedHeading": "PR is up. Here's how the six hours went.",
+  "actions": [
+    {
+      "id": "trace",
+      "label": "Trace the cancel flow end to end, file by file",
+      "cost": 1,
+      "reveals": "$ grep -r \"Cancel Subscription\" src/\nSubscriptionSettings.jsx:  <button onClick={cancelSubscription}>Cancel Subscription</button>\n$ grep -r \"subscriptions/:id/cancel\" server/\nroutes/subscriptions.py:  @app.post(\"/api/subscriptions/:id/cancel\")\n\n# routes/subscriptions.py -> SubscriptionService.cancel() -> RefundCalculator.prorate()",
+      "note": "Same five files as the Phase 1 trace. Confirms the grace period belongs inside prorate(), and that the is_tax block a few lines above it is still unexplained."
+    },
+    {
+      "id": "blame",
+      "label": "git blame the is_tax check and read the commit",
+      "cost": 0.5,
+      "reveals": "$ git blame -L 60,75 src/refund_calculator.py\na3f9c21 (Priya Nair 2025-04-02)   if not line_item.is_tax:\n$ git show a3f9c21\ncommit a3f9c21\n    fix: don't refund taxes, finance flagged this in Q2 audit",
+      "note": "Not a mystery, a deliberate fix. Costs thirty minutes. If the grace-period edit had moved this line without knowing that, the tax-refund bug comes back and nobody notices until finance does."
+    },
+    {
+      "id": "clarify",
+      "label": "Ask your tech lead if the grace period applies to annual plans too",
+      "cost": 0.5,
+      "reveals": "you: does the 48h grace period apply to annual plans too, or just monthly?\ntech-lead: same rule for both, plan type doesn't matter here",
+      "note": "Cheap and useful for scope. It tells you nothing about the is_tax check sitting a few lines above where you're about to edit."
+    },
+    {
+      "id": "guess-fix",
+      "label": "Add the grace-period check directly, skip the reading",
+      "cost": 0.5,
+      "reveals": "# added straight into prorate(), no reading first\nif not grace_period_active(sub):\n    line_item.refund = calculate(line_item)\n$ pytest tests/test_refund.py -q\nFAILED test_cancel_prorates_refund_excluding_tax - assert 55.0 == 60.0",
+      "note": "You edited a function you hadn't read yet and it silently pulled tax back into the refund. Now you have to find that failure, work out why, and undo it, on top of the reading you tried to skip."
+    },
+    {
+      "id": "rewrite",
+      "label": "Rewrite prorate() cleanly, then add the grace period",
+      "cost": 5,
+      "reveals": "# 5 hours later\n$ git diff --stat\n refund_calculator.py | 210 ++++++++++++++--------------\n 1 file changed, 105 insertions(+), 105 deletions(-)\n$ pytest tests/test_refund.py -q\nFAILED test_cancel_prorates_refund_excluding_tax\nFAILED test_annual_plan_proration\n2 failed, 4 passed",
+      "note": "It felt like real progress the whole time. It's 3pm, the grace period still isn't in, and two edge cases the old code quietly handled are broken because the new version never knew they existed."
+    },
+    {
+      "id": "small-fix",
+      "label": "Add the grace period as a small guarded change, with a safety-net test",
+      "cost": 1,
+      "resolves": true,
+      "reveals": "def prorate(sub, line_item):\n    if not line_item.is_tax:\n        ...\n    if within_grace_period(sub):\n        return  # refund finalizes after 48h, not now\n    ...\n\n$ pytest tests/test_refund.py -q\ntest_cancel_prorates_refund_excluding_tax PASSED\ntest_cancel_within_grace_period_does_not_finalize_refund PASSED\n2 passed\n$ git diff --stat\n refund_calculator.py | 8 ++++++--\n tests/test_refund.py  | 9 +++++++++\n2 files changed, 15 insertions(+), 2 deletions(-)",
+      "note": "Eight lines, one new test, the is_tax check untouched because now you know why it's there. PR opened with time to spare."
+    }
+  ],
+  "debrief": {
+    "ideal": 2.5,
+    "text": "The fast path here isn't a small diff by accident, it's a small diff on purpose: find out why the fence is standing before deciding whether to move it, then add a few lines next to it instead of tearing up the field. Rewriting prorate() felt like the productive choice. It cost five hours to relearn what a thirty-minute git blame would have told you for free.",
+    "notes": [
+      { "when": "if-taken", "action": "rewrite", "text": "You rewrote prorate() before you understood it. Five hours in, the grace period still wasn't added, and two edge cases the old code quietly handled had no test anywhere to remind you they existed. That's the rewrite urge from this phase, playing out in real time: you'd read enough to be annoyed, not enough to know why the mess was there." },
+      { "when": "if-taken", "action": "guess-fix", "text": "You edited before tracing or checking history and broke the tax exclusion without knowing it. That's the exact failure Chesterton's Fence warns about: treating 'I don't understand this' as 'this is safe to change'." },
+      { "when": "if-not-taken", "action": "blame", "text": "You never checked why the is_tax check exists. This time your change happened to leave it alone, so nothing broke - but that's luck. The whole point of the fence is that you don't get to find out it was luck until after something breaks." },
+      { "when": "if-not-taken", "action": "trace", "text": "You never traced the call chain before editing. It worked out because the Phase 1 trace of this same codebase was still fresh in your head. In a codebase you opened for the first time today, skipping that step means guessing which function actually owns the behavior you're changing." }
+    ]
+  }
+}
+```
 
 ---
 

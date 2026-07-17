@@ -10,7 +10,7 @@ synonyms:
   - how do template engines work
   - html template string replace
   - generate html from python
-updated: 2026-07-06
+updated: 2026-07-16
 ---
 
 # Templates Without a Framework
@@ -92,6 +92,19 @@ ul.post-list { list-style: none; padding: 0; }
 ul.post-list li { margin: 0.5rem 0; }
 footer { margin-top: 3rem; color: #999; font-size: 0.85rem; }
 ```
+
+## Your turn: pretty_date
+
+One more small piece before the full file. `build()` needs to turn a post's `datetime` into something readable under its title - not `2026-07-02`, but a real date. You already parsed those `datetime` objects back in phase 2, so nothing here is new syntax, just a function to write:
+
+```python
+def pretty_date(d):
+    # your turn: return d formatted like "July 2, 2026" -
+    # full month name, the day with no leading zero, then the year
+    return ""
+```
+
+`f"{d:%B}"` (or `d.strftime("%B")`) gives the full month name; `d.day` and `d.year` are just plain integers, no format code needed for those. Passed `datetime(2026, 7, 2)`, it should come back as `"July 2, 2026"`. My version is in the file below - once you run the build and open a post page at `http://localhost:8000`, the date line under the title is exactly what this function produced.
 
 ## The new build.py
 

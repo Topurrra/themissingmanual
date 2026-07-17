@@ -17,11 +17,12 @@ updated: 2026-07-10
 
 # TypeScript Practice
 
-Six short, hands-on TypeScript lessons: start with basic type annotations,
-build up through interfaces, function types, union types, and generics, then
-finish with a capstone that combines them. Each lesson gives you a task and a
-Run button - your code is checked against real tests the moment you run it.
-Everything runs in your browser: your TypeScript is stripped down to plain
-JavaScript on the fly, so what runs is exactly what your annotations describe.
+Seven short, hands-on TypeScript lessons: start with basic type annotations,
+build up through interfaces, function types, union types, and generics, work
+through a capstone that combines them, then debug a real runtime bug. Each
+lesson gives you a task and a Run button - your code is checked against real
+tests the moment you run it. Everything runs in your browser: your
+TypeScript is stripped down to plain JavaScript on the fly, so what runs is
+exactly what your annotations describe.
 
 Start with lesson 1. You can leave and come back any time - your code is saved locally.

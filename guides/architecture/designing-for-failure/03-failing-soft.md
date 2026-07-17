@@ -6,7 +6,7 @@ summary: "When a part fails anyway, lose a feature instead of the product: serve
 tags: [graceful-degradation, fallbacks, bulkheads, redundancy, retry-storm, resilience, reliability]
 difficulty: advanced
 synonyms: ["what is graceful degradation", "fallback pattern", "what is a bulkhead pattern", "retry storm thundering herd", "how to add redundancy", "fail soft instead of hard", "isolate failures in microservices", "serve stale cache on failure"]
-updated: 2026-07-10
+updated: 2026-07-16
 ---
 
 # Failing Soft: Degradation & Redundancy
@@ -167,6 +167,86 @@ healthy. From the user's side: a slightly plainer page for a few minutes. From y
 dips and recovers - not a phone that rings at 2am. On the rare day something *does* get through all of
 this, you'll want the human procedure in [When Prod Is Down](/guides/when-prod-is-down) - but you'll be
 walking into that calm, because you designed the system to bend.
+
+## Your turn: recommendations is failing and taking checkout with it
+
+Reading the patterns is the easy part. Choosing between them while checkout is actually breaking is the
+job. There's no single right answer below and nothing is scored right or wrong - but the clock is real,
+and every minute belongs to a customer who can't check out. Isolate it, then read the debrief.
+
+```scenario
+{
+  "title": "Recommendations is failing and dragging checkout down with it",
+  "brief": "You're on call, twelve minutes before your highest-traffic hour. The recommendations service starts timing out. It shares a connection pool with checkout, and checkout requests are now queuing behind the hung recommendations calls too. Nobody ever built a bulkhead. There's a feature flag that can turn recommendations off and fall back to a generic list.",
+  "prompt": "What do you do first?",
+  "clock": { "unit": "min", "running": "checkout stuck behind recs", "resolved": "checkout free of recs" },
+  "resolvedHeading": "Checkout is taking orders again. Here's how it went.",
+  "actions": [
+    {
+      "id": "check-pool",
+      "label": "Check the connection pool metrics",
+      "cost": 2,
+      "reveals": "$ pool-stats checkout-api\nconnections: 200/200 in use\n  held by recommendations calls: 188\n  held by checkout calls: 12 (queued)\navg wait: 4.8s",
+      "note": "Confirms it: checkout isn't broken, it's queued behind recommendations in the same pool. Two minutes well spent, and it tells you exactly what to isolate."
+    },
+    {
+      "id": "restart-recs",
+      "label": "Restart the recommendations service",
+      "cost": 3,
+      "reveals": "$ kubectl rollout restart deployment/recommendations\ndeployment.apps/recommendations restarted\n[90s later]\nrecommendations: p99 latency 6200ms (climbing again)",
+      "note": "Healthy for ninety seconds, then slow again. You changed something on a system whose root cause you hadn't found, and checkout stayed queued behind the pool the whole time regardless."
+    },
+    {
+      "id": "more-retries",
+      "label": "Turn up retries and the timeout on the recs call so requests get through",
+      "cost": 4,
+      "reveals": "config: recs.max_retries 1 -> 5, recs.timeout 500ms -> 3000ms\n...\nrecommendations error rate: 41% -> 68%\ncheckout p99 latency: 5.1s -> 9.4s",
+      "note": "You fed a struggling dependency more load. Its error rate got worse, and checkout - which was never waiting on recommendations to succeed, only waiting on the pool - got worse too."
+    },
+    {
+      "id": "scale-recs",
+      "label": "Scale up the recommendations service",
+      "cost": 6,
+      "reveals": "$ kubectl scale deployment/recommendations --replicas=12\ndeployment.apps/recommendations scaled\n[4 min later]\nrecommendations: p99 still 6100ms\nrecommendations-db: cpu 97%, slow queries: 340",
+      "note": "More pods didn't help - the bottleneck is the database behind recommendations, not its replica count. Checkout doesn't care how many recommendations pods exist; it only cares that it shares their pool."
+    },
+    {
+      "id": "page-recs-team",
+      "label": "Ping the team that owns recommendations and wait for their fix",
+      "cost": 8,
+      "reveals": "you: recommendations is timing out and it's taking checkout down with it - can someone look?\nrecs-oncall: just paged, digging into the db now, give me ~15\nyou: checkout is failing right now, need something sooner than that",
+      "note": "Asking for help isn't the mistake. Waiting on their fix before doing anything yourself is - that fix runs on their clock, and checkout is bleeding on yours."
+    },
+    {
+      "id": "deploy-bulkhead",
+      "label": "Write and deploy a dedicated connection pool for checkout",
+      "cost": 10,
+      "reveals": "$ git commit -m \"give checkout its own connection pool\"\n$ deploy checkout-api\nrunning tests... 3m40s\ndeploying... 4m10s\n[10 min later] checkout-api: dedicated pool live, 0/50 in use",
+      "note": "This is the real fix, and it's real work: tests, a deploy, a rollout. Exactly right for next week's design review. Not a first move in an incident that's costing you checkout traffic right now."
+    },
+    {
+      "id": "flip-flag",
+      "label": "Flip the flag to disable recommendations and serve the fallback",
+      "cost": 1,
+      "resolves": true,
+      "reveals": "$ feature-flag set recommendations.enabled false\nflag updated\n[req 91a2] recommendations: disabled by flag -> fallback: top-sellers\n[req 91a2] checkout: 200 OK\ncheckout-api pool: 12/200 in use, 0 queued",
+      "note": "Recommendations is still broken. Checkout doesn't care anymore - it was never actually about recommendations."
+    }
+  ],
+  "debrief": {
+    "ideal": 3,
+    "text": "The move that frees checkout has nothing to do with fixing recommendations - isolate it, serve the fallback, and let recommendations be someone else's Tuesday. A failure should cost you a feature, not the product, and the flag is just how fast you can make that true when it wasn't designed in ahead of time.",
+    "notes": [
+      { "when": "if-taken", "action": "more-retries", "text": "Turning the retries up is this guide's retry storm in miniature: you fed a struggling dependency more load, its error rate got worse, and checkout - stuck on the pool, not on whether recommendations succeeded - stayed broken for every one of those minutes." },
+      { "when": "if-taken", "action": "restart-recs", "text": "The restart bought ninety seconds of healthy metrics and nothing for checkout, which was never actually waiting on recommendations to be healthy - just waiting on the shared pool." },
+      { "when": "if-taken", "action": "scale-recs", "text": "More capacity for a service that isn't capacity-constrained buys you nothing. The bottleneck was the database behind recommendations, and checkout was stuck on the pool the entire four minutes it took to learn that." },
+      { "when": "if-taken", "action": "page-recs-team", "text": "The team's fix runs on their clock, not yours. Whatever they find, checkout doesn't get any faster by waiting on it - only by no longer depending on it." },
+      { "when": "if-taken", "action": "deploy-bulkhead", "text": "The dedicated pool is the correct permanent fix, and it's also the slowest action on this list. That's the argument for building it in a design review before the outage, not live during one." },
+      { "when": "if-not-taken", "action": "check-pool", "text": "You never confirmed checkout was queued behind recommendations in the shared pool - you flipped the flag on a strong guess, and it happened to be right. The bulkhead you build afterward is what turns that guess into something you never have to make twice." }
+    ]
+  }
+}
+```
 
 ## Recap
 

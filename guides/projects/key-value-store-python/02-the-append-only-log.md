@@ -11,7 +11,7 @@ synonyms:
   - crc32 checksum records
   - write ahead log explained
   - struct pack binary file
-updated: 2026-07-06
+updated: 2026-07-16
 ---
 
 # The Append-Only Log - the Write Path
@@ -37,6 +37,25 @@ Here's our record, byte by byte:
 📝 **Terminology:** *CRC32* is a fast 32-bit checksum, in Python's stdlib as `zlib.crc32`. It detects accidental corruption; it is not cryptographic and won't stop a malicious editor - the right tool here, where the enemy is crashes, not attackers.
 
 Notice what a record *doesn't* have: types, encodings, field names. To a storage engine, keys and values are **bytes**, period. Meaning belongs to the caller. That's why everything below traffics in `b"name"` rather than `"name"` - the plain fact of `bytes` in, `bytes` out is exactly how real engines think.
+
+## Your turn: encode_record
+
+Before the full file, write the encoder yourself - the format above is everything you need: `[crc:4][key_len:4][val_len:4][key bytes][value bytes]`, little-endian, and a delete stores `val_len = -1` (`TOMBSTONE`) with no value bytes. The crc covers everything after itself.
+
+```python
+import struct
+import zlib
+
+TOMBSTONE = -1
+
+
+def encode_record(key: bytes, value) -> bytes:
+    # your turn: pack the lengths (+ key + value, or TOMBSTONE for a delete),
+    # then prepend a 4-byte crc32 of everything after it
+    return b""
+```
+
+`struct.pack` and `zlib.crc32` are the only two stdlib pieces involved - `struct.pack("<I", n)` for the 4-byte crc, `struct.pack("<ii", a, b)` for the two lengths. My version is in the file below; once you have yours, run `encode_record(b"name", b"Ada")` in a REPL and compare it byte-for-byte against the output shown after the code.
 
 ## Encoding a record
 

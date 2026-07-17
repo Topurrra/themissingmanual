@@ -11,7 +11,7 @@ synonyms:
   - unexpected token json
   - json error location
   - catch json parse
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Explaining Errors
@@ -21,6 +21,8 @@ Last phase ended with our formatter throwing `Unexpected token` and a line numbe
 ## Don't let the throw escape
 
 The first move is the cheapest one. Wrap the parse in `try` / `catch` so a bad input becomes a *result* you can hand back, not a crash.
+
+Guess which of the two calls below comes back with `ok: true` before you run it.
 
 ```js runnable
 function tryFormat(text) {
@@ -52,7 +54,43 @@ try {
 }
 ```
 
-Run it and read the raw message your browser produced. Somewhere in there is a number telling you how many characters in the problem is. Let's dig that number out with a regular expression and translate it into a line and column a human can count to.
+Run it and read the raw message your browser produced. Somewhere in there is a number telling you how many characters in the problem is. `findPosition` below digs that number out with a regular expression - it's given, since it's a one-liner. The real work is `lineAndColumn`: translating a raw character count into a line and column a human can count to.
+
+**Your turn.** Fill in `lineAndColumn` and hit Run: the checks underneath tell you whether it works. My version is in the next block whenever you want it.
+
+```js runnable
+function findPosition(message) {
+  // Engines say "position 21" or "(line 1 column 22)" - grab whichever.
+  const posMatch = message.match(/position (\d+)/);
+  if (posMatch) return Number(posMatch[1]);
+  return null;
+}
+
+function lineAndColumn(text, position) {
+  // Given the full `text` and a 0-based character `position` where the
+  // parser choked, return { line, column } - both 1-based, the way a
+  // human counts lines and characters in an editor.
+}
+
+// --- checks: fix your function until this prints "All good." ---
+const single = '{"name":"Ada", "age":}';
+const r1 = lineAndColumn(single, 21);
+if (JSON.stringify(r1) !== JSON.stringify({ line: 1, column: 22 })) {
+  throw new Error(`single-line text at position 21 should be {line:1, column:22}, got: ${JSON.stringify(r1)}`);
+}
+
+const multi = '{\n  "name": "Ada",\n  "age":\n}';
+const r2 = lineAndColumn(multi, multi.indexOf("}"));
+if (JSON.stringify(r2) !== JSON.stringify({ line: 4, column: 1 })) {
+  throw new Error(`the closing brace is line 4, column 1, got: ${JSON.stringify(r2)}`);
+}
+
+console.log("All good.");
+```
+
+Stuck? `text.lastIndexOf("\n")` returns `-1` when there's no newline at all. Whatever formula you use for "distance from the last newline" needs to keep working with that `-1`, for both single-line and multi-line text.
+
+### One way to write it
 
 ```js runnable
 function findPosition(message) {
@@ -79,9 +117,13 @@ console.log("location:", lineAndColumn(broken, pos));
 
 `findPosition` reads the number out of whatever the engine said. `lineAndColumn` counts newlines before that point to work out the line, then measures the distance from the last newline to get the column. For a one-line input the line is always 1 and the column is what you care about.
 
+If you computed the column as `position - lastNewline - 1`, that's a reasonable instinct - it's the plain 0-based offset into the line, which is how most string methods think. But editors and humans count columns starting at 1, so that version lands one character before the real spot. The caret in the next section still points close enough to be useful even when it's off by one, which is exactly why an off-by-one bug like that can slip through unnoticed for a while.
+
 ## A caret that points at the spot
 
 Numbers are fine, but the kindest thing a formatter can do is draw an arrow at the broken character. We slice the text around the position and put a `^` underneath.
+
+Guess which character the caret lands under before you run it - count 21 characters into `broken` by hand if you want to check yourself.
 
 ```js runnable
 function pointAt(text, position) {

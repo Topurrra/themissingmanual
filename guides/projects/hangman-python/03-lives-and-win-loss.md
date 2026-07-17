@@ -11,7 +11,7 @@ synonyms:
   - out of lives game over
   - count wrong guesses
   - check whole word guessed
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Lives, Wins, and Losses
@@ -28,6 +28,8 @@ By the end you'll run a complete round from start to finish.
 A life is a counter. Start it at some limit - six is the classic Hangman number,
 one for each part of the stick figure - and subtract one every time the player
 misses. Hits don't touch it.
+
+Before you run this, guess what `lives` will be after the loop. Then check.
 
 ```python runnable
 lives = 6

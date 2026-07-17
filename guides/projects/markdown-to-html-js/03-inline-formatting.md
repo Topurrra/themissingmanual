@@ -11,7 +11,7 @@ synonyms:
   - inline code markdown
   - regex replace javascript
   - markdown inline parser
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Inline Formatting
@@ -27,6 +27,8 @@ groups in Phase 2 told us what to wrap, here they get pasted straight into the o
 
 Bold is `**text**`, italic is `*text*`. The replacement uses `$1` to mean "whatever the
 first capture group caught":
+
+Guess what this prints before you run it.
 
 ```js runnable
 let text = "This is **bold** and this is *italic*.";
@@ -106,9 +108,39 @@ trivial.
 
 ## All inline rules together
 
-Here is the complete inline pass - the function we will plug into the converter next
-phase. Order is deliberate: links and code first (they have distinctive delimiters), then
-bold, then italic.
+Here is the last piece of this phase: one `inline` function that chains all four rules -
+links, code, bold, italic - the function we will plug into the converter next phase.
+
+**Your turn.** You already have all four `.replace` calls from above, and you already saw
+what goes wrong when bold and italic run in the wrong order. Chain the four rules into one
+function and get every check below to pass. My version is right after.
+
+```js runnable
+function inline(text) {
+  // Chain the four .replace() rules from above into one function:
+  //   links:  [text](url)   -> <a href="url">text</a>
+  //   code:   `code`        -> <code>code</code>
+  //   bold:   **text**      -> <strong>text</strong>
+  //   italic: *text*        -> <em>text</em>
+  // The order you chain them in matters - get it wrong and some of the
+  // checks below will fail even though each individual rule "looks right".
+}
+
+// --- checks: fix your function until this prints "All good." ---
+if (inline("**bold**") !== "<strong>bold</strong>") throw new Error(`inline("**bold**") should be "<strong>bold</strong>", got: ${inline("**bold**")}`);
+if (inline("*italic*") !== "<em>italic</em>") throw new Error(`inline("*italic*") should be "<em>italic</em>", got: ${inline("*italic*")}`);
+if (inline("`code`") !== "<code>code</code>") throw new Error(`inline("\`code\`") should be "<code>code</code>", got: ${inline("`code`")}`);
+if (inline("[text](url)") !== '<a href="url">text</a>') throw new Error(`inline("[text](url)") should be '<a href="url">text</a>', got: ${inline("[text](url)")}`);
+if (inline("**a** and *b*") !== "<strong>a</strong> and <em>b</em>") throw new Error(`inline("**a** and *b*") should be "<strong>a</strong> and <em>b</em>", got: ${inline("**a** and *b*")}`);
+if (inline("[**bold link**](url)") !== '<a href="url"><strong>bold link</strong></a>') throw new Error(`inline("[**bold link**](url)") should be '<a href="url"><strong>bold link</strong></a>', got: ${inline("[**bold link**](url)")}`);
+console.log("All good.");
+```
+
+Stuck on ordering? Links and code use different delimiters (`[]()` and `` ` ``) so they
+can't collide with `*`, but they *contain* text that bold and italic will also try to
+match - which order avoids that trap?
+
+### One way to write it
 
 ```js runnable
 function inline(text) {
@@ -128,6 +160,10 @@ console.log(inline(sample));
 Run it. One line of mixed Markdown, and every span comes out as the right tag: a link, a
 code span, bold, and italic, all in one pass. Chaining `.replace` calls like this reads
 top to bottom as a list of rules, which is about as clear as text transformation gets.
+Links and code run first because they have their own delimiters and won't collide with
+each other - but their *captured text* still needs bold and italic applied afterward,
+which is exactly what happens here since `inline` runs once, in order, over the whole
+string.
 
 ```mermaid
 graph LR

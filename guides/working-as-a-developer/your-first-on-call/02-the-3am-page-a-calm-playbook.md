@@ -6,7 +6,7 @@ summary: "How to stay calm when the pager goes off: triage before you try to fix
 tags: [on-call, incident-response, triage, escalation, calm-under-pressure]
 difficulty: beginner
 synonyms: ["what to do when paged at 3am", "how to triage an outage", "on-call panic what to do", "when to escalate an incident", "stop the bleeding before root cause"]
-updated: 2026-07-06
+updated: 2026-07-16
 ---
 
 # The 3am Page: A Calm Playbook
@@ -79,6 +79,85 @@ is designed for: contain what you can, pull in help for what you can't.
 Once things are stable, don't let the story of the night end at "and then it was fixed." What you learned
 in that window - the fix, the near-misses, the runbook that didn't exist - becomes the material for the next
 phase.
+
+## Your turn: it's 2:47am and you're alone with it
+
+Reading "escalate at 15-20 minutes" is easy in daylight. Deciding it live, on your first page, when asking
+for help feels like admitting you couldn't handle it, is the actual job. There is no single right answer
+below and nothing is scored right or wrong - but the clock is real, and every minute on it is a minute you
+carry this by yourself.
+
+```scenario
+{
+  "title": "2:47am - checkout is down and you're alone",
+  "brief": "First rotation, first real page. It's 2:47am, checkout is throwing 500s on the payment flow, and nobody else on the team knows yet. Every minute you spend deciding is a minute you're carrying this by yourself.",
+  "prompt": "What do you do first?",
+  "clock": { "unit": "min", "running": "carrying it alone", "resolved": "you're not alone anymore" },
+  "resolvedHeading": "Help is on the way. Here's how it went.",
+  "actions": [
+    {
+      "id": "triage",
+      "label": "Check severity: who's affected, how bad, is it urgent",
+      "cost": 3,
+      "reveals": "checkout-api error rate: 94% (500s)\naffected: all logged-in users, payment flow\nstatus: fully down, not degraded",
+      "note": "Three minutes well spent. You now know this is real, it's the payment flow, and it's fully down - that's what decides how fast you move next."
+    },
+    {
+      "id": "rollback",
+      "label": "Roll back the last deploy",
+      "cost": 5,
+      "reveals": "$ kubectl rollout undo deployment/checkout-api\ndeployment.apps/checkout-api rolled back\n$ curl -s -o /dev/null -w \"%{http_code}\\n\" https://api.example.com/health\n500",
+      "note": "Sensible first move. It just didn't work, and you're several minutes further into this."
+    },
+    {
+      "id": "restart",
+      "label": "Restart the checkout service, in case it's stuck",
+      "cost": 5,
+      "reveals": "deployment.apps/checkout-api restarted\n$ curl -s -o /dev/null -w \"%{http_code}\\n\" https://api.example.com/health\n500",
+      "note": "Also reasonable, also no change. Two real attempts, still down."
+    },
+    {
+      "id": "logs",
+      "label": "Dig into the stack traces yourself until you find it",
+      "cost": 12,
+      "reveals": "checkout-api  ERROR  NullPointerException: paymentToken.expiry is null\n  at PaymentService.charge(PaymentService.java:112)\n  ... 3,800 more in the last 90s",
+      "note": "You found something real - a null token expiry - and it is genuinely interesting. You found it alone, twelve minutes in, on your first-ever page, before anyone else knew you were struggling."
+    },
+    {
+      "id": "one-more-try",
+      "label": "Try one more fix before you wake anyone up",
+      "cost": 10,
+      "reveals": "$ kubectl scale deployment/checkout-api --replicas=6\ndeployment.apps/checkout-api scaled\n$ curl -s -o /dev/null -w \"%{http_code}\\n\" https://api.example.com/health\n500",
+      "note": "It didn't work. You're now well past the point where a second opinion would have been cheap."
+    },
+    {
+      "id": "wait-and-watch",
+      "label": "Wait a few minutes to see if it recovers on its own",
+      "cost": 6,
+      "reveals": "checkout-api error rate: 94% (500s)\nno change",
+      "note": "Nothing changed except the clock."
+    },
+    {
+      "id": "escalate",
+      "label": "Page the secondary on-call for a second set of eyes",
+      "cost": 2,
+      "resolves": true,
+      "reveals": "you: Hey, I'm on-call for checkout, seeing 500s since 2:47, tried a rollback and a restart, neither helped - I think I need another set of eyes, can you hop on?\nmaya: on my way, give me 2 min\nmaya: joined the call",
+      "note": "Two minutes, and you're no longer the only person who knows this is happening."
+    }
+  ],
+  "debrief": {
+    "ideal": 10,
+    "text": "The win here isn't the fix - it's not carrying this alone. Triage told you it was real and it was bad, one real mitigation attempt told you it wasn't a quick one, and paging your secondary at that point is the process working, not you failing. Root cause can wait for daylight and a second set of eyes.",
+    "notes": [
+      { "when": "if-taken", "action": "logs", "text": "You found something real - a null payment token expiry - and it's worth knowing. But you found it alone, twelve minutes into your first-ever page, before anyone else knew you were struggling. Interesting isn't the same as urgent." },
+      { "when": "if-taken", "action": "one-more-try", "text": "This is the trap the guide names directly: not escalating because you feel like you should be able to handle it. One more idea, alone, past the point where a second opinion would have cost two minutes and saved ten." },
+      { "when": "if-taken", "action": "wait-and-watch", "text": "Waiting cost six minutes and taught you nothing you didn't already know. It isn't triage and it isn't mitigation - it's the appearance of doing something." },
+      { "when": "if-not-taken", "action": "triage", "text": "You skipped straight to fixing without knowing what you were fixing or how bad it was. It worked out this time - but you were guessing at urgency instead of knowing it." }
+    ]
+  }
+}
+```
 
 Quick check before you move on:
 

@@ -11,7 +11,7 @@ synonyms:
   - monthly total sql
   - sql aggregates
   - sum and count
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Totals and Groups
@@ -46,8 +46,76 @@ category bucket holds many descriptions and SQL wouldn't know which to show.
 
 Here's the first real report query. Which categories ate the most money?
 
-Run it. As promised, the block re-creates the table and data first, then the new
-query is the part at the bottom.
+**Your turn.** Write the query yourself. It should return, for each category:
+`category`, `num_expenses` (a count of rows), and `total` (the sum of `amount`,
+rounded to 2 decimals) - sorted with the biggest total first. Run it and check
+the table against the rows listed below. My version is in the next block
+whenever you want it.
+
+```sql runnable
+CREATE TABLE expenses (
+  id          INTEGER PRIMARY KEY,
+  spent_on    TEXT    NOT NULL,
+  category    TEXT    NOT NULL,
+  description TEXT    NOT NULL,
+  amount      REAL    NOT NULL
+);
+
+INSERT INTO expenses (spent_on, category, description, amount) VALUES
+  ('2026-01-01', 'rent',          'January rent',        1450.00),
+  ('2026-01-02', 'subscriptions', 'Streaming service',      15.99),
+  ('2026-01-03', 'groceries',     'Corner market',          54.20),
+  ('2026-01-05', 'dining',        'Lunch with Sam',         28.75),
+  ('2026-01-07', 'transport',     'Metro card refill',      40.00),
+  ('2026-01-09', 'groceries',     'Weekly shop',            96.40),
+  ('2026-01-12', 'utilities',     'Electricity',            72.10),
+  ('2026-01-14', 'dining',        'Pizza night',            34.50),
+  ('2026-01-16', 'subscriptions', 'Music service',           9.99),
+  ('2026-01-18', 'groceries',     'Farmers market',         61.30),
+  ('2026-01-21', 'transport',     'Rideshare home',         18.40),
+  ('2026-01-24', 'dining',        'Dinner out',             52.00),
+  ('2026-01-27', 'groceries',     'Weekly shop',            88.15),
+  ('2026-01-30', 'utilities',     'Water bill',             31.25),
+  ('2026-02-01', 'rent',          'February rent',        1450.00),
+  ('2026-02-02', 'subscriptions', 'Streaming service',      15.99),
+  ('2026-02-04', 'groceries',     'Corner market',          49.80),
+  ('2026-02-06', 'travel',        'Weekend flights',       312.00),
+  ('2026-02-07', 'dining',        'Airport food',           22.60),
+  ('2026-02-10', 'groceries',     'Weekly shop',           102.55),
+  ('2026-02-13', 'dining',        'Valentine dinner',       96.00),
+  ('2026-02-15', 'subscriptions', 'Music service',           9.99),
+  ('2026-02-17', 'transport',     'Metro card refill',      40.00),
+  ('2026-02-20', 'groceries',     'Weekly shop',            79.90),
+  ('2026-02-23', 'utilities',     'Electricity',            68.40),
+  ('2026-02-26', 'dining',        'Takeout',                31.20);
+
+-- Your turn: write a SELECT below that returns, for each category,
+-- category / num_expenses (COUNT) / total (ROUND(SUM(amount), 2)),
+-- sorted with the biggest total first.
+```
+
+Run it. You should get back exactly these 7 rows, biggest total first:
+
+| category | num_expenses | total |
+|---|---|---|
+| rent | 2 | 2900 |
+| groceries | 7 | 532.3 |
+| travel | 1 | 312 |
+| dining | 6 | 265.05 |
+| utilities | 3 | 171.75 |
+| transport | 3 | 98.4 |
+| subscriptions | 4 | 51.96 |
+
+If you left off the `SELECT`, running the block just prints "OK - 26 rows
+affected." from the `INSERT` - that's your sign nothing queried the data yet.
+
+Stuck? The mental-shift rule from above still applies: every column you select
+has to be `category` itself or wrapped in an aggregate. And if the rows come
+back right but alphabetical instead of biggest-first, that's `GROUP BY` doing
+exactly what it promises - no particular order - and what's missing is the
+`ORDER BY`.
+
+### One way to write it
 
 ```sql runnable
 CREATE TABLE expenses (
@@ -118,6 +186,8 @@ to turn each date into a month label, and SQLite's `strftime` does that:
 `strftime('%Y-%m', spent_on)` turns `'2026-01-14'` into `'2026-01'`.
 
 Group by that label and you get one row per month.
+
+Before you run this, guess: which month comes out higher, January or February?
 
 ```sql runnable
 CREATE TABLE expenses (

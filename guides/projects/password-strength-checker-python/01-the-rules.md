@@ -11,7 +11,7 @@ synonyms:
   - check password requirements
   - validate password
   - password conditions
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # The Rules
@@ -65,9 +65,29 @@ print(has_digit("abcdef"))  # no digits    -> False
 
 ## The tricky one: symbols
 
-A symbol is "not a letter, not a digit". You could try to list every symbol - `!@#$%...` - but you'll forget some, and different keyboards have different ones. Don't enumerate. Define a symbol as *the absence of letter-and-digit-ness*. A character is a symbol if it isn't alphanumeric: `not c.isalnum()`.
+A symbol is "not a letter, not a digit". You could try to list every symbol - `!@#$%...` - but you'll forget some, and different keyboards have different ones. Don't enumerate.
 
-One catch: a space is also "not alphanumeric", and so is a tab. For a password checker that's fine - a space is a perfectly good password character and many people use passphrases with spaces. So we'll count anything non-alphanumeric, including spaces, as a symbol. If you ever want to exclude spaces, that's a one-line change you can see in the code.
+**Your turn.** Write `has_symbol` yourself: it should return `True` if the password has at least one character that is neither a letter nor a digit. Fill in the function and hit Run - the checks underneath tell you whether it works. My version is in the next block whenever you want it.
+
+```python runnable
+def has_symbol(password):
+    # Return True if `password` has at least one character that is
+    # neither a letter nor a digit (that's a "symbol", including
+    # punctuation and spaces).
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+assert has_symbol("abc123") == False, f"'abc123' has no symbols, got {has_symbol('abc123')}"
+assert has_symbol("abc-123") == True, f"the dash is a symbol, got {has_symbol('abc-123')}"
+assert has_symbol("hi there") == True, f"the space counts as a symbol, got {has_symbol('hi there')}"
+assert has_symbol("p@ssw0rd") == True, f"the @ is a symbol, got {has_symbol('p@ssw0rd')}"
+print("All good.")
+```
+
+Stuck? Python has one string method that tells you if a character IS a letter-or-digit, in one shot. Negate it and you never have to list a single symbol.
+
+### One way to write it
 
 ```python runnable
 def has_symbol(password):
@@ -79,9 +99,15 @@ print(has_symbol("hi there"))  # the space counts    -> True
 print(has_symbol("p@ssw0rd"))  # the @              -> True
 ```
 
+Define a symbol as *the absence of letter-and-digit-ness*. A character is a symbol if it isn't alphanumeric: `not c.isalnum()`.
+
+One catch: a space is also "not alphanumeric", and so is a tab. For a password checker that's fine - a space is a perfectly good password character and many people use passphrases with spaces. So we'll count anything non-alphanumeric, including spaces, as a symbol. If you ever want to exclude spaces, that's a one-line change you can see in the code.
+
 ## All five rules together
 
 Here's everything from this phase in one block, run against a small set of sample passwords so you can see the rules light up differently for each. This is the first time you'll feel the whole picture: weak passwords fail most rules, strong ones pass most.
+
+Before you run this, guess which sample fails the most rules and which one fails none. Then check.
 
 ```python runnable
 def long_enough(password, minimum=8):

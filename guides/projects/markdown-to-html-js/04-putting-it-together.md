@@ -11,7 +11,7 @@ synonyms:
   - combine block inline markdown
   - mdtohtml function
   - markdown xss escaping
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Putting It Together
@@ -25,6 +25,9 @@ one piece we have been deferring - escaping - and hardens it against a few edge 
 Here is a question that decides whether your converter is a toy or a tool: what happens
 when the Markdown source itself contains HTML?
 
+Before you run this, guess what the printed `<p>` line will actually do if it lands on a
+real web page.
+
 ```js runnable
 const evil = "Hello <script>alert('gotcha')</script>";
 
@@ -35,9 +38,35 @@ console.log(`<p>${evil}</p>`);
 
 If you drop that output into a real page, the script runs. That is the classic injection
 hole, and it is why **escaping is not optional**. Before we interpret any Markdown, we
-convert the dangerous HTML characters into their harmless display forms: `<` becomes
-`&lt;`, `>` becomes `&gt;`, and `&` becomes `&amp;` (the `&` first, so we do not double-
-escape the ones we added).
+need to turn the characters that give HTML its power - `<`, `>`, and `&` - into text that
+*displays* instead of executing.
+
+**Your turn.** Write `escapeHtml`. You need three `.replace` calls, one per character -
+the order you put them in matters more than it looks like it should. Fill it in and let
+the checks tell you when it's right. My version is right after.
+
+```js runnable
+function escapeHtml(text) {
+  // Replace the three characters that are dangerous in HTML with their
+  // display-safe equivalents:
+  //   &  ->  &amp;
+  //   <  ->  &lt;
+  //   >  ->  &gt;
+  // The order you do these replacements in matters.
+}
+
+// --- checks: fix your function until this prints "All good." ---
+if (escapeHtml("<") !== "&lt;") throw new Error(`escapeHtml("<") should be "&lt;", got: ${escapeHtml("<")}`);
+if (escapeHtml(">") !== "&gt;") throw new Error(`escapeHtml(">") should be "&gt;", got: ${escapeHtml(">")}`);
+if (escapeHtml("a & b") !== "a &amp; b") throw new Error(`escapeHtml("a & b") should be "a &amp; b", got: ${escapeHtml("a & b")}`);
+if (escapeHtml("<script>") !== "&lt;script&gt;") throw new Error(`escapeHtml("<script>") should be "&lt;script&gt;", got: ${escapeHtml("<script>")}`);
+console.log("All good.");
+```
+
+Stuck on the order? Think about what happens to the `&lt;` you just created if the `&`
+rule runs *after* the `<` rule - would it stay `&lt;`, or get escaped a second time?
+
+### One way to write it
 
 ```js runnable
 function escapeHtml(text) {
@@ -52,7 +81,10 @@ console.log(escapeHtml("Hello <script>alert('x')</script> & friends"));
 
 Run it. The `<script>` is now inert text - it will *display* as `<script>` on the page
 instead of executing. That ordering matters: escape `&` first, or you turn your own
-`&lt;` into `&amp;lt;`.
+`&lt;` into `&amp;lt;`. If you escaped `<` and `>` first and `&` last, every check above
+still looks reasonable to write - it's only `escapeHtml("<script>")` that gives it away,
+because by the time the `&` rule runs, it is escaping the `&` inside the `&lt;` this
+function just created.
 
 ## The order of operations
 

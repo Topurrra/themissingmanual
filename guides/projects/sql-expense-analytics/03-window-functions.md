@@ -11,7 +11,7 @@ synonyms:
   - lag function
   - month over month
   - window frame
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Running Totals with Window Functions
@@ -118,6 +118,8 @@ Add `PARTITION BY` and the window restarts at each boundary. Here's the same
 running total, but reset at the start of every month - useful for "how far into
 this month's spending am I?"
 
+Before you run it, guess: at which row does `month_running_total` drop back down?
+
 ```sql runnable
 CREATE TABLE expenses (
   id          INTEGER PRIMARY KEY,
@@ -183,10 +185,74 @@ last month, and by how much?
 `LAG(total)` over months ordered by date means "the total from the row before
 this one" - last month's number, sitting right next to this month's.
 
-The trick is doing it in two steps. First collapse to monthly totals with
-`GROUP BY` (a subquery), then run `LAG` over those monthly rows. Window
-functions operate after grouping, so the subquery gives them clean monthly rows
-to walk.
+**Your turn.** Write a query that returns one row per month: `month`, `total`
+(that month's spend, rounded to 2 decimals), `prev_month` (the previous row's
+total, via `LAG`), and `change` (`total` minus `prev_month`, rounded). Run it
+and compare against the rows listed below. My version is in the next block
+whenever you want it.
+
+```sql runnable
+CREATE TABLE expenses (
+  id          INTEGER PRIMARY KEY,
+  spent_on    TEXT    NOT NULL,
+  category    TEXT    NOT NULL,
+  description TEXT    NOT NULL,
+  amount      REAL    NOT NULL
+);
+
+INSERT INTO expenses (spent_on, category, description, amount) VALUES
+  ('2026-01-01', 'rent',          'January rent',        1450.00),
+  ('2026-01-02', 'subscriptions', 'Streaming service',      15.99),
+  ('2026-01-03', 'groceries',     'Corner market',          54.20),
+  ('2026-01-05', 'dining',        'Lunch with Sam',         28.75),
+  ('2026-01-07', 'transport',     'Metro card refill',      40.00),
+  ('2026-01-09', 'groceries',     'Weekly shop',            96.40),
+  ('2026-01-12', 'utilities',     'Electricity',            72.10),
+  ('2026-01-14', 'dining',        'Pizza night',            34.50),
+  ('2026-01-16', 'subscriptions', 'Music service',           9.99),
+  ('2026-01-18', 'groceries',     'Farmers market',         61.30),
+  ('2026-01-21', 'transport',     'Rideshare home',         18.40),
+  ('2026-01-24', 'dining',        'Dinner out',             52.00),
+  ('2026-01-27', 'groceries',     'Weekly shop',            88.15),
+  ('2026-01-30', 'utilities',     'Water bill',             31.25),
+  ('2026-02-01', 'rent',          'February rent',        1450.00),
+  ('2026-02-02', 'subscriptions', 'Streaming service',      15.99),
+  ('2026-02-04', 'groceries',     'Corner market',          49.80),
+  ('2026-02-06', 'travel',        'Weekend flights',       312.00),
+  ('2026-02-07', 'dining',        'Airport food',           22.60),
+  ('2026-02-10', 'groceries',     'Weekly shop',           102.55),
+  ('2026-02-13', 'dining',        'Valentine dinner',       96.00),
+  ('2026-02-15', 'subscriptions', 'Music service',           9.99),
+  ('2026-02-17', 'transport',     'Metro card refill',      40.00),
+  ('2026-02-20', 'groceries',     'Weekly shop',            79.90),
+  ('2026-02-23', 'utilities',     'Electricity',            68.40),
+  ('2026-02-26', 'dining',        'Takeout',                31.20);
+
+-- Your turn: return one row per month with:
+--   month       - 'YYYY-MM'
+--   total       - that month's SUM(amount), rounded to 2 decimals
+--   prev_month  - the previous row's total, via LAG
+--   change      - total - prev_month, rounded to 2 decimals
+-- January has no earlier month, so prev_month and change should come back empty there.
+```
+
+Run it. You should get back exactly these two rows:
+
+| month | total | prev_month | change |
+|---|---|---|---|
+| 2026-01 | 2053.03 | NULL | NULL |
+| 2026-02 | 2278.43 | 2053.03 | 225.4 |
+
+`LAG` always needs an `OVER (...)`, even when you're not partitioning or
+ordering by anything unusual. Drop it - `LAG(total) AS prev_month` on its own -
+and SQLite refuses outright with `misuse of window function LAG()`. That's a
+syntax problem, not a wrong number, so it's an easy one to fix once you see it.
+
+Stuck on where `LAG` goes? Window functions run after `GROUP BY` collapses
+rows, so you need a subquery (or CTE) that groups into monthly totals first,
+with `LAG` running over *that* subquery's rows.
+
+### One way to write it
 
 ```sql runnable
 CREATE TABLE expenses (
@@ -239,6 +305,11 @@ FROM (
 ) AS monthly
 ORDER BY month;
 ```
+
+The trick is doing it in two steps: first collapse to monthly totals with
+`GROUP BY` (the subquery), then run `LAG` over those monthly rows. Window
+functions operate after grouping, so the subquery gives them clean monthly rows
+to walk.
 
 January's `prev_month` is empty - there's no month before it, so `LAG` returns
 nothing, and the subtraction is empty too. That's correct, not a bug: the first

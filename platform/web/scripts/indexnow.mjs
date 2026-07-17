@@ -82,7 +82,13 @@ function explain(status) {
       200: 'OK - URLs received.',
       202: 'Accepted - received, key validation pending.',
       400: 'Bad request - malformed JSON or bad URL format.',
-      403: 'Forbidden - key not found/valid at keyLocation. Is the key file deployed and public?',
+      // The body carries the real reason; the two seen in practice are:
+      //  SiteVerificationNotCompleted -> IndexNow has not fetched <key>.txt yet. On a
+      //    first-ever submit this is normal: wait and retry. If it persists for hours,
+      //    something is blocking THEIR fetch of the key file - check Cloudflare's
+      //    Security Events for a bot/WAF challenge on /<key>.txt and add a skip rule.
+      //  KeyNotFound / mismatch -> the file really is missing or its contents differ.
+      403: 'Forbidden - see errorCode in the body below.',
       422: 'Unprocessable - URLs do not belong to this host, or the key does not match.',
       429: 'Too many requests - you are submitting too often (likely re-submitting unchanged URLs).'
     }[status] || 'Unexpected status.'

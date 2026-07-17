@@ -6,7 +6,7 @@ summary: "Text reads harsher than you mean it. Phrase feedback as questions or o
 tags: [code-review, communication, pull-requests, feedback, tone]
 difficulty: beginner
 synonyms: ["how to leave good code review comments", "how to review a pull request", "code review tone", "how to phrase code review feedback", "style nitpick vs real bug"]
-updated: 2026-07-06
+updated: 2026-07-16
 ---
 
 # Reviewing Someone Else's Code Without Being a Jerk
@@ -111,6 +111,77 @@ Ready to check your understanding:
     "explain": "The problem isn't the content, it's the framing - no reasoning, no room for a response, only a verdict."
   }
 ]
+```
+
+## Your turn: Priya's PR needs a decision
+
+Reading the hierarchy is the easy part. Deciding what to raise and what to let go, on an actual diff, with a
+teammate waiting, is the job. There is no single right answer below and nothing is scored right or wrong -
+but every round trip you ask for costs a day, and Priya is waiting to hear back.
+
+```scenario
+{
+  "title": "A 200-line PR, four issues, one deadline",
+  "brief": "Priya's pull request lands in your queue at 4pm. It touches the checkout total and needs to ship today. Skimming it, you spot four things: a variable named cnt, a couple of spots with inconsistent indentation, a line that reads cart.discount.value with no null check, and a total() function that validates, transforms, and writes to the database all in one place. Nothing here is scored right or wrong, but every round trip you ask for costs a day, and Priya is waiting to hear back.",
+  "prompt": "What's your first move?",
+  "clock": { "unit": "days", "running": "until merge", "resolved": "to merge" },
+  "resolvedHeading": "Review submitted. Here's how it went.",
+  "actions": [
+    {
+      "id": "read-diff",
+      "label": "Read the full diff before commenting",
+      "cost": 0,
+      "reveals": "+ let cnt = items.length;\n+ for (let i = 0; i < items.length; i++) {\n+   for (let j = 0; j < taxRates.length; j++) { ... }\n+ }\n+ const discounted = price - cart.discount.value;\n+ function total(cart) {\n+   // validates, transforms, and writes to the DB, all in one place\n+ }",
+      "note": "Now you know what's actually here: one naming nit, a loop that could be a lookup, one line that assumes cart.discount is never null, and one function doing three jobs."
+    },
+    {
+      "id": "nit-lightly",
+      "label": "Leave the naming and indentation as one light, non-blocking note",
+      "cost": 0,
+      "reveals": "you: \"Nit: cnt -> itemCount reads clearer, and a couple of spots have mixed indentation. Not blocking, just flagging.\"",
+      "note": "Costs nothing. Priya can take it or leave it, and the PR isn't waiting on you either way."
+    },
+    {
+      "id": "flag-arch-lightly",
+      "label": "Note the three-jobs-in-one function as a future concern, not a blocker",
+      "cost": 0,
+      "reveals": "you: \"total() validates, transforms, and writes to the DB together. If we ever need the transform on its own this'll be annoying to split out. Not blocking today, worth a follow-up ticket.\"",
+      "note": "A real concern, raised without spending a round trip on it. Ships today, revisited later."
+    },
+    {
+      "id": "block-naming",
+      "label": "Request changes over the cnt variable name alone",
+      "cost": 1,
+      "reveals": "you: Request changes - \"Please rename cnt to itemCount before merge.\"\npriya: renames it, pushes, re-requests review. 6:40pm.",
+      "note": "A full day spent on a preference. The checkout fix now sits unmerged one more day, for a name."
+    },
+    {
+      "id": "block-arch",
+      "label": "Request changes until total() is split into three functions",
+      "cost": 1,
+      "reveals": "you: Request changes - \"Can we split validate/transform/write into three functions before merge?\"\npriya: pushes a refactor the next morning.",
+      "note": "The concern was real. Blocking today's fix on a refactor that could have been a follow-up ticket cost a day the team didn't have."
+    },
+    {
+      "id": "flag-bug",
+      "label": "Request changes on the null-unsafe discount access; leave everything else as non-blocking notes in the same review",
+      "cost": 1,
+      "resolves": true,
+      "reveals": "you: Request changes - \"cart.discount can be null for guest checkouts, this will throw. Can we guard it? Everything else here (naming, the loop, the function split) is a nit or a follow-up, not a blocker.\"\npriya: adds cart.discount?.value ?? 0, pushes. merged 5:15pm next day.",
+      "note": "One round trip, spent on the one thing that could actually break checkout."
+    }
+  ],
+  "debrief": {
+    "ideal": 1,
+    "text": "The round trip worth asking for is the one that stops a real bug from shipping. A name, a loop shape, a function that could be split later - those are notes, not blockers. A reviewer who spends a day on every nit gets the same round trip as one who spent it on the null check, and their next review carries less weight for it.",
+    "notes": [
+      { "when": "if-taken", "action": "block-naming", "text": "Renaming cnt is a fair note. Blocking on it doesn't make Priya more likely to fix it, it just costs a day a non-blocking comment would have cost nothing." },
+      { "when": "if-taken", "action": "block-arch", "text": "The concern about total() doing three jobs was legitimate craftsmanship. Legitimate isn't the same as urgent, and it could have shipped as a follow-up ticket instead of a day." },
+      { "when": "if-not-taken", "action": "read-diff", "text": "You commented without reading the full diff first. Whatever you caught came from a skim, and a skim is exactly how a null-unsafe line like this one gets missed." },
+      { "when": "if-not-taken", "action": "flag-arch-lightly", "text": "You never raised the three-jobs-in-one function at all. That's a fine call to skip for a same-day fix, as long as it's a choice and not something you just didn't notice." }
+    ]
+  }
+}
 ```
 
 ---

@@ -11,7 +11,7 @@ synonyms:
   - dispatch on command word
   - run python script terminal
   - build a command line tool
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # A Real CLI
@@ -20,7 +20,9 @@ You've got every piece: adding, saving, loading, completing, deleting, filtering
 
 ## How a command line tool thinks
 
-When you type `python todo.py add "buy milk"`, Python hands your script the words you typed as a list called `sys.argv`:
+When you type `python todo.py add "buy milk"`, Python hands your script the words you typed as a list called `sys.argv`.
+
+Before you run this, guess what `sys.argv[2:]` prints - one string, or a list?
 
 ```python runnable
 import sys
@@ -41,9 +43,49 @@ print("The rest:", sys.argv[2:])
 
 ## Dispatching on the command word
 
-"Dispatch" means: look at the command word, run the matching function. A clean way to express that in Python is a chain of `if`/`elif` on `sys.argv[1]`.
+"Dispatch" means: look at the command word, run the matching function.
 
-Let's wire up a tiny dispatcher using a fake `argv`, with stand-in functions so you can watch the routing work:
+**Your turn.** Write `dispatch(argv)` using the stand-in functions below:
+- if `argv` has fewer than 2 elements, print `"Usage: todo.py [add|list|done] ..."` and return
+- if `argv[1]` is `"add"`, call `do_add(argv[2])`
+- if `argv[1]` is `"list"`, call `do_list()`
+- if `argv[1]` is `"done"`, call `do_done(int(argv[2]))` (convert the id to an int - `argv` is all text)
+- otherwise, print `f"Unknown command: {argv[1]}"`
+
+Fill it in and run the checks. My version is in the next block whenever you want it.
+
+```python runnable
+import sys
+
+def do_add(text):   print(f"ADD: {text}")
+def do_list():      print("LIST: showing all tasks")
+def do_done(task_id): print(f"DONE: completing task {task_id}")
+
+def dispatch(argv):
+    # See the spec above. Route argv[1] to the matching do_* function.
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+import io, contextlib
+
+def run(argv):
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        dispatch(argv)
+    return buf.getvalue().strip()
+
+assert run(["todo.py", "add", "buy milk"]) == "ADD: buy milk", run(["todo.py", "add", "buy milk"])
+assert run(["todo.py", "list"]) == "LIST: showing all tasks"
+assert run(["todo.py", "done", "3"]) == "DONE: completing task 3"
+assert run(["todo.py", "fly"]) == "Unknown command: fly"
+assert run(["todo.py"]) == "Usage: todo.py [add|list|done] ..."
+print("All good.")
+```
+
+Stuck? A chain of `if`/`elif` on `argv[1]` handles a multi-way choice like this one just fine.
+
+### One way to write it
 
 ```python runnable
 import sys

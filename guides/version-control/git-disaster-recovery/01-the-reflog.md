@@ -6,7 +6,7 @@ summary: "The reflog is Git's private diary of everywhere HEAD has been; with it
 tags: [git, reflog, recovery, reset, lost-commits, deleted-branch]
 difficulty: advanced
 synonyms: ["git reflog explained", "recover after git reset hard", "recover deleted branch", "i lost commits in git", "find lost git commits", "undo reset hard"]
-updated: 2026-06-18
+updated: 2026-07-16
 ---
 
 # The Reflog - Your Safety Net
@@ -147,6 +147,84 @@ you ever lost was a label's aim, and labels are cheap to re-point.
 That's why the reflog is the safety net under the rest of this guide. The next two phases use genuinely
 sharp tools - `rebase` and rewriting pushed history - and the reason you can wield them calmly is that if
 either goes wrong, you already know the way back.
+
+## Your turn: three commits just vanished
+
+Reading the cheat-card is the easy part. Doing it with the afternoon's work missing from `git log` is the
+job. There is no single right answer below and nothing is scored right or wrong - but every move costs real
+minutes, and the fastest fix is also the calmest one.
+
+```scenario
+{
+  "title": "reset --hard HEAD~3, when you meant HEAD~1",
+  "brief": "It's 4:40pm. You meant to undo your last commit - git reset --hard HEAD~1 - and typed HEAD~3 instead. git log now shows the branch sitting three commits earlier than you left it: the retry logic you've been building since lunch is gone from the tree, and none of it was ever pushed. Nobody else has a copy.",
+  "prompt": "What do you do first?",
+  "clock": { "unit": "min", "running": "work still missing", "resolved": "back in the tree" },
+  "resolvedHeading": "Work's back. Here's how it went.",
+  "actions": [
+    {
+      "id": "reflog",
+      "label": "Run git reflog",
+      "cost": 1,
+      "reveals": "$ git reflog\n9a1b2c3 (HEAD -> main) HEAD@{0}: reset: moving to HEAD~3\n1a2b3c4 HEAD@{1}: commit: Add retry backoff and jitter\n7f6e5d4 HEAD@{2}: commit: Handle idempotency key on retry\n3c2b1a0 HEAD@{3}: commit: Retry queue skeleton\n9a1b2c3 HEAD@{4}: commit: Fix invoice rounding",
+      "note": "HEAD@{1} is exactly where you stood one move ago - the tip of the work you just reset past. That hash is the whole rescue."
+    },
+    {
+      "id": "status",
+      "label": "Run git log again to confirm exactly what's missing",
+      "cost": 1,
+      "reveals": "$ git log --oneline -1\n9a1b2c3 Fix invoice rounding\n$ git status\nOn branch main\nnothing to commit, working tree clean",
+      "note": "Confirms the branch is three commits short and the tree is clean - which the reset's own output already told you. Cheap, but it doesn't get you any closer to the fix."
+    },
+    {
+      "id": "stash-check",
+      "label": "Check git stash list, in case the changes are stashed",
+      "cost": 1,
+      "reveals": "$ git stash list\n(nothing)",
+      "note": "--hard doesn't stash what it discards, it throws the changes away outright. The commits themselves are fine - they just aren't in the stash. A quick, cheap dead end."
+    },
+    {
+      "id": "guess-reset",
+      "label": "Reset again, guessing how far back you need to go",
+      "cost": 5,
+      "reveals": "$ git reset --hard HEAD@{4}\nHEAD is now at 9a1b2c3 Fix invoice rounding\n$ git log --oneline -1\n9a1b2c3 Fix invoice rounding      # further from the work than before",
+      "note": "Guessing an index instead of reading the reflog first moved you past your own rescue point. You're now one more reset away from the work, not one closer."
+    },
+    {
+      "id": "reclone",
+      "label": "Rename the folder aside and clone a fresh copy to compare",
+      "cost": 12,
+      "reveals": "$ mv checkout-api checkout-api.bak\n$ git clone git@github.com:acme/checkout-api.git\nCloning into 'checkout-api'...\n$ git log --oneline -1\n9a1b2c3 Fix invoice rounding      # last thing that was ever pushed",
+      "note": "The three commits were never pushed, so no clone anywhere has them - only the reflog in your original folder does. This time you renamed it instead of deleting it, so you're still fine. rm -rf first and this would not have been recoverable."
+    },
+    {
+      "id": "retype",
+      "label": "Stop trusting Git and retype the retry logic from memory",
+      "cost": 40,
+      "reveals": "// retry_backoff.js (reconstructed from memory)\nfunction retryWithBackoff(fn, attempts = 3) {\n  // ...missing the idempotency-key check you added after lunch\n}",
+      "note": "Forty minutes to reconstruct roughly what you remembered - and you dropped the idempotency-key fix, because you're recreating code, not recovering it. The original three commits, exactly as written, were one git reflog away the whole time."
+    },
+    {
+      "id": "reset-recover",
+      "label": "Reset back onto the hash the reflog showed",
+      "cost": 1,
+      "resolves": true,
+      "reveals": "$ git reset --hard 1a2b3c4\nHEAD is now at 1a2b3c4 Add retry backoff and jitter\n$ git log --oneline -3\n1a2b3c4 Add retry backoff and jitter\n7f6e5d4 Handle idempotency key on retry\n3c2b1a0 Retry queue skeleton",
+      "note": "All three commits are back, exactly as you left them. The reset never deleted anything - it just moved a label. You moved it back."
+    }
+  ],
+  "debrief": {
+    "ideal": 2,
+    "text": "The reset didn't delete anything - it moved a label backward, and a label is cheap to move back. git reflog, find the hash from one move ago, git reset --hard onto it: two minutes, and the work is exactly as you left it, bugs included. Every other move either burns time confirming what you already knew, or - like re-cloning - trades a recoverable mistake for one that might not be.",
+    "notes": [
+      { "when": "if-taken", "action": "guess-reset", "text": "Guessing an index instead of reading the reflog first moved you further from the work, not closer - the exact 'do something' panic instinct this phase exists to interrupt." },
+      { "when": "if-taken", "action": "reclone", "text": "You got away with it because you renamed the folder instead of deleting it. The reflog that saves you here lives only in that one local folder - delete it, and even the correct fix stops working." },
+      { "when": "if-taken", "action": "retype", "text": "Forty minutes rebuilding from memory got you a rough approximation with at least one dropped fix. The real commits, exactly as written, were sitting in the reflog the whole time." },
+      { "when": "if-not-taken", "action": "reflog", "text": "You reset straight onto the hash without ever reading the reflog line. It happened to be the right hash this time - reading it first is what makes that a certainty instead of a guess." }
+    ]
+  }
+}
+```
 
 ## Recap
 

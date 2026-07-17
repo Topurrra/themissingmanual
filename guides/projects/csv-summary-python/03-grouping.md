@@ -11,7 +11,7 @@ synonyms:
   - sum per category python
   - group csv rows
   - aggregate by group
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Grouping with a Dict
@@ -64,7 +64,39 @@ It works, but that `if region not in totals` line is noise we repeat in every gr
 
 `collections.defaultdict(float)` is a dict that, when you ask for a key it's never seen, quietly creates it with a default value first. Pass `float` and missing keys start at `0.0`. Pass `int` and they start at `0`. Pass `list` and they start at `[]`.
 
-That means `totals[region] += amount` works even the first time - the slot gets created as `0.0` on the spot, then the amount is added. The `if` disappears:
+**Your turn.** This is the technique the rest of the guide leans on, so try it yourself first. Write `total_by_group` using `defaultdict` instead of the `if region not in totals` check from the clumsy version above. The checks underneath tell you if it works. My version is right after.
+
+```python runnable
+from collections import defaultdict
+
+
+def total_by_group(rows, group_col, value_col):
+    # Return a dict mapping each distinct value in `group_col`
+    # to the sum of `value_col` for rows with that value.
+    # Use defaultdict(float) so you don't need to check
+    # "have I seen this key before?"
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+sample = [
+    {"region": "North", "amount": "10"},
+    {"region": "South", "amount": "5"},
+    {"region": "North", "amount": "3"},
+]
+totals = total_by_group(sample, "region", "amount")
+assert isinstance(totals, dict), f"total_by_group should return a dict, got: {totals!r}"
+assert totals["North"] == 13.0, f"North should total 13.0, got: {totals.get('North')}"
+assert totals["South"] == 5.0, f"South should total 5.0, got: {totals.get('South')}"
+assert len(totals) == 2, f"expected 2 groups, got: {len(totals)}"
+print("All good.")
+```
+
+Stuck? Look at the clumsy version above - `total_by_group` is that same loop, minus the `if`.
+
+### One way to write it
+
+`totals[region] += amount` works even the first time with a defaultdict - the slot gets created as `0.0` on the spot, then the amount is added. The `if` disappears:
 
 ```python runnable
 import csv
@@ -81,10 +113,15 @@ CSV_TEXT = """date,region,product,amount
 
 rows = list(csv.DictReader(io.StringIO(CSV_TEXT)))
 
-totals = defaultdict(float)
-for row in rows:
-    totals[row["region"]] += float(row["amount"])
 
+def total_by_group(rows, group_col, value_col):
+    totals = defaultdict(float)
+    for row in rows:
+        totals[row[group_col]] += float(row[value_col])
+    return totals
+
+
+totals = total_by_group(rows, "region", "amount")
 for region in sorted(totals):
     print(f"{region}: {totals[region]:.2f}")
 ```
@@ -93,7 +130,9 @@ Same result, less ceremony. `sorted(totals)` prints the regions alphabetically s
 
 ## Count and total per group
 
-Usually you want more than the total - you also want how many sales made up that total. Keep two defaultdicts side by side, or keep one dict of small lists. Two is the readable choice:
+Usually you want more than the total - you also want how many sales made up that total. Keep two defaultdicts side by side, or keep one dict of small lists. Two is the readable choice.
+
+Before you run this, guess which region has the highest *average* sale - not the highest total.
 
 ```python runnable
 import csv
@@ -126,7 +165,9 @@ Now each line shows the region, how many sales, the total, and the per-region av
 
 ## Group by a different column
 
-The grouping key is only a column name. Swap `region` for `product` and the same loop totals sales per product instead - no other change:
+The grouping key is only a column name. Swap `region` for `product` and the same loop totals sales per product instead - no other change.
+
+Before you run it, guess whether Widget or Gadget has the higher total.
 
 ```python runnable
 import csv

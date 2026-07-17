@@ -9,10 +9,19 @@
   export let activeModule = null;
   export let activePhase = null;
 
-  // Per-module accordion. The active module starts expanded; others open/close on
-  // click. Both host pages wrap their content in a per-module/lesson {#key}, so this
-  // component remounts (and re-picks its default) on every navigation - no need to
-  // react to activeModule changing under an existing instance.
+  // Once you have picked a module, the rail shows THAT module only - the other nine
+  // collapsed accordions were noise you had already navigated past, and the /practice
+  // hub is the place to choose. `focused` drives that: one module, always expanded, no
+  // toggle, plus an explicit way back to the hub so switching stays one click.
+  // When activeModule is null (no host does this today) it falls back to the
+  // multi-module accordion rather than rendering an empty rail.
+  $: shown = activeModule ? modules.filter((m) => m.module === activeModule) : modules;
+  $: focused = !!activeModule && shown.length === 1;
+
+  // Per-module accordion, used only in the unfocused fallback. Both host pages wrap
+  // their content in a per-module/lesson {#key}, so this component remounts (and
+  // re-picks its default) on every navigation - no need to react to activeModule
+  // changing under an existing instance.
   let openModules = new Set(activeModule ? [activeModule] : []);
   function toggleModule(mod) {
     if (openModules.has(mod)) openModules.delete(mod);
@@ -53,15 +62,28 @@
 </script>
 
 <aside class="pr-sidebar" class:pr-collapsed={$practiceRailCollapsed}>
-  <nav class="pr-sidebar-nav" aria-label="Practice modules">
-    {#each modules as m (m.slug)}
-      {@const open = openModules.has(m.module)}
+  <nav class="pr-sidebar-nav" aria-label={focused ? 'Lessons in this module' : 'Practice modules'}>
+    {#if focused}
+      <a class="pr-back" href="/practice">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i>
+        <span>All modules</span>
+      </a>
+    {/if}
+    {#each shown as m (m.slug)}
+      {@const open = focused || openModules.has(m.module)}
       <div class="pr-module" class:pr-module-active={m.module === activeModule}>
-        <button type="button" class="pr-module-head" on:click={() => toggleModule(m.module)} aria-expanded={open}>
-          <i class="ti ti-chevron-right pr-module-chev" class:pr-chev-open={open} aria-hidden="true"></i>
-          <span class="pr-module-title">{m.title}</span>
-          <span class="pr-module-count">{doneCount(m, doneMap)}/{m.lessons.length}</span>
-        </button>
+        {#if focused}
+          <div class="pr-module-head pr-module-head-static">
+            <span class="pr-module-title">{m.title}</span>
+            <span class="pr-module-count">{doneCount(m, doneMap)}/{m.lessons.length}</span>
+          </div>
+        {:else}
+          <button type="button" class="pr-module-head" on:click={() => toggleModule(m.module)} aria-expanded={open}>
+            <i class="ti ti-chevron-right pr-module-chev" class:pr-chev-open={open} aria-hidden="true"></i>
+            <span class="pr-module-title">{m.title}</span>
+            <span class="pr-module-count">{doneCount(m, doneMap)}/{m.lessons.length}</span>
+          </button>
+        {/if}
         {#if open}
           <ul class="pr-lesson-list">
             {#each m.lessons as l (l.phase_no)}
@@ -123,6 +145,44 @@
 
   .pr-module + .pr-module {
     margin-top: 2px;
+  }
+
+  /* Back-to-hub row. Same link-row shape as .pr-lesson-row so it reads as part of
+     the rail, but muted and set apart above the module title. */
+  .pr-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.7rem;
+    margin-bottom: 0.5rem;
+    border-radius: 9px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    transition:
+      color 0.15s var(--ease),
+      background 0.15s var(--ease);
+  }
+  .pr-back:hover {
+    color: var(--ink);
+    background: var(--surface);
+    text-decoration: none;
+  }
+  .pr-back .ti {
+    font-size: 15px;
+    color: var(--faint);
+  }
+  .pr-back:hover .ti {
+    color: var(--accent);
+  }
+
+  /* Focused rail: the module name is a heading, not a control - there is nothing to
+     toggle when it is the only module shown. */
+  .pr-module-head-static {
+    cursor: default;
+    font-weight: 600;
+  }
+  .pr-module-head-static:hover {
+    background: none;
   }
 
   /* Module header = the reader's collapsible sub-group row (app.css .nav-group

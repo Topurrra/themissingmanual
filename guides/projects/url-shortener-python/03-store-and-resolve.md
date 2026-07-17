@@ -11,7 +11,7 @@ synonyms:
   - handle unknown code
   - deduplicate urls
   - end to end demo
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Store and Resolve
@@ -24,7 +24,7 @@ You've got the two halves now: a dictionary store (Phase 1) and a base62 code ge
 
 `resolve(code)` takes a code and returns the long URL it points to - or tells you it doesn't know that code, without crashing.
 
-Here's the first real version. Run it end to end:
+Here's the first real version. Guess the three codes that come back, then run it end to end:
 
 ```python runnable
 ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -117,7 +117,54 @@ print("Two codes for one URL?", first != second)
 
 Run it and you'll see two different codes - `0` and `1` - for the identical URL. Whether that's a bug depends on what you want. It's harmless (both codes resolve correctly), but it wastes codes and means you can't tell a user "you already shortened this." Most real shorteners return the *existing* code when they recognize a URL.
 
-Fixing it needs a second lookup - URL back to code - so we can check "have I seen this URL before?" A second dictionary, keyed the other way, does it:
+**Your turn.** Fix `shorten()` so a repeated URL returns the same code instead of minting a new one. This is the point of the phase, so have a real go before you read on. My version is in the next block whenever you want it.
+
+```python runnable
+ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+BASE = len(ALPHABET)
+def encode(number):
+    if number == 0:
+        return ALPHABET[0]
+    chars = []
+    while number > 0:
+        number, remainder = divmod(number, BASE)
+        chars.append(ALPHABET[remainder])
+    return "".join(reversed(chars))
+
+code_to_url = {}
+url_to_code = {}
+counter = 0
+
+def shorten(long_url):
+    # Mint a code for `long_url` and remember it both ways.
+    #   - If `long_url` has already been shortened, return the SAME
+    #     code again instead of minting a new one.
+    #   - Otherwise: encode the counter, store code -> url and url -> code,
+    #     advance the counter, and return the new code.
+    global counter
+    pass
+
+def resolve(code):
+    return code_to_url.get(code, None)
+
+
+# --- checks: fix shorten() until this prints "All good." ---
+first = shorten("https://example.com/pricing")
+assert first == "0", f"first code should be '0', got {first!r}"
+
+second = shorten("https://example.com/pricing")
+assert second == first, f"shortening the same URL twice should return the same code, got {second!r} vs {first!r}"
+
+other = shorten("https://example.com/about")
+assert other == "1", f"a genuinely new URL should get the next code, got {other!r}"
+
+assert resolve(first) == "https://example.com/pricing", f"resolve should find the URL back, got {resolve(first)!r}"
+print("All good.")
+```
+
+Stuck? You need a second lookup - URL back to code - so you can check "have I seen this URL before?" before minting anything.
+
+### One way to write it
 
 ```python runnable
 ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

@@ -11,7 +11,7 @@ synonyms:
   - print report python
   - write report to file
   - read csv file python
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Formatting the Report
@@ -33,7 +33,49 @@ A thousands separator helps too: `{value:,.2f}` prints `1884.5` as `1,884.50`. E
 
 ## The whole script
 
-Here's everything from the last three phases, assembled into one function that prints a finished report. Run it.
+Everything from the last three phases - parse the rows, get the five numbers, group by category, line it up with the format specs above - becomes one function that returns the finished report as a string.
+
+**Your turn.** This is the capstone: the function the rest of the project ships. Fill in `build_report` and hit Run. The checks underneath tell you if it works. My version, in full, is right after.
+
+```python runnable
+def build_report(rows, group_col="region", value_col="amount"):
+    # Return the finished report as one string ("\n".join(lines)).
+    # It must contain, in order:
+    #   - a "SALES SUMMARY" header
+    #   - "Rows:" followed by the row count
+    #   - "Total amount:" followed by the sum, 2 decimals
+    #   - "Average:" followed by the average, 2 decimals
+    #   - "Largest sale:" followed by the biggest single value, 2 decimals
+    #   - "By <group_col>:" followed by one line per group (sorted by
+    #     key), each showing the group's name and its total
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+sample_rows = [
+    {"region": "North", "amount": "120.50"},
+    {"region": "South", "amount": "89.00"},
+    {"region": "North", "amount": "210.00"},
+]
+report = build_report(sample_rows)
+assert isinstance(report, str), f"build_report should return a string, got: {type(report)}"
+assert "SALES SUMMARY" in report, f"missing the header, got:\n{report}"
+assert "Rows:" in report and "3" in report, f"row count (3) should show up, got:\n{report}"
+assert "419.50" in report, f"total amount (419.50) should show up, got:\n{report}"
+assert "139.83" in report, f"average (139.83) should show up, got:\n{report}"
+assert "210.00" in report, f"largest sale (210.00) should show up, got:\n{report}"
+lines = report.splitlines()
+north_line = next((l for l in lines if "North" in l), "")
+south_line = next((l for l in lines if "South" in l), "")
+assert "330.50" in north_line, f"North's total (330.50) should be on its own line, got: {north_line!r}"
+assert "89.00" in south_line, f"South's total (89.00) should be on its own line, got: {south_line!r}"
+assert lines.index(north_line) < lines.index(south_line), "groups should be sorted alphabetically (North before South)"
+print("All good.")
+```
+
+Nothing here is new work - every piece was built in a previous phase. Stuck? Build it in stages: get the five numbers printing first, then add the group loop, then worry about the exact wording of each line.
+
+### One way to write it
 
 ```python runnable
 import csv

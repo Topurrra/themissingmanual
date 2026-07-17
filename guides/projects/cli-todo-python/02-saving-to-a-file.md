@@ -11,7 +11,7 @@ synonyms:
   - persist list to disk
   - read write json file
   - python file storage
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Saving to a File
@@ -35,7 +35,9 @@ The ones without the `s` work with files; the ones with the `s` work with string
 
 ## Seeing the conversion
 
-Before touching files, let's watch the round trip in pure memory. Take a list of tasks, turn it into a JSON string, then turn that string back into Python:
+Before touching files, let's watch the round trip in pure memory. Take a list of tasks, turn it into a JSON string, then turn that string back into Python.
+
+Before you run this, guess whether `restored[0]["done"]` prints `True` or `False`. Then check.
 
 ```python runnable
 import json
@@ -94,7 +96,41 @@ This block proves the loop that matters: data went to disk, the program could ha
 
 There's a trap waiting. The very first time someone runs the app, `tasks.json` doesn't exist yet. Try to open a missing file for reading and Python raises `FileNotFoundError` and crashes. Not the welcome we want.
 
-The fix is to expect it: if the file isn't there, start with an empty list. Let's wrap loading in a function that handles both the happy path and the first run.
+The fix is to expect it: if the file isn't there, start with an empty list instead of crashing.
+
+**Your turn.** Write `load_tasks` and `save_tasks`. `save_tasks` writes `tasks` to `path` as JSON. `load_tasks` reads the list back from `path` - but if `path` doesn't exist yet, it returns `[]` instead of crashing. Fill them in and run the checks underneath. My version is in the next block whenever you want it.
+
+```python runnable
+import json
+import tempfile, os
+
+path = os.path.join(tempfile.gettempdir(), "todo_stub.json")
+if os.path.exists(path):
+    os.remove(path)
+
+def load_tasks(path):
+    # Read the JSON list of tasks from `path` and return it.
+    # If `path` doesn't exist yet, return [] instead of crashing.
+    pass
+
+def save_tasks(path, tasks):
+    # Write `tasks` to `path` as JSON.
+    pass
+
+
+# --- checks: fix your functions until this prints "All good." ---
+first = load_tasks(path)
+assert first == [], f"loading a missing file should give [], got: {first}"
+
+save_tasks(path, [{"id": 1, "text": "buy milk", "done": False}])
+second = load_tasks(path)
+assert second == [{"id": 1, "text": "buy milk", "done": False}], f"got: {second}"
+print("All good.")
+```
+
+Stuck on the missing-file case? Python raises a specific exception when `open` can't find the file. Catch it.
+
+### One way to write it
 
 ```python runnable
 import json

@@ -11,7 +11,7 @@ synonyms:
   - update display after guess
   - python set add letter
   - detect correct guess
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Handling a Guess
@@ -28,6 +28,8 @@ it so the blocks run on their own.
 
 Guessed letters live in a set. Adding to a set is one method call, and a set
 quietly drops duplicates, so a repeated guess never piles up:
+
+Before you run this, guess what `len(guessed)` will print. Then check.
 
 ```python runnable
 guessed = set()      # empty to start
@@ -59,8 +61,41 @@ Read the diagram top to bottom. First we check if the letter was already tried -
 if so, it's a repeat and nothing changes. Otherwise we record it, then check
 whether it's actually in the word: in means hit, not in means miss.
 
-Here's that flow as a function. It takes the letter, the word, and the guessed
-set, updates the set, and returns a short word describing what happened:
+## Writing the guess function
+
+Write that flow as a function called `guess`. It takes the letter, the word, and
+the guessed set, updates the set, and returns a short word describing what
+happened. One wrinkle: a player might type `"P"` or `"p"` - your function should
+treat them the same.
+
+**Your turn.** This function is the point of the phase, so have a go before you
+read on. Fill it in and hit Run: the checks underneath tell you whether it works.
+My version is in the next block whenever you want it.
+
+```python runnable
+def guess(letter, word, guessed):
+    # Record `letter` in `guessed` and report what happened. `letter` may
+    # come in as "P" or "p" - treat them the same.
+    #   - already in `guessed` -> return "repeat", don't touch anything else
+    #   - otherwise add it (lowercased) to `guessed`, then return "hit" if
+    #     it's in `word`, "miss" if it isn't
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+guessed = set()
+assert guess("P", "python", guessed) == "hit", f"got: {guess('P', 'python', set())!r}"
+assert guessed == {"p"}, f"guessed should hold the lowercase letter, got: {guessed!r}"
+assert guess("z", "python", guessed) == "miss", f"got: {guess('z', 'python', guessed)!r}"
+assert guess("p", "python", guessed) == "repeat", f"got: {guess('p', 'python', guessed)!r}"
+print("All good.")
+```
+
+Stuck on the `"P"` vs `"p"` wrinkle? There's a string method that hands back a
+lowercase copy of any string - call it on `letter` before you do anything else
+with it.
+
+### One way to write it
 
 ```python runnable
 def guess(letter, word, guessed):
@@ -81,6 +116,10 @@ print("Guessed so far:", guessed)
 Run it. Notice we passed an uppercase `"P"` and the function lowercased it before
 doing anything, so it matched the lowercase word and the set holds `'p'`. That
 one `letter.lower()` line saves you from "I typed P and it said miss" complaints.
+
+If you skipped the `.lower()` call, the checks above catch it fast: `guess("P",
+"python", guessed)` returns `"miss"` instead of `"hit"`, because Python's `in`
+check is case-sensitive and `"P"` is nowhere in the string `"python"`.
 
 ## Wiring it to the display
 

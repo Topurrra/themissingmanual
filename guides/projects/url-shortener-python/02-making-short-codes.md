@@ -11,7 +11,7 @@ synonyms:
   - generate short code
   - counter based ids
   - url safe characters
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Making Short Codes
@@ -39,6 +39,36 @@ A million links and the code is still four characters. That's the payoff.
 
 ## How base62 conversion works
 
+We need a function, `encode(number)`, that turns a plain integer into a base62 string using the `ALPHABET` above. A few fixed points to aim for: `encode(0)` is `"0"`, `encode(61)` is `"Z"` (the last single-character code), and `encode(62)` is `"10"` (the first that needs two).
+
+**Your turn.** This function is the point of the phase, so have a go before you read on. Fill it in and hit Run: the checks underneath tell you whether it works. My version is in the next block whenever you want it.
+
+```python runnable
+ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+BASE = len(ALPHABET)  # 62
+
+def encode(number):
+    # Turn `number` into a base62 string using ALPHABET.
+    #   encode(0) is ALPHABET[0]        -> "0"
+    #   encode(61) is "Z"               -> the last single-character code
+    #   encode(62) is "10"              -> the first that needs two characters
+    # Bigger numbers use more characters, most significant first.
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+assert encode(0) == "0", f"encode(0) should be '0', got {encode(0)!r}"
+assert encode(9) == "9", f"encode(9) should be '9', got {encode(9)!r}"
+assert encode(61) == "Z", f"encode(61) should be 'Z', got {encode(61)!r}"
+assert encode(62) == "10", f"encode(62) should be '10', got {encode(62)!r}"
+assert encode(1000000) == "4c92", f"encode(1000000) should be '4c92', got {encode(1000000)!r}"
+print("All good.")
+```
+
+Stuck? Try dividing the number by 62 and looking at what's left over - then think about what to do with what's left.
+
+### One way to write it
+
 Converting a number to base62 is repeated division. You divide by 62, the remainder picks one character, then you divide the quotient by 62 again, and so on until there's nothing left. Each remainder is an index into our 62-character alphabet.
 
 ```mermaid
@@ -49,7 +79,7 @@ graph LR
   Q --> D
 ```
 
-The remainders come out in reverse order - least significant first - so we build the string and flip it at the end. Here it is in code. Run it and watch a few numbers turn into codes:
+The remainders come out in reverse order - least significant first - so we build the string and flip it at the end. Here it is in code:
 
 ```python runnable
 ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -74,6 +104,8 @@ for n in [0, 1, 2, 10, 61, 62, 1000, 1000000]:
 ## Wiring the counter to the generator
 
 The encoder turns a number into a code. The counter supplies the numbers. Put them together and you have an automatic code factory: bump the counter, encode it, hand back the code.
+
+Guess which five codes come out before you run it.
 
 ```python runnable
 ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

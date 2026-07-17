@@ -10,7 +10,7 @@ synonyms:
   - flag.NewFlagSet subcommands
   - go cli subcommand pattern
   - parse command line flags go
-updated: 2026-07-06
+updated: 2026-07-16
 ---
 
 # Flags and the add Command
@@ -48,9 +48,25 @@ type Note struct {
 
 📝 **Terminology:** `time.Time` is Go's timestamp type. `time.Now()` gives you the current moment, and in phase 4 we'll format it for display with `.Format`.
 
+## Your turn: parseTags
+
+Before the full file, here's one piece to write yourself. Everything else in this phase introduces new API (`flag.NewFlagSet`, the dispatch switch), but this one you can already do with what you know.
+
+`parseTags` takes the raw `-tags` string and turns it into a clean slice. `"Go, CLI"` should come back as `["go", "cli"]`: split on commas, trim the spaces, lowercase it, and drop anything empty, so `"go,,cli"` gives two tags rather than three. An empty string gives `nil`.
+
+```go
+// parseTags turns "Go, CLI" into ["go", "cli"].
+func parseTags(s string) []string {
+	// your turn
+	return nil
+}
+```
+
+`strings.Split`, `strings.TrimSpace` and `strings.ToLower` are all you need. My version is in the file below, and once the program runs you can check it for real: `go run . add -tags "Go, CLI" "a note"` should show both tags, lowercased and trimmed.
+
 ## The full main.go
 
-Replace everything in `main.go` with this. Read it top to bottom afterward - every piece gets explained.
+Replace everything in `main.go` with this - including my `parseTags`, so compare it with yours. Read it top to bottom afterward: every piece gets explained.
 
 ```go
 package main

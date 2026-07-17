@@ -11,7 +11,7 @@ synonyms:
   - json indent
   - beautify json javascript
   - json stringify indent
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Parse and Pretty-Print
@@ -21,6 +21,8 @@ The core of a JSON formatter is two function calls. Text comes in, becomes a rea
 ## Text is not data
 
 When an API sends you JSON, you get a *string*. It looks like an object, but to JavaScript it's a wall of characters. You can't read `.name` off it. You have to parse it first.
+
+Guess what `typeof raw` and `typeof data` will print before you run it.
 
 ```js runnable
 const raw = '{"name":"Ada","langs":["Pascal","Ada"]}';
@@ -52,7 +54,38 @@ That `null` in the middle is the *replacer* slot - a hook for transforming value
 
 ## Putting both halves together
 
-A formatter is parse-then-stringify. Take messy text, turn it into data, turn the data back into clean text.
+A formatter is parse-then-stringify: text goes in, becomes real data, then becomes text again - this time with the indentation you ask for.
+
+**Your turn.** This `format` function is the spine of everything we build from here, so have a go before you read on. Fill it in and hit Run: the checks underneath tell you whether it works. My version is in the next block whenever you want it.
+
+```js runnable
+function format(text, indent = 2) {
+  // Parse `text` as JSON, then turn it back into a string using the
+  // given indent (spaces per level). Return the formatted string.
+}
+
+// --- checks: fix your function until this prints "All good." ---
+const out1 = format('{"a":1}');
+if (out1 !== '{\n  "a": 1\n}') {
+  throw new Error(`format('{"a":1}') should indent with 2 spaces, got: ${out1}`);
+}
+
+const out2 = format('{"a":1}', 4);
+if (out2 !== '{\n    "a": 1\n}') {
+  throw new Error(`format with indent=4 should use 4 spaces, got: ${out2}`);
+}
+
+const out3 = format('{"id":7,"tags":["a","b"]}');
+if (JSON.parse(out3).tags[1] !== "b") {
+  throw new Error(`the formatted output should still parse back to the same data, got: ${out3}`);
+}
+
+console.log("All good.");
+```
+
+Stuck? You already wrote both halves of this in the two blocks above - `format` just needs to call them in order and return the result.
+
+### One way to write it
 
 ```js runnable
 function format(text, indent = 2) {
@@ -67,7 +100,7 @@ console.log(format(messy));
 
 Run it. The cramped input comes out laid out across multiple lines, nested objects indented under their parents, arrays spaced cleanly. That `format` function is the spine of everything we build from here.
 
-Notice what `JSON.parse` did for free along the way: it *normalized* the data. Whatever odd-but-legal spacing was in the input is gone, replaced by exactly the indentation you asked for. Run this to see it cope with input that's already a mess of inconsistent whitespace:
+Notice what `JSON.parse` did for free along the way: it *normalized* the data. Whatever odd-but-legal spacing was in the input is gone, replaced by exactly the indentation you asked for. Before you run this one, guess whether the output looks any different from the last block's, even though the input is formatted totally differently:
 
 ```js runnable
 function format(text, indent = 2) {

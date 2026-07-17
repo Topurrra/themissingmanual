@@ -11,7 +11,7 @@ synonyms:
   - parse csv string
   - csv to list of dicts
   - stringio csv
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Parsing the CSV
@@ -84,7 +84,9 @@ Every value is in quotes - they're all strings. `'120.50'` is text, not the numb
 
 ## Pull out one column
 
-Since each row is a dict, grabbing a single column across all rows is one line. Let's list every region we saw:
+Since each row is a dict, grabbing a single column across all rows is one line. Let's list every region we saw.
+
+Before you run this, guess how many *unique* regions show up in the six rows. Then check.
 
 ```python runnable
 import csv

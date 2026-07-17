@@ -11,7 +11,7 @@ synonyms:
   - min max csv
   - count rows python
   - aggregate csv data
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Totals and Counts
@@ -46,7 +46,37 @@ Now they're real numbers - no quotes - and we can add, compare, and average them
 
 ## The five numbers
 
-Python's built-ins do almost all the work here:
+We want five things about the whole dataset: how many amounts there are, their total, the smallest, the largest, and the average. Python's built-ins can get you there without much code.
+
+**Your turn.** This one's the point of the phase, so give it a shot before you read on. Fill in `summarize` and hit Run - the checks underneath tell you whether it works. My version is in the next block whenever you want it.
+
+```python runnable
+def summarize(amounts):
+    # Given a list of numbers, return a dict with:
+    #   "count"    - how many numbers
+    #   "total"    - their sum
+    #   "smallest" - the minimum
+    #   "largest"  - the maximum
+    #   "average"  - total / count
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+stats = summarize([120.50, 89.00, 210.00, 55.50, 134.00, 410.00])
+assert isinstance(stats, dict), f"summarize should return a dict, got: {stats!r}"
+assert stats["count"] == 6, f"count should be 6, got: {stats.get('count')}"
+assert stats["total"] == 1019.0, f"total should be 1019.0, got: {stats.get('total')}"
+assert stats["smallest"] == 55.5, f"smallest should be 55.5, got: {stats.get('smallest')}"
+assert stats["largest"] == 410.0, f"largest should be 410.0, got: {stats.get('largest')}"
+assert abs(stats["average"] - 169.8333333333333) < 0.0001, f"average should be about 169.83, got: {stats.get('average')}"
+print("All good.")
+```
+
+Stuck on one of the five? Each is a single built-in call away - the question is which built-in fits.
+
+### One way to write it
+
+There's no special "average" built-in - it's the sum divided by the count, which you already have. Python's built-ins do the rest:
 
 | Question | Code |
 |----------|------|
@@ -55,8 +85,6 @@ Python's built-ins do almost all the work here:
 | Smallest? | `min(amounts)` |
 | Largest? | `max(amounts)` |
 | Average? | `sum(amounts) / len(amounts)` |
-
-There's no special "average" built-in - average is the sum divided by the count, which you already have. Let's compute all five and print them.
 
 ```python runnable
 import csv
@@ -73,24 +101,32 @@ CSV_TEXT = """date,region,product,amount
 rows = list(csv.DictReader(io.StringIO(CSV_TEXT)))
 amounts = [float(row["amount"]) for row in rows]
 
-count = len(amounts)
-total = sum(amounts)
-smallest = min(amounts)
-largest = max(amounts)
-average = total / count
 
-print(f"Count:    {count}")
-print(f"Total:    {total:.2f}")
-print(f"Smallest: {smallest:.2f}")
-print(f"Largest:  {largest:.2f}")
-print(f"Average:  {average:.2f}")
+def summarize(amounts):
+    return {
+        "count": len(amounts),
+        "total": sum(amounts),
+        "smallest": min(amounts),
+        "largest": max(amounts),
+        "average": sum(amounts) / len(amounts),
+    }
+
+
+stats = summarize(amounts)
+print(f"Count:    {stats['count']}")
+print(f"Total:    {stats['total']:.2f}")
+print(f"Smallest: {stats['smallest']:.2f}")
+print(f"Largest:  {stats['largest']:.2f}")
+print(f"Average:  {stats['average']:.2f}")
 ```
 
 The `:.2f` in the f-string rounds to two decimal places - so `157.041666...` prints as `157.04`. Money never wants fifteen digits after the dot.
 
 ## The one bug waiting to happen
 
-Look at `average = total / count`. If `count` is zero - an empty CSV, or one with only a header - that line blows up with `ZeroDivisionError`. It's worth one guard:
+Look at `average = total / count`. If `count` is zero - an empty CSV, or one with only a header - that line blows up with `ZeroDivisionError`. It's worth one guard.
+
+Before you run this, guess what the average line prints when there are no data rows at all. Then check.
 
 ```python runnable
 import csv
@@ -115,7 +151,9 @@ print(f"Average: {average:.2f}")
 
 ## Which row was the biggest?
 
-`max(amounts)` tells you the biggest number, but often you want the whole row - what product, what region. For that, give `max` a `key` so it compares rows by their amount and hands back the row itself:
+`max(amounts)` tells you the biggest number, but often you want the whole row - what product, what region. For that, give `max` a `key` so it compares rows by their amount and hands back the row itself.
+
+Before you run it, guess which row prints as the biggest sale - the region and product, not just the number.
 
 ```python runnable
 import csv

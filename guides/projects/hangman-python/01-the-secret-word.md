@@ -11,7 +11,7 @@ synonyms:
   - show guessed letters python
   - reveal letters in a word
   - python string masking
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # The Secret Word and the Blanks
@@ -40,6 +40,8 @@ it's been guessed, otherwise show an underscore.
 In Python you can loop straight over a string and you get one character at a
 time:
 
+Before you run this, guess how many lines it'll print. Then check.
+
 ```python runnable
 word = "python"
 for letter in word:
@@ -52,23 +54,46 @@ hide it.
 
 ## Show it or hide it
 
-For each letter we want a small either/or: the real letter, or an underscore.
-Python has a compact way to write "this value if a condition is true, otherwise
-that value":
+For each letter we want a small either/or: the real letter if it's been guessed,
+an underscore if it hasn't. You already have the tools for that - an `if` check
+and the `in` operator, which asks "is this letter inside the guessed collection?"
+and hands back `True` or `False`. Put those together, loop over the word, and
+you can build the whole display.
 
-```python
-shown = letter if letter in guessed else "_"
+## Putting it together
+
+Write a function `show(word, guessed)` that returns the word as a single display
+string: each letter of `word`, in order, separated by spaces - the letter itself
+if it's in `guessed`, an underscore if it isn't. `p _ t _ _ n` reads better than
+`p_t__n`, which is why the spaces matter.
+
+**Your turn.** This function is the point of the phase, so have a go before you
+read on. Fill it in and hit Run: the checks underneath tell you whether it
+works. My version is in the next block whenever you want it.
+
+```python runnable
+def show(word, guessed):
+    # Return `word` as a display string: each letter, in order, separated
+    # by single spaces. Show the letter if it's in `guessed`, otherwise
+    # show "_".
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+assert show("python", {"p", "t", "n"}) == "p _ t _ _ n", f"got: {show('python', {'p','t','n'})!r}"
+assert show("python", set()) == "_ _ _ _ _ _", f"got: {show('python', set())!r}"
+assert show("python", set("python")) == "p y t h o n", f"got: {show('python', set('python'))!r}"
+print("All good.")
 ```
 
-Read it left to right: `letter` (use this) `if letter in guessed` (when it's been
-guessed) `else "_"` (otherwise an underscore). The `in` check asks "is this
-letter inside the guessed collection?" and gives back `True` or `False`.
+Stuck on the per-letter decision? You need one of two values for each letter -
+think about how to say "this if a condition holds, otherwise that" in a single
+line, then join the results with a space.
 
-## Putting the blanks together
+### One way to write it
 
-Now we glue those per-letter results into one line. We build a list of the shown
-characters and join them with spaces so the blanks are readable - `p _ t _ _ n`
-reads better than `p_t__n`.
+Here's a first pass, glueing the per-letter results into one line by hand. Build
+a list of the shown characters and join them with spaces:
 
 ```python runnable
 word = "python"
@@ -95,11 +120,17 @@ and fast membership checks. It's exactly the right tool for "which letters have
 been guessed," and we'll lean on it hard next phase. For now, know that
 `letter in guessed` against a set is quick and reads like English.
 
-## Tightening it into a function
+We'll need this display in every phase, so let's wrap it in a function that
+takes the word and the guessed letters and hands back the line to print. Python
+also has a compact way to write "this value if a condition is true, otherwise
+that value," which flattens the loop above into one line:
 
-We'll need this display in every phase, so let's wrap it in a function that takes
-the word and the guessed letters and hands back the line to print. Same logic,
-written more compactly with the if/else expression from before:
+```python
+shown = letter if letter in guessed else "_"
+```
+
+Read it left to right: `letter` (use this) `if letter in guessed` (when it's
+been guessed) `else "_"` (otherwise an underscore).
 
 ```python runnable
 def show(word, guessed):

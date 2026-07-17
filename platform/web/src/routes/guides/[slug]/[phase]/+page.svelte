@@ -15,6 +15,7 @@
   import Glossary from '$lib/Glossary.svelte';
   import Playgrounds from '$lib/Playgrounds.svelte';
   import Explainers from '$lib/Explainers.svelte';
+  import Scenarios from '$lib/Scenarios.svelte';
   import ReaderTTS from '$lib/ReaderTTS.svelte';
   import Quiz from '$lib/Quiz.svelte';
   import RunnableCode from '$lib/RunnableCode.svelte';
@@ -198,6 +199,7 @@
   <Glossary />
   <Playgrounds />
   <Explainers />
+  <Scenarios />
   {#if runnableOn}<RunnableCode />{/if}
 {/key}
 

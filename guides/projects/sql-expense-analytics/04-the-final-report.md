@@ -11,7 +11,7 @@ synonyms:
   - percent of total sql
   - combined analytics query
   - dashboard query
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # The Final Report
@@ -36,6 +36,8 @@ whole result."
 
 A CTE (the `WITH ... AS (...)` block) computes the per-category totals once, and
 the outer query divides each by the windowed grand total.
+
+Before you run it, guess: roughly what share of total spending is rent?
 
 ```sql runnable
 CREATE TABLE expenses (
@@ -98,6 +100,71 @@ floating-point division so you get `8.7`, not `0`.
 The second half of the report is the trend over time, with the running total and
 the month-over-month change side by side - everything from phase 3, assembled
 into one statement. This is the query you'd chart.
+
+**Your turn.** Write it yourself: one row per month, with `month`, `total`
+(that month's spend, rounded), `cumulative` (a running total across months, in
+month order), and `mom_change` (this month minus last month, rounded). Run it
+and compare against the rows below. My version is in the next block whenever
+you want it.
+
+```sql runnable
+CREATE TABLE expenses (
+  id          INTEGER PRIMARY KEY,
+  spent_on    TEXT    NOT NULL,
+  category    TEXT    NOT NULL,
+  description TEXT    NOT NULL,
+  amount      REAL    NOT NULL
+);
+
+INSERT INTO expenses (spent_on, category, description, amount) VALUES
+  ('2026-01-01', 'rent',          'January rent',        1450.00),
+  ('2026-01-02', 'subscriptions', 'Streaming service',      15.99),
+  ('2026-01-03', 'groceries',     'Corner market',          54.20),
+  ('2026-01-05', 'dining',        'Lunch with Sam',         28.75),
+  ('2026-01-07', 'transport',     'Metro card refill',      40.00),
+  ('2026-01-09', 'groceries',     'Weekly shop',            96.40),
+  ('2026-01-12', 'utilities',     'Electricity',            72.10),
+  ('2026-01-14', 'dining',        'Pizza night',            34.50),
+  ('2026-01-16', 'subscriptions', 'Music service',           9.99),
+  ('2026-01-18', 'groceries',     'Farmers market',         61.30),
+  ('2026-01-21', 'transport',     'Rideshare home',         18.40),
+  ('2026-01-24', 'dining',        'Dinner out',             52.00),
+  ('2026-01-27', 'groceries',     'Weekly shop',            88.15),
+  ('2026-01-30', 'utilities',     'Water bill',             31.25),
+  ('2026-02-01', 'rent',          'February rent',        1450.00),
+  ('2026-02-02', 'subscriptions', 'Streaming service',      15.99),
+  ('2026-02-04', 'groceries',     'Corner market',          49.80),
+  ('2026-02-06', 'travel',        'Weekend flights',       312.00),
+  ('2026-02-07', 'dining',        'Airport food',           22.60),
+  ('2026-02-10', 'groceries',     'Weekly shop',           102.55),
+  ('2026-02-13', 'dining',        'Valentine dinner',       96.00),
+  ('2026-02-15', 'subscriptions', 'Music service',           9.99),
+  ('2026-02-17', 'transport',     'Metro card refill',      40.00),
+  ('2026-02-20', 'groceries',     'Weekly shop',            79.90),
+  ('2026-02-23', 'utilities',     'Electricity',            68.40),
+  ('2026-02-26', 'dining',        'Takeout',                31.20);
+
+-- Your turn: return one row per month with:
+--   month       - 'YYYY-MM'
+--   total       - that month's SUM(amount), rounded to 2 decimals
+--   cumulative  - the running total across months, in month order
+--   mom_change  - total minus the previous month's total, rounded
+-- Same shape as phase 3's LAG query, plus a running-total column.
+```
+
+Run it. You should get back exactly these two rows:
+
+| month | total | cumulative | mom_change |
+|---|---|---|---|
+| 2026-01 | 2053.03 | 2053.03 | NULL |
+| 2026-02 | 2278.43 | 4331.46 | 225.4 |
+
+If your query comes back with 26 rows instead of 2, you skipped the `GROUP BY`
+step - the window functions are running over individual expenses instead of
+over monthly totals. Collapse to months in a CTE first, same as phase 3, then
+run both window functions over that CTE's rows.
+
+### One way to write it
 
 ```sql runnable
 CREATE TABLE expenses (

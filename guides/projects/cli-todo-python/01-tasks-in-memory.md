@@ -2,7 +2,7 @@
 title: "Tasks in Memory"
 guide: cli-todo-python
 phase: 1
-summary: "Model each task as a dictionary, collect them in a list, and write add and list functions you can watch grow."
+summary: "Model each task as a dictionary, collect them in a list, and write the add and list functions yourself."
 tags: [python, list, dict, data-model, beginner]
 difficulty: beginner
 synonyms:
@@ -11,7 +11,7 @@ synonyms:
   - python append to list
   - in-memory task storage
   - build a todo list structure
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Tasks in Memory
@@ -37,6 +37,8 @@ Run that. You get the whole dict, then two values pulled out by name. The keys -
 
 One task is a dict. A to-do **list** is, fittingly, a Python list of those dicts:
 
+Before you run this one, guess how many lines it prints. Then check.
+
 ```python runnable
 tasks = [
     {"id": 1, "text": "buy milk", "done": False},
@@ -53,9 +55,38 @@ A list of dictionaries is one of the most common shapes in all of Python. Rows f
 
 ## Adding a task
 
-Right now we typed the tasks by hand. The app needs to *add* them on demand. We'll write a function that takes the current list, the new text, and appends a fresh dict to the end.
+Right now we typed the tasks by hand. The app needs to *add* them on demand. We'll write a function that takes the current list and the new text, and appends a fresh dict to the end.
 
-The one wrinkle is the id. Each task needs a number nobody else has. The reliable trick: look at the biggest id already in the list and add one. If the list is empty, start at 1.
+The one wrinkle is the id. Each task needs a number nobody else has, and the first task added to an empty list should get id 1.
+
+**Your turn.** This function is the point of the phase, so have a go before you read on. Fill it in and hit Run: the checks underneath tell you whether it works. My version is in the next block whenever you want it.
+
+```python runnable
+def add_task(tasks, text):
+    # Append one new task dict to `tasks`. It needs three keys:
+    #   "id"   - a number no other task in the list has
+    #   "text" - the text passed in
+    #   "done" - False, because a new task isn't finished
+    # Adding to an empty list should produce id 1.
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+tasks = []
+add_task(tasks, "buy milk")
+assert tasks == [{"id": 1, "text": "buy milk", "done": False}], f"after one add, got: {tasks}"
+
+add_task(tasks, "call the bank")
+assert tasks[1]["id"] == 2, f"the second task should get id 2, got: {tasks[1]}"
+
+ids = [task["id"] for task in tasks]
+assert len(ids) == len(set(ids)), f"ids must be unique, got: {ids}"
+print("All good.")
+```
+
+Stuck on the id? Ask what the ids already in the list can tell you.
+
+### One way to write it
 
 ```python runnable
 def add_task(tasks, text):
@@ -76,11 +107,13 @@ for task in tasks:
 
 Walk through it. We start with an empty list. The first `add_task` sees no tasks, so `new_id` is 1. The next sees a max id of 1, so it picks 2. Then 3. The list grew from nothing to three tasks, each with its own id, and we never had to track a counter ourselves.
 
-Why `max` instead of `len(tasks) + 1`? Because later we'll delete tasks. If you delete task 2 from a list of three, `len` is now 2 - and `len + 1` would hand the next task an id of 3, which already exists. Reading the actual max id keeps every id unique no matter what you've removed. It's a small choice now that saves a real bug later.
+If you reached for `len(tasks) + 1`, that is a reasonable first instinct and it passes every check above. It breaks in Phase 3, when we add deleting. Delete task 2 from a list of three and `len` is 2, so `len + 1` hands the next task an id of 3 - which already exists. Reading the actual max id keeps every id unique no matter what you've removed. It's a small choice now that saves a real bug later.
 
 ## Listing what you have
 
 Adding is half of it. The other half is showing the list back in a way a human wants to read. Let's make a `list_tasks` function that prints each task with its id and a marker for whether it's done.
+
+Two tasks go in and one gets marked done. Before you run it: which line comes back with the `x`?
 
 ```python runnable
 def add_task(tasks, text):

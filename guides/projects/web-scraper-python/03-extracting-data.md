@@ -11,7 +11,7 @@ synonyms:
   - handle missing element beautifulsoup
   - structured data extraction
   - strip whitespace python
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Extracting Structured Data
@@ -128,7 +128,24 @@ price because it's out of stock. The moment you call `.text` on a
 no attribute 'text'` and the whole run dies on item 47 of 1000.
 
 The fix is to check before you reach in. A small helper keeps the main function
-readable:
+readable.
+
+## Your turn: get_text
+
+You already have everything this needs: `select_one` from last phase, and the
+fact that it returns `None` when nothing matches. Write a helper that looks up
+`selector` inside `element` and returns its stripped text - or `default` if the
+selector found nothing.
+
+```python
+def get_text(element, selector, default=""):
+    # your turn
+    return default
+```
+
+You need `select_one`, `.text`, `.strip()`, and a plain `if` - nothing new.
+Check it against `parse_book` below once you're done: swap it in and a missing
+field should come back as `""` instead of crashing the whole run.
 
 ```python
 def get_text(element, selector, default=""):

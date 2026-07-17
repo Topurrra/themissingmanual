@@ -11,7 +11,7 @@ synonyms:
   - markdown to html mapping
   - converter loop setup
   - markdown parsing plan
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # The Plan: Lines to HTML
@@ -70,6 +70,8 @@ Let's prove this works. We will take a small Markdown document, split it into an
 lines, and print each one with its index so we can see exactly what the loop will be
 chewing on.
 
+Before you run this, guess how many lines you'll get - remember, `split` keeps blank lines too.
+
 ```js runnable
 const markdown = `# My Notes
 
@@ -99,6 +101,31 @@ Now the skeleton everything else hangs on. We loop over the lines and, for each 
 decide what it is. Right now we only know how to *classify* a line, not convert it - but
 classifying is the first half of the job, and it shows you the shape of the code we will
 fill in over the next phases.
+
+**Your turn.** Write `classify` yourself - fill it in and hit Run, the checks underneath
+tell you whether it works. My version is in the next block whenever you want it.
+
+```js runnable
+function classify(line) {
+  // Return one of these strings, based on `line`:
+  //   "heading"    - line starts with "# "
+  //   "list-item"  - line starts with "- "
+  //   "blank"      - line is empty or only whitespace
+  //   "paragraph"  - anything else
+}
+
+// --- checks: fix your function until this prints "All good." ---
+if (classify("# My Notes") !== "heading") throw new Error(`classify("# My Notes") should be "heading", got: ${classify("# My Notes")}`);
+if (classify("- first item") !== "list-item") throw new Error(`classify("- first item") should be "list-item", got: ${classify("- first item")}`);
+if (classify("") !== "blank") throw new Error(`classify("") should be "blank", got: ${classify("")}`);
+if (classify("   ") !== "blank") throw new Error(`classify("   ") should be "blank" (whitespace counts too), got: ${classify("   ")}`);
+if (classify("Just some text.") !== "paragraph") throw new Error(`classify("Just some text.") should be "paragraph", got: ${classify("Just some text.")}`);
+console.log("All good.");
+```
+
+Stuck on blank lines? A string has a `.trim()` method - what does it return for `"   "`?
+
+### One way to write it
 
 ```js runnable
 const markdown = `# My Notes

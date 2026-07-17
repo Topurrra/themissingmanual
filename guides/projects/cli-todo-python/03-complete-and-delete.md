@@ -11,7 +11,7 @@ synonyms:
   - filter list comprehension
   - update dict in list
   - python find by id
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # Complete, Delete, and Filter
@@ -23,6 +23,8 @@ A to-do app you can only add to isn't a to-do app - it's a notepad that fills up
 Every operation here starts the same way: "find the task with this id." Marking done, deleting - both need to locate the right task first. So let's write that once.
 
 Tasks are a list of dicts, and we want the one whose `id` matches. A loop does it: walk the list, return the task when the id matches, return `None` if we reach the end without finding it.
+
+The second call below asks for an id that isn't in the list. Guess what it prints before you run it.
 
 ```python runnable
 def find_task(tasks, task_id):
@@ -80,7 +82,44 @@ Run it. Task 1 gets marked done and the message confirms it. The call for id 99 
 
 ## Deleting a task
 
-Deleting is the one place we *don't* edit in place - we build a new list with the unwanted task left out. The cleanest way in Python is a **list comprehension** that keeps every task whose id is not the one we're removing.
+Deleting is the one place we *don't* edit in place - we build a new list with the unwanted task left out, and hand that new list back to the caller.
+
+**Your turn.** Write `delete_task(tasks, task_id)`. It should:
+- return a new list containing every task from `tasks` except the one whose id is `task_id`
+- print `f"No task with id {task_id}"` if nothing had that id
+- print `f"Deleted task {task_id}"` if something did
+
+Fill it in and run the checks. My version is in the next block whenever you want it.
+
+```python runnable
+def delete_task(tasks, task_id):
+    # Return a new list containing every task from `tasks` except the
+    # one whose id is `task_id`.
+    # Print f"No task with id {task_id}" if no task had that id.
+    # Print f"Deleted task {task_id}" if one did.
+    pass
+
+
+# --- checks: fix your function until this prints "All good." ---
+tasks = [
+    {"id": 1, "text": "buy milk", "done": False},
+    {"id": 2, "text": "call the bank", "done": False},
+    {"id": 3, "text": "water the plants", "done": False},
+]
+
+result = delete_task(tasks, 2)
+assert result is not None, "delete_task must return the new list"
+ids = [task["id"] for task in result]
+assert ids == [1, 3], f"expected ids [1, 3] left, got: {ids}"
+
+result2 = delete_task(result, 99)
+assert [task["id"] for task in result2] == [1, 3], "deleting a missing id should change nothing"
+print("All good.")
+```
+
+Stuck? Think about which tasks you want to *keep*, not which one to remove - a list comprehension is built for exactly that.
+
+### One way to write it
 
 ```python runnable
 def delete_task(tasks, task_id):
@@ -112,6 +151,8 @@ One important detail: `delete_task` **returns** the new list, and the caller wri
 ## Filtering: open vs done
 
 Last piece. Once you've finished some tasks, you want to see what's left without the clutter - and sometimes review what you've completed. That's filtering, and it's the same comprehension trick keyed on `done`.
+
+Two of the four tasks below are already done. Guess how many lines print under "Still to do" before you run it.
 
 ```python runnable
 def open_tasks(tasks):

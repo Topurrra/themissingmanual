@@ -11,7 +11,7 @@ synonyms:
   - fastapi dictionary store
   - test api with curl
   - fastapi post put delete
-updated: 2026-06-30
+updated: 2026-07-16
 ---
 
 # CRUD with an In-Memory Store
@@ -26,10 +26,38 @@ One catch with an in-memory store: the data lives only while the server runs.
 Restart it (or let `--reload` bounce it on a save) and you're back to empty.
 That's fine for now - it's exactly why phase 5 exists.
 
+## Your turn: create_note
+
+Before the full file, here's one piece to write yourself. The routing and the
+dict-as-database pattern are new this phase, but `create_note`'s job is just
+plain dict bookkeeping - the same kind of thing you'd write in any Python
+script.
+
+`create_note` is the handler behind `POST /notes`. It builds a record from the
+`next_id` counter and the incoming `note`, stores that record in the `notes`
+dict under `next_id`, bumps the counter for the next caller, and returns the
+record it just stored - id included.
+
+```python
+@app.post("/notes")
+def create_note(note: NoteIn):
+    # your turn
+    return None
+```
+
+You already used `note.model_dump()` last phase to turn the Pydantic model
+into a dict - the rest is a dict literal with `**note.model_dump()` spread in,
+an assignment into `notes[next_id]`, and `next_id += 1` (remember `global
+next_id` inside the function, since you're reassigning it). My version is in
+the file below - once the server's running, create a note with the first curl
+command further down and check you get the stored record back with `"id": 1`,
+exactly as the walkthrough describes.
+
 ## Replace main.py
 
 We've collected enough pieces to write the whole file cleanly. Replace the
-contents of `main.py` with this:
+contents of `main.py` with this - including my `create_note`, so compare it
+with yours:
 
 ```python
 from fastapi import FastAPI
