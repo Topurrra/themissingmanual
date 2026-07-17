@@ -1,7 +1,7 @@
 ---
 title: "Choosing Between Them (and Combining Them)"
 guide: "flexbox-and-grid"
-phase: 3
+phase: 4
 summary: "The rule of thumb for Flexbox vs Grid, why they compose rather than compete, and a holy grail layout that uses both together."
 tags: [css, flexbox, grid, layout, holy-grail-layout]
 difficulty: intermediate
@@ -159,4 +159,4 @@ picture on breakpoints, fluid units, and mobile-first design, see
 
 ---
 
-[← Phase 2: CSS Grid: Two-Dimensional Layout](02-css-grid-two-dimensional-layout.md) · [Guide overview](_guide.md)
+[← Phase 3: CSS Grid: Two-Dimensional Layout](03-css-grid-two-dimensional-layout.md) · [Guide overview](_guide.md)

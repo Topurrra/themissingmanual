@@ -5,7 +5,7 @@ phase: 0
 summary: "Hands-on lessons on the features real Postgres has beyond standard SQL - JSONB, arrays, RETURNING, UUID keys, and upsert - against a real Postgres running in your browser."
 tags: [postgres, practice, lessons, hands-on, jsonb, arrays]
 category: practice
-order: 7
+order: 8
 difficulty: intermediate
 synonyms:
   - postgres exercises

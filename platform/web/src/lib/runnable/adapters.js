@@ -5,10 +5,11 @@
 // it asks `getAdapter(lang)` and talks to the returned object.
 //
 //   interface RunResult {
-//     logs?:   string;          // captured stdout / console output
-//     error?:  string;          // a thrown error / traceback (shown as stderr)
-//     result?: string;          // a return value / last-expression value
-//     table?:  { columns: string[], rows: any[][] };  // structured (SQL) output
+//     logs?:    string;          // captured stdout / console output
+//     error?:   string;          // a thrown error / traceback (shown as stderr)
+//     result?:  string;          // a return value / last-expression value
+//     table?:   { columns: string[], rows: any[][] };  // structured (SQL) output
+//     preview?: string;          // HTML to render in a sandboxed frame (HTML/CSS)
 //   }
 //
 //   interface Adapter {
@@ -197,6 +198,30 @@ class PythonAdapter {
 }
 
 // ---------------------------------------------------------------------------
+// HTML/CSS - there is no runtime to load and nothing to execute. "Running" a page
+// just means handing the markup to a sandboxed frame to render, so `run` returns
+// the source unchanged as `preview` and the widget does the rest. Grading is a
+// separate path (practice/dom-grader.js) that renders it again offscreen at a
+// fixed size and reads back computed styles.
+class HtmlAdapter {
+  label = 'HTML';
+
+  async cmLang() {
+    // lang-html brings CSS (and JS) highlighting with it for embedded <style>.
+    const { html } = await import('@codemirror/lang-html');
+    return html();
+  }
+
+  async load() {}
+
+  async run(code) {
+    return { preview: code };
+  }
+
+  dispose() {}
+}
+
+// ---------------------------------------------------------------------------
 // SQL - sql.js (SQLite in WASM) from CDN, seeded with a small sample DB.
 // ---------------------------------------------------------------------------
 const SEED_SQL = `
@@ -260,15 +285,26 @@ class SqlAdapter {
     try {
       const db = seed !== undefined ? (scratch = new this.#SQL.Database()) : this.#db;
       if (scratch && seed) scratch.run(seed);
-      const res = db.exec(code);
-      if (!res.length) {
-        // No result set (e.g. INSERT/UPDATE/CREATE) - report rows changed.
-        const changes = db.getRowsModified();
-        return { logs: `OK - ${changes} row${changes === 1 ? '' : 's'} affected.` };
+      // exec() drops result sets that matched no rows, so a SELECT returning
+      // nothing is indistinguishable from an INSERT and falls through to the
+      // "rows affected" branch below - which then reports the *seed's* changes.
+      // Walk the statements instead: column names identify a query even when it
+      // returns zero rows. Last query still wins, exactly as exec() did.
+      let table = null;
+      for (const stmt of db.iterateStatements(code)) {
+        const columns = stmt.getColumnNames();
+        if (columns.length) {
+          const rows = [];
+          while (stmt.step()) rows.push(stmt.get());
+          table = { columns, rows };
+        } else {
+          stmt.step();
+        }
       }
-      // Render the LAST statement's result set as a table.
-      const last = res[res.length - 1];
-      return { table: { columns: last.columns, rows: last.values } };
+      if (table) return { table };
+      // No query at all (e.g. INSERT/UPDATE/CREATE) - report rows changed.
+      const changes = db.getRowsModified();
+      return { logs: `OK - ${changes} row${changes === 1 ? '' : 's'} affected.` };
     } catch (err) {
       return { error: String(err.message || err) };
     } finally {
@@ -324,7 +360,9 @@ const FACTORIES = {
   ts: () => new TypeScriptAdapter(),
   postgres: () => new PGliteAdapter(),
   wat: () => new WatAdapter(),
-  math: () => new MathAdapter()
+  math: () => new MathAdapter(),
+  html: () => new HtmlAdapter(),
+  css: () => new HtmlAdapter()
 };
 
 // One adapter instance per language, shared across all blocks on the page so

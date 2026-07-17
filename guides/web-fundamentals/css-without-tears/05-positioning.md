@@ -1,7 +1,7 @@
 ---
 title: "Positioning"
 guide: "css-without-tears"
-phase: 4
+phase: 5
 summary: "What static, relative, absolute, fixed, and sticky actually reposition an element relative to, worked through a sticky header and a centered modal overlay."
 tags: [css, position, sticky, absolute, fixed, relative, modal]
 difficulty: beginner
@@ -158,4 +158,4 @@ columns, and grids of content are their own tool. That's
 
 ---
 
-[← Phase 3: Colors, Units, and Typography](03-colors-units-and-typography.md) · [Guide overview](_guide.md)
+[← Phase 4: Colors, Units, and Typography](04-colors-units-and-typography.md) · [Guide overview](_guide.md)

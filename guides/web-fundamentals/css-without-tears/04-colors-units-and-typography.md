@@ -1,7 +1,7 @@
 ---
 title: "Colors, Units, and Typography"
 guide: "css-without-tears"
-phase: 3
+phase: 4
 summary: "Hex, rgb, and hsl color syntax, why rem is the right default unit for font sizes because it respects the user's browser settings, and the line-height mistake that makes text feel cramped."
 tags: [css, colors, units, rem, em, typography, line-height, accessibility]
 difficulty: beginner
@@ -153,4 +153,4 @@ Test what you just learned:
 
 ---
 
-[← Phase 2: The Box Model](02-the-box-model.md) · [Guide overview](_guide.md) · [Phase 4: Positioning →](04-positioning.md)
+[← Phase 3: Margin Collapse](03-margin-collapse.md) · [Guide overview](_guide.md) · [Phase 5: Positioning →](05-positioning.md)

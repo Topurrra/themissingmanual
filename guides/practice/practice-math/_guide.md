@@ -5,7 +5,7 @@ phase: 0
 summary: "Hands-on arithmetic lessons - type a formula, run it, and get checked instantly. Order of operations, percentages, averages, and compound interest."
 tags: [math, arithmetic, practice, lessons, hands-on]
 category: practice
-order: 9
+order: 10
 difficulty: beginner
 synonyms:
   - math exercises

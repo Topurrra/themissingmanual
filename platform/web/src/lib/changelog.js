@@ -6,6 +6,11 @@ export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
+      { tag: 'New', text: 'Two new CSS deep-dives for the bugs that have no error message: why a margin escapes its parent and pushes the whole box down (Margin Collapse, in CSS Without Tears), and why one long token tears a flex row apart while flex: 1 watches (When a Flex Item Won\'t Shrink, in Flexbox and Grid).', href: '/guides/css-without-tears/3' },
+      { tag: 'New', text: 'Practice: HTML & CSS, with a live preview. Write real markup and styles, press Run, and watch the page redraw beside you. Twelve lessons from your first heading up to the layouts that quietly break: padding that overflows a box, a colour that loses to a more specific selector, and a card one long word tears open.', href: '/practice/html-css/1' },
+      { tag: 'New', text: 'Practice: twelve advanced Python and JavaScript lessons for code that runs clean and is still wrong. A default argument that remembers the last shopper, a copy that was never a copy, sort() putting 10 before 9, and an API that sends some amounts as numbers and some as strings.', href: '/practice' },
+      { tag: 'New', text: 'Practice: six advanced SQL lessons for the queries that run clean and are still wrong. One NULL that empties a NOT IN, a join that quietly doubles your revenue, a typo that splits one company into three, and two capstones where the hard part is deciding what the question even means.', href: '/practice/sql' },
+      { tag: 'Improved', text: 'Practice: a SQL query that correctly matches no rows now shows an empty result table, instead of asking whether you wrote a SELECT and reporting a row count that was never yours.', href: '/practice/sql' },
       { tag: 'New', text: 'Decision scenarios: a symptom, a running clock, and no obviously right answer. Work a live outage, a lost commit, or a 3am page and watch what each choice actually costs you.', href: '/guides/when-prod-is-down/1' },
       { tag: 'Improved', text: 'Build-along projects now hand you the keyboard: write the key function yourself and run it against real checks, then compare it with ours.', href: '/categories/projects' },
       { tag: 'New', text: 'Practice: "fix the bug" lessons - someone else\'s broken code, and your job is to repair it. In Python, JavaScript, TypeScript, SQL, Postgres, git and regex.', href: '/practice' },

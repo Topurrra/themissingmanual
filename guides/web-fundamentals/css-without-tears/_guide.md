@@ -29,7 +29,7 @@ This guide styles that one "About Me" page from nothing to a finished layout, on
 - **Want it to finally make sense?** Read in order - each phase styles more of the same page and
   depends on the last.
 - **Already comfortable with basics, need positioning?** Jump straight to
-  [Phase 4: Positioning](04-positioning.md).
+  [Phase 5: Positioning](05-positioning.md).
 
 ## The phases
 
@@ -37,9 +37,11 @@ This guide styles that one "About Me" page from nothing to a finished layout, on
    what inherits from parent to child, and when `!important` is a legitimate escape hatch.
 2. **[The Box Model](02-the-box-model.md)** - what padding, border, and margin actually do to an
    element's size, and why `box-sizing: border-box` is in almost every real stylesheet.
-3. **[Colors, Units, and Typography](03-colors-units-and-typography.md)** - hex vs. rgb vs. hsl, why
+3. **[Margin Collapse](03-margin-collapse.md)** - why two stacked margins become the larger one
+   instead of their sum, and why a child's margin sometimes escapes its parent entirely.
+4. **[Colors, Units, and Typography](04-colors-units-and-typography.md)** - hex vs. rgb vs. hsl, why
    `rem` beats `px` for font sizes, and the line-height mistake almost everyone makes.
-4. **[Positioning](04-positioning.md)** - `static`, `relative`, `absolute`, `fixed`, and `sticky`,
+5. **[Positioning](05-positioning.md)** - `static`, `relative`, `absolute`, `fixed`, and `sticky`,
    worked through a sticky header and a centered modal.
 
 Real layout systems - lining elements up in rows, columns, and grids - are their own guide:

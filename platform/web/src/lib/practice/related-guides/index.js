@@ -8,6 +8,7 @@ import { RELATED as POSTGRES } from './postgres.js';
 import { RELATED as WEBASSEMBLY } from './webassembly.js';
 import { RELATED as MATH } from './math.js';
 import { RELATED as PHYSICS } from './physics.js';
+import { RELATED as HTML_CSS } from './html-css.js';
 
 const BY_MODULE = {
   regex: REGEX,
@@ -19,7 +20,8 @@ const BY_MODULE = {
   postgres: POSTGRES,
   webassembly: WEBASSEMBLY,
   math: MATH,
-  physics: PHYSICS
+  physics: PHYSICS,
+  'html-css': HTML_CSS
 };
 
 export function relatedGuideFor(module, phaseNo) {

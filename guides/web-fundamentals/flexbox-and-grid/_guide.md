@@ -27,10 +27,12 @@ classic "holy grail" page layout.
 1. **[Flexbox: One-Dimensional Layout](01-flexbox-one-dimensional-layout.md)** - `display: flex`, the
    main axis and cross axis, `justify-content`/`align-items`, wrapping, and growing/shrinking items.
    Builds a navbar and a row of equal-width cards.
-2. **[CSS Grid: Two-Dimensional Layout](02-css-grid-two-dimensional-layout.md)** - `display: grid`,
+2. **[When a Flex Item Won't Shrink](02-when-a-flex-item-wont-shrink.md)** - the `min-width: auto`
+   floor that lets one long token blow a row apart, and why `min-width: 0` is the fix.
+3. **[CSS Grid: Two-Dimensional Layout](03-css-grid-two-dimensional-layout.md)** - `display: grid`,
    defining columns and rows, `grid-template-areas`, and spanning cells. Builds a dashboard layout and
    a responsive photo gallery.
-3. **[Choosing Between Them (and Combining Them)](03-choosing-between-them-and-combining-them.md)** -
+4. **[Choosing Between Them (and Combining Them)](04-choosing-between-them-and-combining-them.md)** -
    the one-dimension-vs-two-dimension rule of thumb, and a holy grail layout that uses both together.
 
 By the end you'll reach for the right tool instead of fighting the wrong one.

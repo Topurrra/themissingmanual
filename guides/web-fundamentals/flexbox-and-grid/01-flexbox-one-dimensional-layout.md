@@ -210,4 +210,4 @@ Check your intuition with a quick quiz:
 
 ---
 
-[Guide overview](_guide.md) · [Phase 2: CSS Grid: Two-Dimensional Layout →](02-css-grid-two-dimensional-layout.md)
+[Guide overview](_guide.md) · [Phase 2: When a Flex Item Won't Shrink →](02-when-a-flex-item-wont-shrink.md)

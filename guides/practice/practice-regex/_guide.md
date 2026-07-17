@@ -5,7 +5,7 @@ phase: 0
 summary: "Hands-on regular-expression lessons - write real patterns, run them instantly, and get checked by real tests."
 tags: [regex, practice, lessons, hands-on, pattern-matching]
 category: practice
-order: 4
+order: 5
 difficulty: beginner
 synonyms:
   - regex exercises

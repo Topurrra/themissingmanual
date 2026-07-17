@@ -5,7 +5,7 @@ phase: 0
 summary: "Hands-on physics lessons - plug real numbers into the formulas from the Physics guides (force, speed, free fall, momentum, kinetic energy) and get checked instantly."
 tags: [physics, formulas, practice, lessons, hands-on]
 category: practice
-order: 10
+order: 11
 difficulty: beginner
 synonyms:
   - physics formula practice

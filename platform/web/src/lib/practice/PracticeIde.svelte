@@ -397,6 +397,17 @@
       {#if running}
         <div class="pr-loading"><span class="pr-spinner"></span><span>{loadingStatus || 'Running…'}</span></div>
       {:else if runResult}
+        {#if runResult.preview != null}
+          <!-- Sandboxed with no allow-scripts, so nothing in the page runs; it is
+               only ever rendered, never executed. srcdoc loads no URL, so the
+               site's frame-src (translate.google.com only) doesn't gate it. -->
+          <iframe
+            class="pr-preview"
+            title="Preview of your page"
+            sandbox=""
+            srcdoc={runResult.preview}
+          ></iframe>
+        {/if}
         {#if runResult.table}
           <div class="pr-table-wrap">
             <table class="pr-table">
@@ -618,6 +629,19 @@
   .pr-hints {
     margin-top: 1rem;
   }
+  /* The preview is the lesson for HTML/CSS, so it gets the room. White background
+     always: the learner is styling a page, and it should look like the page they
+     are building, not inherit whatever theme they happen to be reading in. */
+  .pr-preview {
+    width: 100%;
+    height: 320px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: #fff;
+    display: block;
+    margin: 0 0 0.6rem;
+  }
+
   .pr-hint {
     font-size: 0.9rem;
     color: var(--body);

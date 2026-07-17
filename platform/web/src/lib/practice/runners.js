@@ -54,6 +54,7 @@ export async function runLesson(lesson, code, { onStatus } = {}) {
     logs: res.logs,
     result: res.result,
     table: res.table,
+    preview: res.preview,
     error: res.error,
     errorLine: parseErrorLine(lesson.language, res.error),
     timeMs
@@ -62,6 +63,7 @@ export async function runLesson(lesson, code, { onStatus } = {}) {
 
 function checkMode(lesson) {
   if (lesson.check) return lesson.check;
+  if (lesson.language === 'html') return 'dom';
   if (lesson.language === 'sql' || lesson.language === 'postgres') return 'rows';
   if (lesson.tests && lesson.tests.length) return 'tests';
   return 'output';
@@ -82,7 +84,9 @@ async function gradeRows(lesson, code) {
   ]);
   if (userRes.error) return { passed: false, mode: 'rows', detail: userRes.error };
   if (!userRes.table) {
-    return { passed: false, mode: 'rows', detail: 'Query did not return any rows - did you write a SELECT?' };
+    // A SELECT matching nothing still has a table (with zero rows), so this is
+    // only reached when the code ran no query at all.
+    return { passed: false, mode: 'rows', detail: 'That did not run a query - did you write a SELECT?' };
   }
   if (solRes.error || !solRes.table) {
     return { passed: false, mode: 'rows', detail: 'Reference solution failed to run - check the lesson content.' };
@@ -242,6 +246,30 @@ async function gradeWat(lesson, code) {
   return { passed: results.length > 0 && results.every((r) => r.passed), mode: 'tests', tests: results };
 }
 
+// HTML/CSS: render the learner's page and the solution's page in two identical
+// offscreen frames, then compare only the facts each check names.
+//
+// The solution is the reference, exactly as in gradeRows - and for the same two
+// reasons. An author never writes literal expected values, because
+// getComputedStyle resolves everything (`red` comes back `rgb(255, 0, 0)`,
+// `2em` comes back px), so hand-written literals would be a guessing game. And
+// any different-but-equivalent route to the same rendered result passes on its
+// own: `flex-flow: row` computes identically to `flex-direction: row`, so the
+// grader can't overfit to the one phrasing the author happened to use.
+async function gradeDom(lesson, code) {
+  const { probe, compareCheck } = await import('$lib/practice/dom-grader.js');
+  const checks = lesson.checks || [];
+  if (!checks.length) {
+    return { passed: false, mode: 'tests', detail: 'This lesson has no checks - report it as a bug.' };
+  }
+  const [mine, ref] = await Promise.all([probe(code, checks), probe(lesson.solution, checks)]);
+  if (!mine || !ref) {
+    return { passed: false, mode: 'tests', detail: 'Could not render the page to check it.' };
+  }
+  const results = checks.map((c, i) => compareCheck(c, mine[i], ref[i]));
+  return { passed: results.every((r) => r.passed), mode: 'tests', tests: results };
+}
+
 async function gradeOutput(lesson, code) {
   const adapter = getAdapter(lesson.language);
   await adapter.load();
@@ -258,5 +286,6 @@ export async function gradeLesson(lesson, code) {
   if (mode === 'tests') return gradeTests(lesson, code);
   if (mode === 'gitState') return gradeGitState(lesson, code);
   if (mode === 'wat') return gradeWat(lesson, code);
+  if (mode === 'dom') return gradeDom(lesson, code);
   return gradeOutput(lesson, code);
 }

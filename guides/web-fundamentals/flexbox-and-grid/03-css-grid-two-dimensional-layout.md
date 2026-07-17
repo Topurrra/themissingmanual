@@ -1,7 +1,7 @@
 ---
 title: "CSS Grid: Two-Dimensional Layout"
 guide: "flexbox-and-grid"
-phase: 2
+phase: 3
 summary: "How display: grid lays out rows and columns together, using grid-template-columns/rows, gap, named grid-template-areas, and spanning, to build a dashboard layout and a responsive photo gallery."
 tags: [css, grid, grid-template-columns, grid-template-areas, gap, responsive]
 difficulty: intermediate
@@ -181,4 +181,4 @@ Lock in the two properties before moving on:
 
 ---
 
-[← Phase 1: Flexbox: One-Dimensional Layout](01-flexbox-one-dimensional-layout.md) · [Guide overview](_guide.md) · [Phase 3: Choosing Between Them (and Combining Them) →](03-choosing-between-them-and-combining-them.md)
+[← Phase 2: When a Flex Item Won't Shrink](02-when-a-flex-item-wont-shrink.md) · [Guide overview](_guide.md) · [Phase 4: Choosing Between Them (and Combining Them) →](04-choosing-between-them-and-combining-them.md)

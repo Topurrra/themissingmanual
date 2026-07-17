@@ -151,4 +151,4 @@ Test what you just learned:
 
 ---
 
-[← Phase 1: Selectors and the Cascade](01-selectors-and-the-cascade.md) · [Guide overview](_guide.md) · [Phase 3: Colors, Units, and Typography →](03-colors-units-and-typography.md)
+[← Phase 1: Selectors and the Cascade](01-selectors-and-the-cascade.md) · [Guide overview](_guide.md) · [Phase 3: Margin Collapse →](03-margin-collapse.md)

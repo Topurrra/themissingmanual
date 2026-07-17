@@ -5,7 +5,7 @@ phase: 0
 summary: "Hands-on WebAssembly Text (WAT) lessons - write the actual text format browsers compile and run, and get checked instantly against real compiled output."
 tags: [webassembly, wasm, wat, practice, lessons, hands-on]
 category: practice
-order: 8
+order: 9
 difficulty: intermediate
 synonyms:
   - webassembly exercises

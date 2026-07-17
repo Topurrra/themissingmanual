@@ -5,7 +5,7 @@ phase: 0
 summary: "Hands-on TypeScript lessons - add types to real JavaScript, run them instantly, and get checked by real tests."
 tags: [typescript, practice, lessons, hands-on, types]
 category: practice
-order: 5
+order: 6
 difficulty: beginner
 synonyms:
   - typescript exercises

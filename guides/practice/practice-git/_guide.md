@@ -5,7 +5,7 @@ phase: 0
 summary: "Hands-on Git lessons - type real git commands into an in-browser terminal, against a real repository, and get checked instantly."
 tags: [git, practice, lessons, hands-on, version-control]
 category: practice
-order: 6
+order: 7
 difficulty: beginner
 synonyms:
   - git exercises
