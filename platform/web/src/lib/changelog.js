@@ -6,6 +6,11 @@ export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
+      { tag: 'New', text: 'Decision scenarios: a symptom, a running clock, and no obviously right answer. Work a live outage, a lost commit, or a 3am page and watch what each choice actually costs you.', href: '/guides/when-prod-is-down/1' },
+      { tag: 'Improved', text: 'Build-along projects now hand you the keyboard: write the key function yourself and run it against real checks, then compare it with ours.', href: '/categories/projects' },
+      { tag: 'New', text: 'Practice: "fix the bug" lessons - someone else\'s broken code, and your job is to repair it. In Python, JavaScript, TypeScript, SQL, Postgres, git and regex.', href: '/practice' },
+      { tag: 'Improved', text: 'Practice: once you pick a module, the sidebar shows just that module\'s lessons instead of all ten.', href: '/practice' },
+      { tag: 'Improved', text: 'Diagrams now appear instantly, with no JavaScript to download, and follow whichever theme you are reading in.' },
       { tag: 'New', text: 'C and C++ from zero: two deep, from-scratch courses - pointers, memory, RAII, templates, the STL, and the ideas that separate writing code from understanding it.', href: '/categories/programming-languages' },
       { tag: 'New', text: 'Power BI from zero, plus a DAX deep dive - from a spreadsheet to a live, trustworthy report, and the row-vs-filter-context reasoning behind DAX.', href: '/categories/data-analytics' },
       { tag: 'New', text: 'Searches that turn up nothing now offer to add the topic straight to the writing queue.', href: '/request' },
@@ -71,13 +76,25 @@ export function changelogSignature() {
 // The most recent N changelog items, newest first - for the homepage "recently added" strip.
 export function recentItems(n = 4) {
   const out = [];
-  for (const rel of CHANGELOG) {
+  
+  // 1. Collect up to 'n' items
+  outerLoop: for (const rel of CHANGELOG) {
     for (const it of rel.items) {
       out.push(it);
-      if (out.length >= n) return out;
+      if (out.length >= n) {
+        break outerLoop; 
+      }
     }
   }
-  return out;
+
+  // 2. Sort the collected items: 'new' first, everything else second
+  return out.sort((a, b) => {
+    const aIsNew = a.tag === "New" ? 1 : 0;
+    const bIsNew = b.tag === "New" ? 1 : 0;
+    
+    // Sorts descending (1 comes before 0)
+    return bIsNew - aIsNew; 
+  });
 }
 
 const MONTHS = [

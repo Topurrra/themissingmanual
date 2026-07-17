@@ -8,7 +8,7 @@
   import { siteOrigin } from "$lib/site.js";
   import { recentItems } from "$lib/changelog.js";
 
-  const whatsNew = recentItems(3); // changelog highlights for the "What's new" strip
+  const whatsNew = recentItems(5); // changelog highlights for the "What's new" strip
 
   export let data;
   $: origin = siteOrigin($page.url.origin);

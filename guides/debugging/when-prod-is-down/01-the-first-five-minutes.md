@@ -18,11 +18,11 @@ control. Here's exactly what to do, in order - use the card while it's happening
 
 ## The PROD-DOWN CHECKLIST
 
-> **Alert just fired? Don't touch anything yet. Do these, in order. Breathe between each one.**
+> **Alert just fired? Don't touch anything yet. Do these, in order.**
 
 | # | Do this | Why |
 |---|---|---|
-| 1 | **Breathe. Say "I will not change anything until I understand the blast radius."** | Panic-actions are the #1 way a small outage becomes a big one. |
+| 1 | **Don't panic.** | Panic-actions are the #1 way a small outage becomes a big one. |
 | 2 | **Confirm it's real.** Is it the service, or your laptop/VPN/the monitoring? | You can't fix an outage that isn't happening - and you'll cause one chasing a ghost. |
 | 3 | **Declare the incident out loud.** Post in the incident channel: *"Declaring an incident: checkout 500s. I'm coordinating."* | Makes it official, pulls in help, starts the clock and the record. |
 | 4 | **Assess the blast radius.** *Who* is affected, *what* can't they do, *how bad* (all users or some?). | Severity drives everything: who you wake, how fast you act, what risks are acceptable. |
