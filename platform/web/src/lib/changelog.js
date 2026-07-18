@@ -6,6 +6,7 @@ export const CHANGELOG = [
   {
     date: '2026-07',
     items: [
+      { tag: 'New', text: 'Seven new cheat sheets: JavaScript (array methods, destructuring, async), CSS (flexbox, grid, and the centering recipes), TypeScript (utility types and narrowing), React Hooks (signatures plus which-hook-when), grep & find, systemctl & journalctl, and nginx. The SSH sheet gained rsync, and the Python sheet now covers uv properly.', href: '/cheat-sheet?tool=javascript' },
       { tag: 'New', text: 'Build a Mini UI Framework: the frontend wave\'s capstone project. In about 120 lines of runnable JavaScript you build the machinery inside React, Vue, and Svelte yourself - a proxy reactivity system, automatic dependency tracking, a virtual DOM, and a diff - then trigger the famous keys bug on purpose and fix it. The magic box, emptied.', href: '/guides/mini-framework-js/1' },
       { tag: 'New', text: 'Angular from Zero rounds out the big four: the full-framework deal explained through its modern core - standalone components, signals, dependency injection demystified, and just enough RxJS to be productive without drowning. The NG-numbered errors get their own decoder.', href: '/guides/angular-from-zero/1' },
       { tag: 'New', text: 'Svelte from Zero: the framework this site is built with, explained from the compiler up - runes, dead-snapshot debugging, snippets, and why there is no virtual DOM to diff. Eight phases, including a translation table for the older syntax you will meet in the wild.', href: '/guides/svelte-from-zero/1' },

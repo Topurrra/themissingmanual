@@ -128,6 +128,114 @@ export const CHEATSHEETS = [
     ]
   },
   {
+    id: 'javascript', name: 'JavaScript', icon: 'ti-brand-javascript',
+    blurb: 'The array methods, destructuring, and async patterns you reach for daily.',
+    commands: [
+      { cmd: '.map()', desc: 'Transform every element into a new array.', example: 'prices.map(p => p * 1.2)' },
+      { cmd: '.filter()', desc: 'Keep only elements that pass the test.', example: 'todos.filter(t => !t.done)' },
+      { cmd: '.find()', desc: 'First element matching, or undefined.', example: 'users.find(u => u.id === 7)' },
+      { cmd: '.some() / .every()', desc: 'Does any / do all pass the test?', example: 'items.some(i => i.price > 100)' },
+      { cmd: '.reduce()', desc: 'Fold an array into one value.', example: 'cart.reduce((sum, i) => sum + i.price, 0)' },
+      { cmd: '.includes()', desc: 'Is this value in the array (or string)?', example: "roles.includes('admin')" },
+      { cmd: '.flat() / .flatMap()', desc: 'Flatten nested arrays / map then flatten.', example: 'orders.flatMap(o => o.items)' },
+      { cmd: '.sort() (copy first!)', desc: 'Sorts IN PLACE - spread to keep the original.', example: '[...scores].sort((a, b) => a - b)' },
+      { cmd: '.at(-1)', desc: 'Last element without length math.', example: 'history.at(-1)' },
+      { cmd: 'destructuring (object)', desc: 'Pull fields into variables, with defaults.', example: "const { name, role = 'user' } = person" },
+      { cmd: 'destructuring (array)', desc: 'Unpack by position; skip with commas.', example: 'const [first, , third] = rows' },
+      { cmd: 'spread', desc: 'Copy/merge arrays and objects immutably.', example: 'const next = { ...state, count: 5 }' },
+      { cmd: 'rest args', desc: 'Gather remaining arguments into an array.', example: 'function sum(...nums) { return nums.reduce((a, b) => a + b, 0) }' },
+      { cmd: '?. (optional chaining)', desc: 'Stop safely at null/undefined mid-path.', example: 'order?.customer?.email' },
+      { cmd: '?? (nullish coalescing)', desc: 'Default only for null/undefined (0 and "" pass).', example: 'const limit = config.limit ?? 50' },
+      { cmd: 'template literals', desc: 'Strings with embedded expressions, multiline.', example: '`Hello ${user.name}, ${count} new`' },
+      { cmd: 'async / await', desc: 'Write promise code that reads top-to-bottom.', example: 'const res = await fetch(url); const data = await res.json()' },
+      { cmd: 'try / catch (async)', desc: 'Handle a rejected await.', example: 'try { await save() } catch (e) { console.error(e) }' },
+      { cmd: 'Promise.all', desc: 'Run promises in parallel, wait for all.', example: 'const [user, posts] = await Promise.all([getUser(), getPosts()])' },
+      { cmd: 'JSON.parse / stringify', desc: 'Text to object and back (pretty-print with 2).', example: 'JSON.stringify(data, null, 2)' },
+      { cmd: 'Object.entries / keys', desc: 'Loop an object like an array.', example: 'Object.entries(scores).map(([k, v]) => `${k}: ${v}`)' },
+      { cmd: 'structuredClone', desc: 'Real deep copy (unlike spread, which is shallow).', example: 'const copy = structuredClone(state)' }
+    ]
+  },
+  {
+    id: 'typescript', name: 'TypeScript', icon: 'ti-brand-typescript',
+    blurb: 'Types, narrowing, generics, and the utility types worth memorizing.',
+    commands: [
+      { cmd: 'basic annotations', desc: 'Types on variables, params, and returns.', example: 'function total(items: number[]): number { return items.length }' },
+      { cmd: 'interface', desc: 'Name an object shape.', example: 'interface User { id: number; name: string }' },
+      { cmd: 'type alias', desc: 'Name any type - unions included.', example: "type Status = 'draft' | 'sent' | 'paid'" },
+      { cmd: 'optional ?', desc: 'Property may be missing.', example: 'interface Opts { retries?: number }' },
+      { cmd: 'readonly', desc: 'Property cannot be reassigned.', example: 'interface Cfg { readonly apiUrl: string }' },
+      { cmd: 'union |', desc: 'One of several types.', example: 'let id: string | number' },
+      { cmd: 'narrowing: typeof', desc: 'Branch by primitive type - TS follows.', example: "if (typeof id === 'string') id.toUpperCase()" },
+      { cmd: 'narrowing: in', desc: 'Branch by property presence.', example: "if ('error' in result) console.log(result.error)" },
+      { cmd: 'narrowing: instanceof', desc: 'Branch by class.', example: 'if (e instanceof TypeError) retry()' },
+      { cmd: 'discriminated union', desc: 'A shared literal field makes switches exhaustive.', example: "type Shape = { kind: 'circle'; r: number } | { kind: 'rect'; w: number; h: number }" },
+      { cmd: 'generics', desc: 'A type parameter flows in and out.', example: 'function first<T>(arr: T[]): T | undefined { return arr[0] }' },
+      { cmd: 'generic constraint', desc: 'Require a capability of T.', example: 'function byId<T extends { id: number }>(items: T[], id: number) { return items.find(i => i.id === id) }' },
+      { cmd: 'Partial<T>', desc: 'All properties optional - update payloads.', example: 'function patch(u: Partial<User>) {}' },
+      { cmd: 'Pick<T, K>', desc: 'Keep only the listed keys.', example: "type Preview = Pick<User, 'id' | 'name'>" },
+      { cmd: 'Omit<T, K>', desc: 'Everything except the listed keys.', example: "type NewUser = Omit<User, 'id'>" },
+      { cmd: 'Record<K, V>', desc: 'Object with known key and value types.', example: 'const stock: Record<string, number> = { kettle: 4 }' },
+      { cmd: 'Required<T> / Readonly<T>', desc: 'Make everything required / immutable.', example: 'type Frozen = Readonly<Config>' },
+      { cmd: 'ReturnType<typeof fn>', desc: 'The type a function returns.', example: 'type Row = ReturnType<typeof parseRow>' },
+      { cmd: 'keyof', desc: 'The property names of a type, as a union.', example: 'type UserField = keyof User' },
+      { cmd: 'as const', desc: 'Freeze literals into exact types.', example: "const ROLES = ['admin', 'editor'] as const" },
+      { cmd: 'satisfies', desc: 'Check against a type without widening to it.', example: 'const theme = { bg: "#fff" } satisfies Record<string, string>' },
+      { cmd: 'unknown (not any)', desc: 'Safe top type - must narrow before use.', example: 'function parse(x: unknown) { if (typeof x === "string") return x.trim() }' }
+    ]
+  },
+  {
+    id: 'css', name: 'CSS', icon: 'ti-brand-css3',
+    blurb: 'Selectors, flexbox and grid one-liners, and the centering recipes.',
+    commands: [
+      { cmd: 'child vs descendant', desc: '> is direct children only; space is any depth.', example: 'nav > a  vs  nav a' },
+      { cmd: ':nth-child()', desc: 'Select by position - zebra stripes.', example: 'tr:nth-child(even) { background: #f6f6f6; }' },
+      { cmd: '[attr] selector', desc: 'Select by attribute or its value.', example: 'input[type="checkbox"] { accent-color: teal; }' },
+      { cmd: ':hover / :focus-visible', desc: 'Pointer hover; keyboard-only focus ring.', example: 'button:focus-visible { outline: 2px solid teal; }' },
+      { cmd: ':not()', desc: 'Everything except.', example: 'li:not(:last-child) { border-bottom: 1px solid #ddd; }' },
+      { cmd: 'flex row', desc: 'The everyday toolbar: row, centered, spaced.', example: 'display: flex; align-items: center; gap: 1rem;' },
+      { cmd: 'flex push-apart', desc: 'First items left, last item right.', example: '.spacer { margin-left: auto; }' },
+      { cmd: 'flex: 1', desc: 'Let an item grow to fill the leftover space.', example: '.search { flex: 1; }' },
+      { cmd: 'grid columns', desc: 'Fixed column layout in one line.', example: 'display: grid; grid-template-columns: 200px 1fr; gap: 1rem;' },
+      { cmd: 'responsive card grid', desc: 'As many columns as fit, no media query.', example: 'grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));' },
+      { cmd: 'center anything', desc: 'The two-line total centering recipe.', example: 'display: grid; place-items: center;' },
+      { cmd: 'center (flex version)', desc: 'Same result with flexbox.', example: 'display: flex; justify-content: center; align-items: center;' },
+      { cmd: 'position: sticky', desc: 'Scrolls, then pins - needs a top value.', example: 'header { position: sticky; top: 0; }' },
+      { cmd: 'media query', desc: 'Styles for a size range.', example: '@media (max-width: 600px) { .sidebar { display: none; } }' },
+      { cmd: 'custom properties', desc: 'Define a variable, use it everywhere.', example: ':root { --accent: #0e7c86; } a { color: var(--accent); }' },
+      { cmd: 'clamp()', desc: 'Fluid value with a floor and ceiling.', example: 'font-size: clamp(1rem, 2.5vw, 1.5rem);' },
+      { cmd: 'aspect-ratio', desc: 'Keep a box at fixed proportions.', example: '.video { aspect-ratio: 16 / 9; }' },
+      { cmd: 'object-fit: cover', desc: 'Fill the box, crop the overflow - no squishing.', example: 'img { width: 100%; height: 200px; object-fit: cover; }' },
+      { cmd: 'truncate text', desc: 'One line with an ellipsis - all three needed.', example: 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;' },
+      { cmd: 'transition', desc: 'Animate property changes - name the property.', example: 'transition: background 0.2s ease;' },
+      { cmd: 'box-sizing', desc: 'Make width include padding and border (do this globally).', example: '* { box-sizing: border-box; }' },
+      { cmd: 'prefers-reduced-motion', desc: 'Respect the reduced-motion OS setting.', example: '@media (prefers-reduced-motion: reduce) { * { animation: none; } }' }
+    ]
+  },
+  {
+    id: 'react', name: 'React Hooks', icon: 'ti-brand-react',
+    blurb: 'Hook signatures, the rules, and which hook fits which job.',
+    commands: [
+      { cmd: 'useState', desc: 'Local state: value + setter; setter triggers re-render.', example: 'const [count, setCount] = useState(0)' },
+      { cmd: 'functional update', desc: 'When new state depends on old - always safe.', example: 'setCount(c => c + 1)' },
+      { cmd: 'state: new references', desc: 'Never mutate - copy, then set.', example: 'setItems([...items, newItem])' },
+      { cmd: 'useEffect (mount)', desc: 'Run once after first render - empty deps.', example: 'useEffect(() => { document.title = "Shop"; }, [])' },
+      { cmd: 'useEffect (on change)', desc: 'Re-run when a dependency changes.', example: 'useEffect(() => { fetchUser(id).then(setUser); }, [id])' },
+      { cmd: 'useEffect cleanup', desc: 'Return a function to undo what you started.', example: 'useEffect(() => { const t = setInterval(tick, 1000); return () => clearInterval(t); }, [])' },
+      { cmd: 'useRef (DOM)', desc: 'A handle to an element - focus, measure, scroll.', example: 'const inputRef = useRef(null); inputRef.current?.focus()' },
+      { cmd: 'useRef (mutable box)', desc: 'Persists across renders WITHOUT re-rendering.', example: 'const renders = useRef(0); renders.current++' },
+      { cmd: 'useMemo', desc: 'Cache an expensive computed value by deps.', example: 'const sorted = useMemo(() => [...rows].sort(byDate), [rows])' },
+      { cmd: 'useCallback', desc: 'Stable function identity for memoized children.', example: 'const onSave = useCallback(() => save(id), [id])' },
+      { cmd: 'useContext', desc: 'Read the value from the nearest provider above.', example: 'const theme = useContext(ThemeContext)' },
+      { cmd: 'useReducer', desc: 'Many update rules, one dispatch.', example: 'const [state, dispatch] = useReducer(reducer, initial)' },
+      { cmd: 'custom hook', desc: 'Package reactive logic as use-prefixed function.', example: 'function useDebounce(value, ms) { /* useState + useEffect inside */ }' },
+      { cmd: 'rules of hooks', desc: 'Top level only - never in ifs, loops, or callbacks.', example: 'const [x, setX] = useState(0); if (loading) return <Spinner />' },
+      { cmd: 'list keys', desc: 'Stable identity per item - never index on mutable lists.', example: 'items.map(i => <Row key={i.id} item={i} />)' },
+      { cmd: 'controlled input', desc: 'Value from state, keystrokes into state.', example: '<input value={email} onChange={e => setEmail(e.target.value)} />' },
+      { cmd: 'pass the function', desc: 'onClick={fn} runs on click; onClick={fn()} runs NOW.', example: '<button onClick={() => remove(id)}>Delete</button>' },
+      { cmd: 'which hook when', desc: 'Derived value: useMemo (or just compute). Side effect: useEffect. Shared: useContext. DOM: useRef.', example: 'const total = items.reduce((s, i) => s + i.price, 0)  // no hook needed' }
+    ]
+  },
+  {
     id: 'kubectl', name: 'kubectl', icon: 'ti-ship',
     blurb: 'Day-to-day commands for inspecting and steering a Kubernetes cluster.',
     commands: [
@@ -173,8 +281,8 @@ export const CHEATSHEETS = [
     ]
   },
   {
-    id: 'python', name: 'Python (pip & venv)', icon: 'ti-brand-python',
-    blurb: 'Virtual environments and package management for Python projects.',
+    id: 'python', name: 'Python (pip, venv & uv)', icon: 'ti-brand-python',
+    blurb: 'Virtual environments and package management - classic pip/venv and modern uv.',
     commands: [
       { cmd: 'python -m venv', desc: 'Create a virtual environment.', example: `python -m venv .venv` },
       { cmd: 'activate (mac/Linux)', desc: 'Enter the virtual environment.', example: `source .venv/bin/activate` },
@@ -190,11 +298,18 @@ export const CHEATSHEETS = [
       { cmd: 'pip install -U', desc: 'Upgrade a package to the latest.', example: `pip install -U pip` },
       { cmd: 'python -m', desc: 'Run a module as a script.', example: `python -m http.server 8000` },
       { cmd: 'pipx', desc: 'Install a CLI tool in its own isolated env.', example: `pipx install black` },
-      { cmd: 'uv', desc: 'A fast, modern venv + pip replacement.', example: `uv pip install requests` }
+      { cmd: 'uv venv', desc: 'Create a venv, much faster than python -m venv.', example: `uv venv` },
+      { cmd: 'uv pip install', desc: 'Drop-in pip replacement inside the venv.', example: `uv pip install requests` },
+      { cmd: 'uv init', desc: 'Start a project with a pyproject.toml.', example: `uv init myproject` },
+      { cmd: 'uv add', desc: 'Add a dependency to the project (and its lockfile).', example: `uv add fastapi` },
+      { cmd: 'uv run', desc: 'Run a command in the project env - no activate needed.', example: `uv run pytest` },
+      { cmd: 'uv sync', desc: 'Install exactly what the lockfile says.', example: `uv sync` },
+      { cmd: 'uvx', desc: 'Run a CLI tool without installing it (like npx).', example: `uvx ruff check .` },
+      { cmd: 'uv python install', desc: 'Install a Python version itself via uv.', example: `uv python install 3.12` }
     ]
   },
   {
-    id: 'ssh', name: 'SSH & scp', icon: 'ti-lock',
+    id: 'ssh', name: 'SSH, scp & rsync', icon: 'ti-lock',
     blurb: 'Connect to remote machines, copy files, and manage keys.',
     commands: [
       { cmd: 'ssh', desc: 'Connect to a remote host.', example: `ssh ana@server.com` },
@@ -206,6 +321,11 @@ export const CHEATSHEETS = [
       { cmd: 'scp (upload)', desc: 'Copy a local file to a remote host.', example: `scp app.tar.gz ana@server.com:/home/ana/` },
       { cmd: 'scp (download)', desc: 'Copy a remote file to your machine.', example: `scp ana@server.com:/var/log/app.log .` },
       { cmd: 'scp -r', desc: 'Copy a whole folder.', example: `scp -r ./site ana@server.com:/var/www/` },
+      { cmd: 'rsync -avz', desc: 'Sync a folder remotely - only transfers what changed.', example: `rsync -avz ./site/ ana@server.com:/var/www/site/` },
+      { cmd: 'rsync --delete', desc: 'Mirror exactly: also remove remote files gone locally.', example: `rsync -avz --delete ./site/ ana@server.com:/var/www/site/` },
+      { cmd: 'rsync -n (dry run)', desc: 'Preview what WOULD transfer - use before --delete.', example: `rsync -avzn --delete ./site/ ana@server.com:/var/www/site/` },
+      { cmd: 'rsync (download)', desc: 'Pull a remote folder to your machine.', example: `rsync -avz ana@server.com:/var/log/app/ ./logs/` },
+      { cmd: 'rsync trailing slash', desc: 'src/ copies the CONTENTS; src copies the folder itself.', example: `rsync -av src/ dest/   # contents of src into dest` },
       { cmd: 'ssh -L', desc: 'Tunnel a remote port to your machine.', example: `ssh -L 8080:localhost:80 ana@server.com` },
       { cmd: 'ssh (config alias)', desc: 'Connect using a ~/.ssh/config Host alias.', example: `ssh prod` },
       { cmd: 'ssh-add', desc: 'Add a key to the running ssh-agent.', example: `ssh-add ~/.ssh/id_ed25519` },
@@ -496,6 +616,33 @@ export const CHEATSHEETS = [
     ]
   },
   {
+    id: 'grep-find', name: 'grep & find', icon: 'ti-file-search',
+    blurb: 'Search inside files with grep, locate files with find - the daily pair.',
+    commands: [
+      { cmd: 'grep -r', desc: 'Search all files under a folder, recursively.', example: `grep -r "TODO" src/` },
+      { cmd: 'grep -ri', desc: 'Recursive and case-insensitive.', example: `grep -ri "timeout" .` },
+      { cmd: 'grep -rn', desc: 'Show file and line number for each match.', example: `grep -rn "api_key" config/` },
+      { cmd: 'grep -rl', desc: 'List only the file names that match.', example: `grep -rl "deprecated" src/` },
+      { cmd: 'grep -v', desc: 'Invert: show lines that do NOT match.', example: `grep -v "DEBUG" app.log` },
+      { cmd: 'grep -c', desc: 'Count matching lines per file.', example: `grep -c "ERROR" app.log` },
+      { cmd: 'grep -E', desc: 'Extended regex: +, ?, | without backslashes.', example: `grep -E "error|warn" app.log` },
+      { cmd: 'grep -w', desc: 'Match whole words only.', example: `grep -rw "cat" notes/` },
+      { cmd: 'grep -A / -B / -C', desc: 'Show lines After, Before, or around a match.', example: `grep -C 3 "panic" app.log` },
+      { cmd: 'grep --include', desc: 'Restrict the recursive search by filename pattern.', example: `grep -rn "useState" --include="*.tsx" src/` },
+      { cmd: 'grep in a pipe', desc: 'Filter the output of any command.', example: `ps aux | grep node` },
+      { cmd: 'rg (ripgrep)', desc: 'Faster modern grep - recursive by default, respects .gitignore.', example: `rg "TODO" -t js` },
+      { cmd: 'find by name', desc: 'Locate files by glob (quote the pattern).', example: `find . -name "*.test.js"` },
+      { cmd: 'find -iname', desc: 'Same, case-insensitive.', example: `find . -iname "readme*"` },
+      { cmd: 'find -type', desc: 'Only files (f) or only directories (d).', example: `find . -type d -name "node_modules"` },
+      { cmd: 'find -mtime', desc: 'By modification age in days (-1 = last 24h).', example: `find /var/log -mtime -1` },
+      { cmd: 'find -size', desc: 'By file size (+100M = larger than 100 MB).', example: `find . -size +100M` },
+      { cmd: 'find -exec', desc: 'Run a command on every result ({} is the file).', example: `find . -name "*.log" -exec gzip {} \\;` },
+      { cmd: 'find -delete', desc: 'Delete what matches - run WITHOUT -delete first to preview.', example: `find . -name "*.tmp" -delete` },
+      { cmd: 'find + xargs', desc: 'Feed results to another command in batches.', example: `find . -name "*.py" | xargs grep -l "import requests"` },
+      { cmd: 'find -maxdepth', desc: 'Limit how deep the search goes.', example: `find . -maxdepth 2 -name "package.json"` }
+    ]
+  },
+  {
     id: 'sed', name: 'sed', icon: 'ti-replace',
     blurb: 'Stream-edit text - find and replace, delete lines, and rewrite files in place.',
     commands: [
@@ -665,6 +812,52 @@ export const CHEATSHEETS = [
       { cmd: '$@ and $<', desc: 'Automatic variables: target and first prerequisite.', example: `%.o: %.c\n\t$(CC) -c $< -o $@` },
       { cmd: '@ prefix', desc: 'Silence a command (don\'t echo it).', example: `@echo "Deploying to $(ENV)"` },
       { cmd: 'ifeq', desc: 'Branch on a variable\'s value (no tab before ifeq lines).', example: `ifeq ($(ENV),prod)\nFLAGS = --minify\nendif` }
+    ]
+  },
+  {
+    id: 'systemd', name: 'systemctl & journalctl', icon: 'ti-server-cog',
+    blurb: 'Manage Linux services and read their logs - the on-call survival pair.',
+    commands: [
+      { cmd: 'systemctl status', desc: 'Is it running, since when, and the last log lines.', example: `systemctl status nginx` },
+      { cmd: 'systemctl start / stop', desc: 'Start or stop a service now.', example: `sudo systemctl restart myapp` },
+      { cmd: 'systemctl enable', desc: 'Start automatically at boot (--now also starts it).', example: `sudo systemctl enable --now myapp` },
+      { cmd: 'systemctl disable', desc: 'Remove from boot startup.', example: `sudo systemctl disable myapp` },
+      { cmd: 'systemctl reload', desc: 'Re-read config without dropping connections (if supported).', example: `sudo systemctl reload nginx` },
+      { cmd: 'systemctl daemon-reload', desc: 'Re-read unit files after editing one - easy to forget.', example: `sudo systemctl daemon-reload` },
+      { cmd: 'systemctl list-units', desc: 'What services exist and their states.', example: `systemctl list-units --type=service --state=running` },
+      { cmd: 'systemctl is-active', desc: 'Script-friendly running check.', example: `systemctl is-active myapp` },
+      { cmd: 'systemctl cat', desc: 'Show the unit file a service runs from.', example: `systemctl cat myapp` },
+      { cmd: 'systemctl --failed', desc: 'List every unit that failed to start.', example: `systemctl --failed` },
+      { cmd: 'journalctl -u', desc: 'All logs for one service.', example: `journalctl -u myapp` },
+      { cmd: 'journalctl -u -f', desc: 'Follow a service log live (like tail -f).', example: `journalctl -u nginx -f` },
+      { cmd: 'journalctl --since', desc: 'Logs from a time window.', example: `journalctl -u myapp --since "1 hour ago"` },
+      { cmd: 'journalctl -p err', desc: 'Only errors and worse, across everything.', example: `journalctl -p err --since today` },
+      { cmd: 'journalctl -b', desc: 'Logs since the current boot (-b -1 = previous boot).', example: `journalctl -b -1 -u myapp` },
+      { cmd: 'journalctl -n', desc: 'Just the last N lines.', example: `journalctl -u myapp -n 100` },
+      { cmd: 'journalctl --disk-usage', desc: 'How much space logs are eating.', example: `journalctl --disk-usage` },
+      { cmd: 'journalctl --vacuum-size', desc: 'Trim old logs down to a size cap.', example: `sudo journalctl --vacuum-size=500M` }
+    ]
+  },
+  {
+    id: 'nginx', name: 'nginx', icon: 'ti-server-2',
+    blurb: 'Test, reload, and read the config blocks behind most reverse proxies.',
+    commands: [
+      { cmd: 'nginx -t', desc: 'Validate the config BEFORE reloading - always.', example: `sudo nginx -t` },
+      { cmd: 'nginx -s reload', desc: 'Apply config changes without dropping connections.', example: `sudo nginx -s reload` },
+      { cmd: 'nginx -T', desc: 'Dump the full merged config (find what is really in effect).', example: `sudo nginx -T | grep -n server_name` },
+      { cmd: 'config layout', desc: 'Main config + one file per site, enabled by symlink.', example: `ls /etc/nginx/sites-available /etc/nginx/sites-enabled` },
+      { cmd: 'server block', desc: 'One virtual host: port, domain, root.', example: `server {\n  listen 80;\n  server_name example.com;\n  root /var/www/site;\n}` },
+      { cmd: 'location', desc: 'Route a URL prefix inside a server block.', example: `location /api/ {\n  proxy_pass http://127.0.0.1:3000;\n}` },
+      { cmd: 'proxy_pass', desc: 'Forward requests to an app server (reverse proxy).', example: `proxy_pass http://127.0.0.1:3000;` },
+      { cmd: 'proxy headers', desc: 'Pass the real client host/IP to the app.', example: `proxy_set_header Host $host;\nproxy_set_header X-Real-IP $remote_addr;` },
+      { cmd: 'try_files (SPA)', desc: 'Serve files, fall back to index.html for client routing.', example: `try_files $uri $uri/ /index.html;` },
+      { cmd: 'redirect to https', desc: 'The standard port-80 to-https bounce.', example: `return 301 https://$host$request_uri;` },
+      { cmd: 'https with certbot', desc: 'Free TLS certificate, auto-configured.', example: `sudo certbot --nginx -d example.com` },
+      { cmd: 'gzip', desc: 'Compress text responses.', example: `gzip on;\ngzip_types text/css application/json application/javascript;` },
+      { cmd: 'client_max_body_size', desc: 'Raise the upload limit (default is 1m).', example: `client_max_body_size 50m;` },
+      { cmd: 'access log', desc: 'Watch requests as they arrive.', example: `sudo tail -f /var/log/nginx/access.log` },
+      { cmd: 'error log', desc: 'The first place to look when something 502s.', example: `sudo tail -f /var/log/nginx/error.log` },
+      { cmd: 'add a header', desc: 'Attach a response header (e.g. cache policy).', example: `add_header Cache-Control "public, max-age=3600";` }
     ]
   }
 ];
