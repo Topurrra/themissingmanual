@@ -55,8 +55,15 @@ pub fn html_to_index_text(html: &str) -> String {
     html_to_text(&re.replace_all(html, ""))
 }
 
+/// Bump when the Markdown renderer's output changes (new comrak options, highlighter
+/// changes, etc.). Folded into `content_signature` so a renderer upgrade re-imports
+/// stored HTML even though no guide file changed - otherwise the persistent DB keeps
+/// serving stale pre-upgrade HTML forever.
+pub const RENDER_VERSION: u32 = 2; // 2: comrak header_ids enabled
+
 /// A content signature of every `guides/**/*.md` under `root`, for cheap change detection.
-/// Hashes each file's relative path + bytes (sorted), so any add, edit, or removal changes it.
+/// Hashes each file's relative path + bytes (sorted) plus RENDER_VERSION, so any add,
+/// edit, removal, or renderer change alters it.
 pub fn content_signature(root: &Path) -> u64 {
     use std::hash::{Hash, Hasher};
     let guides_root = root.join("guides");
@@ -77,6 +84,7 @@ pub fn content_signature(root: &Path) -> u64 {
     }
     entries.sort_by(|a, b| a.0.cmp(&b.0)); // WalkDir order isn't guaranteed; sort for determinism
     let mut h = std::collections::hash_map::DefaultHasher::new();
+    RENDER_VERSION.hash(&mut h);
     for (rel, bytes) in &entries {
         rel.hash(&mut h);
         bytes.hash(&mut h);

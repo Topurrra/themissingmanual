@@ -18,12 +18,18 @@
   import Scenarios from '$lib/Scenarios.svelte';
   import ReaderTTS from '$lib/ReaderTTS.svelte';
   import Quiz from '$lib/Quiz.svelte';
+  import RecallPrompt from '$lib/RecallPrompt.svelte';
+  import Discussion from '$lib/Discussion.svelte';
   import RunnableCode from '$lib/RunnableCode.svelte';
   import FeedbackWidget from '$lib/FeedbackWidget.svelte';
   import Annotations from '$lib/Annotations.svelte';
   export let data;
   $: phase = data.phase;
   $: practice = data.practice;
+  $: related = data.related ?? [];
+  // Discussion pilot: only on guides named in GISCUS_GUIDES ("*" = all).
+  $: giscus = $page.data.giscus;
+  $: discussionOn = !!giscus && (giscus.guides.includes('*') || giscus.guides.includes(phase.guide_slug));
 
   const flagOn = (v) => !['0', 'false', 'off', 'no'].includes(String(v ?? '').trim().toLowerCase());
   $: siteConfig = $page.data.siteConfig ?? {};
@@ -80,7 +86,9 @@
       publisher: { '@type': 'Organization', name: 'The Missing Manual' },
       mainEntityOfPage: `${origin}/guides/${slug}/${phase.phase_no}`,
       isPartOf: { '@type': 'Article', name: guideTitle, url: `${origin}/guides/${slug}` },
-      isAccessibleForFree: true
+      isAccessibleForFree: true,
+      // Recency/trust signal for AI answer engines; same date the Freshness badge shows.
+      ...(phase.updated ? { dateModified: phase.updated } : {})
     },
     {
       '@context': 'https://schema.org', '@type': 'BreadcrumbList',
@@ -150,12 +158,35 @@
   {@html phase.html}
 
   {#key `${phase.guide_slug}/${phase.phase_no}`}
+    {#if quiz.length}
+      <RecallPrompt summary={phase.summary} />
+    {/if}
     <Quiz guideSlug={phase.guide_slug} phaseNo={phase.phase_no} isLast={isLastPhase} questions={quiz} />
     {#if exerciseItems}
       <Exercise guideSlug={phase.guide_slug} phaseNo={phase.phase_no} items={exerciseItems} />
     {/if}
     <ShareTil guideSlug={phase.guide_slug} phaseNo={phase.phase_no} />
   {/key}
+
+  {#if related.length}
+    <aside class="related" aria-label="Related guides">
+      <p class="related-head">Related guides</p>
+      <ul class="related-list">
+        {#each related as r}
+          <li>
+            <a href={`/guides/${r.slug}/${r.phaseNo}`}>
+              <span class="related-title">{r.title}</span>
+              {#if r.summary}<span class="related-sum">{r.summary}</span>{/if}
+            </a>
+          </li>
+        {/each}
+      </ul>
+    </aside>
+  {/if}
+
+  {#if discussionOn}
+    <Discussion config={giscus} />
+  {/if}
 
   {#if hasFooterNav}
     <nav class="reader-nav phasenav" aria-label="Phase navigation">
@@ -204,6 +235,55 @@
 {/key}
 
 <style>
+  .related {
+    margin: 2.2rem 0 0;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line);
+  }
+  .related-head {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.7rem;
+  }
+  .related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.6rem;
+  }
+  .related-list a {
+    display: block;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--raise);
+    text-decoration: none;
+    transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
+  }
+  .related-list a:hover { border-color: var(--accent); background: var(--accent-tint-2); }
+  .related-title {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+  .related-sum {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
   .pr-try-practice {
     margin: 0 0 1.2rem;
     font-size: 0.82rem;

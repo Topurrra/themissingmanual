@@ -27,6 +27,22 @@ async function getSiteConfig(fetch) {
   }
 }
 
+// Giscus discussion pilot (GitHub Discussions-backed comments). Activates only
+// when the env config exists; GISCUS_GUIDES is a comma list of pilot guide slugs
+// ("*" = every guide). Values come from giscus.app after installing the giscus
+// app on the repo and enabling Discussions.
+function giscusConfig() {
+  const { GISCUS_REPO, GISCUS_REPO_ID, GISCUS_CATEGORY, GISCUS_CATEGORY_ID, GISCUS_GUIDES } = process.env;
+  if (!GISCUS_REPO || !GISCUS_REPO_ID || !GISCUS_CATEGORY_ID) return null;
+  return {
+    repo: GISCUS_REPO,
+    repoId: GISCUS_REPO_ID,
+    category: GISCUS_CATEGORY || 'General',
+    categoryId: GISCUS_CATEGORY_ID,
+    guides: (GISCUS_GUIDES || '').split(',').map((s) => s.trim()).filter(Boolean)
+  };
+}
+
 export async function load({ fetch, url }) {
   const siteConfig = await getSiteConfig(fetch);
   const categories = (await listCategories(fetch)) ?? [];
@@ -50,5 +66,5 @@ export async function load({ fetch, url }) {
     }
   }
 
-  return { nav, guidePhases, guideTitle, siteConfig, askEnabled: isAskEnabled(), tutorEnabled: isTutorEnabled() };
+  return { nav, guidePhases, guideTitle, siteConfig, askEnabled: isAskEnabled(), tutorEnabled: isTutorEnabled(), giscus: giscusConfig() };
 }

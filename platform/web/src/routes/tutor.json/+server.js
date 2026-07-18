@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import { isTutorEnabled, tutorAsk } from '$lib/server/tutor.js';
 import { getPhase } from '$lib/api.js';
 
-export async function POST({ request, fetch }) {
+export async function POST({ request, fetch, getClientAddress }) {
   if (!isTutorEnabled()) return json({ enabled: false });
 
   const body = await request.json().catch(() => ({}));
@@ -31,7 +31,8 @@ export async function POST({ request, fetch }) {
     phaseTitle: phase.title,
     phaseMarkdown: phase.markdown,
     question,
-    history
+    history,
+    ip: (() => { try { return getClientAddress(); } catch { return ''; } })()
   });
-  return json(data);
+  return json(data, data.rateLimited ? { status: 429 } : undefined);
 }

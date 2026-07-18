@@ -110,6 +110,9 @@ pub fn render_markdown(md: &str) -> String {
     opts.extension.table = true;
     opts.extension.strikethrough = true;
     opts.extension.autolink = true;
+    // Stable ids on every heading: deep-linkable subsections, and lets AI/search
+    // engines cite a specific section instead of the whole page.
+    opts.extension.header_ids = Some(String::new());
     // Surface a fence's post-language info (e.g. `runnable`) so the highlighter can act on it.
     opts.render.full_info_string = true;
 
@@ -244,5 +247,15 @@ mod tests {
     fn mermaid_fence_is_not_runnable() {
         let html = render_markdown("```mermaid\nflowchart LR\n  A --> B\n```\n");
         assert!(!html.contains("data-runnable"), "mermaid is not a runnable block: {html}");
+    }
+}
+
+#[cfg(test)]
+mod header_id_tests {
+    #[test]
+    fn headings_get_stable_ids() {
+        let html = super::render_markdown("## Hello World\n\ntext\n\n### Sub Section Two\n");
+        assert!(html.contains("id=\"hello-world\""), "h2 id missing: {html}");
+        assert!(html.contains("id=\"sub-section-two\""), "h3 id missing: {html}");
     }
 }

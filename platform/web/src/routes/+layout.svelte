@@ -325,6 +325,7 @@
 {#if isAdmin}
   <slot />
 {:else}
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <OnboardingModal />
   {#if announcement}
     <div class="announce-banner" role="status">{announcement}</div>
@@ -398,7 +399,7 @@
   </header>
 
   {#if bare}
-    <main class="page-main home"><slot /></main>
+    <main id="main-content" tabindex="-1" class="page-main home"><slot /></main>
   {:else}
     {#if drawerOpen}
       <button
@@ -576,7 +577,7 @@
           {/if}
         </nav>
       </aside>
-      <main class="page-main"><slot /></main>
+      <main id="main-content" tabindex="-1" class="page-main"><slot /></main>
       {#if !$tutorOpen}
         <PathRail
           guides={pathGuides}
@@ -672,6 +673,26 @@
 {/if}
 
 <style>
+  /* Skip-to-content link (WCAG 2.4.1) — visually hidden until keyboard-focused. */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 10px 16px;
+    background: var(--accent-strong);
+    color: var(--raise);
+    border-radius: 0 0 8px 0;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .skip-link:focus {
+    left: 0;
+  }
+  :global(#main-content:focus) {
+    outline: none;
+  }
+
   /* "What's new" header control — a subtle sparkle that carries a dot when the
      changelog has updates the reader hasn't seen. */
   /* "What's new" reuses the shared .icon-btn look so it matches the other header

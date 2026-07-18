@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { setBeginner } from '$lib/beginner-store.js';
+  import { focusTrap } from '$lib/focusTrap.js';
 
   // First-visit only: asks the same question the Settings panel's Beginner
   // mode toggle already answers, just surfaced proactively instead of
@@ -35,7 +36,7 @@
 
 {#if show}
   <button type="button" class="ob-backdrop" aria-label="Dismiss" on:click={dismiss}></button>
-  <div class="ob-card" role="dialog" aria-modal="true" aria-label="Tell us your experience level">
+  <div class="ob-card" role="dialog" aria-modal="true" aria-label="Tell us your experience level" use:focusTrap>
     <p class="ob-eyebrow">Quick question</p>
     <h2>New to this, or already comfortable with the basics?</h2>
     <p class="ob-sub">We'll show beginner-level guides by default - change it anytime in Settings.</p>

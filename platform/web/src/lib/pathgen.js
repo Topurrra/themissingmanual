@@ -15,6 +15,7 @@ export const CATEGORY_ORDER = [
   'programming-concepts',
   'programming-languages',
   'web-fundamentals',
+  'frontend',
   'version-control',
   'networking',
   'apis',

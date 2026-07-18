@@ -21,7 +21,7 @@ If your answer is "in every servlet," stop - that's how you end up copy-pasting 
 
 Picture the request as a visitor walking toward a room (your servlet). A filter is a doorway the visitor must pass through to get in. The doorway can inspect the visitor, log their arrival, check their ID, reject them outright, or wave them through. When the visitor leaves the room, they walk back out through the same doorway, which gets one more chance to act - on the response this time.
 
-The servlet on the other side has no idea any of this happened. It just receives a request and produces a response, exactly as in [Phase 1](01-….md). That separation is the whole point: your business logic stays clean, and the *cross-cutting* concerns - the ones that apply to many or all requests - live somewhere else.
+The servlet on the other side has no idea any of this happened. It just receives a request and produces a response, exactly as in [Phase 1](01-what-a-servlet-is.md). That separation is the whole point: your business logic stays clean, and the *cross-cutting* concerns - the ones that apply to many or all requests - live somewhere else.
 
 📝 What kinds of things go in filters? The classic list:
 

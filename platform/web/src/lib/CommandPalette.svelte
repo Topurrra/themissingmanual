@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { CHEATSHEETS } from '$lib/cheatsheets.js';
+  import { focusTrap } from '$lib/focusTrap.js';
 
   export let nav = []; // [{ slug, name, icon, guides: [] }]
 
@@ -158,8 +159,9 @@
   });
 </script>
 
-<div class="cmdk-backdrop" hidden={!open} on:click|self={close} role="presentation">
-  <div class="cmdk" role="dialog" aria-label="Search">
+{#if open}
+<div class="cmdk-backdrop" on:click|self={close} role="presentation">
+  <div class="cmdk" role="dialog" aria-modal="true" aria-label="Search" use:focusTrap>
     <div class="cmdk-top">
       <i class="ti ti-search" aria-hidden="true"></i>
       <!-- svelte-ignore a11y-autofocus -->
@@ -168,6 +170,11 @@
         type="text"
         placeholder="Search guides, topics, pages…"
         aria-label="Search"
+        role="combobox"
+        aria-expanded="true"
+        aria-controls="cmdk-listbox"
+        aria-activedescendant={items.length ? `cmdk-opt-${active}` : undefined}
+        data-autofocus
         bind:this={inputEl}
         bind:value={q}
         on:input={onInput}
@@ -176,7 +183,7 @@
       <span class="cmdk-esc">esc</span>
     </div>
 
-    <div class="cmdk-list">
+    <div class="cmdk-list" id="cmdk-listbox" role="listbox" aria-label="Search results">
       {#if suggestion}
         <button type="button" class="cmdk-suggest" on:click={applySuggestion}>
           <i class="ti ti-arrow-back-up" aria-hidden="true"></i>
@@ -187,13 +194,15 @@
         <div class="cmdk-empty">No matches for “{q}”.</div>
       {:else}
         {#each grouped as g}
-          <div class="cmdk-group">{g.group}</div>
+          <div class="cmdk-group" role="presentation">{g.group}</div>
           {#each g.rows as row}
             <div
               class="cmdk-item"
               class:active={row.i === active}
               class:soon={row.it.soon}
-              role="button"
+              role="option"
+              id={`cmdk-opt-${row.i}`}
+              aria-selected={row.i === active}
               tabindex="-1"
               on:mousemove={() => (active = row.i)}
               on:click={() => choose(row.i)}
@@ -218,6 +227,7 @@
     </div>
   </div>
 </div>
+{/if}
 
 <style>
   .cmdk-suggest {

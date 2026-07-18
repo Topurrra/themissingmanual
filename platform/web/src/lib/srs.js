@@ -41,17 +41,42 @@ export function seedChapter(guide, phase, { now = Date.now(), delayDays = 1 } = 
     const isPhaseQuiz = c.type === 'quiz' && c.key === `${guide}/${phase}`;
     const isGuideTerm = c.type === 'term' && c.guide === guide;
     if (!isPhaseQuiz && !isGuideTerm) continue;
-    if (!state[c.id]) { state[c.id] = { ease: 2.5, interval: 0, reps: 0, due: now + delayDays * DAY }; changed = true; }
+    if (!state[c.id]) { state[c.id] = { reps: 0, due: now + delayDays * DAY }; changed = true; }
   }
   if (changed) saveState(state);
   return changed;
 }
 
-// Only enrolled cards (those with saved state) that are due now.
+// Only enrolled cards (those with saved state) that are due now. The session is
+// interleaved across guides: cards seeded together share a due date, so a plain
+// due-order session would run all of one guide's cards back to back - blocked
+// practice, the weaker order (Rohrer & Taylor: interleaving ~doubles next-day
+// retention). Round-robin by source guide instead; due order still picks WHICH
+// cards make the session.
 export function dueQueue(cards, state, { now = Date.now(), dueLimit = 60 } = {}) {
   const due = cards.filter((c) => state[c.id] && state[c.id].due <= now);
   due.sort((a, b) => state[a.id].due - state[b.id].due);
-  return due.slice(0, dueLimit);
+  return interleaveByGuide(due.slice(0, dueLimit));
+}
+
+function interleaveByGuide(cards) {
+  const groups = new Map();
+  for (const c of cards) {
+    const k = c.guide || '';
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(c);
+  }
+  if (groups.size <= 1) return cards;
+  const lists = [...groups.values()];
+  const out = [];
+  let added = true;
+  while (added) {
+    added = false;
+    for (const l of lists) {
+      if (l.length) { out.push(l.shift()); added = true; }
+    }
+  }
+  return out;
 }
 
 export function countDue(cards, state, now = Date.now()) {
@@ -72,16 +97,6 @@ export function enrolledStats(cards, state, now = Date.now()) {
   return { enrolled, nextDue: nextDue === Infinity ? null : nextDue };
 }
 
-// SM-2-lite. grade ∈ 'again' | 'good' | 'easy'. Returns the new card state.
-export function schedule(prev, grade, now = Date.now()) {
-  let { ease = 2.5, interval = 0, reps = 0 } = prev || {};
-  if (grade === 'again') {
-    return { ease: Math.max(1.3, ease - 0.2), interval: 0, reps: 0, due: now };
-  }
-  if (grade === 'easy') ease += 0.15;
-  if (reps === 0) interval = grade === 'easy' ? 3 : 1;
-  else if (reps === 1) interval = grade === 'easy' ? 6 : 3;
-  else interval = Math.max(1, Math.round(interval * ease * (grade === 'easy' ? 1.3 : 1)));
-  reps += 1;
-  return { ease, interval, reps, due: now + interval * DAY };
-}
+// FSRS scheduling (see fsrs.js). grade ∈ 'again' | 'good' | 'easy'. Legacy
+// SM-2-lite card states ({ease, interval, ...}) are migrated on their next review.
+export { schedule } from '$lib/fsrs.js';

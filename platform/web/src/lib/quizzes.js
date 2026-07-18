@@ -4,6 +4,10 @@
 //   { q: 'the question', choices: ['a', 'b', 'c'], answer: 0, explain: 'why' }
 // - `answer` is the 0-based index of the correct choice.
 // - `explain` (optional) shows after the reader answers.
+// - `why` (optional) is an array aligned with `choices`: a one-sentence "why this
+//   specific option is wrong" per distractor (the correct index can be null). When a
+//   reader picks a wrong option that has a `why` entry, they see that diagnosis
+//   instead of the generic `explain`. Same shape works in markdown ```quiz blocks.
 // A phase with no entry simply shows no quiz, so you can fill these in over time.
 // Keep them short (2-3 per phase) and focused on the one idea that must stick.
 

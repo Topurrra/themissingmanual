@@ -18,6 +18,9 @@
   let selPopup = null; // { x, y, text } - floating "ask about this" pill for a text selection
   let look = { x: 0, y: 0 }; // mascot pupil offset, in the eye's own SVG units
   let typingTimer = null;
+  let srAnnounce = ''; // screen-reader live-region text (the typing reveal itself is silent to AT)
+  let wasOpen = false;
+  let lastFocus = null;
 
   onDestroy(() => { if (typingTimer) clearInterval(typingTimer); });
 
@@ -49,6 +52,20 @@
 
   $: if ($tutorOpen) scrollToBottom();
 
+  // Focus management for the drawer: move focus to the input on open, return
+  // it to the opener on close. Deliberately no Tab trap - this is a non-modal
+  // side rail (the page stays usable next to it; `inert` covers the closed state).
+  $: if (typeof document !== 'undefined' && $tutorOpen !== wasOpen) {
+    wasOpen = $tutorOpen;
+    if ($tutorOpen) {
+      lastFocus = document.activeElement;
+      tick().then(() => inputEl?.focus());
+    } else {
+      if (lastFocus && document.contains(lastFocus)) lastFocus.focus?.();
+      lastFocus = null;
+    }
+  }
+
   // One-shot prefill from an external "ask the tutor" trigger (e.g. a wrong
   // quiz answer) - consume immediately so it can't re-fire on remount/nav.
   $: if ($tutorPrefill) {
@@ -67,6 +84,7 @@
   // "Thinking…" only covers the network wait - once the answer starts
   // typing out, the growing text itself is the activity indicator.
   $: waitingForFetch = busy && !(history.length && history[history.length - 1].typing);
+  $: if (waitingForFetch) srAnnounce = 'Tutor is thinking…';
 
   function clearHistory() {
     history = [];
@@ -90,8 +108,10 @@
         body: JSON.stringify({ guideSlug, phaseNo: Number(phaseNo), question: q, history: priorTurns })
       });
       const j = await res.json();
-      if (j.enabled && !j.error && !j.capReached) {
+      if (j.enabled && !j.error && !j.capReached && !j.rateLimited) {
         await typeOutAnswer(j.answer, j.logId, j.referenced);
+      } else if (j.rateLimited) {
+        error = "You're asking quickly - give it a few minutes and try again.";
       } else if (j.capReached) {
         error = "This has hit its limit for now - try again later.";
       } else {
@@ -126,6 +146,7 @@
           clearInterval(typingTimer);
           typingTimer = null;
           saveHistory();
+          srAnnounce = `Tutor: ${fullText}`; // announce the full answer once, not word-by-word
           resolve();
         }
         history = history; // re-render + persist once done - msg is mutated in place
@@ -163,7 +184,7 @@
   // "ask about this" pill. Scoped to .reader so selecting inside the tutor's
   // own chat log (e.g. to copy an answer) never triggers it.
   function onSelMouseup(e) {
-    if (!show || e.target.closest('.tutor-drawer, .sel-ask')) return;
+    if (!show || e.target?.closest?.('.tutor-drawer, .sel-ask')) return;
     const sel = window.getSelection();
     if (!sel || sel.isCollapsed || !sel.toString().trim()) { selPopup = null; return; }
     const reader = document.querySelector('.reader');
@@ -188,6 +209,13 @@
     if (e.key !== 'Escape') return;
     if (selPopup) { selPopup = null; return; }
     if ($tutorOpen) tutorOpen.set(false);
+  }
+
+  // Keyboard selections (Shift+arrows/Home/End) surface the same pill as
+  // mouse selections - reuses onSelMouseup's logic on selection-extending keys.
+  function onSelKeyup(e) {
+    if (!e.shiftKey || !/^(Arrow|Home|End|Page)/.test(e.key)) return;
+    onSelMouseup(e);
   }
 
   // The empty-chat mascot's eyes track the cursor direction (unit vector,
@@ -220,11 +248,12 @@
   }
 </script>
 
-<svelte:window on:keydown={onKeydown} on:mouseup={onSelMouseup} on:scroll={() => (selPopup = null)} on:mousemove={onMascotLook} />
+<svelte:window on:keydown={onKeydown} on:keyup={onSelKeyup} on:mouseup={onSelMouseup} on:scroll={() => (selPopup = null)} on:mousemove={onMascotLook} />
 
 {#if show}
   <aside class="tutor-rail" class:open={$tutorOpen} inert={!$tutorOpen}>
     <div class="tutor-drawer" role="dialog" aria-label="AI tutor">
+      <div class="sr-live" role="status" aria-live="polite">{srAnnounce}</div>
       <div class="settings-drawer-head">
         <h2>Ask the tutor</h2>
         <button class="settings-x" on:click={() => tutorOpen.set(false)} aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button>
@@ -302,7 +331,8 @@
 
   {#if selPopup}
     <button type="button" class="sel-ask" style="left: {selPopup.x}px; top: {selPopup.y}px;"
-      on:mousedown|preventDefault={askAboutSelection}>
+      on:mousedown|preventDefault={askAboutSelection}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); askAboutSelection(); } }}>
       Ask the tutor about this
     </button>
   {/if}
@@ -341,6 +371,11 @@
     }
     .tutor-rail.open { transform: translateX(0); }
     .tutor-drawer { border-left: 1px solid var(--line); box-shadow: -12px 0 32px -8px rgba(19, 19, 22, 0.18); }
+  }
+  /* Visually hidden but exposed to screen readers (live-region announcements). */
+  .sr-live {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
   }
   .tutor-sub { color: var(--muted); font-size: 0.82rem; line-height: 1.4; margin: 0 0 0.9rem; }
   .tutor-log { flex: 1; display: flex; flex-direction: column; gap: 0.6rem; overflow-y: auto; overflow-x: hidden; margin-bottom: 0.7rem; min-height: 120px; min-width: 0; }

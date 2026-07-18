@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { lofiEnabled, setLofiEnabled, syncLofiEnabled } from '$lib/lofi-store.js';
   import { beginnerMode, setBeginner, syncBeginner } from '$lib/beginner-store.js';
+  import { focusTrap } from '$lib/focusTrap.js';
 
   // Shared appearance control: theme (system/light/dark) + font picker + quick
   // dark-mode toggle + lofi-player master switch + beginner mode. Persists to
@@ -96,7 +97,7 @@
     {#if open}
     <div use:portal>
       <button class="settings-scrim" tabindex="-1" aria-hidden="true" on:click={() => (open = false)}></button>
-      <div class="settings-drawer" role="dialog" aria-label="Appearance">
+      <div class="settings-drawer" role="dialog" aria-modal="true" aria-label="Appearance" use:focusTrap>
         <div class="settings-drawer-head">
           <h2>Appearance</h2>
           <button class="settings-x" on:click={() => (open = false)} aria-label="Close settings"><i class="ti ti-x" aria-hidden="true"></i></button>

@@ -49,7 +49,7 @@ builder.Services.AddAuthorization();
 
 *What just happened:* `AddAuthentication` registers the auth services and names the *default scheme* - the strategy used when an endpoint demands authentication. `AddJwtBearer` plugs in the JWT validator. `TokenValidationParameters` are the rules every incoming token must pass: signed by *our* key (`ValidateIssuerSigningKey` + `IssuerSigningKey`), from the issuer we expect, meant for our audience, and not expired (`ValidateLifetime`). If any check fails, the request arrives unauthenticated. `AddAuthorization()` then registers the services that enforce the *what*.
 
-> ⚠️ That signing key is the master password of your entire auth system - anyone holding it can mint tokens that impersonate any user. It's read from `config["Jwt:Key"]` here, never hardcoded. In development use [user secrets](/guides/aspnet-core-from-zero/08-testing-and-production.md) or environment variables; in production use a secrets manager or vault. A signing key committed to source control is one of the most common, and most damaging, mistakes in real codebases.
+> ⚠️ That signing key is the master password of your entire auth system - anyone holding it can mint tokens that impersonate any user. It's read from `config["Jwt:Key"]` here, never hardcoded. In development use [user secrets](08-testing-and-production.md) or environment variables; in production use a secrets manager or vault. A signing key committed to source control is one of the most common, and most damaging, mistakes in real codebases.
 
 ## ⚠️ Wiring the middleware in the right order
 

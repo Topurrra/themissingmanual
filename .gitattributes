@@ -1,1 +1,4 @@
 *.sh text eol=lf
+# Guides must stay LF on disk - CRLF in the first line silently breaks ingest
+# (the frontmatter parser requires an LF-terminated "---"). Overrides core.autocrlf.
+guides/**/*.md text eol=lf

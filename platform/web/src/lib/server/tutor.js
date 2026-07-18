@@ -274,6 +274,18 @@ site itself is written: clear, concrete, example-driven, no hand-waving, no unne
 Default to a focused answer (a few sentences to a short paragraph); if the student asks to go
 deeper or for more examples, do.
 
+When the student got something WRONG (a wrong quiz choice, a failed exercise, or code with a bug
+they're asking about), don't open with the correct answer. First ask yourself what misconception
+would produce exactly that wrong answer, then lead with ONE short pointed question that makes the
+student confront it, referencing their actual answer or output ("You picked X - what would X do
+if...?"). Then give the explanation. One leading question, not a drawn-out interrogation; if the
+student asks again or seems stuck, answer directly.
+
+Also check whether the mistake really belongs to an EARLIER concept than this lesson (a wrong
+answer about closures that is really about scope, a SQL join mistake that is really about NULL).
+If it does, say so plainly and use search_guides to point them at the guide phase that covers that
+foundation - filling the earlier gap beats re-explaining the current lesson.
+
 Stay scoped to software/tech education. If asked something unrelated, or to do something harmful,
 decline briefly and steer back to the lesson. If the lesson doesn't cover what's being asked, you
 may call search_guides to check the rest of the site before answering - don't invent facts about
@@ -308,7 +320,25 @@ function cacheSet(k, data) {
   if (cache.size > CACHE_MAX) cache.delete(cache.keys().next().value);
 }
 
-export async function tutorAsk({ fetch, guideSlug, phaseNo, phaseTitle, phaseMarkdown, question, history }) {
+// Per-IP sliding window (in-memory). The global monthlyCap protects the total
+// budget; this stops one reader from eating a disproportionate share of it.
+// Checked after the cache, so repeat/common questions stay free and unlimited.
+// ponytail: in-memory per process - resets on restart, which is fine here.
+const RL_WINDOW_MS = 10 * 60 * 1000;
+const RL_MAX = 15; // provider-backed questions per IP per window
+const rlHits = new Map(); // ip -> [timestamps]
+function rateLimited(ip) {
+  if (!ip) return false;
+  const now = Date.now();
+  const arr = (rlHits.get(ip) || []).filter((t) => now - t < RL_WINDOW_MS);
+  if (arr.length >= RL_MAX) { rlHits.set(ip, arr); return true; }
+  arr.push(now);
+  rlHits.set(ip, arr);
+  if (rlHits.size > 5000) rlHits.delete(rlHits.keys().next().value); // memory cap
+  return false;
+}
+
+export async function tutorAsk({ fetch, guideSlug, phaseNo, phaseTitle, phaseMarkdown, question, history, ip }) {
   const c = getConfig();
   if (!c.enabled) return { enabled: false };
 
@@ -321,6 +351,7 @@ export async function tutorAsk({ fetch, guideSlug, phaseNo, phaseTitle, phaseMar
     if (cached) return { ...cached, cached: true };
   }
 
+  if (rateLimited(ip)) return { enabled: true, rateLimited: true };
   if (usedThisMonth() >= c.monthlyCap) return { enabled: true, capReached: true };
 
   const providerList = c.providerOrder

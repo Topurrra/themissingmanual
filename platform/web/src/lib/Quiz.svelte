@@ -92,6 +92,12 @@
     celebrated = false;
     try { localStorage.removeItem(storeKey); } catch (e) {}
   }
+  // Mastery gate: re-ask only the missed questions (correct answers stay locked),
+  // so reaching 100% means fixing what you got wrong, not re-typing what you knew.
+  function retryMissed() {
+    selected = selected.map((s, i) => (s === questions[i].answer ? s : null));
+    persist();
+  }
 
   onMount(() => {
     let saved = null;
@@ -136,9 +142,11 @@
             </button>
           {/each}
         </div>
-        {#if done && q.explain}
+        {#if done && (q.explain || (ans !== q.answer && q.why && q.why[ans]))}
           <p class="quiz-explain" class:ok={ans === q.answer}>
-            {ans === q.answer ? 'Correct. ' : 'Not quite. '}{q.explain}
+            <!-- Per-distractor feedback: a wrong choice with its own `why` entry gets
+                 that specific diagnosis instead of the generic explanation. -->
+            {ans === q.answer ? 'Correct. ' : 'Not quite. '}{(ans !== q.answer && q.why && q.why[ans]) || q.explain}
           </p>
         {/if}
         {#if done && ans !== q.answer && tutorAvailable}
@@ -154,7 +162,12 @@
         <span class="quiz-score">You got {correct} of {questions.length}.</span>
         {#if correct === questions.length}<span class="quiz-flag">Marked complete in your path.</span>{/if}
         <span class="quiz-flag"><i class="ti ti-cards" aria-hidden="true"></i> Saved to <a href="/review">review</a></span>
-        <button type="button" class="quiz-retry" on:click={retry}>Try again</button>
+        {#if correct < questions.length}
+          <button type="button" class="quiz-retry-missed" on:click={retryMissed}>
+            Retry the {questions.length - correct} you missed
+          </button>
+        {/if}
+        <button type="button" class="quiz-retry" on:click={retry}>Start over</button>
       </div>
     {/if}
     </div>
@@ -213,6 +226,12 @@
   .quiz-score { font-weight: 600; color: var(--ink); }
   .quiz-flag { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); }
   .quiz-flag a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  .quiz-retry-missed {
+    margin-left: auto; cursor: pointer; font: inherit; font-size: 0.85rem; font-weight: 500;
+    color: #fff; background: var(--accent); border: 0; border-radius: 8px; padding: 0.4rem 0.8rem;
+  }
+  .quiz-retry-missed:hover { background: var(--accent-strong); }
+  .quiz-retry-missed + .quiz-retry { margin-left: 0; }
   .quiz-retry { margin-left: auto; cursor: pointer; font: inherit; font-size: 0.85rem; color: var(--muted); background: none; border: 0; text-decoration: underline; text-underline-offset: 3px; }
   .quiz-retry:hover { color: var(--ink); }
 </style>

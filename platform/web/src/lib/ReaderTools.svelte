@@ -57,6 +57,7 @@
     pill.hidden = true;
 
     const toast = make('div', 'read-toast');
+    toast.setAttribute('role', 'status'); // announce "Place saved/cleared" to screen readers
     toast.hidden = true;
     let toastT;
     const showToast = (msg) => {
