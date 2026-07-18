@@ -11,16 +11,18 @@ synonyms:
   - math exercises
   - practice arithmetic
   - order of operations practice
-updated: 2026-07-10
+updated: 2026-07-18
 ---
 
 # Math Practice
 
-Five short, hands-on math lessons. Unlike the code lessons elsewhere in
+Eight short, hands-on math lessons. Unlike the code lessons elsewhere in
 Practice, there's no function to write and no boilerplate to read - the
 editor is just a blank line, and you type a formula straight into it, the way
-you'd type one into a calculator. Order of operations, percentages, a
-compound-interest formula - each lesson gives you a task and a Run button.
+you'd type one into a calculator. Order of operations, percentages, and
+compound interest to start; then three advanced rungs - the quadratic
+formula, solving for time with logarithms, and a tiered-pricing capstone.
+Each lesson gives you a task and a Run button.
 
 Your result is checked by rounding it to 4 decimal places and comparing it to
 the expected answer - you don't need to match decimal formatting exactly,

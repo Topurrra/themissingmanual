@@ -2,7 +2,7 @@
 title: "Postgres Practice"
 guide: practice-postgres
 phase: 0
-summary: "Hands-on lessons on the features real Postgres has beyond standard SQL - JSONB, arrays, RETURNING, UUID keys, and upsert - against a real Postgres running in your browser."
+summary: "Hands-on lessons on the features real Postgres has beyond standard SQL - JSONB, arrays, RETURNING, upsert, CTEs, window functions, and recursive queries - against a real Postgres running in your browser."
 tags: [postgres, practice, lessons, hands-on, jsonb, arrays]
 category: practice
 order: 8
@@ -12,17 +12,21 @@ synonyms:
   - practice postgresql queries
   - learn postgres by doing
   - jsonb practice
-updated: 2026-07-10
+updated: 2026-07-18
 ---
 
 # Postgres Practice
 
-Seven short, hands-on lessons on what Postgres adds on top of standard SQL: a
-`JSONB` column for document-shaped data, arrays as a real column type,
-`RETURNING` to get a row back from an `INSERT`, `UUID` primary keys generated
-with `gen_random_uuid()`, and `ON CONFLICT DO UPDATE` for upserts. If you've
-done the SQL Practice module, this picks up where it leaves off - same
-Run-and-check format, but against a genuine Postgres instance (compiled to
-WebAssembly, running entirely in your browser - no server, no setup).
+Twelve short, hands-on lessons on what Postgres adds on top of standard SQL.
+The first seven cover the everyday extras: a `JSONB` column for
+document-shaped data, arrays as a real column type, `RETURNING` to get a row
+back from an `INSERT`, `UUID` primary keys generated with
+`gen_random_uuid()`, and `ON CONFLICT DO UPDATE` for upserts. Lessons 8-12
+go deeper into the analytical toolkit: CTEs with `WITH` (single, chained,
+and recursive) and window functions (`RANK` with `PARTITION BY`, `LAG` for
+month-over-month change). If you've done the SQL Practice module, this picks
+up where it leaves off - same Run-and-check format, but against a genuine
+Postgres instance (compiled to WebAssembly, running entirely in your
+browser - no server, no setup).
 
 Start with lesson 1. You can leave and come back any time - your code is saved locally.
