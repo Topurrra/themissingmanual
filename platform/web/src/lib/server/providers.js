@@ -27,6 +27,21 @@ export const CLOUD = {
 const DEFAULT_COOLDOWN_MS = 60_000;
 const cooldownUntil = new Map();
 
+// A provider that rate-limits us usually says exactly when it will accept traffic again,
+// via `Retry-After`. Ignoring it means we either come back too early (burning the next
+// request on another 429) or idle a provider that was ready in 2s for the full 60s - and
+// on free tiers, 429 is steady state, not an exception. Capped so a buggy or hostile
+// header can't bench a provider for hours.
+const MAX_COOLDOWN_MS = 15 * 60_000;
+export function parseRetryAfter(res) {
+  // Spec allows either delta-seconds ("30") or an HTTP date.
+  const raw = res?.headers?.get?.('retry-after');
+  if (!raw) return 0;
+  const secs = Number(raw);
+  const ms = Number.isFinite(secs) ? secs * 1000 : Date.parse(raw) - Date.now();
+  return ms > 0 ? Math.min(ms, MAX_COOLDOWN_MS) : 0;
+}
+
 function isOnCooldown(id) {
   const until = cooldownUntil.get(id);
   return !!until && Date.now() < until;
@@ -75,7 +90,7 @@ export async function callProvider(providerId, apiKey, messages, opts = {}) {
     if (!res.ok) {
       let detail = res.statusText;
       try { const j = await res.json(); detail = j?.error?.message || j?.error || detail; } catch {}
-      throw Object.assign(new Error(`${cfg.name}: ${res.status} ${detail}`), { status: res.status });
+      throw Object.assign(new Error(`${cfg.name}: ${res.status} ${detail}`), { status: res.status, retryAfterMs: parseRetryAfter(res) });
     }
 
     const j = await res.json().catch(() => null);
@@ -132,7 +147,7 @@ async function callOllama(cfg, apiKey, messages, opts) {
     if (!res.ok) {
       let detail = res.statusText;
       try { const j = await res.json(); detail = j?.error || detail; } catch {}
-      throw Object.assign(new Error(`${cfg.name}: ${res.status} ${detail}`), { status: res.status });
+      throw Object.assign(new Error(`${cfg.name}: ${res.status} ${detail}`), { status: res.status, retryAfterMs: parseRetryAfter(res) });
     }
 
     const j = await res.json().catch(() => null);
@@ -240,11 +255,16 @@ export async function routeChat(providerList, messages, opts = {}) {
       const result = await callProvider(p.id, p.apiKey, messages, { ...opts, model: p.model });
       return { ...result, providerUsed: p.id, attempted };
     } catch (e) {
-      attempted.push({ id: p.id, error: e.message, status: e.status });
-      // A bad request (4xx that isn't a rate limit) likely won't heal by
-      // waiting - but treating it identically to a 429/5xx is the simplest
-      // correct behavior: don't hammer a provider that just failed either way.
-      markCooldown(p.id, opts.cooldownMs);
+      // 429 = rate limited, 529 = overloaded (Anthropic's variant). Both mean "come back
+      // later" rather than "you sent something invalid", and both are the cases that
+      // actually carry Retry-After.
+      const backpressure = e.status === 429 || e.status === 529;
+      attempted.push({ id: p.id, error: e.message, status: e.status, backpressure });
+      // Honor the provider's own Retry-After when it sent one; otherwise fall back to the
+      // flat cooldown. A bad request (4xx that isn't a rate limit) likely won't heal by
+      // waiting - but treating it identically is still the simplest correct behavior:
+      // don't hammer a provider that just failed either way.
+      markCooldown(p.id, e.retryAfterMs || opts.cooldownMs);
     }
   }
   throw Object.assign(new Error('All configured providers failed or are on cooldown.'), { attempted });

@@ -20,7 +20,13 @@ struct ClassedHighlighter {
 impl ClassedHighlighter {
     fn new() -> Self {
         Self {
-            syntaxes: SyntaxSet::load_defaults_newlines(),
+            // NOT syntect's `load_defaults_newlines()`: that bundled set has no TypeScript,
+            // Kotlin or Svelte, so those fences silently fell back to plain text (119
+            // TypeScript blocks across 24 files, including every phase of
+            // `typescript-from-zero`). two-face ships the extended, bat-derived set.
+            // `extra_newlines` is required because we feed lines *with* their newline via
+            // `parse_html_for_line_which_includes_newline` below.
+            syntaxes: two_face::syntax::extra_newlines(),
         }
     }
 }
@@ -155,6 +161,66 @@ mod tests {
     fn syntax_css_is_non_empty_and_prefixed() {
         let css = syntax_css();
         assert!(css.contains(".tok-"), "expected tok- prefixed classes");
+    }
+
+    /// Distinct `tok-…` classes a fence produced, sorted - a fingerprint of how a
+    /// language was highlighted.
+    fn tok_classes(lang: &str, code: &str) -> Vec<String> {
+        let html = render_markdown(&format!("```{lang}\n{code}\n```\n"));
+        let mut found: Vec<String> = html
+            .split("class=\"")
+            .skip(1)
+            .filter_map(|s| s.split('"').next())
+            .flat_map(|c| c.split_whitespace())
+            .filter(|c| c.starts_with("tok-"))
+            .map(str::to_string)
+            .collect();
+        found.sort();
+        found.dedup();
+        found
+    }
+
+    /// syntect's bundled `load_defaults_newlines()` set has no TypeScript or Kotlin, so
+    /// those fences silently rendered as plain text - on 119 TypeScript blocks across 24
+    /// files, including every phase of `typescript-from-zero`. We now load an extended
+    /// set (two-face). This test pins BOTH halves: the previously-missing languages must
+    /// highlight, and the languages that already worked must keep producing token classes
+    /// (the 7 themes are styled against these class names, so a silent scope rename would
+    /// blank out code blocks site-wide).
+    #[test]
+    fn highlights_typescript_kotlin_and_keeps_existing_languages() {
+        for (lang, code) in [
+            ("typescript", "type A = { n: number };\nconst x: A = { n: 1 };"),
+            ("ts", "const y: string = \"hi\";"),
+            ("kotlin", "fun main() { val x = 1 }"),
+        ] {
+            let classes = tok_classes(lang, code);
+            // The plain-text fallback still emits a `tok-text tok-plain` wrapper, so
+            // "has tok- classes" is NOT enough - require real syntax scopes beyond it.
+            let real: Vec<_> = classes
+                .iter()
+                .filter(|c| *c != "tok-text" && *c != "tok-plain")
+                .collect();
+            assert!(
+                !real.is_empty(),
+                "`{lang}` fell back to plain text (no syntax scopes): {classes:?}"
+            );
+        }
+
+        // Regression guard for languages that already highlighted.
+        for (lang, code) in [
+            ("python", "def f(x):\n    return x + 1"),
+            ("javascript", "const a = 1;"),
+            ("rust", "fn main() {}"),
+            ("sql", "SELECT 1;"),
+        ] {
+            let classes = tok_classes(lang, code);
+            assert!(
+                classes.iter().any(|c| c.starts_with("tok-keyword"))
+                    || classes.len() > 1,
+                "`{lang}` lost highlighting after the syntax-set swap: {classes:?}"
+            );
+        }
     }
 
     #[test]

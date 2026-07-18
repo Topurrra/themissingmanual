@@ -11,6 +11,9 @@ path = "src/lib.rs"
 [dependencies]
 comrak = "0.28"
 syntect = "5"
+# syntect's bundled syntax set has no TypeScript/Kotlin/Svelte, so those fences rendered
+# as plain text. two-face ships the extended (bat-derived) set. MIT/Apache-2.0.
+two-face = "0.4"
 tantivy = "0.22"
 rusqlite = { version = "0.32", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }

@@ -21,6 +21,63 @@ pub enum StoreError {
     Json(#[from] serde_json::Error),
 }
 
+/// Tables ingest regenerates from `guides/` on every boot. Losing them costs a rebuild,
+/// nothing more - they are a cache of the Markdown, which is the real source of truth.
+pub const DERIVED_TABLES: &[&str] = &["phases", "guides", "categories"];
+
+/// Tables whose contents exist ONLY in this database. There is no Markdown to re-ingest
+/// them from, so deleting the file destroys them permanently: analytics history, reader
+/// feedback, backlog votes, admin settings, login sessions, edit history, and uploaded
+/// asset blobs. Anything that drops or recreates these needs a migration, not a rebuild -
+/// see [`apply_migrations`] and [`Store::reset_derived`].
+pub const USER_DATA_TABLES: &[&str] = &[
+    "sessions",
+    "events",
+    "settings",
+    "feedback",
+    "backlog_votes",
+    "phase_revisions",
+    "assets",
+];
+
+/// Current schema version, tracked in SQLite's own `PRAGMA user_version`.
+///
+/// Bump this and add a matching arm in [`apply_migrations`] for any change the additive
+/// `ALTER TABLE ... ADD COLUMN` list above cannot express - renaming or dropping a column,
+/// changing a constraint, backfilling data. Those all require rewriting a table, and on a
+/// table in [`USER_DATA_TABLES`] a mistake is unrecoverable, so they get an ordered,
+/// recorded migration instead of a swallowed `let _ = execute(...)`.
+const SCHEMA_VERSION: i64 = 1;
+
+/// Apply any migrations the database has not seen yet, in order, then record the version.
+///
+/// Version 0 is "schema created by the CREATE TABLE IF NOT EXISTS block above", which is
+/// where every database up to now sits - so the baseline is a no-op that just stamps 1.
+/// Real migrations start at 2. Each runs in a transaction: a failure rolls back and
+/// propagates instead of leaving a half-migrated store.
+fn apply_migrations(conn: &Connection) -> Result<(), StoreError> {
+    let from: i64 = conn.query_row("PRAGMA user_version", [], |r| r.get(0))?;
+    if from >= SCHEMA_VERSION {
+        return Ok(());
+    }
+    for version in (from + 1)..=SCHEMA_VERSION {
+        let sql: &[&str] = match version {
+            // Baseline. The tables already exist; nothing to do but claim the version.
+            1 => &[],
+            // 2 => &["ALTER TABLE ... ;", "UPDATE ... ;"],
+            _ => &[],
+        };
+        let tx = conn.unchecked_transaction()?;
+        for stmt in sql {
+            tx.execute_batch(stmt)?;
+        }
+        tx.commit()?;
+    }
+    // PRAGMA does not accept a bound parameter.
+    conn.execute_batch(&format!("PRAGMA user_version = {SCHEMA_VERSION}"))?;
+    Ok(())
+}
+
 impl Store {
     pub fn open_in_memory() -> Result<Self, StoreError> {
         Self::from_conn(Connection::open_in_memory()?)
@@ -129,7 +186,21 @@ impl Store {
         let _ = conn.execute("ALTER TABLE events ADD COLUMN source TEXT NOT NULL DEFAULT ''", []);
         let _ = conn.execute("ALTER TABLE events ADD COLUMN value INTEGER NOT NULL DEFAULT 0", []);
         let _ = conn.execute("ALTER TABLE feedback ADD COLUMN done INTEGER NOT NULL DEFAULT 0", []);
+        apply_migrations(&conn)?;
         Ok(Self { conn })
+    }
+
+    /// Wipe ONLY the tables that ingest regenerates from `guides/`, leaving user data intact.
+    ///
+    /// This exists so "force a clean content rebuild" never means `rm manual.db`. Deleting the
+    /// file also deletes every table in [`USER_DATA_TABLES`], which has no source to re-ingest
+    /// from - the analytics history, submitted feedback, backlog votes, admin settings and
+    /// uploaded assets are simply gone. Use this instead.
+    pub fn reset_derived(&self) -> Result<(), StoreError> {
+        for table in DERIVED_TABLES {
+            self.conn.execute(&format!("DELETE FROM {table}"), [])?;
+        }
+        Ok(())
     }
 
     pub fn upsert_guide(&self, slug: &str, title: &str, summary: &str, category: &str, difficulty: &str) -> Result<(), StoreError> {
@@ -854,6 +925,82 @@ impl Store {
 mod tests {
     use super::*;
     use crate::models::Phase;
+
+    /// The schema version is stamped on open, and re-opening an already-migrated
+    /// database is a no-op rather than an error.
+    #[test]
+    fn migrations_stamp_version_and_are_idempotent() {
+        let s = Store::open_in_memory().unwrap();
+        let v: i64 = s.conn.query_row("PRAGMA user_version", [], |r| r.get(0)).unwrap();
+        assert_eq!(v, SCHEMA_VERSION, "open() should stamp the schema version");
+        apply_migrations(&s.conn).unwrap();
+        let again: i64 = s.conn.query_row("PRAGMA user_version", [], |r| r.get(0)).unwrap();
+        assert_eq!(again, SCHEMA_VERSION, "re-running migrations must be a no-op");
+    }
+
+    /// The point of `reset_derived`: a content rebuild must never cost user data.
+    /// `rm manual.db` would take all of it; this takes only what ingest can regenerate.
+    #[test]
+    fn reset_derived_keeps_user_data() {
+        let s = Store::open_in_memory().unwrap();
+        s.upsert_guide("git", "Git", "sum", "version-control", "beginner").unwrap();
+        s.upsert_phase(&sample_phase()).unwrap();
+        // Stand-ins for the unrecoverable tables.
+        s.conn
+            .execute("INSERT INTO backlog_votes (item_key, votes) VALUES ('x', 7)", [])
+            .unwrap();
+        s.conn
+            .execute("INSERT INTO settings (key, value) VALUES ('k', 'v')", [])
+            .unwrap();
+        s.conn
+            .execute(
+                "INSERT INTO feedback (guide_slug, phase_no, vote) VALUES ('git', 1, 'up')",
+                [],
+            )
+            .unwrap();
+        // Analytics history is the one people most expect a "rebuild" to wipe. It must not.
+        s.conn
+            .execute(
+                "INSERT INTO events (kind, path, visitor) VALUES ('page', '/guides/git/1', 'v1')",
+                [],
+            )
+            .unwrap();
+        s.conn
+            .execute(
+                "INSERT INTO sessions (id, expires_at) VALUES ('s1', datetime('now','+1 day'))",
+                [],
+            )
+            .unwrap();
+        s.conn
+            .execute(
+                "INSERT INTO phase_revisions (guide_slug, phase_no, title, summary, markdown)
+                 VALUES ('git', 1, 't', 's', 'm')",
+                [],
+            )
+            .unwrap();
+        s.insert_asset("a1", "logo.png", "image/png", &[1, 2, 3]).unwrap();
+
+        s.reset_derived().unwrap();
+
+        let count = |t: &str| -> i64 {
+            s.conn
+                .query_row(&format!("SELECT COUNT(*) FROM {t}"), [], |r| r.get(0))
+                .unwrap()
+        };
+        for t in DERIVED_TABLES {
+            assert_eq!(count(t), 0, "{t} is rebuilt from guides/ and should be cleared");
+        }
+        // Every unrecoverable table must still hold its row. Checked by name so adding a
+        // table to USER_DATA_TABLES without seeding it here fails loudly rather than
+        // silently going unprotected.
+        for t in USER_DATA_TABLES {
+            assert_eq!(
+                count(t),
+                1,
+                "{t} has no Markdown source - reset_derived() must never touch it"
+            );
+        }
+    }
 
     fn sample_phase() -> Phase {
         Phase {
