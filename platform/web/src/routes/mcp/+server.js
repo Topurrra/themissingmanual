@@ -5,31 +5,9 @@
 // Tools reuse the same pipeline the in-browser WebMcp uses: /search.json for search
 // and Accept: text/markdown for full guide content.
 
-const SERVER_INFO = { name: 'the-missing-manual', version: '1.0.0' };
-const DEFAULT_PROTOCOL = '2025-06-18';
-
-const TOOLS = [
-  {
-    name: 'search_guides',
-    description:
-      'Search The Missing Manual developer guides. Returns matching guide sections with titles, summaries, and URLs.',
-    inputSchema: {
-      type: 'object',
-      properties: { query: { type: 'string', description: 'Search terms, e.g. "undo a commit"' } },
-      required: ['query']
-    }
-  },
-  {
-    name: 'read_guide',
-    description:
-      'Fetch the full Markdown of a Missing Manual guide or phase by its /guides/<slug>[/<phase>] path or URL (use one returned by search_guides).',
-    inputSchema: {
-      type: 'object',
-      properties: { url: { type: 'string', description: 'A /guides/... path, or a full URL to one.' } },
-      required: ['url']
-    }
-  }
-];
+// Shared with the discovery card at /.well-known/mcp/server-card.json so the two can
+// never disagree about what this server offers.
+import { SERVER_INFO, DEFAULT_PROTOCOL, TOOLS } from '$lib/mcp-info.js';
 
 const CORS = {
   'access-control-allow-origin': '*',

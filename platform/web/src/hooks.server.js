@@ -1,4 +1,6 @@
-import { getGuide, getPhase } from '$lib/api.js';
+import { getGuide, getPhase, listCategories, getCategory } from '$lib/api.js';
+import { prefersMarkdown } from '$lib/server/negotiate.js';
+import { serverCard } from '$lib/mcp-info.js';
 import { apiCatalog, skillsIndex, OPENAPI, SKILL_MD } from '$lib/agent-endpoints.js';
 import { checkAndSend } from '$lib/server/push.js';
 import { API_BASE } from '$lib/server/adminApi.js';
@@ -29,16 +31,57 @@ if (!globalThis.__tmmPushInterval) {
 
 // /guides/<slug> or /guides/<slug>/<phase>
 const GUIDE_RE = /^\/guides\/([^/]+?)(?:\/(\d+))?\/?$/;
-
-function prefersMarkdown(accept) {
-  if (!accept) return false;
-  return /text\/markdown/i.test(accept) && !/text\/html/i.test(accept);
-}
+// /categories/<slug>
+const CATEGORY_RE = /^\/categories\/([^/]+?)\/?$/;
 
 function json(obj, type = 'application/json') {
   return new Response(JSON.stringify(obj, null, 2), {
     headers: { 'content-type': `${type}; charset=utf-8`, 'cache-control': 'max-age=3600' }
   });
+}
+
+async function categoryToMarkdown(fetch, slug, origin) {
+  const detail = await getCategory(fetch, slug);
+  if (!detail) return null;
+  const guides = detail.guides ?? [];
+  const name = detail.name || detail.category?.name || slug;
+  const blurb = detail.blurb || detail.category?.blurb || '';
+  let out = `# ${name}\n`;
+  if (blurb) out += `\n> ${blurb}\n`;
+  out += `\n${guides.length} guide${guides.length === 1 ? '' : 's'}.\n\n`;
+  for (const g of guides) {
+    out += `- [${g.title}](${origin}/guides/${g.slug})`;
+    if (g.difficulty) out += ` _(${g.difficulty})_`;
+    if (g.summary) out += ` - ${g.summary}`;
+    out += '\n';
+  }
+  return out;
+}
+
+/// The front door for an agent that lands on the root. A crawler probing `/` with
+/// `Accept: text/markdown` should get an orientation document, not the HTML homepage.
+async function siteToMarkdown(fetch, origin) {
+  const cats = (await listCategories(fetch)) ?? [];
+  let out =
+    `# The Missing Manual\n\n` +
+    `> A free, text-first library of the real-world knowledge nobody teaches developers.\n` +
+    `> Every guide is plain Markdown, laddered from "what this actually is" to advanced.\n\n` +
+    `Any guide page also serves Markdown - send \`Accept: text/markdown\`.\n\n` +
+    `## Machine-readable entry points\n\n` +
+    `- [llms.txt](${origin}/llms.txt) - concise site index\n` +
+    `- [llms-full.txt](${origin}/llms-full.txt) - full content index\n` +
+    `- [MCP server](${origin}/mcp) - Model Context Protocol (Streamable HTTP, JSON-RPC 2.0)\n` +
+    `- [MCP server card](${origin}/.well-known/mcp/server-card.json)\n` +
+    `- [API catalog](${origin}/.well-known/api-catalog) - RFC 9727 linkset\n` +
+    `- [OpenAPI](${origin}/openapi.json)\n` +
+    `- [Sitemap](${origin}/sitemap.xml)\n\n` +
+    `## Categories\n\n`;
+  for (const c of cats) {
+    out += `- [${c.name}](${origin}/categories/${c.slug})`;
+    if (c.blurb) out += ` - ${c.blurb}`;
+    out += '\n';
+  }
+  return out;
 }
 
 async function guideToMarkdown(fetch, slug) {
@@ -65,6 +108,9 @@ export async function handle({ event, resolve }) {
     if (p === '/openapi.json') return json(OPENAPI, 'application/openapi+json');
     if (p === '/api/health')
       return json({ status: 'ok', service: 'the-missing-manual', time: new Date().toISOString() });
+    // MCP Server Card (SEP-1649). Generated from $lib/mcp-info.js - the same constants
+    // the live /mcp server answers initialize/tools/list from, so it cannot go stale.
+    if (p === '/.well-known/mcp/server-card.json') return json(serverCard(url.origin));
     if (p === '/.well-known/agent-skills/index.json') return json(skillsIndex(url.origin));
     if (p === '/.well-known/agent-skills/use-the-missing-manual/SKILL.md')
       return new Response(SKILL_MD, {
@@ -85,14 +131,20 @@ export async function handle({ event, resolve }) {
   }
 
   const m = p.match(GUIDE_RE);
+  const cm = p.match(CATEGORY_RE);
+  const isRoot = p === '/';
 
   // - Markdown for Agents
-  if (m && request.method === 'GET' && prefersMarkdown(accept)) {
+  if ((m || cm || isRoot) && request.method === 'GET' && prefersMarkdown(accept)) {
     try {
       let md = null;
       let updated = null;
       let meta = null;
-      if (m[2]) {
+      if (cm) {
+        md = await categoryToMarkdown(event.fetch, cm[1], url.origin);
+      } else if (isRoot) {
+        md = await siteToMarkdown(event.fetch, url.origin);
+      } else if (m[2]) {
         const no = Number(m[2]);
         const ph = await getPhase(event.fetch, m[1], no);
         md = ph && ph.markdown ? ph.markdown : null;
@@ -145,7 +197,7 @@ export async function handle({ event, resolve }) {
       `<${o}/llms.txt>; rel="describedby"; type="text/plain"`,
       `<${o}/.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"`
     ];
-    if (m) links.push(`<${o}${url.pathname}>; rel="alternate"; type="text/markdown"`);
+    if (m || cm || isRoot) links.push(`<${o}${url.pathname}>; rel="alternate"; type="text/markdown"`);
     response.headers.append('link', links.join(', '));
     response.headers.append('vary', 'Accept');
 
