@@ -21,6 +21,7 @@
   import RecallPrompt from '$lib/RecallPrompt.svelte';
   import Discussion from '$lib/Discussion.svelte';
   import RunnableCode from '$lib/RunnableCode.svelte';
+  import PhaseToc from '$lib/PhaseToc.svelte';
   import FeedbackWidget from '$lib/FeedbackWidget.svelte';
   import Annotations from '$lib/Annotations.svelte';
   export let data;
@@ -143,18 +144,29 @@
 {#if practice}
   <p class="pr-try-practice"><a href={`/practice/${practice.module}/${practice.phaseNo}`}>Try it in Practice →</a></p>
 {/if}
-<div style="margin: 0.1rem 0 1.2rem;"><Freshness date={phase.updated} /></div>
-{#if phase.source_file}
-  <p class="pr-edit-link">
-    <a href={`https://github.com/Topurrra/themissingmanual/edit/main/${phase.source_file}`} target="_blank" rel="noopener noreferrer">Edit this page on GitHub →</a>
-  </p>
-{/if}
-
-{#key `${phase.guide_slug}/${phase.phase_no}`}
-  <ReaderTTS />
-{/key}
+<!-- Phase toolbar: freshness + listen on the left, edit-on-GitHub pushed to the right,
+     all on one row (wraps on narrow screens). ReaderTTS is keyed so it resets per phase. -->
+<div class="phase-toolbar">
+  <Freshness date={phase.updated} />
+  {#key `${phase.guide_slug}/${phase.phase_no}`}
+    <ReaderTTS />
+  {/key}
+  {#if phase.source_file}
+    <a
+      class="edit-btn"
+      href={`https://github.com/Topurrra/themissingmanual/edit/main/${phase.source_file}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      title="Edit this page on GitHub"
+    >
+      <i class="ti ti-brand-github" aria-hidden="true"></i>
+      <span>Edit on GitHub</span>
+    </a>
+  {/if}
+</div>
 
 <article class="reader" class:has-phasenav={hasFooterNav} use:noTranslateCode={phase.html} bind:this={articleEl}>
+  <PhaseToc html={phase.html} />
   {@html phase.html}
 
   {#key `${phase.guide_slug}/${phase.phase_no}`}
@@ -294,14 +306,34 @@
   .pr-try-practice a:hover {
     color: var(--accent);
   }
-  .pr-edit-link {
-    margin: 0 0 1.2rem;
-    font-size: 0.82rem;
+  .phase-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    margin: 0.1rem 0 1.4rem;
   }
-  .pr-edit-link a {
+  /* ReaderTTS ships a 24px bottom margin for its standalone use; drop it here so the
+     row stays tight and vertically centered. */
+  .phase-toolbar :global(.tts) {
+    margin: 0;
+  }
+  /* Edit link becomes a subtle outline button, pushed to the far right of the row. */
+  .edit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
     color: var(--muted);
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: border-color 0.15s var(--ease), color 0.15s var(--ease);
   }
-  .pr-edit-link a:hover {
+  .edit-btn:hover {
+    border-color: var(--accent);
     color: var(--accent);
   }
 </style>

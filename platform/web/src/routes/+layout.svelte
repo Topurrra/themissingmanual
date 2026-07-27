@@ -14,6 +14,7 @@
   import Appearance from "$lib/Appearance.svelte";
   import TranslateWidget from "$lib/TranslateWidget.svelte";
   import TutorChat from "$lib/TutorChat.svelte";
+  import StarNudge from "$lib/StarNudge.svelte";
   import TutorToggleButton from "$lib/TutorToggleButton.svelte";
   import { tutorOpen } from "$lib/tutor-store.js";
   import {
@@ -99,7 +100,41 @@
     );
 
   $: siteName = (siteConfig.site_name || "").trim() || "The Missing Manual";
-  $: announcement = (siteConfig.announcement || "").trim();
+  // Announcement bar. The config value is either a plain string (legacy) or JSON
+  // {message, href} for a clickable promo (used to point readers at other apps).
+  // Backward-compatible: anything that isn't valid {message} JSON is treated as text.
+  $: announceRaw = (siteConfig.announcement || "").trim();
+  $: announce = (() => {
+    if (!announceRaw) return null;
+    try {
+      const o = JSON.parse(announceRaw);
+      if (o && typeof o === "object" && !Array.isArray(o) && o.message) {
+        const href = (o.href || "").trim();
+        return {
+          message: String(o.message).trim(),
+          href,
+          external: /^https?:\/\//i.test(href),
+        };
+      }
+    } catch (e) {}
+    return { message: announceRaw, href: "", external: false };
+  })();
+  // Dismiss persists per-message, so a NEW announcement re-appears even for readers
+  // who dismissed the previous one.
+  let announceDismissed = false;
+  function dismissAnnounce() {
+    announceDismissed = true;
+    try {
+      localStorage.setItem("tmm-announce-dismissed", announce ? announce.message : "");
+    } catch (e) {}
+  }
+  $: announceVisible = !!announce && !announceDismissed;
+  onMount(() => {
+    try {
+      const d = localStorage.getItem("tmm-announce-dismissed");
+      if (d && announce && d === announce.message) announceDismissed = true;
+    } catch (e) {}
+  });
   $: lofiOn = flagOn(siteConfig.flag_lofi);
 
   // Sponsors: parse the JSON string; fall back to the current hardcoded two
@@ -333,8 +368,31 @@
 {:else}
   <a href="#main-content" class="skip-link">Skip to content</a>
   <OnboardingModal />
-  {#if announcement}
-    <div class="announce-banner" role="status">{announcement}</div>
+  {#if announceVisible}
+    <div class="announce-banner" role="status">
+      <span class="ann-dot" aria-hidden="true"></span>
+      {#if announce.href}
+        <a
+          class="ann-link"
+          href={announce.href}
+          target={announce.external ? "_blank" : undefined}
+          rel={announce.external ? "noopener noreferrer" : undefined}
+        >
+          {announce.message}
+          <i class="ti ti-arrow-right ann-arrow" aria-hidden="true"></i>
+        </a>
+      {:else}
+        <span class="ann-msg">{announce.message}</span>
+      {/if}
+      <button
+        type="button"
+        class="ann-close"
+        on:click={dismissAnnounce}
+        aria-label="Dismiss announcement"
+      >
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
   {/if}
   {#if $beginnerMode}
     <div class="beginner-banner" role="status">
@@ -605,6 +663,9 @@
       {/if}
       <TutorChat />
     </div>
+    {#if showGithubStar}
+      <StarNudge {githubUrl} />
+    {/if}
   {/if}
 
   <footer class="colophon">
@@ -757,15 +818,66 @@
     box-shadow: 0 0 0 2px var(--bg);
   }
 
-  /* Slim announcement banner at the very top of the page (above the header) */
+  /* Slim announcement banner at the very top of the page (above the header).
+     Ported from the taste-kit "announcement bar": accent dot, message as a link
+     with a nudging arrow, and a dismiss control. */
   .announce-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
     padding: 0.5rem 1.25rem;
     background: var(--accent-tint);
     color: var(--ink);
     border-bottom: 1px solid var(--line);
-    text-align: center;
     font-size: 0.86rem;
     line-height: 1.4;
+  }
+  .ann-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex: none;
+  }
+  .ann-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .ann-link:hover {
+    color: var(--accent);
+  }
+  .ann-arrow {
+    font-size: 15px;
+    color: var(--accent);
+    transition: transform 0.15s var(--ease);
+  }
+  .ann-link:hover .ann-arrow {
+    transform: translateX(2px);
+  }
+  .ann-msg {
+    font-weight: 500;
+  }
+  .ann-close {
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    margin-left: 0.2rem;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: color 0.15s var(--ease), background 0.15s var(--ease);
+  }
+  .ann-close:hover {
+    color: var(--ink);
+    background: var(--surface);
   }
   /* Beginner-mode indicator - explains why advanced guides are hidden + a way out. */
   .beginner-banner {
