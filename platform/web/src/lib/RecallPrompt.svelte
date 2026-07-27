@@ -35,7 +35,6 @@
     background: var(--accent-tint-2);
   }
   .recall-ask {
-    display: flex;
     align-items: flex-start;
     gap: 0.5rem;
     margin: 0;
