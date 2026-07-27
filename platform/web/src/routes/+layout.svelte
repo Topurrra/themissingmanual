@@ -163,6 +163,12 @@
       }));
   })();
 
+  // GitHub repo URL for the header "Star" button - reuses the same admin-configured
+  // social link the footer uses (no separate config). Hidden when unset or still the
+  // dev placeholder, so a real repo is required for the button to appear.
+  $: githubUrl = (socialLinks.find((s) => s.key === "github") || {}).url || "";
+  $: showGithubStar = githubUrl && !githubUrl.includes("your-username");
+
   $: activeCat =
     (currentCategory && nav.find((c) => c.slug === currentCategory)) ||
     (currentGuide &&
@@ -384,6 +390,18 @@
         <LofiPlayer />
       {/if}
       <TranslateWidget />
+      {#if showGithubStar}
+        <a
+          href={githubUrl}
+          class="icon-btn gh-star"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Star this project on GitHub"
+          aria-label="Star The Missing Manual on GitHub"
+        >
+          <i class="ti ti-brand-github" aria-hidden="true"></i>
+        </a>
+      {/if}
       <a
         href="/changelog"
         class="icon-btn whatsnew"
@@ -695,6 +713,34 @@
 
   /* "What's new" header control — a subtle sparkle that carries a dot when the
      changelog has updates the reader hasn't seen. */
+  /* GitHub "Star" CTA: same outline language as the other header controls
+     (.icon-btn), but auto-width to carry a text label - a bare icon in a row of
+     icons doesn't read as "star us". Subtle by default; the accent only appears
+     on hover so it invites without shouting. */
+  .gh-star {
+    width: auto;
+    gap: 0.4rem;
+    padding: 0 0.6rem;
+  }
+  .gh-star-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+  .gh-star:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  /* Tight header on small screens: keep the icon, drop the word. */
+  @media (max-width: 640px) {
+    .gh-star {
+      width: 34px;
+      padding: 0;
+    }
+    .gh-star-label {
+      display: none;
+    }
+  }
+
   /* "What's new" reuses the shared .icon-btn look so it matches the other header
      controls exactly; .whatsnew only positions the unseen-updates dot. */
   .whatsnew {
