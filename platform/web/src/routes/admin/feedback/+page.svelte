@@ -1,5 +1,5 @@
 <script>
-  import { adminPatch } from '$lib/admin.js';
+  import { adminPatch, adminDelete } from '$lib/admin.js';
 
   export let data;
   $: items = data.items ?? [];
@@ -40,6 +40,19 @@
     } catch (e) {
       f.done = !done; // revert on failure
       items = items;
+    }
+  }
+
+  // Permanently remove a request. Deleting the feedback row also drops it from the
+  // public "what's next" backlog (same source), so this is the one-by-one cleanup.
+  async function remove(f) {
+    if (!confirm('Delete this request permanently? It also disappears from the public "what’s next" page.')) return;
+    const prev = items;
+    items = items.filter((x) => x.id !== f.id); // optimistic
+    try {
+      await adminDelete(`/feedback/${f.id}`);
+    } catch (e) {
+      items = prev; // revert on failure
     }
   }
 
@@ -109,10 +122,15 @@
         <td class="fb-note">{f.note || '-'}</td>
         <td>
           {#if isRequest(f)}
-            <button type="button" class="fb-done-btn" class:on={f.done} on:click={() => toggleDone(f)}>
-              <i class={`ti ${f.done ? 'ti-check' : 'ti-circle'}`} aria-hidden="true"></i>
-              {f.done ? 'Done' : 'Mark done'}
-            </button>
+            <div class="fb-req-actions">
+              <button type="button" class="fb-done-btn" class:on={f.done} on:click={() => toggleDone(f)}>
+                <i class={`ti ${f.done ? 'ti-check' : 'ti-circle'}`} aria-hidden="true"></i>
+                {f.done ? 'Done' : 'Mark done'}
+              </button>
+              <button type="button" class="fb-del-btn" on:click={() => remove(f)} aria-label="Delete request" title="Delete request">
+                <i class="ti ti-trash" aria-hidden="true"></i>
+              </button>
+            </div>
           {/if}
         </td>
       </tr>
@@ -206,4 +224,18 @@
   .fb-done-btn:hover { border-color: var(--accent); color: var(--ink); }
   .fb-done-btn.on { color: var(--accent-strong); background: var(--accent-tint); border-color: var(--accent); }
   tr.fb-done { opacity: 0.55; }
+
+  .fb-req-actions { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .fb-del-btn {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: var(--muted);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.32rem 0.45rem;
+  }
+  .fb-del-btn:hover { border-color: var(--danger); color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, transparent); }
 </style>

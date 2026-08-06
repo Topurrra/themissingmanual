@@ -627,6 +627,15 @@ impl Store {
         Ok(())
     }
 
+    /// Admin: permanently delete a feedback row - used to clear reader guide requests
+    /// from the backlog. Also drops any backlog vote tally keyed to it (`r:<id>`) so the
+    /// public "what's next" list can't keep an orphaned counter around.
+    pub fn delete_feedback(&self, id: i64) -> Result<(), StoreError> {
+        self.conn.execute("DELETE FROM feedback WHERE rowid=?1", params![id])?;
+        self.conn.execute("DELETE FROM backlog_votes WHERE item_key=?1", params![format!("r:{id}")])?;
+        Ok(())
+    }
+
     // ---- public backlog voting (no accounts - one counter per item key) ----
 
     /// +1 a backlog item's vote count (upsert), returns the new total. `key` is either

@@ -45,6 +45,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/settings", get(admin::get_settings).put(admin::put_settings))
         .route("/feedback", get(admin::list_feedback))
         .route("/feedback/:id/done", patch(admin::set_feedback_done))
+        .route("/feedback/:id", delete(admin::delete_feedback))
         .route("/status", get(admin::status))
         .route("/backlog", get(admin::backlog))
         .route_layer(middleware::from_fn_with_state(state.clone(), auth::require_admin));

@@ -614,6 +614,16 @@ pub async fn set_feedback_done(State(state): State<Arc<AppState>>, Path(id): Pat
     }
 }
 
+/// Admin: permanently delete a feedback row (used to clear a reader guide request from
+/// the backlog, which also removes it from the public "what's next" page).
+pub async fn delete_feedback(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Response {
+    let r = { state.store.lock().unwrap().delete_feedback(id) };
+    match r {
+        Ok(_) => StatusCode::NO_CONTENT.into_response(),
+        Err(e) => err(e),
+    }
+}
+
 // ===== system status =====
 
 /// Admin: API version, DB size, and content counts for the status panel.
