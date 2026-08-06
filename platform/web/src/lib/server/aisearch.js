@@ -245,10 +245,14 @@ function cleanSnippet(text) {
   return t;
 }
 
-export async function ask(query, { titleMap } = {}) {
+export async function ask(query, { titleMap, forceRetrieval } = {}) {
   const c = getConfig();
   if (!(c.enabled && c.hasCreds)) return { enabled: false };
-  const key = (c.generate ? 'a:' : 's:') + query.trim().toLowerCase();
+  // `forceRetrieval` (used by the zero-hit auto-fallback) pins the free retrieval
+  // path even when generated answers are enabled globally - a query with no
+  // keyword coverage is exactly where a written answer is most likely to hallucinate.
+  const generate = forceRetrieval ? false : c.generate;
+  const key = (generate ? 'a:' : 's:') + query.trim().toLowerCase();
   if (!key) return { enabled: true, answer: '', sources: [] };
 
   const cached = cacheGet(key);
@@ -261,7 +265,7 @@ export async function ask(query, { titleMap } = {}) {
     return { enabled: true, capReached: true };
   }
 
-  const sub = c.generate ? 'chat/completions' : 'search';
+  const sub = generate ? 'chat/completions' : 'search';
   const endpoint = `https://api.cloudflare.com/client/v4/accounts/${c.accountId}/ai-search/instances/${c.name}/${sub}`;
   let res;
   try {
@@ -291,7 +295,7 @@ export async function ask(query, { titleMap } = {}) {
   const j = await res.json().catch(() => null);
 
   // chat/completions returns chunks at top level; /search nests them under result.
-  const chunks = (c.generate ? j?.chunks : j?.result?.chunks) || [];
+  const chunks = (generate ? j?.chunks : j?.result?.chunks) || [];
   // Dedup by GUIDE slug, not by file key: Cloudflare returns chunks in relevance
   // order and several can come from different phases of the same guide. Keep the
   // top-ranked chunk per guide so each guide appears once.
@@ -305,7 +309,7 @@ export async function ask(query, { titleMap } = {}) {
   }
 
   let data;
-  if (c.generate) {
+  if (generate) {
     const answer = rewriteAnswerLinks(j?.choices?.[0]?.message?.content || '');
     data = { enabled: true, mode: 'answer', answer, sources: sources.slice(0, 6) };
   } else {

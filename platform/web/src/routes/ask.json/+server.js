@@ -18,7 +18,9 @@ export async function GET({ url, fetch }) {
   const q = (url.searchParams.get('q') || '').trim();
   if (!q) return json({ enabled: true, answer: '', sources: [] });
   if (q.length > 300) return json({ enabled: true, error: 'too_long' }, { status: 400 });
+  // The zero-hit auto-fallback passes ?mode=search to pin the free retrieval path.
+  const forceRetrieval = url.searchParams.get('mode') === 'search';
   const map = await getTitleMap(fetch);
-  const data = await ask(q, { titleMap: map });
+  const data = await ask(q, { titleMap: map, forceRetrieval });
   return json(data);
 }

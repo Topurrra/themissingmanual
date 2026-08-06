@@ -8,6 +8,12 @@
   $: ({ q, hits, suggestion, cmdHits, cmdFirst } = data);
   $: askEnabled = $page.data.askEnabled;
 
+  // On a zero keyword-hit query, AskPanel auto-runs the (free) AI retrieval and
+  // sets `aiEmpty` when it also finds nothing - only then do we show the
+  // request-a-guide dead end. Reset per query so a new search starts hopeful.
+  let aiEmpty = false;
+  $: q, (aiEmpty = false);
+
   // Record the search once its result count is known (replaces the old
   // count-less beacon in lib/beacon.js's sendPageview) - guarded so a query
   // is only ever recorded once even as unrelated props re-run this block.
@@ -38,7 +44,11 @@
 </form>
 
 {#if q}
-  {#if askEnabled}<AskPanel query={q} />{/if}
+  {#if askEnabled}
+    {#key q}
+      <AskPanel query={q} auto={hits.length === 0} bind:empty={aiEmpty} />
+    {/key}
+  {/if}
   {#if suggestion}
     <p class="did-you-mean">Did you mean <a href="/search?q={encodeURIComponent(suggestion)}">{suggestion}</a>?</p>
   {/if}
@@ -81,7 +91,7 @@
             </li>
           {/each}
         </ul>
-      {:else}
+      {:else if !askEnabled || aiEmpty}
         <div class="no-hits">
           <p class="nh-lead">We don’t have a guide on “{q}” yet.</p>
           <a class="nh-cta" href={`/request?q=${encodeURIComponent(q)}`}>

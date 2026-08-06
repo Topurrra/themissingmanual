@@ -1,8 +1,18 @@
 <script>
-  // Explicit "Ask the guides" panel - only rendered when AI Search is configured.
-  // Calls /ask.json ONCE per button press (never on keystroke), so it can't drain
-  // the query budget. Keyword (Tantivy) results stay on the page as the fallback.
+  import { onMount } from 'svelte';
+
+  // "Ask the guides" panel - only rendered when AI Search is configured.
+  // Manual mode calls /ask.json ONCE per button press (never on keystroke) so it
+  // can't drain the query budget. Keyword (Tantivy) results stay as the fallback.
+  //
+  // Auto mode (the /search page sets `auto` on a zero keyword-hit query) fires the
+  // retrieval search once on mount and reports back via the bindable `empty` when it
+  // turns up nothing - so the page can fall through to the "Request this guide"
+  // prompt. Auto runs force the free retrieval path (`&mode=search`), never a paid
+  // written answer.
   export let query = '';
+  export let auto = false;
+  export let empty = false;
 
   let q = query;
   $: q = query;
@@ -98,7 +108,8 @@
     sources = [];
     message = '';
     try {
-      const res = await fetch(`/ask.json?q=${encodeURIComponent(text)}`);
+      const modeParam = auto ? '&mode=search' : '';
+      const res = await fetch(`/ask.json?q=${encodeURIComponent(text)}${modeParam}`);
       const data = await res.json();
       if (!data.enabled) { message = 'AI answers are not enabled.'; state = 'error'; return; }
       if (data.capReached) { message = 'AI answers have hit this month’s limit - keyword results are below.'; state = 'error'; return; }
@@ -113,16 +124,38 @@
       state = 'error';
     }
   }
+
+  // Auto mode: search once as soon as the panel mounts. The /search page keys this
+  // component by query, so a new zero-hit search remounts it and re-fires here.
+  onMount(() => {
+    if (auto && q.trim()) run();
+  });
+
+  // In auto mode, signal the parent when there's nothing to show (no results, an
+  // error, or the monthly cap) so it renders the request-a-guide fallback instead.
+  $: empty = auto && (state === 'error' || (state === 'done' && !answer && results.length === 0));
 </script>
 
-<section class="ask">
-  <div class="ask-head">
-    <span class="ask-title"><i class="ti ti-sparkles" aria-hidden="true"></i> Ask the guides</span>
-    <button class="ask-btn" on:click={run} disabled={state === 'loading' || !q.trim()}>
-      {#if state === 'loading'}<i class="ti ti-loader-2 spin" aria-hidden="true"></i> Thinking…{:else}Ask AI{/if}
-    </button>
-  </div>
-  <p class="ask-hint">Semantic search across the guides - finds the right passages even when the words don't match. One query per ask; keyword results below are instant.</p>
+{#if !(auto && empty)}
+<section class="ask" class:auto>
+  {#if auto}
+    <div class="ask-head">
+      <span class="ask-title">
+        <i class="ti ti-sparkles" aria-hidden="true"></i>
+        {#if state === 'loading'}Searching with AI…{:else}Related passages, found by AI{/if}
+      </span>
+      {#if state === 'loading'}<i class="ti ti-loader-2 spin ask-auto-spin" aria-hidden="true"></i>{/if}
+    </div>
+    <p class="ask-hint">No keyword match, so we searched by meaning. These guides look closest.</p>
+  {:else}
+    <div class="ask-head">
+      <span class="ask-title"><i class="ti ti-sparkles" aria-hidden="true"></i> Ask the guides</span>
+      <button class="ask-btn" on:click={run} disabled={state === 'loading' || !q.trim()}>
+        {#if state === 'loading'}<i class="ti ti-loader-2 spin" aria-hidden="true"></i> Thinking…{:else}Ask AI{/if}
+      </button>
+    </div>
+    <p class="ask-hint">Semantic search across the guides - finds the right passages even when the words don't match. One query per ask; keyword results below are instant.</p>
+  {/if}
 
   {#if state === 'done'}
     {#if mode === 'answer'}
@@ -155,8 +188,10 @@
     <p class="ask-msg">{message}</p>
   {/if}
 </section>
+{/if}
 
 <style>
+  .ask.auto .ask-auto-spin { margin-left: auto; color: var(--accent); }
   .ask { border: 1px solid var(--line); border-radius: 12px; background: var(--raise); padding: 0.9rem 1rem; margin: 0.6rem 0 1.2rem; }
   .ask-head { display: flex; align-items: center; gap: 0.6rem; }
   .ask-title { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-display); font-weight: 600; color: var(--ink); }

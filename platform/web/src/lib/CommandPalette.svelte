@@ -1,8 +1,10 @@
 <script>
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import { CHEATSHEETS } from '$lib/cheatsheets.js';
   import { focusTrap } from '$lib/focusTrap.js';
+  import { createAiFallback } from '$lib/aiFallback.js';
 
   export let nav = []; // [{ slug, name, icon, guides: [] }]
 
@@ -10,6 +12,9 @@
   let q = '';
   let live = []; // guide/phase hits from the search API
   let suggestion = null; // "did you mean" spelling correction from the API
+  let aiRows = []; // AI retrieval fallback, only when the keyword search is empty
+  const aiFb = createAiFallback();
+  $: askEnabled = $page.data.askEnabled;
   let active = 0;
   let inputEl;
   let timer;
@@ -85,7 +90,15 @@
     url: `/guides/${h.guide_slug}/${h.phase_no}`,
     group: 'Guides'
   }));
-  $: items = [...guideHits, ...cheatHits, ...topics, ...pages];
+  // AI rows only populate when the keyword search is empty (see runSearch).
+  $: aiHits = aiRows.map((r) => ({
+    title: r.title,
+    type: 'AI suggestion',
+    icon: 'ti-sparkles',
+    url: r.url,
+    group: 'Suggested by AI'
+  }));
+  $: items = [...guideHits, ...aiHits, ...cheatHits, ...topics, ...pages];
   $: if (active >= items.length) active = Math.max(0, items.length - 1);
 
   // grouped view for rendering (keeps the flat index in `items`)
@@ -97,14 +110,16 @@
   }, []);
 
   async function runSearch(query) {
-    if (!query.trim()) { live = []; suggestion = null; return; }
+    if (!query.trim()) { live = []; suggestion = null; aiRows = []; aiFb.cancel(); return; }
     try {
       const res = await fetch(`/search.json?q=${encodeURIComponent(query)}`);
-      if (!res.ok) { live = []; suggestion = null; return; }
-      const data = await res.json();
+      const data = res.ok ? await res.json() : {};
       live = data.hits || [];
       suggestion = data.suggestion || null;
     } catch (e) { live = []; suggestion = null; }
+    // Keyword-first: fall back to AI only when the guide search found nothing.
+    if (askEnabled && live.length === 0) aiFb.schedule(query, (rows) => (aiRows = rows));
+    else { aiRows = []; aiFb.cancel(); }
   }
 
   // Re-run the palette search with the suggested spelling (in-place, no navigation).
@@ -117,6 +132,7 @@
 
   function onInput() {
     clearTimeout(timer);
+    aiRows = []; // clear stale AI rows while typing; runSearch refills if still empty
     timer = setTimeout(() => runSearch(q), 140);
     active = 0;
   }
@@ -126,10 +142,11 @@
     q = '';
     live = [];
     suggestion = null;
+    aiRows = [];
     active = 0;
     setTimeout(() => inputEl && inputEl.focus(), 10);
   }
-  function close() { open = false; }
+  function close() { open = false; aiFb.cancel(); }
 
   function choose(i) {
     const it = items[i];

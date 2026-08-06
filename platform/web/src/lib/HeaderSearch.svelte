@@ -1,10 +1,15 @@
 <script>
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import { guardSearchSubmit } from '$lib/search.js';
   import { CHEATSHEETS } from '$lib/cheatsheets.js';
+  import { createAiFallback } from '$lib/aiFallback.js';
 
   let q = '';
   let hits = []; // top guide/phase hits from the search API
+  let aiRows = []; // AI retrieval fallback, only when the keyword search is empty
+  const aiFb = createAiFallback();
+  $: askEnabled = $page.data.askEnabled;
   let open = false; // dropdown visibility
   let active = -1; // -1 = nothing highlighted (Enter submits to /search)
   let timer;
@@ -47,23 +52,28 @@
     kind: 'guide', icon: 'ti-file-text', title: h.title, snippet: h.snippet,
     url: `/guides/${h.guide_slug}/${h.phase_no}`
   }));
-  $: shown = [...cheatRows, ...guideRows].slice(0, 5);
+  // AI rows only ever populate when keyword hits are empty (see runSearch), so
+  // they fill the gap rather than crowd real matches.
+  $: aiHits = aiRows.map((r) => ({ kind: 'ai', icon: 'ti-sparkles', title: r.title, snippet: r.text, url: r.url }));
+  $: shown = [...cheatRows, ...guideRows, ...aiHits].slice(0, 6);
   $: showDropdown = open && q.trim().length > 0;
 
   async function runSearch(query) {
-    if (!query.trim()) { hits = []; return; }
+    if (!query.trim()) { hits = []; aiRows = []; aiFb.cancel(); return; }
     try {
       const res = await fetch(`/search.json?q=${encodeURIComponent(query)}`);
-      if (!res.ok) { hits = []; return; }
-      const data = await res.json();
-      hits = data.hits || [];
+      hits = res.ok ? ((await res.json()).hits || []) : [];
     } catch (e) { hits = []; }
+    // Keyword-first: only reach for AI when Tantivy returned nothing at all.
+    if (askEnabled && hits.length === 0) aiFb.schedule(query, (rows) => (aiRows = rows));
+    else { aiRows = []; aiFb.cancel(); }
   }
 
   function onInput() {
     clearTimeout(timer);
     active = -1;
     open = true;
+    aiRows = []; // clear stale AI rows while typing; runSearch refills if still empty
     const query = q;
     timer = setTimeout(() => runSearch(query), 140);
   }
@@ -151,9 +161,11 @@
               <span class="th-body">
                 <span class="th-title">{h.title}</span>
                 {#if h.kind === 'cheat'}<span class="th-snippet th-cheat">{h.sub}</span>
+                {:else if h.kind === 'ai'}<span class="th-snippet">{h.snippet}</span>
                 {:else if h.snippet}<span class="th-snippet">{@html h.snippet}</span>{/if}
               </span>
-              {#if h.kind === 'cheat'}<span class="th-tag">cheat</span>{/if}
+              {#if h.kind === 'cheat'}<span class="th-tag">cheat</span>
+              {:else if h.kind === 'ai'}<span class="th-tag">AI</span>{/if}
             </button>
           {/each}
         {:else}
