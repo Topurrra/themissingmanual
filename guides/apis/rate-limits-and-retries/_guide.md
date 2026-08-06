@@ -48,5 +48,3 @@ annoyance instead of a 2am page.
 > This guide stays at the level you need to write a resilient client. The provider's side - designing
 > and enforcing limits, sizing buckets, fairness across tenants - is its own topic; for the broader API
 > picture see [REST APIs, Explained](/guides/rest-apis-explained) and [What an API Is](/guides/what-an-api-is).
-
-[Phase 1: Why APIs Push Back](01-why-apis-push-back.md) →

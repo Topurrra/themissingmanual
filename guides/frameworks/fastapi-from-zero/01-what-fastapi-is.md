@@ -57,7 +57,6 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-
 @app.get("/")
 def read_root():
     return {"message": "The book API is alive"}
@@ -246,7 +245,3 @@ type-hint model:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Path Operations & Parameters →](02-path-operations-and-parameters.md)

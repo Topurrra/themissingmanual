@@ -230,7 +230,3 @@ read it back.
   }
 ]
 ```
-
----
-
-[← Phase 1: What GORM Is & Connecting](01-what-gorm-is.md) · [Guide overview](_guide.md) · [Phase 3: Create & Read →](03-create-and-read.md)

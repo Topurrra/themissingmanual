@@ -79,7 +79,3 @@ name on it.
 
 > Power BI's DAX engine and the star schema underneath it aren't unique to Power BI - the same shape
 > powers Tableau, Looker, and most modern warehouses. Learn it here and it transfers.
-
----
-
-[Phase 1: What Power BI Actually Is & Getting Set Up →](01-what-power-bi-actually-is-and-getting-set-up.md)

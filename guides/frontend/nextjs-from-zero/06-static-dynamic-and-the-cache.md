@@ -191,7 +191,3 @@ in dev, stale in prod" is this phase's signature bug report. Test caching behavi
   }
 ]
 ```
-
----
-
-[← Phase 5: Mutations: Forms and Server Actions](05-mutations-and-server-actions.md) · [Guide overview](_guide.md) · [Phase 7: When Next.js Breaks →](07-when-it-breaks.md)

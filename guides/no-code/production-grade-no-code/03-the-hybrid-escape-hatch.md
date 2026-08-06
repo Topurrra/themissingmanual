@@ -81,7 +81,3 @@ That's also where this guide's arc closes: Phase 1 named the failures, Phase 2 b
   }
 ]
 ```
-
----
-
-[← Phase 2: Error Handling and Retries in a Visual Workflow](02-error-handling-and-retries.md) · [Guide overview](_guide.md)

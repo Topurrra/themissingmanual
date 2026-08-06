@@ -218,10 +218,6 @@ how regex earns its scary reputation.
 6. Regex checks **shape, not meaning** - and "the perfect email regex" is a trap; aim for
    good-enough and readable.
 
----
-
-[← Phase 1: What a Regex Actually Is](01-what-a-regex-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Using Regex for Real →](03-using-regex-for-real.md)
-
 ## Try it yourself
 
 Edit the pattern or the sample text and watch the matches highlight live:

@@ -215,5 +215,3 @@ Quick check before you move on:
   }
 ]
 ```
-
-[← Phase 1: Logic Is the Skill Under Everything](01-logic-is-the-skill-under-everything.md) · [Guide overview](_guide.md) · [Phase 3: The Three Ways We Reason →](03-the-three-ways-we-reason.md)

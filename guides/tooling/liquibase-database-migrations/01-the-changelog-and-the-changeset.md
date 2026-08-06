@@ -153,5 +153,3 @@ The first time you open a Liquibase XML example you will see a `<databaseChangeL
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The everyday loop →](02-the-everyday-loop.md)

@@ -229,5 +229,3 @@ Lock these in before moving on to middleware.
   }
 ]
 ```
-
-[← Phase 3: Handlers & IntoResponse](03-handlers-and-intoresponse.md) · [Guide overview](_guide.md) · [Phase 5: Middleware with Tower →](05-middleware-and-tower.md)

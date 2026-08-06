@@ -126,7 +126,3 @@ and code generation once you've felt the problem they solve - not before.
   }
 ]
 ```
-
----
-
-[← Phase 1: You Don't Need to Learn Ten Frameworks](01-you-dont-need-to-learn-ten-frameworks.md) · [Guide overview](_guide.md) · [Phase 3: When You Don't Need a Framework Yet →](03-when-you-dont-need-a-framework-yet.md)

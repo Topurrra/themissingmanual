@@ -72,7 +72,3 @@ If you've never programmed at all, you'll want a gentler on-ramp first - start w
 
 > Frameworks and big projects (gRPC, Kubernetes internals, cgo) are their own world - this guide makes
 > the *language and its runtime* make sense, top to bottom.
-
----
-
-[Phase 1: Install & Your First Program →](01-install-and-first-program.md)

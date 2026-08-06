@@ -294,7 +294,3 @@ Lock in the model that keeps your server alive under load:
   }
 ]
 ```
-
----
-
-[← Phase 5: Dependency Injection with Depends()](05-dependency-injection.md) · [Guide overview](_guide.md) · [Phase 7: Databases with SQLModel →](07-databases-with-sqlmodel.md)

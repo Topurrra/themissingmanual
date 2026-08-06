@@ -105,10 +105,6 @@ $ ipconfig getifaddr en0
 
 You now have the *number*. But you didn't type a number - you typed a name. Next, the system that translates one into the other.
 
----
-
-[← Guide overview](_guide.md) · [Phase 2: DNS - Names to Numbers →](02-dns.md)
-
 ## Try it yourself
 
 Change the address or drag the prefix - see the network, broadcast, and host range update live:

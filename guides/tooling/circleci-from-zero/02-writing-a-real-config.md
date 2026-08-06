@@ -182,5 +182,3 @@ For builders: keep the config as flat as you can. When you feel the urge to add 
   }
 ]
 ```
-
-[← Phase 1: The four nouns](01-the-four-nouns.md) | [Overview](_guide.md) | [Phase 3: When it breaks →](03-when-it-breaks.md)

@@ -387,7 +387,3 @@ Make sure the validation and binding ideas stuck:
   }
 ]
 ```
-
----
-
-[← Phase 6: Transactions with JTA](06-transactions-with-jta.md) · [Guide overview](_guide.md) · [Phase 8: Enterprise Beans & Messaging →](08-enterprise-beans-and-messaging.md)

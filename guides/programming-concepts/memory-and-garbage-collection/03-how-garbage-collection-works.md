@@ -112,5 +112,3 @@ Allocate objects, drop a root, then run the collector to see mark-and-sweep deci
 
 ```playground-gc
 ```
-
-[← Phase 2: Manual vs Automatic Memory](02-manual-vs-automatic.md) · [Guide overview](_guide.md)

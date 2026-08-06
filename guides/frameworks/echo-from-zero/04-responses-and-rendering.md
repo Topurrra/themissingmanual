@@ -301,7 +301,3 @@ that doesn't live where the URL implies.
   }
 ]
 ```
-
----
-
-[← Phase 3: Binding & Validation](03-binding-and-validation.md) · [Guide overview](_guide.md) · [Phase 5: Middleware →](05-middleware.md)

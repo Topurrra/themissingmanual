@@ -112,5 +112,3 @@ The practical payoff: the OTel API in your code is stable and neutral, so the "r
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Instrumenting and exporting →](02-instrumenting-and-exporting.md)

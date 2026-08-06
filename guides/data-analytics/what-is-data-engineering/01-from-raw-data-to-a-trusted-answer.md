@@ -112,7 +112,3 @@ have to memorize why these things matter - you'll already know.
 4. Almost every data-engineering tool and practice exists to **protect that trust**.
 
 Next: the river, stage by stage - what each piece of the pipeline actually does.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Pieces of the Pipeline →](02-the-pieces-of-the-pipeline.md)

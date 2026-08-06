@@ -199,5 +199,3 @@ Quick gut-check before moving on:
   }
 ]
 ```
-
-[← Phase 4: Dependency Injection](04-dependency-injection.md) · [Guide overview](_guide.md) · [Phase 6: Building a REST API →](06-building-a-rest-api.md)

@@ -161,5 +161,3 @@ In the wild: a healthy repo's config is mostly workflow plumbing plus two or thr
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Writing a real config →](02-writing-a-real-config.md)

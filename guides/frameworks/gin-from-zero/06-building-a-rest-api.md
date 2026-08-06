@@ -313,5 +313,3 @@ HTTP/1.1 204 No Content
   }
 ]
 ```
-
-[← Phase 5: Middleware](05-middleware.md) · [Guide overview](_guide.md) · [Phase 7: Error Handling & Project Structure →](07-errors-and-structure.md)

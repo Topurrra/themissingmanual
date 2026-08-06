@@ -139,7 +139,3 @@ catalog, which remains the strongest argument on the other side.
   }
 ]
 ```
-
----
-
-[← Phase 7: When Svelte Breaks](07-when-it-breaks.md) · [Guide overview](_guide.md)

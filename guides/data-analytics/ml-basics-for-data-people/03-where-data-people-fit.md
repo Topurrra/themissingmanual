@@ -104,7 +104,3 @@ You now have the working model: ML learns from data, the workflow runs features 
 Neural networks, deep learning, and today's large language models are their own territory - watch for a future **ai-ml** category. Everything here about leakage, quality, and rigorous evaluation carries straight into it; the tools get bigger, the truth that data decides the outcome does not.
 
 For now, double down on the foundations: [What Is Data Engineering](/guides/what-is-data-engineering) for the pipelines that feed ML, and [Data Quality and Observability](/guides/data-quality-and-observability) for keeping those inputs trustworthy.
-
----
-
-[← Guide overview](_guide.md)

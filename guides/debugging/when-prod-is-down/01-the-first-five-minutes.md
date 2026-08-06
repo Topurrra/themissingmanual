@@ -246,7 +246,3 @@ minute nobody can check out. Restore service, then read the debrief.
    suspect.
 5. **Stop the bleeding before you diagnose.** Restore service first, understand later - only one of those is
    your job in minute one.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Triage & Mitigate →](02-triage-and-mitigate.md)

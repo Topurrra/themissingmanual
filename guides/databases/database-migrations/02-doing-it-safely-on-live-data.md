@@ -169,7 +169,3 @@ move over calmly.
    last.
 4. **Contract late.** The overlap period is your safety net and your rollback path - don't collapse it
    early.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: The Dangerous Migrations →](03-the-dangerous-migrations.md)

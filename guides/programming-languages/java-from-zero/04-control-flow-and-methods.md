@@ -364,7 +364,3 @@ Test yourself on the ideas most likely to bite - fall-through, loop choice, and 
   }
 ]
 ```
-
----
-
-[← Phase 3: Collections](03-collections.md) · [Guide overview](_guide.md) · [Phase 5: Classes & Objects →](05-classes-and-objects.md)

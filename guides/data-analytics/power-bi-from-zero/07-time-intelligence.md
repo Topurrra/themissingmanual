@@ -151,7 +151,3 @@ Test yourself on the idea that makes the rest of this phase click - that these f
   }
 ]
 ```
-
----
-
-[← Phase 6: Measures vs Calculated Columns](06-measures-vs-calculated-columns.md) · [Phase 8: Visualizations That Do Not Lie →](08-visualizations-that-do-not-lie.md)

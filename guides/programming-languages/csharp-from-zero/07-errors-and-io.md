@@ -326,7 +326,3 @@ Test yourself on the ideas that matter most - how exceptions flow, and why `usin
   }
 ]
 ```
-
----
-
-[← Phase 6: Inheritance & Interfaces](06-inheritance-and-interfaces.md) · [Guide overview](_guide.md) · [Phase 8: Projects, NuGet & Tooling →](08-projects-and-tooling.md)

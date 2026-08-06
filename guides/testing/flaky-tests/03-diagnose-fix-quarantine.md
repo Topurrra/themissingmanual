@@ -186,5 +186,3 @@ For builders: in CI, a flaky test is a slow leak in the thing protecting your `m
   }
 ]
 ```
-
-[← Phase 2: The Usual Culprits](02-the-usual-culprits.md) · [Guide overview](_guide.md)

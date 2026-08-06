@@ -276,7 +276,3 @@ subset = df[df["units"] > 100].copy()      # an INDEPENDENT subset to edit freel
   }
 ]
 ```
-
----
-
-[← Phase 2: Loading & Inspecting Data](02-loading-and-inspecting-data.md) · [Guide overview](_guide.md) · [Phase 4: Cleaning Data →](04-cleaning-data.md)

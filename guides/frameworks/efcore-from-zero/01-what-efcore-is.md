@@ -240,7 +240,3 @@ Three questions on the framing that has to stick before Phase 2:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Entity Models & Migrations →](02-models-and-migrations.md)

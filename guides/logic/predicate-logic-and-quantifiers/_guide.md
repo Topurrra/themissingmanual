@@ -41,7 +41,3 @@ really?"), and negate a sweeping statement correctly. If you've ever written `.a
 > This builds on [Propositional Logic](/guides/propositional-logic) and uses the idea of a set from
 > [Sets, Relations & Functions](/guides/sets-relations-and-functions). The Logic track continues into
 > proof and spotting fallacies.
-
----
-
-[Phase 1: Predicates: Statements With Variables →](01-predicates-statements-with-variables.md)

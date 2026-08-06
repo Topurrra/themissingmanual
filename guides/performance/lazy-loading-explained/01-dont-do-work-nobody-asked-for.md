@@ -108,5 +108,3 @@ One sentence: **do the work when something proves it's needed, not on the chance
 ```
 
 Watch it animated: [lazy loading](/explainers/LazyLoading.dc.html)
-
-[← Overview](_guide.md) | [Phase 2: Where you'll actually use it →](02-where-youll-use-it.md)

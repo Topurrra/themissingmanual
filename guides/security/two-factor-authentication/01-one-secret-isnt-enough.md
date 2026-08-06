@@ -54,5 +54,3 @@ Walk through the credential-stuffing scenario again, but now with 2FA turned on.
 This is the entire value of 2FA in one sentence: it turns "steal one thing" into "steal two different kinds of things, from two different places, usually at the same time" - and that jump in difficulty is what keeps most opportunistic attackers out, even when your password has already leaked somewhere you don't know about.
 
 2FA doesn't make your account unhackable - a sufficiently motivated, well-resourced attacker who steals your unlocked phone *and* knows your password can still get in. What it does is take you out of the pool of soft targets: the accounts that fall to automated, high-volume attacks that only try the one thing they have. That's most attacks. Phase 2 gets into which second factors resist even the harder, targeted attacks, and which ones are more theater than protection.
-
-[← Overview](_guide.md) | [Phase 2: How the common methods actually work →](02-how-the-methods-work.md)

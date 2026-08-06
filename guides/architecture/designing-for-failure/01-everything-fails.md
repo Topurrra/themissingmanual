@@ -136,7 +136,3 @@ or a 2am page.
    down your *whole* service through **cascading failure** - even parts unrelated to the slow one.
 5. **Slow is more dangerous than down.** Design assuming failure, and ask "is it answering in time?",
    not just "is it up?".
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Core Patterns →](02-the-core-patterns.md)

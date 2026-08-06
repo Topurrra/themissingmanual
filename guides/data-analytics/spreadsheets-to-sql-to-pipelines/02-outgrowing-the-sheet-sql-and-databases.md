@@ -182,7 +182,3 @@ run on its own?
 
 You can now hold a clean, shared, queryable source of truth. Next: what to do when the querying itself
 has to happen without you.
-
----
-
-[← Phase 1: Where Everyone Starts](01-where-everyone-starts-spreadsheets.md) · [Guide overview](_guide.md) · [Phase 3: When It Has to Run Itself →](03-when-it-has-to-run-itself-pipelines.md)

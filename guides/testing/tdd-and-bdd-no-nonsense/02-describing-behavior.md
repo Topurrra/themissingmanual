@@ -150,7 +150,3 @@ drifts out of date, because the build fails the moment they stop being true.
 
 You now know what both techniques are and how they fit together. The last and most important phase is the
 plain-spoken one: deciding *when* to actually use them.
-
----
-
-[← Phase 1: TDD - Red, Green, Refactor](01-red-green-refactor.md) · [Guide overview](_guide.md) · [Phase 3: Straight Talk - When They Help, When They Don't →](03-when-they-help.md)

@@ -132,5 +132,3 @@ A typical deploy pipeline runs `npx prisma migrate deploy` as a release step *be
   }
 ]
 ```
-
-[← Phase 1: Schema is the source of truth](01-schema-is-the-source-of-truth.md) | [Overview](_guide.md) | [Phase 3: Drift, shadows, and production →](03-drift-shadows-and-production.md)

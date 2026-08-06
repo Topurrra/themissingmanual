@@ -275,7 +275,3 @@ Test yourself on the one idea this whole guide builds on - what a tensor is and 
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Tensor Operations & the GPU →](02-tensor-operations-and-gpu.md)

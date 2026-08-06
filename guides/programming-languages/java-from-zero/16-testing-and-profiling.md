@@ -341,7 +341,3 @@ Test yourself on the ideas that separate "I ran it once" from "I proved it works
   }
 ]
 ```
-
----
-
-[← Phase 15: The JVM: Memory, GC & JIT](15-the-jvm-memory-and-gc.md) · [Guide overview](_guide.md) · [Phase 17: Performance & the Ecosystem →](17-performance-and-ecosystem.md)

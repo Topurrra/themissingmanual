@@ -55,5 +55,3 @@ The value is genuinely both sides of the old tradeoff at once, not a compromise 
 > Auto-scaling doesn't eliminate the mountain range in your traffic - it makes your capacity follow the shape of the mountain instead of standing at one fixed height and hoping.
 
 But "capacity follows demand" raises an obvious question: follows *how*? What number is it watching, how fast does it react, and what stops it from overreacting to every blip? That's the mechanism - the whole subject of Phase 2.
-
-[← Overview](_guide.md) | [Phase 2: How it actually decides to scale →](02-how-it-decides.md)

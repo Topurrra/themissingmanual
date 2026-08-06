@@ -121,5 +121,3 @@ summation   → you repeat the rounding enough times that it adds up
   }
 ]
 ```
-
-[← Phase 1: Why Floats Surprise You](01-why-floats-surprise-you.md) · [Guide overview](_guide.md) · [Phase 3: The Fixes →](03-the-fixes.md)

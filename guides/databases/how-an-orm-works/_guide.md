@@ -51,7 +51,3 @@ Phases carry difficulty badges.
 > The throughline: an ORM **maps** objects to rows, keeps an **identity map** + **unit of work** to track
 > them, **loads** related data on some strategy, and **translates** your queries to SQL. Four jobs - learn
 > them once, recognize them everywhere.
-
----
-
-[Phase 1: What an ORM Is (the Mismatch) →](01-what-an-orm-is.md)

@@ -269,7 +269,3 @@ habit:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Loading & Inspecting Data →](02-loading-and-inspecting-data.md)

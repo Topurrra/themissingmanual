@@ -208,5 +208,3 @@ Groups become more powerful later: the same object can attach **authentication, 
   }
 ]
 ```
-
-[← Phase 1: What ASP.NET Core Is & Your First Server](01-what-aspnet-core-is.md) · [Guide overview](_guide.md) · [Phase 3: Model Binding & Validation →](03-model-binding-and-validation.md)

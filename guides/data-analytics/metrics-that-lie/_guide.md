@@ -27,5 +27,3 @@ This guide hands you the small set of tricks that fool almost everyone: an avera
 3. **[Reading a Dashboard Without Getting Fooled](03-reading-without-getting-fooled.md)** - vanity vs actionable metrics, cherry-picked date ranges, truncated axes, and a quick interrogation you can run on any number in under a minute.
 
 > This guide is the applied, paranoid sibling of [Probability and Statistics](/guides/probability-and-statistics) - that one builds the machinery, this one shows you where people abuse it. For turning clean numbers into decisions, see [Building a BI Dashboard That's Actually Useful](/guides/bi-dashboards-that-work).
-
-[Phase 1: The Average Is Lying to You](01-the-average-is-lying.md) →

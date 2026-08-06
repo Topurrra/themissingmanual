@@ -274,7 +274,3 @@ first server fits together:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Routing & Route Groups →](02-routing-and-groups.md)

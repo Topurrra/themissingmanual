@@ -290,5 +290,3 @@ fine for most reads, something to weigh under heavy concurrent writes.)
   }
 ]
 ```
-
-[← Phase 6: Relationships](06-relationships.md) · [Guide overview](_guide.md) · [Phase 8: Transactions & Migrations in Production →](08-transactions-and-migrations.md)

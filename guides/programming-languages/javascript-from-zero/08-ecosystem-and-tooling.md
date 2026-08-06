@@ -132,7 +132,3 @@ You don't need to set any of this up by hand on day one - `npm create vite@lates
 3. JavaScript runs in two main **runtimes**: the **browser** (DOM, `fetch`, no filesystem) and **Node** (`fs`, servers, no DOM); **Deno/Bun** are newer alternatives.
 4. **Vite** bundles many source files into fast browser files; **Prettier** formats, **ESLint** lints (flags likely bugs), **Vitest/Jest** run tests.
 5. You don't configure all this by hand - you *recognize* it; scaffolders like `npm create vite@latest` wire it up for you.
-
----
-
-[← Phase 7: Errors & I/O](07-errors-and-io.md) · [Guide overview](_guide.md) · [Phase 9: Idioms & Common Gotchas →](09-idioms-and-gotchas.md)

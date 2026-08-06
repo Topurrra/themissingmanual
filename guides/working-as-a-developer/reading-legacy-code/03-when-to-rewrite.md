@@ -145,7 +145,3 @@ Knowing the rewrite urge is a trap is the easy part. Feeling the deadline while 
   }
 }
 ```
-
----
-
-[← Phase 2: Techniques for Making the Unknown Known](02-techniques-for-understanding.md) · [Guide overview](_guide.md)

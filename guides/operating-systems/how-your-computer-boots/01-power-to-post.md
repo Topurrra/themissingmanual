@@ -61,5 +61,3 @@ UEFI + GPT:   read EFI System Partition -> find a .efi bootloader file -> execut
 Modern UEFI firmware supports **secure boot**: before executing that `.efi` bootloader file, the firmware checks its cryptographic signature against keys it trusts. If the signature doesn't match - because the bootloader was tampered with, or it's an unsigned OS installer - firmware refuses to run it. It's a small trust check that closes a real attack window: malware that infects the boot chain before an OS (and its antivirus) ever loads. This guide won't go deeper, but the check exists at exactly this handoff point.
 
 Once firmware finds a valid boot target, its job is done. It hands the CPU over to that code and steps out of the picture - which is exactly where the bootloader picks up.
-
-[← Overview](_guide.md) | [Phase 2: The bootloader's job →](02-the-bootloader.md)

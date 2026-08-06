@@ -212,7 +212,3 @@ byte-for-byte identical environment to the one you built.
 
 Next, the part that surprises everyone: where your data goes when the container stops, and the traps that
 catch every newcomer.
-
----
-
-[← Phase 1: Image vs Container](01-image-vs-container.md) · [Guide overview](_guide.md) · [Phase 3: Volumes & the Gotchas →](03-volumes-and-the-gotchas.md)

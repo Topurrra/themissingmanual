@@ -148,7 +148,3 @@ yourself."
 
 But when the DMA controller finishes, it has to *tell* the CPU. How does a device get the CPU's
 attention without the CPU constantly checking? The last piece: interrupts.
-
----
-
-[← Phase 1: Buses & Addresses](01-buses-and-addresses.md) · [Guide overview](_guide.md) · [Phase 3: Interrupts →](03-interrupts.md)

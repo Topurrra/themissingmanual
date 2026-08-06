@@ -213,7 +213,3 @@ VPS](/guides/deploying-to-a-vps) walks through.
    with `ssh-keygen -R hostname`.
 5. **The cheat-card** at the top maps every common error to its fix - come back to it whenever something
    refuses you.
-
----
-
-[← Phase 2: Key Pairs, Demystified](02-key-pairs-demystified.md) · [Guide overview](_guide.md)

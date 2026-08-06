@@ -167,5 +167,3 @@ That's the whole controller story: a class marks a base path, methods mark verbs
   }
 ]
 ```
-
-[← Phase 1: What NestJS Is & Your First App](01-what-nestjs-is.md) · [Guide overview](_guide.md) · [Phase 3: Providers & Dependency Injection →](03-providers-and-di.md)

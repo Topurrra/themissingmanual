@@ -153,7 +153,3 @@ the numbers first, or you'll buy machinery for a target you never defined.
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Three Kinds of Backup →](02-the-three-kinds-of-backup.md)

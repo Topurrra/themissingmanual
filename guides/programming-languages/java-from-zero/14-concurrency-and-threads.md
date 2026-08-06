@@ -292,7 +292,3 @@ Test yourself on the ideas that make concurrency safe rather than just fast:
   }
 ]
 ```
-
----
-
-[← Phase 13: Records, Sealed Types & Modern Java](13-records-and-modern-java.md) · [Guide overview](_guide.md) · [Phase 15: The JVM: Memory, GC & JIT →](15-the-jvm-memory-and-gc.md)

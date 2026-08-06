@@ -68,7 +68,3 @@ Some tools straddle two themes on purpose - a tool like Sentry does error tracki
   }
 ]
 ```
-
----
-
-[← Phase 1: Why There Are 50+ Tools](01-why-there-are-50-plus-tools.md) · [Guide overview](_guide.md) · [Phase 3: How to Learn a New Tool Fast →](03-how-to-learn-a-new-tool-fast.md)

@@ -198,7 +198,3 @@ Make sure the one idea that unlocks Spring Security - and its two most-confused 
   }
 ]
 ```
-
----
-
-[← Phase 8: Testing Spring Boot Apps](08-testing-spring-boot.md) · [Guide overview](_guide.md) · [Phase 10: Production: Actuator, Packaging & Deployment →](10-production-actuator-and-deploy.md)

@@ -146,7 +146,3 @@ With the broker and worker understood and running, you're ready to actually writ
   }
 ]
 ```
-
----
-
-[← Phase 1: What Celery Is & Why](01-what-celery-is.md) · [Guide overview](_guide.md) · [Phase 3: Defining & Calling Tasks →](03-defining-and-calling-tasks.md)

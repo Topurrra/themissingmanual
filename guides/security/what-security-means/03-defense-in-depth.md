@@ -96,7 +96,3 @@ You now have the *map* - the foundation the whole field stands on. The specific 
 - **[Auth vs. Authz](/guides/auth-vs-authz)** - the difference between proving *who you are* (authentication) and what you're *allowed to do* (authorization) - two of the most important, most-confused trust-boundary checks there are.
 
 Read those with the mindset you just built, and they'll read like a checklist of abuse cases - exactly what they are.
-
----
-
-[← Guide overview](_guide.md)

@@ -29,7 +29,3 @@ This guide gives you the model first. You'll follow one email on its real journe
 3. **[Fixing Deliverability](03-fixing-deliverability.md)** - why mail still goes to spam after you "set up SPF," the alignment trap, reading a DMARC report, and a working checklist.
 
 > This guide assumes you're comfortable with the basics of how machines find each other. If DNS records and ports feel fuzzy, read [IP Addresses, DNS & Ports](/guides/ip-dns-and-ports) first - email leans hard on DNS, and that foundation makes everything here click.
-
----
-
-[Phase 1: The Journey of One Email →](01-the-journey-of-one-email.md)

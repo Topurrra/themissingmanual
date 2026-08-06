@@ -87,7 +87,3 @@ And RAM is *not* where your files live. "16 GB of RAM, 512 GB SSD" is a 16 GB *d
 We've leaned on "slow storage" twice now. Time to give storage its own introduction - and to draw the ladder connecting cache, RAM, and storage.
 
 Watch it animated: [how RAM works](/explainers/HowRAMWorks.dc.html)
-
----
-
-[← Phase 1: The CPU - the Worker](01-the-cpu-the-worker.md) · [Guide overview](_guide.md) · [Phase 3: Storage - the Filing Cabinet →](03-storage-the-filing-cabinet.md)

@@ -81,7 +81,3 @@ it shows you what your other languages have been doing for you all along.
 
 > C's ecosystem (build systems beyond `make`, embedded toolchains, kernel development) is its own
 > world - this guide makes the *language* make sense, top to bottom.
-
----
-
-[Phase 1: Install, Compiling & Your First Program →](01-install-compiling-and-your-first-program.md)

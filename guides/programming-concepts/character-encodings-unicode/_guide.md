@@ -34,5 +34,3 @@ Read the phases in order the first time. Phase 1 installs the core distinction (
 1. [Bytes Are Not Characters](01-bytes-are-not-characters.md)
 2. [How UTF-8 Actually Works](02-how-utf-8-actually-works.md)
 3. [When Text Lies: Emoji, Graphemes, and the BOM](03-when-text-lies.md)
-
-[Phase 1: Bytes Are Not Characters](01-bytes-are-not-characters.md) →

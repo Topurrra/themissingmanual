@@ -86,7 +86,3 @@ You can now read code in either style, name what it's doing and why, and make a 
 
 - [Languages Explained Like a Human](/guides/languages-explained-like-a-human) - how programming languages differ beyond paradigm, in plain terms.
 - [Data Structures Explained](/guides/data-structures-explained) - the values your functions transform and your objects hold, demystified.
-
----
-
-[← Phase 2: What Functional Programming Actually Is](02-what-functional-actually-is.md) · [Guide overview](_guide.md)

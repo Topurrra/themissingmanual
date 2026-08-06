@@ -206,5 +206,3 @@ If you're solo or your schema changes come in a tidy line, dbmate's two-file, ti
   }
 ]
 ```
-
-[← Phase 1](01-the-mental-model.md) | [Overview](_guide.md) | [Phase 3: Production reality →](03-production-reality.md)

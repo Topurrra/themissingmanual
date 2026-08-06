@@ -144,7 +144,3 @@ One last check - the through-lines of the whole guide:
   }
 ]
 ```
-
----
-
-[← Phase 18: Packaging & Environments](18-packaging-and-environments.md) · [Guide overview](_guide.md)

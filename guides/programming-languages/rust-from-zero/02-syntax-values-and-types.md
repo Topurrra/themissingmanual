@@ -229,7 +229,3 @@ and know "attempt to add with overflow" means a number outgrew its type.
 
 You can hold single values now. Next: *many* values at once - lists, maps, and the two kinds of text Rust
 makes you choose between.
-
----
-
-[← Phase 1: Install & Your First Program](01-install-and-first-program.md) · [Guide overview](_guide.md) · [Phase 3: Collections →](03-collections.md)

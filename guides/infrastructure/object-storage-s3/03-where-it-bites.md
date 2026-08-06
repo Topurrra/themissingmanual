@@ -108,5 +108,3 @@ For builders: a clean default architecture is *private bucket + signed URLs for 
   }
 ]
 ```
-
-[← Phase 2: Keys and access](02-keys-and-access.md) · [Overview](_guide.md)

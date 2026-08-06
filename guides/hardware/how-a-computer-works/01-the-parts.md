@@ -108,10 +108,6 @@ Information flows *in*, the machine works on it, results flow *out* - the shape 
 
 Now let's watch the parts cooperate - next we follow a single program from the filing cabinet into the worker's hands.
 
----
-
-[← Guide overview](_guide.md) · [Phase 2: How They Work Together to Run a Program →](02-running-a-program.md)
-
 ## Try it yourself
 
 Everything inside is binary. Convert between bases and try a bitwise operation:

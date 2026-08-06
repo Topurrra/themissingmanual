@@ -156,7 +156,3 @@ and where they fit - unit tests are the smallest of several layers.
 > tests fit alongside the larger tests that check whole systems - and when to reach for each.
 
 **Related:** [Why Test At All?](/guides/why-test-at-all) · [Unit, Integration, E2E](/guides/unit-integration-e2e) · [Mocking and Test Doubles](/guides/mocking-and-test-doubles)
-
----
-
-[← Phase 2: Write It and Run It](02-write-it-and-run-it.md) · [Guide overview](_guide.md)

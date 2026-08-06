@@ -108,7 +108,3 @@ hash is still a fast hash. You need both: a salt *and* a hash that's slow on pur
 
 We now know the two properties a good password hash needs: it must be salted, and it must be slow. The
 final phase introduces the algorithms built to do exactly that - and the safe way to use them.
-
----
-
-[← Phase 1: Hashing, Not Encrypting](01-hashing-not-encrypting.md) · [Guide overview](_guide.md) · [Phase 3: Use a Slow Hash Built for Passwords →](03-use-a-slow-hash.md)

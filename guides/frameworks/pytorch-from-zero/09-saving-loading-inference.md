@@ -250,7 +250,3 @@ all of this fast on a GPU, and the pitfalls that trip people up along the way.
   }
 ]
 ```
-
----
-
-[← Phase 8: Training a Real Classifier](08-training-a-classifier.md) · [Guide overview](_guide.md) · [Phase 10: GPUs, Performance & Common Pitfalls →](10-gpus-performance-pitfalls.md)

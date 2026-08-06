@@ -125,7 +125,3 @@ Bo: 50
 4. **Polymorphism** lets many types answer the same call their own way, so you add new types instead of editing old conditionals.
 
 That's OOP's worldview: model your program as cooperating objects, each guarding its own data. Next we'll look at the other major worldview - one that starts not from objects, but from functions.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: What Functional Programming Actually Is →](02-what-functional-actually-is.md)

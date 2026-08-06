@@ -139,5 +139,3 @@ Neither tool is "better." They fit different teams.
   }
 ]
 ```
-
-[← Phase 1: What load testing measures](01-what-load-testing-measures.md) · [Overview](_guide.md) · [Phase 3: When the numbers lie and the system breaks →](03-gotchas-and-production-reality.md)

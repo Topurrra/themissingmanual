@@ -122,5 +122,3 @@ A quick check before you go:
   }
 ]
 ```
-
-[← Phase 2: Matrices as Recipes for Transformation](02-matrices-as-recipes-for-transformation.md) · [Guide overview](_guide.md)

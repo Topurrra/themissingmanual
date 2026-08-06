@@ -121,5 +121,3 @@ One picture: **a function plus a notebook.** Before doing the work, check the no
 ```
 
 Watch it animated: [memoization](/explainers/Memoization.dc.html)
-
-[← Overview](_guide.md) | [Phase 2: How to actually implement it →](02-how-to-implement-it.md)

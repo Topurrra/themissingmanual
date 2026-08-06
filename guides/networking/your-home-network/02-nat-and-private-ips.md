@@ -123,7 +123,3 @@ Now let's look at the part of the box you actually interact with - the Wi-Fi - a
 that keep your network yours.
 
 Watch it animated: [NAT and private IPs](/explainers/NAT.dc.html)
-
----
-
-[← Phase 1: The Router (and the Modem)](01-the-router-and-the-modem.md) · [Guide overview](_guide.md) · [Phase 3: Wi-Fi & Keeping It Safe →](03-wifi-and-keeping-it-safe.md)

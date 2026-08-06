@@ -101,5 +101,3 @@ Watch it animated: [short-circuit evaluation](/explainers/ShortCircuit.dc.html)
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Where this becomes a real pattern →](02-real-patterns.md)

@@ -57,7 +57,3 @@ You've got the mental model now. Go build something. Welcome to Rust.
 2. **The Book** ([doc.rust-lang.org/book](https://doc.rust-lang.org/book/)) is the official, free, thorough deep dive - pair it with hands-on building.
 3. **Build a small thing and finish it** - that teaches more than more reading.
 4. The **borrow checker stops fighting you sooner than you think**; the up-front thinking buys you fast, crash-resistant programs.
-
----
-
-[← Phase 17: Performance, Unsafe & the Ecosystem](17-performance-and-unsafe.md) · [Guide overview](_guide.md)

@@ -73,7 +73,3 @@ lambdas, LINQ, modern C# (records, pattern matching, nullable reference types), 
 
 > Frameworks (ASP.NET Core, Blazor, MAUI, Unity) are their own world - this guide makes the *language and
 > the .NET runtime* make sense, top to bottom.
-
----
-
-[Phase 1: Install & Your First Program →](01-install-and-first-program.md)

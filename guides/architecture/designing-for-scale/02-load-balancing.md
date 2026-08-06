@@ -100,7 +100,3 @@ Now the part this phase exists to warn you about. Most load balancers offer a fe
 5. The clean fix is to **externalize state** so any server can serve any user - which is Phase 3.
 
 Next, the parts of your system you *can't* clone freely - sessions, the database, the cache - and how to handle each one.
-
----
-
-[← Phase 1: Scale Up vs Scale Out](01-scale-up-vs-scale-out.md) · [Phase 3: Scaling the Stateful Bits →](03-scaling-the-stateful-bits.md)

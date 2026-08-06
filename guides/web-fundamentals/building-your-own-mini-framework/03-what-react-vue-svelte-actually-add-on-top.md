@@ -74,8 +74,4 @@ One more pass before you're done with this guide.
 ]
 ```
 
----
-
-[← Phase 2: Reactivity Without Magic](02-reactivity-without-magic.md) · [Guide overview](_guide.md)
-
 Next stop: zoom back out to [what a framework even is](/guides/what-a-framework-even-is) and see how this core loop fits into the bigger picture of routing, state management, and ecosystem tooling.

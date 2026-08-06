@@ -135,7 +135,3 @@ Next, the commands you run every day - and the small print of semver ranges that
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Installing, Updating, and Workspaces →](02-installing-and-workspaces.md)

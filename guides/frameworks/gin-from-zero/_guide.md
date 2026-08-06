@@ -56,7 +56,3 @@ deployable REST API. Phases carry difficulty badges.
 
 > The throughline: an **engine** holds your routes, a **context** handles each request, and middleware
 > wraps the chain. Hold those three and Gin is a small, fast tool you fully understand.
-
----
-
-[Phase 1: What Gin Is & Your First Server →](01-what-gin-is.md)

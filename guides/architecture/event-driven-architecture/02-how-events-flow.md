@@ -122,5 +122,3 @@ Which is why the single most important habit in event-driven systems is making c
   }
 ]
 ```
-
-[← Phase 1: Announce, Don't Call](01-the-mental-model.md) | [Overview](_guide.md) | [Phase 3: The Bill Comes Due →](03-the-bill-comes-due.md)

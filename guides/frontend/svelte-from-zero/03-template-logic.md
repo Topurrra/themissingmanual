@@ -175,7 +175,3 @@ modifier is gone).
   }
 ]
 ```
-
----
-
-[← Phase 2: Runes: State That Compiles](02-runes-state-that-compiles.md) · [Guide overview](_guide.md) · [Phase 4: Components: Props, Callbacks, and Snippets →](04-components-props-snippets.md)

@@ -89,7 +89,3 @@ Watch reachability get traced and swept step by step:
   }
 ]
 ```
-
----
-
-[← Phase 1: Reference Counting and Mark-Sweep](01-reference-counting-and-mark-sweep.md) · [Guide overview](_guide.md) · [Phase 3: Reading and Tuning a Real GC →](03-reading-and-tuning-a-real-gc.md)

@@ -301,7 +301,3 @@ Make sure the join types and the row-count instinct stuck:
   }
 ]
 ```
-
----
-
-[← Phase 6: GroupBy & Aggregation](06-groupby-and-aggregation.md) · [Guide overview](_guide.md) · [Phase 8: Time Series & Dates →](08-time-series.md)

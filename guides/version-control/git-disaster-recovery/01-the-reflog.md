@@ -234,7 +234,3 @@ minutes, and the fastest fix is also the calmest one.
 3. Recover a bad `reset --hard` with **`git reset --hard <hash>`** from the reflog.
 4. Rescue detached-HEAD or orphaned commits by **putting a label on them** (`git branch <name> <hash>`).
 5. Restore a deleted branch from the **`(was <hash>)`** message (or the reflog): `git switch -c <name> <hash>`.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Rebase Without Fear →](02-rebase-without-fear.md)

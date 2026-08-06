@@ -194,5 +194,3 @@ getting in the way of the picture.
   }
 ]
 ```
-
-[← Phase 2: General Relativity: Gravity Is Curved Spacetime](02-general-relativity-curved-spacetime.md) · [Overview](_guide.md)

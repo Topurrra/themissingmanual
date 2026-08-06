@@ -25,5 +25,3 @@ Read the three phases in order. Phase 1 builds the mental model: why mocks lie a
 1. [Why mocks lie and what a container gives you](01-why-mocks-lie.md)
 2. [The everyday loop: start, connect, tear down](02-the-everyday-loop.md)
 3. [Production reality: Docker, speed, and CI](03-production-reality.md)
-
-[Phase 1: Why mocks lie and what a container gives you](01-why-mocks-lie.md) →

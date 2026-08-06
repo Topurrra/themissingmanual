@@ -256,7 +256,3 @@ Make sure the form-handling essentials stuck:
   }
 ]
 ```
-
----
-
-[← Phase 3: Templates with Jinja2](03-templates-with-jinja.md) · [Guide overview](_guide.md) · [Phase 5: Working with a Database →](05-database-with-sqlalchemy.md)

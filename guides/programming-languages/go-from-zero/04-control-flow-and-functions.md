@@ -251,7 +251,3 @@ it means "run this last, guaranteed."
 
 Next: building *projects* - modules, packages, why a capital letter makes something public, and a sane
 layout, the groundwork for the goroutines in phase 6.
-
----
-
-[← Phase 3: Collections](03-collections.md) · [Guide overview](_guide.md) · [Phase 5: Modules & Project Layout →](05-modules-and-project-layout.md)

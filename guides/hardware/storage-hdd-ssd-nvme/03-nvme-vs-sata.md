@@ -122,7 +122,3 @@ use and a large one under heavy load. If you can only make one move, make the fi
 
 That's the whole stack, from a magnetic spot on a spinning platter to flash racing down a PCIe lane. You
 can now read any storage spec sheet and know not just *which* is faster, but *why*.
-
----
-
-[← Phase 2: SSD - Flash, No Moving Parts](02-ssd-flash-no-moving-parts.md) · [Guide overview](_guide.md)

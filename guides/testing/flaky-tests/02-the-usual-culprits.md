@@ -154,5 +154,3 @@ The five usual culprits, each with its tell:
   }
 ]
 ```
-
-[← Phase 1: What a Flaky Test Actually Is](01-what-a-flaky-test-is.md) · [Guide overview](_guide.md) · [Phase 3: Diagnose, Fix, Quarantine](03-diagnose-fix-quarantine.md) →

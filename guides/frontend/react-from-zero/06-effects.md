@@ -217,7 +217,3 @@ genuinely involved.
   }
 ]
 ```
-
----
-
-[← Phase 5: Events and Forms](05-events-and-forms.md) · [Guide overview](_guide.md) · [Phase 7: Sharing State →](07-sharing-state.md)

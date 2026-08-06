@@ -118,5 +118,3 @@ The mental shift that makes Maven click: **the POM is a description, not a scrip
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The everyday core →](02-pom-coordinates-lifecycle.md)

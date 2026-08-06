@@ -161,7 +161,3 @@ Test yourself on the ideas that change how modern C++ reads: what `auto` actuall
   }
 ]
 ```
-
----
-
-[Phase 15: Error Handling: Exceptions and Alternatives](15-error-handling-exceptions-and-alternatives.md) · [Phase 17: Undefined Behavior, Gotchas & Where to Go Next →](17-undefined-behavior-gotchas-and-where-to-go-next.md)

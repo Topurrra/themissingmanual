@@ -149,7 +149,3 @@ $ dig doesnotexist.example
 4. Together they cover Rungs 3-5: gateway reachability, the path to the destination, and the name lookup in between.
 
 These three tools see *summaries* - replies, hops, records. When even they can't tell you where a conversation broke, you drop down to watching the actual packets on the wire. That's the last tool, and it's next.
-
----
-
-[← Phase 1: Work Up the Layers](01-work-up-the-layers.md) · [Guide overview](_guide.md) · [Phase 3: Reading a Packet Capture →](03-reading-a-packet-capture.md)

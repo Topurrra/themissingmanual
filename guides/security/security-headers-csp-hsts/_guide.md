@@ -27,5 +27,3 @@ This guide walks you through what each header actually does and the specific att
 1. **[Headers Are a Fence, Not a Lock](01-headers-are-a-fence.md)** - why response headers are cheap, high-leverage defense, how the browser is the thing that enforces them, and what they can and can't protect.
 2. **[The Everyday Hardening Set](02-the-everyday-set.md)** - HSTS, X-Content-Type-Options, X-Frame-Options / frame-ancestors, Referrer-Policy, and the cookie flags (HttpOnly, Secure, SameSite), each tied to the attack it stops.
 3. **[Rolling Out CSP Without Breaking the Site](03-rolling-out-csp.md)** - Content-Security-Policy from scratch: what it blunts, why report-only comes first, reading the violation reports, and tightening the policy until it's tight but not broken.
-
-[Phase 1: Headers Are a Fence, Not a Lock](01-headers-are-a-fence.md) →

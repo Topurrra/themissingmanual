@@ -113,5 +113,3 @@ Check yourself before moving on:
   }
 ]
 ```
-
-[← Phase 1: What Unity Is](01-what-unity-is.md) · [Guide overview](_guide.md) · [Phase 3: GameObjects & Components →](03-gameobjects-and-components.md)

@@ -110,5 +110,3 @@ Most large open-source Python projects you'll clone already have one of these wi
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The everyday workflow](02-the-everyday-workflow.md) →

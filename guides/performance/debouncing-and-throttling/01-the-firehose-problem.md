@@ -76,5 +76,3 @@ Both examples - the search box and the scroll handler - share the same underlyin
 > The event firing isn't the problem. Running expensive work on every single firing, when only the last one (or a bounded number per second) actually matters, is the problem.
 
 That distinction - "wait until things settle" versus "allow updates, but cap how often" - is exactly the fork between the two techniques ahead. Debounce handles the first shape: a burst of events where only the final one matters. Throttle handles the second: an ongoing stream where you want steady updates, capped at a bounded rate rather than an unbounded one.
-
-[← Overview](_guide.md) | [Phase 2: Debounce - wait for a pause →](02-debounce.md)

@@ -235,5 +235,3 @@ async fn exists(path: web::Path<u32>) -> HttpResponse {
   }
 ]
 ```
-
-[← Phase 2: Routing & Extractors](02-routing-and-extractors.md) · [Guide overview](_guide.md) · [Phase 4: Shared State with web::Data →](04-shared-state.md)

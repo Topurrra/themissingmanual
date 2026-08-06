@@ -371,7 +371,3 @@ Test yourself on the ideas most likely to bite you in real code:
   }
 ]
 ```
-
----
-
-[← Phase 4: Control Flow & Methods](04-control-flow-and-methods.md) · [Guide overview](_guide.md) · [Phase 6: Inheritance & Interfaces →](06-inheritance-and-interfaces.md)

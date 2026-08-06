@@ -211,7 +211,3 @@ plan to save these objects.
   }
 ]
 ```
-
----
-
-[← Phase 3: The Identity Map & Unit of Work](03-identity-map-and-unit-of-work.md) · [Guide overview](_guide.md) · [Phase 5: Lazy Loading & the N+1 Trap →](05-lazy-loading-and-n-plus-1.md)

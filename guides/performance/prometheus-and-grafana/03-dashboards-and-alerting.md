@@ -163,7 +163,3 @@ The other option is an all-in-one **APM** (Application Performance Monitoring) p
 6. **The pair vs an APM** is a control-vs-convenience trade - both are valid.
 
 That's the pair, end to end: Prometheus collects and stores, Grafana displays, PromQL is how you ask, and good dashboards and alerts are a matter of judgment, not just configuration. You can now walk up to someone else's Grafana and actually understand what you're looking at - and build your own that someone will thank you for.
-
----
-
-[← Phase 2: Metrics & a Taste of PromQL](02-metrics-and-promql.md) · [Guide overview](_guide.md)

@@ -71,7 +71,3 @@ This picture explains everything the three phases built:
 5. **"Fast" means the CPU's data sits high in that hierarchy** - every spec you compare is really about keeping the worker fed from the fast layers.
 
 That's the trio: CPU does the work, RAM is the workspace, storage is the permanent home - and the memory hierarchy is why they're arranged this way. When a computer feels fast or slow, you now know which part to look at.
-
----
-
-[← Phase 2: RAM - the Workspace](02-ram-the-workspace.md) · [Guide overview](_guide.md)

@@ -52,7 +52,3 @@ difficulty badges.
 
 > The throughline: **mux routes to handler, handler writes response, middleware wraps handlers.** That's
 > net/http, and that's the skeleton inside every Go web framework.
-
----
-
-[Phase 1: The net/http Mental Model →](01-the-mental-model.md)

@@ -371,7 +371,3 @@ Test yourself on the ideas that make the rest of this guide's multi-file example
   }
 ]
 ```
-
----
-
-[← Phase 7: Structs & Typedef](07-structs-and-typedef.md) · [Phase 9: Build Tooling: Makefiles & Debugging →](09-build-tooling-makefiles-and-debugging.md)

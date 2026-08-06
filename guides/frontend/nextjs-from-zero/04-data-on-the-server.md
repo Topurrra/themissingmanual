@@ -194,7 +194,3 @@ returning 200 tells them the opposite - the SEO lesson hiding inside an error-ha
   }
 ]
 ```
-
----
-
-[← Phase 3: Server and Client Components](03-server-and-client-components.md) · [Guide overview](_guide.md) · [Phase 5: Mutations: Forms and Server Actions →](05-mutations-and-server-actions.md)

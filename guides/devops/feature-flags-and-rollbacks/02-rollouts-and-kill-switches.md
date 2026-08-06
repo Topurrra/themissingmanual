@@ -120,5 +120,3 @@ These four uses share one engine: a runtime-changeable value plus per-user targe
   }
 ]
 ```
-
-[← Phase 1](01-deploy-is-not-release.md) | [Overview](_guide.md) | [Phase 3: The bill comes due →](03-flag-debt-and-rollback.md)

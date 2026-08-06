@@ -198,7 +198,3 @@ broken - it's one more dialect to read, like Vue's Options API.
   }
 ]
 ```
-
----
-
-[← Phase 1: What Svelte Actually Is](01-what-svelte-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Template Logic →](03-template-logic.md)

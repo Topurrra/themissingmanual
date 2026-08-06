@@ -73,5 +73,3 @@ CAP's silence about the *non-partition* case is exactly what a later refinement,
 3. **CP systems** (a failing-over RDBMS, ZooKeeper, etcd) refuse rather than risk disagreement. **AP systems** (DynamoDB, Cassandra) always answer and reconcile later.
 4. The most common misreading is treating CP/AP as a permanent label. CAP only describes behavior *during* a partition - outside of one, a system is typically both consistent and available.
 5. PACELC is the deeper refinement: even without a partition, there's often still a latency-versus-consistency tradeoff to make.
-
-[← Phase 2: Why you can't have all three](02-why-you-cant-have-all-three.md) | [Overview](_guide.md)

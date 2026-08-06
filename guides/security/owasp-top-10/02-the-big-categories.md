@@ -93,7 +93,3 @@ You don't have to memorize ten unrelated facts. You have to internalize a few ha
 3. **Injection** = user input becomes code; use parameterized queries and output encoding.
 4. **SSRF** = your server is tricked into making requests for the attacker; allow-list outbound destinations.
 5. The full table covers the rest - and the deeper dives live in linked guides on [injection/XSS](/guides/sql-injection-and-xss) and [auth vs. authz](/guides/auth-vs-authz).
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: How to Actually Use It →](03-how-to-use-it.md)

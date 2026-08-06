@@ -89,7 +89,3 @@ real wait and a genuine nudge, not the second message you send.
 
 Once you can get answers fast, the next skill is handling the moments where nobody's around to ask at all -
 see [Your First On-Call](/guides/your-first-on-call) for what changes when you're the one holding the pager.
-
----
-
-[← Phase 2: The Question Template That Actually Works](02-the-question-template.md) · [Guide overview](_guide.md)

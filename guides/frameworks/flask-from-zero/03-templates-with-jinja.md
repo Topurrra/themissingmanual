@@ -250,7 +250,3 @@ Make sure the data → HTML handoff stuck:
   }
 ]
 ```
-
----
-
-[← Phase 2: Routing & Views](02-routing-and-views.md) · [Guide overview](_guide.md) · [Phase 4: Forms & Request Data →](04-forms-and-request-data.md)

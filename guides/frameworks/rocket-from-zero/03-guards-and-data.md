@@ -202,7 +202,3 @@ Make sure the core idea stuck before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 2: Routing & Dynamic Paths](02-routing-and-paths.md) · [Guide overview](_guide.md) · [Phase 4: Responders →](04-responders.md)

@@ -359,5 +359,3 @@ with a real SQL table. Same handlers, same error handling, real persistence unde
   }
 ]
 ```
-
-[← Phase 5: Middleware](05-middleware.md) · [Guide overview](_guide.md) · [Phase 7: Testing & Production →](07-testing-and-production.md)

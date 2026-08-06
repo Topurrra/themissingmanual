@@ -202,7 +202,3 @@ question is "what's the *smallest* subtree that truly needs interactivity?"
   }
 ]
 ```
-
----
-
-[← Phase 2: Routing with Files](02-routing-with-files.md) · [Guide overview](_guide.md) · [Phase 4: Data on the Server →](04-data-on-the-server.md)

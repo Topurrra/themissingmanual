@@ -40,7 +40,3 @@ being a slogan and become something you can actually trace, gate by gate.
 
 > This builds directly on [Propositional Logic](/guides/propositional-logic). It pairs well with the
 > hardware track for what happens once these gates become silicon.
-
----
-
-[Phase 1: Boolean Algebra: The Laws →](01-boolean-algebra-the-laws.md)

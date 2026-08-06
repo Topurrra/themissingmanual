@@ -122,7 +122,3 @@ There's no universal winner - it depends on whether you value easy revocation or
 6. **Many systems mix both**, pairing short-lived tokens with server state to regain control over logout.
 
 You now understand how *your own* server remembers you. Last piece: how does a *third* app - Google, GitHub - let you log in or grant access without ever handing over your password? That's OAuth.
-
----
-
-[← Phase 1: Authentication vs Authorization](01-authentication-vs-authorization.md) · [Guide overview](_guide.md) · [Phase 3: Delegated Access →](03-oauth-and-sign-in-with.md)

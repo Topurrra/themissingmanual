@@ -316,7 +316,3 @@ Lock in where rows come from, and why edits do or don't save:
   }
 ]
 ```
-
----
-
-[← Phase 4: Layouts: How Things Get Positioned](04-layouts.md) · [Guide overview](_guide.md) · [Phase 6: The Grid & Forms →](06-the-grid-and-forms.md)

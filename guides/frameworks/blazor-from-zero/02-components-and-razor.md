@@ -195,7 +195,3 @@ Test the mental model before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 1: What Blazor Is (Server vs WebAssembly)](01-what-blazor-is.md) · [Guide overview](_guide.md) · [Phase 3: Data Binding →](03-data-binding.md)

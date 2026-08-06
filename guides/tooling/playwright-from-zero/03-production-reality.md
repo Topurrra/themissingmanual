@@ -191,5 +191,3 @@ The traps that catch nearly everyone at least once:
   }
 ]
 ```
-
-[← Phase 2](02-the-everyday-loop.md) | [Overview](_guide.md)

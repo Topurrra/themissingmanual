@@ -107,5 +107,3 @@ Keep both halves of the story and you'll never be fooled by a headline again. A 
   }
 ]
 ```
-
-[← Phase 2: Interference is the engine](02-interference-is-the-engine.md) | [Overview](_guide.md)

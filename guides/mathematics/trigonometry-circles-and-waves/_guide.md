@@ -29,7 +29,3 @@ This is the tenth guide in the Mathematics track. It assumes the coordinate geom
 3. **[Rotation, Navigation, and Where Am I Facing](03-rotation-navigation-and-where-am-i-facing.md)** - rotating 2D sprites, simple GPS triangulation, and the builder's guide to seeing trigonometry in graphics, audio, and game development.
 
 > This builds on [Numbers & Number Systems](/guides/numbers-and-number-systems) (coordinates, angles) and [Linear Algebra](/guides/linear-algebra-what-happens-if-i-change-this) (rotation matrices). It is the geometry behind most visual and audio software.
-
----
-
-[Phase 1: The Unit Circle and Why Sine/Cosine Exist →](01-the-unit-circle-and-why-sine-cosine-exist.md)

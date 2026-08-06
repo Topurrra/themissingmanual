@@ -334,7 +334,3 @@ Test yourself on the ideas that define C# classes - properties and reference equ
   }
 ]
 ```
-
----
-
-[← Phase 4: Control Flow & Methods](04-control-flow-and-methods.md) · [Guide overview](_guide.md) · [Phase 6: Inheritance & Interfaces →](06-inheritance-and-interfaces.md)

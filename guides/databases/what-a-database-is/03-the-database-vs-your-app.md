@@ -97,7 +97,3 @@ You'll hear a lot of database names thrown around. Here's just enough of a map t
 4. **Relational (SQL) is the family to learn first**; "**NoSQL**" is a broad umbrella of different models for different problems, covered elsewhere.
 
 That's the whole "A" of databases: what one *is* (data plus a managing DBMS), how its data is *shaped* (tables, rows, columns, keys, schema), and how you *reach* it (a server you talk to in SQL). From here, the natural next move is to actually ask it questions.
-
----
-
-[← Guide overview](_guide.md) · [Next up: Querying Basics - SELECT & WHERE →](/guides/querying-basics-select-where)

@@ -50,7 +50,3 @@ service), then maps it onto Express. Phases carry difficulty badges.
 
 > The throughline: **`http.createServer` calls your `(req, res)` function per request; routing and
 > middleware are code you write.** That's `node:http`, and it's the skeleton inside every Node framework.
-
----
-
-[Phase 1: The node:http Mental Model →](01-the-mental-model.md)

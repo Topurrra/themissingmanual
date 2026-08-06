@@ -131,7 +131,3 @@ Test yourself on the decisions that matter most as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 7: Production: Scaling, Monitoring & Pitfalls](07-production-scaling-monitoring.md) · [Guide overview](_guide.md)

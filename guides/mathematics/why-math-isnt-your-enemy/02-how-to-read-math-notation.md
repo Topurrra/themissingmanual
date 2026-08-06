@@ -252,5 +252,3 @@ Quick check on the three symbols that do the heaviest lifting:
   }
 ]
 ```
-
-[← Phase 1: You Were Lied To About Math](01-you-were-lied-to-about-math.md) · [Guide overview](_guide.md) · [Phase 3: The Mindset That Makes Math Click →](03-the-mindset-that-makes-math-click.md)

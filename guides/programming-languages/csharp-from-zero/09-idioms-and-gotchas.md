@@ -314,7 +314,3 @@ Test yourself on the three traps that catch everyone:
   }
 ]
 ```
-
----
-
-[← Phase 8: Projects, NuGet & Tooling](08-projects-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: Generics, Deep →](10-generics-deep.md)

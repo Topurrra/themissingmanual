@@ -25,5 +25,3 @@ Read it in order the first time. Phase 1 gives you the shape of a test and why t
 1. [The model: what a test runner does](01-the-test-runner-model.md)
 2. [The daily core: matchers, mocks, async, timers](02-matchers-mocks-async.md)
 3. [Production reality: snapshots, flakiness, and Jest vs Vitest](03-snapshots-flakiness-choosing.md)
-
-[Phase 1: The model: what a test runner does](01-the-test-runner-model.md) →

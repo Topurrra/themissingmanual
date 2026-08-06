@@ -171,7 +171,3 @@ Rendered to page:  Nice post! &lt;script&gt;steal()&lt;/script&gt;
   }
 ]
 ```
-
----
-
-[← Phase 4: The Django Admin](04-the-django-admin.md) · [Guide overview](_guide.md) · [Phase 6: Forms & Validation →](06-forms-and-validation.md)

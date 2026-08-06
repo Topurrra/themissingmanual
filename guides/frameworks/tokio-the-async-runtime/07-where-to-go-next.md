@@ -130,7 +130,3 @@ One last check - the picture that turns Rust web servers from magic into machine
   }
 ]
 ```
-
----
-
-[← Phase 6: select! & Timeouts](06-select-and-timeouts.md) · [Guide overview](_guide.md)

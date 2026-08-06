@@ -220,7 +220,3 @@ Test the mental model before moving on.
   }
 ]
 ```
-
----
-
-[← Phase 1: What chi Is](01-what-chi-is.md) · [Guide overview](_guide.md) · [Phase 3: Middleware the Standard Way →](03-middleware.md)

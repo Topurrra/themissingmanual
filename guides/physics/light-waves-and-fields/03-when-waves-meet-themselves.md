@@ -104,5 +104,3 @@ Interference is the quiet workhorse under a lot of code you will touch. Audio en
   }
 ]
 ```
-
-[← Phase 2: Light is one wave on a giant dial](02-light-is-one-wave-on-a-dial.md) | [Overview](_guide.md)

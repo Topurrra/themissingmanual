@@ -240,5 +240,3 @@ The user adds a note - you write it to SQLite *immediately* and update the scree
   }
 ]
 ```
-
-[← Phase 5: Navigation with Shell](05-navigation-with-shell.md) · [Guide overview](_guide.md) · [Phase 7: Platform Features & Deployment →](07-platform-features-and-deployment.md)

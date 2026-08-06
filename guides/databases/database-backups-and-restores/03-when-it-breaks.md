@@ -182,7 +182,3 @@ database at the end.
   }
 ]
 ```
-
----
-
-[← Phase 2: The Three Kinds of Backup](02-the-three-kinds-of-backup.md) · [Guide overview](_guide.md)

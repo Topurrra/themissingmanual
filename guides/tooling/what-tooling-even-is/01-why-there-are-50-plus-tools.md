@@ -59,7 +59,3 @@ If a coworker mentions a tool you've never heard of and everyone else nods along
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The Themes Underneath the Tool Names →](02-the-themes-underneath-the-tool-names.md)

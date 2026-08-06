@@ -272,7 +272,3 @@ Lock in the three superpowers - convert first, then extract, slice, and roll up:
   }
 ]
 ```
-
----
-
-[← Phase 7: Joining & Combining](07-joining-and-combining.md) · [Guide overview](_guide.md) · [Phase 9: Reshaping & Pivoting →](09-reshaping-and-pivoting.md)

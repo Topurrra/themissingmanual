@@ -141,8 +141,4 @@ You now have the whole picture - what gRPC is, how it works, and the real cost o
 puts a `.proto` file in front of you, you'll know exactly what you're looking at and whether it belongs
 there.
 
----
-
-[← Phase 2: How gRPC Works](02-how-grpc-works.md) · [Guide overview](_guide.md)
-
 **Related guides:** [REST APIs, Explained](/guides/rest-apis-explained) · [GraphQL, Explained](/guides/graphql-explained)

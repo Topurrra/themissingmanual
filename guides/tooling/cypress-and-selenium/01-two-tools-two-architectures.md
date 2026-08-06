@@ -128,5 +128,3 @@ Cypress trades architectural reach for developer experience; Selenium trades dev
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Writing and Running Tests →](02-writing-and-running-tests.md)

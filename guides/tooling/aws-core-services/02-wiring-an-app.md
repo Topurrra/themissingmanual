@@ -125,5 +125,3 @@ If you were standing up this app today, the minimum is smaller than you'd think:
   }
 ]
 ```
-
-[← Phase 1: The five services that matter](01-the-five-that-matter.md) | [Overview](_guide.md) | [Phase 3: IAM, least privilege, and what bites you →](03-iam-and-what-bites-you.md)

@@ -119,5 +119,3 @@ On teams, the painful drift case is two developers each running `migrate dev` th
   }
 ]
 ```
-
-[← Phase 2: The everyday loop](02-the-everyday-loop.md) | [Overview](_guide.md)

@@ -138,7 +138,3 @@ version of it (including from me).
    as translation.
 
 Now that you know the buckets, let's open them and name the pieces across all three vendors.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Building Blocks (Across Vendors) →](02-the-building-blocks.md)

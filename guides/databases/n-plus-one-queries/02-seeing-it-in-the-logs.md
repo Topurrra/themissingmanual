@@ -123,5 +123,3 @@ For builders: if your APM says the time is in the database but you *don't* see t
   }
 ]
 ```
-
-[← Phase 1: What N+1 actually is](01-what-n-plus-one-is.md) | [Overview](_guide.md) | [Phase 3: Fixing it without over-fetching →](03-fixing-it.md)

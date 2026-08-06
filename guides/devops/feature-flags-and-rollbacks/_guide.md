@@ -24,5 +24,3 @@ Read the three phases in order; each one builds the mental model the next assume
 1. [The switch in your code](01-deploy-is-not-release.md) - why deploy and release are two different things, and what a flag actually is.
 2. [Living with flags](02-rollouts-and-kill-switches.md) - gradual rollouts, kill switches, A/B tests, and trunk-based development.
 3. [The bill comes due](03-flag-debt-and-rollback.md) - flag debt, combinatorial testing, expiry, and rollback versus roll-forward.
-
-[Phase 1: The switch in your code](01-deploy-is-not-release.md) →

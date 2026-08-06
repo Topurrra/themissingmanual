@@ -56,7 +56,3 @@ REST API. Phases carry difficulty badges.
 
 > The throughline: an **instance** holds your routes, a **context** handles each request, and handlers
 > **return errors** for a central handler to render. That error style is Echo's whole personality.
-
----
-
-[Phase 1: What Echo Is & Your First Server →](01-what-echo-is.md)

@@ -73,7 +73,3 @@ When you need specifics - exactly how to defend a given category, with concrete 
 3. Wire a dependency scanner into CI so **Vulnerable & Outdated Components** becomes a routine chore, not a landmine.
 4. Lean on **defense in depth** - layer controls so no single failure is fatal; see [what security means](/guides/what-security-means).
 5. Never treat "we checked it once" as "we're secure"; re-check as the app and the list evolve, and use the OWASP **Cheat Sheets** at [owasp.org](https://owasp.org) for the how-to.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Big Categories, in Plain English ←](02-the-big-categories.md)

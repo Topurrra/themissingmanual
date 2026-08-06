@@ -188,5 +188,3 @@ Lock in the one idea that matters most - the wrap-and-return shape:
   }
 ]
 ```
-
-[← Phase 4: Responses & Rendering](04-responses-and-rendering.md) · [Guide overview](_guide.md) · [Phase 6: A REST API with Error Handling →](06-rest-api-and-errors.md)

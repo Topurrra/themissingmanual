@@ -122,5 +122,3 @@ For the bigger picture of where this step sits in a pipeline, see [/guides/what-
   }
 ]
 ```
-
-[← Phase 1: What SonarQube actually is](01-what-it-is.md) | [Overview](_guide.md) | [Phase 3: Where it nags and how to tame it →](03-where-it-nags.md)

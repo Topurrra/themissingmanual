@@ -123,5 +123,3 @@ Hold both pictures: **a line of timestamps** versus **a graph of named, verifiab
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The everyday loop →](02-the-everyday-loop.md)

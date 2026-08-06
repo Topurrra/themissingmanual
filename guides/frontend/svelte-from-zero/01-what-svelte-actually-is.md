@@ -163,7 +163,3 @@ from a resident, not a tourist.
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Runes: State That Compiles →](02-runes-state-that-compiles.md)

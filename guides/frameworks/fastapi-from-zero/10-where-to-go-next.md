@@ -147,7 +147,3 @@ Test yourself on the decisions that matter most as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 9: Testing & Project Structure](09-testing-and-project-structure.md) · [Guide overview](_guide.md)

@@ -121,7 +121,3 @@ One last check - on how Hibernate actually shows up in the real world:
   }
 ]
 ```
-
----
-
-[← Phase 9: Caching & Performance](09-caching-and-performance.md) · [Guide overview](_guide.md)

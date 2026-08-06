@@ -120,7 +120,3 @@ For the two alternatives this guide keeps pointing at, read them side by side: [
 3. **Flexible queries can be abused** - depth, cost, pagination limits, and persisted-query allowlists are guardrails you have to add.
 4. **More tooling and ramp-up** than a plain REST endpoint - often worth it, but real surface area for a small team.
 5. **Choose on purpose:** GraphQL for many-client, varied, nested needs; REST for simple/cache-heavy/lockable APIs; gRPC for strict internal service-to-service calls.
-
----
-
-[← Phase 2: How GraphQL Works](02-how-graphql-works.md) · [Guide overview](_guide.md)

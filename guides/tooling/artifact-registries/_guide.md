@@ -28,5 +28,3 @@ This guide gives you the mental model first - what an artifact is, why registrie
 1. **[What a Registry Actually Is](01-what-a-registry-actually-is.md)** - artifacts need a home; what a registry stores, how a tag points at an immutable digest, and why that one distinction governs everything else.
 2. **[Pushing, Pulling, and Private Packages](02-pushing-pulling-private-packages.md)** - the everyday flow across Docker Hub, GHCR, Nexus, and Artifactory: log in, tag, push, pull, and serve private npm/Maven/PyPI packages from one place.
 3. **[Proxying, Retention, Scanning, and the Tag Trap](03-proxying-retention-scanning-gotchas.md)** - proxying public registries for speed and resilience, retention so you don't drown in old builds, vulnerability scanning, and why the mutable public tag bites.
-
-[Phase 1: What a Registry Actually Is](01-what-a-registry-actually-is.md) →

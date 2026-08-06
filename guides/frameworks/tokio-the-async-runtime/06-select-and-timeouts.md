@@ -239,5 +239,3 @@ every worker can listen to. Two good tools:
   }
 ]
 ```
-
-[← Phase 5: Channels & Synchronization](05-channels-and-sync.md) · [Guide overview](_guide.md) · [Phase 7: Where to Go Next →](07-where-to-go-next.md)

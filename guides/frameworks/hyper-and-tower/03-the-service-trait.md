@@ -188,5 +188,3 @@ ideas are in hand, "how does axum actually work" answers itself.
   }
 ]
 ```
-
-[← Phase 2: hyper: The HTTP Library](02-hyper-the-http-library.md) · [Guide overview](_guide.md) · [Phase 4: Layers & Middleware →](04-layers-and-middleware.md)

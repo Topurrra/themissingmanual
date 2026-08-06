@@ -91,7 +91,3 @@ That's a different discipline: watching performance continuously in the live sys
 That's the whole loop. You measure instead of guessing, you read the profile to find the genuine hot spot, you change one thing and prove it helped. Do that, and "the app is slow" stops being a dreaded mystery and becomes a list with the answer near the top.
 
 For the bigger picture of what "fast enough" even means and how to set targets, see [What Performance Means](/guides/what-performance-means).
-
----
-
-[← Phase 2: Reading a Profile](02-reading-a-profile.md) · [Guide overview](_guide.md)

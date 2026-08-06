@@ -217,7 +217,3 @@ Test the mental model before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 1: What Gin Is & Your First Server](01-what-gin-is.md) · [Guide overview](_guide.md) · [Phase 3: Binding & Validating Input →](03-binding-and-validation.md)

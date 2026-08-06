@@ -180,7 +180,3 @@ One quick pass over the container model before we dive into CDI:
   }
 ]
 ```
-
----
-
-[← Phase 1: What Jakarta EE Is](01-what-jakarta-ee-is.md) · [Guide overview](_guide.md) · [Phase 3: CDI: Contexts & Dependency Injection →](03-cdi-dependency-injection.md)

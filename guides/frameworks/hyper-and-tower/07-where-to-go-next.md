@@ -117,7 +117,3 @@ A last look at how far one model stretches:
   }
 ]
 ```
-
----
-
-[← Phase 6: How axum Uses Them](06-how-axum-uses-them.md) · [Guide overview](_guide.md)

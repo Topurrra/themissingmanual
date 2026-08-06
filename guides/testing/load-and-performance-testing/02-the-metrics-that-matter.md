@@ -101,7 +101,3 @@ You drive all four with the same load tool and the same three metrics. What chan
 4. **Four test types, one tool, four questions:** **load** (expected peak - fine?), **stress** (where's the breaking point?), **soak** (does it leak over hours?), **spike** (can it absorb a sudden surge?).
 
 Next, the hands-on part: pick a realistic scenario, ramp up the virtual users, and find the exact point where the curve turns - the breaking point.
-
----
-
-[← Phase 1: Why Load-Test](01-why-load-test.md) · [Guide overview](_guide.md) · [Phase 3: Running One & Reading It →](03-running-one-and-reading-it.md)

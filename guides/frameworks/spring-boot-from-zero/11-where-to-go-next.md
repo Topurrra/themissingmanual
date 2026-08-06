@@ -126,7 +126,3 @@ Test yourself on the decisions that matter most as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 10: Production: Actuator, Packaging & Deployment](10-production-actuator-and-deploy.md) · [Guide overview](_guide.md)

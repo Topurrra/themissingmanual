@@ -43,7 +43,3 @@ recipe and read a sentence, you can do this.
 > This guide rebuilds the relationship. The real subjects - sets, numbers, counting, probability, and
 > beyond - are the guides that follow. Its sister foundation is
 > [What Logic Actually Is](/guides/what-logic-actually-is).
-
----
-
-[Phase 1: You Were Lied To About Math →](01-you-were-lied-to-about-math.md)

@@ -83,7 +83,3 @@ You might wonder why we don't just *retrain* the model on your data. We'll cover
 5. The mental model is an **open-book exam**: you look up the page, the model reads it and answers.
 
 Now you know *why* RAG exists. Next, the actual machinery - how you turn a pile of documents into something you can retrieve from in milliseconds.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: How RAG Works →](02-how-rag-works.md)

@@ -94,7 +94,3 @@ None of this means multi-agent is wrong. It means the decision is a real trade, 
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Orchestration Patterns →](02-orchestration-patterns.md)

@@ -136,7 +136,3 @@ push - so the abstract assembly line becomes something you can watch run on your
 4. **The catch:** a green check only means "tests passed," so a pipeline is only as trustworthy as its
    tests - and **flaky tests poison it** by training everyone to ignore red. Fix flakiness like the bug it
    is.
-
----
-
-[← Phase 2: CD - Delivery vs Deployment](02-delivery-vs-deployment.md) · [Guide overview](_guide.md)

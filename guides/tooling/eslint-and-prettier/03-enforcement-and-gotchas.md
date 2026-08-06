@@ -130,5 +130,3 @@ Mature teams treat a clean lint as non-negotiable as a passing test suite - same
   }
 ]
 ```
-
-[← Phase 2: Config and autofix](02-config-and-autofix.md) · [Overview](_guide.md)

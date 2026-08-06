@@ -135,7 +135,3 @@ rtt min/avg/max/mdev = 11.2/69.3/243/100.1 ms
 6. **Rung 5 - destination:** reachable? how's the latency and loss? This hands you off to `traceroute`.
 
 You now have the method. Next, the three tools that answer rungs 3 through 5 - and what their output is really telling you.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Core Tools →](02-the-core-tools.md)

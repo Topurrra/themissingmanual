@@ -142,7 +142,3 @@ name that won't suddenly belong to someone else tomorrow. That anchor has a name
    contradict itself at write time.
 6. **The pointer only works if the target row has a stable, unique name** - the **primary key**, coming
    up next.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Primary Keys →](02-primary-keys.md)

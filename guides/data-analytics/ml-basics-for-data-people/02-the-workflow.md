@@ -133,7 +133,3 @@ Use two sharper questions instead. Don't memorize formulas - hold the meaning:
 6. **Accuracy alone misleads on rare events.** Use **precision** (few false alarms) and **recall** (few misses), and choose the balance from what a mistake actually costs.
 
 Next: why ML projects actually succeed or fail on the data - and why that puts you closer to the center than the people writing the models.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: Where Data People Fit →](03-where-data-people-fit.md)

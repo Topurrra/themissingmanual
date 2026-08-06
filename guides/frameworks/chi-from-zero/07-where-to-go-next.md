@@ -147,7 +147,3 @@ Three decisions to take with you as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 6: Structuring & Testing](06-structure-and-testing.md) · [Guide overview](_guide.md)

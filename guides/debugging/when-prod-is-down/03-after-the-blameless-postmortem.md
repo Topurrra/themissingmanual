@@ -189,7 +189,3 @@ bought. Don't leave it on the table.
 6. **Every outage is tuition.** You've already paid. The postmortem is how you collect what it bought.
 
 Watch it animated: [root-cause analysis](/explainers/RootCause.dc.html)
-
----
-
-[← Guide overview](_guide.md)

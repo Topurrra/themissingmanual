@@ -171,5 +171,3 @@ In the wild: a habit worth stealing is making the first target a `help` that lis
   }
 ]
 ```
-
-[← Phase 1: The Dependency Graph](01-the-dependency-graph.md) | [Overview](_guide.md) | [Phase 3: The Tab, Stale Builds, and Why It Endures →](03-gotchas-and-why-it-endures.md)

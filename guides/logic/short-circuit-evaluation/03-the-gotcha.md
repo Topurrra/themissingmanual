@@ -69,5 +69,3 @@ level ?? 10   ->  falls back only on null / undefined - real 0 and "" survive
 ## Carrying this forward
 
 Short-circuiting itself was never the bug in either example - it's a precise, predictable rule, exactly as described in Phase 1. The bug is always in the assumption layered on top of it: assuming a call will run, or assuming "falsy" means "absent." Once you know to ask those two questions - *does the right side need to run no matter what, and could a legitimate falsy value show up here* - you'll catch both of these before they ship instead of after.
-
-[← Phase 2: Where this becomes a real pattern](02-real-patterns.md) | [Overview](_guide.md)

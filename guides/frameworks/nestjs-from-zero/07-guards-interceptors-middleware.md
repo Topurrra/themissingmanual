@@ -220,5 +220,3 @@ That's the cross-cutting layer done. The tasks API now checks its callers (guard
   }
 ]
 ```
-
-[← Phase 6: Building a REST API](06-building-a-rest-api.md) · [Guide overview](_guide.md) · [Phase 8: Testing & Production →](08-testing-and-production.md)

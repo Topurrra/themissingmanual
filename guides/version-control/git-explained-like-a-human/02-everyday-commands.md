@@ -299,10 +299,6 @@ where things go wrong and you fix them without breaking a sweat.
 
 Watch it animated: [merging two branches](/explainers/Merging.dc.html)
 
----
-
-[← Phase 1: The Mental Model](01-the-mental-model.md) · [Guide overview](_guide.md) · [Phase 3: When It Breaks →](03-when-it-breaks.md)
-
 ## Try it yourself
 
 Run commands and watch the history graph build - try `commit -m "first"`, `branch dev`, `checkout dev`, `commit -m "work"`, `checkout main`, then `merge dev`:

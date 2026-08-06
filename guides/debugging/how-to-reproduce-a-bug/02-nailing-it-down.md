@@ -99,7 +99,3 @@ flowchart TD
 6. **Shrink by subtraction, one change at a time.** A minimal reproduction is the smallest recipe that still breaks - and doubles as a diagnosis.
 
 Watch it animated: [reproducing a bug](/explainers/ReproSteps.dc.html)
-
----
-
-[← Phase 1: Why Reproduction Is the Whole Game](01-why-reproduction-is-the-whole-game.md) · [Guide overview](_guide.md) · [Phase 3: When It Won't Reproduce (Heisenbugs) →](03-when-it-wont-reproduce.md)

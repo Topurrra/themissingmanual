@@ -30,5 +30,3 @@ Phase 1 builds the mental model - the difference between eager and lazy, and why
 1. [Don't do work nobody asked for yet](01-dont-do-work-nobody-asked-for.md) - the general principle, contrasted with eager loading.
 2. [Where you'll actually use it](02-where-youll-use-it.md) - images, code-splitting, and infinite scroll.
 3. [The tradeoff](03-the-tradeoff.md) - layout shift, missing content, and when eager wins.
-
-[Phase 1: Don't do work nobody asked for yet](01-dont-do-work-nobody-asked-for.md) →

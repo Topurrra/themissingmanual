@@ -43,7 +43,3 @@ statement is and what it means for reasoning to be valid. Here we make statement
 
 > The next guide, [Implication & Conditionals](/guides/implication-and-conditionals), tackles the
 > trickiest connective of all - "if P then Q" - which deserves its own guide.
-
----
-
-[Phase 1: Connectives: AND, OR, NOT →](01-connectives-and-or-not.md)

@@ -85,8 +85,4 @@ If your network is set up and safe but a device still won't load pages, the prob
 
 You now know what the box on your shelf is, what it's doing every second, and how to keep it yours. That's the whole machine, named.
 
----
-
-[← Phase 2: NAT & Private IPs](02-nat-and-private-ips.md) · [Guide overview](_guide.md)
-
 Related: [IP, DNS, and Ports](/guides/ip-dns-and-ports) · [How the Internet Works](/guides/how-the-internet-works) · [The TCP/IP Model](/guides/tcp-ip-model)

@@ -135,7 +135,6 @@ from alembic import op
 revision = "a1b2c3d4e5f6"
 down_revision = None
 
-
 def upgrade() -> None:
     op.create_table(
         "books",
@@ -144,7 +143,6 @@ def upgrade() -> None:
         sa.Column("year", sa.Integer(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
-
 
 def downgrade() -> None:
     op.drop_table("books")
@@ -164,7 +162,6 @@ smaller script - just the delta:
 ```python
 def upgrade() -> None:
     op.add_column("books", sa.Column("subtitle", sa.String(), nullable=True))
-
 
 def downgrade() -> None:
     op.drop_column("books", "subtitle")
@@ -320,7 +317,3 @@ Lock in the ideas most likely to save you from a production scare:
   }
 ]
 ```
-
----
-
-[← Phase 7: Loading Strategies & the N+1 Trap](07-loading-strategies-and-n-plus-1.md) · [Guide overview](_guide.md) · [Phase 9: SQLAlchemy in the Real World & Where to Go Next →](09-where-to-go-next.md)

@@ -95,7 +95,3 @@ Build a request and see the raw HTTP that goes over the wire, plus the response 
 
 ```playground-http
 ```
-
----
-
-[← Phase 1: Request & Response](01-request-and-response.md) · [Guide overview](_guide.md) · [Phase 3: Headers, Cookies & the S in HTTPS →](03-headers-cookies-and-https.md)

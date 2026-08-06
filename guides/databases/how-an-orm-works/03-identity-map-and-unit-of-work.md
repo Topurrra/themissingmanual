@@ -112,7 +112,3 @@ The discipline is the same across every ORM: **open a session, do one unit of bu
   }
 ]
 ```
-
----
-
-[← Phase 2: Mapping Objects to Tables](02-mapping-objects-to-tables.md) · [Guide overview](_guide.md) · [Phase 4: Change Tracking & Dirty Checking →](04-change-tracking.md)

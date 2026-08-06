@@ -173,7 +173,3 @@ under load. That's **concurrency**, and Go's tools for it (`goroutines` and `cha
 6. **Start flat**, split into package folders only when a real grouping appears.
 
 Next: goroutines and channels - doing many things at once, safely. The reason Go exists.
-
----
-
-[← Phase 4: Control Flow & Functions](04-control-flow-and-functions.md) · [Guide overview](_guide.md) · [Phase 6: Goroutines & Channels →](06-goroutines-and-channels.md)

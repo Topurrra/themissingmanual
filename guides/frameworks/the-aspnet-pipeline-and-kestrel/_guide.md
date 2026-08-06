@@ -50,7 +50,3 @@ host, and how minimal APIs/MVC sit on top. Phases carry difficulty badges.
 
 > The throughline: **Kestrel listens, a middleware pipeline of `RequestDelegate`s processes each request,
 > and the host wires up DI + configuration + the server.** That's the machine inside every .NET web app.
-
----
-
-[Phase 1: What Kestrel & the Pipeline Are →](01-what-kestrel-and-the-pipeline-are.md)

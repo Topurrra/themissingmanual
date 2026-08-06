@@ -92,7 +92,3 @@ haven't said *why*, stop and add the why. It costs one sentence and saves the wh
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The Question Template That Actually Works →](02-the-question-template.md)

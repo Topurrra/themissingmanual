@@ -163,7 +163,3 @@ One last check - the mappings that turn Express from magic into mechanism:
   }
 ]
 ```
-
----
-
-[← Phase 6: Async, Streams & Structure](06-async-streams-structure.md) · [Guide overview](_guide.md)

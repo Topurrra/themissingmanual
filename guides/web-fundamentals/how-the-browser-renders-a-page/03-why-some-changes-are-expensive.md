@@ -135,7 +135,3 @@ measurable page-speed improvements - Core Web Vitals, loading strategy, and what
 see [Web Performance & Core Web Vitals](/guides/web-performance-core-web-vitals). To make sure your
 layouts hold up across screen sizes without triggering unnecessary reflows, see
 [Responsive Design](/guides/responsive-design).
-
----
-
-[← Phase 2: The Render Tree, Layout, and Paint](02-the-render-tree-layout-and-paint.md) · [Guide overview](_guide.md)

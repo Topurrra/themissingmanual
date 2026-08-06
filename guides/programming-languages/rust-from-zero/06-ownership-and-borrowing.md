@@ -178,7 +178,3 @@ Here's the genuinely encouraging part: **the fights get rare fast.** The first w
 4. **The borrowing rule:** many `&` *or* one `&mut`, never both at once (`error[E0499]` when you break it). Many readers, or one writer.
 5. **Lifetimes** are just the compiler's name for "how long a reference is valid" - they make dangling pointers impossible.
 6. Together these give **memory safety with no garbage collector and no manual `free`** - checked at compile time. The borrow checker is a teacher; the fights get rare fast.
-
----
-
-[← Phase 5: Modules & Project Layout](05-modules-and-project-layout.md) · [Phase 7: Errors & I/O →](07-errors-and-io.md)

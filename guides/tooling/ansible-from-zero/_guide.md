@@ -25,5 +25,3 @@ Go in order. Phase 1 builds the mental model: agentless push over SSH, and the o
 1. [What Ansible Actually Is](01-the-mental-model.md) - agentless config management, push over SSH, and why idempotency changes everything.
 2. [The Everyday Loop](02-the-everyday-loop.md) - inventory, playbooks, modules, variables, roles, and handlers in the order you'll actually use them.
 3. [Production Reality](03-production-reality.md) - gotchas, scaling, secrets, and where Ansible ends and Terraform begins.
-
-[Phase 1: What Ansible Actually Is](01-the-mental-model.md) →

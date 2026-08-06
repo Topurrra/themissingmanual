@@ -134,7 +134,3 @@ stage is the careful, deliberate part of the whole pipeline.
    crosses the line on its own.
 4. **Deploy strategies** (rolling, blue-green, canary) limit the blast radius and make backing out fast - 
    they manage risk, they don't replace tests.
-
----
-
-[← Phase 1: CI - Continuous Integration](01-continuous-integration.md) · [Phase 3: Why It's Worth It →](03-why-its-worth-it.md)

@@ -127,7 +127,3 @@ export class TasksModule {}
   }
 ]
 ```
-
----
-
-[← Phase 3: Providers & Dependency Injection](03-providers-and-di.md) · [Guide overview](_guide.md) · [Phase 5: DTOs, Validation & Pipes →](05-dtos-validation-pipes.md)

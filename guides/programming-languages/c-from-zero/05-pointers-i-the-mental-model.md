@@ -199,7 +199,3 @@ This is the model everything else in C builds on. Arrays, strings, structs, dyna
   }
 ]
 ```
-
----
-
-[← Phase 4: Functions & Program Structure](04-functions-and-program-structure.md) · [Phase 6: Arrays & Strings →](06-arrays-and-strings.md)

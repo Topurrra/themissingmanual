@@ -102,5 +102,3 @@ Right now, sketch your feature on paper and label every chunk of text that flows
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: How Injection Actually Works](02-how-injection-works.md) →

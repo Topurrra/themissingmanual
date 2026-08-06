@@ -118,5 +118,3 @@ In the wild: a team on plain Node or an older React stack stays on Jest because 
   }
 ]
 ```
-
-[← Phase 2](02-matchers-mocks-async.md) | [Overview](_guide.md)

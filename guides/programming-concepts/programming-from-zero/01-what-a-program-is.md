@@ -156,7 +156,3 @@ actually tell it to do, line by line?" Then you trace it. That mindset is the en
 
 Next, we give those instructions something to work *with*: named values, the types they come in, and the
 operators that combine them.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Building Blocks →](02-building-blocks.md)

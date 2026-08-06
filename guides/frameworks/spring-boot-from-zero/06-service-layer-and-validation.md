@@ -437,7 +437,3 @@ Make sure the layering and its two famous gotchas stuck:
   }
 ]
 ```
-
----
-
-[← Phase 5: Persistence with Spring Data JPA](05-persistence-with-jpa.md) · [Guide overview](_guide.md) · [Phase 7: Error Handling Done Right →](07-error-handling.md)

@@ -84,7 +84,3 @@ If you misdiagnose this, you'll reach for the wrong tool and the pain won't go a
 4. **Diagnose read-heavy vs. write-heavy.** Reads are scaled with replication (Phase 2); writes, much harder, with sharding (Phase 3). Measure before you choose.
 
 Next: the most common real scaling move there is - making copies of your database so they can share the read load.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Replication →](02-replication.md)

@@ -80,7 +80,3 @@ language; it's a great *second* one.
 
 > Frameworks and big domains (`async` runtimes, embedded, WebAssembly toolchains) are their own world -
 > this guide makes the *language* make sense, top to bottom.
-
----
-
-[Phase 1: Install & Your First Program →](01-install-and-first-program.md)

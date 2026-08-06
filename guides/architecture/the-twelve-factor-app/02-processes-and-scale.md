@@ -91,5 +91,3 @@ For builders: this trio is the entire reason container platforms and orchestrato
   }
 ]
 ```
-
-[← Phase 1](01-codebase-deps-config.md) | [Overview](_guide.md) | [Phase 3: Dev-prod parity, logs as streams, and the operations factors →](03-parity-logs-ops.md)

@@ -143,5 +143,3 @@ app.Run();
   }
 ]
 ```
-
-[← Phase 5: The Host, DI & Configuration](05-host-di-configuration.md) · [Guide overview](_guide.md) · [Phase 7: Where to Go Next →](07-where-to-go-next.md)

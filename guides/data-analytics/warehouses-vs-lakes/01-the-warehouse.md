@@ -150,7 +150,3 @@ That last cost - the awkwardness with raw, messy, everything-data - is the reaso
 That's next.
 
 Watch it animated: [OLTP vs. OLAP](/explainers/OLTPvsOLAP.dc.html)
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Lake (and Lakehouse) →](02-the-lake-and-lakehouse.md)

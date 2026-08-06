@@ -243,5 +243,3 @@ instance.
   }
 ]
 ```
-
-[← Phase 1: What Ext JS Even Is](01-what-extjs-is.md) · [Guide overview](_guide.md) · [Phase 3: Components & the Containment Tree →](03-components-and-containers.md)

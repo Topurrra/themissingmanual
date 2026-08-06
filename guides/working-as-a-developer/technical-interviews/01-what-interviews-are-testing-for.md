@@ -92,7 +92,3 @@ decent evidence about that company's engineering culture - it's data in both dir
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The Coding Round Without the Panic →](02-the-coding-round-without-the-panic.md)

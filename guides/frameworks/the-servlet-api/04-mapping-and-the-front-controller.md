@@ -223,7 +223,3 @@ Make sure the front-controller picture clicked before moving to filters:
   }
 ]
 ```
-
----
-
-[← Phase 3: Handling Requests with HttpServlet](03-handling-requests.md) · [Guide overview](_guide.md) · [Phase 5: Filters & the Chain →](05-filters-and-the-chain.md)

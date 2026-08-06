@@ -152,7 +152,3 @@ Three quick ones to make sure the core idea stuck:
   }
 ]
 ```
-
----
-
-[← Phase 2: Controllers & Routing](02-controllers-and-routing.md) · [Guide overview](_guide.md) · [Phase 4: Modules →](04-modules.md)

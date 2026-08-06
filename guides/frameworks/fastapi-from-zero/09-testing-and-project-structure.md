@@ -351,7 +351,3 @@ Make sure the testing mechanics stuck before we ship to production:
   }
 ]
 ```
-
----
-
-[← Phase 8: Authentication & Security](08-authentication-and-security.md) · [Guide overview](_guide.md) · [Phase 10: Production & Where to Go Next →](10-where-to-go-next.md)

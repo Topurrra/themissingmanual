@@ -123,7 +123,3 @@ are just vocabulary for expressing the goal.
 
 Next, the actual objects you use to declare all this - the Pod, the Deployment, and the Service - with real
 YAML and `kubectl`.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Core Objects →](02-the-core-objects.md)

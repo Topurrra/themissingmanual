@@ -27,5 +27,3 @@ By the end of this guide, deploys stop being a held-breath event. You'll underst
 1. **[Why Naive Deploys Hurt](01-why-naive-deploys-hurt.md)** - the mental model: a deploy means *two versions of your code wanting to exist at the same moment*. Stop-and-replace drops that moment on the floor, and your users feel it.
 2. **[The Three Strategies](02-the-three-strategies.md)** - rolling, blue-green, and canary. How each one moves traffic off the old version and onto the new without a gap, and when to reach for which.
 3. **[The Hard Part - Migrations and Health](03-migrations-and-health.md)** - why the database is what actually bites you, the expand-then-contract pattern, and the health checks and connection draining that let a load balancer do its job.
-
-[Phase 1: Why Naive Deploys Hurt](01-why-naive-deploys-hurt.md) →

@@ -201,7 +201,3 @@ side effects in a computed produce heisenbugs. Side effects belong in handlers a
   }
 ]
 ```
-
----
-
-[← Phase 2: Templates That React](02-templates-that-react.md) · [Guide overview](_guide.md) · [Phase 4: Components: Props, Events, and v-model →](04-components-props-events.md)

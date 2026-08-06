@@ -138,7 +138,3 @@ signals the trouble is in your *environment*, not your *logic*.
 
 Next: the handful of error *families* you'll meet over and over, so reading the type already tells you half
 of what went wrong.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Common Error Families →](02-common-families.md)

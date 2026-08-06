@@ -198,7 +198,3 @@ stays calm at 3am.
   }
 ]
 ```
-
----
-
-[← Phase 2: The Three Patterns in Practice](02-the-three-patterns.md) · [Guide overview](_guide.md)

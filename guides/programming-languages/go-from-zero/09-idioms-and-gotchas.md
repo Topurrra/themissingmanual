@@ -195,7 +195,3 @@ $ go run main.go
 5. **The cheat-card** - nil interface ≠ nil, slice append aliasing, range-var capture (fixed in 1.22), unused imports/vars are errors, exported = Capitalized, and zero values are real defaults (but don't write to a nil map).
 
 That's idiomatic Go. You can now read other people's Go and write code that looks like it belongs. Next: where Go actually shines, what to build next, and where to go from here.
-
----
-
-[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: Interfaces in Depth →](10-interfaces-in-depth.md)

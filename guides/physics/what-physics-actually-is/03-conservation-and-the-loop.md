@@ -118,5 +118,3 @@ You now have the three load-bearing ideas. Physics is **model-building** - the d
   }
 ]
 ```
-
-← [Phase 2: Measurement and units](02-measurement-and-units.md) | [Overview](_guide.md)

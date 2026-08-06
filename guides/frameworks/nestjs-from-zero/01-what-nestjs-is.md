@@ -146,7 +146,3 @@ Make sure the mental model stuck before moving on:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Controllers & Routing →](02-controllers-and-routing.md)

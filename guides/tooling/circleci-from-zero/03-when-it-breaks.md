@@ -150,5 +150,3 @@ For the bigger picture of where CircleCI fits among other tools, [What CI/CD doe
   }
 ]
 ```
-
-[← Phase 2: Writing a real config](02-writing-a-real-config.md) | [Overview](_guide.md)

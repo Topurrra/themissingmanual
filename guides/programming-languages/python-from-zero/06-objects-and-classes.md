@@ -188,7 +188,3 @@ Add a `Cat` tomorrow and you describe only its sound, not a whole animal from sc
 
 OOP is one of two big ways to organize code; the other, functional, keeps functions and data apart on
 purpose. Next: what to do when things go wrong, and how to read and write files.
-
----
-
-[← Phase 5: Modules & Project Layout](05-modules-and-project-layout.md) · [Guide overview](_guide.md) · [Phase 7: Errors & I/O →](07-errors-and-io.md)

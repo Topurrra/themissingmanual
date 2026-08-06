@@ -245,7 +245,3 @@ macros do, and how the entry point works:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Routing & Dynamic Paths →](02-routing-and-paths.md)

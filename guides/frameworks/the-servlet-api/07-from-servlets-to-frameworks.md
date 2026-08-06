@@ -119,7 +119,3 @@ One last check - the mappings that turn frameworks from magic into mechanism:
   }
 ]
 ```
-
----
-
-[← Phase 6: Sessions & State](06-sessions-and-state.md) · [Guide overview](_guide.md)

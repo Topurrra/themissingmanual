@@ -243,7 +243,3 @@ Test yourself on call-site `this` and the prototype chain:
   }
 ]
 ```
-
----
-
-[← Phase 10: Scope, Closures & Hoisting](10-scope-and-closures.md) · [Guide overview](_guide.md) · [Phase 12: Iterators, Generators & Symbols →](12-iterators-generators-symbols.md)

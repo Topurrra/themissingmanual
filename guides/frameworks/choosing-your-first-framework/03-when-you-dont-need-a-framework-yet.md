@@ -100,7 +100,3 @@ you what the code is actually doing when nobody's watching.
   }
 ]
 ```
-
----
-
-[← Phase 2: A Starting Point, Language by Language](02-a-starting-point-language-by-language.md) · [Guide overview](_guide.md)

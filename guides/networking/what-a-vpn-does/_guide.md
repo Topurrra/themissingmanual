@@ -29,7 +29,3 @@ This guide replaces the feeling with a model you can reason from. By the end you
 3. **[Where the Promises Break](03-where-the-promises-break.md)** - the clear-eyed part: HTTPS already encrypted your pages, you are not anonymous, and the VPN provider is now the one you're trusting. When a VPN actually helps, and when it's theater.
 
 > This guide assumes the basics of how traffic moves and gets addressed. If "ISP," "IP address," or "request" feel shaky, skim [How the Internet Works](/guides/how-the-internet-works) and [IP, DNS & Ports](/guides/ip-dns-and-ports) first - they make this one click into place.
-
----
-
-[Phase 1: The Tunnel - What a VPN Really Is →](01-the-tunnel.md)

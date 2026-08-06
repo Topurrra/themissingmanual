@@ -160,7 +160,3 @@ Test yourself on the idea that makes UB dangerous - that it's not "predictably b
   }
 ]
 ```
-
----
-
-[← Phase 13: The Standard Library Essentials](13-the-standard-library-essentials.md) · [Phase 15: Where to Go Next →](15-where-to-go-next.md)

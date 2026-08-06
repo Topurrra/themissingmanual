@@ -181,7 +181,3 @@ APIs: [Hibernate & JPA](/guides/hibernate-and-jpa-from-zero), [SQLAlchemy](/guid
   }
 ]
 ```
-
----
-
-[← Phase 4: Change Tracking & Dirty Checking](04-change-tracking.md) · [Guide overview](_guide.md) · [Phase 6: Building the Query (to SQL) →](06-building-the-query.md)

@@ -295,7 +295,3 @@ Test yourself on the three ideas that make streams tick - the pipeline shape, la
   }
 ]
 ```
-
----
-
-[← Phase 11: Lambdas & Functional Interfaces](11-lambdas-and-functional-interfaces.md) · [Guide overview](_guide.md) · [Phase 13: Records, Sealed Types & Modern Java →](13-records-and-modern-java.md)

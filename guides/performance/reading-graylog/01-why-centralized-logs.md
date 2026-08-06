@@ -136,7 +136,3 @@ retained for a long time. (See [Secrets Management](/guides/secrets-management).
    `field:value` search possible.
 5. The tool can only show what you logged; logs are only as good as the data your apps emit - and never
    log secrets.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Searching Effectively →](02-searching-effectively.md)

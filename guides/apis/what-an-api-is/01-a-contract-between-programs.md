@@ -83,7 +83,3 @@ Once you see an API as a contract that hides a kitchen, a lot of developer sente
 4. You program **against the promise**, not against the inner workings, which is exactly why independently-built software can work together.
 
 Next, we'll ask the obvious question: if an API is a contract that hides a kitchen, *why* is software built this way at all? What problem does the whole arrangement solve?
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Why APIs Exist →](02-why-apis-exist.md)

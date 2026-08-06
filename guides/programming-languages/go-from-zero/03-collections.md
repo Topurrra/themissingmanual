@@ -245,7 +245,3 @@ this whenever "I changed one and the other changed too" would be a bug.
 
 Next: making decisions and organizing logic - Go's one loop, `if` and `switch`, and the
 multiple-return-value functions that give Go its distinctive shape.
-
----
-
-[← Phase 2: Syntax, Values & Types](02-syntax-values-and-types.md) · [Guide overview](_guide.md) · [Phase 4: Control Flow & Functions →](04-control-flow-and-functions.md)

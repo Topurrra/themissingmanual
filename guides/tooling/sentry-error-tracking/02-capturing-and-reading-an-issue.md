@@ -162,5 +162,3 @@ sentry_sdk.set_context("order", {              # readable detail on the event
   }
 ]
 ```
-
-[← Phase 1](01-what-sentry-actually-is.md) · [Overview](_guide.md) · [Phase 3: Releases, source maps, and noise →](03-releases-source-maps-and-noise.md)

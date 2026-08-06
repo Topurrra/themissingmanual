@@ -142,7 +142,3 @@ Power BI can auto-generate hidden date hierarchies from any date column, but bui
   }
 ]
 ```
-
----
-
-[← Phase 3: Shaping Data with Power Query](03-shaping-data-with-power-query.md) · [Phase 5: DAX From Intuition →](05-dax-from-intuition.md)

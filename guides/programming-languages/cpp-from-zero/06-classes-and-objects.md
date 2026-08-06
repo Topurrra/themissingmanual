@@ -274,7 +274,3 @@ Test yourself on the ideas that matter most this phase - what actually separates
   }
 ]
 ```
-
----
-
-[← Phase 5: References vs Pointers](05-references-vs-pointers.md) · [Phase 7: Constructors, Destructors & RAII →](07-constructors-destructors-and-raii.md)

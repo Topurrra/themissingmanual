@@ -215,7 +215,3 @@ the top, then go async.
   }
 ]
 ```
-
----
-
-[← Phase 5: Sharing State](05-sharing-state.md) · [Guide overview](_guide.md) · [Phase 7: When Svelte Breaks →](07-when-it-breaks.md)

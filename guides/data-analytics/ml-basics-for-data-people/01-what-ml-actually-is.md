@@ -131,7 +131,3 @@ Most ML you'll encounter at work - and everything in the next phase - is supervi
 5. The "pile of examples" is data work - which is exactly why you belong in this conversation.
 
 Next: the actual workflow of a supervised project - features, splitting the data so you can trust your results, training, and the subtle business of measuring whether the model is any good.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Workflow →](02-the-workflow.md)

@@ -360,7 +360,3 @@ trades off, and why types come first:
   }
 ]
 ```
-
----
-
-[← Phase 3: Selecting & Filtering](03-selecting-and-filtering.md) · [Guide overview](_guide.md) · [Phase 5: Transforming Data →](05-transforming-data.md)

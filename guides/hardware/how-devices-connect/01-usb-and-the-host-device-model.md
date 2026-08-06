@@ -165,7 +165,3 @@ the spec sheet - when in doubt, the only source you can trust.
 
 Next we go *inside* the case, where the heavy hardware lives - and where the connection model flips from
 "slow and universal" to "fast and direct."
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: PCIe - the High-Speed Internal Highway →](02-pcie-the-internal-highway.md)

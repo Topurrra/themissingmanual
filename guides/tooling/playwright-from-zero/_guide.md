@@ -27,5 +27,3 @@ Read the phases in order the first time. Phase 1 is the mental model - what Play
 1. [The mental model: a browser you can boss around](01-the-mental-model.md) - what Playwright is, and why auto-waiting kills flakiness.
 2. [The everyday loop: write, run, debug](02-the-everyday-loop.md) - locators, web-first assertions, codegen, and the trace viewer.
 3. [Production reality: the things that bite](03-production-reality.md) - auth state, parallelism, network mocking, CI, and the classic traps.
-
-[Phase 1: The mental model](01-the-mental-model.md) →

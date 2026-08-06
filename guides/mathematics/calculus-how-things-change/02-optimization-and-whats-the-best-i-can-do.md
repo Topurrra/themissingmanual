@@ -135,5 +135,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Phase 1: Derivatives as Right Now Speed](01-derivatives-as-right-now-speed.md) · [Guide overview](_guide.md) · [Phase 3: Integrals as the Total So Far →](03-integrals-as-the-total-so-far.md)

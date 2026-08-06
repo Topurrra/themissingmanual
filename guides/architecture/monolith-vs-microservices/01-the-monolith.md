@@ -97,7 +97,3 @@ flowchart LR
 5. Most "monolith pain" is **tangled code, not the monolith itself** - and splitting tangled code into services makes it worse.
 
 With the monolith seen fairly, you're ready to look at the architecture built specifically to relieve those two strains - and to pay for that relief in new ways.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Microservices →](02-microservices.md)

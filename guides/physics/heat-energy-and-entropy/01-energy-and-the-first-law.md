@@ -129,5 +129,3 @@ That machine is also impossible - but for a completely different reason, one the
   }
 ]
 ```
-
-[Next → Phase 2: Entropy and the second law](02-entropy-and-the-second-law.md)

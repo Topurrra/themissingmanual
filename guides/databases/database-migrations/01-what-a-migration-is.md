@@ -139,7 +139,3 @@ because it's what makes a change safe to run while real users are hitting the ta
 3. **Migration tools** keep migrations as ordered files, track which have run in a bookkeeping table,
    and apply the pending ones in order - the same way in every environment.
 4. Most migrations are **DDL**; the safe ones are **additive** and ask nothing of existing rows.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Doing It Safely on Live Data →](02-doing-it-safely-on-live-data.md)

@@ -154,5 +154,3 @@ Run the drill once before you need it: pretend a package you ship turned malicio
   }
 ]
 ```
-
-[← Phase 2](02-everyday-defenses.md) | [Overview](_guide.md)

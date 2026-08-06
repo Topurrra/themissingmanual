@@ -110,5 +110,3 @@ You *can* run raw commands when you have to (the `command` and `shell` modules e
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Everyday Loop →](02-the-everyday-loop.md)

@@ -332,7 +332,3 @@ Make sure the two dials - scope and lifecycle - and the gotchas have landed:
   }
 ]
 ```
-
----
-
-[← Phase 4: Dependency Injection, Deep](04-dependency-injection-deep.md) · [Guide overview](_guide.md) · [Phase 6: Spring AOP & Proxies →](06-spring-aop-and-proxies.md)

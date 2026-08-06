@@ -256,7 +256,3 @@ no `-> Type` returns `()` (it's run for its side effects, like printing).
 You can now branch, loop, and factor logic into functions. As programs grow past one file, you'll need a
 way to organize them - that's next: modules, crates, and how a real Rust project is laid out. Right after
 that comes the phase everything has been building toward: ownership.
-
----
-
-[← Phase 3: Collections](03-collections.md) · [Guide overview](_guide.md) · [Phase 5: Modules & Project Layout →](05-modules-and-project-layout.md)

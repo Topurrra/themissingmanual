@@ -144,7 +144,3 @@ The rule of thumb: each level of nesting is **two more spaces** than its parent,
 5. Jobs run in parallel by default; YAML structure is set by **space** indentation.
 
 You can now read any workflow as "event → jobs → steps on a runner." Next, we'll build a real one that actually tests your project.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Building It Up →](02-building-it-up.md)

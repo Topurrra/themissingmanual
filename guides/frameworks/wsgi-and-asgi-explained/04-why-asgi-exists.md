@@ -137,7 +137,3 @@ See whether the *why* behind ASGI actually landed - not the syntax, the reasonin
   }
 ]
 ```
-
----
-
-[← Phase 3: The WSGI Server & Middleware](03-the-wsgi-server-and-middleware.md) · [Guide overview](_guide.md) · [Phase 5: An ASGI App & the Servers →](05-an-asgi-app-and-the-servers.md)

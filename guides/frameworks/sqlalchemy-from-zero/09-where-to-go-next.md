@@ -115,7 +115,3 @@ One last check - on how SQLAlchemy actually shows up in the real world:
   }
 ]
 ```
-
----
-
-[← Phase 8: Migrations with Alembic](08-migrations-with-alembic.md) · [Guide overview](_guide.md)

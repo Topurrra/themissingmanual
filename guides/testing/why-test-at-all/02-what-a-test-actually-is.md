@@ -159,7 +159,3 @@ loud instead of you finding out from a refund request.
 
 You can now read a test and write one in your head. The last question is the one that keeps people sane: with
 limited time, *what* should you actually bother testing - and what's a waste?
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: What's Worth Testing (Straight Talk) →](03-whats-worth-testing.md)

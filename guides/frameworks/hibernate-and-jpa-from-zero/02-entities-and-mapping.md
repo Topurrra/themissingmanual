@@ -355,7 +355,3 @@ Test yourself on the ideas most likely to trip you up in real mapping code:
   }
 ]
 ```
-
----
-
-[← Phase 1: What an ORM Is & Why Hibernate Exists](01-what-an-orm-is.md) · [Guide overview](_guide.md) · [Phase 3: The EntityManager & Persistence Context →](03-entitymanager-and-persistence-context.md)

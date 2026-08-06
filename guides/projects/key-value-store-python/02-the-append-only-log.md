@@ -48,7 +48,6 @@ import zlib
 
 TOMBSTONE = -1
 
-
 def encode_record(key: bytes, value) -> bytes:
     # your turn: pack the lengths (+ key + value, or TOMBSTONE for a delete),
     # then prepend a 4-byte crc32 of everything after it
@@ -71,7 +70,6 @@ import zlib
 # crc covers everything after itself. val_len == -1 marks a delete.
 HEADER = struct.Struct("<Iii")   # uint32 crc, int32 key_len, int32 val_len
 TOMBSTONE = -1
-
 
 def encode_record(key: bytes, value) -> bytes:
     if value is None:  # a delete
@@ -205,7 +203,3 @@ That's the read path, and it's phase 3's job: replay the log on startup, rebuild
   }
 ]
 ```
-
----
-
-[← Phase 1: A Dict, and Why Persistence Is Hard](01-the-dict-and-the-problem.md) · [Guide overview](_guide.md) · [Phase 3: Replay and the Index →](03-replay-and-the-index.md)

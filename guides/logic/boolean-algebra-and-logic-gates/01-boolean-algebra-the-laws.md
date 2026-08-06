@@ -247,5 +247,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Logic Gates: Logic Made Physical →](02-logic-gates-logic-made-physical.md)

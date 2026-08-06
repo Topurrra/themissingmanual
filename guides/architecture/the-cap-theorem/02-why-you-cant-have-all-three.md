@@ -131,5 +131,3 @@ Real systems don't flip a switch mid-outage - the choice is a design decision, b
 ```
 
 Watch it animated: [the CAP theorem](/explainers/CAPTheorem.dc.html)
-
-[← Phase 1: The three letters](01-the-three-letters.md) | [Overview](_guide.md) | [Phase 3: What this looks like in real databases →](03-what-this-looks-like-in-real-databases.md)

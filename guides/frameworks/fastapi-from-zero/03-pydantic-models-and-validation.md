@@ -349,7 +349,3 @@ what coercion does.
   }
 ]
 ```
-
----
-
-[← Phase 2: Path Operations & Parameters](02-path-operations-and-parameters.md) · [Guide overview](_guide.md) · [Phase 4: Response Models & Status Codes →](04-response-models-and-status-codes.md)

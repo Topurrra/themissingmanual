@@ -183,5 +183,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Permutations & Combinations →](02-permutations-and-combinations.md)

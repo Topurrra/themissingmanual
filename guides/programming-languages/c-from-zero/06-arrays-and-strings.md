@@ -199,7 +199,3 @@ Test yourself on the two ideas that trip up most beginners: array decay losing t
   }
 ]
 ```
-
----
-
-[← Phase 5: Pointers I](05-pointers-i-the-mental-model.md) · [Phase 7: Structs & Typedef →](07-structs-and-typedef.md)

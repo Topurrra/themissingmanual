@@ -122,7 +122,3 @@ Test yourself on the one decision that matters most here - where to point your J
   }
 ]
 ```
-
----
-
-[← Phase 17: Performance & the Ecosystem](17-performance-and-ecosystem.md) · [Guide overview](_guide.md)

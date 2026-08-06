@@ -50,7 +50,3 @@ router. Phases carry difficulty badges.
 
 > The throughline: chi adds a **router** to the standard library and gets out of the way. Learn chi and
 > you've mostly learned idiomatic `net/http` - which is exactly the point.
-
----
-
-[Phase 1: What chi Is →](01-what-chi-is.md)

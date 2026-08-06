@@ -248,7 +248,3 @@ Test yourself on the three ideas that matter most here - what `private` really d
   }
 ]
 ```
-
----
-
-[← Phase 6: Generics](06-generics.md) · [Guide overview](_guide.md) · [Phase 8: Modules, tsconfig & the Build →](08-modules-and-tsconfig.md)

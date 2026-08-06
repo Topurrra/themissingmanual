@@ -152,7 +152,3 @@ None of this replaces knowing individual functions - you'll still look up `SAMEP
   }
 ]
 ```
-
----
-
-[← Phase 4: The Data Model & Relationships](04-the-data-model-and-relationships.md) · [Phase 6: Measures vs Calculated Columns →](06-measures-vs-calculated-columns.md)

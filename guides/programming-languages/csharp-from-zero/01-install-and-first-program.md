@@ -214,7 +214,3 @@ Test yourself on the idea that underpins everything else - how C# actually runs:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Syntax, Values & Types →](02-syntax-values-and-types.md)

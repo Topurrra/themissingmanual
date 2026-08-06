@@ -339,7 +339,3 @@ Quick check - make sure these stuck:
   {"q":"You add __eq__ to a class so two equal-valued instances compare equal. What breaks?","choices":["Nothing - __eq__ is fully self-contained","The instances become unhashable: defining __eq__ removes the default __hash__, so they can't go in a set or be dict keys until you add __hash__","print() stops working on them"],"answer":1,"explain":"Equal objects must hash equally, so once you redefine equality Python disables the inherited hash. Define __eq__ and __hash__ together over the same fields, or sets and dicts break."}
 ]
 ```
-
----
-
-[← Phase 9: Idioms & Common Gotchas](09-idioms-and-gotchas.md) · [Guide overview](_guide.md) · [Phase 11: Iterators & Generators →](11-iterators-and-generators.md)

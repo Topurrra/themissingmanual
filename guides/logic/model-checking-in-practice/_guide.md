@@ -49,7 +49,3 @@ re-explain states, transitions, or the safety/liveness split.
 > ([Phase 3](/guides/formal-methods-and-specification/3)). Also builds on
 > [What Logic Actually Is](/guides/what-logic-actually-is) and
 > [Predicate Logic and Quantifiers](/guides/predicate-logic-and-quantifiers).
-
----
-
-[Phase 1: Writing a Real Spec →](01-writing-a-real-spec.md)

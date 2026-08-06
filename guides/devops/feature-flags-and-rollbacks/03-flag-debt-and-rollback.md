@@ -118,5 +118,3 @@ The mature version of all this is a habit, not a platform. When you add a flag, 
   }
 ]
 ```
-
-[← Phase 2](02-rollouts-and-kill-switches.md) | [Overview](_guide.md)

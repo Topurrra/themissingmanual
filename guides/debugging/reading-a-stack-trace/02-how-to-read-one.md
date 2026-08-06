@@ -122,7 +122,3 @@ When you're tired, the *type* on the error line is often enough to point you at 
 2. **The crash point** is the frame immediately next to the error line - **bottom** in Python/Ruby (`most recent call last`), **top** in JavaScript/Java/C#.
 3. **Find your code in the noise:** skip frames in `site-packages/`, `node_modules/`, and framework files; read your own source tree.
 4. The **type on the error line** often hints at the cause - but symptom and cause can live in different frames.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: From Trace to Fix →](03-from-trace-to-fix.md)

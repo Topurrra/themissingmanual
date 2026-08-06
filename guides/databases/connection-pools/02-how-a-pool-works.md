@@ -140,5 +140,3 @@ For builders: the three numbers you'll actually configure are **pool size** (how
   }
 ]
 ```
-
-[← Phase 1: What a connection actually costs](01-what-a-connection-costs.md) | [Overview](_guide.md) | [Phase 3: When pools break →](03-when-pools-break.md)

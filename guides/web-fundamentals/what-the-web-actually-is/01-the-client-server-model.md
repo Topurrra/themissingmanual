@@ -122,7 +122,3 @@ Check your understanding of client, server, and the request/response loop:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: URLs, DNS, and HTTP, Together →](02-urls-dns-and-http-together.md)

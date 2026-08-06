@@ -124,5 +124,3 @@ When you land on a new GCP project, three questions tell you almost everything a
   }
 ]
 ```
-
-[← Phase 2: The services you'll actually use](02-the-services-you-use.md) · [Overview](_guide.md)

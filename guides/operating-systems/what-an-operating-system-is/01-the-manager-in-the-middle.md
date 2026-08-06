@@ -100,7 +100,3 @@ understanding it.
 
 Next, we'll look at the specific resources the OS manages for you - starting with the most visible one:
 running programs.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Four Jobs →](02-the-four-jobs.md)

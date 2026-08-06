@@ -175,7 +175,3 @@ Three questions on the model that has to stick before Phase 2:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Kestrel: The Web Server →](02-kestrel-the-web-server.md)

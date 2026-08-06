@@ -190,7 +190,3 @@ paged for it before - and built so they won't be again.
   }
 ]
 ```
-
----
-
-[← Phase 2: Retrying Without Making It Worse](02-retrying-without-making-it-worse.md) · [Guide overview](_guide.md)

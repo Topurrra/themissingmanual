@@ -154,7 +154,3 @@ Test what stuck:
   }
 ]
 ```
-
----
-
-[← Phase 1: The DOM Is Not the HTML](01-the-dom-is-not-the-html.md) · [Guide overview](_guide.md) · [Phase 3: Events: Listening, Bubbling, and Delegation →](03-events-listening-bubbling-and-delegation.md)

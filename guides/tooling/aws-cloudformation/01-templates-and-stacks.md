@@ -118,5 +118,3 @@ You don't have to write a template to read one. When you adopt an AWS feature, s
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Writing and changing stacks for real →](02-writing-and-changing-stacks.md)

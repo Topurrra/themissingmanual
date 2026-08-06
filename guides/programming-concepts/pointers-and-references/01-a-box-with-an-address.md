@@ -110,5 +110,3 @@ Every variable is either **a box that holds a value** or **a box that holds an a
 ```
 
 Watch it animated: [pointers and references](/explainers/Pointers.dc.html)
-
-[← Overview](_guide.md) | [Phase 2: Pointers vs. references across languages →](02-pointers-vs-references-across-languages.md)

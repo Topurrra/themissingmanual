@@ -76,5 +76,3 @@ Horizontal scaling -> more machines, scales further, new ones join without disru
 ```
 
 This is why virtually every auto-scaling system you'll encounter - the kind with metrics, thresholds, and policies described above - is scaling horizontally. The mechanism depends on being able to add a new, independent unit of capacity without interrupting anything already in flight, and that's a property only horizontal scaling has.
-
-[← Phase 1: Why you'd want this at all](01-why-you-need-this.md) | [Overview](_guide.md) | [Phase 3: The gotchas →](03-the-gotchas.md)

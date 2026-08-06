@@ -481,5 +481,3 @@ to test all of this with `httptest` so you never have to `curl` by hand again.
   }
 ]
 ```
-
-[← Phase 4: Requests & Responses with the Standard Library](04-requests-and-responses.md) · [Guide overview](_guide.md) · [Phase 6: Structuring & Testing →](06-structure-and-testing.md)

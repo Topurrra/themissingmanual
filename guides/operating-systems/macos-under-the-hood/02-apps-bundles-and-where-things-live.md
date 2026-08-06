@@ -173,7 +173,3 @@ look.
 
 Next, the surface you already touch every day - the Terminal and zsh - plus the service manager that
 keeps the Mac running and the security walls a power user runs into.
-
----
-
-[← Phase 1: macOS Is Unix](01-macos-is-unix.md) · [Phase 3: Under the Surface →](03-under-the-surface.md)

@@ -122,7 +122,3 @@ when the CPU and memory are under strain.
 > ⏭️ **Where next.** Go deeper with [The Filesystem, Explained](/guides/the-filesystem-explained) and
 > [The Terminal & Shell, Explained](/guides/the-terminal-and-shell), or see what "100% CPU" really means in
 > [Processes, Memory & the CPU](/guides/processes-memory-and-cpu). (Those guides are part of this track.)
-
----
-
-[← Phase 2: The Four Jobs](02-the-four-jobs.md) · [Guide overview](_guide.md)

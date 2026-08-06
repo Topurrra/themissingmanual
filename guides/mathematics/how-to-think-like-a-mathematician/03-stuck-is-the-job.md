@@ -124,5 +124,3 @@ problem. To turn a found pattern into a result no one can argue with, head to
   }
 ]
 ```
-
-[← Phase 2: The moves](02-the-moves.md) | [Overview](_guide.md)

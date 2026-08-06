@@ -116,7 +116,3 @@ which is the entire reason a tunnel is the cleaner choice.
    SSH first!). With a Tunnel, there's nothing to firewall.
 
 It's live, HTTPS, and safe. The last step is making *future* changes effortless.
-
----
-
-[← Phase 4: Domains & DNS](04-domains-and-dns.md) · [Guide overview](_guide.md) · [Phase 6: Auto-Deploy on Merge →](06-auto-deploy-on-merge.md)

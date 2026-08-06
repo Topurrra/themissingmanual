@@ -258,7 +258,3 @@ Test what sizes a child, and how to read a blank screen:
   }
 ]
 ```
-
----
-
-[← Phase 3: Components & the Containment Tree](03-components-and-containers.md) · [Guide overview](_guide.md) · [Phase 5: The Data Package →](05-the-data-package.md)

@@ -255,5 +255,3 @@ delegates to, so the five handlers go back to describing only the *happy path*.
   }
 ]
 ```
-
-[← Phase 4: Request & Response](04-request-and-response.md) · [Guide overview](_guide.md) · [Phase 6: Error Handling →](06-error-handling.md)

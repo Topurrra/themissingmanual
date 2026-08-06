@@ -119,7 +119,3 @@ Check the three-way split sticks before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 2: URLs, DNS, and HTTP, Together](02-urls-dns-and-http-together.md) · [Guide overview](_guide.md)

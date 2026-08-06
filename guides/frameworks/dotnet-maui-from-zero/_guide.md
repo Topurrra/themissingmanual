@@ -55,7 +55,3 @@ delete) from a single page to a navigable, MVVM-structured, API-aware app. Phase
 
 > The throughline: **XAML describes the UI, a ViewModel holds state and behavior, and data binding wires
 > them** - one codebase, native everywhere. Hold that and MAUI is approachable.
-
----
-
-[Phase 1: What MAUI Is & Your First App →](01-what-maui-is.md)

@@ -201,7 +201,3 @@ Make sure the core idea - and the one line everyone forgets - actually stuck:
   }
 ]
 ```
-
----
-
-[← Phase 4: Mapping & the Front-Controller Pattern](04-mapping-and-the-front-controller.md) · [Guide overview](_guide.md) · [Phase 6: Sessions & State →](06-sessions-and-state.md)

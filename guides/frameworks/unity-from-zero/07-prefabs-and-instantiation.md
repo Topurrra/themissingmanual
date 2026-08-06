@@ -199,5 +199,3 @@ stuttering.
   }
 ]
 ```
-
-[← Phase 6: Physics & Collisions](06-physics-and-collisions.md) · [Guide overview](_guide.md) · [Phase 8: UI, Audio & Building →](08-ui-audio-and-building.md)

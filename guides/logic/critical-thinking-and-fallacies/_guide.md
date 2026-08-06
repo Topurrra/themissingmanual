@@ -42,7 +42,3 @@ it - and a person who can't be easily fooled can't be easily steered.
 > This caps the Logic foundations. It draws on validity from
 > [What Logic Actually Is](/guides/what-logic-actually-is) and the conditional errors from
 > [Implication & Conditionals](/guides/implication-and-conditionals).
-
----
-
-[Phase 1: What a Fallacy Is (and Why They Work) →](01-what-a-fallacy-is.md)

@@ -25,5 +25,3 @@ Read the phases in order. Phase 1 is the model: what Jenkins actually is, why it
 1. [The mental model: what Jenkins is and why it won't die](01-the-mental-model.md)
 2. [The Jenkinsfile: pipeline, agent, stages, steps](02-the-jenkinsfile.md)
 3. [Production reality: plugins, credentials, and the tradeoffs](03-production-reality.md)
-
-[Phase 1: The mental model: what Jenkins is and why it won't die](01-the-mental-model.md) →

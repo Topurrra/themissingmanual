@@ -197,7 +197,3 @@ DELETE FROM `users` WHERE `id` = 1
   }
 ]
 ```
-
----
-
-[← Phase 4: Querying](04-querying.md) · [Guide overview](_guide.md) · [Phase 6: Associations →](06-associations.md)

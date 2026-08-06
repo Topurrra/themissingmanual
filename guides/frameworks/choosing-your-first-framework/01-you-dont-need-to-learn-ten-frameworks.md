@@ -104,7 +104,3 @@ already know one framework's anatomy.
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: A Starting Point, Language by Language →](02-a-starting-point-language-by-language.md)

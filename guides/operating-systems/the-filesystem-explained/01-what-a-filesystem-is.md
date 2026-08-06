@@ -174,7 +174,3 @@ $ pwd
 5. Your **home folder** is your personal space, nicknamed `~` in the shell.
 
 Next, we'll look at why the tree won't always let you in - the rules of ownership and permission that decide who can read, change, or run each file.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Permissions & Ownership →](02-permissions-and-ownership.md)

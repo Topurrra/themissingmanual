@@ -130,5 +130,3 @@ If you build the dashboards, you set the defaults that decide whether your org r
   }
 ]
 ```
-
-[← Phase 2: The Data You Never See](02-the-data-you-never-see.md) | [Overview](_guide.md)

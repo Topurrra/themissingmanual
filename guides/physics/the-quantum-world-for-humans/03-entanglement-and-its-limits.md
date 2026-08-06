@@ -93,5 +93,3 @@ For builders: entanglement is the resource that lets a multi-qubit quantum compu
   }
 ]
 ```
-
-[← Phase 2](02-superposition-and-uncertainty.md) | [Overview](_guide.md)

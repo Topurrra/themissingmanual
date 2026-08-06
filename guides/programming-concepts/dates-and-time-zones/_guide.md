@@ -25,5 +25,3 @@ Here's the relief: almost every time bug comes from a small number of confusions
 1. **[A Moment Is Not a Clock Reading](01-a-moment-is-not-a-clock-reading.md)** - the core split: an instant on the timeline versus the local wall-clock string a human reads. UTC, Unix timestamps, and why "3pm" is not a moment until you say *where*.
 2. **[Offsets, Zones, and the Golden Rules](02-offsets-zones-and-the-golden-rules.md)** - why `+02:00` is not the same thing as `Europe/Berlin`, what the IANA database actually is, and the small set of rules - store UTC, convert at the edges, never hand-roll, use a real library - that keep you safe.
 3. **[The 2am That Happens Twice](03-the-2am-that-happens-twice.md)** - daylight saving time creates gaps where time skips and overlaps where it repeats. The off-by-one-hour bug, the ambiguous timestamp, and why these are the rocks every naive time library splits on.
-
-[Phase 1: A Moment Is Not a Clock Reading](01-a-moment-is-not-a-clock-reading.md) →

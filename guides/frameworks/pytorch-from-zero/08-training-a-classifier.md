@@ -298,7 +298,3 @@ learning *whether* you can train a model - you're just changing what goes in the
   }
 ]
 ```
-
----
-
-[← Phase 7: Data: Dataset & DataLoader](07-datasets-and-dataloaders.md) · [Guide overview](_guide.md) · [Phase 9: Saving, Loading & Inference →](09-saving-loading-inference.md)

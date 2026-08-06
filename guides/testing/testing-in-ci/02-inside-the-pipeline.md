@@ -217,7 +217,3 @@ Windows user to discover the hard way.
    names the exact failing test, expected vs. actual, file and line.
 5. A **build matrix** runs the same tests across versions/OSes to catch "works on mine, not yours"
    bugs - at the cost of more CI time.
-
----
-
-[← Phase 1: What CI Testing Actually Is](01-what-ci-testing-actually-is.md) · [Phase 3: Keeping CI Trustworthy →](03-keeping-ci-trustworthy.md)

@@ -82,7 +82,3 @@ nothing. Delete it.
    it) to actually stop paying.
 
 You've got a box and an IP. Next, get into it - securely.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: SSH In With a Key →](02-ssh-in-with-a-key.md)

@@ -227,7 +227,3 @@ watch(selectedId, async (id, _, onCleanup) => {
   }
 ]
 ```
-
----
-
-[← Phase 5: Slots and Composition](05-slots-and-composition.md) · [Guide overview](_guide.md) · [Phase 7: When Vue Breaks →](07-when-it-breaks.md)

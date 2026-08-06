@@ -262,5 +262,3 @@ Lock in the core fact (the handler interface) and the two production must-haves:
   }
 ]
 ```
-
-[← Phase 7: Error Handling & Project Structure](07-errors-and-structure.md) · [Guide overview](_guide.md) · [Phase 9: Where to Go Next →](09-where-to-go-next.md)

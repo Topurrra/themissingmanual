@@ -125,7 +125,3 @@ Check that the render tree and layout stuck before we get to which changes cost 
   }
 ]
 ```
-
----
-
-[← Phase 1: Parsing: From Bytes to DOM and CSSOM](01-parsing-from-bytes-to-dom-and-cssom.md) · [Guide overview](_guide.md) · [Phase 3: Why Some Changes Are Expensive →](03-why-some-changes-are-expensive.md)

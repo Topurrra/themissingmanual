@@ -152,5 +152,3 @@ Pick by where the data is going. Talking RPC between services? Reach for Protobu
   }
 ]
 ```
-
-[← Phase 1: The mental model](01-why-schemas-beat-json.md) | [Overview](_guide.md) | [Phase 3: Schema evolution and the gotchas →](03-schema-evolution-and-gotchas.md)

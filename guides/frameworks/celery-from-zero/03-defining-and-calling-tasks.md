@@ -184,7 +184,3 @@ This also tells you how to *shape* a good task: keep it a **thin entry point** d
   }
 ]
 ```
-
----
-
-[← Phase 2: The Broker & Worker](02-the-broker-and-worker.md) · [Guide overview](_guide.md) · [Phase 4: Results & State →](04-results-and-state.md)

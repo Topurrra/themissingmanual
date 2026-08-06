@@ -94,7 +94,3 @@ One last check on the two questions this phase answered - choosing, and learning
   }
 ]
 ```
-
----
-
-[← Phase 4: The Anatomy of (Almost) Any Framework](04-the-anatomy-of-any-framework.md) · [Guide overview](_guide.md)

@@ -228,7 +228,3 @@ Two halves of the pattern: **reject and stop**, or **enrich `req` and continue**
   }
 ]
 ```
-
----
-
-[← Phase 2: Routing](02-routing.md) · [Guide overview](_guide.md) · [Phase 4: Request & Response →](04-request-and-response.md)

@@ -149,5 +149,3 @@ The plain summary: window functions feel like a separate, intimidating corner of
   }
 ]
 ```
-
-[← Phase 2](02-over-partition-order.md) | [Overview](_guide.md)

@@ -173,5 +173,3 @@ aws sqs delete-message \
   }
 ]
 ```
-
-[← Phase 1](01-not-everything-needs-kafka.md) | [Overview](_guide.md) | [Phase 3: Production Reality →](03-production-reality.md)

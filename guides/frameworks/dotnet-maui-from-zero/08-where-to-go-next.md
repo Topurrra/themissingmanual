@@ -114,7 +114,3 @@ Three decisions to take with you as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 7: Platform Features & Deployment](07-platform-features-and-deployment.md) · [Guide overview](_guide.md)

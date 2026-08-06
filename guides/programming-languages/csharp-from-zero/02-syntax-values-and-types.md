@@ -299,7 +299,3 @@ Test yourself on the idea that matters most - copy versus share:
   }
 ]
 ```
-
----
-
-[← Phase 1: Install & Your First Program](01-install-and-first-program.md) · [Guide overview](_guide.md) · [Phase 3: Collections →](03-collections.md)

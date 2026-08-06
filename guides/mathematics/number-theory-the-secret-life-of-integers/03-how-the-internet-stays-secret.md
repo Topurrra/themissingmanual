@@ -185,5 +185,3 @@ A quick check before you go:
   }
 ]
 ```
-
-[← Phase 2: The Clock Math You Already Know](02-the-clock-math-you-already-know.md) · [Guide overview](_guide.md)

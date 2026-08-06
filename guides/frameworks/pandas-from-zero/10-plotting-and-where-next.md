@@ -142,7 +142,3 @@ Test yourself on the decisions that matter most as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 9: Reshaping & Pivoting](09-reshaping-and-pivoting.md) · [Guide overview](_guide.md)

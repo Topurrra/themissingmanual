@@ -103,5 +103,3 @@ So if measuring only gives one random answer, how is any of this useful? That's 
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Interference is the engine →](02-interference-is-the-engine.md)

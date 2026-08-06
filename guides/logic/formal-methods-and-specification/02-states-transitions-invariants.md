@@ -180,5 +180,3 @@ benefit - the discipline of being exhaustive is the win.
   }
 ]
 ```
-
-[← Phase 1: The Blueprint, Not the Building](01-the-blueprint-not-the-building.md) · [Guide overview](_guide.md) · [Phase 3: Checking the Design Before You Build →](03-checking-before-you-build.md)

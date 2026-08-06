@@ -184,7 +184,3 @@ on your own components once you know its parts.
   }
 ]
 ```
-
----
-
-[← Phase 1: What Vue Actually Is](01-what-vue-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Reactivity for Real →](03-reactivity-for-real.md)

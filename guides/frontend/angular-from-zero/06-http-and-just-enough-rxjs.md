@@ -214,7 +214,3 @@ where to go deeper.
   }
 ]
 ```
-
----
-
-[← Phase 5: Services and Dependency Injection](05-services-and-di.md) · [Guide overview](_guide.md) · [Phase 7: When Angular Breaks →](07-when-it-breaks.md)

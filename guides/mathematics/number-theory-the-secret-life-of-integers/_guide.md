@@ -29,7 +29,3 @@ This is the seventh guide in the Mathematics track. It assumes the number famili
 3. **[How the Internet Stays Secret](03-how-the-internet-stays-secret.md)** - RSA encryption explained as "two large primes multiplied together are easy to compute but nearly impossible to reverse," with the builder's guide to hashing and checksums.
 
 > This builds on [Numbers & Number Systems](/guides/numbers-and-number-systems) (integers, primes, modular arithmetic) and pairs with [Counting & Combinatorics](/guides/counting-and-combinatorics) (the pigeonhole principle). It is the discrete math backbone of modern computing.
-
----
-
-[Phase 1: Primes and the Building Blocks of Numbers →](01-primes-and-the-building-blocks-of-numbers.md)

@@ -308,7 +308,3 @@ Test yourself on the two ideas that do the heavy lifting here - wrapping and the
   }
 ]
 ```
-
----
-
-[← Phase 12: Concurrency Patterns](12-concurrency-patterns.md) · [Guide overview](_guide.md) · [Phase 14: The Runtime: Scheduler, Memory & GC →](14-runtime-scheduler-and-memory.md)

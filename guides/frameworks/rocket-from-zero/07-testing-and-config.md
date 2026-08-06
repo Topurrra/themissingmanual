@@ -219,7 +219,3 @@ Three questions on the ideas that matter most before you ship:
   }
 ]
 ```
-
----
-
-[← Phase 6: A REST API with Error Catchers](06-rest-api-and-catchers.md) · [Guide overview](_guide.md) · [Phase 8: Where to Go Next →](08-where-to-go-next.md)

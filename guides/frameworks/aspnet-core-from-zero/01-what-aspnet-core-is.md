@@ -215,7 +215,3 @@ server fits together:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Routing & Minimal APIs →](02-routing-and-minimal-apis.md)

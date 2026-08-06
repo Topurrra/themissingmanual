@@ -123,5 +123,3 @@ The teams that get real value from OpenAPI aren't the ones with the prettiest Sw
   }
 ]
 ```
-
-[← Phase 2: Writing and Generating From the Spec](02-writing-and-generating.md) · [Overview](_guide.md)

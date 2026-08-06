@@ -106,5 +106,3 @@ When a value crosses a boundary - comes out of a database, arrives in an API req
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Offsets, Zones, and the Golden Rules →](02-offsets-zones-and-the-golden-rules.md)

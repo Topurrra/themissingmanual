@@ -140,7 +140,3 @@ and works everywhere - even where there's nothing to click.
 
 Now that you know what the window and the shell *are*, let's give your hands something to do: the everyday
 commands you'll actually reach for.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Essential Commands →](02-essential-commands.md)

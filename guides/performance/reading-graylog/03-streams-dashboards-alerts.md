@@ -142,10 +142,6 @@ store noise you'll never read.
 5. Never log secrets into a searchable, long-lived store; and know your retention window - cost forces a
    trade-off between keeping everything and keeping nothing.
 
----
-
-[← Phase 2: Searching Effectively](02-searching-effectively.md) · [Guide overview →](_guide.md)
-
 **Related guides:** [Reading Logs Without Drowning](/guides/reading-logs-without-drowning) ·
 [Observability: Logs, Metrics & Traces](/guides/observability-logs-metrics-traces) ·
 [Secrets Management](/guides/secrets-management)

@@ -229,7 +229,3 @@ You almost always want the first. Here's the contrast:
   }
 ]
 ```
-
----
-
-[← Phase 4: Events & the Component Lifecycle](04-events-and-lifecycle.md) · [Guide overview](_guide.md) · [Phase 6: Component Communication & State →](06-communication-and-state.md)

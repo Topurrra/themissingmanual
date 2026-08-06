@@ -185,5 +185,3 @@ Window functions also relate to joins: a self-join was the old way to compare a 
   }
 ]
 ```
-
-[← Phase 1](01-the-window-not-the-group.md) | [Overview](_guide.md) | [Phase 3: Frames, moving averages, and top-N-per-group →](03-frames-and-top-n.md)

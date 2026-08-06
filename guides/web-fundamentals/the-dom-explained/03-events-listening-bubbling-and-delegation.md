@@ -137,7 +137,3 @@ Check your understanding:
 ```
 
 Next: getting user input right. [Forms That Work](/guides/forms-that-work) covers form elements, validation, and submission - the DOM concepts from this guide apply directly once you're listening for `input` and `submit` events instead of `click`.
-
----
-
-[← Phase 2: Selecting and Modifying Elements](02-selecting-and-modifying-elements.md) · [Guide overview](_guide.md)

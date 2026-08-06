@@ -24,5 +24,3 @@ Read the phases in order the first time. Phase 1 rewires how you picture the thi
 1. [What it actually is: a giant key-to-blob map](01-the-mental-model.md)
 2. [How you really work with it: keys, uploads, and signed URLs](02-keys-and-access.md)
 3. [Where it bites: leaks, edits, and consistency](03-where-it-bites.md)
-
-[Phase 1: What it actually is](01-the-mental-model.md) →

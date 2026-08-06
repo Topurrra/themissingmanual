@@ -122,7 +122,3 @@ One last check - the ideas that turn Boot from magic into mechanism:
   }
 ]
 ```
-
----
-
-[← Phase 7: Spring MVC Without Boot](07-spring-mvc-without-boot.md) · [Guide overview](_guide.md)

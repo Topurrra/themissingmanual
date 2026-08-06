@@ -170,5 +170,3 @@ POST /products/_search
   }
 ]
 ```
-
-[← Phase 1: The inverted index](01-the-inverted-index.md) | [Overview](_guide.md) | [Phase 3: Near-real-time, consistency, and when to add search at all →](03-production-reality.md)

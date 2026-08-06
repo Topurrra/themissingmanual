@@ -120,5 +120,3 @@ Datadog is one agent that collects metrics, traces, and logs, a tagging system t
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The everyday loop](02-the-everyday-loop.md) →

@@ -104,5 +104,3 @@ Mature teams do not run a load test once before launch and forget it. They keep 
   }
 ]
 ```
-
-[← Phase 2: Writing the same test in k6 and JMeter](02-k6-and-jmeter-in-practice.md) · [Overview](_guide.md)

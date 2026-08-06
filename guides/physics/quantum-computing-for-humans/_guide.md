@@ -24,5 +24,3 @@ Read the three phases in order. We build on one idea the whole way: a quantum co
 1. [The qubit, and the lie about parallel answers](01-the-qubit.md) - what a qubit holds, and why you still get one ordinary answer when you measure.
 2. [Interference is the engine](02-interference-is-the-engine.md) - how a quantum algorithm makes wrong answers cancel and right answers add up.
 3. [What it actually buys you, and the sober reality](03-what-it-actually-buys-you.md) - the real speedups, the things it does not help, and why today's machines are still noisy.
-
-[Phase 1: The qubit, and the lie about parallel answers](01-the-qubit.md) →

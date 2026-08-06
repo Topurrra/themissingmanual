@@ -146,5 +146,3 @@ You started with "Redis is a RAM-speed dictionary." Now you know the full shape:
   }
 ]
 ```
-
-[← Phase 2: The everyday core](02-the-everyday-core.md) | [Overview](_guide.md)

@@ -46,7 +46,3 @@ copying a big file doesn't pin your CPU at 100%, the answers all live here.
 > and how the OS wires up interrupt handlers are deeper topics for follow-up guides - we'll point you
 > toward [What an Operating System Is](/guides/what-an-operating-system-is) where the software side picks
 > up.
-
----
-
-[Phase 1: Buses & Addresses →](01-buses-and-addresses.md)

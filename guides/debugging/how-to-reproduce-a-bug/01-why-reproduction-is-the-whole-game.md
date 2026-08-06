@@ -78,7 +78,3 @@ flowchart LR
 3. **Reproduction is also how you verify a fix:** trigger it, fix it, confirm it's gone, then undo and confirm it returns.
 4. **"It didn't happen when I tried" ≠ fixed** - that's an experiment with no control.
 5. **Two moves, in order: trigger, then shrink.** Make it happen reliably first; then remove everything that isn't load-bearing until only the cause is left.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Nailing It Down →](02-nailing-it-down.md)

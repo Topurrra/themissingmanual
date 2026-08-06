@@ -30,5 +30,3 @@ Read in order. Phase 1 is the rule itself, in its simplest form. Phase 2 shows t
 1. [Why bother checking the second half](01-the-core-rule.md) - the rule: AND stops at the first false, OR stops at the first true.
 2. [Where this becomes a real pattern](02-real-patterns.md) - guard checks and default values.
 3. [The gotcha](03-the-gotcha.md) - skipped side effects, and the falsy-value surprise with `||`.
-
-[Phase 1: Why bother checking the second half](01-the-core-rule.md) →

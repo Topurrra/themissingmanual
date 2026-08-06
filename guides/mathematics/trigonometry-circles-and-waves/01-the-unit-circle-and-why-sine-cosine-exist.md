@@ -149,5 +149,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Waves, Frequencies, and the Real World →](02-waves-frequencies-and-the-real-world.md)

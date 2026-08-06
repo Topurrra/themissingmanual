@@ -160,7 +160,3 @@ you is the subject of the final phase.
 
 You now understand both landing spots and the hybrid. Last question: which do *you* use, and how do
 they fit together?
-
----
-
-[← Phase 1: The Warehouse](01-the-warehouse.md) · [Guide overview](_guide.md) · [Phase 3: Choosing & Combining →](03-choosing-and-combining.md)

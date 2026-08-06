@@ -136,7 +136,3 @@ A second, related trap: don't call the model directly from your *frontend* (brow
 5. The API **key is a password.** Keep it out of code and out of the frontend; load it from a secret at runtime.
 
 Next: what those tokens in the `usage` block actually are, why they're the unit of both memory and money, and how to keep both under control.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Tokens, Context & Cost →](02-tokens-context-and-cost.md)

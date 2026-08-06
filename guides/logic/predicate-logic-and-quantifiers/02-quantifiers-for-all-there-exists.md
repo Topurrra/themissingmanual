@@ -253,5 +253,3 @@ Quick check before you move on:
   }
 ]
 ```
-
-[← Phase 1: Predicates: Statements With Variables](01-predicates-statements-with-variables.md) · [Guide overview](_guide.md) · [Phase 3: Negating & Nesting Quantifiers →](03-negating-and-nesting-quantifiers.md)

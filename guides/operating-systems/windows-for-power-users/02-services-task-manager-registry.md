@@ -136,7 +136,3 @@ HKEY_CURRENT_USER\Control Panel\Desktop
 4. ⚠️ The registry has **no undo and no Recycle Bin** - so back up the key first (right-click → Export), change only what a trusted source specified, and prefer the normal Settings UI when it can do the job.
 
 Next, the genuinely fun part: PowerShell - a modern shell built on one surprising idea.
-
----
-
-[← Phase 1: Windows Under the Hood](01-windows-under-the-hood.md) · [Phase 3: PowerShell Basics →](03-powershell-basics.md)

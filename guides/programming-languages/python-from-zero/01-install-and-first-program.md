@@ -139,7 +139,3 @@ live in files, keeping the REPL open on the side for quick tests.
 5. Save real code in a `.py` file and run it with **`python3 yourfile.py`**.
 
 Next: values, the types they come in, and Python's use of *indentation* to structure code.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Syntax, Values & Types →](02-syntax-values-and-types.md)

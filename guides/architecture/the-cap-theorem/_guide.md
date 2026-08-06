@@ -30,5 +30,3 @@ Read it in order. Phase 1 defines the three letters precisely - most confusion a
 1. [The three letters](01-the-three-letters.md) - consistency, availability, and partition tolerance, defined precisely.
 2. [Why you can't have all three](02-why-you-cant-have-all-three.md) - walking through a real partition and the forced choice it creates.
 3. [What this looks like in real databases](03-what-this-looks-like-in-real-databases.md) - CP systems, AP systems, and the most common misreading of CAP.
-
-[Phase 1: The three letters](01-the-three-letters.md) →

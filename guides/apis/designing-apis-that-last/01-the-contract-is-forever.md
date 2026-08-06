@@ -206,7 +206,3 @@ versions, wrapping your API in defensive code, or leaving.
 5. **Adding an enum value is a gray-zone change** - safe for tolerant clients, breaking for strict ones.
 6. The mindset: **you can add but not take away**, and most breaks are **silent on your side**, so
    default to "breaking" when in doubt.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Versioning Strategies →](02-versioning-strategies.md)

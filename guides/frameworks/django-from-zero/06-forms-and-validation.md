@@ -179,7 +179,3 @@ Here's the template that renders the form, token included:
   }
 ]
 ```
-
----
-
-[← Phase 5: Templates & the MTV Pattern](05-templates-and-mtv.md) · [Guide overview](_guide.md) · [Phase 7: The ORM, Deeper →](07-the-orm-deeper.md)

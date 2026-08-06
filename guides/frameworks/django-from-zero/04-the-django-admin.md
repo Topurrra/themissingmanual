@@ -104,7 +104,6 @@ from django.contrib import admin
 
 from .models import Post, Comment
 
-
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ("title", "author", "published", "created_at")
@@ -143,11 +142,9 @@ from django.contrib import admin
 
 from .models import Post, Comment
 
-
 class CommentInline(admin.TabularInline):
     model = Comment
     extra = 1
-
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -231,7 +228,3 @@ visitors safely submit comments (Phase 6).
   }
 ]
 ```
-
----
-
-[← Phase 3: Models & the ORM](03-models-and-the-orm.md) · [Guide overview](_guide.md) · [Phase 5: Templates & the MTV Pattern →](05-templates-and-mtv.md)

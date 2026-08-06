@@ -97,7 +97,3 @@ A program lives in the cabinet, gets laid out on the desk, and the worker runs t
 5. The computer constantly **moves data up the ladder** to stay quick; reaching down to slow storage is what lag feels like - and why being out of RAM makes everything crawl.
 
 Last phase: what laptop specs mean, and why "my computer is slow" almost always points to one specific part.
-
----
-
-[← Phase 1: The Parts and What They Do](01-the-parts.md) · [Guide overview](_guide.md) · [Phase 3: Fast vs Slow (and Buying a Computer) →](03-fast-vs-slow.md)

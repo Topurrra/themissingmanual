@@ -189,7 +189,3 @@ Make sure the dev-mode mental model stuck before we start building APIs.
   }
 ]
 ```
-
----
-
-[← Phase 1: What Quarkus Is & Why It's Fast](01-what-quarkus-is.md) · [Guide overview](_guide.md) · [Phase 3: Building REST APIs →](03-rest-apis.md)

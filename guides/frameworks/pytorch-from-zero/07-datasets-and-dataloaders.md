@@ -306,7 +306,3 @@ Make sure the division of labor and the loop shape stuck:
   }
 ]
 ```
-
----
-
-[← Phase 6: The Training Loop](06-the-training-loop.md) · [Guide overview](_guide.md) · [Phase 8: Training a Real Classifier →](08-training-a-classifier.md)

@@ -101,7 +101,3 @@ One question this guide has deliberately left open: everything here assumed serv
 4. **Caching** sheds load off that bottleneck by not asking the same question twice - often buying you out of a harder scaling project. Details in [Caching, Explained](/guides/caching-explained).
 5. Externalizing state **concentrates the single point of failure** into those shared stores, which then need their own redundancy - the subject of [Designing for Failure](/guides/designing-for-failure).
 6. The whole game: **push state to the edges so the middle can be cloned.**
-
----
-
-[← Phase 2: Load Balancing](02-load-balancing.md) · [Guide overview →](_guide.md)

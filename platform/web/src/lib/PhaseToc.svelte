@@ -92,11 +92,13 @@
     display: none;
   }
   .phase-toc > summary::after {
-    content: " ▸";
+    /* Unicode escapes, not the raw glyphs: a CSS chunk decoded as Latin-1 in
+       production mojibakes the raw U+25B8/U+25BE bytes. Escapes are pure ASCII. */
+    content: " \25B8"; /* right-pointing small triangle, collapsed state */
     color: var(--faint);
   }
   .phase-toc[open] > summary::after {
-    content: " ▾";
+    content: " \25BE"; /* down-pointing small triangle, expanded state */
   }
   .toc-list,
   .toc-sub {

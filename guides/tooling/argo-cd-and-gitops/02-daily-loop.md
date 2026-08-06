@@ -164,5 +164,3 @@ Most teams structure the infra repo so each environment is a folder or branch (`
   }
 ]
 ```
-
-[← Phase 1: The pull model](01-the-pull-model.md) | [Overview](_guide.md) | [Phase 3: When reconciliation bites →](03-when-it-bites.md)

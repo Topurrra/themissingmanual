@@ -158,7 +158,3 @@ Inheritance models "is-a"; a derived class inherits and can override its base's 
   }
 ]
 ```
-
----
-
-[Phase 13: Smart Pointers & Modern Memory Management](13-smart-pointers-and-modern-memory-management.md) · [Phase 15: Error Handling: Exceptions and Alternatives →](15-error-handling-exceptions-and-alternatives.md)

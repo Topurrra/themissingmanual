@@ -86,5 +86,3 @@ The search box is the canonical example, but the same shape - a burst of events 
 - **A form field validating itself as the user types**, where showing a "this email looks wrong" error on every half-typed character would be more annoying than helpful - waiting for a pause gives the user room to actually finish typing first.
 
 All three share the same reasoning as the search box: the events arrive in a rapid burst, and reacting to the burst's end - not its every step - is both cheaper and more correct for what the user actually wants.
-
-[← Phase 1: The firehose problem](01-the-firehose-problem.md) | [Overview](_guide.md) | [Phase 3: Throttle - cap the rate →](03-throttle.md)

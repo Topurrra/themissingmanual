@@ -29,5 +29,3 @@ This guide assumes you know roughly what OIDC is. If "ID token" and "redirect UR
 1. [Phase 1: Stop Building Auth](01-stop-building-auth.md) - why identity is a buy-or-host decision, and what an IdP gives you for free.
 2. [Phase 2: Realms, Clients, and Roles](02-realms-clients-roles.md) - the everyday vocabulary, wiring an app, and where users and permissions live.
 3. [Phase 3: Managed vs Self-Hosted, and the Gotchas](03-managed-vs-self-hosted.md) - Auth0 vs Keycloak in production, costs, lock-in, and what breaks.
-
-[Phase 1: Stop Building Auth](01-stop-building-auth.md) →

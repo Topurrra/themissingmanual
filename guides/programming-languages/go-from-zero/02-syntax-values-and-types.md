@@ -196,7 +196,3 @@ purpose, so you spot the mismatch instantly instead of shipping wrong output.
 
 Next: from single values to *collections* - arrays, the slices you'll actually use, and maps for looking
 things up by name.
-
----
-
-[← Phase 1: Install & Your First Program](01-install-and-first-program.md) · [Guide overview](_guide.md) · [Phase 3: Collections →](03-collections.md)

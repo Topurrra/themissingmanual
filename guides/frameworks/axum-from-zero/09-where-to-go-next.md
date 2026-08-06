@@ -129,7 +129,3 @@ Three decisions to take with you as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 8: Testing & Production](08-testing-and-production.md) · [Guide overview](_guide.md)

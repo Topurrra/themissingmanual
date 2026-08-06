@@ -143,7 +143,3 @@ Two of these are worth a sentence more, because they're the ones that surprise p
 5. Windows differs from Unix in real, nameable ways: **`\` vs `/`**, **drive letters vs one root**, **`.exe`/extensions vs the permission bit**, and **the registry vs config files**.
 
 Next, we'll watch the parts that run without you ever opening them - services - and meet the registry up close.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Services, Task Manager & the Registry →](02-services-task-manager-registry.md)

@@ -173,7 +173,3 @@ Writing `v.begin(), v.end()` everywhere gets repetitive, and it's easy to accide
   }
 ]
 ```
-
----
-
-[← Phase 11: The STL: Containers](11-the-stl-containers.md) · [Phase 13: Smart Pointers & Modern Memory Management →](13-smart-pointers-and-modern-memory-management.md)

@@ -196,7 +196,3 @@ fn show(id: u32) -> String { format!("book #{id}") }
   }
 ]
 ```
-
----
-
-[← Phase 1: What Rocket Is & Your First Server](01-what-rocket-is.md) · [Guide overview](_guide.md) · [Phase 3: Request Guards & Data →](03-guards-and-data.md)

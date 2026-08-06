@@ -39,5 +39,3 @@ separates teams who recover in an hour from teams who never recover at all.
    you can be down, and how those two numbers set your budget.
 3. **[The Untested Backup, and Ransomware](03-testing-and-ransomware.md)** - why the restore drill is
    the only proof that counts, and the offline, immutable copy that survives an attacker.
-
-[Phase 1: Backup vs Disaster Recovery](01-backup-vs-disaster-recovery.md) →

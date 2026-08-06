@@ -124,5 +124,3 @@ Closures aren't an accident of syntax; they're what makes functions genuinely *f
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Closures You'll Actually Write →](02-closures-you-will-write.md)

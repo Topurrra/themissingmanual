@@ -133,7 +133,3 @@ Test yourself on the two ideas that trip people up most: what refresh actually d
   }
 ]
 ```
-
----
-
-[← Phase 2: Connecting to Data Sources](02-connecting-to-data-sources.md) · [Phase 4: The Data Model & Relationships →](04-the-data-model-and-relationships.md)

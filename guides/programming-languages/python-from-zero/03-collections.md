@@ -256,7 +256,3 @@ The rule: **assignment never copies; it makes another name for the same object.*
 
 Next: making programs *decide* and *repeat* with `if`/`else`, loops, and functions - plus the famous
 mutable-default-argument trap.
-
----
-
-[← Phase 2: Syntax, Values & Types](02-syntax-values-and-types.md) · [Guide overview](_guide.md) · [Phase 4: Control Flow & Functions →](04-control-flow-and-functions.md)

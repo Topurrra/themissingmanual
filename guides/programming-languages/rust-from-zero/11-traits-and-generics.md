@@ -355,7 +355,3 @@ Test yourself on the distinctions that matter most:
   }
 ]
 ```
-
----
-
-[← Phase 10: Lifetimes & the Borrow Checker, Deep](10-lifetimes-and-borrowing.md) · [Guide overview](_guide.md) · [Phase 12: Smart Pointers & Interior Mutability →](12-smart-pointers.md)

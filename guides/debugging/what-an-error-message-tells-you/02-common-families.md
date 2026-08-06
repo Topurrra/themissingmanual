@@ -179,7 +179,3 @@ message names the case.
 
 Now you can read an error and recognize its anatomy and its family. The last phase covers the calm,
 repeatable *method* for resolving one.
-
----
-
-[← Phase 1: An Error Is Information](01-information-not-insult.md) · [Phase 3: What to Actually Do With One →](03-what-to-do.md)

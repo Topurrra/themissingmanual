@@ -148,7 +148,3 @@ pipeline - you've just described the heart of a whole discipline. That field has
 
 You now have the whole arc. The next time a data task lands on your desk, you can place it - and pick the
 tool that fits, not the one that's fanciest.
-
----
-
-[← Phase 2: Outgrowing the Sheet](02-outgrowing-the-sheet-sql-and-databases.md) · [Guide overview](_guide.md)

@@ -152,5 +152,3 @@ deploy:
   }
 ]
 ```
-
-[← Phase 2: The Everyday Core](02-artifacts-cache-rules.md) | [Overview](_guide.md)

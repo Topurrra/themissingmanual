@@ -184,7 +184,3 @@ top of these.
 
 You now have the nouns. The last question is how *managed* you want each piece to be - and the trade-offs
 hiding in that choice.
-
----
-
-[← Phase 1: What "The Cloud" Actually Sells](01-what-the-cloud-sells.md) · [Guide overview](_guide.md) · [Phase 3: IaaS vs PaaS vs Serverless →](03-iaas-paas-serverless.md)

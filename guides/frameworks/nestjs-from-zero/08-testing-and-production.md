@@ -224,7 +224,3 @@ In a real deployment you'd run `node dist/main.js` inside a container (Docker), 
   }
 ]
 ```
-
----
-
-[← Phase 7: Guards, Interceptors & Middleware](07-guards-interceptors-middleware.md) · [Guide overview](_guide.md) · [Phase 9: Where to Go Next →](09-where-to-go-next.md)

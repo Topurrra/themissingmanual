@@ -120,5 +120,3 @@ A team's build went from forty seconds to four after one change: someone had a J
   }
 ]
 ```
-
-[← Phase 2](02-the-build-script-you-live-in.md) | [Overview](_guide.md)

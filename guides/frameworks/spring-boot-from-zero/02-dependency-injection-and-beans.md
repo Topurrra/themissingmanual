@@ -300,7 +300,3 @@ Test yourself on the ideas that have to stick from this phase:
   }
 ]
 ```
-
----
-
-[← Phase 1: What Spring Boot Is & Your First App](01-what-spring-boot-is.md) · [Guide overview](_guide.md) · [Phase 3: Building a REST API: Controllers →](03-rest-controllers.md)

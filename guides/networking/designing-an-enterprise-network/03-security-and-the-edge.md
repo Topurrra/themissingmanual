@@ -102,7 +102,3 @@ You don't reach zero-trust by buying a product; you reach it by taking Phase 1 t
 6. The whole guide, in one line: **divide it, keep it standing, and assume the wall will fall - so the blast radius is one zone, not everything.**
 
 You can now look at a real enterprise network diagram and reason about why each box sits where it does. For the machinery beneath this model - routing protocols, switch-loop prevention, and vendor configuration - see the follow-up guides noted in the overview.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Scaling & Reliability ←](02-scaling-and-reliability.md)

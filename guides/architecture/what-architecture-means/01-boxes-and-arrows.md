@@ -87,7 +87,3 @@ sequenceDiagram
 4. Think **floor plan, not furniture** - the shape is decided before the detailed building, and it gives everyone a shared map.
 
 Next, we'll answer the obvious question: if architecture is just the shape, why do people treat it as such a big deal? The answer is about *cost*.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Why It Matters →](02-why-it-matters.md)

@@ -174,5 +174,3 @@ Wire this into your workflow so the loop is automatic. Most teams run `alembic u
   }
 ]
 ```
-
-[← Phase 1](01-the-version-table-is-the-whole-idea.md) · [Overview](_guide.md) · [Phase 3: The autogenerate trap, heads, and merges →](03-the-autogenerate-trap-and-heads.md)

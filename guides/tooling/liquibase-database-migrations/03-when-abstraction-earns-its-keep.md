@@ -154,5 +154,3 @@ In the wild: most Liquibase incidents are not Liquibase bugs, they are someone e
   }
 ]
 ```
-
-[← Phase 2: The everyday loop](02-the-everyday-loop.md) | [Overview](_guide.md)

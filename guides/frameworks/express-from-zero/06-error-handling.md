@@ -246,7 +246,3 @@ consistent shape, one place to log, one place to hide stack traces in production
   }
 ]
 ```
-
----
-
-[← Phase 5: Building a REST API](05-building-a-rest-api.md) · [Guide overview](_guide.md) · [Phase 7: Serving & Structuring an App →](07-serving-and-structure.md)

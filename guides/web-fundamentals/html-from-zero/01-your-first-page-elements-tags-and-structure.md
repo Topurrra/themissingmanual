@@ -172,7 +172,3 @@ Check your understanding of tags, elements, and the skeleton:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Text, Lists, Links, and Images →](02-text-lists-links-and-images.md)

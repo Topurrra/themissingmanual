@@ -177,5 +177,3 @@ query GetTeam {
   }
 ]
 ```
-
-[← Phase 1: The cache is the point](01-the-cache-is-the-point.md) · [Overview](_guide.md) · [Phase 3: When the cache lies to you →](03-production-reality.md)

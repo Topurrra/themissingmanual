@@ -275,7 +275,3 @@ Test yourself on the three ideas that matter most - cheap goroutines, the GMP ro
   }
 ]
 ```
-
----
-
-[← Phase 13: Error Handling, Deep](13-error-handling-deep.md) · [Guide overview](_guide.md) · [Phase 15: Testing, Benchmarks & Profiling →](15-testing-benchmarks-profiling.md)

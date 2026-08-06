@@ -73,7 +73,3 @@ A teammate "knew how" to refresh the staging database from a backup - four comma
 4. The point isn't usually speed. It's removing the chance to get it wrong, and making the knowledge survive you.
 
 You've got the judgment. Next, let's turn one of those tasks into a real, safe bash script.
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Shell Scripting Essentials →](02-shell-scripting-essentials.md)

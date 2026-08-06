@@ -167,7 +167,3 @@ regression" into "write one test, walk away, come back to the exact commit." Sti
 4. **`git bisect reset`** when done, *always* - it returns you from the detached commit to your branch.
 5. **`git bisect skip`** an untestable commit; never guess a verdict.
 6. **`git bisect run <command>`** automates the whole loop using the command's exit code (`0` = good).
-
----
-
-[← Phase 1: Binary-Search Thinking](01-binary-search-thinking.md) · [Guide overview](_guide.md) · [Phase 3: Bisecting Beyond Git →](03-bisecting-beyond-git.md)

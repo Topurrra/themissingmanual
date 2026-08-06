@@ -34,5 +34,3 @@ If you're brand new to Python itself, start with [/guides/python-from-zero](/gui
 1. [Why Environments Exist (and the Global-Install Trap)](01-why-environments-exist.md) - the mental model: isolation, the `site-packages` problem, what a virtual environment really is.
 2. [The Daily Driver: pip, requirements, and Poetry](02-pip-requirements-poetry.md) - installing, freezing, and the jump to `pyproject.toml` with dependency groups and a lockfile.
 3. [uv, Lockfiles, and Surviving Production](03-uv-lockfiles-production.md) - uv's fast resolver, pinning vs ranges, reproducible installs, and the gotchas.
-
-[Phase 1: Why Environments Exist (and the Global-Install Trap)](01-why-environments-exist.md) →

@@ -74,7 +74,3 @@ The card never changes. Each layer just adds a wrapper that the *matching* layer
 5. **Each wrapper is read only by the matching layer at the destination** - which is why layers can be swapped independently, and why you can debug them one at a time.
 
 You've got the idea. Now let's put names on the four envelopes - and see what each one is actually for.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Four Layers →](02-the-four-layers.md)

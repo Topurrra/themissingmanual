@@ -172,5 +172,3 @@ the lock may change hands. That's the level phase 2 will search exhaustively.
   }
 ]
 ```
-
-[Guide overview](_guide.md) · [Phase 2: Exhaustive State-Space Exploration →](02-exhaustive-state-space-exploration.md)

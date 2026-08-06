@@ -335,7 +335,3 @@ Lock in the pecking order - the right tool for each shape of transformation, and
   }
 ]
 ```
-
----
-
-[← Phase 4: Cleaning Data](04-cleaning-data.md) · [Guide overview](_guide.md) · [Phase 6: GroupBy & Aggregation →](06-groupby-and-aggregation.md)

@@ -60,5 +60,3 @@ In practice, most data warehouses lean toward star schemas, or something close t
 ## Where this fits in the bigger picture
 
 Everything in this guide has been about how a warehouse organizes tables once data is already there - the OLAP side of things, built for analysis and reporting. That's a different world from the OLTP database your application writes to on every request, and the two get confused constantly. If the distinction between those two systems - and how data gets from one to the other - isn't already solid for you, that's covered in [Data Warehouses vs Lakes, Plainly](/guides/warehouses-vs-lakes), which lays out the OLTP/OLAP split this guide has been assuming throughout.
-
-[← Phase 2: Why it's shaped like a star](02-why-a-star.md) | [Overview](_guide.md)

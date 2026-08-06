@@ -167,7 +167,3 @@ RAG), and you almost certainly haven't exhausted prompting yet. You've just save
 
 Now that you can tell the levers apart, the next phase looks plainly at what pulling the fine-tuning lever
 actually takes - because the cost is rarely where people expect it.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: What Fine-Tuning Actually Involves →](02-what-fine-tuning-actually-involves.md)

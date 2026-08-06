@@ -151,10 +151,6 @@ data half of an API call. Now let's combine it with the HTTP half and make real 
 5. It won for being **human-readable, language-neutral, and simple.**
 6. Two rules bite everyone: **double quotes only** (keys included) and **no trailing comma.**
 
----
-
-[← Phase 1: HTTP, the Transport](01-http-the-transport.md) · [Guide overview](_guide.md) · [Phase 3: A Real API Call →](03-a-real-api-call.md)
-
 ## Try it yourself
 
 Paste or edit JSON - it validates live, and you can format or minify it:

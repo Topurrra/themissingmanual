@@ -133,7 +133,3 @@ If you've only ever used a queue, the instinct is "I read it, so it's handled, s
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Producing and Consuming for Real →](02-producing-and-consuming.md)

@@ -162,7 +162,3 @@ wake you at 2am.
 5. **Trap - trading correctness/readability for speed you didn't need:** the deferred cost (bugs,
    maintenance) outweighs a millisecond nobody asked for. Hit the target, then stop.
 6. **The fastest code is the work you avoid.** Across every layer, doing less beats doing it faster.
-
----
-
-[← Phase 2: Where the Time Actually Goes](02-where-the-time-goes.md) · [Guide overview →](_guide.md)

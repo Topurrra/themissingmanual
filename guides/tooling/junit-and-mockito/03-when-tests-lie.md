@@ -114,5 +114,3 @@ public boolean isExpired(Clock clock) {
   }
 ]
 ```
-
-[← Phase 2](02-mocking-with-mockito.md) | [Overview](_guide.md)

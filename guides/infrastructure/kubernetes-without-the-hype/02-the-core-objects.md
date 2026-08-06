@@ -211,7 +211,3 @@ flowchart TD
 
 Now the plain part everyone skips: knowing how Kubernetes works doesn't mean you should run it. Next: when
 it earns its keep - and when it doesn't.
-
----
-
-[← Phase 1: The Problem K8s Solves](01-the-problem-k8s-solves.md) · [Phase 3: Should You Even Use It? →](03-should-you-even-use-it.md)

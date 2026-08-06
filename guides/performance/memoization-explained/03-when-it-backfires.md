@@ -82,5 +82,3 @@ general cache
 *What just happened:* memoization has no concept of time passing - it assumes the answer for a given input is eternally true, because that's exactly what purity guarantees. A general-purpose cache like Redis is built for the opposite assumption: the underlying data *will* change, so every entry gets a TTL (an expiration time) and the application explicitly invalidates entries when it knows the underlying data changed. `get_price` from the example above belongs in a system like that - a cache with a TTL of a few minutes, or explicit invalidation when a price updates - not in a memoization wrapper that never expires anything.
 
 The dividing line: memoization is for computation you want to avoid repeating on unchanging pure math. A shared cache is for data you're willing to serve slightly stale, on purpose, for a bounded window, with a plan for when it goes stale.
-
-[← Phase 2: How to actually implement it](02-how-to-implement-it.md) | [Overview](_guide.md)

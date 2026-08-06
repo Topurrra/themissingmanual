@@ -119,5 +119,3 @@ When you measure something, you don't get infinite digits - you get as many as y
   }
 ]
 ```
-
-← [Phase 1: What a model actually is](01-what-a-model-is.md) | [Overview](_guide.md) | [Phase 3: The deepest idea →](03-conservation-and-the-loop.md)

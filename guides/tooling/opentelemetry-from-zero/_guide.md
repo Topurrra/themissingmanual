@@ -29,5 +29,3 @@ If you're fuzzy on what traces, metrics, and logs even are as concepts, read [th
 1. [What OpenTelemetry actually is](01-what-otel-actually-is.md) - the standard, the three signals, and why it won.
 2. [Instrumenting and exporting](02-instrumenting-and-exporting.md) - SDK, auto vs manual, the collector pipeline.
 3. [Sampling, cost, and reality](03-sampling-cost-and-reality.md) - what breaks, what it costs, and how to keep it sane.
-
-[Phase 1: What OpenTelemetry actually is](01-what-otel-actually-is.md) →

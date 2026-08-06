@@ -124,5 +124,3 @@ The teams that get the most out of ELK share one habit: they agreed on a **log s
   }
 ]
 ```
-
-[← Phase 1: What ELK actually is](01-what-elk-actually-is.md) | [Overview](_guide.md) | [Phase 3: Cost, retention, and production reality →](03-cost-retention-production.md)

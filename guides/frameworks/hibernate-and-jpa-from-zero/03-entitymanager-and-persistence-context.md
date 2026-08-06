@@ -308,7 +308,3 @@ The three ideas that explain the most future bugs:
   }
 ]
 ```
-
----
-
-[← Phase 2: Entities & Basic Mapping](02-entities-and-mapping.md) · [Guide overview](_guide.md) · [Phase 4: Transactions & the Unit of Work →](04-transactions-and-unit-of-work.md)

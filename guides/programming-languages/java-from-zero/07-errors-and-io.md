@@ -269,7 +269,3 @@ Test yourself on the one idea that defines this phase - how Java handles failure
   }
 ]
 ```
-
----
-
-[← Phase 6: Inheritance & Interfaces](06-inheritance-and-interfaces.md) · [Guide overview](_guide.md) · [Phase 8: Packages, Build & Tooling →](08-packages-and-tooling.md)

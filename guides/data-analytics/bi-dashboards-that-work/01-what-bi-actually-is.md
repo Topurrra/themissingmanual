@@ -79,7 +79,3 @@ Their answers hand you the decision, the question, and usually the metric. The i
 4. **No decision in hand? Go interview the user.** That conversation is the design, not a detour around it.
 
 Next: which numbers earn a place on the dashboard, and why "total signups ever" feels great and tells you nothing.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Metrics That Inform vs Vanity Metrics →](02-metrics-that-inform.md)

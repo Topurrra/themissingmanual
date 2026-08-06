@@ -137,5 +137,3 @@ If Pulumi's state and diff model feels familiar, that's because it shares DNA wi
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The everyday loop →](02-the-everyday-loop.md)

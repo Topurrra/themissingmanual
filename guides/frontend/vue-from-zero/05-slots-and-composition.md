@@ -211,7 +211,3 @@ exists. Default to props; inject for genuine cross-cutting context.
   }
 ]
 ```
-
----
-
-[← Phase 4: Components: Props, Events, and v-model](04-components-props-events.md) · [Guide overview](_guide.md) · [Phase 6: Watchers, Lifecycle, and Fetching →](06-watchers-lifecycle-fetching.md)

@@ -327,7 +327,3 @@ Make sure the core ideas stuck before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 7: Databases with SQLModel](07-databases-with-sqlmodel.md) · [Guide overview](_guide.md) · [Phase 9: Testing & Project Structure →](09-testing-and-project-structure.md)

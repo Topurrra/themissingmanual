@@ -96,5 +96,3 @@ For builders: when you see "passes locally, fails in CI," don't reach for "CI is
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: The Usual Culprits](02-the-usual-culprits.md) →

@@ -208,7 +208,3 @@ and copies you keep in sync.
 **Where to go next.** When you're ready for the advanced nightmares - recovering commits you thought were
 gone (the reflog), safely undoing history you've *already pushed*, and rescuing a rebase that went
 sideways - that's the next guide. You now have the foundation that makes all of it make sense.
-
----
-
-[← Phase 2: The Everyday Commands](02-everyday-commands.md) · [Guide overview](_guide.md)

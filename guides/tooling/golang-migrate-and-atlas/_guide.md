@@ -29,5 +29,3 @@ If you already live in one tool and are sizing up the other, skim Phase 1 for th
 1. [Phase 1: Two philosophies of change](01-two-philosophies.md) - what each tool actually is, and why "write the steps" and "write the destination" are different answers to the same problem.
 2. [Phase 2: The everyday loop](02-the-everyday-loop.md) - create, apply, and roll back migrations with golang-migrate and Atlas, command by command.
 3. [Phase 3: Production reality](03-production-reality.md) - dirty state, drift, partial failures, and the gotchas that decide which tool you'll trust.
-
-[Phase 1: Two philosophies of change](01-two-philosophies.md) →

@@ -109,7 +109,3 @@ reach for a trace.
 5. A green dashboard means "no known alarm is firing," not "everything is healthy."
 
 Watch it animated: [monitoring vs. observability](/explainers/Monitoring.dc.html)
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Three Pillars →](02-the-three-pillars.md)

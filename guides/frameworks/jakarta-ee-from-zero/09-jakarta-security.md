@@ -255,7 +255,3 @@ Make sure the authN/authZ split - and which Jakarta piece answers which question
   }
 ]
 ```
-
----
-
-[← Phase 8: Enterprise Beans & Messaging](08-enterprise-beans-and-messaging.md) · [Guide overview](_guide.md) · [Phase 10: MicroProfile & Where to Go Next →](10-microprofile-and-where-next.md)

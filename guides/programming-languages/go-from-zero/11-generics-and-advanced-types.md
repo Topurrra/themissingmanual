@@ -307,7 +307,3 @@ Test yourself on the two ideas most likely to bite - constraints and method sets
   }
 ]
 ```
-
----
-
-[← Phase 10: Interfaces in Depth](10-interfaces-in-depth.md) · [Guide overview](_guide.md) · [Phase 12: Concurrency Patterns →](12-concurrency-patterns.md)

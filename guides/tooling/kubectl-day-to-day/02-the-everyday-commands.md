@@ -215,5 +215,3 @@ kubectl apply -f <file>.yaml             # change it, declaratively
   }
 ]
 ```
-
-← [Phase 1: The mental model](01-the-mental-model.md) | [Overview](_guide.md) | [Phase 3: When a pod won't start](03-when-pods-wont-start.md) →

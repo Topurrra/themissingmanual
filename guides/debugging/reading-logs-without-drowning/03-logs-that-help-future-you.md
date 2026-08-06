@@ -131,7 +131,3 @@ on every system you'll touch.
 report often tells you the *exact* line. Reading that report is its own short skill:
 **[Reading a Stack Trace](/guides/reading-a-stack-trace)**. And if `tail`, `grep`, and pipes still feel
 shaky, the foundation under all of it is here: **[The Terminal and Shell](/guides/the-terminal-and-shell)**.
-
----
-
-[← Phase 2: Finding the Needle](02-finding-the-needle.md) · [Guide overview](_guide.md)

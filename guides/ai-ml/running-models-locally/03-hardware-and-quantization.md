@@ -99,8 +99,4 @@ Put it together as a quick mental checklist, in order:
 
 You can now read any model on a download page and predict whether it'll run on your machine, and why. From here, the natural next steps are feeding a local model your own documents and, eventually, fine-tuning one - each its own guide.
 
----
-
-[← Phase 2: Getting One Running (Ollama)](02-getting-one-running.md) · [Guide overview](_guide.md)
-
 **Related guides:** [Using an LLM API](/guides/using-an-llm-api) · [What AI and ML Are](/guides/what-ai-and-ml-are)

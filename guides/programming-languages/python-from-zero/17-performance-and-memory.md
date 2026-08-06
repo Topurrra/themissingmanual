@@ -335,7 +335,3 @@ Quick check - make sure these stuck:
   }
 ]
 ```
-
----
-
-[← Phase 16: Concurrency & the GIL](16-concurrency-and-the-gil.md) · [Guide overview](_guide.md) · [Phase 18: Packaging & Environments →](18-packaging-and-environments.md)

@@ -76,7 +76,3 @@ You don't have to pick a side today. Most languages ship one of each, and the de
 4. **Most of the time hides in a small spot** (the 80/20 rule). Find the tall bar, fix it, ignore the rest - and that's also how you know when to stop.
 
 You're convinced you should measure. The next question is the practical one: when you run a profiler and it dumps a wall of numbers and a striped diagram at you, how do you read it? That's next.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Reading a Profile →](02-reading-a-profile.md)

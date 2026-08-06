@@ -98,7 +98,3 @@ hour has died here.
 4. ⚠️ The **web/VNC console garbles pasted symbols** - type sensitive strings by hand there.
 
 You're on the box. Time to run your actual app.
-
----
-
-[← Phase 1: Pick a Cheap VPS](01-pick-a-vps.md) · [Guide overview](_guide.md) · [Phase 3: Docker & Your Private Repo →](03-docker-and-your-repo.md)

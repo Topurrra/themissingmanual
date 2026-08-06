@@ -173,7 +173,3 @@ stream that reconnects itself.
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Three Patterns in Practice →](02-the-three-patterns.md)

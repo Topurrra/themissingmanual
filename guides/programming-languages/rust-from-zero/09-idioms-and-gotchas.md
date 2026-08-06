@@ -211,7 +211,3 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 4. **`Option`/`Result` combinators** (`.map`, `.ok`, `.unwrap_or`, `.and_then`): handle the simple maybe-cases without a full `match`.
 5. **Borrow over clone**: take `&T` / `&str` / `&[T]` to read; clone only when you truly need a second copy.
 6. **The cheat-card** covers the six that bite everyone - `String` vs `&str`, clone overuse, borrow-checker fights, lifetime anxiety, `.unwrap()` panics, and debug-only integer-overflow panics.
-
----
-
-[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: Lifetimes & the Borrow Checker →](10-lifetimes-and-borrowing.md)

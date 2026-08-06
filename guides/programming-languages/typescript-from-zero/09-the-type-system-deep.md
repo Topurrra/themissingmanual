@@ -263,7 +263,3 @@ Lock in the ideas most likely to trip you up - shape-based compatibility, the ex
   }
 ]
 ```
-
----
-
-[← Phase 8: Modules, tsconfig & the Build](08-modules-and-tsconfig.md) · [Guide overview](_guide.md) · [Phase 10: Utility & Mapped Types →](10-utility-and-mapped-types.md)

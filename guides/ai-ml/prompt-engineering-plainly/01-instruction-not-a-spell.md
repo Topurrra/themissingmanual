@@ -72,7 +72,3 @@ That's also why prompting is iterative, not a one-shot incantation. You write an
 5. It's iteration, not incantation: write, observe, tighten.
 
 With that model in place, the actual techniques stop looking like magic and start looking like common sense.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Techniques That Actually Help →](02-techniques-that-help.md)

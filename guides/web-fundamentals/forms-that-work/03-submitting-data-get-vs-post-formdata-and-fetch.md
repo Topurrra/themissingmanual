@@ -208,7 +208,3 @@ The form now renders accessibly, validates on both sides, and submits without a 
 happens after the browser gets that response - how it turns HTML, CSS, and the DOM into pixels on
 screen in the first place - is the subject of
 [How the Browser Renders a Page](/guides/how-the-browser-renders-a-page).
-
----
-
-[← Phase 2: Validation: Built-in vs. Custom](02-validation-built-in-vs-custom.md) · [Guide overview](_guide.md)

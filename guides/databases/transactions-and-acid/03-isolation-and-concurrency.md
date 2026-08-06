@@ -164,8 +164,4 @@ Everything here is the cost of letting transactions overlap on *one* database. W
 4. A **deadlock** is two transactions each waiting on a lock the other holds; the database kills one as a victim and rolls it back.
 5. Handle deadlocks by **retrying** the transaction; prevent most of them by **locking rows in a consistent order** and keeping transactions short.
 
----
-
-[← Phase 2: ACID, Explained](02-acid-explained.md) · [Guide overview →](_guide.md)
-
 **Related:** [Querying Basics - SELECT & WHERE](/guides/querying-basics-select-where) · [Scaling a Database](/guides/scaling-a-database)

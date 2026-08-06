@@ -118,5 +118,3 @@ Mature systems almost always run both: the database as the transactional source 
   }
 ]
 ```
-
-[← Phase 2: Indexing, mappings, analyzers, and getting ranked results](02-indexing-and-relevance.md) | [Overview](_guide.md)

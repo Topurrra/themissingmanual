@@ -291,7 +291,3 @@ front-controller pattern, and it's where DispatcherServlet's secret lives.
   }
 ]
 ```
-
----
-
-[← Phase 2: The Servlet Container & Lifecycle](02-the-servlet-container-and-lifecycle.md) · [Guide overview](_guide.md) · [Phase 4: Mapping & the Front-Controller Pattern →](04-mapping-and-the-front-controller.md)

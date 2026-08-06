@@ -125,7 +125,3 @@ The rule of thumb: **RAG adds knowledge; fine-tuning adds behavior.** "The model
 5. **Keep the index fresh** - stale vectors produce confidently outdated, sourced-looking answers.
 6. **Evaluate retrieval separately** from generation, against known good answers - that's how you know what to fix.
 7. **RAG adds knowledge; fine-tuning adds behavior.** Pick by the problem you actually have, or use both.
-
----
-
-[← Phase 2: How RAG Works](02-how-rag-works.md) · [Guide overview](_guide.md)

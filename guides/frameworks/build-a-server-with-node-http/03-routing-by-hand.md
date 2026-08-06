@@ -134,5 +134,3 @@ Step back and notice what just happened across this phase. We wanted three route
   }
 ]
 ```
-
-[← Phase 2: Handling Requests & Responses](02-requests-and-responses.md) · [Guide overview](_guide.md) · [Phase 4: Middleware Is Just a Function →](04-middleware-is-a-function.md)

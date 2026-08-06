@@ -182,5 +182,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Relations & Functions →](02-relations-and-functions.md)

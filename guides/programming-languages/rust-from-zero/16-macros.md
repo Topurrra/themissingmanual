@@ -231,7 +231,3 @@ One quick pass to lock in the core idea - that a macro is compile-time code gene
   }
 ]
 ```
-
----
-
-[← Phase 15: Closures, Iterators & Zero-Cost Abstractions](15-closures-and-iterators.md) · [Guide overview](_guide.md) · [Phase 17: Performance, Unsafe & the Ecosystem →](17-performance-and-unsafe.md)

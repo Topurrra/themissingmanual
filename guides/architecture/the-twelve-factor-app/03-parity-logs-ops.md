@@ -123,5 +123,3 @@ For builders: you don't need a giant platform to honor these. A single small ser
   }
 ]
 ```
-
-[← Phase 2](02-processes-and-scale.md) | [Overview](_guide.md)

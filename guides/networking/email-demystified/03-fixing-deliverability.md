@@ -111,5 +111,3 @@ Bake this into onboarding, not firefighting. When your app adds a new way to sen
   }
 ]
 ```
-
-[← Phase 2: The Three Proofs](02-spf-dkim-dmarc.md) | [Overview](_guide.md)

@@ -129,5 +129,3 @@ Here's a normal incident, using all four: a monitor pages that prod checkout lat
   }
 ]
 ```
-
-[← Phase 1: What Datadog actually is](01-what-datadog-actually-is.md) | [Overview](_guide.md) | [Phase 3: The bill, and how it sneaks up](03-the-bill-and-how-it-sneaks-up.md) →

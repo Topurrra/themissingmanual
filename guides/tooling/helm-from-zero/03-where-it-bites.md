@@ -155,5 +155,3 @@ If you want the broader picture of how these manifests fit into a cluster, [Kube
   }
 ]
 ```
-
-[← Phase 2: The Everyday Loop](02-the-everyday-loop.md) | [Overview](_guide.md)

@@ -166,7 +166,3 @@ Everything here has been about getting the *right* rows. A different problem - a
 5. Right rows first (this guide); fast joins second ([Why Is My Query Slow?](/guides/why-is-my-query-slow)).
 
 You can now join tables on purpose, pick the type that keeps exactly the rows you mean, and catch the three classic ways a join lies. The data you split apart goes back together - correctly, and without surprises.
-
----
-
-[← Phase 2: INNER vs LEFT (and the Others)](02-inner-vs-left.md) · [Guide overview](_guide.md)

@@ -228,7 +228,3 @@ Test yourself on the one idea that drives this whole phase - that a generic *kee
   }
 ]
 ```
-
----
-
-[← Phase 5: Unions, Literals & Narrowing](05-unions-and-narrowing.md) · [Guide overview](_guide.md) · [Phase 7: Classes & OOP in TypeScript →](07-classes-and-oop.md)

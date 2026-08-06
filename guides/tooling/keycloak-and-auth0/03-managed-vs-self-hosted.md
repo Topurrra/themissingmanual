@@ -143,5 +143,3 @@ A frequent path: a startup launches on Auth0 to get to market fast, runs happily
   }
 ]
 ```
-
-[← Phase 2: Realms, Clients, and Roles](02-realms-clients-roles.md) | [Overview](_guide.md)

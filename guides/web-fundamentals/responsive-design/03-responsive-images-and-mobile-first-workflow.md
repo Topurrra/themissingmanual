@@ -171,7 +171,3 @@ Check your understanding of responsive images and mobile-first CSS:
 Responsive layout handles screen size, but not every visitor navigates by sight or with a mouse. Pair
 this guide with [Accessibility From Day One](/guides/accessibility-from-day-one) to make sure the same
 layout also works with keyboards, screen readers, and zoomed text.
-
----
-
-[← Phase 2: Fluid Layouts](02-fluid-layouts.md) · [Guide overview](_guide.md)

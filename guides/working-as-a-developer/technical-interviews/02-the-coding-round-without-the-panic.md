@@ -88,7 +88,3 @@ never got stuck but also never explained anything.
   }
 ]
 ```
-
----
-
-[← Phase 1: What Interviews Are Actually Testing For](01-what-interviews-are-testing-for.md) · [Guide overview](_guide.md) · [Phase 3: System Design and the Human Round →](03-system-design-and-the-human-round.md)

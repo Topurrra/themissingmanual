@@ -230,7 +230,3 @@ first server fits together:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Routing, URL Params & Sub-routers →](02-routing-and-subrouters.md)

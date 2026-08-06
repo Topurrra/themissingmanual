@@ -248,7 +248,3 @@ Test yourself on the two ideas that trip people up most: what a function call ac
   }
 ]
 ```
-
----
-
-[← Phase 3: Control Flow](03-control-flow.md) · [Phase 5: Pointers I - The Mental Model →](05-pointers-i-the-mental-model.md)

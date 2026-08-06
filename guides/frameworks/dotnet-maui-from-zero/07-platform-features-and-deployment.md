@@ -295,7 +295,3 @@ shippers lose time.
   }
 ]
 ```
-
----
-
-[← Phase 6: Data & Calling APIs](06-data-and-apis.md) · [Guide overview](_guide.md) · [Phase 8: Where to Go Next →](08-where-to-go-next.md)

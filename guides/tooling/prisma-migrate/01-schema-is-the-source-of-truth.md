@@ -128,5 +128,3 @@ Because the schema is declarative, code review gets pleasant: a reviewer reads t
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The everyday loop →](02-the-everyday-loop.md)

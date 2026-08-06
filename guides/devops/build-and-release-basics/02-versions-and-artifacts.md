@@ -87,7 +87,3 @@ The push refers to repository [docker.io/yourname/myapp]
 4. **An artifact registry** is where frozen artifacts live, so any machine can pull the exact same version on demand.
 
 You now have a named, frozen artifact sitting in a registry. The last question is the one that bites everyone: how do you move that one artifact through dev, staging, and production - and why does it sometimes work in one and break in the next?
-
----
-
-[← Phase 1: What "Building" Actually Produces](01-what-building-produces.md) · [Guide overview](_guide.md) · [Phase 3: Environments & Promotion →](03-environments-and-promotion.md)

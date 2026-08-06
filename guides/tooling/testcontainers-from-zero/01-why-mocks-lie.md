@@ -104,5 +104,3 @@ The pattern is language-agnostic. There are official Testcontainers libraries fo
   }
 ]
 ```
-
-← [Overview](_guide.md) | [Phase 2: The everyday loop →](02-the-everyday-loop.md)

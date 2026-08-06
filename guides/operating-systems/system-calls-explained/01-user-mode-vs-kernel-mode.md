@@ -64,5 +64,3 @@ Your program (user mode): receives the 100 bytes, keeps running
 Think of user mode and kernel mode as two rooms with exactly one door between them, controlled by the kernel. Your program lives entirely in the user-mode room and can do plenty on its own there - arithmetic, string manipulation, working with data already in its own memory. The moment it needs something from outside that room - hardware, another process, memory it doesn't yet own - it has to knock on that door and wait for the kernel to open it, do the work, and close it again.
 
 That knock has a name and a very specific mechanism, and that's exactly what Phase 2 walks through: what actually happens, instruction by instruction, in the moment a system call fires.
-
-[← Overview](_guide.md) | [Phase 2: What actually happens during a syscall →](02-the-mechanics-of-a-syscall.md)

@@ -89,7 +89,3 @@ The cure isn't to delete your E2E tests. It's to **invert the cone**: for each b
 5. A pyramid-shaped suite is what makes [CI](/guides/testing-in-ci) fast and trustworthy, and it rests on solid [test doubles](/guides/mocking-and-test-doubles) at the base.
 
 You can now look at any feature and place its tests deliberately - fast where you can, broad only where you must - and recognize when a suite is drifting upside-down before it costs the team its afternoons.
-
----
-
-[← Phase 2: The Three Levels](02-the-three-levels.md) · [Guide overview](_guide.md)

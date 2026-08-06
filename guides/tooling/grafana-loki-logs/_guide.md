@@ -25,5 +25,3 @@ Read the phases in order. Phase 1 builds the mental model: why Loki indexes labe
 1. [What Loki actually is](01-what-loki-actually-is.md) - the mental model: index the labels, not the log content.
 2. [Shipping logs and querying with LogQL](02-shipping-and-querying-logql.md) - agents, label streams, and the query language.
 3. [Cardinality, cost, and the Elasticsearch tradeoff](03-cardinality-cost-tradeoffs.md) - where Loki shines, where it bites, and how to size it.
-
-[Phase 1: What Loki actually is](01-what-loki-actually-is.md) →

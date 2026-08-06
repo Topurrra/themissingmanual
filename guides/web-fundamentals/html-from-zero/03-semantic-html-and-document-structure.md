@@ -184,7 +184,3 @@ Last check before you move on:
   }
 ]
 ```
-
----
-
-[← Phase 2: Text, Lists, Links, and Images](02-text-lists-links-and-images.md) · [Guide overview](_guide.md)

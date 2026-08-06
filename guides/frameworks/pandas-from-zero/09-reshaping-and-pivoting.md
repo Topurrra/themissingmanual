@@ -286,7 +286,3 @@ Make sure the two shapes - and the one command for each direction - have stuck:
   }
 ]
 ```
-
----
-
-[← Phase 8: Time Series & Dates](08-time-series.md) · [Guide overview](_guide.md) · [Phase 10: Plotting & Where to Go Next →](10-plotting-and-where-next.md)

@@ -116,7 +116,3 @@ flowchart LR
 4. A **trust boundary** is the line where data crosses from the untrusted world into your trusted system - and *everything crossing into the trusted side must be checked*, because the other side can lie.
 
 You now know how to find where the danger is. The last phase is about what to actually *do* there - and the principles that hold even after an attacker gets through the first door.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: Defense in Depth & Least Privilege →](03-defense-in-depth.md)

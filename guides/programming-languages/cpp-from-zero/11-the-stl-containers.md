@@ -241,7 +241,3 @@ Test yourself on the ideas that matter most for choosing and using a container c
   }
 ]
 ```
-
----
-
-[← Phase 10: Templates & Generic Programming](10-templates-and-generic-programming.md) · [Phase 12: The STL: Iterators & Algorithms →](12-the-stl-iterators-and-algorithms.md)

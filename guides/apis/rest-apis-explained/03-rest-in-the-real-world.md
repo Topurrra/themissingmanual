@@ -176,7 +176,3 @@ That's REST, plain and simple. You can now read an unfamiliar API on sight, desi
 recognize the moment its style stops serving you - which is exactly when the related guides pick up.
 
 Watch it animated: [REST vs. GraphQL](/explainers/RESTvsGraphQL.dc.html)
-
----
-
-[← Phase 2: Designing Endpoints](02-designing-endpoints.md) · [Guide overview](_guide.md)

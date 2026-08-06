@@ -79,7 +79,3 @@ One habit worth keeping: redraw the boundaries when the architecture changes. A 
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: STRIDE, Applied →](02-stride-applied.md)

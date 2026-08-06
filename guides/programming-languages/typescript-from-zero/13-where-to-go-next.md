@@ -114,7 +114,3 @@ One last check on the big picture:
   }
 ]
 ```
-
----
-
-[← Phase 12: Typing the Real World](12-typing-the-real-world.md) · [Guide overview](_guide.md)

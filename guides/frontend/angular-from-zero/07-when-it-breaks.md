@@ -161,7 +161,3 @@ hook, or effect. The bug is always the write's *timing*, never the value.
   }
 ]
 ```
-
----
-
-[← Phase 6: HTTP and Just Enough RxJS](06-http-and-just-enough-rxjs.md) · [Guide overview](_guide.md) · [Phase 8: Where to Go Next →](08-where-to-go-next.md)

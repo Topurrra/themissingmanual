@@ -187,7 +187,3 @@ The discipline that saves you: **find the first red step and read its output, ig
 5. To debug a red run, **find the first red step and read its output** - that's where the truth is.
 
 You now have a working pipeline and can read its verdicts. Next, we make it fast and trustworthy: caching, testing multiple versions, secrets, and blocking bad merges.
-
----
-
-[← Phase 1: The Anatomy of a Workflow](01-anatomy-of-a-workflow.md) · [Guide overview](_guide.md) · [Phase 3: Beyond the Basics →](03-beyond-the-basics.md)

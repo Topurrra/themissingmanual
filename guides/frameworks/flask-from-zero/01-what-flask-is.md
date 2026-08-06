@@ -73,7 +73,6 @@ from flask import Flask
 
 app = Flask(__name__)
 
-
 @app.route("/")
 def index():
     return "The notes app is alive"
@@ -134,7 +133,6 @@ Add a second route and the pattern repeats:
 @app.route("/")
 def index():
     return "The notes app is alive"
-
 
 @app.route("/about")
 def about():
@@ -231,7 +229,3 @@ Flask is built on:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Routing & Views →](02-routing-and-views.md)

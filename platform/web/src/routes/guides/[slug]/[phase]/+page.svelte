@@ -21,6 +21,7 @@
   import RecallPrompt from '$lib/RecallPrompt.svelte';
   import Discussion from '$lib/Discussion.svelte';
   import RunnableCode from '$lib/RunnableCode.svelte';
+  import CodeGroup from '$lib/CodeGroup.svelte';
   import PhaseToc from '$lib/PhaseToc.svelte';
   import FeedbackWidget from '$lib/FeedbackWidget.svelte';
   import Annotations from '$lib/Annotations.svelte';
@@ -243,6 +244,7 @@
   <Playgrounds />
   <Explainers />
   <Scenarios />
+  <CodeGroup />
   {#if runnableOn}<RunnableCode />{/if}
 {/key}
 

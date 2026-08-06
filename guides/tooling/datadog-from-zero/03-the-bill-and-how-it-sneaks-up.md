@@ -119,5 +119,3 @@ Datadog earns its reputation: one agent, three correlated signals, dashboards an
   }
 ]
 ```
-
-[← Phase 2: The everyday loop](02-the-everyday-loop.md) | [Overview](_guide.md)

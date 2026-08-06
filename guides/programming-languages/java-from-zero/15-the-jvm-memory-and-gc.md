@@ -287,7 +287,3 @@ Test yourself on the three ideas that matter most - where objects live, what GC 
   }
 ]
 ```
-
----
-
-[← Phase 14: Concurrency & Threads](14-concurrency-and-threads.md) · [Guide overview](_guide.md) · [Phase 16: Testing, Build & Profiling →](16-testing-and-profiling.md)

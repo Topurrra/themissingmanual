@@ -168,7 +168,3 @@ good alerting setup - and the thing alert fatigue quietly destroys.
    labels; that detail belongs on logs and traces.
 5. **Alert fatigue** - alert on symptoms users feel, page only on what needs action now, so that when a
    page fires, people still trust it.
-
----
-
-[← Guide overview](_guide.md) · [Reading Logs Without Drowning →](/guides/reading-logs-without-drowning)

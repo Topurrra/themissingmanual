@@ -210,7 +210,3 @@ You can now predict the order of any mix of sync code, promises, and timers - th
   }
 ]
 ```
-
----
-
-[← Phase 12: Iterators, Generators & Symbols](12-iterators-generators-symbols.md) · [Guide overview](_guide.md) · [Phase 14: Functional JavaScript →](14-functional-javascript.md)

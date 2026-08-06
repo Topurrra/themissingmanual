@@ -229,7 +229,3 @@ Test the mental model before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 2: The Editor](02-the-editor.md) · [Guide overview](_guide.md) · [Phase 4: MonoBehaviour & the Game Loop →](04-monobehaviour-and-the-game-loop.md)

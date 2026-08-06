@@ -179,7 +179,3 @@ everything, and the events-up rule from phase 2: the form doesn't know what savi
   }
 ]
 ```
-
----
-
-[← Phase 4: Lists, Keys, and Conditional Rendering](04-lists-keys-and-conditional-rendering.md) · [Guide overview](_guide.md) · [Phase 6: Effects →](06-effects.md)

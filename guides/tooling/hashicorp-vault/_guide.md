@@ -25,5 +25,3 @@ Read phase 1 slowly. Vault makes a lot more sense once you understand that it sp
 1. [Phase 1: Sealed by Default](01-sealed-by-default.md) - what Vault actually is and why it exists
 2. [Phase 2: The Daily Loop](02-the-daily-loop.md) - auth, policies, static and dynamic secrets
 3. [Phase 3: Leases, Revocation, and Reality](03-leases-revocation-and-reality.md) - the gotchas and production concerns
-
-[Phase 1: Sealed by Default](01-sealed-by-default.md) →

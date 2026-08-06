@@ -40,7 +40,3 @@ becomes a calculation, not a guess.
 > This builds on [Numbers & Number Systems](/guides/numbers-and-number-systems) and the set idea from
 > [Sets, Relations & Functions](/guides/sets-relations-and-functions). It sets up the last foundation:
 > probability and statistics.
-
----
-
-[Phase 1: The Multiplication Principle →](01-the-multiplication-principle.md)

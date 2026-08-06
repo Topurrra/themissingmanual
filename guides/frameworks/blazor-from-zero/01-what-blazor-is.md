@@ -197,7 +197,3 @@ Server-vs-WebAssembly trade-off:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Components & Razor →](02-components-and-razor.md)

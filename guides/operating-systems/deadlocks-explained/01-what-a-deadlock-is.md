@@ -105,5 +105,3 @@ That cycle is the entire disease. Phase 2 breaks down the four specific conditio
 ```
 
 Watch it animated: [deadlocks](/explainers/Deadlocks.dc.html)
-
-[← Overview](_guide.md) | [Phase 2: The four conditions that must all be true →](02-the-four-conditions.md)

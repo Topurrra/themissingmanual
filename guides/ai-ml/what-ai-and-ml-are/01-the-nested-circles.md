@@ -79,7 +79,3 @@ You don't need to know how a neural network works internally to use this guide. 
 5. **LLMs** are one famous kind of deep learning, aimed at language, that work by predicting the next piece of text.
 
 That middle ring - learning instead of being told - is the idea the whole field turns on. Next, we'll slow right down and look at what that shift really means.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Rules vs Learning →](02-rules-vs-learning.md)

@@ -229,5 +229,3 @@ Lock in the core fact (testing is in-memory) and the two production must-haves:
   }
 ]
 ```
-
-[← Phase 6: A REST API with Error Handling](06-rest-api-and-errors.md) · [Guide overview](_guide.md) · [Phase 8: Where to Go Next →](08-where-to-go-next.md)

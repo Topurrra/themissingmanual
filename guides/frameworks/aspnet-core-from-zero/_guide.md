@@ -58,7 +58,3 @@ deployable REST API. Phases carry difficulty badges.
 
 > The throughline: a request travels a **middleware pipeline** to an endpoint, and your code receives its
 > collaborators through **dependency injection**. Hold those two and ASP.NET Core is approachable.
-
----
-
-[Phase 1: What ASP.NET Core Is & Your First Server →](01-what-aspnet-core-is.md)

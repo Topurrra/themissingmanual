@@ -115,7 +115,3 @@ One last check - the mappings that turn frameworks from magic into mechanism:
   }
 ]
 ```
-
----
-
-[← Phase 6: Structure, Context & Graceful Shutdown](06-structure-and-shutdown.md) · [Guide overview](_guide.md)

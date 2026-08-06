@@ -147,5 +147,3 @@ A healthy repo commits `pyproject.toml` and the lockfile, and git-ignores `.venv
   }
 ]
 ```
-
-[← Phase 1](01-why-environments-exist.md) | [Overview](_guide.md) | [Phase 3: uv, Lockfiles, and Surviving Production →](03-uv-lockfiles-production.md)

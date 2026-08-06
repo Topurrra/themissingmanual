@@ -169,7 +169,3 @@ References are the first piece of C++'s bigger theme: giving you safer, more exp
   }
 ]
 ```
-
----
-
-[← Phase 4: Functions, Overloading & Default Arguments](04-functions-overloading-and-default-arguments.md) · [Phase 6: Classes & Objects →](06-classes-and-objects.md)

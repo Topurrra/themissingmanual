@@ -207,7 +207,3 @@ Make sure the core mental model landed before moving on to the container itself:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The IoC Container & ApplicationContext →](02-the-ioc-container.md)

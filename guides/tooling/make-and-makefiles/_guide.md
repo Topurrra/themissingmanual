@@ -25,5 +25,3 @@ Read the three phases in order. Phase 1 is the mental model - the one picture th
 1. [Phase 1: The Dependency Graph in Your Head](01-the-dependency-graph.md) - what Make actually is and why it exists
 2. [Phase 2: Targets, Tasks, and Variables](02-targets-tasks-variables.md) - how you really use it day to day
 3. [Phase 3: The Tab, Stale Builds, and Why It Endures](03-gotchas-and-why-it-endures.md) - where it bites and why it survived
-
-[Phase 1: The Dependency Graph in Your Head](01-the-dependency-graph.md) →

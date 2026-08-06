@@ -380,7 +380,3 @@ Make sure the core JAX-RS ideas stuck:
   }
 ]
 ```
-
----
-
-[← Phase 3: CDI: Contexts & Dependency Injection](03-cdi-dependency-injection.md) · [Guide overview](_guide.md) · [Phase 5: Jakarta Persistence (JPA) →](05-jakarta-persistence.md)

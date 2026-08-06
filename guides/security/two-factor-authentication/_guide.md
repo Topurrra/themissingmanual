@@ -26,5 +26,3 @@ You've clicked "enable two-factor authentication" a hundred times without really
 1. [One secret isn't enough](01-one-secret-isnt-enough.md) - why passwords alone fail, and the something-you-know/have/are framework.
 2. [How the common methods actually work](02-how-the-methods-work.md) - SMS codes, authenticator apps, and hardware keys, and why they're not equally safe.
 3. [What this means for you](03-what-this-means-for-you.md) - what to actually turn on, backup codes, and the recovery tradeoff nobody mentions.
-
-[Phase 1: One secret isn't enough →](01-one-secret-isnt-enough.md)

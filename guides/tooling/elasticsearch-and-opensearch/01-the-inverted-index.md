@@ -121,5 +121,3 @@ Reach for this when your search must understand language: relevance ranking, typ
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Indexing, mappings, analyzers, and getting ranked results →](02-indexing-and-relevance.md)

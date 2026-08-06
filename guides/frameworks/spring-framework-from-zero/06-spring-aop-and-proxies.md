@@ -363,7 +363,3 @@ Make sure the proxy mental model and its famous gotcha have stuck:
   }
 ]
 ```
-
----
-
-[← Phase 5: Bean Scopes & Lifecycle](05-bean-scopes-and-lifecycle.md) · [Guide overview](_guide.md) · [Phase 7: Spring MVC Without Boot →](07-spring-mvc-without-boot.md)

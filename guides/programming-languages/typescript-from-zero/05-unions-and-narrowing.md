@@ -214,7 +214,3 @@ Lock in the three ideas that do the real work - why unions block operations, how
   }
 ]
 ```
-
----
-
-[← Phase 4: Objects, Interfaces & Type Aliases](04-objects-interfaces-and-types.md) · [Guide overview](_guide.md) · [Phase 6: Generics →](06-generics.md)

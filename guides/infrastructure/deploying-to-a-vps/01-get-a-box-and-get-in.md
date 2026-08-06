@@ -266,7 +266,3 @@ internet.
 
 You now have a clean, reachable, reasonably-locked-down box. Next, let's get your app onto it and make
 it stay running.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Run Your App as a Service →](02-run-your-app-as-a-service.md)

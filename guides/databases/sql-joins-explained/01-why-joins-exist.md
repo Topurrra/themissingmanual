@@ -103,7 +103,3 @@ Once you see a join as "match rows from A to rows in B on a shared key," a huge 
 2. A **foreign key** (like `orders.user_id`) is the thread linking a row in one table to a row in another.
 3. A **join** recombines those tables for one query by **matching rows on a shared value**, defined in the `ON` clause.
 4. A plain `JOIN` keeps only rows that find a match on both sides - so it can *drop* rows (order `104` disappeared). Controlling that is what comes next.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: INNER vs LEFT (and the Others) →](02-inner-vs-left.md)

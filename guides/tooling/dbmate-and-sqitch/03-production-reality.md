@@ -107,5 +107,3 @@ Both tools are single commands with no application runtime, so they slot anywher
   }
 ]
 ```
-
-[← Phase 2](02-the-everyday-loop.md) | [Overview](_guide.md)

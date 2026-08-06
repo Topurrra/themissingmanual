@@ -121,7 +121,3 @@ roads and the traffic signals - the whole in-between that turns a pile of parts 
 > ⏭️ Ready to see the software side take over? [What an Operating System Is](/guides/what-an-operating-system-is)
 > picks up here - the OS is the code that sets up those DMA buffers and wires up those interrupt handlers.
 > See also [How Devices Connect](/guides/how-devices-connect) for how peripherals plug into all this.
-
----
-
-[← Phase 2: How the CPU Talks to Devices (I/O)](02-how-the-cpu-talks-to-devices.md) · [Guide overview](_guide.md)

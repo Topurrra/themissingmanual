@@ -260,7 +260,3 @@ and every minute belongs to a customer who can't check out. Isolate it, then rea
    *before* you need it.
 5. Beware the **retry storm**: retries can amplify an outage into a bigger one. Always pair them with
    backoff, jitter, a retry cap, and a circuit breaker.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Core Patterns](02-the-core-patterns.md)

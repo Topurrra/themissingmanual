@@ -108,7 +108,3 @@ a description. Phase 2 hands you the vocabulary.
 4. A bare pattern like `cat` matches its shape **anywhere** in the text, and matching is
    **case-sensitive** by default.
 5. "Match" means "this shape was found somewhere," not "the text equals this."
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Core Toolkit →](02-the-core-toolkit.md)

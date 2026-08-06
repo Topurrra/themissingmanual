@@ -176,7 +176,3 @@ avoid the traps. The next step up is orchestrating *several* containers together
 database, and a cache, defined in one file and started with one command: [Docker Compose for Real
 Projects](/guides/docker-compose-for-real-projects). When it's time to put a container on a real server,
 see [Deploying to a VPS](/guides/deploying-to-a-vps).
-
----
-
-[← Phase 2: The Dockerfile & Layers](02-the-dockerfile-and-layers.md) · [Guide overview](_guide.md)

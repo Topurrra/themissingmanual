@@ -116,8 +116,4 @@ fixing the named "culprit," and finding the bug still there.
 5. **A flaky test ruins a bisect.** Make the bug reproduce reliably *first*
    ([How to Reproduce a Bug](/guides/how-to-reproduce-a-bug)), then halve.
 
----
-
-[← Phase 2: git bisect](02-git-bisect.md) · [Guide overview](_guide.md)
-
 **Related guides:** [How to Reproduce a Bug](/guides/how-to-reproduce-a-bug) · [Git Disaster Recovery](/guides/git-disaster-recovery)

@@ -59,7 +59,3 @@ REST API. Phases carry difficulty badges.
 > The throughline: a **`Router`** sends a request to an **`async fn` whose arguments extract from it and
 > whose return value becomes the response**, with tower layers wrapped around the whole thing. Hold that
 > and axum is plain Rust.
-
----
-
-[Phase 1: What axum Is & Your First Server →](01-what-axum-is.md)

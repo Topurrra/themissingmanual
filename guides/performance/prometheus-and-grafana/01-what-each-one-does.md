@@ -90,7 +90,3 @@ The next time a dashboard shows a flatline or "No data" during an incident, you 
 4. **The truth lives in Prometheus.** When a graph looks wrong, check whether the data is really there before blaming the picture.
 
 Now that you know *where* the numbers live, let's learn how to read them - the metric types, labels, and your first PromQL query.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Metrics & a Taste of PromQL →](02-metrics-and-promql.md)

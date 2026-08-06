@@ -97,7 +97,3 @@ That's the "A" of performance. You now have the mental model: the two numbers, t
 - [Big-O Without the Math Panic](/guides/big-o-without-the-math-panic) - why some code gets slow as the data grows, without the scary notation.
 - [Profiling 101](/guides/profiling-101) - the tools that show you where the time actually goes, so you find the bottleneck for real.
 - [Load and Performance Testing](/guides/load-and-performance-testing) - push realistic traffic through a system and read the percentiles before your users do.
-
----
-
-[← Phase 2: Measure Before You Optimize](02-measure-before-you-optimize.md) · [Guide overview →](_guide.md)

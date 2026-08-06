@@ -237,7 +237,3 @@ Make sure the container model has landed before we start defining beans by hand:
   }
 ]
 ```
-
----
-
-[← Phase 1: Spring Without Boot - Why Core Spring?](01-spring-without-boot.md) · [Guide overview](_guide.md) · [Phase 3: Defining Beans: @Configuration & @Bean →](03-defining-beans.md)

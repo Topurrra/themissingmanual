@@ -231,10 +231,6 @@ Next: zooming out from individual checks to the whole system - seeing which down
 source poisons, alerting on these checks without drowning in noise, and setting SLAs so you catch the
 silent failure before a human does.
 
----
-
-[← Phase 1: Why Trust Is the Whole Product](01-why-trust-is-the-whole-product.md) · [Phase 3: Pipeline Observability →](03-pipeline-observability.md)
-
 ## Try it yourself
 
 A quick format check - which values are valid ISO dates (YYYY-MM-DD)?

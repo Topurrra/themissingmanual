@@ -113,7 +113,3 @@ reads.
    anything that does many small scattered reads (like booting, or a database).
 
 Now let's remove the moving parts entirely and watch what happens to that random-access tax.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: SSD - Flash, No Moving Parts →](02-ssd-flash-no-moving-parts.md)

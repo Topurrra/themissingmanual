@@ -250,7 +250,3 @@ changes - is its own topic in [Database Migrations](/guides/database-migrations)
   }
 ]
 ```
-
----
-
-[← Phase 7: Preloading & the N+1 Trap](07-preloading-and-n-plus-1.md) · [Guide overview](_guide.md) · [Phase 9: GORM in the Real World & Where to Go Next →](09-where-to-go-next.md)

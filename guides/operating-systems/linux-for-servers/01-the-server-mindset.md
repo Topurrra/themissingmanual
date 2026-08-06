@@ -128,7 +128,3 @@ generate it. That's what lets one person administer a hundred machines. Every ti
    and reproducible.
 
 Next, the tool that actually starts, stops, and supervises all those long-running services: **systemd**.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Managing Services with systemd →](02-managing-services-with-systemd.md)

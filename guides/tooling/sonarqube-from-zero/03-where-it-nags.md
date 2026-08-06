@@ -92,5 +92,3 @@ In the wild: mature teams treat the gate like a flaky test that's usually right.
   }
 ]
 ```
-
-[← Phase 2: Scanning and the quality gate](02-scanning-and-the-gate.md) | [Overview](_guide.md)

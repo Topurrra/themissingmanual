@@ -167,5 +167,3 @@ The teams that never get burned have two habits. First, every migration is revie
   }
 ]
 ```
-
-[← Phase 2](02-the-daily-loop.md) · [Overview](_guide.md)

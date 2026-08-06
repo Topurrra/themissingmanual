@@ -136,5 +136,3 @@ The teams that stay happy on Pulumi treat the language as a tool for clarity, no
   }
 ]
 ```
-
-[← Phase 2: The everyday loop](02-the-everyday-loop.md) | [Overview](_guide.md)

@@ -229,7 +229,3 @@ You're ready for [SQL JOINs Explained](/guides/sql-joins-explained), the natural
    default); `CASCADE` deletes the children with it (convenient and dangerous - read it carefully).
 6. **This is the foundation JOINs stand on** - trustworthy links are what let you reassemble the tables
    correctly.
-
----
-
-[← Phase 2: Primary Keys](02-primary-keys.md) · [Guide overview](_guide.md) · [Next guide: SQL JOINs Explained →](/guides/sql-joins-explained)

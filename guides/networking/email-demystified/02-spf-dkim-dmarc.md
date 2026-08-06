@@ -125,5 +125,3 @@ When you onboard a new sending vendor (a new transactional email provider, a mar
   }
 ]
 ```
-
-[← Phase 1: The Journey of One Email](01-the-journey-of-one-email.md) | [Overview](_guide.md) | [Phase 3: Fixing Deliverability →](03-fixing-deliverability.md)

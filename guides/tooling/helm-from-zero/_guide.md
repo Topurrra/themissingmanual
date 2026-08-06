@@ -29,5 +29,3 @@ If Kubernetes itself is still fuzzy, read [Kubernetes Without the Hype](/guides/
 1. [The Mental Model: A Chart Is Templated Manifests](01-the-mental-model.md) - what a chart is, why values exist, what a release is.
 2. [The Everyday Loop: Install, Upgrade, Rollback](02-the-everyday-loop.md) - the commands you run daily and how releases get tracked.
 3. [Where It Bites: Templating Gotchas and When Not to Use Helm](03-where-it-bites.md) - whitespace, dry-runs, and Helm vs Kustomize vs raw YAML.
-
-[Phase 1: The Mental Model: A Chart Is Templated Manifests](01-the-mental-model.md) →

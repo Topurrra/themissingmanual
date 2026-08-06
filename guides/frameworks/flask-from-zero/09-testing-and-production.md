@@ -47,7 +47,6 @@ import pytest
 from app import create_app
 from app.models import db
 
-
 @pytest.fixture
 def app():
     app = create_app({
@@ -59,7 +58,6 @@ def app():
         db.create_all()      # build the schema in the in-memory DB
         yield app            # hand the app to the test
         db.drop_all()        # tear it down afterward
-
 
 @pytest.fixture
 def client(app):
@@ -81,12 +79,10 @@ def test_create_note_redirects(client):
     response = client.post("/notes/", data={"title": "Buy milk", "content": "2%"})
     assert response.status_code == 302            # POST then redirect (PRG pattern)
 
-
 def test_notes_requires_login(client):
     response = client.get("/notes/")              # not logged in
     assert response.status_code == 302            # bounced to the login page
     assert "/login" in response.headers["Location"]
-
 
 def test_note_str(client):
     from app.models import Note
@@ -193,7 +189,3 @@ Three questions on the ideas that matter most before you ship:
   }
 ]
 ```
-
----
-
-[← Phase 8: Building a JSON API with Flask](08-building-a-json-api.md) · [Guide overview](_guide.md) · [Phase 10: Where to Go Next →](10-where-to-go-next.md)

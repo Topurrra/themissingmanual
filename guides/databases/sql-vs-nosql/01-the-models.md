@@ -176,7 +176,3 @@ None of them is "SQL but better" - each is "different, on purpose."
 4. Each family trades some of relational's generality to be excellent at one access pattern.
 
 Now that you know the shapes, we can compare them fairly - which is the next phase.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Real Trade-offs →](02-the-trade-offs.md)

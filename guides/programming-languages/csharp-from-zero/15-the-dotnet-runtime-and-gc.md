@@ -213,7 +213,3 @@ Test yourself on the three ideas that matter most - where values live, what the 
   }
 ]
 ```
-
----
-
-[← Phase 14: async/await & Tasks](14-async-await-and-tasks.md) · [Guide overview](_guide.md) · [Phase 16: Testing, Build & Profiling →](16-testing-and-profiling.md)

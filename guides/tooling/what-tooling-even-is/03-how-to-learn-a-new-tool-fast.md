@@ -65,7 +65,3 @@ Hello world, find the landmine, bookmark one page, then go do the actual ticket 
   }
 ]
 ```
-
----
-
-[← Phase 2: The Themes Underneath the Tool Names](02-the-themes-underneath-the-tool-names.md) · [Guide overview](_guide.md) · [Phase 4: Picking Where to Start →](04-picking-where-to-start.md)

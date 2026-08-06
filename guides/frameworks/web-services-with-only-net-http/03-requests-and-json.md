@@ -209,5 +209,3 @@ func createMessage(w http.ResponseWriter, r *http.Request) {
   }
 ]
 ```
-
-[← Phase 2: Handlers & Routing by Hand](02-handlers-and-routing.md) · [Guide overview](_guide.md) · [Phase 4: Middleware Is Just a Wrapper →](04-middleware-is-a-wrapper.md)

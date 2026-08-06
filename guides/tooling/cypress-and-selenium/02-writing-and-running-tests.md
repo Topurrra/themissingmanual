@@ -206,5 +206,3 @@ Real suites layer two habits on top of these basics. First, the **Page Object pa
   }
 ]
 ```
-
-[← Phase 1: Two Tools, Two Architectures](01-two-tools-two-architectures.md) | [Overview](_guide.md) | [Phase 3: Limits, Flake, and Choosing →](03-limits-flake-and-choosing.md)

@@ -150,5 +150,3 @@ For builders: keep the config small at first. Three or four cheap hooks that eve
   }
 ]
 ```
-
-[← Phase 1: What a Hook Actually Is](01-what-a-hook-is.md) | [Overview](_guide.md) | [Phase 3: Bypassing, CI, and the Gotchas →](03-bypassing-ci-and-gotchas.md)

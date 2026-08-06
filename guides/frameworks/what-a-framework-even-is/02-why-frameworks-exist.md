@@ -123,7 +123,3 @@ Read that back and frameworks sound close to free money - and for most projects,
   }
 ]
 ```
-
----
-
-[← Phase 1: Framework vs Library](01-framework-vs-library.md) · [Guide overview](_guide.md) · [Phase 3: The Price of Magic →](03-the-price-of-magic.md)

@@ -130,5 +130,3 @@ For builders: the same discipline separates a good engineer from a flailing one.
   }
 ]
 ```
-
-← [Phase 2: Reading the gauges](02-reading-the-gauges.md) | [Overview](_guide.md)

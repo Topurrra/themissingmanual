@@ -67,7 +67,3 @@ so you can see the climb.
 
 > Frameworks (React, Next, NestJS) are their own guides - they *use* TypeScript heavily, but this guide
 > makes the *type system itself* make sense, top to bottom.
-
----
-
-[Phase 1: Install & Your First Program →](01-install-and-first-program.md)

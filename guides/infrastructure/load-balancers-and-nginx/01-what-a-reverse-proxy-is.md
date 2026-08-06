@@ -126,7 +126,3 @@ absorbed both. That mental model carries you through everything else in this gui
 
 Next: what happens when one copy of your app isn't enough, and the proxy starts spreading traffic across
 several.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Load Balancing →](02-load-balancing.md)

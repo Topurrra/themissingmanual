@@ -140,5 +140,3 @@ is Phase 3.
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: RPO, RTO, and the Cost Dial →](02-rpo-rto-and-cost.md)

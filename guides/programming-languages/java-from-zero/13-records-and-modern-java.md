@@ -364,7 +364,3 @@ Test yourself on the ideas that separate old Java from modern Java:
   }
 ]
 ```
-
----
-
-[← Phase 12: The Streams API](12-streams-api.md) · [Guide overview](_guide.md) · [Phase 14: Concurrency & Threads →](14-concurrency-and-threads.md)

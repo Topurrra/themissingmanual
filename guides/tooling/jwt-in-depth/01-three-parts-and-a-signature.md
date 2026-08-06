@@ -155,5 +155,3 @@ A JWT is a **note the server wrote about you, stamped with a signature only the 
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Issuing, Sending, and Verifying →](02-issuing-sending-verifying.md)

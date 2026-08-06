@@ -126,5 +126,3 @@ The two times a year the switch happens are the only times these bugs are observ
   }
 ]
 ```
-
-[← Phase 2](02-offsets-zones-and-the-golden-rules.md) | [Overview](_guide.md)

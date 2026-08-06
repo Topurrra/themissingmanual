@@ -117,7 +117,3 @@ Customer email:
 6. Stack the ones the task needs. Each line you add narrows what a good continuation looks like.
 
 These work. The next phase is about being clear-eyed on what they *don't* - so you know where prompting stops and other tools begin.
-
----
-
-[← Phase 1: A Prompt Is an Instruction](01-instruction-not-a-spell.md) · [Guide overview](_guide.md) · [Phase 3: Plain Limits →](03-plain-limits.md)

@@ -172,8 +172,6 @@ Switch the join type and watch which rows survive - and where NULLs appear:
 
 Watch it animated: [SQL joins](/explainers/Joins.dc.html)
 
-[← Phase 1: Why Joins Exist](01-why-joins-exist.md) · [Guide overview](_guide.md) · [Phase 3: Join Gotchas →](03-join-gotchas.md)
-
 ## Try it yourself
 
 Run a real join against the sample `authors` and `books` tables:

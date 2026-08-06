@@ -29,7 +29,3 @@ This guide fixes that gap. By the end you'll know exactly what counts as a secre
 3. **[Real Secrets Management](03-real-secrets-management.md)** - how teams do it for production: a secrets manager that stores keys centrally, encrypted and access-controlled; injecting them at runtime instead of baking them into images; least privilege; and making rotation routine. Includes the leaked-secret cheat-card.
 
 > This guide is about keeping secrets *safe*. Where config values *come from* in the first place - environment variables, `.env`, YAML, precedence - is its own guide: [Environment Variables & Config](/guides/env-vars-and-config). And if a secret has already reached a remote and you're wondering whether `git revert` hides it (it doesn't), see [Git Disaster Recovery](/guides/git-disaster-recovery).
-
----
-
-[Phase 1: What Counts as a Secret & Why It Leaks →](01-what-counts-as-a-secret.md)

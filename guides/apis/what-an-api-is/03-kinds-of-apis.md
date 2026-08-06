@@ -85,7 +85,3 @@ The natural next step is to see a web API actually *work* - how a request travel
 3. This category focuses on **web APIs.**
 4. Web APIs come in a few **styles** - REST (most common), GraphQL, gRPC - which are names to recognize now and learn later.
 5. Next stop: how a web request and response are actually shaped, over **HTTP and JSON**.
-
----
-
-[← Phase 2: Why APIs Exist](02-why-apis-exist.md) · [Guide overview →](_guide.md)

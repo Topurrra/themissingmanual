@@ -158,5 +158,3 @@ That's the whole mental model. Phase 2 turns it into the patterns you'll actuall
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The everyday core →](02-the-everyday-core.md)

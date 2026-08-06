@@ -269,7 +269,3 @@ algorithm that uses the gradients to fix it. That's loss functions and optimizer
   }
 ]
 ```
-
----
-
-[← Phase 3: Autograd: Automatic Differentiation](03-autograd.md) · [Guide overview](_guide.md) · [Phase 5: Loss Functions & Optimizers →](05-loss-and-optimizers.md)

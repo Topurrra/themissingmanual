@@ -119,7 +119,3 @@ One last check on the big picture you just built:
   }
 ]
 ```
-
----
-
-[← Phase 9: Jakarta Security](09-jakarta-security.md) · [Guide overview](_guide.md)

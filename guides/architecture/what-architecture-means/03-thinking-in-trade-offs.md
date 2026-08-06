@@ -86,7 +86,3 @@ The discipline is to resist. Build the three-box `web → API → database` shap
 That's the whole foundation. You can now see a system's shape (Phase 1), judge which of its decisions are the expensive ones (Phase 2), and reason about the trade-offs behind any choice (Phase 3). Everything else in the **architecture** category - specific shapes, scaling techniques, patterns with intimidating names - is built on exactly these ideas. When you meet a fancy pattern next, ask the three questions you now own: *What are the boxes and arrows? Which decisions are expensive? What does it trade away?* That's thinking like an architect.
 
 > Ready for a concrete example? [Monolith vs microservices](/guides/monolith-vs-microservices) applies all three habits to one real decision. When you start worrying about real traffic, [designing for scale](/guides/designing-for-scale) is where the "scale" driver from Phase 2 gets its own guide.
-
----
-
-[← Phase 2: Why It Matters](02-why-it-matters.md) · [Guide overview →](_guide.md)

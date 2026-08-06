@@ -57,5 +57,3 @@ Every mistake in this phase comes from the same root: treating a noisy process a
 - **Novelty effects** trust a glance taken before the effect had time to settle.
 
 The discipline that fixes all three is the same one from Phase 2: decide the metric and the sample size before you start, and let the test run its planned course before drawing a conclusion.
-
-[← Phase 2: How a real test is structured](02-structuring-a-test.md) | [Overview](_guide.md)

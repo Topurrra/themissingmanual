@@ -206,7 +206,3 @@ That's all for now; the full mental model gets its own treatment in
    **callback**. And `this` is decided by *how* a function is called, not where it's written.
 
 Next: modules, which let you split a program across files and pull the pieces together cleanly.
-
----
-
-[← Phase 3: Collections](03-collections.md) · [Guide overview](_guide.md) · [Phase 5: Modules & Project Layout →](05-modules-and-project-layout.md)

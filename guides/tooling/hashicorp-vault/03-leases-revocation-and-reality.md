@@ -119,5 +119,3 @@ In the wild: the teams who get the most from Vault are the ones who lean into dy
   }
 ]
 ```
-
-[← Phase 2: The Daily Loop](02-the-daily-loop.md) · [Overview](_guide.md)

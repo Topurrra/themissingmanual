@@ -213,7 +213,3 @@ Lock in what the building blocks do, where the utility types come from, and how 
   }
 ]
 ```
-
----
-
-[← Phase 9: The Type System, Deep](09-the-type-system-deep.md) · [Guide overview](_guide.md) · [Phase 11: Conditional & Template Literal Types →](11-conditional-and-template-types.md)

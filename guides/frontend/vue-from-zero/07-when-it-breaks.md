@@ -172,7 +172,3 @@ two moves that resolve most mysteries:
   }
 ]
 ```
-
----
-
-[← Phase 6: Watchers, Lifecycle, and Fetching](06-watchers-lifecycle-fetching.md) · [Guide overview](_guide.md) · [Phase 8: Where to Go Next →](08-where-to-go-next.md)

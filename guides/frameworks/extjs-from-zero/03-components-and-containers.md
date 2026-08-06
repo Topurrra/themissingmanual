@@ -327,7 +327,3 @@ Lock in how the tree fits together and how to navigate it:
   }
 ]
 ```
-
----
-
-[← Phase 2: The Class System](02-the-class-system.md) · [Guide overview](_guide.md) · [Phase 4: Layouts: How Things Get Positioned →](04-layouts.md)

@@ -128,7 +128,3 @@ generation and width, so check rather than guess.
 
 Now to the headline tenant of that x16 slot: the GPU - what it's for, how it's fed, and how the everyday
 peripherals from Phase 1 present themselves to the system.
-
----
-
-[← Phase 1: USB & the Host/Device Model](01-usb-and-the-host-device-model.md) · [Guide overview](_guide.md) · [Phase 3: GPUs & Peripherals →](03-gpus-and-peripherals.md)

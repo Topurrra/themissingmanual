@@ -174,7 +174,3 @@ Lock in the one idea everything else builds on:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Dev Mode & the Developer Experience →](02-dev-mode-and-dx.md)

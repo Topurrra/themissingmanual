@@ -238,7 +238,3 @@ Lock in the three decisions you'll make constantly - interface vs type, optional
   }
 ]
 ```
-
----
-
-[← Phase 3: Functions & Annotations](03-functions-and-annotations.md) · [Guide overview](_guide.md) · [Phase 5: Unions, Literals & Narrowing →](05-unions-and-narrowing.md)

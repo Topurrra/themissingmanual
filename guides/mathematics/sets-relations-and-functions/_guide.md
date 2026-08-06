@@ -39,7 +39,3 @@ as a tool you already reach for.
 
 > With this vocabulary in hand, the Mathematics track moves on to numbers and number systems, counting,
 > and probability.
-
----
-
-[Phase 1: Sets: Collections of Distinct Things →](01-sets.md)

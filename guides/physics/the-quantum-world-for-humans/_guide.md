@@ -24,5 +24,3 @@ Read the three phases in order. We anchor everything on one experiment - the dou
 1. [Waves, particles, and the double slit](01-waves-particles-double-slit.md) - the one experiment that breaks your intuition, and the mental model that survives it.
 2. [Superposition and uncertainty (the real ones)](02-superposition-and-uncertainty.md) - what superposition actually means, why uncertainty is a tradeoff and not clumsiness.
 3. [Entanglement, and why it can't send a message](03-entanglement-and-its-limits.md) - the genuinely spooky correlation, and the hard wall that stops it from beating light.
-
-[Phase 1: Waves, particles, and the double slit](01-waves-particles-double-slit.md) →

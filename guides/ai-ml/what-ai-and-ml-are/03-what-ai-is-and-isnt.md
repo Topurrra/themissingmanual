@@ -85,7 +85,3 @@ That's the solid foundation for everything else in this track. With this mental 
 - **[How a Model Learns](/guides/how-a-model-learns)** - how a model is actually trained from data.
 - **[Using an LLM API](/guides/using-an-llm-api)** - call a model from your own code, now that you know what it really is.
 - **[ML Basics for Data People](/guides/ml-basics-for-data-people)** - the everyday craft of working with data and models, if that's your world.
-
----
-
-[← Phase 2: Rules vs Learning](02-rules-vs-learning.md) · [Guide overview →](_guide.md)

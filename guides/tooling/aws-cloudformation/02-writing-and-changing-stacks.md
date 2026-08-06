@@ -188,5 +188,3 @@ A common, sane workflow: keep templates in Git, run `create-change-set` in CI on
   }
 ]
 ```
-
-[← Phase 1: The mental model](01-templates-and-stacks.md) | [Overview](_guide.md) | [Phase 3: When it breaks →](03-rollback-drift-and-reality.md)

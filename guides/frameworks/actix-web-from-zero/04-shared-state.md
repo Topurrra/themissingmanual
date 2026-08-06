@@ -215,5 +215,3 @@ is almost always "register the exact type the handler asks for."
   }
 ]
 ```
-
-[← Phase 3: Responders](03-responders.md) · [Guide overview](_guide.md) · [Phase 5: Middleware →](05-middleware.md)

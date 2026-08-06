@@ -175,7 +175,3 @@ Both holes closed, same move from Phase 1: keep data as data. For the wider land
 these two, head to [The OWASP Top 10](/guides/owasp-top-10).
 
 Watch it animated: [cross-site scripting](/explainers/XSS.dc.html)
-
----
-
-[← Phase 2: SQL Injection](02-sql-injection.md) · [Guide overview](_guide.md)

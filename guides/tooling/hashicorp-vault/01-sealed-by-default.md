@@ -109,5 +109,3 @@ For the bigger picture of why teams move off plaintext and what other tools play
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: The Daily Loop →](02-the-daily-loop.md)

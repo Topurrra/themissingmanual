@@ -103,7 +103,3 @@ $ node nonblocking.js
 4. **Async fills *waiting* time, not *computing* time.** It overlaps waits; it does not make a single wait shorter, and it doesn't help CPU-bound work.
 
 So non-blocking is clearly better for waiting - but *how* does one worker juggle many overlapping waits without dropping anything? What rings the bell when "table 4 is ready"? That mechanism has a name, and it's the engine the whole model runs on: the event loop.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Event Loop →](02-the-event-loop.md)

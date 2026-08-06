@@ -80,7 +80,3 @@ it's optional - this guide stands on its own.
 
 > C++'s wider ecosystem (build systems, package managers, specific frameworks like Qt or game
 > engines) is its own world - this guide makes the *language* make sense, top to bottom.
-
----
-
-[Phase 1: Compiling & Your First Program →](01-compiling-and-your-first-program.md)

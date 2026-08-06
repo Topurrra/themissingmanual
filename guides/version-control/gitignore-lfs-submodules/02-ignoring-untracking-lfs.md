@@ -148,5 +148,3 @@ Decide your LFS rules at project start, the same as `.gitignore`. If your repo w
   }
 ]
 ```
-
-[← Phase 1: What Git tracks](01-what-git-tracks.md) | [Overview](_guide.md) | [Phase 3: Leaked secrets and the submodule trap →](03-secrets-and-submodules.md)

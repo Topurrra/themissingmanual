@@ -151,7 +151,3 @@ Stretch goals, each a real weekend project on this foundation:
 4. The comparison table is yours now - including why React demands immutability and Svelte
    ships no diff.
 5. The magic box is empty. It was code all along - about 120 lines of it.
-
----
-
-[← Phase 4: The Diff](04-the-diff.md) · [Guide overview](_guide.md)

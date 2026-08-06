@@ -140,7 +140,3 @@ replaced by a set of calm procedures and the deep knowledge that *your work is a
 There's always more Git (submodules, hooks, the plumbing underneath) - but you now have everything the day
 job demands, from your first commit to a steady hand in a crisis. That's what the senior who actually cares
 would have sat down and shown you. Now someone has.
-
----
-
-[← Phase 2: Rebase Without Fear](02-rebase-without-fear.md) · [Guide overview](_guide.md)

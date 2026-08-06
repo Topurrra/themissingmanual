@@ -79,5 +79,3 @@ Partition-tolerant       ->  keeps running during a partition, but must choose:
 ```
 
 *What just happened:* this reframes the whole theorem - it isn't really "pick two of three" as a free menu. Partition tolerance is a fact of life for any real distributed system; the actual decision you get to make is what to do *during* a partition: favor consistency, or favor availability. Phase 2 walks through exactly why you can't have both once the network is actually split.
-
-[← Overview](_guide.md) | [Phase 2: Why you can't have all three →](02-why-you-cant-have-all-three.md)

@@ -113,5 +113,3 @@ You don't have to run ELK yourself to get the model. Cloud providers and Elastic
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Shipping, structuring, and searching →](02-shipping-structuring-searching.md)

@@ -174,7 +174,3 @@ One quick check before we open up the `Future` trait itself in Phase 2:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Async, Await & Futures →](02-async-await-futures.md)

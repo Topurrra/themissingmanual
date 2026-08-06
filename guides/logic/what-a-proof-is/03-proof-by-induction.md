@@ -225,5 +225,3 @@ A quick check before you go:
   }
 ]
 ```
-
-[← Phase 2: The Main Proof Techniques](02-the-main-proof-techniques.md) · [Guide overview](_guide.md)

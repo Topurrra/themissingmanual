@@ -107,7 +107,3 @@ author enough to skip that, that's a legitimate call to make sometimes - make it
 Code review etiquette is one piece of working well with other people's code. [Reading Legacy Code](/guides/reading-legacy-code)
 picks up right after this: how to make sense of code someone else wrote long before you got there, with no
 one around to ask.
-
----
-
-[← Phase 2: Receiving Feedback Without Getting Defensive](02-receiving-feedback-without-defensiveness.md) · [Guide overview](_guide.md)

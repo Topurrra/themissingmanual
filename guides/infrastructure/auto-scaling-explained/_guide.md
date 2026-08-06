@@ -25,5 +25,3 @@ You provision servers for the traffic you expect, and then real traffic shows up
 1. [Why you'd want this at all](01-why-you-need-this.md) - the peak-vs-average traffic problem, and what over- and under-provisioning each cost you.
 2. [How it actually decides to scale](02-how-it-decides.md) - metrics, thresholds, cooldowns, and the policies that turn a number into an action.
 3. [The gotchas](03-the-gotchas.md) - cold starts, the thundering herd, and why auto-scaling needs a load balancer to actually work.
-
-[Phase 1: Why you'd want this at all →](01-why-you-need-this.md)

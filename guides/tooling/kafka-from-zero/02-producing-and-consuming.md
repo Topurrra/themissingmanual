@@ -147,7 +147,3 @@ A typical setup: one `orders` topic with, say, 12 partitions, produced to with `
   }
 ]
 ```
-
----
-
-[← Phase 1: It's a Log, Not a Queue](01-its-a-log-not-a-queue.md) · [Guide overview](_guide.md) · [Phase 3: Production Reality →](03-production-reality.md)

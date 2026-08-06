@@ -352,7 +352,3 @@ Test yourself on the ideas that trip people up most in this phase:
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 4: Functions & Program Structure →](04-functions-and-program-structure.md)

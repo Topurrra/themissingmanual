@@ -109,5 +109,3 @@ The wave model is not only for physicists. Every audio file on your machine is a
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Light is one wave on a giant dial →](02-light-is-one-wave-on-a-dial.md)

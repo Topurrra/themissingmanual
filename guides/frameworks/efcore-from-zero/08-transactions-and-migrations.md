@@ -190,7 +190,3 @@ context.Database.Migrate();
   }
 ]
 ```
-
----
-
-[← Phase 7: Loading Strategies & the N+1 Trap](07-loading-and-n-plus-1.md) · [Guide overview](_guide.md) · [Phase 9: EF Core in the Real World & Where to Go Next →](09-where-to-go-next.md)

@@ -176,7 +176,3 @@ traffic, `NOT NULL` without a default, one giant `UPDATE`, and anything destruct
 plan and a tested backup. Each has the same shape - add nullable, backfill in batches, switch, drop
 last - and `down` restores structure, never data. When in doubt about what your engine wraps in a
 transaction, see [Transactions and ACID](/guides/transactions-and-acid).
-
----
-
-[← Guide overview](_guide.md)

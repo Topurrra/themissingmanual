@@ -55,7 +55,3 @@ one piece of "what Boot does for you" per phase. Phases carry difficulty badges.
 
 > After this, re-read the Spring Boot guide - every annotation you used there will now have a visible
 > mechanism underneath it. That's the whole goal.
-
----
-
-[Phase 1: Spring Without Boot - Why Core Spring? →](01-spring-without-boot.md)

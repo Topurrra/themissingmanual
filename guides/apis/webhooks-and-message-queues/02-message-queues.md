@@ -154,7 +154,3 @@ next phase begins.
 5. That redelivery is a gift *and* a trap: the same message can arrive more than once. Hold that thought.
 
 Watch it animated: [message queues](/explainers/MessageQueues.dc.html)
-
----
-
-[← Phase 1: Push vs Pull: Webhooks](01-push-vs-pull-webhooks.md) · [Guide overview](_guide.md) · [Phase 3: When to Use Which →](03-when-to-use-which.md)

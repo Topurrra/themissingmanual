@@ -187,5 +187,3 @@ fn expensive_hash_computation() -> u64 {
   }
 ]
 ```
-
-[← Phase 3: Tasks & Spawning](03-tasks-and-spawning.md) · [Guide overview](_guide.md) · [Phase 5: Channels & Synchronization →](05-channels-and-sync.md)

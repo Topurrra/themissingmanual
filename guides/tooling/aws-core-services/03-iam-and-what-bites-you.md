@@ -137,5 +137,3 @@ The mature pattern, once a team grows past one person, is to stop minting indivi
   }
 ]
 ```
-
-[← Phase 2: Wiring them into an app](02-wiring-an-app.md) | [Overview](_guide.md)

@@ -166,7 +166,3 @@ correct. Add structure when the file gets unwieldy, not before. Start flat; spli
 
 Next: modeling *things* - objects and the classes that define them - so data and its operations live
 together.
-
----
-
-[← Phase 4: Control Flow & Functions](04-control-flow-and-functions.md) · [Guide overview](_guide.md) · [Phase 6: Objects & Classes →](06-objects-and-classes.md)

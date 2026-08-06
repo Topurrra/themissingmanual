@@ -134,5 +134,3 @@ If you've used axum's middleware, none of this is new - and that's the point.
   }
 ]
 ```
-
-[← Phase 4: Layers & Middleware](04-layers-and-middleware.md) · [Guide overview](_guide.md) · [Phase 6: How axum Uses Them →](06-how-axum-uses-them.md)

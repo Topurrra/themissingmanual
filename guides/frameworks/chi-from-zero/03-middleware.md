@@ -276,5 +276,3 @@ That compatibility is chi's entire pitch, and middleware is where you feel it mo
   }
 ]
 ```
-
-[← Phase 2: Routing, URL Params & Sub-routers](02-routing-and-subrouters.md) · [Guide overview](_guide.md) · [Phase 4: Requests & Responses with the Standard Library →](04-requests-and-responses.md)

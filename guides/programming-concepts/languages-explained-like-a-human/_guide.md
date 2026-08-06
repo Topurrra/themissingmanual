@@ -46,7 +46,3 @@ This guide won't sell you a favorite. It'll give you the map.
 > This guide is about choosing and feeling the difference. The deeper *why* behind these axes lives in
 > sibling guides - what happens when code runs, and how memory and garbage collection work - linked
 > throughout. We point you there rather than re-teaching it here.
-
----
-
-[Phase 1: What Actually Makes Languages Different →](01-what-makes-languages-different.md)

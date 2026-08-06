@@ -234,7 +234,3 @@ Three questions on the ideas that have to stick before Phase 2:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Handlers & Routing by Hand →](02-handlers-and-routing.md)

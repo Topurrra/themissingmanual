@@ -120,7 +120,3 @@ flowchart TD
 7. The **router between zones** is where every cross-zone decision lives - and where scaling and security build next.
 
 Next, keeping all those zones standing when traffic surges and hardware fails: **scaling and reliability**.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Scaling & Reliability →](02-scaling-and-reliability.md)

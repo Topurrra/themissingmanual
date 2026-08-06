@@ -373,7 +373,3 @@ Make sure the matching rules and the ambiguity fixes have stuck:
   }
 ]
 ```
-
----
-
-[← Phase 3: Defining Beans: @Configuration & @Bean](03-defining-beans.md) · [Guide overview](_guide.md) · [Phase 5: Bean Scopes & Lifecycle →](05-bean-scopes-and-lifecycle.md)

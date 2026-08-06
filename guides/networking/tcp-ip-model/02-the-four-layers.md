@@ -90,7 +90,3 @@ flowchart TD
 5. **A real request touches all four**, each adding exactly its own piece on the way down.
 
 You've met the four layers and seen them carry a request. The one question we kept deferring - *careful TCP or quick UDP?* - is next, along with a frame-by-frame trip of a single packet down the stack and back up.
-
----
-
-[← Phase 1: Why Layers?](01-why-layers.md) · [Guide overview](_guide.md) · [Phase 3: TCP vs UDP & a Packet's Round Trip →](03-tcp-udp-and-the-round-trip.md)

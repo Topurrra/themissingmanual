@@ -113,7 +113,3 @@ flowchart TD
 A name became a number, the number found a machine, and a port found the right service on it. That's the address book of the internet, top to bottom - and it's running behind every link you'll ever click.
 
 > Where to go next: [How the Internet Works](/guides/how-the-internet-works) follows the data on its journey between machines, [HTTP, Explained](/guides/http-explained) covers the conversation once your request arrives, and [Your Home Network](/guides/your-home-network) digs into the router, NAT, and private addresses from Phase 1.
-
----
-
-[← Phase 2: DNS - Names to Numbers](02-dns.md) · [Guide overview](_guide.md)

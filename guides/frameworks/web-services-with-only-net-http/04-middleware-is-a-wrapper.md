@@ -221,7 +221,3 @@ Three quick ones to make sure the wrapper model stuck.
   }
 ]
 ```
-
----
-
-[← Phase 3: Reading Requests, Writing JSON](03-requests-and-json.md) · [Guide overview](_guide.md) · [Phase 5: A JSON REST API With No Framework →](05-rest-api-no-framework.md)

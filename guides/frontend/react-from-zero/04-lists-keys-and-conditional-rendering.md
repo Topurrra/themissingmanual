@@ -159,7 +159,3 @@ preserves it; choose the one the UX needs.
   }
 ]
 ```
-
----
-
-[← Phase 3: State and Re-renders](03-state-and-re-renders.md) · [Guide overview](_guide.md) · [Phase 5: Events and Forms →](05-events-and-forms.md)

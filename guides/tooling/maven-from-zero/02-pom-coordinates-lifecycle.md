@@ -150,5 +150,3 @@ A real project's `pom.xml` looks long, but skim it and you will see only these p
   }
 ]
 ```
-
-[← Phase 1](01-convention-over-configuration.md) | [Overview](_guide.md) | [Phase 3: Production reality →](03-conflicts-and-multi-module.md)

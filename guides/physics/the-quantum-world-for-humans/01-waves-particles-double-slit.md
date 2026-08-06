@@ -113,5 +113,3 @@ For builders: this isn't abstract. The probability-wave picture is exactly what 
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Superposition and uncertainty →](02-superposition-and-uncertainty.md)

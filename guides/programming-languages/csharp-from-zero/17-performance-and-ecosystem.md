@@ -242,7 +242,3 @@ Test yourself on the discipline that makes performance work actually pay off:
   }
 ]
 ```
-
----
-
-[← Phase 16: Testing, Build & Profiling](16-testing-and-profiling.md) · [Guide overview](_guide.md) · [Phase 18: Where to Go Next →](18-where-to-go-next.md)

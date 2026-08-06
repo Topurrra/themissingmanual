@@ -162,7 +162,3 @@ animations) attaches to them.
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Components and Templates →](02-components-and-templates.md)

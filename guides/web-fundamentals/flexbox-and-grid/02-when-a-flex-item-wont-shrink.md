@@ -159,7 +159,3 @@ Check your intuition:
   }
 ]
 ```
-
----
-
-[← Phase 1: Flexbox: One-Dimensional Layout](01-flexbox-one-dimensional-layout.md) · [Guide overview](_guide.md) · [Phase 3: CSS Grid: Two-Dimensional Layout →](03-css-grid-two-dimensional-layout.md)

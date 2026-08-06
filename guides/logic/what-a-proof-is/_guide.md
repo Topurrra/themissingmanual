@@ -40,7 +40,3 @@ once. If you've written a recursive function, you already think the way inductio
 > This builds on validity from [What Logic Actually Is](/guides/what-logic-actually-is) and the
 > contrapositive from [Propositional Logic](/guides/propositional-logic). Last in the Logic foundations:
 > spotting fallacies.
-
----
-
-[Phase 1: What a Proof Actually Is →](01-what-a-proof-actually-is.md)

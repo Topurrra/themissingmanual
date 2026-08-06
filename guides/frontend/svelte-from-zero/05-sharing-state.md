@@ -193,7 +193,3 @@ object, `derived(...)` ≈ `$derived`.
   }
 ]
 ```
-
----
-
-[← Phase 4: Components: Props, Callbacks, and Snippets](04-components-props-snippets.md) · [Guide overview](_guide.md) · [Phase 6: Effects, Lifecycle, and Fetching →](06-effects-lifecycle-fetching.md)

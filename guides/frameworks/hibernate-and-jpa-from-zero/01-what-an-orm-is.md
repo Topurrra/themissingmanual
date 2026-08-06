@@ -275,7 +275,3 @@ Three questions on the ideas that have to stick before Phase 2:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Entities & Basic Mapping →](02-entities-and-mapping.md)

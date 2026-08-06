@@ -145,7 +145,3 @@ two are constantly confused, and confusing them causes its own breaches.
 
 That's the complete, responsible way to store a password. Stored like this, even a full database leak
 hands an attacker nothing they can practically use.
-
----
-
-[← Phase 2: Salt (and Why Plain SHA-256 Isn't Enough)](02-salt-and-fast-hashes.md) · [Guide overview](_guide.md)

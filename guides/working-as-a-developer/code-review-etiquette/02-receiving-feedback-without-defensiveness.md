@@ -110,7 +110,3 @@ separate from the technical content.
   }
 ]
 ```
-
----
-
-[← Phase 1: Reviewing Someone Else's Code Without Being a Jerk](01-reviewing-without-being-a-jerk.md) · [Guide overview](_guide.md) · [Phase 3: The Etiquette Nobody Tells You →](03-the-etiquette-nobody-tells-you.md)

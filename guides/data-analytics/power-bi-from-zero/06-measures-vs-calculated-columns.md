@@ -127,7 +127,3 @@ Test yourself on the distinction that causes the most "why is my number wrong" b
   }
 ]
 ```
-
----
-
-[← Phase 5: DAX From Intuition](05-dax-from-intuition.md) · [Phase 7: Time Intelligence →](07-time-intelligence.md)

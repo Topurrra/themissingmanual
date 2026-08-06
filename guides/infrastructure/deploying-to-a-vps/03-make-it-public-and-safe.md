@@ -253,7 +253,3 @@ service that heals itself, behind a proxy that keeps it safe. Zero to live.
 > Where to go next: when one box isn't enough - multiple app instances, load balancing across them,
 > zero-downtime deploys - pick up [Load Balancers and nginx](/guides/load-balancers-and-nginx), which
 > builds directly on the reverse proxy you just stood up.
-
----
-
-[← Phase 2: Run Your App as a Service](02-run-your-app-as-a-service.md) · [Guide overview →](_guide.md)

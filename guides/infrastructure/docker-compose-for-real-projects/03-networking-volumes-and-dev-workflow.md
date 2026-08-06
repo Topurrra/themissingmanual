@@ -195,8 +195,4 @@ Run your eye down what's dev-only in this file:
 
 You can now run a real multi-service stack, understand how it talks to itself, keep its data safe, develop against it quickly, and avoid the two traps that catch people once they're comfortable. That's the whole everyday skill - go run something real on it.
 
----
-
-[← Phase 2: The compose file](02-the-compose-file.md) · [Guide overview](_guide.md)
-
 **Related:** [Docker Without the Magic](/guides/docker-without-the-magic) · [Environment Variables & Config](/guides/env-vars-and-config)

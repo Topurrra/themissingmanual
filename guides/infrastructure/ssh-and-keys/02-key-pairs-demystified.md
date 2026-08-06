@@ -187,7 +187,3 @@ many copies of the padlock as you like, but the key that opens it stays in your 
 You can now log in without typing a password. Next: making SSH pleasant to live with - short names instead
 of long host strings, typing your passphrase once instead of every time, and reading the errors everyone
 eventually hits.
-
----
-
-[← Phase 1: What SSH Is](01-what-ssh-is.md) · [Guide overview](_guide.md) · [Phase 3: Living With SSH →](03-living-with-ssh.md)

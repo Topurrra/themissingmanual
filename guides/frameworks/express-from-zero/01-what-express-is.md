@@ -221,7 +221,3 @@ return JSON:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Routing →](02-routing.md)

@@ -186,7 +186,3 @@ Test yourself on the idea that matters most here - that ownership now lives in t
   }
 ]
 ```
-
----
-
-[← Phase 12: The STL: Iterators & Algorithms](12-the-stl-iterators-and-algorithms.md) · [Phase 14: Inheritance & Polymorphism →](14-inheritance-and-polymorphism.md)

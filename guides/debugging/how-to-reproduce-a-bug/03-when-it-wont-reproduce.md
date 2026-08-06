@@ -113,8 +113,4 @@ The thread through all five: an intermittent bug has an input you aren't yet con
 4. **The core tactics:** force the timing, always start cold, fake the dependency so it fails on command, disable caching, pin the seed and freeze the clock.
 5. **Once the hidden input is pinned,** the bug becomes reliably triggerable - back to trigger → fix → verify.
 
----
-
-[← Phase 2: Nailing It Down](02-nailing-it-down.md) · [Guide overview](_guide.md)
-
 Once you can trigger it on demand, the next skills pick up where this leaves off: [Reading a Stack Trace](/guides/reading-a-stack-trace) to decode the crash, [Using a Debugger](/guides/using-a-debugger) to watch it run, and [Bisecting a Bug](/guides/bisecting-a-bug) to find the commit that introduced it.

@@ -122,7 +122,3 @@ And if you *pushed*, it's worse: the secret now exists in every clone anyone has
 6. ⚠️ A committed secret lives in **Git history forever** - deleting it from the latest commit is not enough. **Rotate it**: revoke the old value and issue a new one.
 
 Next: how teams manage secrets centrally for production - with a cheat-card for the day one gets out.
-
----
-
-[← Phase 1: What Counts as a Secret](01-what-counts-as-a-secret.md) · [Guide overview](_guide.md) · [Phase 3: Real Secrets Management →](03-real-secrets-management.md)

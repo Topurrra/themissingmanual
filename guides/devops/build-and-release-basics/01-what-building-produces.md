@@ -94,7 +94,3 @@ dist/assets/index-a1b2c3d4.js   143.21 kB
 4. **A clean build is reproducible:** same recipe + same source = same artifact, anywhere - because every ingredient is declared, not assumed.
 
 Now that you can produce a trustworthy artifact, the next question is: how do you *name* it, and how do you make sure the thing you tested is the exact thing you ship?
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Versions & Artifacts →](02-versions-and-artifacts.md)

@@ -303,7 +303,3 @@ Test yourself on the three ideas that matter most - constraints, variance, and r
   }
 ]
 ```
-
----
-
-[← Phase 9: Idioms & Common Gotchas](09-idioms-and-gotchas.md) · [Guide overview](_guide.md) · [Phase 11: Delegates, Lambdas & Events →](11-delegates-and-lambdas.md)

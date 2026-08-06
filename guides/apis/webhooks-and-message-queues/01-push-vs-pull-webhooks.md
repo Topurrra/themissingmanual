@@ -183,7 +183,3 @@ That's how another company tells *you* something happened. Next, the mirror imag
 services hand work to each other without anyone waiting around.
 
 Watch it animated: [webhooks](/explainers/Webhooks.dc.html)
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Message Queues →](02-message-queues.md)

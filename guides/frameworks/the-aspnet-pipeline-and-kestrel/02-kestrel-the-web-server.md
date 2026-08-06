@@ -138,7 +138,3 @@ Everything about *what to do* with a request - matching routes, running auth, ca
   }
 ]
 ```
-
----
-
-[← Phase 1: What Kestrel & the Pipeline Are](01-what-kestrel-and-the-pipeline-are.md) · [Guide overview](_guide.md) · [Phase 3: The Middleware Pipeline →](03-the-middleware-pipeline.md)

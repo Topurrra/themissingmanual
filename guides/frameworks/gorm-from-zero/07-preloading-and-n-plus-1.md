@@ -175,5 +175,3 @@ The rule of thumb:
   }
 ]
 ```
-
-[← Phase 6: Associations](06-associations.md) · [Guide overview](_guide.md) · [Phase 8: Transactions, Hooks & Migrations →](08-transactions-hooks-migrations.md)

@@ -218,5 +218,3 @@ Quick check before you go - three claims this phase made:
   }
 ]
 ```
-
-[← Phase 2: Relations & Functions](02-relations-and-functions.md) · [Guide overview](_guide.md)

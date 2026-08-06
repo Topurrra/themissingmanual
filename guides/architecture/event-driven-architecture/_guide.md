@@ -25,5 +25,3 @@ This guide gives you the mental model - producers, a broker, consumers - and the
 1. **[Announce, Don't Call](01-the-mental-model.md)** - the core shift: a producer emits an event, a broker holds it, consumers react. Why this decouples your system, and what an "event" actually is.
 2. **[How Events Really Flow](02-how-events-flow.md)** - queues vs pub/sub, choreography vs orchestration, and the delivery guarantees you actually get. The day-to-day mechanics.
 3. **[The Bill Comes Due](03-the-bill-comes-due.md)** - eventual consistency, debugging across hops, ordering, and duplicate delivery. Why consumers must be idempotent, and when *not* to go event-driven at all.
-
-[Phase 1: Announce, Don't Call](01-the-mental-model.md) →

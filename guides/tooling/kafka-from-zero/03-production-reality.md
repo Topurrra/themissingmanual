@@ -135,7 +135,3 @@ Kafka is heavy. Reach for it when you genuinely have streams: high throughput, m
   }
 ]
 ```
-
----
-
-[← Phase 2: Producing and Consuming for Real](02-producing-and-consuming.md) · [Guide overview](_guide.md)

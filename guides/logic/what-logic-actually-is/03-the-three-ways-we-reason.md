@@ -203,5 +203,3 @@ Quick gut-check before you go - for each scenario, name the engine.
   }
 ]
 ```
-
-[← Phase 2: Statements, Truth, and Validity](02-statements-truth-and-validity.md) · [Guide overview](_guide.md)

@@ -87,7 +87,3 @@ That's what integration and E2E tests are for. They're slower and blunter, so yo
 4. You still need the top because **units are blind to the seams between pieces** - integration and E2E exist to test the connections units can't see.
 
 With the shape in hand, let's look at each level up close - what it catches, what it costs, and what one actually looks like.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Three Levels →](02-the-three-levels.md)

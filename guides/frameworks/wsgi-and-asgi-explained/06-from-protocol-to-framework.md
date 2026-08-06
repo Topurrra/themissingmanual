@@ -119,7 +119,3 @@ One last check - the mappings that turn frameworks from magic into mechanism:
   }
 ]
 ```
-
----
-
-[← Phase 5: An ASGI App & the Servers](05-an-asgi-app-and-the-servers.md) · [Guide overview](_guide.md)

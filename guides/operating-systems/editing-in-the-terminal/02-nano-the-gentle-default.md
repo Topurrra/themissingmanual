@@ -39,7 +39,6 @@ Buy milk
 Call the plumber
 Finish the report
 
-
 ^G Help      ^O Write Out  ^W Where Is   ^K Cut
 ^X Exit      ^R Read File  ^\ Replace    ^U Paste
 ```
@@ -168,7 +167,3 @@ nano is the easy one. Now let's defang the editor everyone fears - and it all co
   }
 ]
 ```
-
----
-
-[← Phase 1: Why edit in the terminal](01-why-edit-in-the-terminal.md) · [Guide overview](_guide.md) · [Phase 3: vim - modes and escaping →](03-vim-modes-and-escaping.md)

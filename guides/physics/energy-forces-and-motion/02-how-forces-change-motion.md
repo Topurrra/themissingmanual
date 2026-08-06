@@ -129,5 +129,3 @@ Your hand pushes the wall       →   the wall pushes your hand        →  nobo
   }
 ]
 ```
-
-[← Phase 1](01-what-a-force-really-is.md) | [Overview](_guide.md) | [Phase 3: Energy and momentum →](03-energy-and-momentum.md)

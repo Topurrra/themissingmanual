@@ -125,7 +125,3 @@ in, and does it have the tool I just used?*
 5. **The browser console** is a live JavaScript scratchpad - open it with `F12` and the Console tab.
 
 Next: values, the types they come in, and the ways to name and combine them.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Syntax, Values & Types →](02-syntax-values-and-types.md)

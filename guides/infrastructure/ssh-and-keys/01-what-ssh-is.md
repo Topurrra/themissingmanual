@@ -163,7 +163,3 @@ When in doubt, run `hostname` - it never lies about where you are.
 
 You can already get in with a password. The trouble with passwords is that they're typed, guessable, and
 travel each time you connect. Next, we replace them with something far better.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Key Pairs, Demystified →](02-key-pairs-demystified.md)

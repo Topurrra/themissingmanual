@@ -192,7 +192,3 @@ Next: one real "why is this broken?" bug, walked end to end across all four pane
   }
 ]
 ```
-
----
-
-[← Phase 1: The DevTools Map and the Console](01-the-devtools-map-and-the-console.md) · [Guide overview](_guide.md) · [Phase 3: A Real Investigation →](03-a-real-investigation.md)

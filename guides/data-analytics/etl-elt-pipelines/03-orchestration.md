@@ -155,7 +155,3 @@ This is the boundary of orchestration. Making a pipeline *run reliably* is neces
 6. **"It ran" ≠ "it ran correctly"** - a green run can still be empty or wrong; trusting the output is the job of [Data Quality & Observability](/guides/data-quality-and-observability).
 
 You now have the full shape of moving and shaping data: the three stages, the order trade-off, and what it takes to run the whole thing reliably. From here, the two natural next steps are *where the data lands* ([Warehouses vs. Lakes](/guides/warehouses-vs-lakes)) and *how to trust it once it's there* ([Data Quality & Observability](/guides/data-quality-and-observability)).
-
----
-
-[← Phase 2: ETL vs ELT](02-etl-vs-elt.md) · [Guide overview](_guide.md)

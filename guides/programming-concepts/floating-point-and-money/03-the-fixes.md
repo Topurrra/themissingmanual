@@ -117,5 +117,3 @@ USE A FLOAT FOR:        DON'T USE A FLOAT FOR:
   }
 ]
 ```
-
-[← Phase 2: Where It Bites](02-where-it-bites.md) · [Guide overview](_guide.md)

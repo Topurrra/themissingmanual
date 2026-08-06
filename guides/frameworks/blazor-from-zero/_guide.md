@@ -56,7 +56,3 @@ carry difficulty badges.
 
 > The throughline: a Blazor app is a **tree of components that re-render when their state changes**, and
 > you choose **where the C# runs** (server or WebAssembly). Everything else is detail on those two ideas.
-
----
-
-[Phase 1: What Blazor Is (Server vs WebAssembly) →](01-what-blazor-is.md)

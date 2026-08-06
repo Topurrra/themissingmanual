@@ -323,7 +323,3 @@ Test yourself on the idea that ties this phase together - the hidden conversion 
   }
 ]
 ```
-
----
-
-[← Phase 12: Smart Pointers & Interior Mutability](12-smart-pointers.md) · [Guide overview](_guide.md) · [Phase 14: Fearless Concurrency →](14-fearless-concurrency.md)

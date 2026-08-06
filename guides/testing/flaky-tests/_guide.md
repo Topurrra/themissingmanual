@@ -26,5 +26,3 @@ You wrote a test. It passed. You changed nothing - and on the next run it failed
 1. **[What a Flaky Test Actually Is](01-what-a-flaky-test-is.md)** - the mental model: a passing test is a deterministic function, and flakiness is hidden nondeterminism leaking into it. Once you see tests this way, every culprit in Phase 2 has the same shape.
 2. **[The Usual Culprits](02-the-usual-culprits.md)** - a field guide to the five everyday sources of flakiness: timing and sleeps, async not awaited, test order and shared state, real network/clock/randomness, and leaked resources. How to recognize each by its fingerprint.
 3. **[Diagnose, Fix, Quarantine](03-diagnose-fix-quarantine.md)** - the playbook: rerun and isolate and seed to find the cause, control time/randomness/state/externals to fix it, and quarantine (never silently ignore) when you can't fix it today.
-
-[Phase 1: What a Flaky Test Actually Is](01-what-a-flaky-test-is.md) →

@@ -143,5 +143,3 @@ Azure also offers managed PostgreSQL and MySQL (the **Azure Database for Postgre
   }
 ]
 ```
-
-[← Phase 1](01-the-container-hierarchy.md) | [Overview](_guide.md) | [Phase 3: Identity, access, and production reality →](03-identity-and-production.md)

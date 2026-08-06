@@ -177,7 +177,3 @@ createApp(App).mount('#app');
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Templates That React →](02-templates-that-react.md)

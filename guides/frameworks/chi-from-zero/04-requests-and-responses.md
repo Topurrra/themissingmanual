@@ -280,5 +280,3 @@ price for staying 100% standard-library-native.
   }
 ]
 ```
-
-[← Phase 3: Middleware the Standard Way](03-middleware.md) · [Guide overview](_guide.md) · [Phase 5: Building a REST API →](05-building-a-rest-api.md)

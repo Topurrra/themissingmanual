@@ -316,7 +316,3 @@ Lock in the two ideas that cause the most real-world relationship bugs:
   }
 ]
 ```
-
----
-
-[← Phase 4: Transactions & the Unit of Work](04-transactions-and-unit-of-work.md) · [Guide overview](_guide.md) · [Phase 6: Lazy vs Eager Fetching & the N+1 Problem →](06-fetching-and-n-plus-1.md)

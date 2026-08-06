@@ -104,5 +104,3 @@ The thing to internalize: brokers are not a ladder where bigger is better. They'
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Sending and Receiving for Real →](02-sending-and-receiving-for-real.md)

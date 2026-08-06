@@ -82,7 +82,3 @@ Neither is "better" in the abstract - they fit different constraints. Here's bot
 5. **ETL still wins** when compute is constrained or data must be masked before it can land at all.
 
 You can now read the data-stage of any pipeline and know *why* it's ordered the way it is. But knowing the stages and their order isn't enough to trust a pipeline. A pipeline runs on a schedule, with steps that depend on each other, and it *will* fail at 3am. Making it run *reliably* is the final piece.
-
----
-
-[← Phase 1: Extract, Transform, Load](01-extract-transform-load.md) · [Guide overview](_guide.md) · [Phase 3: Orchestration →](03-orchestration.md)

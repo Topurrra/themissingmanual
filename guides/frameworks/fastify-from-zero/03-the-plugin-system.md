@@ -236,7 +236,3 @@ flowchart TD
   }
 ]
 ```
-
----
-
-[← Phase 2: Routing & Schemas](02-routing-and-schemas.md) · [Guide overview](_guide.md) · [Phase 4: Hooks & the Lifecycle →](04-hooks-and-lifecycle.md)

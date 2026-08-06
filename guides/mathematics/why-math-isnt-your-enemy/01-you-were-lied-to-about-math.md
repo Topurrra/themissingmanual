@@ -213,5 +213,3 @@ A short check - not a test, only to let a few of these ideas settle:
 
 In the next phase, we take the part that scares people most - the symbols - and turn them from a foreign
 alphabet into something you can read.
-
-[← Guide overview](_guide.md) · [Phase 2: How to Read Math Notation →](02-how-to-read-math-notation.md)

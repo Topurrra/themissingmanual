@@ -134,5 +134,3 @@ flowchart LR
   }
 ]
 ```
-
-[← Phase 1](01-what-junit-5-actually-is.md) | [Overview](_guide.md) | [Phase 3: When tests lie →](03-when-tests-lie.md)

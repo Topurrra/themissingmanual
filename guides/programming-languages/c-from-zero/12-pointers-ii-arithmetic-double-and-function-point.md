@@ -207,7 +207,3 @@ printf("%d\n", ops[1](10, 4));         // calls sub(10, 4) -> 6
   }
 ]
 ```
-
----
-
-[← Phase 11: The Stack vs the Heap](11-the-stack-vs-the-heap.md) · [Phase 13: The Standard Library Essentials →](13-the-standard-library-essentials.md)

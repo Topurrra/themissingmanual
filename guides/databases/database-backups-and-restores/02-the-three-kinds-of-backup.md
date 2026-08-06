@@ -183,7 +183,3 @@ up PITR." Match the mechanism to the number; don't run the backup tool harder.
   }
 ]
 ```
-
----
-
-[← Phase 1: The Restore Is the Real Thing](01-the-restore-is-the-real-thing.md) · [Guide overview](_guide.md) · [Phase 3: When It Breaks →](03-when-it-breaks.md)

@@ -210,7 +210,3 @@ errors this produces.
   }
 ]
 ```
-
----
-
-[← Phase 3: Signals](03-signals.md) · [Guide overview](_guide.md) · [Phase 5: Services and Dependency Injection →](05-services-and-di.md)

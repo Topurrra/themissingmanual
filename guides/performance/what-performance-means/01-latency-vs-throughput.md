@@ -82,7 +82,3 @@ But every item now *waits* for the batch to fill before it goes anywhere. The fi
 4. When someone says "slow," find out which number they mean *before* you touch anything.
 
 Next: even once you know *which* number to chase, you still don't know *where* the slowness lives. That's the next rule - and it's the one that saves the most wasted effort.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Measure Before You Optimize →](02-measure-before-you-optimize.md)

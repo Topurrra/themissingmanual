@@ -29,7 +29,3 @@ This is the ninth guide in the Mathematics track. It assumes the function idea f
 3. **[Integrals as the Total So Far](03-integrals-as-the-total-so-far.md)** - area under a curve, expected value, Riemann sums, and how profiling data is an integral over time.
 
 > This builds on [Sets, Relations, and Functions](/guides/sets-relations-and-functions) (functions as mappings) and [Counting & Combinatorics](/guides/counting-and-combinatorics) (summation as repeated addition). It is the continuous math behind much of modern computing.
-
----
-
-[Phase 1: Derivatives as Right Now Speed →](01-derivatives-as-right-now-speed.md)

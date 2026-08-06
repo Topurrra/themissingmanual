@@ -57,7 +57,3 @@ real magic to *feel* is dev mode (Phase 2) and native compilation (Phase 9). Pha
 
 > Quarkus isn't a rejection of Spring/Jakarta EE - it's the same ideas re-engineered for the container
 > era. Knowing the standards (this guide assumes them) is exactly what makes Quarkus click.
-
----
-
-[Phase 1: What Quarkus Is & Why It's Fast →](01-what-quarkus-is.md)

@@ -117,5 +117,3 @@ When you scaffold a new project, the very first commit should already include a 
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Ignoring, untracking, and LFS for big files →](02-ignoring-untracking-lfs.md)

@@ -195,8 +195,3 @@ Quick check before you move on:
   }
 ]
 ```
-
----
-
-[← Phase 1: Before Your First Shift](01-before-your-first-shift.md) · [Guide overview](_guide.md) ·
-[Phase 3: After the Fire →](03-after-the-fire-the-postmortem.md)

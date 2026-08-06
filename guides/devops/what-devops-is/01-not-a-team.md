@@ -81,7 +81,3 @@ It means: the team that writes a piece of software is also on the hook for opera
 5. The phrase that captures it: **"you build it, you run it."**
 
 Next, we'll look at *how* a team actually works without the wall - the continuous loop that carries software from an idea all the way to running in production, and back again.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Loop: Build → Test → Ship → Observe →](02-the-loop.md)

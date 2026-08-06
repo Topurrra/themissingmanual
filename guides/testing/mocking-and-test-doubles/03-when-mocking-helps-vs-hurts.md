@@ -168,8 +168,4 @@ Before you replace something with a double, ask:
 That's the whole craft: doubles are a scalpel for isolating *your* logic, not a way to make every test fast
 and green. Use them at the seams, keep your own code real, and let the higher layers test what the doubles hid.
 
----
-
-[← Phase 2: The Doubles, Clearly Defined](02-the-doubles-defined.md) · [Guide overview](_guide.md)
-
 **Related guides:** [Your First Unit Test](/guides/your-first-unit-test) · [Unit, Integration & E2E Tests](/guides/unit-integration-e2e)

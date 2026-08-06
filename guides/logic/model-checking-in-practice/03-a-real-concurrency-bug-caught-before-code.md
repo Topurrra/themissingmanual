@@ -168,5 +168,3 @@ skill this whole guide has been building toward.
   }
 ]
 ```
-
-[← Phase 2: Exhaustive State-Space Exploration](02-exhaustive-state-space-exploration.md) · [Guide overview](_guide.md)

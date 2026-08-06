@@ -64,7 +64,6 @@ null-check it. Both kinds answer `.is_authenticated`: `True` for a real logged-i
 # blog/views.py
 from django.http import HttpResponse
 
-
 def whoami(request):
     if request.user.is_authenticated:
         return HttpResponse(f"You are logged in as {request.user.username}.")
@@ -143,7 +142,6 @@ users get through.
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .forms import PostForm
-
 
 @login_required
 def post_create(request):
@@ -292,7 +290,3 @@ Test yourself on the ideas that have to stick - the authN/authZ split and how Dj
   }
 ]
 ```
-
----
-
-[← Phase 7: The ORM, Deeper](07-the-orm-deeper.md) · [Guide overview](_guide.md) · [Phase 9: Class-Based Views & Django REST Framework →](09-class-based-views-and-drf.md)

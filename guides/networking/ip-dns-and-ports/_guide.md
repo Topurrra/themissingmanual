@@ -29,7 +29,3 @@ This guide installs those three ideas so the internet stops being a black box. B
 3. **[Ports - One Machine, Many Doors](03-ports.md)** - how a single machine runs the web, email, and SSH at once, each behind a numbered door, and why the real address of a service is *IP + port*.
 
 > This guide is about *finding* and *addressing* machines. How data actually travels between them - packets, routing, the journey of a request - lives in [How the Internet Works](/guides/how-the-internet-works), and what your browser says once it reaches the server lives in [HTTP, Explained](/guides/http-explained).
-
----
-
-[Phase 1: IP Addresses →](01-ip-addresses.md)

@@ -274,7 +274,3 @@ split:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: URLs & Views →](02-urls-and-views.md)

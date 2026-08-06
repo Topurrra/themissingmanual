@@ -154,7 +154,3 @@ flowchart LR
 3. In async code, **wrap `await` in `try/catch`** to catch rejected Promises; an **unhandled rejection** can crash Node.
 4. **`fetch` doesn't reject on 404/500** - check `res.ok` and throw yourself; `res.json()` is async and can also fail.
 5. I/O is runtime-specific: **`fetch`** for the browser network, **`node:fs/promises`** for Node files - **always guard `JSON.parse`**.
-
----
-
-[← Phase 6: Async & the DOM](06-async-and-the-dom.md) · [Guide overview](_guide.md) · [Phase 8: The Ecosystem & Tooling →](08-ecosystem-and-tooling.md)

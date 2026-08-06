@@ -121,5 +121,3 @@ NATS:
   }
 ]
 ```
-
-[← Phase 2](02-sending-and-receiving-for-real.md) | [Overview](_guide.md)

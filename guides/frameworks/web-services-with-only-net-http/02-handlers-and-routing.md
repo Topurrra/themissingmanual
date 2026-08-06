@@ -157,7 +157,3 @@ Quick gut check before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 1: The net/http Mental Model](01-the-mental-model.md) · [Guide overview](_guide.md) · [Phase 3: Reading Requests, Writing JSON →](03-requests-and-json.md)

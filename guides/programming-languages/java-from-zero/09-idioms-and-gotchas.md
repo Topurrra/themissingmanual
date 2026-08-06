@@ -261,7 +261,3 @@ Test yourself on the three traps that catch everyone:
   }
 ]
 ```
-
----
-
-[← Phase 8: Packages, Build & Tooling](08-packages-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: Generics, Deep →](10-generics-deep.md)

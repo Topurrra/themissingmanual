@@ -246,7 +246,3 @@ Lock in the three ideas that bite hardest - return inference, the optional-vs-de
   }
 ]
 ```
-
----
-
-[← Phase 2: Why Types & the Basic Types](02-why-types-and-basic-types.md) · [Guide overview](_guide.md) · [Phase 4: Objects, Interfaces & Type Aliases →](04-objects-interfaces-and-types.md)

@@ -30,5 +30,3 @@ Read it in order. Phase 1 builds the core picture - a box holding an address ins
 1. [A box with an address instead of a value](01-a-box-with-an-address.md) - the mental model: values, variables, and what it means for a variable to point somewhere else.
 2. [Pointers vs. references across languages](02-pointers-vs-references-across-languages.md) - explicit pointers, implicit references, and true value types, kept language-agnostic.
 3. [The classic gotchas](03-the-classic-gotchas.md) - null dereference, dangling pointers, and the shared-reference surprise.
-
-[Phase 1: A box with an address instead of a value](01-a-box-with-an-address.md) →

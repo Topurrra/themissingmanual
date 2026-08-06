@@ -303,7 +303,3 @@ Test yourself on the ideas that have to stick from this phase:
   }
 ]
 ```
-
----
-
-[← Phase 2: The Application Server & Deployment](02-the-app-server-and-deployment.md) · [Guide overview](_guide.md) · [Phase 4: JAX-RS: Building REST APIs →](04-jax-rs-rest-apis.md)

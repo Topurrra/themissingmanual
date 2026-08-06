@@ -191,7 +191,3 @@ That's the payoff: **decoupling** plus **managed lifetimes** - what makes ASP.NE
   }
 ]
 ```
-
----
-
-[← Phase 3: Model Binding & Validation](03-model-binding-and-validation.md) · [Guide overview](_guide.md) · [Phase 5: The Middleware Pipeline →](05-middleware-pipeline.md)

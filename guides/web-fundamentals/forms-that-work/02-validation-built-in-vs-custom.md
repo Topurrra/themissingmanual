@@ -159,7 +159,3 @@ Check your understanding:
   }
 ]
 ```
-
----
-
-[← Phase 1: Inputs, Labels, and Why `<label>` Matters](01-inputs-labels-and-why-label-matters.md) · [Guide overview](_guide.md) · [Phase 3: Submitting Data: GET vs. POST, FormData, and Fetch →](03-submitting-data-get-vs-post-formdata-and-fetch.md)

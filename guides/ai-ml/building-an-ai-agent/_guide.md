@@ -29,5 +29,3 @@ This guide takes the curtain down: the mental model first (it's a loop, and you 
 3. **[Where Agents Go Wrong](03-where-agents-go-wrong.md)** - infinite loops, hallucinated tool calls, runaway cost, and the guardrails - step budgets, validation, approval gates - that keep an agent on a leash.
 
 > This guide assumes you're comfortable calling a model programmatically. If "send a request, get text back" isn't second nature yet, read [Using an LLM API](/guides/using-an-llm-api) first - an agent is that same call, wrapped in a loop.
-
-[Phase 1: An Agent Is a Loop](01-an-agent-is-a-loop.md) →

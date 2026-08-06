@@ -27,5 +27,3 @@ Go in order. Phase 1 builds the mental model - the dependency graph and why herm
 1. [Phase 1: The Graph, and Why Hermetic](01-the-graph-and-why-hermetic.md) - what Bazel actually models and why declared inputs change everything.
 2. [Phase 2: BUILD Files and the Daily Loop](02-build-files-and-the-daily-loop.md) - targets, rules, and the commands you'll run a hundred times a day.
 3. [Phase 3: Caching, Cold Starts, and When Not To](03-caching-cold-starts-and-when-not-to.md) - remote cache, the real costs, and choosing the right tool.
-
-[Phase 1: The Graph, and Why Hermetic](01-the-graph-and-why-hermetic.md) →

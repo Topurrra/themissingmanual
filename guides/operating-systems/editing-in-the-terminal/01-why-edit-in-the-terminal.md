@@ -123,7 +123,3 @@ Let's start with the editor you can use the moment you learn it.
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: nano - the gentle default →](02-nano-the-gentle-default.md)

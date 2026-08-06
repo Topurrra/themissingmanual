@@ -71,5 +71,3 @@ With one or two backend services, this is barely a problem - hardcode two addres
 ```
 
 *What just happened:* the gateway doesn't remove the complexity of having many services - that complexity is real and it's still there. What it does is move that complexity to one place, behind one door, instead of scattering it across every client that ever needs to talk to the backend. Phase 2 covers what actually happens at that door once traffic arrives there.
-
-[← Overview](_guide.md) | [Phase 2: What a gateway actually does →](02-what-a-gateway-actually-does.md)

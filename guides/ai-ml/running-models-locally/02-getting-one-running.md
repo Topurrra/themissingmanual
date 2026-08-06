@@ -122,7 +122,3 @@ Hello there, nice to meet!
 5. Anything that can make an HTTP request to `localhost` can use your local model.
 
 You can pull a model and talk to it from code. The open question is *which* models your machine can actually handle - and that's pure hardware. Let's make it knowable.
-
----
-
-[← Phase 1: Why (and Why Not) Run Locally](01-why-run-locally.md) · [Guide overview](_guide.md) · [Phase 3: Hardware, Quantization & Reality →](03-hardware-and-quantization.md)

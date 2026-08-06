@@ -285,7 +285,3 @@ lines and you understand how all of deep learning actually trains.
   }
 ]
 ```
-
----
-
-[← Phase 5: Loss Functions & Optimizers](05-loss-and-optimizers.md) · [Guide overview](_guide.md) · [Phase 7: Data: Dataset & DataLoader →](07-datasets-and-dataloaders.md)

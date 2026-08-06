@@ -257,7 +257,3 @@ Run the inspect-first sweep in your head and pick the best answer:
   }
 ]
 ```
-
----
-
-[← Phase 1: What pandas Is & the DataFrame](01-what-pandas-is.md) · [Guide overview](_guide.md) · [Phase 3: Selecting & Filtering →](03-selecting-and-filtering.md)

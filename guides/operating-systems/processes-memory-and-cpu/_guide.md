@@ -29,7 +29,3 @@ This guide builds on [What an Operating System Is](/guides/what-an-operating-sys
 3. **[What "Out of Memory" Really Means](03-what-out-of-memory-really-means.md)** - RAM vs. virtual memory, paging/swap and why swapping makes everything crawl, what "this app uses 4 GB" means, and the OOM killer - the OS killing a process to save itself.
 
 > This guide is about *diagnosis* - naming the culprit. Deep tuning (changing scheduler priorities with `nice`, sizing a swap file, configuring cgroup memory limits) is deferred to a follow-up guide; here we get you to "that process, right there."
-
----
-
-[Phase 1: Processes, Up Close →](01-processes-up-close.md)

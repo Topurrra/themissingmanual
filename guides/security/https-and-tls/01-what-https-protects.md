@@ -86,7 +86,3 @@ Once the model is right, two things get easier. You'll never be fooled by a padl
 4. The padlock means *encrypted to whoever holds the certificate* - **not** *this site is safe or trustworthy*.
 5. A scammer can get a valid padlock for a lookalike domain in minutes. Read the domain name yourself.
 6. HTTPS protects data **in transit only** - not the servers at the ends, not your own compromised laptop.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Handshake & Keys →](02-the-handshake-and-keys.md)

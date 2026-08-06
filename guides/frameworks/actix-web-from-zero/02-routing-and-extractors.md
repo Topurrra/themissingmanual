@@ -324,7 +324,3 @@ called `create_for_author`. List as many extractors as you need; they're just fu
   }
 ]
 ```
-
----
-
-[← Phase 1: What actix-web Is & Your First Server](01-what-actix-web-is.md) · [Guide overview](_guide.md) · [Phase 3: Responders →](03-responders.md)

@@ -208,7 +208,3 @@ Three questions on the ideas that have to stick before Phase 2:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: hyper: The HTTP Library →](02-hyper-the-http-library.md)

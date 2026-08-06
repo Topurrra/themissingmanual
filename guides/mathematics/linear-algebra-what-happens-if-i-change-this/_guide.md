@@ -29,7 +29,3 @@ This is the sixth guide in the Mathematics track. It assumes nothing beyond the 
 3. **[Why This Is Everywhere](03-why-this-is-everywhere.md)** - PageRank, recommendation systems, neural networks, and the builder's guide to seeing linear algebra in the wild.
 
 > This builds on [Numbers & Number Systems](/guides/numbers-and-number-systems) (coordinates as numbers) and pairs with [Counting & Combinatorics](/guides/counting-and-combinatorics) (dimensions as choices). It sets up the machinery behind much of modern computing.
-
----
-
-[Phase 1: Vectors as Arrows in the Real World →](01-vectors-as-arrows-in-the-real-world.md)

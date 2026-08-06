@@ -106,7 +106,3 @@ Read calmly, in order - error line, crash point, your code, then *downward* towa
 3. **`Caused by:` / chained exceptions:** the **deepest cause is the real root**; read it first, fix the bottom, the chain collapses.
 4. An **all-library trace** almost always means **you passed the library bad input** - find your call into it and check what you sent.
 5. Close the loop: **reproduce** the failure using the trace as a recipe, and **search the error type + message** (the generic shape, not your unique details).
-
----
-
-[← Guide overview](_guide.md) · [Related: How to Reproduce a Bug →](/guides/how-to-reproduce-a-bug)

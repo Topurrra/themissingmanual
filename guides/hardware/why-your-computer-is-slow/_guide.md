@@ -24,5 +24,3 @@ Read the three phases in order. The first gives you the one idea that makes ever
 1. [The bottleneck: your computer is only as fast as its slowest link](01-the-bottleneck-mental-model.md)
 2. [Reading the gauges: Task Manager and Activity Monitor](02-reading-the-gauges.md)
 3. [The verdict: what to actually upgrade](03-what-to-upgrade.md)
-
-[Phase 1: The bottleneck](01-the-bottleneck-mental-model.md) →

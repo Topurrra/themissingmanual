@@ -112,7 +112,3 @@ Fixing this means giving up the database's automatic guarantee and building your
 You've now seen both architectures fairly, with their wins and their bills laid side by side. The last phase is the one that actually helps: how to choose for *your* team, and the two traps that catch people who choose for the wrong reasons.
 
 > The "talk over the network" glue - message queues, event-driven communication, and how services stay loosely coupled - is its own topic. See [Webhooks and Message Queues](/guides/webhooks-and-message-queues). For how to scale any single service well (which a monolith needs too), see [Designing for Scale](/guides/designing-for-scale).
-
----
-
-[← Phase 1: The Monolith](01-the-monolith.md) · [Guide overview](_guide.md) · [Phase 3: How to Actually Choose →](03-how-to-actually-choose.md)

@@ -197,7 +197,3 @@ API so you land in step 1 far more often than step 2.
    your announcements.
 
 Watch it animated: [API versioning](/explainers/APIVersioning.dc.html)
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: Designing for Longevity →](03-designing-for-longevity.md)

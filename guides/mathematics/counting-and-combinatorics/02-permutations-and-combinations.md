@@ -208,5 +208,3 @@ Quick check before moving on:
   }
 ]
 ```
-
-[← Phase 1: The Multiplication Principle](01-the-multiplication-principle.md) · [Guide overview](_guide.md) · [Phase 3: Why Counting Matters →](03-why-counting-matters.md)

@@ -44,7 +44,3 @@ everyone exactly once.
 > Deeper material - *how* to store production secrets safely (vaults, encrypted secrets, cloud secret
 > managers) - lives in its own guide: [Secrets Management](/guides/secrets-management). This guide gets
 > you to the point where you understand *why* secrets belong in config and out of Git.
-
----
-
-[Phase 1: Why Config Lives Outside Code →](01-why-config-lives-outside-code.md)

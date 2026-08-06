@@ -58,7 +58,3 @@ configured REST API. Phases carry difficulty badges.
 > The throughline: an **attribute is the route**, the **function signature is the request** (params +
 > guards), the **return type is the response**, and macros wire it together. Concise Rust web code, with
 > the magic now explained.
-
----
-
-[Phase 1: What Rocket Is & Your First Server →](01-what-rocket-is.md)

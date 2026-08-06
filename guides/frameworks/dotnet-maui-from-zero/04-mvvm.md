@@ -192,5 +192,3 @@ When you find yourself wanting UI in the ViewModel, that's the signal to extract
   }
 ]
 ```
-
-[← Phase 3: Controls & Data Binding](03-controls-and-data-binding.md) · [Guide overview](_guide.md) · [Phase 5: Navigation with Shell →](05-navigation-with-shell.md)

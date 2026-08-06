@@ -274,7 +274,3 @@ Test yourself on the three ideas that make this phase tick - capturing, laziness
   }
 ]
 ```
-
----
-
-[← Phase 14: Fearless Concurrency](14-fearless-concurrency.md) · [Guide overview](_guide.md) · [Phase 16: Macros & Metaprogramming →](16-macros.md)

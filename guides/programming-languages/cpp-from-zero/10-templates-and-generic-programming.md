@@ -243,7 +243,3 @@ Test yourself on the idea that makes everything else in this phase click - that 
   }
 ]
 ```
-
----
-
-[← Phase 9: Operator Overloading](09-operator-overloading.md) · [Phase 11: The STL - Containers →](11-the-stl-containers.md)

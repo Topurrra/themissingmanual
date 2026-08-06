@@ -188,5 +188,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Phase 1: Vectors as Arrows in the Real World](01-vectors-as-arrows-in-the-real-world.md) · [Guide overview](_guide.md) · [Phase 3: Why This Is Everywhere →](03-why-this-is-everywhere.md)

@@ -173,7 +173,3 @@ The four axes that actually separate languages:
 
 Hold these four in your head. In the next phase, our four languages stop being names and become coordinates:
 Python here, JavaScript there, Go and Rust over here - each a deliberate set of bets on these very axes.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Four, Plainly →](02-the-four-plainly.md)

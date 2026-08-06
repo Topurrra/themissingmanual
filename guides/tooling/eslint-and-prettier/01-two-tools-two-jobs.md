@@ -98,5 +98,3 @@ If your project uses JavaScript or TypeScript - a Node service, a React app, a C
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: Config and autofix](02-config-and-autofix.md) →

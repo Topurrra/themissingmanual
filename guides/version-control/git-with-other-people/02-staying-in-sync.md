@@ -171,7 +171,3 @@ won't bite anyone.
 
 You can now keep your branch healthy and current while the team moves around you. The last step is getting
 your finished work *into* `main` - through a pull request.
-
----
-
-[← Phase 1: The Feature-Branch Workflow](01-the-feature-branch-workflow.md) · [Guide overview](_guide.md) · [Phase 3: Pull Requests & Review →](03-pull-requests-and-review.md)

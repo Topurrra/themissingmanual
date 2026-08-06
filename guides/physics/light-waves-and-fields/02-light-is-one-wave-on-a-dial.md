@@ -122,5 +122,3 @@ Every pixel on your screen is the amplitude trio of three frequencies, red, gree
   }
 ]
 ```
-
-[← Phase 1: What a wave actually is](01-what-a-wave-actually-is.md) | [Overview](_guide.md) | [Phase 3: When waves meet themselves →](03-when-waves-meet-themselves.md)

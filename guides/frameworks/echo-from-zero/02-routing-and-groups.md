@@ -258,5 +258,3 @@ write `authMiddleware`, is Phase 5.** For now, hold the shape: groups bundle a p
   }
 ]
 ```
-
-[← Phase 1: What Echo Is & Your First Server](01-what-echo-is.md) · [Guide overview](_guide.md) · [Phase 3: Binding & Validation →](03-binding-and-validation.md)

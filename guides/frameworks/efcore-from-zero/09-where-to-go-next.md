@@ -142,7 +142,3 @@ One last check - on how EF Core shows up in real .NET apps:
   }
 ]
 ```
-
----
-
-[← Phase 8: Transactions & Migrations in Production](08-transactions-and-migrations.md) · [Guide overview](_guide.md)

@@ -123,7 +123,3 @@ That's the no-nonsense measurement discipline. Now that you can see *where* the 
   }
 ]
 ```
-
----
-
-[← Phase 1: Perceived Performance and the Three Vitals](01-perceived-performance-and-the-three-vitals.md) · [Overview](_guide.md) · [Phase 3: The Levers That Move the Numbers →](03-the-levers-that-move-the-numbers.md)

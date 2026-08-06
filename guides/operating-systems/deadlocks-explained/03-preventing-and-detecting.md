@@ -91,5 +91,3 @@ A process that's frozen with no errors, no crash, and low CPU usage is the class
 > The fix for a live production deadlock is never "wait longer" - a true deadlock never resolves on its own. The fix is restart the stuck process to unblock users immediately, then use the thread dump you captured *before* restarting to find and fix the lock-ordering bug.
 
 Once you've found the offending pair of locks, the fix is almost always one of the two techniques from earlier in this phase: reorder the acquisition to match the rest of the codebase, or wrap the second acquisition in a timeout. Deadlocks are unusual among production bugs in that the fix is rarely complicated - the hard part is entirely in locating which two lock acquisitions formed the cycle.
-
-[← Phase 2: The four conditions that must all be true](02-the-four-conditions.md) | [Overview](_guide.md)

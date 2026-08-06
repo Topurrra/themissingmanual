@@ -90,5 +90,3 @@ The most senior move in this guide is knowing when to skip it. Event-driven arch
   }
 ]
 ```
-
-[← Phase 2: How Events Really Flow](02-how-events-flow.md) | [Overview](_guide.md)

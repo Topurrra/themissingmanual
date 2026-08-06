@@ -136,5 +136,3 @@ The plugin ecosystem is the other half of pytest's pull. A few you'll meet on re
   }
 ]
 ```
-
-[← Phase 2: The everyday core](02-fixtures-parametrize-marks.md) | [Overview](_guide.md)

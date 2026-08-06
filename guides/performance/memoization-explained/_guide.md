@@ -30,5 +30,3 @@ Phase 1 introduces the core idea through naive recursive Fibonacci - the textboo
 1. [Don't compute the same answer twice](01-dont-compute-twice.md) - the core idea, with exponential recursive Fibonacci as the motivating example.
 2. [How to actually implement it](02-how-to-implement-it.md) - a cache keyed by arguments, decorators, and the purity requirement.
 3. [When it backfires](03-when-it-backfires.md) - unbounded memory, false purity, and memoization vs. general caching.
-
-[Phase 1: Don't compute the same answer twice](01-dont-compute-twice.md) →

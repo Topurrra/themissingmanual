@@ -182,7 +182,3 @@ Test yourself on the idea that ties this whole phase together - the compiler doi
   }
 ]
 ```
-
----
-
-[← Phase 1: Compiling & Your First Program](01-compiling-and-your-first-program.md) · [Phase 3: Types, Variables & Control Flow →](03-types-variables-and-control-flow.md)

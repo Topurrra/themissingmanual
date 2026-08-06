@@ -55,7 +55,3 @@ You came in not knowing Go. You're leaving able to read it, write it idiomatical
 3. **Cloud & infra** - Go's home turf; Docker and Kubernetes are written in Go, and much of the cloud-native stack with them.
 4. **Build one real thing** - a JSON API, a CLI, or a concurrent fetcher - and finish it, leaning on the standard library and the toolchain.
 5. **Next reading** - A Tour of Go and Effective Go for depth; [Languages, Explained Like a Human](/guides/languages-explained-like-a-human) for the bigger picture.
-
----
-
-[← Phase 17: Performance & Optimization](17-performance-and-optimization.md) · [Guide overview](_guide.md)

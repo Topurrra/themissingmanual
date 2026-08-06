@@ -173,5 +173,3 @@ A common production shape: one realm for customers with self-signup and social l
   }
 ]
 ```
-
-[← Phase 1: Stop Building Auth](01-stop-building-auth.md) | [Overview](_guide.md) | [Phase 3: Managed vs Self-Hosted →](03-managed-vs-self-hosted.md)

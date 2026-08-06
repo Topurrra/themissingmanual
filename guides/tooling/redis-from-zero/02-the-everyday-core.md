@@ -184,5 +184,3 @@ Phase 3 is the part people skip and then learn the hard way: what Redis actually
   }
 ]
 ```
-
-[← Phase 1: The mental model](01-the-mental-model.md) | [Overview](_guide.md) | [Phase 3: Production reality →](03-production-reality.md)

@@ -140,5 +140,3 @@ A genuinely zero-downtime release is the strategy from Phase 2 *plus* this phase
   }
 ]
 ```
-
-[← Phase 2: The Three Strategies](02-the-three-strategies.md) | [Overview](_guide.md)

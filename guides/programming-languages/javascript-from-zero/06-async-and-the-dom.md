@@ -181,7 +181,3 @@ Async code fails in its own particular ways, which is exactly where the next pha
 3. **`await`** pauses an `async` function until a Promise settles and hands you the value - forgetting it gives you the Promise itself, the #1 async bug.
 4. The **DOM** is the page as a live tree of objects: **select** (`querySelector`), **change** (`textContent`), **respond** (`addEventListener`).
 5. Everyday browser pattern: **click → `await fetch` → update the DOM**, wrapped in `try/catch`, page never freezing.
-
----
-
-[← Phase 5: Modules & Project Layout](05-modules-and-project-layout.md) · [Guide overview](_guide.md) · [Phase 7: Errors & I/O →](07-errors-and-io.md)

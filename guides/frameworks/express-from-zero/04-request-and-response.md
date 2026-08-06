@@ -188,5 +188,3 @@ shape once and validate against it.
   }
 ]
 ```
-
-[← Phase 3: Middleware](03-middleware.md) · [Guide overview](_guide.md) · [Phase 5: Building a REST API →](05-building-a-rest-api.md)

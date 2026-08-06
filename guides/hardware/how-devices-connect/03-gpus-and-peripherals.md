@@ -131,7 +131,3 @@ That's the whole picture: the universal door (USB), the internal highway (PCIe),
 (GPU), and the standard-class trick that makes peripherals plug-and-play.
 
 Watch it animated: [CPU vs. GPU](/explainers/CPUvsGPU.dc.html)
-
----
-
-[← Phase 2: PCIe - the High-Speed Internal Highway](02-pcie-the-internal-highway.md) · [Guide overview](_guide.md)

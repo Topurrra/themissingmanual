@@ -133,7 +133,3 @@ log "Starting backup of $SOURCE_DIR"
 4. These safety properties matter *more* the less you're watching - which is the whole point of scheduling.
 
 That's the arc: notice the repeated task (Phase 1), turn it into a safe bash script (Phase 2), and know when to upgrade to Python and how to schedule it safely (here). You now have what you need to start deleting boring tasks from your week - carefully.
-
----
-
-[← Phase 2: Shell Scripting Essentials](02-shell-scripting-essentials.md) · [Guide overview](_guide.md)

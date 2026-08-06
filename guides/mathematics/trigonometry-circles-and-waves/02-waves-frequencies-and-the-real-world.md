@@ -154,5 +154,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Phase 1: The Unit Circle and Why Sine/Cosine Exist](01-the-unit-circle-and-why-sine-cosine-exist.md) · [Guide overview](_guide.md) · [Phase 3: Rotation, Navigation, and Where Am I Facing →](03-rotation-navigation-and-where-am-i-facing.md)

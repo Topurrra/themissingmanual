@@ -186,7 +186,3 @@ four jobs solid here, and every one of those libraries will feel like review.
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Mapping Objects to Tables →](02-mapping-objects-to-tables.md)

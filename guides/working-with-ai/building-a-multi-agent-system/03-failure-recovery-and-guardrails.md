@@ -133,7 +133,3 @@ None of these guardrails are exotic - timeouts, retry limits, independent valida
   }
 ]
 ```
-
----
-
-[← Phase 2: Orchestration Patterns](02-orchestration-patterns.md) · [Guide overview](_guide.md)

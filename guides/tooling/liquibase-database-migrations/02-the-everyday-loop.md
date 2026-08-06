@@ -169,5 +169,3 @@ write changeset  →  liquibase update-sql   (preview, runs nothing)
   }
 ]
 ```
-
-[← Phase 1: The mental model](01-the-changelog-and-the-changeset.md) | [Overview](_guide.md) | [Phase 3: When abstraction earns its keep →](03-when-abstraction-earns-its-keep.md)

@@ -134,7 +134,3 @@ actually use the thing. Once internalized, it stops registering as friction.
 
 Next: named values, their types, and the zero-value rule - Go variables are never mysteriously
 uninitialized.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Syntax, Values & Types →](02-syntax-values-and-types.md)

@@ -191,5 +191,3 @@ With shared state and lifecycle hooks in hand, the books API has a real spine. N
   }
 ]
 ```
-
-[← Phase 4: Responders](04-responders.md) · [Guide overview](_guide.md) · [Phase 6: A REST API with Error Catchers →](06-rest-api-and-catchers.md)

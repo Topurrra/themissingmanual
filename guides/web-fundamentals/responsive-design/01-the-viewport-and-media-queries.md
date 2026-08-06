@@ -166,7 +166,3 @@ Check your understanding of the viewport tag and media queries:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Fluid Layouts →](02-fluid-layouts.md)

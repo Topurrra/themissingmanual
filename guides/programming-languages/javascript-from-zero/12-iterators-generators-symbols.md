@@ -287,7 +287,3 @@ Test yourself on the ideas that make `for...of` and generators tick:
   }
 ]
 ```
-
----
-
-[← Phase 11: this, Prototypes & the Object Model](11-this-prototypes-and-objects.md) · [Guide overview](_guide.md) · [Phase 13: The Event Loop, Deep →](13-the-event-loop-deep.md)

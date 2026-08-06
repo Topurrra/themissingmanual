@@ -214,7 +214,3 @@ So the rule of thumb:
   }
 ]
 ```
-
----
-
-[← Phase 2: Async, Await & Futures](02-async-await-futures.md) · [Guide overview](_guide.md) · [Phase 4: The Runtime & Scheduler →](04-runtime-and-scheduler.md)

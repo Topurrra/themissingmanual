@@ -181,7 +181,3 @@ This `Buffer` has no destructor, no copy operations, no move operations - and is
   }
 ]
 ```
-
----
-
-[← Phase 7: Constructors, Destructors & RAII](07-constructors-destructors-and-raii.md) · [Phase 9: Operator Overloading →](09-operator-overloading.md)

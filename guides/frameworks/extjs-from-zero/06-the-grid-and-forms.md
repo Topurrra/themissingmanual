@@ -253,7 +253,3 @@ Lock in what binds to what, and how an edit actually reaches the server:
   }
 ]
 ```
-
----
-
-[← Phase 5: The Data Package](05-the-data-package.md) · [Guide overview](_guide.md) · [Phase 7: MVVM: ViewControllers, ViewModels & Binding →](07-mvvm-and-binding.md)

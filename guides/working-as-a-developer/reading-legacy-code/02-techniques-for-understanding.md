@@ -94,7 +94,3 @@ These refactors aren't the goal. They're a forcing function: you can't safely re
   }
 ]
 ```
-
----
-
-[← Phase 1: Where to Start When You Don't Understand Any of It](01-where-to-start.md) · [Guide overview](_guide.md) · [Phase 3: When (and When Not) to Rewrite →](03-when-to-rewrite.md)

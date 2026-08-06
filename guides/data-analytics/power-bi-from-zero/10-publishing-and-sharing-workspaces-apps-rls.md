@@ -134,7 +134,3 @@ The `[Region] = "East"` role above is **static**: one role per region, and you m
   }
 ]
 ```
-
----
-
-[← Phase 9: Building Reports & Dashboards](09-building-reports-and-dashboards.md) · [Phase 11: Refresh, Gateways & Capacity Basics →](11-refresh-gateways-and-capacity-basics.md)

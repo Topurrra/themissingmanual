@@ -123,7 +123,3 @@ That's the practical payoff of splitting the feeling into three: when someone sa
   }
 ]
 ```
-
----
-
-[← Overview](_guide.md) · [Phase 2: Measuring What Users Feel →](02-measuring-what-users-feel.md)

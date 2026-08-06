@@ -125,7 +125,3 @@ reason the whole ecosystem exists and the reason Linux ended up everywhere.
 
 Now that you know what you're sitting in front of, let's move around inside it - starting with a filesystem
 layout that catches every newcomer off guard.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Getting Around →](02-getting-around.md)

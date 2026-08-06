@@ -61,7 +61,3 @@ Phases carry difficulty badges; the 🔴 ones (autograd, the loop, performance) 
 
 > Tensors, autograd, the loop. Everything in deep learning - from a 3-line model to a giant LLM - is those
 > three ideas at scale. This guide makes them yours.
-
----
-
-[Phase 1: What PyTorch Is & Tensors →](01-what-pytorch-is-and-tensors.md)

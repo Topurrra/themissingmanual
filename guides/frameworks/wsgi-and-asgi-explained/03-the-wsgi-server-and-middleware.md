@@ -173,7 +173,3 @@ See whether the two big ideas - the server that calls your app, and the app that
   }
 ]
 ```
-
----
-
-[← Phase 2: A WSGI App From Scratch](02-a-wsgi-app-from-scratch.md) · [Guide overview](_guide.md) · [Phase 4: Why ASGI Exists →](04-why-asgi-exists.md)

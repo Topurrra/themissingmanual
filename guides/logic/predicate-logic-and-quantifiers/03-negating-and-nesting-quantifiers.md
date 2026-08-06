@@ -238,5 +238,3 @@ Three to lock it in:
   }
 ]
 ```
-
-[← Phase 2: Quantifiers: For All and There Exists](02-quantifiers-for-all-there-exists.md) · [Guide overview](_guide.md)

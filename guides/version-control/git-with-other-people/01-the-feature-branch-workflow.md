@@ -167,10 +167,6 @@ state. The catch is that `main` doesn't sit still while you work. Keeping up wit
 
 Watch it animated: [branching](/explainers/Branching.dc.html)
 
----
-
-[← Guide overview](_guide.md) · [Phase 2: Staying in Sync →](02-staying-in-sync.md)
-
 ## Try it yourself
 
 Run commands and watch the history graph build - `commit -m "first"`, `branch dev`, `checkout dev`, `commit -m "work"`, `checkout main`, `merge dev`:

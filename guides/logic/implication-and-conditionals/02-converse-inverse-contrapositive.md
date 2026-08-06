@@ -221,5 +221,3 @@ A quick check before you move on.
   }
 ]
 ```
-
-[← Phase 1: What "If P Then Q" Really Means](01-what-if-p-then-q-means.md) · [Guide overview](_guide.md) · [Phase 3: Necessary vs Sufficient Conditions →](03-necessary-and-sufficient.md)

@@ -57,7 +57,3 @@ deployable project. Phases carry difficulty badges.
 
 > The throughline: Flask is a small core plus your chosen extensions. That makes it the clearest window
 > into what every web framework is doing - and a joy for anything that doesn't need the whole workshop.
-
----
-
-[Phase 1: What Flask Is & Your First App →](01-what-flask-is.md)

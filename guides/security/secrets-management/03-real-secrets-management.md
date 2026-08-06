@@ -90,7 +90,3 @@ Here's the mindset shift that separates anxious teams from calm ones. Don't trea
 ## That's the whole skill
 
 Look back at where you started: a hardcoded key and a sinking feeling. Now you can name what a secret is, keep keys out of your code and out of Git, know that a committed secret means *rotate, not delete*, and understand how teams store, scope, inject, and rotate secrets so a leak is contained and recoverable. Treat every secret like a house key, and you'll sleep fine.
-
----
-
-[← Phase 2: Keep Them Out of Code](02-keep-them-out-of-code.md) · [Guide overview](_guide.md)

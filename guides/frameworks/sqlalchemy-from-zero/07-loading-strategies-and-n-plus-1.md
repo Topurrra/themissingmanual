@@ -320,7 +320,3 @@ Lock in the one idea that wrecks more SQLAlchemy apps than any other:
   }
 ]
 ```
-
----
-
-[← Phase 6: Relationships](06-relationships.md) · [Guide overview](_guide.md) · [Phase 8: Migrations with Alembic →](08-migrations-with-alembic.md)

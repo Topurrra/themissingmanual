@@ -127,7 +127,3 @@ moment.
    to.
 
 Watch it animated: [continuous integration](/explainers/CICD.dc.html)
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: CD - Delivery vs Deployment →](02-delivery-vs-deployment.md)

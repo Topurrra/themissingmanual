@@ -81,5 +81,3 @@ If you have ever called a gRPC service, you have used Protobuf without writing a
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Using them day to day →](02-using-protobuf-and-avro.md)

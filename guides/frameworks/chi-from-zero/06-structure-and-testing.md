@@ -261,5 +261,3 @@ func TestCreateArticle(t *testing.T) {
   }
 ]
 ```
-
-[← Phase 5: Building a REST API](05-building-a-rest-api.md) · [Guide overview](_guide.md) · [Phase 7: Where to Go Next →](07-where-to-go-next.md)

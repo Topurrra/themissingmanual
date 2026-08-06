@@ -156,7 +156,3 @@ Test the big picture before moving on:
 Both layout systems assume a page that already reflows sensibly at different sizes. For the full
 picture on breakpoints, fluid units, and mobile-first design, see
 [Responsive Design](/guides/responsive-design).
-
----
-
-[← Phase 3: CSS Grid: Two-Dimensional Layout](03-css-grid-two-dimensional-layout.md) · [Guide overview](_guide.md)

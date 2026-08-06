@@ -137,7 +137,3 @@ by knowing where things actually are.
 
 Next, we'll use this map to answer the most surprising "where do things live?" question on the Mac - what
 a `.app` *actually* is, and the maze of `Library` folders.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Apps, Bundles & Where Things Live →](02-apps-bundles-and-where-things-live.md)

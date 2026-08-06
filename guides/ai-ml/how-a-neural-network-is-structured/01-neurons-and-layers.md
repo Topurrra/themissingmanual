@@ -77,5 +77,3 @@ The word "network" is doing real work here, not just sounding technical. A neuro
 This matters structurally because it means a single input value can influence *every* neuron in the next layer, and by extension, every neuron after that, all the way to the output. No one hidden neuron sees "the whole picture" of the input on its own, but by the time you reach the output layer, every output number has been shaped, in some tiny way, by every input number. That's the structural reason a network can represent something as complicated as "is this a picture of a cat" from raw pixel values: not because any one neuron is smart, but because there are enormous numbers of these small connections layered on top of each other.
 
 The remaining question - and it's the one that actually gives a neuron its computational power - is what exactly a neuron *does* with the numbers arriving on all those input connections before it produces its one output number. That's Phase 2.
-
-[← Overview](_guide.md) | [Phase 2: Weights, biases, and activation functions →](02-weights-and-activations.md)

@@ -126,5 +126,3 @@ This connects directly to [/guides/secrets-management](/guides/secrets-managemen
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Pinning, scanning, and seeing what you ship →](02-everyday-defenses.md)

@@ -135,5 +135,3 @@ You don't need to adopt the whole toolchain to get value. The cheapest possible 
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: Writing and Generating From the Spec →](02-writing-and-generating.md)

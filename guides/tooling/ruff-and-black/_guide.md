@@ -27,5 +27,3 @@ If you have never set up a Python project before, skim [/guides/python-from-zero
 1. [What a formatter and a linter actually do](01-formatter-vs-linter.md)
 2. [The everyday workflow](02-the-everyday-workflow.md)
 3. [Pre-commit, CI, and the gotchas](03-pre-commit-ci-and-gotchas.md)
-
-[Phase 1: What a formatter and a linter actually do](01-formatter-vs-linter.md) →

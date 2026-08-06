@@ -213,7 +213,3 @@ five fields. Next, let's actually send this request, two different ways.
 5. **Auth** is the secret you attach (usually `Authorization: Bearer <token>`) - treat it like a
    password.
 6. The **example** shows it all assembled correctly and tells you the response shape in advance.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Making the Request (Postman & curl) →](02-making-the-request.md)

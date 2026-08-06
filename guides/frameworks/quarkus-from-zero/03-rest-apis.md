@@ -222,7 +222,3 @@ Make sure the Quarkus-flavored bits stuck:
   }
 ]
 ```
-
----
-
-[← Phase 2: Dev Mode & the Developer Experience](02-dev-mode-and-dx.md) · [Guide overview](_guide.md) · [Phase 4: CDI in Quarkus (ArC) →](04-cdi-with-arc.md)

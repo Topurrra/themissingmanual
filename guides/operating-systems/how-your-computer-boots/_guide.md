@@ -32,5 +32,3 @@ Read it start to finish; the phases build on each other. Phase 1 covers the mome
 1. [Power to POST to firmware](01-power-to-post.md) - what BIOS/UEFI actually does before anything else can run.
 2. [The bootloader's job](02-the-bootloader.md) - finding and loading the kernel, and what a dual-boot menu really is.
 3. [Kernel init to login screen](03-kernel-init-to-login.md) - the kernel taking over hardware and handing off to init/systemd or Windows' session manager.
-
-[Phase 1: Power to POST to firmware](01-power-to-post.md) →

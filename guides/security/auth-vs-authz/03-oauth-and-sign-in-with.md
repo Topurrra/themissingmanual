@@ -109,7 +109,3 @@ So "Sign in with Google" is **OIDC** (authentication) doing the login. "Connect 
 7. **Keep tokens on HTTPS, keep secrets out of JWTs, and don't roll your own auth** - understand the flow, then use a trusted library or provider.
 
 That's the whole landscape: who you are versus what you can do (Phase 1), how a server remembers you (Phase 2), and how access gets delegated across services (Phase 3). You can now reason about any auth system instead of half-understanding it.
-
----
-
-[← Phase 2: Keeping You Logged In](02-sessions-vs-tokens.md) · [Guide overview](_guide.md)

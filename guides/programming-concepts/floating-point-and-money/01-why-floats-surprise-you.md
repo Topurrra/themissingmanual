@@ -107,5 +107,3 @@ That's a fantastic trade for measuring, simulating, and rendering - places where
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Where It Bites →](02-where-it-bites.md)

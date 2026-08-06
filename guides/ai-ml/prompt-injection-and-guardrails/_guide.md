@@ -29,5 +29,3 @@ This guide assumes you're comfortable calling a model from code. If you're not y
 1. **[Why the Model Can't Tell Instructions From Data](01-instructions-vs-data.md)** - the one structural fact that makes everything else make sense: to an LLM, your instructions and the attacker's text arrive as the same undifferentiated stream of tokens. There's no privileged channel.
 2. **[How Injection Actually Works](02-how-injection-works.md)** - direct injection (the user types the attack) and indirect injection (it hides in a fetched page or document). What an attacker is after: hijacked actions and data exfiltration. Why "please ignore bad instructions" doesn't save you.
 3. **[Guardrails That Hold](03-guardrails-that-hold.md)** - the defenses that actually work: separate trust levels, least-privilege tools, output validation, human-in-the-loop for risky actions, and limiting the blast radius. The security model, not a magic prompt.
-
-[Phase 1: Why the Model Can't Tell Instructions From Data](01-instructions-vs-data.md) →

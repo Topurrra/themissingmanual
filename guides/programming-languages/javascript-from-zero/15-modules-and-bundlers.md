@@ -252,7 +252,3 @@ Test yourself on the idea that powers this phase - static structure and what it 
   }
 ]
 ```
-
----
-
-[← Phase 14: Functional JavaScript](14-functional-javascript.md) · [Guide overview](_guide.md) · [Phase 16: Performance & Memory →](16-performance-and-memory.md)

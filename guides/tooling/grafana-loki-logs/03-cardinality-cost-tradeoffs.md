@@ -119,5 +119,3 @@ ingestion rejected               per-stream or per-tenant rate limits hit
   }
 ]
 ```
-
-[← Phase 2: Shipping logs and querying with LogQL](02-shipping-and-querying-logql.md) · [Overview](_guide.md)

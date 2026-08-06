@@ -154,7 +154,3 @@ Deeper scripting - variables, loops, functions, error handling, writing real aut
 4. Scripts are `.ps1` files; the first run usually hits the **execution policy** block. ⚠️ Fix it deliberately with `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` - not by turning the safety off entirely.
 
 > ⏭️ **Where next.** For the shell concepts underneath all this (what a prompt, a path, and a pipe really are), see [The Terminal & Shell](/guides/the-terminal-and-shell). To compare how the *other* big OSes do the same jobs, see [macOS Under the Hood](/guides/macos-under-the-hood) and the foundation in [What an Operating System Is](/guides/what-an-operating-system-is).
-
----
-
-[← Phase 2: Services, Task Manager & the Registry](02-services-task-manager-registry.md) · [Guide overview](_guide.md)

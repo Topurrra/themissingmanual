@@ -182,7 +182,3 @@ provider actually wraps the part of the tree you're standing in.
   }
 ]
 ```
-
----
-
-[← Phase 6: Effects](06-effects.md) · [Guide overview](_guide.md) · [Phase 8: When React Breaks →](08-when-it-breaks.md)

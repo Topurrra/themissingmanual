@@ -236,5 +236,3 @@ Check yourself before moving on:
   }
 ]
 ```
-
-[← Phase 1: What Express Is & Your First Server](01-what-express-is.md) · [Guide overview](_guide.md) · [Phase 3: Middleware →](03-middleware.md)

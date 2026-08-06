@@ -25,5 +25,3 @@ Read it in order - each phase builds the model the next one assumes. Phase 1 is 
 1. [The mental model: one RAM-speed dictionary](01-the-mental-model.md) - why Redis is fast, why single-threaded is a feature, and the data types as the whole point.
 2. [The everyday core: caching, TTLs, and the patterns](02-the-everyday-core.md) - cache-aside, expiry, eviction, pub/sub and streams, and the day-to-day commands.
 3. [Production reality: persistence, locks, and the sharp edges](03-production-reality.md) - RDB vs AOF, what you lose on a crash, distributed locks and their caveats.
-
-[Phase 1: The mental model: one RAM-speed dictionary](01-the-mental-model.md) →

@@ -122,7 +122,3 @@ experience instead of opinions.
 You came in facing a wall of equally-loud options. You leave with a map, four clear profiles, and a way to
 choose on purpose. The best next step isn't more comparing - it's writing your first real program in whichever
 one you picked. Go build something.
-
----
-
-[← Phase 2: The Four, Plainly](02-the-four-plainly.md) · [Guide overview](_guide.md)

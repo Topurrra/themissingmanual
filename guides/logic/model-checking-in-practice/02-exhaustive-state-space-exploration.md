@@ -133,5 +133,3 @@ deployment size on earth.
   }
 ]
 ```
-
-[← Phase 1: Writing a Real Spec](01-writing-a-real-spec.md) · [Guide overview](_guide.md) · [Phase 3: A Real Concurrency Bug, Caught Before Code →](03-a-real-concurrency-bug-caught-before-code.md)

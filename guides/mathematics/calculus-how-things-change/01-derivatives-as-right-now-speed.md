@@ -131,5 +131,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Optimization and What Is the Best I Can Do →](02-optimization-and-whats-the-best-i-can-do.md)

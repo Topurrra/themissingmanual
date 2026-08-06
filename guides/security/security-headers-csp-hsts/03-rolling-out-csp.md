@@ -124,5 +124,3 @@ CSP is one of the controls behind the injection and misconfiguration entries on 
   }
 ]
 ```
-
-[← Phase 2: The Everyday Hardening Set](02-the-everyday-set.md) · [Guide overview](_guide.md)

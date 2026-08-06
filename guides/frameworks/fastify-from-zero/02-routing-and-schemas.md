@@ -213,5 +213,3 @@ This filtering is actually a feature once you expect it: it's a quiet security d
   }
 ]
 ```
-
-[← Phase 1: What Fastify Is & Your First Server](01-what-fastify-is.md) · [Guide overview](_guide.md) · [Phase 3: The Plugin System →](03-the-plugin-system.md)

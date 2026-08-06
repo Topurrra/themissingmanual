@@ -133,5 +133,3 @@ None of these are wrong choices in every situation - a bank account and a forum 
 ```
 
 Watch it animated: [two-factor authentication](/explainers/TwoFactor.dc.html)
-
-[← Phase 1: One secret isn't enough](01-one-secret-isnt-enough.md) | [Overview](_guide.md) | [Phase 3: What this means for you →](03-what-this-means-for-you.md)

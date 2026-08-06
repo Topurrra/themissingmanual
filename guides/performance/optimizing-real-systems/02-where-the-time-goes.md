@@ -185,7 +185,3 @@ this guide: the cheapest, fastest, most reliable work is the work you found a wa
 Next: you've made the change and the benchmark looks great. Now make sure it's actually faster *in
 production*, for real users - watching the right numbers, avoiding the traps that make a "win"
 worthless.
-
----
-
-[← Phase 1: The Optimization Loop](01-the-optimization-loop.md) · [Phase 3: Optimizing Safely in Production →](03-optimizing-safely-in-production.md)

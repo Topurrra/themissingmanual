@@ -185,7 +185,3 @@ error, same skill scaled up.
   files and line numbers, how to read it to the real cause.
 - **[Reading Logs Without Drowning](/guides/reading-logs-without-drowning)** - when the error is buried in
   thousands of lines of output, how to find the signal in the noise.
-
----
-
-[← Phase 2: The Common Error Families](02-common-families.md) · [Guide overview](_guide.md)

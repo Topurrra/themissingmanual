@@ -136,7 +136,3 @@ Test yourself on the move that shows up in all four patterns - widening a table 
   }
 ]
 ```
-
----
-
-[← Phase 2: CALCULATE and Context Transition](02-calculate-and-context-transition.md) · [Phase 4: Variables, Debugging & Readable DAX →](04-variables-debugging-and-readable-dax.md)

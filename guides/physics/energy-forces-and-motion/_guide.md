@@ -24,5 +24,3 @@ Read the three phases in order: what a force actually *is* and why a thing in mo
 1. [What a force really is (and why motion sticks)](01-what-a-force-really-is.md) - inertia, the first law, and why a spaceship coasts forever; the mental model that fixes most Newton confusion.
 2. [How forces change motion](02-how-forces-change-motion.md) - F = ma as a rule for *change*, equal-and-opposite pairs, and why a heavy door is hard to start and hard to stop.
 3. [Energy and momentum: the currencies that never vanish](03-energy-and-momentum.md) - energy as a conserved currency that converts but never disappears, momentum, and what seatbelts are really doing.
-
-[Phase 1: What a force really is (and why motion sticks)](01-what-a-force-really-is.md) →

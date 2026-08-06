@@ -197,7 +197,3 @@ it, and the `assert`s held, printing a green dot and `1 passed`. Break the math 
 
 Next: the part that makes code feel *Pythonic* - the idioms locals use, and the gotchas that bite
 everyone exactly once.
-
----
-
-[← Phase 7: Errors & I/O](07-errors-and-io.md) · [Guide overview](_guide.md) · [Phase 9: Idioms & Common Gotchas →](09-idioms-and-gotchas.md)

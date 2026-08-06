@@ -184,7 +184,3 @@ Resist inventing structure you don't need yet - let folders appear when the code
 
 Next: what makes JavaScript truly distinctive - doing things that take time (network calls, timers,
 clicks) without freezing, and reaching into a live web page from your code.
-
----
-
-[← Phase 4: Control Flow & Functions](04-control-flow-and-functions.md) · [Guide overview](_guide.md) · [Phase 6: Async & the DOM →](06-async-and-the-dom.md)

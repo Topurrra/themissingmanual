@@ -126,7 +126,3 @@ These five files are still pure `node:http`. Nothing changed about how the serve
   }
 ]
 ```
-
----
-
-[← Phase 5: A JSON REST API With No Framework](05-rest-api-no-framework.md) · [Guide overview](_guide.md) · [Phase 7: What Express Adds →](07-what-express-adds.md)

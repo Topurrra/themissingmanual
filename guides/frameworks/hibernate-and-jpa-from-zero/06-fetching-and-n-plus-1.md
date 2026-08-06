@@ -340,7 +340,3 @@ Lock in the one idea that wrecks more Hibernate apps than any other:
   }
 ]
 ```
-
----
-
-[← Phase 5: Mapping Relationships](05-mapping-relationships.md) · [Guide overview](_guide.md) · [Phase 7: Querying: JPQL, Criteria & Native SQL →](07-querying-jpql-criteria.md)

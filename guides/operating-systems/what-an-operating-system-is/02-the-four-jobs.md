@@ -129,7 +129,3 @@ through. That's the whole machine, named.
 
 Now let's stop describing and start *watching* - in the next phase you'll see these four jobs live on your
 own machine.
-
----
-
-[← Phase 1: The Manager in the Middle](01-the-manager-in-the-middle.md) · [Guide overview](_guide.md) · [Phase 3: See It Yourself →](03-see-it-yourself.md)

@@ -162,7 +162,3 @@ Same model, second interpreter: now let's hand untrusted input to a *browser* an
 wear its other costume.
 
 Watch it animated: [SQL injection](/explainers/SQLInjection.dc.html)
-
----
-
-[← Phase 1: The One Bug Underneath Both](01-the-one-bug-underneath-both.md) · [Guide overview](_guide.md) · [Phase 3: Cross-Site Scripting (XSS) →](03-cross-site-scripting.md)

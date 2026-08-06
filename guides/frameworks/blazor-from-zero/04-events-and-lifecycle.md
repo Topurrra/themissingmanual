@@ -304,5 +304,3 @@ the callback is on a background thread, and Blazor's render must happen on its o
   }
 ]
 ```
-
-[← Phase 3: Data Binding](03-data-binding.md) · [Guide overview](_guide.md) · [Phase 5: Forms & Validation →](05-forms-and-validation.md)

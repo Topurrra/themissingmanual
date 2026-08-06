@@ -215,7 +215,3 @@ Make sure the production picture is solid before the guide wraps up:
   }
 ]
 ```
-
----
-
-[← Phase 9: Security with Spring Security](09-security-with-spring-security.md) · [Guide overview](_guide.md) · [Phase 11: Where to Go Next →](11-where-to-go-next.md)

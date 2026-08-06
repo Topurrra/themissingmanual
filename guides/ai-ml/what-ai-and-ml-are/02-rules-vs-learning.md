@@ -98,7 +98,3 @@ Being clear-eyed matters here, because the hype pretends ML is always the answer
 5. The skill is **choosing the right one** - "use AI" is not automatically the smarter answer.
 
 We've said machine learning "learns the patterns." But it's worth being brutally clear about what that does and doesn't give you - because a pattern-learner that sounds human is easy to overtrust. That's next.
-
----
-
-[← Phase 1: AI vs ML vs Deep Learning vs LLMs](01-the-nested-circles.md) · [Phase 3: What AI Is and Isn't →](03-what-ai-is-and-isnt.md)

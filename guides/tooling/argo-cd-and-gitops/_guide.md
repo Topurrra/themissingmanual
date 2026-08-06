@@ -25,5 +25,3 @@ Read the three phases in order. Phase 1 builds the mental model so the rest stop
 1. [The pull model: Git as the source of truth](01-the-pull-model.md)
 2. [Your daily loop: apps, sync, and rollback](02-daily-loop.md)
 3. [When reconciliation bites: drift, waves, and secrets](03-when-it-bites.md)
-
-[Phase 1: The pull model: Git as the source of truth](01-the-pull-model.md) →

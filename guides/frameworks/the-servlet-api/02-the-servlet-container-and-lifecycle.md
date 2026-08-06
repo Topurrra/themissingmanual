@@ -274,7 +274,3 @@ Three questions on the model that explains half of Java web framework behaviour:
   }
 ]
 ```
-
----
-
-[← Phase 1: What a Servlet Is](01-what-a-servlet-is.md) · [Guide overview](_guide.md) · [Phase 3: Handling Requests with HttpServlet →](03-handling-requests.md)

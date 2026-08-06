@@ -114,5 +114,3 @@ where "look back" leaves off.
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The moves →](02-the-moves.md)

@@ -173,5 +173,3 @@ relativity every second to tell you where you are.
   }
 ]
 ```
-
-[← Phase 1: Special Relativity: One Rule, Strange Consequences](01-special-relativity-one-rule.md) · [Overview](_guide.md) · [Phase 3: The Evidence and the Everyday →](03-the-evidence-and-the-everyday.md)

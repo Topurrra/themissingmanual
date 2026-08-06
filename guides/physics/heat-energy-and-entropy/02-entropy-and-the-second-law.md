@@ -137,5 +137,3 @@ Energy is conserved, but its *usefulness* is not. Every time energy changes hand
   }
 ]
 ```
-
-[Next → Phase 3: The arrow of time](03-the-arrow-of-time.md)

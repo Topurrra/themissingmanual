@@ -161,7 +161,3 @@ console.log(renderToString(evil));
    thing; skipping `false`/`null` is why `&&`-rendering works.
 4. Escaping text at render time is why frameworks are XSS-safe by default.
 5. Descriptions are cheap and comparable - and comparing two of them is phase 4.
-
----
-
-[← Phase 2: Effects and Computed](02-effects-and-computed.md) · [Guide overview](_guide.md) · [Phase 4: The Diff →](04-the-diff.md)

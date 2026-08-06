@@ -152,7 +152,3 @@ When you're ready to actually sit down and write your first one start to finish,
 [Your First Unit Test](/guides/your-first-unit-test). And when you want the map of the different *kinds* of
 tests - unit, integration, end-to-end - and when to reach for each, read
 [Unit, Integration, and E2E](/guides/unit-integration-e2e).
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: What a Test Actually Is](02-what-a-test-actually-is.md)

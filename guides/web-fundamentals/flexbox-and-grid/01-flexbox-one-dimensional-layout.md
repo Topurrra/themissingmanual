@@ -207,7 +207,3 @@ Check your intuition with a quick quiz:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: When a Flex Item Won't Shrink →](02-when-a-flex-item-wont-shrink.md)

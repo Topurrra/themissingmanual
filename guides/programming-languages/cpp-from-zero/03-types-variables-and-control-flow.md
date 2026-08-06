@@ -176,7 +176,3 @@ None of this phase reinvents control flow - an `if` is still an `if`. What chang
   }
 ]
 ```
-
----
-
-[Phase 4: Functions, Overloading & Default Arguments →](04-functions-overloading-and-default-arguments.md)

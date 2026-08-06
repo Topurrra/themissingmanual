@@ -247,7 +247,3 @@ restart` hoping it'll catch; read the log and fix the actual error.
 
 Your app now stays up on its own - but it's still hiding on localhost where nobody outside the box can
 reach it. Next, we open the front door: a domain, a reverse proxy, and HTTPS.
-
----
-
-[← Phase 1: Get a Box and Get In](01-get-a-box-and-get-in.md) · [Phase 3: Make It Public & Safe →](03-make-it-public-and-safe.md)

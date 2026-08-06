@@ -267,5 +267,3 @@ Pick a quiz to check the parts that trip people up most:
   }
 ]
 ```
-
-[← Phase 1: What a Proof Actually Is](01-what-a-proof-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Proof by Induction →](03-proof-by-induction.md)

@@ -163,5 +163,3 @@ Test the lifecycle and the `deltaTime` rule before moving on:
   }
 ]
 ```
-
-[← Phase 3: GameObjects & Components](03-gameobjects-and-components.md) · [Guide overview](_guide.md) · [Phase 5: Transforms, Input & Movement →](05-transforms-input-movement.md)

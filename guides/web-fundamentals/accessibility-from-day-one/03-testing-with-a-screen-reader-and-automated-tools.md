@@ -108,7 +108,3 @@ Accessibility habits carry into the next layer of the stack, too - where you sto
 use your site. See [Browser Storage and Cookies](/guides/browser-storage-and-cookies) for how
 `localStorage`, `sessionStorage`, and cookies work, including the consent and privacy angles that come
 with them.
-
----
-
-[← Phase 2: ARIA, Focus Management, and Keyboard Navigation](02-aria-focus-management-and-keyboard-navigation.md) · [Guide overview](_guide.md)

@@ -58,7 +58,3 @@ difficulty badges so you can see the climb.
 
 > Jakarta EE and Spring aren't enemies - they share DNA (Spring helped inspire CDI; both use JPA). Knowing
 > the *standard* makes every Java framework, including Spring, easier to read.
-
----
-
-[Phase 1: What Jakarta EE Is →](01-what-jakarta-ee-is.md)

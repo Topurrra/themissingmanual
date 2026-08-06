@@ -104,5 +104,3 @@ The **non-linear** activation function is what breaks that collapse. Because ReL
 ```
 
 Watch it animated: [how a neural network is structured](/explainers/NeuralNetwork.dc.html)
-
-[← Phase 1: Neurons, layers, and what "network" means](01-neurons-and-layers.md) | [Overview](_guide.md) | [Phase 3: The forward pass →](03-the-forward-pass.md)

@@ -128,7 +128,3 @@ Test yourself on the idea that matters most in this phase - that the connection 
   }
 ]
 ```
-
----
-
-[← Phase 1: What Power BI Actually Is & Getting Set Up](01-what-power-bi-actually-is-and-getting-set-up.md) · [Phase 3: Shaping Data with Power Query →](03-shaping-data-with-power-query.md)

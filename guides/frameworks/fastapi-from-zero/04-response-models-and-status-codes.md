@@ -37,12 +37,10 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-
 class BookPublic(BaseModel):
     id: int
     title: str
     author: str
-
 
 @app.get("/books/{book_id}", response_model=BookPublic)
 def get_book(book_id: int):
@@ -84,12 +82,10 @@ running server - exactly what FastAPI does internally with your return value:
 ```python runnable
 from pydantic import BaseModel
 
-
 # What clients send - notice: no id, no internal fields.
 class BookCreate(BaseModel):
     title: str
     author: str
-
 
 # What we store internally - has server-controlled and private fields.
 class BookInDB(BaseModel):
@@ -99,13 +95,11 @@ class BookInDB(BaseModel):
     secret_notes: str        # internal! must never reach the client
     acquisition_cost: float  # also internal
 
-
 # What we return to clients - public fields only.
 class BookPublic(BaseModel):
     id: int
     title: str
     author: str
-
 
 # Simulate the full round trip.
 incoming = BookCreate(title="Dune", author="Frank Herbert")
@@ -144,17 +138,14 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-
 class BookCreate(BaseModel):
     title: str
     author: str
-
 
 class BookPublic(BaseModel):
     id: int
     title: str
     author: str
-
 
 @app.post("/books", response_model=BookPublic)
 def create_book(book: BookCreate):
@@ -197,17 +188,14 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-
 class BookCreate(BaseModel):
     title: str
     author: str
-
 
 class BookPublic(BaseModel):
     id: int
     title: str
     author: str
-
 
 @app.post("/books", response_model=BookPublic, status_code=status.HTTP_201_CREATED)
 def create_book(book: BookCreate):
@@ -239,16 +227,13 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-
 class BookPublic(BaseModel):
     id: int
     title: str
     author: str
 
-
 # Pretend this is our database.
 books = {1: {"id": 1, "title": "Dune", "author": "Frank Herbert"}}
-
 
 @app.get("/books/{book_id}", response_model=BookPublic)
 def get_book(book_id: int):
@@ -348,7 +333,3 @@ Test yourself on the one idea that anchors this phase - input and output are dif
   }
 ]
 ```
-
----
-
-[← Phase 3: Pydantic Models & Validation](03-pydantic-models-and-validation.md) · [Guide overview](_guide.md) · [Phase 5: Dependency Injection with Depends() →](05-dependency-injection.md)

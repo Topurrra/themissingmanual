@@ -121,7 +121,3 @@ You've made it through a first on-call rotation, from setup to a 3am page to wri
 same instinct for staying calm under pressure and reasoning clearly about what happened, shows up again in a
 different high-stakes setting: [Technical Interviews](/guides/technical-interviews) - another situation
 where the pressure feels bigger than the actual problem in front of you.
-
----
-
-[← Phase 2: The 3am Page](02-the-3am-page-a-calm-playbook.md) · [Guide overview](_guide.md)

@@ -50,5 +50,3 @@ This is why "add 2FA" isn't automatically a pure win - it's a real design decisi
 - **A deliberately slow, verified human recovery path** for the worst case - one that takes real effort to complete precisely so it can't be used as a shortcut by an attacker who merely knows the victim's name and email.
 
 The plain summary: 2FA is a clear net win against the attacks that matter most day to day - reused passwords, phishing, breached credential lists. It earns its place on nearly every account you have. But it's not a switch you flip and forget; it's a lock, and every lock needs a thought-out way back in for the day you're the one standing outside it.
-
-[← Phase 2: How the common methods actually work](02-how-the-methods-work.md) | [Overview](_guide.md)

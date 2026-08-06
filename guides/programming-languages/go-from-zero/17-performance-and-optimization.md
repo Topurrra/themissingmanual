@@ -249,7 +249,3 @@ Test yourself on the discipline that makes performance work actually pay off:
   }
 ]
 ```
-
----
-
-[← Phase 16: The Standard Library as Design](16-standard-library.md) · [Guide overview](_guide.md) · [Phase 18: Where to Go Next →](18-where-to-go-next.md)

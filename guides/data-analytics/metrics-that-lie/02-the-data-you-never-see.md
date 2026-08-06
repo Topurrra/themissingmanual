@@ -124,5 +124,3 @@ When you build a comparison view - A/B test results, cohort tables, regional per
   }
 ]
 ```
-
-[← Phase 1: The Average Is Lying to You](01-the-average-is-lying.md) | [Overview](_guide.md) | [Phase 3: Reading a Dashboard Without Getting Fooled →](03-reading-without-getting-fooled.md)

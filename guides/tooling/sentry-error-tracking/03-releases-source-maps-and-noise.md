@@ -170,5 +170,3 @@ def scrub(event, hint):
   }
 ]
 ```
-
-[← Phase 2](02-capturing-and-reading-an-issue.md) · [Overview](_guide.md)

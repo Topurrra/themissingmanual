@@ -25,5 +25,3 @@ Read the phases in order. Phase 1 builds the mental model: the three telemetry t
 1. [What Datadog actually is](01-what-datadog-actually-is.md) - one agent, three signals, and tags as the connective tissue.
 2. [The everyday loop](02-the-everyday-loop.md) - dashboards, APM traces, log queries, and monitors that page the right human.
 3. [The bill, and how it sneaks up](03-the-bill-and-how-it-sneaks-up.md) - custom-metric cardinality, log volume, host pricing, and keeping the cost in check.
-
-[Phase 1: What Datadog actually is](01-what-datadog-actually-is.md) →

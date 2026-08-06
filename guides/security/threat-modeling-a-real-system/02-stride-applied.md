@@ -75,7 +75,3 @@ Notice the payment webhook shows up in four of six categories. That repetition i
   }
 ]
 ```
-
----
-
-[← Phase 1: Drawing the System](01-drawing-the-system.md) · [Guide overview](_guide.md) · [Phase 3: From Threats to Action →](03-from-threats-to-action.md)

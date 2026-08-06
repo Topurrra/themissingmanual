@@ -252,7 +252,3 @@ Lock in the core idea before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 4: Response Models & Status Codes](04-response-models-and-status-codes.md) · [Guide overview](_guide.md) · [Phase 6: Async & Concurrency →](06-async-and-concurrency.md)

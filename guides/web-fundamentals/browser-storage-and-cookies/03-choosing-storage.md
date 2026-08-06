@@ -152,7 +152,3 @@ Quick check before you go:
   }
 ]
 ```
-
----
-
-[← Phase 2: localStorage, sessionStorage, and IndexedDB](02-storage-apis.md) · [Guide overview](_guide.md)

@@ -210,5 +210,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Phase 1: Sets: Collections of Distinct Things](01-sets.md) · [Guide overview](_guide.md) · [Phase 3: Why This Is the Vocabulary of Everything →](03-the-vocabulary-of-everything.md)

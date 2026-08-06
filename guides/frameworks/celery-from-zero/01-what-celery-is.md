@@ -203,7 +203,3 @@ Make sure the core model stuck before we start wiring things up:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The Broker & Worker →](02-the-broker-and-worker.md)

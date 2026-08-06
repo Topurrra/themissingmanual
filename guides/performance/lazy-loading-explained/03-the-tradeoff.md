@@ -66,5 +66,3 @@ Lazy loading isn't always the right call. Skip it entirely when:
 - **Content you can't cheaply reserve space for.** If you genuinely cannot predict a lazy-loaded element's size ahead of time (dynamic-height content, for instance), you're trading a slow load for a layout-shift risk. Eager-loading that content - even at the cost of a slightly heavier initial load - is often the safer choice over a shift that annoys or misdirects every visitor.
 
 The underlying question is the same one from Phase 1, asked in reverse: is there a real chance this won't be needed? If the answer is "no, everyone who loads this page needs this immediately," lazy loading has nothing to offer - you're adding a deferral mechanism to something that was never optional.
-
-[← Phase 2: Where you'll actually use it](02-where-youll-use-it.md) | [Overview](_guide.md)

@@ -291,7 +291,3 @@ the boundary: **defining an association sets up the wiring; loading it is a sepa
   }
 ]
 ```
-
----
-
-[← Phase 5: Update & Delete](05-update-and-delete.md) · [Guide overview](_guide.md) · [Phase 7: Preloading & the N+1 Trap →](07-preloading-and-n-plus-1.md)

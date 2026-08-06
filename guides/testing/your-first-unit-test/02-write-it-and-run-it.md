@@ -57,7 +57,6 @@ together for now so there's nothing to wire up:
 def total_with_tax(price, tax_rate):
     return price + (price * tax_rate)
 
-
 def test_total_with_tax_adds_ten_percent():
     # Arrange
     price = 100
@@ -210,5 +209,3 @@ Run the tests below - then break the function on purpose and watch them turn red
 
 ```playground-unittest
 ```
-
-[← Phase 1: Arrange, Act, Assert](01-arrange-act-assert.md) · [Guide overview](_guide.md) · [Phase 3: What Makes a Good Test →](03-what-makes-a-good-test.md)

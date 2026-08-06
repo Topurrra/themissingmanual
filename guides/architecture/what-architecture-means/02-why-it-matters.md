@@ -86,7 +86,3 @@ These four are the heavyweights that bend architecture more than features do:
 4. The big shape is driven as much by **non-functional needs** - scale, reliability, security, team size - as by features. They're invisible in a demo and brutal in production if ignored.
 
 Next, the most important habit of all: there is no "best" architecture. Every choice trades something away - and learning to see the trade-offs is what turns "boxes and arrows" into real judgment.
-
----
-
-[← Phase 1: Boxes and Arrows](01-boxes-and-arrows.md) · [Phase 3: Thinking in Trade-offs →](03-thinking-in-trade-offs.md)

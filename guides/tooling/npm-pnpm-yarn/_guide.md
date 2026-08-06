@@ -28,5 +28,3 @@ This guide untangles all of it. By the end you'll know exactly what `package.jso
 1. **[The Manifest and the Lockfile](01-manifest-and-lockfile.md)** - `package.json` is your *wish list*; the lockfile is the *receipt* that pins the exact tree you actually got. Why both exist, and why the lockfile is the truth.
 2. **[Installing, Updating, and Workspaces](02-installing-and-workspaces.md)** - the everyday commands across all three managers, how semver ranges decide what an update does, and how one repo can hold many packages with workspaces.
 3. **[node_modules, the pnpm Store, and the Gotchas](03-store-and-gotchas.md)** - why `node_modules` got so big, how pnpm's content-addressed store makes installs fast and disk-cheap, the strictness that catches phantom dependencies, and the traps that bite everyone.
-
-[Phase 1: The Manifest and the Lockfile](01-manifest-and-lockfile.md) →

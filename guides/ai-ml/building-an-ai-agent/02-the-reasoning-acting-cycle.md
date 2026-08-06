@@ -143,5 +143,3 @@ The whole cycle is a tidy loop you can write today: keep a `messages` list, call
   }
 ]
 ```
-
-[← Phase 1: An Agent Is a Loop](01-an-agent-is-a-loop.md) · [Guide overview](_guide.md) · [Phase 3: Where Agents Go Wrong →](03-where-agents-go-wrong.md)

@@ -115,10 +115,6 @@ broke before you've read a single log line.
 Next, we'll look at what actually earns a computer the everyday name "server" - the handful of traits that
 separate a machine doing serving from your laptop running a quick test.
 
----
-
-[← Guide overview](_guide.md) · [Phase 2: What Makes It a "Server" →](02-what-makes-it-a-server.md)
-
 ## See it move
 
 Step through the journey of one request - the DNS lookup, the request out, and the response back:

@@ -244,5 +244,3 @@ Step back and look at what this is. A fully working REST API: five CRUD operatio
   }
 ]
 ```
-
-[← Phase 4: Middleware Is Just a Function](04-middleware-is-a-function.md) · [Guide overview](_guide.md) · [Phase 6: Async, Streams & Structure →](06-async-streams-structure.md)

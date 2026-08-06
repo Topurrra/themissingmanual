@@ -188,7 +188,3 @@ Make sure the core mental model - the `.csproj` as the center of a project - stu
   }
 ]
 ```
-
----
-
-[← Phase 7: Errors & I/O](07-errors-and-io.md) · [Guide overview](_guide.md) · [Phase 9: Idioms & Gotchas →](09-idioms-and-gotchas.md)

@@ -280,7 +280,3 @@ Test the one sticky idea - hints don't run, they're *checked*. Pick the best ans
   }
 ]
 ```
-
----
-
-[← Phase 13: Context Managers](13-context-managers.md) · [Guide overview](_guide.md) · [Phase 15: Dataclasses & Modern Modeling →](15-dataclasses.md)

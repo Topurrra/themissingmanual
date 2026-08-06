@@ -138,5 +138,3 @@ The reason the format-then-lint order matters is that both tools touch the same 
   }
 ]
 ```
-
-[← Phase 1](01-formatter-vs-linter.md) | [Overview](_guide.md) | [Phase 3: Pre-commit, CI, and the gotchas](03-pre-commit-ci-and-gotchas.md) →

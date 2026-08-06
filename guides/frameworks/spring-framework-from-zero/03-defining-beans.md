@@ -223,7 +223,3 @@ Make sure the two doors and the proxy gotcha actually stuck:
   }
 ]
 ```
-
----
-
-[← Phase 2: The IoC Container & ApplicationContext](02-the-ioc-container.md) · [Guide overview](_guide.md) · [Phase 4: Dependency Injection, Deep →](04-dependency-injection-deep.md)

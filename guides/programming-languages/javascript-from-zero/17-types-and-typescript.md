@@ -159,7 +159,3 @@ Lock in the core ideas - when bugs get caught, what "superset" means, and the on
   }
 ]
 ```
-
----
-
-[← Phase 16: Performance & Memory](16-performance-and-memory.md) · [Guide overview](_guide.md) · [Phase 18: Where to Go Next →](18-where-to-go-next.md)

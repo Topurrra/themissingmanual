@@ -337,7 +337,3 @@ Before you move on, three questions to make sure the dataclass essentials stuck 
   }
 ]
 ```
-
----
-
-[← Phase 14: Type Hints & mypy](14-type-hints.md) · [Guide overview](_guide.md) · [Phase 16: Concurrency & the GIL →](16-concurrency-and-the-gil.md)

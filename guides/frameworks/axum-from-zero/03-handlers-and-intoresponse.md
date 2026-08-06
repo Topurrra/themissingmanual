@@ -238,5 +238,3 @@ signature, not the router.
   }
 ]
 ```
-
-[← Phase 2: Routing & Extractors](02-routing-and-extractors.md) · [Guide overview](_guide.md) · [Phase 4: Shared State →](04-shared-state.md)

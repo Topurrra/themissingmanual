@@ -34,7 +34,6 @@ project:
 ```python
 from sqlalchemy.orm import DeclarativeBase
 
-
 class Base(DeclarativeBase):
     pass
 ```
@@ -52,10 +51,8 @@ Now the real thing. Here's `Author`, mapped to a table:
 ```python
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-
 class Base(DeclarativeBase):
     pass
-
 
 class Author(Base):
     __tablename__ = "authors"
@@ -134,7 +131,6 @@ from datetime import datetime
 from sqlalchemy import String, Text, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
 
-
 class Book(Base):
     __tablename__ = "books"
 
@@ -143,7 +139,6 @@ class Book(Base):
     isbn: Mapped[str | None] = mapped_column(String(13), unique=True)
     description: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-
 
 class Tag(Base):
     __tablename__ = "tags"
@@ -294,7 +289,3 @@ Test yourself on the ideas most likely to trip you up when writing models:
   }
 ]
 ```
-
----
-
-[← Phase 2: The Engine & Connecting](02-the-engine-and-connecting.md) · [Guide overview](_guide.md) · [Phase 4: The Session & Unit of Work →](04-the-session-and-unit-of-work.md)

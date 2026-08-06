@@ -296,7 +296,3 @@ Test yourself on the idea that trips up everyone - laziness - plus the two opera
   }
 ]
 ```
-
----
-
-[← Phase 11: Delegates, Lambdas & Events](11-delegates-and-lambdas.md) · [Guide overview](_guide.md) · [Phase 13: Records, Pattern Matching & Modern C# →](13-records-and-modern-csharp.md)

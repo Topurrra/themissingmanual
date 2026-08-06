@@ -107,7 +107,3 @@ Check that this landed:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Selecting and Modifying Elements →](02-selecting-and-modifying-elements.md)

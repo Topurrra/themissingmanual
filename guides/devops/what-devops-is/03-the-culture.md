@@ -90,7 +90,3 @@ flowchart TD
 5. **Blameless learning:** treat failures as lessons about the system, not crimes by a person, so problems get surfaced and fixed at the root.
 
 That's DevOps - the way of working, the loop, and the culture underneath it. The natural next step is the machinery that automates the loop in practice: the pipelines that build, test, and ship your code on every change. That's [What CI/CD Does](/guides/what-cicd-does), and once you've read it, [Testing in CI](/guides/testing-in-ci) shows how the "test" stage of the loop actually runs.
-
----
-
-[← Guide overview](_guide.md)

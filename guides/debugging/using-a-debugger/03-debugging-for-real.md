@@ -155,7 +155,3 @@ bug you have before trusting what the breakpoint shows you.
 
 You now have the universal debugger toolkit: pause precisely, inspect everything, step with intent, navigate
 the stack, and know when it's the wrong tool - the judgment separating print-debugging from real debugging.
-
----
-
-[← Phase 2: The Core Moves](02-the-core-moves.md) · [Guide overview](_guide.md)

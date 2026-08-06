@@ -242,5 +242,3 @@ A quick check before you go:
   }
 ]
 ```
-
-[← Phase 2: Permutations & Combinations](02-permutations-and-combinations.md) · [Guide overview](_guide.md)

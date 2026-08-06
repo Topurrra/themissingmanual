@@ -45,5 +45,3 @@ before they page you at 3am.
 3. **[When It Breaks at Scale](03-when-it-breaks-at-scale.md)** - the deeper payoff: why one server is
    easy and many servers are hard, sticky sessions, fan-out with a pub/sub backplane, and the clear
    case for reaching for the *simplest* pattern.
-
-[Phase 1: Why HTTP Can't Push](01-why-http-cant-push.md) →

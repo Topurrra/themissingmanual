@@ -45,7 +45,3 @@ follows from what.**
 > This guide builds the foundation. The hands-on machinery - propositional logic, truth tables,
 > if-then, quantifiers, proof, and spotting fallacies - lives in the guides that follow it. Its sister
 > foundation is [Why Math Isn't Your Enemy](/guides/why-math-isnt-your-enemy).
-
----
-
-[Phase 1: Logic Is the Skill Under Everything →](01-logic-is-the-skill-under-everything.md)

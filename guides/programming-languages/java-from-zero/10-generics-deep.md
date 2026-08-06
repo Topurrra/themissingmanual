@@ -367,7 +367,3 @@ Test yourself on the three ideas that matter most - bounds, PECS, and erasure:
   }
 ]
 ```
-
----
-
-[← Phase 9: Idioms & Common Gotchas](09-idioms-and-gotchas.md) · [Guide overview](_guide.md) · [Phase 11: Lambdas & Functional Interfaces →](11-lambdas-and-functional-interfaces.md)

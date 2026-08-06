@@ -335,5 +335,3 @@ without fighting the framework.
   }
 ]
 ```
-
-[← Phase 6: Error Handling](06-error-handling.md) · [Guide overview](_guide.md) · [Phase 8: Testing & Production →](08-testing-and-production.md)

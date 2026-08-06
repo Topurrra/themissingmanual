@@ -24,5 +24,3 @@ This is a field guide, not a spec: each factor exists because of a specific terr
 1. [One codebase, clean dependencies, config outside the code](01-codebase-deps-config.md) - the foundation that makes a deploy repeatable.
 2. [Stateless processes, port binding, and scaling out](02-processes-and-scale.md) - how the running app behaves so you can run many copies.
 3. [Dev-prod parity, logs as streams, and the operations factors](03-parity-logs-ops.md) - the factors that keep you sane once it's live.
-
-[Phase 1: One codebase, clean dependencies, config outside the code](01-codebase-deps-config.md) →

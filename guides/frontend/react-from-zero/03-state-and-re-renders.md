@@ -229,7 +229,3 @@ state flat and small, and the spreads stay one level deep.
   }
 ]
 ```
-
----
-
-[← Phase 2: Components and Props](02-components-and-props.md) · [Guide overview](_guide.md) · [Phase 4: Lists, Keys, and Conditional Rendering →](04-lists-keys-and-conditional-rendering.md)

@@ -174,7 +174,3 @@ C's rules for names are strict but small: letters, digits, and underscores, must
   }
 ]
 ```
-
----
-
-[← Phase 1: Install, Compiling & Your First Program](01-install-compiling-and-your-first-program.md) · [Guide overview](_guide.md) · [Phase 3: Control Flow →](03-control-flow.md)

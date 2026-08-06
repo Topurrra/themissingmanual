@@ -101,5 +101,3 @@ These feel-based guesses are a starting hypothesis, not a verdict. Two parts can
   }
 ]
 ```
-
-← [Overview](_guide.md) | [Phase 2: Reading the gauges](02-reading-the-gauges.md) →

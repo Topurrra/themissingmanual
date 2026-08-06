@@ -110,7 +110,3 @@ One plain table, since the whole point is the trade-off:
 4. Each level catches exactly what the level below it can't see - which is why you want all three, in different amounts.
 
 That "different amounts" is the last piece. Next: how to get the mix right, and the anti-pattern that gets it exactly backwards.
-
----
-
-[← Phase 1: The Testing Pyramid](01-the-testing-pyramid.md) · [Guide overview](_guide.md) · [Phase 3: Getting the Mix Right →](03-getting-the-mix-right.md)

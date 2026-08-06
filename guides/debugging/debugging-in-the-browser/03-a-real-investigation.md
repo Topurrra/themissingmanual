@@ -199,7 +199,3 @@ That's the toolkit. Four panels, one method - most "why is this broken?" mysteri
   }
 ]
 ```
-
----
-
-[← Phase 2: Breakpoints and the Network Tab](02-breakpoints-and-the-network-tab.md) · [Guide overview](_guide.md)

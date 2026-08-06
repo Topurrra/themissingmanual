@@ -62,5 +62,3 @@ Once an entry is chosen, the bootloader has real work to do:
 Once the kernel image sits in memory and the bootloader jumps to its entry point, the bootloader's job is complete. It doesn't stick around, doesn't run alongside the kernel, doesn't get called again until the next reboot. Control passes entirely and permanently (until next boot) to the kernel, which is a different kind of program - one built to manage hardware directly rather than find and load a single file.
 
 That handoff is where Phase 3 begins.
-
-[← Phase 1: Power to POST to firmware](01-power-to-post.md) | [Phase 3: Kernel init to login screen →](03-kernel-init-to-login.md)

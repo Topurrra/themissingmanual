@@ -236,7 +236,3 @@ func leak() {
 6. **The mantra** - share memory by communicating: hand values down channels instead of locking shared variables. ⚠️ Watch for deadlock (send with no receiver) and leaks (a goroutine blocked forever).
 
 You can now run work concurrently and coordinate it safely. Next: handling what goes *wrong* - in Go, errors are ordinary values you pass around, not exceptions thrown from the shadows.
-
----
-
-[← Phase 5: Modules & Project Layout](05-modules-and-project-layout.md) · [Phase 7: Errors & I/O →](07-errors-and-io.md)

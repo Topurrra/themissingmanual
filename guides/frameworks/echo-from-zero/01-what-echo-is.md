@@ -305,7 +305,3 @@ error-returning handler:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Routing & Groups →](02-routing-and-groups.md)

@@ -286,7 +286,3 @@ Test yourself on the distinctions most likely to trip you up when querying:
   }
 ]
 ```
-
----
-
-[← Phase 4: The Session & Unit of Work](04-the-session-and-unit-of-work.md) · [Guide overview](_guide.md) · [Phase 6: Relationships →](06-relationships.md)

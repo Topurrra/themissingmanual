@@ -207,7 +207,3 @@ Make sure the one idea that defines this phase stuck - why a field change become
   }
 ]
 ```
-
----
-
-[← Phase 3: The EntityManager & Persistence Context](03-entitymanager-and-persistence-context.md) · [Guide overview](_guide.md) · [Phase 5: Mapping Relationships →](05-mapping-relationships.md)

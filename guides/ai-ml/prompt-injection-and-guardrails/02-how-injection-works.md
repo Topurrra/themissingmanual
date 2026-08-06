@@ -120,5 +120,3 @@ Audit your feature with one question: *if the worst sentence an attacker could w
   }
 ]
 ```
-
-[← Phase 1: Why the Model Can't Tell Instructions From Data](01-instructions-vs-data.md) · [Guide overview](_guide.md) · [Phase 3: Guardrails That Hold](03-guardrails-that-hold.md) →

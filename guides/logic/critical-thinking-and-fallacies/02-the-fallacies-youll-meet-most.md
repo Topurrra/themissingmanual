@@ -266,5 +266,3 @@ Quick check before you move on:
 ```
 
 Next we'll turn defense into offense: a practical toolkit for thinking clearly and pressure-testing arguments before they fool you.
-
-[← Phase 1: What a Fallacy Is (and Why They Work)](01-what-a-fallacy-is.md) · [Guide overview](_guide.md) · [Phase 3: Thinking Clearly: A Practical Toolkit →](03-thinking-clearly-a-practical-toolkit.md)

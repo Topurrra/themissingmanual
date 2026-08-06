@@ -191,5 +191,3 @@ Make sure the core ideas stuck:
   }
 ]
 ```
-
-[← Phase 3: Request Guards & Data](03-guards-and-data.md) · [Guide overview](_guide.md) · [Phase 5: Managed State & Fairings →](05-state-and-fairings.md)

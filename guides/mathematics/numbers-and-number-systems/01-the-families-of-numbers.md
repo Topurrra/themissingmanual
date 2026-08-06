@@ -253,5 +253,3 @@ Quick check before you move on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Bases: Binary, Decimal, Hex →](02-bases-binary-decimal-hex.md)

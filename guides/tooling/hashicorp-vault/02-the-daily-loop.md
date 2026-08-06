@@ -175,5 +175,3 @@ For builders: transit is how you get strong encryption and key rotation without 
   }
 ]
 ```
-
-[← Phase 1: Sealed by Default](01-sealed-by-default.md) · [Overview](_guide.md) · [Phase 3: Leases, Revocation, and Reality →](03-leases-revocation-and-reality.md)

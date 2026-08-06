@@ -208,7 +208,3 @@ cardinality, and the SE/FE split:
   }
 ]
 ```
-
----
-
-[← Phase 4: Variables, Debugging & Readable DAX](04-variables-debugging-and-readable-dax.md) · [Back to DAX, Deep Dive](_guide.md)

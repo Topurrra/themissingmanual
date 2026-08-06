@@ -286,7 +286,3 @@ Test yourself on the idea driving this phase - which side of the primitive/objec
   }
 ]
 ```
-
----
-
-[← Phase 1: Install & Your First Program](01-install-and-first-program.md) · [Guide overview](_guide.md) · [Phase 3: Collections →](03-collections.md)

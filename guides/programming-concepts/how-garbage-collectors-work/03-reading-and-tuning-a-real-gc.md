@@ -72,7 +72,3 @@ This isn't a smaller or faster garbage collector. It's the reference-counting in
   }
 ]
 ```
-
----
-
-[← Phase 2: Generational and Concurrent Collectors](02-generational-and-concurrent-collectors.md) · [Guide overview](_guide.md)

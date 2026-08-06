@@ -323,7 +323,3 @@ Test yourself on the distinctions most likely to bite you in real mapping code:
   }
 ]
 ```
-
----
-
-[← Phase 7: Querying: JPQL, Criteria & Native SQL](07-querying-jpql-criteria.md) · [Guide overview](_guide.md) · [Phase 9: Caching & Performance →](09-caching-and-performance.md)

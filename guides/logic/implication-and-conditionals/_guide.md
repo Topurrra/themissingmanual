@@ -38,7 +38,3 @@ legal, and settle the necessary-versus-sufficient confusion that trips up even e
 
 > This completes the core of how statements connect. The Logic track continues into quantifiers
 > ("for all" / "there exists"), proof, and spotting fallacies.
-
----
-
-[Phase 1: What "If P Then Q" Really Means →](01-what-if-p-then-q-means.md)

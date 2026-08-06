@@ -124,5 +124,3 @@ You might wonder why Azure didn't give you a flat bucket of resources with tags.
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The services you'll actually use →](02-the-services-you-use.md)

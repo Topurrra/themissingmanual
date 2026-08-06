@@ -131,7 +131,3 @@ Next: nearly every framework, however magical, is built from the same small set 
   }
 ]
 ```
-
----
-
-[← Phase 2: Why Frameworks Exist](02-why-frameworks-exist.md) · [Guide overview](_guide.md) · [Phase 4: The Anatomy of (Almost) Any Framework →](04-the-anatomy-of-any-framework.md)

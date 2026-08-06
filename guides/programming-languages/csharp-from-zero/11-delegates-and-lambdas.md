@@ -261,7 +261,3 @@ Test yourself on the ideas that LINQ will lean on hardest:
   }
 ]
 ```
-
----
-
-[← Phase 10: Generics, Deep](10-generics-deep.md) · [Guide overview](_guide.md) · [Phase 12: LINQ →](12-linq.md)

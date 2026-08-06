@@ -115,7 +115,3 @@ one behavior, one act - we'll come back to why this matters in [Phase 3](03-what
 
 You've got the shape. Next, let's turn this from a diagram into a real file you run - and watch it pass,
 then fail.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Write It and Run It →](02-write-it-and-run-it.md)

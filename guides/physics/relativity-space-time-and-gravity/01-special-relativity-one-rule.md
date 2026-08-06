@@ -186,5 +186,3 @@ Next: we add gravity, and space itself stops being a flat stage and starts to cu
   }
 ]
 ```
-
-[Overview](_guide.md) · [Phase 2: General Relativity: Gravity Is Curved Spacetime →](02-general-relativity-curved-spacetime.md)

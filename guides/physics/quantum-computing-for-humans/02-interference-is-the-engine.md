@@ -110,5 +110,3 @@ The mechanism is less magical and far more powerful as an idea, because it tells
   }
 ]
 ```
-
-[← Phase 1: The qubit](01-the-qubit.md) | [Phase 3: What it actually buys you →](03-what-it-actually-buys-you.md)

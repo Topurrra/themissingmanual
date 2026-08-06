@@ -264,7 +264,3 @@ are two distinct steps, not one:
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Syntax, Variables & Types →](02-syntax-variables-and-types.md)

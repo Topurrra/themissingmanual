@@ -117,8 +117,4 @@ flowchart LR
 
 That's a complete, fast, trustworthy CI pipeline - and, more importantly, you understand every line of it. The natural next step is the *CD* half: taking a green build and shipping it. That's a guide of its own, because deployment carries its own set of "oh no" moments worth treating with the same care.
 
----
-
-[← Phase 2: Building It Up](02-building-it-up.md) · [Guide overview](_guide.md)
-
 **Related:** [What CI/CD Does](/guides/what-cicd-does) · [Testing in CI](/guides/testing-in-ci) · [Secrets Management](/guides/secrets-management)

@@ -60,7 +60,3 @@ here builds directly on that foundation.
 
 > This guide stays inside DAX itself - modeling choices like star schema design and relationship types
 > live in [Power BI From Zero](/guides/power-bi-from-zero) and [Star Schema Explained](/guides/star-schema-explained).
-
----
-
-[Phase 1: Row Context vs Filter Context →](01-row-context-vs-filter-context.md)

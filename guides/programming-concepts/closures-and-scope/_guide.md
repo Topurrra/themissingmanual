@@ -29,5 +29,3 @@ This guide uses JavaScript and Python for examples because that's where most peo
 3. **[The Loop Bug and Other Gotchas](03-the-loop-bug-and-gotchas.md)** - the classic trap where every callback sees the last value of a loop variable, *why* it happens (capture is by reference, not by snapshot), and the small fixes that solve it in JavaScript and Python - plus the memory gotcha closures can hide.
 
 > This guide is about the *model* - why functions remember and how to reason about it. We stay on the concepts that transfer to every language rather than cataloguing one runtime's edge cases. For the layer underneath - how variables and stack frames actually live in memory - see [What Happens When Code Runs](/guides/what-happens-when-code-runs).
-
-[Phase 1: Scope and the Backpack](01-scope-and-the-backpack.md) →

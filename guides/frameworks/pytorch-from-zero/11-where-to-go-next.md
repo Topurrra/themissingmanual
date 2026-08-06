@@ -129,7 +129,3 @@ Three questions on the decisions that matter most as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 10: GPUs, Performance & Common Pitfalls](10-gpus-performance-pitfalls.md) · [Guide overview](_guide.md)

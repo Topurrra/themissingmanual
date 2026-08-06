@@ -106,5 +106,3 @@ For builders: this is the local half of a quality strategy. The same checks can 
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Config and the Commit Loop →](02-the-config-and-loop.md)

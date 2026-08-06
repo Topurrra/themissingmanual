@@ -275,7 +275,3 @@ Test yourself on the one idea that ties this phase together - small interfaces t
   }
 ]
 ```
-
----
-
-[← Phase 15: Testing, Benchmarks & Profiling](15-testing-benchmarks-profiling.md) · [Guide overview](_guide.md) · [Phase 17: Performance & Optimization →](17-performance-and-optimization.md)

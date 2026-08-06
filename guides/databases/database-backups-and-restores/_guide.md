@@ -46,5 +46,3 @@ rehearsed procedure instead of improvising in front of an audience.
 
 **Related:** [What a Database Is](/guides/what-a-database-is) ·
 [Transactions and ACID](/guides/transactions-and-acid)
-
-[Phase 1: The Restore Is the Real Thing](01-the-restore-is-the-real-thing.md) →

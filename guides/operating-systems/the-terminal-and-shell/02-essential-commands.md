@@ -268,10 +268,6 @@ entirely.
 You can now navigate and manage files by hand. Next, the features that make the terminal genuinely
 *powerful* - chaining commands together and letting the shell do the tedious parts for you.
 
----
-
-[← Phase 1: What the Terminal and Shell Actually Are](01-terminal-vs-shell.md) · [Guide overview](_guide.md) · [Phase 3: The Real Power →](03-pipes-redirection-wildcards-path.md)
-
 ## Try it yourself
 
 Here's a real (but fake) shell - nothing leaves your browser. Try `ls`, `cd projects`, `cat readme.txt`, `mkdir demo`, then `tree`:

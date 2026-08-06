@@ -52,7 +52,3 @@ Read in order - it builds from hyper's HTTP server up through the `Service` trai
 
 > The throughline: a **`Service`** turns a request into a response, a **`Layer`** wraps a `Service`
 > (that's middleware), and **hyper** drives it over the socket. axum is a `Service` you assembled.
-
----
-
-[Phase 1: What hyper & tower Are →](01-what-hyper-and-tower-are.md)

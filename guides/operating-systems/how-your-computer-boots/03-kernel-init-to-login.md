@@ -105,5 +105,3 @@ Watch it animated: [how a computer boots](/explainers/Boot.dc.html)
   }
 ]
 ```
-
-[← Phase 2: The bootloader's job](02-the-bootloader.md) | [Overview](_guide.md)

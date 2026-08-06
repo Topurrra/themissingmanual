@@ -35,12 +35,10 @@ from app.models import Note, db
 # Create the blueprint: a name, the import name, and an optional URL prefix.
 notes_bp = Blueprint("notes", __name__, url_prefix="/notes")
 
-
 @notes_bp.route("/")
 def list_notes():
     notes = Note.query.all()
     return render_template("notes.html", notes=notes)
-
 
 @notes_bp.route("/", methods=["POST"])
 def create_note():
@@ -72,7 +70,6 @@ So blueprints handle the routes. But there's still that `app = Flask(__name__)` 
 # app/__init__.py
 from flask import Flask
 from app.models import db
-
 
 def create_app(config_object="config.DevConfig"):
     app = Flask(__name__)
@@ -106,7 +103,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()                 # created here, NOT bound to any app yet
 
-
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
@@ -125,15 +121,12 @@ The factory loaded config with `app.config.from_object(...)`. 📝 **`app.config
 # config.py
 import os
 
-
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-only-change-me")
-
 
 class DevConfig(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///notes.db"
     DEBUG = True
-
 
 class ProdConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"]
@@ -214,7 +207,3 @@ Three questions on the ideas that have to stick before Phase 7:
   }
 ]
 ```
-
----
-
-[← Phase 5: Working with a Database](05-database-with-sqlalchemy.md) · [Guide overview](_guide.md) · [Phase 7: Sessions, Auth & Extensions →](07-sessions-auth-and-extensions.md)

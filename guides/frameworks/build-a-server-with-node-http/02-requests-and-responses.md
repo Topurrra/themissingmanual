@@ -246,5 +246,3 @@ function sendNoContent(res) {
   }
 ]
 ```
-
-[← Phase 1: The node:http Mental Model](01-the-mental-model.md) · [Guide overview](_guide.md) · [Phase 3: Routing by Hand →](03-routing-by-hand.md)

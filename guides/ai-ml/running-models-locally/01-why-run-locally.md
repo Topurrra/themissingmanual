@@ -94,7 +94,3 @@ Lean toward a **hosted API** when you need top-tier quality on hard problems, yo
 5. It's not all-or-nothing - many systems sensibly use both.
 
 You know the deal you're making. Next, let's actually make it - pull a real model down and talk to it.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Getting One Running (Ollama) →](02-getting-one-running.md)

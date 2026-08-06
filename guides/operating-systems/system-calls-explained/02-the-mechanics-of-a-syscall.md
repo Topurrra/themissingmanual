@@ -90,5 +90,3 @@ user mode:   ... program resumes here, with the read bytes now available ...
 ```
 
 *What just happened:* every one of your program's interactions with the outside world - every file, every socket, every millisecond of wall-clock time it asks for - runs this exact seven-step sequence. It happens so often, and usually so fast, that you never see it directly. But it isn't free, and that cost is the subject of Phase 3.
-
-[← Phase 1: Why programs can't touch hardware directly](01-user-mode-vs-kernel-mode.md) | [Phase 3: Why syscalls matter for real performance →](03-why-syscalls-matter-for-performance.md)

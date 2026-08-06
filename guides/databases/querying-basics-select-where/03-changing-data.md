@@ -242,7 +242,3 @@ You can now read data with `SELECT`, narrow it with `WHERE`, sort and limit it, 
 `INSERT`, `UPDATE`, and `DELETE` - the everyday core of SQL, the same handful of shapes you'll use for
 years. When you're ready to pull data from more than one table at a time, head to
 [SQL Joins, Explained](/guides/sql-joins-explained).
-
----
-
-[← Phase 2: Filtering & Sorting](02-filtering-and-sorting.md) · [Guide overview](_guide.md)

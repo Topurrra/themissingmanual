@@ -56,5 +56,3 @@ A proper A/B test never compares control-in-March to variant-in-April. Both grou
 This doesn't mean before/after comparisons are worthless everywhere. They're a reasonable first signal when you have no way to run a real test. But if you're deciding something that matters - a pricing change, a checkout redesign, anything you'd want to defend later - a random split is what turns "I think it worked" into "I can show it worked."
 
 Phase 2 covers how to actually structure that split: what to hold fixed, what to measure, and how big the groups need to be before the comparison means anything.
-
-[← Overview](_guide.md) | [Phase 2: How a real test is structured →](02-structuring-a-test.md)

@@ -183,7 +183,3 @@ When the build finishes, you have a real, distributable game. The pickups demo i
   }
 ]
 ```
-
----
-
-[← Phase 7: Prefabs & Instantiation](07-prefabs-and-instantiation.md) · [Guide overview](_guide.md) · [Phase 9: Where to Go Next →](09-where-to-go-next.md)

@@ -64,7 +64,3 @@ That last line is the real value, and it's worth saying plainly: the Top 10's bi
 3. It ranks by **risk** (how common × how damaging), and each entry is a *family* of related vulnerabilities, not a single bug.
 4. The mental model: a **field guide to the usual suspects** - and its real value is a **shared checklist and vocabulary** for the whole industry.
 5. It's **updated every few years**; check [owasp.org](https://owasp.org) for the current edition rather than trusting any one ranking as permanent.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Big Categories, in Plain English →](02-the-big-categories.md)

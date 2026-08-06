@@ -128,7 +128,3 @@ Three decisions to take with you as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 7: Testing & Configuration](07-testing-and-config.md) · [Guide overview](_guide.md)

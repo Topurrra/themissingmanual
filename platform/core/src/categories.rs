@@ -28,6 +28,7 @@ const DEFS: &[Def] = &[
     Def { slug: "hardware", name: "Hardware", icon: "ti-cpu", blurb: "How the machine is actually built and talks to itself - from the chip to the device on your desk." },
     Def { slug: "networking", name: "Networking", icon: "ti-network", blurb: "How the internet really works, and how to design networks that hold up - from your home router to the enterprise." },
     Def { slug: "programming-concepts", name: "Programming Concepts", icon: "ti-bulb", blurb: "The ideas under every language - how code runs, data structures, async, memory, big-O, and choosing the right tool." },
+    Def { slug: "algorithms", name: "Algorithms", icon: "ti-binary-tree", blurb: "The classic algorithms every developer meets - searching, sorting, recursion, trees, graphs, and dynamic programming - taught from intuition, run in your browser, and shown side by side across languages." },
     Def { slug: "programming-languages", name: "Programming Languages", icon: "ti-code", blurb: "Python, JavaScript, TypeScript, Java, C#, Go, and Rust - each language end to end, from zero to advanced." },
     Def { slug: "web-fundamentals", name: "Web Fundamentals", icon: "ti-world-www", blurb: "HTML, CSS, and how the browser actually works - the web platform itself, learned properly before any framework touches it." },
     Def { slug: "frontend", name: "Frontend", icon: "ti-browser", blurb: "The modern client side - React, Next, Vue, Svelte, Angular, and the ideas they all share: components, state, rendering, and shipping interfaces users actually feel." },

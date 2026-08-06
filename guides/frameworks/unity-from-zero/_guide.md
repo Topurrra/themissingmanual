@@ -57,7 +57,3 @@ to grab, a score) from an empty scene to a built, playable result. Phases carry 
 
 > The throughline: a scene is **GameObjects**, each a bag of **Components**, and your **scripts are
 > Components** the engine calls every frame. Hold that and Unity is approachable.
-
----
-
-[Phase 1: What Unity Is →](01-what-unity-is.md)

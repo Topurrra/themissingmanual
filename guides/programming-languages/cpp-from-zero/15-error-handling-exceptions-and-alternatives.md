@@ -193,7 +193,3 @@ Reach for **exceptions** when the failure is rare, when it needs to propagate th
   }
 ]
 ```
-
----
-
-[Phase 16: Modern C++ - auto, Lambdas, Ranges & What Changed Since C++11 →](16-modern-c-auto-lambdas-ranges-and-what-changed-si.md)

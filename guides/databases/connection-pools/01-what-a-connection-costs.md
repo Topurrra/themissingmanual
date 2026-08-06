@@ -117,5 +117,3 @@ If a database is new to you, the broader picture of what you're connecting *to* 
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: How a pool works and how to size it →](02-how-a-pool-works.md)

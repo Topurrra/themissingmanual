@@ -92,7 +92,3 @@ Now the cheat-card makes sense: each error is the chain-of-trust check failing i
 4. **Renew before expiry** - broken auto-renewal causes a full-page expiry warning for every visitor, a common, avoidable outage.
 5. Read errors as facts: **expired** = stale dates, **name mismatch** = wrong domain, **self-signed/unknown issuer** = chain doesn't reach a trusted root.
 6. **Never click through a certificate warning on a real site** - that's exactly what an attacker needs you to ignore.
-
----
-
-[← Phase 2: The Handshake & Keys](02-the-handshake-and-keys.md) · [Guide overview →](_guide.md)

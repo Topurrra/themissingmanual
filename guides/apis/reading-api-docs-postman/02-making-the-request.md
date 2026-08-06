@@ -163,7 +163,3 @@ with nothing hidden.
 4. The auth header is the same `Authorization: Bearer <token>` from the docs in both tools.
 5. You can **import curl into Postman** and **export Postman as curl** - translate freely, and reach for
    curl when you need to show someone the exact request.
-
----
-
-[← Phase 1: How to Read API Docs](01-how-to-read-api-docs.md) · [Guide overview](_guide.md) · [Phase 3: Reading the Response & Iterating →](03-reading-the-response.md)

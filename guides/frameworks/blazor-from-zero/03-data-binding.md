@@ -186,7 +186,3 @@ Binding handles the sync, but *re-rendering* is what makes the change visible. W
   }
 ]
 ```
-
----
-
-[← Phase 2: Components & Razor](02-components-and-razor.md) · [Guide overview](_guide.md) · [Phase 4: Events & the Component Lifecycle →](04-events-and-lifecycle.md)

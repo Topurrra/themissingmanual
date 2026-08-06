@@ -158,10 +158,6 @@ knows the rules for who may touch it.
 
 Next, we'll connect the tree and the rules to what actually happens when you open a file - plus hidden files, what extensions really are, and how to find anything on the disk.
 
----
-
-[← Phase 1: What a Filesystem Is](01-what-a-filesystem-is.md) · [Guide overview](_guide.md) · [Phase 3: Where Things Live & Finding Them →](03-where-things-live.md)
-
 ## Try it yourself
 
 Toggle the permission bits and watch the octal (e.g. `755`) and `rwx` string update:

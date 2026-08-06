@@ -158,7 +158,3 @@ test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 4. **`cargo fmt`** (rustfmt) formats your code to the one standard style - silent when it succeeds.
 5. **`cargo clippy`** is the famously helpful linter: it teaches idiomatic Rust by explaining the better way, not just flagging the wrong way.
 6. **`cargo test`** runs `#[test]` functions that live right beside your code - testing is built in, no framework required.
-
----
-
-[← Phase 7: Errors & I/O](07-errors-and-io.md) · [Phase 9: Idioms & Common Gotchas →](09-idioms-and-gotchas.md)

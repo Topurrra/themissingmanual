@@ -162,7 +162,3 @@ A few overloads are also just off the table. `&&`, `||`, and `,` can technically
   }
 ]
 ```
-
----
-
-[← Phase 8: Copy, Move & the Rule of Five](08-copy-move-and-the-rule-of-five.md) · [Phase 10: Templates & Generic Programming →](10-templates-and-generic-programming.md)

@@ -101,7 +101,3 @@ Sometimes the right amount of caching is none. Skip it (or be very careful) when
 You now hold the whole idea: a cache is a copy of an expensive answer kept somewhere fast (Phase 1), those copies live stacked from the browser to the database (Phase 2), and the real work is keeping each copy true to the truth (Phase 3). That's why the old joke survives - and why, the next time something shows the wrong value, your first thought will be the right one: *which layer is holding a stale copy?*
 
 **Related:** [Why Is My Query Slow?](/guides/why-is-my-query-slow) · [Designing for Scale](/guides/designing-for-scale)
-
----
-
-[← Phase 2: Where Caches Live](02-where-caches-live.md) · [Guide overview](_guide.md)

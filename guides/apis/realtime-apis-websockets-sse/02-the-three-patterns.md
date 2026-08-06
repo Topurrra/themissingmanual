@@ -252,7 +252,3 @@ when one server becomes ten - and that's where realtime gets genuinely hard.
   }
 ]
 ```
-
----
-
-[← Phase 1: Why HTTP Can't Push](01-why-http-cant-push.md) · [Guide overview](_guide.md) · [Phase 3: When It Breaks at Scale →](03-when-it-breaks-at-scale.md)

@@ -141,5 +141,3 @@ $ mvn test
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Mocking with Mockito →](02-mocking-with-mockito.md)

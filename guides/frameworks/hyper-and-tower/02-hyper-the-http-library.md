@@ -257,7 +257,3 @@ could stay small and promise long-term stability:
   }
 ]
 ```
-
----
-
-[← Phase 1: What hyper & tower Are](01-what-hyper-and-tower-are.md) · [Guide overview](_guide.md) · [Phase 3: The Service Trait →](03-the-service-trait.md)

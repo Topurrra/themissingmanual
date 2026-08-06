@@ -125,7 +125,3 @@ Test yourself on the idea this whole phase turns on - that UB is a broken promis
   }
 ]
 ```
-
----
-
-[← Phase 16: Modern C++](16-modern-c-auto-lambdas-ranges-and-what-changed-si.md) · [Back to the guide overview →](_guide.md)

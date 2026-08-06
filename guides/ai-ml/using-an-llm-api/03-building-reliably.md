@@ -113,7 +113,3 @@ The difference between a demo and a feature is a handful of guardrails:
 You can now call a hosted model, reason about its cost and limits, and build around its rough edges. The remaining craft is getting the model to actually *do what you want* - writing instructions that produce good results reliably.
 
 > ⏭️ Next up: [Prompt Engineering, Plainly](/guides/prompt-engineering-plainly) - how to write prompts that get you the output you're after, without the cargo-cult.
-
----
-
-[← Phase 2: Tokens, Context & Cost](02-tokens-context-and-cost.md) · [Guide overview](_guide.md)

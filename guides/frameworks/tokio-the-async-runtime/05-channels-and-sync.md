@@ -203,5 +203,3 @@ Next we'll let a task wait on *several* of these at once and give up after a dea
   }
 ]
 ```
-
-[← Phase 4: The Runtime & Scheduler](04-runtime-and-scheduler.md) · [Guide overview](_guide.md) · [Phase 6: select! & Timeouts →](06-select-and-timeouts.md)

@@ -232,7 +232,3 @@ see [Memory & Garbage Collection](/guides/memory-and-garbage-collection).
 
 Next: the heart of Rust - ownership and borrowing. Who owns a value, what "moving" and "borrowing" really
 mean, and why the borrow checker is on your side even when it's saying no.
-
----
-
-[← Phase 4: Control Flow & Functions](04-control-flow-and-functions.md) · [Guide overview](_guide.md) · [Phase 6: Ownership & Borrowing →](06-ownership-and-borrowing.md)

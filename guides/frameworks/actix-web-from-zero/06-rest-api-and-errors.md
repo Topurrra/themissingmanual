@@ -367,5 +367,3 @@ bad JSON body gets you the 400 the extractor (or your `JsonConfig`) produces.
   }
 ]
 ```
-
-[← Phase 5: Middleware](05-middleware.md) · [Guide overview](_guide.md) · [Phase 7: Testing & Production →](07-testing-and-production.md)

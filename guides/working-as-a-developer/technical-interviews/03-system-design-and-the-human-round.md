@@ -112,7 +112,3 @@ you're through the door. That part isn't a performance for an interviewer. It's 
   }
 ]
 ```
-
----
-
-[← Phase 2: The Coding Round Without the Panic](02-the-coding-round-without-the-panic.md) · [Guide overview](_guide.md)

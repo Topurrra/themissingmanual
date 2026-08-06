@@ -190,7 +190,3 @@ Three things to remember:
   }
 ]
 ```
-
----
-
-[← Phase 7: MVVM: ViewControllers, ViewModels & Binding](07-mvvm-and-binding.md) · [Guide overview](_guide.md)

@@ -13,7 +13,6 @@ updated: 2026-07-10
 
 This is the phase where the pieces click together. You've met the [mux and Go 1.22 routing](02-handlers-and-routing.md), [reading requests and writing JSON](03-requests-and-json.md), and [middleware as a plain wrapper](04-middleware-is-a-wrapper.md). Now we build a complete CRUD API - a real **messages** service you can `curl` - using only the standard library.
 
-
 Here's the mental model to anchor on, because it cuts through all the ceremony: **a REST resource is five plain handlers over one collection.** List, get-one, create, update, delete - that's the whole CRUD vocabulary. Each handler is an ordinary `func(w http.ResponseWriter, r *http.Request)`. The Go 1.22 mux maps a method-plus-path pattern to each one. That's it. When you reach for Gin or Echo later, what they hand you is *these same five handlers* with some boilerplate shaved off. Today you write them by hand, and afterward no framework's "REST controller" will ever look like magic again.
 
 > 💡 We're not introducing new net/http concepts here - we're *composing* the ones you already have. If a line surprises you, it's almost certainly explained in Phase 2, 3, or 4. This phase is the payoff for reading those.
@@ -338,5 +337,3 @@ Now the plain comparison, because you've earned it by building the thing.
   }
 ]
 ```
-
-[← Phase 4: Middleware Is Just a Wrapper](04-middleware-is-a-wrapper.md) · [Guide overview](_guide.md) · [Phase 6: Structure, Context & Graceful Shutdown →](06-structure-and-shutdown.md)

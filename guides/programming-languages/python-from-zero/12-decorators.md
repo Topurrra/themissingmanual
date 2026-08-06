@@ -409,7 +409,3 @@ Quick check - make sure these stuck:
   }
 ]
 ```
-
----
-
-[← Phase 11: Iterators & Generators](11-iterators-and-generators.md) · [Guide overview](_guide.md) · [Phase 13: Context Managers →](13-context-managers.md)

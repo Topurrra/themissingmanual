@@ -112,5 +112,3 @@ For builders: when you read or write text in code, name the encoding. `open(path
   }
 ]
 ```
-
-[← Phase 1](01-bytes-are-not-characters.md) | [Overview](_guide.md) | [Phase 3: When Text Lies →](03-when-text-lies.md)

@@ -198,7 +198,3 @@ is the design working exactly as intended.
 
 Next, we zoom all the way out - from one resilient machine to the building full of them - and finally make
 "the cloud" mean something concrete.
-
----
-
-[← Phase 1: A Server vs Your Laptop](01-a-server-vs-your-laptop.md) · [Phase 3: The Data Center & "The Cloud" →](03-the-data-center-and-the-cloud.md)

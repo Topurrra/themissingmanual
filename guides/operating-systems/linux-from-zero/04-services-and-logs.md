@@ -201,7 +201,3 @@ behind you.
 real server: logging in remotely over SSH, running web services, keeping it updated and secure, and
 deploying actual software. That's the next guide: **[Linux for Servers](/guides/linux-for-servers)**. You
 now have exactly the foundation it builds on.
-
----
-
-[← Phase 3: Users, Permissions, and sudo](03-users-permissions-sudo.md) · [Guide overview](_guide.md)

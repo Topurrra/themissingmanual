@@ -117,7 +117,3 @@ The load test told you the **symptom** - *"it saturates around 800 concurrent us
 5. **Test like production** (data volume, environment, varied inputs) or the result is confident fiction. A load test finds the **symptom**; **profiling** (a future performance guide) finds the cause - keep those two jobs, and that order, separate.
 
 That's the full loop. You can now answer the question that started this guide - *will it hold?* - with a number and a graph instead of a launch-day stomach-drop.
-
----
-
-[← Phase 2: The Metrics That Matter](02-the-metrics-that-matter.md) · [Guide overview](_guide.md)

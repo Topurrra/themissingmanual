@@ -59,7 +59,3 @@ skill per phase. Phases carry difficulty badges.
 
 > The throughline: a DataFrame is a table you compute on, and almost everything is a column operation.
 > Hold those two ideas and pandas stops being a grab-bag of methods and becomes a coherent tool.
-
----
-
-[Phase 1: What pandas Is & the DataFrame →](01-what-pandas-is.md)

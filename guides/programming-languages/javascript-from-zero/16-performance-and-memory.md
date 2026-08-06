@@ -275,7 +275,3 @@ Test yourself on the ideas that change how you write code - predictable shapes, 
   }
 ]
 ```
-
----
-
-[← Phase 15: Modules & Bundlers, Deep](15-modules-and-bundlers.md) · [Guide overview](_guide.md) · [Phase 17: Types & the Road to TypeScript →](17-types-and-typescript.md)

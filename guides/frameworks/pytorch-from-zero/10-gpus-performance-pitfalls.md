@@ -210,7 +210,3 @@ step 150 | loss 0.0006
   }
 ]
 ```
-
----
-
-[← Phase 9: Saving, Loading & Inference](09-saving-loading-inference.md) · [Guide overview](_guide.md) · [Phase 11: Where to Go Next →](11-where-to-go-next.md)

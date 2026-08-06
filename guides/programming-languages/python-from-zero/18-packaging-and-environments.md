@@ -301,7 +301,3 @@ Quick check - see if the assembly line and the isolation rule stuck:
   }
 ]
 ```
-
----
-
-[← Phase 17: Performance & Memory](17-performance-and-memory.md) · [Guide overview](_guide.md) · [Phase 19: Where to Go Next →](19-where-to-go-next.md)

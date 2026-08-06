@@ -164,7 +164,3 @@ the pain usually arrives.
 
 Next: the tool built precisely for the first three pains - a database, and the language you ask it
 questions in.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Outgrowing the Sheet - SQL & Databases →](02-outgrowing-the-sheet-sql-and-databases.md)

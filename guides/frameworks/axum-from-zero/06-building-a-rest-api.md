@@ -316,5 +316,3 @@ Lock these in before we tackle error handling.
   }
 ]
 ```
-
-[← Phase 5: Middleware with Tower](05-middleware-and-tower.md) · [Guide overview](_guide.md) · [Phase 7: Error Handling →](07-error-handling.md)

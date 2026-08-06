@@ -226,7 +226,3 @@ Lock in the one idea that drives the whole workflow - what actually runs, and wh
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Why Types & the Basic Types →](02-why-types-and-basic-types.md)

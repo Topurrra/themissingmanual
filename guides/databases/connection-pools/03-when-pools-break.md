@@ -147,5 +147,3 @@ For builders: the throughline across all three failures and both earlier phases 
   }
 ]
 ```
-
-[← Phase 2: How a pool works and how to size it](02-how-a-pool-works.md) | [Overview](_guide.md)

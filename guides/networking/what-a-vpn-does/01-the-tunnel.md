@@ -100,7 +100,3 @@ People argue about VPNs endlessly - "does it hide my IP?", "can my ISP see me?",
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Who Sees What - The Visibility Ledger →](02-who-sees-what.md)

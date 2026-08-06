@@ -230,7 +230,3 @@ covers what to do when even a perfect retry policy isn't enough - when a depende
   }
 ]
 ```
-
----
-
-[← Phase 1: Why APIs Push Back](01-why-apis-push-back.md) · [Guide overview](_guide.md) · [Phase 3: When Retrying Isn't Enough →](03-when-retrying-isnt-enough.md)

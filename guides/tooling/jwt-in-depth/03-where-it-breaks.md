@@ -136,5 +136,3 @@ A JWT is a signed, readable note. Its security rests entirely on (1) verifying t
   }
 ]
 ```
-
-[← Phase 2: Issuing, Sending, and Verifying](02-issuing-sending-verifying.md) | [Overview](_guide.md)

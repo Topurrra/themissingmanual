@@ -155,7 +155,3 @@ Test what you just learned:
 Positioning moves individual elements around, but it isn't how you build real page layouts - rows,
 columns, and grids of content are their own tool. That's
 [Flexbox and Grid](/guides/flexbox-and-grid), the natural next guide from here.
-
----
-
-[← Phase 4: Colors, Units, and Typography](04-colors-units-and-typography.md) · [Guide overview](_guide.md)

@@ -186,7 +186,3 @@ meet in a terminal, on your laptop or on a server you've never seen.
   }
 ]
 ```
-
----
-
-[← Phase 2: nano - the gentle default](02-nano-the-gentle-default.md) · [Guide overview](_guide.md)

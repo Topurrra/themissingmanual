@@ -127,7 +127,3 @@ This is the real case *for* a VPN, and it's a solid one:
   }
 ]
 ```
-
----
-
-[← Phase 1: The Tunnel](01-the-tunnel.md) · [Guide overview](_guide.md) · [Phase 3: Where the Promises Break →](03-where-the-promises-break.md)

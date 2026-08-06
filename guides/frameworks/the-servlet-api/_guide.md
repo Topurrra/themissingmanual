@@ -48,7 +48,3 @@ generalize. Short and foundational. Phases carry difficulty badges.
 
 > Once you've seen the Servlet API bare, "a framework" reads as "conveniences over a servlet, a front
 > controller, and a filter chain." The magic was always this.
-
----
-
-[Phase 1: What a Servlet Is →](01-what-a-servlet-is.md)

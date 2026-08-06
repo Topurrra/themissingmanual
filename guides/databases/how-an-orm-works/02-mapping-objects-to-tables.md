@@ -174,5 +174,3 @@ directions, every time.
   }
 ]
 ```
-
-[← Phase 1: What an ORM Is (the Mismatch)](01-what-an-orm-is.md) · [Guide overview](_guide.md) · [Phase 3: The Identity Map & Unit of Work →](03-identity-map-and-unit-of-work.md)

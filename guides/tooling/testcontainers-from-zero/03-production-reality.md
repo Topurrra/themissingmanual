@@ -115,5 +115,3 @@ A solid setup looks like this: dedicated container modules with their built-in w
   }
 ]
 ```
-
-[← Phase 2: The everyday loop](02-the-everyday-loop.md) | [Overview](_guide.md)

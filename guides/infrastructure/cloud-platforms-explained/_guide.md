@@ -45,7 +45,3 @@ catalog you can skim. This guide gives you that model - the shape, not the encyc
 > the console click-by-click, and we don't cover any single service in depth. When you're ready to
 > *manage* cloud resources as code instead of clicking, that's a different skill -
 > [Infrastructure as Code with Terraform](/guides/infrastructure-as-code-terraform).
-
----
-
-[Phase 1: What "The Cloud" Actually Sells →](01-what-the-cloud-sells.md)

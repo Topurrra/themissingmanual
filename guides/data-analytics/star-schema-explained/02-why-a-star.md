@@ -101,5 +101,3 @@ Watch it animated: [a star schema](/explainers/StarSchema.dc.html)
   }
 ]
 ```
-
-[← Phase 1: Facts vs. dimensions](01-facts-vs-dimensions.md) | [Overview](_guide.md) | [Phase 3: Star vs. snowflake, and when to use it →](03-star-vs-snowflake.md)

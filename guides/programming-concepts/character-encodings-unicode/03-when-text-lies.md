@@ -100,5 +100,3 @@ For builders: your debugging toolkit for any "weird text" bug is now three quest
   }
 ]
 ```
-
-[← Phase 2](02-how-utf-8-actually-works.md) | [Overview](_guide.md)

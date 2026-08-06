@@ -112,5 +112,3 @@ A window function and a `GROUP BY` are not rivals - they answer different questi
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: OVER, PARTITION BY, ORDER BY →](02-over-partition-order.md)

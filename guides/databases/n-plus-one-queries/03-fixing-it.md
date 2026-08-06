@@ -131,5 +131,3 @@ For builders: when you eager-load, you're choosing the query shape the ORM gener
   }
 ]
 ```
-
-[← Phase 2: Seeing it in your logs](02-seeing-it-in-the-logs.md) | [Overview](_guide.md)

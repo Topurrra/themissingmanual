@@ -67,5 +67,3 @@ Look closely at the third call, though - `greet("")`. An empty string is falsy t
 ## Why both patterns are the same trick
 
 Notice that the guard pattern and the default-value pattern are not two different features - they're the identical short-circuiting rule from Phase 1, aimed at two different problems. `&&` short-circuits on the first falsy value, which is useful when falsy means "stop, nothing more to check." `||` short-circuits on the first truthy value, which is useful when truthy means "good enough, use this." Once you see them as the same mechanism, you'll start noticing this rule everywhere - configuration loading, default arguments, permission checks - not just in the two examples above.
-
-[← Phase 1: Why bother checking the second half](01-the-core-rule.md) | [Overview](_guide.md) | [Phase 3: The gotcha →](03-the-gotcha.md)

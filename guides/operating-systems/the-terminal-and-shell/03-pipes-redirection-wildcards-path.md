@@ -213,7 +213,3 @@ them, and the power features that let you combine, capture, and scale your work.
 next step is **shell scripting** - saving a sequence of these commands in a file so you can rerun your own
 little tools on demand. But everything a script does, you can now do by hand, on purpose, knowing exactly
 what each line means.
-
----
-
-[← Phase 2: The Essential Commands](02-essential-commands.md) · [Guide overview](_guide.md)

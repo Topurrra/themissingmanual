@@ -45,7 +45,6 @@ from kv import KV
 store = KV("data.log")
 lock = threading.Lock()
 
-
 class Handler(socketserver.StreamRequestHandler):
     def handle(self):
         while True:
@@ -73,11 +72,9 @@ class Handler(socketserver.StreamRequestHandler):
             else:
                 self.wfile.write(b"ERR unknown command\n")
 
-
 class Server(socketserver.ThreadingTCPServer):
     allow_reuse_address = True
     daemon_threads = True
-
 
 if __name__ == "__main__":
     with Server(("127.0.0.1", 5555), Handler) as server:
@@ -112,13 +109,11 @@ The server speaks a protocol, so prove it with a client that isn't you-in-a-REPL
 import socket
 import sys
 
-
 def send(command: str) -> str:
     with socket.create_connection(("127.0.0.1", 5555)) as sock:
         sock.sendall(command.encode() + b"\n")
         response = sock.makefile("rb").readline()
     return response.decode().rstrip("\n")
-
 
 if __name__ == "__main__":
     print(send(" ".join(sys.argv[1:])))
@@ -200,7 +195,3 @@ VALUE 42
   }
 ]
 ```
-
----
-
-[← Phase 4: Compaction](04-compaction.md) · [Guide overview](_guide.md) · [Phase 6: Benchmarks, and What Redis Does Differently →](06-benchmarks-and-real-databases.md)

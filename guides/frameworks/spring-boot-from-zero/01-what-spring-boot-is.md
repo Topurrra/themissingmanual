@@ -215,7 +215,3 @@ Test the mental model before moving on:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Dependency Injection & Beans →](02-dependency-injection-and-beans.md)

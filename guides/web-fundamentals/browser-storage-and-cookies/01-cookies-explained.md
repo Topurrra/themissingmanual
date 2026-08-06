@@ -103,7 +103,3 @@ industry is shifting toward first-party data and server-side alternatives instea
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: localStorage, sessionStorage, and IndexedDB →](02-storage-apis.md)

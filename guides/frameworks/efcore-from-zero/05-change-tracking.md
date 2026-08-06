@@ -171,7 +171,3 @@ ctx.SaveChanges();                                      // normal diff-and-UPDAT
   }
 ]
 ```
-
----
-
-[← Phase 4: Querying with LINQ](04-querying-with-linq.md) · [Guide overview](_guide.md) · [Phase 6: Relationships →](06-relationships.md)

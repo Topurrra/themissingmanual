@@ -168,7 +168,3 @@ the shape your code expects.** Everything in the next phase varies only *how muc
 Now that you know *why* we fake, the next phase names the family - "a double that returns canned answers"
 and "a double that asserts it was called correctly" are different tools, even though people call them all
 "mocks."
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Doubles, Clearly Defined →](02-the-doubles-defined.md)

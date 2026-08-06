@@ -161,7 +161,3 @@ gone sideways.
    `git switch main && git pull`.
 5. Fix PR conflicts by **merging `main` into your branch locally**; **tag** named versions with
    `git tag -a` and push the tag.
-
----
-
-[← Phase 2: Staying in Sync](02-staying-in-sync.md) · [Guide overview](_guide.md)

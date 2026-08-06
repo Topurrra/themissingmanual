@@ -80,7 +80,3 @@ Each is the same root mistake as committing: **the secret ended up somewhere it 
 5. The universal lens: **where can this value be seen, and who can see there?** Logs, error pages, and careless sharing leak secrets the same way commits do.
 
 Next: the practical mechanics of getting secrets out of your code and keeping them out of Git - and what to do about the ones already in there.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Keep Them Out of Code →](02-keep-them-out-of-code.md)

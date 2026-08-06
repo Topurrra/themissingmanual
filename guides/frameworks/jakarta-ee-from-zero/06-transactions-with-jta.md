@@ -208,7 +208,3 @@ The one idea that must stick: the container runs the transaction, and the rollba
   }
 ]
 ```
-
----
-
-[← Phase 5: Jakarta Persistence (JPA)](05-jakarta-persistence.md) · [Guide overview](_guide.md) · [Phase 7: Validation & JSON Binding →](07-validation-and-json-binding.md)

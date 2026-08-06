@@ -242,5 +242,3 @@ blow up later with a confusing `NullReferenceException`. Choosing the throwing o
   }
 ]
 ```
-
-[← Phase 2: Entity Models & Migrations](02-models-and-migrations.md) · [Guide overview](_guide.md) · [Phase 4: Querying with LINQ →](04-querying-with-linq.md)

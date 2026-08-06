@@ -34,5 +34,3 @@ Read the phases in order. Phase 1 builds the mental model: why a schema is code,
 1. [Phase 1: A Schema Is Code](01-schema-is-code.md) - what Flyway actually is, the history table, and the three rules
 2. [Phase 2: The Everyday Loop](02-the-everyday-loop.md) - writing V-migrations, running them, repeatable migrations
 3. [Phase 3: Production Reality](03-production-reality.md) - baselining, failed migrations, and the rollback truth
-
-[Phase 1: A Schema Is Code](01-schema-is-code.md) →

@@ -177,7 +177,3 @@ Check what you just learned:
   }
 ]
 ```
-
----
-
-[← Phase 1: Your First Page](01-your-first-page-elements-tags-and-structure.md) · [Guide overview](_guide.md) · [Phase 3: Semantic HTML and Document Structure →](03-semantic-html-and-document-structure.md)

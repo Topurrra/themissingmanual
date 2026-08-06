@@ -46,7 +46,3 @@ right questions instead of feeling lost.
 > The framework guides in this category are grouped into three tiers - **popular** (most jobs),
 > **battle-tested** (less hype, still employable), and **roots** (what the popular ones are built on, to
 > kill the magic). Phase 5 explains how to use those tiers.
-
----
-
-[Phase 1: Framework vs Library →](01-framework-vs-library.md)

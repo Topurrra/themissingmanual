@@ -198,7 +198,3 @@ if (count > 0) console.log("has items"); // correct
 3. **`this`** depends on how a function is called; **arrow functions** keep the outer `this`.
 4. **`NaN` isn't equal to itself** (`Number.isNaN`); **floats are imprecise** (`0.1 + 0.2`); **objects copy by reference** (spread to clone).
 5. **Truthy/falsy** treats `0` and `""` as false - check existence explicitly when valid.
-
----
-
-[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: Scope, Closures & Hoisting →](10-scope-and-closures.md)

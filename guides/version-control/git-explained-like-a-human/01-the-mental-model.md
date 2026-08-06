@@ -220,7 +220,3 @@ feeling like magic spells.
 
 Next: **[Phase 2 - the everyday commands](02-everyday-commands.md)** maps each command you already type
 back to these five ideas.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Everyday Commands →](02-everyday-commands.md)

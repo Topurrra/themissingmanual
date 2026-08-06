@@ -267,7 +267,3 @@ Test yourself on the one insight that powers this whole phase - that a lambda *i
   }
 ]
 ```
-
----
-
-[← Phase 10: Generics, Deep](10-generics-deep.md) · [Guide overview](_guide.md) · [Phase 12: The Streams API →](12-streams-api.md)

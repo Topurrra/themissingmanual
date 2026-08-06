@@ -56,7 +56,3 @@ needs a running server is shown with the commands to run it yourself. Phases car
 
 > The whole framework rests on one idea: **types are the contract.** Once you see that, validation, docs,
 > serialization, and DI all stop being separate features and become one coherent thing.
-
----
-
-[Phase 1: What FastAPI Is & Your First App →](01-what-fastapi-is.md)

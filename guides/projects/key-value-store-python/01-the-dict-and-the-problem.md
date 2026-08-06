@@ -177,7 +177,3 @@ Before moving on, make sure the failure modes stuck - they justify every decisio
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Append-Only Log →](02-the-append-only-log.md)

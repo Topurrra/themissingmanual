@@ -144,5 +144,3 @@ For builders: think of a signed URL like a hotel key card. It opens one room, ex
   }
 ]
 ```
-
-[← Phase 1: The mental model](01-the-mental-model.md) · [Overview](_guide.md) · [Phase 3: Where it bites →](03-where-it-bites.md)

@@ -156,10 +156,6 @@ rung. What changes is only how much of it is yours to manage.
 You now have the "A" of infrastructure: what a server is, what makes a computer one, and where servers live.
 The natural next steps are learning to actually *connect* to one and to *choose* one.
 
----
-
-[← Phase 2: What Makes It a "Server"](02-what-makes-it-a-server.md) · [Guide overview →](_guide.md)
-
 **Where to go next:**
 [SSH and Keys](/guides/ssh-and-keys) - how to securely log in to a server and run commands on it ·
 [Cloud Platforms Explained](/guides/cloud-platforms-explained) - choosing and renting a server from a provider ·

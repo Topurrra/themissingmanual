@@ -147,5 +147,3 @@ You now have the full model - scope, capture, the patterns, and the traps. The n
   }
 ]
 ```
-
-[← Phase 2: Closures You'll Actually Write](02-closures-you-will-write.md) · [Guide overview](_guide.md)

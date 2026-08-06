@@ -70,5 +70,3 @@ flowchart TD
 > If a column is a number you'd sum or average, it belongs in the fact table. If it's something you'd filter or group by - a name, a category, a date, a region - it belongs in a dimension.
 
 Phase 2 gets into why the dimension tables themselves look different from what you'd expect if you've worked with a normalized application database - and why that difference is deliberate, not sloppy design.
-
-[← Overview](_guide.md) | [Phase 2: Why it's shaped like a star →](02-why-a-star.md)

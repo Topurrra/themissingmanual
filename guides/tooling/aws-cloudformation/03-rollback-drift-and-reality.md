@@ -155,5 +155,3 @@ A pragmatic split many teams settle on: CloudFormation (often via the higher-lev
   }
 ]
 ```
-
-[← Phase 2: Writing and changing stacks for real](02-writing-and-changing-stacks.md) | [Overview](_guide.md)

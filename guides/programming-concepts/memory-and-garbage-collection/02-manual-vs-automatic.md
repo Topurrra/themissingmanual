@@ -102,7 +102,3 @@ With the *who* and *why* settled, one question remains: in the automatic world, 
 3. **Automatic** (Java/Go/Python/JS): a **garbage collector** reclaims unreachable objects for you. Use-after-free and double-free become impossible; the cost is occasional pauses and less control over timing.
 4. The choice is **control vs. safety**, decided by the problem, not by skill.
 5. **Rust's ownership** is a third way: memory safety enforced by the **compiler** at build time, with no garbage collector.
-
----
-
-[← Phase 1: Where Objects Live](01-where-objects-live.md) · [Phase 3: How Garbage Collection Actually Works →](03-how-garbage-collection-works.md)

@@ -207,7 +207,3 @@ it's worth building now while the stakes are low.
   }
 ]
 ```
-
----
-
-[← Phase 1: What React Actually Is](01-what-react-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: State and Re-renders →](03-state-and-re-renders.md)

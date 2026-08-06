@@ -356,7 +356,3 @@ Make sure the translation layer and its status-code rules stuck:
   }
 ]
 ```
-
----
-
-[← Phase 6: The Service Layer, DTOs & Validation](06-service-layer-and-validation.md) · [Guide overview](_guide.md) · [Phase 8: Testing Spring Boot Apps →](08-testing-spring-boot.md)

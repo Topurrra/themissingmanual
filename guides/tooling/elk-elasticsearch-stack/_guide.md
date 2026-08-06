@@ -25,5 +25,3 @@ Three phases, in order. Phase 1 builds the mental model - the four pieces, what 
 1. [What ELK actually is](01-what-elk-actually-is.md) - the four pieces and why centralized logs win.
 2. [Shipping, structuring, and searching](02-shipping-structuring-searching.md) - Beats, parsing, index patterns, and Kibana queries.
 3. [Cost, retention, and production reality](03-cost-retention-production.md) - index lifecycle, the price of indexing, and what breaks.
-
-[Phase 1: What ELK actually is](01-what-elk-actually-is.md) →

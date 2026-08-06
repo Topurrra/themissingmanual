@@ -173,7 +173,3 @@ how to look up by key.
 
 Every row of that opening table is a real trade. The next phase turns these into an actual
 decision.
-
----
-
-[← Phase 1: The Models](01-the-models.md) · [Guide overview](_guide.md) · [Phase 3: How to Actually Choose →](03-how-to-choose.md)

@@ -229,7 +229,3 @@ $ docker compose down
 7. **`up` / `up -d` / `logs -f` / `down`** - bring the stack up (foreground or background), watch it, tear it down without leftovers.
 
 You can now write and run a stack. Next we'll look under the hood at the three things that make a stack actually *work*: how services find each other, how data persists, and how to wire it for fast day-to-day development without setting traps for production.
-
----
-
-[← Phase 1: Why One Container Isn't Enough](01-why-one-container-isnt-enough.md) · [Guide overview](_guide.md) · [Phase 3: Networking, Volumes & Dev Workflow →](03-networking-volumes-and-dev-workflow.md)

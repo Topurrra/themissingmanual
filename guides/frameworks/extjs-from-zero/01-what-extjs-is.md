@@ -231,7 +231,3 @@ Three questions on the config-driven model, the toolkits, and how Ext differs fr
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The Class System →](02-the-class-system.md)

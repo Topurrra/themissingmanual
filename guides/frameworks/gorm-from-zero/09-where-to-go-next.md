@@ -165,7 +165,3 @@ One last check - on how GORM shows up in real Go services:
   }
 ]
 ```
-
----
-
-[← Phase 8: Transactions, Hooks & Migrations](08-transactions-hooks-migrations.md) · [Guide overview](_guide.md)

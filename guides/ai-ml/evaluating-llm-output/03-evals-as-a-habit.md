@@ -142,5 +142,3 @@ You now have the full loop: a real input set, a way to grade it, and the habit o
   }
 ]
 ```
-
-[← Phase 2: How to Actually Grade Output](02-how-to-grade-output.md) · [Guide overview](_guide.md)

@@ -103,7 +103,3 @@ journey once, with eyes open - and that's the only time it's ever hard.
    containers.
 3. ⚠️ **Avoid building on the tiny box** - build in the Action and **pull the image**, or guarantee
    **swap** so the deploy build can't OOM.
-
----
-
-[← Phase 5: Behind Cloudflare](05-behind-cloudflare.md) · [Guide overview](_guide.md)

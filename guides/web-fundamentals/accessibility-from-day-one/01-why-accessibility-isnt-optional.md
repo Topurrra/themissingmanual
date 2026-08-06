@@ -107,7 +107,3 @@ Quick check before moving on:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: ARIA, Focus Management, and Keyboard Navigation →](02-aria-focus-management-and-keyboard-navigation.md)

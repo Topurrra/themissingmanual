@@ -168,7 +168,3 @@ journey we walk in Phase 3.
    one request at a time, and usually sampled.
 4. The three are lenses on the same system: metric = *that / how widespread*, trace = *where*, log =
    *why*. A shared `trace_id` is the thread that stitches them together.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: Putting Them Together →](03-putting-them-together.md)

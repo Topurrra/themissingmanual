@@ -29,5 +29,3 @@ You don't need an AWS account open to follow along - every command is annotated 
 1. [The five services that matter](01-the-five-that-matter.md) - the mental model and what each core service actually does.
 2. [Wiring them into an app](02-wiring-an-app.md) - how S3, EC2, RDS, IAM, and Lambda fit together in a typical stack.
 3. [IAM, least privilege, and what bites you](03-iam-and-what-bites-you.md) - the permission model in depth, plus the production gotchas.
-
-[Phase 1: The five services that matter](01-the-five-that-matter.md) →

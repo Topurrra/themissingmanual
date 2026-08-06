@@ -122,5 +122,3 @@ For builders: this is the same core idea that later tools (Bazel, Ninja, Gradle'
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Targets, Tasks, and Variables →](02-targets-tasks-variables.md)

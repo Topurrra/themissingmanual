@@ -125,9 +125,5 @@ about the standing cost.
 That's the whole decision, plainly put. You can now answer "should we fine-tune our own model?" with a reasoned
 order instead of a reflex - and that answer will usually save your team a great deal of time and money.
 
----
-
-[← Phase 2: What Fine-Tuning Actually Involves](02-what-fine-tuning-actually-involves.md) · [Guide overview](_guide.md)
-
 **Related guides:** [Prompt Engineering, Plainly](/guides/prompt-engineering-plainly) ·
 [RAG, Explained](/guides/rag-explained) · [Using an LLM API](/guides/using-an-llm-api)

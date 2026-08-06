@@ -174,7 +174,3 @@ you can read an `ls -l` line, these stop being mysteries and become things you c
 You can now move around, install software, and understand who's allowed to do what. Last piece: the
 software that runs *without* you - background services humming on every Linux machine - and how to start
 them, check them, and read their logs when they misbehave.
-
----
-
-[← Phase 2: Getting Around](02-getting-around.md) · [Phase 4: Services and Logs →](04-services-and-logs.md)

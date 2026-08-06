@@ -114,7 +114,3 @@ Without it, people and scripts hard-code IP addresses, and the day you renumber 
 7. Run **two of every infrastructure service** - DHCP and DNS failing looks like the whole network failing.
 
 Next, the edge: how the network meets the outside world without letting the outside in - **security and the edge**.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: Security & the Edge →](03-security-and-the-edge.md)

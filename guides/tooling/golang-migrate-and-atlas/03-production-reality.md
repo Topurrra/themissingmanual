@@ -132,5 +132,3 @@ For the principles underneath both tools - ordering, idempotency, forward-only d
   }
 ]
 ```
-
-[← Phase 2: The everyday loop](02-the-everyday-loop.md) | [Overview](_guide.md)

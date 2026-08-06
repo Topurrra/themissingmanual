@@ -371,7 +371,3 @@ See if the protocol stuck. Pick the best answer for each, then check yourself.
   }
 ]
 ```
-
----
-
-[← Phase 12: Decorators](12-decorators.md) · [Guide overview](_guide.md) · [Phase 14: Type Hints & mypy →](14-type-hints.md)

@@ -73,7 +73,3 @@ The discipline that protects you from both mistakes is the same: **write the cle
 4. **Premature optimization** trades clarity for speed you may never need. Write the clear version first; optimize only what measurement proves matters.
 
 Next: even with the bottleneck found, how do you know when you're *done*? When is something finally fast *enough*? That turns out to depend less on your numbers and more on the person waiting.
-
----
-
-[← Phase 1: Latency vs Throughput](01-latency-vs-throughput.md) · [Phase 3: What "Fast Enough" Means →](03-what-fast-enough-means.md)

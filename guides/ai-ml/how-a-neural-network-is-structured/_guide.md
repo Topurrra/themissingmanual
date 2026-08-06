@@ -25,5 +25,3 @@ You've seen the diagram a hundred times: circles connected by lines, arranged in
 1. [Neurons, layers, and what "network" means](01-neurons-and-layers.md) - the layered picture: input, hidden, and output layers, and what one neuron structurally is.
 2. [Weights, biases, and activation functions](02-weights-and-activations.md) - what a neuron actually computes, and why non-linearity is non-negotiable.
 3. [The forward pass](03-the-forward-pass.md) - how one prediction flows through the whole structure, end to end.
-
-[Phase 1: Neurons, layers, and what "network" means →](01-neurons-and-layers.md)

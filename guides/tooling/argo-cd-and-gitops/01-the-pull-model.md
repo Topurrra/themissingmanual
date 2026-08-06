@@ -116,5 +116,3 @@ You don't need GitOps for a hobby cluster you alone touch. It earns its keep the
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Your daily loop →](02-daily-loop.md)

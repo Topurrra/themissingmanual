@@ -136,5 +136,3 @@ Audit your storage. If a date column anywhere holds a local time with no zone, t
   }
 ]
 ```
-
-[← Phase 1](01-a-moment-is-not-a-clock-reading.md) | [Overview](_guide.md) | [Phase 3: The 2am That Happens Twice →](03-the-2am-that-happens-twice.md)

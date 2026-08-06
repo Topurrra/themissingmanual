@@ -27,5 +27,3 @@ Read the phases in order. Phase 1 replaces "queue" with "log" in your head - the
 1. [Phase 1: It's a Log, Not a Queue](01-its-a-log-not-a-queue.md) - the mental model: append-only topics, partitions, offsets, and why reading doesn't delete anything.
 2. [Phase 2: Producing and Consuming for Real](02-producing-and-consuming.md) - the everyday loop: keys and partitioning, consumer groups, committing offsets, and how to scale readers.
 3. [Phase 3: Production Reality](03-production-reality.md) - delivery guarantees, duplicates, idempotent consumers, rebalances, retention, and when Kafka is the wrong tool.
-
-[Phase 1: It's a Log, Not a Queue](01-its-a-log-not-a-queue.md) →

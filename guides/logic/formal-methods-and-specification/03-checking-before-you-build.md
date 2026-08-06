@@ -184,5 +184,3 @@ checked guarantee. Small, targeted specs of the scary 5% deliver almost all the 
   }
 ]
 ```
-
-[← Phase 2: States, Transitions, and Invariants](02-states-transitions-invariants.md) · [Guide overview](_guide.md)

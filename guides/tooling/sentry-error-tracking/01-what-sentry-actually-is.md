@@ -117,5 +117,3 @@ Sentry    "AttributeError at mail.py:42, 12k hits" ── the exact failure
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: Capturing and reading an issue →](02-capturing-and-reading-an-issue.md)

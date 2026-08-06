@@ -122,7 +122,3 @@ Three decisions to take with you as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 7: Calling APIs & Dependency Injection](07-calling-apis-and-di.md) · [Guide overview](_guide.md)

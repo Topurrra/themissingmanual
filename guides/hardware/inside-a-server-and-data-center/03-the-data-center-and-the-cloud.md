@@ -202,7 +202,3 @@ serve something.
    Phases 1 and 2.
 6. **"Serverless"** still runs on those servers - the name describes your experience, not the disappearance
    of the metal.
-
----
-
-[← Phase 2: Built Not to Stop](02-built-not-to-stop.md) · [Guide overview](_guide.md)

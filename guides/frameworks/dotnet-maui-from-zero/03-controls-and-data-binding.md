@@ -204,7 +204,3 @@ You now have a list that renders itself and an edit screen that reads and writes
   }
 ]
 ```
-
----
-
-[← Phase 2: XAML & Layouts](02-xaml-and-layouts.md) · [Guide overview](_guide.md) · [Phase 4: The MVVM Pattern →](04-mvvm.md)

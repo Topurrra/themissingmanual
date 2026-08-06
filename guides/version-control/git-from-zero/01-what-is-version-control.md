@@ -147,7 +147,3 @@ unknown / Please tell me who you are`. It looks alarming but means only this: yo
 
 Your machine is ready. Next, you'll make an actual project and take your first snapshot - entirely
 offline, no GitHub needed yet.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Your First Repository →](02-your-first-repository.md)

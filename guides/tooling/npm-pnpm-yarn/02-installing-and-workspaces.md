@@ -159,7 +159,3 @@ Next, the part everyone has *felt* but few have had explained: why `node_modules
   }
 ]
 ```
-
----
-
-[← Phase 1: The Manifest and the Lockfile](01-manifest-and-lockfile.md) · [Guide overview](_guide.md) · [Phase 3: node_modules, the pnpm Store, and the Gotchas →](03-store-and-gotchas.md)

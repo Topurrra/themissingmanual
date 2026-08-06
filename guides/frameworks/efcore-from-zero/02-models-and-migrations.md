@@ -208,7 +208,3 @@ Each model change earns its own migration - a readable, reviewable timeline of h
   }
 ]
 ```
-
----
-
-[← Phase 1: What EF Core Is & the DbContext](01-what-efcore-is.md) · [Guide overview](_guide.md) · [Phase 3: Create & Read →](03-create-and-read.md)

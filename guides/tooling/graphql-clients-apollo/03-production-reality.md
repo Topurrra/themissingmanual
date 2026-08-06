@@ -119,5 +119,3 @@ Step back and the shape of the deal is clear. REST gives you a simple mental mod
   }
 ]
 ```
-
-[← Phase 2: Queries and mutations in real components](02-queries-and-mutations.md) · [Overview](_guide.md)

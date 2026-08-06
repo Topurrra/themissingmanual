@@ -241,7 +241,3 @@ A quick check before you go:
   }
 ]
 ```
-
----
-
-[← Phase 2: How to Read Math Notation](02-how-to-read-math-notation.md) · [Guide overview](_guide.md)

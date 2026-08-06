@@ -135,5 +135,3 @@ Decide from your constraints, not from hype:
   }
 ]
 ```
-
-[← Phase 2: Writing and Running Tests](02-writing-and-running-tests.md) | [Overview](_guide.md)

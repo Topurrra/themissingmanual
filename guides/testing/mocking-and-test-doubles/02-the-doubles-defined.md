@@ -222,7 +222,3 @@ loosely if you like, but *think* precisely.
 
 You now have the whole family named. The last phase is the judgment that separates tests that protect you
 from tests that lie to you.
-
----
-
-[← Phase 1: Why Fake Anything?](01-why-fake-anything.md) · [Guide overview](_guide.md) · [Phase 3: When Mocking Helps vs Hurts →](03-when-mocking-helps-vs-hurts.md)

@@ -110,7 +110,3 @@ Put together, these three defenses answer the questions from Phase 1 directly: i
   }
 ]
 ```
-
----
-
-[← Phase 1: Where No-Code Automations Actually Fail](01-where-automations-actually-fail.md) · [Guide overview](_guide.md) · [Phase 3: The Hybrid Escape Hatch →](03-the-hybrid-escape-hatch.md)

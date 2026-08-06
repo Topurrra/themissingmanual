@@ -198,7 +198,3 @@ Keep that checklist handy. "Nothing happens" is never mysterious once you know t
   }
 ]
 ```
-
----
-
-[← Phase 5: Transforms, Input & Movement](05-transforms-input-movement.md) · [Guide overview](_guide.md) · [Phase 7: Prefabs & Instantiation →](07-prefabs-and-instantiation.md)

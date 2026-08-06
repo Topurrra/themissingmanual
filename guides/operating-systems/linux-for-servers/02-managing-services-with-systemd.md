@@ -217,7 +217,3 @@ second, fix third.* You almost never have to guess.
 
 Next, the discipline that keeps all of this from becoming a liability: running the box *safely* - users,
 `sudo`, scheduled jobs, the firewall, and SSH hardening.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: Running It Safely →](03-running-it-safely.md)

@@ -117,7 +117,3 @@ Semantic search is not strictly better than keyword search; it's *different*, an
 5. It's **weak on exact identifiers**; serious systems often blend semantic and keyword search.
 
 You can now reason about search by meaning end to end on a small library. The last question is the practical one: what happens when "compare the query to every stored vector" means comparing against *ten million* of them? That's the next phase - plus the three gotchas that quietly wreck real systems.
-
----
-
-[← Phase 1: Meaning as Coordinates](01-meaning-as-coordinates.md) · [Guide overview](_guide.md) · [Phase 3: Vector Databases & the Gotchas →](03-vector-databases-and-the-gotchas.md)

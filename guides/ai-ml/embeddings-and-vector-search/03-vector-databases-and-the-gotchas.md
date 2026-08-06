@@ -105,7 +105,3 @@ A document can be the closest match in meaning while being **wrong** (an outdate
 6. **Similarity is not correctness:** the nearest match can still be wrong, stale, or off-topic - treat results as candidates to verify.
 
 Meaning becomes coordinates, "near" becomes a number, and a vector database turns that into search across millions - along with the traps that decide whether it works in practice. Feeding these results to a language model to actually answer questions is exactly what [RAG, Explained](/guides/rag-explained) is about.
-
----
-
-[← Phase 2: Measuring Similarity](02-measuring-similarity.md) · [Guide overview](_guide.md) · [Next guide: RAG, Explained →](/guides/rag-explained)

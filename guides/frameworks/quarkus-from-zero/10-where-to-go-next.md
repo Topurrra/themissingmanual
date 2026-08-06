@@ -121,7 +121,3 @@ Test yourself on the decisions that matter most as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 9: Native Compilation & Containers](09-native-compilation.md) · [Guide overview](_guide.md)

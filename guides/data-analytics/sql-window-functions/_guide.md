@@ -26,5 +26,3 @@ Read the three phases in order - they build on each other. Phase 1 gives you the
 1. [The window, not the group](01-the-window-not-the-group.md) - what a window function actually is, and why it doesn't collapse rows
 2. [OVER, PARTITION BY, ORDER BY](02-over-partition-order.md) - the everyday core: ranking, running totals, comparing to the previous row
 3. [Frames, moving averages, and top-N-per-group](03-frames-and-top-n.md) - the deeper payoff and the patterns that earn their keep
-
-[Phase 1: The window, not the group](01-the-window-not-the-group.md) →

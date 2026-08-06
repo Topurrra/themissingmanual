@@ -199,5 +199,3 @@ When you're ready to take the whole thing live - a domain, TLS, environment secr
   }
 ]
 ```
-
-[← Phase 6: Error Handling](06-error-handling.md) · [Guide overview](_guide.md) · [Phase 8: Where to Go Next →](08-where-to-go-next.md)

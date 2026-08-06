@@ -187,10 +187,6 @@ dying disk). The histogram tells you which kind of problem you have before you'v
 5. The histogram shows matches over time - a cliff means a change, a ramp means degradation; read the
    shape first.
 
----
-
-[← Phase 1: Why Centralized Logs](01-why-centralized-logs.md) · [Phase 3: Streams, Dashboards & Alerts →](03-streams-dashboards-alerts.md)
-
 ## Try it yourself
 
 Build a pattern for the responses you care about (here: 4xx/5xx status codes):

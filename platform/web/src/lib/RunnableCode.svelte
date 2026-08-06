@@ -341,7 +341,9 @@
     font-size: 0.66rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--faint);
+    /* Keyed to the code palette: the bar is always dark, so site-theme --faint
+       (a light-page gray) was near-invisible here in several themes. */
+    color: color-mix(in srgb, var(--code-fg) 58%, transparent);
   }
   :global(.run-widget .rw-actions) {
     display: flex;
@@ -427,15 +429,18 @@
   :global(.run-widget .rw-stdout) {
     color: var(--code-fg);
   }
+  /* Result and error sit on the always-dark output panel, so --accent-strong /
+     --danger-strong (tuned dark for the light page) vanished. Mix toward the
+     light --code-fg so both stay bright on the dark surface in every theme. */
   :global(.run-widget .rw-result) {
-    color: var(--accent-strong);
+    color: color-mix(in srgb, var(--accent) 50%, var(--code-fg));
   }
   :global(.run-widget .rw-stderr) {
-    color: var(--danger-strong);
+    color: color-mix(in srgb, var(--danger, #d64545) 55%, var(--code-fg));
   }
   :global(.run-widget .rw-note) {
     font-size: 0.82rem;
-    color: var(--muted);
+    color: color-mix(in srgb, var(--code-fg) 62%, transparent);
     padding: 0.55rem 0.9rem;
     border-top: 1px solid var(--line);
   }
@@ -446,7 +451,7 @@
     align-items: center;
     gap: 0.55rem;
     font-size: 0.82rem;
-    color: var(--muted);
+    color: color-mix(in srgb, var(--code-fg) 62%, transparent);
     font-family: var(--font-body);
   }
   :global(.run-widget .rw-spinner) {
@@ -483,12 +488,12 @@
     color: var(--code-fg);
   }
   :global(.run-widget .rw-table th) {
-    background: color-mix(in srgb, var(--code-bg) 60%, var(--surface));
-    color: var(--ink);
+    background: color-mix(in srgb, var(--code-bg) 82%, var(--code-fg) 12%);
+    color: var(--code-fg);
     font-weight: 600;
   }
   :global(.run-widget .rw-table .rw-null) {
-    color: var(--faint);
+    color: color-mix(in srgb, var(--code-fg) 45%, transparent);
     font-style: italic;
   }
 

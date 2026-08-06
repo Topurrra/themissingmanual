@@ -117,5 +117,3 @@ If you're standing up infrastructure, your first registry decision is usually "p
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Pushing, Pulling, and Private Packages](02-pushing-pulling-private-packages.md) →

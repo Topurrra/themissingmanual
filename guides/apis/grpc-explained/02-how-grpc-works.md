@@ -209,7 +209,3 @@ otherwise plain unary is the right, boring default.
 
 You now know what gRPC is and how it works. The last and most important question is the real one: when is
 all this worth it, and when is it the wrong tool?
-
----
-
-[← Phase 1: The Problem gRPC Solves](01-the-problem-grpc-solves.md) · [Guide overview](_guide.md) · [Phase 3: The Real Trade-offs →](03-the-real-trade-offs.md)

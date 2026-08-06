@@ -220,7 +220,3 @@ monitor because it ships with a built-in one you reach over the wire.
 
 Next we follow the redundancy idea through the rest of the machine: disks, drives, and the single
 principle that governs reliable hardware design.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Built Not to Stop - Redundancy & Reliability →](02-built-not-to-stop.md)

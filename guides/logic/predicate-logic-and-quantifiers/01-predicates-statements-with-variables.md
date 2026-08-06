@@ -231,5 +231,3 @@ Quick check before you move on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Quantifiers: For All and There Exists →](02-quantifiers-for-all-there-exists.md)

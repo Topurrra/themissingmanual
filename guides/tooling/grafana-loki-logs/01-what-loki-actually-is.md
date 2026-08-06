@@ -108,5 +108,3 @@ Grafana dashboard
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: Shipping logs and querying with LogQL →](02-shipping-and-querying-logql.md)

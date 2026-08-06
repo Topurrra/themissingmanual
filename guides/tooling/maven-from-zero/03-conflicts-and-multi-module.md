@@ -134,5 +134,3 @@ The Maven skills that separate a fluent user from a stuck one are diagnostic, no
   }
 ]
 ```
-
-[← Phase 2](02-pom-coordinates-lifecycle.md) | [Overview](_guide.md)

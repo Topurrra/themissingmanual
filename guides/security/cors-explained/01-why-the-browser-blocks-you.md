@@ -135,7 +135,3 @@ debugging in half.
 4. **The browser enforces; the server permits.** A CORS error = the server didn't send the permission.
 5. CORS protects *users in browsers*, **not your API**. `curl` and scripts ignore it entirely - so guard
    your API with real auth, not CORS.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Reading the Error & the Headers →](02-reading-the-error-and-the-headers.md)

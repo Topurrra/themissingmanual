@@ -134,7 +134,3 @@ Check your understanding of the parsing stage before moving to what the browser 
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Render Tree, Layout, and Paint →](02-the-render-tree-layout-and-paint.md)

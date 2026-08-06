@@ -119,8 +119,4 @@ flowchart TD
 
 That's the full kit: the calm method (walk up the layers), the everyday tools that answer each rung (`ping`, `traceroute`, `dig`), and the deep tool for when the summaries lie (the packet capture). The next time something "just doesn't work," you won't be guessing - you'll be reading.
 
----
-
-[← Phase 2: The Core Tools](02-the-core-tools.md) · [Guide overview](_guide.md)
-
 Related guides: [IP, DNS, and Ports](/guides/ip-dns-and-ports) · [The TCP/IP Model](/guides/tcp-ip-model) · [How the Internet Works](/guides/how-the-internet-works)

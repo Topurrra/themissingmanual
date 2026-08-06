@@ -151,5 +151,3 @@ This is the deeper lesson of running GitOps in production: the reconciliation lo
   }
 ]
 ```
-
-[← Phase 2: Your daily loop](02-daily-loop.md) | [Overview](_guide.md)

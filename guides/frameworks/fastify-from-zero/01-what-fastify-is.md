@@ -241,7 +241,3 @@ respond:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Routing & Schemas →](02-routing-and-schemas.md)

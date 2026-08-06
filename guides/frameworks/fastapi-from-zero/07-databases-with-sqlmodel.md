@@ -304,7 +304,3 @@ Lock in the database fundamentals before we add auth:
   }
 ]
 ```
-
----
-
-[← Phase 6: Async & Concurrency](06-async-and-concurrency.md) · [Guide overview](_guide.md) · [Phase 8: Authentication & Security →](08-authentication-and-security.md)

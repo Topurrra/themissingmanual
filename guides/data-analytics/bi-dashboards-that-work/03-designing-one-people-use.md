@@ -113,7 +113,3 @@ Every trap so far misleads a viewer. This one skips having a viewer at all - the
 One last check, for any dashboard you've built: *if this number changed, what would someone do?* Cut every tile that can't answer it.
 
 > Where next. To go upstream - where these numbers come from and how to shape them - see [Warehouses vs Lakes](/guides/warehouses-vs-lakes) and [Querying Basics: SELECT and WHERE](/guides/querying-basics-select-where).
-
----
-
-[← Phase 2: Metrics That Inform vs Vanity Metrics](02-metrics-that-inform.md) · [Guide overview](_guide.md)

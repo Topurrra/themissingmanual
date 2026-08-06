@@ -80,7 +80,3 @@ You don't need a database to jot down a grocery list. You start needing one when
 4. You reach for a database for **correctness and sharing first**, not because the data got big.
 
 Next, we'll open up "the organized store" and see how the data is actually shaped - the tables, rows, columns, and the one idea that ties them together.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Tables, Rows, Columns & Keys →](02-tables-rows-columns-keys.md)

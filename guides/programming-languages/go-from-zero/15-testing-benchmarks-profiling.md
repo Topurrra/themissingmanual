@@ -356,7 +356,3 @@ Test yourself on the ideas that separate "I ran a test" from "I measured my prog
   }
 ]
 ```
-
----
-
-[← Phase 14: The Runtime: Scheduler, Memory & GC](14-runtime-scheduler-and-memory.md) · [Guide overview](_guide.md) · [Phase 16: The Standard Library as Design →](16-standard-library.md)

@@ -239,7 +239,3 @@ actually fall.
   }
 ]
 ```
-
----
-
-[← Phase 4: Building Models with nn.Module](04-building-models-with-nn-module.md) · [Guide overview](_guide.md) · [Phase 6: The Training Loop →](06-the-training-loop.md)

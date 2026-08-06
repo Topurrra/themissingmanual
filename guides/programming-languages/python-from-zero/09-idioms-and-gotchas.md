@@ -195,7 +195,3 @@ trust `is` on numbers. Use `==` for values, `is` for `None`/`True`/`False`.
 
 That's the *basics* done - phases 1-9. From here the guide goes deeper, into how Python actually works
 under your code, starting with its object model.
-
----
-
-[← Phase 8: The Ecosystem & Tooling](08-ecosystem-and-tooling.md) · [Guide overview](_guide.md) · [Phase 10: The Data Model & Dunder Methods →](10-the-data-model.md)

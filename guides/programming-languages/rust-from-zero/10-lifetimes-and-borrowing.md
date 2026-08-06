@@ -237,7 +237,3 @@ Test yourself on the idea that demystifies this phase - that a lifetime *describ
   }
 ]
 ```
-
----
-
-[← Phase 9: Idioms & Common Gotchas](09-idioms-and-gotchas.md) · [Guide overview](_guide.md) · [Phase 11: Traits & Generics, Deep →](11-traits-and-generics.md)

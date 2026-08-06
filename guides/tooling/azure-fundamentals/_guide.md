@@ -27,5 +27,3 @@ Read the phases in order; each one assumes the last. If you already know AWS, ph
 1. [The container hierarchy: how Azure is organized](01-the-container-hierarchy.md)
 2. [The services you'll actually use](02-the-services-you-use.md)
 3. [Identity, access, and production reality](03-identity-and-production.md)
-
-[Phase 1: The container hierarchy](01-the-container-hierarchy.md) →

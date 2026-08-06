@@ -203,7 +203,3 @@ Lock in the core moves - branching, reaching inside, and building strings:
   }
 ]
 ```
-
----
-
-[← Phase 10: Utility & Mapped Types](10-utility-and-mapped-types.md) · [Guide overview](_guide.md) · [Phase 12: Typing the Real World →](12-typing-the-real-world.md)

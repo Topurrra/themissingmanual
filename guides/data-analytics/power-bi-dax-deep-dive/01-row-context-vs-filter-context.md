@@ -138,7 +138,3 @@ That conversion - taking row context and turning it into filter context so a mea
   }
 ]
 ```
-
----
-
-[Phase 2: CALCULATE and Context Transition →](02-calculate-and-context-transition.md)

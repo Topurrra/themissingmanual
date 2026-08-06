@@ -199,5 +199,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Phase 1: Probability: Measuring Uncertainty](01-probability-measuring-uncertainty.md) · [Guide overview](_guide.md) · [Phase 3: How Statistics Mislead You →](03-how-statistics-mislead-you.md)

@@ -99,7 +99,3 @@ the moment allows.
   }
 ]
 ```
-
----
-
-[← Phase 1: Why Some Questions Get Answered Fast and Others Get Ignored](01-why-questions-get-ignored.md) · [Guide overview](_guide.md) · [Phase 3: Async vs. Sync, and Reading the Room →](03-async-vs-sync-reading-the-room.md)

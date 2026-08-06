@@ -146,7 +146,3 @@ LLM:  Run `make test` - that runs the unit tests locally. CI also
 5. Because you know which chunks you sent, you can **cite sources** - grounded answers a human can verify.
 
 You now have a working mental model of the machine. The catch: this clean pipeline is deceptively easy to build badly. The next phase is the plain-spoken one - why real RAG is mostly a retrieval problem, and where it bites.
-
----
-
-[← Phase 1: The Problem RAG Solves](01-the-problem-rag-solves.md) · [Guide overview](_guide.md) · [Phase 3: Why It's Harder Than It Looks →](03-why-its-harder-than-it-looks.md)

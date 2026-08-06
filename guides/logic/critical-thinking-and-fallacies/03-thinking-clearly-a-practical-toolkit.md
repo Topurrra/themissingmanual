@@ -198,5 +198,3 @@ Here's a quick check on the habits worth keeping.
   }
 ]
 ```
-
-[← Phase 2: The Fallacies You'll Meet Most](02-the-fallacies-youll-meet-most.md) · [Guide overview](_guide.md)

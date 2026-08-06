@@ -107,5 +107,3 @@ Stop asking *"what keeps this moving?"* - that question assumes the wrong defaul
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: How forces change motion →](02-how-forces-change-motion.md)

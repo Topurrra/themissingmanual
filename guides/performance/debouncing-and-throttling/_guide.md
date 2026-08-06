@@ -30,5 +30,3 @@ Phase 1 lays out why the naive "run the handler on every event" approach is a re
 1. [The firehose problem](01-the-firehose-problem.md) - why running a handler on every event is a real performance problem.
 2. [Debounce: wait for a pause](02-debounce.md) - the search-box pattern and the timer-reset idea.
 3. [Throttle: cap the rate](03-throttle.md) - the scroll-handler pattern, and choosing between debounce and throttle.
-
-[Phase 1: The firehose problem](01-the-firehose-problem.md) →

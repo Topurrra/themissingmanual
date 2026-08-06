@@ -197,5 +197,3 @@ That's the full daily loop: `create` to scaffold, `template` to preview, `instal
   }
 ]
 ```
-
-[← Phase 1: The Mental Model](01-the-mental-model.md) | [Overview](_guide.md) | [Phase 3: Where It Bites: Templating Gotchas and When Not to Use Helm](03-where-it-bites.md) →

@@ -98,7 +98,3 @@ a tool that picks the midpoints and does the bookkeeping for you.
    goes wrong.
 
 Watch it animated: [binary-searching for a bug](/explainers/BinarySearchDebug.dc.html)
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: git bisect →](02-git-bisect.md)

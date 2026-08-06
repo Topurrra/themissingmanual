@@ -180,7 +180,3 @@ guide: open the list, sort it, and find the one row that's the problem.
 > [The Terminal & Shell](/guides/the-terminal-and-shell) are good neighbors.
 
 Watch it animated: [virtual memory](/explainers/VirtualMemory.dc.html)
-
----
-
-[← Phase 2: What "100% CPU" Really Means](02-what-100-cpu-really-means.md) · [Guide overview](_guide.md)

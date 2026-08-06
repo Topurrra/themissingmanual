@@ -59,7 +59,3 @@ phase. Phases carry difficulty badges.
 
 > Django and FastAPI aren't rivals so much as different bets: Django for full web apps with an admin and
 > server-rendered pages; FastAPI for lean, async APIs. Knowing both means picking the right one on purpose.
-
----
-
-[Phase 1: What Django Is & Your First Project →](01-what-django-is.md)

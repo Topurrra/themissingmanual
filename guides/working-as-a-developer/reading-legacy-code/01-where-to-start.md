@@ -85,7 +85,3 @@ Quick check before moving on:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Techniques for Making the Unknown Known →](02-techniques-for-understanding.md)

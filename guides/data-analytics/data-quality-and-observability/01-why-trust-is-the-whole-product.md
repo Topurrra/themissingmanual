@@ -149,7 +149,3 @@ phases is to make "is the output true?" a question the pipeline answers automati
 
 Next, the concrete part: the specific dimensions of data worth testing automatically, and where to put the
 checks so they fail the run *before* bad data spreads.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Data Quality Checks →](02-data-quality-checks.md)

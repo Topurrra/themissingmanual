@@ -56,7 +56,3 @@ deployable REST API. Phases carry difficulty badges.
 
 > The throughline: an **`App`** of routes, run by an **`HttpServer`**, with handlers that **extract from
 > the request and return a `Responder`**. Mature, fast, and more familiar than its actor heritage suggests.
-
----
-
-[Phase 1: What actix-web Is & Your First Server →](01-what-actix-web-is.md)

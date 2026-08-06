@@ -206,7 +206,3 @@ Lock in the trade-offs that decide whether and how you go native:
   }
 ]
 ```
-
----
-
-[← Phase 8: Testing Quarkus Apps](08-testing.md) · [Guide overview](_guide.md) · [Phase 10: Production & Where to Go Next →](10-where-to-go-next.md)

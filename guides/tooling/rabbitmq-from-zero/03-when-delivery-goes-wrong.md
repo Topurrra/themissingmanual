@@ -123,5 +123,3 @@ A production-grade RabbitMQ queue almost never stands alone. It comes with: dura
   }
 ]
 ```
-
-[← Phase 2: Publishing and Consuming for Real](02-publishing-and-consuming.md) | [Overview](_guide.md)

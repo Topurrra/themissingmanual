@@ -305,7 +305,3 @@ Make sure the one big idea stuck - and the agg-vs-transform line that everyone f
   }
 ]
 ```
-
----
-
-[← Phase 5: Transforming Data](05-transforming-data.md) · [Guide overview](_guide.md) · [Phase 7: Joining & Combining →](07-joining-and-combining.md)

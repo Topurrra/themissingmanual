@@ -164,10 +164,6 @@ Now the cheat-card rows make full sense:
 
 That's the whole map: numbered storage at the bottom, a tree on top, rules guarding each branch, and a handful of conventions for finding your way. You can read a path, read a permission line, and read an error - which is most of what "knowing the filesystem" actually means.
 
----
-
-[← Phase 2: Permissions & Ownership](02-permissions-and-ownership.md) · [Guide overview](_guide.md)
-
 ## Try it yourself
 
 Poke around a fake filesystem - `ls`, `cd`, `pwd`, `cat`, `tree`. Nothing leaves your browser:

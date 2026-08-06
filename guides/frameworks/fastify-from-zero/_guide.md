@@ -58,7 +58,3 @@ to a tested, deployable REST API. Phases carry difficulty badges.
 
 > The throughline: **a route is a handler plus a schema, and the app is a tree of encapsulated plugins.**
 > That schema-first, plugin-based design is Fastify's whole personality.
-
----
-
-[Phase 1: What Fastify Is & Your First Server →](01-what-fastify-is.md)

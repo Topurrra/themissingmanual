@@ -94,5 +94,3 @@ If you want the bird's-eye view of which attacks matter most, [OWASP Top 10](/gu
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: The Everyday Hardening Set →](02-the-everyday-set.md)

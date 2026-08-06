@@ -24,5 +24,3 @@ Read the three phases in order. Each opens with something you already know in yo
 1. [What a model actually is](01-what-a-model-is.md) - physics as model-building, not memorizing; why a frictionless plane is a *deliberate* lie that tells the truth.
 2. [Measurement and units (your built-in mistake detector)](02-measurement-and-units.md) - how to measure, why units travel with every number, and how they quietly catch your errors before anyone else does.
 3. [The deepest idea: things that never change](03-conservation-and-the-loop.md) - conservation laws, and the scientific loop that turns a guess into knowledge.
-
-[Phase 1: What a model actually is](01-what-a-model-is.md) →

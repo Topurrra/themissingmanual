@@ -144,7 +144,3 @@ You now have the real security model for LLM apps: not a magic prompt, but a sys
   }
 ]
 ```
-
----
-
-[← Phase 2: How Injection Actually Works](02-how-injection-works.md) · [Guide overview](_guide.md)

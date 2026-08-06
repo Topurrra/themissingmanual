@@ -42,5 +42,3 @@ make it certain.
 1. [The loop: understand, plan, do, look back](01-the-loop.md) - the four-step frame every solver runs, named.
 2. [The moves: how to actually get an idea](02-the-moves.md) - small cases, patterns, working backwards, invariants.
 3. [Stuck is the job: getting unstuck](03-stuck-is-the-job.md) - what to do when nothing comes, and why struggle beats talent.
-
-[Phase 1: The loop: understand, plan, do, look back](01-the-loop.md) →

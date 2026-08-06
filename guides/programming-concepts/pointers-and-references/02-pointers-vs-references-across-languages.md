@@ -75,5 +75,3 @@ Explicit &/* in C, Go                      -> references, visible syntax (Bucket
 *What just happened:* the mechanism underneath Bucket 1 and Bucket 2 is identical - a variable holding an address to shared data. The only real difference is whether the language shows you the address or hides it behind ordinary-looking assignment. Bucket 3 is the one genuinely different case, where the "box holds a value" picture from Phase 1 was the whole story all along.
 
 The question worth asking about any variable in any language isn't "what syntax does this use" - it's "if I assign this to a second variable and mutate through the second one, does the first one change too?" If yes, you're holding a reference. If no, you're holding a value. Phase 3 covers what goes wrong once you're holding a reference and stop tracking that.
-
-[← Phase 1: A box with an address instead of a value](01-a-box-with-an-address.md) | [Overview](_guide.md) | [Phase 3: The classic gotchas →](03-the-classic-gotchas.md)

@@ -197,7 +197,3 @@ belongs in the query string. Keeping that line clean is most of what makes an AP
 
 You can now design endpoints that read cleanly. The last phase steps back and tells you the plain truth:
 where this style holds up, and where it starts to hurt.
-
----
-
-[← Phase 1: Resources & Verbs](01-resources-and-verbs.md) · [Guide overview](_guide.md) · [Phase 3: REST in the Real World →](03-rest-in-the-real-world.md)

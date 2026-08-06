@@ -145,5 +145,3 @@ doesn't, you've found your bug.
   }
 ]
 ```
-
-[← Phase 1: The loop](01-the-loop.md) | [Overview](_guide.md) | [Phase 3: Stuck is the job →](03-stuck-is-the-job.md)

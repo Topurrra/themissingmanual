@@ -181,7 +181,3 @@ ctx.SaveChanges();
   }
 ]
 ```
-
----
-
-[← Phase 5: Change Tracking & SaveChanges](05-change-tracking.md) · [Guide overview](_guide.md) · [Phase 7: Loading Strategies & the N+1 Trap →](07-loading-and-n-plus-1.md)

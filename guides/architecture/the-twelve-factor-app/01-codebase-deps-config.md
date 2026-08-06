@@ -104,5 +104,3 @@ For builders: this is the single highest-leverage factor for a small team. If yo
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Stateless processes, port binding, and scaling out →](02-processes-and-scale.md)

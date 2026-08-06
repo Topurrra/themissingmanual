@@ -83,5 +83,3 @@ Before you write a single line of test script, write down your **goals as number
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: Writing the same test in k6 and JMeter →](02-k6-and-jmeter-in-practice.md)

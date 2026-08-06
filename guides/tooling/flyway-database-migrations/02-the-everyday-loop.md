@@ -143,5 +143,3 @@ $ flyway info      # 4. confirm V3 now shows Success
   }
 ]
 ```
-
-[← Phase 1: A Schema Is Code](01-schema-is-code.md) · [Overview](_guide.md) · [Phase 3: Production Reality →](03-production-reality.md)

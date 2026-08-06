@@ -162,7 +162,3 @@ of hand-clicked console settings nobody can recreate.
 You now have the whole mental model: what the cloud sells, the blocks it's made of, and how to choose
 among them without getting burned. Next: stop clicking the console and start describing your
 infrastructure as code, so it's reproducible, reviewable, and yours.
-
----
-
-[← Phase 2: The Building Blocks](02-the-building-blocks.md) · [Guide overview](_guide.md) · [Next guide: Infrastructure as Code with Terraform →](/guides/infrastructure-as-code-terraform)

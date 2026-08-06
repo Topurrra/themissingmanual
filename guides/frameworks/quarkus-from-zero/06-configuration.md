@@ -197,7 +197,3 @@ The three ideas worth keeping before you go reactive in the next phase:
   }
 ]
 ```
-
----
-
-[← Phase 5: Persistence: Hibernate with Panache](05-persistence-with-panache.md) · [Guide overview](_guide.md) · [Phase 7: Reactive Quarkus with Mutiny →](07-reactive-with-mutiny.md)

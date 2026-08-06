@@ -161,7 +161,3 @@ Last three - the throughline that should stick:
   }
 ]
 ```
-
----
-
-[← Phase 6: How Minimal APIs & MVC Sit on Top](06-how-minimal-apis-and-mvc-sit-on-top.md) · [Guide overview](_guide.md)

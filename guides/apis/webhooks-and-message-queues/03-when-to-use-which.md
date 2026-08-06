@@ -196,8 +196,4 @@ You came in knowing request/response. You leave knowing how systems handle "late
 comes from outside (webhooks) and when the work flows inside (queues) - and the handful of traps that
 turn a nice async design into a 2am page. That's the whole shape of event-driven integration, named.
 
----
-
-[← Phase 2: Message Queues](02-message-queues.md) · [Guide overview](_guide.md)
-
 Related guides: [REST APIs, Explained](/guides/rest-apis-explained) · [Designing APIs That Last](/guides/designing-apis-that-last)

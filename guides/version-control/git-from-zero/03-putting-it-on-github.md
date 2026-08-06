@@ -174,7 +174,3 @@ workflow. The last phase is your safety net: the small errors that ambush beginn
 each.
 
 Watch it animated: [pushing to a remote](/explainers/Remotes.dc.html)
-
----
-
-[← Phase 2: Your First Repository](02-your-first-repository.md) · [Guide overview](_guide.md) · [Phase 4: When the First Day Goes Sideways →](04-first-day-snags.md)

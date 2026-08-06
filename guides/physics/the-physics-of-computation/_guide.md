@@ -26,5 +26,3 @@ This is an advanced guide - it assumes you're comfortable with how computers rep
 1. [A bit is a physical thing](01-a-bit-is-a-physical-thing.md) - what a bit actually is inside real hardware, and why erasing one has a minimum, measured energy cost (Landauer's principle, properly this time).
 2. [The thermodynamic limits of computing](02-the-thermodynamic-limits-of-computing.md) - why chips hit a real heat wall, and reversible computing: the theoretical escape hatch nobody has fully built.
 3. [Information theory meets physics](03-information-theory-meets-physics.md) - Shannon entropy and thermodynamic entropy turn out to be the same equation, and that's the reason the rest of this guide is true.
-
-[Phase 1: A bit is a physical thing](01-a-bit-is-a-physical-thing.md) →

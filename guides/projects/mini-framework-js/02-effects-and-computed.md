@@ -173,7 +173,3 @@ through chains of computeds more cleverly - the flag is the real core.)
    are last run's reads.
 4. `computed` = effect + cache + dirty flag: lazy, cached derivation.
 5. You have now personally implemented the sentence "the framework tracks your dependencies."
-
----
-
-[← Phase 1: Reactive Objects](01-reactive-objects.md) · [Guide overview](_guide.md) · [Phase 3: The Virtual DOM →](03-the-virtual-dom.md)

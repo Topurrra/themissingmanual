@@ -136,5 +136,3 @@ Reach for an IdP the moment auth stops being trivial - the first time someone as
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Realms, Clients, and Roles →](02-realms-clients-roles.md)

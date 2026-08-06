@@ -135,8 +135,4 @@ usually "both, on purpose, with governance."
 
 Watch it animated: [data warehouses vs. data lakes](/explainers/DataWarehouseLake.dc.html)
 
----
-
-[← Phase 2: The Lake (and Lakehouse)](02-the-lake-and-lakehouse.md) · [Guide overview](_guide.md)
-
 **Related guides:** [ETL & ELT Pipelines](/guides/etl-elt-pipelines) · [What Is Data Engineering?](/guides/what-is-data-engineering) · [BI Dashboards That Work](/guides/bi-dashboards-that-work)

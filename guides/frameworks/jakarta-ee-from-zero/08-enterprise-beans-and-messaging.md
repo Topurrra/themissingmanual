@@ -334,7 +334,3 @@ Test yourself on the ideas that have to stick from this phase:
   }
 ]
 ```
-
----
-
-[← Phase 7: Validation & JSON Binding](07-validation-and-json-binding.md) · [Guide overview](_guide.md) · [Phase 9: Jakarta Security →](09-jakarta-security.md)

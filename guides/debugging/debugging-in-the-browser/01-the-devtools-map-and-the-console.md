@@ -171,7 +171,3 @@ solves "the data won't load."
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Breakpoints and the Network Tab →](02-breakpoints-and-the-network-tab.md)

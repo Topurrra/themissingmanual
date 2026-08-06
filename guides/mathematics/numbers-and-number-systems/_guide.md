@@ -39,7 +39,3 @@ suddenly readable.
 
 > This builds on [Sets, Relations & Functions](/guides/sets-relations-and-functions) (the number
 > families are nested sets). Next in the Mathematics track: counting, and probability.
-
----
-
-[Phase 1: The Families of Numbers →](01-the-families-of-numbers.md)

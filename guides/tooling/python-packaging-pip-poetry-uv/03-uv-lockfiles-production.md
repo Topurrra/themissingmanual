@@ -127,5 +127,3 @@ The production-grade setup is boring on purpose: `pyproject.toml` with ranges, a
   }
 ]
 ```
-
-[← Phase 2](02-pip-requirements-poetry.md) | [Overview](_guide.md)

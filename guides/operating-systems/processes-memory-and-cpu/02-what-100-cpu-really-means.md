@@ -153,7 +153,3 @@ spinning one core forever. The fix wasn't restarting the server or "adding more 
 CPU is one of the two things a stuck machine runs out of. The other feels different - not a screaming fan but a grinding, molasses slowness, ending in "out of memory." That's a different mechanism with a different fix, and it's next.
 
 Watch it animated: [CPU scheduling](/explainers/CPUScheduling.dc.html)
-
----
-
-[← Phase 1: Processes, Up Close](01-processes-up-close.md) · [Guide overview](_guide.md) · [Phase 3: What "Out of Memory" Really Means →](03-what-out-of-memory-really-means.md)

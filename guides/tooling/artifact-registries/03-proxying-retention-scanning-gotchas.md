@@ -159,5 +159,3 @@ A mature setup looks like this: one Artifactory or Nexus as the single front doo
   }
 ]
 ```
-
-[← Phase 2: Pushing, Pulling, and Private Packages](02-pushing-pulling-private-packages.md) | [Overview](_guide.md)

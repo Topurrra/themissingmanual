@@ -209,7 +209,3 @@ Let's put it together into the real screen for our running **notes** app: a titl
   }
 ]
 ```
-
----
-
-[← Phase 1: What MAUI Is & Your First App](01-what-maui-is.md) · [Guide overview](_guide.md) · [Phase 3: Controls & Data Binding →](03-controls-and-data-binding.md)

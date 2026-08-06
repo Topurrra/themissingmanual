@@ -184,7 +184,3 @@ explanation next phase.)
   }
 ]
 ```
-
----
-
-[← Phase 1: What Next.js Actually Is](01-what-nextjs-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Server and Client Components →](03-server-and-client-components.md)

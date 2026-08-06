@@ -118,7 +118,3 @@ exists. The tests you write today are a letter to a stressed future you: *go ahe
 
 Now that you know *why* a net is worth having, the obvious next question is: what *is* a test, actually? It's
 much smaller and less magical than it sounds.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: What a Test Actually Is →](02-what-a-test-actually-is.md)

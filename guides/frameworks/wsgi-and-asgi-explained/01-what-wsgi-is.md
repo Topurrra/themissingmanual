@@ -210,7 +210,3 @@ Three questions on the ideas that have to stick before Phase 2:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: A WSGI App From Scratch →](02-a-wsgi-app-from-scratch.md)

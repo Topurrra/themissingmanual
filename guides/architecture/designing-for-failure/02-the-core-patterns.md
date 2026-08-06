@@ -200,7 +200,3 @@ retry. Retries make blips invisible. The breaker stops the bleeding when blips b
 4. A **circuit breaker** trips **open** after too many failures, **fails fast** during a cooldown, then
    tests recovery in **half-open** - protecting both your resources and the struggling dependency.
 5. The three layer onto the same call: breaker outside, retries within an attempt, timeout on each call.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: Failing Soft - Degradation & Redundancy →](03-failing-soft.md)

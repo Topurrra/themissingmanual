@@ -188,7 +188,3 @@ main.go:12:2: Error return value of `f.Close` is not checked (errcheck)
 6. **Standard library + `golangci-lint`** - batteries like `net/http` and `encoding/json` are built in; `golangci-lint` is the one external tool most teams add.
 
 You've got the language and the toolbox. What's left is a handful of conventions and gotchas that bite everyone once.
-
----
-
-[← Phase 7: Errors & I/O](07-errors-and-io.md) · [Phase 9: Idioms & Common Gotchas →](09-idioms-and-gotchas.md)

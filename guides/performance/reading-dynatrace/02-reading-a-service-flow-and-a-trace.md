@@ -122,7 +122,3 @@ merely downwind of the real problem.
 
 You can now read a single request. The last step is what Dynatrace does when *many* requests go wrong at once
 - and how it tries to name the cause for you.
-
----
-
-[← Phase 1: What Dynatrace Actually Is](01-what-dynatrace-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Problems & Root Cause →](03-problems-and-root-cause.md)

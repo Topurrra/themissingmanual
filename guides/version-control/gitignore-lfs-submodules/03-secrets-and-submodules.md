@@ -156,5 +156,3 @@ If you inherit a project with submodules, put `git submodule update --init --rec
   }
 ]
 ```
-
-[← Phase 2: Ignoring, untracking, and LFS for big files](02-ignoring-untracking-lfs.md) | [Overview](_guide.md)

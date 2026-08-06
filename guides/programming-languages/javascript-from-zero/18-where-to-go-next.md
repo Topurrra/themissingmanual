@@ -85,7 +85,3 @@ You started this course unsure what `npm run dev` even did. Now you read real co
 2. **TypeScript is the standout next step** - typed JavaScript that catches bugs early; short leap since you know the JS underneath.
 3. **Full-stack** (frontend + Node backend + database) is where the paths converge - realistic in months.
 4. **Build to learn:** plain-JS app → API-fetching page → rebuild in a framework → tiny full-stack app. *Finish each one.*
-
----
-
-[← Phase 17: Types & the Road to TypeScript](17-types-and-typescript.md) · [Guide overview](_guide.md)

@@ -121,5 +121,3 @@ Start smaller than feels respectable. A `evals.jsonl` file with fifteen real inp
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: How to Actually Grade Output →](02-how-to-grade-output.md)

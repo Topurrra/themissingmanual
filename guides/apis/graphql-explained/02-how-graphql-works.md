@@ -155,7 +155,3 @@ You now know enough to read GraphQL and predict its output. But everything above
 3. **Queries read, mutations write** - the split makes intent explicit, but the server, not the protocol, enforces that queries stay side-effect-free.
 4. **The response mirrors the request** - the JSON under `"data"` has the exact shape you asked for, so you always know what you're getting.
 5. **Resolvers** are the per-field server functions that actually fetch the data - remember them for Phase 3.
-
----
-
-[← Phase 1: The Problem REST Leaves](01-the-problem-rest-leaves.md) · [Guide overview](_guide.md) · [Phase 3: The Real Trade-offs →](03-the-real-trade-offs.md)

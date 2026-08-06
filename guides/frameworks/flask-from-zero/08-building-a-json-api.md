@@ -219,7 +219,3 @@ Three questions on the ideas that have to stick before Phase 9:
   }
 ]
 ```
-
----
-
-[← Phase 7: Sessions, Auth & Extensions](07-sessions-auth-and-extensions.md) · [Guide overview](_guide.md) · [Phase 9: Testing & Production →](09-testing-and-production.md)

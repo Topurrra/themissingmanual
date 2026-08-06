@@ -99,7 +99,3 @@ If you can't tick all three, you're probably not ready - good news, since you ge
 6. **It's the last resort.** Exhaust optimization, caching, and replication first; prefer a managed/distributed database to hand-rolling it.
 
 Watch it animated: [database sharding](/explainers/Sharding.dc.html)
-
----
-
-[← Phase 2: Replication](02-replication.md) · [Guide overview →](_guide.md)

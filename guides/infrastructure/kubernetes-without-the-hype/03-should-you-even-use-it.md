@@ -129,7 +129,3 @@ when the problem is real.
    the quiet prerequisite - **people to operate it**. Avoid **resume-driven Kubernetes**.
 5. **Managed** k8s eases the control-plane burden but doesn't remove the rest of the cost or the need to
    learn it.
-
----
-
-[← Phase 2: The Core Objects](02-the-core-objects.md) · [Guide overview →](_guide.md)

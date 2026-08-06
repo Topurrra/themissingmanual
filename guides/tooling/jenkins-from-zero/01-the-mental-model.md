@@ -95,5 +95,3 @@ A server (the controller) watches for triggers, and when one fires it hands a jo
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Jenkinsfile →](02-the-jenkinsfile.md)

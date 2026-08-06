@@ -131,8 +131,4 @@ them.
 
 Watch it animated: [overfitting](/explainers/Overfitting.dc.html)
 
----
-
-[← Phase 2: Learning by Being Wrong](02-learning-by-being-wrong.md) · [Guide overview](_guide.md)
-
 **Related guides:** [What AI and ML Are](/guides/what-ai-and-ml-are) · [ML Basics for Data People](/guides/ml-basics-for-data-people)

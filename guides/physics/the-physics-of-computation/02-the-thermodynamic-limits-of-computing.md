@@ -85,5 +85,3 @@ The power wall is real today, measured in watts and throttled clock speeds. Land
   }
 ]
 ```
-
-[← Phase 1: A bit is a physical thing](01-a-bit-is-a-physical-thing.md) · [Guide overview](_guide.md) · [Phase 3: Information theory meets physics →](03-information-theory-meets-physics.md)

@@ -115,7 +115,3 @@ gotcha of the next phase.
 4. **Levels**, least to most serious: **DEBUG → INFO → WARN → ERROR → FATAL.** Filter by severity to
    shrink the flood fast.
 5. Reading a log is reading a **story in time order** - the loudest ERROR isn't always the real cause.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Finding the Needle →](02-finding-the-needle.md)

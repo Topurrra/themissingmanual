@@ -116,7 +116,3 @@ example feels unfamiliar - it's the same pattern as DOM event listeners.
   }
 ]
 ```
-
----
-
-[← Phase 1: Cookies](01-cookies-explained.md) · [Guide overview](_guide.md) · [Phase 3: Choosing the Right Storage for the Job →](03-choosing-storage.md)

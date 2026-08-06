@@ -194,7 +194,3 @@ Test the front-controller picture before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 6: Spring AOP & Proxies](06-spring-aop-and-proxies.md) · [Guide overview](_guide.md) · [Phase 8: From Core Spring to Spring Boot →](08-from-core-spring-to-boot.md)

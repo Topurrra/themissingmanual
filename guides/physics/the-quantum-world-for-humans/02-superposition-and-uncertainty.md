@@ -91,5 +91,3 @@ For builders: a qubit's power is superposition with *controlled phase* - the pre
   }
 ]
 ```
-
-[← Phase 1](01-waves-particles-double-slit.md) | [Overview](_guide.md) | [Phase 3: Entanglement and its limits →](03-entanglement-and-its-limits.md)

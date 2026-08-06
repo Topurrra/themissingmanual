@@ -73,7 +73,3 @@ Each phase carries a difficulty badge so you can see the climb.
 
 > Frameworks (Spring Boot, Android, Jakarta EE) are their own world - this guide makes the *language and
 > the JVM* make sense, top to bottom.
-
----
-
-[Phase 1: Install & Your First Program →](01-install-and-first-program.md)

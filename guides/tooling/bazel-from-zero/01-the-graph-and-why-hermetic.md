@@ -100,5 +100,3 @@ The same idea shows up in other modern tools - content-addressed caching, depend
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: BUILD Files and the Daily Loop →](02-build-files-and-the-daily-loop.md)

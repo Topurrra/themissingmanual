@@ -120,5 +120,3 @@ If you are coming from [/guides/docker-without-the-magic](/guides/docker-without
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Running Containers and Pods →](02-running-containers-and-pods.md)

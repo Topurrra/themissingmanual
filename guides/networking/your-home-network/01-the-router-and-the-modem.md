@@ -113,7 +113,3 @@ makes the router rebuild its picture of your network from scratch - and now you 
 
 Next we'll open up the router's cleverest trick: how it lets a dozen devices share a single internet
 address without ever getting their wires crossed.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: NAT & Private IPs →](02-nat-and-private-ips.md)

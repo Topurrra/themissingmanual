@@ -131,7 +131,3 @@ Lock in the pieces before moving to what actually renders once the response arri
   }
 ]
 ```
-
----
-
-[← Phase 1: The Client-Server Model](01-the-client-server-model.md) · [Guide overview](_guide.md) · [Phase 3: HTML, CSS, and JavaScript →](03-html-css-and-javascript-three-jobs-three-languages.md)

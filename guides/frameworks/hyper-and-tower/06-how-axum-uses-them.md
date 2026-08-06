@@ -138,7 +138,3 @@ flowchart TD
   }
 ]
 ```
-
----
-
-[← Phase 5: The tower-http Toolbox](05-tower-http.md) · [Guide overview](_guide.md) · [Phase 7: Where to Go Next →](07-where-to-go-next.md)

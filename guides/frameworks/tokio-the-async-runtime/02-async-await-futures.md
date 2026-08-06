@@ -142,5 +142,3 @@ You don't write waker code when you use `async`/`await` - the leaf futures in To
   }
 ]
 ```
-
-[← Phase 1: What Tokio Is & Why Futures Need a Runtime](01-what-tokio-is.md) · [Guide overview](_guide.md) · [Phase 3: Tasks & Spawning →](03-tasks-and-spawning.md)

@@ -189,7 +189,3 @@ fn app() -> Router {
   }
 ]
 ```
-
----
-
-[← Phase 1: What axum Is & Your First Server](01-what-axum-is.md) · [Guide overview](_guide.md) · [Phase 3: Handlers & IntoResponse →](03-handlers-and-intoresponse.md)

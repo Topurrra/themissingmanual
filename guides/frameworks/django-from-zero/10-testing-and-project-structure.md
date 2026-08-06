@@ -30,7 +30,6 @@ Tests live in your app's `tests.py` (or a `tests/` package once there are many).
 from django.test import TestCase
 from blog.models import Post
 
-
 class PostModelTests(TestCase):
     def test_post_is_created_with_its_fields(self):
         post = Post.objects.create(title="Hello world", body="My first post.")
@@ -72,7 +71,6 @@ Model tests check your data. But most of a web app's behavior lives in *views* -
 from django.test import TestCase
 from django.urls import reverse
 from blog.models import Post
-
 
 class PostViewTests(TestCase):
     def test_post_list_shows_published_posts(self):
@@ -246,7 +244,3 @@ Three questions on the ideas that matter most before you ship in Phase 11:
   }
 ]
 ```
-
----
-
-[← Phase 9: Class-Based Views & Django REST Framework](09-class-based-views-and-drf.md) · [Guide overview](_guide.md) · [Phase 11: Production & Where to Go Next →](11-where-to-go-next.md)

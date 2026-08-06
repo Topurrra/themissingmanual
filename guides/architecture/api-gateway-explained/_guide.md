@@ -30,5 +30,3 @@ Read it in order. Phase 1 is the problem the gateway solves - what life looks li
 1. [The single front door](01-the-single-front-door.md) - the problem: clients otherwise juggle N services, N addresses, N auth schemes.
 2. [What a gateway actually does](02-what-a-gateway-actually-does.md) - routing, authentication, rate limiting, transformation, and aggregation.
 3. [Tradeoffs and real examples](03-tradeoffs-and-real-examples.md) - the new failure point, the latency cost, real products, and when to skip it.
-
-[Phase 1: The single front door](01-the-single-front-door.md) →

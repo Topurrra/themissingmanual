@@ -332,5 +332,3 @@ satisfies it. If you haven't built the API side, [ASP.NET Core From Zero](/guide
   }
 ]
 ```
-
-[← Phase 6: Component Communication & State](06-communication-and-state.md) · [Guide overview](_guide.md) · [Phase 8: Where to Go Next →](08-where-to-go-next.md)

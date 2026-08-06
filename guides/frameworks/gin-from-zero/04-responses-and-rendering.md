@@ -286,7 +286,3 @@ Test the two decisions every response comes down to:
   }
 ]
 ```
-
----
-
-[← Phase 3: Binding & Validating Input](03-binding-and-validation.md) · [Guide overview](_guide.md) · [Phase 5: Middleware →](05-middleware.md)

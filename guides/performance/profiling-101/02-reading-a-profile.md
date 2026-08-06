@@ -103,7 +103,3 @@ The table is precise but hard to feel. A **flame graph** is the same information
 5. **A flame graph draws the same data: width = time.** Find the widest box; that's your target. A wide box with nothing wide stacked above it is the self-time hot spot.
 
 You can now read a profile and point at the slow thing with confidence. But knowing *where* it's slow isn't the same as making it fast - and it's surprisingly easy to "fix" it and make things worse. The next phase is the disciplined loop that turns a reading into a real, verified speedup.
-
----
-
-[← Phase 1: Measure, Don't Guess](01-measure-dont-guess.md) · [Guide overview](_guide.md) · [Phase 3: From Profile to Fix →](03-from-profile-to-fix.md)

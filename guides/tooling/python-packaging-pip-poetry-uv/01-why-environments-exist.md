@@ -113,5 +113,3 @@ Every modern tool in this guide - Poetry, uv, even plain pip workflows - is buil
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Daily Driver: pip, requirements, and Poetry →](02-pip-requirements-poetry.md)

@@ -205,7 +205,3 @@ a real server you control.
 > Ready to stand this up? [Deploying to a VPS](/guides/deploying-to-a-vps) walks through getting an app onto
 > a server with nginx in front of it, end to end - this guide is the "why" behind the front-door piece you'll
 > configure there.
-
----
-
-[← Phase 2: Load Balancing](02-load-balancing.md) · [Guide overview](_guide.md)

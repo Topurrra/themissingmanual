@@ -194,5 +194,3 @@ You now have everything the tasks API needs to trust its inputs: `CreateTaskDto`
   }
 ]
 ```
-
-[← Phase 4: Modules](04-modules.md) · [Guide overview](_guide.md) · [Phase 6: Building a REST API →](06-building-a-rest-api.md)

@@ -136,5 +136,3 @@ Most teams split fast unit tests from slower Testcontainers-backed integration t
   }
 ]
 ```
-
-[← Phase 1: Why mocks lie](01-why-mocks-lie.md) | [Overview](_guide.md) | [Phase 3: Production reality →](03-production-reality.md)

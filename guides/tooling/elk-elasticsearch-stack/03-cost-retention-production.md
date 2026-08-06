@@ -115,5 +115,3 @@ The teams that stay happy with ELK treat it as a cost center they actively manag
   }
 ]
 ```
-
-[← Phase 2: Shipping, structuring, and searching](02-shipping-structuring-searching.md) | [Overview](_guide.md)

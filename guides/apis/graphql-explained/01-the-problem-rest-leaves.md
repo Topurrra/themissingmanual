@@ -107,7 +107,3 @@ That's the promise. The next phase shows the machinery that makes it real: a typ
 3. **Under-fetching** is needing several chained round trips to build one screen; the waiting, not the bytes, is what hurts.
 4. **Both come from one root cause:** the server owns the shape.
 5. **GraphQL's pitch:** let the client ask for exactly the fields it wants and get exactly those, in a single request.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: How GraphQL Works →](02-how-graphql-works.md)

@@ -216,7 +216,3 @@ run it:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: XAML & Layouts →](02-xaml-and-layouts.md)

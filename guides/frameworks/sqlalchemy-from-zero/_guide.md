@@ -57,7 +57,3 @@ migrations. Uses modern SQLAlchemy 2.0 style throughout. Phases carry difficulty
 
 > After this, Flask-SQLAlchemy and SQLModel read as conveniences over a Session, mapped classes, and
 > `select()` - the things you now understand directly.
-
----
-
-[Phase 1: What SQLAlchemy Is (Core vs ORM) →](01-what-sqlalchemy-is.md)

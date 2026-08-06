@@ -90,7 +90,3 @@ When you hear "we expose that through an API," "the frontend calls the backend,"
 4. All three are the same idea: an API is a **stable boundary** you depend on while the other side is free to change - which is exactly why breaking it matters so much.
 
 Next, we'll get concrete about the *kinds* of APIs you'll meet - the ones living inside your own program versus the ones you reach across a network - and name the styles you'll keep hearing about.
-
----
-
-[← Phase 1: A Contract Between Programs](01-a-contract-between-programs.md) · [Phase 3: Kinds of APIs →](03-kinds-of-apis.md)

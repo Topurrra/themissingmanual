@@ -89,7 +89,3 @@ $ curl -s -H "Authorization: Bearer eyJhbGci..." https://api.example.com/me
 4. **In-memory session state is the silent killer** - it works on one box, then causes intermittent "forgot who you are" bugs the moment you add a second. The fix is to externalize state (Phase 3).
 
 Next, the piece that actually sends each request to one of your interchangeable servers - and the trap that tries to make them stateful again.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Load Balancing →](02-load-balancing.md)

@@ -149,5 +149,3 @@ That's the entire foundation. A **chart** is templated manifests plus default va
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Everyday Loop: Install, Upgrade, Rollback](02-the-everyday-loop.md) →

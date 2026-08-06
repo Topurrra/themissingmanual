@@ -170,8 +170,4 @@ That's the whole arc: a green job never meant the data was true (Phase 1); check
 question the pipeline answers loudly (Phase 2); and observability makes sure the answer reaches a human
 before a decision is built on a lie (Phase 3). The product was never the pipeline. It was the trust.
 
----
-
-[← Phase 2: Data Quality Checks](02-data-quality-checks.md) · [Guide overview →](_guide.md)
-
 **Related:** [ETL & ELT Pipelines](/guides/etl-elt-pipelines) · [What Is Data Engineering?](/guides/what-is-data-engineering)

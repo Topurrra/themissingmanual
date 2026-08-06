@@ -194,7 +194,3 @@ divide by 100 only when displaying. Never compare prices with `===` on decimals.
    integer cents.
 
 Next: *collections* of values - lists (arrays) and labeled bundles (objects).
-
----
-
-[← Phase 1: Install & Your First Program](01-install-and-first-program.md) · [Guide overview](_guide.md) · [Phase 3: Collections →](03-collections.md)

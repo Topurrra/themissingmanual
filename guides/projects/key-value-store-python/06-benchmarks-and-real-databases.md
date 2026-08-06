@@ -54,13 +54,11 @@ from kv import KV
 
 N = 2000
 
-
 def bench(label, fn):
     start = time.perf_counter()
     fn()
     took = time.perf_counter() - start
     print(f"{label:<26} {N / took:>12,.0f} ops/sec")
-
 
 for fsync in (True, False):
     if os.path.exists("bench.log"):
@@ -185,7 +183,3 @@ More than the code, you own the ideas now. When PostgreSQL's docs mention the WA
   }
 ]
 ```
-
----
-
-[← Phase 5: A TCP Server](05-a-tcp-server.md) · [Guide overview](_guide.md)

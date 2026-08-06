@@ -90,7 +90,3 @@ Replication scales reads. It does **not** scale writes. Re-read the leader diagr
 Next: the hard one. Splitting the data itself so different machines own different writes - and the real price you pay for it.
 
 Watch it animated: [database replication](/explainers/Replication.dc.html)
-
----
-
-[← Phase 1: The Bottleneck](01-the-bottleneck.md) · [Phase 3: Sharding →](03-sharding.md)

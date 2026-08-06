@@ -290,5 +290,3 @@ Quick gut-check before you go:
 
 You've finished the Probability & Statistics guide - and the Mathematics foundations. The numbers
 work for you now, not the other way around.
-
-[← Phase 2: Reading Data: Statistics That Don't Lie](02-reading-data-statistics.md) · [Guide overview](_guide.md)

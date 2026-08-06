@@ -113,7 +113,3 @@ code is cheaper than churning it.
   }
 ]
 ```
-
----
-
-[← Phase 7: When Vue Breaks](07-when-it-breaks.md) · [Guide overview](_guide.md)

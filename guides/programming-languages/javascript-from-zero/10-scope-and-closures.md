@@ -263,7 +263,3 @@ Test yourself on where a function looks for its variables:
   }
 ]
 ```
-
----
-
-[← Phase 9: Idioms & Common Gotchas](09-idioms-and-gotchas.md) · [Guide overview](_guide.md) · [Phase 11: this, Prototypes & the Object Model →](11-this-prototypes-and-objects.md)

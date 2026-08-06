@@ -151,7 +151,3 @@ notes.txt has 7 lines
 4. **`panic!`** is for unrecoverable bugs ("this can't happen"); **`Result`** is for expected, recoverable failures the caller can handle.
 5. **`.unwrap()`** panics on failure - fine in tests and proven-impossible cases, a crash-in-waiting in real code. Prefer `?`, `match`, or at least `.expect("why")`.
 6. Read files with **`std::fs::read_to_string`**; let `main` return a `Result` so you can use `?` end to end.
-
----
-
-[← Phase 6: Ownership & Borrowing](06-ownership-and-borrowing.md) · [Phase 8: The Ecosystem & Tooling →](08-ecosystem-and-tooling.md)

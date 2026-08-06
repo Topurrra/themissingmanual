@@ -261,5 +261,3 @@ Two threads to pull on, both pointing forward.
   }
 ]
 ```
-
-[← Phase 4: Hooks & the Lifecycle](04-hooks-and-lifecycle.md) · [Guide overview](_guide.md) · [Phase 6: Error Handling →](06-error-handling.md)

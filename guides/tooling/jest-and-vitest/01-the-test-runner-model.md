@@ -112,5 +112,3 @@ For builders: keep `"test": "vitest"` (or `jest`) as your dev script and add `"t
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The daily core →](02-matchers-mocks-async.md)

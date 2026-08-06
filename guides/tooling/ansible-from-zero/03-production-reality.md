@@ -141,5 +141,3 @@ Terraform is the mirror image. It **provisions** infrastructure - it creates and
   }
 ]
 ```
-
-[← Phase 2](02-the-everyday-loop.md) | [Overview](_guide.md)

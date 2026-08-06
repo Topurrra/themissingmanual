@@ -131,5 +131,3 @@ None of these five jobs strictly requires a gateway - you could build auth check
 ```
 
 Watch it animated: [an API gateway](/explainers/APIGateway.dc.html)
-
-[← Phase 1: The single front door](01-the-single-front-door.md) | [Overview](_guide.md) | [Phase 3: Tradeoffs and real examples →](03-tradeoffs-and-real-examples.md)

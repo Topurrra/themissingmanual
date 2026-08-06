@@ -137,5 +137,3 @@ For the wider why behind these patterns - expand/contract migrations, online sch
   }
 ]
 ```
-
-[← Phase 2: The Everyday Loop](02-the-everyday-loop.md) · [Overview](_guide.md)

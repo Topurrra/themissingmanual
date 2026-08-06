@@ -57,7 +57,3 @@ You don't graduate from this guide by reading every tool guide that follows it. 
   }
 ]
 ```
-
----
-
-[← Phase 3: How to Learn a New Tool Fast](03-how-to-learn-a-new-tool-fast.md) · [Guide overview](_guide.md)

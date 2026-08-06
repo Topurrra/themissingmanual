@@ -128,5 +128,3 @@ For builders: combine fake timers with a mock callback to test debouncing - fire
   }
 ]
 ```
-
-[← Phase 1](01-the-test-runner-model.md) | [Overview](_guide.md) | [Phase 3: Production reality →](03-snapshots-flakiness-choosing.md)

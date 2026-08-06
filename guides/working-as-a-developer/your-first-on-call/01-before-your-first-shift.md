@@ -113,7 +113,3 @@ Quick check before you move on:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The 3am Page →](02-the-3am-page-a-calm-playbook.md)

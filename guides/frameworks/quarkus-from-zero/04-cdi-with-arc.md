@@ -199,7 +199,3 @@ Test yourself on the ideas that have to stick from this phase:
   }
 ]
 ```
-
----
-
-[← Phase 3: Building REST APIs](03-rest-apis.md) · [Guide overview](_guide.md) · [Phase 5: Persistence: Hibernate with Panache →](05-persistence-with-panache.md)

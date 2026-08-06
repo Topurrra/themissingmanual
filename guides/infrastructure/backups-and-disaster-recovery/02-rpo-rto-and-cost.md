@@ -153,5 +153,3 @@ satisfies the RTO. The numbers turn a vague worry into a spec you can actually v
   }
 ]
 ```
-
-[← Phase 1](01-backup-vs-disaster-recovery.md) | [Overview](_guide.md) | [Phase 3: The Untested Backup, and Ransomware →](03-testing-and-ransomware.md)

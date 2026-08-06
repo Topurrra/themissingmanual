@@ -125,7 +125,3 @@ $ python compose.py
 5. **Composition** - build big behavior by chaining small, single-purpose functions.
 
 That's FP's worldview: model your program as data flowing through transformations. Now you've got both mental models - so we can finally have the plain conversation about which to reach for, and when.
-
----
-
-[← Phase 1: What OOP Actually Is](01-what-oop-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Plainly - Which, When? →](03-which-when.md)

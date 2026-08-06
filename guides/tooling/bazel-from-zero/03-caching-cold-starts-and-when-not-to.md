@@ -108,5 +108,3 @@ The pattern to copy from Bazel even if you never adopt it: **make your build's i
   }
 ]
 ```
-
-[← Phase 2: BUILD Files and the Daily Loop](02-build-files-and-the-daily-loop.md) · [Overview](_guide.md)

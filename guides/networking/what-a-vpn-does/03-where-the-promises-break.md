@@ -110,7 +110,3 @@ flowchart LR
   }
 ]
 ```
-
----
-
-[← Phase 2: Who Sees What](02-who-sees-what.md) · [Guide overview](_guide.md)

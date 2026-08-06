@@ -293,7 +293,3 @@ The three things that are actually different about JPA in a container:
   }
 ]
 ```
-
----
-
-[← Phase 4: JAX-RS: Building REST APIs](04-jax-rs-rest-apis.md) · [Guide overview](_guide.md) · [Phase 6: Transactions with JTA →](06-transactions-with-jta.md)

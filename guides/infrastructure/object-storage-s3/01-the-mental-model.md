@@ -112,5 +112,3 @@ For builders: the next time you reach for "save the uploaded file to `./uploads/
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: Keys and access →](02-keys-and-access.md)

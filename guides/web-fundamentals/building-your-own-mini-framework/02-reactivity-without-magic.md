@@ -134,7 +134,3 @@ Trace through the update sequence once more before moving on.
   }
 ]
 ```
-
----
-
-[← Phase 1: A Virtual DOM From Scratch](01-a-virtual-dom-from-scratch.md) · [Guide overview](_guide.md) · [Phase 3: What React/Vue/Svelte Actually Add On Top →](03-what-react-vue-svelte-actually-add-on-top.md)

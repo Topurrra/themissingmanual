@@ -161,7 +161,3 @@ a real decision instead of taking a side in a holy war.
   links tables, in depth.
 - [Scaling a Database](/guides/scaling-a-database) - the "scale up vs scale out" and consistency
   story from Phase 2, taken further.
-
----
-
-[← Phase 2: The Real Trade-offs](02-the-trade-offs.md) · [Guide overview](_guide.md)

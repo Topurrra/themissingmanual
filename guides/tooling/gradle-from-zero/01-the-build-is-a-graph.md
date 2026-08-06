@@ -133,5 +133,3 @@ When a CI build is mysteriously slow or runs the wrong things, experienced engin
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Build Script You Live In →](02-the-build-script-you-live-in.md)

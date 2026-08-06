@@ -192,5 +192,3 @@ Navigation now reads as one clean story: the list page shows `Notes`; tapping a 
   }
 ]
 ```
-
-[← Phase 4: The MVVM Pattern](04-mvvm.md) · [Guide overview](_guide.md) · [Phase 6: Data & Calling APIs →](06-data-and-apis.md)

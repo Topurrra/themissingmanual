@@ -117,7 +117,3 @@ Try it yourself - allocate objects, drop a root, and step through mark-and-sweep
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Generational and Concurrent Collectors →](02-generational-and-concurrent-collectors.md)

@@ -157,5 +157,3 @@ A typical mid-size team runs one Nexus or Artifactory as the single front door: 
   }
 ]
 ```
-
-[← Phase 1: What a Registry Actually Is](01-what-a-registry-actually-is.md) | [Overview](_guide.md) | [Phase 3: Proxying, Retention, Scanning, and the Tag Trap](03-proxying-retention-scanning-gotchas.md) →

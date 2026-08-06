@@ -82,7 +82,3 @@ Test your instinct on the failure shapes before moving on.
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Error Handling and Retries in a Visual Workflow →](02-error-handling-and-retries.md)

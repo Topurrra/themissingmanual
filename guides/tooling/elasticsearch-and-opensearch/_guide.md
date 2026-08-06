@@ -25,5 +25,3 @@ Read it in order the first time. Phase 1 builds the one mental model that makes 
 1. [Phase 1: The inverted index, or why search is a different problem](01-the-inverted-index.md)
 2. [Phase 2: Indexing, mappings, analyzers, and getting ranked results](02-indexing-and-relevance.md)
 3. [Phase 3: Near-real-time, consistency, and when to add search at all](03-production-reality.md)
-
-[Phase 1: The inverted index, or why search is a different problem](01-the-inverted-index.md) →

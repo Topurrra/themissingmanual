@@ -124,5 +124,3 @@ None of this is free, and pretending otherwise is how people get burned in Phase
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: Queries and mutations in real components →](02-queries-and-mutations.md)

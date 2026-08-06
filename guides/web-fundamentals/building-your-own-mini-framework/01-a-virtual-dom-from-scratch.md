@@ -184,7 +184,3 @@ Check your understanding of why this beats direct DOM writes.
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Reactivity Without Magic →](02-reactivity-without-magic.md)

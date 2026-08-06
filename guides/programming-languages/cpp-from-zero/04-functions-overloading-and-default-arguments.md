@@ -216,7 +216,3 @@ Test yourself on the idea that makes this phase click - what actually makes two 
   }
 ]
 ```
-
----
-
-[← Phase 3: Types, Variables & Control Flow](03-types-variables-and-control-flow.md) · [Phase 5: References vs Pointers →](05-references-vs-pointers.md)

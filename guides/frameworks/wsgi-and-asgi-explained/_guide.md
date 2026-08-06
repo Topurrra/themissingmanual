@@ -49,7 +49,3 @@ onto the frameworks you know. Phases carry difficulty badges.
 
 > Once you've seen the callable, "a Python web framework" reads as "conveniences over a WSGI or ASGI
 > app." The magic was always this contract.
-
----
-
-[Phase 1: What WSGI Is →](01-what-wsgi-is.md)

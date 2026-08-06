@@ -285,10 +285,6 @@ and you can run it without leaving doors open. From here, the infrastructure tra
 knowledge gets automated across many machines - but it all rests on being able to do it by hand, calmly, on
 one box. Which you now can.
 
----
-
-[← Guide overview](_guide.md)
-
 ## Try it yourself
 
 Inspect a fake server filesystem - `ls -l`, `cat /etc/hostname`, `cat readme.txt | grep shell`, `tail -n 2 projects/todo.txt`:

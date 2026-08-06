@@ -194,5 +194,3 @@ types.
   }
 ]
 ```
-
-[← Phase 3: The Service Trait](03-the-service-trait.md) · [Guide overview](_guide.md) · [Phase 5: The tower-http Toolbox →](05-tower-http.md)

@@ -93,7 +93,3 @@ The point isn't to fear a mastermind. It's to accept that *someone, or something
 4. The **attacker** is usually a script or an opportunist, not a mastermind - but they only have to find *one* unlocked door, while you have to guard all of them.
 
 Now that you're thinking in abuse cases, the next phase gives you a light, repeatable way to find them on purpose: threat modeling.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Threat Modeling, Lightly →](02-threat-modeling-lightly.md)

@@ -155,7 +155,3 @@ Try it yourself:
   }
 ]
 ```
-
----
-
-[← Phase 1: Why Accessibility Isn't Optional](01-why-accessibility-isnt-optional.md) · [Guide overview](_guide.md) · [Phase 3: Testing with a Screen Reader and Automated Tools →](03-testing-with-a-screen-reader-and-automated-tools.md)

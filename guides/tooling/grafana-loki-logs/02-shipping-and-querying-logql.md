@@ -122,5 +122,3 @@ sum by (status_code) (
   }
 ]
 ```
-
-[← Phase 1: What Loki actually is](01-what-loki-actually-is.md) · [Overview](_guide.md) · [Phase 3: Cardinality, cost, and the Elasticsearch tradeoff →](03-cardinality-cost-tradeoffs.md)

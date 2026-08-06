@@ -97,5 +97,3 @@ Without a load balancer doing that second job, adding servers is like hiring mor
 ```
 
 Watch it animated: [auto-scaling](/explainers/AutoScaling.dc.html)
-
-[← Phase 2: How it actually decides to scale](02-how-it-decides.md) | [Overview](_guide.md)

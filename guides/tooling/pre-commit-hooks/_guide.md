@@ -27,5 +27,3 @@ Go in order. Phase 1 builds the mental model: what a git hook actually is, and w
 1. [Phase 1: What a Hook Actually Is](01-what-a-hook-is.md) - the mental model: git hooks, and the framework that tames them.
 2. [Phase 2: The Config and the Commit Loop](02-the-config-and-loop.md) - `.pre-commit-config.yaml`, installing, and running on staged files.
 3. [Phase 3: Bypassing, CI, and the Gotchas](03-bypassing-ci-and-gotchas.md) - fixing vs failing, enforcement, and what breaks in real teams.
-
-[Phase 1: What a Hook Actually Is](01-what-a-hook-is.md) →

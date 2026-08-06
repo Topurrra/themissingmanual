@@ -211,7 +211,3 @@ Git means a leaked laptop or a public repo doesn't hand an attacker your product
    instead.
 
 Next: when a handful of variables isn't enough and you need structured, nested config - YAML and friends.
-
----
-
-[← Phase 1: Why Config Lives Outside Code](01-why-config-lives-outside-code.md) · [Guide overview](_guide.md) · [Phase 3: Config Files: YAML & Friends →](03-config-files-yaml.md)

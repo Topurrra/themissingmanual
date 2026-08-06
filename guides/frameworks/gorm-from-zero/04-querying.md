@@ -222,7 +222,3 @@ Check your grip on the lazy chain and the zero-value trap:
   }
 ]
 ```
-
----
-
-[← Phase 3: Create & Read](03-create-and-read.md) · [Guide overview](_guide.md) · [Phase 5: Update & Delete →](05-update-and-delete.md)

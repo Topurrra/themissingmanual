@@ -179,5 +179,3 @@ A common setup: one Git repo, one Pulumi project, a stack per environment, and `
   }
 ]
 ```
-
-[← Phase 1: What Pulumi actually is](01-what-pulumi-actually-is.md) | [Overview](_guide.md) | [Phase 3: Where the rope gets you →](03-where-the-rope-gets-you.md)

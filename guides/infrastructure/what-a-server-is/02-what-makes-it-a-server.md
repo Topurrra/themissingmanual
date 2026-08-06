@@ -131,7 +131,3 @@ it's there whenever a client shows up), and reachable (so clients can find it). 
 
 Next, we'll follow a server up the ladder - from a physical box you could touch, to a virtual machine, to a
 cloud instance you rent by the hour, and see exactly what "the cloud is someone else's computer" really means.
-
----
-
-[← Phase 1: A Computer That's Always On](01-a-computer-thats-always-on.md) · [Phase 3: From a Box to the Cloud →](03-from-a-box-to-the-cloud.md)

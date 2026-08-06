@@ -129,5 +129,3 @@ A common rootless workflow: run your dev stack as a pod so the app and its datab
   }
 ]
 ```
-
-[← Phase 1: What Podman Actually Is](01-what-podman-actually-is.md) | [Overview](_guide.md) | [Phase 3: Production Reality and Gotchas →](03-production-reality-and-gotchas.md)

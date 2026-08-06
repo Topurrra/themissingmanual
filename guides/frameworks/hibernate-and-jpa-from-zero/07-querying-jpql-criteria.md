@@ -221,7 +221,3 @@ Lock in when to use which layer, and the one habit that keeps your queries safe:
   }
 ]
 ```
-
----
-
-[← Phase 6: Lazy vs Eager Fetching & the N+1 Problem](06-fetching-and-n-plus-1.md) · [Guide overview](_guide.md) · [Phase 8: Inheritance & Embeddables →](08-inheritance-and-embeddables.md)

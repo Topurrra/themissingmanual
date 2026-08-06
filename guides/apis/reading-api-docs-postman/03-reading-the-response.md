@@ -203,10 +203,6 @@ environment variable. Knowing that escape hatch exists is half of staying calm a
 6. **Never share your secret.** Keep the token in a (secret) environment variable / `$TOKEN`, reference
    it as `{{token}}` / `$TOKEN`, and if one ever leaks: revoke, rotate, replace.
 
----
-
-[← Phase 2: Making the Request (Postman & curl)](02-making-the-request.md) · [Guide overview](_guide.md)
-
 ### Related guides
 - [HTTP & JSON API Basics](/guides/http-and-json-api-basics) - what a request, header, and JSON body actually are, if any of that felt shaky.
 - [REST APIs Explained](/guides/rest-apis-explained) - why endpoints and methods are shaped the way they are, the next layer down.

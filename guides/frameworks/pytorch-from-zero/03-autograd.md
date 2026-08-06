@@ -287,7 +287,3 @@ just convenient ways to organize the forward math and let autograd handle the re
   }
 ]
 ```
-
----
-
-[← Phase 2: Tensor Operations & the GPU](02-tensor-operations-and-gpu.md) · [Guide overview](_guide.md) · [Phase 4: Building Models with nn.Module →](04-building-models-with-nn-module.md)

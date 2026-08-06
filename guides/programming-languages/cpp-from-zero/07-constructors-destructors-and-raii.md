@@ -295,7 +295,3 @@ lifetime instead of leaving it to a programmer's memory:
   }
 ]
 ```
-
----
-
-[← Phase 6: Classes & Objects](06-classes-and-objects.md) · [Phase 8: Copy, Move & the Rule of Five →](08-copy-move-and-the-rule-of-five.md)

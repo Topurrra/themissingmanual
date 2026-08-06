@@ -145,7 +145,3 @@ and `cargo check` is near-instant. It's the price of the speed and safety you ge
 
 You have a working toolchain and a program you ran yourself. Next: fill `main` with real content - values,
 their types, and Rust's default that things can't change unless you say so.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Syntax, Values & Types →](02-syntax-values-and-types.md)

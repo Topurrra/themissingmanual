@@ -146,7 +146,3 @@ The map travels further than you'd think. Frontend frameworks rename some parts 
   }
 ]
 ```
-
----
-
-[← Phase 3: The Price of Magic](03-the-price-of-magic.md) · [Guide overview](_guide.md) · [Phase 5: Choosing & Learning a Framework →](05-choosing-and-learning-a-framework.md)

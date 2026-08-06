@@ -128,5 +128,3 @@ Watch it animated: [system calls](/explainers/SystemCalls.dc.html)
   }
 ]
 ```
-
-[← Phase 2: What actually happens during a syscall](02-the-mechanics-of-a-syscall.md) | [Overview](_guide.md)

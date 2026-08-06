@@ -128,7 +128,3 @@ Test yourself on the ideas that trip people up most - what refresh actually does
   }
 ]
 ```
-
----
-
-[← Phase 10: Publishing & Sharing](10-publishing-and-sharing-workspaces-apps-rls.md) · [Guide overview](_guide.md)

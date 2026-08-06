@@ -217,7 +217,3 @@ The discipline keeps the response a *coordinated* effort instead of several peop
    not reconstructed from memory.
 6. **No silent heroes.** Announce every change before you make it - the quiet fixer is the most dangerous
    person on the call.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: After - the Blameless Postmortem →](03-after-the-blameless-postmortem.md)

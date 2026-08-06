@@ -98,5 +98,3 @@ When you sketch a RabbitMQ design on a whiteboard, draw the exchange as a box an
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Publishing and Consuming for Real →](02-publishing-and-consuming.md)

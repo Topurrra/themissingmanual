@@ -184,7 +184,3 @@ Test yourself on the ideas that make a Java project a project, not just a folder
   }
 ]
 ```
-
----
-
-[← Phase 7: Errors & I/O](07-errors-and-io.md) · [Guide overview](_guide.md) · [Phase 9: Idioms & Gotchas →](09-idioms-and-gotchas.md)

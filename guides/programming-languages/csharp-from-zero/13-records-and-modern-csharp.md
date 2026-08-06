@@ -351,7 +351,3 @@ Test yourself on the two ideas that define this phase - records' value equality 
   }
 ]
 ```
-
----
-
-[← Phase 12: LINQ](12-linq.md) · [Guide overview](_guide.md) · [Phase 14: async/await & Tasks →](14-async-await-and-tasks.md)

@@ -109,5 +109,3 @@ Look at any "Connect your GitHub account" or "Allow this app to post to your cal
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Authorization Code Flow and the Three Tokens →](02-the-flow-and-the-tokens.md)

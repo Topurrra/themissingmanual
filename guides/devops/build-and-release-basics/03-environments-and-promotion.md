@@ -86,7 +86,3 @@ One artifact, three sets of settings. The code that runs is identical; only the 
 5. **"Works in staging, breaks in prod" = an environment or config difference**, not a code difference - because the code (the artifact) is provably identical.
 
 You now understand the whole journey: source becomes a built artifact, the artifact gets a version and is frozen in a registry, and that one artifact is promoted through environments with config supplied per place. The natural next question is *who pushes these buttons, and how do we make it automatic and reliable* - which is exactly what [What CI/CD Does](/guides/what-cicd-does) picks up. You might also enjoy [What Happens When Code Runs](/guides/what-happens-when-code-runs) to see what the artifact does once it's finally live.
-
----
-
-[← Phase 2: Versions & Artifacts](02-versions-and-artifacts.md) · [Guide overview](_guide.md)

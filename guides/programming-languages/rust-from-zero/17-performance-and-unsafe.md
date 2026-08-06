@@ -205,7 +205,3 @@ Three questions on the ideas most likely to trip you in real work:
   }
 ]
 ```
-
----
-
-[← Phase 16: Macros & Metaprogramming](16-macros.md) · [Guide overview](_guide.md) · [Phase 18: Where to Go Next →](18-where-to-go-next.md)

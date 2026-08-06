@@ -156,7 +156,3 @@ Two habits turn React's scary red walls into directions:
   }
 ]
 ```
-
----
-
-[← Phase 7: Sharing State](07-sharing-state.md) · [Guide overview](_guide.md) · [Phase 9: Where to Go Next →](09-where-to-go-next.md)

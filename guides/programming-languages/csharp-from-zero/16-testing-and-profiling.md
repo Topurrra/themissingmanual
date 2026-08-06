@@ -294,7 +294,3 @@ Test yourself on the ideas that separate "I ran it once and it looked fine" from
   }
 ]
 ```
-
----
-
-[← Phase 15: The .NET Runtime: Memory, GC & JIT](15-the-dotnet-runtime-and-gc.md) · [Guide overview](_guide.md) · [Phase 17: Performance & the Ecosystem →](17-performance-and-ecosystem.md)

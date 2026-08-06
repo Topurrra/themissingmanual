@@ -155,5 +155,3 @@ Wire these into the pipeline, not your memory. Make CI run the strict install (`
   }
 ]
 ```
-
-[← Phase 1](01-the-real-attack-surface.md) | [Overview](_guide.md) | [Phase 3: The terrible day, and what stops it →](03-when-it-breaks.md)

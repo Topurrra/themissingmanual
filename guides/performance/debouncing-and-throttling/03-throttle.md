@@ -134,5 +134,3 @@ A shorthand worth keeping: **debounce waits for silence; throttle keeps things f
 ```
 
 Watch it animated: [debouncing](/explainers/Debouncing.dc.html)
-
-[← Phase 2: Debounce - wait for a pause](02-debounce.md) | [Overview](_guide.md)

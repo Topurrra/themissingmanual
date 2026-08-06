@@ -77,5 +77,3 @@ Each of these patterns follows the same three-part structure:
 ```
 
 *What just happened:* that third point is doing a lot of work, and it's the subject of Phase 3. Lazy loading only feels invisible when the timing is right - trigger the fetch a little too late, and the user notices the wait. Get it wrong in a specific way, and you get a worse problem than a wait: content that jumps around after it finally arrives.
-
-[← Phase 1: Don't do work nobody asked for yet](01-dont-do-work-nobody-asked-for.md) | [Overview](_guide.md) | [Phase 3: The tradeoff →](03-the-tradeoff.md)

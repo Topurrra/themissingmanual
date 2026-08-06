@@ -339,7 +339,3 @@ Make sure the three tiers - and when to reach for each - actually stuck:
   }
 ]
 ```
-
----
-
-[← Phase 7: Error Handling Done Right](07-error-handling.md) · [Guide overview](_guide.md) · [Phase 9: Security with Spring Security →](09-security-with-spring-security.md)

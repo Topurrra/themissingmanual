@@ -120,7 +120,3 @@ the end.
 5. Config lives in **environment variables** and **config files**, often both, with a defined precedence.
 
 Next, the workhorse of real-world config: the environment variable.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Environment Variables & .env Files →](02-env-vars-and-dotenv.md)

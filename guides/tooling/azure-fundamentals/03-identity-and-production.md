@@ -128,5 +128,3 @@ For the broader picture of how cloud platforms compare and when to pick one, see
   }
 ]
 ```
-
-[← Phase 2](02-the-services-you-use.md) | [Overview](_guide.md)

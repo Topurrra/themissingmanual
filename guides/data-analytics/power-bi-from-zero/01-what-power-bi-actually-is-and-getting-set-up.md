@@ -117,7 +117,3 @@ Test yourself on the idea that matters most here - that Power BI is a live-query
   }
 ]
 ```
-
----
-
-[Phase 2: Connecting to Data Sources →](02-connecting-to-data-sources.md)

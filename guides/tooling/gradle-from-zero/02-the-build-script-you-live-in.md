@@ -152,5 +152,3 @@ In a multi-module project - a `core` module, a `web` module, an `app` - getting 
   }
 ]
 ```
-
-[← Phase 1](01-the-build-is-a-graph.md) | [Overview](_guide.md) | [Phase 3: Why It's Fast, and Where It Bites →](03-why-its-fast-and-where-it-bites.md)

@@ -162,7 +162,3 @@ Test what you just learned:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The Box Model →](02-the-box-model.md)

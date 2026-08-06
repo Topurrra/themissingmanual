@@ -227,5 +227,3 @@ exists," which let you make claims about whole collections, where necessary and 
 interesting. After that comes **proof**, using exactly these tools to establish things beyond doubt.
 And then **fallacies**, a tour of seductive-but-broken reasoning - much of it necessary and
 sufficient quietly swapped. You've built the foundation; the rest of the track stands on it.
-
-[← Phase 2: Converse, Inverse, Contrapositive](02-converse-inverse-contrapositive.md) · [Guide overview](_guide.md)

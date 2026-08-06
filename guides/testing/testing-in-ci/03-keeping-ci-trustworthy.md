@@ -184,7 +184,3 @@ merged anyway. The fix was one checkbox: make the check required. Suddenly red m
    plus parallelism and caching - so people actually wait for it.
 6. **Required status checks / branch protection** make the gate real: the merge button stays blocked
    until CI is green. CI you can merge past is decoration, not protection.
-
----
-
-[← Phase 2: Inside the Pipeline](02-inside-the-pipeline.md) · [Guide overview](_guide.md)

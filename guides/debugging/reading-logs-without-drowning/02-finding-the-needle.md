@@ -187,10 +187,6 @@ why you grep with `-B` context** - the quiet cause shows up beside the loud symp
 
 Watch it animated: [debugging with logs](/explainers/LogDebugging.dc.html)
 
----
-
-[← Phase 1: What Logs Actually Are](01-what-logs-actually-are.md) · [Phase 3: Logs That Help Future-You →](03-logs-that-help-future-you.md)
-
 ## Try it yourself
 
 Find the lines that matter - edit the pattern and watch matches highlight:

@@ -140,5 +140,3 @@ Most old, sluggish machines light up #1 or #2 - and both have cheap fixes. The n
   }
 ]
 ```
-
-← [Phase 1: The bottleneck](01-the-bottleneck-mental-model.md) | [Overview](_guide.md) | [Phase 3: The verdict](03-what-to-upgrade.md) →

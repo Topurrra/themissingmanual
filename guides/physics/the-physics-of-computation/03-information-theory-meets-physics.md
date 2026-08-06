@@ -80,5 +80,3 @@ None of that is a story about current silicon being immature. It's a story about
   }
 ]
 ```
-
-[← Phase 2: The thermodynamic limits of computing](02-the-thermodynamic-limits-of-computing.md) · [Guide overview](_guide.md)

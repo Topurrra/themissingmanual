@@ -135,5 +135,3 @@ For the bigger picture of why ordered, repeatable schema change matters at all, 
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The everyday loop](02-the-everyday-loop.md) →

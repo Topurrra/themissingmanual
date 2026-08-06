@@ -179,7 +179,3 @@ Check your grip on results and state before we get into failures:
   }
 ]
 ```
-
----
-
-[← Phase 3: Defining & Calling Tasks](03-defining-and-calling-tasks.md) · [Guide overview](_guide.md) · [Phase 5: Retries & Error Handling →](05-retries-and-error-handling.md)

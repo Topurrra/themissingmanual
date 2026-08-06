@@ -115,7 +115,3 @@ The single thing driving every row is *when the translation happens*. Pull that 
 5. "Compiled" / "interpreted" describe how a language is *usually run*, not an unbreakable rule.
 
 Now you know how your text becomes runnable instructions. Next question: once those instructions start running, the values they work with - your numbers, your text, your lists - have to *live* somewhere. Let's look at where.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Where Your Data Lives - the Stack & the Heap →](02-stack-and-heap.md)

@@ -228,7 +228,3 @@ Three questions on the ideas that have to stick before Phase 2:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The Servlet Container & Lifecycle →](02-the-servlet-container-and-lifecycle.md)

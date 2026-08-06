@@ -134,5 +134,3 @@ A typical server deployment ends up as: a Quadlet `.container` file per service,
   }
 ]
 ```
-
-[← Phase 2: Running Containers and Pods](02-running-containers-and-pods.md) | [Overview](_guide.md)

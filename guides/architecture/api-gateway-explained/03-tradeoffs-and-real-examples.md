@@ -91,5 +91,3 @@ A load balancer already does everything you actually need
 > The gateway is a tool for a specific shape of problem: many services, one client-facing contract. If you don't have the "many services" part yet, you're paying the tradeoffs from this phase for a benefit you can't cash in yet.
 
 The plain read: gateways are close to mandatory once a system has real service sprawl, and unnecessary weight before that point. The decision isn't about which is more modern - it's about whether the specific problems in Phase 1 are ones you actually have.
-
-[← Phase 2: What a gateway actually does](02-what-a-gateway-actually-does.md) | [Overview](_guide.md)

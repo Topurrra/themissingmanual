@@ -30,5 +30,3 @@ Here's the relief: web performance isn't a vague vibe, and it isn't a thousand m
 3. **[The Levers That Move the Numbers](03-the-levers-that-move-the-numbers.md)** - the fixes that pay: bundle size and code splitting, images, caching and a CDN, render-blocking resources, and sizing media so the layout stops jumping.
 
 > This guide assumes you already know what "fast" means in the abstract - latency, throughput, measure-before-you-optimize. If that's shaky, start with [What "Performance" Even Means](/guides/what-performance-means). For the disciplined loop that turns a measurement into durable speed, see [Optimizing Real Systems](/guides/optimizing-real-systems).
-
-[Phase 1: Perceived Performance and the Three Vitals](01-perceived-performance-and-the-three-vitals.md) →

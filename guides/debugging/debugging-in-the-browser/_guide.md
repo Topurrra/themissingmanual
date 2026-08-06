@@ -43,5 +43,3 @@ Edge, Firefox, or Safari.
 Related reading: [Reading a Stack Trace](/guides/reading-a-stack-trace) and
 [What an Error Message Tells You](/guides/what-an-error-message-tells-you) - the Console throws both at you,
 and they're far less scary once you can read them.
-
-[Phase 1: The DevTools Map and the Console](01-the-devtools-map-and-the-console.md) →

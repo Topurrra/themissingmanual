@@ -157,7 +157,3 @@ That's the whole model: a manifest of intent, a lockfile of truth, ranges that n
   }
 ]
 ```
-
----
-
-[← Phase 2: Installing, Updating, and Workspaces](02-installing-and-workspaces.md) · [Guide overview](_guide.md)

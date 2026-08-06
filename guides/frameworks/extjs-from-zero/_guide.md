@@ -58,7 +58,3 @@ carry difficulty badges.
 
 > The whole framework is one sentence: **describe a tree of components, point them at stores, and let the
 > framework run it.** Hold that, and even a ten-year-old Ext JS app becomes something you can read.
-
----
-
-[Phase 1: What Ext JS Even Is →](01-what-extjs-is.md)

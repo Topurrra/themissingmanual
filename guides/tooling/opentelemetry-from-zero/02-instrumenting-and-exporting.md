@@ -153,5 +153,3 @@ For builders: a common production shape is a lightweight collector running as an
   }
 ]
 ```
-
-[← Phase 1: What OpenTelemetry actually is](01-what-otel-actually-is.md) | [Overview](_guide.md) | [Phase 3: Sampling, cost, and reality →](03-sampling-cost-and-reality.md)

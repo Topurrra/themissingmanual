@@ -106,7 +106,3 @@ You don't need the biggest number in every row: for most people, a modern CPU, c
 5. **"My computer is slow" is diagnosable** - almost always one part as the bottleneck, and the cheat-card maps symptom to part.
 
 That's the whole machine, connected to real decisions. To go deeper on the three parts that matter most, [CPU, RAM, and Storage](/guides/cpu-ram-and-storage) picks up here; for the software layer on top, read [What an Operating System Is](/guides/what-an-operating-system-is).
-
----
-
-[← Phase 2: How They Work Together to Run a Program](02-running-a-program.md) · [Guide overview](_guide.md)

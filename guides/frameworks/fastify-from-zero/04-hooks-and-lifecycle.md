@@ -230,7 +230,3 @@ ordering.
   }
 ]
 ```
-
----
-
-[← Phase 3: The Plugin System](03-the-plugin-system.md) · [Guide overview](_guide.md) · [Phase 5: Building a REST API →](05-building-a-rest-api.md)

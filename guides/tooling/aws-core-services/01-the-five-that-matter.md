@@ -127,5 +127,3 @@ You manage MORE                                    AWS manages MORE
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Wiring them into an app →](02-wiring-an-app.md)

@@ -270,7 +270,3 @@ Test yourself on the ideas that make functional code predictable:
   }
 ]
 ```
-
----
-
-[← Phase 13: The Event Loop, Deep](13-the-event-loop-deep.md) · [Guide overview](_guide.md) · [Phase 15: Modules & Bundlers, Deep →](15-modules-and-bundlers.md)

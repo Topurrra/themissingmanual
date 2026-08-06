@@ -101,7 +101,3 @@ Clock speed isn't just a spec-sheet number - it's a real, continuous signal tick
 ```
 
 Watch it animated: [CPU cache](/explainers/CPUCache.dc.html) and [multicore processing](/explainers/Multicore.dc.html)
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: RAM - the Workspace →](02-ram-the-workspace.md)

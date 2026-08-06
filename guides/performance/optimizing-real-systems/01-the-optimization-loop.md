@@ -173,7 +173,3 @@ changes that earned their place on the graph.
 
 Next: now that you have the loop, where should you point it? The usual real-world bottlenecks, ranked,
 so you look in the right place first.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Where the Time Actually Goes →](02-where-the-time-goes.md)

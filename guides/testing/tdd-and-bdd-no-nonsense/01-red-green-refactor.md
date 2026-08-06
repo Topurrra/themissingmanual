@@ -163,7 +163,3 @@ the cycle itself. They're the same thing.
 
 Now you have the loop. Next, we'll look at a style that sits on top of it - describing tests as *behavior*
 in language a non-developer could read.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: BDD - Describing Behavior →](02-describing-behavior.md)

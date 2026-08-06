@@ -56,7 +56,3 @@ badges.
 
 > The whole thing is a hand-off: app → broker → worker → (result). Hold those four pieces and Celery's
 > configuration and quirks all fall into place.
-
----
-
-[Phase 1: What Celery Is & Why →](01-what-celery-is.md)

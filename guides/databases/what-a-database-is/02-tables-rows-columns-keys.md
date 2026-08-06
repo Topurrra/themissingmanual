@@ -112,10 +112,6 @@ belongs to the `customers` row whose `id` is 2" - so orders 5057 and 5058 both p
 
 Next, we'll step back from the data and look at where the database actually *lives*: it's a separate program you talk to over a connection, in a language called SQL.
 
----
-
-[← Guide overview](_guide.md) · [Phase 3: The Database vs Your App →](03-the-database-vs-your-app.md)
-
 ## Try it yourself
 
 Every row of the sample `books` table - try changing the query:

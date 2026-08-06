@@ -85,7 +85,3 @@ EXPLAIN SELECT * FROM users WHERE email = 'ada@example.com';
 5. **The smell is "read a lot, return a little."** A scan that reads millions to return a handful is the thing to fix. A scan that returns most of the table is often fine.
 
 The fix is to give the database a shortcut - a separate, sorted structure it can jump around in instead of reading everything. That's an index, and it's the heart of the next phase.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Indexes →](02-indexes.md)

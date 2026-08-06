@@ -59,7 +59,3 @@ deployable REST API. Phases carry difficulty badges.
 
 > The throughline: an Express app is **a chain of `(req, res, next)` functions** - routes, parsers, auth,
 > and error handlers are all that one shape. Hold it and Express is a small tool you fully understand.
-
----
-
-[Phase 1: What Express Is & Your First Server →](01-what-express-is.md)

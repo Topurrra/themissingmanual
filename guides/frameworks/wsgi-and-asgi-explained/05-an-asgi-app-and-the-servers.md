@@ -247,7 +247,3 @@ Make sure the ASGI shape stuck:
   }
 ]
 ```
-
----
-
-[← Phase 4: Why ASGI Exists](04-why-asgi-exists.md) · [Guide overview](_guide.md) · [Phase 6: From Protocol to Framework →](06-from-protocol-to-framework.md)

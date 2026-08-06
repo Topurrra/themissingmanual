@@ -117,7 +117,3 @@ Three calls to take with you as you leave this guide:
   }
 ]
 ```
-
----
-
-[← Phase 8: UI, Audio & Building](08-ui-audio-and-building.md) · [Guide overview](_guide.md)

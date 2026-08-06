@@ -111,5 +111,3 @@ set-cookie: session=abc123; HttpOnly; Secure; SameSite=Lax
   }
 ]
 ```
-
-[← Phase 1: Headers Are a Fence, Not a Lock](01-headers-are-a-fence.md) · [Guide overview](_guide.md) · [Phase 3: Rolling Out CSP Without Breaking the Site →](03-rolling-out-csp.md)

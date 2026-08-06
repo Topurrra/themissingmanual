@@ -334,7 +334,3 @@ Test yourself on the one idea that makes this whole phase tick - laziness:
   }
 ]
 ```
-
----
-
-[← Phase 10: The Data Model & Dunder Methods](10-the-data-model.md) · [Guide overview](_guide.md) · [Phase 12: Decorators →](12-decorators.md)

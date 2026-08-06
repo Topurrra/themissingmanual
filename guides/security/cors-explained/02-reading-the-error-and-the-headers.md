@@ -175,7 +175,3 @@ Change the method, the server's header, and credentials to see exactly when the 
 
 ```playground-cors
 ```
-
----
-
-[← Phase 1: Why the Browser Blocks You](01-why-the-browser-blocks-you.md) · [Phase 3: Fixing It Properly →](03-fixing-it-properly.md)

@@ -184,7 +184,3 @@ endpoint.)
   }
 ]
 ```
-
----
-
-[← Phase 4: Data on the Server](04-data-on-the-server.md) · [Guide overview](_guide.md) · [Phase 6: Static, Dynamic, and the Cache →](06-static-dynamic-and-the-cache.md)

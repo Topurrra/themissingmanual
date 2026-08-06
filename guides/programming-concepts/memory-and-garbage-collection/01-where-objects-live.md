@@ -89,7 +89,3 @@ So reclaiming heap memory is a tightrope - too early breaks correctness, too lat
 3. Objects go on the **heap** because they need to **outlive** the function that created them.
 4. The hard problem is **when to reclaim heap memory**: too early causes **use-after-free** (a dangling pointer), too late or never causes a **memory leak**.
 5. How a language answers "is anyone still using this?" - by hand or automatically - is the subject of the next phase.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Manual vs Automatic Memory →](02-manual-vs-automatic.md)

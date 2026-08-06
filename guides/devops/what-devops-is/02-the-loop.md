@@ -91,7 +91,3 @@ DevOps escapes the trade-off with two ideas working together:
 6. Together, automation and feedback let teams ship **small changes often** instead of rare, scary ones.
 
 Next, the part that's easiest to skip and hardest to fake: the *culture* underneath the loop - the shared habits and attitudes that make any of this actually work.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: The Culture Underneath →](03-the-culture.md)

@@ -133,5 +133,3 @@ The teams who stay calm during rollouts are the ones who made compatibility a bu
   }
 ]
 ```
-
-[← Phase 2: Using them day to day](02-using-protobuf-and-avro.md) | [Overview](_guide.md)

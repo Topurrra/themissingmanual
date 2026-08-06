@@ -75,7 +75,3 @@ A load test isn't a pass/fail gate like a unit test. You're not looking for a gr
 4. Load testing finds the **symptom** (it breaks at N users); **profiling** finds the cause (why). This guide stays on the first.
 
 Now you know *why* you're running one. Next is what to actually watch while it runs - three numbers that tell the whole story, one of which is measured in a way that trips up almost everyone the first time.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Metrics That Matter →](02-the-metrics-that-matter.md)

@@ -32,5 +32,3 @@ Read in order. Phase 1 introduces facts and dimensions with a concrete example. 
 1. [Facts vs. dimensions](01-facts-vs-dimensions.md) - the two kinds of tables, with a concrete sales example.
 2. [Why it's shaped like a star](02-why-a-star.md) - denormalized dimensions, on purpose, for fast reporting.
 3. [Star vs. snowflake, and when to use it](03-star-vs-snowflake.md) - a normalized variant, and where this fits in the bigger picture.
-
-[Phase 1: Facts vs. dimensions](01-facts-vs-dimensions.md) →

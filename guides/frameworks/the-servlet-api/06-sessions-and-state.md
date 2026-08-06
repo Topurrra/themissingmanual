@@ -263,7 +263,3 @@ Three questions on the ideas that have to stick:
   }
 ]
 ```
-
----
-
-[← Phase 5: Filters & the Chain](05-filters-and-the-chain.md) · [Guide overview](_guide.md) · [Phase 7: From Servlets to Frameworks →](07-from-servlets-to-frameworks.md)

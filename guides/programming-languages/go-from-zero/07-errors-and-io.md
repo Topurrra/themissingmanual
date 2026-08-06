@@ -240,7 +240,3 @@ err: recovered from: runtime error: integer divide by zero
 6. **`panic`/`recover`** - Go's real exceptions, reserved for unrecoverable bugs, not everyday failures. ⚠️ Never ignore an error with `_`.
 
 You now write code that fails clearly. Next: stepping back from the language to the *toolbox* around it - the batteries-included commands (`go build`, `go test`, `go fmt`) that make Go projects low-fuss to work in.
-
----
-
-[← Phase 6: Goroutines & Channels](06-goroutines-and-channels.md) · [Phase 8: The Ecosystem & Tooling →](08-ecosystem-and-tooling.md)

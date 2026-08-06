@@ -185,7 +185,3 @@ settings, and the environment has the final say for whatever this particular dep
 You now have the full picture: *why* config lives outside code, *how* environment variables and `.env`
 files work, and *how* structured files and precedence fit together. From here, the natural next step is
 handling production secrets properly - see [Secrets Management](/guides/secrets-management).
-
----
-
-[← Phase 2: Environment Variables & .env Files](02-env-vars-and-dotenv.md) · [Guide overview](_guide.md)

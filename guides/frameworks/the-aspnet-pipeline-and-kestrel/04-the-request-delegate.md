@@ -199,5 +199,3 @@ explained from the inside).
   }
 ]
 ```
-
-[← Phase 3: The Middleware Pipeline](03-the-middleware-pipeline.md) · [Guide overview](_guide.md) · [Phase 5: The Host, DI & Configuration →](05-host-di-configuration.md)

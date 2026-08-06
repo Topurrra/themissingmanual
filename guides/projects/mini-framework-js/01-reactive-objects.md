@@ -179,7 +179,3 @@ console.log('items:', cart.items, '| tota exists:', 'tota' in cart); // 3, false
 3. `reactive()` = proxy + ledger: writes notify exactly the right subscribers, no-op writes are
    filtered.
 4. Reads are the missing half - automating "who was asking" is phase 2.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Effects and Computed →](02-effects-and-computed.md)

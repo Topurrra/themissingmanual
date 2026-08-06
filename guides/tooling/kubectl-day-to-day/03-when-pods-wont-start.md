@@ -164,5 +164,3 @@ In the wild, on-call engineers don't have a secret sense for this. They run the 
   }
 ]
 ```
-
-← [Phase 2: The commands you actually run](02-the-everyday-commands.md) | [Overview](_guide.md)

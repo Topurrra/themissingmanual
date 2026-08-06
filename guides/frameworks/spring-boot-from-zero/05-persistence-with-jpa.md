@@ -347,7 +347,3 @@ Make sure the model - and where it leaks - actually stuck:
   }
 ]
 ```
-
----
-
-[← Phase 4: Configuration & Profiles](04-configuration-and-profiles.md) · [Guide overview](_guide.md) · [Phase 6: The Service Layer, DTOs & Validation →](06-service-layer-and-validation.md)

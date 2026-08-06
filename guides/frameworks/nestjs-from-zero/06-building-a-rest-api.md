@@ -231,7 +231,3 @@ You've now built a complete REST resource the way Nest intends: thin controller,
   }
 ]
 ```
-
----
-
-[← Phase 5: DTOs, Validation & Pipes](05-dtos-validation-pipes.md) · [Guide overview](_guide.md) · [Phase 7: Guards, Interceptors & Middleware →](07-guards-interceptors-middleware.md)

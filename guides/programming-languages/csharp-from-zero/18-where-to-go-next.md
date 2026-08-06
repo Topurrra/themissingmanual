@@ -122,7 +122,3 @@ Test yourself on the map you just drew:
   }
 ]
 ```
-
----
-
-[← Phase 17: Performance & the Ecosystem](17-performance-and-ecosystem.md) · [Guide overview](_guide.md)

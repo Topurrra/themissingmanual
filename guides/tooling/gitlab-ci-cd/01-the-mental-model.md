@@ -142,5 +142,3 @@ ERROR: Job failed: exit code 1
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Everyday Core - Artifacts, Cache, and Rules →](02-artifacts-cache-rules.md)

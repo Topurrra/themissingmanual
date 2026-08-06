@@ -183,7 +183,3 @@ but every round trip you ask for costs a day, and Priya is waiting to hear back.
   }
 }
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Receiving Feedback Without Getting Defensive →](02-receiving-feedback-without-defensiveness.md)

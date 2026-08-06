@@ -195,5 +195,3 @@ If you've used [axum](/guides/axum-from-zero), none of this is new - only the sp
   }
 ]
 ```
-
-[← Phase 4: Shared State with web::Data](04-shared-state.md) · [Guide overview](_guide.md) · [Phase 6: A REST API with Error Handling →](06-rest-api-and-errors.md)

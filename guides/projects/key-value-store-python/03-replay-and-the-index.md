@@ -70,7 +70,6 @@ import zlib
 HEADER = struct.Struct("<Iii")   # uint32 crc, int32 key_len, int32 val_len
 TOMBSTONE = -1
 
-
 def encode_record(key: bytes, value) -> bytes:
     if value is None:  # a delete
         body = struct.pack("<ii", len(key), TOMBSTONE) + key
@@ -78,7 +77,6 @@ def encode_record(key: bytes, value) -> bytes:
         body = struct.pack("<ii", len(key), len(value)) + key + value
     crc = zlib.crc32(body)
     return struct.pack("<I", crc) + body
-
 
 class KV:
     def __init__(self, path):
@@ -238,7 +236,3 @@ A crash-safe, persistent key-value store: durable writes, startup recovery, and 
   }
 ]
 ```
-
----
-
-[← Phase 2: The Append-Only Log](02-the-append-only-log.md) · [Guide overview](_guide.md) · [Phase 4: Compaction →](04-compaction.md)

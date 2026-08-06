@@ -100,10 +100,8 @@ real HTML and real `Post` data arrive in later phases.
 # blog/views.py
 from django.http import HttpResponse
 
-
 def post_list(request):
     return HttpResponse("All blog posts will be listed here.")
-
 
 def post_detail(request, post_id):
     return HttpResponse(f"You asked for post #{post_id}.")
@@ -166,7 +164,6 @@ like `/blog/posts/?tag=python`:
 # blog/views.py
 from django.http import HttpResponse
 
-
 def post_list(request):
     tag = request.GET.get("tag")          # ?tag=python  ->  "python"; missing -> None
     if tag:
@@ -190,7 +187,6 @@ the moment we have a database in Phase 3:
 # blog/views.py  (sketch - Post arrives in Phase 3)
 from django.shortcuts import get_object_or_404
 from .models import Post
-
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)   # found -> the Post; missing -> raises Http404
@@ -235,7 +231,6 @@ Now build a URL *from* a name instead of typing it:
 # blog/views.py
 from django.urls import reverse
 from django.http import HttpResponse
-
 
 def post_list(request):
     # build the URL for post #5 by NAME, not by hardcoding "/blog/posts/5/"
@@ -318,7 +313,3 @@ response:
   }
 ]
 ```
-
----
-
-[← Phase 1: What Django Is & Your First Project](01-what-django-is.md) · [Guide overview](_guide.md) · [Phase 3: Models & the ORM →](03-models-and-the-orm.md)

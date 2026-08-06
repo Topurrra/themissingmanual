@@ -186,7 +186,3 @@ transformed view of it, that's a `computed` reading the prop.
   }
 ]
 ```
-
----
-
-[← Phase 3: Reactivity for Real](03-reactivity-for-real.md) · [Guide overview](_guide.md) · [Phase 5: Slots and Composition →](05-slots-and-composition.md)

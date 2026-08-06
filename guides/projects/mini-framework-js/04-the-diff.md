@@ -171,7 +171,3 @@ identity insight is the whole foundation.)
    famous keys bug deliberately.
 4. Keys give the differ identity: match by key, and a move is a move.
 5. Everything our framework guides said about reconciliation and keys, you have now implemented.
-
----
-
-[← Phase 3: The Virtual DOM](03-the-virtual-dom.md) · [Guide overview](_guide.md) · [Phase 5: Wiring It Together →](05-wiring-it-together.md)

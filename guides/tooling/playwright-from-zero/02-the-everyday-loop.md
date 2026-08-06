@@ -186,5 +186,3 @@ npx playwright show-trace trace.zip
   }
 ]
 ```
-
-[← Phase 1](01-the-mental-model.md) | [Overview](_guide.md) | [Phase 3: Production reality →](03-production-reality.md)

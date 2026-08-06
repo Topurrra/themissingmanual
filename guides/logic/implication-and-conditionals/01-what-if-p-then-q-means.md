@@ -212,5 +212,3 @@ Quick check before moving on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Converse, Inverse, Contrapositive →](02-converse-inverse-contrapositive.md)

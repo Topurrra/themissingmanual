@@ -152,7 +152,3 @@ Sizing notes, plainly:
   }
 ]
 ```
-
----
-
-[← Phase 7: When Angular Breaks](07-when-it-breaks.md) · [Guide overview](_guide.md)

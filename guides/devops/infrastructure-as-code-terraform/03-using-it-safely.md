@@ -152,7 +152,3 @@ This one surprises people because it's invisible until you go looking. **Sensiti
 5. **Secrets in state**: state can hold secrets in plain text. Never commit it, guard the backend like a vault, and know that `sensitive` hides output, not state.
 
 That's the foundation. You can now reason about Terraform instead of fearing it: declare desired state, run the loop, respect state, read every plan. The deeper craft - authoring modules well, multi-environment workspaces, full CI/CD pipelines - builds directly on these ideas, and is the subject of the follow-up guide.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: How Terraform Works ←](02-how-terraform-works.md)

@@ -176,7 +176,3 @@ Test yourself on the discipline that keeps dynamic memory safe:
   }
 ]
 ```
-
----
-
-[← Phase 9: Build Tooling: Makefiles & Debugging](09-build-tooling-makefiles-and-debugging.md) · [Phase 11: The Stack vs the Heap →](11-the-stack-vs-the-heap.md)

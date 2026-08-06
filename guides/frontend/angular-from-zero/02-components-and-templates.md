@@ -196,7 +196,3 @@ forms - is deferred to a follow-up guide, and phase 8 places it on the map.
   }
 ]
 ```
-
----
-
-[← Phase 1: What Angular Actually Is](01-what-angular-actually-is.md) · [Guide overview](_guide.md) · [Phase 3: Signals →](03-signals.md)

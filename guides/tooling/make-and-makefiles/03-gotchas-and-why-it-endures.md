@@ -131,5 +131,3 @@ For builders: even when a project's real build lives in a heavier tool, a thin M
   }
 ]
 ```
-
-[← Phase 2: Targets, Tasks, and Variables](02-targets-tasks-variables.md) | [Overview](_guide.md)

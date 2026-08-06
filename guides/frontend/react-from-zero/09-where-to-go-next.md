@@ -92,7 +92,3 @@ for the setup. If you don't, it's a bigger lever on your career than any item in
   }
 ]
 ```
-
----
-
-[← Phase 8: When React Breaks](08-when-it-breaks.md) · [Guide overview](_guide.md)

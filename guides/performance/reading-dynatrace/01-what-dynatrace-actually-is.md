@@ -111,7 +111,3 @@ to the rest. The tool stops being a maze and becomes a map you already know how 
    narrowing *where* to look - but it shows correlation, not proven cause.
 
 Now that you know what the model is, the next step is reading one request as it moves through it.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Reading a Service Flow & a Trace →](02-reading-a-service-flow-and-a-trace.md)

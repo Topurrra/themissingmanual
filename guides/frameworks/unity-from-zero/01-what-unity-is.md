@@ -216,7 +216,3 @@ works, and the composition shift:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The Editor →](02-the-editor.md)

@@ -255,7 +255,3 @@ idea in [Phase 3](03-collections.md): the default list is one shared object.
    function.
 
 Next: importing code, the standard library, writing your own modules, and laying out a real project.
-
----
-
-[← Phase 3: Collections](03-collections.md) · [Guide overview](_guide.md) · [Phase 5: Modules & Project Layout →](05-modules-and-project-layout.md)

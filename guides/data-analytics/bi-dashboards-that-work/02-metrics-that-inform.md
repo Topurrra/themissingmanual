@@ -101,7 +101,3 @@ Counts grow as your business grows, which makes them sneakily misleading - more 
 4. **A number alone means nothing.** Give it a comparison, a target, and a trend.
 
 Next: arranging these numbers so the most important answer hits the eye first - and the visual traps that mislead even with the right metrics.
-
----
-
-[← Phase 1: What BI Actually Is](01-what-bi-actually-is.md) · [Phase 3: Designing One People Actually Use →](03-designing-one-people-use.md)

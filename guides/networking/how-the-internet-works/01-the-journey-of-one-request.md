@@ -110,10 +110,6 @@ Once "everything is packets" is in your head, a lot of everyday computer life st
 
 Next, a question the journey left open: when you typed that web address, how did your device know *which* server, out of the millions on Earth, to send the request to? That's about addresses and names.
 
----
-
-[← Guide overview](_guide.md) · [Phase 2: Addresses & Names →](02-addresses-and-names.md)
-
 ## See it move
 
 Step through the whole journey - the DNS lookup, the request travelling out, and the response coming back:

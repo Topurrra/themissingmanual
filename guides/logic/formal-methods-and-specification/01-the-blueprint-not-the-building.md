@@ -147,5 +147,3 @@ and that question is where the year-one bug lives.
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: States, Transitions, and Invariants →](02-states-transitions-invariants.md)

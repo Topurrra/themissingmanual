@@ -153,5 +153,3 @@ A typical background-job setup: a topic exchange named after your domain, one du
   }
 ]
 ```
-
-[← Phase 1: The Smart Post Office](01-the-smart-post-office.md) | [Overview](_guide.md) | [Phase 3: When Delivery Goes Wrong →](03-when-delivery-goes-wrong.md)

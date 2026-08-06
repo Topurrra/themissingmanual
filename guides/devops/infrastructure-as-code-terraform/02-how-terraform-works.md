@@ -213,7 +213,3 @@ terraform {
 5. ⚠️ For teams, state **must** be shared and **locked** via a **remote backend**, or two people will silently build divergent or corrupted infrastructure.
 
 Next: turning this knowledge into safe habits - plan-before-apply for real, modules for reuse, and the dangers (drift, destroy, secrets in state) that bite people who skip the discipline.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: Using It Safely →](03-using-it-safely.md)

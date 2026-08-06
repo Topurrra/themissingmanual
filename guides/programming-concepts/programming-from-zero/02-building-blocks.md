@@ -263,7 +263,3 @@ wrong value in a box, a value of the wrong type (`"30"` where you needed `30`), 
 
 Now you have values and ways to combine them. Next we give the program a will of its own: the ability to
 choose what to do, repeat work, and bundle instructions into reusable tools.
-
----
-
-[← Phase 1: What a Program Actually Is](01-what-a-program-is.md) · [Phase 3: Making Decisions & Reusing Work →](03-control-flow-and-functions.md)

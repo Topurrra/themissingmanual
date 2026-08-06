@@ -172,7 +172,3 @@ Lock in the one idea that everything else builds on:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: The Application Server & Deployment →](02-the-app-server-and-deployment.md)

@@ -176,5 +176,3 @@ Quick gut-check before you move on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: The Fallacies You'll Meet Most →](02-the-fallacies-youll-meet-most.md)

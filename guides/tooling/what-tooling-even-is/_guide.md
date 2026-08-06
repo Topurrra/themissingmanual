@@ -33,5 +33,3 @@ Phase 1 resets the expectation: nobody knows all of this, and that's normal, not
 2. [Phase 2: The Themes Underneath the Tool Names](02-the-themes-underneath-the-tool-names.md) - a map of the ~12 problems these tools solve, with examples for each.
 3. [Phase 3: How to Learn a New Tool Fast](03-how-to-learn-a-new-tool-fast.md) - a repeatable approach for when your job suddenly needs one.
 4. [Phase 4: Picking Where to Start](04-picking-where-to-start.md) - concrete first tools by role and situation.
-
-[Phase 1: Why There Are 50+ Tools →](01-why-there-are-50-plus-tools.md)

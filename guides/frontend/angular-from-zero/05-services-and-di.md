@@ -208,7 +208,3 @@ delivered by DI.
   }
 ]
 ```
-
----
-
-[← Phase 4: Component Inputs and Outputs](04-inputs-and-outputs.md) · [Guide overview](_guide.md) · [Phase 6: HTTP and Just Enough RxJS →](06-http-and-just-enough-rxjs.md)

@@ -202,7 +202,7 @@
     border: 1px solid var(--line); background: var(--bg); color: var(--body);
     font: inherit; font-size: 0.8rem; border-radius: 999px; padding: 0.25rem 0.5rem; cursor: pointer;
   }
-  .tts-voice { max-width: 130px; }
+  .tts-voice { max-width: 140px; }
   .tts-stop {
     display: inline-grid; place-items: center; cursor: pointer; flex: none;
     width: 30px; height: 30px; border-radius: 999px; border: 0; background: none; color: var(--muted);

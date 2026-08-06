@@ -40,7 +40,3 @@ line of code exists.
 > always/there-exists machinery from
 > [Predicate Logic and Quantifiers](/guides/predicate-logic-and-quantifiers), and the idea of
 > a gap-free argument from [What a Proof Is](/guides/what-a-proof-is).
-
----
-
-[Phase 1: The Blueprint, Not the Building →](01-the-blueprint-not-the-building.md)

@@ -29,5 +29,3 @@ If you've never met the moving parts (pods, deployments, namespaces), skim [/gui
 1. [The mental model: kubectl talks to one API](01-the-mental-model.md)
 2. [The commands you actually run](02-the-everyday-commands.md)
 3. [When a pod won't start: the debugging loop](03-when-pods-wont-start.md)
-
-[Phase 1: The mental model: kubectl talks to one API](01-the-mental-model.md) →

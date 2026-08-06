@@ -108,5 +108,3 @@ That's the promise of this whole pillar. Not a pile of disconnected formulas to 
   }
 ]
 ```
-
-← [Overview](_guide.md) | [Phase 2: Measurement and units →](02-measurement-and-units.md)

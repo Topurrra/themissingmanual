@@ -235,7 +235,3 @@ Test yourself on the sharp edges that trip people up most:
   }
 ]
 ```
-
----
-
-[← Phase 12: Pointers II](12-pointers-ii-arithmetic-double-and-function-point.md) · [Phase 14: Undefined Behavior & Common Footguns →](14-undefined-behavior-and-common-footguns.md)

@@ -115,5 +115,3 @@ If your app sends mail - password resets, receipts, notifications - you are oper
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Three Proofs →](02-spf-dkim-dmarc.md)

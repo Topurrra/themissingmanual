@@ -180,7 +180,3 @@ Your engine is complete: durable, crash-safe on both the write and compact paths
   }
 ]
 ```
-
----
-
-[← Phase 3: Replay and the Index](03-replay-and-the-index.md) · [Guide overview](_guide.md) · [Phase 5: A TCP Server →](05-a-tcp-server.md)

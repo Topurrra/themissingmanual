@@ -285,7 +285,3 @@ Make sure the core idea stuck - that Rust's thread safety is just ownership, ext
   }
 ]
 ```
-
----
-
-[← Phase 13: Error Handling, Deep](13-error-handling-deep.md) · [Guide overview](_guide.md) · [Phase 15: Closures, Iterators & Zero-Cost Abstractions →](15-closures-and-iterators.md)

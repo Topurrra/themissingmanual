@@ -42,7 +42,6 @@ Here's a plain function view - the kind you already know:
 # blog/views.py
 from django.http import HttpResponse
 
-
 def post_list(request):
     posts = Post.objects.all()
     body = "<br>".join(p.title for p in posts)
@@ -59,7 +58,6 @@ Now the same thing as a class-based view:
 # blog/views.py
 from django.http import HttpResponse
 from django.views import View
-
 
 class PostListView(View):
     def get(self, request):
@@ -108,12 +106,10 @@ Here's a list page and a detail page for `Post`, in their entirety:
 from django.views.generic import ListView, DetailView
 from .models import Post
 
-
 class PostListView(ListView):
     model = Post
     template_name = "blog/post_list.html"
     context_object_name = "posts"
-
 
 class PostDetailView(DetailView):
     model = Post
@@ -196,7 +192,6 @@ Let's expose `Post` as a JSON API. First, a serializer that says what a `Post` l
 from rest_framework import serializers
 from .models import Post
 
-
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
@@ -216,7 +211,6 @@ Now a `ViewSet` that wires the serializer to CRUD operations, plus a router to b
 from rest_framework import viewsets
 from .models import Post
 from .serializers import PostSerializer
-
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -347,7 +341,3 @@ DRF fits.
   }
 ]
 ```
-
----
-
-[← Phase 8: Users, Auth & Sessions](08-users-auth-and-sessions.md) · [Guide overview](_guide.md) · [Phase 10: Testing & Project Structure →](10-testing-and-project-structure.md)

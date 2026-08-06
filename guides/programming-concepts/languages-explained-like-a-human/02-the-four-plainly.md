@@ -188,7 +188,3 @@ and safety together, and asks you to learn its rules in return. None is the cham
 to a different question.
 
 Which brings us to *your* question: what should *you* pick? That's the next phase.
-
----
-
-[← Phase 1: What Makes Languages Different](01-what-makes-languages-different.md) · [Guide overview](_guide.md) · [Phase 3: How to Choose →](03-how-to-choose.md)

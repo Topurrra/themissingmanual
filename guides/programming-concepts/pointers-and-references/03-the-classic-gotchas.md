@@ -88,5 +88,3 @@ read(original["count"])    # -> 1, untouched
 ## The one question that catches all three
 
 Before you assign, pass, or return something that isn't a plain number or boolean, ask: *is this a reference to shared data, and does that matter here?* If it's a reference and might be empty, check before dereferencing. If it's a reference into memory you manage yourself, make sure it's still valid before you follow it. If it's a reference and you wanted an independent copy, clone it explicitly. All three gotchas are the same one instinct, applied at the point where it counts: don't assume you're holding a value when you might be holding an address.
-
-[← Phase 2: Pointers vs. references across languages](02-pointers-vs-references-across-languages.md) | [Overview](_guide.md)

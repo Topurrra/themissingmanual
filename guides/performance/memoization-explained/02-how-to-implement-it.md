@@ -87,5 +87,3 @@ not pure (unsafe to memoize):
 ## The mental model to keep
 
 Memoizing a function is really two decisions bundled into one line of code: "wrap this in a cache" and "I am asserting this function is pure." The wrapper - hand-rolled, `@lru_cache`, or `useMemo` - handles the mechanics; the notebook idea from Phase 1 is all that's happening underneath, and you're responsible for the assertion. Phase 3 covers what happens when that assertion turns out to be false, and the other ways this technique backfires even when the function genuinely is pure.
-
-[← Phase 1: Don't compute the same answer twice](01-dont-compute-twice.md) | [Overview](_guide.md) | [Phase 3: When it backfires →](03-when-it-backfires.md)

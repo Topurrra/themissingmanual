@@ -176,5 +176,3 @@ Lock in the core fact (in-memory testing) and the two production must-knows:
   }
 ]
 ```
-
-[← Phase 7: Authentication & Authorization](07-auth.md) · [Guide overview](_guide.md) · [Phase 9: Where to Go Next →](09-where-to-go-next.md)

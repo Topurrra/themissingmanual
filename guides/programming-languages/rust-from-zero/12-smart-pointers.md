@@ -333,7 +333,3 @@ Lock in the distinction that matters most - which pointer relaxes which rule:
   }
 ]
 ```
-
----
-
-[← Phase 11: Traits & Generics, Deep](11-traits-and-generics.md) · [Guide overview](_guide.md) · [Phase 13: Error Handling, Deep →](13-error-handling-deep.md)

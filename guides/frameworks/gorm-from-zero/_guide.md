@@ -58,7 +58,3 @@ to associations, the N+1 trap, and migrations. Phases carry difficulty badges.
 
 > The throughline: a **struct is a table**, and **`*gorm.DB` is a query you chain**. Keep an eye on the
 > SQL it generates and you stay in command of your database instead of fighting the ORM.
-
----
-
-[Phase 1: What GORM Is & Connecting →](01-what-gorm-is.md)

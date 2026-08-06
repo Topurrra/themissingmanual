@@ -176,7 +176,3 @@ Two habits worth building:
   }
 ]
 ```
-
----
-
-[← Phase 6: Effects, Lifecycle, and Fetching](06-effects-lifecycle-fetching.md) · [Guide overview](_guide.md) · [Phase 8: Where to Go Next →](08-where-to-go-next.md)

@@ -123,10 +123,6 @@ The next time a query is slow, you have a procedure instead of a panic. `EXPLAIN
 
 That's the everyday skill: see the scan, add the index the plan points at, prove it worked. When this loop *doesn't* solve it - composite-index ordering, lock contention, planner tuning - you've reached the deeper end, and that's where the future *performance* guides will pick up.
 
----
-
-[← Phase 2: Indexes](02-indexes.md) · [Guide overview](_guide.md)
-
 ## Try it yourself
 
 Ask SQLite how it plans to run a query (real EXPLAIN output):

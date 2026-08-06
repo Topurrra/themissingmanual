@@ -150,7 +150,3 @@ Test what you just learned:
   }
 ]
 ```
-
----
-
-[← Phase 3: Margin Collapse](03-margin-collapse.md) · [Guide overview](_guide.md) · [Phase 5: Positioning →](05-positioning.md)

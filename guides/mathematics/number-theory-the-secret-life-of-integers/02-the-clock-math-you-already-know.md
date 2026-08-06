@@ -164,5 +164,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Phase 1: Primes and the Building Blocks of Numbers](01-primes-and-the-building-blocks-of-numbers.md) · [Guide overview](_guide.md) · [Phase 3: How the Internet Stays Secret →](03-how-the-internet-stays-secret.md)

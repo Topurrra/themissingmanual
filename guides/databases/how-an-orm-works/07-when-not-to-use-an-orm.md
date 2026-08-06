@@ -150,7 +150,3 @@ and translates your queries - four jobs, recognized everywhere, in every ORM you
   }
 ]
 ```
-
----
-
-[← Phase 6: Building the Query (to SQL)](06-building-the-query.md) · [Guide overview](_guide.md)

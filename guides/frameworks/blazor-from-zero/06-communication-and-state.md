@@ -301,7 +301,3 @@ Make sure the four channels are straight before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 5: Forms & Validation](05-forms-and-validation.md) · [Guide overview](_guide.md) · [Phase 7: Calling APIs & Dependency Injection →](07-calling-apis-and-di.md)

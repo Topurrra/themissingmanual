@@ -176,7 +176,3 @@ An even-handed table, because "always use a framework" is tool-brain:
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Routing with Files →](02-routing-with-files.md)

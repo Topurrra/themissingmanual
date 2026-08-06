@@ -166,5 +166,3 @@ Most mature backend frameworks lean code-first by default - you annotate handler
   }
 ]
 ```
-
-[← Phase 1: The Contract, Not the Docs](01-the-contract-not-the-docs.md) · [Overview](_guide.md) · [Phase 3: The Spec at Work in Production →](03-the-spec-in-production.md)

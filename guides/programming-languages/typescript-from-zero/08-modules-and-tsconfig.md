@@ -287,7 +287,3 @@ strict mode:
   }
 ]
 ```
-
----
-
-[← Phase 7: Classes & OOP in TypeScript](07-classes-and-oop.md) · [Guide overview](_guide.md) · [Phase 9: The Type System, Deep →](09-the-type-system-deep.md)

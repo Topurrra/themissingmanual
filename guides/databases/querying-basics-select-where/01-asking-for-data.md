@@ -155,7 +155,3 @@ about.
 
 You can now ask any table for any of its columns. Next, you'll learn to ask for only the *rows* you
 care about - by far the most useful skill in everyday SQL.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Filtering & Sorting →](02-filtering-and-sorting.md)

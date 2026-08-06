@@ -161,5 +161,3 @@ A common rhythm on a healthy team: format-on-save in the editor (so you never th
   }
 ]
 ```
-
-[← Phase 1: Two tools, two jobs](01-two-tools-two-jobs.md) · [Overview](_guide.md) · [Phase 3: Enforcement and gotchas](03-enforcement-and-gotchas.md) →

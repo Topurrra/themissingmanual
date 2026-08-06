@@ -202,5 +202,3 @@ Quick gut-check before you move on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Statements, Truth, and Validity →](02-statements-truth-and-validity.md)

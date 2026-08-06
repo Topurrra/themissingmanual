@@ -248,7 +248,3 @@ Make sure the request → response cycle stuck:
   }
 ]
 ```
-
----
-
-[← Phase 1: What Flask Is & Your First App](01-what-flask-is.md) · [Guide overview](_guide.md) · [Phase 3: Templates with Jinja2 →](03-templates-with-jinja.md)

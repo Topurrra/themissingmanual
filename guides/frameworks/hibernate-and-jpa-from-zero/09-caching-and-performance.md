@@ -323,7 +323,3 @@ Three ideas that decide whether your Hibernate app is fast or quietly slow:
   }
 ]
 ```
-
----
-
-[← Phase 8: Inheritance & Embeddables](08-inheritance-and-embeddables.md) · [Guide overview](_guide.md) · [Phase 10: Hibernate in the Real World & Where to Go Next →](10-where-to-go-next.md)

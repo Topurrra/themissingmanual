@@ -333,7 +333,3 @@ Make sure the core controller ideas stuck:
   }
 ]
 ```
-
----
-
-[← Phase 2: Dependency Injection & Beans](02-dependency-injection-and-beans.md) · [Guide overview](_guide.md) · [Phase 4: Configuration & Profiles →](04-configuration-and-profiles.md)

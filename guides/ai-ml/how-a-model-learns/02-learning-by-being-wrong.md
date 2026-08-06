@@ -133,7 +133,3 @@ The loop will happily keep lowering loss on the examples it's shown. Next phase:
 go wrong, and why we hide some data from the model on purpose.
 
 Watch it animated: [gradient descent](/explainers/GradientDescent.dc.html)
-
----
-
-[← Phase 1: Data → Weights → Predictions](01-data-weights-predictions.md) · [Guide overview](_guide.md) · [Phase 3: Overfitting & Why Test Sets Exist →](03-overfitting-and-test-sets.md)

@@ -105,7 +105,3 @@ That's the whole everyday picture of HTTP: a request and a response (Phase 1), t
 > machine you can reach, and where encryption sits in the stack? Continue with
 > [How the Internet Works](/guides/how-the-internet-works),
 > [IP, DNS, and Ports](/guides/ip-dns-and-ports), and [The TCP/IP Model](/guides/tcp-ip-model).
-
----
-
-[← Phase 2: Methods & Status Codes](02-methods-and-status-codes.md) · [Guide overview](_guide.md)

@@ -100,7 +100,3 @@ Once you see every group of related writes as a bundle, a whole category of 2am 
 3. Inside an open bundle you see your own provisional changes; the outside world sees nothing until `COMMIT`.
 4. The money transfer is the canonical case: two updates that must succeed or fail *together*.
 5. Keep transactions short - an open one holds locks and resources until you close it.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: ACID, Explained →](02-acid-explained.md)

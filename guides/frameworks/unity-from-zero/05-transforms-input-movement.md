@@ -166,7 +166,3 @@ For now, direct transform movement is the right tool: it taught you the loop wit
   }
 ]
 ```
-
----
-
-[← Phase 4: MonoBehaviour & the Game Loop](04-monobehaviour-and-the-game-loop.md) · [Guide overview](_guide.md) · [Phase 6: Physics & Collisions →](06-physics-and-collisions.md)

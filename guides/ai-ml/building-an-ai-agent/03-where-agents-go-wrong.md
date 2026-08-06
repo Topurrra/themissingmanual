@@ -151,5 +151,3 @@ Build the cage before the animal. Write the loop with the step budget and valida
   }
 ]
 ```
-
-[← Phase 2: The Reasoning-Acting Cycle](02-the-reasoning-acting-cycle.md) · [Guide overview](_guide.md)

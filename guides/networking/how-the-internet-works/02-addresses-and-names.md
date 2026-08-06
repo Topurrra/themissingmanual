@@ -94,7 +94,3 @@ Half of "the internet is down" moments are actually DNS moments: a site that loa
 4. Names and numbers can fail independently - so "is it a name problem (DNS) or a machine problem (the server)?" is a powerful first question when something won't load.
 
 We now have a request that travels (Phase 1) and a way to find the right machine to send it to (Phase 2). One question remains: once the request *arrives*, how do the two machines actually understand each other? They have to speak the same language.
-
----
-
-[← Guide overview](_guide.md) · [Phase 3: Client, Server & Talking the Same Language →](03-client-server-and-protocols.md)

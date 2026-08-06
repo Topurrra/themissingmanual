@@ -251,7 +251,3 @@ Make sure the bare callable stuck:
   }
 ]
 ```
-
----
-
-[← Phase 1: What WSGI Is](01-what-wsgi-is.md) · [Guide overview](_guide.md) · [Phase 3: The WSGI Server & Middleware →](03-the-wsgi-server-and-middleware.md)

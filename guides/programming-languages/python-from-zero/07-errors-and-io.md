@@ -219,7 +219,3 @@ has no such gap - it attempts the real operation and handles the one failure it 
 
 Next: the tooling that turns a script into a real project - package installs, virtual environments,
 formatters, and tests.
-
----
-
-[← Phase 6: Objects & Classes](06-objects-and-classes.md) · [Guide overview](_guide.md) · [Phase 8: The Ecosystem & Tooling →](08-ecosystem-and-tooling.md)

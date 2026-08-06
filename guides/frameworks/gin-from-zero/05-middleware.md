@@ -216,5 +216,3 @@ Lock in the one idea that matters most - the `c.Next()` seam and aborting:
   }
 ]
 ```
-
-[← Phase 4: Responses & Rendering](04-responses-and-rendering.md) · [Guide overview](_guide.md) · [Phase 6: Building a REST API →](06-building-a-rest-api.md)

@@ -130,5 +130,3 @@ When you wire up "Log in with Google" through a mature library, almost everythin
   }
 ]
 ```
-
-[← Phase 2: The Authorization Code Flow and the Three Tokens](02-the-flow-and-the-tokens.md) | [Overview](_guide.md)

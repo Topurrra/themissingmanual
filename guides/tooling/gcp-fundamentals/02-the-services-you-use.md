@@ -152,5 +152,3 @@ The instinct for newcomers is to default to Compute Engine because a VM feels fa
   }
 ]
 ```
-
-[← Phase 1: The project is the unit of everything](01-the-project-is-the-unit.md) · [Overview](_guide.md) · [Phase 3: IAM, billing, and the AWS map →](03-iam-billing-and-the-aws-map.md)

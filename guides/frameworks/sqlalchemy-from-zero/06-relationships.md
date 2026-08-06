@@ -55,7 +55,6 @@ Start with the foreign key. Many books point to one author, so the `author_id` c
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-
 class Author(Base):
     __tablename__ = "authors"
 
@@ -63,7 +62,6 @@ class Author(Base):
     name: Mapped[str]
 
     books: Mapped[list["Book"]] = relationship(back_populates="author")
-
 
 class Book(Base):
     __tablename__ = "books"
@@ -183,7 +181,6 @@ book_tag = Table(
     Column("tag_id", Integer, ForeignKey("tags.id"), primary_key=True),
 )
 
-
 class Book(Base):
     __tablename__ = "books"
 
@@ -191,7 +188,6 @@ class Book(Base):
     title: Mapped[str]
 
     tags: Mapped[list["Tag"]] = relationship(secondary=book_tag, back_populates="books")
-
 
 class Tag(Base):
     __tablename__ = "tags"
@@ -334,7 +330,3 @@ Lock in the ideas most likely to bite you when wiring relationships:
   }
 ]
 ```
-
----
-
-[← Phase 5: Querying with select()](05-querying-with-select.md) · [Guide overview](_guide.md) · [Phase 7: Loading Strategies & the N+1 Trap →](07-loading-strategies-and-n-plus-1.md)

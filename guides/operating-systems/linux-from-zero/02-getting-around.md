@@ -198,10 +198,6 @@ You can find your way and add software. But several of those commands started wi
 felt a flicker of "wait, am I allowed to do that?" That's the right instinct - next, users, permissions, and
 what `sudo` really means.
 
----
-
-[← Phase 1: What Linux Actually Is](01-what-linux-actually-is.md) · [Phase 3: Users, Permissions, and sudo →](03-users-permissions-sudo.md)
-
 ## Try it yourself
 
 Practice moving around - `ls`, `cd projects`, `cat readme.txt`, `mkdir demo`, `tree`:

@@ -196,7 +196,3 @@ builder.Services.AddHostedService<QueueCleaner>();
   }
 ]
 ```
-
----
-
-[← Phase 4: The RequestDelegate](04-the-request-delegate.md) · [Guide overview](_guide.md) · [Phase 6: How Minimal APIs & MVC Sit on Top →](06-how-minimal-apis-and-mvc-sit-on-top.md)

@@ -164,7 +164,3 @@ Check what you just covered:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Validation: Built-in vs. Custom →](02-validation-built-in-vs-custom.md)

@@ -95,10 +95,6 @@ You now have the skeleton. Next, let's name the verbs a request can use, and lea
 
 Watch it animated: [an HTTP request/response](/explainers/HTTPRequest.dc.html)
 
----
-
-[← Guide overview](_guide.md) · [Phase 2: Methods & Status Codes →](02-methods-and-status-codes.md)
-
 ## See it move
 
 Step through the journey of one request - the DNS lookup, the request out, and the response back:

@@ -219,7 +219,3 @@ Three questions on the ideas that have to stick before Phase 8:
   }
 ]
 ```
-
----
-
-[← Phase 6: Blueprints & the App Factory](06-blueprints-and-app-factory.md) · [Guide overview](_guide.md) · [Phase 8: Building a JSON API with Flask →](08-building-a-json-api.md)

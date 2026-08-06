@@ -118,5 +118,3 @@ When you expose a metric in a dashboard or an API, default to showing **median p
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Data You Never See →](02-the-data-you-never-see.md)

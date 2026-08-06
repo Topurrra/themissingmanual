@@ -120,7 +120,3 @@ unrelated data? Addresses are just numbers, and the wrong number points at the w
 
 Next, we follow those wires *past* RAM - to the disk, the keyboard, the network card - and meet the trick
 that lets a device move data without making the CPU babysit every byte.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: How the CPU Talks to Devices (I/O) →](02-how-the-cpu-talks-to-devices.md)

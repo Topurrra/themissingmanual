@@ -213,5 +213,3 @@ A quick check before you move on:
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: Reading Data: Statistics That Don't Lie →](02-reading-data-statistics.md)

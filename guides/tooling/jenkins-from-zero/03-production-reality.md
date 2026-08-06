@@ -117,5 +117,3 @@ For builders: the long-term move once you understand an inherited instance is to
   }
 ]
 ```
-
-[← Phase 2: The Jenkinsfile](02-the-jenkinsfile.md) | [Overview](_guide.md)

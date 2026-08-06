@@ -115,5 +115,3 @@ This is the whole arc of the guide landing in one object. Inertia (phase 1) is w
   }
 ]
 ```
-
-[← Phase 2](02-how-forces-change-motion.md) | [Overview](_guide.md)

@@ -166,5 +166,3 @@ A mature test suite leans on all three together: fixtures build the world (a log
   }
 ]
 ```
-
-[← Phase 1: The mental model](01-the-mental-model.md) | [Overview](_guide.md) | [Phase 3: Production reality →](03-conftest-monkeypatch-gotchas.md)

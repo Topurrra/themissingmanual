@@ -119,7 +119,3 @@ up. Reach for this, not `restart`, whenever you touch `.env`. (Burn it in now; i
    them.
 
 It's running - but only reachable by raw IP. Let's give it a real name.
-
----
-
-[← Phase 2: SSH In With a Key](02-ssh-in-with-a-key.md) · [Guide overview](_guide.md) · [Phase 4: Domains & DNS →](04-domains-and-dns.md)

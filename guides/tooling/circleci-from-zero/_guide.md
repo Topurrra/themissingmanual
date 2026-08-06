@@ -27,5 +27,3 @@ Read the phases in order; each one builds the mental model the next assumes. If 
 1. [The four nouns: jobs, executors, steps, workflows](01-the-four-nouns.md) - the mental model of how a CircleCI pipeline is actually built.
 2. [Writing a real config: caching, orbs, and fan-out](02-writing-a-real-config.md) - how you use it day to day to get fast, readable pipelines.
 3. [When it breaks: flaky tests, slow builds, and managed-CI tradeoffs](03-when-it-breaks.md) - the gotchas, parallelism, and the limits of someone else's infrastructure.
-
-[Phase 1: The four nouns: jobs, executors, steps, workflows](01-the-four-nouns.md) →

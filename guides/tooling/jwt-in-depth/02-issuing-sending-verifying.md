@@ -173,5 +173,3 @@ But - and phase 3 is built around this - statelessness has a sharp edge. If the 
   }
 ]
 ```
-
-[← Phase 1: Three Parts and a Signature](01-three-parts-and-a-signature.md) | [Overview](_guide.md) | [Phase 3: Where It Breaks →](03-where-it-breaks.md)

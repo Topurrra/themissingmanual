@@ -218,5 +218,3 @@ roles/
   }
 ]
 ```
-
-[← Phase 1](01-the-mental-model.md) | [Overview](_guide.md) | [Phase 3: Production Reality →](03-production-reality.md)

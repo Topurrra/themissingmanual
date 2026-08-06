@@ -30,5 +30,3 @@ Read it in order, once, start to finish. Phase 1 builds the mental model so the 
 1. [What N+1 actually is](01-what-n-plus-one-is.md) - the mental model: one query, then one more per row.
 2. [Seeing it in your logs](02-seeing-it-in-the-logs.md) - how to catch it red-handed with query logs and APM.
 3. [Fixing it without over-fetching](03-fixing-it.md) - eager loading, the single JOIN, batching, and the tradeoff.
-
-[Phase 1: What N+1 actually is](01-what-n-plus-one-is.md) →

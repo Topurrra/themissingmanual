@@ -150,5 +150,3 @@ come.
   }
 ]
 ```
-
-[← Phase 2](02-rpo-rto-and-cost.md) | [Overview](_guide.md)

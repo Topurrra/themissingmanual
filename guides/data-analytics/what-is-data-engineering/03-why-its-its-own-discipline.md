@@ -132,10 +132,6 @@ model. From here, the rest of the data-analytics track gives you the tools to ac
 
 ---
 
-[← Phase 2: The Pieces of the Pipeline](02-the-pieces-of-the-pipeline.md) · [← Guide overview](_guide.md)
-
----
-
 ## Related guides
 
 - [Spreadsheets to SQL to Pipelines](/guides/spreadsheets-to-sql-to-pipelines) - the hands-on path from a spreadsheet mindset to real pipelines.

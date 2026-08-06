@@ -139,7 +139,3 @@ The remaining surface of Next, ranked by how safely you can defer it:
   }
 ]
 ```
-
----
-
-[← Phase 7: When Next.js Breaks](07-when-it-breaks.md) · [Guide overview](_guide.md)

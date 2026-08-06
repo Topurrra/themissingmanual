@@ -172,7 +172,3 @@ Make sure the reactive model - and the clear caveat - landed:
   }
 ]
 ```
-
----
-
-[← Phase 6: Configuration](06-configuration.md) · [Guide overview](_guide.md) · [Phase 8: Testing Quarkus Apps →](08-testing.md)

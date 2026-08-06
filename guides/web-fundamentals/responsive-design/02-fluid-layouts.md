@@ -191,7 +191,3 @@ Check your understanding of fluid layout:
   }
 ]
 ```
-
----
-
-[← Phase 1: The Viewport and Media Queries](01-the-viewport-and-media-queries.md) · [Guide overview](_guide.md) · [Phase 3: Responsive Images and Mobile-First Workflow →](03-responsive-images-and-mobile-first-workflow.md)

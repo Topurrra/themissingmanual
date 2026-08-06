@@ -374,7 +374,3 @@ Test yourself on the patterns that separate toy goroutines from production ones:
   }
 ]
 ```
-
----
-
-[← Phase 11: Generics & Advanced Types](11-generics-and-advanced-types.md) · [Guide overview](_guide.md) · [Phase 13: Error Handling, Deep →](13-error-handling-deep.md)

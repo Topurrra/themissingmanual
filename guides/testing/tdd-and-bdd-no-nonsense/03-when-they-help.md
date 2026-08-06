@@ -136,8 +136,4 @@ The developers who get the most out of these techniques aren't the most devout -
 That's the plain picture: what TDD and BDD are, how to run each loop, and the judgment to use them where
 they genuinely help.
 
----
-
-[← Phase 2: BDD - Describing Behavior](02-describing-behavior.md) · [Guide overview](_guide.md)
-
 **Related guides:** [Your First Unit Test](/guides/your-first-unit-test) · [Unit, Integration & E2E](/guides/unit-integration-e2e)

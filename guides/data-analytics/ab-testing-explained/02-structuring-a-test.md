@@ -100,5 +100,3 @@ Watch it animated: [A/B testing](/explainers/ABTesting.dc.html)
   }
 ]
 ```
-
-[← Phase 1: Why you'd randomize at all](01-why-randomize.md) | [Overview](_guide.md) | [Phase 3: How teams fool themselves →](03-how-teams-fool-themselves.md)

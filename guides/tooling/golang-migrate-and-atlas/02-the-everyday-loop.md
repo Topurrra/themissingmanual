@@ -181,5 +181,3 @@ A common, sane setup: **Atlas versioned mode** as the team default - you edit a 
   }
 ]
 ```
-
-[← Phase 1: Two philosophies of change](01-two-philosophies.md) | [Overview](_guide.md) | [Phase 3: Production reality](03-production-reality.md) →

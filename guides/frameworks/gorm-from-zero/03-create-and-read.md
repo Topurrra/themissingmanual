@@ -268,5 +268,3 @@ db.First(&u, "email = ?", userInput)
   }
 ]
 ```
-
-[← Phase 2: Models & Auto-Migration](02-models-and-migration.md) · [Guide overview](_guide.md) · [Phase 4: Querying →](04-querying.md)

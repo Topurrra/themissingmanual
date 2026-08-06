@@ -81,7 +81,3 @@ Read left to right, that's the answer to the question this whole guide asked. **
 5. The full chain: **source code → translated to machine instructions → loaded as a process into RAM → executed step by step by the CPU.**
 
 That's the whole journey, end to end. From here, three neighbors go deeper into single links of the chain: [Processes, Memory & the CPU](/guides/processes-memory-and-cpu) for how the OS juggles running programs, [CPU, RAM & Storage](/guides/cpu-ram-and-storage) for the hardware underneath, and [Memory & Garbage Collection](/guides/memory-and-garbage-collection) for how a running program's memory is cleaned up.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Where Your Data Lives ←](02-stack-and-heap.md)

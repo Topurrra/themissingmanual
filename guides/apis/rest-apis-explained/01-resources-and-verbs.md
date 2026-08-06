@@ -179,7 +179,3 @@ they're interchangeable. And because each request is self-contained, you can cop
    and any request can be replayed on its own.
 
 With the mental model in place, the next phase turns it into endpoints you'd actually be proud to ship.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Designing Endpoints →](02-designing-endpoints.md)

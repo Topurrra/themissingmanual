@@ -114,5 +114,3 @@ Every zero-downtime strategy depends on a layer between users and your app insta
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The Three Strategies →](02-the-three-strategies.md)

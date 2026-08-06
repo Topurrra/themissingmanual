@@ -82,7 +82,3 @@ not a warning, a hard fail. That's fine, because HTTPS is the very next phase - 
    the next phase is done.
 
 The name resolves to your box. Now make it HTTPS, safe, and fast - with Cloudflare.
-
----
-
-[← Phase 3: Docker & Your Private Repo](03-docker-and-your-repo.md) · [Guide overview](_guide.md) · [Phase 5: Behind Cloudflare →](05-behind-cloudflare.md)

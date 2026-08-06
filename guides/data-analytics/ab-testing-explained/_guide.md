@@ -32,5 +32,3 @@ Read it in order. Phase 1 is the core idea - why you need a control group at all
 1. [Why you'd randomize at all](01-why-randomize.md) - the core idea, and why "before vs. after" is a trap.
 2. [How a real test is structured](02-structuring-a-test.md) - control vs. variant, one metric, sample size, and what "significant" means.
 3. [How teams fool themselves](03-how-teams-fool-themselves.md) - peeking early, metric fishing, and novelty effects.
-
-[Phase 1: Why you'd randomize at all](01-why-randomize.md) →

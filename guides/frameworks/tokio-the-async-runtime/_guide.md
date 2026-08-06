@@ -50,7 +50,3 @@ channels, and `select!`. Phases carry difficulty badges.
 
 > The throughline: **`async fn`s make inert futures; Tokio is the engine that polls, schedules, and wakes
 > them.** Every Rust web server is a pile of futures running on this runtime.
-
----
-
-[Phase 1: What Tokio Is & Why Futures Need a Runtime →](01-what-tokio-is.md)

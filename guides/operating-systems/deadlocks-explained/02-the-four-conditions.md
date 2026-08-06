@@ -76,5 +76,3 @@ Circular wait     -> can be prevented (always acquire locks in the same global o
 > You don't have to eliminate all four conditions. You have to eliminate exactly one. That reframes "prevent deadlocks" from an abstract goal into a specific, checkable engineering decision.
 
 Phase 3 turns this into code: what lock ordering looks like in practice, how timeouts and try-lock sidestep "no preemption," and what tools exist to catch a deadlock that already happened.
-
-[← Phase 1: What a deadlock actually is](01-what-a-deadlock-is.md) | [Phase 3: Preventing and detecting them in real code →](03-preventing-and-detecting.md)

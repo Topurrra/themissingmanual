@@ -206,7 +206,3 @@ A quick check before the next phase - these two ideas carry the entire guide:
   }
 ]
 ```
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Components and Props →](02-components-and-props.md)

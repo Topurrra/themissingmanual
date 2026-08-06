@@ -123,8 +123,4 @@ Round-trip time isn't a fixed number - it wobbles, and on a bad connection packe
 
 Watch it animated: [the TCP handshake](/explainers/TCPHandshake.dc.html)
 
----
-
-[← Phase 2: The Four Layers](02-the-four-layers.md) · [Guide overview](_guide.md)
-
 **Related guides:** [How the Internet Works](/guides/how-the-internet-works) · [IP, DNS, and Ports](/guides/ip-dns-and-ports) · [HTTP Explained](/guides/http-explained)

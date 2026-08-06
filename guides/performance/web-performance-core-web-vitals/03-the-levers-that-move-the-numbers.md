@@ -171,7 +171,3 @@ The throughline is the one from the rest of performance: **measure first, pull t
   }
 ]
 ```
-
----
-
-[← Phase 2: Measuring What Users Feel](02-measuring-what-users-feel.md) · [Overview](_guide.md)

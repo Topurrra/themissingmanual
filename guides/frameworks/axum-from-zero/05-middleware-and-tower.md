@@ -173,5 +173,3 @@ Step back and notice what you *didn't* learn: an axum-specific middleware API. T
   }
 ]
 ```
-
-[← Phase 4: Shared State](04-shared-state.md) · [Guide overview](_guide.md) · [Phase 6: Building a REST API →](06-building-a-rest-api.md)

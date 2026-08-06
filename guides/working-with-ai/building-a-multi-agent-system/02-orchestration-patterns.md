@@ -114,7 +114,3 @@ Real systems mix these - a supervisor might dispatch a fan-out step as one of it
   }
 ]
 ```
-
----
-
-[← Phase 1: Why One Agent Isn't Enough](01-why-one-agent-isnt-enough.md) · [Guide overview](_guide.md) · [Phase 3: Failure Recovery and Guardrails →](03-failure-recovery-and-guardrails.md)

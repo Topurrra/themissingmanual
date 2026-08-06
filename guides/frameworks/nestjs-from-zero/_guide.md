@@ -58,7 +58,3 @@ tested, deployable REST API. Phases carry difficulty badges.
 
 > The throughline: **controllers handle HTTP, providers hold logic, dependency injection wires them, and
 > modules group them.** That structure is why Nest scales where bare Express sprawls.
-
----
-
-[Phase 1: What NestJS Is & Your First App →](01-what-nestjs-is.md)

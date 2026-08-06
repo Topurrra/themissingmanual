@@ -124,7 +124,3 @@ filter, a file path - you'll feel the same alarm: keep data as data.
 
 Now let's take the first interpreter - the database - and watch the wall come down, then build it back up
 properly.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: SQL Injection →](02-sql-injection.md)

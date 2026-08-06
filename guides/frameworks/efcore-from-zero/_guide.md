@@ -59,7 +59,3 @@ relationships, the N+1 trap, and migrations. Phases carry difficulty badges.
 
 > The throughline: a **`DbContext` is a change-tracking session**, **`DbSet`s are your tables**, and
 > **LINQ becomes SQL**. Watch that SQL and you stay in command of the database.
-
----
-
-[Phase 1: What EF Core Is & the DbContext →](01-what-efcore-is.md)

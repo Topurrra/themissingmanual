@@ -353,7 +353,3 @@ PyTorch, and it's the pattern you'll see in every training loop from Phase 6 onw
   }
 ]
 ```
-
----
-
-[← Phase 1: What PyTorch Is & Tensors](01-what-pytorch-is-and-tensors.md) · [Guide overview](_guide.md) · [Phase 3: Autograd: Automatic Differentiation →](03-autograd.md)

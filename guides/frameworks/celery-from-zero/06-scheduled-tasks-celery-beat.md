@@ -159,7 +159,3 @@ For schedules that need to change at runtime - letting admins add or edit schedu
   }
 ]
 ```
-
----
-
-[← Phase 5: Retries & Error Handling](05-retries-and-error-handling.md) · [Guide overview](_guide.md) · [Phase 7: Production: Scaling, Monitoring & Pitfalls →](07-production-scaling-monitoring.md)

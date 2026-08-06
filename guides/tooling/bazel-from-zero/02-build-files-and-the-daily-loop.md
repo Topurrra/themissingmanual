@@ -153,5 +153,3 @@ The `WORKSPACE` / `MODULE.bazel` file at your repo root is where external depend
   }
 ]
 ```
-
-[← Phase 1: The Graph, and Why Hermetic](01-the-graph-and-why-hermetic.md) · [Overview](_guide.md) · [Phase 3: Caching, Cold Starts, and When Not To →](03-caching-cold-starts-and-when-not-to.md)

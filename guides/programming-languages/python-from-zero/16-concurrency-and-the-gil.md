@@ -280,7 +280,3 @@ The GIL is the one idea that has to stick. Test yourself before moving on.
   }
 ]
 ```
-
----
-
-[← Phase 15: Dataclasses & Modern Modeling](15-dataclasses.md) · [Guide overview](_guide.md) · [Phase 17: Performance & Memory →](17-performance-and-memory.md)

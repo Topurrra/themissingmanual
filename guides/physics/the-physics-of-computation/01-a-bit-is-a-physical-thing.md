@@ -92,5 +92,3 @@ Check what actually sticks:
   }
 ]
 ```
-
-[Guide overview](_guide.md) · [Phase 2: The thermodynamic limits of computing →](02-the-thermodynamic-limits-of-computing.md)

@@ -245,5 +245,3 @@ curl -i -X POST http://127.0.0.1:8000/books \
   }
 ]
 ```
-
-[← Phase 5: Managed State & Fairings](05-state-and-fairings.md) · [Guide overview](_guide.md) · [Phase 7: Testing & Configuration →](07-testing-and-config.md)

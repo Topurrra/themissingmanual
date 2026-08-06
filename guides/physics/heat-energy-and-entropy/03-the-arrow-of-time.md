@@ -129,5 +129,3 @@ Curious where the rules bend? The small-scale world where this meets quantum mec
   }
 ]
 ```
-
-[← Back to the guide overview](_guide.md)

@@ -132,7 +132,3 @@ something to *put in the body* - and for web APIs, that something is almost alwa
 3. The **status code** is the verdict: `2xx` worked, `4xx` you erred, `5xx` the server erred.
 4. **Headers** are metadata notes; `Content-Type: application/json` is the one you'll see most.
 5. A `200 OK` means *delivered*, not *correct* - always read the body too.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: JSON, the Data Format →](02-json-the-data-format.md)

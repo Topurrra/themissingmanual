@@ -151,5 +151,3 @@ Reach for pytest on any new Python project unless you have a specific reason not
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: The everyday core: fixtures, parametrize, and marks →](02-fixtures-parametrize-marks.md)

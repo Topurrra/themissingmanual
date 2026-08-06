@@ -30,5 +30,3 @@ This guide is about replacing the feeling with a measurement. Not a research lab
 3. **[Evals as a Habit](03-evals-as-a-habit.md)** - regression testing prompts and model upgrades, tracking quality over time, and the line between offline evals, production monitoring, and real user feedback.
 
 > This guide assumes you've already wired a model into your app. If "call the model" is still fuzzy, read [Using an LLM API](/guides/using-an-llm-api) first; the craft of writing the instructions you'll be evaluating lives in [Prompt Engineering, Plainly](/guides/prompt-engineering-plainly).
-
-[Phase 1: Why Vibes Don't Scale](01-why-vibes-dont-scale.md) →

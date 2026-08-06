@@ -130,7 +130,3 @@ Neither is better. They're different bargains about where your control goes. Nex
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Why Frameworks Exist →](02-why-frameworks-exist.md)

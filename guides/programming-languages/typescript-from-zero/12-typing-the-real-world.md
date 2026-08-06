@@ -251,7 +251,3 @@ Test yourself on the gap between what types promise and what gets checked:
   }
 ]
 ```
-
----
-
-[← Phase 11: Conditional & Template Literal Types](11-conditional-and-template-types.md) · [Guide overview](_guide.md) · [Phase 13: Where to Go Next →](13-where-to-go-next.md)

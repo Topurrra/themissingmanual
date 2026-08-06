@@ -299,7 +299,3 @@ Make sure the core idea stuck - that the signature drives everything:
   }
 ]
 ```
-
----
-
-[← Phase 1: What FastAPI Is & Your First App](01-what-fastapi-is.md) · [Guide overview](_guide.md) · [Phase 3: Pydantic Models & Validation →](03-pydantic-models-and-validation.md)

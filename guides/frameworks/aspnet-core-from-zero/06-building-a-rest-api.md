@@ -222,7 +222,3 @@ The endpoints you wrote contain almost no logic - they bind input, call one repo
   }
 ]
 ```
-
----
-
-[← Phase 5: The Middleware Pipeline](05-middleware-pipeline.md) · [Guide overview](_guide.md) · [Phase 7: Authentication & Authorization →](07-auth.md)

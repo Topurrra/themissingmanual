@@ -196,5 +196,3 @@ deploy:
   }
 ]
 ```
-
-[← Phase 1: The Mental Model](01-the-mental-model.md) | [Overview](_guide.md) | [Phase 3: Production Reality - Environments, Gates, and Secrets →](03-environments-gates-secrets.md)

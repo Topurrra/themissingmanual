@@ -179,7 +179,3 @@ Test what you just learned:
   }
 ]
 ```
-
----
-
-[← Phase 2: The Box Model](02-the-box-model.md) · [Guide overview](_guide.md) · [Phase 4: Colors, Units, and Typography →](04-colors-units-and-typography.md)

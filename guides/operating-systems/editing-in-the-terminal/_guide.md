@@ -41,5 +41,3 @@ which is the key that unlocks everything, including the calm, guaranteed way out
 3. **[vim: the mode that traps everyone, and the way out](03-vim-modes-and-escaping.md)** - the big idea
    (normal vs. insert mode), why that design is powerful instead of cruel, and the exact keystrokes to
    save, quit, and escape - including when you've made a mess and want out clean.
-
-[Phase 1: Why edit in the terminal at all](01-why-edit-in-the-terminal.md) →

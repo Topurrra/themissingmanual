@@ -140,5 +140,3 @@ When you join a team with all of this set up, your day looks like: write code, s
   }
 ]
 ```
-
-[← Phase 2](02-the-everyday-workflow.md) | [Overview](_guide.md)

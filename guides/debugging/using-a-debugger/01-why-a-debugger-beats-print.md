@@ -97,7 +97,3 @@ you'll pick on the merits.
    timing-sensitive code.
 
 Now that you know *why*, let's learn the handful of controls that work in every debugger.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The Core Moves →](02-the-core-moves.md)

@@ -270,7 +270,3 @@ interface:
   }
 ]
 ```
-
----
-
-[← Phase 2: Syntax, Values & Types](02-syntax-values-and-types.md) · [Guide overview](_guide.md) · [Phase 4: Control Flow & Methods →](04-control-flow-and-methods.md)

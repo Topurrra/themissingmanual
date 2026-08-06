@@ -162,7 +162,3 @@ You came here blocked; now you can read the error, point at the exact missing he
 quietly opening a hole. That's the whole skill. The deeper material - caching preflights with
 `Access-Control-Max-Age`, per-route policies, and CORS in front of CDNs and API gateways - is a follow-up
 guide for when you need it. For now, you're unblocked, safely.
-
----
-
-[← Phase 2: Reading the Error & the Headers](02-reading-the-error-and-the-headers.md) · [Guide overview](_guide.md)

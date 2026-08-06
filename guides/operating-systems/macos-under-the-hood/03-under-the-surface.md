@@ -188,7 +188,3 @@ are really folders, settings tucked in `~/Library`, services supervised by `laun
 > [The Filesystem Explained](/guides/the-filesystem-explained), and the foundation,
 > [What an Operating System Is](/guides/what-an-operating-system-is). Curious how the *other* side does it?
 > [Windows for Power Users](/guides/windows-for-power-users) is the companion tour.
-
----
-
-[← Phase 2: Apps, Bundles & Where Things Live](02-apps-bundles-and-where-things-live.md) · [Guide overview](_guide.md)

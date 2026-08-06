@@ -57,7 +57,3 @@ Hibernate emits. Phases carry difficulty badges.
 
 > The payoff: after this, [Spring Boot's persistence phase](/guides/spring-boot-from-zero) stops being
 > magic - you'll see exactly what Spring Data JPA generates and how to make it fast.
-
----
-
-[Phase 1: What an ORM Is & Why Hibernate Exists →](01-what-an-orm-is.md)

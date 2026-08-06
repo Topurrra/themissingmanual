@@ -120,5 +120,3 @@ On a real team, the migrations folder becomes a readable history of the schema. 
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: The daily loop →](02-the-daily-loop.md)

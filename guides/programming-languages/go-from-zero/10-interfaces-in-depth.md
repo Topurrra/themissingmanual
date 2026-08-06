@@ -282,7 +282,3 @@ Test yourself on the idea that ties this whole phase together - the (type, value
   }
 ]
 ```
-
----
-
-[← Phase 9: Idioms & Common Gotchas](09-idioms-and-gotchas.md) · [Guide overview](_guide.md) · [Phase 11: Generics & Advanced Types →](11-generics-and-advanced-types.md)

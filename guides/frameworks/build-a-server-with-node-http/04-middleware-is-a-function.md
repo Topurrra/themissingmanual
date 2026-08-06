@@ -116,7 +116,3 @@ Notice how data flows forward: `requireAuth` set `req.user`, so any handler down
   }
 ]
 ```
-
----
-
-[← Phase 3: Routing by Hand](03-routing-by-hand.md) · [Guide overview](_guide.md) · [Phase 5: A JSON REST API With No Framework →](05-rest-api-no-framework.md)

@@ -197,7 +197,3 @@ Three questions on the ideas that have to stick before Phase 2:
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Handling Requests & Responses →](02-requests-and-responses.md)

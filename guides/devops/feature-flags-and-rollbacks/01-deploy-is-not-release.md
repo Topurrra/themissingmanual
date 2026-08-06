@@ -106,5 +106,3 @@ If your team runs CI/CD, flags are the missing safety layer on top of it. A gree
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Living with flags →](02-rollouts-and-kill-switches.md)

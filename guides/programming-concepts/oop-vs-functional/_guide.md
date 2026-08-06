@@ -31,7 +31,3 @@ This guide gives you the working mental model for each, with small annotated exa
 3. **[Plainly: Which, When?](03-which-when.md)** - the plain truth that most real code is both, a fair comparison of where each shines, and how to choose without joining a cult.
 
 > This guide is about the two *paradigms* and the mental models behind them. It is not a tutorial in any one language's class syntax or a deep dive into category theory - for the broader "how languages differ" picture, see [Languages Explained Like a Human](/guides/languages-explained-like-a-human).
-
----
-
-[Phase 1: What OOP Actually Is →](01-what-oop-actually-is.md)

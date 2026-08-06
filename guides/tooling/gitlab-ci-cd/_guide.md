@@ -25,5 +25,3 @@ Go in order. Phase 1 builds the mental model: stages, jobs, runners, and the sin
 1. [Phase 1: The Mental Model - One File, A Pipeline, A Machine](01-the-mental-model.md)
 2. [Phase 2: The Everyday Core - Artifacts, Cache, and Rules](02-artifacts-cache-rules.md)
 3. [Phase 3: Production Reality - Environments, Gates, and Secrets](03-environments-gates-secrets.md)
-
-[Phase 1: The Mental Model - One File, A Pipeline, A Machine](01-the-mental-model.md) →

@@ -220,7 +220,3 @@ The three ideas worth keeping:
   }
 ]
 ```
-
----
-
-[← Phase 4: CDI in Quarkus (ArC)](04-cdi-with-arc.md) · [Guide overview](_guide.md) · [Phase 6: Configuration →](06-configuration.md)

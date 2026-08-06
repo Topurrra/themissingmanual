@@ -28,5 +28,3 @@ If you're new to how Git tracks files at all, skim [/guides/git-from-zero](/guid
 1. [What Git tracks (and what "ignore" really means)](01-what-git-tracks.md)
 2. [Ignoring, untracking, and LFS for big files](02-ignoring-untracking-lfs.md)
 3. [Leaked secrets and the submodule trap](03-secrets-and-submodules.md)
-
-[Phase 1: What Git tracks (and what "ignore" really means)](01-what-git-tracks.md) →

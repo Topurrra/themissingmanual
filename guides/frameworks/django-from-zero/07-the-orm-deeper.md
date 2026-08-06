@@ -297,7 +297,3 @@ Three questions on the ideas that separate "the ORM works" from "the ORM is fast
   }
 ]
 ```
-
----
-
-[← Phase 6: Forms & Validation](06-forms-and-validation.md) · [Guide overview](_guide.md) · [Phase 8: Users, Auth & Sessions →](08-users-auth-and-sessions.md)

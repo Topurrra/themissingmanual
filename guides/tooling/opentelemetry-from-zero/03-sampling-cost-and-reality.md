@@ -113,5 +113,3 @@ In the wild: teams that succeed with OTel treat it as a product with an owner, n
   }
 ]
 ```
-
-[← Phase 2: Instrumenting and exporting](02-instrumenting-and-exporting.md) | [Overview](_guide.md)

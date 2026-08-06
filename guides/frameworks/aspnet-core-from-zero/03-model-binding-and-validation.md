@@ -189,7 +189,3 @@ Pick whichever fits the project. This guide stays on minimal APIs and wires vali
   }
 ]
 ```
-
----
-
-[← Phase 2: Routing & Minimal APIs](02-routing-and-minimal-apis.md) · [Guide overview](_guide.md) · [Phase 4: Dependency Injection →](04-dependency-injection.md)

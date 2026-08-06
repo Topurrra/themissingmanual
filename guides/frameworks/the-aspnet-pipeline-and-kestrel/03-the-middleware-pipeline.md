@@ -163,5 +163,3 @@ app.MapGet("/products", () => Results.Ok("listing products"));   // endpoints la
   }
 ]
 ```
-
-[← Phase 2: Kestrel: The Web Server](02-kestrel-the-web-server.md) · [Guide overview](_guide.md) · [Phase 4: The RequestDelegate →](04-the-request-delegate.md)

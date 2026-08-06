@@ -61,7 +61,3 @@ so you can see the climb.
 > The "magic" of Spring Boot is auto-configured Spring. When you want to see what it automates by hand,
 > the [Spring Framework (core)](/guides/spring-framework-from-zero) guide (writing the config yourself) is
 > the demystifier - but learn it *after* this; Boot is how the job is actually done.
-
----
-
-[Phase 1: What Spring Boot Is & Your First App →](01-what-spring-boot-is.md)

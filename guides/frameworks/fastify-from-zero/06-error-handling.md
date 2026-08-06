@@ -179,5 +179,3 @@ app.setErrorHandler((error, request, reply) => {
   }
 ]
 ```
-
-[← Phase 5: Building a REST API](05-building-a-rest-api.md) · [Guide overview](_guide.md) · [Phase 7: Testing & Production →](07-testing-and-production.md)

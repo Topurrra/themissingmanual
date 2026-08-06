@@ -42,7 +42,3 @@ you how those tools get *abused*, so the next misleading number doesn't get past
 > favorable outcomes) and pairs with
 > [Critical Thinking & Fallacies](/guides/critical-thinking-and-fallacies). It's the final guide of the
 > Mathematics foundations.
-
----
-
-[Phase 1: Probability: Measuring Uncertainty →](01-probability-measuring-uncertainty.md)

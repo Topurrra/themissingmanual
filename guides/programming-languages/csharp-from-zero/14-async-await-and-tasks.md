@@ -308,7 +308,3 @@ Test yourself on the one idea that makes all of this work - what `await` really 
   }
 ]
 ```
-
----
-
-[← Phase 13: Records, Pattern Matching & Modern C#](13-records-and-modern-csharp.md) · [Guide overview](_guide.md) · [Phase 15: The .NET Runtime: Memory, GC & JIT →](15-the-dotnet-runtime-and-gc.md)

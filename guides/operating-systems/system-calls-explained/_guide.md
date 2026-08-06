@@ -30,5 +30,3 @@ Read it in order. Phase 1 explains why programs can't touch hardware directly. P
 1. [Why programs can't touch hardware directly](01-user-mode-vs-kernel-mode.md) - the wall between user mode and kernel mode, and why it exists.
 2. [What actually happens during a syscall](02-the-mechanics-of-a-syscall.md) - the trap, the mode switch, the syscall number and arguments, the return.
 3. [Why syscalls matter for real performance](03-why-syscalls-matter-for-performance.md) - the cost of a mode switch, why you buffer, and watching syscalls with strace.
-
-[Phase 1: Why programs can't touch hardware directly](01-user-mode-vs-kernel-mode.md) →

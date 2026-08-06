@@ -134,7 +134,3 @@ Test yourself on the idea that demystifies this phase - that a chart can be buil
   }
 ]
 ```
-
----
-
-[← Phase 7: Time Intelligence](07-time-intelligence.md) · [Phase 9: Building Reports & Dashboards →](09-building-reports-and-dashboards.md)

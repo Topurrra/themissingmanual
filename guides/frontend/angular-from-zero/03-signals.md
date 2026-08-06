@@ -180,7 +180,3 @@ callback for the timer/subscription cases - the universal start-needs-a-stop dis
   }
 ]
 ```
-
----
-
-[← Phase 2: Components and Templates](02-components-and-templates.md) · [Guide overview](_guide.md) · [Phase 4: Component Inputs and Outputs →](04-inputs-and-outputs.md)

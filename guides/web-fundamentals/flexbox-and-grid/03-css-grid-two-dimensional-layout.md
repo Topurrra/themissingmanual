@@ -178,7 +178,3 @@ Lock in the two properties before moving on:
   }
 ]
 ```
-
----
-
-[← Phase 2: When a Flex Item Won't Shrink](02-when-a-flex-item-wont-shrink.md) · [Guide overview](_guide.md) · [Phase 4: Choosing Between Them (and Combining Them) →](04-choosing-between-them-and-combining-them.md)

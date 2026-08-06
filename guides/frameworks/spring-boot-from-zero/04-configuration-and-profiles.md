@@ -264,7 +264,3 @@ Make sure the config model stuck before you wire a database to it in the next ph
   }
 ]
 ```
-
----
-
-[← Phase 3: Building a REST API: Controllers](03-rest-controllers.md) · [Guide overview](_guide.md) · [Phase 5: Persistence with Spring Data JPA →](05-persistence-with-jpa.md)

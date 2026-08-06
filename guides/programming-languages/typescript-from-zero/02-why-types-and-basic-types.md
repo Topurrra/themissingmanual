@@ -204,7 +204,3 @@ Lock in the three ideas that matter most here - when types catch bugs, how much 
   }
 ]
 ```
-
----
-
-[← Phase 1: Install & Your First Program](01-install-and-first-program.md) · [Guide overview](_guide.md) · [Phase 3: Functions & Annotations →](03-functions-and-annotations.md)

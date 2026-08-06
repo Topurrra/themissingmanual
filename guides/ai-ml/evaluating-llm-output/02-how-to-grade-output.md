@@ -148,5 +148,3 @@ Layer them. Run the rule checks first as a hard gate (valid JSON? required field
   }
 ]
 ```
-
-[← Phase 1: Why Vibes Don't Scale](01-why-vibes-dont-scale.md) · [Guide overview](_guide.md) · [Phase 3: Evals as a Habit →](03-evals-as-a-habit.md)

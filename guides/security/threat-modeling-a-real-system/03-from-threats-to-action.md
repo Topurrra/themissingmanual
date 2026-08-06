@@ -152,7 +152,3 @@ closed, then read the debrief.
   }
 }
 ```
-
----
-
-[← Phase 2: STRIDE, Applied](02-stride-applied.md) · [Guide overview](_guide.md)

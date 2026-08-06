@@ -94,5 +94,3 @@ For builders: SonarQube and SonarCloud are the same engine in different clothes 
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: Scanning and the quality gate →](02-scanning-and-the-gate.md)

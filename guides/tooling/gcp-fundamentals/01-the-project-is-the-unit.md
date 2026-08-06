@@ -92,5 +92,3 @@ The practical habit that pays off forever: **one project per environment**, neve
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: The services you'll actually use →](02-the-services-you-use.md)

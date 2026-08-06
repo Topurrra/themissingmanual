@@ -128,5 +128,3 @@ When you build one, the loop is yours and it's small - often a few dozen lines. 
   }
 ]
 ```
-
-[← Guide overview](_guide.md) · [Phase 2: The Reasoning-Acting Cycle →](02-the-reasoning-acting-cycle.md)

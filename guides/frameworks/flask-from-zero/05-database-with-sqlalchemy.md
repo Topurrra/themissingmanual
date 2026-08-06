@@ -204,7 +204,3 @@ Three questions on the ideas that have to stick before Phase 6:
   }
 ]
 ```
-
----
-
-[← Phase 4: Forms & Request Data](04-forms-and-request-data.md) · [Guide overview](_guide.md) · [Phase 6: Blueprints & the App Factory →](06-blueprints-and-app-factory.md)

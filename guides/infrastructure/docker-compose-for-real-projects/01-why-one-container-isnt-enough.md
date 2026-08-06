@@ -113,7 +113,3 @@ $ docker compose up
 5. **The file is the win** - readable, editable, version-controlled, reproducible by anyone.
 
 Now that you can see the shape of the problem, let's write the file that solves it.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: The compose file →](02-the-compose-file.md)

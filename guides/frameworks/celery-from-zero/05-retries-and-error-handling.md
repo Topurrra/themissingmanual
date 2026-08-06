@@ -204,7 +204,3 @@ def send_welcome_email(user_id):
   }
 ]
 ```
-
----
-
-[← Phase 4: Results & State](04-results-and-state.md) · [Guide overview](_guide.md) · [Phase 6: Scheduled Tasks with Celery Beat →](06-scheduled-tasks-celery-beat.md)

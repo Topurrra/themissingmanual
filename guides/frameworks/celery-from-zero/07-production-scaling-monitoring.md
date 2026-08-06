@@ -159,7 +159,3 @@ And the operating discipline, in one breath: **keep tasks small and idempotent, 
   }
 ]
 ```
-
----
-
-[← Phase 6: Scheduled Tasks with Celery Beat](06-scheduled-tasks-celery-beat.md) · [Guide overview](_guide.md) · [Phase 8: Where to Go Next →](08-where-to-go-next.md)

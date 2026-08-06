@@ -105,5 +105,3 @@ For builders: this is why "what encoding?" is the first question to ask whenever
   }
 ]
 ```
-
-[← Overview](_guide.md) | [Phase 2: How UTF-8 Actually Works →](02-how-utf-8-actually-works.md)

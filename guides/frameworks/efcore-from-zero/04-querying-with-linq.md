@@ -173,5 +173,3 @@ The habit that saves you: **watch the SQL EF generates.** If a query is slow or 
   }
 ]
 ```
-
-[← Phase 3: Create & Read](03-create-and-read.md) · [Guide overview](_guide.md) · [Phase 5: Change Tracking & SaveChanges →](05-change-tracking.md)

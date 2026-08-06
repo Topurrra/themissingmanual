@@ -147,7 +147,3 @@ That's the whole tool. The thing to keep, across all three phases: **Dynatrace i
 *where* - the slow tier, the failing hop, the correlated incident. You still bring the *why* - the trace you
 confirm, the timeline you check, the line of code you read.** The x-ray shows the break; the doctor still
 reads the film.
-
----
-
-[← Phase 2: Reading a Service Flow & a Trace](02-reading-a-service-flow-and-a-trace.md) · [Guide overview](_guide.md)

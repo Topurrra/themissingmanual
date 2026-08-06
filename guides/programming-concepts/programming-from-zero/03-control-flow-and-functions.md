@@ -280,7 +280,3 @@ vocabulary built on this exact grammar.
   ways programs organize many values at once.
 
 Watch it animated: [conditional branching](/explainers/ConditionalBranching.dc.html)
-
----
-
-[← Phase 2: The Building Blocks](02-building-blocks.md) · [Guide overview →](_guide.md)

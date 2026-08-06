@@ -160,5 +160,3 @@ produced, and judge it like you'd judge SQL you wrote by hand. When a query is m
   }
 ]
 ```
-
-[← Phase 5: Lazy Loading & the N+1 Trap](05-lazy-loading-and-n-plus-1.md) · [Guide overview](_guide.md) · [Phase 7: When Not to Use an ORM →](07-when-not-to-use-an-orm.md)

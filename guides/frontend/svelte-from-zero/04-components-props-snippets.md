@@ -231,7 +231,3 @@ parameters.
   }
 ]
 ```
-
----
-
-[← Phase 3: Template Logic](03-template-logic.md) · [Guide overview](_guide.md) · [Phase 5: Sharing State →](05-sharing-state.md)

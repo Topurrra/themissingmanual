@@ -239,5 +239,3 @@ Lock in the core fact (the router is a service) and the two production must-have
   }
 ]
 ```
-
-[← Phase 7: Error Handling](07-error-handling.md) · [Guide overview](_guide.md) · [Phase 9: Where to Go Next →](09-where-to-go-next.md)

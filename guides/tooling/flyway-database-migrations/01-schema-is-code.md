@@ -118,5 +118,3 @@ If you want the broader picture of why schema migrations exist as a discipline a
   }
 ]
 ```
-
-[← Overview](_guide.md) · [Phase 2: The Everyday Loop →](02-the-everyday-loop.md)

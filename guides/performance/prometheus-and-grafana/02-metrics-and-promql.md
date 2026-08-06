@@ -103,7 +103,3 @@ When you're staring at a dashboard during an incident and someone asks "is the e
 5. **The rule:** wrap counters in `rate()`; read gauges raw.
 
 Now you can read what's stored. Let's put it on a screen and make it page someone when it matters.
-
----
-
-[← Phase 1: What Each One Does](01-what-each-one-does.md) · [Guide overview](_guide.md) · [Phase 3: Dashboards & Alerting →](03-dashboards-and-alerting.md)

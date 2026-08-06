@@ -81,7 +81,3 @@ There's no perfect prompt-only cure for this, which is exactly the point of a cl
 5. **Prompt injection is real.** Untrusted text can carry instructions; separate it, and don't wire dangerous actions behind untrusted input without a human in the loop.
 
 Put the whole guide in one line: **clarity beats cleverness.** There's no spell - just a clear instruction, a plain look at the result, and another pass. Do that, and you're already doing prompt engineering better than most people chasing magic words.
-
----
-
-[← Phase 2: The Techniques That Actually Help](02-techniques-that-help.md) · [Guide overview](_guide.md)

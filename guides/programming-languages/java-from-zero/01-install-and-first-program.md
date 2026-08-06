@@ -251,7 +251,3 @@ Test yourself on the one idea that makes Java *Java* - compile to bytecode, run 
   }
 ]
 ```
-
----
-
-[Guide overview](_guide.md) · [Phase 2: Syntax, Values & Types →](02-syntax-values-and-types.md)

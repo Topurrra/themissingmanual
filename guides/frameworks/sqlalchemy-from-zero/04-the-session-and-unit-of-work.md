@@ -275,7 +275,3 @@ The three ideas that explain the most future bugs:
   }
 ]
 ```
-
----
-
-[← Phase 3: Defining Models](03-defining-models.md) · [Guide overview](_guide.md) · [Phase 5: Querying with select() →](05-querying-with-select.md)

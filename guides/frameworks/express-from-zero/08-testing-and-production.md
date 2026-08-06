@@ -209,5 +209,3 @@ When you're ready to take the whole thing live - domains, TLS, environment secre
   }
 ]
 ```
-
-[← Phase 7: Serving & Structuring an App](07-serving-and-structure.md) · [Guide overview](_guide.md) · [Phase 9: Where to Go Next →](09-where-to-go-next.md)

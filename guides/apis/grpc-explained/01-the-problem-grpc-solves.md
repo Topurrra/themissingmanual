@@ -135,7 +135,3 @@ the contract into running code.
 4. **Speed** comes from compact binary Protocol Buffers over a reused **HTTP/2** connection; **safety** comes
    from calling remote services like typed local functions.
 5. **RPC** means "call a function that runs elsewhere" - you think in functions, not resources and verbs.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: How gRPC Works →](02-how-grpc-works.md)

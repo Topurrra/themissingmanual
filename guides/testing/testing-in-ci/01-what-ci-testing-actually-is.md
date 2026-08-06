@@ -118,7 +118,3 @@ the universe being unfair - it's almost always *something on your machine that i
    code can't reach `main`.
 4. CI beats "it passed on my machine" because it **starts from a clean checkout** - nothing installed,
    nothing on disk except what's committed - which is the only state that actually matters.
-
----
-
-[← Guide overview](_guide.md) · [Phase 2: Inside the Pipeline →](02-inside-the-pipeline.md)

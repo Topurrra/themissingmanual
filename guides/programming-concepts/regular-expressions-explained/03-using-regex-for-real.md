@@ -186,7 +186,3 @@ at a time.** You don't write a perfect regex; you *grow* one, watching it match 
 
 You now have the mental model, the everyday toolkit, and the traps mapped. That's enough to read and
 write the regex you'll meet in real work - calmly, and without the dread.
-
----
-
-[← Phase 2: The Core Toolkit](02-the-core-toolkit.md) · [Guide overview](_guide.md)

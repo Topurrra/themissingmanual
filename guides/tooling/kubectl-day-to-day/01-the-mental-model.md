@@ -134,5 +134,3 @@ In the wild, the engineers who look fastest with kubectl aren't the ones who mem
   }
 ]
 ```
-
-← [Overview](_guide.md) | [Phase 2: The commands you actually run](02-the-everyday-commands.md) →

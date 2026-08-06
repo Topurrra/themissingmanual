@@ -167,7 +167,3 @@ server scope can't be serialized into a browser. The error even names your two o
   }
 ]
 ```
-
----
-
-[← Phase 6: Static, Dynamic, and the Cache](06-static-dynamic-and-the-cache.md) · [Guide overview](_guide.md) · [Phase 8: Where to Go Next →](08-where-to-go-next.md)

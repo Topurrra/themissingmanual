@@ -258,7 +258,3 @@ up, [Phase 3](03-defining-models.md): describing your `Author`, `Book`, and `Tag
   }
 ]
 ```
-
----
-
-[← Phase 1: What SQLAlchemy Is (Core vs ORM)](01-what-sqlalchemy-is.md) · [Guide overview](_guide.md) · [Phase 3: Defining Models →](03-defining-models.md)

@@ -215,7 +215,3 @@ Make sure the "real app is cheap to test" model - and when to reach for each too
   }
 ]
 ```
-
----
-
-[← Phase 7: Reactive Quarkus with Mutiny](07-reactive-with-mutiny.md) · [Guide overview](_guide.md) · [Phase 9: Native Compilation & Containers →](09-native-compilation.md)

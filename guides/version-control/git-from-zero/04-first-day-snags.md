@@ -198,7 +198,3 @@ here, the same `edit → add → commit → push` loop carries you a very long w
 is doing underneath them - why branches aren't scary, what HEAD means, how to fix the bigger "oh no"
 moments calmly. That's the next guide:
 **[Git, Explained Like You're a Human](/guides/git-explained-like-a-human)**.
-
----
-
-[← Phase 3: Putting It on GitHub](03-putting-it-on-github.md) · [Guide overview](_guide.md)

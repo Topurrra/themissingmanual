@@ -269,7 +269,3 @@ Confirm the three boxes and the scoping gotcha stuck:
   }
 ]
 ```
-
----
-
-[← Phase 6: The Grid & Forms](06-the-grid-and-forms.md) · [Guide overview](_guide.md) · [Phase 8: Sencha Cmd, Theming & Surviving a Legacy Codebase →](08-sencha-cmd-and-survival.md)

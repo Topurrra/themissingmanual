@@ -362,7 +362,3 @@ Test yourself on the ideas that separate inheritance from interfaces - especiall
   }
 ]
 ```
-
----
-
-[← Phase 5: Classes & Objects](05-classes-and-objects.md) · [Guide overview](_guide.md) · [Phase 7: Errors & I/O →](07-errors-and-io.md)

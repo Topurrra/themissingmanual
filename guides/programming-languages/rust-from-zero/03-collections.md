@@ -216,7 +216,3 @@ Sort the keys yourself, or reach for `BTreeMap` (a sorted map) instead.
 
 You can store data now. Next: make decisions about it and bundle logic into functions, where you'll meet
 `match`, the feature Rust programmers love most.
-
----
-
-[← Phase 2: Syntax, Values & Types](02-syntax-values-and-types.md) · [Guide overview](_guide.md) · [Phase 4: Control Flow & Functions →](04-control-flow-and-functions.md)
