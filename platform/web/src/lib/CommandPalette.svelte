@@ -13,6 +13,7 @@
   let live = []; // guide/phase hits from the search API
   let suggestion = null; // "did you mean" spelling correction from the API
   let aiRows = []; // AI retrieval fallback, only when the keyword search is empty
+  let aiSearching = false; // true while the AI fallback is pending/in-flight
   const aiFb = createAiFallback();
   $: askEnabled = $page.data.askEnabled;
   let active = 0;
@@ -110,7 +111,7 @@
   }, []);
 
   async function runSearch(query) {
-    if (!query.trim()) { live = []; suggestion = null; aiRows = []; aiFb.cancel(); return; }
+    if (!query.trim()) { live = []; suggestion = null; aiRows = []; aiSearching = false; aiFb.cancel(); return; }
     try {
       const res = await fetch(`/search.json?q=${encodeURIComponent(query)}`);
       const data = res.ok ? await res.json() : {};
@@ -118,8 +119,14 @@
       suggestion = data.suggestion || null;
     } catch (e) { live = []; suggestion = null; }
     // Keyword-first: fall back to AI only when the guide search found nothing.
-    if (askEnabled && live.length === 0) aiFb.schedule(query, (rows) => (aiRows = rows));
-    else { aiRows = []; aiFb.cancel(); }
+    if (askEnabled && live.length === 0) {
+      aiSearching = true;
+      aiFb.schedule(query, (rows) => { aiRows = rows; aiSearching = false; });
+    } else {
+      aiRows = [];
+      aiSearching = false;
+      aiFb.cancel();
+    }
   }
 
   // Re-run the palette search with the suggested spelling (in-place, no navigation).
@@ -143,6 +150,7 @@
     live = [];
     suggestion = null;
     aiRows = [];
+    aiSearching = false;
     active = 0;
     setTimeout(() => inputEl && inputEl.focus(), 10);
   }
@@ -207,7 +215,9 @@
           <span>Did you mean <b>{suggestion}</b>?</span>
         </button>
       {/if}
-      {#if items.length === 0}
+      {#if items.length === 0 && aiSearching}
+        <div class="cmdk-empty cmdk-searching"><i class="ti ti-loader-2 cmdk-spin" aria-hidden="true"></i> Searching with AI…</div>
+      {:else if items.length === 0}
         <div class="cmdk-empty">No matches for “{q}”.</div>
       {:else}
         {#each grouped as g}
@@ -266,4 +276,8 @@
   .cmdk-suggest:hover { background: var(--accent-tint); }
   .cmdk-suggest .ti { color: var(--accent); font-size: 16px; flex: none; }
   .cmdk-suggest b { color: var(--accent); font-weight: 600; }
+
+  .cmdk-searching { display: flex; align-items: center; gap: 0.5rem; }
+  .cmdk-spin { color: var(--accent); animation: cmdk-spin 0.8s linear infinite; }
+  @keyframes cmdk-spin { to { transform: rotate(360deg); } }
 </style>
