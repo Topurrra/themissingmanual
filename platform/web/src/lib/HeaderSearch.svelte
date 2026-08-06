@@ -8,6 +8,7 @@
   let q = '';
   let hits = []; // top guide/phase hits from the search API
   let aiRows = []; // AI retrieval fallback, only when the keyword search is empty
+  let aiSearching = false; // true while the AI fallback is pending/in-flight
   const aiFb = createAiFallback();
   $: askEnabled = $page.data.askEnabled;
   let open = false; // dropdown visibility
@@ -59,14 +60,20 @@
   $: showDropdown = open && q.trim().length > 0;
 
   async function runSearch(query) {
-    if (!query.trim()) { hits = []; aiRows = []; aiFb.cancel(); return; }
+    if (!query.trim()) { hits = []; aiRows = []; aiSearching = false; aiFb.cancel(); return; }
     try {
       const res = await fetch(`/search.json?q=${encodeURIComponent(query)}`);
       hits = res.ok ? ((await res.json()).hits || []) : [];
     } catch (e) { hits = []; }
     // Keyword-first: only reach for AI when Tantivy returned nothing at all.
-    if (askEnabled && hits.length === 0) aiFb.schedule(query, (rows) => (aiRows = rows));
-    else { aiRows = []; aiFb.cancel(); }
+    if (askEnabled && hits.length === 0) {
+      aiSearching = true;
+      aiFb.schedule(query, (rows) => { aiRows = rows; aiSearching = false; });
+    } else {
+      aiRows = [];
+      aiSearching = false;
+      aiFb.cancel();
+    }
   }
 
   function onInput() {
@@ -168,6 +175,8 @@
               {:else if h.kind === 'ai'}<span class="th-tag">AI</span>{/if}
             </button>
           {/each}
+        {:else if aiSearching}
+          <div class="typeahead-empty th-searching"><i class="ti ti-loader-2 th-spin" aria-hidden="true"></i> Searching with AI…</div>
         {:else}
           <div class="typeahead-empty">No quick matches - press Enter to search.</div>
         {/if}
@@ -259,4 +268,7 @@
   .typeahead-all .th-go { margin-left: auto; color: var(--accent); }
 
   .typeahead-empty { padding: 0.6rem; font-size: 0.85rem; color: var(--muted); }
+  .th-searching { display: flex; align-items: center; gap: 0.45rem; }
+  .th-spin { color: var(--accent); animation: th-spin 0.8s linear infinite; }
+  @keyframes th-spin { to { transform: rotate(360deg); } }
 </style>
