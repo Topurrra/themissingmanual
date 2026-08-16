@@ -59,7 +59,7 @@ pub fn html_to_index_text(html: &str) -> String {
 /// changes, etc.). Folded into `content_signature` so a renderer upgrade re-imports
 /// stored HTML even though no guide file changed - otherwise the persistent DB keeps
 /// serving stale pre-upgrade HTML forever.
-pub const RENDER_VERSION: u32 = 2; // 2: comrak header_ids enabled
+pub const RENDER_VERSION: u32 = 3; // 3: external links get target=_blank; 2: comrak header_ids
 
 /// A content signature of every `guides/**/*.md` under `root`, for cheap change detection.
 /// Hashes each file's relative path + bytes (sorted) plus RENDER_VERSION, so any add,
