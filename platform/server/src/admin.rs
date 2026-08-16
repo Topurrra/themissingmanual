@@ -672,18 +672,14 @@ pub async fn backlog(State(state): State<Arc<AppState>>, Query(q): Query<HashMap
     Json(json!({ "days": days, "items": items })).into_response()
 }
 
-/// Public: "what should we write next?" - the same failed-search signal as the admin
-/// backlog, plus reader-submitted guide requests, merged into one voted list. No auth,
-/// no PII (feedback rows never expose their `visitor` column here or anywhere public).
-pub async fn public_backlog(State(state): State<Arc<AppState>>, Query(q): Query<HashMap<String, String>>) -> Response {
-    let days: i64 = q.get("days").and_then(|s| s.parse().ok()).unwrap_or(30).clamp(1, 365);
-    let (searches, requests, votes) = {
+/// Public: "what should we write next?" - reader-submitted guide requests only, as a voted
+/// list. No auth, no PII (feedback rows never expose their `visitor` column publicly).
+/// Failed/junk searches ("asdjhaskjjsd") are deliberately NOT shown here - they'd turn the
+/// page into a noise dump; they stay in the admin backlog (`backlog`) for gap analysis.
+pub async fn public_backlog(State(state): State<Arc<AppState>>, Query(_q): Query<HashMap<String, String>>) -> Response {
+    let (requests, votes) = {
         let store = state.store.lock().unwrap();
-        let searches = match store.top_searches(days, 30) {
-            Ok(s) => s,
-            Err(e) => return err(e),
-        };
-        let requests = match store.list_guide_requests(30) {
+        let requests = match store.list_guide_requests(50) {
             Ok(r) => r,
             Err(e) => return err(e),
         };
@@ -691,33 +687,27 @@ pub async fn public_backlog(State(state): State<Arc<AppState>>, Query(q): Query<
             Ok(v) => v,
             Err(e) => return err(e),
         };
-        (searches, requests, votes)
+        (requests, votes)
     };
 
-    let mut items: Vec<serde_json::Value> = searches
+    let mut items: Vec<serde_json::Value> = requests
         .into_iter()
-        .map(|(query, demand)| {
-            let hits = state.index.search(&query, 5).map(|r| r.hits.len()).unwrap_or(0);
-            let key = format!("q:{query}");
+        .map(|GuideRequest { id, ts, note, done }| {
+            let key = format!("r:{id}");
             let v = votes.get(&key).copied().unwrap_or(0);
-            json!({ "key": key, "kind": "search", "label": query, "demand": demand, "hits": hits, "votes": v })
+            json!({ "key": key, "kind": "request", "label": note, "ts": ts, "votes": v, "done": done })
         })
         .collect();
-    items.extend(requests.into_iter().map(|GuideRequest { id, ts, note, done }| {
-        let key = format!("r:{id}");
-        let v = votes.get(&key).copied().unwrap_or(0);
-        json!({ "key": key, "kind": "request", "label": note, "ts": ts, "votes": v, "done": done })
-    }));
-    // Done items sink to the bottom regardless of votes - the list is "what's still
-    // open", not a trophy case. Within each group: votes first, then demand as a tiebreak.
+    // Done items sink to the bottom regardless of votes - the list is "what's still open",
+    // not a trophy case. Then most-voted first, newest as a tiebreak.
     items.sort_by(|a, b| {
         let da = a["done"].as_bool().unwrap_or(false);
         let db = b["done"].as_bool().unwrap_or(false);
         da.cmp(&db)
             .then(b["votes"].as_i64().unwrap_or(0).cmp(&a["votes"].as_i64().unwrap_or(0)))
-            .then(b["demand"].as_i64().unwrap_or(0).cmp(&a["demand"].as_i64().unwrap_or(0)))
+            .then(b["ts"].as_str().unwrap_or("").cmp(a["ts"].as_str().unwrap_or("")))
     });
-    Json(json!({ "days": days, "items": items })).into_response()
+    Json(json!({ "items": items })).into_response()
 }
 
 #[derive(Deserialize)]

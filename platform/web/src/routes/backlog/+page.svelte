@@ -38,18 +38,17 @@
 
 <Seo
   title="What should we write next? - The Missing Manual"
-  description="A public backlog of topics readers searched for and didn't find, plus reader-submitted requests. Vote for what you want written next." />
+  description="A public backlog of guides readers have requested. Vote for what you want written next." />
 
 <div class="crumb"><a href="/">Home</a> <span>/</span> <span>What should we write next?</span></div>
 <h1 class="page-title">What should we write next?</h1>
 <p class="tagline">
-  Two real signals, one list: topics readers searched for and found little on, and guides readers
-  asked for directly. Vote for what you want to see written - no account needed. Don't see your
-  topic? <a href="/request">Request it</a>.
+  Guides readers have asked for directly. Vote for what you want to see written next - no account
+  needed. Don't see your topic? <a href="/request">Request it</a>.
 </p>
 
 {#if !items.length}
-  <p class="bl-empty">Nothing in the backlog right now - the library covers everything readers have searched for or asked about lately.</p>
+  <p class="bl-empty">No open requests right now. Don't see your topic? <a href="/request">Request a guide</a> and it shows up here.</p>
 {:else}
   <ul class="bl-list">
     {#each items as item (item.key)}
@@ -70,8 +69,6 @@
           <p class="bl-meta">
             {#if item.done}
               <i class="ti ti-check" aria-hidden="true"></i> Done - already written
-            {:else if item.kind === 'search'}
-              <i class="ti ti-search" aria-hidden="true"></i> Searched by readers · {item.hits} result{item.hits === 1 ? '' : 's'} today
             {:else}
               <i class="ti ti-message-2" aria-hidden="true"></i> Reader request
             {/if}
