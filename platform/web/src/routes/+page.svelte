@@ -77,9 +77,12 @@
     shown: $beginnerMode ? begByCat[c.slug] || 0 : c.count || 0,
     hasAny: (c.count || 0) > 0,
   }));
+  // Guides count includes practice modules (all published content) to match the admin
+  // total; topics counts only the browsable content categories (practice is hidden, so
+  // it is not a topic card). `rawCategories` includes practice, `categories` does not.
   $: totalGuides = $beginnerMode
     ? Object.values(begByCat).reduce((a, b) => a + b, 0)
-    : categories.reduce((a, c) => a + (c.count || 0), 0);
+    : (rawCategories || []).reduce((a, c) => a + (c.count || 0), 0);
   $: shownTopics = cards.filter((c) => c.shown > 0).length;
   $: shownRecent = (recent || []).filter(
     (g) => !$beginnerMode || g.difficulty === "beginner",
