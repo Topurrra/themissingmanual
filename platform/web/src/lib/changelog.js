@@ -6,6 +6,7 @@ export const CHANGELOG = [
   {
     date: '2026-08',
     items: [
+      { tag: 'New', text: 'Embedded C From Zero: program a real microcontroller (the AVR ATmega328P) in bare-metal C - GPIO, registers, interrupts, timers, PWM, and serial - and run every example in your browser with Wokwi, no board needed.', href: '/guides/embedded-c-from-zero/1' },
       { tag: 'New', text: 'New Algorithms category: search, sort, recursion, trees, and graphs, each shown across seven languages and runnable in the browser.', href: '/categories/algorithms' },
     ],
   },
