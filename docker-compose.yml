@@ -59,6 +59,9 @@ services:
       # security (extractable from the desktop app) - the per-IP rate limit is the
       # real abuse defense. Leave empty in dev to keep them open.
       JNE_KEY: ${JNE_KEY:-}
+      # OMNIS-X runtime-monitoring beacon (@omnis-x/watcher). The value lives in the
+      # gitignored .env beside this file — never hard-coded here. Unset ⇒ no beacon.
+      OMNISX_INGEST_KEY: ${OMNISX_INGEST_KEY:-}
     volumes:
       - ./data/aisearch:/data
     depends_on:

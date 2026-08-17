@@ -33,6 +33,7 @@
     "@electric-sql/pglite": "^0.5.4",
     "@isomorphic-git/lightning-fs": "^4.6.2",
     "@lezer/highlight": "^1.2.3",
+    "@omnis-x/watcher": "^0.1.1",
     "@resvg/resvg-js": "^2.6.2",
     "buffer": "^6.0.3",
     "codemirror": "^6.0.2",

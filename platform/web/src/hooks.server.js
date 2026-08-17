@@ -4,6 +4,8 @@ import { serverCard } from '$lib/mcp-info.js';
 import { apiCatalog, skillsIndex, OPENAPI, SKILL_MD } from '$lib/agent-endpoints.js';
 import { checkAndSend } from '$lib/server/push.js';
 import { API_BASE } from '$lib/server/adminApi.js';
+import { sequence } from '@sveltejs/kit/hooks';
+import { omnisHandle } from '@omnis-x/watcher/sveltekit';
 
 // Known AI/search crawler user-agents (case-insensitive substring match).
 // Bots don't run JS, so this can't go through the client beacon - recorded
@@ -96,7 +98,7 @@ async function guideToMarkdown(fetch, slug) {
   return out;
 }
 
-export async function handle({ event, resolve }) {
+async function siteHandle({ event, resolve }) {
   const { url, request } = event;
   const accept = request.headers.get('accept') || '';
   const p = url.pathname;
@@ -228,3 +230,13 @@ export async function handle({ event, resolve }) {
 
   return response;
 }
+
+// Runtime-monitoring beacon (@omnis-x/watcher). omnisHandle runs FIRST via sequence()
+// so it wraps every request - including siteHandle's early returns (agent/markdown
+// routes) - and observes the final status. Guarded: no OMNISX_INGEST_KEY = no beacon,
+// so local dev and any env without the key just run siteHandle unchanged. The SDK is
+// fail-open and non-blocking.
+const OMNISX_KEY = process.env.OMNISX_INGEST_KEY;
+export const handle = OMNISX_KEY
+  ? sequence(omnisHandle({ ingestKey: OMNISX_KEY }), siteHandle)
+  : siteHandle;
