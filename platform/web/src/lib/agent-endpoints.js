@@ -36,10 +36,59 @@ export function apiCatalog(origin) {
     linkset: [
       {
         anchor: `${origin}/`,
+        // `item` lists the concrete resources an agent can fetch; service-desc/doc/status
+        // are the RFC's typed relations for the spec, docs, and health of the same service.
+        item: [
+          { href: `${origin}/openapi.json`, type: 'application/openapi+json', title: 'OpenAPI 3.1 spec' },
+          { href: `${origin}/mcp`, type: 'application/json', title: 'MCP server (Streamable HTTP)' },
+          { href: `${origin}/search.json`, type: 'application/json', title: 'Full-text guide search' },
+          { href: `${origin}/llms.txt`, type: 'text/plain', title: 'Guide index for agents' }
+        ],
         'service-desc': [{ href: `${origin}/openapi.json`, type: 'application/openapi+json' }],
         'service-doc': [{ href: `${origin}/llms.txt`, type: 'text/plain' }],
         status: [{ href: `${origin}/api/health`, type: 'application/json' }]
       }
+    ]
+  };
+}
+
+// ── Agentic Resource Discovery catalog (agenticresourcediscovery.org),
+// served at /.well-known/ai-catalog.json. One flat list of every agentic surface
+// so a client can find them without probing each well-known path.
+export function aiCatalog(origin) {
+  return {
+    name: 'The Missing Manual',
+    description:
+      'A free, text-first library of in-depth developer guides. Read-only and unauthenticated: search guides, fetch any page as Markdown, or connect over MCP.',
+    url: origin,
+    resources: [
+      { type: 'mcp', name: 'the-missing-manual', description: 'Search and read guides over MCP (Streamable HTTP).', url: `${origin}/mcp`, transport: 'streamable-http' },
+      { type: 'openapi', name: 'public-read-api', description: 'OpenAPI 3.1 for the public read endpoints.', url: `${origin}/openapi.json` },
+      { type: 'skill', name: 'use-the-missing-manual', description: 'Agent skill: how to search, read, and cite the library.', url: `${origin}/.well-known/agent-skills/use-the-missing-manual/SKILL.md` },
+      { type: 'agent-card', name: 'the-missing-manual', description: 'A2A agent card.', url: `${origin}/.well-known/agent-card.json` },
+      { type: 'llms-txt', name: 'guide-index', description: 'Curated index of every guide for LLMs.', url: `${origin}/llms.txt` }
+    ]
+  };
+}
+
+// ── A2A agent card (a2a-protocol), served at /.well-known/agent-card.json.
+// TMM's agentic surface is its MCP server; the card advertises those tools as A2A
+// skills and points agents at the reachable MCP endpoint.
+export function agentCard(origin) {
+  return {
+    name: 'The Missing Manual',
+    description:
+      'Search and read a free library of in-depth developer guides. Answers come straight from the guide text - no auth, no cost.',
+    url: `${origin}/mcp`,
+    preferredTransport: 'MCP',
+    version: '1.0.0',
+    provider: { organization: 'The Missing Manual', url: origin },
+    capabilities: { streaming: false, pushNotifications: false },
+    defaultInputModes: ['text/plain'],
+    defaultOutputModes: ['text/markdown', 'application/json'],
+    skills: [
+      { id: 'search_guides', name: 'Search guides', description: 'Full-text search across every guide; returns titles, summaries, and snippets.', tags: ['search', 'documentation', 'developer-education'] },
+      { id: 'read_guide', name: 'Read a guide', description: 'Fetch any guide or chapter as clean Markdown by its /guides/... path.', tags: ['read', 'markdown', 'documentation'] }
     ]
   };
 }

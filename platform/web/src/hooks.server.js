@@ -1,7 +1,7 @@
 import { getGuide, getPhase, listCategories, getCategory } from '$lib/api.js';
 import { prefersMarkdown } from '$lib/server/negotiate.js';
 import { serverCard } from '$lib/mcp-info.js';
-import { apiCatalog, skillsIndex, OPENAPI, SKILL_MD } from '$lib/agent-endpoints.js';
+import { apiCatalog, skillsIndex, OPENAPI, SKILL_MD, aiCatalog, agentCard } from '$lib/agent-endpoints.js';
 import { checkAndSend } from '$lib/server/push.js';
 import { API_BASE } from '$lib/server/adminApi.js';
 import { sequence } from '@sveltejs/kit/hooks';
@@ -21,6 +21,34 @@ function matchBot(ua) {
   if (!ua) return null;
   const ul = ua.toLowerCase();
   return BOT_UAS.find((name) => ul.includes(name.toLowerCase())) || null;
+}
+
+// AI answer-engine crawlers we proactively hand Markdown to on an HTML request.
+// Deliberately NARROWER than BOT_UAS: classic search indexers (Googlebot, Bingbot,
+// Applebot, DuckDuckBot, Yandex) are excluded so their HTML indexing is never swapped
+// out from under them - only AI/answer-engine agents get the markdown representation.
+const AI_MD_UAS = [
+  'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'anthropic-ai', 'Claude-Web',
+  'PerplexityBot', 'Perplexity-User', 'CCBot', 'Bytespider', 'Meta-ExternalAgent',
+  'cohere-ai', 'DeepSeekBot', 'ora-agent', 'Applebot-Extended', 'Google-Extended'
+];
+function matchMdBot(ua) {
+  if (!ua) return false;
+  const ul = ua.toLowerCase();
+  return AI_MD_UAS.some((name) => ul.includes(name.toLowerCase()));
+}
+
+// Frontmatter block for the .md URL twins, so agents get document metadata without
+// scraping. Title/description are lifted from the doc's own first heading and
+// blockquote, so it stays correct for guides, chapters, categories, and the root alike.
+function mdFrontmatter(md, canonical, updated) {
+  const title = (md.match(/^#\s+(.+)$/m)?.[1] || 'The Missing Manual').trim();
+  const desc = md.match(/^>\s+(.+)$/m)?.[1]?.trim();
+  let fm = `---\ntitle: ${JSON.stringify(title)}\n`;
+  if (desc) fm += `description: ${JSON.stringify(desc)}\n`;
+  fm += `canonical: ${canonical}\n`;
+  if (updated) fm += `last-updated: ${updated}\n`;
+  return fm + '---\n\n';
 }
 
 // The comeback-loop send job: periodically check for subscriptions whose
@@ -107,6 +135,8 @@ async function siteHandle({ event, resolve }) {
   // dot-directories like /.well-known).
   if (request.method === 'GET') {
     if (p === '/.well-known/api-catalog') return json(apiCatalog(url.origin), 'application/linkset+json');
+    if (p === '/.well-known/ai-catalog.json') return json(aiCatalog(url.origin)); // ARD
+    if (p === '/.well-known/agent-card.json') return json(agentCard(url.origin)); // A2A
     if (p === '/openapi.json') return json(OPENAPI, 'application/openapi+json');
     if (p === '/api/health')
       return json({ status: 'ok', service: 'the-missing-manual', time: new Date().toISOString() });
@@ -132,12 +162,22 @@ async function siteHandle({ event, resolve }) {
     }
   }
 
-  const m = p.match(GUIDE_RE);
-  const cm = p.match(CATEGORY_RE);
-  const isRoot = p === '/';
+  // A .md URL twin (/index.md, /guides/x.md, /guides/x/2.md, /categories/y.md) serves
+  // the same content as its HTML page. Strip the suffix and resolve the logical path.
+  const mdSuffix = p !== '/' && p.endsWith('.md');
+  const logicalPath = p === '/index.md' ? '/' : mdSuffix ? p.slice(0, -3) : p;
 
-  // - Markdown for Agents
-  if ((m || cm || isRoot) && request.method === 'GET' && prefersMarkdown(accept)) {
+  const m = logicalPath.match(GUIDE_RE);
+  const cm = logicalPath.match(CATEGORY_RE);
+  const isRoot = logicalPath === '/';
+
+  // - Markdown for Agents. Serve Markdown when the client asks (Accept), the URL ends
+  // in .md, or an AI answer-engine crawler hit an HTML page (classic indexers get HTML).
+  const wantsMd =
+    (m || cm || isRoot) &&
+    request.method === 'GET' &&
+    (prefersMarkdown(accept) || mdSuffix || matchMdBot(request.headers.get('user-agent') || ''));
+  if (wantsMd) {
     try {
       let md = null;
       let updated = null;
@@ -167,9 +207,13 @@ async function siteHandle({ event, resolve }) {
         md = await guideToMarkdown(event.fetch, m[1]);
       }
       if (md != null) {
+        const canonical = `${url.origin}${logicalPath}`;
+        // .md URLs carry a frontmatter block; the Accept/UA path stays raw (JNE reads it).
+        const body = mdSuffix ? mdFrontmatter(md, canonical, updated) + md : md;
         const headers = {
           'content-type': 'text/markdown; charset=utf-8',
-          'x-markdown-tokens': String(Math.ceil(md.length / 4)),
+          'x-markdown-tokens': String(Math.ceil(body.length / 4)),
+          link: `<${canonical}>; rel="canonical"`,
           vary: 'Accept',
           'cache-control': 'max-age=3600'
         };
@@ -181,14 +225,35 @@ async function siteHandle({ event, resolve }) {
           // Absent on the last phase - that absence IS the "no next" signal.
           if (meta.next != null) headers['x-next-phase'] = String(meta.next);
         }
-        return new Response(md, { headers });
+        return new Response(body, { headers });
       }
     } catch (e) {
-      // fall through to the normal HTML response
+      // fall through to the normal HTML response (or a 404 for a .md miss)
     }
   }
 
   const response = await resolve(event);
+
+  // - Agent-friendly 404: hand crawlers and .md requests a short Markdown recovery
+  // body instead of the HTML error shell, so they can route to the real content.
+  if (
+    response.status === 404 &&
+    (mdSuffix || prefersMarkdown(accept) || matchMdBot(request.headers.get('user-agent') || ''))
+  ) {
+    const o = url.origin;
+    const body =
+      `# Not found\n\n` +
+      `There is nothing at \`${p}\`.\n\n` +
+      `## Find your way\n` +
+      `- [Guide index for agents](${o}/llms.txt)\n` +
+      `- [Every URL (sitemap)](${o}/sitemap.xml)\n` +
+      `- [Search the guides](${o}/search.json?q=YOUR+QUERY)\n` +
+      `- [Home](${o}/index.md)\n`;
+    return new Response(body, {
+      status: 404,
+      headers: { 'content-type': 'text/markdown; charset=utf-8', 'cache-control': 'max-age=300' }
+    });
+  }
 
   // - RFC 8288 Link headers for agent discovery (HTML responses only).
   const ct = response.headers.get('content-type') || '';
@@ -199,7 +264,11 @@ async function siteHandle({ event, resolve }) {
       `<${o}/llms.txt>; rel="describedby"; type="text/plain"`,
       `<${o}/.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"`
     ];
-    if (m || cm || isRoot) links.push(`<${o}${url.pathname}>; rel="alternate"; type="text/markdown"`);
+    // Advertise the .md twin (which actually serves markdown), not this HTML path.
+    if (m || cm || isRoot) {
+      const mdTwin = isRoot ? '/index.md' : `${url.pathname}.md`;
+      links.push(`<${o}${mdTwin}>; rel="alternate"; type="text/markdown"`);
+    }
     response.headers.append('link', links.join(', '));
     response.headers.append('vary', 'Accept');
 

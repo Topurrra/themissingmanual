@@ -27,6 +27,11 @@
         },
         "query-input": "required name=search_term_string",
       },
+      // Which parts of the page an assistant should read aloud: the value prop.
+      speakable: {
+        "@type": "SpeakableSpecification",
+        cssSelector: [".hero h1", ".hero .tagline"],
+      },
     },
     {
       "@context": "https://schema.org",
@@ -34,6 +39,16 @@
       name: "The Missing Manual",
       url: origin,
       logo: `${origin}/icon-256.png`,
+      description:
+        "A free, text-first library of in-depth, plain-language guides to how software really works - from how a computer boots up to the internet, databases, and AI.",
+      // sameAs disambiguates the brand from generically-named entities.
+      sameAs: ["https://github.com/Topurrra/themissingmanual"],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "support",
+        email: "topurianika96@gmail.com",
+        url: `${origin}/contact`,
+      },
       makesOffer: {
         "@type": "Offer",
         priceSpecification: {
@@ -59,6 +74,44 @@
         "An AI tutor grounded in this site's own guides - answers questions about the exact phase you're reading instead of generic chat.",
       isAccessibleForFree: true,
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "What is The Missing Manual?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "A free, text-first library of in-depth, plain-language guides to how software really works - from how a computer boots up to the internet, databases, and AI. It explains the parts most docs and tutorials skip, with mental models first.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Is it free? Do I need an account?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes, it is free forever - no ads, no paywalls, and no account or sign-up required to read anything.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can AI agents read and cite the guides?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. Every guide is available as clean Markdown (send Accept: text/markdown, or append .md to the URL), there is an MCP server at /mcp, a search API at /search.json, and an index for LLMs at /llms.txt. Content is free to read, cite, and index.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What topics does it cover?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Programming languages, version control, databases, networking and the internet, operating systems, algorithms, security, AI, and more - plus a hands-on practice area with runnable exercises.",
+          },
+        },
+      ],
     },
   ];
   // The practice category has its own hub (/practice), not a reader shelf - keep

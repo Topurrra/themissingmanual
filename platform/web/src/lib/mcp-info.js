@@ -45,6 +45,11 @@ export const CAPABILITIES = { tools: { listChanged: false } };
 /// so keeping up means editing one place.
 export function serverCard(origin) {
   return {
+    // Top-level name/version/serverUrl for card scanners; serverInfo stays for the
+    // MCP handshake (initialize's serverInfo), so both readers see what they expect.
+    name: SERVER_INFO.name,
+    version: SERVER_INFO.version,
+    serverUrl: `${origin}/mcp`,
     serverInfo: SERVER_INFO,
     description: SERVER_DESCRIPTION,
     protocolVersion: DEFAULT_PROTOCOL,

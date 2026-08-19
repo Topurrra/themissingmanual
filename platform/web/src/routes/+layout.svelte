@@ -741,6 +741,8 @@
             <a href="/request">Request a guide</a>
             <a href="/backlog">What's next?</a>
             <a href="/contribute">Contribute</a>
+            <a href="/contact">Contact</a>
+            <a href="/privacy">Privacy</a>
             <!-- <a href="/review">Review</a> -->
           </div>
         </nav>
