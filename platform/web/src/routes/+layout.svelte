@@ -141,7 +141,7 @@
   // (KeepITLocal / OMNIS-X) if it's empty/invalid so today's footer is unchanged.
   const SPONSOR_FALLBACK = [
     { name: "KeepITLocal", url: "#" },
-    { name: "OMNIS-X", url: "#" },
+    { name: "OMNIS-X", url: "https://omnis-x.com" },
   ];
   $: sponsors = (() => {
     try {
