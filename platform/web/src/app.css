@@ -3708,6 +3708,7 @@ a.rank-row:hover .rank-fill {
   white-space: nowrap;
   color: var(--ink);
   font-weight: 500;
+  text-wrap: pretty;
 }
 
 .rank-count {
