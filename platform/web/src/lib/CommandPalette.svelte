@@ -170,7 +170,12 @@
   function onKey(e) {
     if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); open ? close() : show(); return; }
     if (open && e.key === 'Escape') { e.preventDefault(); close(); return; }
-    if (!open && e.key === '/' && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName || '')) { e.preventDefault(); show(); }
+    // Bare "/" opens the palette - but only when nothing editable is focused and no
+    // modifier is held, so Cmd+/ (comment in the code editor) and typing "/" inside an
+    // editor never trigger it. CodeMirror is a contenteditable div, not INPUT/TEXTAREA.
+    const ae = document.activeElement;
+    const inEditable = !!ae && (/INPUT|TEXTAREA/.test(ae.tagName) || ae.isContentEditable);
+    if (!open && e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey && !inEditable) { e.preventDefault(); show(); }
   }
   function onInputKey(e) {
     if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, items.length - 1); }
