@@ -1,16 +1,20 @@
 // Server-only. Free-tier AI providers for the tutor, adapted from a companion
 // project's provider table (same OpenAI-compatible /chat/completions shape for
-// all four - one call shape, not four SDKs). Non-streaming: there's no chat UI
+// all of them - one call shape, not one SDK each). Non-streaming: there's no chat UI
 // yet to stream tokens to, so a single JSON round-trip is simpler to verify.
 //
 // Model IDs drift as providers add/retire free models - these are just
 // starting defaults, and every field here is overridable from Admin -> Tutor.
 export const CLOUD = {
   groq: { name: 'Groq', base: 'https://api.groq.com/openai/v1', defaultModel: 'llama-3.3-70b-versatile', note: 'Fast inference, free tier (rate-limited).', keysUrl: 'https://console.groq.com/keys' },
-  cerebras: { name: 'Cerebras', base: 'https://api.cerebras.ai/v1', defaultModel: 'llama-3.3-70b', note: 'Very fast inference, free tier (rate-limited).', keysUrl: 'https://cloud.cerebras.ai' },
+  gemini: { name: 'Google AI Studio', base: 'https://generativelanguage.googleapis.com/v1beta/openai', defaultModel: 'gemini-3.8-flash', note: 'Free tier on Flash models (~1,500 req/day, per-project quota).', keysUrl: 'https://aistudio.google.com/apikey' },
   mistral: { name: 'Mistral', base: 'https://api.mistral.ai/v1', defaultModel: 'mistral-small-latest', note: 'Free tier (rate-limited).', keysUrl: 'https://console.mistral.ai/api-keys' },
   openrouter: { name: 'OpenRouter', base: 'https://openrouter.ai/api/v1', defaultModel: 'meta-llama/llama-3.3-70b-instruct:free', note: 'Free-model pool, shared rate limits across all :free models.', keysUrl: 'https://openrouter.ai/keys', headers: { 'X-Title': 'The Missing Manual Tutor' } },
-  uncloseai: { name: 'uncloseai', base: 'https://hermes.ai.unturf.com/v1', defaultModel: 'adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic', note: 'Community-run, no key needed - smaller open models, best-effort uptime (no company behind it).', keysUrl: null, noKeyRequired: true },
+  // Cloudflare is the odd one: its OpenAI-compatible base embeds the account ID
+  // (https://dash.cloudflare.com → copy it from the dashboard URL), so the base
+  // below is a template and `accountInBase` pulls the stored per-account value in.
+  // The token needs the Workers AI Read permission.
+  cloudflare: { name: 'Cloudflare Workers AI', base: 'https://api.cloudflare.com/client/v4/accounts/{account}/ai/v1', accountInBase: true, defaultModel: '@cf/meta/llama-3.3-70b-instruct-fp8-fast', note: '10,000 Neurons/day free - needs your account ID plus an API token.', keysUrl: 'https://dash.cloudflare.com' },
   // Ollama Cloud is NOT OpenAI-compatible (own /api/chat request/response shape,
   // tool-call arguments already parsed instead of a JSON string) - `kind: 'ollama'`
   // routes it through callOllama()/listOllamaModels() below instead of the
@@ -18,6 +22,17 @@ export const CLOUD = {
   // routing/failover) is generic over CLOUD and needs no changes for a new id.
   ollamacloud: { name: 'Ollama Cloud', kind: 'ollama', base: 'https://ollama.com', defaultModel: 'gpt-oss:120b', note: 'Ollama-hosted cloud models, free tier (usage-based, resets periodically).', keysUrl: 'https://ollama.com/settings/keys' }
 };
+
+// Resolves a provider's chat base. Static for everyone except Cloudflare, whose
+// OpenAI-compatible base embeds the account ID (see the CLOUD comment above).
+// A missing account ID throws like any other provider failure, so routeChat()
+// cools it down instead of hammering a misconfigured provider every question.
+function providerBase(cfg, creds) {
+  if (!cfg.accountInBase) return cfg.base;
+  const account = (creds?.accountId || '').trim();
+  if (!account) throw Object.assign(new Error(`${cfg.name}: set the account ID first.`), { status: 0 });
+  return cfg.base.replace('{account}', account);
+}
 
 // A provider is put on cooldown after a failure so routeChat() skips it for a
 // while instead of retrying a known-broken provider on every question.
@@ -66,6 +81,7 @@ export async function callProvider(providerId, apiKey, messages, opts = {}) {
   const cfg = CLOUD[providerId];
   if (!cfg) throw Object.assign(new Error(`Unknown provider "${providerId}"`), { status: 0 });
   if (cfg.kind === 'ollama') return callOllama(cfg, apiKey, messages, opts);
+  const base = providerBase(cfg, { accountId: opts.accountId });
   const model = opts.model || cfg.defaultModel;
   const tools = opts.tools || null;
   const execTool = opts.execTool || null;
@@ -79,7 +95,7 @@ export async function callProvider(providerId, apiKey, messages, opts = {}) {
 
     let res;
     try {
-      res = await fetch(cfg.base + '/chat/completions', {
+      res = await fetch(base + '/chat/completions', {
         method: 'POST',
         headers: Object.assign({ Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, cfg.headers || {}),
         signal: AbortSignal.timeout(opts.timeoutMs || 20_000)
@@ -175,16 +191,18 @@ async function callOllama(cfg, apiKey, messages, opts) {
 
 // List models available to this key, adapted from LocalAIs's listCloudModels().
 // "free" is only meaningful for OpenRouter, whose catalog genuinely mixes free
-// and paid models (the `:free` suffix / zero pricing) - Groq/Cerebras/Mistral
+// and paid models (the `:free` suffix / zero pricing) - Groq/Mistral
 // don't expose a reliable free/paid split on this endpoint, so `free` stays
 // null there (their whole free-tier catalog is just "what your key can see").
-export async function listModels(providerId, apiKey) {
+export async function listModels(providerId, apiKey, accountId) {
   const cfg = CLOUD[providerId];
   if (!cfg || !apiKey) return [];
   if (cfg.kind === 'ollama') return listOllamaModels(cfg, apiKey);
+  let base;
+  try { base = providerBase(cfg, { accountId }); } catch { return []; }
   let res;
   try {
-    res = await fetch(cfg.base + '/models', {
+    res = await fetch(base + '/models', {
       headers: Object.assign({ Authorization: `Bearer ${apiKey}` }, cfg.headers || {}),
       signal: AbortSignal.timeout(10_000)
     });
@@ -252,7 +270,7 @@ export async function routeChat(providerList, messages, opts = {}) {
   for (const p of order) {
     if (isOnCooldown(p.id)) { attempted.push({ id: p.id, skipped: 'cooldown' }); continue; }
     try {
-      const result = await callProvider(p.id, p.apiKey, messages, { ...opts, model: p.model });
+      const result = await callProvider(p.id, p.apiKey, messages, { ...opts, model: p.model, accountId: p.accountId });
       return { ...result, providerUsed: p.id, attempted };
     } catch (e) {
       // 429 = rate limited, 529 = overloaded (Anthropic's variant). Both mean "come back

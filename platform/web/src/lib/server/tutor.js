@@ -15,7 +15,7 @@ import { search } from '$lib/api.js';
 
 const require = createRequire(import.meta.url);
 const PROVIDER_IDS = Object.keys(CLOUD);
-const DEFAULT_ORDER = ['cerebras', 'groq', 'mistral', 'openrouter', 'uncloseai', 'ollamacloud'];
+const DEFAULT_ORDER = ['groq', 'gemini', 'mistral', 'openrouter', 'cloudflare', 'ollamacloud'];
 const DEFAULT_COOLDOWN_SEC = 60;
 const LOG_MAX = 500;
 
@@ -80,12 +80,11 @@ function getConfig() {
   const providers = {};
   for (const id of PROVIDER_IDS) {
     const envPrefix = id.toUpperCase();
-    const noKey = !!CLOUD[id].noKeyRequired;
-    let apiKey = pick(`${id}Key`, process.env[`${envPrefix}_API_KEY`]);
-    if (noKey && !apiKey) apiKey = 'not-required'; // uncloseai etc. accept any value as the key
+    const apiKey = pick(`${id}Key`, process.env[`${envPrefix}_API_KEY`]);
     providers[id] = {
       enabled: f[`${id}Enabled`] !== undefined ? f[`${id}Enabled`] === '1' : !!process.env[`${envPrefix}_API_KEY`],
       apiKey,
+      accountId: pick(`${id}Account`, process.env[`${envPrefix}_ACCOUNT_ID`]),
       model: pick(`${id}Model`, process.env[`${envPrefix}_MODEL`]) || CLOUD[id].defaultModel
     };
   }
@@ -115,16 +114,16 @@ export function getConfigMasked() {
   const providers = {};
   for (const id of PROVIDER_IDS) {
     const p = c.providers[id];
-    const noKeyRequired = !!CLOUD[id].noKeyRequired;
     providers[id] = {
       name: CLOUD[id].name,
       note: CLOUD[id].note,
       keysUrl: CLOUD[id].keysUrl,
-      noKeyRequired,
+      accountIdRequired: !!CLOUD[id].accountInBase,
+      accountId: p.accountId || '',
       enabled: p.enabled,
       model: p.model,
-      hasKey: !noKeyRequired && !!p.apiKey,
-      keyHint: !noKeyRequired && p.apiKey ? `••••${p.apiKey.slice(-4)}` : ''
+      hasKey: !!p.apiKey,
+      keyHint: p.apiKey ? `••••${p.apiKey.slice(-4)}` : ''
     };
   }
   return {
@@ -143,7 +142,7 @@ export function getConfigMasked() {
 // own creds, not the whole config (so that endpoint can't leak other keys).
 export function getProviderCreds(id) {
   const p = getConfig().providers[id];
-  return p ? { apiKey: p.apiKey, model: p.model } : null;
+  return p ? { apiKey: p.apiKey, model: p.model, accountId: p.accountId } : null;
 }
 
 export function setConfig(partial) {
@@ -158,6 +157,7 @@ export function setConfig(partial) {
     if (!p) continue;
     if (p.enabled !== undefined) writeConfigKV(`${id}Enabled`, p.enabled ? '1' : '0');
     if (p.model !== undefined && p.model !== '') writeConfigKV(`${id}Model`, p.model);
+    if (p.account !== undefined && p.account !== '') writeConfigKV(`${id}Account`, p.account); // blank = keep existing
     if (p.apiKey) writeConfigKV(`${id}Key`, p.apiKey); // blank = keep existing
   }
   cfgCache = null;
@@ -400,6 +400,6 @@ export async function tutorCompareOne({ fetch, provider, model, prompt }) {
   const p = c.providers[provider];
   if (!p?.apiKey) throw new Error('No key configured for this provider.');
   const messages = [{ role: 'system', content: c.systemPrompt || DEFAULT_SYSTEM_PROMPT }, { role: 'user', content: prompt }];
-  const r = await callProvider(provider, p.apiKey, messages, { model: model || p.model, tools: [SEARCH_TOOL], execTool: makeSearchExecutor(fetch) });
+  const r = await callProvider(provider, p.apiKey, messages, { model: model || p.model, accountId: p.accountId, tools: [SEARCH_TOOL], execTool: makeSearchExecutor(fetch) });
   return { content: r.content };
 }

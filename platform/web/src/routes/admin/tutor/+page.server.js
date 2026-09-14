@@ -2,7 +2,7 @@ import { fail } from '@sveltejs/kit';
 import { isAuthed } from '$lib/server/adminApi.js';
 import { getConfigMasked, setConfig, tutorStatus, recentLogs } from '$lib/server/tutor.js';
 
-const PROVIDER_IDS = ['groq', 'cerebras', 'mistral', 'openrouter', 'uncloseai', 'ollamacloud'];
+const PROVIDER_IDS = ['groq', 'gemini', 'mistral', 'openrouter', 'cloudflare', 'ollamacloud'];
 
 export async function load() {
   // The admin +layout.server.js guard already blocks unauthenticated access.
@@ -18,6 +18,7 @@ export const actions = {
       providers[id] = {
         enabled: form.get(`${id}Enabled`) === 'on',
         model: (form.get(`${id}Model`) ?? '').toString(),
+        account: (form.get(`${id}Account`) ?? '').toString(),
         apiKey: (form.get(`${id}Key`) ?? '').toString()
       };
     }

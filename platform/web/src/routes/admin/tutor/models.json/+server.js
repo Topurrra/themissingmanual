@@ -8,6 +8,6 @@ export async function GET({ url, request }) {
   const provider = url.searchParams.get('provider') || '';
   const creds = getProviderCreds(provider);
   if (!creds?.apiKey) return json({ models: [], error: 'no_key' });
-  const models = await listModels(provider, creds.apiKey);
+  const models = await listModels(provider, creds.apiKey, creds.accountId);
   return json({ models, error: models.length ? undefined : 'empty' });
 }

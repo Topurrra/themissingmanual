@@ -8,10 +8,10 @@
   $: pct = s.cap ? Math.min(100, Math.round((s.used / s.cap) * 100)) : 0;
   const providerIds = [
     "groq",
-    "cerebras",
+    "gemini",
     "mistral",
     "openrouter",
-    "uncloseai",
+    "cloudflare",
     "ollamacloud",
   ];
 
@@ -141,9 +141,7 @@
 
   // compare
   const compareIds = providerIds.filter(
-    (id) =>
-      data.config.providers[id].hasKey ||
-      data.config.providers[id].noKeyRequired,
+    (id) => data.config.providers[id].hasKey,
   );
   let cmpProvider = {
     A: compareIds[0] || "",
@@ -355,28 +353,37 @@
         <input type="checkbox" name={`${id}Enabled`} checked={p.enabled} />
         <span>{p.name} <em class="hint">{p.note}</em></span>
       </label>
-      {#if !p.noKeyRequired}
+      {#if p.accountIdRequired}
         <label class="row">
           <span class="lbl"
-            >API key {#if p.hasKey}<em class="hint"
-                >stored: {p.keyHint} - leave blank to keep</em
-              >{/if} &middot;
-            <a class="link" href={p.keysUrl} target="_blank" rel="noopener"
-              >get a free key</a
+            >Account ID <em class="hint"
+              >from your Cloudflare dashboard URL</em
             ></span
           >
           <input
-            name={`${id}Key`}
-            type="password"
-            placeholder={p.hasKey ? "•••••••• (unchanged)" : "paste key"}
+            name={`${id}Account`}
+            value={p.accountId || ""}
             autocomplete="off"
+            spellcheck="false"
           />
         </label>
-      {:else}
-        <p class="hint no-key-note">
-          No API key needed for this one - it's open access.
-        </p>
       {/if}
+      <label class="row">
+        <span class="lbl"
+          >API key {#if p.hasKey}<em class="hint"
+              >stored: {p.keyHint} - leave blank to keep</em
+            >{/if} &middot;
+          <a class="link" href={p.keysUrl} target="_blank" rel="noopener"
+            >get a free key</a
+          ></span
+        >
+        <input
+          name={`${id}Key`}
+          type="password"
+          placeholder={p.hasKey ? "•••••••• (unchanged)" : "paste key"}
+          autocomplete="off"
+        />
+      </label>
       <label class="row">
         <span class="lbl">Model</span>
         <div class="model-row">
@@ -710,9 +717,6 @@
   .reset-prompt {
     align-self: flex-start;
     margin-top: 0.2rem;
-  }
-  .no-key-note {
-    margin: 0;
   }
   .provider {
     display: flex;
