@@ -429,11 +429,36 @@
   }
   .sel-ask:hover { background: var(--accent); color: #fff; }
   @keyframes sel-ask-in { from { opacity: 0; } to { opacity: 1; } }
-  .tutor-input { display: flex; gap: 0.5rem; margin-bottom: 0.6rem; }
-  .tutor-input input { flex: 1; font: inherit; padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
-  .tutor-input input:focus { outline: none; border-color: var(--accent); }
-  .tutor-input button { flex: none; width: 38px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; display: inline-grid; place-items: center; cursor: pointer; }
-  .tutor-input button:disabled { opacity: 0.6; cursor: default; }
+  /* Single rounded composer mirroring the header .search-field house style:
+     one wrapper owns the border + focus ring, the inner input is borderless. */
+  .tutor-input {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--raise);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.3rem 0.3rem 0.3rem 0.85rem;
+    margin-bottom: 0.6rem;
+    transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+  }
+  .tutor-input:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-tint); }
+  .tutor-input input {
+    flex: 1; min-width: 0; border: 0; background: none;
+    font: inherit; font-size: 0.88rem; color: var(--ink);
+    padding: 0.45rem 0; outline: none;
+  }
+  .tutor-input input::placeholder { color: var(--faint); }
+  /* The ring lives on the wrapper - suppress the global :focus-visible outline here. */
+  .tutor-input input:focus-visible { outline: none; }
+  .tutor-input button {
+    flex: none; width: 32px; height: 32px; border-radius: 8px;
+    border: 1px solid var(--accent); background: var(--accent); color: #fff;
+    display: inline-grid; place-items: center; cursor: pointer;
+    transition: background 0.15s var(--ease), border-color 0.15s var(--ease), color 0.15s var(--ease), transform 0.15s var(--ease);
+  }
+  .tutor-input button:hover:not(:disabled) { background: var(--accent-strong); border-color: var(--accent-strong); }
+  .tutor-input button:active:not(:disabled) { transform: scale(0.94); }
+  /* Empty/disabled: quiet ghost button so the accent only shows when there's something to send. */
+  .tutor-input button:disabled { background: transparent; border-color: transparent; color: var(--faint); cursor: default; }
   .tutor-clear { align-self: flex-start; font: inherit; font-size: 0.78rem; color: var(--faint); background: none; border: 1px solid var(--line); border-radius: 7px; padding: 0.35rem 0.7rem; cursor: pointer; }
   .tutor-clear:hover { color: var(--ink); border-color: var(--ink); }
 </style>
