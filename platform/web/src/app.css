@@ -2391,23 +2391,22 @@ mark {
   font-weight: 400;
 }
 
-/* "X" fire - red→orange gradient clipped to the glyph, solid fallback first. */
-.spon-name .spon-x {
-  color: #ff5722;
-  /* fallback for no background-clip support */
-  background: linear-gradient(90deg, #e8331f 0%, #ff5e1a 45%, #ff9100 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+/* OMNIS-X's geometric emblem and solid orange-red wordmark. */
+.spon-name.spon-omnis {
+  color: var(--ink);
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
-  .spon-name .spon-x {
-    color: #ff5722;
-    -webkit-text-fill-color: #ff5722;
-    background: none;
-  }
+.spon-mark {
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-right: 0.7rem;
+  vertical-align: -0.2em;
+}
+
+.spon-name .spon-x {
+  color: #e0511d;
 }
 
 .co-social {

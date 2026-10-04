@@ -703,6 +703,7 @@
                   >{/if}
                 <a
                   class="spon-name"
+                  class:spon-omnis={s.name === "OMNIS-X"}
                   href={s.url}
                   target="_blank"
                   rel="noopener"
@@ -710,7 +711,7 @@
                   {#if s.logo}
                     <img src={s.logo} alt={s.name} />
                   {:else if sponsorParts(s.name)}
-                    {@const p = sponsorParts(s.name)}{p.pre}<span
+                    {@const p = sponsorParts(s.name)}{#if s.name === "OMNIS-X"}<svg class="spon-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 2h6l14 20h-6zM16 2h6L8 22H2z" fill="currentColor" /><circle cx="12" cy="12" r="5" fill="var(--bg)" /><circle cx="12" cy="12" r="3" fill="#e0511d" /></svg>{/if}{p.pre}<span
                       class={p.midClass}>{p.mid}</span
                     >{p.post}{#if p.product}<span class="spon-product">{" "}{p.product}</span>{/if}
                   {:else}
