@@ -1,7 +1,7 @@
 <script>
   import { dev } from "$app/environment";
 
-  export let option = 1;
+  export let option = 6;
   export let cards = [];
   export let totalGuides = 0;
   export let shownTopics = 0;
@@ -15,7 +15,7 @@
   export let dueCount = 0;
   export let beginner = false;
 
-  const options = ["Editorial", "Search first", "Learning journey", "Library index", "Type statement"];
+  const options = ["Editorial", "Search first", "Learning journey", "Library index", "Type statement", "Your selection"];
   $: available = cards.filter((c) => c.shown > 0);
   $: featured = shownRecent[0];
 </script>
@@ -137,7 +137,7 @@
       </div>
     </section>
     {@render saved()}{@render topics()}{@render tools()}{@render recent()}{@render updates()}
-  {:else if option === 2}
+  {:else if option === 2 || option === 6}
     <section class="hero landing-search-hero">
       <h1>Understand how software <br /><span>actually works.</span></h1>
       <p class="tagline">The internet, databases, AI, and everything underneath. Find the explanation you’ve been missing.</p>
@@ -146,7 +146,12 @@
       <div class="landing-search-foot"><p>Start from zero or go deep.<br />Free, forever. No account needed.</p><a href="/paths">{hasPath ? "Continue your learning path" : "Build your learning path"}<i class="ti ti-arrow-up-right" aria-hidden="true"></i></a></div>
       {#if hasPath}<p class="landing-progress">{pct}% through your path</p>{/if}
     </section>
-    {@render saved()}{@render topics()}{@render recent()}{@render tools()}{@render updates()}
+    {@render saved()}
+    {#if option === 6}
+      {@render tools()}{@render topics()}{@render recent()}{@render updates()}
+    {:else}
+      {@render topics()}{@render recent()}{@render tools()}{@render updates()}
+    {/if}
   {:else if option === 3}
     <section class="hero landing-journey">
       <div><h1>Understand <br />how software <br /><span>actually works.</span></h1><p class="tagline">Start from zero or go deep at your own pace. Clear, in-depth guides to the internet, databases, AI, and more.</p><p class="landing-promise">Free, forever. No account needed.</p></div>
@@ -288,11 +293,11 @@
   .landing-index-intro .landing-link { margin-top: 0.75rem; }
   .landing-index-columns { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem; }
   .landing-index-columns .landing-tool-list { grid-template-columns: 1fr; gap: 2rem; }
-  .landing[data-option="4"] .landing-topic-list { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 1.5rem; }
-  .landing[data-option="4"] .landing-topic { gap: 0.6rem; flex-wrap: wrap; align-content: center; }
-  .landing[data-option="4"] .landing-topic-name { flex: 1; font-size: 0.94rem; }
-  .landing[data-option="4"] .landing-topic-count { width: 100%; margin-left: 1.9rem; text-align: left; }
-  .landing[data-option="4"] .landing-topic-arrow { display: none; }
+  .landing:is([data-option="4"], [data-option="6"]) .landing-topic-list { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 1.5rem; }
+  .landing:is([data-option="4"], [data-option="6"]) .landing-topic { gap: 0.6rem; flex-wrap: wrap; align-content: center; }
+  .landing:is([data-option="4"], [data-option="6"]) .landing-topic-name { flex: 1; font-size: 0.94rem; }
+  .landing:is([data-option="4"], [data-option="6"]) .landing-topic-count { width: 100%; margin-left: 1.9rem; text-align: left; }
+  .landing:is([data-option="4"], [data-option="6"]) .landing-topic-arrow { display: none; }
   .landing-statement h1 { font-size: clamp(3rem, 8vw, 6rem); line-height: 1.02; }
   .landing-statement-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 2.5rem; align-items: start; }
   .landing-statement-bottom .landing-actions { margin-top: 0; }
@@ -301,7 +306,7 @@
   @media (max-width: 900px) {
     .landing-editorial-bottom, .landing-journey, .landing-index-hero, .landing-statement-bottom { gap: 2rem; }
     .landing-journey h1 { font-size: clamp(2.6rem, 5.2vw, 4.4rem); }
-    .landing[data-option="4"] .landing-topic-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .landing:is([data-option="4"], [data-option="6"]) .landing-topic-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 640px) {
     .landing-options { margin-top: -0.5rem; margin-bottom: 2rem; }
@@ -317,12 +322,12 @@
     .landing-editorial-bottom, .landing-statement-bottom { margin-top: 1.5rem; }
     .landing-feature { padding: 1.25rem; }
     .landing-topics, .landing-tools, .landing-recent, .landing-updates, .landing-saved { margin-top: 3rem; }
-    .landing-topic-list, .landing[data-option="4"] .landing-topic-list { grid-template-columns: 1fr; }
+    .landing-topic-list, .landing:is([data-option="4"], [data-option="6"]) .landing-topic-list { grid-template-columns: 1fr; }
     .landing-topic { gap: 0.65rem; }
     .landing-topic-name { font-size: 0.98rem; }
     .landing-topic-count { font-size: 0.72rem; }
-    .landing[data-option="4"] .landing-topic { flex-wrap: nowrap; }
-    .landing[data-option="4"] .landing-topic-count { width: auto; margin-left: auto; text-align: right; }
+    .landing:is([data-option="4"], [data-option="6"]) .landing-topic { flex-wrap: nowrap; }
+    .landing:is([data-option="4"], [data-option="6"]) .landing-topic-count { width: auto; margin-left: auto; text-align: right; }
     .landing[data-option="5"] .landing-topic-name { font-size: 1.08rem; }
     .landing-tool-list { grid-template-columns: 1fr; gap: 1.75rem; }
     .landing-tool-list > a { display: grid; grid-template-columns: 32px 1fr; column-gap: 1rem; }

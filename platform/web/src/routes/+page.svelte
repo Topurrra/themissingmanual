@@ -13,9 +13,9 @@
 
   export let data;
   $: origin = siteOrigin($page.url.origin);
-  $: landingOption = [1, 2, 3, 4, 5].includes(Number($page.url.searchParams.get("landing")))
+  $: landingOption = [1, 2, 3, 4, 5, 6].includes(Number($page.url.searchParams.get("landing")))
     ? Number($page.url.searchParams.get("landing"))
-    : 1;
+    : 6;
   $: homeLd = [
     {
       "@context": "https://schema.org",
