@@ -2381,13 +2381,14 @@ mark {
   font-size: 0.85rem;
 }
 
-/* "IT" green - readable on light footer; brightened in dark. Not the teal --accent. */
+/* "IT" brand red from the supplied KeepITLocal wordmark. */
 .spon-name .spon-it {
-  color: #2e9e4f;
+  color: #ef5a5f;
 }
 
-:root[data-mode="dark"] .spon-name .spon-it {
-  color: #45c46a;
+.spon-name .spon-product {
+  color: var(--muted);
+  font-weight: 400;
 }
 
 /* "X" fire - red→orange gradient clipped to the glyph, solid fallback first. */

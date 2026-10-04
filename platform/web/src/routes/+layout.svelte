@@ -138,9 +138,9 @@
   $: lofiOn = flagOn(siteConfig.flag_lofi);
 
   // Sponsors: parse the JSON string; fall back to the current hardcoded two
-  // (KeepITLocal / OMNIS-X) if it's empty/invalid so today's footer is unchanged.
+  // (KeepITLocal Redact / OMNIS-X) if it's empty/invalid.
   const SPONSOR_FALLBACK = [
-    { name: "KeepITLocal", url: "#" },
+    { name: "KeepITLocal Redact", url: "https://keepitlocal.app" },
     { name: "OMNIS-X", url: "https://omnis-x.com" },
   ];
   $: sponsors = (() => {
@@ -154,8 +154,8 @@
   // Bespoke per-letter colouring (reuses .spon-* from app.css). Returns the
   // segments for {@html}-free rendering in the markup.
   function sponsorParts(name) {
-    if (name === "KeepITLocal")
-      return { pre: "Keep", mid: "IT", midClass: "spon-it", post: "Local" };
+    if (name === "KeepITLocal" || name === "KeepITLocal Redact")
+      return { pre: "Keep", mid: "IT", midClass: "spon-it", post: "Local", product: name === "KeepITLocal Redact" ? "Redact" : "" };
     if (name === "OMNIS-X")
       return { pre: "OMNIS-", mid: "X", midClass: "spon-x", post: "" };
     return null;
@@ -712,7 +712,7 @@
                   {:else if sponsorParts(s.name)}
                     {@const p = sponsorParts(s.name)}{p.pre}<span
                       class={p.midClass}>{p.mid}</span
-                    >{p.post}
+                    >{p.post}{#if p.product}<span class="spon-product">{" "}{p.product}</span>{/if}
                   {:else}
                     {s.name}
                   {/if}
