@@ -166,6 +166,22 @@
   {/if}
 </div>
 
+<aside class="annotation-tip" aria-label="Highlights and private notes">
+  <i class="ti ti-highlight" aria-hidden="true"></i>
+  <div>
+    <p>Select a few words in this guide to highlight them or add a private note.</p>
+    <details>
+      <summary>How to use highlights and notes</summary>
+      <ol>
+        <li>Select a few words or a short sentence with your mouse.</li>
+        <li>Choose a color from the toolbar to highlight it, or choose the note icon, write your note, and click Save.</li>
+        <li>Click a highlighted passage later to edit its note, change its color, or remove it.</li>
+      </ol>
+      <p class="annotation-tip-storage">Highlights and notes are saved only in this browser. Clearing browser data removes them.</p>
+    </details>
+  </div>
+</aside>
+
 <article class="reader" class:has-phasenav={hasFooterNav} use:noTranslateCode={phase.html} bind:this={articleEl}>
   <PhaseToc html={phase.html} />
   {@html phase.html}
@@ -249,6 +265,13 @@
 {/key}
 
 <style>
+  .annotation-tip { display: flex; align-items: flex-start; gap: 0.7rem; max-width: 720px; margin: 0.9rem auto 1.8rem; padding: 0.9rem 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+  .annotation-tip > .ti { color: var(--accent-strong); flex: none; margin-top: 0.15rem; font-size: 1.1rem; }
+  .annotation-tip p { margin: 0; }
+  .annotation-tip summary { cursor: pointer; color: var(--accent-strong); font-weight: 500; margin-top: 0.3rem; padding: 0.2rem 0; }
+  .annotation-tip ol { margin: 0.6rem 0; padding-left: 1.25rem; }
+  .annotation-tip li + li { margin-top: 0.4rem; }
+  .annotation-tip .annotation-tip-storage { font-size: 0.85rem; }
   .related {
     margin: 2.2rem 0 0;
     padding-top: 1.4rem;

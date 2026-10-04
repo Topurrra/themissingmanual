@@ -39,6 +39,11 @@
   <i class="ti ti-book-2" aria-hidden="true"></i> Download EPUB
 </a>
 
+<p class="guide-notes-tip">
+  <i class="ti ti-highlight" aria-hidden="true"></i>
+  <span>As you read each phase, select text to highlight it or add a private note.</span>
+</p>
+
 <ol class="phases">
   {#each phases.filter((p) => p.phase_no > 0) as p}
     <li>
@@ -49,6 +54,8 @@
 </ol>
 
 <style>
+  .guide-notes-tip { display: flex; align-items: flex-start; gap: 0.6rem; margin: 0.2rem 0 1.4rem; max-width: 65ch; color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+  .guide-notes-tip .ti { color: var(--accent-strong); margin-top: 0.1rem; flex: none; font-size: 1.1rem; }
   .epub-dl {
     display: inline-flex; align-items: center; gap: 0.4rem; margin: 0.9rem 0 1.2rem;
     font-size: 0.88rem; color: var(--muted); border: 1px solid var(--line);
