@@ -6,6 +6,7 @@ use tantivy::{
     tokenizer::{LowerCaser, RemoveLongFilter, SimpleTokenizer, Stemmer, StopWordFilter, TextAnalyzer, Language},
     Index, IndexWriter, TantivyDocument, Term,
 };
+use crate::locales::Locale;
 use crate::models::{Phase, SearchHit, SearchResults};
 
 /// Name of our custom analyzer: lowercase → drop stop words → English stemmer.
@@ -27,6 +28,8 @@ pub struct Fields {
 pub struct SearchIndex {
     index: Index,
     fields: Fields,
+    /// Tokenizer name used by the stemmed text fields (`en_stem`, or `<locale>_stem`).
+    analyzer: String,
 }
 
 pub struct Writer<'a> {
@@ -53,15 +56,15 @@ fn en_stem_analyzer() -> TextAnalyzer {
         .build()
 }
 
-fn text() -> TextOptions {
+fn text(analyzer: &str) -> TextOptions {
     TextOptions::default().set_indexing_options(
         TextFieldIndexing::default()
-            .set_tokenizer(ANALYZER)
+            .set_tokenizer(analyzer)
             .set_index_option(IndexRecordOption::WithFreqsAndPositions),
     )
 }
-fn text_stored() -> TextOptions {
-    text().set_stored()
+fn text_stored(analyzer: &str) -> TextOptions {
+    text(analyzer).set_stored()
 }
 fn lower_analyzer() -> TextAnalyzer {
     TextAnalyzer::builder(SimpleTokenizer::default()).filter(LowerCaser).build()
@@ -72,22 +75,43 @@ fn raw_text() -> TextOptions {
     )
 }
 
-fn build_schema() -> (Schema, Fields) {
+fn build_schema(analyzer: &str) -> (Schema, Fields) {
     let mut b = Schema::builder();
     let guide_slug = b.add_text_field("guide_slug", STRING | STORED);
     let phase_no = b.add_u64_field("phase_no", STORED);
-    let title = b.add_text_field("title", text_stored());
-    let summary = b.add_text_field("summary", text_stored());
-    let body = b.add_text_field("body", text_stored()); // STORED so snippets can quote it
-    let tags = b.add_text_field("tags", text());
-    let synonyms = b.add_text_field("synonyms", text());
+    let title = b.add_text_field("title", text_stored(analyzer));
+    let summary = b.add_text_field("summary", text_stored(analyzer));
+    let body = b.add_text_field("body", text_stored(analyzer)); // STORED so snippets can quote it
+    let tags = b.add_text_field("tags", text(analyzer));
+    let synonyms = b.add_text_field("synonyms", text(analyzer));
     let raw = b.add_text_field("raw", raw_text());
     let schema = b.build();
     (schema, Fields { guide_slug, phase_no, title, summary, body, tags, synonyms, raw })
 }
 
-fn register(index: &Index) {
-    index.tokenizers().register(ANALYZER, en_stem_analyzer());
+/// Stemming + stop-word analyzer for a translation locale's index (same shape as English).
+fn locale_stem_analyzer(locale: &Locale) -> TextAnalyzer {
+    let stop: Vec<String> = match locale.stemmer {
+        Language::Portuguese => [
+            "a", "o", "as", "os", "um", "uma", "de", "do", "da", "dos", "das", "em", "no", "na",
+            "nos", "nas", "e", "ou", "que", "como", "para", "por", "com", "se", "eu", "meu",
+            "minha", "seu", "sua", "isso", "este", "esta", "ao", "é",
+        ]
+        .iter()
+        .map(|s| s.to_string())
+        .collect(),
+        _ => Vec::new(),
+    };
+    TextAnalyzer::builder(SimpleTokenizer::default())
+        .filter(RemoveLongFilter::limit(40))
+        .filter(LowerCaser)
+        .filter(StopWordFilter::remove(stop))
+        .filter(Stemmer::new(locale.stemmer))
+        .build()
+}
+
+fn register(index: &Index, analyzer: &str, stem: TextAnalyzer) {
+    index.tokenizers().register(analyzer, stem);
     index.tokenizers().register(LOWER, lower_analyzer());
 }
 
@@ -118,18 +142,27 @@ fn levenshtein(a: &str, b: &str) -> usize {
 
 impl SearchIndex {
     pub fn create_in_ram() -> tantivy::Result<Self> {
-        let (schema, fields) = build_schema();
+        let (schema, fields) = build_schema(ANALYZER);
         let index = Index::create_in_ram(schema);
-        register(&index);
-        Ok(Self { index, fields })
+        register(&index, ANALYZER, en_stem_analyzer());
+        Ok(Self { index, fields, analyzer: ANALYZER.to_string() })
+    }
+
+    /// In-RAM index for a translation locale: same field layout, the locale's stemmer.
+    pub fn create_in_ram_for(locale: &Locale) -> tantivy::Result<Self> {
+        let analyzer = format!("{}_stem", locale.code);
+        let (schema, fields) = build_schema(&analyzer);
+        let index = Index::create_in_ram(schema);
+        register(&index, &analyzer, locale_stem_analyzer(locale));
+        Ok(Self { index, fields, analyzer })
     }
 
     pub fn open_or_create(dir: &std::path::Path) -> tantivy::Result<Self> {
         std::fs::create_dir_all(dir).ok();
-        let (schema, fields) = build_schema();
+        let (schema, fields) = build_schema(ANALYZER);
         let index = Index::open_in_dir(dir).or_else(|_| Index::create_in_dir(dir, schema))?;
-        register(&index);
-        Ok(Self { index, fields })
+        register(&index, ANALYZER, en_stem_analyzer());
+        Ok(Self { index, fields, analyzer: ANALYZER.to_string() })
     }
 
     pub fn writer(&self) -> tantivy::Result<Writer<'_>> {
@@ -139,7 +172,7 @@ impl SearchIndex {
     /// Tokenize text the same way the index does (lowercase, drop stop words, stem).
     fn analyze(&self, text: &str) -> Vec<String> {
         let mut out = Vec::new();
-        if let Some(mut an) = self.index.tokenizers().get(ANALYZER) {
+        if let Some(mut an) = self.index.tokenizers().get(&self.analyzer) {
             let mut ts = an.token_stream(text);
             while ts.advance() {
                 out.push(ts.token().text.clone());
@@ -322,6 +355,12 @@ impl<'a> Writer<'a> {
         Ok(())
     }
 
+    /// Remove every doc (a translation locale's index is rebuilt wholesale on each sync).
+    pub fn clear(&mut self) -> tantivy::Result<()> {
+        self.writer.delete_all_documents()?;
+        Ok(())
+    }
+
     /// Remove any existing docs for a guide_slug before re-adding (idempotent re-ingest).
     pub fn delete_guide(&mut self, guide_slug: &str) {
         let term = Term::from_field_text(self.fields.guide_slug, guide_slug);
@@ -431,6 +470,16 @@ mod tests {
         let idx = idx_with(&[phase(1, "Branches", "a branch is a sticky note on one commit", &["git"])]);
         let r = idx.search("branch", 10).unwrap();
         assert!(r.hits[0].snippet.to_lowercase().contains("branch"), "snippet quotes the match");
+    }
+
+    #[test]
+    fn locale_index_stems_portuguese() {
+        let idx = SearchIndex::create_in_ram_for(crate::locales::find("pt-br").unwrap()).unwrap();
+        let mut w = idx.writer().unwrap();
+        w.add_phase(&phase(1, "Ramificações", "criando ramificações no repositório", &["git"]), "criando ramificações no repositório").unwrap();
+        w.commit().unwrap();
+        // "ramificação" (singular) stems to the same root as the plural in the body.
+        assert!(!idx.search("ramificação", 10).unwrap().hits.is_empty());
     }
 
     #[test]

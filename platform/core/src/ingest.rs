@@ -61,7 +61,7 @@ pub fn html_to_index_text(html: &str) -> String {
 /// serving stale pre-upgrade HTML forever.
 pub const RENDER_VERSION: u32 = 3; // 3: external links get target=_blank; 2: comrak header_ids
 
-/// A content signature of every `guides/**/*.md` under `root`, for cheap change detection.
+/// A content signature of every `guides/**/*.md` (and `translations/**/*.md`) under `root`, for cheap change detection.
 /// Hashes each file's relative path + bytes (sorted) plus RENDER_VERSION, so any add,
 /// edit, removal, or renderer change alters it.
 pub fn content_signature(root: &Path) -> u64 {
@@ -79,6 +79,19 @@ pub fn content_signature(root: &Path) -> u64 {
                 .unwrap_or(path)
                 .to_string_lossy()
                 .replace('\\', "/");
+            entries.push((rel, bytes));
+        }
+    }
+    // Translations too, so editing one triggers the periodic sync. Prefixed so a path can
+    // never collide with a guides/ one.
+    let translations_root = root.join("translations");
+    for entry in WalkDir::new(&translations_root).into_iter().filter_map(|e| e.ok()) {
+        let path = entry.path();
+        if path.extension().and_then(|e| e.to_str()) != Some("md") {
+            continue;
+        }
+        if let Ok(bytes) = std::fs::read(path) {
+            let rel = path.strip_prefix(root).unwrap_or(path).to_string_lossy().replace('\\', "/");
             entries.push((rel, bytes));
         }
     }

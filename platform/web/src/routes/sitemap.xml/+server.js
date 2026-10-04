@@ -1,4 +1,5 @@
 import { listGuides, listCategories, getGuide } from '$lib/api.js';
+import { localePath } from '$lib/i18n/locales.js';
 
 // XML sitemap: static pages + every category + every guide overview + every phase.
 // Each phase is its own citable answer page, so we list them all rather than relying
@@ -19,6 +20,14 @@ export async function GET({ fetch, url }) {
   details.forEach((d, i) => {
     for (const p of d?.phases ?? []) {
       entries.push({ loc: `/guides/${guides[i].slug}/${p.phase_no}`, lastmod: guides[i].updated });
+    }
+  });
+  // Translated twins (/<locale>/guides/...): a guide publishes in a locale only with
+  // every phase translated, so the English phase list is also the translated one.
+  details.forEach((d, i) => {
+    for (const lang of d?.translations ?? []) {
+      entries.push({ loc: localePath(lang, `/guides/${guides[i].slug}`) });
+      for (const p of d.phases ?? []) entries.push({ loc: localePath(lang, `/guides/${guides[i].slug}/${p.phase_no}`) });
     }
   });
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

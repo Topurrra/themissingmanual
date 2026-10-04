@@ -13,6 +13,7 @@
     "openrouter",
     "cloudflare",
     "ollamacloud",
+    "opencode",
   ];
 
   // Model values are local + reactive so the picker modal can set them.

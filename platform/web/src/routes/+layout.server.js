@@ -2,6 +2,7 @@ import { listCategories, listGuides, getGuide } from '$lib/api.js';
 import { API_BASE } from '$lib/server/adminApi.js';
 import { isAskEnabled } from '$lib/server/aisearch.js';
 import { isTutorEnabled } from '$lib/server/tutor.js';
+import { splitLocale } from '$lib/i18n/locales.js';
 
 // Public site config (PUBLIC endpoint). All fields are strings; "" when unset.
 // On any failure we return an all-empty object so the layout's fallbacks render
@@ -43,7 +44,8 @@ function giscusConfig() {
   };
 }
 
-export async function load({ fetch, url }) {
+export async function load({ fetch, url, locals }) {
+  const lang = locals.lang ?? 'en';
   const siteConfig = await getSiteConfig(fetch);
   const categories = (await listCategories(fetch)) ?? [];
   const guides = (await listGuides(fetch)) ?? [];
@@ -57,14 +59,16 @@ export async function load({ fetch, url }) {
   // On a guide/phase page, fetch that guide's phases so the sidebar can show them.
   let guidePhases = null;
   let guideTitle = null;
-  const guideSlug = (url.pathname.match(/^\/guides\/([^/]+)/) || [])[1] || null;
+  // (Translated pages live under /<locale>/guides/...; their sidebar shows the
+  // translated phase titles.)
+  const guideSlug = (splitLocale(url.pathname).path.match(/^\/guides\/([^/]+)/) || [])[1] || null;
   if (guideSlug) {
-    const detail = await getGuide(fetch, guideSlug);
+    const detail = await getGuide(fetch, guideSlug, lang);
     if (detail) {
       guidePhases = detail.phases ?? [];
       guideTitle = detail.guide?.title ?? null;
     }
   }
 
-  return { nav, guidePhases, guideTitle, siteConfig, askEnabled: isAskEnabled(), tutorEnabled: isTutorEnabled(), giscus: giscusConfig() };
+  return { lang, nav, guidePhases, guideTitle, siteConfig, askEnabled: isAskEnabled(), tutorEnabled: isTutorEnabled(), giscus: giscusConfig() };
 }

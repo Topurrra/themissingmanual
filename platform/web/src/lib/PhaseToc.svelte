@@ -1,4 +1,5 @@
 <script>
+  import { t } from '$lib/i18n/index.js';
   // "On this page" - an in-flow table of contents built from the phase's own
   // headings (comrak stamps stable ids on a nested `<a class="anchor" id>`).
   // Ported from the taste-kit TOC rail: a left-border rail, muted links, accent
@@ -14,6 +15,7 @@
   // only when a phase has >= 3 headings.
 
   export let html = '';
+  export let lang = 'en';
 
   function parseHeadings(src) {
     if (!src || typeof DOMParser === 'undefined') return []; // SSR-safe
@@ -52,8 +54,8 @@
 
 {#if total >= 3}
   <details class="phase-toc" open>
-    <summary>On this page</summary>
-    <nav aria-label="On this page">
+    <summary>{t(lang, 'toc.label')}</summary>
+    <nav aria-label={t(lang, 'toc.label')}>
       <ul class="toc-list">
         {#each items as it}
           <li>

@@ -148,3 +148,61 @@ pub struct SearchResults {
     pub hits: Vec<SearchHit>,
     pub suggestion: Option<String>,
 }
+
+/// Frontmatter of a translated file under `translations/<locale>/`. Category, order,
+/// difficulty, group and tags are inherited from the English guide (ignored if present).
+#[derive(Debug, Clone, Deserialize)]
+pub struct TranslationFrontmatter {
+    pub guide: String,
+    pub phase: u32,
+    pub title: String,
+    pub summary: String,
+    pub synonyms: Vec<String>,
+    /// The English phase's `updated` date this translation was made from ("YYYY-MM-DD").
+    pub source_updated: String,
+    /// GitHub handles; only read on phase 0 (`_guide.md`).
+    #[serde(default)]
+    pub translators: Vec<String>,
+}
+
+/// A guide published in a locale (its phase-0 title/summary + translators).
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub struct GuideTranslation {
+    pub slug: String,
+    pub lang: String,
+    pub title: String,
+    pub summary: String,
+    pub translators: Vec<String>,
+}
+
+/// One translated phase, rendered through the same pipeline as English.
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub struct PhaseTranslation {
+    pub guide_slug: String,
+    pub lang: String,
+    pub phase_no: u32,
+    pub title: String,
+    pub summary: String,
+    pub synonyms: Vec<String>,
+    pub html: String,
+    pub markdown: String,
+    pub source_updated: String,
+    pub source_file: String,
+}
+
+/// Why a translated guide was not published in a locale.
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub struct TranslationIssue {
+    pub guide_slug: String,
+    pub problems: Vec<String>,
+    pub missing_phases: Vec<u32>,
+}
+
+/// A published translated phase whose English source changed after it was translated.
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub struct StaleTranslation {
+    pub guide_slug: String,
+    pub phase_no: u32,
+    pub source_updated: String,
+    pub english_updated: String,
+}

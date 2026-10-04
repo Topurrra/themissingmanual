@@ -25,6 +25,7 @@ const DEFS: &[Def] = &[
     Def { slug: "mathematics", name: "Mathematics", icon: "ti-math-symbols", blurb: "The language reality is written in - sets, numbers, probability, and more - taught from intuition, for anyone who was told they're 'bad at math'." },
     Def { slug: "physics", name: "Physics", icon: "ti-atom", blurb: "How the physical world really works, in plain language - motion, energy, light, and the genuinely strange rules of the quantum world. The 'why' beneath the machine." },
     Def { slug: "operating-systems", name: "Operating Systems", icon: "ti-device-desktop", blurb: "Windows, macOS, and Linux - what they're really doing under the hood, from first login to power user." },
+    Def { slug: "omarchy", name: "Omarchy", icon: "ti-omarchy", blurb: "The keyboard-first Linux desktop, for people arriving from Windows, macOS, or Ubuntu - tiling windows, menus, and hotkeys until it feels like home, then making it yours, plugins, and fixing it when it breaks." },
     Def { slug: "hardware", name: "Hardware", icon: "ti-cpu", blurb: "How the machine is actually built and talks to itself - from the chip to the device on your desk." },
     Def { slug: "networking", name: "Networking", icon: "ti-network", blurb: "How the internet really works, and how to design networks that hold up - from your home router to the enterprise." },
     Def { slug: "programming-concepts", name: "Programming Concepts", icon: "ti-bulb", blurb: "The ideas under every language - how code runs, data structures, async, memory, big-O, and choosing the right tool." },

@@ -76,6 +76,8 @@ Guides live in `guides/<category>/<slug>/` as plain Markdown - no code required 
 Found something wrong in a guide, or a command that doesn't work anymore? Open an issue or a PR -
 small, factual corrections are exactly the kind of contribution this project wants most.
 
+Want to translate a guide? See [docs/TRANSLATING.md](docs/TRANSLATING.md).
+
 ## License
 
 The whole repository - guide content and code alike - is licensed under

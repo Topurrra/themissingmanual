@@ -106,7 +106,7 @@ async fn lists_categories_with_counts() {
     assert_eq!(res.status(), StatusCode::OK);
     let bytes = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
     let cats: Vec<Category> = serde_json::from_slice(&bytes).unwrap();
-    assert_eq!(cats.len(), 28); // DEFS taxonomy count (see categories.rs)
+    assert_eq!(cats.len(), 31); // DEFS taxonomy count (see categories.rs)
     assert!(cats.iter().find(|c| c.slug == "version-control").unwrap().count >= 1);
 }
 
@@ -712,4 +712,184 @@ async fn admin_sync_requires_auth() {
     let cookie = login(&app).await;
     let r = app.oneshot(post_json_auth("/api/admin/sync", "{}", &cookie)).await.unwrap();
     assert_eq!(r.status(), StatusCode::OK);
+}
+
+// ===== guide translations =====
+
+/// English `git` (phases 0-1, phase 1 updated after the translation) + English `sql`,
+/// a complete pt-br `git` translation and an incomplete pt-br `sql` one.
+fn translation_fixture() -> tempfile::TempDir {
+    let dir = tempfile::tempdir().unwrap();
+    let write = |rel: &str, body: String| {
+        let p = dir.path().join(rel);
+        std::fs::create_dir_all(p.parent().unwrap()).unwrap();
+        std::fs::write(p, body).unwrap();
+    };
+    let en = |slug: &str, phase: u32, updated: &str, body: &str| {
+        format!("---\ntitle: \"{slug} {phase}\"\nguide: \"{slug}\"\nphase: {phase}\nsummary: \"English summary\"\ntags: [git]\ncategory: version-control\ndifficulty: beginner\nsynonyms: [\"english\"]\nupdated: {updated}\n---\n{body}\n")
+    };
+    let pt = |slug: &str, phase: u32, extra: &str, body: &str| {
+        format!("---\nguide: \"{slug}\"\nphase: {phase}\ntitle: \"Título {phase}\"\nsummary: \"Resumo {phase}\"\nsynonyms: [\"ramo\"]\nsource_updated: \"2026-06-01\"\n{extra}---\n{body}\n")
+    };
+    write("guides/version-control/git/_guide.md", en("git", 0, "2026-06-01", "# Git"));
+    write("guides/version-control/git/01-branches.md", en("git", 1, "2026-07-10", "# Branches\n\nA branch is a label."));
+    write("guides/version-control/sql/_guide.md", en("sql", 0, "2026-06-01", "# SQL"));
+    write("guides/version-control/sql/01-select.md", en("sql", 1, "2026-06-01", "# Select"));
+    write("translations/pt-br/version-control/git/_guide.md", pt("git", 0, "translators: [\"gmm-tech\"]\n", "# Título 0\n\n[Fase 1](01-branches.md) [SQL](/guides/sql)"));
+    write("translations/pt-br/version-control/git/01-branches.md", pt("git", 1, "", "# Título 1\n\nUm ramo é um rótulo para ramificações."));
+    write("translations/pt-br/version-control/sql/_guide.md", pt("sql", 0, "", "# Título 0"));
+    write("translations/README.md", "not a translation".to_string());
+    dir
+}
+
+async fn json_of(app: &axum::Router, uri: &str) -> (StatusCode, serde_json::Value) {
+    let r = app.clone().oneshot(get(uri)).await.unwrap();
+    let status = r.status();
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    (status, serde_json::from_slice(&bytes).unwrap_or(serde_json::Value::Null))
+}
+
+#[tokio::test]
+async fn translated_guide_phase_and_search() {
+    let dir = translation_fixture();
+    let app = server::app(std::sync::Arc::new(server::AppState::build(dir.path()).unwrap()));
+
+    let (s, v) = json_of(&app, "/api/locales").await;
+    assert_eq!(s, StatusCode::OK);
+    assert_eq!(v, serde_json::json!([{ "code": "pt-br", "hreflang": "pt-BR", "name": "Português (Brasil)", "guides": ["git"] }]));
+
+    let (s, v) = json_of(&app, "/api/guides/git?lang=pt-br").await;
+    assert_eq!(s, StatusCode::OK);
+    assert_eq!(v["guide"]["title"], "Título 0");
+    assert_eq!(v["guide"]["summary"], "Resumo 0");
+    assert_eq!(v["guide"]["lang"], "pt-br");
+    assert_eq!(v["guide"]["translators"], serde_json::json!(["gmm-tech"]));
+    assert_eq!(v["guide"]["category"], "version-control", "inherited from English");
+    assert_eq!(v["phases"][1]["title"], "Título 1");
+    assert_eq!(v["translations"], serde_json::json!(["pt-br"]));
+
+    let (s, v) = json_of(&app, "/api/guides/git/0?lang=pt-br").await;
+    assert_eq!(s, StatusCode::OK);
+    let html = v["html"].as_str().unwrap();
+    assert!(html.contains(r#"href="/pt-br/guides/git/1""#), "{html}");
+    assert!(html.contains(r#"href="/guides/sql""#), "untranslated target stays English: {html}");
+    assert_eq!(v["stale"], false);
+
+    let (s, v) = json_of(&app, "/api/guides/git/1?lang=pt-br").await;
+    assert_eq!(s, StatusCode::OK);
+    assert_eq!(v["lang"], "pt-br");
+    assert_eq!(v["title"], "Título 1");
+    assert_eq!(v["summary"], "Resumo 1");
+    assert_eq!(v["synonyms"], serde_json::json!(["ramo"]));
+    assert!(v["markdown"].as_str().unwrap().contains("Um ramo"));
+    assert_eq!(v["source_file"], "translations/pt-br/version-control/git/01-branches.md");
+    assert_eq!(v["source_updated"], "2026-06-01");
+    assert_eq!(v["english_updated"], "2026-07-10");
+    assert_eq!(v["stale"], true);
+    assert_eq!(v["tags"], serde_json::json!(["git"]), "tags inherited");
+    assert_eq!(v["translations"], serde_json::json!(["pt-br"]));
+
+    let (s, v) = json_of(&app, "/api/search?q=ramifica%C3%A7%C3%A3o&lang=pt-br").await;
+    assert_eq!(s, StatusCode::OK);
+    assert_eq!(v[0]["guide_slug"], "git");
+    assert_eq!(v[0]["title"], "Título 1");
+    let (_, v) = json_of(&app, "/api/search?q=select&lang=pt-br").await;
+    assert_eq!(v.as_array().unwrap().len(), 0, "unpublished translations are not indexed");
+
+    // Untranslated (incomplete) guide -> 404 in pt-br; still fine in English.
+    assert_eq!(json_of(&app, "/api/guides/sql?lang=pt-br").await.0, StatusCode::NOT_FOUND);
+    assert_eq!(json_of(&app, "/api/guides/sql/0?lang=pt-br").await.0, StatusCode::NOT_FOUND);
+    let (s, v) = json_of(&app, "/api/guides/sql").await;
+    assert_eq!(s, StatusCode::OK);
+    assert_eq!(v["translations"], serde_json::json!([]));
+
+    // Unknown lang -> 400.
+    for uri in ["/api/guides/git?lang=xx", "/api/guides/git/1?lang=xx", "/api/search?q=git&lang=xx"] {
+        assert_eq!(json_of(&app, uri).await.0, StatusCode::BAD_REQUEST, "{uri}");
+    }
+}
+
+#[tokio::test]
+async fn english_responses_only_gain_translations() {
+    let dir = translation_fixture();
+    let state = std::sync::Arc::new(server::AppState::build(dir.path()).unwrap());
+    let app = server::app(state.clone());
+    let (phase, guide, refs) = {
+        let store = state.store.lock().unwrap();
+        (
+            store.get_phase("git", 1).unwrap().unwrap(),
+            store.get_guide("git").unwrap().unwrap(),
+            store.list_phase_refs("git").unwrap(),
+        )
+    };
+
+    let (_, mut v) = json_of(&app, "/api/guides/git/1").await;
+    assert_eq!(v.as_object_mut().unwrap().remove("translations").unwrap(), serde_json::json!(["pt-br"]));
+    assert_eq!(v, serde_json::to_value(&phase).unwrap(), "English phase JSON unchanged");
+    assert_eq!(json_of(&app, "/api/guides/git/1?lang=en").await.1["title"], "git 1");
+
+    let (_, mut v) = json_of(&app, "/api/guides/git").await;
+    assert_eq!(v.as_object_mut().unwrap().remove("translations").unwrap(), serde_json::json!(["pt-br"]));
+    assert_eq!(v, serde_json::json!({ "guide": guide, "phases": refs }), "English guide JSON unchanged");
+
+    // English search is untouched by the translation index.
+    let (_, v) = json_of(&app, "/api/search?q=branch").await;
+    assert_eq!(v[0]["title"], "git 1");
+}
+
+#[tokio::test]
+async fn admin_translations_report() {
+    let dir = translation_fixture();
+    let hash = server::auth::hash_password("secret");
+    let app = server::app(std::sync::Arc::new(
+        server::AppState::build(dir.path()).unwrap().with_admin_hash(Some(hash)),
+    ));
+    assert_eq!(app.clone().oneshot(get("/api/admin/translations")).await.unwrap().status(), StatusCode::UNAUTHORIZED);
+    let cookie = login(&app).await;
+    let r = app.oneshot(get_auth("/api/admin/translations", &cookie)).await.unwrap();
+    assert_eq!(r.status(), StatusCode::OK);
+    let bytes = axum::body::to_bytes(r.into_body(), usize::MAX).await.unwrap();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    let l = &v["locales"][0];
+    assert_eq!(l["code"], "pt-br");
+    assert_eq!(l["published"], serde_json::json!(["git"]));
+    assert_eq!(l["issues"][0]["guide_slug"], "sql");
+    assert_eq!(l["issues"][0]["missing_phases"], serde_json::json!([1]));
+    assert_eq!(
+        l["stale"],
+        serde_json::json!([{ "guide_slug": "git", "phase_no": 1, "source_updated": "2026-06-01", "english_updated": "2026-07-10" }])
+    );
+}
+
+#[test]
+fn content_sync_picks_up_translation_edits() {
+    let dir = translation_fixture();
+    let state = server::AppState::build(dir.path()).unwrap();
+    assert!(state.sync_content(false).unwrap().is_some()); // baseline
+    assert!(state.sync_content(false).unwrap().is_none());
+    // Completing the sql translation is a translation-only change; the sync must notice it.
+    std::fs::write(
+        dir.path().join("translations/pt-br/version-control/sql/01-select.md"),
+        "---\nguide: \"sql\"\nphase: 1\ntitle: \"Selecionar\"\nsummary: \"r\"\nsynonyms: []\nsource_updated: \"2026-06-01\"\n---\n# Selecionar\n",
+    )
+    .unwrap();
+    assert!(state.sync_content(false).unwrap().is_some());
+    let slugs = state.store.lock().unwrap().translated_slugs("pt-br").unwrap();
+    assert_eq!(slugs, vec!["git".to_string(), "sql".to_string()]);
+}
+
+#[test]
+fn cms_publish_changes_rerun_the_translation_publish_rule() {
+    let dir = translation_fixture();
+    let state = server::AppState::build(dir.path()).unwrap();
+    let published = |s: &server::AppState| s.store.lock().unwrap().translated_slugs("pt-br").unwrap();
+    // Draft the English guide in the CMS, then sync: its translation is not published.
+    state.store.lock().unwrap().set_guide_status("git", "draft").unwrap();
+    state.reindex_guide("git").unwrap();
+    state.sync_content(true).unwrap();
+    assert!(published(&state).is_empty());
+    // Republishing in the CMS must bring the translation back without a file change.
+    state.store.lock().unwrap().set_guide_status("git", "published").unwrap();
+    state.reindex_guide("git").unwrap();
+    assert_eq!(published(&state), vec!["git".to_string()]);
 }

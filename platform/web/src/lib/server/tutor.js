@@ -15,7 +15,7 @@ import { search } from '$lib/api.js';
 
 const require = createRequire(import.meta.url);
 const PROVIDER_IDS = Object.keys(CLOUD);
-const DEFAULT_ORDER = ['groq', 'gemini', 'mistral', 'openrouter', 'cloudflare', 'ollamacloud'];
+const DEFAULT_ORDER = ['groq', 'gemini', 'mistral', 'openrouter', 'cloudflare', 'ollamacloud', 'opencode'];
 const DEFAULT_COOLDOWN_SEC = 60;
 const LOG_MAX = 500;
 

@@ -27,6 +27,7 @@
   import OnboardingModal from "$lib/OnboardingModal.svelte";
   import { beginnerMode, setBeginner } from "$lib/beginner-store.js";
   import { CHEATSHEETS } from "$lib/cheatsheets.js";
+  import { splitLocale, localePath, hreflangOf } from "$lib/i18n/locales.js";
 
   export let data;
   // The practice category has its own hub (/practice), not a reader shelf - keep
@@ -41,7 +42,12 @@
     icon: c.icon,
   }));
   $: pathGuides = nav.flatMap((c) => c.guides);
-  $: path = $page.url.pathname;
+  // Translated guide pages (/<locale>/guides/...) drive the same shell logic as
+  // their English path; `lang` keeps the sidebar's phase links in that language.
+  $: lang = data?.lang ?? "en";
+  // SSR sets <html lang>; keep it in sync across client-side navigations.
+  $: if (typeof document !== "undefined") document.documentElement.lang = hreflangOf(lang);
+  $: path = splitLocale($page.url.pathname).path;
   $: isHome = path === "/";
   // Cheat sheet gets the real app rail (like guides): tools listed in the sidebar,
   // the active one driven by ?tool= so it stays in sync with the page.
@@ -447,7 +453,7 @@
       {#if lofiOn}
         <LofiPlayer />
       {/if}
-      <TranslateWidget />
+      {#if lang === "en"}<TranslateWidget />{/if}
       {#if showGithubStar}
         <a
           href={githubUrl}
@@ -522,7 +528,7 @@
             <ul class="nav-items">
               <li>
                 <a
-                  href={`/guides/${currentGuide}`}
+                  href={localePath(lang, `/guides/${currentGuide}`)}
                   class:on={currentPhase === null}
                   aria-current={currentPhase === null ? "page" : undefined}
                 >
@@ -534,7 +540,7 @@
               {#each guidePhases.filter((p) => p.phase_no > 0) as p}
                 <li>
                   <a
-                    href={`/guides/${currentGuide}/${p.phase_no}`}
+                    href={localePath(lang, `/guides/${currentGuide}/${p.phase_no}`)}
                     class:on={currentPhase === p.phase_no}
                     aria-current={currentPhase === p.phase_no
                       ? "page"

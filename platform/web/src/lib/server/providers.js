@@ -20,7 +20,11 @@ export const CLOUD = {
   // routes it through callOllama()/listOllamaModels() below instead of the
   // generic OpenAI-shaped path. Everything else (config storage, provider order,
   // routing/failover) is generic over CLOUD and needs no changes for a new id.
-  ollamacloud: { name: 'Ollama Cloud', kind: 'ollama', base: 'https://ollama.com', defaultModel: 'gpt-oss:120b', note: 'Ollama-hosted cloud models, free tier (usage-based, resets periodically).', keysUrl: 'https://ollama.com/settings/keys' }
+  ollamacloud: { name: 'Ollama Cloud', kind: 'ollama', base: 'https://ollama.com', defaultModel: 'gpt-oss:120b', note: 'Ollama-hosted cloud models, free tier (usage-based, resets periodically).', keysUrl: 'https://ollama.com/settings/keys' },
+  // OpenCode Zen: OpenAI-compatible /chat/completions, but only for part of its catalog (Claude and
+  // Qwen Flash models speak /messages, GPT/Grok speak /responses) - the default is a free
+  // chat/completions model. Its /models listing has no pricing, so no free/paid split.
+  opencode: { name: 'OpenCode Zen', base: 'https://opencode.ai/zen/v1', defaultModel: 'big-pickle', note: 'Some models are free for a limited time; only chat/completions models work here. Free models may use your prompts for training.', keysUrl: 'https://opencode.ai/auth' }
 };
 
 // Resolves a provider's chat base. Static for everyone except Cloudflare, whose

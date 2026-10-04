@@ -26,6 +26,8 @@ services:
       # Live content: drop guide folders in ./guides and the periodic sync picks them up
       # (files win on change). Read-only — the server only reads them.
       - ./guides:/app/guides:ro
+      # Guide translations (translations/<locale>/...), synced the same way.
+      - ./translations:/app/translations:ro
 
   web:
     restart: unless-stopped

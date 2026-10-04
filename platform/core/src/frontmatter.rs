@@ -1,4 +1,4 @@
-use crate::models::Frontmatter;
+use crate::models::{Frontmatter, TranslationFrontmatter};
 
 #[derive(thiserror::Error, Debug)]
 pub enum FrontmatterError {
@@ -13,12 +13,21 @@ pub enum FrontmatterError {
 /// Split a Markdown document into its YAML frontmatter and its body.
 /// Accepts both LF (`\n`) and CRLF (`\r\n`) line endings.
 pub fn parse_markdown(input: &str) -> Result<(Frontmatter, String), FrontmatterError> {
+    parse_with(input)
+}
+
+/// Same as [`parse_markdown`], for a translated file under `translations/<locale>/`.
+pub fn parse_translation(input: &str) -> Result<(TranslationFrontmatter, String), FrontmatterError> {
+    parse_with(input)
+}
+
+fn parse_with<T: serde::de::DeserializeOwned>(input: &str) -> Result<(T, String), FrontmatterError> {
     let normalized = input.replace("\r\n", "\n");
     let rest = normalized.strip_prefix("---\n").ok_or(FrontmatterError::Missing)?;
     let end = rest.find("\n---").ok_or(FrontmatterError::Unterminated)?;
     let yaml = &rest[..end];
     let body = rest[end + 4..].trim_start_matches('\n').to_string();
-    let fm: Frontmatter = serde_yaml::from_str(yaml)?;
+    let fm: T = serde_yaml::from_str(yaml)?;
     Ok((fm, body))
 }
 

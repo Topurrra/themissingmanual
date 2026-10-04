@@ -1,5 +1,7 @@
 <script>
   import { onMount } from 'svelte';
+  import { t } from '$lib/i18n/index.js';
+  import { hreflangOf } from '$lib/i18n/locales.js';
 
   // "Listen to this guide" - reads the current .reader content aloud with the
   // browser's SpeechSynthesis (no server, no cost). Reads block-by-block so it
@@ -7,6 +9,11 @@
   // are user-selectable and persisted. Mounted inside the page's {#key} block.
   const VOICE_KEY = 'tmm-tts-voice';
   const RATE_KEY = 'tmm-tts-rate';
+
+  // Page language. A translated page reads with that language's voices (pt-BR
+  // first for pt-br); English pages behave exactly as before.
+  export let lang = 'en';
+  $: voiceLang = lang === 'en' ? 'en' : hreflangOf(lang);
 
   let supported = false;
   let playing = false;
@@ -18,7 +25,7 @@
   let voiceURI = '';
   let gen = 0; // invalidates in-flight utterances on stop/restart
 
-  $: label = !playing ? 'Listen' : paused ? 'Resume' : 'Pause';
+  $: label = t(lang, !playing ? 'tts.listen' : paused ? 'tts.resume' : 'tts.pause');
 
   // The browser's *default* voice is often the most robotic local one. We rank the
   // available voices so neural / "Natural" / online ones float to the top and the
@@ -35,6 +42,10 @@
     if (NATURAL_RE.test(v.name)) s += 100;
     if (v.localService === false) s += 40;
     if (GOOD_NAMES.test(v.name)) s += 20;
+    if (voiceLang !== 'en') {
+      if (v.lang.replace('_', '-').toLowerCase() === voiceLang.toLowerCase()) s += 6;
+      return s;
+    }
     if (/^en[-_]?US/i.test(v.lang)) s += 6;
     else if (/^en[-_]?GB/i.test(v.lang)) s += 5;
     else if (/^en/i.test(v.lang)) s += 3;
@@ -42,8 +53,9 @@
   }
   function loadVoices() {
     const all = window.speechSynthesis.getVoices() || [];
-    const en = all.filter((v) => /^en/i.test(v.lang));
-    voices = (en.length ? en : all).slice().sort((a, b) => rankVoice(b) - rankVoice(a));
+    const prefix = voiceLang.split('-')[0];
+    const match = all.filter((v) => v.lang.toLowerCase().startsWith(prefix));
+    voices = (match.length ? match : all).slice().sort((a, b) => rankVoice(b) - rankVoice(a));
   }
   // Empty selection ("Auto") resolves to the top-ranked (most natural) voice.
   function currentVoice() {
@@ -51,12 +63,12 @@
   }
 
   // Friendly short label, e.g. "Microsoft Zira - English (United States)" -> "Zira (US)".
-  const REGION = { US: 'US', GB: 'UK', AU: 'AU', IN: 'IN', CA: 'CA', IE: 'IE', ZA: 'ZA', NZ: 'NZ' };
+  const REGION = { US: 'US', GB: 'UK', AU: 'AU', IN: 'IN', CA: 'CA', IE: 'IE', ZA: 'ZA', NZ: 'NZ', BR: 'BR', PT: 'PT' };
   function prettyVoice(v) {
     let n = v.name
       .replace(/\([^)]*\)/g, '')
       .replace(/Microsoft|Google|Apple|Desktop|Online|Natural|Enhanced|Premium/gi, '')
-      .replace(/\benglish\b/gi, '')
+      .replace(/\benglish\b|portugu[eê]s|portuguese/gi, '')
       .replace(/[-–-]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
@@ -100,7 +112,7 @@
     u.rate = rate;
     u.pitch = 1;
     const v = currentVoice();
-    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
+    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = voiceLang === 'en' ? 'en-US' : voiceLang; }
     u.onend = () => { if (myGen === gen) step(i + 1, myGen); };
     u.onerror = () => { if (myGen === gen) step(i + 1, myGen); };
     window.speechSynthesis.speak(u);
@@ -162,21 +174,21 @@
       <span>{label}</span>
     </button>
     {#if voices.length}
-      <select bind:value={voiceURI} on:change={onVoice} class="tts-sel tts-voice" aria-label="Voice" title="Voice">
-        <option value="">Auto · best voice</option>
+      <select bind:value={voiceURI} on:change={onVoice} class="tts-sel tts-voice" aria-label={t(lang, 'tts.voice')} title={t(lang, 'tts.voice')}>
+        <option value="">{t(lang, 'tts.auto')}</option>
         {#each voices as v}
           <option value={v.voiceURI}>{isNatural(v) ? '✨ ' : ''}{prettyVoice(v)}</option>
         {/each}
       </select>
     {/if}
     {#if playing}
-      <select bind:value={rate} on:change={onRate} class="tts-sel" aria-label="Reading speed" title="Speed">
+      <select bind:value={rate} on:change={onRate} class="tts-sel" aria-label={t(lang, 'tts.speed')} title={t(lang, 'tts.speed_short')}>
         <option value={0.8}>0.8×</option>
         <option value={1}>1×</option>
         <option value={1.25}>1.25×</option>
         <option value={1.5}>1.5×</option>
       </select>
-      <button class="tts-stop" on:click={stop} title="Stop" aria-label="Stop">
+      <button class="tts-stop" on:click={stop} title={t(lang, 'tts.stop')} aria-label={t(lang, 'tts.stop')}>
         <i class="ti ti-x" aria-hidden="true"></i>
       </button>
     {/if}

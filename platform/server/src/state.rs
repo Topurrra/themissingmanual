@@ -6,12 +6,15 @@ use std::time::Instant;
 use content_core::ingest::{html_to_text, ingest_dir};
 use content_core::store::Store;
 use content_core::index::SearchIndex;
+use content_core::translations::{index_locale, ingest_translations, LocaleIndexes};
 
 /// Shared application state: the SQLite store (behind a mutex - rusqlite is !Sync),
 /// the Tantivy index (Send + Sync), request config, and a login rate-limit map.
 pub struct AppState {
     pub store: Mutex<Store>,
     pub index: SearchIndex,
+    /// One search index per registered translation locale (`?lang=` search).
+    pub locale_indexes: LocaleIndexes,
     pub login_attempts: Mutex<HashMap<IpAddr, (u32, Instant)>>,
     /// Root holding `guides/`, for the periodic file sync. None disables sync.
     pub content_root: Option<PathBuf>,
@@ -28,8 +31,10 @@ impl AppState {
     pub fn build(repo_root: &Path) -> Result<Self, Box<dyn std::error::Error>> {
         let store = Store::open_in_memory()?;
         let index = SearchIndex::create_in_ram()?;
+        let locale_indexes = LocaleIndexes::create_in_ram()?;
         ingest_dir(repo_root, &store, &index)?;
-        Ok(Self::wrap(store, index, Some(repo_root.to_path_buf())))
+        ingest_translations(repo_root, &store, &locale_indexes)?;
+        Ok(Self::wrap(store, index, locale_indexes, Some(repo_root.to_path_buf())))
     }
 
     /// Persistent build: open the on-disk DB, import Markdown once if empty, rebuild the index.
@@ -44,15 +49,20 @@ impl AppState {
             }
         }
         let index = SearchIndex::create_in_ram()?;
+        let locale_indexes = LocaleIndexes::create_in_ram()?;
         let imported = if store.list_all_guides()?.is_empty() {
             match content_root {
-                Some(root) => { ingest_dir(root, &store, &index)?; true }
+                Some(root) => {
+                    ingest_dir(root, &store, &index)?;
+                    ingest_translations(root, &store, &locale_indexes)?;
+                    true
+                }
                 None => false,
             }
         } else {
             false
         };
-        let me = Self::wrap(store, index, content_root.map(|p| p.to_path_buf()));
+        let me = Self::wrap(store, index, locale_indexes, content_root.map(|p| p.to_path_buf()));
         if !imported {
             me.rebuild_index()?; // DB already had content: the fresh in-RAM index needs filling
         } else if let Some(root) = me.content_root.clone() {
@@ -63,10 +73,11 @@ impl AppState {
         Ok(me)
     }
 
-    fn wrap(store: Store, index: SearchIndex, content_root: Option<PathBuf>) -> Self {
+    fn wrap(store: Store, index: SearchIndex, locale_indexes: LocaleIndexes, content_root: Option<PathBuf>) -> Self {
         Self {
             store: Mutex::new(store),
             index,
+            locale_indexes,
             login_attempts: Mutex::new(HashMap::new()),
             content_root,
             asset_max: std::env::var("ASSET_MAX_BYTES")
@@ -112,6 +123,17 @@ impl AppState {
             }
         }
         w.commit()?;
+        self.reindex_locales(&store)?;
+        Ok(())
+    }
+
+    /// Rebuild every translation locale's search index from the DB.
+    fn reindex_locales(&self, store: &Store) -> Result<(), Box<dyn std::error::Error>> {
+        for l in content_core::locales::LOCALES {
+            if let Some(idx) = self.locale_indexes.get(l.code) {
+                index_locale(store, l.code, idx)?;
+            }
+        }
         Ok(())
     }
 
@@ -147,6 +169,10 @@ impl AppState {
             return Ok(None); // nothing changed on disk
         }
         let stats = ingest_dir(&root, &store, &self.index)?;
+        let t = ingest_translations(&root, &store, &self.locale_indexes)?;
+        if t.issues > 0 {
+            eprintln!("translations: {} guide(s) not published (see /api/admin/translations)", t.issues);
+        }
         store.set_setting("content_sig", &sig)?;
         Ok(Some(stats))
     }
@@ -164,6 +190,14 @@ impl AppState {
             }
         }
         w.commit()?;
+        // A publish/unpublish or a phase add/delete/reorder can change which translations
+        // pass the publish rule, so re-run the translation sync (it also re-indexes locales).
+        match &self.content_root {
+            Some(root) => {
+                ingest_translations(root, &store, &self.locale_indexes)?;
+            }
+            None => self.reindex_locales(&store)?,
+        }
         Ok(())
     }
 }

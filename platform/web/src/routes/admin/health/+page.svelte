@@ -12,6 +12,7 @@
   $: brokenLinks = data.broken_links ?? [];
   $: missingAssets = data.missing_assets ?? [];
   $: orphanedAssets = data.orphaned_assets ?? [];
+  $: translationLocales = data.translation_locales ?? [];
 
   $: allHealthy =
     brokenLinks.length === 0 && missingAssets.length === 0 && orphanedAssets.length === 0;
@@ -46,7 +47,7 @@
 <div class="admin-head">
   <h1 class="admin-h1">Content Health</h1>
 </div>
-<p class="admin-sub">Broken links, missing or orphaned assets, and content re-sync.</p>
+<p class="admin-sub">Broken links, missing or orphaned assets, translation status, and content re-sync.</p>
 
 {#if allHealthy}
   <p class="admin-note hc-ok">Everything looks healthy ✓</p>
@@ -131,6 +132,53 @@
   <p class="admin-note hc-err">{form.error}</p>
 {/if}
 
+<!-- Translations (translations/<locale>/... on disk; file-only, rebuilt on each sync).
+     A guide with any issue is not published in that locale at all. -->
+{#each translationLocales as loc (loc.code)}
+  <h2 class="admin-h2">Translations · {loc.code}
+    <span class="hc-count hc-zero">{loc.published?.length ?? 0} published</span>
+    {#if loc.issues?.length}<span class="hc-count">{loc.issues.length} not published</span>{/if}
+    {#if loc.stale?.length}<span class="hc-count">{loc.stale.length} stale</span>{/if}
+  </h2>
+  {#if loc.published?.length}
+    <p class="hc-tr-pub">
+      {#each loc.published as s, i}{#if i}, {/if}<a href={`/${loc.code}/guides/${s}`} target="_blank" rel="noopener">{s}</a>{/each}
+    </p>
+  {/if}
+  <table class="admin-table">
+    <thead>
+      <tr><th>Guide</th><th>Problems</th><th>Missing phases</th></tr>
+    </thead>
+    <tbody>
+      {#each loc.issues ?? [] as is (is.guide_slug)}
+        <tr>
+          <td class="hc-href">{is.guide_slug}</td>
+          <td>{#each is.problems ?? [] as pr}<div class="hc-href">{pr}</div>{/each}</td>
+          <td class="hc-href">{(is.missing_phases ?? []).join(', ')}</td>
+        </tr>
+      {:else}
+        <tr><td colspan="3" class="admin-empty">No translation issues.</td></tr>
+      {/each}
+    </tbody>
+  </table>
+  {#if loc.stale?.length}
+    <table class="admin-table">
+      <thead>
+        <tr><th>Stale phase</th><th>Translated from</th><th>English updated</th></tr>
+      </thead>
+      <tbody>
+        {#each loc.stale as st (`${st.guide_slug}/${st.phase_no}`)}
+          <tr>
+            <td><a href={`/${loc.code}/guides/${st.guide_slug}/${st.phase_no}`} target="_blank" rel="noopener">{st.guide_slug}/{st.phase_no}</a></td>
+            <td class="hc-href">{st.source_updated}</td>
+            <td class="hc-href">{st.english_updated}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  {/if}
+{/each}
+
 <style>
   .hc-actions {
     display: flex;
@@ -181,6 +229,11 @@
   .hc-delete:disabled {
     opacity: 0.6;
     cursor: default;
+  }
+  .hc-tr-pub {
+    margin: 0 0 0.8rem;
+    font-size: 0.88rem;
+    line-height: 1.7;
   }
   .hc-err {
     color: var(--danger, #b3261e);

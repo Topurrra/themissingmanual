@@ -6,6 +6,7 @@ import { checkAndSend } from '$lib/server/push.js';
 import { API_BASE } from '$lib/server/adminApi.js';
 import { sequence } from '@sveltejs/kit/hooks';
 import { omnisHandle } from '@omnis-x/watcher/sveltekit';
+import { splitLocale, hreflangOf } from '$lib/i18n/locales.js';
 
 // Known AI/search crawler user-agents (case-insensitive substring match).
 // Bots don't run JS, so this can't go through the client beacon - recorded
@@ -114,13 +115,13 @@ async function siteToMarkdown(fetch, origin) {
   return out;
 }
 
-async function guideToMarkdown(fetch, slug) {
-  const detail = await getGuide(fetch, slug);
+async function guideToMarkdown(fetch, slug, lang) {
+  const detail = await getGuide(fetch, slug, lang);
   if (!detail || !detail.guide) return null;
   const { guide, phases } = detail;
   let out = `# ${guide.title}\n\n> ${guide.summary}\n`;
   for (const p of phases || []) {
-    const ph = await getPhase(fetch, slug, p.phase_no);
+    const ph = await getPhase(fetch, slug, p.phase_no, lang);
     if (ph && ph.markdown) out += `\n\n---\n\n${ph.markdown.trim()}\n`;
   }
   return out;
@@ -130,6 +131,15 @@ async function siteHandle({ event, resolve }) {
   const { url, request } = event;
   const accept = request.headers.get('accept') || '';
   const p = url.pathname;
+
+  // - Translated guide pages: /<locale>/guides/... (reroute in hooks.js maps them onto
+  // the English route files). v1 localizes guide pages only, so any other /<locale>
+  // path goes to its English twin. Loaders read the language from locals.lang.
+  const loc = splitLocale(p);
+  event.locals.lang = loc.lang;
+  if (loc.lang !== 'en' && !GUIDE_RE.test(loc.path.endsWith('.md') ? loc.path.slice(0, -3) : loc.path)) {
+    return new Response(null, { status: 307, headers: { location: loc.path + url.search } });
+  }
 
   // - Agent-discovery endpoints (served here because SvelteKit's router skips
   // dot-directories like /.well-known).
@@ -167,7 +177,7 @@ async function siteHandle({ event, resolve }) {
   const mdSuffix = p !== '/' && p.endsWith('.md');
   const logicalPath = p === '/index.md' ? '/' : mdSuffix ? p.slice(0, -3) : p;
 
-  const m = logicalPath.match(GUIDE_RE);
+  const m = splitLocale(logicalPath).path.match(GUIDE_RE);
   const cm = logicalPath.match(CATEGORY_RE);
   const isRoot = logicalPath === '/';
 
@@ -188,15 +198,16 @@ async function siteHandle({ event, resolve }) {
         md = await siteToMarkdown(event.fetch, url.origin);
       } else if (m[2]) {
         const no = Number(m[2]);
-        const ph = await getPhase(event.fetch, m[1], no);
+        const ph = await getPhase(event.fetch, m[1], no, loc.lang);
         md = ph && ph.markdown ? ph.markdown : null;
-        updated = ph && ph.updated ? ph.updated : null;
+        // A translation's freshness is the English date it was made from.
+        updated = ph ? ph.source_updated || ph.updated || null : null;
         if (md != null) {
           // Phase bounds, so clients never have to sniff the footer markup to work
           // out "is there a next phase" (footers vary by category, and the old
           // convention lied on last phases). Phase 0 is the overview, so it's not
           // counted but does get a next.
-          const detail = await getGuide(event.fetch, m[1]);
+          const detail = await getGuide(event.fetch, m[1], loc.lang);
           const nos = (detail?.phases ?? [])
             .map((p) => p.phase_no)
             .filter((n) => n > 0)
@@ -204,7 +215,7 @@ async function siteHandle({ event, resolve }) {
           if (nos.length) meta = { no, count: nos.length, next: nos.find((n) => n > no) };
         }
       } else {
-        md = await guideToMarkdown(event.fetch, m[1]);
+        md = await guideToMarkdown(event.fetch, m[1], loc.lang);
       }
       if (md != null) {
         const canonical = `${url.origin}${logicalPath}`;
@@ -227,12 +238,20 @@ async function siteHandle({ event, resolve }) {
         }
         return new Response(body, { headers });
       }
+      // Not published in this locale: the English markdown is the closest thing.
+      if (loc.lang !== 'en') {
+        return new Response(null, { status: 307, headers: { location: loc.path + url.search } });
+      }
     } catch (e) {
       // fall through to the normal HTML response (or a 404 for a .md miss)
     }
   }
 
-  const response = await resolve(event);
+  // <html lang> follows the page language (app.html carries the placeholder).
+  const htmlLang = hreflangOf(loc.lang);
+  const response = await resolve(event, {
+    transformPageChunk: ({ html }) => html.replace('%tmm.lang%', htmlLang)
+  });
 
   // - Agent-friendly 404: hand crawlers and .md requests a short Markdown recovery
   // body instead of the HTML error shell, so they can route to the real content.

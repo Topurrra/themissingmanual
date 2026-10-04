@@ -8,7 +8,7 @@ use axum::{
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
-use content_core::{Category, GuideSummary, PhaseRef};
+use content_core::{Category, GuideSummary, Phase, PhaseRef};
 use crate::state::AppState;
 use crate::{admin, auth};
 
@@ -48,6 +48,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/feedback/:id", delete(admin::delete_feedback))
         .route("/status", get(admin::status))
         .route("/backlog", get(admin::backlog))
+        .route("/translations", get(admin::translations))
         .route_layer(middleware::from_fn_with_state(state.clone(), auth::require_admin));
     // Auth routes - not behind require_admin (login establishes the session; me/logout self-check).
     let auth_routes = Router::new()
@@ -61,6 +62,7 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/api/guides/:slug", get(guide_detail))
         .route("/api/guides/:slug/:phase", get(phase_detail))
         .route("/api/search", get(search))
+        .route("/api/locales", get(list_locales))
         .route("/api/rss", get(rss))
         .route("/api/events", post(admin::record_event))
         .route("/api/ui-metrics", post(crate::halcyon::ui_metric_sample))
@@ -116,51 +118,205 @@ async fn list_guides(State(state): State<Arc<AppState>>, Query(q): Query<GuidesQ
     Json(out).into_response()
 }
 
+#[derive(Deserialize)]
+struct LangQuery {
+    #[serde(default)]
+    lang: Option<String>,
+}
+
+/// Resolve `?lang=`: `Ok(None)` = English (absent, empty or `en`), `Ok(Some(code))` = a
+/// registered translation locale, `Err` = 400 for anything else.
+fn resolve_lang(lang: Option<&str>) -> Result<Option<&'static str>, Response> {
+    match lang {
+        None | Some("") | Some("en") => Ok(None),
+        Some(c) => content_core::locales::find(c).map(|l| Some(l.code)).ok_or_else(|| {
+            (StatusCode::BAD_REQUEST, Json(serde_json::json!({ "error": "unknown lang" }))).into_response()
+        }),
+    }
+}
+
+/// Locales a guide is published in, in registry order.
+fn translations_for(store: &content_core::store::Store, slug: &str) -> Result<Vec<String>, content_core::store::StoreError> {
+    let langs = store.translation_langs(slug)?;
+    Ok(content_core::locales::LOCALES
+        .iter()
+        .filter(|l| langs.iter().any(|c| c == l.code))
+        .map(|l| l.code.to_string())
+        .collect())
+}
+
+fn not_translated() -> Response {
+    (StatusCode::NOT_FOUND, Json(serde_json::json!({ "error": "not translated" }))).into_response()
+}
+
+/// Registered translation locales with the guides published in each.
+async fn list_locales(State(state): State<Arc<AppState>>) -> Response {
+    let store = state.store.lock().unwrap();
+    let mut out = Vec::new();
+    for l in content_core::locales::LOCALES {
+        match store.translated_slugs(l.code) {
+            Ok(guides) => out.push(serde_json::json!({
+                "code": l.code, "hreflang": l.hreflang, "name": l.name, "guides": guides,
+            })),
+            Err(e) => return server_error(e),
+        }
+    }
+    Json(out).into_response()
+}
+
 #[derive(Serialize)]
 struct GuideDetail {
     guide: GuideSummary,
     phases: Vec<PhaseRef>,
+    translations: Vec<String>,
 }
 
-async fn guide_detail(State(state): State<Arc<AppState>>, Path(slug): Path<String>) -> Response {
-    let (guide, phases) = {
-        let store = state.store.lock().unwrap();
-        let guide = match store.get_guide(&slug) {
-            Ok(Some(g)) => g,
-            Ok(None) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({ "error": "guide not found" }))).into_response(),
-            Err(e) => return server_error(e),
-        };
+#[derive(Serialize)]
+struct LocalizedGuide {
+    #[serde(flatten)]
+    guide: GuideSummary,
+    lang: &'static str,
+    translators: Vec<String>,
+}
+
+#[derive(Serialize)]
+struct LocalizedGuideDetail {
+    guide: LocalizedGuide,
+    phases: Vec<PhaseRef>,
+    translations: Vec<String>,
+}
+
+async fn guide_detail(
+    State(state): State<Arc<AppState>>,
+    Path(slug): Path<String>,
+    Query(q): Query<LangQuery>,
+) -> Response {
+    let lang = match resolve_lang(q.lang.as_deref()) {
+        Ok(l) => l,
+        Err(r) => return r,
+    };
+    let store = state.store.lock().unwrap();
+    let mut guide = match store.get_guide(&slug) {
+        Ok(Some(g)) => g,
+        Ok(None) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({ "error": "guide not found" }))).into_response(),
+        Err(e) => return server_error(e),
+    };
+    let translations = match translations_for(&store, &slug) {
+        Ok(t) => t,
+        Err(e) => return server_error(e),
+    };
+    let Some(code) = lang else {
         let phases = match store.list_phase_refs(&slug) {
             Ok(p) => p,
             Err(e) => return server_error(e),
         };
-        (guide, phases)
+        return Json(GuideDetail { guide, phases, translations }).into_response();
     };
-    Json(GuideDetail { guide, phases }).into_response()
+    let t = match store.get_guide_translation(&slug, code) {
+        Ok(Some(t)) => t,
+        Ok(None) => return not_translated(),
+        Err(e) => return server_error(e),
+    };
+    let phases = match store.list_phase_translation_refs(&slug, code) {
+        Ok(p) => p,
+        Err(e) => return server_error(e),
+    };
+    guide.title = t.title;
+    guide.summary = t.summary;
+    Json(LocalizedGuideDetail {
+        guide: LocalizedGuide { guide, lang: code, translators: t.translators },
+        phases,
+        translations,
+    })
+    .into_response()
 }
 
-async fn phase_detail(State(state): State<Arc<AppState>>, Path((slug, phase)): Path<(String, u32)>) -> Response {
-    let result = {
-        let store = state.store.lock().unwrap();
-        store.get_phase(&slug, phase)
+#[derive(Serialize)]
+struct PhaseDetail {
+    #[serde(flatten)]
+    phase: Phase,
+    translations: Vec<String>,
+}
+
+#[derive(Serialize)]
+struct LocalizedPhaseDetail {
+    #[serde(flatten)]
+    phase: Phase,
+    lang: &'static str,
+    source_updated: String,
+    english_updated: String,
+    stale: bool,
+    translations: Vec<String>,
+}
+
+async fn phase_detail(
+    State(state): State<Arc<AppState>>,
+    Path((slug, phase)): Path<(String, u32)>,
+    Query(q): Query<LangQuery>,
+) -> Response {
+    let lang = match resolve_lang(q.lang.as_deref()) {
+        Ok(l) => l,
+        Err(r) => return r,
     };
-    match result {
-        Ok(Some(p)) => Json(p).into_response(),
-        Ok(None) => (StatusCode::NOT_FOUND, Json(serde_json::json!({ "error": "phase not found" }))).into_response(),
-        Err(e) => server_error(e),
+    let store = state.store.lock().unwrap();
+    let en = match store.get_phase(&slug, phase) {
+        Ok(Some(p)) => p,
+        Ok(None) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({ "error": "phase not found" }))).into_response(),
+        Err(e) => return server_error(e),
+    };
+    let translations = match translations_for(&store, &slug) {
+        Ok(t) => t,
+        Err(e) => return server_error(e),
+    };
+    let Some(code) = lang else {
+        return Json(PhaseDetail { phase: en, translations }).into_response();
+    };
+    if !translations.iter().any(|c| c == code) {
+        return not_translated();
     }
+    let t = match store.get_phase_translation(&slug, code, phase) {
+        Ok(Some(t)) => t,
+        Ok(None) => return not_translated(),
+        Err(e) => return server_error(e),
+    };
+    let english_updated = en.updated.clone();
+    Json(LocalizedPhaseDetail {
+        stale: english_updated > t.source_updated,
+        phase: Phase {
+            title: t.title,
+            summary: t.summary,
+            synonyms: t.synonyms,
+            html: t.html,
+            markdown: t.markdown,
+            source_file: t.source_file,
+            ..en
+        },
+        lang: code,
+        source_updated: t.source_updated,
+        english_updated,
+        translations,
+    })
+    .into_response()
 }
 
 #[derive(Deserialize)]
 struct SearchParams {
     q: String,
+    #[serde(default)]
+    lang: Option<String>,
 }
 
 async fn search(State(state): State<Arc<AppState>>, Query(params): Query<SearchParams>) -> Response {
     if params.q.trim().is_empty() {
         return (StatusCode::BAD_REQUEST, Json(serde_json::json!({ "error": "query `q` is required" }))).into_response();
     }
-    match state.index.search(&params.q, 20) {
+    let index = match resolve_lang(params.lang.as_deref()) {
+        Ok(None) => &state.index,
+        // Every registered locale has an index (LocaleIndexes::create_in_ram).
+        Ok(Some(code)) => state.locale_indexes.get(code).unwrap_or(&state.index),
+        Err(r) => return r,
+    };
+    match index.search(&params.q, 20) {
         Ok(results) => {
             // Body stays the hits array (non-breaking); the optional "did you mean"
             // rides in a header so existing clients keep working unchanged.

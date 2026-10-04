@@ -444,6 +444,28 @@ pub async fn sync_now(State(state): State<Arc<AppState>>) -> Response {
     }
 }
 
+/// Admin: per-locale translation status - published slugs, guides held back (issues), and
+/// published phases whose English source changed after translation (stale).
+pub async fn translations(State(state): State<Arc<AppState>>) -> Response {
+    let store = state.store.lock().unwrap();
+    let mut locales = Vec::new();
+    for l in content_core::locales::LOCALES {
+        let row = (|| -> Result<serde_json::Value, content_core::store::StoreError> {
+            Ok(json!({
+                "code": l.code,
+                "published": store.translated_slugs(l.code)?,
+                "issues": store.translation_issues(l.code)?,
+                "stale": store.stale_translations(l.code)?,
+            }))
+        })();
+        match row {
+            Ok(v) => locales.push(v),
+            Err(e) => return err(e),
+        }
+    }
+    Json(json!({ "locales": locales })).into_response()
+}
+
 // ===== bulk content actions =====
 
 #[derive(Deserialize)]

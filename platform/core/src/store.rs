@@ -1,5 +1,8 @@
 use rusqlite::{params, Connection};
-use crate::models::{CategoryRow, FeedbackRow, GuideSummary, Phase, PhaseRef, PhaseRevision, RevisionMeta};
+use crate::models::{
+    CategoryRow, FeedbackRow, GuideSummary, GuideTranslation, Phase, PhaseRef, PhaseRevision, PhaseTranslation,
+    RevisionMeta, StaleTranslation, TranslationIssue,
+};
 
 pub struct Store {
     conn: Connection,
@@ -23,7 +26,14 @@ pub enum StoreError {
 
 /// Tables ingest regenerates from `guides/` on every boot. Losing them costs a rebuild,
 /// nothing more - they are a cache of the Markdown, which is the real source of truth.
-pub const DERIVED_TABLES: &[&str] = &["phases", "guides", "categories"];
+pub const DERIVED_TABLES: &[&str] = &[
+    "phases",
+    "guides",
+    "categories",
+    "guide_translations",
+    "phase_translations",
+    "translation_issues",
+];
 
 /// Tables whose contents exist ONLY in this database. There is no Markdown to re-ingest
 /// them from, so deleting the file destroys them permanently: analytics history, reader
@@ -179,7 +189,35 @@ impl Store {
                  markdown TEXT NOT NULL,
                  created_at TEXT NOT NULL DEFAULT (datetime('now'))
              );
-             CREATE INDEX IF NOT EXISTS idx_revisions_phase ON phase_revisions(guide_slug, phase_no);",
+             CREATE INDEX IF NOT EXISTS idx_revisions_phase ON phase_revisions(guide_slug, phase_no);
+             CREATE TABLE IF NOT EXISTS guide_translations (
+                 slug TEXT NOT NULL,
+                 lang TEXT NOT NULL,
+                 title TEXT NOT NULL,
+                 summary TEXT NOT NULL,
+                 translators TEXT NOT NULL DEFAULT '[]',
+                 PRIMARY KEY (slug, lang)
+             );
+             CREATE TABLE IF NOT EXISTS phase_translations (
+                 guide_slug TEXT NOT NULL,
+                 lang TEXT NOT NULL,
+                 phase_no INTEGER NOT NULL,
+                 title TEXT NOT NULL,
+                 summary TEXT NOT NULL,
+                 synonyms TEXT NOT NULL,
+                 html TEXT NOT NULL,
+                 markdown TEXT NOT NULL,
+                 source_updated TEXT NOT NULL,
+                 source_file TEXT NOT NULL,
+                 PRIMARY KEY (guide_slug, lang, phase_no)
+             );
+             CREATE TABLE IF NOT EXISTS translation_issues (
+                 lang TEXT NOT NULL,
+                 guide_slug TEXT NOT NULL,
+                 problems TEXT NOT NULL,
+                 missing_phases TEXT NOT NULL,
+                 PRIMARY KEY (lang, guide_slug)
+             );",
         )?;
         // Additive migrations for pre-existing events tables (no-op once present).
         let _ = conn.execute("ALTER TABLE events ADD COLUMN device TEXT NOT NULL DEFAULT ''", []);
@@ -329,6 +367,159 @@ impl Store {
                 phase_no: row.get::<_, i64>(0)? as u32,
                 title: row.get(1)?,
                 summary: row.get(2)?,
+            })
+        })?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    // ===== guide translations (file-only; rebuilt per locale on every sync) =====
+
+    /// Replace everything stored for `lang` with the given published guides + issues.
+    pub fn replace_translations(
+        &self,
+        lang: &str,
+        guides: &[(GuideTranslation, Vec<PhaseTranslation>)],
+        issues: &[TranslationIssue],
+    ) -> Result<(), StoreError> {
+        let tx = self.conn.unchecked_transaction()?;
+        for table in ["guide_translations", "translation_issues"] {
+            tx.execute(&format!("DELETE FROM {table} WHERE lang=?1"), params![lang])?;
+        }
+        tx.execute("DELETE FROM phase_translations WHERE lang=?1", params![lang])?;
+        for (g, phases) in guides {
+            tx.execute(
+                "INSERT INTO guide_translations (slug, lang, title, summary, translators) VALUES (?1, ?2, ?3, ?4, ?5)",
+                params![g.slug, lang, g.title, g.summary, serde_json::to_string(&g.translators)?],
+            )?;
+            for p in phases {
+                tx.execute(
+                    "INSERT INTO phase_translations
+                       (guide_slug, lang, phase_no, title, summary, synonyms, html, markdown, source_updated, source_file)
+                     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+                    params![
+                        p.guide_slug, lang, p.phase_no, p.title, p.summary,
+                        serde_json::to_string(&p.synonyms)?, p.html, p.markdown, p.source_updated, p.source_file
+                    ],
+                )?;
+            }
+        }
+        for i in issues {
+            tx.execute(
+                "INSERT OR REPLACE INTO translation_issues (lang, guide_slug, problems, missing_phases) VALUES (?1, ?2, ?3, ?4)",
+                params![lang, i.guide_slug, serde_json::to_string(&i.problems)?, serde_json::to_string(&i.missing_phases)?],
+            )?;
+        }
+        tx.commit()?;
+        Ok(())
+    }
+
+    /// Slugs published in `lang`: translated AND the English guide is currently published.
+    pub fn translated_slugs(&self, lang: &str) -> Result<Vec<String>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT t.slug FROM guide_translations t JOIN guides g ON g.slug = t.slug
+             WHERE t.lang = ?1 AND g.status = 'published' ORDER BY g.sort_order, t.slug",
+        )?;
+        let rows = stmt.query_map(params![lang], |r| r.get(0))?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    /// Locale codes a guide is published in (unordered; callers order by the registry).
+    pub fn translation_langs(&self, slug: &str) -> Result<Vec<String>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT t.lang FROM guide_translations t JOIN guides g ON g.slug = t.slug
+             WHERE t.slug = ?1 AND g.status = 'published'",
+        )?;
+        let rows = stmt.query_map(params![slug], |r| r.get(0))?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    pub fn get_guide_translation(&self, slug: &str, lang: &str) -> Result<Option<GuideTranslation>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT t.slug, t.lang, t.title, t.summary, t.translators FROM guide_translations t
+             JOIN guides g ON g.slug = t.slug WHERE t.slug = ?1 AND t.lang = ?2 AND g.status = 'published'",
+        )?;
+        let mut rows = stmt.query(params![slug, lang])?;
+        match rows.next()? {
+            Some(row) => Ok(Some(GuideTranslation {
+                slug: row.get(0)?,
+                lang: row.get(1)?,
+                title: row.get(2)?,
+                summary: row.get(3)?,
+                translators: serde_json::from_str(&row.get::<_, String>(4)?)?,
+            })),
+            None => Ok(None),
+        }
+    }
+
+    pub fn list_phase_translation_refs(&self, slug: &str, lang: &str) -> Result<Vec<PhaseRef>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT phase_no, title, summary FROM phase_translations WHERE guide_slug = ?1 AND lang = ?2 ORDER BY phase_no",
+        )?;
+        let rows = stmt.query_map(params![slug, lang], |row| {
+            Ok(PhaseRef { phase_no: row.get::<_, i64>(0)? as u32, title: row.get(1)?, summary: row.get(2)? })
+        })?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    /// A translated phase (no publish check - pair with [`Store::get_guide_translation`]).
+    pub fn get_phase_translation(&self, slug: &str, lang: &str, phase_no: u32) -> Result<Option<PhaseTranslation>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT guide_slug, lang, phase_no, title, summary, synonyms, html, markdown, source_updated, source_file
+             FROM phase_translations WHERE guide_slug = ?1 AND lang = ?2 AND phase_no = ?3",
+        )?;
+        let mut rows = stmt.query(params![slug, lang, phase_no])?;
+        match rows.next()? {
+            Some(row) => Ok(Some(PhaseTranslation {
+                guide_slug: row.get(0)?,
+                lang: row.get(1)?,
+                phase_no: row.get(2)?,
+                title: row.get(3)?,
+                summary: row.get(4)?,
+                synonyms: serde_json::from_str(&row.get::<_, String>(5)?)?,
+                html: row.get(6)?,
+                markdown: row.get(7)?,
+                source_updated: row.get(8)?,
+                source_file: row.get(9)?,
+            })),
+            None => Ok(None),
+        }
+    }
+
+    pub fn translation_issues(&self, lang: &str) -> Result<Vec<TranslationIssue>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT guide_slug, problems, missing_phases FROM translation_issues WHERE lang = ?1 ORDER BY guide_slug",
+        )?;
+        let rows = stmt.query_map(params![lang], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?))
+        })?;
+        let mut out = Vec::new();
+        for row in rows {
+            let (guide_slug, problems, missing) = row?;
+            out.push(TranslationIssue {
+                guide_slug,
+                problems: serde_json::from_str(&problems)?,
+                missing_phases: serde_json::from_str(&missing)?,
+            });
+        }
+        Ok(out)
+    }
+
+    /// Published translated phases whose English `updated` is newer than the translation's
+    /// `source_updated` (ISO dates compare as strings).
+    pub fn stale_translations(&self, lang: &str) -> Result<Vec<StaleTranslation>, StoreError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT t.guide_slug, t.phase_no, t.source_updated, p.updated FROM phase_translations t
+             JOIN phases p ON p.guide_slug = t.guide_slug AND p.phase_no = t.phase_no
+             JOIN guides g ON g.slug = t.guide_slug
+             WHERE t.lang = ?1 AND g.status = 'published' AND p.updated > t.source_updated
+             ORDER BY t.guide_slug, t.phase_no",
+        )?;
+        let rows = stmt.query_map(params![lang], |r| {
+            Ok(StaleTranslation {
+                guide_slug: r.get(0)?,
+                phase_no: r.get(1)?,
+                source_updated: r.get(2)?,
+                english_updated: r.get(3)?,
             })
         })?;
         Ok(rows.collect::<Result<Vec<_>, _>>()?)

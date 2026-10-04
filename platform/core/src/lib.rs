@@ -10,6 +10,8 @@ pub mod ingest;
 pub mod categories;
 pub mod audit;
 pub mod mermaid_ssr;
+pub mod locales;
+pub mod translations;
 
 pub use models::{Frontmatter, GuideSummary, Phase, PhaseRef, SearchHit};
 pub use categories::Category;

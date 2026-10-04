@@ -10,6 +10,7 @@ RUN groupadd -r app && useradd -r -g app app
 WORKDIR /app
 COPY --from=build /build/platform/target/release/server /usr/local/bin/server
 COPY --chown=app:app guides/ ./guides/
+COPY --chown=app:app translations/ ./translations/
 COPY platform/server/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 ENV BIND_ADDR=0.0.0.0:3000

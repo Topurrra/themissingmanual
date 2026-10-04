@@ -4,13 +4,18 @@ import { adminApi, adminJson } from '$lib/server/adminApi.js';
 // Loads the content-health report from the admin API, forwarding the browser's
 // cookie for auth. The +layout.server.js guard handles redirecting unauthenticated
 // requests to /admin/login before this runs. Defaults to empty arrays on failure.
+// Translation status (published / issues / stale per locale) rides along.
 export async function load({ request }) {
-  const report =
-    (await adminJson(request.headers.get('cookie'), '/health-check', {})) ?? {};
+  const cookie = request.headers.get('cookie');
+  const [report, translations] = await Promise.all([
+    adminJson(cookie, '/health-check', {}),
+    adminJson(cookie, '/translations', {})
+  ]);
   return {
-    broken_links: report.broken_links ?? [],
-    missing_assets: report.missing_assets ?? [],
-    orphaned_assets: report.orphaned_assets ?? []
+    broken_links: report?.broken_links ?? [],
+    missing_assets: report?.missing_assets ?? [],
+    orphaned_assets: report?.orphaned_assets ?? [],
+    translation_locales: translations?.locales ?? []
   };
 }
 

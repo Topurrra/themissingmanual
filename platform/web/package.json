@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "build:glossary": "node scripts/build-glossary.mjs",
     "lint:content": "node scripts/lint-content.mjs",
+    "validate:translations": "node scripts/validate-translations.mjs",
     "indexnow": "node scripts/indexnow.mjs",
     "indexnow:all": "node scripts/indexnow.mjs --all"
   },

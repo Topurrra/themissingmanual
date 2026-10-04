@@ -8,7 +8,7 @@
   export let image = '';          // absolute or root-relative og image
   export let jsonld = null;       // object or array → injected as ld+json
   export let keywords = '';       // string, or array (e.g. a guide/phase's synonyms)
-
+  export let alternates = [];     // [{ hreflang, href }] language versions (see i18n alternatesFor)
   export let canonicalPath = '';
 
   $: keywordsStr = Array.isArray(keywords) ? keywords.filter(Boolean).join(', ') : keywords;
@@ -29,6 +29,7 @@
   {#if description}<meta name="description" content={description} />{/if}
   {#if keywordsStr}<meta name="keywords" content={keywordsStr} />{/if}
   <link rel="canonical" href={canonical} />
+  {#each alternates as a}<link rel="alternate" hreflang={a.hreflang} href={a.href} />{/each}
   <meta property="og:type" content={type} />
   <meta property="og:url" content={canonical} />
   {#if title}<meta property="og:title" content={title} />{/if}

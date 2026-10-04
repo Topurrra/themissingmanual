@@ -4,11 +4,13 @@
   import { seedChapter } from '$lib/srs.js';
   import { recordActivity } from '$lib/streaks.js';
   import { tutorOpen, tutorPrefill } from '$lib/tutor-store.js';
+  import { t } from '$lib/i18n/index.js';
 
   export let guideSlug;
   export let phaseNo;
   export let isLast = false;
   export let questions = [];
+  export let lang = 'en';
 
   $: tutorAvailable = !!$page.data?.tutorEnabled;
   function askTutorWhy(q, chosenText) {
@@ -113,8 +115,8 @@
   <details class="quiz">
     <summary class="quiz-head">
       <i class="ti ti-help-circle" aria-hidden="true"></i>
-      <span class="quiz-head-text">Check your understanding</span>
-      <span class="quiz-count">{questions.length} {questions.length === 1 ? 'question' : 'questions'}</span>
+      <span class="quiz-head-text">{t(lang, 'quiz.head')}</span>
+      <span class="quiz-count">{questions.length} {t(lang, questions.length === 1 ? 'quiz.question' : 'quiz.questions')}</span>
       <i class="ti ti-chevron-down quiz-chevron" aria-hidden="true"></i>
     </summary>
     <div class="quiz-body">
@@ -146,12 +148,12 @@
           <p class="quiz-explain" class:ok={ans === q.answer}>
             <!-- Per-distractor feedback: a wrong choice with its own `why` entry gets
                  that specific diagnosis instead of the generic explanation. -->
-            {ans === q.answer ? 'Correct. ' : 'Not quite. '}{(ans !== q.answer && q.why && q.why[ans]) || q.explain}
+            {t(lang, ans === q.answer ? 'quiz.correct' : 'quiz.not_quite')}{(ans !== q.answer && q.why && q.why[ans]) || q.explain}
           </p>
         {/if}
         {#if done && ans !== q.answer && tutorAvailable}
           <button type="button" class="quiz-ask-tutor" on:click={() => askTutorWhy(q, q.choices[ans])}>
-            <i class="ti ti-message-chatbot" aria-hidden="true"></i> Ask the tutor why
+            <i class="ti ti-message-chatbot" aria-hidden="true"></i> {t(lang, 'quiz.ask_tutor')}
           </button>
         {/if}
       </div>
@@ -159,15 +161,15 @@
 
     {#if allDone}
       <div class="quiz-summary">
-        <span class="quiz-score">You got {correct} of {questions.length}.</span>
-        {#if correct === questions.length}<span class="quiz-flag">Marked complete in your path.</span>{/if}
-        <span class="quiz-flag"><i class="ti ti-cards" aria-hidden="true"></i> Saved to <a href="/review">review</a></span>
+        <span class="quiz-score">{t(lang, 'quiz.score', { correct, total: questions.length })}</span>
+        {#if correct === questions.length}<span class="quiz-flag">{t(lang, 'quiz.complete')}</span>{/if}
+        <span class="quiz-flag"><i class="ti ti-cards" aria-hidden="true"></i> {t(lang, 'quiz.saved')} <a href="/review">{t(lang, 'quiz.review')}</a></span>
         {#if correct < questions.length}
           <button type="button" class="quiz-retry-missed" on:click={retryMissed}>
-            Retry the {questions.length - correct} you missed
+            {t(lang, 'quiz.retry_missed', { n: questions.length - correct })}
           </button>
         {/if}
-        <button type="button" class="quiz-retry" on:click={retry}>Start over</button>
+        <button type="button" class="quiz-retry" on:click={retry}>{t(lang, 'quiz.start_over')}</button>
       </div>
     {/if}
     </div>

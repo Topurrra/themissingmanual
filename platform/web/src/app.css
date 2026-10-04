@@ -4141,3 +4141,16 @@ figure.mmd-ssr .commit6, figure.mmd-ssr .commit-highlight6, figure.mmd-ssr .arro
 figure.mmd-ssr .commit7, figure.mmd-ssr .commit-highlight7, figure.mmd-ssr .label7 { fill: var(--g7) !important; }
 figure.mmd-ssr .commit7, figure.mmd-ssr .commit-highlight7, figure.mmd-ssr .arrow7 { stroke: var(--g7) !important; }
 figure.mmd-ssr [class*="branch-label"] { fill: #ffffff !important; }
+
+/* Omarchy's mark (traced exactly from basecamp/omarchy icon.png, MIT) as a Tabler-style icon:
+   a currentColor mask, so `<i class="ti ti-omarchy">` themes like every other icon. */
+.ti-omarchy::before {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15'%3E%3Cpath d='M0 0h15v1H0zM0 1h1v6H0zM7 1h1v1H7zM14 1h1v13h-1zM2 2h6v1H2zM11 2h2v1h-2zM2 3h1v4H2zM12 3h1v9h-1zM0 7h3v1H0zM0 8h1v6H0zM2 8h1v4H2zM2 12h11v1H2zM7 13h1v1H7zM0 14h8v1H0zM9 14h6v1H9z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15'%3E%3Cpath d='M0 0h15v1H0zM0 1h1v6H0zM7 1h1v1H7zM14 1h1v13h-1zM2 2h6v1H2zM11 2h2v1h-2zM2 3h1v4H2zM12 3h1v9h-1zM0 7h3v1H0zM0 8h1v6H0zM2 8h1v4H2zM2 12h11v1H2zM7 13h1v1H7zM0 14h8v1H0zM9 14h6v1H9z'/%3E%3C/svg%3E") center / contain no-repeat;
+}

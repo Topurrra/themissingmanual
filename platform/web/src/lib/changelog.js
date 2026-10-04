@@ -4,6 +4,13 @@
 // you ship something worth telling readers about.
 export const CHANGELOG = [
   {
+    date: '2026-10',
+    items: [
+      { tag: 'New', text: 'New Omarchy category: 12 guides for the keyboard-first Linux desktop, from day one to plugins and recovery.', href: '/categories/omarchy' },
+      { tag: 'New', text: 'Read The Missing Manual inside Omarchy with our plugin.', href: '/guides/the-missing-manual-on-omarchy' },
+    ],
+  },
+  {
     date: '2026-08',
     items: [
       { tag: 'New', text: 'Embedded C From Zero: program a real microcontroller (the AVR ATmega328P) in bare-metal C - GPIO, registers, interrupts, timers, PWM, and serial - and run every example in your browser with Wokwi, no board needed.', href: '/guides/embedded-c-from-zero/1' },
