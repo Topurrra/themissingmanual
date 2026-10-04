@@ -4,6 +4,7 @@
   import { beginnerMode } from "$lib/beginner-store.js";
   import { allCards, loadState, countDue } from "$lib/srs.js";
   import Seo from "$lib/Seo.svelte";
+  import LandingOptions from "$lib/LandingOptions.svelte";
   import { page } from "$app/stores";
   import { siteOrigin } from "$lib/site.js";
   import { recentItems } from "$lib/changelog.js";
@@ -12,6 +13,9 @@
 
   export let data;
   $: origin = siteOrigin($page.url.origin);
+  $: landingOption = [1, 2, 3, 4, 5].includes(Number($page.url.searchParams.get("landing")))
+    ? Number($page.url.searchParams.get("landing"))
+    : 1;
   $: homeLd = [
     {
       "@context": "https://schema.org",
@@ -182,23 +186,6 @@
     bookmarks = bookmarks.filter((b) => b.key !== k);
   }
 
-  /* ASCII animation */
-  let asciiEl;
-  const asciiText = "Actually";
-  let asciiIdx = 0;
-
-  function animateAscii() {
-    // Bail if we've navigated away (the element is gone) — the queued setTimeout
-    // would otherwise deref a null asciiEl and throw. Returning here also stops
-    // the chain from rescheduling, so it self-terminates on unmount.
-    if (!asciiEl) return;
-    if (asciiIdx < asciiText.length) {
-      asciiEl.textContent += asciiText[asciiIdx];
-      asciiIdx++;
-      setTimeout(animateAscii, 180);
-    }
-  }
-
   onMount(() => {
     try {
       const cfg = JSON.parse(localStorage.getItem("tmm-path-config") || "null");
@@ -220,13 +207,6 @@
       dueCount = countDue(allCards(), loadState());
     } catch (e) {}
     loadBookmarks();
-    /* start ASCII animation after DOM is ready */
-    asciiEl.classList.remove("done"); // show cursor
-    asciiEl.textContent = "";         // empty text
-    asciiIdx = 0;
-    setTimeout(() => {
-      animateAscii();
-    }, 1000);
   });
 </script>
 
@@ -237,420 +217,18 @@
   jsonld={homeLd}
 />
 
-<section class="hero">
-  <h1>
-    Understand how software <span
-      bind:this={asciiEl}
-      class="accent ascii-accent"
-    ></span>works.
-  </h1>
-  <p class="tagline">
-    Clear, in-depth guides to everything from how a computer boots up to how the
-    internet, databases, and AI really work. Start from zero or go deep at your
-    own pace. Free, forever, no account needed.
-  </p>
-  <div class="hero-cta">
-    {#if hasPath}
-      <a class="cta-primary" href="/paths">Continue learning →</a>
-      <span class="cta-note">{pct}% through your path</span>
-    {:else}
-      <a class="cta-primary" href="/paths">Start learning →</a>
-    {/if}
-    <a class="cta-secondary" href="#topics">Browse topics</a>
-    <a class="cta-secondary" href="/cheat-sheet">Cheat sheets</a>
-  </div>
-  <div class="hero-stats">
-    <span><b>{totalGuides}</b> guide{totalGuides === 1 ? "" : "s"}</span>
-    <span><b>{shownTopics}</b> topics</span>
-    <span><b>Free</b> forever</span>
-  </div>
-</section>
-
-{#if whatsNew.length}
-  <section class="whatsnew-strip" aria-label="What's new">
-    <div class="wn-head">
-      <span class="wn-eyebrow">What’s new</span>
-      <a class="wn-all" href="/changelog">See all →</a>
-    </div>
-    <ul class="wn-list">
-      {#each whatsNew as it}
-        <li class="wn-item">
-          <span class="wn-tag wn-{it.tag.toLowerCase()}">{it.tag}</span>
-          {#if it.href}
-            <a class="wn-text" href={it.href} title={it.text}>{it.text}</a>
-          {:else}
-            <span class="wn-text" title={it.text}>{it.text}</span>
-          {/if}
-        </li>
-      {/each}
-    </ul>
-  </section>
-{/if}
-
-{#if bookmarks.length}
-  <h2 class="section-eyebrow">Pick up where you left off</h2>
-  <ul class="bookmarks">
-    {#each bookmarks as b}
-      <li class="bm-row">
-        <a class="bm-link" href={b.path}>
-          <i class="ti ti-bookmark" aria-hidden="true"></i>
-          <span class="bm-body">
-            <span class="bm-title"
-              >{b.title}{#if b.phase}
-                · Phase {b.phase}{/if}</span
-            >
-            {#if b.label}<span class="bm-sub">Continue at “{b.label}”</span
-              >{/if}
-          </span>
-        </a>
-        <button
-          class="bm-x"
-          on:click={() => removeBookmark(b.key)}
-          aria-label="Remove bookmark"
-          title="Remove">&times;</button
-        >
-      </li>
-    {/each}
-  </ul>
-{/if}
-
-<div class="home-cards">
-  {#if dueCount > 0}
-    <a class="home-train review" href="/review">
-      <span class="ht-icon"><i class="ti ti-cards" aria-hidden="true"></i></span
-      >
-      <span class="ht-text">
-        <span class="ht-title">Review · {dueCount} due</span>
-      </span>
-      <span class="ht-go" aria-hidden="true">→</span>
-    </a>
-  {/if}
-  <a class="home-train" href="/practice">
-    <span class="ht-icon"
-      ><i class="ti ti-keyboard" aria-hidden="true"></i></span
-    >
-    <span class="ht-text">
-      <span class="ht-title">Learn By Doing</span>
-    </span>
-    <span class="ht-go" aria-hidden="true">→</span>
-  </a>
-  <a class="home-train" href="/train">
-    <span class="ht-icon"><i class="ti ti-brain" aria-hidden="true"></i></span>
-    <span class="ht-text">
-      <span class="ht-title">Train your brain</span>
-    </span>
-    <span class="ht-go" aria-hidden="true">→</span>
-  </a>
-  <!-- <a class="home-train" href="/guides/git-from-zero/1?tutor=1">
-    <span class="ht-icon"
-      ><i class="ti ti-message-chatbot" aria-hidden="true"></i></span
-    >
-    <span class="ht-text">
-      <span class="ht-title">Ask the AI tutor</span>
-    </span>
-    <span class="ht-go" aria-hidden="true">→</span>
-  </a> -->
-</div>
-
-<h2 class="section-eyebrow" id="topics">Browse by topic</h2>
-<div class="cat-grid">
-  {#each cards as c}
-    {#if c.shown > 0}
-      <a class="cat-card" href={`/categories/${c.slug}`}>
-        <i class={`ti ${c.icon}`} aria-hidden="true"></i>
-        <span class="cat-name">{c.name}</span>
-        <span class="cat-meta">{c.shown} guide{c.shown === 1 ? "" : "s"} →</span
-        >
-      </a>
-    {:else}
-      <div class="cat-card disabled">
-        <i class={`ti ${c.icon}`} aria-hidden="true"></i>
-        <span class="cat-name">{c.name}</span>
-        <span class="cat-meta"
-          >{$beginnerMode && c.hasAny
-            ? "No beginner guides"
-            : "Coming soon"}</span
-        >
-      </div>
-    {/if}
-  {/each}
-</div>
-<p class="req-hint">
-  Missing a topic? <a href="/request">Request a guide →</a>
-</p>
-
-{#if shownRecent.length}
-  <h2 class="section-eyebrow">Newly added</h2>
-  <ul class="guides">
-    {#each shownRecent as g}
-      <li>
-        <span class="guide-ico" title={g.category}
-          ><i
-            class={`ti ${iconFor[g.category] || "ti-file-text"}`}
-            aria-hidden="true"
-          ></i></span
-        >
-        <span class="guide-body">
-          <a href={`/guides/${g.slug}`}>{g.title}</a>
-          <span class="summary">{g.summary}</span>
-        </span>
-      </li>
-    {/each}
-  </ul>
-{/if}
-
-<style>
-  /* "Recently added" strip — surfaces What's-new near the top so it isn't buried
-     in the footer. Slim, calm, links out to the full changelog. */
-  .whatsnew-strip {
-    margin: 1.6rem 0 0.4rem;
-    padding: 0.9rem 1.1rem;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: var(--surface);
-  }
-  .wn-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
-  }
-  .wn-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--faint);
-  }
-  .wn-all {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--accent);
-    white-space: nowrap;
-  }
-  .wn-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-  }
-  .wn-item {
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
-    font-size: 0.92rem;
-    line-height: 1.5;
-    color: var(--body);
-    min-width: 0;
-  }
-  /* Keep each entry to one tidy line - changelog text can be a full sentence;
-     the full text stays available via the title tooltip. */
-  .wn-text {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--body);
-    text-decoration: none;
-  }
-  a.wn-text:hover {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-  .wn-tag {
-    flex: none;
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 0.12rem 0.4rem;
-    border-radius: 999px;
-    transform: translateY(-1px);
-  }
-  .wn-new {
-    color: var(--accent-strong);
-    background: var(--accent-tint);
-  }
-  .wn-improved {
-    color: var(--muted);
-    background: var(--raise);
-    border: 1px solid var(--line);
-  }
-
-  .ascii-accent {
-    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
-    white-space: pre-wrap;
-    letter-spacing: 0.03em;
-    font-variant-ligatures: none;
-    position: relative;
-    /* display: inline-block; */
-  }
-
-  .ascii-accent::after {
-    content: "|"; /* █, ▌, ▋, | */
-    font-weight: 700;
-    animation: ascii-blink 0.6s steps(1) infinite;
-  }
-
-  .ascii-accent.done::after {
-    content: "";
-  }
-
-  @keyframes ascii-blink {
-    50% {
-      opacity: 0;
-    }
-  }
-
-  .home-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 0.8rem;
-    margin: 1.5rem 0 0.5rem;
-  }
-  .home-train {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.1rem 1.3rem;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: var(--raise);
-    transition:
-      border-color 0.15s var(--ease),
-      box-shadow 0.15s var(--ease),
-      transform 0.15s var(--ease);
-  }
-  .home-train:hover {
-    border-color: var(--accent);
-    box-shadow: var(--shadow-md);
-    text-decoration: none;
-    transform: translateY(-2px);
-  }
-  .ht-icon {
-    flex: none;
-    display: inline-grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--accent-tint);
-  }
-  .ht-icon .ti {
-    font-size: 24px;
-    color: var(--accent);
-  }
-  .ht-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    min-width: 0;
-  }
-  .ht-title {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.05rem;
-    color: var(--ink);
-  }
-  .ht-blurb {
-    font-size: 0.9rem;
-    color: var(--muted);
-  }
-  .ht-go {
-    margin-left: auto;
-    flex: none;
-    color: var(--faint);
-    font-size: 1.2rem;
-    transition:
-      color 0.15s var(--ease),
-      transform 0.15s var(--ease);
-  }
-  .home-train:hover .ht-go {
-    color: var(--accent);
-    transform: translateX(3px);
-  }
-
-  .bookmarks {
-    list-style: none;
-    margin: 0 0 0.5rem;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .bm-row {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    background: var(--raise);
-    transition: border-color 0.15s var(--ease);
-  }
-  .bm-row:hover {
-    border-color: var(--accent);
-  }
-  .bm-link {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    flex: 1;
-    min-width: 0;
-    padding: 0.7rem 0.9rem;
-    color: var(--ink);
-  }
-  .bm-link:hover {
-    text-decoration: none;
-  }
-  .bm-link .ti {
-    flex: none;
-    color: var(--accent);
-    font-size: 18px;
-  }
-  .bm-body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    min-width: 0;
-  }
-  .bm-title {
-    font-weight: 600;
-    color: var(--ink);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .bm-sub {
-    font-size: 0.85rem;
-    color: var(--muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .bm-x {
-    flex: none;
-    cursor: pointer;
-    background: none;
-    border: 0;
-    color: var(--faint);
-    font-size: 1.3rem;
-    line-height: 1;
-    padding: 0 0.8rem;
-    align-self: stretch;
-    border-radius: 0 12px 12px 0;
-  }
-  .bm-x:hover {
-    color: #c0563c;
-    background: var(--surface);
-  }
-
-  .req-hint {
-    margin: 0.9rem 0 0;
-    font-size: 0.92rem;
-    color: var(--muted);
-  }
-</style>
+<LandingOptions
+  option={landingOption}
+  {cards}
+  {totalGuides}
+  {shownTopics}
+  {shownRecent}
+  {iconFor}
+  {whatsNew}
+  {bookmarks}
+  {removeBookmark}
+  {hasPath}
+  {pct}
+  {dueCount}
+  beginner={$beginnerMode}
+/>
