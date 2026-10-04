@@ -361,21 +361,25 @@
 
 {#if stage === 'menu'}
   <header class="tr-intro">
-    <span class="eyebrow">Train</span>
     <h1>Train your brain</h1>
-    <p class="tagline">Quick, adaptive workouts for the skills under clear thinking - reasoning, working memory, spatial sense, speed, and recall. Pick a game and beat your best, or take the Brain Challenge for a score.</p>
+    <p>Quick workouts for reasoning, memory, spatial sense, speed, and recall. Pick a game to practice a skill, or take the Brain Challenge for a broader benchmark.</p>
   </header>
 
   <button class="tr-challenge" on:click={startChallenge}>
     <span class="tr-ch-icon"><i class="ti ti-target-arrow" aria-hidden="true"></i></span>
     <span class="tr-ch-text">
       <span class="tr-ch-title">Brain Challenge</span>
-      <span class="tr-ch-blurb">A 12-round mix across four reasoning skills → your Brain Score and a per-skill breakdown.</span>
+      <span class="tr-ch-blurb">A 12-round mix across four reasoning skills with a score and per-skill breakdown.</span>
     </span>
-    <span class="tr-ch-go" aria-hidden="true">→</span>
+    <i class="ti ti-arrow-right tr-ch-go" aria-hidden="true"></i>
   </button>
 
-  <div class="tr-grid">
+  <section class="tr-workouts" aria-labelledby="workout-heading">
+    <div class="tr-section-heading">
+      <h2 id="workout-heading">Choose a workout</h2>
+      <p>Each session has its own saved best.</p>
+    </div>
+    <div class="tr-grid">
     {#each GAMES as g}
       {@const isK = g.id === 'knowledge'}
       {@const disabled = isK && knowledgeEmpty}
@@ -386,7 +390,14 @@
         <span class="tr-mode-skill">{g.skill}</span>
       </button>
     {/each}
-  </div>
+    </div>
+  </section>
+
+  <section class="tr-setup" aria-labelledby="setup-heading">
+    <div class="tr-section-heading">
+      <h2 id="setup-heading">Set up your session</h2>
+      <p>{(GAMES.find((item) => item.id === game) || {}).name} · {(GAMES.find((item) => item.id === game) || {}).skill}</p>
+    </div>
 
   {#if game === 'memory' || game === 'focus'}
     <div class="tr-opt">
@@ -426,15 +437,16 @@
   {/if}
 
   <div class="tr-start-row">
-    <button class="tr-start" disabled={startDisabled} on:click={start}>Start →</button>
+    <button class="tr-start" disabled={startDisabled} on:click={start}>Start {(GAMES.find((item) => item.id === game) || {}).name} <i class="ti ti-player-play-filled" aria-hidden="true"></i></button>
     {#if startDisabled}
       <span class="tr-best">Finish a guide’s quiz to unlock Knowledge.</span>
     {:else if game === 'wordsearch'}
-      <span class="tr-best">Find every term - beat your best time.</span>
+      <span class="tr-best">Find every term and beat your best time.</span>
     {:else}
-      <span class="tr-best">Best: <b>{best}</b></span>
+      <span class="tr-best">Personal best <b>{best}</b></span>
     {/if}
   </div>
+  </section>
 
 {:else if stage === 'play'}
   <div class="tr-hud">
@@ -543,9 +555,8 @@
 
 {:else if stage === 'wordsearchDone'}
   <header class="tr-intro">
-    <span class="eyebrow">{newBest ? 'New best!' : 'Solved'}</span>
     <h1>All {ws ? ws.words.length : 0} found</h1>
-    <p class="tagline">{wsPackName} · finished in {fmtTime(wsElapsed)}.</p>
+    <p>{newBest ? 'New personal best · ' : ''}{wsPackName} finished in {fmtTime(wsElapsed)}.</p>
   </header>
 
   <div class="tr-breakdown">
@@ -560,9 +571,8 @@
 
 {:else if stage === 'challengeDone'}
   <header class="tr-intro">
-    <span class="eyebrow">{newBest ? 'New best!' : 'Brain Challenge'}</span>
     <h1>Brain Score: {chScore}</h1>
-    <p class="tagline">{chBand} - {correct} of {chResults.length} correct.</p>
+    <p>{newBest ? 'New personal best · ' : ''}{chBand} · {correct} of {chResults.length} correct.</p>
   </header>
 
   <div class="tr-skills">
@@ -588,9 +598,8 @@
 
 {:else}
   <header class="tr-intro">
-    <span class="eyebrow">{newBest ? 'New best!' : endLabel}</span>
     <h1>{game === 'memory' ? `${rounds} rounds` : game === 'nback' ? `${nbHits} hits` : `You scored ${correct}`}</h1>
-    {#if activeSkill}<p class="tagline">Trained: {activeSkill}.</p>{/if}
+    {#if activeSkill}<p>{newBest ? 'New personal best · ' : ''}{endLabel} · trained {activeSkill}.</p>{/if}
   </header>
 
   <div class="tr-breakdown">
@@ -615,78 +624,88 @@
 {/if}
 
 <style>
-  .tr-intro { margin-bottom: 1.8rem; }
-  .tr-intro h1 { margin: 0.5rem 0 0.6rem; }
+  .tr-intro { max-width: 46rem; margin-bottom: 2.25rem; }
+  .tr-intro h1 { margin: 0; color: var(--ink); font-family: var(--font-display); font-size: 2rem; line-height: 1.12; letter-spacing: -0.025em; }
+  .tr-intro p { margin: 0.75rem 0 0; color: var(--muted); font-size: 1rem; line-height: 1.6; }
 
   .tr-challenge {
     display: flex; align-items: center; gap: 1rem; width: 100%; text-align: left; cursor: pointer;
-    padding: 1.1rem 1.3rem; margin-bottom: 1.4rem; border: 1px solid var(--accent); border-radius: 16px;
+    padding: 1.1rem 1.2rem; margin-bottom: 2.3rem; border: 1px solid var(--accent); border-radius: 12px;
     background: var(--accent-tint); color: var(--body);
-    transition: box-shadow 0.15s var(--ease), transform 0.15s var(--ease);
+    transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
   }
-  .tr-challenge:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-  .tr-ch-icon { flex: none; display: inline-grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--accent); }
-  .tr-ch-icon .ti { font-size: 26px; color: #fff; }
+  .tr-challenge:hover { background: color-mix(in srgb, var(--accent-tint) 72%, var(--raise)); }
+  .tr-ch-icon { flex: none; display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 9px; background: var(--accent); }
+  .tr-ch-icon .ti { font-size: 22px; color: #fff; }
   .tr-ch-text { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
   .tr-ch-title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--ink); }
   .tr-ch-blurb { font-size: 0.88rem; color: var(--muted); }
-  .tr-ch-go { margin-left: auto; flex: none; color: var(--accent); font-size: 1.3rem; }
+  .tr-ch-go { margin-left: auto; flex: none; color: var(--accent); font-size: 1.2rem; }
 
-  .tr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.8rem; margin-bottom: 1.4rem; }
+  .tr-workouts { margin-bottom: 2.4rem; }
+  .tr-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.95rem; }
+  .tr-section-heading h2 { margin: 0; color: var(--ink); font-family: var(--font-display); font-size: 1.2rem; line-height: 1.25; }
+  .tr-section-heading p { margin: 0; color: var(--muted); font-size: 0.88rem; text-align: right; }
+  .tr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.7rem; }
   .tr-mode {
     display: flex; flex-direction: column; gap: 0.3rem; text-align: left; cursor: pointer;
-    padding: 1.1rem 1.2rem; border: 1px solid var(--line); border-radius: 14px; background: var(--raise); color: var(--body);
-    transition: border-color 0.15s var(--ease), background 0.15s var(--ease), box-shadow 0.15s var(--ease);
+    min-height: 9.75rem; padding: 1rem 1.05rem; border: 1px solid var(--line); border-radius: 12px; background: var(--raise); color: var(--body);
+    transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
   }
   .tr-mode:hover:not(:disabled) { border-color: var(--accent); }
-  .tr-mode.on { border-color: var(--accent); background: var(--accent-tint); box-shadow: var(--shadow-sm); }
+  .tr-mode.on { border-color: var(--accent); background: var(--accent-tint); }
   .tr-mode:disabled { opacity: 0.5; cursor: not-allowed; }
   .tr-mode .ti { font-size: 22px; color: var(--accent); }
-  .tr-mode-name { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--ink); }
+  .tr-mode-name { font-family: var(--font-display); font-weight: 600; font-size: 1rem; color: var(--ink); }
   .tr-mode-blurb { font-size: 0.86rem; color: var(--muted); }
   .tr-mode-skill { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); margin-top: 0.2rem; }
 
-  .tr-opt { display: flex; align-items: center; gap: 0.9rem; margin: 0 0 1rem; }
-  .tr-opt-label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); width: 80px; }
+  .tr-setup { padding: 1.3rem 0 0; border-top: 1px solid var(--line); }
+  .tr-opt { display: flex; align-items: center; gap: 1rem; margin: 0 0 0.85rem; }
+  .tr-opt-label { width: 5.4rem; color: var(--body); font-size: 0.9rem; font-weight: 600; }
   .tr-seg { display: inline-flex; gap: 4px; background: var(--surface); padding: 4px; border-radius: 10px; }
-  .tr-seg button { cursor: pointer; font: inherit; font-size: 0.85rem; color: var(--muted); border: 0; background: none; padding: 0.35rem 0.7rem; border-radius: 8px; }
+  .tr-seg button { cursor: pointer; font: inherit; font-size: 0.86rem; color: var(--muted); border: 0; background: none; padding: 0.4rem 0.7rem; border-radius: 7px; }
   .tr-seg button:hover { color: var(--ink); }
   .tr-seg button.on { background: var(--raise); color: var(--accent); box-shadow: var(--shadow-sm); font-weight: 500; }
   .tr-adaptive { font-size: 0.85rem; color: var(--muted); display: inline-flex; align-items: center; gap: 0.4rem; }
   .tr-adaptive .ti { color: var(--accent); font-size: 16px; }
 
-  .tr-start-row { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.4rem; }
-  .tr-start { cursor: pointer; font: inherit; font-weight: 600; font-size: 1rem; background: var(--accent); color: #fff; border: 1px solid var(--accent); padding: 0.7rem 1.4rem; border-radius: 10px; transition: background 0.15s var(--ease); }
+  .tr-start-row { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.3rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+  .tr-start { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; font: inherit; font-weight: 600; font-size: 0.95rem; background: var(--accent); color: #fff; border: 1px solid var(--accent); padding: 0.72rem 1rem; border-radius: 9px; transition: background 0.15s var(--ease); }
   .tr-start:hover:not(:disabled) { background: var(--accent-strong); }
+  :global(:root[data-mode="dark"]) .tr-start,
+  :global(:root[data-mode="dark"]) .tr-start:hover:not(:disabled),
+  :global(:root[data-mode="dark"]) .tr-nb-btn,
+  :global(:root[data-mode="dark"]) .ws-cell.sel,
+  :global(:root[data-mode="dark"]) .tr-tile.active { background: var(--accent-strong); border-color: var(--accent-strong); color: var(--bg); }
   .tr-start:disabled { opacity: 0.5; cursor: not-allowed; }
   .tr-best { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); }
   .tr-best b, .tr-score b, .tr-time b { color: var(--ink); }
   .tr-link { cursor: pointer; font: inherit; font-size: 0.92rem; color: var(--muted); background: none; border: 0; text-decoration: underline; text-underline-offset: 3px; }
   .tr-link:hover { color: var(--ink); }
 
-  .tr-hud { display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-family: var(--font-mono); font-size: 0.95rem; color: var(--muted); padding: 0.6rem 0.9rem; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 1.4rem; }
+  .tr-hud { display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-family: var(--font-body); font-size: 0.92rem; color: var(--muted); padding: 0.7rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 1.6rem; }
   .tr-stats { display: flex; align-items: center; gap: 1.4rem; }
   .tr-hud .ti { font-size: 16px; vertical-align: -2px; }
-  .tr-time.low { color: #c0563c; font-weight: 600; }
-  .tr-streak.hot { color: #e0892a; }
+  .tr-time.low, .tr-streak.hot { color: var(--accent); font-weight: 600; }
   .tr-status { color: var(--accent); }
   .tr-stop { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; font: inherit; font-size: 0.82rem; color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 0.3rem 0.7rem; }
-  .tr-stop:hover { border-color: #c0563c; color: #c0563c; }
+  .tr-stop:hover { border-color: var(--accent); color: var(--accent); }
   .tr-stop .ti { font-size: 14px; }
 
-  .tr-card { border: 1px solid var(--line); border-radius: 16px; background: var(--raise); padding: 1.8rem 1.4rem; }
+  .tr-card { border: 1px solid var(--line); border-radius: 12px; background: var(--raise); padding: 1.6rem 1.3rem; }
   .tr-sub { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin: 0 0 1rem; text-align: center; }
   .tr-prompt { font-size: 1.1rem; line-height: 1.5; color: var(--ink); margin: 0 0 1.3rem; }
-  .tr-prompt.big { font-family: var(--font-mono); font-size: clamp(2rem, 7vw, 3rem); font-weight: 600; text-align: center; }
-  .tr-prompt.mono { font-family: var(--font-mono); font-size: clamp(1.1rem, 4vw, 1.6rem); font-weight: 600; text-align: center; letter-spacing: 0.02em; }
+  .tr-prompt.big { font-family: var(--font-mono); font-size: 2.5rem; font-weight: 600; text-align: center; }
+  .tr-prompt.mono { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 600; text-align: center; letter-spacing: 0.02em; }
   .tr-choices { display: flex; flex-direction: column; gap: 0.6rem; }
   .tr-choices.cols { display: grid; grid-template-columns: 1fr 1fr; }
   .tr-choices.svg { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.7rem; max-width: 360px; margin: 0 auto; }
   .tr-choice { cursor: pointer; font: inherit; font-size: 1.02rem; color: var(--ink); border: 1px solid var(--line); background: var(--bg); border-radius: 11px; padding: 0.8rem 1rem; text-align: left; transition: border-color 0.12s var(--ease), background 0.12s var(--ease); }
   .tr-choice:not(:disabled):hover { border-color: var(--accent); }
   .tr-choice.svg { display: grid; place-items: center; padding: 0.6rem; aspect-ratio: 1.4; color: var(--ink); }
-  .tr-choice.right { border-color: #2e9e6b; background: color-mix(in srgb, #2e9e6b 16%, var(--raise)); }
-  .tr-choice.wrong { border-color: #c0563c; background: color-mix(in srgb, #c0563c 16%, var(--raise)); }
+  .tr-choice.right { border-color: var(--accent); background: var(--accent-tint); }
+  .tr-choice.wrong { border-color: var(--faint); background: var(--surface); }
 
   .tr-prompt-svg { display: flex; justify-content: center; margin: 0 0 1.4rem; color: var(--ink); }
   /* These elements are injected via {@html}, so Svelte's scoping never tags
@@ -709,8 +728,8 @@
 
   .tr-seg-wrap { flex-wrap: wrap; }
   .ws-grid { display: grid; gap: 3px; width: min(460px, 100%); margin: 0 auto; touch-action: none; user-select: none; }
-  .ws-cell { aspect-ratio: 1; display: grid; place-items: center; font-family: var(--font-mono); font-size: clamp(0.65rem, 2.3vw, 0.95rem); font-weight: 600; color: var(--body); background: var(--bg); border: 1px solid var(--line); border-radius: 5px; cursor: pointer; }
-  .ws-cell.found { background: color-mix(in srgb, #2e9e6b 22%, var(--raise)); border-color: #2e9e6b; color: var(--ink); }
+  .ws-cell { aspect-ratio: 1; display: grid; place-items: center; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; color: var(--body); background: var(--bg); border: 1px solid var(--line); border-radius: 5px; cursor: pointer; }
+  .ws-cell.found { background: var(--accent-tint); border-color: var(--accent); color: var(--ink); }
   .ws-cell.sel { background: var(--accent); border-color: var(--accent); color: #fff; }
   .ws-words { display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: center; margin: 1.2rem auto 0; max-width: 560px; }
   .ws-word { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.03em; color: var(--body); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 0.25rem 0.7rem; }
@@ -720,7 +739,7 @@
   .tr-tile { aspect-ratio: 1; cursor: pointer; font: inherit; font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--ink); border: 1px solid var(--line); background: var(--bg); border-radius: 12px; transition: background 0.1s var(--ease), border-color 0.1s var(--ease), transform 0.08s var(--ease); }
   .tr-tile:not(:disabled):hover { border-color: var(--accent); }
   .tr-tile.active { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.04); }
-  .tr-tile.good { background: color-mix(in srgb, #2e9e6b 22%, var(--raise)); border-color: #2e9e6b; }
+  .tr-tile.good { background: var(--accent-tint); border-color: var(--accent); }
 
   .tr-cells { display: grid; gap: 0.5rem; max-width: 420px; margin: 0 auto; }
   .tr-cells.shake { animation: tr-shake 0.25s; }
@@ -742,4 +761,33 @@
   .tr-disclaimer .ti { color: var(--accent); vertical-align: -2px; margin-right: 0.3rem; }
 
   .tr-hint { margin: 1rem 0 0; font-size: 0.82rem; color: var(--faint); text-align: center; }
+
+  @media (max-width: 640px) {
+    .tr-intro h1 { font-size: 1.75rem; }
+    .tr-section-heading { align-items: flex-start; flex-direction: column; gap: 0.3rem; }
+    .tr-section-heading p { text-align: left; }
+    .tr-challenge { align-items: flex-start; }
+    .tr-ch-go { margin-top: 0.35rem; }
+    .tr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem; }
+    .tr-mode { min-height: 7.2rem; padding: 0.75rem; }
+    .tr-mode .ti { font-size: 1.1rem; }
+    .tr-mode-name { font-size: 0.9rem; }
+    .tr-mode-blurb { font-size: 0.76rem; line-height: 1.35; }
+    .tr-mode-skill { margin-top: auto; font-size: 0.58rem; }
+    .tr-setup { padding-bottom: 5.8rem; }
+    .tr-setup .tr-start-row {
+      position: fixed; right: 0; bottom: 0; left: 0; z-index: 10;
+      justify-content: space-between; margin: 0; padding: 0.7rem max(1rem, env(safe-area-inset-right)) calc(0.7rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+      background: var(--raise); border-top: 1px solid var(--line);
+    }
+    .tr-setup .tr-best { max-width: 11rem; font-size: 0.72rem; line-height: 1.35; text-align: right; }
+    .tr-mode, .tr-setup button { scroll-margin-bottom: 6.5rem; }
+    .tr-opt { align-items: flex-start; flex-direction: column; gap: 0.45rem; }
+    .tr-opt-label { width: auto; }
+    .tr-stats { flex-wrap: wrap; gap: 0.5rem 1rem; }
+    .tr-hud { align-items: flex-start; }
+    .tr-prompt.big { font-size: 2rem; }
+    .tr-prompt.mono { font-size: 1.12rem; }
+    .ws-cell { font-size: 0.68rem; }
+  }
 </style>

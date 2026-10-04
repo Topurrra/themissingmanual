@@ -8,8 +8,8 @@
   // dark-mode toggle + lofi-player master switch + beginner mode. Persists to
   // localStorage; app.html applies the saved theme/font before first paint.
   const FONTS = [
-    { id: 'IBM Plex Sans', name: 'IBM Plex', vibe: 'Technical · default' },
-    { id: 'Inter', name: 'Inter', vibe: 'Clean, neutral · ★★★★★' },
+    { id: 'Inter', name: 'Inter', vibe: 'Clean, neutral · default' },
+    { id: 'IBM Plex Sans', name: 'IBM Plex', vibe: 'Technical' },
     { id: 'Geist', name: 'Geist', vibe: 'Modern, precise · ★★★★★' },
     { id: 'Sora', name: 'Sora', vibe: 'Friendly, distinct · ★★★★☆' },
     { id: 'DM Sans', name: 'DM Sans', vibe: 'Elegant, soft · ★★★★☆' },
@@ -33,7 +33,7 @@
 
   let open = false;
   let theme = 'light';
-  let font = 'IBM Plex Sans';
+  let font = 'Inter';
 
   $: lofiOn = $lofiEnabled;
   $: beginnerOn = $beginnerMode;

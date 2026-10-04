@@ -30,10 +30,10 @@
   --shadow-md: 0 6px 24px -8px rgba(19, 19, 22, 0.14);
   --shadow-pop: 0 16px 48px -12px rgba(19, 19, 22, 0.22);
 
-  /* IBM Plex Sans for text, JetBrains Mono for code. Display/body are swappable
+  /* Inter for text, JetBrains Mono for code. Display/body are swappable
      at runtime by the font picker (see +layout.svelte). */
-  --font-display: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --maxw: 1200px;

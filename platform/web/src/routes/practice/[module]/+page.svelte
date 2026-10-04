@@ -3,6 +3,7 @@
   import Seo from '$lib/Seo.svelte';
   import { levelLabel } from '$lib/difficulty.js';
   import PracticeSidebar from '$lib/practice/PracticeSidebar.svelte';
+  import { practiceViewport } from '$lib/practice/viewport.js';
 
   export let data;
   $: module = data.module;
@@ -50,46 +51,68 @@
 <Seo title={`${module.title} - Practice - The Missing Manual`} description={module.summary} />
 
 {#key module.module}
-  <div class="pr-mod-shell">
+  <div class="pr-mod-shell" use:practiceViewport>
     <PracticeSidebar modules={data.modules} activeModule={module.module} activePhase={null} />
 
     <div class="pr-mod-content">
       <div class="pr-mod-inner">
-        <a class="pr-back" href="/practice"><i class="ti ti-chevron-left" aria-hidden="true"></i> Practice</a>
+        <a class="pr-back" href="/practice"><i class="ti ti-chevron-left" aria-hidden="true"></i> All practice</a>
 
-        <div class="pr-mod-head">
-          <h1 class="pr-mod-title">{module.title}</h1>
-          <span class="lvl" class:mid={lvl === 'Intermediate'} class:adv={lvl === 'Advanced'} title={lvl}>{lvl}</span>
-        </div>
-        <p class="pr-mod-summary">{module.summary}</p>
+        <header class="pr-mod-head">
+          <div>
+            <h1 class="pr-mod-title">{module.title}</h1>
+            <p class="pr-mod-summary">{module.summary}</p>
+          </div>
+          <div class="pr-mod-meta">
+            <span class="lvl" class:mid={lvl === 'Intermediate'} class:adv={lvl === 'Advanced'}>{lvl}</span>
+            <span>{doneSet.size}/{module.lessons.length} complete</span>
+          </div>
+        </header>
 
-        <!-- <div class="pr-mod-prose">{@html data.overviewHtml}</div> -->
+        {#if primaryHref}
+          <div class="pr-mod-next">
+            <div>
+              <strong>{allDone ? 'Ready for a review?' : doneSet.size ? 'Pick up where you left off.' : 'Start with the first lesson.'}</strong>
+              <span>{module.lessons.length} hands-on lesson{module.lessons.length === 1 ? '' : 's'}</span>
+            </div>
+            <a class="pr-btn pr-btn-primary" href={primaryHref}>
+              {primaryLabel} <i class="ti ti-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        {/if}
+
+        {#if data.overviewHtml}
+          <div class="pr-mod-prose">{@html data.overviewHtml}</div>
+        {/if}
 
         {#if module.lessons.length}
-          <h2 class="pr-mod-sub">Lessons</h2>
-          <ol class="pr-mod-lessons">
-            {#each module.lessons as l (l.phase_no)}
-              <li>
-                <a href={`/practice/${module.module}/${l.phase_no}`}>
-                  {#if doneSet.has(l.phase_no)}<i class="ti ti-circle-check pr-mod-done" aria-hidden="true"></i>{/if}
-                  {l.title}
-                </a>
-              </li>
-            {/each}
-          </ol>
+          <section class="pr-mod-lessons-section" aria-labelledby="lessons-title">
+            <div class="pr-mod-section-head">
+              <h2 id="lessons-title">Lessons</h2>
+              <span>{module.lessons.length} total</span>
+            </div>
+            <ol class="pr-mod-lessons">
+              {#each module.lessons as l (l.phase_no)}
+                <li class:pr-mod-lesson-done={doneSet.has(l.phase_no)}>
+                  <a href={`/practice/${module.module}/${l.phase_no}`}>
+                    <span class="pr-mod-lesson-number">
+                      {#if doneSet.has(l.phase_no)}<i class="ti ti-check" aria-label="Completed"></i>{:else}{String(l.phase_no).padStart(2, '0')}{/if}
+                    </span>
+                    <span class="pr-mod-lesson-title">{l.title}</span>
+                    <i class="ti ti-arrow-up-right pr-mod-lesson-arrow" aria-hidden="true"></i>
+                  </a>
+                </li>
+              {/each}
+            </ol>
+          </section>
         {/if}
 
         {#if allDone}
           <p class="pr-mod-done-msg">
+            <i class="ti ti-circle-check" aria-hidden="true"></i>
             You've completed all {module.lessons.length} lessons in {module.title}.
-            {#if nextModule}<a href={`/practice/${nextModule.module}`}>Continue to {nextModule.title} →</a>{/if}
+            {#if nextModule}<a href={`/practice/${nextModule.module}`}>Continue to {nextModule.title} <i class="ti ti-arrow-right" aria-hidden="true"></i></a>{/if}
           </p>
-        {/if}
-
-        {#if primaryHref}
-          <a class="pr-btn pr-btn-primary pr-mod-cta" href={primaryHref}>
-            {primaryLabel} <i class="ti ti-arrow-right" aria-hidden="true"></i>
-          </a>
         {/if}
       </div>
     </div>
@@ -99,7 +122,7 @@
 <style>
   .pr-mod-shell {
     position: fixed;
-    top: 57px;
+    top: var(--practice-header-offset, 57px);
     left: 0;
     right: 0;
     bottom: 0;
@@ -114,15 +137,13 @@
     overflow-y: auto;
   }
   .pr-mod-inner {
-    max-width: 720px;
+    max-width: 760px;
     margin: 0 auto;
     padding: 2.4rem 1.5rem 4rem;
   }
 
   .pr-back {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.04em;
+    font-size: 0.88rem;
     color: var(--muted);
     display: inline-flex;
     align-items: center;
@@ -135,25 +156,64 @@
 
   .pr-mod-head {
     display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    margin: 0.9rem 0 0.4rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.4rem 0 1.7rem;
+    border-bottom: 1px solid var(--line);
   }
   .pr-mod-title {
-    font-size: clamp(1.7rem, 3.6vw, 2.2rem);
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    line-height: 1.08;
     letter-spacing: -0.03em;
     margin: 0;
   }
   .pr-mod-summary {
     color: var(--muted);
-    font-size: 1.02rem;
-    line-height: 1.6;
-    margin: 0 0 1.6rem;
+    font-size: 1rem;
+    line-height: 1.65;
+    max-width: 55ch;
+    margin: 0.65rem 0 0;
+  }
+  .pr-mod-meta {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .pr-mod-next {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .pr-mod-next div {
+    display: grid;
+    gap: 0.2rem;
+  }
+  .pr-mod-next strong {
+    font-size: 1rem;
+    color: var(--ink);
+  }
+  .pr-mod-next span {
+    font-size: 0.86rem;
+    color: var(--muted);
   }
 
   .pr-mod-prose :global(p) {
-    line-height: 1.75;
+    line-height: 1.72;
     color: var(--body);
+  }
+  .pr-mod-prose {
+    max-width: 68ch;
+    margin: 1.9rem 0 0;
   }
   .pr-mod-prose :global(pre) {
     background: var(--code-bg);
@@ -172,56 +232,71 @@
     font-size: 0.86em;
   }
 
-  .pr-mod-sub {
+  .pr-mod-lessons-section {
+    margin-top: 2.5rem;
+  }
+  .pr-mod-section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.55rem;
+  }
+  .pr-mod-section-head h2 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .pr-mod-section-head span {
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 400;
-    margin: 2.2rem 0 0.6rem;
+    color: var(--faint);
   }
   .pr-mod-lessons {
-    counter-reset: lesson;
     list-style: none;
-    margin: 0 0 2rem;
+    margin: 0;
     padding: 0;
-  }
-  .pr-mod-lessons li {
-    padding: 0.85rem 0 0.85rem 2.6rem;
-    border-bottom: 1px solid var(--line);
-    position: relative;
-  }
-  .pr-mod-lessons li:first-child {
     border-top: 1px solid var(--line);
   }
-  .pr-mod-lessons li::before {
-    counter-increment: lesson;
-    content: counter(lesson, decimal-leading-zero);
-    position: absolute;
-    left: 0;
-    top: 0.9rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--accent);
+  .pr-mod-lessons li {
+    border-bottom: 1px solid var(--line);
   }
   .pr-mod-lessons a {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.05rem;
-    letter-spacing: -0.015em;
-    color: var(--ink);
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.75rem;
+    padding: 1rem 0.2rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink);
+    transition: color 0.15s var(--ease), background 0.15s var(--ease);
   }
   .pr-mod-lessons a:hover {
     color: var(--accent);
     text-decoration: none;
   }
-  .pr-mod-done {
-    color: #2e9e6b;
-    font-size: 0.95em;
+  .pr-mod-lesson-number {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--faint);
+  }
+  .pr-mod-lesson-done .pr-mod-lesson-number {
+    color: var(--accent);
+  }
+  .pr-mod-lesson-title {
+    min-width: 0;
+  }
+  .pr-mod-lesson-arrow {
+    color: var(--faint);
+    font-size: 1rem;
+    transition: transform 0.15s var(--ease), color 0.15s var(--ease);
+  }
+  .pr-mod-lessons a:hover .pr-mod-lesson-arrow {
+    color: var(--accent);
+    transform: translate(2px, -2px);
   }
 
   .pr-btn {
@@ -229,7 +304,7 @@
     align-items: center;
     gap: 0.4rem;
     font-family: var(--font-body);
-    font-size: 0.92rem;
+    font-size: 0.9rem;
     font-weight: 500;
     border-radius: 9px;
     padding: 0.6rem 1.1rem;
@@ -247,16 +322,27 @@
     color: #fff;
     text-decoration: none;
   }
-  .pr-mod-cta {
-    margin-top: 0.4rem;
+  :global(:root[data-mode="dark"]) .pr-btn-primary,
+  :global(:root[data-mode="dark"]) .pr-btn-primary:hover {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+    color: var(--bg);
   }
   .pr-mod-done-msg {
-    color: var(--muted);
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.55rem;
+    color: var(--body);
     font-size: 0.92rem;
-    margin: 0 0 0.7rem;
+    margin: 1.35rem 0 0;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--line);
   }
+  .pr-mod-done-msg > .ti { color: var(--accent); margin-top: 0.12rem; }
   .pr-mod-done-msg a {
     color: var(--accent);
+    white-space: nowrap;
   }
 
   /* ≤900px: same treatment as the IDE shell - stack children, the shell itself
@@ -273,6 +359,20 @@
     }
     .pr-mod-inner {
       padding: 1.4rem 1.1rem 3rem;
+    }
+    .pr-mod-head {
+      display: block;
+      padding: 1.15rem 0 1.35rem;
+    }
+    .pr-mod-title {
+      font-size: 2rem;
+    }
+    .pr-mod-meta {
+      margin-top: 1rem;
+    }
+    .pr-mod-next {
+      align-items: flex-start;
+      flex-direction: column;
     }
   }
 </style>

@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import PracticeSidebar from './PracticeSidebar.svelte';
+  import { practiceViewport } from './viewport.js';
   import { bumpProgress } from './progress.js';
   import { recordActivity } from '$lib/streaks.js';
 
@@ -276,15 +277,15 @@
   });
 </script>
 
-<div class="pr-ide-shell">
+<div class="pr-ide-shell" use:practiceViewport>
   <PracticeSidebar {modules} activeModule={moduleParam} activePhase={phase.phase_no} />
 
   <div class="pr-ide" bind:this={containerEl}>
   <aside class="pr-lesson" style={`width:${leftPct}%`}>
     <div class="pr-lesson-sticky">
       <div class="pr-lesson-head">
-        <a class="pr-back" href="/practice"><i class="ti ti-chevron-left" aria-hidden="true"></i> {guide.title}</a>
-        <span class="pr-progress-tag">{idx + 1}/{total}</span>
+        <a class="pr-back" href={`/practice/${moduleParam}`}><i class="ti ti-chevron-left" aria-hidden="true"></i> {guide.title}</a>
+        <span class="pr-progress-tag">Lesson {idx + 1} of {total}</span>
         <h1 class="pr-lesson-title">{phase.title}</h1>
         <button
           type="button"
@@ -361,7 +362,10 @@
 
   <section class="pr-editor-col">
     <div class="pr-toolbar">
-      <span class="pr-lang-tag">{langLabel}</span>
+      <div class="pr-editor-ident">
+        <span class="pr-editor-label">Your code</span>
+        <span class="pr-lang-tag">{langLabel}</span>
+      </div>
       <div class="pr-toolbar-actions">
         <button type="button" class="pr-btn" on:click={handleReset}>
           <i class="ti ti-rotate" aria-hidden="true"></i> Reset
@@ -392,7 +396,7 @@
   ></div>
 
   <aside class="pr-output" style={`width:${rightPct}%`}>
-    <div class="pr-panel-head">Output</div>
+    <div class="pr-panel-head"><span>Output</span><span class="pr-panel-status">Run results and checks</span></div>
     <div class="pr-output-body" aria-live="polite">
       {#if running}
         <div class="pr-loading"><span class="pr-spinner"></span><span>{loadingStatus || 'Running…'}</span></div>
@@ -482,7 +486,7 @@
 <style>
   .pr-ide-shell {
     position: fixed;
-    top: 57px;
+    top: var(--practice-header-offset, 57px);
     left: 0;
     right: 0;
     bottom: 0;
@@ -508,6 +512,7 @@
     min-width: 190px; /* LESSON_MIN above */
     overflow-y: auto;
     border-right: 1px solid var(--line);
+    background: var(--bg);
     display: flex;
     flex-direction: column;
   }
@@ -517,23 +522,19 @@
     z-index: 2;
     background: var(--bg);
     border-bottom: 1px solid var(--line);
-    padding: 1rem 1.1rem;
+    padding: 1.1rem 1.15rem 0.95rem;
   }
   .pr-lesson-head {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.45rem 0.65rem;
   }
   .pr-back {
-    flex: 0 1 auto;
     min-width: 0;
-    max-width: 9rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
+    font-size: 0.82rem;
     color: var(--muted);
     display: inline-flex;
     align-items: center;
@@ -543,10 +544,11 @@
     color: var(--accent);
   }
   .pr-progress-tag {
-    flex: none;
+    grid-column: 2;
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     color: var(--faint);
+    white-space: nowrap;
   }
   .pr-lesson-toggle {
     display: none;
@@ -554,25 +556,19 @@
     width: 28px;
     height: 28px;
   }
-  /* Consolidated onto the same row as the back-link/progress tag (used to be
-     its own row below, at 1.25rem) - grows to fill the remainder, with its
-     own ellipsis as a safety net for a long title on a narrow panel. */
   .pr-lesson-title {
-    flex: 1 1 auto;
+    grid-column: 1 / -1;
     min-width: 0;
     margin: 0;
-    padding-left: 0.65rem;
-    border-left: 1px solid var(--line);
-    font-size: 0.95rem;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
     font-weight: 600;
-    line-height: 1.3;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
     color: var(--ink);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .pr-lesson-body {
-    padding: 1.1rem;
+    padding: 1.25rem 1.15rem 1.75rem;
   }
   /* Compact scale for lesson prose - reader-like but tighter, since this panel
      is much narrower than the reader's 720px column: body ~0.92rem vs the
@@ -587,13 +583,13 @@
     max-width: 62ch;
   }
   .pr-prose :global(h1) {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     letter-spacing: -0.02em;
     line-height: 1.25;
     margin: 0 0 0.5rem;
   }
   .pr-prose :global(h2) {
-    font-size: 1.05rem;
+    font-size: 1.08rem;
     letter-spacing: -0.01em;
     line-height: 1.3;
     margin: 1.3rem 0 0.4rem;
@@ -627,7 +623,9 @@
   }
 
   .pr-hints {
-    margin-top: 1rem;
+    margin-top: 1.35rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
   }
   /* The preview is the lesson for HTML/CSS, so it gets the room. White background
      always: the learner is styling a page, and it should look like the page they
@@ -646,20 +644,22 @@
     font-size: 0.9rem;
     color: var(--body);
     background: var(--surface);
-    border-radius: 9px;
-    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    padding: 0.65rem 0.75rem;
     margin: 0 0 0.5rem;
     line-height: 1.55;
   }
   .pr-solution {
-    margin-top: 1rem;
+    margin-top: 1.35rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
   }
   .pr-solution-label {
     font-family: var(--font-mono);
     font-size: 0.7rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--muted);
     margin: 0 0 0.4rem;
   }
   .pr-solution-code {
@@ -676,7 +676,7 @@
   }
 
   .pr-related {
-    margin: 1rem 0 0;
+    margin: 1.4rem 0 0;
     font-size: 0.82rem;
   }
   .pr-related a {
@@ -689,8 +689,8 @@
   .pr-lesson-nav {
     display: flex;
     justify-content: space-between;
-    margin-top: 1.3rem;
-    padding-top: 0.9rem;
+    margin-top: 1.6rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--line);
     font-size: 0.86rem;
   }
@@ -737,6 +737,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background: var(--code-bg);
   }
   .pr-toolbar {
     position: sticky;
@@ -747,16 +748,28 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 1rem 0.65rem 0.5rem 0.9rem;
+    padding: 0.75rem 0.75rem 0.75rem 1rem;
     border-bottom: 1px solid var(--line);
-    /* background: color-mix(in srgb, var(--code-bg) 70%, var(--surface)); */
+    background: var(--surface);
+  }
+  .pr-editor-ident {
+    display: flex;
+    align-items: baseline;
+    min-width: 0;
+    gap: 0.6rem;
+  }
+  .pr-editor-label {
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
   }
   .pr-lang-tag {
     font-family: var(--font-mono);
     font-size: 0.66rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--faint);
+    color: var(--muted);
   }
   .pr-toolbar-actions {
     display: flex;
@@ -793,28 +806,34 @@
     border-left: 1px solid var(--line);
     display: flex;
     flex-direction: column;
+    background: var(--bg);
   }
   .pr-panel-head {
     position: sticky;
     top: 0;
     z-index: 2;
     flex: none;
-    padding: 1rem 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--faint);
-    background: var(--bg);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.7rem;
+    padding: 0.9rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--surface);
     border-bottom: 1px solid var(--line);
   }
+  .pr-panel-status { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 400; color: var(--faint); white-space: nowrap; }
   .pr-output-body {
-    padding: 0.6rem 0.9rem;
+    padding: 1rem;
     flex: 1 1 auto;
   }
   .pr-placeholder {
     color: var(--faint);
     font-size: 0.88rem;
+    line-height: 1.55;
   }
   .pr-loading {
     display: flex;
@@ -926,7 +945,7 @@
     font-size: 0.86rem;
     color: var(--muted);
     background: var(--surface);
-    border-radius: 9px;
+    border-radius: 6px;
     padding: 0.6rem 0.8rem;
   }
 
@@ -937,7 +956,7 @@
     gap: 0.7rem;
     background: color-mix(in srgb, #2e9e6b 12%, var(--surface));
     border: 1px solid color-mix(in srgb, #2e9e6b 35%, var(--line));
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 0.7rem 0.9rem;
     margin-top: 0.4rem;
   }
@@ -961,8 +980,8 @@
     color: var(--body);
     background: var(--raise);
     border: 1px solid var(--line);
-    border-radius: 9px;
-    padding: 0.32rem 0.55rem;
+    border-radius: 7px;
+    padding: 0.4rem 0.65rem;
     cursor: pointer;
     transition: border-color 0.15s var(--ease), color 0.15s var(--ease), background 0.15s var(--ease);
   }
@@ -978,12 +997,18 @@
     color: #fff;
     background: var(--accent);
     border-color: var(--accent);
-    padding: 0.32rem 0.8rem;
+    padding: 0.42rem 0.85rem;
   }
   .pr-btn-primary:hover:not(:disabled) {
     background: var(--accent-strong);
     border-color: var(--accent-strong);
     color: #fff;
+  }
+  :global(:root[data-mode="dark"]) .pr-btn-primary,
+  :global(:root[data-mode="dark"]) .pr-btn-primary:hover:not(:disabled) {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+    color: var(--bg);
   }
   .pr-btn-primary:disabled {
     opacity: 0.6;
@@ -1018,11 +1043,25 @@
     .pr-editor-col {
       min-height: 420px;
     }
+    .pr-toolbar {
+      position: sticky;
+      top: 0;
+    }
     .pr-divider {
       display: none;
     }
     .pr-lesson-toggle {
       display: inline-grid;
+      grid-column: 2;
+      grid-row: 2;
+      align-self: center;
+    }
+    .pr-lesson-title {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .pr-panel-status {
+      display: none;
     }
     .pr-lesson-body.pr-collapsed {
       display: none;
