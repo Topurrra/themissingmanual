@@ -2391,18 +2391,11 @@ mark {
   font-weight: 400;
 }
 
-/* OMNIS-X's geometric emblem and solid orange-red wordmark. */
+/* OMNIS-X's bold lettering and solid orange-red X. */
 .spon-name.spon-omnis {
   color: var(--ink);
   font-weight: 700;
   white-space: nowrap;
-}
-
-.spon-mark {
-  width: 1.3rem;
-  height: 1.3rem;
-  margin-right: 0.7rem;
-  vertical-align: -0.2em;
 }
 
 .spon-name .spon-x {
