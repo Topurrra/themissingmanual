@@ -13,9 +13,6 @@
 
   export let data;
   $: origin = siteOrigin($page.url.origin);
-  $: landingOption = [1, 2, 3, 4, 5, 6].includes(Number($page.url.searchParams.get("landing")))
-    ? Number($page.url.searchParams.get("landing"))
-    : 6;
   $: homeLd = [
     {
       "@context": "https://schema.org",
@@ -134,12 +131,6 @@
     shown: $beginnerMode ? begByCat[c.slug] || 0 : c.count || 0,
     hasAny: (c.count || 0) > 0,
   }));
-  // Guides count includes practice modules (all published content) to match the admin
-  // total; topics counts only the browsable content categories (practice is hidden, so
-  // it is not a topic card). `rawCategories` includes practice, `categories` does not.
-  $: totalGuides = $beginnerMode
-    ? Object.values(begByCat).reduce((a, b) => a + b, 0)
-    : (rawCategories || []).reduce((a, c) => a + (c.count || 0), 0);
   $: shownTopics = cards.filter((c) => c.shown > 0).length;
   $: shownRecent = (recent || []).filter(
     (g) => !$beginnerMode || g.difficulty === "beginner",
@@ -218,9 +209,7 @@
 />
 
 <LandingOptions
-  option={landingOption}
   {cards}
-  {totalGuides}
   {shownTopics}
   {shownRecent}
   {iconFor}
