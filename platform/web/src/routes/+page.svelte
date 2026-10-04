@@ -48,7 +48,7 @@
         "@type": "ContactPoint",
         contactType: "support",
         email: "topurianika96@gmail.com",
-        url: `${origin}/contact`,
+        url: `${origin}/additional-info?tab=contact`,
       },
       makesOffer: {
         "@type": "Offer",

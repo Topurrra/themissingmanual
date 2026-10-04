@@ -56,7 +56,7 @@
     isHome ||
     [
       "/about",
-      "/contribute",
+      "/additional-info",
       "/rss",
       "/paths",
       "/roadmap",
@@ -407,7 +407,7 @@
   {/if}
 
   <header class="site-header">
-    <div class="bar">
+    <div class="bar" class:bar-home={isHome}>
       {#if !bare}
         <button
           class="site-rail-btn"
@@ -433,7 +433,7 @@
       {/if}
       <a href="/" class="brand" translate="no">{siteName}</a>
 
-      <HeaderSearch>
+      {#if !isHome}<HeaderSearch>
         <span
           class="kbd"
           role="button"
@@ -442,7 +442,7 @@
           on:click|preventDefault|stopPropagation={() =>
             palette && palette.show()}>{kbdLabel}</span
         >
-      </HeaderSearch>
+      </HeaderSearch>{/if}
 
       {#if lofiOn}
         <LofiPlayer />
@@ -741,9 +741,7 @@
             <a href="/changelog">What's new</a>
             <a href="/request">Request a guide</a>
             <a href="/backlog">What's next?</a>
-            <a href="/contribute">Contribute</a>
-            <a href="/contact">Contact</a>
-            <a href="/privacy">Privacy</a>
+            <a href="/additional-info">Additional Info</a>
             <!-- <a href="/review">Review</a> -->
           </div>
         </nav>
@@ -755,6 +753,7 @@
 {/if}
 
 <style>
+  .bar-home .brand { margin-inline-end: auto; }
   /* Skip-to-content link (WCAG 2.4.1) — visually hidden until keyboard-focused. */
   .skip-link {
     position: absolute;

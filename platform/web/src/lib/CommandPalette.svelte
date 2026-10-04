@@ -23,7 +23,9 @@
   const PAGES = [
     { title: 'Home', type: 'Page', icon: 'ti-home', url: '/' },
     { title: 'About', type: 'Page', icon: 'ti-info-circle', url: '/about' },
-    { title: 'Contribute', type: 'Page', icon: 'ti-pencil', url: '/contribute' },
+    { title: 'Additional Info · Contribute', type: 'Page', icon: 'ti-pencil', url: '/additional-info?tab=contribute' },
+    { title: 'Additional Info · Contact', type: 'Page', icon: 'ti-mail', url: '/additional-info?tab=contact' },
+    { title: 'Additional Info · Privacy', type: 'Page', icon: 'ti-shield', url: '/additional-info?tab=privacy' },
     { title: 'Cheat Sheet', type: 'Page', icon: 'ti-terminal-2', url: '/cheat-sheet' },
     { title: "What's New", type: 'Page', icon: 'ti-sparkles', url: '/changelog' },
     { title: 'Request a Guide', type: 'Page', icon: 'ti-message-plus', url: '/request' },

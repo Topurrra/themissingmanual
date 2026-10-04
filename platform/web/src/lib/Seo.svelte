@@ -9,10 +9,12 @@
   export let jsonld = null;       // object or array → injected as ld+json
   export let keywords = '';       // string, or array (e.g. a guide/phase's synonyms)
 
+  export let canonicalPath = '';
+
   $: keywordsStr = Array.isArray(keywords) ? keywords.filter(Boolean).join(', ') : keywords;
 
   $: origin = siteOrigin($page.url.origin);
-  $: canonical = origin + $page.url.pathname;
+  $: canonical = origin + (canonicalPath || $page.url.pathname);
   // Fall back to the site-wide brand card so every page has a share image.
   $: ogImage = image
     ? (image.startsWith('http') ? image : origin + image)

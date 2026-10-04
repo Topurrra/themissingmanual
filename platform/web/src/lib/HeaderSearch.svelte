@@ -1,9 +1,12 @@
 <script>
+  import { onDestroy } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { guardSearchSubmit } from '$lib/search.js';
   import { CHEATSHEETS } from '$lib/cheatsheets.js';
   import { createAiFallback } from '$lib/aiFallback.js';
+
+  export let hero = false;
 
   let q = '';
   let hits = []; // top guide/phase hits from the search API
@@ -16,6 +19,13 @@
   let timer;
   let wrapEl;
   let formEl;
+  let disposed = false;
+
+  onDestroy(() => {
+    disposed = true;
+    clearTimeout(timer);
+    aiFb.cancel();
+  });
 
   // Cheat-sheet hits for the typeahead. A command match (e.g. "git init")
   // deep-links to that command via ?q=; a tool-name match (e.g. "docker")
@@ -61,10 +71,13 @@
 
   async function runSearch(query) {
     if (!query.trim()) { hits = []; aiRows = []; aiSearching = false; aiFb.cancel(); return; }
+    let nextHits = [];
     try {
       const res = await fetch(`/search.json?q=${encodeURIComponent(query)}`);
-      hits = res.ok ? ((await res.json()).hits || []) : [];
-    } catch (e) { hits = []; }
+      nextHits = res.ok ? ((await res.json()).hits || []) : [];
+    } catch (e) {}
+    if (disposed || query !== q) return;
+    hits = nextHits;
     // Keyword-first: only reach for AI when Tantivy returned nothing at all.
     if (askEnabled && hits.length === 0) {
       aiSearching = true;
@@ -78,6 +91,8 @@
 
   function onInput() {
     clearTimeout(timer);
+    aiFb.cancel();
+    aiSearching = false;
     active = -1;
     open = true;
     aiRows = []; // clear stale AI rows while typing; runSearch refills if still empty
@@ -130,19 +145,24 @@
   method="GET"
   action="/search"
   class="header-search"
+  class:hero-search={hero}
+  role={hero ? 'search' : undefined}
+  aria-label={hero ? 'Search the library' : undefined}
   on:submit={(e) => { guardSearchSubmit(e); if (!e.defaultPrevented) close(); }}
 >
   <div class="search-field typeahead-wrap" bind:this={wrapEl} on:focusout={onFocusOut}>
     <i class="ti ti-search" aria-hidden="true"></i>
     <input
       type="search"
+      required={hero}
       name="q"
-      placeholder="Search… e.g. undo a commit"
-      aria-label="Search guides"
+      placeholder={hero ? 'What do you want to understand?' : 'Search… e.g. undo a commit'}
+      aria-label={hero ? 'What do you want to understand?' : 'Search guides'}
       role="combobox"
       aria-expanded={showDropdown}
       aria-controls="typeahead-list"
       aria-autocomplete="list"
+      aria-activedescendant={showDropdown ? (active >= 0 && shown[active] ? `typeahead-option-${active}` : 'typeahead-all') : undefined}
       autocomplete="off"
       bind:value={q}
       on:input={onInput}
@@ -156,7 +176,9 @@
         {#if shown.length}
           {#each shown as h, i}
             <button
+              id={`typeahead-option-${i}`}
               type="button"
+              tabindex="-1"
               class="typeahead-hit"
               class:active={i === active}
               role="option"
@@ -181,7 +203,9 @@
           <div class="typeahead-empty">No quick matches - press Enter to search.</div>
         {/if}
         <button
+          id="typeahead-all"
           type="button"
+          tabindex="-1"
           class="typeahead-all"
           class:active={active === -1}
           role="option"
@@ -199,6 +223,14 @@
 </form>
 
 <style>
+  .hero-search { flex: none; width: 100%; max-width: 720px; margin: 0 auto; text-align: left; }
+  .hero-search .search-field { max-width: none; gap: 1rem; padding: 0.6rem 0.75rem 0.6rem 1.25rem; }
+  .hero-search .search-field > .ti { color: var(--muted); font-size: 1.25rem; }
+  .hero-search .search-field input { padding: 0.7rem 0; font-size: 1rem; }
+  @media (max-width: 640px) {
+    .hero-search .search-field { gap: 0.6rem; padding-left: 0.75rem; }
+    .hero-search .search-field input { font-size: 0.88rem; }
+  }
   .typeahead-wrap { position: relative; }
 
   .typeahead-pop {

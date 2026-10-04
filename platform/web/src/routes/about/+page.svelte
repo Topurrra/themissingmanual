@@ -107,7 +107,7 @@
     </p>
 
     <p>
-        Want to help write it? <a href="/contribute">Here's how to contribute →</a>
+        Want to help write it? <a href="/additional-info?tab=contribute">Here's how to contribute →</a>
     </p>
 </article>
 </div>

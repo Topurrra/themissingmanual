@@ -9,7 +9,7 @@ export async function GET({ fetch, url }) {
   // exclude its guides/category page and list the hub instead.
   const guides = ((await listGuides(fetch)) ?? []).filter((g) => g.category !== 'practice');
   const cats = ((await listCategories(fetch)) ?? []).filter((c) => c.slug !== 'practice');
-  const entries = ['/', '/paths', '/glossary', '/cheat-sheet', '/changelog', '/about', '/train', '/practice', '/contribute'].map((loc) => ({ loc }));
+  const entries = ['/', '/paths', '/glossary', '/cheat-sheet', '/changelog', '/about', '/train', '/practice', '/additional-info', '/additional-info?tab=contact', '/additional-info?tab=privacy'].map((loc) => ({ loc }));
   for (const c of cats) entries.push({ loc: `/categories/${c.slug}` });
   for (const g of guides) entries.push({ loc: `/guides/${g.slug}`, lastmod: g.updated });
   // Phase URLs. The API serializes these at its SQLite mutex and the response is

@@ -1,4 +1,5 @@
 <script>
+  import HeaderSearch from "$lib/HeaderSearch.svelte";
   export let cards = [];
   export let shownTopics = 0;
   export let shownRecent = [];
@@ -15,11 +16,9 @@
 </script>
 
 {#snippet search()}
-  <form class="landing-search" action="/search" method="GET" role="search" aria-label="Search the library">
-    <i class="ti ti-search" aria-hidden="true"></i>
-    <input name="q" type="search" aria-label="What do you want to understand?" placeholder="What do you want to understand?" required />
-    <button type="submit" aria-label="Search guides"><i class="ti ti-arrow-right" aria-hidden="true"></i></button>
-  </form>
+  <HeaderSearch hero>
+    <button class="landing-search-submit" type="submit" aria-label="Search guides"><i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </HeaderSearch>
 {/snippet}
 
 {#snippet saved()}
@@ -172,17 +171,11 @@
   .landing-saved small { font-size: 0.85rem; color: var(--muted); }
   .landing-saved button { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border: 0; background: none; color: var(--muted); cursor: pointer; border-radius: 9px; }
   .landing-saved button:hover { background: var(--surface); color: var(--danger); }
-  .landing-search { display: flex; align-items: center; gap: 1rem; padding: 0.6rem 0.75rem 0.6rem 1.25rem; border: 1px solid var(--line); border-radius: 10px; background: var(--raise); }
-  .landing-search:focus-within { border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: 3px; }
-  .landing-search > .ti { color: var(--muted); font-size: 1.25rem; flex: none; }
-  .landing-search input { width: 100%; min-width: 0; padding: 0.7rem 0; border: 0; background: none; color: var(--ink); font: inherit; outline: none; }
-  .landing-search input:focus-visible { outline: none; box-shadow: none; }
-  .landing-search input::placeholder { color: var(--faint); opacity: 1; }
-  .landing-search button { display: grid; place-items: center; width: 44px; height: 44px; flex: none; background: var(--accent-tint); color: var(--accent-strong); border: 0; border-radius: 9px; cursor: pointer; font-size: 1.25rem; }
-  .landing-search button:hover { background: var(--surface); }
+  .landing-search-submit { display: grid; place-items: center; width: 44px; height: 44px; flex: none; background: var(--accent-tint); color: var(--accent-strong); border: 0; border-radius: 9px; cursor: pointer; font-size: 1.25rem; }
+  .landing-search-submit:hover { background: var(--surface); }
+  .landing-search-submit .ti { color: inherit; font-size: 1.25rem; }
   .landing-search-hero { text-align: center; }
   .landing-search-hero .tagline { margin: 1.5rem auto 2rem; max-width: 52ch; }
-  .landing-search-hero .landing-search { max-width: 720px; margin: 0 auto; text-align: left; }
   .landing-search-suggestions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem 1.25rem; margin: 1.25rem 0 2.5rem; font-size: 0.82rem; }
   .landing-search-suggestions > span { color: var(--muted); }
   .landing-search-suggestions a { display: inline-flex; gap: 0.35rem; color: var(--accent-strong); }
@@ -218,7 +211,6 @@
     .landing-section-head { margin-bottom: 1.25rem; }
     .landing-search-hero { text-align: left; }
     .landing-search-hero .tagline { margin: 1.25rem 0 1.5rem; }
-    .landing-search { gap: 0.6rem; padding-left: 0.75rem; font-size: 0.88rem; }
     .landing-search-suggestions { justify-content: flex-start; margin-bottom: 1.5rem; }
     .landing-search-foot { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
     .landing-updates li { gap: 0.75rem; }
