@@ -51,13 +51,10 @@ export default {
         'media-src': ["'self'", 'https:'],
         'connect-src': ["'self'", 'https://cdn.jsdelivr.net', 'https://translate.googleapis.com'],
         'frame-src': ['https://translate.google.com'],
-        // The JS code-playground sandbox (runnable/js-worker.js) runs reader-submitted
-        // code via indirect eval() inside a dedicated Worker. Without an explicit
-        // worker-src, workers fall back to script-src's policy - which only carries
-        // 'wasm-unsafe-eval' (for Pyodide/sql.js WASM), not 'unsafe-eval', so eval()
-        // gets silently blocked there. Scoping 'unsafe-eval' to worker-src keeps the
-        // main thread's script-src eval-free; only the sandboxed worker gets it.
-        'worker-src': ["'self'", "'unsafe-eval'"],
+        // This governs worker script loading, not eval inside the worker.
+        // Vite emits a same-origin external worker; its execution CSP is set by
+        // its own response headers. Keep main-thread script-src eval-free.
+        'worker-src': ["'self'"],
         'object-src': ["'none'"],
         'base-uri': ["'none'"],
         'frame-ancestors': ["'none'"]

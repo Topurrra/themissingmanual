@@ -273,11 +273,28 @@
       // worker's cached asset URLs go stale within seconds, causing "NetworkError"
       // fetch failures and broken pages. PWA offline support is a production-only
       // feature; clean up any stale registration left over from earlier testing.
-      navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister()));
-      caches?.keys().then((keys) => keys.forEach((k) => caches.delete(k)));
+      navigator.serviceWorker.getRegistrations().then((rs) => Promise.all(rs.filter((r) => {
+        const worker = r.active || r.waiting || r.installing;
+        return worker && new URL(worker.scriptURL).href === `${location.origin}/service-worker.js`;
+      }).map((r) => r.unregister()))).catch((err) => console.warn('Service worker cleanup failed:', err));
+      if (typeof caches !== 'undefined') {
+        caches.keys().then((keys) => Promise.all(keys.filter((k) =>
+          /^(?:tmm-cache-|tmm-assets-|tmm-content-)/.test(k)
+        ).map((k) => caches.delete(k)))).catch((err) => console.warn('Offline cache cleanup failed:', err));
+      }
       return;
     }
-    navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+    // The first navigation happened before this worker controlled the page.
+    // Fetch it once after claim so that visit also becomes available offline.
+    const saveFirstVisit = () => fetch(location.href, { headers: { accept: 'text/html' } }).catch(() => {});
+    if (!navigator.serviceWorker.controller) {
+      navigator.serviceWorker.addEventListener('controllerchange', saveFirstVisit, { once: true });
+    }
+    navigator.serviceWorker.register("/service-worker.js").catch((err) => {
+      navigator.serviceWorker.removeEventListener('controllerchange', saveFirstVisit);
+      console.warn('Offline reading registration failed:', err);
+    });
+    return () => navigator.serviceWorker.removeEventListener('controllerchange', saveFirstVisit);
   });
 
   onMount(() => {

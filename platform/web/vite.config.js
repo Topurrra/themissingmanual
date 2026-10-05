@@ -3,6 +3,8 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [sveltekit()],
+  // PGlite and the CDN Python bootstrap load lazily inside module workers.
+  worker: { format: 'es' },
   // @electric-sql/pglite ships its WASM/data files and resolves them via
   // import.meta.url-relative URLs at runtime. Vite's dependency pre-bundling
   // rewrites/copies the package into node_modules/.vite/deps/ without those

@@ -27,6 +27,7 @@
 
   onMount(() => {
     let destroyed = false;
+    const execution = new AbortController();
     const widgets = []; // { editor, runtime cleanup handled via disposeAll }
     let disposeAll = null; // adapters.disposeAll, loaded with the editor
     let themeObserver = null;
@@ -208,11 +209,13 @@
           // First-run load shows a status line (Pyodide/sql.js take a few seconds).
           await adapter.load((status) => {
             if (!destroyed) renderOutput({}, { loading: status });
-          });
+          }, { signal: execution.signal });
+          if (destroyed) return;
           renderOutput({}, { loading: 'Running…' });
           // onStatus lets a runtime report mid-run progress (e.g. Pyodide loading
           // imported packages on first use); fall back to "Running…" when cleared.
           const res = await adapter.run(editor.getValue(), {
+            signal: execution.signal,
             onStatus: (status) => {
               if (!destroyed) renderOutput({}, { loading: status || 'Running…' });
             }
@@ -299,6 +302,7 @@
     // WASM runtime handles don't leak and widgets never duplicate.
     return () => {
       destroyed = true;
+      execution.abort();
       if (themeObserver) themeObserver.disconnect();
       if (pendingTheme) cancelAnimationFrame(pendingTheme);
       for (const w of widgets) {

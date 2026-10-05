@@ -46,6 +46,7 @@
   let runLessonFn;
   let gradeLessonFn;
   let adapter;
+  const execution = new AbortController();
 
   // Panel widths as % of the ide container; center (editor) column takes the
   // remainder. Defaults ~32/40/28 lesson/editor/output - see the min-width
@@ -118,10 +119,13 @@
     persist({ code: currentCode });
     try {
       runResult = await runLessonFn(lesson, currentCode, {
+        signal: execution.signal,
         onStatus: (s) => (loadingStatus = s || '')
       });
+      if (execution.signal.aborted) return;
       loadingStatus = '';
-      gradeResult = await gradeLessonFn(lesson, currentCode);
+      gradeResult = await gradeLessonFn(lesson, currentCode, { signal: execution.signal });
+      if (execution.signal.aborted) return;
       if (gradeResult.passed) {
         persist({ done: true });
         bumpProgress();
@@ -269,6 +273,7 @@
     // Pyodide/sql.js from scratch.
     return () => {
       destroyed = true;
+      execution.abort();
       window.removeEventListener('keydown', onKeydown);
       themeObserver.disconnect();
       if (saveTimer) clearInterval(saveTimer);

@@ -18,19 +18,15 @@ function parseErrorLine(language, err) {
   return null;
 }
 
-// JS runs `eval` in the worker's persistent global scope (js-worker.js) - a second
-// run re-declaring the same top-level `let`/`const` throws "already declared".
-// Force a fresh worker before every JS run/test so each execution is isolated
-// (a lesson is a one-shot exercise, not a REPL). Cheap: no WASM/network involved,
-// just a new Worker() instantiation.
+// JS/TS adapters now isolate each run themselves. Keep the uniform runner call
+// for languages whose runtime is reused between exercises.
 function freshRun(adapter, language, code, opts) {
-  if (language === 'js') adapter.dispose();
   return adapter.run(code, opts);
 }
 
 // async runLesson(lesson, code, { onStatus } = {}) ->
 //   { ok, logs, result, table, error, errorLine, timeMs }
-export async function runLesson(lesson, code, { onStatus } = {}) {
+export async function runLesson(lesson, code, { onStatus, signal } = {}) {
   if (lesson.language === 'git') {
     const { runGitScript } = await import('$lib/practice/git/runtime.js');
     const t0 = performance.now();
@@ -43,8 +39,8 @@ export async function runLesson(lesson, code, { onStatus } = {}) {
     return { ok: !res.error, logs: res.logs, result: undefined, table: undefined, error: res.error, errorLine: null, timeMs: Math.round(performance.now() - t0) };
   }
   const adapter = getAdapter(lesson.language);
-  await adapter.load(onStatus);
-  const runOpts = { onStatus };
+  await adapter.load(onStatus, { signal });
+  const runOpts = { onStatus, signal, fresh: lesson.language === 'python' };
   if (lesson.language === 'sql' || lesson.language === 'postgres') runOpts.seed = lesson.setup || '';
   const t0 = performance.now();
   const res = await freshRun(adapter, lesson.language, code, runOpts);
@@ -74,13 +70,13 @@ function checkMode(lesson) {
 // values (stringified) must match; column names don't (aliases ok). Row order
 // matters only if the solution itself uses ORDER BY, otherwise rows compare as
 // sorted multisets.
-async function gradeRows(lesson, code) {
+async function gradeRows(lesson, code, { signal } = {}) {
   const adapter = getAdapter(lesson.language);
-  await adapter.load();
+  await adapter.load(undefined, { signal });
   const seed = lesson.setup || '';
   const [userRes, solRes] = await Promise.all([
-    adapter.run(code, { seed }),
-    adapter.run(lesson.solution, { seed })
+    adapter.run(code, { seed, signal }),
+    adapter.run(lesson.solution, { seed, signal })
   ]);
   if (userRes.error) return { passed: false, mode: 'rows', detail: userRes.error };
   if (!userRes.table) {
@@ -118,13 +114,8 @@ async function gradeRows(lesson, code) {
 // js/python: each test runs `userCode + "\n" + test.code` fresh; passes iff nothing
 // throws (JS `throw`, Python assert/exception - both surface as `res.error`).
 //
-// ponytail: Python tests share Pyodide's persistent global namespace - adapters.js's
-// PythonAdapter has no fresh-globals hook, and dispose()+reload would re-init the
-// whole WASM runtime (multiple seconds) between every test. State can leak between
-// Python tests/runs in the same page session; lesson authors should write tests
-// that don't depend on prior-test isolation (each test already re-executes the full
-// userCode prefix, which covers the common case). JS doesn't have this problem -
-// freshRun() gives every JS run its own worker.
+// Python practice uses a fresh globals dictionary per run while its interpreter
+// stays warm in the worker. JS/TS isolate runs with a new execution worker.
 // The checklist shows a one-line reason, not a stack trace. For js/typescript,
 // prefer the worker's own `errorMessage` (js-worker.js sends this pre-cleaned,
 // with no stack frames at all - a stack's exact wording is browser-specific, e.g.
@@ -143,13 +134,14 @@ function testFailureMessage(language, err) {
   return err;
 }
 
-async function gradeTests(lesson, code) {
+async function gradeTests(lesson, code, { signal } = {}) {
   const adapter = getAdapter(lesson.language);
-  await adapter.load();
+  await adapter.load(undefined, { signal });
   const tests = lesson.tests || [];
   const results = [];
   for (const test of tests) {
-    const res = await freshRun(adapter, lesson.language, code + '\n' + test.code, {});
+    if (signal?.aborted) return { passed: false, mode: 'tests', tests: results, detail: 'Execution cancelled.' };
+    const res = await freshRun(adapter, lesson.language, code + '\n' + test.code, { signal, fresh: lesson.language === 'python' });
     const message = res.errorMessage || testFailureMessage(lesson.language, res.error);
     results.push({ name: test.name, passed: !res.error, message });
   }
@@ -221,11 +213,8 @@ async function gradeGitState(lesson, code) {
 // the exact same `getAdapter('js')`/`freshRun()` path gradeTests() uses.
 // `new WebAssembly.Module()`/`new WebAssembly.Instance()` (the SYNCHRONOUS
 // instantiation APIs, unlike the async `WebAssembly.instantiate()`) are used
-// in the wrapper specifically so the whole thing stays a plain synchronous
-// eval - js-worker.js's `eval(code)` doesn't await its result, so an async
-// wrapper's rejection would land as an unhandled promise rejection instead of
-// being caught by the worker's try/catch, silently reporting a false pass.
-async function gradeWat(lesson, code) {
+// so lesson snippets can access `instance` directly.
+async function gradeWat(lesson, code, { signal } = {}) {
   const { compileToBytes } = await import('$lib/runnable/wat-adapter.js');
   const { bytes, errorMessage } = await compileToBytes(code);
   const tests = lesson.tests || [];
@@ -238,8 +227,9 @@ async function gradeWat(lesson, code) {
   await adapter.load();
   const results = [];
   for (const test of tests) {
+    if (signal?.aborted) return { passed: false, mode: 'tests', tests: results, detail: 'Execution cancelled.' };
     const wrapper = `const __bytes = Uint8Array.from(atob("${base64}"), (c) => c.charCodeAt(0));\nconst __module = new WebAssembly.Module(__bytes);\nconst instance = new WebAssembly.Instance(__module, {});\n${test.code}`;
-    const res = await freshRun(adapter, 'js', wrapper, {});
+    const res = await freshRun(adapter, 'js', wrapper, { signal });
     const message = res.errorMessage || res.error || '';
     results.push({ name: test.name, passed: !res.error, message });
   }
@@ -270,22 +260,23 @@ async function gradeDom(lesson, code) {
   return { passed: results.every((r) => r.passed), mode: 'tests', tests: results };
 }
 
-async function gradeOutput(lesson, code) {
+async function gradeOutput(lesson, code, { signal } = {}) {
   const adapter = getAdapter(lesson.language);
-  await adapter.load();
-  const res = await freshRun(adapter, lesson.language, code, {});
+  await adapter.load(undefined, { signal });
+  const res = await freshRun(adapter, lesson.language, code, { signal, fresh: lesson.language === 'python' });
   if (res.error) return { passed: false, mode: 'output', detail: res.error };
   const passed = (res.logs || '').trim() === (lesson.expectedOutput || '').trim();
   return { passed, mode: 'output', detail: passed ? undefined : 'Output did not match the expected output.' };
 }
 
 // async gradeLesson(lesson, code) -> { passed, mode, tests?: [{name, passed, message}], detail? }
-export async function gradeLesson(lesson, code) {
+export async function gradeLesson(lesson, code, opts = {}) {
+  if (opts.signal?.aborted) return { passed: false, detail: 'Execution cancelled.' };
   const mode = checkMode(lesson);
-  if (mode === 'rows') return gradeRows(lesson, code);
-  if (mode === 'tests') return gradeTests(lesson, code);
+  if (mode === 'rows') return gradeRows(lesson, code, opts);
+  if (mode === 'tests') return gradeTests(lesson, code, opts);
   if (mode === 'gitState') return gradeGitState(lesson, code);
-  if (mode === 'wat') return gradeWat(lesson, code);
+  if (mode === 'wat') return gradeWat(lesson, code, opts);
   if (mode === 'dom') return gradeDom(lesson, code);
-  return gradeOutput(lesson, code);
+  return gradeOutput(lesson, code, opts);
 }
