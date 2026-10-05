@@ -53,7 +53,7 @@
 </script>
 
 {#if total >= 3}
-  <details class="phase-toc" open>
+  <details class="phase-toc">
     <summary>{t(lang, 'toc.label')}</summary>
     <nav aria-label={t(lang, 'toc.label')}>
       <ul class="toc-list">
