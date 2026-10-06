@@ -3,15 +3,16 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { resolveGamePage } from './route-data.js';
 
-test('all four game routes work without published guide metadata', () => {
-  for (const game of ['chess','checkers','sudoku','go']) {
+test('available game routes work without published guide metadata', () => {
+  for (const game of ['chess','checkers','sudoku']) {
     assert.deepEqual(resolveGamePage(game,[]), {game,guides:[]});
   }
+  assert.throws(() => resolveGamePage('go',[]), /not found/i);
   assert.throws(() => resolveGamePage('poker',[]), /not found/i);
 });
 test('only published Games category links are passed through', () => {
   const guides = [{slug:'go-basics',title:'Learn Go'},{slug:'chess-basics',title:'Chess'}];
-  const page = resolveGamePage('go',[{slug:'games',guides},{slug:'programming-languages',guides:[{slug:'go-from-zero'}]}]);
+  const page = resolveGamePage('chess',[{slug:'games',guides},{slug:'programming-languages',guides:[{slug:'go-from-zero'}]}]);
   assert.deepEqual(page.guides,guides);
 });
 test('game pages are in centered shell and discoverable from Train and footer', async () => {
