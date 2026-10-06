@@ -1,28 +1,39 @@
 #!/bin/sh
-# Pull, then rebuild only what changed. Guides and translations are bind-mounted
-# into the api container and synced automatically, so content-only changes need no
-# image rebuild - just a restart so the api re-ingests right away.
+# Pull, then rebuild only what changed since the LAST DEPLOY (recorded in .last-deploy),
+# so it works the same whether or not you ran `git pull` yourself first.
+# Guides and translations are bind-mounted into the api container and synced
+# automatically, so content-only changes need no image rebuild - just a restart.
 #   ./deploy.sh          normal deploy
 #   ./deploy.sh --all    rebuild everything (same as the old full command)
 set -e
 
-if [ "$1" = "--all" ]; then
-  git pull --ff-only
-  exec docker compose --profile prod up -d --build
-fi
-
-old=$(git rev-parse HEAD)
+STATE=.last-deploy
 git pull --ff-only
-changed=$(git diff --name-only "$old" HEAD)
+new=$(git rev-parse HEAD)
 
-if [ -z "$changed" ]; then
-  echo "Already up to date - nothing to deploy."
+full() {
+  echo "Rebuilding everything."
+  docker compose --profile prod up -d --build
+  echo "$new" > "$STATE"
+  echo "Done."
+  exit 0
+}
+
+[ "$1" = "--all" ] && full
+[ -f "$STATE" ] || { echo "No previous deploy recorded."; full; }
+
+old=$(cat "$STATE")
+if [ "$old" = "$new" ]; then
+  echo "Already deployed $new - nothing to do."
   exit 0
 fi
+git cat-file -e "$old^{commit}" 2>/dev/null || { echo "Last deployed commit $old not found."; full; }
+
+changed=$(git diff --name-only "$old" "$new")
 
 if echo "$changed" | grep -qE '^(docker-compose\.yml|\.dockerignore|platform/server/Dockerfile|platform/web/Dockerfile)'; then
-  echo "Docker setup changed - rebuilding everything."
-  exec docker compose --profile prod up -d --build
+  echo "Docker setup changed."
+  full
 fi
 
 services=""
@@ -39,5 +50,9 @@ if echo "$changed" | grep -qE '^(guides|translations)/' && ! echo "$services" | 
   docker compose --profile prod restart api
 fi
 
-[ -z "$services" ] && ! echo "$changed" | grep -qE '^(guides|translations)/' && echo "No app or content changes (docs/config only) - nothing to rebuild."
-echo "Done."
+if [ -z "$services" ] && ! echo "$changed" | grep -qE '^(guides|translations)/'; then
+  echo "No app or content changes (docs/config only) - nothing to rebuild."
+fi
+
+echo "$new" > "$STATE"
+echo "Deployed $new."
