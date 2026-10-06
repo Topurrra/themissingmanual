@@ -12,6 +12,10 @@
   import SudokuBoard from './SudokuBoard.svelte';
   import GoBoard from './GoBoard.svelte';
   import CoachPanel from './CoachPanel.svelte';
+  import * as chessRules from './chess.js';
+  import { fenOf, describeMove as describeChessMove, insights as chessInsights, evaluationText, rateMove, scoreToCp } from './coach-chess.js';
+  import { describeMove as describeCheckersMove, insights as checkersInsights } from './coach-checkers.js';
+  import { techniqueInfo } from './coach-sudoku.js';
   import './games.css';
 
   export let game;
@@ -28,6 +32,15 @@
   let humanSide = game === 'chess' ? 'w' : game === 'sudoku' ? 'player' : 'b';
   let suppressBot = false;
   let client;
+  // Coach analysis runs on its own client: its jobs describe positions that may already be
+  // in the past (reviewing your last move), so they must not be cancelled by new moves.
+  let reviewClient;
+  let review = null;
+  let reviewToken = 0;
+  let evaluation = '';
+  let evaluationFen = '';
+  let hintGuide = null;
+  const analyses = new Map();
   let controller;
 
   $: entry = getGame(game);
@@ -49,11 +62,12 @@
   $: coach = state && entry?.rules.getCoach ? entry.rules.getCoach(state, selected) : null;
   $: facts = status ? [
     ['Turn', status.turn === 'player' ? 'You' : status.turn === 'w' ? 'White' : 'Black'],
-    ...(game === 'chess' ? [['In check', coach?.check ? 'Yes' : 'No'], ['Captures available', String(coach?.captures?.length ?? 0)], ['Threatened pieces', String(coach?.threats?.length ?? 0)]] : []),
-    ...(game === 'checkers' ? [['Forced capture', coach?.mandatoryCapture ? 'Yes' : 'No'], ['Available routes', String(coach?.moves?.length ?? 0)]] : []),
     ...(game === 'sudoku' ? [['Filled cells', `${board.filter(Boolean).length} of 81`]] : []),
     ...(game === 'go' ? [['Komi', '7.5'], ['Marked dead', String(state.dead.length)]] : [])
   ] : [];
+  $: coaching = preferences.mode === 'coach' && !!view && !!state && ['chess', 'checkers'].includes(game);
+  $: insights = coaching ? (game === 'chess' ? chessInsights(fenOf(state), view.session.humanSide) : checkersInsights(state, view.session.humanSide)) : [];
+  $: if (coaching && game === 'chess' && reviewClient && status?.phase === 'playing' && status.turn === view.session.humanSide) refreshEvaluation(state);
   $: inProgress = !!state && status?.phase !== 'finished' && (game === 'chess' ? !!state.history.length : game === 'checkers' ? !!state.moves.length : game === 'sudoku' ? !!state.history.length : !!state.past.length);
 
   function cancelJob() {
@@ -70,10 +84,71 @@
   function commitSession(session, message = '') {
     view = createView(session, view?.display ?? { mode: preferences.mode });
     hint = '';
+    hintGuide = null;
     hintResult = null;
     error = '';
     notice = message;
     save();
+  }
+
+  // One full-strength Stockfish look per position, shared by the evaluation and the move review.
+  function analyzeChess(ruleState) {
+    const fen = fenOf(ruleState);
+    if (!analyses.has(fen)) {
+      const job = reviewClient.request({ game: 'chess', kind: 'analyze', state: ruleState, revision: 0, budgetMs: 400 });
+      job.catch(() => analyses.delete(fen));
+      analyses.set(fen, job);
+    }
+    return analyses.get(fen);
+  }
+
+  async function refreshEvaluation(ruleState) {
+    const fen = fenOf(ruleState);
+    if (fen === evaluationFen) return;
+    evaluationFen = fen;
+    try {
+      const result = await analyzeChess(ruleState);
+      if (evaluationFen === fen && result.score) evaluation = evaluationText(result.score, view.session.humanSide, chessRules.getStatus(ruleState).turn);
+    } catch { /* evaluation is a bonus; the game never depends on it */ }
+  }
+
+  async function reviewChessMove(before, after) {
+    const action = after.history.at(-1);
+    const fenBefore = fenOf(before);
+    const played = describeChessMove(fenBefore, action);
+    if (chessRules.getStatus(after).phase !== 'playing') {
+      return { rating: 'best', text: `${played.san}${played.text ? ` ${played.text}` : ''}.`, guide: played.guide };
+    }
+    const [best, reply] = await Promise.all([analyzeChess(before), analyzeChess(after)]);
+    if (!best.score || !reply.score) return null;
+    evaluation = evaluationText(reply.score, view.session.humanSide, chessRules.getStatus(after).turn);
+    evaluationFen = fenOf(after);
+    const same = best.action.from === action.from && best.action.to === action.to && (best.action.promotion ?? null) === (action.promotion ?? null);
+    const rating = same ? 'best' : rateMove(scoreToCp(best.score), -scoreToCp(reply.score));
+    if (rating === 'best' || rating === 'good') return { rating, text: `${played.san}${played.text ? ` ${played.text}` : ''}.`, guide: played.guide };
+    const allowed = describeChessMove(fenOf(after), reply.action);
+    const better = describeChessMove(fenBefore, best.action);
+    return {
+      rating,
+      text: `${played.san} allows ${allowed.san}${allowed.text ? `, which ${allowed.text}` : ''}. Better was ${better.san}${better.text ? `: it ${better.text}` : ''}.`,
+      guide: better.guide ?? allowed.guide
+    };
+  }
+
+  // Coach mode only: rate the move you just made, explain why, and show what was better.
+  function coachReview(before) {
+    if (preferences.mode !== 'coach' || !reviewClient || !['chess', 'checkers'].includes(game)) return;
+    const after = view.session.ruleState;
+    const token = ++reviewToken;
+    review = null;
+    (async () => {
+      try {
+        const result = game === 'chess'
+          ? await reviewChessMove(before, after)
+          : (await reviewClient.request({ game: 'checkers', kind: 'review', state: before, action: { path: after.moves.at(-1) }, revision: 0, budgetMs: 300 })).review;
+        if (token === reviewToken && result) review = result;
+      } catch { /* a missing review never blocks play */ }
+    })();
   }
 
   function play(action) {
@@ -82,7 +157,9 @@
     try {
       const next = applySessionMove(view.session, action, view.session.revision);
       if (next === view.session) return;
+      const before = view.session.ruleState;
       commitSession(next, game === 'sudoku' ? '' : describeAction(game, view.session.ruleState, next.ruleState));
+      coachReview(before);
       suppressBot = false;
       maybeBot();
     } catch (cause) { error = cause.message; }
@@ -100,7 +177,7 @@
     const beforeState = view.session.ruleState;
     try {
       view = selectCell(view, index);
-      if (view.session.revision !== before) { hint = ''; hintResult = null; notice = describeAction(game, beforeState, view.session.ruleState); save(); suppressBot = false; maybeBot(); }
+      if (view.session.revision !== before) { hint = ''; hintGuide = null; hintResult = null; notice = describeAction(game, beforeState, view.session.ruleState); save(); coachReview(beforeState); suppressBot = false; maybeBot(); }
       error = '';
     } catch (cause) { error = cause.message; }
   }
@@ -111,8 +188,10 @@
       view = choosePromotion(view, piece);
       notice = describeAction(game, beforeState, view.session.ruleState);
       hint = '';
+      hintGuide = null;
       hintResult = null;
       save();
+      coachReview(beforeState);
       suppressBot = false;
       maybeBot();
     } catch (cause) { error = cause.message; }
@@ -138,6 +217,8 @@
     const next = undoSession(view.session);
     if (next === view.session) { notice = 'Nothing to undo yet.'; return; }
     suppressBot = true;
+    review = null;
+    reviewToken++;
     commitSession(next, 'Last turn undone.');
   }
 
@@ -185,6 +266,20 @@
       const action = result.action;
       const move = action?.from ? `${action.from} to ${action.to}${action.promotion ? `, promote to ${action.promotion}` : ''}` : action?.path ? action.path.join(' to ') : action?.point !== undefined ? `point ${'ABCDEFGHJ'[action.point % 9]}${9 - Math.floor(action.point / 9)}` : action?.pass ? 'pass' : '';
       hint = `${move ? `Suggested move: ${move}. ` : ''}${result.explanation ?? 'Consider your available moves.'}`;
+      hintGuide = null;
+      if (game === 'chess' && action) {
+        const idea = describeChessMove(fenOf(state), action);
+        hint = `Suggested move: ${idea.san}. ${idea.text ? `It ${idea.text}.` : 'Stockfish prefers it; no single tactic, it improves your position.'}`;
+        hintGuide = idea.guide;
+      } else if (game === 'checkers' && action?.path) {
+        const idea = describeCheckersMove(state, action);
+        hint = `Suggested move: ${idea.move}. ${idea.text ? `It ${idea.text}.` : 'It keeps your position solid.'}`;
+        hintGuide = idea.guide;
+      } else if (game === 'sudoku' && result.deduction) {
+        const info = techniqueInfo(result.deduction.technique);
+        hint = `${info.name}: ${result.explanation}`;
+        hintGuide = info.guide;
+      }
       if (game === 'sudoku') hintResult = result.deduction;
     } catch (cause) { if (cause.name !== 'AbortError') error = `${cause.message} Retry the hint.`; }
     finally { if (controller === jobController) { busy = ''; controller = null; } }
@@ -207,6 +302,9 @@
     if (inProgress && !window.confirm(`Replace this ${entry.name.toLowerCase()} game? Your current progress will be lost.`)) return;
     cancelJob();
     error = '';
+    review = null;
+    reviewToken++;
+    evaluation = '';
     if (game === 'sudoku') {
     const revision = view?.session.revision ?? 0;
       const jobController = new AbortController();
@@ -249,11 +347,12 @@
       error = `${loaded.message}. Start a new game to reset this save.`;
     }
     client = new GameWorkerClient({ getRevision: () => view?.session.revision ?? 0 });
+    reviewClient = new GameWorkerClient();
     if (!view && game !== 'sudoku' && loaded.status === 'empty') commitSession(createSession(game, { humanSide, difficulty }));
     if (view) maybeBot();
     if (!view && game === 'sudoku' && loaded.status === 'empty') newGame();
   });
-  onDestroy(() => { cancelJob(); client?.dispose(); });
+  onDestroy(() => { cancelJob(); client?.dispose(); reviewClient?.dispose(); });
 </script>
 
 <section class="bg-frame" style={themeStyle} data-game={game} data-mode={preferences.mode}>
@@ -309,7 +408,7 @@
       {#if error}<p class="bg-error" role="alert">{error}</p>{/if}
     </div>
     {#if preferences.mode === 'coach' && view && state && status}
-      <CoachPanel {game} {status} {facts} hint={hint || coach?.message || ''} {history} {guides} />
+      <CoachPanel {game} {status} {facts} hint={hint || coach?.message || ''} {hintGuide} {review} {evaluation} {insights} {history} {guides} />
     {/if}
   </div>
 </section>

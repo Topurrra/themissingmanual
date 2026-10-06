@@ -33,7 +33,8 @@ export class StockfishTransport {
     try {
       if(this.dead||this.job)throw new Error('Stockfish transport accepts one job.');
       this.job=job;
-      if(job.game!=='chess'||!['move','hint'].includes(job.kind))throw new Error('Unsupported Stockfish job.');
+      if(job.game!=='chess'||!['move','hint','analyze'].includes(job.kind))throw new Error('Unsupported Stockfish job.');
+      this.score=null;
       this.state=chess.restoreState(job.state);
       if(chess.getStatus(this.state).phase!=='playing')throw new Error('Chess game is finished.');
       this.moves=chess.legalMoves(this.state);
@@ -50,7 +51,7 @@ export class StockfishTransport {
     try {
       if(line==='uciok') {
         this.engine.postMessage('setoption name Hash value 16');
-        this.engine.postMessage('setoption name Skill Level value '+(this.job.kind==='hint'?20:SKILL[this.job.difficulty]??8));
+        this.engine.postMessage('setoption name Skill Level value '+(this.job.kind==='move'?SKILL[this.job.difficulty]??8:20));
         this.engine.postMessage('ucinewgame');
         this.engine.postMessage('isready');
       } else if(line==='readyok'&&!this.initialized) {
@@ -62,13 +63,17 @@ export class StockfishTransport {
         const budget=Math.max(1,Math.min(1000,requested));
         const selected=this.job.kind==='hint'? ' searchmoves '+this.moves.map(move=>move.from+move.to+(move.promotion??'')).join(' '):'';
         this.engine.postMessage('go movetime '+Math.round(budget)+selected);
+      } else if(line.startsWith('info ')&&line.includes(' score ')) {
+        // Keep the latest full-strength evaluation (side to move's point of view) for the coach.
+        const found=/ score (cp|mate) (-?\d+)\b(?! (?:lower|upper)bound)/.exec(line);
+        if(found)this.score=found[1]==='cp'?{cp:Number(found[2])}:{mate:Number(found[2])};
       } else if(line.startsWith('bestmove ')) {
         const match=/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?(?:\s|$)/.exec(line);
         if(!match)throw new Error('Stockfish returned no playable move.');
         const action={from:match[1],to:match[2],...(match[3]?{promotion:match[3]}:{})};
         if(!this.moves.some(move=>move.from===action.from&&move.to===action.to&&move.promotion===action.promotion))throw new Error('Stockfish returned an illegal move.');
         const next=chess.applyMove(this.state,action);
-        this.reply({result:{action,engine:'Stockfish 19 lite',explanation:describeAction('chess',this.state,next)+' Stockfish analysis within the current thinking budget.'}});
+        this.reply({result:{action,engine:'Stockfish 19 lite',score:this.score,explanation:describeAction('chess',this.state,next)+' Stockfish analysis within the current thinking budget.'}});
       }
     } catch(error){this.reply({error:{message:error.message}});}
   }

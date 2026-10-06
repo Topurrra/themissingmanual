@@ -89,3 +89,25 @@ test('real Stockfish hints obey selected-square restrictions', async () => {
     assert.doesNotThrow(()=>chess.applyMove(chess.createState(),reply.result.action));
   } finally {transport.terminate();}
 });
+
+test('analyze jobs search at full strength and report the latest exact score', () => {
+  const {engine,messages}=setup({kind:'analyze',difficulty:'easy',budgetMs:300});
+  engine.emit('uciok');
+  assert.ok(engine.commands.includes('setoption name Skill Level value 20'));
+  engine.emit('readyok');
+  assert.equal(engine.commands.at(-1),'go movetime 300');
+  engine.emit('info depth 8 score cp 34 nodes 100 pv e2e4');
+  engine.emit('info depth 9 score cp 51 upperbound nodes 200 pv e2e4');
+  engine.emit('info depth 9 score cp 29 nodes 300 pv e2e4');
+  engine.emit('bestmove e2e4');
+  const result=messages.find(message=>message.result)?.result;
+  assert.deepEqual(result.score,{cp:29});
+  assert.deepEqual(result.action,{from:'e2',to:'e4'});
+});
+test('mate scores are kept as mate distances', () => {
+  const {engine,messages}=setup({kind:'analyze'});
+  engine.emit('uciok');engine.emit('readyok');
+  engine.emit('info depth 12 score mate -3 nodes 900 pv e2e4');
+  engine.emit('bestmove e2e4');
+  assert.deepEqual(messages.find(message=>message.result).result.score,{mate:-3});
+});

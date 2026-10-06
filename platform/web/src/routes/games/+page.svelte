@@ -1,5 +1,6 @@
 <script>
   import Seo from '$lib/Seo.svelte';
+  import TrainTabs from '$lib/TrainTabs.svelte';
   import '$lib/board-games/games.css';
   const games = [
     {id:'chess',name:'Chess',icon:'ti-chess',description:'Read the position. Protect your king. Build a plan.',details:'Classic chess · Computer practice'},
@@ -9,7 +10,7 @@
 </script>
 <Seo title="Games" description="Play chess, checkers and Sudoku. Choose a clear board or contextual coaching, and learn at your own pace." />
 <div class="bg-hub">
-  <a class="bg-back" href="/train">← Brain workouts</a>
+  <TrainTabs active="games" />
   <h1>A little room to think.</h1>
   <p class="bg-intro">Three games. Time to find your next move.</p>
   <p>Choose <strong>Focus</strong> for a quiet board, or <strong>Coach</strong> for explanations as you play. Your game stays with you when you switch.</p>

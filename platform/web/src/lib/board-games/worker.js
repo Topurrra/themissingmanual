@@ -1,5 +1,7 @@
 import { chooseAction } from './opponents.js';
 import * as sudoku from './sudoku.js';
+import * as checkers from './checkers.js';
+import { review } from './coach-checkers.js';
 
 export function handleJob(job) {
   if (!job || typeof job !== 'object') throw new Error('Invalid game job');
@@ -15,6 +17,10 @@ export function handleJob(job) {
       return { deduction, explanation: deduction.explanation };
     }
     throw new Error('Unsupported Sudoku job');
+  }
+  if (game === 'checkers' && kind === 'review') {
+    // Coach review of the player's move: material search, kept off the main thread.
+    return { review: review(checkers.restoreState(job.state), job.action, job.budgetMs ?? 300) };
   }
   if (kind === 'move' || kind === 'hint') {
     return chooseAction(game, job.state, {

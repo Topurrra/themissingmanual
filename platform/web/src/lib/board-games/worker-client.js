@@ -7,7 +7,7 @@ function cancelled(message = 'Game request cancelled.') {
 }
 async function defaultWorker(job) {
   if(job.game==='chess')return new StockfishTransport();
-  if(job.game==='checkers') {
+  if(job.game==='checkers'&&job.kind!=='review') {
     const {MarcherTransport}=await import('./marcher-client.js');
     return new MarcherTransport();
   }

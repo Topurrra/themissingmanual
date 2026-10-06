@@ -21,7 +21,9 @@ test('game pages are in centered shell and discoverable from Train and footer', 
   const train = await readFile(new URL('../../routes/train/+page.svelte',import.meta.url),'utf8');
   assert.match(layout,/path === "\/games"/);
   assert.match(layout,/href="\/games"/);
-  assert.match(train,/href="\/games"/);
+  const tabs = await readFile(new URL('../TrainTabs.svelte',import.meta.url),'utf8');
+  assert.match(train,/<TrainTabs /);
+  assert.match(tabs,/href: '\/games'/);
 });
 
 test('optional backend failures do not block games but retain other route behavior', async () => {

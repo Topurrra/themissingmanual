@@ -10,6 +10,7 @@ export const CHANGELOG = [
       { tag: 'New', text: 'Read The Missing Manual inside Omarchy with our plugin.', href: '/guides/the-missing-manual-on-omarchy' },
       { tag: 'New', text: 'Four Excel guides, from your first formula to pivot tables, XLOOKUP, and Power Query.', href: '/guides/excel-from-zero' },
       { tag: 'New', text: 'Play chess, checkers, and Sudoku against the computer, with a coach that explains the position.', href: '/games' },
+      { tag: 'Improved', text: 'The game coach now rates your moves, explains why, and links the guide that teaches each idea.', href: '/games' },
       { tag: 'New', text: 'New Strategy Games category: chess, checkers, Go, and Sudoku from first move to strong play, plus how computers play them.', href: '/categories/games' },
     ],
   },

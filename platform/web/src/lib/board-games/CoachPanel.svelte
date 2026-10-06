@@ -6,6 +6,13 @@
   export let hint = '';
   export let history = [];
   export let guides = [];
+  // Smarter coaching: a review of your last move, the engine's evaluation in words,
+  // things to notice right now, and links to the guide phase that teaches each idea.
+  export let review = null;
+  export let evaluation = '';
+  export let insights = [];
+  export let hintGuide = null;
+  const RATING = { best: 'Best move', good: 'Good move', inaccuracy: 'Inaccuracy', mistake: 'Mistake', blunder: 'Blunder' };
   let tab = 'coach';
   let expanded = true;
   onMount(() => { expanded = !matchMedia('(max-width: 760px)').matches; });
@@ -20,7 +27,23 @@
   </div>
   <div hidden={tab !== 'coach'}>
     <h2>{status?.phase === 'review' ? 'Review the score' : 'Think through this position'}</h2>
-    <p>{hint || status?.message || 'Choose a position to explore your options.'}</p>
+    {#if review}
+      <div class="bg-review" data-rating={review.rating} role="status">
+        <strong>{review.label ?? 'Your last move'}: {RATING[review.rating] ?? review.rating}</strong>
+        <span>{review.text}</span>
+        {#if review.guide}<a href={review.guide}>Learn this idea</a>{/if}
+      </div>
+    {/if}
+    {#if evaluation}<p class="bg-eval">{evaluation}</p>{/if}
+    <p>{hint || status?.message || 'Choose a position to explore your options.'}{#if hint && hintGuide}{' '}<a href={hintGuide}>Learn this idea</a>{/if}</p>
+    {#if insights.length}
+      <h3>What to notice</h3>
+      <ul class="bg-insights">
+        {#each insights as tip}
+          <li>{tip.text}{#if tip.guide}{' '}<a href={tip.guide}>Learn</a>{/if}</li>
+        {/each}
+      </ul>
+    {/if}
     {#if facts.length}
       <dl class="bg-facts">
         {#each facts as fact}
