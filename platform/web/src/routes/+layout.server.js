@@ -47,8 +47,13 @@ function giscusConfig() {
 export async function load({ fetch, url, locals }) {
   const lang = locals.lang ?? 'en';
   const siteConfig = await getSiteConfig(fetch);
-  const categories = (await listCategories(fetch)) ?? [];
-  const guides = (await listGuides(fetch)) ?? [];
+  const gamesRoute = /^\/games(?:\/|$)/.test(splitLocale(url.pathname).path);
+  const optionalNavigation = async (request) => {
+    try { return (await request(fetch)) ?? []; }
+    catch (error) { if (gamesRoute) return []; throw error; }
+  };
+  const categories = await optionalNavigation(listCategories);
+  const guides = await optionalNavigation(listGuides);
   const nav = categories.map((c) => ({
     slug: c.slug,
     name: c.name,

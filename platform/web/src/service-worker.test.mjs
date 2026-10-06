@@ -245,3 +245,16 @@ test('an offline Markdown request never receives the cached HTML representation'
     await assert.rejects(s.event('fetch', { request: markdown }), /offline/);
   }
 });
+
+test('visited game pages cache offline while game-related private endpoints bypass interception', async () => {
+  const s = setup();
+  s.setNetwork(async () => new Response('game page', {headers:{'content-type':'text/html'}}));
+  for (const path of ['/games','/games/chess','/games/checkers','/games/sudoku','/games/go']) {
+    await s.event('fetch',{request:s.request(path)});
+  }
+  s.setNetwork(async () => { throw new Error('offline'); });
+  for (const path of ['/games','/games/chess','/games/checkers','/games/sudoku','/games/go']) {
+    assert.equal(await (await s.event('fetch',{request:s.request(path)})).text(),'game page');
+  }
+  assert.equal(await s.event('fetch',{request:s.request('/api/games')}),undefined);
+});

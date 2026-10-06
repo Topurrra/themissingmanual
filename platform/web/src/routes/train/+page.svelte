@@ -362,6 +362,7 @@
 {#if stage === 'menu'}
   <header class="tr-intro">
     <h1>Train your brain</h1>
+    <p><a href="/games">Play chess, checkers, Sudoku and Go →</a></p>
     <p>Quick workouts for reasoning, memory, spatial sense, speed, and recall. Pick a game to practice a skill, or take the Brain Challenge for a broader benchmark.</p>
   </header>
 

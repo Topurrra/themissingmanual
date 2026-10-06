@@ -24,7 +24,7 @@ const NEVER_CACHE = /^\/(?:admin|api|feedback|tutor|mcp)(?:[/.]|$)|^\/push\./;
 const IMMUTABLE = '/_app/immutable/';
 
 function publicContent(path) {
-  return path === '/' || /^\/(?:[a-z]{2}(?:-[A-Za-z]{2})\/)?(?:guides|categories|practice|review)(?:\/|$)/.test(path);
+  return path === '/' || /^\/(?:[a-z]{2}(?:-[A-Za-z]{2})\/)?(?:guides|categories|practice|review|games)(?:\/|$)/.test(path);
 }
 
 function cacheable(res) {

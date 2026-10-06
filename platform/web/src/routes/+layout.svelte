@@ -60,6 +60,7 @@
   // the path rail stays visible and the user can continue.
   $: bare =
     isHome ||
+    path === "/games" || path.startsWith("/games/") ||
     [
       "/about",
       "/additional-info",
@@ -751,6 +752,7 @@
             <a href="/paths">Learning paths</a>
             <a href="/#topics">Browse topics</a>
             <a href="/train">Brain games</a>
+            <a href="/games">Board games</a>
             <a href="/practice">Practice</a>
           </div>
           <div class="co-col">
