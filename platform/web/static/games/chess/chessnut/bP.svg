@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="pawn" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="800px" height="800px" viewBox="0 0 800 800" enable-background="new 0 0 800 800" xml:space="preserve">
+<g id="black_pawn">
+	<path id="base" d="M487.507,418.344L487.507,418.344c0.099-16.66,11.76-24.598,63.798-29.302V331.81h-88.886
+		c31.36-19.11,51.744-52.43,51.744-91.042c0-60.662-50.274-108.192-114.366-108.192s-114.366,47.53-114.366,108.192
+		c0,38.612,20.286,71.833,51.744,91.042h-89.572v57.232c52.625,4.704,63.896,12.642,63.896,29.204
+		c0,59.486-36.848,128.87-113.19,196.098l0.098,62.721c0,18.229,91.336,31.359,201.194,31.359l0,0l0,0
+		c109.858,0,201.292-13.23,201.292-31.359l0.098-62.721C524.648,547.214,487.507,477.732,487.507,418.344z"/>
+	<path id="middle_9_" fill="none" stroke="#F2F2F2" stroke-width="19.0512" stroke-linecap="round" stroke-miterlimit="10" d="
+		M235.451,623.066c0,13.426,74.479,25.186,164.248,25.186l0,0c89.67,0,164.051-10.779,164.051-24.107"/>
+	<path id="top" fill="none" stroke="#F2F2F2" stroke-width="15.876" stroke-linecap="round" stroke-miterlimit="10" d="
+		M400.875,155.704c-23.52-0.196-46.648,8.428-64.975,26.754c-26.165,26.264-31.85,61.936-19.6,93.394"/>
+</g>
+</svg>
