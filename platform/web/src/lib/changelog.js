@@ -8,6 +8,7 @@ export const CHANGELOG = [
     items: [
       { tag: 'New', text: 'New Omarchy category: 12 guides for the keyboard-first Linux desktop, from day one to plugins and recovery.', href: '/categories/omarchy' },
       { tag: 'New', text: 'Read The Missing Manual inside Omarchy with our plugin.', href: '/guides/the-missing-manual-on-omarchy' },
+      { tag: 'New', text: 'Four Excel guides, from your first formula to pivot tables, XLOOKUP, and Power Query.', href: '/guides/excel-from-zero' },
     ],
   },
   {
