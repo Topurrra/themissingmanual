@@ -1,0 +1,31 @@
+{
+  "engine": "Stockfish.js",
+  "gitObject": "9cb3e5066d48f1a35d792afeda36eff37ae60570",
+  "assets": [
+    {
+      "name": "AUTHORS",
+      "bytes": 6881,
+      "sha256": "f81e7d74c350626766382ec67fa262c38cda00cb8b501790f95cdebb526006c1"
+    },
+    {
+      "name": "COPYING.txt",
+      "bytes": 35821,
+      "sha256": "0b383d5a63da644f628d99c33976ea6487ed89aaa59f0b3257992deac1171e6b"
+    },
+    {
+      "name": "stockfish-19-lite-single.js",
+      "bytes": 21415,
+      "sha256": "d3344124ab067fb0b90ee77873bb8e9fbf5fc01bc525fe714b0f942581e889e6"
+    },
+    {
+      "name": "stockfish-19-lite-single.wasm",
+      "bytes": 1787571,
+      "sha256": "57ac2d72312aba346760e3f173f687a8c211208e97a87268436f7f0e10bb5387"
+    }
+  ],
+  "license": "GPL-3.0",
+  "source": "https://github.com/nmrugg/stockfish.js/tree/v19.0.0",
+  "sourceArchive": "https://github.com/nmrugg/stockfish.js/archive/refs/tags/v19.0.0.tar.gz",
+  "version": "19.0.0",
+  "variant": "lite-single"
+}
