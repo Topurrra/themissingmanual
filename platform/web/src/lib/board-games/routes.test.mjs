@@ -10,10 +10,11 @@ test('available game routes work without published guide metadata', () => {
   assert.throws(() => resolveGamePage('go',[]), /not found/i);
   assert.throws(() => resolveGamePage('poker',[]), /not found/i);
 });
-test('only published Games category links are passed through', () => {
-  const guides = [{slug:'go-basics',title:'Learn Go'},{slug:'chess-basics',title:'Chess'}];
+test('a game page links its own Games guide first, then the shared one, nothing else', () => {
+  const guides = [{slug:'sudoku-from-zero'},{slug:'how-computers-play-games'},{slug:'chess-from-zero'},{slug:'go-the-board-game'}];
   const page = resolveGamePage('chess',[{slug:'games',guides},{slug:'programming-languages',guides:[{slug:'go-from-zero'}]}]);
-  assert.deepEqual(page.guides,guides);
+  assert.deepEqual(page.guides.map(g => g.slug),['chess-from-zero','how-computers-play-games']);
+  assert.deepEqual(resolveGamePage('checkers',[{slug:'games',guides}]).guides.map(g => g.slug),['how-computers-play-games']);
 });
 test('game pages are in centered shell and discoverable from Train and footer', async () => {
   const layout = await readFile(new URL('../../routes/+layout.svelte',import.meta.url),'utf8');

@@ -9,9 +9,12 @@
   export let disabled = false;
   export let onselect = () => {};
   export let pieceSet = 'chessnut';
+  // Playing Black: draw the board rotated 180 degrees so your pieces sit at the bottom.
+  export let flipped = false;
 
   let focused = 0;
   const files = 'abcdefgh';
+  $: order = flipped ? board.map((_, i) => board.length - 1 - i) : board.map((_, i) => i);
   const names = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
 
   function label(piece, index) {
@@ -21,7 +24,8 @@
 </script>
 
 <div class="bg-board bg-chess" role="group" aria-label="Chess board. Use arrow keys to move, Enter or Space to select a square.">
-  {#each board as piece, index}
+  {#each order as index (index)}
+    {@const piece = board[index]}
     {@const row = Math.floor(index / 8)}
     {@const column = index % 8}
     <button
@@ -38,15 +42,15 @@
       aria-disabled={disabled}
       onclick={() => { if (!disabled) onselect(index); }}
       onfocus={() => focused = index}
-      onkeydown={(event) => focusBoardCell(event, index, 8)}
+      onkeydown={(event) => focusBoardCell(event, index, 8, flipped)}
     >
       {#if piece}
         <img class="bg-chess-piece" src={getPieceUrl(pieceSet, piece.color, piece.type)} alt="" draggable="false" />
       {/if}
       {#if legalTargets.includes(index)}<span class="bg-target" aria-hidden="true"></span>{/if}
       {#if selection === index}<span class="bg-selection-mark" aria-hidden="true"></span>{/if}
-      {#if column === 0}<span class="bg-rank" aria-hidden="true">{8 - row}</span>{/if}
-      {#if row === 7}<span class="bg-file" aria-hidden="true">{files[column]}</span>{/if}
+      {#if column === (flipped ? 7 : 0)}<span class="bg-rank" aria-hidden="true">{8 - row}</span>{/if}
+      {#if row === (flipped ? 0 : 7)}<span class="bg-file" aria-hidden="true">{files[column]}</span>{/if}
     </button>
   {/each}
 </div>

@@ -8,6 +8,9 @@ const peers = cells.map((i) => [...new Set(units.filter((u) => u.includes(i)).fl
 const boxOf = (i) => Math.floor(i / 27) * 3 + Math.floor((i % 9) / 3);
 const rowOf = (i) => Math.floor(i / 9);
 const colOf = (i) => i % 9;
+// Hints name places the way a player reads the grid, not by internal index.
+const place = (i) => `row ${rowOf(i) + 1}, column ${colOf(i) + 1}`;
+const unitName = (u) => u < 9 ? `row ${u + 1}` : u < 18 ? `column ${u - 8}` : `box ${u - 17}`;
 
 function assertGrid(grid, name = 'grid') {
   if (!Array.isArray(grid) || grid.length !== 81 || grid.some((v) => !Number.isInteger(v) || v < 0 || v > 9)) throw new Error(`${name} must have 81 digits from 0 to 9`);
@@ -132,12 +135,12 @@ function initialCandidates(grid) { return cells.map((i) => new Set(candidates(gr
 function deduction(grid, possible) {
   for (const i of cells) if (!grid[i] && possible[i].size === 1) {
     const value = [...possible[i]][0];
-    return { technique: 'naked-single', cells: [i], index: i, value, explanation: `Cell ${i + 1} can only contain ${value}.` };
+    return { technique: 'naked-single', cells: [i], index: i, value, explanation: `The cell at ${place(i)} can only contain ${value}.` };
   }
-  for (const unit of units) for (const value of DIGITS) {
+  for (const [u, unit] of units.entries()) for (const value of DIGITS) {
     if (unit.some((i) => grid[i] === value)) continue;
     const places = unit.filter((i) => !grid[i] && possible[i].has(value));
-    if (places.length === 1) return { technique: 'hidden-single', cells: unit.slice(), index: places[0], value, explanation: `${value} has only one available cell in this unit.` };
+    if (places.length === 1) return { technique: 'hidden-single', cells: unit.slice(), index: places[0], value, explanation: `${value} has only one place left in ${unitName(u)}: ${place(places[0])}.` };
   }
   for (const box of boxes) for (const value of DIGITS) {
     const places = box.filter((i) => !grid[i] && possible[i].has(value));

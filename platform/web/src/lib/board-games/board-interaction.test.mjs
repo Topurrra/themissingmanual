@@ -26,3 +26,11 @@ test('handled arrow focuses the destination and prevents page scrolling', () => 
   assert.equal(focused, true);
   assert.equal(prevented, true);
 });
+
+test('on a flipped board the arrows follow what the player sees', () => {
+  assert.equal(nextBoardIndex(9, 'ArrowLeft', 8, true), 10);
+  assert.equal(nextBoardIndex(9, 'ArrowRight', 8, true), 8);
+  assert.equal(nextBoardIndex(9, 'ArrowUp', 8, true), 17);
+  assert.equal(nextBoardIndex(9, 'ArrowDown', 8, true), 1);
+  assert.equal(nextBoardIndex(63, 'ArrowUp', 8, true), 63);
+});

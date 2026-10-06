@@ -269,8 +269,8 @@
     <div class="bg-board-area">
       {#if view && state && status}
         <div class="bg-player bg-opponent">{game === 'sudoku' ? `${state.givens.filter(Boolean).length} givens` : `Opponent · ${view.session.humanSide === 'w' ? 'Black' : 'White'}`}</div>
-        {#if game === 'chess'}<ChessBoard {board} selection={selected} {legalTargets} disabled={!!busy || status?.phase !== 'playing' || status.turn !== view.session.humanSide || !!view.promotion} pieceSet={preferences.pieceSets[game]} onselect={select} />
-        {:else if game === 'checkers'}<CheckersBoard {board} selection={selected} {legalTargets} disabled={!!busy || status?.phase !== 'playing' || status.turn !== view.session.humanSide} onselect={select} />
+        {#if game === 'chess'}<ChessBoard {board} flipped={view.session.humanSide === 'b'} selection={selected} {legalTargets} disabled={!!busy || status?.phase !== 'playing' || status.turn !== view.session.humanSide || !!view.promotion} pieceSet={preferences.pieceSets[game]} onselect={select} />
+        {:else if game === 'checkers'}<CheckersBoard {board} flipped={view.session.humanSide === 'b'} selection={selected} {legalTargets} disabled={!!busy || status?.phase !== 'playing' || status.turn !== view.session.humanSide} onselect={select} />
         {:else if game === 'sudoku'}<SudokuBoard {board} selection={selected} notes={shownNotes} givens={state.givens} highlighted={eliminatedCells} disabled={!!busy || status?.phase !== 'playing'} onselect={select} oninput={sudokuInput} />
         {:else}<GoBoard {board} selection={selected} dead={state.dead} lastMove={state.lastMove ?? null} legalTargets={[]} disabled={!!busy || (status?.phase === 'playing' && status.turn !== view.session.humanSide) || status?.phase === 'finished'} onselect={select} />{/if}
         {#if view.promotion}
@@ -293,7 +293,7 @@
         {#if game === 'go' && status?.phase === 'review'}
           {@const score = entry.rules.score(state)}
           <p>Tap a group to mark it dead before accepting the area score.</p>
-          <table class="bg-score"><caption>Area score</caption><thead><tr><th>Area</th><th>Black</th><th>White</th></tr></thead><tbody><tr><th>Stones</th><td>{score.blackStones}</td><td>{score.whiteStones}</td></tr><tr><th>Territory</th><td>{score.blackTerritory}</td><td>{score.whiteTerritory}</td></tr><tr><th>Komi</th><td>—</td><td>{score.komi}</td></tr><tr><th>Total</th><td>{score.blackTotal}</td><td>{score.whiteTotal}</td></tr></tbody></table>
+          <table class="bg-score"><caption>Area score</caption><thead><tr><th>Area</th><th>Black</th><th>White</th></tr></thead><tbody><tr><th>Stones</th><td>{score.blackStones}</td><td>{score.whiteStones}</td></tr><tr><th>Territory</th><td>{score.blackTerritory}</td><td>{score.whiteTerritory}</td></tr><tr><th>Komi</th><td>0</td><td>{score.komi}</td></tr><tr><th>Total</th><td>{score.blackTotal}</td><td>{score.whiteTotal}</td></tr></tbody></table>
         {/if}
         <div class="bg-settings">
           <label>Difficulty <select bind:value={difficulty}><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select></label>
