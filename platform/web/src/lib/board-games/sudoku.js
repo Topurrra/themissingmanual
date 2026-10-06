@@ -12,6 +12,7 @@ const colOf = (i) => i % 9;
 function assertGrid(grid, name = 'grid') {
   if (!Array.isArray(grid) || grid.length !== 81 || grid.some((v) => !Number.isInteger(v) || v < 0 || v > 9)) throw new Error(`${name} must have 81 digits from 0 to 9`);
 }
+
 function valid(grid) {
   return units.every((u) => { const values = u.map((i) => grid[i]).filter(Boolean); return new Set(values).size === values.length; });
 }
@@ -231,4 +232,3 @@ export function generatePuzzle(difficulty = 'easy', seed = 1) {
   if (countSolutions(givens, 2) !== 1 || ratePuzzle(givens) !== difficulty) throw new Error(`invalid ${difficulty} fallback puzzle`);
   return { givens, solution, difficulty };
 }
-

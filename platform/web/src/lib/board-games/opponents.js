@@ -76,11 +76,11 @@ function explanationFor(gameName, state, action, next, hint) {
     const reason = status.phase === 'finished' && status.winner !== 'draw' ? 'finishes the game' :
       status.message === 'Check' ? 'gives check' :
         captured ? 'captures a piece' :
-          action.promotion ? `promotes to ${action.promotion}` : 'develops a piece';
+          action.promotion ? `promotes to ${action.promotion}` : 'plays a legal move';
     detail = `${action.from} to ${action.to}${action.promotion ? ` (${action.promotion})` : ''} ${reason}`;
   } else if (gameName === 'checkers') {
     const captured = action.path.some((point, index) => index > 0 && Math.abs(point - action.path[index - 1]) > 9);
-    const reason = captured ? 'takes the required capture route' : 'advances a piece';
+    const reason = captured ? 'takes the required capture route' : 'plays a legal move';
     detail = `${action.path.join(' to ')} ${reason}`;
   } else if (action.pass) {
     detail = 'pass leaves the board unchanged and moves toward score review';

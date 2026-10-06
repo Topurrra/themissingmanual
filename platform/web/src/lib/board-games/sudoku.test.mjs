@@ -153,5 +153,3 @@ test('candidate eliminations survive JSON restoration and forged removals are re
   }
   assert.fail('hard puzzle yielded no elimination');
 });
-
-

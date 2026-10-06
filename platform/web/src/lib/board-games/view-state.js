@@ -32,17 +32,21 @@ export function selectCell(view, cell) {
   const {game,ruleState} = view.session;
   const rules = getGame(game).rules;
   if (game === 'sudoku') return {...view,selection:cell};
-  if (game === 'go') return advanceView(view,{point:cell});
+  if (game === 'go') return ruleState.board[cell] ? {...view,selection:cell} : advanceView(view,{point:cell});
   const moves = rules.legalMoves(ruleState);
   if (game === 'chess') {
+    if (view.selection === cell) return {...view,selection:null,promotion:null};
     const candidates = view.selection === null ? [] : moves.filter(m => m.from === square(view.selection) && m.to === square(cell));
     if (candidates.length) {
       if (candidates.some(m => m.promotion)) return {...view,promotion:candidates};
       return advanceView(view,candidates[0]);
     }
     if (moves.some(m => m.from === square(cell))) return {...view,selection:cell,promotion:null};
+    if (view.selection !== null && view.selection !== cell) throw new Error(`Illegal chess destination ${square(cell)}. Choose a highlighted square.`);
+    if (view.selection === null) throw new Error(`No legal chess move starts at ${square(cell)}.`);
     return {...view,selection:null,promotion:null};
   }
+  if (view.selection?.length === 1 && view.selection[0] === cell) return {...view,selection:null};
   const prefix = view.selection ? [...view.selection,cell] : [cell];
   const matching = moves.filter(m => prefix.every((p,i) => m.path[i] === p));
   if (matching.length) {
@@ -50,6 +54,8 @@ export function selectCell(view, cell) {
     return complete ? advanceView(view,complete) : {...view,selection:prefix};
   }
   if (moves.some(m => m.path[0] === cell)) return {...view,selection:[cell]};
+  if (view.selection?.length && view.selection[0] !== cell) throw new Error('Illegal checkers destination. Choose a highlighted square.');
+  if (!view.selection?.length) throw new Error('No legal checkers move starts there.');
   return {...view,selection:null};
 }
 export function choosePromotion(view,piece) {

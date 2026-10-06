@@ -4,6 +4,7 @@
   import { createSession, applySessionMove, undoSession } from './session.js';
   import { loadSession, saveSession, loadPreferences, savePreferences } from './persistence.js';
   import { createView, setDisplay, selectCell, targets, choosePromotion } from './view-state.js';
+  import { describeAction } from './action-description.js';
   import { getTheme, getThemes, getPieceSets } from './themes.js';
   import { GameWorkerClient } from './worker-client.js';
   import ChessBoard from './ChessBoard.svelte';
@@ -81,7 +82,7 @@
     try {
       const next = applySessionMove(view.session, action, view.session.revision);
       if (next === view.session) return;
-      commitSession(next);
+      commitSession(next, game === 'sudoku' ? '' : describeAction(game, view.session.ruleState, next.ruleState));
       suppressBot = false;
       maybeBot();
     } catch (cause) { error = cause.message; }
@@ -96,16 +97,19 @@
     if (status?.phase !== 'playing' || (game !== 'sudoku' && status.turn !== view.session.humanSide)) return;
     if (game === 'sudoku') { view = selectCell(view, index); return; }
     const before = view.session.revision;
+    const beforeState = view.session.ruleState;
     try {
       view = selectCell(view, index);
-      if (view.session.revision !== before) { hint = ''; hintResult = null; save(); suppressBot = false; maybeBot(); }
+      if (view.session.revision !== before) { hint = ''; hintResult = null; notice = describeAction(game, beforeState, view.session.ruleState); save(); suppressBot = false; maybeBot(); }
       error = '';
     } catch (cause) { error = cause.message; }
   }
 
   function promote(piece) {
     try {
+      const beforeState = view.session.ruleState;
       view = choosePromotion(view, piece);
+      notice = describeAction(game, beforeState, view.session.ruleState);
       hint = '';
       hintResult = null;
       save();
@@ -175,7 +179,8 @@
     busy = 'hint';
     error = '';
     try {
-      const result = await client.request({ game, kind: 'hint', state, selection: selected, difficulty: view.session.difficulty, revision, budgetMs: 1000 }, { signal: jobController.signal });
+      const selection = game === 'go' && selected !== null && state.board[selected] ? null : selected;
+      const result = await client.request({ game, kind: 'hint', state, selection, difficulty: view.session.difficulty, revision, budgetMs: 1000 }, { signal: jobController.signal });
       if (view?.session.revision !== revision || result.revision !== revision) return;
       const action = result.action;
       const move = action?.from ? `${action.from} to ${action.to}${action.promotion ? `, promote to ${action.promotion}` : ''}` : action?.path ? action.path.join(' to ') : action?.point !== undefined ? `point ${'ABCDEFGHJ'[action.point % 9]}${9 - Math.floor(action.point / 9)}` : action?.pass ? 'pass' : '';
@@ -267,7 +272,7 @@
         {#if game === 'chess'}<ChessBoard {board} selection={selected} {legalTargets} disabled={!!busy || status?.phase !== 'playing' || status.turn !== view.session.humanSide || !!view.promotion} pieceSet={preferences.pieceSets[game]} onselect={select} />
         {:else if game === 'checkers'}<CheckersBoard {board} selection={selected} {legalTargets} disabled={!!busy || status?.phase !== 'playing' || status.turn !== view.session.humanSide} onselect={select} />
         {:else if game === 'sudoku'}<SudokuBoard {board} selection={selected} notes={shownNotes} givens={state.givens} highlighted={eliminatedCells} disabled={!!busy || status?.phase !== 'playing'} onselect={select} oninput={sudokuInput} />
-        {:else}<GoBoard {board} dead={state.dead} lastMove={state.lastMove ?? null} legalTargets={[]} disabled={!!busy || (status?.phase === 'playing' && status.turn !== view.session.humanSide) || status?.phase === 'finished'} onselect={select} />{/if}
+        {:else}<GoBoard {board} selection={selected} dead={state.dead} lastMove={state.lastMove ?? null} legalTargets={[]} disabled={!!busy || (status?.phase === 'playing' && status.turn !== view.session.humanSide) || status?.phase === 'finished'} onselect={select} />{/if}
         {#if view.promotion}
           <div class="bg-promotion" role="group" aria-label="Choose promotion piece"><span>Promote pawn to</span>{#each [['q','Queen'],['r','Rook'],['b','Bishop'],['n','Knight']] as choice}<button type="button" onclick={() => promote(choice[0])}>{choice[1]}</button>{/each}</div>
         {/if}

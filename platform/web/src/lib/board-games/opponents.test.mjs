@@ -6,6 +6,7 @@ import * as checkers from './checkers.js';
 import * as go from './go.js';
 import * as sudoku from './sudoku.js';
 import { handleJob } from './worker.js';
+import { chooseAction } from './opponents.js';
 
 const fixture = new URL('./test-fixtures/game-worker.mjs', import.meta.url);
 const request = (job) => new Promise((resolve, reject) => {
@@ -101,4 +102,14 @@ test('job handler enforces the 1000ms budget cap', () => {
   const result = handleJob({ game: 'chess', kind: 'move', state: chess.createState(), budgetMs: 100000 });
   assert.ok(result.action);
   assert.ok(performance.now() - start < 2500);
+});
+test('quiet practice suggestions use direction-neutral wording', () => {
+  const chessHint = chooseAction('chess', chess.createState(), { hint: true, selection: 'g1', budgetMs: 20 });
+  assert.match(chessHint.explanation, /plays/);
+  assert.doesNotMatch(chessHint.explanation, /develops/);
+  const board = Array(64).fill(0); board[35] = 2; board[42] = 1; board[44] = 1;
+  const checkersHint = chooseAction('checkers', checkers.createState({ board, turn: 'b' }), { hint: true, selection: 35, budgetMs: 20 });
+  assert.ok(checkersHint.action.path.at(-1) < 35);
+  assert.match(checkersHint.explanation, /plays/);
+  assert.doesNotMatch(checkersHint.explanation, /advances/);
 });
