@@ -6,6 +6,7 @@
 !.gitattributes
 !.dockerignore
 !docker-compose.yml
+!deploy.sh
 !LICENSE
 !README.md
 
