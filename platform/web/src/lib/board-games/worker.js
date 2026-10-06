@@ -28,6 +28,7 @@ export function handleJob(job) {
 if (typeof self !== 'undefined' && typeof self.addEventListener === 'function') {
   self.addEventListener('message', ({ data: job }) => {
     try {
+      self.postMessage({id:job?.id,revision:job?.revision,stage:'ready'});
       self.postMessage({ id: job?.id, revision: job?.revision, result: handleJob(job) });
     } catch (error) {
       self.postMessage({ id: job?.id, revision: job?.revision, error: { message: error.message } });

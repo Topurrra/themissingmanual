@@ -162,7 +162,7 @@
     busy = 'move';
     error = '';
     try {
-      const result = await client.request({ game, kind: 'move', state: view.session.ruleState, difficulty: view.session.difficulty, revision, budgetMs: 1000 }, { signal: jobController.signal });
+      const result = await client.request({ game, kind: 'move', state: view.session.ruleState, difficulty: view.session.difficulty, revision, budgetMs: 1000 }, { signal: jobController.signal, onStage: (stage) => { if (controller === jobController && ['chess','checkers'].includes(game)) busy = stage === 'loading' ? 'loading' : 'move'; } });
       if (!view || view.session.revision !== revision || result.revision !== revision) return;
       const next = applySessionMove(view.session, result.action, revision);
       commitSession(next, result.explanation ?? 'Opponent moved.');
@@ -180,7 +180,7 @@
     error = '';
     try {
       const selection = game === 'go' && selected !== null && state.board[selected] ? null : selected;
-      const result = await client.request({ game, kind: 'hint', state, selection, difficulty: view.session.difficulty, revision, budgetMs: 1000 }, { signal: jobController.signal });
+      const result = await client.request({ game, kind: 'hint', state, selection, difficulty: view.session.difficulty, revision, budgetMs: 1000 }, { signal: jobController.signal, onStage: (stage) => { if (controller === jobController && ['chess','checkers'].includes(game)) busy = stage === 'loading' ? 'loading' : 'hint'; } });
       if (view?.session.revision !== revision || result.revision !== revision) return;
       const action = result.action;
       const move = action?.from ? `${action.from} to ${action.to}${action.promotion ? `, promote to ${action.promotion}` : ''}` : action?.path ? action.path.join(' to ') : action?.point !== undefined ? `point ${'ABCDEFGHJ'[action.point % 9]}${9 - Math.floor(action.point / 9)}` : action?.pass ? 'pass' : '';
@@ -213,7 +213,7 @@
       controller = jobController;
       busy = 'puzzle';
       try {
-        const result = await client.request({ game, kind: 'puzzle', difficulty, revision, seed: Date.now() }, { signal: jobController.signal });
+        const result = await client.request({ game, kind: 'puzzle', difficulty, revision, seed: Date.now() }, { signal: jobController.signal, onStage: (stage) => { if (controller === jobController && ['chess','checkers'].includes(game)) busy = stage === 'loading' ? 'loading' : 'move'; } });
         if ((view?.session.revision ?? 0) !== revision || result.revision !== revision) return;
         const ruleState = entry.rules.createState({ puzzle: result.puzzle });
         commitSession(createSession(game, { difficulty, ruleState, humanSide: 'player' }), 'New puzzle ready.');
@@ -258,10 +258,10 @@
 
 <section class="bg-frame" style={themeStyle} data-game={game} data-mode={preferences.mode}>
   <header class="bg-header">
-    <div><a href="/games" class="bg-back">← All games</a><h1>{entry?.name}</h1><p>{game === 'go' ? '9 × 9 · Chinese area · 7.5 komi' : game === 'checkers' ? '8 × 8 · English checkers' : game === 'sudoku' ? '9 × 9 puzzle' : '8 × 8 · Chess'} · {view?.session.difficulty ?? difficulty} {game === 'sudoku' ? 'puzzle' : 'opponent'}</p></div>
+    <div><a href="/games" class="bg-back">← All games</a><h1>{entry?.name}</h1><p>{game === 'go' ? '9 × 9 · Chinese area · 7.5 komi' : game === 'checkers' ? '8 × 8 · English checkers' : game === 'sudoku' ? '9 × 9 puzzle' : '8 × 8 · Chess'} · {view?.session.difficulty ?? difficulty} {game === 'sudoku' ? 'puzzle' : 'opponent'}{game === 'chess' ? ' · Stockfish' : game === 'checkers' ? ' · Marcher' : ''}</p></div>
     <div class="bg-game-top-controls">
       <div class="bg-modes" role="group" aria-label="Play mode"><button type="button" aria-pressed={preferences.mode === 'focus'} onclick={() => updateDisplay({ mode: 'focus' })}>Focus</button><button type="button" aria-pressed={preferences.mode === 'coach'} onclick={() => updateDisplay({ mode: 'coach' })}>Coach</button></div>
-      <p class="bg-status" aria-live="polite">{busy === 'move' ? 'Opponent thinking…' : status?.message ?? 'Preparing game…'}</p>
+      <p class="bg-status" aria-live="polite">{busy === 'loading' ? 'Loading game engine…' : busy === 'move' ? 'Opponent thinking…' : busy === 'hint' ? 'Finding a hint…' : status?.message ?? 'Preparing game…'}</p>
     </div>
   </header>
 

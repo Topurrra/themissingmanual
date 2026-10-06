@@ -53,8 +53,36 @@ test('crashes reject clearly and a new worker retries successfully', async () =>
 test('reply from an old position revision cannot be used', async () => {
   let revision = 1;
   const client = new GameWorkerClient({ createWorker, getRevision: () => revision });
-  const request = client.request({ kind:'delay', revision });
-  revision = 2;
+  let markReady;
+  const ready=new Promise(resolve=>markReady=resolve);
+  const request=client.request({kind:'delay',revision},{onStage:stage=>{if(stage==='thinking')markReady();}});
+  await ready;
+  revision=2;
   await assert.rejects(request, { name:'AbortError' });
   client.dispose();
+});
+
+test('loading has its own deadline before the five-second execution budget', async () => {
+  const client = new GameWorkerClient({ createWorker, timeoutMs:40, loadingTimeoutMs:300 });
+  const reply=await client.request({kind:'loading',revision:1});
+  assert.equal(reply.revision,1);
+  client.dispose();
+});
+test('a loader that never becomes ready times out and can be retried', async () => {
+  const client=new GameWorkerClient({createWorker,timeoutMs:50,loadingTimeoutMs:100});
+  await assert.rejects(client.request({kind:'loading-hang',revision:1}),/loading.*timed out/i);
+  assert.equal((await client.request({kind:'echo',revision:2})).revision,2);
+  client.dispose();
+});
+
+test('disposing during asynchronous creation terminates the late worker', async () => {
+  let deliver;
+  let terminated=false;
+  const client=new GameWorkerClient({createWorker:()=>new Promise(resolve=>deliver=resolve)});
+  const request=client.request({revision:1});
+  client.dispose();
+  await assert.rejects(request,{name:'AbortError'});
+  deliver({terminate(){terminated=true;}});
+  await new Promise(resolve=>setTimeout(resolve,0));
+  assert.equal(terminated,true);
 });
