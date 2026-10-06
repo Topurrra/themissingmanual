@@ -80,7 +80,7 @@ A PivotTable reads your range as a database table. It needs the shape a database
 - **No blank rows or blank columns inside the data.** When Excel guesses the range for you, a blank row can end the guess early, so rows below it silently vanish from the pivot.
 - **No merged cells.** A merged cell holds its value in only one cell of the group, so the others look empty to the pivot.
 - **No subtotal or total rows.** The pivot calculates totals itself. A subtotal row in your data is counted as one more record and double-counts everything.
-- **One kind of thing per column.** Do not put numbers and text like "n/a" in the same column. Text or blanks in a number column change how the pivot summarizes it (Phase 2).
+- **One kind of thing per column.** Do not put numbers and text like "n/a" in the same column. Text in a number column changes how the pivot summarizes it (Phase 2), and in older Excel versions so do blank cells.
 
 The "one column per month" layout is the most common offender. A sheet with columns Jan, Feb, Mar reads well for a human but works badly for a pivot to use, because the month is spread across headers instead of being a value in a column. Reshape it so Month is its own column and each month-region pair is one row. That tall, narrow layout is what pivots are built for.
 

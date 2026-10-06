@@ -61,7 +61,7 @@ Count is how many rows are in each group, which is how many sales there were. Av
 For more control, right-click a value and choose **Value Field Settings**. Its **Summarize Values By** tab also lists Max, Min, Product, and Count Numbers.
 
 > ⚠️ **Gotcha**
-> Excel picks Sum for a column of numbers but Count when the column holds text or blank cells. If a number column has text in it, such as "n/a" or numbers stored as text, or has blank cells, the pivot labels the field **Count of Revenue** instead of **Sum of Revenue** and gives you row counts where you expected dollars. Always read the field label after you add it to Values.
+> Excel picks Sum for a column of numbers but Count when the column holds text. If a number column has text in it, such as "n/a" or numbers stored as text, the pivot labels the field **Count of Revenue** instead of **Sum of Revenue** and gives you row counts where you expected dollars. Always read the field label after you add it to Values. (In Microsoft 365, blank cells no longer trigger this, a change Microsoft made in 2018. In older versions, a single blank cell does, so fill blanks with 0 or fix them at the source.)
 
 ## Show Values As
 
@@ -150,7 +150,7 @@ Check yourself before moving on:
     "q": "Your pivot shows Count of Revenue where you expected Sum of Revenue. What is the most likely cause?",
     "choices": ["The Revenue column contains text, so Excel defaulted to Count", "The pivot needs refreshing", "Rows and Columns are swapped"],
     "answer": 0,
-    "explain": "Excel defaults to Sum for numbers and Count when the column has text or blanks. A number column with text in it flips the default."
+    "explain": "Excel defaults to Sum for numbers and Count when the column has text. A number column with text in it, such as n/a or numbers stored as text, flips the default."
   },
   {
     "q": "In our data, East has 5 sales totaling 13200 and the whole company has 12 sales totaling 25500. What is the Grand Total of Average of Revenue?",

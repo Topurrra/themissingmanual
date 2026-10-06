@@ -91,7 +91,7 @@ Microsoft lists three variants:
 
 | Command | Unpivots | Picks up a new column added later? |
 |---|---|---|
-| Unpivot Columns | The columns you selected | Do not count on it. Use Unpivot Other Columns when columns will be added |
+| Unpivot Columns | The columns you selected | Yes. Power Query internally builds this as Unpivot Other Columns |
 | Unpivot Other Columns | Every column except the ones you selected | Yes, which is why you choose it when months will be added |
 | Unpivot Only Selected Columns | Only the columns you selected | No, new columns stay as they are, which is what Microsoft says it is for |
 
